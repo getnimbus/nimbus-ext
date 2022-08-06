@@ -4,7 +4,7 @@
 import Mark from "mark.js";
 import "@webcomponents/webcomponentsjs/webcomponents-bundle.js";
 import { coinGeko } from "./views/network";
-import { get } from "lodash"
+import { get } from "lodash";
 
 import "./views/AddressHighlight.svelte";
 import "./views/TrxHighlight.svelte";
@@ -182,8 +182,6 @@ const getCoinList = async () => {
             (data: { [key: string]: string | number }) =>
               data.symbol === item.innerText || data.name === item.innerText
           );
-
-          console.log("selectedItem: ", selectedItem)
 
           // Inject address as props
           item.setAttribute("id", selectedItem?.id);
