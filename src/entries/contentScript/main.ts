@@ -5,6 +5,7 @@ import Mark from "mark.js";
 import "@webcomponents/webcomponentsjs/webcomponents-bundle.js";
 import { coinGeko } from "./views/network";
 import { get } from "lodash";
+import UrlPattern from "url-pattern";
 
 import "./views/AddressHighlight.svelte";
 import "./views/TrxHighlight.svelte";
@@ -18,49 +19,49 @@ const currentUrl: string = window.location.href;
 const listPage: { [key: string]: string }[] = [
   {
     name: "coinmarketcap",
-    url: "https://coinmarketcap.com/community/articles",
+    url: "articles",
     selector: ".hero",
   },
   {
     name: "binance",
-    url: "https://www.binance.com/en/support/announcement",
+    url: "announcement",
     selector: "article",
   },
   {
     name: "kraken",
-    url: "https://blog.kraken.com/post",
+    url: "post",
     selector: ".entry-content",
   },
-  {
-    name: "kucoin",
-    url: "https://www.kucoin.com/news",
-    selector: ".article___1avbl",
-  },
-  {
-    name: "bitfinex",
-    url: "https://www.bitfinex.com/posts",
-    selector: ".announcements_page_content",
-  },
-  {
-    name: "gemini",
-    url: "https://www.gemini.com/blog",
-    selector: ".inbiro",
-  },
-  {
-    name: "coindesk",
-    url: "https://www.coindesk.com/markets",
-    selector: ".main-body-grid",
-  },
-  {
-    name: "marginatm",
-    url: "https://marginatm.com",
-    selector: "#post-detail-content",
-  },
-  {
-    name: "theblock",
-    url: "https://www.theblock.co/post",
-    selector: ".articleContent",
-  },
+  // {
+  //   name: "kucoin",
+  //   url: "https://www.kucoin.com/news",
+  //   selector: ".article___1avbl",
+  // },
+  // {
+  //   name: "bitfinex",
+  //   url: "https://www.bitfinex.com/posts",
+  //   selector: ".announcements_page_content",
+  // },
+  // {
+  //   name: "gemini",
+  //   url: "https://www.gemini.com/blog",
+  //   selector: ".inbiro",
+  // },
+  // {
+  //   name: "coindesk",
+  //   url: "https://www.coindesk.com/markets",
+  //   selector: ".main-body-grid",
+  // },
+  // {
+  //   name: "marginatm",
+  //   url: "https://marginatm.com",
+  //   selector: "#post-detail-content",
+  // },
+  // {
+  //   name: "theblock",
+  //   url: "https://www.theblock.co/post",
+  //   selector: ".articleContent",
+  // },
 ];
 
 const getCoinList = async () => {
@@ -161,9 +162,27 @@ const getCoinList = async () => {
     })();
 
     (() => {
+      // const selectedPageSupport = listPage.find(
+      //   (item: { [key: string]: string }) => currentUrl.includes(item.url)
+      // );
+
       const selectedPageSupport = listPage.find(
-        (item: { [key: string]: string }) => currentUrl.includes(item.url)
+        (item: { [key: string]: string }) => {
+          const regex = new RegExp(`^\/${item.url}\/(.*)$`)
+          const pattern = new UrlPattern(regex);
+
+          const matchCurrentUrl = currentUrl.match(item.url)
+
+          const structUrlMatch = matchCurrentUrl && "/" + matchCurrentUrl[0]
+
+          const indexOfSelectedStringUrl = currentUrl.indexOf(structUrlMatch)
+          const conditionalUrlRegex = indexOfSelectedStringUrl !== -1 && currentUrl.slice(indexOfSelectedStringUrl)
+
+          return matchCurrentUrl && matchCurrentUrl[0] === item.url && pattern.match(conditionalUrlRegex) !== null
+        }
       );
+
+      console.log("selectedPageSupport: ", selectedPageSupport)
 
       const context = document.querySelector(
         `${selectedPageSupport?.selector}`
