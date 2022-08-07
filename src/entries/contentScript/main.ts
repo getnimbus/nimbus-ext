@@ -15,33 +15,29 @@ import { escapeRegex } from "./views/utils";
 const regexETHTrx = /0x[a-fA-F0-9]{64}/g; // TODO: Ignore longer address
 const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex
 
-const currentUrl: string = window.location.href;
 const listPage: { [key: string]: string | string[] }[] = [
   {
     name: "coinmarketcap",
-    url: "articles",
     selector: ".hero",
     hostname: "coinmarketcap.com",
     urlPattern: [
-      '/articles/:id'
+      '/community/articles/:id',
     ]
   },
   {
     name: "binance",
-    url: "announcement",
     selector: ".article",
     hostname: "www.binance.com",
     urlPattern: [
-      '/announcements/:id'
+      '/:lang/support/announcement/:id'
     ]
   },
   {
     name: "kraken",
-    url: "post",
     selector: ".entry-content",
     hostname: "blog.kraken.com",
     urlPattern: [
-      '/post/:id/:slug/'
+      '/post/:id/:slug/',
     ]
   },
   // {
@@ -174,26 +170,22 @@ const getCoinList = async () => {
     })();
 
     (() => {
-      const selectedPageSupport = listPage.find(
-        (item: any) => {
-          const indexOfSelectedStringUrl = currentUrl.indexOf(item.url)
-          const conditionalUrl = indexOfSelectedStringUrl !== -1 && currentUrl.slice(indexOfSelectedStringUrl - 1)
+      const selectedPageFromCurrentUrl: any = listPage.find((item) => {
+        return location.hostname === item.hostname
+      })
 
-          const pattern = item.urlPattern.map((patternUrl) => {
-            return new UrlPattern(patternUrl)
-          })
+      const patternUrl = selectedPageFromCurrentUrl.urlPattern.map((item) => {
+        return new UrlPattern(item)
+      })
 
-          const arrayUrlDetected = pattern.map((item) => {
-            return item.match(conditionalUrl)
-          })
+      const arrayUrlDetected = patternUrl.map((item) => {
+        return item.match(location.pathname)
+      })
 
-          return location.hostname === item.hostname && arrayUrlDetected.length !== 0 && arrayUrlDetected[0] !== null
-        }
-      );
-      console.log("selectedPageSupport: ", selectedPageSupport)
+      const urlDetected = arrayUrlDetected.every(el => el === null)
 
       const context = document.querySelector(
-        `${selectedPageSupport?.selector}`
+        `${!urlDetected ? selectedPageFromCurrentUrl.selector : ""}`
       );
       const instance = new Mark(context);
       // /0x[a-fA-F0-9]{64}/g
