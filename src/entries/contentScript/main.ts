@@ -15,29 +15,35 @@ import { escapeRegex } from "./views/utils";
 const regexETHTrx = /0x[a-fA-F0-9]{64}/g; // TODO: Ignore longer address
 const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex
 
-const listPage: { [key: string]: string | string[] }[] = [
+const listPage: { [key: string]: string | any[] }[] = [
   {
     name: "coinmarketcap",
-    selector: ".hero",
     hostname: "coinmarketcap.com",
     urlPattern: [
-      '/community/articles/:id',
+      {
+        selector: [".hero"],
+        path: '/community/articles/:id',
+      }
     ]
   },
   {
     name: "binance",
-    selector: ".article",
     hostname: "www.binance.com",
     urlPattern: [
-      '/:lang/support/announcement/:id'
+      {
+        selector: [".article", ".hero"],
+        path: '/:lang/support/announcement/:id',
+      }
     ]
   },
   {
     name: "kraken",
-    selector: ".entry-content",
     hostname: "blog.kraken.com",
     urlPattern: [
-      '/post/:id/:slug/',
+      {
+        selector: [".entry-content"],
+        path: '/post/:id/:slug/',
+      }
     ]
   },
   // {
@@ -175,44 +181,52 @@ const getCoinList = async () => {
       })
 
       const patternUrl = selectedPageFromCurrentUrl.urlPattern.map((item) => {
-        return new UrlPattern(item)
+        return new UrlPattern(item.path)
       })
 
       const arrayUrlDetected = patternUrl.map((item) => {
         return item.match(location.pathname)
       })
 
-      const urlDetected = arrayUrlDetected.every(el => el === null)
+      const urlDetected = arrayUrlDetected.some(el => el === null)
 
-      const context = document.querySelector(
-        `${!urlDetected ? selectedPageFromCurrentUrl.selector : ""}`
-      );
-      const instance = new Mark(context);
-      // /0x[a-fA-F0-9]{64}/g
-      instance.markRegExp(regexNativeToken, {
-        // instance.markRegExp(/BTC|ETH|Bitcoin/g, {
-        element: "native-token-highlight",
-        className: "nimbus-ext",
-        exclude: ["[data-markjs]", ".nimbus-ext", "native-token-info"],
-        // acrossElements: true,
-        debug: true,
-        each(item: any) {
-          const selectedItem = coinList.find(
-            (data: { [key: string]: string | number }) =>
-              data.symbol === item.innerText || data.name === item.innerText
+      if (urlDetected) return
+
+      console.log("selectedPageFromCurrentUrl: ", selectedPageFromCurrentUrl)
+
+      selectedPageFromCurrentUrl.urlPattern.map((item) => {
+        item.selector.map((selectDOM) => {
+          const context = document.querySelector(
+            `${selectDOM}`
           );
+          const instance = new Mark(context);
+          // /0x[a-fA-F0-9]{64}/g
+          instance.markRegExp(regexNativeToken, {
+            // instance.markRegExp(/BTC|ETH|Bitcoin/g, {
+            element: "native-token-highlight",
+            className: "nimbus-ext",
+            exclude: ["[data-markjs]", ".nimbus-ext", "native-token-info"],
+            // acrossElements: true,
+            debug: true,
+            each(item: any) {
+              const selectedItem = coinList.find(
+                (data: { [key: string]: string | number }) =>
+                  data.symbol === item.innerText || data.name === item.innerText
+              );
 
-          // Inject address as props
-          item.setAttribute("id", selectedItem?.id);
-          item.setAttribute("name", item.innerText);
-        },
-        filter: function (textNode: any, foundTerm: string, totalCounter: any) {
-          return true; // must return either true or false
-        },
-        done() {
-          // console.log("Done mark addresses");
-        },
-      });
+              // Inject address as props
+              item.setAttribute("id", selectedItem?.id);
+              item.setAttribute("name", item.innerText);
+            },
+            filter: function (textNode: any, foundTerm: string, totalCounter: any) {
+              return true; // must return either true or false
+            },
+            done() {
+              // console.log("Done mark addresses");
+            },
+          });
+        })
+      })
     })();
   }
 
