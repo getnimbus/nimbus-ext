@@ -6,6 +6,7 @@
   "description": "A @samrum/vite-plugin-web-extension web extension",
   "scripts": {
     "build": "vite build",
+    "build:components": "vite build -c vite.config.components.ts",
     "watch": "vite build --watch",
     "dev": "vite",
     "serve:firefox": "web-ext run --start-url \"about:debugging#/runtime/this-firefox\"  --source-dir ./dist/",
@@ -38,6 +39,7 @@
     "svelte-portal": "^2.2.0",
     "svelte-windicss-preprocess": "^4.2.8",
     "tippy.js": "^6.3.7",
+    "vite-imagetools": "^4.0.4",
     "webextension-polyfill": "^0.9.0",
     "windicss": "^3.5.6"
   },

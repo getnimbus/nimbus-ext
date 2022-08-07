@@ -4,6 +4,7 @@ import webExtension from "@samrum/vite-plugin-web-extension";
 import path from "path";
 import { getManifest } from "./src/manifest";
 import { windi } from "svelte-windicss-preprocess";
+import sveltePreprocess from "svelte-preprocess";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -12,7 +13,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       svelte({
-        preprocess: [windi({})],
+        preprocess: [sveltePreprocess(), windi({})],
         compilerOptions: {
           customElement: true,
         },
