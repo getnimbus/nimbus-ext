@@ -21,16 +21,19 @@ const listPage: { [key: string]: string }[] = [
     name: "coinmarketcap",
     url: "articles",
     selector: ".hero",
+    hostname: "coinmarketcap.com"
   },
   {
     name: "binance",
     url: "announcement",
     selector: "article",
+    hostname: "www.binance.com"
   },
   {
     name: "kraken",
     url: "post",
     selector: ".entry-content",
+    hostname: "blog.kraken.com"
   },
   // {
   //   name: "kucoin",
@@ -178,7 +181,9 @@ const getCoinList = async () => {
           const indexOfSelectedStringUrl = currentUrl.indexOf(structUrlMatch)
           const conditionalUrlRegex = indexOfSelectedStringUrl !== -1 && currentUrl.slice(indexOfSelectedStringUrl)
 
-          return matchCurrentUrl && matchCurrentUrl[0] === item.url && pattern.match(conditionalUrlRegex) !== null
+          const hostname = location.hostname;
+
+          return matchCurrentUrl && matchCurrentUrl[0] === item.url && pattern.match(conditionalUrlRegex) !== null && hostname === item.hostname
         }
       );
 
