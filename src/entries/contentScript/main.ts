@@ -16,24 +16,33 @@ const regexETHTrx = /0x[a-fA-F0-9]{64}/g; // TODO: Ignore longer address
 const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex
 
 const currentUrl: string = window.location.href;
-const listPage: { [key: string]: string }[] = [
+const listPage: { [key: string]: string | string[] }[] = [
   {
     name: "coinmarketcap",
     url: "articles",
     selector: ".hero",
-    hostname: "coinmarketcap.com"
+    hostname: "coinmarketcap.com",
+    urlPattern: [
+      '/articles/:id'
+    ]
   },
   {
     name: "binance",
     url: "announcement",
-    selector: "article",
-    hostname: "www.binance.com"
+    selector: ".article",
+    hostname: "www.binance.com",
+    urlPattern: [
+      '/announcements/:id'
+    ]
   },
   {
     name: "kraken",
     url: "post",
     selector: ".entry-content",
-    hostname: "blog.kraken.com"
+    hostname: "blog.kraken.com",
+    urlPattern: [
+      '/post/:id/:slug/'
+    ]
   },
   // {
   //   name: "kucoin",
@@ -165,28 +174,22 @@ const getCoinList = async () => {
     })();
 
     (() => {
-      // const selectedPageSupport = listPage.find(
-      //   (item: { [key: string]: string }) => currentUrl.includes(item.url)
-      // );
-
       const selectedPageSupport = listPage.find(
-        (item: { [key: string]: string }) => {
-          const regex = new RegExp(`^\/${item.url}\/(.*)$`)
-          const pattern = new UrlPattern(regex);
+        (item: any) => {
+          const indexOfSelectedStringUrl = currentUrl.indexOf(item.url)
+          const conditionalUrl = indexOfSelectedStringUrl !== -1 && currentUrl.slice(indexOfSelectedStringUrl - 1)
 
-          const matchCurrentUrl = currentUrl.match(item.url)
+          const pattern = item.urlPattern.map((patternUrl) => {
+            return new UrlPattern(patternUrl)
+          })
 
-          const structUrlMatch = matchCurrentUrl && "/" + matchCurrentUrl[0]
+          const arrayUrlDetected = pattern.map((item) => {
+            return item.match(conditionalUrl)
+          })
 
-          const indexOfSelectedStringUrl = currentUrl.indexOf(structUrlMatch)
-          const conditionalUrlRegex = indexOfSelectedStringUrl !== -1 && currentUrl.slice(indexOfSelectedStringUrl)
-
-          const hostname = location.hostname;
-
-          return matchCurrentUrl && matchCurrentUrl[0] === item.url && pattern.match(conditionalUrlRegex) !== null && hostname === item.hostname
+          return location.hostname === item.hostname && arrayUrlDetected.length !== 0 && arrayUrlDetected[0] !== null
         }
       );
-
       console.log("selectedPageSupport: ", selectedPageSupport)
 
       const context = document.querySelector(
