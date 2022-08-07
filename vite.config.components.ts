@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { windi } from "svelte-windicss-preprocess";
-import { imagetools } from "vite-imagetools";
 import sveltePreprocess from "svelte-preprocess";
 import path from "path";
 
@@ -35,6 +34,5 @@ export default defineConfig({
       },
       preprocess: [sveltePreprocess(), windi({})],
     }),
-    imagetools(),
   ],
 });

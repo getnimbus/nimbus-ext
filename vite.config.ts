@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       svelte({
         preprocess: [sveltePreprocess(), windi({})],
+        exclude: ["*.normal.svelte"],
         compilerOptions: {
           customElement: true,
         },

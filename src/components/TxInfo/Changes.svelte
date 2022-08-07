@@ -3,6 +3,7 @@
 <script>
   import "./MoneyMove.svelte";
   import NoResultsIcon from "~/entries/contentScript/assets/no-results.png";
+  const NoResultsIconUrl = new URL(NoResultsIcon, import.meta.url).href;
 
   export let data;
   export let id;
@@ -26,7 +27,7 @@
   {:else}
     <img
       class="w-[84px] h-[84px] mx-auto"
-      src={NoResultsIcon}
+      src={NoResultsIconUrl}
       alt="no-results"
     />
   {/if}

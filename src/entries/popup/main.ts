@@ -1,5 +1,5 @@
-import App from "./App.svelte";
+import "./App.normal.svelte";
 
-new App({
-  target: document.getElementById("app"),
-});
+// new App({
+//   target: document.getElementById("app"),
+// });

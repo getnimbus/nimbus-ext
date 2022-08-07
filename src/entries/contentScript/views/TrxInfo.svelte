@@ -16,7 +16,6 @@
   import "~/components/TxInfo/User.svelte";
   import "~/components/TxInfo/MoneyMove.svelte";
   import "~/components/TxInfo/Changes.svelte";
-  import "~/components/ReportModal.svelte";
   import "~/components/Footer.svelte";
 
   export let hash;
@@ -62,7 +61,6 @@
         .then((response) => response.data);
 
       const transactionInfo = get(response, "data");
-      console.log("transactionInfo: ", transactionInfo);
 
       if (isEmpty(transactionInfo)) {
         unknownTRX = true;

@@ -36,7 +36,6 @@
     "lodash": "^4.17.21",
     "mark.js": "^8.11.1",
     "numeral": "^2.0.6",
-    "svelte-portal": "^2.2.0",
     "svelte-windicss-preprocess": "^4.2.8",
     "tippy.js": "^6.3.7",
     "vite-imagetools": "^4.0.4",
