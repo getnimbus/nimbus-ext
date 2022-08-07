@@ -1,9 +1,9 @@
 {
-  "name": "vite-web-extension",
-  "version": "1.0.0",
-  "displayName": "Vite Web Extension",
-  "author": "@samrum/vite-plugin-web-extension",
-  "description": "A @samrum/vite-plugin-web-extension web extension",
+  "name": "nimbus-ext",
+  "displayName": "Nimbus",
+  "version": "0.0.2",
+  "author": "Thanh Le - mihthanh27@gmail.com",
+  "description": "Enrich your web3 experience",
   "scripts": {
     "build": "vite build",
     "build:components": "vite build -c vite.config.components.ts",
