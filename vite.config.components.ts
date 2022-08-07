@@ -13,16 +13,20 @@ export default defineConfig({
     },
   },
   build: {
+    outDir: path.resolve(__dirname, "./build-component"),
     lib: {
       entry: "src/lib/index.js",
       name: "NimbusComponent",
     },
-    // rollupOptions: {
-    //   input: [
-    //     "./src/contentScripts/views/TrxHighlight.svelte",
-    //     "./src/contentScripts/views/AddressHighlight.svelte",
-    //   ],
-    // },
+    rollupOptions: {
+      // output: {
+      //   format: "esm",
+      // },
+      // input: [
+      //   "./src/entries/contentScript/views/TrxHighlight.svelte",
+      //   "./src/entries/contentScript/views/AddressHighlight.svelte",
+      // ],
+    },
   },
   plugins: [
     svelte({
