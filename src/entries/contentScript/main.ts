@@ -83,8 +83,18 @@ const listPage: { [key: string]: string }[] = [
 
   console.info("[Nimbus 🌩] Hello world from content script");
 
+  window.onload = () => {
+    console.log("Window onload");
+    runMarkElement();
+  };
+
+  runMarkElement();
+
   function runMarkElement() {
+    console.time("Start marking");
+
     (() => {
+      console.time("Marking tx");
       const context = document;
       const instance = new Mark(context);
       instance.markRegExp(regexETHTrx, {
@@ -98,31 +108,14 @@ const listPage: { [key: string]: string }[] = [
           item.setAttribute("hash", item.innerText);
         },
         done() {
+          console.timeEnd("Marking tx");
           // console.log("Done mark addresses");
         },
       });
     })();
 
     (() => {
-      const context = document;
-      const instance = new Mark(context);
-      instance.markRegExp(regexETHTrx, {
-        element: "trx-highlight",
-        className: "nimbus-ext",
-        exclude: ["[data-markjs]", ".nimbus-ext", "trx-info"],
-        // acrossElements: true,
-        debug: true,
-        each(item: any) {
-          // Inject address as props
-          item.setAttribute("hash", item.innerText);
-        },
-        done() {
-          // console.log("Done mark addresses");
-        },
-      });
-    })();
-
-    (() => {
+      console.time("Marking address");
       const context = document;
       const instance = new Mark(context);
       instance.markRegExp(regexETHAddress, {
@@ -136,6 +129,7 @@ const listPage: { [key: string]: string }[] = [
           item.setAttribute("address", item.innerText);
         },
         done() {
+          console.time("Marking address");
           // console.log("Done mark addresses");
         },
       });
@@ -176,13 +170,11 @@ const listPage: { [key: string]: string }[] = [
     //     },
     //   });
     // })();
+
+    console.timeEnd("Start marking");
   }
 
-  window.onload = () => {
-    runMarkElement();
-  };
-
-  const observer = new MutationObserver(() => runMarkElement());
-  const config = { subtree: true, childList: true };
-  observer.observe(document, config);
+  // const observer = new MutationObserver(() => runMarkElement());
+  // const config = { subtree: true, childList: true };
+  // observer.observe(document, config);
 })();

@@ -13,7 +13,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: path.resolve(__dirname, "./build-component"),
+    outDir: path.resolve(__dirname, "./built-component"),
     lib: {
       entry: "src/lib/index.js",
       name: "NimbusComponent",
