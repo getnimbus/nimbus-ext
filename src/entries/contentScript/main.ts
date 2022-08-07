@@ -102,7 +102,9 @@ const listPage: { [key: string]: string }[] = [
         className: "nimbus-ext",
         exclude: ["[data-markjs]", ".nimbus-ext", "trx-info"],
         // acrossElements: true,
-        debug: true,
+        debug: false,
+        accuracy: "exactly",
+        diacritics: false,
         each(item: any) {
           // Inject address as props
           item.setAttribute("hash", item.innerText);
@@ -123,7 +125,9 @@ const listPage: { [key: string]: string }[] = [
         className: "nimbus-ext",
         exclude: ["[data-markjs]", ".nimbus-ext", "address-info"],
         // acrossElements: true,
-        debug: true,
+        debug: false,
+        accuracy: "exactly",
+        diacritics: false,
         each(item: any) {
           // Inject address as props
           item.setAttribute("address", item.innerText);
