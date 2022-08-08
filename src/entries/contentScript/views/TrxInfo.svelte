@@ -1,13 +1,12 @@
 <svelte:options tag="trx-info" />
 
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import { nimbus } from "./network";
-  import { shorterAddress, chainIdData } from "./utils";
+  import { chainIdData } from "./utils";
   import { isEmpty, get } from "lodash";
   import moment from "moment";
   import numeral from "numeral";
-  import { portal } from "svelte-portal";
 
   import "~/components/Button.svelte";
   import "~/components/Loading.svelte";
@@ -17,16 +16,15 @@
   import "~/components/TxInfo/User.svelte";
   import "~/components/TxInfo/MoneyMove.svelte";
   import "~/components/TxInfo/Changes.svelte";
-  import "~/components/ReportModal.svelte";
   import "~/components/Footer.svelte";
 
   export let hash;
-  export let isPopup = true;
+  export let popup: boolean = true;
+  let mouted = false;
 
-  let isLoading = false;
+  let isLoading = true;
   let unknownTRX = false;
   let enabledFilter = false;
-  let showModalReport;
 
   let info = {
     name: "",
@@ -49,7 +47,11 @@
     gas_quote: "",
   };
 
-  const loadTrxInfo = async () => {
+  const loadTrxInfo = async (hash) => {
+    // TODO: Verify trx hash before calling api
+    if (hash?.length < 10) {
+      return;
+    }
     isLoading = true;
     let response;
 
@@ -59,26 +61,27 @@
         .then((response) => response.data);
 
       const transactionInfo = get(response, "data");
-      console.log("transactionInfo: ", transactionInfo);
 
       if (isEmpty(transactionInfo)) {
         unknownTRX = true;
       } else {
-        info.name = transactionInfo.name;
-        info.block_signed_at = transactionInfo.block_signed_at;
+        unknownTRX = false;
+        info = transactionInfo;
+        // info.name = transactionInfo.name;
+        // info.block_signed_at = transactionInfo.block_signed_at;
         info.chain = chainIdData(transactionInfo.chainId);
-        info.chainId = transactionInfo.chainId;
-        info.trx_hash = transactionInfo.tx_hash;
+        // info.chainId = transactionInfo.chainId;
+        // info.trx_hash = transactionInfo.tx_hash;
 
-        info.from_address = transactionInfo.from_address;
-        info.from_address_label = transactionInfo.from_address_label;
-        info.from_address_logo = transactionInfo.from_address_logo;
+        // info.from_address = transactionInfo.from_address;
+        // info.from_address_label = transactionInfo.from_address_label;
+        // info.from_address_logo = transactionInfo.from_address_logo;
 
-        info.to_address = transactionInfo.to_address;
-        info.to_address_label = transactionInfo.to_address_label;
-        info.to_address_logo = transactionInfo.to_address_logo;
+        // info.to_address = transactionInfo.to_address;
+        // info.to_address_label = transactionInfo.to_address_label;
+        // info.to_address_logo = transactionInfo.to_address_logo;
 
-        info.successful = transactionInfo.successful;
+        // info.successful = transactionInfo.successful;
         info.changes = transactionInfo.changes || [];
         info.fees_paid_value = transactionInfo.fees_paid_value || "unknown";
         info.gas_quote = transactionInfo.gas_quote || "unknown";
@@ -92,16 +95,23 @@
     }
   };
 
+  $: {
+    if (mouted) {
+      loadTrxInfo(hash);
+    }
+  }
+
   onMount(() => {
-    loadTrxInfo();
+    mouted = true;
+    // loadTrxInfo(hash);
   });
 </script>
 
 <div
-  class={`rounded-lg bg-white font-sans text-sm text-gray-600 transition-all overflow-hidden min-w-[520px] w-full max-w-[700px] max-h-[680px] ${
-    isLoading && "w-[350px] max-w-[400px] max-h-[120px]"
+  class={`rounded-lg bg-white border-1 border-gray-200 border-solid font-sans text-sm text-gray-600 transition-all overflow-hidden min-w-[520px] w-full max-w-[700px] max-h-[680px] ${
+    isLoading && popup && "w-[350px] max-w-[400px] max-h-[120px]"
   }`}
-  class:shadow-xl={isPopup}
+  class:shadow-xl={popup}
 >
   {#if isLoading}
     <div class="w-full h-[120px] flex justify-center items-center">
@@ -179,7 +189,7 @@
               class="pl-3 space-y-4 py-3 flex-1 w-full border-0 border-l-1 border-solid border-sky-200"
             >
               {#if info.successful}
-                <div class="max-h-[360px] overflow-y-auto py-3">
+                <div class="max-h-[400px] overflow-y-auto py-3">
                   <change-list
                     data={info.changes}
                     id={info.chainId}
@@ -209,28 +219,14 @@
       {/if}
 
       <div
-        class="mb-2 flex items-center gap-2"
-        class:justify-center={unknownTRX}
-        class:justify-end={!unknownTRX}
+        class="mb-2"
+        class:text-center={unknownTRX}
+        class:text-right={!unknownTRX}
       >
-        {#if !unknownTRX}
-          <a
-            href={`https://twitter.com/intent/tweet/?text=Know how value moves inside this transaction &url=https%3A%2F%2Fgetnimbus.xyz%2Ftx-explain%2F${info.trx_hash} with Nimbus 🌩️`}
-            target="_blank"
-            class="flex items-center gap-1 border-1 border-solid border-blue-300 text-blue-500 no-underline text-xs font-medium rounded cursor-pointer items-center px-2.5 py-1.5"
-          >
-            <svg fill="#3b82f6" viewBox="0 0 24 24" width={14} height={14}>
-              <path
-                d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"
-              />
-            </svg>
-            Share
-          </a>
-        {/if}
-        <button
-          type="button"
-          on:click={() => showModalReport.handleShowModal()}
-          class="inline-flex cursor-pointer items-center px-2.5 py-1.5 border-1 border-solid border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
+        <a
+          href="https://feedback.getnimbus.xyz/"
+          target="_blank"
+          class="inline-flex no-underline cursor-pointer items-center px-2.5 py-1.5 border-1 border-solid border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
         >
           Report
           <svg
@@ -245,14 +241,8 @@
               clip-rule="evenodd"
             />
           </svg>
-        </button>
+        </a>
       </div>
-    </div>
-
-    <div use:portal={"body"}>
-      <report-modal bind:this={showModalReport}>
-        <star-rating hidden={() => showModalReport.handleHiddenModal()} />
-      </report-modal>
     </div>
 
     <nimbus-footer>

@@ -1,7 +1,7 @@
 // @ts-nocheck
-import tippy, { Props } from 'tippy.js';
+import tippy, { Props } from "tippy.js";
 
-export default function tooltip(node: any, params: Props) {
+export default function tooltip(node: any, params: Partial<Props>) {
   const custom = params.content;
   const title = node.title;
   const label = node.getAttribute("aria-label");
@@ -10,36 +10,37 @@ export default function tooltip(node: any, params: Props) {
 
   // is set so our element is accessible:
   // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-label_attribute
-  if (!label) node.setAttribute("aria-label", defaultContent);
+  // if (!label) node.setAttribute("aria-label", defaultContent);
   node.title = "";
 
   // Support any of the Tippy props by forwarding all "params":
   // https://atomiks.github.io/tippyjs/v6/all-props/
   const tip = tippy(node, {
+    showOnCreate: false,
     content: defaultContent,
     onTrigger: (_, e) => {
       e.preventDefault();
       e.stopPropagation();
     },
     onHidden: (e) => {
-      e.setProps({ content: '' })
-      e.setProps({ content }) // Trick to make childrent re-render
+      e.setProps({ content: "" });
+      e.setProps({ content }); // Trick to make childrent re-render
     },
-    ...params
+    ...params,
   });
 
-  node.addEventListener('click', (e) => {
+  node.addEventListener("click", (e) => {
     e.stopPropagation();
-  })
+  });
 
   return {
     // If the props change, let's update the Tippy instance:
     update: (newParams: Props) => {
       content = newParams.content;
-      tip.setProps({ content, ...newParams })
+      tip.setProps({ content, ...newParams });
     },
 
     // Clean up the Tippy instance on unmount:
     destroy: () => tip.destroy(),
   };
-};
+}

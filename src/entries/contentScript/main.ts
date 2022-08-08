@@ -22,9 +22,9 @@ const listPage: { [key: string]: string | any[] }[] = [
     urlPattern: [
       {
         selector: [".hero"],
-        path: '/community/articles/:id',
-      }
-    ]
+        path: "/community/articles/:id",
+      },
+    ],
   },
   {
     name: "binance",
@@ -32,9 +32,9 @@ const listPage: { [key: string]: string | any[] }[] = [
     urlPattern: [
       {
         selector: [".article", ".hero"],
-        path: '/:lang/support/announcement/:id',
-      }
-    ]
+        path: "/:lang/support/announcement/:id",
+      },
+    ],
   },
   {
     name: "kraken",
@@ -42,9 +42,9 @@ const listPage: { [key: string]: string | any[] }[] = [
     urlPattern: [
       {
         selector: [".entry-content"],
-        path: '/post/:id/:slug/',
-      }
-    ]
+        path: "/post/:id/:slug/",
+      },
+    ],
   },
   // {
   //   name: "kucoin",
@@ -117,59 +117,58 @@ const getCoinList = async () => {
 
   console.info("[Nimbus 🌩] Hello world from content script");
 
+  runMarkElement();
+
   function runMarkElement() {
+    console.time("Start marking");
+
     (() => {
+      console.time("Marking tx");
       const context = document;
       const instance = new Mark(context);
       instance.markRegExp(regexETHTrx, {
         element: "trx-highlight",
-        className: "nimbus-ext",
-        exclude: ["[data-markjs]", ".nimbus-ext", "trx-info"],
-        // acrossElements: true,
-        debug: true,
-        each(item: any) {
-          // Inject address as props
-          item.setAttribute("hash", item.innerText);
-        },
-        done() {
-          // console.log("Done mark addresses");
-        },
-      });
-    })();
-
-    (() => {
-      const context = document;
-      const instance = new Mark(context);
-      instance.markRegExp(regexETHTrx, {
-        element: "trx-highlight",
-        className: "nimbus-ext",
-        exclude: ["[data-markjs]", ".nimbus-ext", "trx-info"],
-        // acrossElements: true,
-        debug: true,
-        each(item: any) {
-          // Inject address as props
-          item.setAttribute("hash", item.innerText);
-        },
-        done() {
-          // console.log("Done mark addresses");
-        },
-      });
-    })();
-
-    (() => {
-      const context = document;
-      const instance = new Mark(context);
-      instance.markRegExp(regexETHAddress, {
-        element: "address-highlight",
         className: "nimbus-ext",
         exclude: ["[data-markjs]", ".nimbus-ext", "address-info"],
         // acrossElements: true,
-        debug: true,
+        debug: false,
+        accuracy: "exactly",
+        diacritics: false,
         each(item: any) {
           // Inject address as props
           item.setAttribute("address", item.innerText);
         },
         done() {
+          console.timeEnd("Marking tx");
+          // console.log("Done mark addresses");
+        },
+      });
+    })();
+
+    (() => {
+      console.time("Marking address");
+      const context = document;
+      const instance = new Mark(context);
+      // /0x[a-fA-F0-9]{64}/g
+      instance.markRegExp(regexETHAddress, {
+        element: "address-highlight",
+        className: "nimbus-ext",
+        exclude: ["[data-markjs]", ".nimbus-ext", "address-info"],
+        // acrossElements: true,
+        debug: false,
+        accuracy: "exactly",
+        diacritics: false,
+        each(item: any) {
+          const selectedItem = coinList.find(
+            (data: { [key: string]: string | number }) =>
+              data.symbol === item.innerText || data.name === item.innerText
+          );
+
+          // Inject address as props
+          item.setAttribute("address", item.innerText);
+        },
+        done() {
+          console.time("Marking address");
           // console.log("Done mark addresses");
         },
       });
@@ -177,22 +176,25 @@ const getCoinList = async () => {
 
     (() => {
       const selectedPageFromCurrentUrl: any = listPage.find((item) => {
-        return location.hostname === item.hostname
-      })
+        return location.hostname === item.hostname;
+      });
+
+      if (!selectedPageFromCurrentUrl) return;
 
       const patternUrl = selectedPageFromCurrentUrl.urlPattern.map((item) => {
-        return new UrlPattern(item.path)
-      })
+        return new UrlPattern(item.path);
+      });
 
       const arrayUrlDetected = patternUrl.map((item) => {
-        return item.match(location.pathname)
-      })
+        return item.match(location.pathname);
+      });
 
-      const urlDetected = arrayUrlDetected.some(el => el !== null)
+      const urlDetected = arrayUrlDetected.some((el) => el !== null);
 
-      if (!urlDetected) return
+      if (!urlDetected) return;
 
-      console.log("selectedPageFromCurrentUrl: ", selectedPageFromCurrentUrl)
+      console.log("selectedPageFromCurrentUrl: ", selectedPageFromCurrentUrl);
+      console.log(regexNativeToken);
 
       selectedPageFromCurrentUrl.urlPattern.forEach((item) => {
         item.selector.map((selectDOM) => {
@@ -216,21 +218,23 @@ const getCoinList = async () => {
               item.setAttribute("id", selectedItem?.id);
               item.setAttribute("name", item.innerText);
             },
-            filter: function (textNode: any, foundTerm: string, totalCounter: any) {
+            filter: function (
+              textNode: any,
+              foundTerm: string,
+              totalCounter: any
+            ) {
               return true; // must return either true or false
             },
             done() {
               // console.log("Done mark addresses");
             },
           });
-        })
-      })
+        });
+      });
     })();
   }
 
-  window.onload = () => {
-    runMarkElement();
-  };
+  console.timeEnd("Start marking");
 
   // const observer = new MutationObserver(() => runMarkElement());
   // const config = { subtree: true, childList: true };

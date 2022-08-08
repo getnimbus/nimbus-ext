@@ -1,5 +1,7 @@
-import App from "./App.svelte";
+import "./App.normal.svelte";
 
-new App({
-  target: document.getElementById("app"),
-});
+// TODO: Maybe we can code this page using React
+
+// new App({
+//   target: document.getElementById("app"),
+// });
