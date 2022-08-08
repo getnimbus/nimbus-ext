@@ -190,7 +190,7 @@ const getCoinList = async () => {
 
       const urlDetected = arrayUrlDetected.some(el => el !== null)
 
-      if (urlDetected) return
+      if (!urlDetected) return
 
       console.log("selectedPageFromCurrentUrl: ", selectedPageFromCurrentUrl)
 
