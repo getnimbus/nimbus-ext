@@ -232,7 +232,7 @@ const getCoinList = async () => {
     runMarkElement();
   };
 
-  const observer = new MutationObserver(() => runMarkElement());
-  const config = { subtree: true, childList: true };
-  observer.observe(document, config);
+  // const observer = new MutationObserver(() => runMarkElement());
+  // const config = { subtree: true, childList: true };
+  // observer.observe(document, config);
 })();
