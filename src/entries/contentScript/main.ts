@@ -188,17 +188,15 @@ const getCoinList = async () => {
         return item.match(location.pathname)
       })
 
-      const urlDetected = arrayUrlDetected.some(el => el === null)
+      const urlDetected = arrayUrlDetected.some(el => el !== null)
 
       if (urlDetected) return
 
       console.log("selectedPageFromCurrentUrl: ", selectedPageFromCurrentUrl)
 
-      selectedPageFromCurrentUrl.urlPattern.map((item) => {
+      selectedPageFromCurrentUrl.urlPattern.forEach((item) => {
         item.selector.map((selectDOM) => {
-          const context = document.querySelector(
-            `${selectDOM}`
-          );
+          const context = document.querySelector(selectDOM);
           const instance = new Mark(context);
           // /0x[a-fA-F0-9]{64}/g
           instance.markRegExp(regexNativeToken, {
