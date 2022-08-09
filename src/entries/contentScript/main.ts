@@ -85,11 +85,7 @@ const getCoinList = async () => {
   } catch (e) {
     console.error(e);
   }
-  const data = get(response, "data") || [];
-  return [
-    ...data.map((item: any) => item.symbol.toUpperCase()),
-    ...data.map((item: any) => item.name),
-  ];
+  return get(response, "data") || [];
 };
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
@@ -99,15 +95,13 @@ const getCoinList = async () => {
 
   const coinList = (await getCoinList()) || [];
 
-  // const nameAndSymbolList: string[] = [
-  //   ...coinList.map((item: any) => item.symbol.toUpperCase()),
-  //   ...coinList.map((item: any) => item.name),
-  // ];
-
-  // console.log("nameAndSymbolList: ", nameAndSymbolList);
+  const nameAndSymbolList: string[] = [
+    ...coinList.map((item: any) => item.symbol.toUpperCase()),
+    ...coinList.map((item: any) => item.name),
+  ];
 
   const regexNativeToken = new RegExp(
-    `\\b(${coinList.map(function (w) {
+    `\\b(${nameAndSymbolList.map(function (w) {
       return escapeRegex(w);
     }).join("|")})\\b`,
     "g"
@@ -211,6 +205,8 @@ const getCoinList = async () => {
                 (data: { [key: string]: string | number }) =>
                   data.symbol === item.innerText || data.name === item.innerText
               );
+
+              console.log("selectedItem: ", selectedItem)
 
               // Inject address as props
               item.setAttribute("id", selectedItem?.id);
