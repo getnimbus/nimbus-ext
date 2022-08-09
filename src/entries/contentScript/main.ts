@@ -88,7 +88,6 @@ const getCoinList = async () => {
   const data = get(response, "data") || [];
   return [
     ...data.map((item: any) => item.symbol.toUpperCase()),
-    ...data.map((item: any) => item.name),
   ];
 };
 
@@ -107,11 +106,7 @@ const getCoinList = async () => {
   // console.log("nameAndSymbolList: ", nameAndSymbolList);
 
   const regexNativeToken = new RegExp(
-    coinList
-      .map(function (w) {
-        return escapeRegex(w);
-      })
-      .join("|"),
+    coinList.slice(0, 500).join("|"),
     "g"
   );
 
@@ -194,7 +189,7 @@ const getCoinList = async () => {
       if (!urlDetected) return;
 
       console.log("selectedPageFromCurrentUrl: ", selectedPageFromCurrentUrl);
-      console.log(regexNativeToken);
+      console.log("regexNativeToken: ", regexNativeToken);
 
       selectedPageFromCurrentUrl.urlPattern.forEach((item) => {
         item.selector.map((selectDOM) => {
