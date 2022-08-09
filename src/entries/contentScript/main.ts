@@ -97,11 +97,10 @@ const getCoinList = async () => {
 
   const nameAndSymbolList: string[] = [
     ...coinList.map((item: any) => item.symbol.toUpperCase()),
-    ...coinList.map((item: any) => item.name),
   ];
 
   const regexNativeToken = new RegExp(
-    `\\b(${nameAndSymbolList.map(function (w) {
+    `\\b(${nameAndSymbolList.slice(0, 500).map(function (w) {
       return escapeRegex(w);
     }).join("|")})\\b`,
     "g"
