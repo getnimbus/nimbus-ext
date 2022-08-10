@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 // import { onMessage, sendMessage } from "webext-bridge";
-// import browser from "webextension-polyfill";
+import * as browser from "webextension-polyfill";
 import Mark from "mark.js";
 import "@webcomponents/webcomponentsjs/webcomponents-bundle.js";
 import { coinGeko } from "./views/network";
@@ -11,6 +11,7 @@ import "./views/AddressHighlight.svelte";
 import "./views/TrxHighlight.svelte";
 import "./views/NativeTokenHighlight.svelte";
 import { escapeRegex } from "./views/utils";
+import { sendMessage } from "webext-bridge";
 
 const regexETHTrx = /0x[a-fA-F0-9]{64}/g; // TODO: Ignore longer address
 const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex
@@ -90,19 +91,24 @@ const getCoinList = async () => {
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
 (async () => {
-  // const coinList: { [key: string]: string | number }[] =
-  //   (await sendMessage("coinList", { limit: 500 })) || [];
+  const coinList: { [key: string]: string | number }[] =
+    (await sendMessage("coinList", { limit: 500 })) || [];
 
-  const coinList = (await getCoinList()) || [];
+  console.log(coinList);
+
+  // const coinList = (await getCoinList()) || [];
 
   const nameAndSymbolList: string[] = [
     ...coinList.map((item: any) => item.symbol.toUpperCase()),
   ];
 
   const regexNativeToken = new RegExp(
-    `\\b(${nameAndSymbolList.slice(0, 500).map(function (w) {
-      return escapeRegex(w);
-    }).join("|")})\\b`,
+    `\\b(${nameAndSymbolList
+      .slice(0, 500)
+      .map(function (w) {
+        return escapeRegex(w);
+      })
+      .join("|")})\\b`,
     "g"
   );
 
@@ -204,8 +210,6 @@ const getCoinList = async () => {
                 (data: { [key: string]: string | number }) =>
                   data.symbol === item.innerText || data.name === item.innerText
               );
-
-              console.log("selectedItem: ", selectedItem)
 
               // Inject address as props
               item.setAttribute("id", selectedItem?.id);
