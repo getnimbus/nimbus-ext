@@ -129,7 +129,7 @@
 </script>
 
 <div
-  class={`py-2 px-3 rounded-lg bg-white shadow-xl font-sans text-sm text-gray-400 transition-all overflow-hidden min-w-[350px] max-w-[400px] max-h-[600px] ${
+  class={`rounded-lg bg-white shadow-xl font-sans text-sm text-gray-400 transition-all overflow-hidden min-w-[350px] max-w-[400px] max-h-[600px] ${
     isLoading && "w-[350px] max-w-[400px] max-h-[120px]"
   }`}
 >
@@ -141,7 +141,7 @@
   {/if}
 
   {#if balance}
-    <div class="p-4">
+    <div class="p-3">
       {#if balance}
         <div class="flex items-center mb-2">
           <svg
