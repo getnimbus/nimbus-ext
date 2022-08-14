@@ -133,7 +133,7 @@ const getCoinList = async () => {
         diacritics: false,
         each(item: any) {
           // Inject address as props
-          item.setAttribute("address", item.innerText);
+          item.setAttribute("hash", item.innerText);
         },
         done() {
           console.timeEnd("Marking tx");
