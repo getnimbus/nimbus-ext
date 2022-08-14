@@ -23,7 +23,7 @@ const sharedManifest = {
     page: "src/entries/options/index.html",
     open_in_tab: true,
   },
-  permissions: [],
+  permissions: ["tabs", "storage", "activeTab", "http://*/", "https://*/"],
 };
 
 const browserAction = {
@@ -55,6 +55,7 @@ const ManifestV3 = {
   action: browserAction,
   background: {
     service_worker: "src/entries/background/serviceWorker.ts",
+    type: "module",
   },
   host_permissions: ["*://*/*"],
 };

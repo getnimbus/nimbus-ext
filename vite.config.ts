@@ -5,6 +5,9 @@ import path from "path";
 import { getManifest } from "./src/manifest";
 import { windi } from "svelte-windicss-preprocess";
 import sveltePreprocess from "svelte-preprocess";
+import AutoImport from "unplugin-auto-import/vite";
+
+console.log({ env: process.env.NODE_ENV });
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -14,7 +17,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       svelte({
         preprocess: [sveltePreprocess(), windi({})],
-        exclude: ["*.normal.svelte"],
+        // exclude: ["*.normal.svelte"],
         compilerOptions: {
           customElement: true,
         },
@@ -22,11 +25,24 @@ export default defineConfig(({ mode }) => {
       webExtension({
         manifest: getManifest(Number(env.MANIFEST_VERSION)),
       }),
+      AutoImport({
+        imports: [
+          {
+            "webextension-polyfill": [["default", "browser"]],
+          },
+        ],
+      }),
     ],
     resolve: {
       alias: {
         "~": path.resolve(__dirname, "./src"),
       },
+    },
+    build: {
+      sourcemap: true, // TODO: Change me for prod build
+    },
+    optimizeDeps: {
+      include: ["webextension-polyfill"],
     },
   };
 });
