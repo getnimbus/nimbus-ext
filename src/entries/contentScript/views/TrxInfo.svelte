@@ -135,12 +135,12 @@
             </div>
             <div class="w-full flex flex-col text-xs">
               <a
-                href={`${info.chain.explorer}/tx/${info.trx_hash}`}
+                href={`${info.chain.explorer}/tx/${hash}`}
                 target="_blank"
                 rel="noreferrer"
                 class="text-blue-400 no-underline"
               >
-                {info.trx_hash}
+                {hash}
               </a>
               <div class="text-gray-500">
                 {`${moment(info.block_signed_at).fromNow()} - ${moment(

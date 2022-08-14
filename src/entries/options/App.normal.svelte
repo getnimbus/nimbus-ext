@@ -3,7 +3,7 @@
 <script lang="ts">
 </script>
 
-<div>Options</div>
+<div>Hello this is option page</div>
 
 <style>
 </style>

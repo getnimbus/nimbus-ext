@@ -38,7 +38,7 @@
     try {
       console.log("Start chart");
       chart = createChart(chartElement, {
-        width: 350,
+        width: 352,
         height: 200,
         crosshair: {
           mode: 0,

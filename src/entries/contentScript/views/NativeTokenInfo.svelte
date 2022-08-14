@@ -56,7 +56,7 @@
 </script>
 
 <div
-  class={`py-2 px-3 rounded-lg bg-white shadow-xl font-sans text-sm text-gray-400 transition-all overflow-hidden min-w-[350px] max-w-[400px] max-h-[600px] ${
+  class={`rounded-lg bg-white shadow-xl font-sans text-sm text-gray-400 transition-all overflow-hidden min-w-[350px] max-w-[400px] max-h-[600px] ${
     isLoading && "w-[350px] max-w-[400px] max-h-[120px]"
   }`}
   class:shadow-xl={popup}
@@ -69,7 +69,7 @@
 
   {#if coinInfo}
     <coin-chart symbol={id} />
-    <div class="py-4 pr-4 text-center">
+    <div class="p-3 text-center">
       <img
         class="w-[72px] h-[72px] rounded-[50%]"
         src={getCgLogo(id)}
