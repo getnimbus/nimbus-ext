@@ -117,7 +117,7 @@ const getCoinList = async () => {
   runMarkElement();
 
   function runMarkElement() {
-    console.time("Start marking");
+    console.time("Nimbus marking");
 
     (() => {
       console.time("Marking tx");
@@ -231,9 +231,19 @@ const getCoinList = async () => {
     })();
   }
 
-  console.timeEnd("Start marking");
+  console.timeEnd("Nimbus marking");
 
-  // const observer = new MutationObserver(() => runMarkElement());
-  // const config = { subtree: true, childList: true };
-  // observer.observe(document, config);
+  let currentUrl = window.location.href;
+
+  const observer = new MutationObserver((e) => {
+    if (window.location.href !== currentUrl) {
+      console.log("URL changed");
+      currentUrl = window.location.href;
+      runMarkElement();
+      setTimeout(() => {
+        runMarkElement();
+      }, 3000);
+    }
+  });
+  observer.observe(document, { subtree: true, childList: true });
 })();
