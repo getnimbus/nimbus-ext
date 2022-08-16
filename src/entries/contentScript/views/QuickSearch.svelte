@@ -37,6 +37,7 @@
     const coinList = await sendMessage("coinList", { limit: 500 });
 
     const nameAndSymbolList = [
+      // @ts-ignore
       ...coinList.map((item) => item.symbol.toUpperCase()),
     ];
 
