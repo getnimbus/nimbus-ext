@@ -7,6 +7,7 @@
   import { escapeRegex } from "../views/utils";
   import { get } from "lodash";
   import UrlPattern from "url-pattern";
+  import "./NativeTokenInfo.svelte";
 
   const listPage = [
     {
@@ -58,7 +59,6 @@
       console.error(e);
     }
     const coinList = get(response, "data");
-    console.log("coinList: ", coinList);
 
     const nameAndSymbolList = [
       ...coinList.map((item) => item.symbol.toUpperCase()),
@@ -173,6 +173,9 @@
 
     <div class="text-3xl font-bold">On this page</div>
 
-    <div>token info card</div>
+    <native-token-info />
+    <native-token-info />
+    <native-token-info />
+    <native-token-info />
   </div>
 {/if}
