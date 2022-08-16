@@ -10,6 +10,7 @@ import UrlPattern from "url-pattern";
 import "./views/AddressHighlight.svelte";
 import "./views/TrxHighlight.svelte";
 import "./views/NativeTokenHighlight.svelte";
+import "./views/QuickSearch.svelte";
 import { escapeRegex } from "./views/utils";
 import { sendMessage } from "webext-bridge";
 
@@ -94,8 +95,6 @@ const getCoinList = async () => {
   const coinList: { [key: string]: string | number }[] =
     (await sendMessage("coinList", { limit: 500 })) || [];
 
-  console.log(coinList);
-
   // const coinList = (await getCoinList()) || [];
 
   const nameAndSymbolList: string[] = [
@@ -175,6 +174,7 @@ const getCoinList = async () => {
       const selectedPageFromCurrentUrl: any = listPage.find((item) => {
         return location.hostname === item.hostname;
       });
+      // console.log("selectedPageFromCurrentUrl: ", selectedPageFromCurrentUrl);
 
       if (!selectedPageFromCurrentUrl) return;
 
@@ -185,12 +185,13 @@ const getCoinList = async () => {
       const arrayUrlDetected = patternUrl.map((item) => {
         return item.match(location.pathname);
       });
+      // console.log("arrayUrlDetected: ", arrayUrlDetected);
 
       const urlDetected = arrayUrlDetected.some((el) => el !== null);
+      // console.log("urlDetected: ", urlDetected);
 
       if (!urlDetected) return;
 
-      console.log("selectedPageFromCurrentUrl: ", selectedPageFromCurrentUrl);
       console.log("regexNativeToken: ", regexNativeToken);
 
       selectedPageFromCurrentUrl.urlPattern.forEach((item) => {
@@ -246,4 +247,7 @@ const getCoinList = async () => {
     }
   });
   observer.observe(document, { subtree: true, childList: true });
+
+  const quickSearchEle = document.createElement("quick-search");
+  document.body.appendChild(quickSearchEle);
 })();
