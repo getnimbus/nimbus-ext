@@ -192,7 +192,7 @@ const getCoinList = async () => {
 
       if (!urlDetected) return;
 
-      console.log("regexNativeToken: ", regexNativeToken);
+      // console.log("regexNativeToken: ", regexNativeToken);
 
       selectedPageFromCurrentUrl.urlPattern.forEach((item) => {
         item.selector.map((selectDOM) => {

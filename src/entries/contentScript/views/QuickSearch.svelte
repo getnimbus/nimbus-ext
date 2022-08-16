@@ -3,62 +3,38 @@
 <script>
   import { onMount } from "svelte";
   import { fly } from "svelte/transition";
-  import { coinGeko } from "../views/network";
+  import { nimbus } from "../views/network";
   import { escapeRegex } from "../views/utils";
   import { get } from "lodash";
   import UrlPattern from "url-pattern";
+  import { sendMessage } from "webext-bridge";
+
   import "./NativeTokenInfo.svelte";
 
-  const listPage = [
-    {
-      name: "coinmarketcap",
-      hostname: "coinmarketcap.com",
-      urlPattern: [
-        {
-          selector: [".hero"],
-          path: "/community/articles/:id",
-        },
-      ],
-    },
-    {
-      name: "binance",
-      hostname: "www.binance.com",
-      urlPattern: [
-        {
-          selector: [".article", ".hero"],
-          path: "/:lang/support/announcement/:id",
-        },
-      ],
-    },
-    {
-      name: "kraken",
-      hostname: "blog.kraken.com",
-      urlPattern: [
-        {
-          selector: [".entry-content"],
-          path: "/post/:id/:slug/",
-        },
-      ],
-    },
-  ];
-
+  let listPageConfig = [];
   let coinList = [];
   let isChangeURL = false;
   let isShowSideBar = false;
   let search = "";
+  let currentUrl = window.location.href;
 
   onMount(() => {
+    getConfigPages();
     getCoinList();
   });
 
-  const getCoinList = async () => {
+  const getConfigPages = async () => {
     let response;
     try {
-      response = await coinGeko.get("/coins/list");
+      response = await nimbus.get("/config/pages");
     } catch (e) {
       console.error(e);
     }
-    const coinList = get(response, "data");
+    listPageConfig = get(response, "data.data");
+  };
+
+  const getCoinList = async () => {
+    const coinList = await sendMessage("coinList", { limit: 500 });
 
     const nameAndSymbolList = [
       ...coinList.map((item) => item.symbol.toUpperCase()),
@@ -77,7 +53,7 @@
   };
 
   const handleDectecUrl = () => {
-    const selectedPageFromCurrentUrl = listPage.find((item) => {
+    const selectedPageFromCurrentUrl = listPageConfig.find((item) => {
       return location.hostname === item.hostname;
     });
 
@@ -92,7 +68,6 @@
     isChangeURL = arrayUrlDetected.some((el) => el !== null);
   };
 
-  let currentUrl = window.location.href;
   const observer = new MutationObserver((e) => {
     if (window.location.href !== currentUrl) {
       currentUrl = window.location.href;
