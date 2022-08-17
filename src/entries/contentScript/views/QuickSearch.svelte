@@ -11,7 +11,7 @@
 
   import "./NativeTokenInfo.svelte";
 
-  let listPageConfig = [];
+  let listPageConfig;
   let coinListData;
   let regexToken;
   let innerTextMatchContext = [];
@@ -27,16 +27,14 @@
   });
 
   const getConfigPages = async () => {
-    let response;
-    try {
-      response = await nimbus.get("/config/pages");
-    } catch (e) {
-      console.error(e);
-    }
-    listPageConfig = get(response, "data.data");
-
-    const blabla = await sendMessage("configPageList");
-    console.log("blabla: ", blabla);
+    // let response;
+    // try {
+    //   response = await nimbus.get("/config/pages");
+    // } catch (e) {
+    //   console.error(e);
+    // }
+    // listPageConfig = get(response, "data.data");
+    listPageConfig = await sendMessage("configPageList");
   };
 
   const getCoinList = async () => {
