@@ -12,7 +12,10 @@
   import "./NativeTokenInfo.svelte";
 
   let listPageConfig = [];
-  let coinList = [];
+  let coinListData;
+  let regexToken;
+  let innerTextMatchContext = [];
+  let selectedTokenData = [];
   let isChangeURL = false;
   let isShowSideBar = false;
   let search = "";
@@ -35,13 +38,14 @@
 
   const getCoinList = async () => {
     const coinList = await sendMessage("coinList", { limit: 500 });
+    coinListData = coinList;
 
     const nameAndSymbolList = [
       // @ts-ignore
       ...coinList.map((item) => item.symbol.toUpperCase()),
     ];
 
-    const regexNativeToken = new RegExp(
+    regexToken = new RegExp(
       `\\b(${nameAndSymbolList
         .slice(0, 500)
         .map(function (w) {
@@ -50,7 +54,6 @@
         .join("|")})\\b`,
       "g"
     );
-    console.log("regexNativeToken: ", regexNativeToken);
   };
 
   const handleDectecUrl = () => {
@@ -83,6 +86,28 @@
   $: {
     if (!isChangeURL) {
       isShowSideBar = false;
+    } else {
+      const selectedPageFromCurrentUrl = listPageConfig.find((item) => {
+        return location.hostname === item.hostname;
+      });
+
+      selectedPageFromCurrentUrl.urlPattern.forEach((item) => {
+        item.selector.map((selectDOM) => {
+          const context = document.querySelector(selectDOM);
+          innerTextMatchContext = context.innerText.match(regexToken);
+        });
+      });
+    }
+  }
+
+  $: {
+    if (innerTextMatchContext && innerTextMatchContext.length > 0) {
+      selectedTokenData = innerTextMatchContext.map((item) => {
+        return coinListData.find(
+          (data) => data.symbol === item || data.name === item
+        );
+      });
+      console.log("selectedData: ", selectedTokenData);
     }
   }
 </script>
@@ -149,9 +174,8 @@
 
     <div class="text-3xl font-bold">On this page</div>
 
-    <native-token-info />
-    <native-token-info />
-    <native-token-info />
-    <native-token-info />
+    {#each selectedTokenData as tokenInfo}
+      <native-token-info id={tokenInfo.id} name={tokenInfo.symbol} />
+    {/each}
   </div>
 {/if}
