@@ -19,9 +19,19 @@ const fetchBasicData = async () => {
     });
 };
 
+const fetchConfigPages = async () => {
+  const listConfigPages = await fetch("https://utils.getnimbus.xyz/config/pages").then((response) => response.json());
+  browser.storage.local
+    .set({ configPageList: JSON.stringify(listConfigPages.data) })
+    .then(() => {
+      console.log("Loaded config page list");
+    });
+};
+
 browser.runtime.onStartup.addListener(async () => {
   console.log("onStartup....");
   await fetchBasicData();
+  await fetchConfigPages();
 });
 
 interface ICoinListInput {
@@ -39,5 +49,16 @@ onMessage<ICoinListInput, any>("coinList", async ({ data: { limit } }) => {
   }
 });
 
+onMessage("configPageList", async () => {
+  try {
+    return JSON.parse(
+      (await browser.storage.local.get("configPageList")).configPageList
+    );
+  } catch (error) {
+    return [];
+  }
+});
+
 // Run on init
 fetchBasicData();
+fetchConfigPages();

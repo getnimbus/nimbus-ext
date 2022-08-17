@@ -34,6 +34,9 @@
       console.error(e);
     }
     listPageConfig = get(response, "data.data");
+
+    const blabla = await sendMessage("configPageList");
+    console.log("blabla: ", blabla);
   };
 
   const getCoinList = async () => {
@@ -102,12 +105,15 @@
 
   $: {
     if (innerTextMatchContext && innerTextMatchContext.length > 0) {
-      selectedTokenData = innerTextMatchContext.map((item) => {
-        return coinListData.find(
-          (data) => data.symbol === item || data.name === item
-        );
-      });
-      console.log("selectedData: ", selectedTokenData);
+      selectedTokenData = [
+        ...new Set(
+          innerTextMatchContext.map((item) => {
+            return coinListData.find(
+              (data) => data.symbol === item || data.name === item
+            );
+          })
+        ),
+      ];
     }
   }
 </script>
