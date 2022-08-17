@@ -3,7 +3,7 @@
 <script>
   import { onMount } from "svelte";
   import { fly } from "svelte/transition";
-  import { nimbus } from "../views/network";
+  import { coinGeko } from "../views/network";
   import { escapeRegex } from "../views/utils";
   import { get } from "lodash";
   import UrlPattern from "url-pattern";
@@ -14,7 +14,6 @@
   let listPageConfig;
   let coinListData;
   let regexToken;
-  let innerTextMatchContext = [];
   let selectedTokenData = [];
   let isChangeURL = false;
   let isShowSideBar = false;
@@ -27,14 +26,7 @@
   });
 
   const getConfigPages = async () => {
-    // let response;
-    // try {
-    //   response = await nimbus.get("/config/pages");
-    // } catch (e) {
-    //   console.error(e);
-    // }
-    // listPageConfig = get(response, "data.data");
-    listPageConfig = await sendMessage("configPageList");
+    listPageConfig = await sendMessage("configPageList", undefined);
   };
 
   const getCoinList = async () => {
@@ -57,6 +49,16 @@
     );
   };
 
+  const getSearchData = async (searchValue) => {
+    let response;
+    try {
+      response = await coinGeko.get(`/search?query=${searchValue}`);
+    } catch (e) {
+      console.error(e);
+    }
+    selectedTokenData = get(response, "data.coins") || [];
+  };
+
   const handleDectecUrl = () => {
     const selectedPageFromCurrentUrl = listPageConfig.find((item) => {
       return location.hostname === item.hostname;
@@ -71,6 +73,31 @@
     });
 
     isChangeURL = arrayUrlDetected.some((el) => el !== null);
+  };
+
+  const handleGetCoinDataFromPage = () => {
+    let innerTextMatchContext = [];
+
+    const selectedPageFromCurrentUrl = listPageConfig.find((item) => {
+      return location.hostname === item.hostname;
+    });
+
+    selectedPageFromCurrentUrl.urlPattern.map((item) => {
+      return item.selector.forEach((selectDOM) => {
+        const context = document.querySelector(selectDOM);
+        innerTextMatchContext = context.innerText.match(regexToken);
+      });
+    });
+
+    selectedTokenData = innerTextMatchContext.length > 0 && [
+      ...new Set(
+        innerTextMatchContext.map((item) => {
+          return coinListData.find(
+            (data) => data.symbol === item || data.name === item
+          );
+        })
+      ),
+    ];
   };
 
   const observer = new MutationObserver((e) => {
@@ -88,30 +115,20 @@
     if (!isChangeURL) {
       isShowSideBar = false;
     } else {
-      const selectedPageFromCurrentUrl = listPageConfig.find((item) => {
-        return location.hostname === item.hostname;
-      });
-
-      selectedPageFromCurrentUrl.urlPattern.forEach((item) => {
-        item.selector.map((selectDOM) => {
-          const context = document.querySelector(selectDOM);
-          innerTextMatchContext = context.innerText.match(regexToken);
-        });
-      });
+      handleGetCoinDataFromPage();
     }
   }
 
   $: {
-    if (innerTextMatchContext && innerTextMatchContext.length > 0) {
-      selectedTokenData = [
-        ...new Set(
-          innerTextMatchContext.map((item) => {
-            return coinListData.find(
-              (data) => data.symbol === item || data.name === item
-            );
-          })
-        ),
-      ];
+    console.log("isShowSideBar: ", isShowSideBar);
+    console.log("search: ", search);
+    console.log("selectedTokenData: ", selectedTokenData);
+
+    if (search && listPageConfig && coinListData) {
+      getSearchData(search);
+    }
+    if (!search && listPageConfig && coinListData) {
+      handleGetCoinDataFromPage();
     }
   }
 </script>
