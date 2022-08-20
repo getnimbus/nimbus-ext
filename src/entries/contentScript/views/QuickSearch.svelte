@@ -19,6 +19,8 @@
   let isChangeURL = false;
   let isShowSideBar = false;
   let search = "";
+  let isFocused = false;
+  let loaded = false;
   let currentUrl = window.location.href;
   let timer;
 
@@ -69,46 +71,45 @@
       return location.hostname === item.hostname;
     });
 
-    selectedPageFromCurrentUrl.urlPattern.map((item) => {
+    selectedPageFromCurrentUrl?.urlPattern.map((item) => {
+      const patternUrlPath = new UrlPattern(item.path);
+      const detectUrlPath = patternUrlPath.match(location.pathname);
+
+      if (detectUrlPath === null) return;
       return item.selector.forEach((selectDOM) => {
         const context = document.querySelector(selectDOM);
         innerTextMatchContext = context.innerText.match(regexToken);
       });
     });
 
-    selectedTokenData = innerTextMatchContext.length > 0 && [
-      ...new Set(
-        innerTextMatchContext.map((item) => {
-          return coinListData.find(
-            (data) => data.symbol === item || data.name === item
-          );
-        })
-      ),
-    ];
+    selectedTokenData =
+      innerTextMatchContext.length > 0
+        ? [
+            ...new Set(
+              innerTextMatchContext.map((item) => {
+                return coinListData.find(
+                  (data) => data.symbol === item || data.name === item
+                );
+              })
+            ),
+          ]
+        : [];
   };
 
-  const handleDectecUrl = () => {
-    const selectedPageFromCurrentUrl = listPageConfig.find((item) => {
+  const handleDectecSupportUrl = () => {
+    isChangeURL = listPageConfig.some((item) => {
       return location.hostname === item.hostname;
     });
-
-    const patternUrl = selectedPageFromCurrentUrl.urlPattern.map((item) => {
-      return new UrlPattern(item.path);
-    });
-
-    const arrayUrlDetected = patternUrl.map((item) => {
-      return item.match(location.pathname);
-    });
-
-    isChangeURL = arrayUrlDetected.some((el) => el !== null);
   };
 
   const observer = new MutationObserver((e) => {
     if (window.location.href !== currentUrl) {
       currentUrl = window.location.href;
-      handleDectecUrl();
+      handleDectecSupportUrl();
+      handleGetCoinDataFromPage();
       setTimeout(() => {
-        handleDectecUrl();
+        handleDectecSupportUrl();
+        handleGetCoinDataFromPage();
       }, 3000);
     }
   });
@@ -122,9 +123,8 @@
   };
 
   $: {
-    if (!isChangeURL) {
-      isShowSideBar = false;
-    } else {
+    if (listPageConfig && coinListData) {
+      handleDectecSupportUrl();
       handleGetCoinDataFromPage();
     }
   }
@@ -132,6 +132,14 @@
   $: {
     if (search) {
       getSearchData(search);
+    }
+  }
+
+  $: {
+    if (search && isFocused === false) {
+      loaded = true;
+    } else {
+      loaded = false;
     }
   }
 </script>
@@ -167,10 +175,23 @@
     class="fixed top-0 right-0 h-full p-4 bg-sky-100 overflow-y-auto w-[25rem] flex flex-col gap-3"
   >
     <div
-      class="cursor-pointer text-sky-500 font-semibold"
+      class="cursor-pointer text-sky-500 font-semibold absolute top-2 left-0 btn-border pt-3 pb-2 bg-sky-200 rounded-tr-lg rounded-br-lg"
       on:click={() => (isShowSideBar = false)}
     >
-      Close
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+      </svg>
+    </div>
+
+    <div class="text-center font-bold text-2xl">
+      Welcome to <span class="text-sky-400">Nimbus 🌩</span>
     </div>
 
     <div class="bg-white text-sky-300 p-2 rounded flex items-center gap-1">
@@ -190,22 +211,40 @@
       </svg>
       <input
         on:keyup={({ target: { value } }) => debounce(value)}
+        on:focus={() => (isFocused = true)}
+        on:blur={() => (isFocused = false)}
         placeholder="Search..."
         type="text"
         class="font-base w-full py-2 border-none focus:outline-none"
       />
     </div>
 
-    <div class="text-3xl font-bold">On this page</div>
-
-    {#if search}
-      {#each tokenDataSearch as tokenInfo}
-        <native-token-info id={tokenInfo.id} name={tokenInfo.symbol} />
+    {#if search !== ""}
+      {#each tokenDataSearch as item}
+        <native-token-info id={item.id} name={item.symbol} {loaded} />
       {/each}
-    {:else}
-      {#each selectedTokenData as tokenInfo}
-        <native-token-info id={tokenInfo.id} name={tokenInfo.symbol} />
-      {/each}
+    {:else if search === ""}
+      {#if selectedTokenData.length !== 0}
+        <div class="text-3xl font-bold">On this page</div>
+        {#each selectedTokenData as item}
+          <native-token-info id={item.id} name={item.symbol} loaded={true} />
+        {/each}
+      {:else}
+        <div class="text-base font-semibold">
+          Let us help what Token information do you want to known?
+        </div>
+      {/if}
     {/if}
   </div>
 {/if}
+
+<style>
+  .btn-border {
+    border-top: 1px;
+    border-bottom: 1px;
+    border-right: 1px;
+    border-left: 0px;
+    border-style: solid;
+    border-color: skyblue;
+  }
+</style>

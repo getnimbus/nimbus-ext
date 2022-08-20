@@ -6,14 +6,19 @@
   import { coinGeko } from "./network";
   import dayjs from "dayjs";
   import { formatCurrency } from "./utils";
-  let chartElement;
+
   export let symbol;
+  export let loaded;
+
+  let chartElement;
   let chart;
   let areaChart;
   let hoverDate;
   let hoverPrice = 0;
 
   const getChartData = async () => {
+    if (!loaded) return;
+
     const data = await coinGeko
       .get(`coins/${symbol.toLowerCase()}/market_chart/range`, {
         id: `${symbol.toLowerCase()}-chart`,
@@ -93,29 +98,32 @@
     }
   };
 
-  onMount(() => {
-    getChartData();
-  });
-
   onDestroy(() => {
     if (chart) {
       chart.remove();
     }
   });
+
+  $: {
+    if (loaded) {
+      getChartData();
+    }
+  }
 </script>
 
-<div class="w-[350px] h-[200px] relative">
-  <div class="w-[350px] h-[200px]" bind:this={chartElement} />
-  <div class="absolute bottom-2 left-2 z-10">
-    <div class="inline-block px-1 bg-[#22c55e] text-white rounded mb-1">
-      {dayjs(hoverDate).format("YYYY/MM/DD HH:mm")}
-    </div>
-    <br />
-    <div class="inline-block px-1 bg-[#22c55e] text-white rounded mb-1">
-      ${formatCurrency(hoverPrice)}
+{#if loaded}
+  <div class="w-[350px] h-[200px] relative">
+    <div class="w-[350px] h-[200px]" bind:this={chartElement} />
+    <div class="absolute bottom-2 left-2 z-10">
+      <div class="inline-block px-1 bg-[#22c55e] text-white rounded mb-1">
+        {dayjs(hoverDate).format("YYYY/MM/DD HH:mm")}
+      </div>
+      <br />
+      <div class="inline-block px-1 bg-[#22c55e] text-white rounded mb-1">
+        ${formatCurrency(hoverPrice)}
+      </div>
     </div>
   </div>
-</div>
-
-<style>
-</style>
+{:else}
+  <div>hello world</div>
+{/if}

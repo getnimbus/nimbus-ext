@@ -217,7 +217,7 @@
   {/if}
 
   {#if token}
-    <coin-chart symbol={token.symbol} />
+    <coin-chart symbol={token.symbol} loaded={true} />
     <div class="py-4 pr-4 text-center">
       <img
         class="w-[72px] h-[72px] rounded-[50%]"

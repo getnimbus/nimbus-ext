@@ -3,8 +3,7 @@
 <script>
   import { onMount } from "svelte";
   import { coinGeko } from "./network";
-  // import { isEmpty, get } from "lodash";
-  import { formatCurrency, getCgLogo, getLocalImg } from "./utils";
+  import { formatCurrency, getCgLogo } from "./utils";
 
   import "./CoinChart.svelte";
   import "./PriceConvert.svelte";
@@ -18,10 +17,7 @@
 
   let coinInfo = {};
 
-  // import MetaMaskIcon from "../assets/metamask-icon.png";
-  // import CoinMarketCapIcon from "../assets/CoinMarketCap_logo.png";
-  // import CoinGekoIcon from "../assets/coingecko-logo.png";
-  // import CoinDefaultIcon from "../assets/coin-default.svg";
+  export let loaded;
 
   const loadSymbolInfo = async () => {
     isLoading = true;
@@ -75,13 +71,15 @@
           src={getCgLogo(id)}
           alt={name}
         />
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1 text-black">
           <div class="flex flex-col">
             <div class="flex gap-1 text-lg font-bold">
-              {name} - <span class="text-gray-400">{coinInfo?.name}</span>
+              {name} - {coinInfo?.name}
             </div>
-            <div class="flex gap-1">
-              Price:<strong>${formatCurrency(price)}</strong>
+            <div class="flex items-center gap-1">
+              Price:<span class="font-bold text-base"
+                >${formatCurrency(price)}</span
+              >
             </div>
           </div>
           <div class="text-base font-semibold">
@@ -107,39 +105,11 @@
         </div>
       </div>
 
-      <coin-chart symbol={id} />
+      <coin-chart symbol={id} {loaded} />
 
       {#if price}
         <price-convert symbol={name} {price} />
       {/if}
-
-      <!-- <div class="flex gap-4 justify-between items-center my-2">
-        <div
-          on:click={() => alert("Comming soon")}
-          class="flex items-center justyfy-center gap-1 btn-border px-3 py-1 text-sky-500 cursor-pointer"
-        >
-          <img src={getLocalImg(MetaMaskIcon)} width={14} height={14} alt="" /> Add
-          to MetaMask
-        </div>
-        <div class="flex gap-2">
-          <a href="https://coinmarketcap.com/currencies/bitcoin" target="blank">
-            <img
-              src={getLocalImg(CoinMarketCapIcon)}
-              width={22}
-              height={22}
-              alt=""
-            />
-          </a>
-          <a href={`https://www.coingecko.com/en/coins/${id}`} target="blank">
-            <img
-              src={getLocalImg(CoinGekoIcon)}
-              width={22}
-              height={22}
-              alt=""
-            />
-          </a>
-        </div>
-      </div> -->
 
       <div class="flex gap-4 items-center my-4">
         <div
