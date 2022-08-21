@@ -34,7 +34,6 @@
     const data = (await sendMessage("chartData", {
       symbol: symbol.toLowerCase(),
     })) as any;
-    console.log("data chart: ", data);
 
     const priceData = data.prices.map(([time, price]) => ({
       time: dayjs(time).unix(),
@@ -131,5 +130,31 @@
     </div>
   </div>
 {:else}
-  <div>hello world</div>
+  <svg
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    x="0px"
+    y="0px"
+    viewBox="0 0 1000 1000"
+    enable-background="new 0 0 1000 1000"
+    xml:space="preserve"
+    style="width: 100%; height: 300px;"
+  >
+    <metadata> Svg Vector Icons : http://www.onlinewebfonts.com/icon </metadata>
+    <g
+      ><g
+        ><g
+          ><path
+            fill="#16c78433"
+            d="M975.4,932.7H39.2v-880c0-8.1-6.5-14.6-14.6-14.6S10,44.6,10,52.7v894.6c0,8.1,6.5,14.6,14.6,14.6h950.8c8.1,0,14.6-6.5,14.6-14.6C990,939.2,983.5,932.7,975.4,932.7z"
+          /><path
+            fill="#16c78433"
+            d="M671.8,522.7c-129.6,220.4-193.4,4.4-213.9-58.3C423,357.8,259.6,58.1,62.4,370.4v531.6h904.3C966.7,901.9,856.5,150,671.8,522.7z"
+          /></g
+        ></g
+      ><g /><g /><g /><g /><g /><g /><g /><g /><g /><g /><g /><g /><g /><g /><g
+      /></g
+    >
+  </svg>
 {/if}

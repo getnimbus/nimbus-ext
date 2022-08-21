@@ -1,8 +1,9 @@
 <svelte:options tag="native-token-info" />
 
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import { coinGeko } from "./network";
+  import { sendMessage } from "webext-bridge";
   import { formatCurrency, getCgLogo } from "./utils";
 
   import "./CoinChart.svelte";
@@ -22,22 +23,25 @@
   const loadSymbolInfo = async () => {
     isLoading = true;
     try {
-      const [priceData, coinData] = await Promise.all([
-        coinGeko
-          .get(`simple/price?ids=${id}&vs_currencies=usd`)
-          .then((response) => response.data),
-        coinGeko
-          .get(
-            `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`
-          )
-          .then((response) => response.data),
-      ]);
-      price = priceData?.[id]?.usd;
+      // const [priceData, coinData] = await Promise.all([
+      //   coinGeko
+      //     .get(`simple/price?ids=${id}&vs_currencies=usd`)
+      //     .then((response) => response.data),
+      //   coinGeko
+      //     .get(
+      //       `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`
+      //     )
+      //     .then((response) => response.data),
+      // ]);
+
+      const data = (await sendMessage("tokenInfoData", { id: id })) as any;
+
+      price = data?.priceData?.[id]?.usd;
 
       coinInfo = {
-        symbol: coinData?.symbol,
-        name: coinData?.name,
-        logo_url: coinData?.image?.large,
+        symbol: data?.coinData?.symbol,
+        name: data?.coinData?.name,
+        logo_url: data?.coinData?.image?.large,
       };
     } catch (e) {
       console.log(e);

@@ -47,14 +47,21 @@ const fetchChartData = async (symbol) => {
   const chart = await coinGeko.get(`coins/${symbol}/market_chart/range`, params).then(
     (response) => response
   );
-
-  browser.storage.local
-    .set({ chartData: JSON.stringify(chart.data) })
-    .then(() => {
-      console.log("Loaded chart data");
-    });
-
   return JSON.stringify(chart.data)
+}
+
+const fetchTokenInfo = async (id) => {
+  const [priceData, coinData] = await Promise.all([
+    coinGeko
+      .get(`simple/price?ids=${id}&vs_currencies=usd`)
+      .then((response) => response.data),
+    coinGeko
+      .get(
+        `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`
+      )
+      .then((response) => response.data),
+  ]);
+  return JSON.stringify({ priceData: priceData, coinData: coinData })
 }
 
 browser.runtime.onStartup.addListener(async () => {
@@ -73,6 +80,10 @@ interface ISearchInput {
 
 interface ISymbolInput {
   symbol: string;
+}
+
+interface IIdInput {
+  id: string
 }
 
 onMessage<ICoinListInput, any>("coinList", async ({ data: { limit } }) => {
@@ -109,6 +120,15 @@ onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
   try {
     const dataChart = JSON.parse(await fetchChartData(symbol))
     return dataChart
+  } catch (e) {
+    return {};
+  }
+});
+
+onMessage<IIdInput, any>("tokenInfoData", async ({ data: { id } }) => {
+  try {
+    const data = JSON.parse(await fetchTokenInfo(id))
+    return data
   } catch (e) {
     return {};
   }
