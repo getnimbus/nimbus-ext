@@ -64,6 +64,11 @@
     tokenDataSearch = data && data.slice(0, 5);
   };
 
+  const blabla = async (searchValue) => {
+    const a = await sendMessage("getSearchData", { search: searchValue });
+    console.log("a: ", a);
+  };
+
   const handleGetCoinDataFromPage = () => {
     let innerTextMatchContext = [];
 
@@ -132,6 +137,7 @@
   $: {
     if (search) {
       getSearchData(search);
+      blabla(search);
     }
   }
 

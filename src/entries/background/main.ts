@@ -1,6 +1,5 @@
 import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
-import { get } from "lodash"
 
 browser.runtime.onInstalled.addListener(() => {
   console.log("Extension installed");
@@ -28,6 +27,11 @@ const fetchConfigPages = async () => {
       console.log("Loaded config page list");
     });
 };
+
+const fetchSearchData = async (search) => {
+  const list = await fetch(`https://api.coingecko.com/api/v3/search?query=${search}`).then((response) => response.json());
+  return JSON.stringify(list.coins)
+}
 
 browser.runtime.onStartup.addListener(async () => {
   console.log("onStartup....");
@@ -65,14 +69,12 @@ onMessage("configPageList", async () => {
 });
 
 onMessage<ISearchInput, any>("getSearchData", async ({ data: { search } }) => {
-  let response;
   try {
-    response = await fetch(`https://api.coingecko.com/api/v3/search?query=${search}`);
+    const data = JSON.parse(await fetchSearchData(search))
+    return data.slice(0, 5)
   } catch (e) {
-    console.error(e);
+    return [];
   }
-  const data = get(response, "data.coins") || [];
-  return data && data.slice(0, 5);
 });
 
 // Run on init
