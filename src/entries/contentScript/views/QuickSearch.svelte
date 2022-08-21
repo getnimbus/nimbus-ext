@@ -1,17 +1,15 @@
 <svelte:options tag="quick-search" />
 
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import { fly } from "svelte/transition";
-  import { coinGeko } from "../views/network";
   import { escapeRegex } from "../views/utils";
-  import { get } from "lodash";
   import UrlPattern from "url-pattern";
   import { sendMessage } from "webext-bridge";
 
   import "./NativeTokenInfo.svelte";
 
-  let listPageConfig;
+  let listPageConfig = [];
   let coinListData;
   let regexToken;
   let selectedTokenData = [];
@@ -30,15 +28,14 @@
   });
 
   const getConfigPages = async () => {
-    listPageConfig = await sendMessage("configPageList", undefined);
+    listPageConfig = (await sendMessage("configPageList", undefined)) as any[];
   };
 
   const getCoinList = async () => {
-    const coinList = await sendMessage("coinList", { limit: 500 });
+    const coinList = (await sendMessage("coinList", { limit: 500 })) as any[];
     coinListData = coinList;
 
     const nameAndSymbolList = [
-      // @ts-ignore
       ...coinList.map((item) => item.symbol.toUpperCase()),
     ];
 
@@ -54,19 +51,10 @@
   };
 
   const getSearchData = async (searchValue) => {
-    let response;
-    try {
-      response = await coinGeko.get(`/search?query=${searchValue}`);
-    } catch (e) {
-      console.error(e);
-    }
-    const data = get(response, "data.coins") || [];
-    tokenDataSearch = data && data.slice(0, 5);
-  };
-
-  const blabla = async (searchValue) => {
-    const a = await sendMessage("getSearchData", { search: searchValue });
-    console.log("a: ", a);
+    const data = (await sendMessage("getSearchData", {
+      search: searchValue,
+    })) as any[];
+    tokenDataSearch = data;
   };
 
   const handleGetCoinDataFromPage = () => {
@@ -137,7 +125,6 @@
   $: {
     if (search) {
       getSearchData(search);
-      blabla(search);
     }
   }
 

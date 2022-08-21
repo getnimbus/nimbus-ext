@@ -1,5 +1,7 @@
 import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
+import dayjs from "dayjs";
+import { coinGeko } from '../contentScript/views/network';
 
 browser.runtime.onInstalled.addListener(() => {
   console.log("Extension installed");
@@ -33,6 +35,28 @@ const fetchSearchData = async (search) => {
   return JSON.stringify(list.coins)
 }
 
+const fetchChartData = async (symbol) => {
+  const params = {
+    id: `${symbol}-chart`,
+    params: {
+      vs_currency: "usd",
+      from: dayjs().subtract(7, "d").unix(),
+      to: dayjs().unix(),
+    },
+  }
+  const chart = await coinGeko.get(`coins/${symbol}/market_chart/range`, params).then(
+    (response) => response
+  );
+
+  browser.storage.local
+    .set({ chartData: JSON.stringify(chart.data) })
+    .then(() => {
+      console.log("Loaded chart data");
+    });
+
+  return JSON.stringify(chart.data)
+}
+
 browser.runtime.onStartup.addListener(async () => {
   console.log("onStartup....");
   await fetchBasicData();
@@ -45,6 +69,10 @@ interface ICoinListInput {
 
 interface ISearchInput {
   search: string;
+}
+
+interface ISymbolInput {
+  symbol: string;
 }
 
 onMessage<ICoinListInput, any>("coinList", async ({ data: { limit } }) => {
@@ -74,6 +102,15 @@ onMessage<ISearchInput, any>("getSearchData", async ({ data: { search } }) => {
     return data.slice(0, 5)
   } catch (e) {
     return [];
+  }
+});
+
+onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
+  try {
+    const dataChart = JSON.parse(await fetchChartData(symbol))
+    return dataChart
+  } catch (e) {
+    return {};
   }
 });
 

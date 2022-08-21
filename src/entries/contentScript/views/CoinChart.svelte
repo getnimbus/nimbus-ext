@@ -1,11 +1,12 @@
 <svelte:options tag="coin-chart" />
 
-<script>
+<script lang="ts">
   import { createChart } from "lightweight-charts";
   import { onDestroy, onMount } from "svelte";
   import { coinGeko } from "./network";
   import dayjs from "dayjs";
   import { formatCurrency } from "./utils";
+  import { sendMessage } from "webext-bridge";
 
   export let symbol;
   export let loaded;
@@ -19,16 +20,21 @@
   const getChartData = async () => {
     if (!loaded) return;
 
-    const data = await coinGeko
-      .get(`coins/${symbol.toLowerCase()}/market_chart/range`, {
-        id: `${symbol.toLowerCase()}-chart`,
-        params: {
-          vs_currency: "usd",
-          from: dayjs().subtract(7, "d").unix(),
-          to: dayjs().unix(),
-        },
-      })
-      .then((response) => response.data);
+    // const data = await coinGeko
+    //   .get(`coins/${symbol.toLowerCase()}/market_chart/range`, {
+    //     id: `${symbol.toLowerCase()}-chart`,
+    //     params: {
+    //       vs_currency: "usd",
+    //       from: dayjs().subtract(7, "d").unix(),
+    //       to: dayjs().unix(),
+    //     },
+    //   })
+    //   .then((response) => response.data);
+
+    const data = (await sendMessage("chartData", {
+      symbol: symbol.toLowerCase(),
+    })) as any;
+    console.log("data chart: ", data);
 
     const priceData = data.prices.map(([time, price]) => ({
       time: dayjs(time).unix(),
