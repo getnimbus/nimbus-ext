@@ -112,7 +112,7 @@
     clearTimeout(timer);
     timer = setTimeout(() => {
       search = value;
-    }, 750);
+    }, 300);
   };
 
   $: {
