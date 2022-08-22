@@ -48,7 +48,7 @@
     try {
       console.log("Start chart");
       chart = createChart(chartElement, {
-        width: 352,
+        width: 320,
         height: 200,
         crosshair: {
           mode: 0,
@@ -117,8 +117,8 @@
 </script>
 
 {#if loaded}
-  <div class="w-[350px] h-[200px] relative">
-    <div class="w-[350px] h-[200px]" bind:this={chartElement} />
+  <div class="w-[320px] h-[200px] relative">
+    <div class="w-[320px] h-[200px]" bind:this={chartElement} />
     <div class="absolute bottom-2 left-2 z-10">
       <div class="inline-block px-1 bg-[#22c55e] text-white rounded mb-1">
         {dayjs(hoverDate).format("YYYY/MM/DD HH:mm")}

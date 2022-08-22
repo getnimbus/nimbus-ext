@@ -56,8 +56,8 @@
 </script>
 
 <div
-  class={`rounded-lg bg-white shadow-xl font-sans text-sm text-gray-400 transition-all overflow-hidden min-w-[350px] max-w-[400px] max-h-[600px] ${
-    isLoading && "w-[350px] max-w-[400px] max-h-[120px]"
+  class={`rounded-lg bg-white shadow-xl font-sans text-sm text-gray-400 transition-all overflow-hidden w-[25rem] max-h-[600px] ${
+    isLoading && "w-[25rem] max-h-[120px]"
   }`}
   class:shadow-xl={popup}
 >
