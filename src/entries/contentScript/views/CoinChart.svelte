@@ -7,6 +7,7 @@
   import dayjs from "dayjs";
   import { formatCurrency } from "./utils";
   import { sendMessage } from "webext-bridge";
+  import { isEmpty } from "lodash";
 
   export let symbol;
   export let loaded;
@@ -16,6 +17,8 @@
   let areaChart;
   let hoverDate;
   let hoverPrice = 0;
+  let dataChart = {};
+  let isRenderChart = false;
 
   const getChartData = async () => {
     if (!loaded) return;
