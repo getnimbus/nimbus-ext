@@ -169,7 +169,7 @@
   <div
     transition:fly={{ x: 650, opacity: 1 }}
     style="z-index: 999"
-    class="fixed top-0 right-0 h-full p-4 bg-sky-100 overflow-y-auto w-[25rem] flex flex-col gap-3"
+    class="fixed top-0 right-0 h-full p-4 bg-sky-100 overflow-y-auto w-[350px] flex flex-col gap-3"
   >
     <div
       class="cursor-pointer text-sky-500 font-semibold absolute top-2 left-0 btn-border pt-3 pb-2 bg-sky-200 rounded-tr-lg rounded-br-lg"
