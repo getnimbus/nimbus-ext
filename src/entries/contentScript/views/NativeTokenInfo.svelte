@@ -39,7 +39,6 @@
       // ]);
 
       const data = (await sendMessage("tokenInfoData", { id: id })) as any;
-      console.log("data: ", data);
 
       price = data?.priceData?.[id]?.usd;
 

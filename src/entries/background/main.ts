@@ -138,13 +138,10 @@ onMessage<ISearchInput, any>("getSearchData", async ({ data: { search } }) => {
 onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
   try {
     const dataLocal = await browser.storage.local.get(symbol)
-    console.log("data chart: ", dataLocal)
 
     if (!isEmpty(dataLocal[symbol]) && dataLocal.hasOwnProperty(symbol)) {
-      console.log("HI")
       return dataLocal[symbol]
     } else {
-      console.log("HELLO")
       return JSON.parse(await fetchChartData(symbol))
     }
 
@@ -159,10 +156,8 @@ onMessage<IIdInput, any>("tokenInfoData", async ({ data: { id } }) => {
     const dataLocal = await browser.storage.local.get(key)
 
     if (!isEmpty(dataLocal) && dataLocal.hasOwnProperty(id + "_info")) {
-      // console.log("HI")
       return JSON.parse(dataLocal[key])
     } else {
-      // console.log("HELLO")
       return JSON.parse(await fetchTokenInfo(id))
     }
   } catch (e) {
