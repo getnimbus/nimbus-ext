@@ -95,18 +95,18 @@
   //   });
   // };
 
-  // const observer = new MutationObserver((e) => {
-  //   if (window.location.href !== currentUrl) {
-  //     currentUrl = window.location.href;
-  //     handleDectecSupportUrl();
-  //     handleGetCoinDataFromPage();
-  //     setTimeout(() => {
-  //       handleDectecSupportUrl();
-  //       handleGetCoinDataFromPage();
-  //     }, 3000);
-  //   }
-  // });
-  // observer.observe(document, { subtree: true, childList: true });
+  const observer = new MutationObserver((e) => {
+    if (window.location.href !== currentUrl) {
+      currentUrl = window.location.href;
+      // handleDectecSupportUrl();
+      handleGetCoinDataFromPage();
+      setTimeout(() => {
+        // handleDectecSupportUrl();
+        handleGetCoinDataFromPage();
+      }, 3000);
+    }
+  });
+  observer.observe(document, { subtree: true, childList: true });
 
   const debounce = (value) => {
     clearTimeout(timer);
