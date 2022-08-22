@@ -16,7 +16,11 @@
   let isLoading = false;
   let price = 0;
 
-  let coinInfo = {};
+  let coinInfo = {
+    symbol: "",
+    name: "",
+    logo_url: "",
+  };
 
   export let loaded;
 
@@ -35,6 +39,7 @@
       // ]);
 
       const data = (await sendMessage("tokenInfoData", { id: id })) as any;
+      console.log("data: ", data);
 
       price = data?.priceData?.[id]?.usd;
 
@@ -82,7 +87,7 @@
             </div>
             <div class="flex items-center gap-1">
               Price:<span class="font-bold text-base"
-                >${formatCurrency(price)}</span
+                >${price && formatCurrency(price)}</span
               >
             </div>
           </div>

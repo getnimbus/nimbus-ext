@@ -135,6 +135,12 @@
       loaded = false;
     }
   }
+
+  $: {
+    if (!isShowSideBar) {
+      search = "";
+    }
+  }
 </script>
 
 <div

@@ -1,6 +1,7 @@
 import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
 import dayjs from "dayjs";
+import { isEmpty } from "lodash";
 import { coinGeko } from '../contentScript/views/network';
 
 browser.runtime.onInstalled.addListener(() => {
@@ -47,6 +48,13 @@ const fetchChartData = async (symbol) => {
   const chart = await coinGeko.get(`coins/${symbol}/market_chart/range`, params).then(
     (response) => response
   );
+
+  browser.storage.local
+    .set({ [JSON.stringify(symbol)]: JSON.stringify(chart.data) })
+    .then(() => {
+      console.log("Loaded data chart");
+    });
+
   return JSON.stringify(chart.data)
 }
 
@@ -61,6 +69,17 @@ const fetchTokenInfo = async (id) => {
       )
       .then((response) => response.data),
   ]);
+
+  browser.storage.local
+    .set({
+      [JSON.stringify(id + "_info")]: JSON.stringify(
+        { priceData: priceData, coinData: coinData }
+      ),
+    })
+    .then(() => {
+      console.log("Loaded crypto info");
+    });
+
   return JSON.stringify({ priceData: priceData, coinData: coinData })
 }
 
@@ -118,8 +137,17 @@ onMessage<ISearchInput, any>("getSearchData", async ({ data: { search } }) => {
 
 onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
   try {
-    const dataChart = JSON.parse(await fetchChartData(symbol))
-    return dataChart
+    const dataLocal = await browser.storage.local.get(symbol)
+    console.log("data chart: ", dataLocal)
+
+    if (!isEmpty(dataLocal[symbol]) && dataLocal.hasOwnProperty(symbol)) {
+      console.log("HI")
+      return dataLocal[symbol]
+    } else {
+      console.log("HELLO")
+      return JSON.parse(await fetchChartData(symbol))
+    }
+
   } catch (e) {
     return {};
   }
@@ -127,8 +155,16 @@ onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
 
 onMessage<IIdInput, any>("tokenInfoData", async ({ data: { id } }) => {
   try {
-    const data = JSON.parse(await fetchTokenInfo(id))
-    return data
+    const key = id + "_info"
+    const dataLocal = await browser.storage.local.get(key)
+
+    if (!isEmpty(dataLocal) && dataLocal.hasOwnProperty(id + "_info")) {
+      // console.log("HI")
+      return JSON.parse(dataLocal[key])
+    } else {
+      // console.log("HELLO")
+      return JSON.parse(await fetchTokenInfo(id))
+    }
   } catch (e) {
     return {};
   }
