@@ -89,24 +89,24 @@
         : [];
   };
 
-  const handleDectecSupportUrl = () => {
-    isChangeURL = listPageConfig.some((item) => {
-      return location.hostname === item.hostname;
-    });
-  };
+  // const handleDectecSupportUrl = () => {
+  //   isChangeURL = listPageConfig.some((item) => {
+  //     return location.hostname === item.hostname;
+  //   });
+  // };
 
-  const observer = new MutationObserver((e) => {
-    if (window.location.href !== currentUrl) {
-      currentUrl = window.location.href;
-      handleDectecSupportUrl();
-      handleGetCoinDataFromPage();
-      setTimeout(() => {
-        handleDectecSupportUrl();
-        handleGetCoinDataFromPage();
-      }, 3000);
-    }
-  });
-  observer.observe(document, { subtree: true, childList: true });
+  // const observer = new MutationObserver((e) => {
+  //   if (window.location.href !== currentUrl) {
+  //     currentUrl = window.location.href;
+  //     handleDectecSupportUrl();
+  //     handleGetCoinDataFromPage();
+  //     setTimeout(() => {
+  //       handleDectecSupportUrl();
+  //       handleGetCoinDataFromPage();
+  //     }, 3000);
+  //   }
+  // });
+  // observer.observe(document, { subtree: true, childList: true });
 
   const debounce = (value) => {
     clearTimeout(timer);
@@ -117,7 +117,7 @@
 
   $: {
     if (listPageConfig && coinListData) {
-      handleDectecSupportUrl();
+      // handleDectecSupportUrl();
       handleGetCoinDataFromPage();
     }
   }
@@ -137,29 +137,27 @@
   }
 </script>
 
-{#if isChangeURL}
-  <div
-    style="z-index: 999"
-    on:click={() => (isShowSideBar = true)}
-    class="fixed top-[140px] right-0 p-2 bg-sky-100 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-1"
+<div
+  style="z-index: 999"
+  on:click={() => (isShowSideBar = true)}
+  class="fixed top-[140px] right-0 p-2 bg-sky-100 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-1"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-5 w-5"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2"
   >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="h-5 w-5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      stroke-width="2"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-      />
-    </svg>
-    <div class="font-semibold text-lg">Nimbus 🌩</div>
-  </div>
-{/if}
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+    />
+  </svg>
+  <div class="font-semibold text-lg">Nimbus 🌩</div>
+</div>
 
 {#if isShowSideBar}
   <div
