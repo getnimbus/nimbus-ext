@@ -60,10 +60,9 @@
 </script>
 
 <div
-  class={`rounded-lg bg-white shadow-xl font-sans text-sm text-gray-400 transition-all overflow-hidden w-[350px] max-h-[600px] ${
-    isLoading && "w-[350px] max-h-[120px]"
+  class={`rounded bg-white shadow font-sans text-sm text-gray-400 transition-all overflow-hidden w-full max-h-[600px] ${
+    isLoading && "w-full max-h-[120px]"
   }`}
-  class:shadow-xl={popup}
 >
   {#if isLoading}
     <div class="w-full h-[120px] flex justify-center items-center">
@@ -79,35 +78,33 @@
           src={getCgLogo(id)}
           alt={name}
         />
-        <div class="flex flex-col gap-1 text-black">
+        <div class="flex flex-col text-gray-900 text-sm">
           <div class="flex flex-col">
-            <div class="flex gap-1 text-lg font-bold">
+            <div class="flex font-medium">
               {name} - {coinInfo?.name}
             </div>
-            <div class="flex items-center gap-1">
-              Price:<span class="font-bold text-base"
-                >${price && formatCurrency(price)}</span
-              >
+            <div class="flex items-center">
+              Price: <span class="font-medium">
+                ${price && formatCurrency(price)}
+              </span>
             </div>
           </div>
-          <div class="text-base font-semibold">
-            Goverment token of stepN App
-          </div>
+          <div class="font-medium">Goverment token of stepN App</div>
         </div>
       </div>
       <div class="flex gap-2 flex-wrap mt-2">
         <div
-          class="flex items-center justyfy-center px-2 py-1 text-sky-500 bg-sky-100 rounded"
+          class="flex items-center text-xs justyfy-center px-1 py-1 text-sky-500 bg-sky-100 rounded"
         >
           Label 1
         </div>
         <div
-          class="flex items-center justyfy-center px-2 py-1 text-sky-500 bg-sky-100 rounded"
+          class="flex items-center text-xs justyfy-center px-1 py-1 text-sky-500 bg-sky-100 rounded"
         >
           Label 2
         </div>
         <div
-          class="flex items-center justyfy-center px-2 py-1 text-sky-500 bg-sky-100 rounded"
+          class="flex items-center text-xs justyfy-center px-1 py-1 text-sky-500 bg-sky-100 rounded"
         >
           Label 3
         </div>
@@ -119,7 +116,7 @@
         <price-convert symbol={name} {price} />
       {/if}
 
-      <div class="flex gap-4 items-center my-4">
+      <!-- <div class="flex gap-4 items-center my-4">
         <div
           on:click={() => alert("Comming soon")}
           class="flex items-center justyfy-center btn-border px-3 py-2 text-white bg-sky-500 rounded cursor-pointer"
@@ -132,7 +129,7 @@
         >
           Follow this coin
         </div>
-      </div>
+      </div> -->
     </div>
   {/if}
 </div>

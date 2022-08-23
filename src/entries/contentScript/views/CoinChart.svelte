@@ -51,8 +51,14 @@
     try {
       console.log("Start chart");
       chart = createChart(chartElement, {
-        width: 320,
+        width: 300,
         height: 200,
+        handleScroll: {
+          mouseWheel: false,
+          pressedMouseMove: false,
+          horzTouchDrag: false,
+          vertTouchDrag: false,
+        },
         crosshair: {
           mode: 0,
           vertLine: {
@@ -76,6 +82,7 @@
           fixRightEdge: true,
           borderColor: "#e5e7eb",
           drawTicks: false,
+          rightBarStaysOnScroll: true,
         },
         rightPriceScale: {
           visible: false,
@@ -120,8 +127,8 @@
 </script>
 
 {#if loaded}
-  <div class="w-[320px] h-[200px] relative">
-    <div class="w-[320px] h-[200px]" bind:this={chartElement} />
+  <div class="w-full h-[200px] relative">
+    <div class="w-full h-[200px]" bind:this={chartElement} />
     <div class="absolute bottom-2 left-2 z-10">
       <div class="inline-block px-1 bg-[#22c55e] text-white rounded mb-1">
         {dayjs(hoverDate).format("YYYY/MM/DD HH:mm")}
@@ -133,31 +140,41 @@
     </div>
   </div>
 {:else}
-  <svg
-    version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    x="0px"
-    y="0px"
-    viewBox="0 0 1000 1000"
-    enable-background="new 0 0 1000 1000"
-    xml:space="preserve"
-    style="width: 100%; height: 300px;"
+  <div
+    class="w-full h-[180px] my-3 skeleton rounded flex items-center justify-center flex-col text-center"
   >
-    <metadata> Svg Vector Icons : http://www.onlinewebfonts.com/icon </metadata>
-    <g
-      ><g
-        ><g
-          ><path
-            fill="#16c78433"
-            d="M975.4,932.7H39.2v-880c0-8.1-6.5-14.6-14.6-14.6S10,44.6,10,52.7v894.6c0,8.1,6.5,14.6,14.6,14.6h950.8c8.1,0,14.6-6.5,14.6-14.6C990,939.2,983.5,932.7,975.4,932.7z"
-          /><path
-            fill="#16c78433"
-            d="M671.8,522.7c-129.6,220.4-193.4,4.4-213.9-58.3C423,357.8,259.6,58.1,62.4,370.4v531.6h904.3C966.7,901.9,856.5,150,671.8,522.7z"
-          /></g
-        ></g
-      ><g /><g /><g /><g /><g /><g /><g /><g /><g /><g /><g /><g /><g /><g /><g
-      /></g
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-10 w-10"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
     >
-  </svg>
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
+      />
+    </svg>
+    <div class="mt-2 text-gray-900 mx-6 text-xs">
+      Click outside to finish search and load chart data
+    </div>
+  </div>
 {/if}
+
+<style>
+  @keyframes skeleton-loading {
+    0% {
+      background-color: hsl(200, 20%, 80%);
+    }
+    100% {
+      background-color: hsl(200, 20%, 95%);
+    }
+  }
+
+  .skeleton {
+    /* animation: skeleton-loading 1s linear infinite alternate; */
+    background-color: hsl(200, 20%, 95%);
+  }
+</style>

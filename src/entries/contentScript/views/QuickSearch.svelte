@@ -146,7 +146,7 @@
 <div
   style="z-index: 999"
   on:click={() => (isShowSideBar = true)}
-  class="fixed top-[140px] right-0 p-2 bg-sky-100 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-1"
+  class="fixed top-[140px] right-0 p-2 bg-sky-100 opacity-80 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-1"
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -162,14 +162,14 @@
       d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
     />
   </svg>
-  <div class="font-semibold text-lg">Nimbus 🌩</div>
+  <div class="font-semibold text-lg">🌩</div>
 </div>
 
 {#if isShowSideBar}
   <div
     transition:fly={{ x: 650, opacity: 1 }}
     style="z-index: 999"
-    class="fixed top-0 right-0 h-full p-4 bg-sky-100 overflow-y-auto w-[350px] flex flex-col gap-3"
+    class="fixed top-0 right-0 h-screen p-4 bg-sky-100 overflow-y-auto w-[350px] flex flex-col text-gray-900 sidebar-wrapper"
   >
     <div
       class="cursor-pointer text-sky-500 font-semibold absolute top-2 left-0 btn-border pt-3 pb-2 bg-sky-200 rounded-tr-lg rounded-br-lg"
@@ -187,11 +187,11 @@
       </svg>
     </div>
 
-    <div class="text-center font-bold text-2xl">
+    <div class="text-center font-bold text-2xl my-2">
       Welcome to <span class="text-sky-400">Nimbus 🌩</span>
     </div>
 
-    <div class="bg-white text-sky-300 p-2 rounded flex items-center gap-1">
+    <div class="bg-white text-sky-300 p-2 rounded flex items-center gap-1 my-3">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         class="h-6 w-6"
@@ -217,21 +217,36 @@
     </div>
 
     {#if search !== ""}
-      {#each tokenDataSearch as item}
-        <native-token-info id={item.id} name={item.symbol} {loaded} />
-      {/each}
+      <div class="flex flex-col gap-y-3">
+        {#each tokenDataSearch as item}
+          <native-token-info id={item.id} name={item.symbol} {loaded} />
+        {/each}
+      </div>
     {:else if search === ""}
       {#if selectedTokenData.length !== 0}
-        <div class="text-3xl font-bold">On this page</div>
-        {#each selectedTokenData as item}
-          <native-token-info id={item.id} name={item.symbol} loaded={true} />
-        {/each}
+        <div class="text-2xl font-bold mt-3 mb-2">On this page</div>
+        <div class="flex flex-col gap-y-3">
+          {#each selectedTokenData as item}
+            <native-token-info id={item.id} name={item.symbol} loaded={true} />
+          {/each}
+        </div>
       {:else}
         <div class="text-base font-semibold">
           Let us help what Token information do you want to known?
         </div>
       {/if}
     {/if}
+    {#if tokenDataSearch.length || selectedTokenData.length}
+      <div class="text-xs italic mt-3">*Chart data by CoinGekko</div>
+    {/if}
+    <!-- 
+    <a
+      href="https://feedback.getnimbus.xyz/"
+      target="_blank"
+      class="flex items-center justify-center border-1 border-solid border-sky-400 px-3 py-2 text-sky-500 rounded cursor-pointer bg-white no-underline mt-auto"
+    >
+      Feedback
+    </a> -->
   </div>
 {/if}
 
@@ -243,5 +258,9 @@
     border-left: 0px;
     border-style: solid;
     border-color: skyblue;
+  }
+
+  .sidebar-wrapper {
+    border-left: 1px solid #e5e7eb;
   }
 </style>
