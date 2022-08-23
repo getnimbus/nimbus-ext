@@ -1,7 +1,7 @@
 <svelte:options tag="quick-search" />
 
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { fly } from "svelte/transition";
   import { escapeRegex } from "../views/utils";
   import UrlPattern from "url-pattern";
@@ -106,6 +106,12 @@
     }
   });
   observer.observe(document, { subtree: true, childList: true });
+
+  onDestroy(() => {
+    if (observer) {
+      observer.disconnect();
+    }
+  });
 
   const debounce = (value) => {
     clearTimeout(timer);
