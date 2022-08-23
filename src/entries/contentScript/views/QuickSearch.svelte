@@ -129,11 +129,11 @@
 
   $: loaded = search && isFocused === false;
 
-  $: {
-    if (!isShowSideBar) {
-      search = "";
-    }
-  }
+  // $: {
+  //   if (!isShowSideBar) {
+  //     search = "";
+  //   }
+  // }
 </script>
 
 <div
@@ -203,6 +203,7 @@
         on:keyup={({ target: { value } }) => debounce(value)}
         on:focus={() => (isFocused = true)}
         on:blur={() => (isFocused = false)}
+        value={search}
         placeholder="Search..."
         type="text"
         class="font-base w-full py-2 border-none focus:outline-none"
