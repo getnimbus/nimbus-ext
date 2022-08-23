@@ -129,11 +129,11 @@
 
   $: loaded = search && isFocused === false;
 
-  // $: {
-  //   if (!isShowSideBar) {
-  //     search = "";
-  //   }
-  // }
+  $: {
+    if (!isShowSideBar) {
+      search = "";
+    }
+  }
 </script>
 
 <div
