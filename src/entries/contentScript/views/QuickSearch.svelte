@@ -18,7 +18,6 @@
   let isShowSideBar = false;
   let search = "";
   let isFocused = false;
-  let loaded = false;
   let currentUrl = window.location.href;
   let timer;
 
@@ -128,13 +127,7 @@
     }
   }
 
-  $: {
-    if (search && isFocused === false) {
-      loaded = true;
-    } else {
-      loaded = false;
-    }
-  }
+  $: loaded = search && isFocused === false;
 
   $: {
     if (!isShowSideBar) {
