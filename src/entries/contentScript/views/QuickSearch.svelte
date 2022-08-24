@@ -168,7 +168,7 @@
   <div
     transition:fly={{ x: 650, opacity: 1 }}
     style="z-index: 999"
-    class="fixed top-0 right-0 h-screen p-4 bg-sky-100 overflow-y-auto w-[350px] flex flex-col text-gray-900 sidebar-wrapper"
+    class="fixed top-0 right-0 h-screen p-4 bg-sky-100 overflow-y-auto w-[350px] flex flex-col text-gray-900 border-0 border-l-1 border-solid border-l-gray-200"
   >
     <div
       class="cursor-pointer text-sky-500 font-semibold absolute top-2 left-0 btn-border pt-3 pb-2 bg-sky-200 rounded-tr-lg rounded-br-lg"
@@ -258,9 +258,5 @@
     border-left: 0px;
     border-style: solid;
     border-color: skyblue;
-  }
-
-  .sidebar-wrapper {
-    border-left: 1px solid #e5e7eb;
   }
 </style>
