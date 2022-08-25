@@ -108,9 +108,9 @@
 </script>
 
 <div
-  class={`rounded-lg bg-white border-1 border-gray-200 border-solid font-sans text-sm text-gray-600 transition-all overflow-hidden min-w-[520px] w-full max-w-[700px] max-h-[680px] ${
-    isLoading && popup && "w-[350px] max-w-[400px] max-h-[120px]"
-  }`}
+  class={`rounded-lg bg-white border-1 border-gray-200 border-solid font-sans text-sm text-gray-600 transition-all overflow-hidden min-w-[520px] w-full max-w-[700px] ${
+    isLoading && popup && "w-[350px] max-w-[400px] max-h-[120px] "
+  } ${popup ? "max-h-[680px]" : ""}`}
   class:shadow-xl={popup}
 >
   {#if isLoading}
