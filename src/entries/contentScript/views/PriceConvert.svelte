@@ -60,7 +60,7 @@
   <div class="flex flex-col text-black">
     <div class="mb-1 font-semibold text-center">USD</div>
     <input
-      class="py-2 px-[6px] input-border flex-1 rounded w-30 bg-white"
+      class="py-2 px-[6px] input-border flex-1 rounded w-30 bg-white focus:ring-1 focus:ring-sky-700"
       type="text"
       bind:value={amount2}
       on:input={onInputAmount2}

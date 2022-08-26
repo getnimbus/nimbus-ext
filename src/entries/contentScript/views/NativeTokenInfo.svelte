@@ -84,7 +84,7 @@
               {name} - {coinInfo?.name}
             </div>
             <div class="flex items-center">
-              Price: <span class="font-medium">
+              Price: <span class="font-medium ml-1">
                 ${price && formatCurrency(price)}
               </span>
             </div>

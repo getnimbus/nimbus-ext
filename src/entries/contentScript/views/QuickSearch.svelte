@@ -20,6 +20,7 @@
   let isFocused = false;
   let currentUrl = window.location.href;
   let timer;
+  let isLoading = false;
 
   onMount(() => {
     getConfigPages();
@@ -50,10 +51,14 @@
   };
 
   const getSearchData = async (searchValue) => {
+    isLoading = true;
     const data = (await sendMessage("getSearchData", {
       search: searchValue,
     })) as any[];
-    tokenDataSearch = data;
+    if (data) {
+      isLoading = false;
+      tokenDataSearch = data;
+    }
   };
 
   const handleGetCoinDataFromPage = () => {
@@ -138,6 +143,9 @@
   $: {
     if (!isShowSideBar) {
       search = "";
+      isFocused = false;
+    } else {
+      isFocused = true;
     }
   }
 </script>
@@ -190,7 +198,11 @@
       Welcome to <span class="text-sky-400">Nimbus 🌩</span>
     </div>
 
-    <div class="bg-white text-sky-300 p-2 rounded flex items-center gap-1 my-3">
+    <div
+      class={`bg-white text-sky-300 p-2 rounded flex items-center gap-1 my-3 ${
+        isFocused ? "input-border-focus" : "input-border-unfocus"
+      }`}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         class="h-6 w-6"
@@ -209,6 +221,7 @@
         on:keyup={({ target: { value } }) => debounce(value)}
         on:focus={() => (isFocused = true)}
         on:blur={() => (isFocused = false)}
+        autofocus
         value={search}
         placeholder="Search..."
         type="text"
@@ -217,14 +230,29 @@
     </div>
 
     {#if search !== ""}
-      <div class="flex flex-col gap-y-3">
-        {#each tokenDataSearch as item}
-          <native-token-info id={item.id} name={item.symbol} {loaded} />
-        {/each}
-      </div>
+      {#if isLoading}
+        <div class="text-center text-base font-semibold">Searching...</div>
+      {:else if !isLoading}
+        {#if tokenDataSearch.length !== 0}
+          <div class="flex justify-between items-end mb-2">
+            <div class="text-xl font-bold">Results</div>
+            <div class="text-xs italic">*Chart data by CoinGekko</div>
+          </div>
+          <div class="flex flex-col gap-y-3">
+            {#each tokenDataSearch as item}
+              <native-token-info id={item.id} name={item.symbol} {loaded} />
+            {/each}
+          </div>
+        {:else}
+          <div class="text-center text-base font-semibold">No results</div>
+        {/if}
+      {/if}
     {:else if search === ""}
       {#if selectedTokenData.length !== 0}
-        <div class="text-2xl font-bold mt-3 mb-2">On this page</div>
+        <div class="flex justify-between items-end mb-2">
+          <div class="text-xl font-bold">On this page</div>
+          <div class="text-xs italic">*Chart data by CoinGekko</div>
+        </div>
         <div class="flex flex-col gap-y-3">
           {#each selectedTokenData as item}
             <native-token-info id={item.id} name={item.symbol} loaded={true} />
@@ -232,15 +260,12 @@
         </div>
       {:else}
         <div class="text-base font-semibold">
-          Let us help what Token information do you want to known?
+          Search for cryptocurrency/token you want to know
         </div>
       {/if}
     {/if}
-    {#if tokenDataSearch.length || selectedTokenData.length}
-      <div class="text-xs italic mt-3">*Chart data by CoinGekko</div>
-    {/if}
-    <!-- 
-    <a
+
+    <!-- <a
       href="https://feedback.getnimbus.xyz/"
       target="_blank"
       class="flex items-center justify-center border-1 border-solid border-sky-400 px-3 py-2 text-sky-500 rounded cursor-pointer bg-white no-underline mt-auto"
@@ -258,5 +283,13 @@
     border-left: 0px;
     border-style: solid;
     border-color: skyblue;
+  }
+
+  .input-border-focus {
+    border: 1px solid #0369a1;
+  }
+
+  .input-border-unfocus {
+    border: 1px solid transparent;
   }
 </style>
