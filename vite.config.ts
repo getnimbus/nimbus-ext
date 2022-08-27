@@ -7,12 +7,9 @@ import { windi } from "svelte-windicss-preprocess";
 import sveltePreprocess from "svelte-preprocess";
 import AutoImport from "unplugin-auto-import/vite";
 
-console.log({ env: process.env.NODE_ENV });
-
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-
   return {
     plugins: [
       svelte({
@@ -46,6 +43,7 @@ export default defineConfig(({ mode }) => {
           assetFileNames: `assets/[name].[ext]`,
         },
       },
+      sourcemap: env.WATCH === "true" ? "inline" : false,
     },
     optimizeDeps: {
       include: ["webextension-polyfill"],
