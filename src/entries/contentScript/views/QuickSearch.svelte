@@ -245,7 +245,7 @@
           {#if tokenDataSearch.length !== 0}
             <div class="flex justify-between items-center mb-[8px]">
               <div class="text-[20px] leading-[28px] font-bold">Results</div>
-              <div class="text-[12px] leading-[16px] italic">
+              <div class="text-[12px] leading-[16px] italic text-sky-700">
                 *Chart data by CoinGekko
               </div>
             </div>
@@ -262,7 +262,7 @@
         {#if selectedTokenData.length !== 0}
           <div class="flex justify-between items-center mb-[8px]">
             <div class="text-[20px] leading-[28px] font-bold">On this page</div>
-            <div class="text-[12px] leading-[16px] italic">
+            <div class="text-[12px] leading-[16px] italic text-sky-700">
               *Chart data by CoinGekko
             </div>
           </div>

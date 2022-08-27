@@ -6,6 +6,7 @@
   import { sendMessage } from "webext-bridge";
   import { formatCurrency, getCgLogo } from "./utils";
 
+  import "~/components/ResetStyle.svelte";
   import "./CoinChart.svelte";
   import "./PriceConvert.svelte";
 
@@ -48,66 +49,68 @@
   });
 </script>
 
-<div
-  class={`rounded bg-white shadow font-sans text-sm text-gray-400 transition-all overflow-hidden w-full max-h-[600px] ${
-    isLoading && "w-full max-h-[120px]"
-  }`}
->
-  {#if isLoading}
-    <div class="w-full h-[120px] flex justify-center items-center">
-      <loading-icon />
-    </div>
-  {/if}
+<reset-style>
+  <div
+    class={`rounded-[4px] bg-white shadow font-sans text-[14px] leading-[20px] text-gray-400 transition-all overflow-hidden w-full max-h-[600px] ${
+      isLoading && "w-full max-h-[120px]"
+    }`}
+  >
+    {#if isLoading}
+      <div class="w-full h-[120px] flex justify-center items-center">
+        <loading-icon />
+      </div>
+    {/if}
 
-  {#if coinInfo}
-    <div class="p-3">
-      <div class="flex gap-4 items-center">
-        <img
-          class="w-[52px] h-[52px] rounded-[50%]"
-          src={getCgLogo(id)}
-          alt={name}
-        />
-        <div class="flex flex-col text-gray-900 text-sm">
-          <div class="flex flex-col">
-            <div class="flex font-medium">
-              {name} - {coinInfo?.name}
+    {#if coinInfo}
+      <div class="p-[12px]">
+        <div class="flex gap-[16px] items-center">
+          <img
+            class="w-[52px] h-[52px] rounded-[50%]"
+            src={getCgLogo(id)}
+            alt={name}
+          />
+          <div class="flex flex-col text-gray-900 text-[14px] leading-[20px]">
+            <div class="flex flex-col">
+              <div class="flex font-medium">
+                {name} - {coinInfo?.name}
+              </div>
+              <div class="flex items-center">
+                Price: <span class="font-medium ml-[4px]">
+                  ${price && formatCurrency(price)}
+                </span>
+              </div>
             </div>
-            <div class="flex items-center">
-              Price: <span class="font-medium ml-1">
-                ${price && formatCurrency(price)}
-              </span>
-            </div>
+            <div class="font-medium">Goverment token of stepN App</div>
           </div>
-          <div class="font-medium">Goverment token of stepN App</div>
         </div>
-      </div>
-      <div class="flex gap-2 flex-wrap mt-2">
-        <div
-          class="flex items-center text-xs justyfy-center px-1 py-1 text-sky-500 bg-sky-100 rounded"
-        >
-          Label 1
-        </div>
-        <div
-          class="flex items-center text-xs justyfy-center px-1 py-1 text-sky-500 bg-sky-100 rounded"
-        >
-          Label 2
-        </div>
-        <div
-          class="flex items-center text-xs justyfy-center px-1 py-1 text-sky-500 bg-sky-100 rounded"
-        >
-          Label 3
-        </div>
-      </div>
 
-      <coin-chart symbol={id} {loaded} />
+        <div class="flex gap-[8px] flex-wrap mt-[8px]">
+          <div
+            class="flex items-center text-xs justyfy-center px-[4px] py-[4px] text-sky-500 bg-sky-100 rounded-[4px]"
+          >
+            Label 1
+          </div>
+          <div
+            class="flex items-center text-xs justyfy-center px-[4px] py-[4px] text-sky-500 bg-sky-100 rounded-[4px]"
+          >
+            Label 2
+          </div>
+          <div
+            class="flex items-center text-xs justyfy-center px-[4px] py-[4px] text-sky-500 bg-sky-100 rounded-[4px]"
+          >
+            Label 3
+          </div>
+        </div>
 
-      {#if price}
-        <price-convert symbol={name} {price} />
-      {:else}
-        <div>No data price</div>
-      {/if}
+        <coin-chart symbol={id} {loaded} />
 
-      <!-- <div class="flex gap-4 items-center my-4">
+        {#if price}
+          <price-convert symbol={name} {price} />
+        {:else}
+          <div>No data price</div>
+        {/if}
+
+        <!-- <div class="flex gap-4 items-center my-4">
         <div
           on:click={() => alert("Comming soon")}
           class="flex items-center justyfy-center btn-border px-3 py-2 text-white bg-sky-500 rounded cursor-pointer"
@@ -121,9 +124,10 @@
           Follow this coin
         </div>
       </div> -->
-    </div>
-  {/if}
-</div>
+      </div>
+    {/if}
+  </div>
+</reset-style>
 
 <style>
   .btn-border {

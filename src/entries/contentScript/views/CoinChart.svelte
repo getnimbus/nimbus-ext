@@ -8,6 +8,8 @@
   import { sendMessage } from "webext-bridge";
   import { isEmpty } from "lodash";
 
+  import "~/components/ResetStyle.svelte";
+
   export let symbol;
   export let loaded;
 
@@ -56,6 +58,7 @@
 
       isErrorDataChart = false;
       await tick();
+
       hoverPrice = lastPrice[1];
       hoverDate = dayjs.unix(dayjs(lastPrice[0]).unix()).toDate();
 
@@ -142,34 +145,14 @@
   }
 </script>
 
-{#if isErrorDataChart}
-  <div
-    class="w-full h-[180px] my-3 skeleton rounded flex items-center justify-center flex-col text-center"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="h-10 w-10"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      stroke-width="2"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
-      />
-    </svg>
-    <div class="mt-2 text-gray-900 mx-6 text-xs">No chart data</div>
-  </div>
-{:else if !isErrorDataChart}
-  {#if !hasData}
+<reset-style>
+  {#if isErrorDataChart}
     <div
-      class="w-full h-[180px] my-3 skeleton rounded flex items-center justify-center flex-col text-center"
+      class="w-full h-[180px] my-[12px] skeleton rounded-[4px] flex items-center justify-center flex-col text-center"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="h-10 w-10"
+        class="h-[40px] w-[40px]"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -181,25 +164,55 @@
           d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
         />
       </svg>
-      <div class="mt-2 text-gray-900 mx-6 text-xs">
-        Click outside to finish search and load chart data
+      <div class="mt-[8px] text-gray-900 mx-[24px] text-[12px] leading-[16px]">
+        No chart data
       </div>
     </div>
-  {:else}
-    <div class="w-full h-[200px] relative">
-      <div class="w-full h-[200px]" bind:this={chartElement} />
-      <div class="absolute bottom-2 left-2 z-10">
-        <div class="inline-block px-1 bg-[#22c55e] text-white rounded mb-1">
-          {dayjs(hoverDate).format("YYYY/MM/DD HH:mm")}
-        </div>
-        <br />
-        <div class="inline-block px-1 bg-[#22c55e] text-white rounded mb-1">
-          ${hoverPrice && formatCurrency(hoverPrice)}
+  {:else if !isErrorDataChart}
+    {#if !hasData}
+      <div
+        class="w-full h-[180px] my-[12px] skeleton rounded-[4px] flex items-center justify-center flex-col text-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-[40px] w-[40px]"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
+          />
+        </svg>
+        <div
+          class="mt-[8px] text-gray-900 mx-[24px] text-[12px] leading-[16px]"
+        >
+          Click outside to finish search and load chart data
         </div>
       </div>
-    </div>
+    {:else}
+      <div class="w-full h-[200px] relative">
+        <div class="w-full h-[200px]" bind:this={chartElement} />
+        <div class="absolute bottom-[8px] left-[8px] z-10">
+          <div
+            class="inline-block px-[4px] bg-[#22c55e] text-white rounded mb-[4px]"
+          >
+            {dayjs(hoverDate).format("YYYY/MM/DD HH:mm")}
+          </div>
+          <br />
+          <div
+            class="inline-block px-[4px] bg-[#22c55e] text-white rounded mb-[4px]"
+          >
+            ${hoverPrice && formatCurrency(hoverPrice)}
+          </div>
+        </div>
+      </div>
+    {/if}
   {/if}
-{/if}
+</reset-style>
 
 <style>
   @keyframes skeleton-loading {
