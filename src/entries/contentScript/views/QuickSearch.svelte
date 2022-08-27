@@ -7,6 +7,7 @@
   import UrlPattern from "url-pattern";
   import { sendMessage } from "webext-bridge";
 
+  import "~/components/ResetStyle.svelte";
   import "./NativeTokenInfo.svelte";
 
   let listPageConfig = [];
@@ -150,130 +151,143 @@
   }
 </script>
 
-<div
-  style="z-index: 999"
-  on:click={() => (isShowSideBar = true)}
-  class="fixed top-[140px] right-0 p-2 bg-sky-100 opacity-80 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-1"
->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    class="h-5 w-5"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    stroke-width="2"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-    />
-  </svg>
-  <div class="font-semibold text-lg">🌩</div>
-</div>
-
-{#if isShowSideBar}
+<reset-style>
   <div
-    transition:fly={{ x: 650, opacity: 1 }}
-    style="z-index: 999"
-    class="fixed top-0 right-0 h-screen p-4 bg-sky-100 overflow-y-auto w-[350px] flex flex-col text-gray-900 border-0 border-l-1 border-solid border-l-gray-200"
+    style="z-index: 999;"
+    on:click={() => (isShowSideBar = true)}
+    class="fixed top-[140px] right-0 p-[8px] bg-sky-100 opacity-80 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-[4px]"
   >
-    <div
-      class="cursor-pointer text-sky-500 font-semibold absolute top-2 left-0 btn-border pt-3 pb-2 bg-sky-200 rounded-tr-lg rounded-br-lg"
-      on:click={() => (isShowSideBar = false)}
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="w-[20px] h-[20px]"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-4"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-      </svg>
-    </div>
-
-    <div class="text-center font-bold text-2xl my-2">
-      Welcome to <span class="text-sky-400">Nimbus 🌩</span>
-    </div>
-
-    <div
-      class={`bg-white text-sky-300 p-2 rounded flex items-center gap-1 my-3 ${
-        isFocused ? "input-border-focus" : "input-border-unfocus"
-      }`}
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-        />
-      </svg>
-      <input
-        on:keyup={({ target: { value } }) => debounce(value)}
-        on:focus={() => (isFocused = true)}
-        on:blur={() => (isFocused = false)}
-        autofocus
-        value={search}
-        placeholder="Search..."
-        type="text"
-        class="font-base w-full py-2 border-none focus:outline-none"
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
       />
-    </div>
+    </svg>
+    <div class="font-semibold">🌩</div>
+  </div>
 
-    {#if search !== ""}
-      {#if isLoading}
-        <div class="text-center text-base font-semibold">Searching...</div>
-      {:else if !isLoading}
-        {#if tokenDataSearch.length !== 0}
-          <div class="flex justify-between items-end mb-2">
-            <div class="text-xl font-bold">Results</div>
-            <div class="text-xs italic">*Chart data by CoinGekko</div>
+  {#if isShowSideBar}
+    <div
+      transition:fly={{ x: 650, opacity: 1 }}
+      style="z-index: 999"
+      class="fixed top-0 right-0 h-screen p-[16px] bg-sky-100 overflow-y-auto w-[350px] flex flex-col text-gray-900 border-0 border-l-1 border-solid border-l-gray-200"
+    >
+      <div
+        class="cursor-pointer text-sky-500 font-semibold absolute top-[8px] left-0 btn-border pt-[12px] pb-[8px] bg-sky-200 rounded-tr-[8px] rounded-br-[8px]"
+        on:click={() => (isShowSideBar = false)}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-[20px] w-[16px]"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </div>
+
+      <div class="text-center font-bold text-[24px] leading-[32px] my-[8px]">
+        Welcome to <span class="text-sky-400">Nimbus 🌩</span>
+      </div>
+
+      <div
+        class={`bg-white text-sky-300 p-[8px] rounded flex items-center gap-[4px] my-[12px] ${
+          isFocused ? "input-border-focus" : "input-border-unfocus"
+        }`}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-[24px] w-[24px]"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
+        </svg>
+        <input
+          on:keyup={({ target: { value } }) => debounce(value)}
+          on:focus={() => (isFocused = true)}
+          on:blur={() => (isFocused = false)}
+          autofocus
+          value={search}
+          placeholder="Search..."
+          type="text"
+          class="w-full py-[8px] border-none focus:outline-none"
+          style="background: #fff"
+        />
+      </div>
+
+      {#if search !== ""}
+        {#if isLoading}
+          <div class="text-center text-[16px] leading-[24px] font-semibold">
+            Searching...
           </div>
-          <div class="flex flex-col gap-y-3">
-            {#each tokenDataSearch as item}
+        {:else if !isLoading}
+          {#if tokenDataSearch.length !== 0}
+            <div class="flex justify-between items-center mb-[8px]">
+              <div class="text-[20px] leading-[28px] font-bold">Results</div>
+              <div class="text-[12px] leading-[16px] italic">
+                *Chart data by CoinGekko
+              </div>
+            </div>
+            <div class="flex flex-col gap-y-[12px]">
+              {#each tokenDataSearch as item}
+                <native-token-info id={item.id} name={item.symbol} {loaded} />
+              {/each}
+            </div>
+          {:else}
+            <div class="text-center text-base font-semibold">No results</div>
+          {/if}
+        {/if}
+      {:else if search === ""}
+        {#if selectedTokenData.length !== 0}
+          <div class="flex justify-between items-center mb-[8px]">
+            <div class="text-[20px] leading-[28px] font-bold">On this page</div>
+            <div class="text-[12px] leading-[16px] italic">
+              *Chart data by CoinGekko
+            </div>
+          </div>
+          <div class="flex flex-col gap-y-[12px]">
+            {#each selectedTokenData as item}
               <native-token-info id={item.id} name={item.symbol} {loaded} />
             {/each}
           </div>
         {:else}
-          <div class="text-center text-base font-semibold">No results</div>
+          <div class="text-[16px] leading-[24px] font-semibold">
+            Search for cryptocurrency/token you want to know
+          </div>
         {/if}
       {/if}
-    {:else if search === ""}
-      {#if selectedTokenData.length !== 0}
-        <div class="flex justify-between items-end mb-2">
-          <div class="text-xl font-bold">On this page</div>
-          <div class="text-xs italic">*Chart data by CoinGekko</div>
-        </div>
-        <div class="flex flex-col gap-y-3">
-          {#each selectedTokenData as item}
-            <native-token-info id={item.id} name={item.symbol} loaded={true} />
-          {/each}
-        </div>
-      {:else}
-        <div class="text-base font-semibold">
-          Search for cryptocurrency/token you want to know
-        </div>
-      {/if}
-    {/if}
 
-    <!-- <a
+      <!-- <a
       href="https://feedback.getnimbus.xyz/"
       target="_blank"
       class="flex items-center justify-center border-1 border-solid border-sky-400 px-3 py-2 text-sky-500 rounded cursor-pointer bg-white no-underline mt-auto"
     >
       Feedback
     </a> -->
-  </div>
-{/if}
+    </div>
+  {/if}
+</reset-style>
 
 <style>
   .btn-border {

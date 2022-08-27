@@ -27,17 +27,6 @@
   const loadSymbolInfo = async () => {
     isLoading = true;
     try {
-      // const [priceData, coinData] = await Promise.all([
-      //   coinGeko
-      //     .get(`simple/price?ids=${id}&vs_currencies=usd`)
-      //     .then((response) => response.data),
-      //   coinGeko
-      //     .get(
-      //       `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`
-      //     )
-      //     .then((response) => response.data),
-      // ]);
-
       const data = (await sendMessage("tokenInfoData", { id: id })) as any;
 
       price = data?.priceData?.[id]?.usd;
@@ -114,6 +103,8 @@
 
       {#if price}
         <price-convert symbol={name} {price} />
+      {:else}
+        <div>No data price</div>
       {/if}
 
       <!-- <div class="flex gap-4 items-center my-4">

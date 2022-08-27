@@ -135,16 +135,22 @@ onMessage<ISearchInput, any>("getSearchData", async ({ data: { search } }) => {
   }
 });
 
-onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
+onMessage<ISymbolInput, any>("chartDataLocal", async ({ data: { symbol } }) => {
   try {
     const dataLocal = await browser.storage.local.get(symbol)
 
     if (!isEmpty(dataLocal[symbol]) && dataLocal.hasOwnProperty(symbol)) {
       return dataLocal[symbol]
-    } else {
-      return JSON.parse(await fetchChartData(symbol))
     }
 
+  } catch (e) {
+    return {};
+  }
+});
+
+onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
+  try {
+    return JSON.parse(await fetchChartData(symbol))
   } catch (e) {
     return {};
   }
