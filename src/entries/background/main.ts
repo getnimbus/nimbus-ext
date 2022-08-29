@@ -10,6 +10,13 @@ browser.runtime.onInstalled.addListener(() => {
 
 console.log(browser);
 
+browser.commands.onCommand.addListener((command) => {
+  console.log(`Command: ${command}`);
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "toggleSidebar" });
+  });
+});
+
 const fetchBasicData = async () => {
   const list = await fetch("https://api.coingecko.com/api/v3/search").then(
     (response) => response.json()

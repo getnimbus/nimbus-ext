@@ -6,6 +6,7 @@
   import { escapeRegex } from "../views/utils";
   import UrlPattern from "url-pattern";
   import { sendMessage } from "webext-bridge";
+  import * as browser from "webextension-polyfill";
 
   import "~/components/ResetStyle.svelte";
   import "./NativeTokenInfo.svelte";
@@ -149,6 +150,12 @@
       isFocused = true;
     }
   }
+
+  browser.runtime.onMessage.addListener(function (msg) {
+    if (msg.action && msg.action == "toggleSidebar") {
+      isShowSideBar = !isShowSideBar;
+    }
+  });
 </script>
 
 <reset-style>
