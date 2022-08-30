@@ -97,11 +97,11 @@
           >
             <div class="mb-1 text-xs">Tell us what's happened 🥹</div>
             <textarea
-              class="block w-full h-20 resize-none p-2 border rounded-[4px]"
+              class="block w-full h-20 resize-none p-2 border rounded"
             />
             <div class="flex justify-between gap-1 mt-2">
               <button
-                class="py-2 px-3 rounded-[4px] border-none text-white cursor-pointer w-max bg-sky-500"
+                class="py-2 px-3 rounded border-none text-white cursor-pointer w-max bg-sky-500"
                 >Send</button
               >
               <button

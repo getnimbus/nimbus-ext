@@ -246,7 +246,7 @@
     </div>
 
     <nimbus-footer>
-      <ul class="list-disc list-outside px-[12px]">
+      <ul class="list-disc list-outside px-3">
         <li class="italic">
           <a
             class="text-blue-400 no-underline"

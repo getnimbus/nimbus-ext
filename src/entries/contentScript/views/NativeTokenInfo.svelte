@@ -51,7 +51,7 @@
 
 <reset-style>
   <div
-    class={`rounded-[4px] bg-white shadow font-sans text-[14px] leading-[20px] text-gray-400 transition-all overflow-hidden w-full max-h-[600px] ${
+    class={`rounded bg-white shadow font-sans text-sm leading-5 text-gray-400 transition-all overflow-hidden w-full max-h-[600px] ${
       isLoading && "w-full max-h-[120px]"
     }`}
   >
@@ -62,20 +62,20 @@
     {/if}
 
     {#if coinInfo}
-      <div class="p-[12px]">
-        <div class="flex gap-[16px] items-center">
+      <div class="p-3">
+        <div class="flex gap-4 items-center">
           <img
-            class="w-[52px] h-[52px] rounded-[50%]"
+            class="w-[52px] h-[52px] rounded-full"
             src={getCgLogo(id)}
             alt={name}
           />
-          <div class="flex flex-col text-gray-900 text-[14px] leading-[20px]">
+          <div class="flex flex-col text-gray-900 text-sm leading-5">
             <div class="flex flex-col">
               <div class="flex font-medium">
                 {name} - {coinInfo?.name}
               </div>
               <div class="flex items-center">
-                Price: <span class="font-medium ml-[4px]">
+                Price: <span class="font-medium ml-1">
                   ${price && formatCurrency(price)}
                 </span>
               </div>
@@ -84,19 +84,19 @@
           </div>
         </div>
 
-        <div class="flex gap-[8px] flex-wrap mt-[8px]">
+        <div class="flex gap-2 flex-wrap mt-2">
           <div
-            class="flex items-center text-xs justyfy-center px-[4px] py-[4px] text-sky-500 bg-sky-100 rounded-[4px]"
+            class="flex items-center text-xs justyfy-center px-1 py-1 text-sky-500 bg-sky-100 rounded"
           >
             Label 1
           </div>
           <div
-            class="flex items-center text-xs justyfy-center px-[4px] py-[4px] text-sky-500 bg-sky-100 rounded-[4px]"
+            class="flex items-center text-xs justyfy-center px-1 py-1 text-sky-500 bg-sky-100 rounded"
           >
             Label 2
           </div>
           <div
-            class="flex items-center text-xs justyfy-center px-[4px] py-[4px] text-sky-500 bg-sky-100 rounded-[4px]"
+            class="flex items-center text-xs justyfy-center px-1 py-1 text-sky-500 bg-sky-100 rounded"
           >
             Label 3
           </div>

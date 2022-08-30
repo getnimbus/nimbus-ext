@@ -182,7 +182,7 @@
                 <img
                   src={item.logo_url || CoinDefaultIcon}
                   alt=""
-                  class="w-[20px] h-[20px] rounded-[50%] mr-1"
+                  class="w-[20px] h-[20px] rounded-full mr-1"
                 />
                 {item.symbol}
               </div>
@@ -221,7 +221,7 @@
       <coin-chart symbol={token.symbol} loaded={true} />
       <div class="text-center mt-2">
         <img
-          class="w-[72px] h-[72px] rounded-[50%]"
+          class="w-[72px] h-[72px] rounded-full"
           src={token.logo_url || CoinDefaultIcon}
           alt={token.name}
         />

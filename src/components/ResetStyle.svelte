@@ -3,6 +3,12 @@
 <script>
 </script>
 
-<div class="text-[18px] leading-[28px]" style="background: #fff;">
+<div class="text-base leading-[28px] nimbus-reset-style">
   <slot />
 </div>
+
+<style>
+  .nimbus-reset-style input {
+    background: #fff;
+  }
+</style>

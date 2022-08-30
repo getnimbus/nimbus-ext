@@ -162,11 +162,11 @@
   <div
     style="z-index: 9999;"
     on:click={() => (isShowSideBar = true)}
-    class="fixed top-[140px] right-0 p-[8px] bg-sky-100 opacity-80 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-[4px]"
+    class="fixed top-[140px] right-0 p-2 bg-sky-100 opacity-80 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-1"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      class="w-[20px] h-[20px]"
+      class="w-5 h-5"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -185,15 +185,15 @@
     <div
       transition:fly={{ x: 650, opacity: 1 }}
       style="z-index: 9999;"
-      class="fixed top-0 right-0 h-screen p-[16px] bg-sky-100 overflow-y-auto w-[350px] flex flex-col text-gray-900 border-0 border-l-1 border-solid border-l-gray-200"
+      class="fixed top-0 right-0 h-screen p-4 bg-sky-100 overflow-y-auto w-[350px] flex flex-col text-gray-900 border-0 border-l-1 border-solid border-l-gray-200"
     >
       <div
-        class="cursor-pointer text-sky-500 font-semibold absolute top-[8px] left-0 btn-border pt-[12px] pb-[8px] bg-sky-200 rounded-tr-[8px] rounded-br-[8px]"
+        class="cursor-pointer text-sky-500 font-semibold absolute top-2 left-0 btn-border pt-3 pb-2 bg-sky-200 rounded-tr-2 rounded-br-2"
         on:click={() => (isShowSideBar = false)}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-[20px] w-[16px]"
+          class="h-5 w-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -207,18 +207,18 @@
         </svg>
       </div>
 
-      <div class="text-center font-bold text-[24px] leading-[32px] my-[8px]">
+      <div class="text-center font-bold text-6 leading-[32px] my-2">
         Welcome to <span class="text-sky-400">Nimbus 🌩</span>
       </div>
 
       <div
-        class={`bg-white text-sky-300 p-[8px] rounded flex items-center gap-[4px] my-[12px] ${
+        class={`bg-white p-2 rounded flex items-center gap-1 my-3 ${
           isFocused ? "input-border-focus" : "input-border-unfocus"
         }`}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-[24px] w-[24px]"
+          class="h-6 w-6 text-gray-700"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -238,25 +238,25 @@
           value={search}
           placeholder="Search..."
           type="text"
-          class="w-full py-[8px] border-none focus:outline-none"
+          class="w-full py-2 border-none focus:outline-none"
           style="background: #fff"
         />
       </div>
 
       {#if search !== ""}
         {#if isLoading}
-          <div class="text-center text-[16px] leading-[24px] font-semibold">
+          <div class="text-center text-4 leading-6 font-semibold">
             Searching...
           </div>
         {:else if !isLoading}
           {#if tokenDataSearch.length !== 0}
-            <div class="flex justify-between items-center mb-[8px]">
-              <div class="text-[20px] leading-[28px] font-bold">Results</div>
-              <div class="text-[12px] leading-[16px] italic text-sky-700">
+            <div class="mb-2">
+              <div class="text-5 leading-[28px] font-bold">Results</div>
+              <div class="text-xs leading-4 italic text-gray-700 mt-2">
                 *Chart data by CoinGekko
               </div>
             </div>
-            <div class="flex flex-col gap-y-[12px]">
+            <div class="flex flex-col gap-y-3">
               {#each tokenDataSearch as item}
                 <native-token-info id={item.id} name={item.symbol} {loaded} />
               {/each}
@@ -267,19 +267,19 @@
         {/if}
       {:else if search === ""}
         {#if selectedTokenData.length !== 0}
-          <div class="flex justify-between items-center mb-[8px]">
-            <div class="text-[20px] leading-[28px] font-bold">On this page</div>
-            <div class="text-[12px] leading-[16px] italic text-sky-700">
+          <div class="mb-2">
+            <div class="text-5 leading-[28px] font-bold">On this page</div>
+            <div class="text-xs leading-4 italic text-gray-700 mt-2">
               *Chart data by CoinGekko
             </div>
           </div>
-          <div class="flex flex-col gap-y-[12px]">
+          <div class="flex flex-col gap-y-3">
             {#each selectedTokenData as item}
               <native-token-info id={item.id} name={item.symbol} {loaded} />
             {/each}
           </div>
         {:else}
-          <div class="text-[16px] leading-[24px] font-semibold">
+          <div class="text-4 leading-6 font-semibold">
             Search for cryptocurrency/token you want to know
           </div>
         {/if}
