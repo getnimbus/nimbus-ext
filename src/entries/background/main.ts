@@ -13,7 +13,9 @@ console.log(browser);
 browser.commands.onCommand.addListener((command) => {
   console.log(`Command: ${command}`);
   const tabsQuery = browser.tabs.query({ active: true, currentWindow: true })
-  browser.tabs.sendMessage(tabsQuery[0].id, { action: "toggleSidebar" });
+  if (command == "open-quick-search") {
+    browser.tabs.sendMessage(tabsQuery[0].id, { action: "toggleSidebar" });
+  }
 });
 
 const fetchBasicData = async () => {

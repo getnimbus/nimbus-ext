@@ -25,7 +25,7 @@ const sharedManifest = {
   },
   permissions: ["tabs", "storage", "activeTab", "http://*/", "https://*/"],
   commands: {
-    "inject-script": {
+    "open-quick-search": {
       suggested_key: {
         default: "Ctrl+Shift+K",
         mac: "Command+Shift+K"
