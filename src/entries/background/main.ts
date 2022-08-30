@@ -57,7 +57,7 @@ const fetchChartData = async (symbol) => {
     .get(`coins/${symbol}/market_chart/range`, params)
     .then((response) => response);
 
-  await browser.storage.local
+  browser.storage.local
     .set({ [symbol]: JSON.stringify(chart.data) })
     .then(() => {
       console.log("Loaded data chart");
