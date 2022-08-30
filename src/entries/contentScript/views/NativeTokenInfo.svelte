@@ -21,6 +21,7 @@
     symbol: "",
     name: "",
     logo_url: "",
+    categories: [],
   };
 
   export let loaded;
@@ -36,6 +37,7 @@
         symbol: data?.coinData?.symbol,
         name: data?.coinData?.name,
         logo_url: data?.coinData?.image?.large,
+        categories: data?.coinData?.categories || [],
       };
     } catch (e) {
       console.log(e);
@@ -64,42 +66,59 @@
     {#if coinInfo}
       <div class="p-3">
         <div class="flex gap-4 items-center">
-          <img
-            class="w-[52px] h-[52px] rounded-full"
-            src={getCgLogo(id)}
-            alt={name}
-          />
+          <a href={`https://www.coingecko.com/en/coins/${id}`} target="_blank">
+            <img
+              class="w-[52px] h-[52px] rounded-full"
+              src={getCgLogo(id)}
+              alt={name}
+            />
+          </a>
           <div class="flex flex-col text-gray-900 text-sm leading-5">
             <div class="flex flex-col">
-              <div class="flex font-medium">
-                {name} - {coinInfo?.name}
-              </div>
+              <a
+                href={`https://www.coingecko.com/en/coins/${id}`}
+                target="_blank"
+                class="no-underline text-gray-800 hover:text-gray-900"
+              >
+                <div class="flex font-medium items-center">
+                  {name} - {coinInfo?.name}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    class="ml-1 w-4 h-4"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z"
+                      clip-rule="evenodd"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </a>
               <div class="flex items-center">
                 Price: <span class="font-medium ml-1">
                   ${price && formatCurrency(price)}
                 </span>
               </div>
             </div>
-            <div class="font-medium">Goverment token of stepN App</div>
+            <!-- <div class="font-medium">Goverment token of stepN App</div> -->
           </div>
         </div>
 
-        <div class="flex gap-2 flex-wrap mt-2">
-          <div
-            class="flex items-center text-xs justyfy-center px-1 py-1 text-sky-500 bg-sky-100 rounded"
-          >
-            Label 1
-          </div>
-          <div
-            class="flex items-center text-xs justyfy-center px-1 py-1 text-sky-500 bg-sky-100 rounded"
-          >
-            Label 2
-          </div>
-          <div
-            class="flex items-center text-xs justyfy-center px-1 py-1 text-sky-500 bg-sky-100 rounded"
-          >
-            Label 3
-          </div>
+        <div class="flex gap-2 flex-wrap mt-2 mx-auto">
+          {#each coinInfo.categories.slice(0, 3) as category}
+            <div
+              class="flex items-center text-xs justyfy-center px-2 py-1 text-sky-500 bg-sky-100 rounded"
+            >
+              {category}
+            </div>
+          {/each}
         </div>
 
         <coin-chart symbol={id} {loaded} />

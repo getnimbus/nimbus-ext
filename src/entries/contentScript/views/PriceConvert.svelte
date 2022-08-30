@@ -35,7 +35,7 @@
   <div class="flex flex-col text-black">
     <div class="mb-1 font-semibold text-center">{symbol}</div>
     <input
-      class="py-2 px-1 flex-1 rounded border input-border w-30 bg-white focus:ring-1 focus:ring-sky-700"
+      class="py-2 px-1 flex-1 rounded border input-border w-30 bg-white focus:ring-1 focus:ring-sky-600 focus:outline-none"
       type="text"
       bind:value={amount1}
       on:input={onInputAmount1}
@@ -44,7 +44,7 @@
   <div>
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      class="w-6 h-6 text-sky-400"
+      class="w-6 h-6 text-gray-600"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -60,7 +60,7 @@
   <div class="flex flex-col text-black">
     <div class="mb-1 font-semibold text-center">USD</div>
     <input
-      class="py-2 px-1 input-border flex-1 rounded w-30 bg-white focus:ring-1 focus:ring-sky-700"
+      class="py-2 px-1 input-border flex-1 rounded w-30 bg-white focus:ring-1 focus:ring-sky-600 focus:outline-none"
       type="text"
       bind:value={amount2}
       on:input={onInputAmount2}

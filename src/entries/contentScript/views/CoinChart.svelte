@@ -194,11 +194,15 @@
       <div class="w-full h-[200px] relative">
         <div class="w-full h-[200px]" bind:this={chartElement} />
         <div class="absolute bottom-2 left-2 z-10">
-          <div class="inline-block px-1 bg-[#22c55e] text-white rounded mb-1">
+          <div
+            class="inline-block px-1 bg-[#22c55e] text-white rounded text-sm"
+          >
             {dayjs(hoverDate).format("YYYY/MM/DD HH:mm")}
           </div>
           <br />
-          <div class="inline-block px-1 bg-[#22c55e] text-white rounded mb-1">
+          <div
+            class="inline-block px-1 bg-[#22c55e] text-white rounded text-sm"
+          >
             ${hoverPrice && formatCurrency(hoverPrice)}
           </div>
         </div>

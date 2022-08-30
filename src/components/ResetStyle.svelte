@@ -11,4 +11,8 @@
   .nimbus-reset-style input {
     background: #fff;
   }
+
+  .nimbus-reset-style a {
+    text-decoration: none;
+  }
 </style>
