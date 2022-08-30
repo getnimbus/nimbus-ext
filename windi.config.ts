@@ -26,10 +26,6 @@ function rem2px(input, fontSize = 16) {
   }
 }
 
-console.log({
-  default: defaultTheme.borderRadius,
-  change: rem2px(defaultTheme.borderRadius),
-});
 export default defineConfig({
   content: ["./src/**/*.{html,js,svelte}"],
   darkMode: "media",
