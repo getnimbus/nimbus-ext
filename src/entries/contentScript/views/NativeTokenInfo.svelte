@@ -121,7 +121,9 @@
           {/each}
         </div>
 
-        <coin-chart symbol={id} {loaded} />
+        <div class="mt-2">
+          <coin-chart symbol={id} {loaded} />
+        </div>
 
         {#if price}
           <price-convert symbol={name} {price} />
