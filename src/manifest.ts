@@ -23,16 +23,23 @@ const sharedManifest = {
     page: "src/entries/options/index.html",
     open_in_tab: true,
   },
-  permissions: ["tabs", "storage", "activeTab", "http://*/", "https://*/"],
+  permissions: [
+    "tabs",
+    "storage",
+    "unlimitedStorage",
+    "activeTab",
+    "http://*/",
+    "https://*/",
+  ],
   commands: {
     "open-quick-search": {
       suggested_key: {
         default: "Ctrl+Shift+K",
-        mac: "Command+Shift+K"
+        mac: "Command+Shift+K",
       },
-      description: "Open Quick Search"
+      description: "Open Quick Search",
     },
-  }
+  },
 };
 
 const browserAction = {
