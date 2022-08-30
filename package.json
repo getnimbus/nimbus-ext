@@ -7,8 +7,8 @@
   "scripts": {
     "build": "vite build",
     "build:components": "vite build -c vite.config.components.ts",
-    "watch": "vite build --watch",
-    "dev": "vite build --watch",
+    "watch": "WATCH=true vite build --watch",
+    "dev": "WATCH=true vite build --watch",
     "serve:firefox": "web-ext run --start-url \"about:debugging#/runtime/this-firefox\"  --source-dir ./dist/",
     "serve:chrome": "web-ext run -t chromium --start-url \"https://google.com\" --source-dir ./dist/",
     "check": "svelte-check --tsconfig ./tsconfig.json"

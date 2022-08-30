@@ -1,11 +1,12 @@
 <svelte:options tag="native-token-info" />
 
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import { coinGeko } from "./network";
-  import { isEmpty, get } from "lodash";
-  import { formatCurrency, getCgLogo, getLocalImg } from "./utils";
+  import { sendMessage } from "webext-bridge";
+  import { formatCurrency, getCgLogo } from "./utils";
 
+  import "~/components/ResetStyle.svelte";
   import "./CoinChart.svelte";
   import "./PriceConvert.svelte";
 
@@ -16,32 +17,27 @@
   let isLoading = false;
   let price = 0;
 
-  let coinInfo = {};
+  let coinInfo = {
+    symbol: "",
+    name: "",
+    logo_url: "",
+    categories: [],
+  };
 
-  import MetaMaskIcon from "../assets/metamask-icon.png";
-  import CoinMarketCapIcon from "../assets/CoinMarketCap_logo.png";
-  import CoinGekoIcon from "../assets/coingecko-logo.png";
-  import CoinDefaultIcon from "../assets/coin-default.svg";
+  export let loaded;
 
   const loadSymbolInfo = async () => {
     isLoading = true;
     try {
-      const [priceData, coinData] = await Promise.all([
-        coinGeko
-          .get(`simple/price?ids=${id}&vs_currencies=usd`)
-          .then((response) => response.data),
-        coinGeko
-          .get(
-            `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`
-          )
-          .then((response) => response.data),
-      ]);
-      price = priceData?.[id]?.usd;
+      const data = (await sendMessage("tokenInfoData", { id: id })) as any;
+
+      price = data?.priceData?.[id]?.usd;
 
       coinInfo = {
-        symbol: coinData?.symbol,
-        name: coinData?.name,
-        logo_url: coinData?.image?.large,
+        symbol: data?.coinData?.symbol,
+        name: data?.coinData?.name,
+        logo_url: data?.coinData?.image?.large,
+        categories: data?.coinData?.categories || [],
       };
     } catch (e) {
       console.log(e);
@@ -55,69 +51,104 @@
   });
 </script>
 
-<div
-  class={`rounded-lg bg-white shadow-xl font-sans text-sm text-gray-400 transition-all overflow-hidden min-w-[350px] max-w-[400px] max-h-[600px] ${
-    isLoading && "w-[350px] max-w-[400px] max-h-[120px]"
-  }`}
-  class:shadow-xl={popup}
->
-  {#if isLoading}
-    <div class="w-full h-[120px] flex justify-center items-center">
-      <loading-icon />
-    </div>
-  {/if}
-
-  {#if coinInfo}
-    <coin-chart symbol={id} />
-    <div class="p-3 text-center">
-      <img
-        class="w-[72px] h-[72px] rounded-[50%]"
-        src={getCgLogo(id)}
-        alt={name}
-      />
-      <div>
-        {name} - <span class="text-gray-400">{coinInfo?.name}</span>
+<reset-style>
+  <div
+    class={`rounded bg-white shadow font-sans text-sm leading-5 text-gray-400 transition-all overflow-hidden w-full max-h-[600px] ${
+      isLoading && "w-full max-h-[120px]"
+    }`}
+  >
+    {#if isLoading}
+      <div class="w-full h-[120px] flex justify-center items-center">
+        <loading-icon />
       </div>
-      <div>
-        Price: <strong>${formatCurrency(price)}</strong>
-      </div>
+    {/if}
 
-      {#if price}
-        <price-convert symbol={name} {price} />
-      {/if}
+    {#if coinInfo}
+      <div class="p-3">
+        <div class="flex gap-4 items-center">
+          <a href={`https://www.coingecko.com/en/coins/${id}`} target="_blank">
+            <img
+              class="w-[52px] h-[52px] rounded-full"
+              src={getCgLogo(id)}
+              alt={name}
+            />
+          </a>
+          <div class="flex flex-col text-gray-900 text-sm leading-5">
+            <div class="flex flex-col">
+              <a
+                href={`https://www.coingecko.com/en/coins/${id}`}
+                target="_blank"
+                class="no-underline text-gray-800 hover:text-gray-900"
+              >
+                <div class="flex font-medium items-center">
+                  {name} - {coinInfo?.name}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    class="ml-1 w-4 h-4"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z"
+                      clip-rule="evenodd"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </a>
+              <div class="flex items-center">
+                Price: <span class="font-medium ml-1">
+                  ${price && formatCurrency(price)}
+                </span>
+              </div>
+            </div>
+            <!-- <div class="font-medium">Goverment token of stepN App</div> -->
+          </div>
+        </div>
 
-      <div class="flex gap-4 justify-between items-center my-2">
+        <div class="flex gap-2 flex-wrap mt-2 mx-auto">
+          {#each coinInfo.categories.slice(0, 3) as category}
+            <div
+              class="flex items-center text-xs justyfy-center px-2 py-1 text-sky-500 bg-sky-100 rounded"
+            >
+              {category}
+            </div>
+          {/each}
+        </div>
+
+        <div class="mt-2">
+          <coin-chart symbol={id} {loaded} />
+        </div>
+
+        {#if price}
+          <price-convert symbol={name} {price} />
+        {:else}
+          <div>No data price</div>
+        {/if}
+
+        <!-- <div class="flex gap-4 items-center my-4">
         <div
           on:click={() => alert("Comming soon")}
-          class="flex items-center justyfy-center gap-1 btn-border px-3 py-1 text-sky-500 cursor-pointer"
+          class="flex items-center justyfy-center btn-border px-3 py-2 text-white bg-sky-500 rounded cursor-pointer"
         >
-          <img src={getLocalImg(MetaMaskIcon)} width={14} height={14} alt="" /> Add
-          to MetaMask
+          More info
         </div>
-        <div class="flex gap-2">
-          <a href="https://coinmarketcap.com/currencies/bitcoin" target="blank">
-            <img
-              src={getLocalImg(CoinMarketCapIcon)}
-              width={22}
-              height={22}
-              alt=""
-            />
-          </a>
-          <a href={`https://www.coingecko.com/en/coins/${id}`} target="blank">
-            <img
-              src={getLocalImg(CoinGekoIcon)}
-              width={22}
-              height={22}
-              alt=""
-            />
-          </a>
+        <div
+          on:click={() => alert("Comming soon")}
+          class="flex items-center justyfy-center btn-border px-3 py-2 text-sky-500 rounded cursor-pointer"
+        >
+          Follow this coin
         </div>
+      </div> -->
       </div>
-    </div>
-  {/if}
-
-  <nimbus-footer />
-</div>
+    {/if}
+  </div>
+</reset-style>
 
 <style>
   .btn-border {

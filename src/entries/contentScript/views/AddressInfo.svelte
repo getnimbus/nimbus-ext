@@ -182,7 +182,7 @@
                 <img
                   src={item.logo_url || CoinDefaultIcon}
                   alt=""
-                  class="w-[20px] h-[20px] rounded-[50%] mr-1"
+                  class="w-[20px] h-[20px] rounded-full mr-1"
                 />
                 {item.symbol}
               </div>
@@ -217,36 +217,41 @@
   {/if}
 
   {#if token}
-    <coin-chart symbol={token.symbol} />
-    <div class="py-4 pr-4 text-center">
-      <img
-        class="w-[72px] h-[72px] rounded-[50%]"
-        src={token.logo_url || CoinDefaultIcon}
-        alt={token.name}
-      />
-      <div>
-        {token.name} - <span class="text-gray-400">{token.symbol}</span>
-      </div>
-      <div>
-        Price: <strong>${formatCurrency(token.price)}</strong>
-      </div>
-
-      <price-convert symbol={token.symbol} price={token.price} />
-
-      <div class="flex gap-4 justify-between items-center my-2">
-        <div
-          on:click={handleAddToken}
-          class="flex items-center justyfy-center gap-1 btn-border px-3 py-1 text-sky-500 cursor-pointer"
-        >
-          <img src={MetaMaskIcon} with={14} height={14} alt="" /> Add to MetaMask
+    <div class="py-4 px-4">
+      <coin-chart symbol={token.symbol} loaded={true} />
+      <div class="text-center mt-2">
+        <img
+          class="w-[72px] h-[72px] rounded-full"
+          src={token.logo_url || CoinDefaultIcon}
+          alt={token.name}
+        />
+        <div>
+          {token.name} - <span class="text-gray-400">{token.symbol}</span>
         </div>
-        <div class="flex gap-2">
-          <a href="https://coinmarketcap.com/currencies/bitcoin" target="blank">
-            <img src={CoinMarketCapIcon} with={22} height={22} alt="" />
-          </a>
-          <a href="https://www.coingecko.com/en/coins/bitcoin" target="blank">
-            <img src={CoinGekoIcon} with={22} height={22} alt="" />
-          </a>
+        <div>
+          Price: <strong>${formatCurrency(token.price)}</strong>
+        </div>
+
+        <price-convert symbol={token.symbol} price={token.price} />
+
+        <div class="flex gap-4 justify-between items-center my-2">
+          <div
+            on:click={handleAddToken}
+            class="flex items-center justyfy-center gap-1 btn-border px-3 py-1 text-sky-500 cursor-pointer"
+          >
+            <img src={MetaMaskIcon} with={14} height={14} alt="" /> Add to MetaMask
+          </div>
+          <div class="flex gap-2">
+            <a
+              href="https://coinmarketcap.com/currencies/bitcoin"
+              target="blank"
+            >
+              <img src={CoinMarketCapIcon} with={22} height={22} alt="" />
+            </a>
+            <a href="https://www.coingecko.com/en/coins/bitcoin" target="blank">
+              <img src={CoinGekoIcon} with={22} height={22} alt="" />
+            </a>
+          </div>
         </div>
       </div>
     </div>
