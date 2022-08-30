@@ -1,7 +1,7 @@
 <svelte:options tag="coin-chart" />
 
 <script lang="ts">
-  import { createChart } from "lightweight-charts";
+  import { createChart, LineStyle } from "lightweight-charts";
   import { onDestroy, onMount, tick } from "svelte";
   import dayjs from "dayjs";
   import { formatCurrency } from "./utils";
@@ -76,7 +76,7 @@
           crosshair: {
             mode: 0,
             vertLine: {
-              visible: false,
+              style: LineStyle.Dashed,
             },
             horzLine: {
               visible: false,
@@ -98,6 +98,7 @@
             drawTicks: false,
             rightBarStaysOnScroll: true,
           },
+          handleScale: false,
           rightPriceScale: {
             visible: false,
             scaleMargins: {
