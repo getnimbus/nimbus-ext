@@ -1,0 +1,43 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: yarn
+      # - name: Test
+      #   run: npm test
+      - name: Build
+        run: npm run build
+      - name: Build component
+        run: npm run build:components
+      - name: Upload built file
+        uses: actions/upload-artifact@v3
+        with:
+          name: ext
+          path: dist
+      - name: Upload custom component
+        uses: actions/upload-artifact@v3
+        with:
+          name: ext
+          path: built-component
