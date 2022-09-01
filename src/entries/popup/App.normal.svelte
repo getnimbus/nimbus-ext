@@ -1,10 +1,9 @@
 <svelte:options tag="nimbus-popup" />
 
 <script lang="ts">
-  let hello = "Thanh Le";
+  import * as browser from "webextension-polyfill";
+
+  browser.tabs.query({ active: true, currentWindow: true }).then((tab) => {
+    browser.tabs.sendMessage(tab[0].id, { action: "toggleSidebar" });
+  });
 </script>
-
-<div>Hello {hello}</div>
-
-<style>
-</style>

@@ -34,8 +34,8 @@ const sharedManifest = {
   commands: {
     "open-quick-search": {
       suggested_key: {
-        default: "Ctrl+K",
-        mac: "Command+K",
+        default: "Ctrl+Shift+K",
+        mac: "Command+Shift+K",
       },
       description: "Open Quick Search",
     },

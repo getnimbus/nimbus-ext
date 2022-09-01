@@ -8,6 +8,8 @@
   import { sendMessage } from "webext-bridge";
   import * as browser from "webextension-polyfill";
   import Mousetrap from "mousetrap";
+  import addGlobalBinds from "bind-mousetrap-global";
+  addGlobalBinds(Mousetrap);
 
   import "~/components/ResetStyle.svelte";
   import "./NativeTokenInfo.svelte";
@@ -158,7 +160,7 @@
     }
   });
 
-  Mousetrap.bind("command+k", function () {
+  Mousetrap.bindGlobal(["command+shift+k", "ctrl+shift+k"], function () {
     isShowSideBar = !isShowSideBar;
   });
 </script>

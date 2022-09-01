@@ -32,6 +32,7 @@
     "@metamask/detect-provider": "^1.2.0",
     "@webcomponents/webcomponentsjs": "^2.6.0",
     "axios": "^0.27.2",
+    "bind-mousetrap-global": "^1.0.1",
     "dayjs": "^1.11.4",
     "lightweight-charts": "^3.8.0",
     "lodash": "^4.17.21",

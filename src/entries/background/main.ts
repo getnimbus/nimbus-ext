@@ -22,6 +22,10 @@ browser.commands.onCommand.addListener((command) => {
   }
 });
 
+browser.browserAction.onClicked.addListener(() => {
+  console.log("HELLO")
+})
+
 const fetchBasicData = async () => {
   const list = await fetch("https://api.coingecko.com/api/v3/search").then(
     (response) => response.json()
