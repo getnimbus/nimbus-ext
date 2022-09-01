@@ -9,9 +9,17 @@ browser.runtime.onInstalled.addListener(() => {
 });
 
 browser.commands.onCommand.addListener((command) => {
-  const tabsQuery = browser.tabs.query({ active: true, currentWindow: true });
   if (command === "open-quick-search") {
-    browser.tabs.sendMessage(tabsQuery[0].id, { action: "toggleSidebar" });
+    browser.tabs.query({ active: true, currentWindow: true }).then((tab) => {
+      // let tabSelected = tab[0]
+      // if (tabSelected) {
+      //   browser.tabs.sendMessage(tabSelected[0].id, { action: "toggleSidebar" })
+      // } else {
+      //   console.log("no active tab")
+      // }
+
+      browser.tabs.sendMessage(tab[0].id, { action: "toggleSidebar" })
+    })
   }
 });
 
