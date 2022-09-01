@@ -7,6 +7,7 @@
   import UrlPattern from "url-pattern";
   import { sendMessage } from "webext-bridge";
   import * as browser from "webextension-polyfill";
+  import Mousetrap from "mousetrap";
 
   import "~/components/ResetStyle.svelte";
   import "./NativeTokenInfo.svelte";
@@ -155,6 +156,10 @@
     if (msg.action && msg.action == "toggleSidebar") {
       isShowSideBar = !isShowSideBar;
     }
+  });
+
+  Mousetrap.bind("command+k", function () {
+    isShowSideBar = !isShowSideBar;
   });
 </script>
 

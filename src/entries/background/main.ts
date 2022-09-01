@@ -17,7 +17,6 @@ browser.commands.onCommand.addListener((command) => {
       // } else {
       //   console.log("no active tab")
       // }
-
       browser.tabs.sendMessage(tab[0].id, { action: "toggleSidebar" })
     })
   }

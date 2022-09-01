@@ -36,6 +36,7 @@
     "lightweight-charts": "^3.8.0",
     "lodash": "^4.17.21",
     "mark.js": "^8.11.1",
+    "mousetrap": "^1.6.5",
     "numeral": "^2.0.6",
     "svelte-windicss-preprocess": "^4.2.8",
     "tippy.js": "^6.3.7",
