@@ -13,6 +13,7 @@ import "./views/TrxHighlight.svelte";
 import "./views/QuickSearch.svelte";
 // import { escapeRegex } from "./views/utils";
 import { sendMessage } from "webext-bridge";
+import Mousetrap from "mousetrap";
 
 const regexETHTrx = /0x[a-fA-F0-9]{64}/g; // TODO: Ignore longer address
 const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex

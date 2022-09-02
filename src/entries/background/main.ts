@@ -9,11 +9,24 @@ browser.runtime.onInstalled.addListener(() => {
 });
 
 browser.commands.onCommand.addListener((command) => {
-  const tabsQuery = browser.tabs.query({ active: true, currentWindow: true });
   if (command === "open-quick-search") {
-    browser.tabs.sendMessage(tabsQuery[0].id, { action: "toggleSidebar" });
+    browser.tabs.query({ active: true, currentWindow: true }).then((tab) => {
+      // let tabSelected = tab[0]
+      // if (tabSelected) {
+      //   browser.tabs.sendMessage(tabSelected[0].id, { action: "toggleSidebar" })
+      // } else {
+      //   console.log("no active tab")
+      // }
+      browser.tabs.sendMessage(tab[0].id, { action: "toggleSidebar" })
+    })
   }
 });
+
+browser.browserAction.onClicked.addListener(() => {
+  browser.tabs.query({ active: true, currentWindow: true }).then((tab) => {
+    browser.tabs.sendMessage(tab[0].id, { action: "toggleSidebar" })
+  })
+})
 
 const fetchBasicData = async () => {
   const list = await fetch("https://api.coingecko.com/api/v3/search").then(
