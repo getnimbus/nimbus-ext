@@ -23,7 +23,9 @@ browser.commands.onCommand.addListener((command) => {
 });
 
 browser.browserAction.onClicked.addListener(() => {
-  console.log("HELLO")
+  browser.tabs.query({ active: true, currentWindow: true }).then((tab) => {
+    browser.tabs.sendMessage(tab[0].id, { action: "toggleSidebar" })
+  })
 })
 
 const fetchBasicData = async () => {
