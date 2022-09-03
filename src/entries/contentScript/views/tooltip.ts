@@ -31,8 +31,8 @@ export default function tooltip(node: any, params: Partial<Props>) {
     // },
     ...params,
     animation: false,
-    onClickOutside(instance) {
-      instance.destroy();
+    onHide(instance) {
+      requestAnimationFrame(instance.unmount);
     },
     render(instance) {
       // The recommended structure is to use the popper as an outer wrapper
