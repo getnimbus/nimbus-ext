@@ -8,6 +8,7 @@ export const track = (type: string, payload?: Record<string, any>) => {
     if (!tracker) {
       tracker = jitsuClient({
         key: "js.euvzy95jhm8wnhp33dito.pfaiagd2zlpte6kcw9qu2k",
+        privacy_policy: "strict",
       });
     }
 
