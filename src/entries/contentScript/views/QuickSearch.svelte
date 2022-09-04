@@ -13,6 +13,7 @@
 
   import "~/components/ResetStyle.svelte";
   import "./NativeTokenInfo.svelte";
+  import { track } from "~/lib/data-tracking";
 
   let listPageConfig = [];
   let coinListData;
@@ -152,6 +153,13 @@
     } else {
       isFocused = true;
     }
+  }
+
+  $: {
+    track("Sidebar status", {
+      url: window.location.href,
+      isShowSideBar,
+    });
   }
 
   browser.runtime.onMessage.addListener(function (msg) {

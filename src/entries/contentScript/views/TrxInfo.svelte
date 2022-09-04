@@ -17,6 +17,7 @@
   import "~/components/TxInfo/MoneyMove.svelte";
   import "~/components/TxInfo/Changes.svelte";
   import "~/components/Footer.svelte";
+  import { track } from "~/lib/data-tracking";
 
   export let hash;
   export let popup: boolean = true;
@@ -103,7 +104,10 @@
 
   onMount(() => {
     mouted = true;
-    // loadTrxInfo(hash);
+    track("Trx Info", {
+      url: window.location.href,
+      hash,
+    });
   });
 </script>
 

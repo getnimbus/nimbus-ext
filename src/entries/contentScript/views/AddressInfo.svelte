@@ -17,6 +17,7 @@
   import CoinMarketCapIcon from "../assets/CoinMarketCap_logo.png";
   import CoinGekoIcon from "../assets/coingecko-logo.png";
   import CoinDefaultIcon from "../assets/coin-default.svg";
+  import { track } from "~/lib/data-tracking";
 
   export let address;
 
@@ -91,6 +92,10 @@
 
   onMount(() => {
     loadUserAddressInfo();
+    track("Address Info", {
+      url: window.location.href,
+      address,
+    });
   });
 
   const handleAddToken = async () => {
