@@ -2,6 +2,7 @@
 
 <script>
   import { onMount } from "svelte";
+  import { track } from "~/lib/data-tracking";
   import { formatCurrency } from "./utils";
 
   export let symbol;
@@ -15,7 +16,7 @@
       return;
     }
     amount1 = Number(e.target.value) || 0;
-    amount2 = formatCurrency(amount1 * price);
+    amount2 = Number((amount1 * price).toFixed(4));
   };
 
   const onInputAmount2 = (e) => {
@@ -27,8 +28,18 @@
   };
 
   onMount(() => {
-    amount2 = formatCurrency(amount1 * price);
+    amount2 = Number((amount1 * price).toFixed(4));
   });
+
+  $: {
+    if (amount1 !== 1) {
+      track("Sidebar status", {
+        symbol,
+        amount1,
+        amount2,
+      });
+    }
+  }
 </script>
 
 <div class="my-1 flex items-end justify-between">
