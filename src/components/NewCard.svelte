@@ -7,13 +7,13 @@
 <div
   class="rounded-lg p-3 shadow-md shadow-gray-300 flex gap-6 justify-between"
 >
-  <div class="w-[250px] h-[150px] overflow-hidden">
+  <div class="w-[250px] h-[140px] overflow-hidden">
     <img class="w-full h-full object-cover" src={newImage} alt="new" />
   </div>
   <div class="flex-1 flex flex-col justify-between gap-1">
-    <div class="font-bold text-2xl">Product title</div>
-    <div class="font-semibold text-lg text-gray-400">Subtitle</div>
-    <div>
+    <div class="font-bold text-xl">Product title</div>
+    <div class="font-semibold text-base text-gray-400">Subtitle</div>
+    <div class="text-xs">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam ab,
       deserunt perferendis sunt esse adipisci numquam sint corporis, aut a sequi
       saepe, voluptatibus eius? Dolore porro assumenda enim quas neque sed

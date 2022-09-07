@@ -45,6 +45,6 @@
 
 <style>
   .border-bottom {
-    border-bottom: 0.5px solid skyblue;
+    border-bottom: 0.1px solid gray;
   }
 </style>

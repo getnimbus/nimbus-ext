@@ -41,6 +41,9 @@
         "2018-09-19T06:30:00.000Z",
       ],
     },
+    grid: {
+      borderColor: "transparent",
+    },
     tooltip: {
       x: {
         format: "dd/MM/yy HH:mm",
@@ -72,8 +75,8 @@
 <div class="max-w-[1440px] m-auto w-[90%] h-full py-6">
   <div class="flex justify-between items-start">
     <div class="flex flex-col gap-2">
-      <div class="text-6xl font-extrabold">Hi there,</div>
-      <div class="text-3xl font-bold">Today update</div>
+      <div class="text-3xl font-extrabold">Hi there,</div>
+      <div class="text-lg leading-[28px] font-bold">Today update</div>
     </div>
     <div class="flex justify-between items-center gap-6">
       <div class="flex flex-col items-center gap-1 cursor-pointer">
@@ -98,9 +101,7 @@
         </svg>
         <div>Settings</div>
       </div>
-      <div
-        class="bg-sky-200 w-[52px] h-[52px] rounded-full overflow-hidden border"
-      >
+      <div class="bg-sky-200 w-[52px] h-[52px] rounded-full overflow-hidden">
         <img class="w-full h-full object-contain" src={logo} alt="avatar" />
       </div>
     </div>
@@ -136,6 +137,6 @@
 
 <style>
   .border {
-    border: 1px solid skyblue;
+    border: 1px solid gray;
   }
 </style>
