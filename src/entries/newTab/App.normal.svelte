@@ -5,6 +5,8 @@
 
   import logo from "../../assets/logo.svg";
   import "../../components/Title.svelte";
+  import "../../components/TxCardInfo.svelte";
+  import "../../components/NewCard.svelte";
 
   let optionLineChart = {
     series: [
@@ -104,7 +106,7 @@
     </div>
   </div>
   <div class="mt-12 flex flex-col gap-12">
-    <div class="flex justify-between gap-6">
+    <div class="flex lg:flex-row flex-col justify-between gap-6">
       <div class="flex-1">
         <app-title>Your portfolio</app-title>
         <div use:chart={optionLineChart} />
@@ -116,11 +118,18 @@
     </div>
     <div>
       <app-title>Recent Transaction</app-title>
-      <div class="border rounded-lg p-6">transaction</div>
+      <div class="border rounded-lg p-6 flex flex-col gap-4">
+        <app-tx-card-info />
+        <app-tx-card-info />
+        <app-tx-card-info />
+      </div>
     </div>
     <div>
       <app-title>You might interested in</app-title>
-      <div>news</div>
+      <div class="flex flex-col gap-4">
+        <app-new-card />
+        <app-new-card />
+      </div>
     </div>
   </div>
 </div>
