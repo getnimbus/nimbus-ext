@@ -4,7 +4,9 @@
   import newImage from "../assets/news.png";
 </script>
 
-<div class="rounded-lg p-3 shadow-md shadow-sky-200 flex gap-6 justify-between">
+<div
+  class="rounded-lg p-3 shadow-md shadow-gray-300 flex gap-6 justify-between"
+>
   <div class="w-[250px] h-[150px] overflow-hidden">
     <img class="w-full h-full object-cover" src={newImage} alt="new" />
   </div>
