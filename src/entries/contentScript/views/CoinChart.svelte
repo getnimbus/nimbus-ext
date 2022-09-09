@@ -22,23 +22,33 @@
   let hasData = false;
 
   const getChartData = async () => {
-    const dataLocal = (await sendMessage("chartDataLocal", {
-      symbol: symbol.toLowerCase(),
-    })) as any;
-
-    if (dataLocal) {
-      hasData = true;
-      renderChart(dataLocal);
+    if (hasData) {
+      return;
+    } else {
+      const dataLocal = (await sendMessage("chartDataLocal", {
+        symbol: symbol.toLowerCase(),
+      })) as any;
+      if (dataLocal) {
+        console.log("dataLocal: ", dataLocal);
+        hasData = true;
+        renderChart(dataLocal);
+      }
     }
   };
 
   const callNewDataChart = async () => {
-    if (hasData) return;
-    const newestData = (await sendMessage("chartData", {
-      symbol: symbol.toLowerCase(),
-    })) as any;
-    hasData = true;
-    renderChart(newestData);
+    if (hasData) {
+      return;
+    } else {
+      const newestData = (await sendMessage("chartData", {
+        symbol: symbol.toLowerCase(),
+      })) as any;
+      if (newestData) {
+        console.log("newestData: ", newestData);
+        hasData = true;
+        renderChart(newestData);
+      }
+    }
   };
 
   const renderChart = async (data: any) => {
@@ -144,6 +154,11 @@
       callNewDataChart();
     }
   }
+
+  // $: {
+  //   console.log("loaded: ", loaded);
+  //   console.log("hasData: ", hasData);
+  // }
 </script>
 
 <reset-style>

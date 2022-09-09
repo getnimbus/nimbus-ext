@@ -161,7 +161,6 @@ onMessage<ISearchInput, any>("getSearchData", async ({ data: { search } }) => {
 onMessage<ISymbolInput, any>("chartDataLocal", async ({ data: { symbol } }) => {
   try {
     const dataLocal = await browser.storage.local.get(symbol);
-
     if (!isEmpty(dataLocal[symbol]) && dataLocal.hasOwnProperty(symbol)) {
       return JSON.parse(dataLocal[symbol]);
     }
@@ -175,9 +174,10 @@ onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
     const dataLocal = await browser.storage.local.get(symbol);
     if (!isEmpty(dataLocal[symbol]) && dataLocal.hasOwnProperty(symbol)) {
       return JSON.parse(dataLocal[symbol]);
+    } else {
+      console.log("LOCAL MISSED", symbol);
+      return JSON.parse(await fetchChartData(symbol));
     }
-    console.log("LOCAL MISSED", symbol);
-    return JSON.parse(await fetchChartData(symbol));
   } catch (e) {
     return {};
   }
