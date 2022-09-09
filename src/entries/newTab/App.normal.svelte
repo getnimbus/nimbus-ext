@@ -21,7 +21,7 @@
       },
     ],
     chart: {
-      height: 480,
+      height: 465,
       type: "area",
     },
     dataLabels: {
@@ -111,17 +111,21 @@
     <div class="flex lg:flex-row flex-col justify-between gap-6">
       <div class="flex-1">
         <app-title>Your portfolio</app-title>
-        <div use:chart={optionLineChart} />
+        <div class="border shadow rounded-lg p-3">
+          <div use:chart={optionLineChart} />
+        </div>
       </div>
       <div class="flex-1">
         <app-title>Portfolio breakdown</app-title>
-        <div use:chart={optionPieChart} />
+        <div class="border shadow rounded-lg p-3">
+          <div use:chart={optionPieChart} />
+        </div>
       </div>
     </div>
     <div>
       <app-title>Recent Transaction</app-title>
       <div
-        class="border rounded-lg py-6 px-8 flex flex-col gap-4 max-h-[660px] overflow-y-auto"
+        class="border rounded-lg py-6 px-8 flex flex-col gap-4 max-h-[660px] overflow-y-auto shadow"
       >
         <app-tx-card-info />
         <app-tx-card-info />
@@ -145,6 +149,6 @@
 
 <style>
   .border {
-    border: 1px solid gray;
+    border: 0.5px solid rgb(229, 231, 235);
   }
 </style>

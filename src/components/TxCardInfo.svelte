@@ -45,6 +45,6 @@
 
 <style>
   .border-bottom {
-    border-bottom: 0.1px solid gray;
+    border-bottom: 0.2px solid rgb(229, 231, 235);
   }
 </style>
