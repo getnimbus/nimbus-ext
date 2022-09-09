@@ -7,6 +7,7 @@
   import "../../components/Title.svelte";
   import "../../components/TxCardInfo.svelte";
   import "../../components/NewCard.svelte";
+  import "../../components/Button.svelte";
 
   let optionLineChart = {
     series: [
@@ -101,7 +102,7 @@
         </svg>
         <div>Settings</div>
       </div>
-      <div class="bg-sky-200 w-[52px] h-[52px] rounded-full overflow-hidden">
+      <div class="bg-sky-200 w-[48px] h-[48px] rounded-full overflow-hidden">
         <img class="w-full h-full object-contain" src={logo} alt="avatar" />
       </div>
     </div>
@@ -119,8 +120,9 @@
     </div>
     <div>
       <app-title>Recent Transaction</app-title>
-      <div class="border rounded-lg p-6 flex flex-col gap-4">
-        <app-tx-card-info />
+      <div
+        class="border rounded-lg py-6 px-8 flex flex-col gap-4 max-h-[660px] overflow-y-auto"
+      >
         <app-tx-card-info />
         <app-tx-card-info />
       </div>
@@ -130,6 +132,12 @@
       <div class="flex flex-col gap-4">
         <app-new-card />
         <app-new-card />
+        <app-new-card />
+        <app-new-card />
+        <app-new-card />
+      </div>
+      <div class="mt-4 flex justify-center">
+        <app-btn>Suggest a content</app-btn>
       </div>
     </div>
   </div>
