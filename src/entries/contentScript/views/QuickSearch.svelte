@@ -203,12 +203,12 @@
       class="fixed top-0 right-0 h-[98vh] p-4 bg-sky-100 overflow-y-auto w-[350px] flex flex-col text-gray-900 border-0 border-l-1 border-solid border-l-gray-200"
     >
       <div
-        class="cursor-pointer text-sky-500 font-semibold absolute top-2 left-0 btn-border pt-3 pb-2 bg-sky-200 rounded-tr-[8px] rounded-br-[8px]"
+        class="cursor-pointer text-sky-500 font-semibold absolute top-2 left-0 btn-border pt-3 pb-1 bg-sky-200 rounded-tr-[8px] rounded-br-[8px]"
         on:click={() => (isShowSideBar = false)}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-4 text-gray-700 rounded"
+          class="h-5 w-4 rounded"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
