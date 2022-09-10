@@ -288,11 +288,7 @@
           </div>
           <div class="flex flex-col gap-y-3">
             {#each selectedTokenData as item}
-              <native-token-info
-                id={item.id}
-                name={item.symbol}
-                loaded={true}
-              />
+              <native-token-info id={item.id} name={item.symbol} {loaded} />
             {/each}
           </div>
 
