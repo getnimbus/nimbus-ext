@@ -6,7 +6,6 @@
   import { debank } from "./network";
   import { formatCurrency } from "./utils";
 
-  import "~/components/Button.svelte";
   import "~/components/Loading.svelte";
   import "~/components/Footer.svelte";
   import "./CoinChart.svelte";
@@ -204,18 +203,22 @@
 
       <div class="flex justify-between gap-4 my-2">
         <div class="flex-1">
-          <app-btn
+          <button
+            class="btn-primary"
             on:click={() =>
               window.open(`https://debank.com/profile/${address}`, "_blank")}
-            >DeBank</app-btn
           >
+            DeBank
+          </button>
         </div>
         <div class="flex-1">
-          <app-btn
+          <button
+            class="btn-primary"
             on:click={() =>
               window.open(`https://etherscan.io/address/${address}`, "_blank")}
-            >Etherscan</app-btn
           >
+            Etherscan
+          </button>
         </div>
       </div>
     </div>
@@ -273,11 +276,13 @@
       <div>SmartContract info will be supported soon</div>
     </div>
     <div class="flex gap-4 justify-around my-2">
-      <app-btn
+      <button
+        class="btn-primary"
         on:click={() =>
           window.open(`https://etherscan.io/address/${address}`, "_blank")}
-        >Etherscan</app-btn
       >
+        Etherscan
+      </button>
     </div>
   {/if}
 

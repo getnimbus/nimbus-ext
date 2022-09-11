@@ -8,9 +8,11 @@
   <div class="w-[250px] h-[140px] overflow-hidden">
     <img class="w-full h-full object-cover" src={newImage} alt="new" />
   </div>
-  <div class="flex-1 flex flex-col justify-between gap-1">
-    <div class="font-bold text-xl">Product title</div>
-    <div class="font-semibold text-base text-gray-400">Subtitle</div>
+  <div class="flex-1 flex flex-col justify-between">
+    <div class="flex flex-col">
+      <div class="title-4">Product title</div>
+      <div class="title-5 text-gray-400">Subtitle</div>
+    </div>
     <div class="text-xs">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam ab,
       deserunt perferendis sunt esse adipisci numquam sint corporis, aut a sequi

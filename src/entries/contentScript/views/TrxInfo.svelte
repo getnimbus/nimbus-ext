@@ -8,7 +8,6 @@
   import moment from "moment";
   import numeral from "numeral";
 
-  import "~/components/Button.svelte";
   import "~/components/Loading.svelte";
   import "./CoinChart.svelte";
   import "./PriceConvert.svelte";
@@ -204,7 +203,7 @@
                   />
                 </div>
               {:else}
-                <div class="text-center text-base font-semibold">
+                <div class="title-5 text-center font-semibold">
                   The transaction failed and has been reverted
                 </div>
               {/if}

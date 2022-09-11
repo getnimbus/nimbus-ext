@@ -3,11 +3,10 @@
 <script lang="ts">
   import { chart } from "svelte-apexcharts";
 
-  import logo from "../../assets/logo.svg";
-  import "../../components/Title.svelte";
   import "../../components/TxCardInfo.svelte";
   import "../../components/NewCard.svelte";
-  import "../../components/Button.svelte";
+
+  import logo from "../../assets/logo.svg";
 
   let optionLineChart = {
     series: [
@@ -23,6 +22,9 @@
     chart: {
       height: 465,
       type: "area",
+      toolbar: {
+        show: false,
+      },
     },
     dataLabels: {
       enabled: false,
@@ -76,8 +78,8 @@
 <div class="max-w-[1440px] m-auto w-[90%] h-full py-6">
   <div class="flex justify-between items-start">
     <div class="flex flex-col gap-2">
-      <div class="text-3xl font-extrabold">Hi there,</div>
-      <div class="text-lg leading-[28px] font-bold">Today update</div>
+      <div class="title-1">Hi there,</div>
+      <div class="title-2">Today update</div>
     </div>
     <div class="flex justify-between items-center gap-6">
       <div class="flex flex-col items-center gap-1 cursor-pointer">
@@ -110,20 +112,20 @@
   <div class="mt-12 flex flex-col gap-12">
     <div class="flex lg:flex-row flex-col justify-between gap-6">
       <div class="flex-1">
-        <app-title>Your portfolio</app-title>
+        <div class="title-3 text-gray-500 mb-4">Your portfolio</div>
         <div class="border shadow rounded-lg p-3">
           <div use:chart={optionLineChart} />
         </div>
       </div>
       <div class="flex-1">
-        <app-title>Portfolio breakdown</app-title>
+        <div class="title-3 text-gray-500 mb-4">Portfolio breakdown</div>
         <div class="border shadow rounded-lg p-3">
           <div use:chart={optionPieChart} />
         </div>
       </div>
     </div>
     <div>
-      <app-title>Recent Transaction</app-title>
+      <div class="title-3 text-gray-500 mb-4">Recent Transaction</div>
       <div
         class="border rounded-lg py-6 px-8 flex flex-col gap-4 max-h-[660px] overflow-y-auto shadow"
       >
@@ -132,7 +134,7 @@
       </div>
     </div>
     <div>
-      <app-title>You might interested in</app-title>
+      <div class="title-3 text-gray-500 mb-4">You might interested in</div>
       <div class="flex flex-col gap-4">
         <app-new-card />
         <app-new-card />
@@ -141,7 +143,7 @@
         <app-new-card />
       </div>
       <div class="mt-4 flex justify-center">
-        <app-btn>Suggest a content</app-btn>
+        <button class="btn-primary w-max">Suggest a content</button>
       </div>
     </div>
   </div>
