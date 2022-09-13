@@ -52,7 +52,7 @@
 </script>
 
 <div class="flex flex-col justify-center items-center gap-1">
-  <div class="text-base font-bold">Report</div>
+  <div class="title-5 font-bold">Report</div>
   {#if !feedbackCompleted}
     <div class="text-sm">Rate your experience</div>
   {/if}

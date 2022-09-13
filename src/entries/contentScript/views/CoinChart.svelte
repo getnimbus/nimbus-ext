@@ -20,6 +20,7 @@
   let hoverPrice = 0;
   let isErrorDataChart = false;
   let hasData = false;
+  let hasChart = false;
 
   const getChartData = async () => {
     const dataLocal = (await sendMessage("chartDataLocal", {
@@ -37,11 +38,16 @@
     const newestData = (await sendMessage("chartData", {
       symbol: symbol.toLowerCase(),
     })) as any;
-    hasData = true;
-    renderChart(newestData);
+
+    if (newestData) {
+      hasData = true;
+      renderChart(newestData);
+    }
   };
 
   const renderChart = async (data: any) => {
+    if (hasChart) return;
+    hasChart = true;
     if (isEmpty(data)) {
       isErrorDataChart = true;
     } else {

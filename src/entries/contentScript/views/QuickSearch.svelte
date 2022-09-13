@@ -203,12 +203,12 @@
       class="fixed top-0 right-0 h-[98vh] p-4 bg-sky-100 overflow-y-auto w-[350px] flex flex-col text-gray-900 border-0 border-l-1 border-solid border-l-gray-200"
     >
       <div
-        class="cursor-pointer text-sky-500 font-semibold absolute top-2 left-0 btn-border pt-3 pb-2 bg-sky-200 rounded-tr-[8px] rounded-br-[8px]"
+        class="cursor-pointer text-sky-500 font-semibold absolute top-2 left-0 btn-border pt-3 pb-1 bg-sky-200 rounded-tr-[8px] rounded-br-[8px]"
         on:click={() => (isShowSideBar = false)}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-4 text-gray-700 rounded"
+          class="h-5 w-4 rounded"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -222,7 +222,7 @@
         </svg>
       </div>
 
-      <div class="text-center font-bold text-6 leading-[32px] my-2">
+      <div class="title-5 text-center font-bold my-2">
         Welcome to <span class="text-sky-400">Nimbus 🌩</span>
       </div>
 
@@ -253,7 +253,7 @@
           value={search}
           placeholder="Search..."
           type="text"
-          class="w-full py-2 border-none focus:outline-none bg-white"
+          class="input-1"
         />
       </div>
 
@@ -265,7 +265,7 @@
         {:else if !isLoading}
           {#if tokenDataSearch.length !== 0}
             <div class="mb-2">
-              <div class="text-lg leading-[28px] font-bold">Results</div>
+              <div class="title-2">Results</div>
             </div>
             <div class="flex flex-col gap-y-3">
               {#each tokenDataSearch as item}
@@ -284,11 +284,15 @@
       {:else if search === ""}
         {#if selectedTokenData.length !== 0}
           <div class="mb-2">
-            <div class="text-lg leading-[28px] font-bold">On this page</div>
+            <div class="title-2">On this page</div>
           </div>
           <div class="flex flex-col gap-y-3">
             {#each selectedTokenData as item}
-              <native-token-info id={item.id} name={item.symbol} {loaded} />
+              <native-token-info
+                id={item.id}
+                name={item.symbol}
+                loaded={true}
+              />
             {/each}
           </div>
 
