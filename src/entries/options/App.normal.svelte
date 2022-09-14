@@ -19,13 +19,13 @@
   const handleClick = (tabValue) => () => (activeTabValue = tabValue);
 </script>
 
-<div class="max-w-[1440px] m-auto w-[100%] h-screen flex gap-3">
-  <div class="w-54 flex flex-col">
-    <div class="title-2 mb-4 w-full text-center">🌩 Nimbus</div>
+<div class="max-w-[1440px] m-auto w-[100%] h-screen flex gap-1">
+  <div class="w-54 flex flex-col pl-2">
+    <div class="title-2 mb-4 w-full">🌩 Nimbus</div>
     {#each items as item}
       <div
         on:click={handleClick(item.value)}
-        class={`tab cursor-pointer py-2 pl-2 flex items-center gap-2 w-full title-5 ${
+        class={`tab cursor-pointer py-2 flex items-center gap-2 w-full title-5 ${
           activeTabValue === item.value ? "active" : ""
         }`}
       >
