@@ -204,7 +204,7 @@
       <div class="flex justify-between gap-4 my-2">
         <div class="flex-1">
           <button
-            class="btn-primary"
+            class="btn-primary w-full"
             on:click={() =>
               window.open(`https://debank.com/profile/${address}`, "_blank")}
           >
@@ -213,7 +213,7 @@
         </div>
         <div class="flex-1">
           <button
-            class="btn-primary"
+            class="btn-primary w-full"
             on:click={() =>
               window.open(`https://etherscan.io/address/${address}`, "_blank")}
           >
@@ -277,7 +277,7 @@
     </div>
     <div class="flex gap-4 justify-around my-2">
       <button
-        class="btn-primary"
+        class="btn-primary w-full"
         on:click={() =>
           window.open(`https://etherscan.io/address/${address}`, "_blank")}
       >
