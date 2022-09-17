@@ -45,6 +45,7 @@
     "svelte-windicss-preprocess": "^4.2.8",
     "tippy.js": "^6.3.7",
     "url-pattern": "^1.0.3",
+    "uuid": "^9.0.0",
     "vite-imagetools": "^4.0.4",
     "webext-bridge": "^5.0.5",
     "webextension-polyfill": "^0.9.0",

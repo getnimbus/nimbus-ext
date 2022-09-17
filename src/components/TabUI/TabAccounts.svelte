@@ -1,7 +1,17 @@
 <svelte:options tag="tab-accounts" />
 
-<script>
-  let errors = {};
+<script lang="ts">
+  import { onMount } from "svelte";
+  import * as browser from "webextension-polyfill";
+  import { sendMessage } from "webext-bridge";
+  import { isOverlayOpen } from "../../stores/OverlayStores";
+  import { v4 as uuidv4 } from "uuid";
+
+  import "../Overlay.svelte";
+
+  let errors: any = {};
+  let listAddress = [];
+  let selectedItemEdit: any = {};
 
   const validateForm = (data) => {
     if (!isRequiredFieldValid(data.address)) {
@@ -42,7 +52,7 @@
     const formData = new FormData(e.target);
     const regexETHAddress = /0x[a-fA-F0-9]{40}/g;
 
-    const data = {};
+    const data: any = {};
     for (let field of formData) {
       const [key, value] = field;
       data[key] = value;
@@ -61,12 +71,101 @@
         };
         return;
       }
-      console.log("data form", data);
+
+      Object.assign(data, { id: uuidv4() });
+
+      listAddress = [...listAddress, data];
+
+      browser.storage.sync
+        .set({ listAddress: JSON.stringify(listAddress) })
+        .then(() => {
+          console.log("save address to sync storage");
+        });
+
       e.target.reset();
     } else {
       console.log("Invalid Form");
     }
   };
+
+  const onSubmitEdit = (e) => {
+    const formData = new FormData(e.target);
+    const regexETHAddress = /0x[a-fA-F0-9]{40}/g;
+
+    const data: any = {};
+    for (let field of formData) {
+      const [key, value] = field;
+      data[key] = value;
+    }
+
+    validateForm(data);
+
+    if (
+      !Object.keys(errors).some((inputName) => errors[inputName]["required"])
+    ) {
+      if (data.address && !data.address.match(regexETHAddress)) {
+        errors["address"] = {
+          ...errors["address"],
+          required: true,
+          msg: "Please enter your address again",
+        };
+        return;
+      }
+
+      Object.assign(data, { id: selectedItemEdit.id });
+
+      const foundItemEdit = listAddress.find(
+        (element) => element.id === selectedItemEdit.id
+      );
+
+      const index = listAddress.indexOf(foundItemEdit);
+      if (index > -1) {
+        listAddress[index] = data;
+
+        browser.storage.sync
+          .set({ listAddress: JSON.stringify(listAddress) })
+          .then(() => {
+            console.log("save address to sync storage");
+          });
+
+        e.target.reset();
+        isOverlayOpen.set(false);
+      }
+    } else {
+      console.log("Invalid Form");
+    }
+  };
+
+  const getListAddress = async () => {
+    listAddress = (await sendMessage("getListAddress", undefined)) as any[];
+  };
+
+  const handleDelete = (item) => {
+    const index = listAddress.indexOf(item);
+    if (index > -1) {
+      listAddress.splice(index, 1);
+      browser.storage.sync
+        .set({ listAddress: JSON.stringify(listAddress) })
+        .then(() => {
+          console.log("save address to sync storage");
+        });
+    }
+  };
+
+  const handleEdit = (item) => {
+    isOverlayOpen.set(true);
+    selectedItemEdit = item;
+  };
+
+  onMount(() => {
+    getListAddress();
+  });
+
+  $: {
+    if (listAddress) {
+      getListAddress();
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-2">
@@ -104,12 +203,112 @@
         </div>
       {/if}
     </div>
-    <button type="submit" class="btn-primary">Add Address</button>
+    <button type="submit" class="btn-primary uppercase">Add Address</button>
   </form>
+
+  <div class="table-border mt-2 rounded">
+    <div class="grid grid-cols-6 bg-gray-100 p-3 uppercase">
+      <div class="col-span-4 title-5">Address</div>
+      <div class="title-5">Label</div>
+      <div class="title-5">Action</div>
+    </div>
+    {#each listAddress as item}
+      <div class="grid grid-cols-6 items-center p-3 text-sm item-table-border">
+        <div class="col-span-4 font-medium">{item.address}</div>
+        <div class="bg-gray-100 text-gray-500 w-max px-3 py-1 rounded-xl">
+          {item.label}
+        </div>
+        <div class="flex gap-5">
+          <div
+            class="text-red-500 cursor-pointer font-semibold"
+            on:click={() => handleDelete(item)}
+          >
+            Delete
+          </div>
+          <div
+            class="text-sky-500 cursor-pointer font-semibold"
+            on:click={() => handleEdit(item)}
+          >
+            Edit
+          </div>
+        </div>
+      </div>
+    {/each}
+  </div>
+
+  {#if $isOverlayOpen}
+    <app-overlay>
+      <div class="flex flex-col gap-1 items-center">
+        <div class="title-4 text-gray-600 font-semibold">Edit Your Address</div>
+        <div class="text-sm text-gray-500">
+          Edit your address will make change the information at page new tab
+        </div>
+      </div>
+
+      <form
+        on:submit|preventDefault={onSubmitEdit}
+        class="flex flex-col gap-5 mt-4"
+      >
+        <div class="flex items-center gap-2">
+          <div class="w-12">Address:</div>
+          <div class="relative flex-[0.945]">
+            <input
+              type="text"
+              id="address"
+              name="address"
+              placeholder="Address..."
+              bind:value={selectedItemEdit.address}
+              class="input-2 input-border w-full p-3"
+              on:blur={onBlur}
+            />
+            {#if errors.address && errors.address.required}
+              <div class="text-red-500 absolute -bottom-4 left-0">
+                {errors.address.msg}
+              </div>
+            {/if}
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-12">Label:</div>
+          <div class="relative flex-[0.945]">
+            <input
+              type="text"
+              id="label"
+              name="label"
+              placeholder="Label..."
+              bind:value={selectedItemEdit.label}
+              class="input-2 input-border w-full p-3"
+              on:blur={onBlur}
+            />
+            {#if errors.label && errors.label.required}
+              <div class="text-red-500 absolute -bottom-4 left-0">
+                {errors.label.msg}
+              </div>
+            {/if}
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button type="submit" class="btn-primary flex-1 uppercase"
+            >Edit</button
+          >
+          <button
+            class="btn-secondary input-border flex-1 uppercase"
+            on:click={() => isOverlayOpen.set(false)}>Cancel</button
+          >
+        </div>
+      </form>
+    </app-overlay>
+  {/if}
 </div>
 
 <style>
   .input-border {
     border: 1px solid skyblue;
+  }
+  .table-border {
+    border: 0.5px solid rgb(229, 231, 235);
+  }
+  .item-table-border {
+    border-bottom: 0.5px solid rgb(229, 231, 235);
   }
 </style>

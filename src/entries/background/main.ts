@@ -198,6 +198,16 @@ onMessage<IIdInput, any>("tokenInfoData", async ({ data: { id } }) => {
   }
 });
 
+onMessage("getListAddress", async () => {
+  try {
+    return JSON.parse(
+      (await browser.storage.sync.get("listAddress")).listAddress
+    );
+  } catch (error) {
+    return [];
+  }
+});
+
 // Run on init
 fetchBasicData();
 fetchConfigPages();
