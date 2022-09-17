@@ -21,3 +21,7 @@ export const coinGeko = axios.create({
 export const nimbus = axios.create({
   baseURL: "https://utils.getnimbus.xyz",
 });
+
+export const mixpanel = axios.create({
+  baseURL: "https://api.mixpanel.com",
+});

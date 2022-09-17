@@ -156,10 +156,12 @@
   }
 
   $: {
-    track("Sidebar status", {
-      url: window.location.href,
-      isShowSideBar,
-    });
+    if (isShowSideBar) {
+      track("Sidebar status", {
+        url: window.location.href,
+        isShowSideBar,
+      });
+    }
   }
 
   browser.runtime.onMessage.addListener(function (msg) {

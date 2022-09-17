@@ -29,7 +29,6 @@
     "web-ext": "^6.6.0"
   },
   "dependencies": {
-    "@jitsu/sdk-js": "^3.1.3",
     "@metamask/detect-provider": "^1.2.0",
     "@webcomponents/webcomponentsjs": "^2.6.0",
     "apexcharts": "^3.35.5",
