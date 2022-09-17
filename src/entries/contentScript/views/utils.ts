@@ -1,7 +1,11 @@
 import numeral from "numeral";
 
 export const formatCurrency = (input: number) => {
-  return numeral(input.toFixed(2)).format("0,0.00");
+  return numeral(input).format("0,0.00");
+};
+
+export const formatBalance = (input: number) => {
+  return numeral(input).format("0,0.00");
 };
 
 export const shorterAddress = (string: string) => {
