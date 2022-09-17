@@ -247,17 +247,17 @@
             on:click={handleAddToken}
             class="flex items-center justyfy-center gap-1 btn-border px-3 py-1 text-sky-500 cursor-pointer"
           >
-            <img src={MetaMaskIcon} with={14} height={14} alt="" /> Add to MetaMask
+            <img src={MetaMaskIcon} width={14} height={14} alt="" /> Add to MetaMask
           </div>
           <div class="flex gap-2">
             <a
               href="https://coinmarketcap.com/currencies/bitcoin"
               target="blank"
             >
-              <img src={CoinMarketCapIcon} with={22} height={22} alt="" />
+              <img src={CoinMarketCapIcon} width={22} height={22} alt="" />
             </a>
             <a href="https://www.coingecko.com/en/coins/bitcoin" target="blank">
-              <img src={CoinGekoIcon} with={22} height={22} alt="" />
+              <img src={CoinGekoIcon} width={22} height={22} alt="" />
             </a>
           </div>
         </div>
@@ -270,7 +270,7 @@
       <img
         class="w-[64px] h-auto my-[20px] mx-auto"
         src={SmartContractIcon}
-        with={50}
+        width={50}
         alt=""
       />
       <div>SmartContract info will be supported soon</div>
