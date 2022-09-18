@@ -101,11 +101,6 @@
   resolved "https://registry.yarnpkg.com/@iconify/json/-/json-1.1.432.tgz#35c65c90acce30e6f722979b109932d06f9ddcc5"
   integrity sha512-ZcQKCnJXmeKDKxSu4vOFCYkCv8sjX1OASTMQpzqVzt3ivBBDudAYyXJlO4hgk0X4B2R0IMHRNvRgCAYkKDa2eQ==
 
-"@jitsu/sdk-js@^3.1.3":
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/@jitsu/sdk-js/-/sdk-js-3.1.3.tgz#ac532ea8a72b63117e48a0b46023a0aa6992cec3"
-  integrity sha512-hFFo0PQb/zm5Qvs8pPsiJpDdOG7A1s5jc1IENWS0cIncNfbjZzi6EcK8iPhUsAXFU4g6xPpi8MHgVQtCMdocsA==
-
 "@jridgewell/resolve-uri@^3.0.3":
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@jridgewell/resolve-uri/-/resolve-uri-3.1.0.tgz#2203b118c157721addfe69d47b70465463066d78"

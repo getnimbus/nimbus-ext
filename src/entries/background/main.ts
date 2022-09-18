@@ -2,7 +2,7 @@ import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
 import dayjs from "dayjs";
 import { isEmpty } from "lodash";
-import { coinGeko } from "../contentScript/views/network";
+import { coinGeko, mixpanel } from "../contentScript/views/network";
 
 browser.runtime.onInstalled.addListener(() => {
   console.log("Extension installed");
@@ -17,16 +17,16 @@ browser.commands.onCommand.addListener((command) => {
       // } else {
       //   console.log("no active tab")
       // }
-      browser.tabs.sendMessage(tab[0].id, { action: "toggleSidebar" })
-    })
+      browser.tabs.sendMessage(tab[0].id, { action: "toggleSidebar" });
+    });
   }
 });
 
 browser.browserAction.onClicked.addListener(() => {
   browser.tabs.query({ active: true, currentWindow: true }).then((tab) => {
-    browser.tabs.sendMessage(tab[0].id, { action: "toggleSidebar" })
-  })
-})
+    browser.tabs.sendMessage(tab[0].id, { action: "toggleSidebar" });
+  });
+});
 
 const fetchBasicData = async () => {
   const list = await fetch("https://api.coingecko.com/api/v3/search").then(
@@ -205,6 +205,33 @@ onMessage("getListAddress", async () => {
     );
   } catch (error) {
     return [];
+  }
+})
+
+onMessage("trackEvent", async ({ data: { type, payload } }) => {
+  try {
+    return await mixpanel.post(
+      "/track",
+      [
+        {
+          event: type,
+          properties: {
+            ...payload,
+            // distinct_id: // TODO: Save an unique user id
+            token: "d56364b743cd70634fe5bea51e1d7e1c",
+          },
+        },
+      ],
+      {
+        params: {
+          verbose: 1,
+          ip: 1,
+        },
+      }
+    );
+  } catch (e) {
+    console.log(e);
+    return false;
   }
 });
 

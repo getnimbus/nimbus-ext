@@ -3,8 +3,7 @@
 <script>
   import { onMount } from "svelte";
   import detectEthereumProvider from "@metamask/detect-provider";
-  import { debank } from "./network";
-  import { formatCurrency } from "./utils";
+  import { formatBalance, formatCurrency } from "./utils";
 
   import "~/components/Loading.svelte";
   import "~/components/Footer.svelte";
@@ -17,11 +16,12 @@
   import CoinGekoIcon from "../assets/coingecko-logo.png";
   import CoinDefaultIcon from "../assets/coin-default.svg";
   import { track } from "~/lib/data-tracking";
+  import { nimbus } from "./network";
 
   export let address;
 
   let isLoading = true;
-  let balance = null;
+  let balance = 0;
   let tokenList = [];
   let token = null;
   let unknownSmartContract = false;
@@ -29,63 +29,18 @@
   const loadUserAddressInfo = async () => {
     isLoading = true;
 
-    const addrInfo = await debank
-      .get("https://api.debank.com/user/addr", {
-        params: {
-          addr: address,
-        },
-      })
-      .then((response) => response.data);
+    // TODO: What if this is a smart contract or ERC20 a address
+    const addressPortfolio = await nimbus
+      .get(`/portfolio/${address}`)
+      .then((response) => response.data.data);
 
-    if (addrInfo.data.is_contract) {
-      // This is contract page
-      // const tokenInfo = await worker
-      //   .get(`/token/${address}`)
-      //   .then((response) => response.data);
-      const tokenInfo = await debank
-        .get(`/token`, {
-          params: {
-            id: address,
-            chain_id: "eth", // TODO: Alo need to check on others chain
-          },
-        })
-        .then((response) => {
-          if (response.data) {
-            return response.data;
-          }
-
-          throw new Error("Unknown SmartContract");
-        })
-        .catch(() => {
-          // Token is undefined
-          console.log("unknownSmartContract");
-          unknownSmartContract = true;
-        });
-      token = tokenInfo;
-      isLoading = false;
-      return;
+    console.log(addressPortfolio);
+    if (addressPortfolio) {
+      balance = addressPortfolio.totalBalanceUsd;
+      tokenList = addressPortfolio.assets;
+    } else {
+      unknownSmartContract = true;
     }
-
-    const info = await Promise.all([
-      debank
-        .get("/user/total_balance", {
-          params: {
-            id: address,
-          },
-        })
-        .then((response) => response.data),
-      debank
-        .get("/user/token_list", {
-          params: {
-            id: address,
-            is_all: false,
-          },
-        })
-        .then((response) => response.data),
-    ]);
-
-    balance = info[0];
-    tokenList = info[1];
     isLoading = false;
   };
 
@@ -103,11 +58,7 @@
       return;
     }
     const provider = await detectEthereumProvider();
-    if (provider) {
-      // From now on, this should always be true:
-      // provider === window.ethereum
-      startApp(provider); // initialize your app
-
+    if (provider && window.ethereum) {
       const wasAdded = await ethereum.request({
         method: "wallet_watchAsset",
         params: {
@@ -120,13 +71,9 @@
           },
         },
       });
-
-      if (wasAdded) {
-        console.log("Thanks for your interest!");
-      } else {
-        console.log("Your loss!");
-      }
+      console.log(wasAdded);
     } else {
+      // TODO: Show some toast to user
       console.log("Please install MetaMask!");
     }
   };
@@ -162,9 +109,9 @@
           </svg>
 
           <div class="flex flex-col">
-            <div>Balance (Including all tokens)</div>
+            <div>Balance (Including all tokens in all chains)</div>
             <div class="font-bold">
-              ${formatCurrency(balance.total_usd_value)}
+              ${formatCurrency(balance)}
             </div>
           </div>
         </div>
@@ -180,20 +127,20 @@
           </div>
           <div class="grid grid-cols-3 gap-2">
             {#each tokenList
-              .sort((a, b) => b.amount * b.price - a.amount * a.price)
+              .sort((a, b) => Number(b.balanceUsd) - Number(a.balanceUsd))
               .slice(0, 5) as item}
               <div class="flex items-center px-1">
                 <img
-                  src={item.logo_url || CoinDefaultIcon}
+                  src={item.thumbnail || CoinDefaultIcon}
                   alt=""
                   class="w-[20px] h-[20px] rounded-full mr-1"
                 />
-                {item.symbol}
+                {item.tokenSymbol}
               </div>
-              <div class="text-right px-1">{item.amount.toFixed(2)}</div>
+              <div class="text-right px-1">{formatBalance(item.balance)}</div>
               <div class="text-right px-1">
                 <strong>
-                  ${formatCurrency(item.amount * item.price)}
+                  ${formatCurrency(item.balanceUsd)}
                 </strong>
               </div>
             {/each}
@@ -202,7 +149,7 @@
       {/if}
 
       <div class="flex justify-between gap-4 my-2">
-        <div class="flex-1">
+        <!-- <div class="flex-1">
           <button
             class="btn-primary w-full"
             on:click={() =>
@@ -210,7 +157,7 @@
           >
             DeBank
           </button>
-        </div>
+        </div> -->
         <div class="flex-1">
           <button
             class="btn-primary w-full"
@@ -286,13 +233,13 @@
     </div>
   {/if}
 
-  <nimbus-footer>
+  <!-- <nimbus-footer>
     <div class="text-xs">
       Data from <a href="https://debank.com" target="blank"
         >https://debank.com</a
       >
     </div>
-  </nimbus-footer>
+  </nimbus-footer> -->
 </div>
 
 <!-- NOTICE: You need to add below script to use tailwind -->
