@@ -10,8 +10,13 @@
   import "../Overlay.svelte";
 
   let errors: any = {};
+  let errorsEdit: any = {};
   let listAddress = [];
   let selectedItemEdit: any = {};
+
+  const isRequiredFieldValid = (value) => {
+    return value != null && value !== "";
+  };
 
   const validateForm = (data) => {
     if (!isRequiredFieldValid(data.address)) {
@@ -35,8 +40,26 @@
     }
   };
 
-  const isRequiredFieldValid = (value) => {
-    return value != null && value !== "";
+  const validateFormEdit = (data) => {
+    if (!isRequiredFieldValid(data.address)) {
+      errorsEdit["address"] = {
+        ...errorsEdit["address"],
+        required: true,
+        msg: "Address is required",
+      };
+    } else {
+      errorsEdit["address"] = { ...errorsEdit["address"], required: false };
+    }
+
+    if (!isRequiredFieldValid(data.label)) {
+      errorsEdit["label"] = {
+        ...errorsEdit["label"],
+        required: true,
+        msg: "Label is required",
+      };
+    } else {
+      errorsEdit["label"] = { ...errorsEdit["label"], required: false };
+    }
   };
 
   const onBlur = (e) => {
@@ -45,6 +68,15 @@
     }
     if (e.target.name === "label" && e.target.value) {
       errors["label"] = { ...errors["label"], required: false };
+    }
+  };
+
+  const onBlurEdit = (e) => {
+    if (e.target.name === "address" && e.target.value) {
+      errorsEdit["address"] = { ...errorsEdit["address"], required: false };
+    }
+    if (e.target.name === "label" && e.target.value) {
+      errorsEdit["label"] = { ...errorsEdit["label"], required: false };
     }
   };
 
@@ -100,14 +132,16 @@
       data[key] = value;
     }
 
-    validateForm(data);
+    validateFormEdit(data);
 
     if (
-      !Object.keys(errors).some((inputName) => errors[inputName]["required"])
+      !Object.keys(errorsEdit).some(
+        (inputName) => errorsEdit[inputName]["required"]
+      )
     ) {
       if (data.address && !data.address.match(regexETHAddress)) {
-        errors["address"] = {
-          ...errors["address"],
+        errorsEdit["address"] = {
+          ...errorsEdit["address"],
           required: true,
           msg: "Invalid address, please try input again",
         };
@@ -178,7 +212,7 @@
         name="address"
         placeholder="Address..."
         value=""
-        class="input-2 input-border w-[400px] p-3"
+        class="input-2 input-border w-[500px] p-3"
         on:blur={onBlur}
       />
       {#if errors.address && errors.address.required}
@@ -194,7 +228,7 @@
         name="label"
         placeholder="Label..."
         value=""
-        class="input-2 input-border w-[400px] p-3"
+        class="input-2 input-border w-[200px] p-3"
         on:blur={onBlur}
       />
       {#if errors.label && errors.label.required}
@@ -214,7 +248,7 @@
     </div>
 
     {#if listAddress.length <= 0}
-      <div class="text-black text-center title-3 py-3">Empty</div>
+      <div class="text-black text-center title-5 py-3">Empty</div>
     {:else}
       {#each listAddress as item}
         <div
@@ -266,11 +300,11 @@
               placeholder="Address..."
               bind:value={selectedItemEdit.address}
               class="input-2 input-border w-full p-3"
-              on:blur={onBlur}
+              on:blur={onBlurEdit}
             />
-            {#if errors.address && errors.address.required}
+            {#if errorsEdit.address && errorsEdit.address.required}
               <div class="text-red-500 absolute -bottom-4 left-0">
-                {errors.address.msg}
+                {errorsEdit.address.msg}
               </div>
             {/if}
           </div>
@@ -285,11 +319,11 @@
               placeholder="Label..."
               bind:value={selectedItemEdit.label}
               class="input-2 input-border w-full p-3"
-              on:blur={onBlur}
+              on:blur={onBlurEdit}
             />
-            {#if errors.label && errors.label.required}
+            {#if errorsEdit.label && errorsEdit.label.required}
               <div class="text-red-500 absolute -bottom-4 left-0">
-                {errors.label.msg}
+                {errorsEdit.label.msg}
               </div>
             {/if}
           </div>
