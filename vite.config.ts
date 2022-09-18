@@ -10,14 +10,20 @@ import AutoImport from "unplugin-auto-import/vite";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
+  console.log(env);
   return {
     plugins: [
       svelte({
         preprocess: [sveltePreprocess(), windi({})],
-        // exclude: ["*.normal.svelte"],
+        exclude: ["**/*.normal.svelte"],
         compilerOptions: {
           customElement: true,
         },
+      }),
+      svelte({
+        preprocess: [sveltePreprocess(), windi({})],
+        include: ["**/*.normal.svelte"],
+        extensions: [".normal.svelte"],
       }),
       webExtension({
         manifest: getManifest(Number(env.MANIFEST_VERSION)),
@@ -37,6 +43,14 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       rollupOptions: {
+        input: {
+          newTab: path.resolve(__dirname, "./src/entries/newTab/index.html"),
+          option: path.resolve(__dirname, "./src/entries/options/index.html"),
+          contentScript: path.resolve(
+            __dirname,
+            "./src/entries/contentScript/main.ts"
+          ),
+        },
         output: {
           entryFileNames: `assets/[name].js`,
           chunkFileNames: `assets/[name].js`,

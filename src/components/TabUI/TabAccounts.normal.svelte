@@ -4,15 +4,15 @@
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
-  import { isOverlayOpen } from "../../stores/OverlayStores";
   import { v4 as uuidv4 } from "uuid";
 
-  import "../Overlay.svelte";
+  import AppOverlay from "../Overlay.normal.svelte";
 
   let errors: any = {};
   let errorsEdit: any = {};
   let listAddress = [];
   let selectedItemEdit: any = {};
+  let isOpenEditModal = false;
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -165,7 +165,7 @@
           });
 
         e.target.reset();
-        isOverlayOpen.set(false);
+        isOpenEditModal = false;
 
         getListAddress();
       }
@@ -193,7 +193,7 @@
   };
 
   const handleEdit = (item) => {
-    isOverlayOpen.set(true);
+    isOpenEditModal = true;
     selectedItemEdit = item;
   };
 
@@ -277,69 +277,68 @@
     {/if}
   </div>
 
-  {#if $isOverlayOpen}
-    <app-overlay>
-      <div class="flex flex-col gap-1 items-center">
-        <div class="title-4 text-gray-600 font-semibold">Edit Your Address</div>
-        <div class="text-sm text-gray-500">
-          Edit your address will make change the information at page new tab
+  <AppOverlay
+    isOpen={isOpenEditModal}
+    on:close={() => (isOpenEditModal = false)}
+  >
+    <div class="flex flex-col gap-1 items-center">
+      <div class="title-4 text-gray-600 font-semibold">Edit Your Address</div>
+      <div class="text-sm text-gray-500">
+        Edit your address will make change the information at page new tab
+      </div>
+    </div>
+
+    <form
+      on:submit|preventDefault={onSubmitEdit}
+      class="flex flex-col gap-5 mt-4"
+    >
+      <div class="flex items-center gap-2">
+        <div class="w-12">Address:</div>
+        <div class="relative flex-[0.945]">
+          <input
+            type="text"
+            id="address"
+            name="address"
+            placeholder="Address..."
+            bind:value={selectedItemEdit.address}
+            class="input-2 input-border w-full p-3"
+            on:blur={onBlurEdit}
+          />
+          {#if errorsEdit.address && errorsEdit.address.required}
+            <div class="text-red-500 absolute -bottom-4 left-0">
+              {errorsEdit.address.msg}
+            </div>
+          {/if}
         </div>
       </div>
-
-      <form
-        on:submit|preventDefault={onSubmitEdit}
-        class="flex flex-col gap-5 mt-4"
-      >
-        <div class="flex items-center gap-2">
-          <div class="w-12">Address:</div>
-          <div class="relative flex-[0.945]">
-            <input
-              type="text"
-              id="address"
-              name="address"
-              placeholder="Address..."
-              bind:value={selectedItemEdit.address}
-              class="input-2 input-border w-full p-3"
-              on:blur={onBlurEdit}
-            />
-            {#if errorsEdit.address && errorsEdit.address.required}
-              <div class="text-red-500 absolute -bottom-4 left-0">
-                {errorsEdit.address.msg}
-              </div>
-            {/if}
-          </div>
+      <div class="flex items-center gap-2">
+        <div class="w-12">Label:</div>
+        <div class="relative flex-[0.945]">
+          <input
+            type="text"
+            id="label"
+            name="label"
+            placeholder="Label..."
+            bind:value={selectedItemEdit.label}
+            class="input-2 input-border w-full p-3"
+            on:blur={onBlurEdit}
+          />
+          {#if errorsEdit.label && errorsEdit.label.required}
+            <div class="text-red-500 absolute -bottom-4 left-0">
+              {errorsEdit.label.msg}
+            </div>
+          {/if}
         </div>
-        <div class="flex items-center gap-2">
-          <div class="w-12">Label:</div>
-          <div class="relative flex-[0.945]">
-            <input
-              type="text"
-              id="label"
-              name="label"
-              placeholder="Label..."
-              bind:value={selectedItemEdit.label}
-              class="input-2 input-border w-full p-3"
-              on:blur={onBlurEdit}
-            />
-            {#if errorsEdit.label && errorsEdit.label.required}
-              <div class="text-red-500 absolute -bottom-4 left-0">
-                {errorsEdit.label.msg}
-              </div>
-            {/if}
-          </div>
-        </div>
-        <div class="flex gap-2">
-          <button type="submit" class="btn-primary flex-1 uppercase"
-            >Edit</button
-          >
-          <button
-            class="btn-secondary input-border flex-1 uppercase"
-            on:click={() => isOverlayOpen.set(false)}>Cancel</button
-          >
-        </div>
-      </form>
-    </app-overlay>
-  {/if}
+      </div>
+      <div class="flex gap-2">
+        <button type="submit" class="btn-primary flex-1 uppercase">Edit</button>
+        <button
+          class="btn-secondary input-border flex-1 uppercase"
+          on:click={() => isOverlayOpen.set(false)}>Cancel</button
+        >
+      </div>
+    </form>
+  </AppOverlay>
 </div>
 
 <style>

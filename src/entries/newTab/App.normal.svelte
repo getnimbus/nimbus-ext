@@ -1,11 +1,9 @@
-<svelte:options tag="nimbus-newtab" />
-
 <script lang="ts">
   import * as browser from "webextension-polyfill";
   import { chart } from "svelte-apexcharts";
 
-  import "../../components/TxCardInfo.svelte";
-  import "../../components/NewCard.svelte";
+  import TxCardInfo from "~/components/TxCardInfo.normal.svelte";
+  import NewCard from "~/components/NewCard.normal.svelte";
 
   import logo from "../../assets/logo.svg";
 
@@ -142,18 +140,18 @@
       <div
         class="border rounded-lg py-6 px-8 flex flex-col gap-4 max-h-[660px] overflow-y-auto shadow"
       >
-        <app-tx-card-info />
-        <app-tx-card-info />
+        <TxCardInfo />
+        <TxCardInfo />
       </div>
     </div>
     <div>
       <div class="title-3 text-gray-500 mb-4">You might interested in</div>
       <div class="flex flex-col gap-4">
-        <app-new-card />
-        <app-new-card />
-        <app-new-card />
-        <app-new-card />
-        <app-new-card />
+        <NewCard />
+        <NewCard />
+        <NewCard />
+        <NewCard />
+        <NewCard />
       </div>
       <div class="mt-4 flex justify-center">
         <button class="btn-primary w-max">Suggest a content</button>
@@ -162,7 +160,7 @@
   </div>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .border {
     border: 0.5px solid rgb(229, 231, 235);
   }

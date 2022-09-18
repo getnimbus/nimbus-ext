@@ -1,5 +1,3 @@
-<svelte:options tag="tab-icon" />
-
 <script>
   export let type;
   export let active;

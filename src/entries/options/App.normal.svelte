@@ -1,11 +1,9 @@
-<svelte:options tag="nimbus-options" />
-
 <script>
-  import "../../components/TabUI/TabAccounts.svelte";
-  import "../../components/TabUI/TabDashboard.svelte";
-  import "../../components/TabUI/TabHighlight.svelte";
-  import "../../components/TabUI/TabNotification.svelte";
-  import "../../components/TabUI/Icon.svelte";
+  import TabAccounts from "~/components/TabUI/TabAccounts.normal.svelte";
+  import TabDashboard from "~/components/TabUI/TabDashboard.normal.svelte";
+  import TabHighlight from "~/components/TabUI/TabHighlight.normal.svelte";
+  import TabNotification from "~/components/TabUI/TabNotification.normal.svelte";
+  import Icon from "~/components/TabUI/Icon.normal.svelte";
 
   let activeTabValue = 1;
 
@@ -29,7 +27,7 @@
           activeTabValue === item.value ? "active" : ""
         }`}
       >
-        <tab-icon
+        <Icon
           type={item.label}
           active={activeTabValue === item.value ? true : false}
         />
@@ -40,13 +38,13 @@
 
   <div class="flex-1 px-6 border-left">
     {#if activeTabValue === 1}
-      <tab-accounts />
+      <TabAccounts />
     {:else if activeTabValue === 2}
-      <tab-dashboard />
+      <TabDashboard />
     {:else if activeTabValue === 3}
-      <tab-highlight />
+      <TabHighlight />
     {:else if activeTabValue === 4}
-      <tab-notification />
+      <TabNotification />
     {/if}
   </div>
 </div>

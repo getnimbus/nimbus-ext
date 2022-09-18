@@ -1,5 +1,3 @@
-<svelte:options tag="app-tx-card-info" />
-
 <script>
   import logo from "../assets/logo.svg";
 </script>
