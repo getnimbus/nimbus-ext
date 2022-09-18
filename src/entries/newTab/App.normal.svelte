@@ -1,6 +1,7 @@
 <svelte:options tag="nimbus-newtab" />
 
 <script lang="ts">
+  import * as browser from "webextension-polyfill";
   import { chart } from "svelte-apexcharts";
 
   import "../../components/TxCardInfo.svelte";
@@ -74,6 +75,14 @@
       },
     ],
   };
+
+  const handleNavigateOptionPage = () => {
+    const id = browser.runtime.id;
+    window.open(
+      `chrome-extension://${id}/src/entries/options/index.html`,
+      "_blank"
+    );
+  };
 </script>
 
 <div class="max-w-[1440px] m-auto w-[90%] h-full py-6">
@@ -83,7 +92,10 @@
       <div class="title-2">Today update</div>
     </div>
     <div class="flex justify-between items-center gap-6">
-      <div class="flex flex-col items-center gap-1 cursor-pointer">
+      <div
+        class="flex flex-col items-center gap-1 cursor-pointer"
+        on:click={handleNavigateOptionPage}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
