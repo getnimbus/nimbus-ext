@@ -334,7 +334,7 @@
         <button type="submit" class="btn-primary flex-1 uppercase">Edit</button>
         <button
           class="btn-secondary input-border flex-1 uppercase"
-          on:click={() => isOverlayOpen.set(false)}>Cancel</button
+          on:click={() => (isOpenEditModal = false)}>Cancel</button
         >
       </div>
     </form>
