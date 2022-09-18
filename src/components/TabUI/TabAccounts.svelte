@@ -206,34 +206,41 @@
     <button type="submit" class="btn-primary uppercase">Add Address</button>
   </form>
 
-  <div class="table-border mt-2 rounded">
+  <div class="table-border mt-5 rounded">
     <div class="grid grid-cols-6 bg-gray-100 p-3 uppercase">
       <div class="col-span-4 title-5">Address</div>
       <div class="title-5">Label</div>
       <div class="title-5">Action</div>
     </div>
-    {#each listAddress as item}
-      <div class="grid grid-cols-6 items-center p-3 text-sm item-table-border">
-        <div class="col-span-4 font-medium">{item.address}</div>
-        <div class="bg-gray-100 text-gray-500 w-max px-3 py-1 rounded-xl">
-          {item.label}
-        </div>
-        <div class="flex gap-5">
-          <div
-            class="text-red-500 cursor-pointer font-semibold"
-            on:click={() => handleDelete(item)}
-          >
-            Delete
+
+    {#if listAddress.length <= 0}
+      <div class="text-black text-center title-3 py-3">Empty</div>
+    {:else}
+      {#each listAddress as item}
+        <div
+          class="grid grid-cols-6 items-center p-3 text-sm item-table-border"
+        >
+          <div class="col-span-4 font-medium">{item.address}</div>
+          <div class="bg-gray-100 text-gray-500 w-max px-3 py-1 rounded-xl">
+            {item.label}
           </div>
-          <div
-            class="text-sky-500 cursor-pointer font-semibold"
-            on:click={() => handleEdit(item)}
-          >
-            Edit
+          <div class="flex gap-5">
+            <div
+              class="text-red-500 cursor-pointer font-semibold"
+              on:click={() => handleDelete(item)}
+            >
+              Delete
+            </div>
+            <div
+              class="text-sky-500 cursor-pointer font-semibold"
+              on:click={() => handleEdit(item)}
+            >
+              Edit
+            </div>
           </div>
         </div>
-      </div>
-    {/each}
+      {/each}
+    {/if}
   </div>
 
   {#if $isOverlayOpen}
