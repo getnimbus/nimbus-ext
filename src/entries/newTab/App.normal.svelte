@@ -73,14 +73,6 @@
       },
     ],
   };
-
-  const handleNavigateOptionPage = () => {
-    const id = browser.runtime.id;
-    window.open(
-      `chrome-extension://${id}/src/entries/options/index.html`,
-      "_blank"
-    );
-  };
 </script>
 
 <div class="max-w-[1440px] m-auto w-[90%] h-full py-6">
@@ -90,9 +82,10 @@
       <div class="title-2">Today update</div>
     </div>
     <div class="flex justify-between items-center gap-6">
-      <div
+      <a
+        href={`chrome-extension://${browser.runtime.id}/src/entries/options/index.html`}
+        target="_blank"
         class="flex flex-col items-center gap-1 cursor-pointer"
-        on:click={handleNavigateOptionPage}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -114,7 +107,7 @@
           />
         </svg>
         <div>Settings</div>
-      </div>
+      </a>
       <div class="bg-sky-200 w-[48px] h-[48px] rounded-full overflow-hidden">
         <img class="w-full h-full object-contain" src={logo} alt="avatar" />
       </div>
