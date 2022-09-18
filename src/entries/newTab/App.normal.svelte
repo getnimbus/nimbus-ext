@@ -20,7 +20,7 @@
       },
     ],
     chart: {
-      height: 465,
+      height: 453,
       type: "area",
       toolbar: {
         show: false,
@@ -58,6 +58,7 @@
     series: [44, 55, 41, 17, 15],
     chart: {
       type: "donut",
+      height: 465,
     },
     responsive: [
       {
