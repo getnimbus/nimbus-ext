@@ -83,6 +83,8 @@
         });
 
       e.target.reset();
+
+      getListAddress();
     } else {
       console.log("Invalid Form");
     }
@@ -107,7 +109,7 @@
         errors["address"] = {
           ...errors["address"],
           required: true,
-          msg: "Please enter your address again",
+          msg: "Invalid address, please try input again",
         };
         return;
       }
@@ -130,6 +132,8 @@
 
         e.target.reset();
         isOverlayOpen.set(false);
+
+        getListAddress();
       }
     } else {
       console.log("Invalid Form");
@@ -149,6 +153,8 @@
         .then(() => {
           console.log("save address to sync storage");
         });
+
+      getListAddress();
     }
   };
 
@@ -160,17 +166,11 @@
   onMount(() => {
     getListAddress();
   });
-
-  $: {
-    if (listAddress) {
-      getListAddress();
-    }
-  }
 </script>
 
 <div class="flex flex-col gap-2">
   <div class="title-3 text-gray-500 mb-2">My address</div>
-  <form on:submit|preventDefault={onSubmit} class="flex gap-3">
+  <form on:submit|preventDefault={onSubmit} class="flex gap-2">
     <div class="relative">
       <input
         type="text"
@@ -178,7 +178,7 @@
         name="address"
         placeholder="Address..."
         value=""
-        class="input-2 input-border w-[240px] p-3"
+        class="input-2 input-border w-[400px] p-3"
         on:blur={onBlur}
       />
       {#if errors.address && errors.address.required}
@@ -194,7 +194,7 @@
         name="label"
         placeholder="Label..."
         value=""
-        class="input-2 input-border w-[240px] p-3"
+        class="input-2 input-border w-[400px] p-3"
         on:blur={onBlur}
       />
       {#if errors.label && errors.label.required}
