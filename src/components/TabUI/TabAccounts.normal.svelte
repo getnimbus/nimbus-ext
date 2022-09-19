@@ -212,7 +212,8 @@
         name="address"
         placeholder="Address..."
         value=""
-        class="input-2 input-border w-[500px] p-3"
+        class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-[500px] p-3"
+        class:input-border-error={errors.address && errors.address.required}
         on:blur={onBlur}
       />
       {#if errors.address && errors.address.required}
@@ -228,7 +229,8 @@
         name="label"
         placeholder="Label..."
         value=""
-        class="input-2 input-border w-[200px] p-3"
+        class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-[200px] p-3"
+        class:input-border-error={errors.label && errors.label.required}
         on:blur={onBlur}
       />
       {#if errors.label && errors.label.required}
@@ -290,18 +292,20 @@
 
     <form
       on:submit|preventDefault={onSubmitEdit}
-      class="flex flex-col gap-5 mt-4"
+      class="flex flex-col gap-2 mt-4"
     >
-      <div class="flex items-center gap-2">
-        <div class="w-12">Address:</div>
-        <div class="relative flex-[0.945]">
+      <div class="flex flex-col gap-1">
+        <div class="text-sm font-medium text-gray-700">Address</div>
+        <div class="relative w-[485px]">
           <input
             type="text"
             id="address"
             name="address"
             placeholder="Address..."
             bind:value={selectedItemEdit.address}
-            class="input-2 input-border w-full p-3"
+            class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
+            class:input-border-error={errorsEdit.address &&
+              errorsEdit.address.required}
             on:blur={onBlurEdit}
           />
           {#if errorsEdit.address && errorsEdit.address.required}
@@ -311,16 +315,22 @@
           {/if}
         </div>
       </div>
-      <div class="flex items-center gap-2">
-        <div class="w-12">Label:</div>
-        <div class="relative flex-[0.945]">
+      <div
+        class="flex flex-col gap-1"
+        class:form-item-translate={errorsEdit.address &&
+          errorsEdit.address.required}
+      >
+        <div class="text-sm font-medium text-gray-700">Label</div>
+        <div class="relative w-[485px]">
           <input
             type="text"
             id="label"
             name="label"
             placeholder="Label..."
             bind:value={selectedItemEdit.label}
-            class="input-2 input-border w-full p-3"
+            class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
+            class:input-border-error={errorsEdit.label &&
+              errorsEdit.label.required}
             on:blur={onBlurEdit}
           />
           {#if errorsEdit.label && errorsEdit.label.required}
@@ -330,12 +340,17 @@
           {/if}
         </div>
       </div>
-      <div class="flex gap-2">
-        <button type="submit" class="btn-primary flex-1 uppercase">Edit</button>
+      <div
+        class="flex gap-2 mt-1"
+        class:form-item-translate={(errorsEdit.label &&
+          errorsEdit.label.required) ||
+          (errorsEdit.address && errorsEdit.address.required)}
+      >
         <button
-          class="btn-secondary input-border flex-1 uppercase"
+          class="btn-secondary btn-border input-border flex-1 uppercase"
           on:click={() => (isOpenEditModal = false)}>Cancel</button
         >
+        <button type="submit" class="btn-primary flex-1 uppercase">Edit</button>
       </div>
     </form>
   </AppOverlay>
@@ -343,6 +358,12 @@
 
 <style>
   .input-border {
+    border: 1px solid rgb(229, 231, 235);
+  }
+  .input-border-error {
+    border: 1px solid red;
+  }
+  .btn-border {
     border: 1px solid skyblue;
   }
   .table-border {
@@ -350,5 +371,9 @@
   }
   .item-table-border {
     border-bottom: 0.5px solid rgb(229, 231, 235);
+  }
+  .form-item-translate {
+    transform: translateY(9px);
+    transition: all;
   }
 </style>
