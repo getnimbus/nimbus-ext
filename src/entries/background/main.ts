@@ -106,6 +106,16 @@ const fetchTokenInfo = async (id) => {
   return JSON.stringify({ priceData: priceData, coinData: coinData });
 };
 
+const fetchPieChartData = async () => {
+  // const listAddress = JSON.parse(
+  //   (await browser.storage.sync.get("listAddress")).listAddress
+  // );
+  const data = await fetch(
+    `https://utils.getnimbus.xyz/portfolio/${'0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb'}`
+  ).then((response) => response.json());
+  return JSON.stringify(data);
+}
+
 browser.runtime.onStartup.addListener(async () => {
   console.log("onStartup....");
   await fetchBasicData();
@@ -207,6 +217,14 @@ onMessage("getListAddress", async () => {
     return [];
   }
 })
+
+onMessage("getPieChartData", async () => {
+  try {
+    return JSON.parse(await fetchPieChartData());
+  } catch (e) {
+    return [];
+  }
+});
 
 onMessage("trackEvent", async ({ data: { type, payload } }) => {
   try {

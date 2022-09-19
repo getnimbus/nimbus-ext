@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
+  import { sendMessage } from "webext-bridge";
   import { chart } from "svelte-apexcharts";
 
   import TxCardInfo from "~/components/TxCardInfo.normal.svelte";
@@ -73,6 +75,18 @@
       },
     ],
   };
+
+  let pieChartData = [];
+
+  const getPieChartData = async () => {
+    const data = (await sendMessage("getPieChartData", undefined)) as any[];
+    console.log("data pie chart: ", data);
+    pieChartData = data;
+  };
+
+  onMount(() => {
+    getPieChartData();
+  });
 </script>
 
 <div class="max-w-[1440px] m-auto w-[90%] h-full py-6">
