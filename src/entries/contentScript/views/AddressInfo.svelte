@@ -16,7 +16,7 @@
   import CoinGekoIcon from "../assets/coingecko-logo.png";
   import CoinDefaultIcon from "../assets/coin-default.svg";
   import { track } from "~/lib/data-tracking";
-  import { nimbus } from "./network";
+  import { nimbus } from "../../../lib/network";
 
   export let address;
 

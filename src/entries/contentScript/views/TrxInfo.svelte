@@ -2,7 +2,7 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import { nimbus } from "./network";
+  import { nimbus } from "../../../lib/network";
   import { chainIdData } from "./utils";
   import { isEmpty, get } from "lodash";
   import moment from "moment";

@@ -5,7 +5,7 @@
   import { quintOut } from "svelte/easing";
 
   import "./Start.svelte";
-  import { nimbus } from "~/entries/contentScript/views/network";
+  import { nimbus } from "~/lib/network";
   export let hidden = () => {};
 
   const stars = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }];

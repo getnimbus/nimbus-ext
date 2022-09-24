@@ -2,7 +2,8 @@ import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
 import dayjs from "dayjs";
 import { isEmpty } from "lodash";
-import { coinGeko, mixpanel } from "../contentScript/views/network";
+import { coinGeko, mixpanel, nimbus } from "../../lib/network";
+import { cacheOrAPI } from "./utils";
 
 browser.runtime.onInstalled.addListener(() => {
   console.log("Extension installed");
@@ -29,9 +30,8 @@ browser.browserAction.onClicked.addListener(() => {
 });
 
 const fetchBasicData = async () => {
-  const list = await fetch("https://api.coingecko.com/api/v3/search").then(
-    (response) => response.json()
-  );
+  const list = await coinGeko.get("/search").then((response) => response.data);
+  console.log(list);
   browser.storage.local
     .set({ coinList: JSON.stringify(list.coins) })
     .then(() => {
@@ -40,9 +40,9 @@ const fetchBasicData = async () => {
 };
 
 const fetchConfigPages = async () => {
-  const listConfigPages = await fetch(
-    "https://utils.getnimbus.xyz/config/pages"
-  ).then((response) => response.json());
+  const listConfigPages = await nimbus
+    .get("/config/pages")
+    .then((response) => response.data);
   browser.storage.local
     .set({ configPageList: JSON.stringify(listConfigPages.data) })
     .then(() => {
@@ -51,9 +51,9 @@ const fetchConfigPages = async () => {
 };
 
 const fetchSearchData = async (search) => {
-  const list = await fetch(
-    `https://api.coingecko.com/api/v3/search?query=${search}`
-  ).then((response) => response.json());
+  const list = await coinGeko
+    .get(`/search?query=${search}`)
+    .then((response) => response.data);
   return JSON.stringify(list.coins);
 };
 
@@ -67,7 +67,7 @@ const fetchChartData = async (symbol) => {
     },
   };
   const chart = await coinGeko
-    .get(`coins/${symbol}/market_chart/range`, params)
+    .get(`/coins/${symbol}/market_chart/range`, params)
     .then((response) => response);
 
   browser.storage.local
@@ -83,11 +83,11 @@ const fetchChartData = async (symbol) => {
 const fetchTokenInfo = async (id) => {
   const [priceData, coinData] = await Promise.all([
     coinGeko
-      .get(`simple/price?ids=${id}&vs_currencies=usd`)
+      .get(`/simple/price?ids=${id}&vs_currencies=usd`)
       .then((response) => response.data),
     coinGeko
       .get(
-        `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`
+        `/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`
       )
       .then((response) => response.data),
   ]);
@@ -206,7 +206,7 @@ onMessage("getListAddress", async () => {
   } catch (error) {
     return [];
   }
-})
+});
 
 onMessage("trackEvent", async ({ data: { type, payload } }) => {
   try {
@@ -234,6 +234,16 @@ onMessage("trackEvent", async ({ data: { type, payload } }) => {
     return false;
   }
 });
+
+// onMessage("getAddressNews", async ({ data: { type, payload } }) => {
+//   const address = "0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"; // TODO: Get me from address list;
+//   console.log("Start fetch news");
+//   return await cacheOrAPI(
+//     `news-${address}`,
+//     () => nimbus.get(`/news/${address}`).then((res) => res.data),
+//     { defaultValue: [], ttl: 5 * 60 }
+//   );
+// });
 
 // Run on init
 fetchBasicData();

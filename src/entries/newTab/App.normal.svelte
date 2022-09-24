@@ -1,20 +1,22 @@
 <script lang="ts">
   import * as browser from "webextension-polyfill";
+  import { sendMessage } from "webext-bridge";
   import { chart } from "svelte-apexcharts";
 
   import TxCardInfo from "~/components/TxCardInfo.normal.svelte";
   import NewCard from "~/components/NewCard.normal.svelte";
 
-  import logo from "../../assets/logo.svg";
+  import logo from "../../assets/user.png";
+  import { onMount } from "svelte";
 
   let optionLineChart = {
     series: [
       {
-        name: "series1",
+        name: "USD",
         data: [31, 40, 28, 51, 42, 109, 100],
       },
       {
-        name: "series2",
+        name: "BTC",
         data: [11, 32, 45, 32, 34, 52, 41],
       },
     ],
@@ -73,6 +75,15 @@
       },
     ],
   };
+  // const fetchAddressNews = async () => {
+  //   console.log("Fetch news");
+  //   const data = (await sendMessage("coinList", undefined)) as any;
+  //   console.log(data);
+  // };
+
+  onMount(() => {
+    // fetchAddressNews();
+  });
 </script>
 
 <div class="max-w-[1440px] m-auto w-[90%] h-full py-6">
@@ -153,8 +164,9 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
+<!-- <style windi:preflights:global windi:safelist:global>
   .border {
     border: 0.5px solid rgb(229, 231, 235);
   }
-</style>
+</style> -->
+<style windi:preflights:global windi:safelist:global></style>

@@ -2,7 +2,7 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import { coinGeko } from "./network";
+  import { coinGeko } from "../../../lib/network";
   import { sendMessage } from "webext-bridge";
   import { formatCurrency, getCgLogo } from "./utils";
 
