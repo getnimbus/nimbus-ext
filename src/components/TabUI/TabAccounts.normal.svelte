@@ -82,7 +82,7 @@
 
   const onSubmit = (e) => {
     const formData = new FormData(e.target);
-    const regexETHAddress = /0x[a-fA-F0-9]{40}/g;
+    const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
 
     const data: any = {};
     for (let field of formData) {
@@ -95,7 +95,7 @@
     if (
       !Object.keys(errors).some((inputName) => errors[inputName]["required"])
     ) {
-      if (data.address && !data.address.match(regexETHAddress)) {
+      if (data.address && !regexETHAddress.test(data.address)) {
         errors["address"] = {
           ...errors["address"],
           required: true,
@@ -124,7 +124,7 @@
 
   const onSubmitEdit = (e) => {
     const formData = new FormData(e.target);
-    const regexETHAddress = /0x[a-fA-F0-9]{40}/g;
+    const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
 
     const data: any = {};
     for (let field of formData) {
@@ -139,7 +139,7 @@
         (inputName) => errorsEdit[inputName]["required"]
       )
     ) {
-      if (data.address && !data.address.match(regexETHAddress)) {
+      if (data.address && !regexETHAddress.test(data.address)) {
         errorsEdit["address"] = {
           ...errorsEdit["address"],
           required: true,

@@ -35,6 +35,7 @@
     "axios": "^0.27.2",
     "bind-mousetrap-global": "^1.0.1",
     "dayjs": "^1.11.4",
+    "flowbite-svelte": "^0.27.1",
     "lightweight-charts": "^3.8.0",
     "lodash": "^4.17.21",
     "mark.js": "^8.11.1",

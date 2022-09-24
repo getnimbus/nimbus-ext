@@ -79,9 +79,16 @@
   let pieChartData = [];
 
   const getPieChartData = async () => {
-    const data = (await sendMessage("getPieChartData", undefined)) as any[];
-    console.log("data pie chart: ", data);
-    pieChartData = data;
+    try {
+      const data = await fetch(
+        `https://utils.getnimbus.xyz/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`
+      ).then((response) => response.json());
+
+      console.log("data pie chart: ", data);
+      // pieChartData = data;
+    } catch (e) {
+      console.log("e: ", e);
+    }
   };
 
   onMount(() => {
