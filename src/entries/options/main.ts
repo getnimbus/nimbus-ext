@@ -1,7 +1,5 @@
 import "@webcomponents/webcomponentsjs/webcomponents-bundle.js";
-import App from "./App.normal.svelte";
-
-// customElements.define("my-element", App);
+import App from "./App.svelte";
 
 new App({
   target: document.getElementById("app"),

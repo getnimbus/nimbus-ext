@@ -11,8 +11,8 @@
   import addGlobalBinds from "bind-mousetrap-global";
   addGlobalBinds(Mousetrap);
 
-  import "~/components/ResetStyle.svelte";
-  import "./NativeTokenInfo.svelte";
+  import "~/components/ResetStyle.custom.svelte";
+  import "./NativeTokenInfo.custom.svelte";
   import { track } from "~/lib/data-tracking";
 
   let listPageConfig = [];

@@ -1,9 +1,9 @@
 <script>
-  import TabAccounts from "~/components/TabUI/TabAccounts.normal.svelte";
-  import TabDashboard from "~/components/TabUI/TabDashboard.normal.svelte";
-  import TabHighlight from "~/components/TabUI/TabHighlight.normal.svelte";
-  import TabNotification from "~/components/TabUI/TabNotification.normal.svelte";
-  import Icon from "~/components/TabUI/Icon.normal.svelte";
+  // import TabAccounts from "~/components/TabUI/TabAccounts.normal.svelte";
+  // import TabDashboard from "~/components/TabUI/TabDashboard.normal.svelte";
+  // import TabHighlight from "~/components/TabUI/TabHighlight.normal.svelte";
+  // import TabNotification from "~/components/TabUI/TabNotification.normal.svelte";
+  // import Icon from "~/components/TabUI/Icon.normal.svelte";
 
   let activeTabValue = 1;
 

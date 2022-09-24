@@ -6,9 +6,9 @@
   import { sendMessage } from "webext-bridge";
   import { formatCurrency, getCgLogo } from "./utils";
 
-  import "~/components/ResetStyle.svelte";
-  import "./CoinChart.svelte";
-  import "./PriceConvert.svelte";
+  import "~/components/ResetStyle.custom.svelte";
+  import "./CoinChart.custom.svelte";
+  import "./PriceConvert.custom.svelte";
 
   export let name;
   export let id;

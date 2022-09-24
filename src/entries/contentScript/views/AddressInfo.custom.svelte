@@ -5,10 +5,10 @@
   import detectEthereumProvider from "@metamask/detect-provider";
   import { formatBalance, formatCurrency } from "./utils";
 
-  import "~/components/Loading.svelte";
-  import "~/components/Footer.svelte";
-  import "./CoinChart.svelte";
-  import "./PriceConvert.svelte";
+  import "~/components/Loading.custom.svelte";
+  import "~/components/Footer.custom.svelte";
+  import "./CoinChart.custom.svelte";
+  import "./PriceConvert.custom.svelte";
 
   import SmartContractIcon from "../assets/smart-contract.png";
   import MetaMaskIcon from "../assets/metamask-icon.png";

@@ -6,7 +6,7 @@
     getTokenLogo,
     shorterAddress,
   } from "~/entries/contentScript/views/utils";
-  import Tooltip from "../Tooltip.svelte";
+  import Tooltip from "../Tooltip.custom.svelte";
 
   export let name;
   export let address;

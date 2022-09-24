@@ -2,7 +2,7 @@
 
 <script>
   import tooltip from "./tooltip";
-  import "./TrxInfo.svelte";
+  import "./TrxInfo.custom.svelte";
   export let hash;
 </script>
 

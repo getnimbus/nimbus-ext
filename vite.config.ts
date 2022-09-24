@@ -14,29 +14,12 @@ export default defineConfig(({ mode }) => {
     plugins: [
       svelte({
         preprocess: [sveltePreprocess(), windi({})],
-        exclude: ["**/*.normal.svelte"],
-        compilerOptions: {
-          customElement: true,
-        },
         experimental: {
           dynamicCompileOptions({ filename, compileOptions }) {
-            // Dynamically set hydration per Svelte file
-            console.log("\nfile name", filename);
-
-            return compileOptions;
-          },
-        },
-      }),
-      svelte({
-        preprocess: [sveltePreprocess(), windi({})],
-        include: ["**/*.normal.svelte"],
-        extensions: [".normal.svelte"],
-        experimental: {
-          dynamicCompileOptions({ filename, compileOptions }) {
-            // Dynamically set hydration per Svelte file
-            console.log("\nnormal file name", filename);
-
-            return compileOptions;
+            return {
+              ...compileOptions,
+              customElement: filename.endsWith(".custom.svelte"),
+            };
           },
         },
       }),

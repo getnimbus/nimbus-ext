@@ -2,9 +2,10 @@
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
   import { chart } from "svelte-apexcharts";
+  import { Avatar } from "flowbite-svelte";
 
-  import TxCardInfo from "~/components/TxCardInfo.normal.svelte";
-  import NewCard from "~/components/NewCard.normal.svelte";
+  import TxCardInfo from "~/components/TxCardInfo.svelte";
+  import NewCard from "~/components/NewCard.svelte";
 
   import logo from "../../assets/user.png";
   import { onMount } from "svelte";
@@ -119,8 +120,9 @@
         </svg>
         <div>Settings</div>
       </a>
-      <div class="bg-sky-200 w-[48px] h-[48px] rounded-full overflow-hidden">
-        <img class="w-full h-full object-contain" src={logo} alt="avatar" />
+      <div class="w-[48px] h-[48px] rounded-full overflow-hidden">
+        <Avatar src={logo} />
+        <!-- <img class="w-full h-full object-contain" src={logo} alt="avatar" /> -->
       </div>
     </div>
   </div>

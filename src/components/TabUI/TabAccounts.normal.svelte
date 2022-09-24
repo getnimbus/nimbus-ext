@@ -6,7 +6,7 @@
   // import { sendMessage } from "webext-bridge";
   import { v4 as uuidv4 } from "uuid";
 
-  import AppOverlay from "../Overlay.normal.svelte";
+  import AppOverlay from "../Overlay.svelte";
 
   let errors: any = {};
   let errorsEdit: any = {};
