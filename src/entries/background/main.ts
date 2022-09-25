@@ -31,7 +31,6 @@ browser.browserAction.onClicked.addListener(() => {
 
 const fetchBasicData = async () => {
   const list = await coinGeko.get("/search").then((response) => response.data);
-  console.log(list);
   browser.storage.local
     .set({ coinList: JSON.stringify(list.coins) })
     .then(() => {
@@ -110,9 +109,18 @@ const fetchPieChartData = async () => {
   // const listAddress = JSON.parse(
   //   (await browser.storage.sync.get("listAddress")).listAddress
   // );
+
   const data = await fetch(
     `https://utils.getnimbus.xyz/portfolio/${'0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb'}`
-  ).then((response) => response.json());
+  ).then((response) => response);
+
+  browser.storage.local
+    .set({ dataPieChart: JSON.stringify(data) })
+    .then(() => {
+      console.log("Loaded data pie chart");
+    })
+    .catch((error) => console.error(error));
+
   return JSON.stringify(data);
 }
 
@@ -220,7 +228,14 @@ onMessage("getListAddress", async () => {
 
 onMessage("getPieChartData", async () => {
   try {
-    return JSON.parse(await fetchPieChartData());
+    const dataLocal = (await browser.storage.local.get("dataPieChart")).dataPieChart
+    if (dataLocal) {
+      return JSON.parse(
+        dataLocal
+      );
+    } else {
+      return JSON.parse(await fetchPieChartData());
+    }
   } catch (e) {
     return [];
   }

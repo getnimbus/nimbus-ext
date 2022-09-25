@@ -4,11 +4,14 @@
   import { sendMessage } from "webext-bridge";
   import { chart } from "svelte-apexcharts";
   import { Avatar } from "flowbite-svelte";
+  import numeral from "numeral";
 
   import TxCardInfo from "~/components/TxCardInfo.svelte";
   import NewCard from "~/components/NewCard.svelte";
 
   import logo from "../../assets/user.png";
+
+  let totalBalanceUsd = 0;
 
   let optionLineChart = {
     series: [
@@ -57,7 +60,26 @@
   };
 
   let optionPieChart = {
-    series: [44, 55, 41, 17, 15],
+    series: [],
+    labels: [],
+    plotOptions: {
+      pie: {
+        donut: {
+          labels: {
+            show: true,
+            total: {
+              show: true,
+              showAlways: true,
+              label: "Total balance (USD)",
+              color: "#000",
+              formatter: () => {
+                return totalBalanceUsd;
+              },
+            },
+          },
+        },
+      },
+    },
     chart: {
       type: "donut",
       height: 465,
@@ -77,16 +99,31 @@
     ],
   };
 
-  let pieChartData = [];
-
   const getPieChartData = async () => {
     try {
       const data = await fetch(
         `https://utils.getnimbus.xyz/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`
       ).then((response) => response.json());
 
-      console.log("data pie chart: ", data);
-      // pieChartData = data;
+      const dataFormat = data.data.assets.filter((item) => {
+        return parseFloat(item.balanceUsd) > 0;
+      });
+
+      const balanceList = dataFormat.map((item) => {
+        return parseFloat(numeral(item.balanceUsd).format("0,0.0000"));
+      });
+
+      const tokenList = dataFormat.map((item) => {
+        return item.tokenName;
+      });
+
+      totalBalanceUsd = numeral(data.data.totalBalanceUsd).format("0,0.0000");
+
+      optionPieChart = {
+        ...optionPieChart,
+        series: balanceList,
+        labels: tokenList,
+      };
     } catch (e) {
       console.log("e: ", e);
     }
