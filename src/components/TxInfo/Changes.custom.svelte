@@ -1,7 +1,7 @@
 <svelte:options tag="change-list" />
 
 <script>
-  import "./MoneyMove.svelte";
+  import "./MoneyMove.custom.svelte";
   import NoResultsIcon from "~/entries/contentScript/assets/no-results.png";
   import { getLocalImg } from "~/entries/contentScript/views/utils";
 

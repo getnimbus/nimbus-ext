@@ -3,8 +3,8 @@
 <script>
   import numeral from "numeral";
 
-  import "../Arrow.svelte";
-  import "./Entity.svelte";
+  import "../Arrow.custom.svelte";
+  import "./Entity.custom.svelte";
 
   export let data;
   export let id;

@@ -26,7 +26,10 @@ const sharedManifest = {
   chrome_url_overrides: {
     newtab: "src/entries/newTab/index.html",
   },
-  web_accessible_resources: ["src/entries/newTab/index.html"],
+  web_accessible_resources: [
+    // "src/entries/newTab/index.html",
+    // "src/entries/options/index.html",
+  ],
   permissions: [
     "tabs",
     "storage",

@@ -3,10 +3,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
-  import { sendMessage } from "webext-bridge";
+  // import { sendMessage } from "webext-bridge";
   import { v4 as uuidv4 } from "uuid";
 
-  import AppOverlay from "../Overlay.normal.svelte";
+  import AppOverlay from "../Overlay.svelte";
 
   let errors: any = {};
   let errorsEdit: any = {};
@@ -175,7 +175,7 @@
   };
 
   const getListAddress = async () => {
-    listAddress = (await sendMessage("getListAddress", undefined)) as any[];
+    // listAddress = (await sendMessage("getListAddress", undefined)) as any[];
   };
 
   const handleDelete = (item) => {

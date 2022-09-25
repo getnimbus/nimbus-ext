@@ -3,20 +3,21 @@
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
   import { chart } from "svelte-apexcharts";
+  import { Avatar } from "flowbite-svelte";
 
-  import TxCardInfo from "~/components/TxCardInfo.normal.svelte";
-  import NewCard from "~/components/NewCard.normal.svelte";
+  import TxCardInfo from "~/components/TxCardInfo.svelte";
+  import NewCard from "~/components/NewCard.svelte";
 
-  import logo from "../../assets/logo.svg";
+  import logo from "../../assets/user.png";
 
   let optionLineChart = {
     series: [
       {
-        name: "series1",
+        name: "USD",
         data: [31, 40, 28, 51, 42, 109, 100],
       },
       {
-        name: "series2",
+        name: "BTC",
         data: [11, 32, 45, 32, 34, 52, 41],
       },
     ],
@@ -129,8 +130,9 @@
         </svg>
         <div>Settings</div>
       </a>
-      <div class="bg-sky-200 w-[48px] h-[48px] rounded-full overflow-hidden">
-        <img class="w-full h-full object-contain" src={logo} alt="avatar" />
+      <div class="w-[48px] h-[48px] rounded-full overflow-hidden">
+        <Avatar src={logo} />
+        <!-- <img class="w-full h-full object-contain" src={logo} alt="avatar" /> -->
       </div>
     </div>
   </div>
@@ -174,8 +176,9 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
+<!-- <style windi:preflights:global windi:safelist:global>
   .border {
     border: 0.5px solid rgb(229, 231, 235);
   }
-</style>
+</style> -->
+<style windi:preflights:global windi:safelist:global></style>

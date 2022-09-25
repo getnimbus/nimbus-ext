@@ -14,15 +14,14 @@ export default defineConfig(({ mode }) => {
     plugins: [
       svelte({
         preprocess: [sveltePreprocess(), windi({})],
-        exclude: ["**/*.normal.svelte"],
-        compilerOptions: {
-          customElement: true,
+        experimental: {
+          dynamicCompileOptions({ filename, compileOptions }) {
+            return {
+              ...compileOptions,
+              customElement: filename.endsWith(".custom.svelte"),
+            };
+          },
         },
-      }),
-      svelte({
-        preprocess: [sveltePreprocess(), windi({})],
-        include: ["**/*.normal.svelte"],
-        extensions: [".normal.svelte"],
       }),
       webExtension({
         manifest: getManifest(Number(env.MANIFEST_VERSION)),
@@ -42,18 +41,18 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       rollupOptions: {
-        input: {
-          newTab: path.resolve(__dirname, "./src/entries/newTab/index.html"),
-          option: path.resolve(__dirname, "./src/entries/options/index.html"),
-          contentScript: path.resolve(
-            __dirname,
-            "./src/entries/contentScript/main.ts"
-          ),
-        },
+        // input: {
+        //   newTab: path.resolve(__dirname, "./src/entries/newTab/index.html"),
+        //   option: path.resolve(__dirname, "./src/entries/options/index.html"),
+        //   contentScript: path.resolve(
+        //     __dirname,
+        //     "./src/entries/contentScript/main.ts"
+        //   ),
+        // },
         output: {
           entryFileNames: `assets/[name].js`,
           chunkFileNames: `assets/[name].js`,
-          assetFileNames: `assets/[name].[ext]`,
+          assetFileNames: `assets/[name].[hash].[ext]`,
         },
       },
       sourcemap: env.WATCH === "true" ? "inline" : false,
