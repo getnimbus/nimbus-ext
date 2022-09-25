@@ -1,9 +1,9 @@
 <script>
-  // import TabAccounts from "~/components/TabUI/TabAccounts.normal.svelte";
-  // import TabDashboard from "~/components/TabUI/TabDashboard.normal.svelte";
-  // import TabHighlight from "~/components/TabUI/TabHighlight.normal.svelte";
-  // import TabNotification from "~/components/TabUI/TabNotification.normal.svelte";
-  // import Icon from "~/components/TabUI/Icon.normal.svelte";
+  import TabAccounts from "~/components/TabUI/TabAccounts.svelte";
+  import TabDashboard from "~/components/TabUI/TabDashboard.svelte";
+  import TabHighlight from "~/components/TabUI/TabHighlight.svelte";
+  import TabNotification from "~/components/TabUI/TabNotification.svelte";
+  import Icon from "~/components/TabUI/Icon.svelte";
 
   let activeTabValue = 1;
 
@@ -49,7 +49,7 @@
   </div>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .border-left {
     border-left: 1px solid #dee2e6;
   }

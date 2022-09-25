@@ -16,7 +16,7 @@ const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex
   const coinList: { [key: string]: string | number }[] =
     (await sendMessage("coinList", { limit: 500 })) || [];
 
-  console.info("[Nimbus 🌩] Hello world from content script");
+  console.info("[Nimbus 🌩] A bridge for users to step into the Web3 era");
 
   runMarkElement();
 
