@@ -69,7 +69,6 @@
             show: true,
             total: {
               show: true,
-              showAlways: true,
               label: "Total balance (USD)",
               color: "#000",
               formatter: () => {
