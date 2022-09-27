@@ -1783,6 +1783,14 @@ flowbite-svelte@^0.27.1:
     classnames "^2.3.2"
     flowbite "^1.5.3"
 
+flowbite-windicss-plugin@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/flowbite-windicss-plugin/-/flowbite-windicss-plugin-0.1.2.tgz#0fbdcc57790adce080db7780fb16d0f19498cdf6"
+  integrity sha512-i8bybVuSslhPAPwVN8pTJWoZbH2klQbAo/SLquNc2eCgUiZVSrxGCHNdqmqI8pflJ554e24JuHVKw5bz3MhyNA==
+  dependencies:
+    mini-svg-data-uri "^1.4.4"
+    windicss "^3.5.6"
+
 flowbite@^1.5.3:
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/flowbite/-/flowbite-1.5.3.tgz#99f0ba31b6d9a6fa8a1c25fb9aefa575a2a5efe6"
@@ -2727,7 +2735,7 @@ min-indent@^1.0.0:
   resolved "https://registry.yarnpkg.com/min-indent/-/min-indent-1.0.1.tgz#a63f681673b30571fbe8bc25686ae746eefa9869"
   integrity sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==
 
-mini-svg-data-uri@^1.4.3:
+mini-svg-data-uri@^1.4.3, mini-svg-data-uri@^1.4.4:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/mini-svg-data-uri/-/mini-svg-data-uri-1.4.4.tgz#8ab0aabcdf8c29ad5693ca595af19dd2ead09939"
   integrity sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==
