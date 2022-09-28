@@ -1,4 +1,5 @@
 <script lang="ts">
+  import "flowbite/dist/flowbite.css";
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
