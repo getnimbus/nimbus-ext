@@ -1,4 +1,5 @@
 <script lang="ts">
+  import "flowbite/dist/flowbite.css";
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
@@ -82,6 +83,9 @@
     chart: {
       type: "donut",
       height: 465,
+    },
+    tooltip: {
+      enabled: false,
     },
     responsive: [
       {

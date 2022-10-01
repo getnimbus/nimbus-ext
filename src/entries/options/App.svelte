@@ -1,4 +1,5 @@
 <script>
+  import "flowbite/dist/flowbite.css";
   import TabAccounts from "~/components/TabUI/TabAccounts.svelte";
   import TabDashboard from "~/components/TabUI/TabDashboard.svelte";
   import TabHighlight from "~/components/TabUI/TabHighlight.svelte";
