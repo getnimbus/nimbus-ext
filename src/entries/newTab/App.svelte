@@ -84,6 +84,9 @@
       type: "donut",
       height: 465,
     },
+    tooltip: {
+      enabled: false,
+    },
     responsive: [
       {
         breakpoint: 480,
