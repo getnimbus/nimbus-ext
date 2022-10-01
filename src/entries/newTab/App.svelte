@@ -4,7 +4,7 @@
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
   import { chart } from "svelte-apexcharts";
-  import { Avatar, Button } from "flowbite-svelte";
+  import { Avatar, Button, ImagePlaceholder } from "flowbite-svelte";
   import numeral from "numeral";
 
   import TxCardInfo from "~/components/TxCardInfo.svelte";
@@ -208,6 +208,9 @@
         <NewCard />
         <NewCard />
         <NewCard />
+        <div class="rounded-lg border p-3 shadow flex gap-6 justify-between">
+          <ImagePlaceholder />
+        </div>
       </div>
       <div class="mt-4 flex justify-center">
         <Button gradient color="cyanToBlue">Suggest a content</Button>
@@ -216,9 +219,8 @@
   </div>
 </div>
 
-<!-- <style windi:preflights:global windi:safelist:global>
+<style windi:preflights:global windi:safelist:global>
   .border {
-    border: 0.5px solid rgb(229, 231, 235);
+    border: 0.2px solid rgb(229, 231, 235);
   }
-</style> -->
-<style windi:preflights:global windi:safelist:global></style>
+</style>
