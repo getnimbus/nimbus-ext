@@ -6,6 +6,17 @@
   import { sendMessage } from "webext-bridge";
   import { v4 as uuidv4 } from "uuid";
 
+  import {
+    Table,
+    TableBody,
+    TableBodyCell,
+    TableBodyRow,
+    TableHead,
+    TableHeadCell,
+    Checkbox,
+    Button,
+  } from "flowbite-svelte";
+
   import AppOverlay from "../Overlay.svelte";
 
   let errors: any = {};
@@ -197,6 +208,10 @@
     selectedItemEdit = item;
   };
 
+  const handleSelectAddress = (item) => {
+    console.log("selected address: ", item);
+  };
+
   onMount(() => {
     getListAddress();
   });
@@ -239,44 +254,57 @@
         </div>
       {/if}
     </div>
-    <button type="submit" class="btn-primary uppercase">Add Address</button>
+    <Button gradient color="cyanToBlue" type="submit">
+      <div class="uppercase">Add Address</div>
+    </Button>
   </form>
 
   <div class="table-border mt-5 rounded">
-    <div class="grid grid-cols-6 bg-gray-100 p-3 uppercase">
-      <div class="col-span-4 title-5">Address</div>
-      <div class="title-5">Label</div>
-      <div class="title-5">Action</div>
-    </div>
-
-    {#if listAddress.length <= 0}
-      <div class="text-black text-center title-5 py-3">Empty</div>
-    {:else}
-      {#each listAddress as item}
-        <div
-          class="grid grid-cols-6 items-center p-3 text-sm item-table-border"
-        >
-          <div class="col-span-4 font-medium">{item.address}</div>
-          <div class="bg-gray-100 text-gray-500 w-max px-3 py-1 rounded-xl">
-            {item.label}
-          </div>
-          <div class="flex gap-5">
-            <div
-              class="text-red-500 cursor-pointer font-semibold"
-              on:click={() => handleDelete(item)}
-            >
-              Delete
-            </div>
-            <div
-              class="text-sky-500 cursor-pointer font-semibold"
-              on:click={() => handleEdit(item)}
-            >
-              Edit
-            </div>
-          </div>
-        </div>
-      {/each}
-    {/if}
+    <Table hoverable={true}>
+      <TableHead>
+        <TableHeadCell />
+        <TableHeadCell>Address</TableHeadCell>
+        <TableHeadCell>Label</TableHeadCell>
+        <TableHeadCell>Action</TableHeadCell>
+      </TableHead>
+      <TableBody class="divide-y">
+        {#each listAddress as item}
+          <TableBodyRow>
+            <TableBodyCell>
+              <Checkbox
+                color="blue"
+                class="cursor-pointer"
+                on:click={() => handleSelectAddress(item)}
+              />
+            </TableBodyCell>
+            <TableBodyCell>
+              <div class="font-medium">
+                {item.address}
+              </div>
+            </TableBodyCell>
+            <TableBodyCell>
+              <div class="bg-gray-100 text-gray-500 w-max px-3 py-1 rounded-xl">
+                {item.label}
+              </div>
+            </TableBodyCell>
+            <TableBodyCell class="flex gap-6">
+              <div
+                class="text-red-600 hover:underline dark:text-red-500 transition-all cursor-pointer font-semibold"
+                on:click={() => handleDelete(item)}
+              >
+                Delete
+              </div>
+              <div
+                class="text-blue-600 hover:underline dark:text-blue-500 transition-all cursor-pointer font-semibold"
+                on:click={() => handleEdit(item)}
+              >
+                Edit
+              </div>
+            </TableBodyCell>
+          </TableBodyRow>
+        {/each}
+      </TableBody>
+    </Table>
   </div>
 
   <AppOverlay
@@ -341,16 +369,22 @@
         </div>
       </div>
       <div
-        class="flex gap-2 mt-1"
+        class="flex justify-end gap-2 mt-1"
         class:form-item-translate={(errorsEdit.label &&
           errorsEdit.label.required) ||
           (errorsEdit.address && errorsEdit.address.required)}
       >
-        <button
-          class="btn-secondary btn-border input-border flex-1 uppercase"
-          on:click={() => (isOpenEditModal = false)}>Cancel</button
+        <Button
+          outline
+          gradient
+          color="cyanToBlue"
+          on:click={() => (isOpenEditModal = false)}
         >
-        <button type="submit" class="btn-primary flex-1 uppercase">Edit</button>
+          <div class="uppercase text-sky-500">Cancel</div>
+        </Button>
+        <Button gradient color="cyanToBlue" type="submit">
+          <div class="uppercase">Edit</div>
+        </Button>
       </div>
     </form>
   </AppOverlay>
@@ -363,17 +397,7 @@
   .input-border-error {
     border: 1px solid red;
   }
-  .btn-border {
-    border: 1px solid skyblue;
-  }
   .table-border {
     border: 0.5px solid rgb(229, 231, 235);
-  }
-  .item-table-border {
-    border-bottom: 0.5px solid rgb(229, 231, 235);
-  }
-  .form-item-translate {
-    transform: translateY(9px);
-    transition: all;
   }
 </style>
