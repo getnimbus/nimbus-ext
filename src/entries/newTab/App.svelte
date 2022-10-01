@@ -4,7 +4,7 @@
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
   import { chart } from "svelte-apexcharts";
-  import { Avatar } from "flowbite-svelte";
+  import { Avatar, Button } from "flowbite-svelte";
   import numeral from "numeral";
 
   import TxCardInfo from "~/components/TxCardInfo.svelte";
@@ -210,7 +210,7 @@
         <NewCard />
       </div>
       <div class="mt-4 flex justify-center">
-        <button class="btn-primary w-max">Suggest a content</button>
+        <Button gradient color="cyanToBlue">Suggest a content</Button>
       </div>
     </div>
   </div>

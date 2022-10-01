@@ -21,7 +21,7 @@
       on:click|stopPropagation
     >
       <div
-        class="absolute top-2 right-3 text-4xl text-gray-500 cursor-pointer"
+        class="absolute top-2 right-3 text-4xl text-gray-500 hover:text-sky-500 transition-all cursor-pointer"
         on:click|stopPropagation={handleClose}
       >
         &times;

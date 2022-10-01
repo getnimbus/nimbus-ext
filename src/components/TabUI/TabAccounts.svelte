@@ -5,7 +5,6 @@
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
   import { v4 as uuidv4 } from "uuid";
-
   import {
     Table,
     TableBody,
@@ -24,6 +23,7 @@
   let listAddress = [];
   let selectedItemEdit: any = {};
   let isOpenEditModal = false;
+  let isOpenAddModal = false;
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -218,8 +218,18 @@
 </script>
 
 <div class="flex flex-col gap-2">
-  <div class="title-3 text-gray-500 mb-2">My address</div>
-  <form on:submit|preventDefault={onSubmit} class="flex gap-2">
+  <div class="flex justify-between items-center">
+    <div class="title-3 text-gray-500">My address</div>
+    <Button
+      gradient
+      color="cyanToBlue"
+      on:click={() => (isOpenAddModal = true)}
+    >
+      <div class="uppercase">Add Address</div>
+    </Button>
+  </div>
+
+  <!-- <form on:submit|preventDefault={onSubmit} class="flex gap-2">
     <div class="relative">
       <input
         type="text"
@@ -257,9 +267,9 @@
     <Button gradient color="cyanToBlue" type="submit">
       <div class="uppercase">Add Address</div>
     </Button>
-  </form>
+  </form> -->
 
-  <div class="table-border mt-5 rounded">
+  <div class="table-border mt-2 rounded">
     <Table hoverable={true}>
       <TableHead>
         <TableHeadCell />
@@ -313,16 +323,15 @@
   >
     <div class="flex flex-col gap-1 items-center">
       <div class="title-4 text-gray-600 font-semibold">Edit Your Address</div>
-      <div class="text-sm text-gray-500">
+      <div class="text-sm text-gray-500 w-9/12 text-center">
         Edit your address will make change the information at page new tab
       </div>
     </div>
-
     <form
       on:submit|preventDefault={onSubmitEdit}
       class="flex flex-col gap-2 mt-4"
     >
-      <div class="flex flex-col gap-1">
+      <div class="flex flex-col gap-1 w-[485px]">
         <div class="text-sm font-medium text-gray-700">Address</div>
         <div class="relative w-[485px]">
           <input
@@ -344,12 +353,12 @@
         </div>
       </div>
       <div
-        class="flex flex-col gap-1"
+        class="flex flex-col gap-1 w-[485px]"
         class:form-item-translate={errorsEdit.address &&
           errorsEdit.address.required}
       >
         <div class="text-sm font-medium text-gray-700">Label</div>
-        <div class="relative w-[485px]">
+        <div class="relative">
           <input
             type="text"
             id="label"
@@ -378,12 +387,93 @@
           outline
           gradient
           color="cyanToBlue"
-          on:click={() => (isOpenEditModal = false)}
+          on:click={() => {
+            errorsEdit = {};
+            isOpenEditModal = false;
+          }}
         >
           <div class="uppercase text-sky-500">Cancel</div>
         </Button>
         <Button gradient color="cyanToBlue" type="submit">
           <div class="uppercase">Edit</div>
+        </Button>
+      </div>
+    </form>
+  </AppOverlay>
+
+  <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
+    <div class="flex flex-col gap-1 items-center">
+      <div class="title-4 text-gray-600 font-semibold">Add Your Address</div>
+      <div class="text-sm text-gray-500 w-9/12 text-center">
+        Add your address will give you more option to see the information at
+        page new tab
+      </div>
+    </div>
+    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
+      <div
+        class="flex flex-col gap-1 w-[530px]"
+        class:form-item-translate={errors.address && errors.address.required}
+      >
+        <div class="text-sm font-medium text-gray-700">Address</div>
+        <div class="relative">
+          <input
+            type="text"
+            id="address"
+            name="address"
+            placeholder="Address..."
+            value=""
+            class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
+            class:input-border-error={errors.address && errors.address.required}
+            on:blur={onBlur}
+          />
+          {#if errors.address && errors.address.required}
+            <div class="text-red-500 absolute -bottom-4 left-0">
+              {errors.address.msg}
+            </div>
+          {/if}
+        </div>
+      </div>
+      <div
+        class="flex flex-col gap-1 w-[530px]"
+        class:form-item-translate={errors.label && errors.label.required}
+      >
+        <div class="text-sm font-medium text-gray-700">Label</div>
+        <div class="relative">
+          <input
+            type="text"
+            id="label"
+            name="label"
+            placeholder="Label..."
+            value=""
+            class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
+            class:input-border-error={errors.label && errors.label.required}
+            on:blur={onBlur}
+          />
+          {#if errors.label && errors.label.required}
+            <div class="text-red-500 absolute -bottom-4 left-0">
+              {errors.label.msg}
+            </div>
+          {/if}
+        </div>
+      </div>
+      <div
+        class="flex justify-end gap-2 mt-1"
+        class:form-item-translate={(errors.label && errors.label.required) ||
+          (errors.address && errors.address.required)}
+      >
+        <Button
+          outline
+          gradient
+          color="cyanToBlue"
+          on:click={() => {
+            errors = {};
+            isOpenAddModal = false;
+          }}
+        >
+          <div class="uppercase text-sky-500">Cancel</div>
+        </Button>
+        <Button gradient color="cyanToBlue" type="submit">
+          <div class="uppercase">Add</div>
         </Button>
       </div>
     </form>
@@ -396,6 +486,10 @@
   }
   .input-border-error {
     border: 1px solid red;
+  }
+  .form-item-translate {
+    transform: translateY(10px);
+    transition: all;
   }
   .table-border {
     border: 0.5px solid rgb(229, 231, 235);
