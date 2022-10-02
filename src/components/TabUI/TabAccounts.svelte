@@ -115,6 +115,19 @@
         return;
       }
 
+      const isDuplicatedAddress = listAddress.some((item) => {
+        return item.address === data.address;
+      });
+
+      if (isDuplicatedAddress) {
+        errors["address"] = {
+          ...errors["address"],
+          required: true,
+          msg: "This address is duplicated",
+        };
+        return;
+      }
+
       Object.assign(data, { id: uuidv4() });
 
       listAddress = [...listAddress, data];
@@ -126,6 +139,7 @@
         });
 
       e.target.reset();
+      isOpenAddModal = false;
 
       getListAddress();
     } else {
@@ -321,9 +335,9 @@
     isOpen={isOpenEditModal}
     on:close={() => (isOpenEditModal = false)}
   >
-    <div class="flex flex-col gap-1 items-center">
+    <div class="flex flex-col gap-1 items-start">
       <div class="title-4 text-gray-600 font-semibold">Edit Your Address</div>
-      <div class="text-sm text-gray-500 w-9/12 text-center">
+      <div class="text-sm text-gray-500">
         Edit your address will make change the information at page new tab
       </div>
     </div>
@@ -402,9 +416,9 @@
   </AppOverlay>
 
   <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
-    <div class="flex flex-col gap-1 items-center">
+    <div class="flex flex-col gap-1 items-start">
       <div class="title-4 text-gray-600 font-semibold">Add Your Address</div>
-      <div class="text-sm text-gray-500 w-9/12 text-center">
+      <div class="text-sm text-gray-500">
         Add your address will give you more option to see the information at
         page new tab
       </div>
@@ -488,8 +502,7 @@
     border: 1px solid red;
   }
   .form-item-translate {
-    transform: translateY(10px);
-    transition: all;
+    margin-top: 10px;
   }
   .table-border {
     border: 0.5px solid rgb(229, 231, 235);
