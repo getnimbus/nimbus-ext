@@ -137,7 +137,7 @@
   });
 </script>
 
-<div class="max-w-[1440px] m-auto w-[90%] h-full py-6">
+<div class="max-w-[2000px] m-auto w-[90%] h-full py-6">
   <div class="flex justify-between items-start">
     <div class="flex flex-col gap-2">
       <div class="title-1">Hi there,</div>

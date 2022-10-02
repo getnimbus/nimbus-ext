@@ -29,7 +29,7 @@
   };
 </script>
 
-<div class="max-w-[1440px] m-auto w-[100%] h-screen flex gap-1">
+<div class="max-w-[2000px] m-auto w-[100%] h-screen flex gap-1">
   <Sidebar asideClass="bg-gray-50 w-64">
     <SidebarWrapper>
       <img src={logo} alt="logo" class="mb-4" width={200} />
