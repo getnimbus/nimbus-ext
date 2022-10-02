@@ -1,7 +1,5 @@
-<svelte:options tag="app-tx-card-info" />
-
 <script>
-  import logo from "../assets/logo.svg";
+  import logo from "../assets/btc.png";
 </script>
 
 <div class="border-bottom pb-4 flex justify-between items-center gap-16">

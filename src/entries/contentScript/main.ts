@@ -2,9 +2,9 @@
 import Mark from "mark.js";
 import "@webcomponents/webcomponentsjs/webcomponents-bundle.js";
 
-import "./views/AddressHighlight.svelte";
-import "./views/TrxHighlight.svelte";
-import "./views/QuickSearch.svelte";
+import "./views/AddressHighlight.custom.svelte";
+import "./views/TrxHighlight.custom.svelte";
+import "./views/QuickSearch.custom.svelte";
 import { sendMessage } from "webext-bridge";
 import { track } from "~/lib/data-tracking";
 
@@ -16,7 +16,7 @@ const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex
   const coinList: { [key: string]: string | number }[] =
     (await sendMessage("coinList", { limit: 500 })) || [];
 
-  console.info("[Nimbus 🌩] Hello world from content script");
+  console.info("[Nimbus 🌩] A bridge for users to step into the Web3 era");
 
   runMarkElement();
 

@@ -1,10 +1,6 @@
 import "@webcomponents/webcomponentsjs/webcomponents-bundle.js";
-import "./App.normal.svelte";
+import App from "./App.svelte";
 
-console.log("Hello world");
-
-// TODO: Maybe we can code this page using React
-
-// new App({
-//   target: document.getElementById("app"),
-// });
+new App({
+  target: document.getElementById("app"),
+});

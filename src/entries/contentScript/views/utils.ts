@@ -1,8 +1,26 @@
 import numeral from "numeral";
 
 export const formatCurrency = (input: number) => {
-  return numeral(input).format("0,0.00");
+  return numeral(input).format("0,0.00") === "NaN" ? longNumberString(input) : numeral(input).format("0,0.00");
 };
+
+export const longNumberString = (n) => {
+  let str, str2 = '', mag, data = n.toExponential().replace('.', '').split(/e/i);
+  str = data[0], mag = Number(data[1]);
+  if (mag >= 0 && str.length > mag) {
+    mag += 1;
+    return str.substring(0, mag) + '.' + str.substring(mag);
+  }
+  if (mag < 0) {
+    while (++mag) str2 += '0';
+    return '0.' + str2 + str;
+  }
+  mag = (mag - str.length) + 1;
+  while (mag > str2.length) {
+    str2 += '0';
+  }
+  return str + str2;
+}
 
 export const formatBalance = (input: number) => {
   return numeral(input).format("0,0.00");

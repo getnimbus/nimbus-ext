@@ -2,20 +2,20 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import { nimbus } from "./network";
+  import { nimbus } from "../../../lib/network";
   import { chainIdData } from "./utils";
   import { isEmpty, get } from "lodash";
   import moment from "moment";
   import numeral from "numeral";
 
-  import "~/components/Loading.svelte";
-  import "./CoinChart.svelte";
-  import "./PriceConvert.svelte";
-  import "~/components/Switch.svelte";
-  import "~/components/TxInfo/User.svelte";
-  import "~/components/TxInfo/MoneyMove.svelte";
-  import "~/components/TxInfo/Changes.svelte";
-  import "~/components/Footer.svelte";
+  import "~/components/Loading.custom.svelte";
+  import "./CoinChart.custom.svelte";
+  import "./PriceConvert.custom.svelte";
+  import "~/components/Switch.custom.svelte";
+  import "~/components/TxInfo/User.custom.svelte";
+  import "~/components/TxInfo/MoneyMove.custom.svelte";
+  import "~/components/TxInfo/Changes.custom.svelte";
+  import "~/components/Footer.custom.svelte";
   import { track } from "~/lib/data-tracking";
 
   export let hash;

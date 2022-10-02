@@ -1,5 +1,3 @@
-<svelte:options tag="app-new-card" />
-
 <script>
   import newImage from "../assets/news.png";
 </script>

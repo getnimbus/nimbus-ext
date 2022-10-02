@@ -2,7 +2,7 @@
 
 <script>
   import tooltip from "./tooltip";
-  import "./NativeTokenInfo.svelte";
+  import "./NativeTokenInfo.custom.svelte";
   export let name;
   export let id;
 </script>

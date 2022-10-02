@@ -2,7 +2,7 @@
 
 <script>
   import tooltip from "./tooltip";
-  import AddressInfo from "./AddressInfo.svelte";
+  import AddressInfo from "./AddressInfo.custom.svelte";
   export let address;
 </script>
 

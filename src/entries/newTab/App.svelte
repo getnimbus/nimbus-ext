@@ -1,26 +1,32 @@
-<svelte:options tag="nimbus-newtab" />
-
 <script lang="ts">
+  import "flowbite/dist/flowbite.css";
+  import { onMount } from "svelte";
+  import * as browser from "webextension-polyfill";
+  import { sendMessage } from "webext-bridge";
   import { chart } from "svelte-apexcharts";
+  import { Avatar, Button, ImagePlaceholder } from "flowbite-svelte";
+  import numeral from "numeral";
 
-  import "../../components/TxCardInfo.svelte";
-  import "../../components/NewCard.svelte";
+  import TxCardInfo from "~/components/TxCardInfo.svelte";
+  import NewCard from "~/components/NewCard.svelte";
 
-  import logo from "../../assets/logo.svg";
+  import logo from "../../assets/user.png";
+
+  let totalBalanceUsd = 0;
 
   let optionLineChart = {
     series: [
       {
-        name: "series1",
+        name: "USD",
         data: [31, 40, 28, 51, 42, 109, 100],
       },
       {
-        name: "series2",
+        name: "BTC",
         data: [11, 32, 45, 32, 34, 52, 41],
       },
     ],
     chart: {
-      height: 465,
+      height: 453,
       type: "area",
       toolbar: {
         show: false,
@@ -55,9 +61,31 @@
   };
 
   let optionPieChart = {
-    series: [44, 55, 41, 17, 15],
+    series: [],
+    labels: [],
+    plotOptions: {
+      pie: {
+        donut: {
+          labels: {
+            show: true,
+            total: {
+              show: true,
+              label: "Total balance (USD)",
+              color: "#000",
+              formatter: () => {
+                return totalBalanceUsd;
+              },
+            },
+          },
+        },
+      },
+    },
     chart: {
       type: "donut",
+      height: 465,
+    },
+    tooltip: {
+      enabled: false,
     },
     responsive: [
       {
@@ -73,16 +101,54 @@
       },
     ],
   };
+
+  const getPieChartData = async () => {
+    try {
+      const data = await fetch(
+        `https://utils.getnimbus.xyz/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`
+      ).then((response) => response.json());
+
+      const dataFormat = data.data.assets.filter((item) => {
+        return parseFloat(item.balanceUsd) > 0;
+      });
+
+      const balanceList = dataFormat.map((item) => {
+        return parseFloat(numeral(item.balanceUsd).format("0,0.0000"));
+      });
+
+      const tokenList = dataFormat.map((item) => {
+        return item.tokenName;
+      });
+
+      totalBalanceUsd = numeral(data.data.totalBalanceUsd).format("0,0.0000");
+
+      optionPieChart = {
+        ...optionPieChart,
+        series: balanceList,
+        labels: tokenList,
+      };
+    } catch (e) {
+      console.log("e: ", e);
+    }
+  };
+
+  onMount(() => {
+    getPieChartData();
+  });
 </script>
 
-<div class="max-w-[1440px] m-auto w-[90%] h-full py-6">
+<div class="max-w-[2000px] m-auto w-[90%] h-full py-6">
   <div class="flex justify-between items-start">
     <div class="flex flex-col gap-2">
       <div class="title-1">Hi there,</div>
       <div class="title-2">Today update</div>
     </div>
     <div class="flex justify-between items-center gap-6">
-      <div class="flex flex-col items-center gap-1 cursor-pointer">
+      <a
+        href={`chrome-extension://${browser.runtime.id}/src/entries/options/index.html`}
+        target="_blank"
+        class="flex flex-col items-center gap-1 cursor-pointer"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -103,9 +169,10 @@
           />
         </svg>
         <div>Settings</div>
-      </div>
-      <div class="bg-sky-200 w-[48px] h-[48px] rounded-full overflow-hidden">
-        <img class="w-full h-full object-contain" src={logo} alt="avatar" />
+      </a>
+      <div class="w-[48px] h-[48px] rounded-full overflow-hidden">
+        <Avatar src={logo} />
+        <!-- <img class="w-full h-full object-contain" src={logo} alt="avatar" /> -->
       </div>
     </div>
   </div>
@@ -129,28 +196,31 @@
       <div
         class="border rounded-lg py-6 px-8 flex flex-col gap-4 max-h-[660px] overflow-y-auto shadow"
       >
-        <app-tx-card-info />
-        <app-tx-card-info />
+        <TxCardInfo />
+        <TxCardInfo />
       </div>
     </div>
     <div>
       <div class="title-3 text-gray-500 mb-4">You might interested in</div>
       <div class="flex flex-col gap-4">
-        <app-new-card />
-        <app-new-card />
-        <app-new-card />
-        <app-new-card />
-        <app-new-card />
+        <NewCard />
+        <NewCard />
+        <NewCard />
+        <NewCard />
+        <NewCard />
+        <div class="rounded-lg border p-3 shadow flex gap-6 justify-between">
+          <ImagePlaceholder />
+        </div>
       </div>
       <div class="mt-4 flex justify-center">
-        <button class="btn-primary w-max">Suggest a content</button>
+        <Button gradient color="cyanToBlue">Suggest a content</Button>
       </div>
     </div>
   </div>
 </div>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .border {
-    border: 0.5px solid rgb(229, 231, 235);
+    border: 0.2px solid rgb(229, 231, 235);
   }
 </style>

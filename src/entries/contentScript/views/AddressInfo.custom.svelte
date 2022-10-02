@@ -5,10 +5,10 @@
   import detectEthereumProvider from "@metamask/detect-provider";
   import { formatBalance, formatCurrency } from "./utils";
 
-  import "~/components/Loading.svelte";
-  import "~/components/Footer.svelte";
-  import "./CoinChart.svelte";
-  import "./PriceConvert.svelte";
+  import "~/components/Loading.custom.svelte";
+  import "~/components/Footer.custom.svelte";
+  import "./CoinChart.custom.svelte";
+  import "./PriceConvert.custom.svelte";
 
   import SmartContractIcon from "../assets/smart-contract.png";
   import MetaMaskIcon from "../assets/metamask-icon.png";
@@ -16,7 +16,7 @@
   import CoinGekoIcon from "../assets/coingecko-logo.png";
   import CoinDefaultIcon from "../assets/coin-default.svg";
   import { track } from "~/lib/data-tracking";
-  import { nimbus } from "./network";
+  import { nimbus } from "../../../lib/network";
 
   export let address;
 
@@ -151,7 +151,7 @@
       <div class="flex justify-between gap-4 my-2">
         <!-- <div class="flex-1">
           <button
-            class="btn-primary"
+            class="btn-primary w-full"
             on:click={() =>
               window.open(`https://debank.com/profile/${address}`, "_blank")}
           >
@@ -160,7 +160,7 @@
         </div> -->
         <div class="flex-1">
           <button
-            class="btn-primary"
+            class="btn-primary w-full"
             on:click={() =>
               window.open(`https://etherscan.io/address/${address}`, "_blank")}
           >
@@ -224,7 +224,7 @@
     </div>
     <div class="flex gap-4 justify-around my-2">
       <button
-        class="btn-primary"
+        class="btn-primary w-full"
         on:click={() =>
           window.open(`https://etherscan.io/address/${address}`, "_blank")}
       >

@@ -8,7 +8,7 @@
   import { sendMessage } from "webext-bridge";
   import { isEmpty } from "lodash";
 
-  import "~/components/ResetStyle.svelte";
+  import "~/components/ResetStyle.custom.svelte";
 
   export let symbol;
   export let loaded;

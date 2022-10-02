@@ -2,7 +2,8 @@ import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
 import dayjs from "dayjs";
 import { isEmpty } from "lodash";
-import {coinGeko, goplus, mixpanel} from "../contentScript/views/network";
+import { coinGeko, mixpanel, nimbus , goplus} from "../../lib/network";
+import { cacheOrAPI } from "./utils";
 
 browser.runtime.onInstalled.addListener(() => {
   console.log("Extension installed");
@@ -29,9 +30,7 @@ browser.browserAction.onClicked.addListener(() => {
 });
 
 const fetchBasicData = async () => {
-  const list = await fetch("https://api.coingecko.com/api/v3/search").then(
-    (response) => response.json()
-  );
+  const list = await coinGeko.get("/search").then((response) => response.data);
   browser.storage.local
     .set({ coinList: JSON.stringify(list.coins) })
     .then(() => {
@@ -40,9 +39,9 @@ const fetchBasicData = async () => {
 };
 
 const fetchConfigPages = async () => {
-  const listConfigPages = await fetch(
-    "https://utils.getnimbus.xyz/config/pages"
-  ).then((response) => response.json());
+  const listConfigPages = await nimbus
+    .get("/config/pages")
+    .then((response) => response.data);
   browser.storage.local
     .set({ configPageList: JSON.stringify(listConfigPages.data) })
     .then(() => {
@@ -51,9 +50,9 @@ const fetchConfigPages = async () => {
 };
 
 const fetchSearchData = async (search) => {
-  const list = await fetch(
-    `https://api.coingecko.com/api/v3/search?query=${search}`
-  ).then((response) => response.json());
+  const list = await coinGeko
+    .get(`/search?query=${search}`)
+    .then((response) => response.data);
   return JSON.stringify(list.coins);
 };
 
@@ -67,7 +66,7 @@ const fetchChartData = async (symbol) => {
     },
   };
   const chart = await coinGeko
-    .get(`coins/${symbol}/market_chart/range`, params)
+    .get(`/coins/${symbol}/market_chart/range`, params)
     .then((response) => response);
 
   browser.storage.local
@@ -83,11 +82,11 @@ const fetchChartData = async (symbol) => {
 const fetchTokenInfo = async (id) => {
   const [priceData, coinData] = await Promise.all([
     coinGeko
-      .get(`simple/price?ids=${id}&vs_currencies=usd`)
+      .get(`/simple/price?ids=${id}&vs_currencies=usd`)
       .then((response) => response.data),
     coinGeko
       .get(
-        `https://api.coingecko.com/api/v3/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`
+        `/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`
       )
       .then((response) => response.data),
   ]);
@@ -105,6 +104,25 @@ const fetchTokenInfo = async (id) => {
 
   return JSON.stringify({ priceData: priceData, coinData: coinData });
 };
+
+const fetchPieChartData = async () => {
+  // const listAddress = JSON.parse(
+  //   (await browser.storage.sync.get("listAddress")).listAddress
+  // );
+
+  const data = await fetch(
+    `https://utils.getnimbus.xyz/portfolio/${'0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb'}`
+  ).then((response) => response);
+
+  browser.storage.local
+    .set({ dataPieChart: JSON.stringify(data) })
+    .then(() => {
+      console.log("Loaded data pie chart");
+    })
+    .catch((error) => console.error(error));
+
+  return JSON.stringify(data);
+}
 
 browser.runtime.onStartup.addListener(async () => {
   console.log("onStartup....");
@@ -195,6 +213,31 @@ onMessage<IIdInput, any>("tokenInfoData", async ({ data: { id } }) => {
     }
   } catch (e) {
     return {};
+  }
+});
+
+onMessage("getListAddress", async () => {
+  try {
+    return JSON.parse(
+      (await browser.storage.sync.get("listAddress")).listAddress
+    );
+  } catch (error) {
+    return [];
+  }
+});
+
+onMessage("getPieChartData", async () => {
+  try {
+    const dataLocal = (await browser.storage.local.get("dataPieChart")).dataPieChart
+    if (dataLocal) {
+      return JSON.parse(
+        dataLocal
+      );
+    } else {
+      return JSON.parse(await fetchPieChartData());
+    }
+  } catch (e) {
+    return [];
   }
 });
 

@@ -4,7 +4,9 @@
 
 <div class="line-arrow relative">
   <slot />
-  <div class="absolute -bottom-[5px] h-0 w-0 transform -right-[5.5px] rotate-90 arrow" />
+  <div
+    class="absolute -bottom-[5px] h-0 w-0 transform -right-[5.5px] rotate-90 arrow"
+  />
 </div>
 
 <style>
