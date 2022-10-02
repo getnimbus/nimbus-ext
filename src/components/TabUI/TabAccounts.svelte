@@ -222,10 +222,6 @@
     selectedItemEdit = item;
   };
 
-  const handleSelectAddress = (item) => {
-    console.log("selected address: ", item);
-  };
-
   onMount(() => {
     getListAddress();
   });
@@ -286,7 +282,6 @@
   <div class="table-border mt-2 rounded">
     <Table hoverable={true}>
       <TableHead>
-        <TableHeadCell />
         <TableHeadCell>Address</TableHeadCell>
         <TableHeadCell>Label</TableHeadCell>
         <TableHeadCell>Action</TableHeadCell>
@@ -294,13 +289,6 @@
       <TableBody class="divide-y">
         {#each listAddress as item}
           <TableBodyRow>
-            <TableBodyCell>
-              <Checkbox
-                color="blue"
-                class="cursor-pointer"
-                on:click={() => handleSelectAddress(item)}
-              />
-            </TableBodyCell>
             <TableBodyCell>
               <div class="font-medium">
                 {item.address}
