@@ -11,8 +11,9 @@
   import addGlobalBinds from "bind-mousetrap-global";
   addGlobalBinds(Mousetrap);
 
-  import "~/components/ResetStyle.custom.svelte";
-  import "./NativeTokenInfo.custom.svelte";
+  import "~/components/ResetStyle.svelte";
+  import "./NativeTokenInfo.svelte";
+  import "./CheckSafety.svelte";
   import { track } from "~/lib/data-tracking";
 
   let listPageConfig = [];
@@ -223,6 +224,8 @@
           />
         </svg>
       </div>
+
+      <check-safety />
 
       <div class="title-5 text-center font-bold my-2">
         Welcome to <span class="text-sky-400">Nimbus 🌩</span>

@@ -2,7 +2,7 @@ import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
 import dayjs from "dayjs";
 import { isEmpty } from "lodash";
-import { coinGeko, mixpanel, nimbus } from "../../lib/network";
+import { coinGeko, mixpanel, nimbus , goplus} from "../../lib/network";
 import { cacheOrAPI } from "./utils";
 
 browser.runtime.onInstalled.addListener(() => {
@@ -268,15 +268,31 @@ onMessage("trackEvent", async ({ data: { type, payload } }) => {
   }
 });
 
-// onMessage("getAddressNews", async ({ data: { type, payload } }) => {
-//   const address = "0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"; // TODO: Get me from address list;
-//   console.log("Start fetch news");
-//   return await cacheOrAPI(
-//     `news-${address}`,
-//     () => nimbus.get(`/news/${address}`).then((res) => res.data),
-//     { defaultValue: [], ttl: 5 * 60 }
-//   );
-// });
+onMessage<any, any>("checkSafety", async ({ data: { currentUrl } }) => {
+  try {
+    const key = currentUrl + "_info";
+    const dataLocal = await browser.storage.local.get(key);
+
+    if (!isEmpty(dataLocal) && dataLocal.hasOwnProperty(currentUrl + "_info")) {
+      return JSON.parse(dataLocal[key]);
+    } else {
+      const response = await goplus.get("/dapp_security", {
+        params: {
+          url: currentUrl
+        }
+      })
+
+      browser.storage.local
+          .set({ key: JSON.stringify(response.data) })
+          .then(() => {
+            console.log("Loaded check safety");
+          });
+      return response.data;
+    }
+  } catch (e) {
+    return {};
+  }
+});
 
 // Run on init
 fetchBasicData();

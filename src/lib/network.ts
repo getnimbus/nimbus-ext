@@ -18,3 +18,7 @@ export const nimbus = axios.create({
 export const mixpanel = axios.create({
   baseURL: "https://api.mixpanel.com",
 });
+
+export const goplus = axios.create({
+  baseURL: "https://api.gopluslabs.io/api/v1",
+});
