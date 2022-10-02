@@ -28,7 +28,7 @@
   };
 
   onMount(() => {
-    amount2 = Number((amount1 * price).toFixed(4));
+    amount2 = formatCurrency(Number(amount1 * price));
   });
 
   $: {
