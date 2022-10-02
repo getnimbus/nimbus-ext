@@ -2,7 +2,7 @@ import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
 import dayjs from "dayjs";
 import { isEmpty } from "lodash";
-import { coinGeko, mixpanel } from "../contentScript/views/network";
+import {coinGeko, goplus, mixpanel} from "../contentScript/views/network";
 
 browser.runtime.onInstalled.addListener(() => {
   console.log("Extension installed");
@@ -222,6 +222,32 @@ onMessage("trackEvent", async ({ data: { type, payload } }) => {
   } catch (e) {
     console.log(e);
     return false;
+  }
+});
+
+onMessage<any, any>("checkSafety", async ({ data: { currentUrl } }) => {
+  try {
+    const key = currentUrl + "_info";
+    const dataLocal = await browser.storage.local.get(key);
+
+    if (!isEmpty(dataLocal) && dataLocal.hasOwnProperty(currentUrl + "_info")) {
+      return JSON.parse(dataLocal[key]);
+    } else {
+      const response = await goplus.get("/dapp_security", {
+        params: {
+          url: currentUrl
+        }
+      })
+
+      browser.storage.local
+          .set({ key: JSON.stringify(response.data) })
+          .then(() => {
+            console.log("Loaded check safety");
+          });
+      return response.data;
+    }
+  } catch (e) {
+    return {};
   }
 });
 

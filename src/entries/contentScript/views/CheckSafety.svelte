@@ -2,27 +2,19 @@
 
 <script lang="ts">
     import {onMount} from "svelte";
-    import {goplus} from "~/entries/contentScript/views/network";
+    import {sendMessage} from "webext-bridge";
 
-    let currentUrl = window.location.href;
 
     let isLoading = true;
-    let isAudited = null;
-    const ERROR_CODE = 2026;
-    const SUCCESS_CODE = 1;
+    let data = {};
+    const IS_AUDITED_CODE = 1;
 
     const checkSafeteCurrentUrl = async () => {
+        let currentUrl = window.location.href;
         isLoading = true;
 
-        goplus
-            .get(`/dapp_security?url=${currentUrl}`)
-            .then((response) => {
-                if (response.data.code === SUCCESS_CODE) {
-                    isAudited = true;
-                } else if (response.data.code === ERROR_CODE) {
-                    isAudited = false;
-                }
-            });
+        const response = (await sendMessage("checkSafety", {currentUrl}));
+        data = response.result
         isLoading = false;
     };
 
@@ -31,7 +23,7 @@
     });
 </script>
 
-{#if isAudited}
+{#if data.is_audit === IS_AUDITED_CODE}
     <div class="flex gap-2 items-center px-4 py-2 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
          role="alert">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#0E9F6E" viewBox="0 0 256 256">
@@ -42,11 +34,18 @@
                       stroke-linejoin="round" stroke-width="16"></polyline>
         </svg>
         <div>
-            The page has been audited.
+            The page has been audited. Audit report:
+            <a
+                    href={data.audit_info.audit_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+            >
+                {data.audit_info.audit_link}
+            </a>
         </div>
     </div>
-{:else if isAudited === false}
-    <div class="flex gap-2 px-4 py-2 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+{:else if data.is_audit !== IS_AUDITED_CODE}
+    <div class="flex gap-2 px-4 py-2 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800"
          role="alert">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#F05252" viewBox="0 0 256 256">
             <rect width="256" height="256" fill="none"></rect>
