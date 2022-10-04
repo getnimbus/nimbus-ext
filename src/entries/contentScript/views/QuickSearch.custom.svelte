@@ -13,7 +13,7 @@
 
   import "~/components/ResetStyle.custom.svelte";
   import "./NativeTokenInfo.custom.svelte";
-  import "./CheckSafety.svelte";
+  import "./CheckSafety.custom.svelte";
   import { track } from "~/lib/data-tracking";
 
   let listPageConfig = [];
@@ -196,7 +196,6 @@
         d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
       />
     </svg>
-    <div class="font-semibold">🌩</div>
   </div>
 
   {#if isShowSideBar}
@@ -228,7 +227,7 @@
       <check-safety />
 
       <div class="title-5 text-center font-bold my-2">
-        Welcome to <span class="text-sky-400">Nimbus 🌩</span>
+        Welcome to <span class="text-sky-400">Nimbus</span>
       </div>
 
       <div
@@ -258,7 +257,7 @@
           value={search}
           placeholder="Search..."
           type="text"
-          class="input-1"
+          class="input-1 text-black"
         />
       </div>
 

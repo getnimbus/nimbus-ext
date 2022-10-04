@@ -47,8 +47,7 @@ export default defineConfig({
     height: rem2px(defaultTheme.height),
   },
   shortcuts: {
-    "btn-primary":
-      "bg-sky-500 px-2 py-3 rounded border-none text-white cursor-pointer",
+    "btn-primary": "border-none cursor-pointer text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2",
     "btn-secondary":
       "bg-white text-sky-500 border-[1px] border-sky-500 px-2 py-3 rounded cursor-pointer",
     "title-1": "text-3xl font-extrabold",
