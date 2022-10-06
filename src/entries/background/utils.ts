@@ -9,7 +9,6 @@ export const cacheOrAPI = async (
 ) => {
   try {
     const dataLocal = await browser.storage.local.get(key);
-    console.log(dataLocal, key);
     if (!isEmpty(dataLocal[key]) && dataLocal.hasOwnProperty(key)) {
       const parsedData = JSON.parse(dataLocal[key]);
       if (
