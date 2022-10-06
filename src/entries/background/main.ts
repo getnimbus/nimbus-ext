@@ -56,74 +56,6 @@ const fetchSearchData = async (search) => {
   return JSON.stringify(list.coins);
 };
 
-// const fetchChartData = async (symbol) => {
-//   const params = {
-//     id: `${symbol}-chart`,
-//     params: {
-//       vs_currency: "usd",
-//       from: dayjs().subtract(7, "d").unix(),
-//       to: dayjs().unix(),
-//     },
-//   };
-//   const chart = await coinGeko
-//     .get(`/coins/${symbol}/market_chart/range`, params)
-//     .then((response) => response);
-
-//   browser.storage.local
-//     .set({ [symbol]: JSON.stringify(chart.data) })
-//     .then(() => {
-//       console.log("Loaded data chart");
-//     })
-//     .catch((error) => console.error(error));
-
-//   return JSON.stringify(chart.data);
-// };
-
-// const fetchTokenInfo = async (id) => {
-//   const [priceData, coinData] = await Promise.all([
-//     coinGeko
-//       .get(`/simple/price?ids=${id}&vs_currencies=usd`)
-//       .then((response) => response.data),
-//     coinGeko
-//       .get(
-//         `/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`
-//       )
-//       .then((response) => response.data),
-//   ]);
-
-//   browser.storage.local
-//     .set({
-//       [JSON.stringify(id + "_info")]: JSON.stringify({
-//         priceData: priceData,
-//         coinData: coinData,
-//       }),
-//     })
-//     .then(() => {
-//       console.log("Loaded crypto info");
-//     });
-
-//   return JSON.stringify({ priceData: priceData, coinData: coinData });
-// };
-
-// const fetchPieChartData = async () => {
-//   // const listAddress = JSON.parse(
-//   //   (await browser.storage.sync.get("listAddress")).listAddress
-//   // );
-
-//   const data = await fetch(
-//     `https://utils.getnimbus.xyz/portfolio/${'0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb'}`
-//   ).then((response) => response);
-
-//   browser.storage.local
-//     .set({ dataPieChart: JSON.stringify(data) })
-//     .then(() => {
-//       console.log("Loaded data pie chart");
-//     })
-//     .catch((error) => console.error(error));
-
-//   return JSON.stringify(data);
-// }
-
 browser.runtime.onStartup.addListener(async () => {
   console.log("onStartup....");
   await fetchBasicData();
@@ -203,20 +135,6 @@ onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
   }, { defaultValue: null })
 });
 
-// onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
-//   try {
-//     const dataLocal = await browser.storage.local.get(symbol);
-//     if (!isEmpty(dataLocal[symbol]) && dataLocal.hasOwnProperty(symbol)) {
-//       return JSON.parse(dataLocal[symbol]);
-//     } else {
-//       console.log("LOCAL MISSED", symbol);
-//       return JSON.parse(await fetchChartData(symbol));
-//     }
-//   } catch (e) {
-//     return {};
-//   }
-// });
-
 onMessage<IIdInput, any>("tokenInfoData", async ({ data: { id } }) => {
   const key = id + "_info"
   return await cacheOrAPI(key, async () => {
@@ -233,21 +151,6 @@ onMessage<IIdInput, any>("tokenInfoData", async ({ data: { id } }) => {
     return { priceData: priceData, coinData: coinData };
   }, { defaultValue: {} })
 })
-
-// onMessage<IIdInput, any>("tokenInfoData", async ({ data: { id } }) => {
-//   try {
-//     const key = id + "_info";
-//     const dataLocal = await browser.storage.local.get(key);
-
-//     if (!isEmpty(dataLocal) && dataLocal.hasOwnProperty(id + "_info")) {
-//       return JSON.parse(dataLocal[key]);
-//     } else {
-//       return JSON.parse(await fetchTokenInfo(id));
-//     }
-//   } catch (e) {
-//     return {};
-//   }
-// });
 
 onMessage("getListAddress", async () => {
   try {
@@ -269,21 +172,6 @@ onMessage("getPieChartData", async () => {
     ).then((response) => response);
   }, { defaultValue: [] })
 })
-
-// onMessage("getPieChartData", async () => {
-//   try {
-//     const dataLocal = (await browser.storage.local.get("dataPieChart")).dataPieChart
-//     if (dataLocal) {
-//       return JSON.parse(
-//         dataLocal
-//       );
-//     } else {
-//       return JSON.parse(await fetchPieChartData());
-//     }
-//   } catch (e) {
-//     return [];
-//   }
-// });
 
 onMessage("trackEvent", async ({ data: { type, payload } }) => {
   try {
