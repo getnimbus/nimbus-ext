@@ -29,7 +29,7 @@
 
     if (dataLocal) {
       hasData = true;
-      renderChart(dataLocal.data);
+      renderChart(dataLocal);
     }
   };
 
@@ -41,7 +41,7 @@
 
     if (newestData) {
       hasData = true;
-      renderChart(newestData.data);
+      renderChart(newestData);
     }
   };
 

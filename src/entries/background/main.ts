@@ -131,7 +131,7 @@ onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
     };
     return coinGeko
       .get(`/coins/${symbol}/market_chart/range`, params)
-      .then((response) => response)
+      .then((response) => response.data)
   }, { defaultValue: null })
 });
 
@@ -169,7 +169,7 @@ onMessage("getPieChartData", async () => {
     // );
     return fetch(
       `https://utils.getnimbus.xyz/portfolio/${'0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb'}`
-    ).then((response) => response);
+    ).then((response) => response.data);
   }, { defaultValue: [] })
 })
 
