@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 export const cacheOrAPI = async (
   key: string,
   apiCall: Function,
-  { ttl = 5 * 60, defaultValue = null }: { ttl: number; defaultValue: any }
+  { ttl = 5 * 60, defaultValue = null }: { ttl?: number; defaultValue: any }
 ) => {
   try {
     const dataLocal = await browser.storage.local.get(key);
@@ -16,7 +16,7 @@ export const cacheOrAPI = async (
         new Date(parsedData?.createdAt)
       ) {
         console.log(`${key} HIT`);
-        return JSON.parse(dataLocal[key]);
+        return JSON.parse(dataLocal[key])?.result || defaultValue;
       }
       await browser.storage.local.remove(key);
       console.log(`${key} EXPIRED`);

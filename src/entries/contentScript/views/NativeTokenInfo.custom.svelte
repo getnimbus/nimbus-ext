@@ -103,7 +103,7 @@
               </a>
               <div class="flex items-center">
                 Price: <span class="font-medium ml-1">
-                  ${price && formatCurrency(price)}
+                  {price ? `$${formatCurrency(price)}` : "--"}
                 </span>
               </div>
             </div>

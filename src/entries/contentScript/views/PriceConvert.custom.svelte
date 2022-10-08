@@ -46,7 +46,7 @@
   <div class="flex flex-col text-black">
     <div class="mb-1 font-semibold text-center">{symbol}</div>
     <input
-      class="input-2 input-border"
+      class="input-2 input-border text-black"
       type="text"
       bind:value={amount1}
       on:input={onInputAmount1}
@@ -71,7 +71,7 @@
   <div class="flex flex-col text-black">
     <div class="mb-1 font-semibold text-center">USD</div>
     <input
-      class="input-2 input-border"
+      class="input-2 input-border text-black"
       type="text"
       bind:value={amount2}
       on:input={onInputAmount2}
