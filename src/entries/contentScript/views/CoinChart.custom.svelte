@@ -29,7 +29,7 @@
 
     if (dataLocal) {
       hasData = true;
-      renderChart(dataLocal);
+      renderChart(dataLocal.result);
     }
   };
 
