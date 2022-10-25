@@ -3,7 +3,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { fly } from "svelte/transition";
-  import { escapeRegex } from "../views/utils";
+  import { escapeRegex, getLocalImg } from "../views/utils";
   import UrlPattern from "url-pattern";
   import { sendMessage } from "webext-bridge";
   import * as browser from "webextension-polyfill";
@@ -15,6 +15,7 @@
   import "./NativeTokenInfo.custom.svelte";
   import "./CheckSafety.custom.svelte";
   import { track } from "~/lib/data-tracking";
+  import FullLogo from "../assets/full-logo.svg";
 
   let listPageConfig = [];
   let coinListData;
@@ -100,12 +101,6 @@
         : [];
   };
 
-  // const handleDectecSupportUrl = () => {
-  //   isChangeURL = listPageConfig.some((item) => {
-  //     return location.hostname === item.hostname;
-  //   });
-  // };
-
   const observer = new MutationObserver((e) => {
     if (window.location.href !== currentUrl) {
       currentUrl = window.location.href;
@@ -134,7 +129,6 @@
 
   $: {
     if (listPageConfig && coinListData) {
-      // handleDectecSupportUrl();
       handleGetCoinDataFromPage();
     }
   }
@@ -149,7 +143,6 @@
 
   $: {
     if (!isShowSideBar) {
-      // search = "";
       isFocused = false;
     } else {
       isFocused = true;
@@ -224,10 +217,12 @@
         </svg>
       </div>
 
-      <check-safety />
-
-      <div class="title-5 text-center font-bold my-2">
-        Welcome to <span class="text-sky-400">Nimbus</span>
+      <div class="text-center">
+        <img
+          src={getLocalImg(FullLogo)}
+          class="w-auto h-16 object-contain"
+          alt="Nimbus logo"
+        />
       </div>
 
       <div
@@ -259,6 +254,29 @@
           type="text"
           class="input-1 text-black"
         />
+      </div>
+
+      <check-safety />
+
+      <div
+        class="p-3 max-w-sm bg-white rounded border border-gray-200 shadow mb-4"
+      >
+        <div class="flex justify-between items-baseline">
+          <h5 class="mb-1 mt-0 text-xl font-bold tracking-tight text-gray-900 ">
+            Yield farming
+          </h5>
+          <a
+            href="#"
+            class="inline-flex items-center text-sm text-sky-600 no-underline hover:underline"
+          >
+            Read more
+          </a>
+        </div>
+        <p class="mb-1 mt-2 font-normal leading-6 text-gray-700 ">
+          A way to make more crypto with your crypto. It involves you lending
+          your funds to others through the magic of computer programs called
+          smart contracts.
+        </p>
       </div>
 
       {#if search !== ""}

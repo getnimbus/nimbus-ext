@@ -19,14 +19,15 @@ const sharedManifest = {
     // 256: "icons/256.png",
     512: "icons/logo-icon.png",
   },
-  options_ui: {
-    page: "src/entries/options/index.html",
-    open_in_tab: true,
-  },
-  chrome_url_overrides: {
-    newtab: "src/entries/newTab/index.html",
-  },
+  // options_ui: {
+  //   page: "src/entries/options/index.html",
+  //   open_in_tab: true,
+  // },
+  // chrome_url_overrides: {
+  //   newtab: "src/entries/newTab/index.html",
+  // },
   web_accessible_resources: [
+    "src/entries/contentScript/assets/full-logo.svg",
     // "src/entries/newTab/index.html",
     // "src/entries/options/index.html",
   ],
