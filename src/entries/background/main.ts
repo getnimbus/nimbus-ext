@@ -5,6 +5,12 @@ import { isEmpty } from "lodash";
 import { coinGeko, mixpanel, nimbus, goplus } from "../../lib/network";
 import { cacheOrAPI } from "./utils";
 
+browser.runtime.onStartup.addListener(async () => {
+  console.log("onStartup....");
+  await fetchBasicData();
+  await fetchConfigPages();
+});
+
 browser.runtime.onInstalled.addListener(() => {
   console.log("Extension installed");
 });
@@ -50,17 +56,12 @@ const fetchConfigPages = async () => {
 };
 
 const fetchSearchData = async (search) => {
+  // TODO: Make me as local search
   const list = await coinGeko
     .get(`/search?query=${search}`)
     .then((response) => response.data);
   return JSON.stringify(list.coins);
 };
-
-browser.runtime.onStartup.addListener(async () => {
-  console.log("onStartup....");
-  await fetchBasicData();
-  await fetchConfigPages();
-});
 
 interface ICoinListInput {
   limit: number;
@@ -120,37 +121,41 @@ onMessage<ISymbolInput, any>("chartDataLocal", async ({ data: { symbol } }) => {
 });
 
 onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
-  return await cacheOrAPI(symbol, () => {
-    const params = {
-      id: `${symbol}-chart`,
-      params: {
-        vs_currency: "usd",
-        from: dayjs().subtract(7, "d").unix(),
-        to: dayjs().unix(),
-      },
-    };
-    return coinGeko
-      .get(`/coins/${symbol}/market_chart/range`, params)
-      .then((response) => response.data)
-  }, { defaultValue: null })
+  return await cacheOrAPI(
+    symbol,
+    () => {
+      return nimbus
+        .get(`/price-history/${symbol}`)
+        .then((response) => response.data.data);
+    },
+    { defaultValue: null }
+  );
 });
 
 onMessage<IIdInput, any>("tokenInfoData", async ({ data: { id } }) => {
-  const key = id + "_info"
-  return await cacheOrAPI(key, async () => {
-    const [priceData, coinData] = await Promise.all([
-      coinGeko
-        .get(`/simple/price?ids=${id}&vs_currencies=usd`)
-        .then((response) => response.data),
-      coinGeko
-        .get(
-          `/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`
-        )
-        .then((response) => response.data),
-    ]);
-    return { priceData: priceData, coinData: coinData };
-  }, { defaultValue: {} })
-})
+  const key = id + "_info";
+  return await cacheOrAPI(
+    key,
+    async () => {
+      const tokenData = await nimbus
+        .get(`/token/${id}`)
+        .then((response) => response.data.data);
+      return tokenData;
+      // const [priceData, coinData] = await Promise.all([
+      //   coinGeko
+      //     .get(`/simple/price?ids=${id}&vs_currencies=usd`)
+      //     .then((response) => response.data),
+      //   coinGeko
+      //     .get(
+      //       `/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`
+      //     )
+      //     .then((response) => response.data),
+      // ]);
+      return { priceData: priceData, coinData: coinData };
+    },
+    { defaultValue: {} }
+  );
+});
 
 onMessage("getListAddress", async () => {
   try {
@@ -163,15 +168,19 @@ onMessage("getListAddress", async () => {
 });
 
 onMessage("getPieChartData", async () => {
-  return await cacheOrAPI('dataPieChart', () => {
-    // const listAddress = JSON.parse(
-    //   (await browser.storage.sync.get("listAddress")).listAddress
-    // );
-    return fetch(
-      `https://utils.getnimbus.xyz/portfolio/${'0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb'}`
-    ).then((response) => response.data);
-  }, { defaultValue: [] })
-})
+  return await cacheOrAPI(
+    "dataPieChart",
+    () => {
+      // const listAddress = JSON.parse(
+      //   (await browser.storage.sync.get("listAddress")).listAddress
+      // );
+      return fetch(
+        `https://utils.getnimbus.xyz/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`
+      ).then((response) => response.data);
+    },
+    { defaultValue: [] }
+  );
+});
 
 onMessage("trackEvent", async ({ data: { type, payload } }) => {
   try {
@@ -202,13 +211,19 @@ onMessage("trackEvent", async ({ data: { type, payload } }) => {
 
 onMessage<any, any>("checkSafety", async ({ data: { currentUrl } }) => {
   const key = currentUrl + "_info";
-  return await cacheOrAPI(key, () => {
-    return goplus.get("/dapp_security", {
-      params: {
-        url: currentUrl
-      }
-    }).then(res => res.data)
-  }, { defaultValue: null })
+  return await cacheOrAPI(
+    key,
+    () => {
+      return goplus
+        .get("/dapp_security", {
+          params: {
+            url: currentUrl,
+          },
+        })
+        .then((res) => res.data);
+    },
+    { defaultValue: null }
+  );
 });
 
 // Run on init

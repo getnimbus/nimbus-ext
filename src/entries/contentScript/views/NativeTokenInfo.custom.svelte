@@ -31,13 +31,12 @@
     try {
       const data = (await sendMessage("tokenInfoData", { id: id })) as any;
 
-      price = data?.priceData?.[id]?.usd;
-
+      price = data?.price?.usd;
       coinInfo = {
-        symbol: data?.coinData?.symbol,
-        name: data?.coinData?.name,
-        logo_url: data?.coinData?.image?.large,
-        categories: data?.coinData?.categories || [],
+        symbol: data?.symbol,
+        name: data?.name,
+        logo_url: data?.image?.large,
+        categories: data?.categories || [],
       };
     } catch (e) {
       console.log(e);
