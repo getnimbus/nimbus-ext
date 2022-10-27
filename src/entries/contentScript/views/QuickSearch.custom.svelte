@@ -64,7 +64,7 @@
   };
 
   const getTermList = async () => {
-    // listTermData = (await sendMessage("termList", undefined)) as any[];
+    // const listTerm = (await sendMessage("termList", undefined)) as any[];
 
     const listTerm = await nimbus
       .get("/terms")
