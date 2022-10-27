@@ -56,10 +56,22 @@ const fetchSearchData = async (search) => {
   return JSON.stringify(list.coins);
 };
 
+const fetchListTerm = async () => {
+  const listTerm = await nimbus
+    .get("/terms")
+    .then((response) => response.data);
+  browser.storage.local
+    .set({ termList: JSON.stringify(listTerm.data) })
+    .then(() => {
+      console.log("Loaded list term");
+    });
+}
+
 browser.runtime.onStartup.addListener(async () => {
   console.log("onStartup....");
   await fetchBasicData();
   await fetchConfigPages();
+  await fetchListTerm();
 });
 
 interface ICoinListInput {
@@ -214,3 +226,4 @@ onMessage<any, any>("checkSafety", async ({ data: { currentUrl } }) => {
 // Run on init
 fetchBasicData();
 fetchConfigPages();
+fetchListTerm();
