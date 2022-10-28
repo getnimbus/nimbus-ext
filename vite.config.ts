@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
         },
       }),
       webExtension({
-        manifest: getManifest(Number(env.MANIFEST_VERSION)),
+        manifest: getManifest(),
       }),
       AutoImport({
         imports: [
