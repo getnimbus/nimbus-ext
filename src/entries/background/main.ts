@@ -111,6 +111,16 @@ onMessage("configPageList", async () => {
   }
 });
 
+onMessage("getListTerm", async () => {
+  try {
+    return JSON.parse(
+      (await browser.storage.local.get("termList")).termList
+    );
+  } catch (error) {
+    return [];
+  }
+});
+
 onMessage<ISearchInput, any>("getSearchData", async ({ data: { search } }) => {
   try {
     const data = JSON.parse(await fetchSearchData(search));

@@ -10,7 +10,6 @@
   import Mousetrap from "mousetrap";
   import addGlobalBinds from "bind-mousetrap-global";
   addGlobalBinds(Mousetrap);
-  import { nimbus } from "../../../lib/network";
 
   import "~/components/ResetStyle.custom.svelte";
   import "./NativeTokenInfo.custom.svelte";
@@ -64,11 +63,7 @@
   };
 
   const getTermList = async () => {
-    // const listTerm = (await sendMessage("termList", undefined)) as any[];
-
-    const listTerm = await nimbus
-      .get("/terms")
-      .then((response) => response.data.data);
+    const listTerm = (await sendMessage("getListTerm", undefined)) as any[];
 
     listTermData = listTerm;
     const listTermName = listTerm.map((item) => item.term);
