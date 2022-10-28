@@ -9,6 +9,7 @@ browser.runtime.onStartup.addListener(async () => {
   console.log("onStartup....");
   await fetchBasicData();
   await fetchConfigPages();
+  await fetchListTerm();
 });
 
 browser.runtime.onInstalled.addListener(() => {
@@ -70,13 +71,6 @@ const fetchListTerm = async () => {
       console.log("Loaded list term");
     });
 }
-
-browser.runtime.onStartup.addListener(async () => {
-  console.log("onStartup....");
-  await fetchBasicData();
-  await fetchConfigPages();
-  await fetchListTerm();
-});
 
 interface ICoinListInput {
   limit: number;
