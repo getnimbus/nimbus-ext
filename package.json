@@ -1,9 +1,9 @@
 {
   "name": "nimbus-ext",
   "displayName": "Nimbus",
-  "version": "0.0.2",
-  "author": "Thanh Le - mihthanh27@gmail.com",
-  "description": "Enrich your web3 experience",
+  "version": "0.0.1",
+  "author": "Thanh Le - thanhle@getnimbus.io",
+  "description": "Make Web3 simple for everyone",
   "scripts": {
     "build": "vite build",
     "build:components": "vite build -c vite.config.components.ts",

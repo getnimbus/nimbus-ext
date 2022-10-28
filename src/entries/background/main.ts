@@ -29,14 +29,15 @@ browser.commands.onCommand.addListener((command) => {
   }
 });
 
-browser.browserAction.onClicked.addListener(() => {
+browser.action.onClicked.addListener(() => {
   browser.tabs.query({ active: true, currentWindow: true }).then((tab) => {
     browser.tabs.sendMessage(tab[0].id, { action: "toggleSidebar" });
   });
 });
 
 const fetchBasicData = async () => {
-  const list = await coinGeko.get("/search").then((response) => response.data);
+  const list = await coinGeko.get("/search");
+  console.log(list);
   browser.storage.local
     .set({ coinList: JSON.stringify(list.coins) })
     .then(() => {
@@ -45,9 +46,7 @@ const fetchBasicData = async () => {
 };
 
 const fetchConfigPages = async () => {
-  const listConfigPages = await nimbus
-    .get("/config/pages")
-    .then((response) => response.data);
+  const listConfigPages = await nimbus.get("/config/pages");
   browser.storage.local
     .set({ configPageList: JSON.stringify(listConfigPages.data) })
     .then(() => {
@@ -57,9 +56,7 @@ const fetchConfigPages = async () => {
 
 const fetchSearchData = async (search) => {
   // TODO: Make me as local search
-  const list = await coinGeko
-    .get(`/search?query=${search}`)
-    .then((response) => response.data);
+  const list = await coinGeko.get(`/search?query=${search}`);
   return JSON.stringify(list.coins);
 };
 
@@ -126,7 +123,7 @@ onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
     () => {
       return nimbus
         .get(`/price-history/${symbol}`)
-        .then((response) => response.data.data);
+        .then((response) => response.data);
     },
     { defaultValue: null }
   );
@@ -139,7 +136,7 @@ onMessage<IIdInput, any>("tokenInfoData", async ({ data: { id } }) => {
     async () => {
       const tokenData = await nimbus
         .get(`/token/${id}`)
-        .then((response) => response.data.data);
+        .then((response) => response.data);
       return tokenData;
       // const [priceData, coinData] = await Promise.all([
       //   coinGeko
@@ -214,13 +211,11 @@ onMessage<any, any>("checkSafety", async ({ data: { currentUrl } }) => {
   return await cacheOrAPI(
     key,
     () => {
-      return goplus
-        .get("/dapp_security", {
-          params: {
-            url: currentUrl,
-          },
-        })
-        .then((res) => res.data);
+      return goplus.get("/dapp_security", {
+        params: {
+          url: currentUrl,
+        },
+      });
     },
     { defaultValue: null }
   );

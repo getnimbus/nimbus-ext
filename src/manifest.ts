@@ -1,6 +1,6 @@
 import pkg from "../package.json";
 
-const sharedManifest = {
+const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
   content_scripts: [
     {
       js: ["src/entries/contentScript/main.ts"],
@@ -8,36 +8,20 @@ const sharedManifest = {
     },
   ],
   icons: {
-    // 16: "icons/16.png",
-    // 19: "icons/19.png",
-    // 32: "icons/32.png",
-    // 38: "icons/38.png",
-    // 48: "icons/48.png",
-    // 64: "icons/64.png",
-    // 96: "icons/96.png",
-    // 128: "icons/128.png",
-    // 256: "icons/256.png",
     512: "icons/logo-icon.png",
   },
-  options_ui: {
-    page: "src/entries/options/index.html",
-    open_in_tab: true,
-  },
-  chrome_url_overrides: {
-    newtab: "src/entries/newTab/index.html",
-  },
+  // options_ui: {
+  //   page: "src/entries/options/index.html",
+  //   open_in_tab: true,
+  // },
+  // chrome_url_overrides: {
+  //   newtab: "src/entries/newTab/index.html",
+  // },
   web_accessible_resources: [
     // "src/entries/newTab/index.html",
     // "src/entries/options/index.html",
   ],
-  permissions: [
-    "tabs",
-    "storage",
-    "unlimitedStorage",
-    "activeTab",
-    "http://*/",
-    "https://*/",
-  ],
+  permissions: ["storage", "unlimitedStorage", "activeTab"],
   commands: {
     "open-quick-search": {
       suggested_key: {
@@ -47,45 +31,23 @@ const sharedManifest = {
       description: "Open Quick Search",
     },
   },
-};
-
-const browserAction = {
-  default_icon: {
-    // 16: "icons/16.png",
-    // 19: "icons/19.png",
-    // 32: "icons/32.png",
-    38: "icons/logo-icon.png",
+  action: {
+    default_icon: {
+      // 16: "icons/16.png",
+      // 19: "icons/19.png",
+      // 32: "icons/32.png",
+      38: "icons/logo-icon.png",
+    },
+    default_title: "Open Nimbus sidebar",
   },
-  // default_popup: "src/entries/popup/index.html",
-};
-
-const ManifestV2 = {
-  ...sharedManifest,
-  background: {
-    scripts: ["src/entries/background/script.ts"],
-    persistent: false,
-  },
-  browser_action: browserAction,
-  options_ui: {
-    ...sharedManifest.options_ui,
-    chrome_style: false,
-  },
-  permissions: [...sharedManifest.permissions, "*://*/*"],
-};
-
-const ManifestV3 = {
-  ...sharedManifest,
-  action: browserAction,
   background: {
     service_worker: "src/entries/background/serviceWorker.ts",
-    type: "module",
+    // type: "module",
   },
   host_permissions: ["*://*/*"],
 };
 
-export function getManifest(
-  manifestVersion: number
-): chrome.runtime.ManifestV2 | chrome.runtime.ManifestV3 {
+export function getManifest(): chrome.runtime.ManifestV3 {
   const manifest = {
     author: pkg.author,
     description: pkg.description,
@@ -93,23 +55,9 @@ export function getManifest(
     version: pkg.version,
   };
 
-  if (manifestVersion === 2) {
-    return {
-      ...manifest,
-      ...ManifestV2,
-      manifest_version: manifestVersion,
-    };
-  }
-
-  if (manifestVersion === 3) {
-    return {
-      ...manifest,
-      ...ManifestV3,
-      manifest_version: manifestVersion,
-    };
-  }
-
-  throw new Error(
-    `Missing manifest definition for manifestVersion ${manifestVersion}`
-  );
+  return {
+    ...manifest,
+    ...ManifestV3,
+    manifest_version: 3,
+  };
 }
