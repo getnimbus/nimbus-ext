@@ -316,12 +316,14 @@
               >
                 {item.term}
               </h5>
-              <a
-                href={item.url}
-                class="inline-flex items-center text-sm text-sky-600 no-underline hover:underline"
-              >
-                Read more
-              </a>
+              {#if item.url !== null}
+                <a
+                  href={item.url}
+                  class="inline-flex items-center text-sm text-sky-600 no-underline hover:underline"
+                >
+                  Read more
+                </a>
+              {/if}
             </div>
             <p class="mb-1 mt-2 font-normal leading-6 text-gray-700 ">
               {item.define}
