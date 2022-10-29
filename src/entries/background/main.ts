@@ -66,7 +66,7 @@ const fetchListTerm = async () => {
     .get("/terms")
     .then((response) => response.data);
   browser.storage.local
-    .set({ termList: JSON.stringify(listTerm.data) })
+    .set({ termList: JSON.stringify(listTerm) })
     .then(() => {
       console.log("Loaded list term");
     });
