@@ -18,9 +18,10 @@ const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
   //   newtab: "src/entries/newTab/index.html",
   // },
   web_accessible_resources: [
-    "src/entries/contentScript/assets/full-logo.svg",
-    // "src/entries/newTab/index.html",
-    // "src/entries/options/index.html",
+    {
+      resources: ["src/entries/contentScript/assets/full-logo.svg"],
+      matches: ["*://*/*"],
+    },
   ],
   permissions: ["storage", "unlimitedStorage", "activeTab"],
   commands: {
