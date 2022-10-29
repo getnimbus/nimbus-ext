@@ -68,7 +68,7 @@
     </div>
   </div>
 {:else if data.is_audit !== IS_AUDITED_CODE}
-  <div
+  <!-- <div
     class="flex gap-2 pl-4 py-2 mx-4 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800"
     role="alert"
   >
@@ -109,5 +109,5 @@
       />
     </svg>
     <div>This page is not support.</div>
-  </div>
+  </div> -->
 {/if}

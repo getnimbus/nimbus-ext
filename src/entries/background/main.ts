@@ -9,6 +9,7 @@ browser.runtime.onStartup.addListener(async () => {
   console.log("onStartup....");
   await fetchBasicData();
   await fetchConfigPages();
+  await fetchListTerm();
 });
 
 browser.runtime.onInstalled.addListener(() => {
@@ -60,6 +61,17 @@ const fetchSearchData = async (search) => {
   return JSON.stringify(list.coins);
 };
 
+const fetchListTerm = async () => {
+  const listTerm = await nimbus
+    .get("/terms")
+    .then((response) => response.data);
+  browser.storage.local
+    .set({ termList: JSON.stringify(listTerm.data) })
+    .then(() => {
+      console.log("Loaded list term");
+    });
+}
+
 interface ICoinListInput {
   limit: number;
 }
@@ -91,6 +103,16 @@ onMessage("configPageList", async () => {
   try {
     return JSON.parse(
       (await browser.storage.local.get("configPageList")).configPageList
+    );
+  } catch (error) {
+    return [];
+  }
+});
+
+onMessage("getListTerm", async () => {
+  try {
+    return JSON.parse(
+      (await browser.storage.local.get("termList")).termList
     );
   } catch (error) {
     return [];
@@ -224,3 +246,4 @@ onMessage<any, any>("checkSafety", async ({ data: { currentUrl } }) => {
 // Run on init
 fetchBasicData();
 fetchConfigPages();
+fetchListTerm();

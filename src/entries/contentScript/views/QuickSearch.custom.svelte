@@ -3,7 +3,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { fly } from "svelte/transition";
-  import { escapeRegex } from "../views/utils";
+  import { escapeRegex, getLocalImg } from "../views/utils";
   import UrlPattern from "url-pattern";
   import { sendMessage } from "webext-bridge";
   import * as browser from "webextension-polyfill";
@@ -15,11 +15,15 @@
   import "./NativeTokenInfo.custom.svelte";
   import "./CheckSafety.custom.svelte";
   import { track } from "~/lib/data-tracking";
+  import FullLogo from "../assets/full-logo.svg";
 
   let listPageConfig = [];
+  let listTermData;
   let coinListData;
   let regexToken;
+  let regexTerm;
   let selectedTokenData = [];
+  let selectedTermData = [];
   let tokenDataSearch = [];
   let isChangeURL = false;
   let isShowSideBar = false;
@@ -32,6 +36,7 @@
   onMount(() => {
     getConfigPages();
     getCoinList();
+    getTermList();
   });
 
   const getConfigPages = async () => {
@@ -57,6 +62,22 @@
     );
   };
 
+  const getTermList = async () => {
+    const listTerm = (await sendMessage("getListTerm", undefined)) as any[];
+
+    listTermData = listTerm;
+    const listTermName = listTerm.map((item) => item.term);
+
+    regexTerm = new RegExp(
+      `\\b(${listTermName
+        .map(function (w) {
+          return escapeRegex(w);
+        })
+        .join("|")})\\b`,
+      "g"
+    );
+  };
+
   const getSearchData = async (searchValue) => {
     isLoading = true;
     const data = (await sendMessage("getSearchData", {
@@ -68,7 +89,7 @@
     }
   };
 
-  const handleGetCoinDataFromPage = () => {
+  const handleDetectRegex = (regex) => {
     let innerTextMatchContext = [];
 
     const selectedPageFromCurrentUrl = listPageConfig.find((item) => {
@@ -82,15 +103,34 @@
       if (detectUrlPath === null) return;
       return item.selector.forEach((selectDOM) => {
         const context = document.querySelector(selectDOM);
-        innerTextMatchContext = context.innerText.match(regexToken);
+        innerTextMatchContext = context.innerText.match(regex);
       });
     });
 
-    selectedTokenData =
-      innerTextMatchContext.length > 0
+    return innerTextMatchContext;
+  };
+
+  const handleGetTermFromPage = () => {
+    const innerTextMatch = handleDetectRegex(regexTerm);
+    selectedTermData =
+      innerTextMatch.length > 0
         ? [
             ...new Set(
-              innerTextMatchContext.map((item) => {
+              innerTextMatch.map((item) => {
+                return listTermData.find((data) => data.term === item);
+              })
+            ),
+          ]
+        : [];
+  };
+
+  const handleGetCoinDataFromPage = () => {
+    const innerTextMatch = handleDetectRegex(regexToken);
+    selectedTokenData =
+      innerTextMatch.length > 0
+        ? [
+            ...new Set(
+              innerTextMatch.map((item) => {
                 return coinListData.find(
                   (data) => data.symbol === item || data.name === item
                 );
@@ -100,20 +140,16 @@
         : [];
   };
 
-  // const handleDectecSupportUrl = () => {
-  //   isChangeURL = listPageConfig.some((item) => {
-  //     return location.hostname === item.hostname;
-  //   });
-  // };
-
   const observer = new MutationObserver((e) => {
     if (window.location.href !== currentUrl) {
       currentUrl = window.location.href;
       // handleDectecSupportUrl();
       handleGetCoinDataFromPage();
+      handleGetTermFromPage();
       setTimeout(() => {
         // handleDectecSupportUrl();
         handleGetCoinDataFromPage();
+        handleGetTermFromPage();
       }, 3000);
     }
   });
@@ -134,8 +170,13 @@
 
   $: {
     if (listPageConfig && coinListData) {
-      // handleDectecSupportUrl();
       handleGetCoinDataFromPage();
+    }
+  }
+
+  $: {
+    if (listPageConfig && listTermData) {
+      handleGetTermFromPage();
     }
   }
 
@@ -149,7 +190,6 @@
 
   $: {
     if (!isShowSideBar) {
-      // search = "";
       isFocused = false;
     } else {
       isFocused = true;
@@ -224,10 +264,12 @@
         </svg>
       </div>
 
-      <check-safety />
-
-      <div class="title-5 text-center font-bold my-2">
-        Welcome to <span class="text-sky-400">Nimbus</span>
+      <div class="text-center">
+        <img
+          src={getLocalImg(FullLogo)}
+          class="w-auto h-16 object-contain"
+          alt="Nimbus logo"
+        />
       </div>
 
       <div
@@ -260,6 +302,33 @@
           class="input-1 text-black"
         />
       </div>
+
+      <check-safety />
+
+      {#if selectedTermData.length !== 0}
+        {#each selectedTermData as item}
+          <div
+            class="p-3 max-w-sm bg-white rounded border border-gray-200 shadow mb-4"
+          >
+            <div class="flex justify-between items-baseline">
+              <h5
+                class="mb-1 mt-0 text-xl font-bold tracking-tight text-gray-900 "
+              >
+                {item.term}
+              </h5>
+              <a
+                href={item.url}
+                class="inline-flex items-center text-sm text-sky-600 no-underline hover:underline"
+              >
+                Read more
+              </a>
+            </div>
+            <p class="mb-1 mt-2 font-normal leading-6 text-gray-700 ">
+              {item.define}
+            </p>
+          </div>
+        {/each}
+      {/if}
 
       {#if search !== ""}
         {#if isLoading}
