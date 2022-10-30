@@ -38,7 +38,6 @@ browser.action.onClicked.addListener(() => {
 
 const fetchBasicData = async () => {
   const list = await coinGeko.get("/search");
-  console.log(list);
   browser.storage.local
     .set({ coinList: JSON.stringify(list.coins) })
     .then(() => {
@@ -170,7 +169,7 @@ onMessage<IIdInput, any>("tokenInfoData", async ({ data: { id } }) => {
       //     )
       //     .then((response) => response.data),
       // ]);
-      return { priceData: priceData, coinData: coinData };
+      // return { priceData: priceData, coinData: coinData };
     },
     { defaultValue: {} }
   );
@@ -193,9 +192,7 @@ onMessage("getPieChartData", async () => {
       // const listAddress = JSON.parse(
       //   (await browser.storage.sync.get("listAddress")).listAddress
       // );
-      return fetch(
-        `https://utils.getnimbus.xyz/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`
-      ).then((response) => response.data);
+      return nimbus.get(`/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`);
     },
     { defaultValue: [] }
   );
