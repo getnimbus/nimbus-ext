@@ -69,7 +69,7 @@ const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex
           item.setAttribute("address", item.innerText);
         },
         done() {
-          console.time("Marking address");
+          console.timeEnd("Marking address");
           // console.log("Done mark addresses");
         },
       });
