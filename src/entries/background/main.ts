@@ -54,12 +54,6 @@ const fetchConfigPages = async () => {
     });
 };
 
-const fetchSearchData = async (search) => {
-  // TODO: Make me as local search
-  const list = await coinGeko.get(`/search?query=${search}`);
-  return JSON.stringify(list.coins);
-};
-
 const fetchListTerm = async () => {
   const listTerm = await nimbus
     .get("/terms")
@@ -120,8 +114,12 @@ onMessage("getListTerm", async () => {
 
 onMessage<ISearchInput, any>("getSearchData", async ({ data: { search } }) => {
   try {
-    const data = JSON.parse(await fetchSearchData(search));
-    return data.slice(0, 5);
+    const data = JSON.parse(
+      (await browser.storage.local.get("coinList")).coinList
+    );
+    const searchLowerCase = search.toLowerCase().trim()
+    const dataSearchResult = data.filter((item) => { return item.id.toLowerCase().includes(searchLowerCase) || item.name.toLowerCase().includes(searchLowerCase) || item.symbol.toLowerCase().includes(searchLowerCase) })
+    return dataSearchResult.slice(0, 5);
   } catch (e) {
     return [];
   }
