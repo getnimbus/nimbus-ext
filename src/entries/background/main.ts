@@ -117,7 +117,7 @@ onMessage<ISearchInput, any>("getSearchData", async ({ data: { search } }) => {
     const data = JSON.parse(
       (await browser.storage.local.get("coinList")).coinList
     );
-    const searchLowerCase = search.toLowerCase()
+    const searchLowerCase = search.toLowerCase().trim()
     const dataSearchResult = data.filter((item) => { return item.id.toLowerCase().includes(searchLowerCase) || item.name.toLowerCase().includes(searchLowerCase) || item.symbol.toLowerCase().includes(searchLowerCase) })
     return dataSearchResult.slice(0, 5);
   } catch (e) {
