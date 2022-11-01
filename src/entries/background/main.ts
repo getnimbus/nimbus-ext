@@ -123,7 +123,8 @@ onMessage<ISearchInput, any>("getSearchData", async ({ data: { search } }) => {
     const data = JSON.parse(
       (await browser.storage.local.get("coinList")).coinList
     );
-    const dataSearchResult = data.filter((item) => { return item.id.toLowerCase().includes(search) || item.name.toLowerCase().includes(search) || item.symbol.toLowerCase().includes(search) || item.id.toUpperCase().includes(search) || item.name.toUpperCase().includes(search) || item.symbol.toUpperCase().includes(search) })
+    const searchLowerCase = search.toLowerCase()
+    const dataSearchResult = data.filter((item) => { return item.id.toLowerCase().includes(searchLowerCase) || item.name.toLowerCase().includes(searchLowerCase) || item.symbol.toLowerCase().includes(searchLowerCase) || item.id.toUpperCase().includes(searchLowerCase) || item.name.toUpperCase().includes(searchLowerCase) || item.symbol.toUpperCase().includes(searchLowerCase) })
 
     return dataSearchResult.slice(0, 5);
   } catch (e) {
