@@ -32,6 +32,7 @@
   let currentUrl = window.location.href;
   let timer;
   let isLoading = false;
+  let helloText = chrome.i18n.getMessage('appTitle');
 
   onMount(() => {
     getConfigPages();
@@ -377,6 +378,7 @@
         {:else}
           <div class="text-4 leading-6 font-medium mt-10 text-center">
             Search for cryptocurrency or token you want to know
+            {helloText}
           </div>
         {/if}
       {/if}

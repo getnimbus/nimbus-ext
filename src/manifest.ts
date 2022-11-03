@@ -47,6 +47,7 @@ const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
     // type: "module",
   },
   host_permissions: ["*://*/*"],
+  default_locale: "en"
 };
 
 export function getManifest(): chrome.runtime.ManifestV3 {
