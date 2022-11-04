@@ -96,6 +96,14 @@
       return location.hostname === item.hostname;
     });
 
+    if (!selectedPageFromCurrentUrl) {
+      // Fallback as article tag on any page
+      const context = document.querySelector("article");
+      if (context) {
+        innerTextMatchContext = context.innerText.match(regex);
+      }
+    }
+
     selectedPageFromCurrentUrl?.urlPattern.map((item) => {
       const patternUrlPath = new UrlPattern(item.path);
       const detectUrlPath = patternUrlPath.match(location.pathname);
