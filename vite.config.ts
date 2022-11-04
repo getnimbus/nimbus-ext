@@ -6,6 +6,7 @@ import { getManifest } from "./src/manifest";
 import { windi } from "svelte-windicss-preprocess";
 import sveltePreprocess from "svelte-preprocess";
 import AutoImport from "unplugin-auto-import/vite";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -30,6 +31,14 @@ export default defineConfig(({ mode }) => {
         imports: [
           {
             "webextension-polyfill": [["default", "browser"]],
+          },
+        ],
+      }),
+      viteStaticCopy({
+        targets: [
+          {
+            src: "src/_locales",
+            dest: "_locales",
           },
         ],
       }),
