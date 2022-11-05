@@ -1,4 +1,4 @@
-# Nimbus - A bridge for users to step into the Web3 era
+# Nimbus - Make Web3 simple for everyone era
 
 ![Nimbus](./doc/intro.png)
 
