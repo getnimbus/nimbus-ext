@@ -65,6 +65,8 @@
   const getTermList = async () => {
     const listTerm = (await sendMessage("getListTerm", undefined)) as any[];
 
+    console.log("listTerm: ", listTerm);
+
     listTermData = listTerm;
     const listTermName = listTerm.map((item) => item.term);
 
@@ -212,6 +214,9 @@
       });
     }
   }
+
+  $: selectedTermData =
+    search && listTermData.filter((item) => item.term === search);
 
   browser.runtime.onMessage.addListener(function (msg) {
     if (msg.action && msg.action == "toggleSidebar") {
