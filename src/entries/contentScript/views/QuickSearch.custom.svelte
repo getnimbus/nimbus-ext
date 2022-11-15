@@ -97,6 +97,14 @@
       return location.hostname === item.hostname;
     });
 
+    if (!selectedPageFromCurrentUrl) {
+      // Fallback as article tag on any page
+      const context = document.querySelector("article");
+      if (context) {
+        innerTextMatchContext = context.innerText.match(regex);
+      }
+    }
+
     selectedPageFromCurrentUrl?.urlPattern.map((item) => {
       const patternUrlPath = new UrlPattern(item.path);
       const detectUrlPath = patternUrlPath.match(location.pathname);
@@ -384,7 +392,7 @@
       {/if}
 
       <!-- <a
-      href="https://feedback.getnimbus.xyz/"
+      href="https://feedback.getnimbus.io/"
       target="_blank"
       class="flex items-center justify-center border-1 border-solid border-sky-400 px-3 py-2 text-sky-500 rounded cursor-pointer bg-white no-underline mt-auto"
     >

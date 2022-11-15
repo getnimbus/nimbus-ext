@@ -107,7 +107,7 @@
       // const data = (await sendMessage("getPieChartData", undefined)) as any;
 
       const data = await fetch(
-        `https://utils.getnimbus.xyz/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`
+        `https://utils.getnimbus.io/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`
       ).then((response) => response.json());
 
       const dataFormat = data.data.assets.filter((item) => {

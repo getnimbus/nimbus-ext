@@ -227,7 +227,7 @@
         class:text-right={!unknownTRX}
       >
         <a
-          href="https://feedback.getnimbus.xyz/"
+          href="https://feedback.getnimbus.io/"
           target="_blank"
           class="inline-flex no-underline cursor-pointer items-center px-2.5 py-1.5 border-1 border-solid border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
         >
