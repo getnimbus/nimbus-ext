@@ -326,8 +326,18 @@
             <div
               class="p-3 max-w-sm bg-white rounded border border-gray-200 shadow mb-4"
             >
-              <div class="mt-0 text-xl font-bold tracking-tight text-gray-900">
-                {item.term}
+              <div class="flex justify-between items-baseline">
+                <div class="text-xl font-bold tracking-tight text-gray-900">
+                  {item.term}
+                </div>
+                {#if item.url !== null}
+                  <a
+                    href={item.url}
+                    class="inline-flex items-center text-sm text-sky-600 font-medium no-underline hover:underline"
+                  >
+                    Read more
+                  </a>
+                {/if}
               </div>
               {#if item.img !== null}
                 <div class="w-full h-[300px] border rounded overflow-hidden">
@@ -341,14 +351,6 @@
               <p class="mb-1 font-normal leading-6 text-gray-700">
                 {item.define}
               </p>
-              {#if item.url !== null}
-                <a
-                  href={item.url}
-                  class="inline-flex items-center text-sm text-sky-600 font-medium no-underline hover:underline"
-                >
-                  Read more
-                </a>
-              {/if}
             </div>
           {/each}
         {/if}
@@ -357,8 +359,18 @@
           <div
             class="p-3 max-w-sm bg-white rounded border border-gray-200 shadow mb-4"
           >
-            <div class="mt-0 text-xl font-bold tracking-tight text-gray-900">
-              {item.term}
+            <div class="flex justify-between items-baseline">
+              <div class="text-xl font-bold tracking-tight text-gray-900">
+                {item.term}
+              </div>
+              {#if item.url !== null}
+                <a
+                  href={item.url}
+                  class="inline-flex items-center text-sm text-sky-600 font-medium no-underline hover:underline"
+                >
+                  Read more
+                </a>
+              {/if}
             </div>
             {#if item.img !== null}
               <div class="w-full h-[300px] border rounded overflow-hidden">
@@ -372,14 +384,6 @@
             <p class="mb-1 font-normal leading-6 text-gray-700">
               {item.define}
             </p>
-            {#if item.url !== null}
-              <a
-                href={item.url}
-                class="inline-flex items-center text-sm text-sky-600 font-medium no-underline hover:underline"
-              >
-                Read more
-              </a>
-            {/if}
           </div>
         {/each}
       {/if}
