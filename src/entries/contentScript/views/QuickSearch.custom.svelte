@@ -366,7 +366,7 @@
               {#if item.url !== null}
                 <a
                   href={item.url}
-                  class="inline-flex items-center text-sm text-sky-600 font-medium no-underline hover:underline"
+                  class="inline-flex shrink-0 items-center text-sm text-sky-600 font-medium no-underline hover:underline"
                 >
                   Read more
                 </a>
