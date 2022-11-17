@@ -1,9 +1,12 @@
 import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
 import dayjs from "dayjs";
-import { isEmpty } from "lodash";
+import _, { isEmpty } from "lodash";
 import { coinGeko, mixpanel, nimbus, goplus } from "../../lib/network";
 import { cacheOrAPI } from "./utils";
+import type { JsonValue, JsonObject } from "type-fest";
+import langEN from "../../_locales/en/messages.json";
+import langVI from "../../_locales/vi/messages.json";
 
 browser.runtime.onStartup.addListener(async () => {
   console.log("onStartup....");
@@ -55,15 +58,11 @@ const fetchConfigPages = async () => {
 };
 
 const fetchListTerm = async () => {
-  const listTerm = await nimbus
-    .get("/terms")
-    .then((response) => response.data);
-  browser.storage.local
-    .set({ termList: JSON.stringify(listTerm) })
-    .then(() => {
-      console.log("Loaded list term");
-    });
-}
+  const listTerm = await nimbus.get("/terms").then((response) => response.data);
+  browser.storage.local.set({ termList: JSON.stringify(listTerm) }).then(() => {
+    console.log("Loaded list term");
+  });
+};
 
 interface ICoinListInput {
   limit: number;
@@ -104,9 +103,7 @@ onMessage("configPageList", async () => {
 
 onMessage("getListTerm", async () => {
   try {
-    return JSON.parse(
-      (await browser.storage.local.get("termList")).termList
-    );
+    return JSON.parse((await browser.storage.local.get("termList")).termList);
   } catch (error) {
     return [];
   }
@@ -117,8 +114,14 @@ onMessage<ISearchInput, any>("getSearchData", async ({ data: { search } }) => {
     const data = JSON.parse(
       (await browser.storage.local.get("coinList")).coinList
     );
-    const searchLowerCase = search.toLowerCase().trim()
-    const dataSearchResult = data.filter((item) => { return item.id.toLowerCase().includes(searchLowerCase) || item.name.toLowerCase().includes(searchLowerCase) || item.symbol.toLowerCase().includes(searchLowerCase) })
+    const searchLowerCase = search.toLowerCase().trim();
+    const dataSearchResult = data.filter((item) => {
+      return (
+        item.id.toLowerCase().includes(searchLowerCase) ||
+        item.name.toLowerCase().includes(searchLowerCase) ||
+        item.symbol.toLowerCase().includes(searchLowerCase)
+      );
+    });
     return dataSearchResult.slice(0, 5);
   } catch (e) {
     return [];
@@ -190,7 +193,9 @@ onMessage("getPieChartData", async () => {
       // const listAddress = JSON.parse(
       //   (await browser.storage.sync.get("listAddress")).listAddress
       // );
-      return nimbus.get(`/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`);
+      return nimbus.get(
+        `/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`
+      );
     },
     { defaultValue: [] }
   );
@@ -237,6 +242,23 @@ onMessage<any, any>("checkSafety", async ({ data: { currentUrl } }) => {
     { defaultValue: null }
   );
 });
+
+interface II18nMsg extends JsonObject {
+  key: string;
+  lang?: "vi" | "en";
+  defaultText?: string;
+}
+
+onMessage<II18nMsg, "i18n">(
+  "i18n",
+  async ({ data: { key, lang = "en", defaultText } }) => {
+    if (lang === "vi") {
+      return _.get(langVI, key, defaultText);
+    }
+
+    return _.get(langEN, key, defaultText);
+  }
+);
 
 // Run on init
 fetchBasicData();

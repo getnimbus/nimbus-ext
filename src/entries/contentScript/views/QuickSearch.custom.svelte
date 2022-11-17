@@ -16,6 +16,7 @@
   import "./CheckSafety.custom.svelte";
   import { track } from "~/lib/data-tracking";
   import FullLogo from "../assets/full-logo.svg";
+  import { i18n, setLang } from "~/lib/i18n";
 
   let listPageConfig = [];
   let listTermData;
@@ -32,7 +33,7 @@
   let currentUrl = window.location.href;
   let timer;
   let isLoading = false;
-  let helloText = chrome.i18n.getMessage('appTitle');
+  let helloText = i18n("appTitle.message", "Xin chao {name}", { name: "Binh" });
 
   onMount(() => {
     getConfigPages();
@@ -384,7 +385,10 @@
             *Chart data by CoinGekko
           </div>
         {:else}
-          <div class="text-4 leading-6 font-medium mt-10 text-center">
+          <div
+            class="text-4 leading-6 font-medium mt-10 text-center"
+            on:click={() => setLang("vi")}
+          >
             Search for cryptocurrency or token you want to know
             {helloText}
           </div>
