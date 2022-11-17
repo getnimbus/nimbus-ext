@@ -24,6 +24,7 @@
   let regexTerm;
   let selectedTokenData = [];
   let selectedTermData = [];
+  let selectedSearchTermData = [];
   let tokenDataSearch = [];
   let isChangeURL = false;
   let isShowSideBar = false;
@@ -213,6 +214,12 @@
     }
   }
 
+  $: selectedSearchTermData =
+    search &&
+    listTermData
+      .filter((item) => item.term.toLowerCase().includes(search))
+      .slice(0, 3);
+
   browser.runtime.onMessage.addListener(function (msg) {
     if (msg.action && msg.action == "toggleSidebar") {
       isShowSideBar = !isShowSideBar;
@@ -313,27 +320,68 @@
 
       <check-safety />
 
-      {#if selectedTermData.length !== 0}
-        {#each selectedTermData as item}
+      {#if selectedSearchTermData.length === 0}
+        {#if selectedTermData.length !== 0}
+          {#each selectedTermData as item}
+            <div
+              class="p-3 max-w-sm bg-white rounded border border-gray-200 shadow mb-4"
+            >
+              <div class="flex justify-between items-baseline">
+                <div class="text-xl font-bold tracking-tight text-gray-900">
+                  {item.term}
+                </div>
+                {#if item.url !== null}
+                  <a
+                    href={item.url}
+                    class="inline-flex items-center text-sm text-sky-600 font-medium no-underline hover:underline"
+                  >
+                    Read more
+                  </a>
+                {/if}
+              </div>
+              {#if item.img !== null}
+                <div class="w-full h-[300px] border rounded overflow-hidden">
+                  <img
+                    src={item.img}
+                    alt="img"
+                    class="w-full h-full object-contain"
+                  />
+                </div>
+              {/if}
+              <p class="mb-1 font-normal leading-6 text-gray-700">
+                {item.define}
+              </p>
+            </div>
+          {/each}
+        {/if}
+      {:else}
+        {#each selectedSearchTermData as item}
           <div
             class="p-3 max-w-sm bg-white rounded border border-gray-200 shadow mb-4"
           >
             <div class="flex justify-between items-baseline">
-              <h5
-                class="mb-1 mt-0 text-xl font-bold tracking-tight text-gray-900 "
-              >
+              <div class="text-xl font-bold tracking-tight text-gray-900">
                 {item.term}
-              </h5>
+              </div>
               {#if item.url !== null}
                 <a
                   href={item.url}
-                  class="inline-flex items-center text-sm text-sky-600 no-underline hover:underline"
+                  class="inline-flex shrink-0 items-center text-sm text-sky-600 font-medium no-underline hover:underline"
                 >
                   Read more
                 </a>
               {/if}
             </div>
-            <p class="mb-1 mt-2 font-normal leading-6 text-gray-700 ">
+            {#if item.img !== null}
+              <div class="w-full h-[300px] border rounded overflow-hidden">
+                <img
+                  src={item.img}
+                  alt="img"
+                  class="w-full h-full object-contain"
+                />
+              </div>
+            {/if}
+            <p class="mb-1 font-normal leading-6 text-gray-700">
               {item.define}
             </p>
           </div>
@@ -408,6 +456,10 @@
     border-left: 0px;
     border-style: solid;
   }
+
+  /* .border {
+    border: 1px solid red;
+  } */
 
   .input-border-focus {
     border: 1px solid #0369a1;
