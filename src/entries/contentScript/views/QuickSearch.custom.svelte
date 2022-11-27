@@ -433,15 +433,14 @@
             *Chart data by CoinGekko
           </div>
         {:else}
-          <div
-            class="text-4 leading-6 font-medium mt-10 text-center"
-            on:click={() => setLang("vi")}
-          >
+          <div class="text-4 leading-6 font-medium mt-10 text-center">
             Search for cryptocurrency or token you want to know
             {helloText}
           </div>
         {/if}
       {/if}
+
+      <button on:click={() => setLang("vi")}>change lang</button>
 
       <!-- <a
       href="https://feedback.getnimbus.io/"

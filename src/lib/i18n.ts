@@ -4,7 +4,7 @@ import langEN from "../_locales/en/messages.json";
 import langVI from "../_locales/vi/messages.json";
 
 type LANG = "vi" | "en";
-let currentLang: LANG = "en";
+export let currentLang: LANG = "en";
 
 browser.storage.onChanged.addListener((changes) => {
   if (changes?.options?.newValue?.lang) {

@@ -4,6 +4,7 @@
   import TabDashboard from "~/components/TabUI/TabDashboard.svelte";
   import TabHighlight from "~/components/TabUI/TabHighlight.svelte";
   import TabNotification from "~/components/TabUI/TabNotification.svelte";
+  import TabSettings from "~/components/TabUI/TabSettings.svelte";
   import Icon from "~/components/TabUI/Icon.svelte";
   import logo from "../../assets/logo-1.svg";
 
@@ -21,6 +22,7 @@
     { label: "Dashboard", value: 2 },
     { label: "Highlight", value: 3 },
     { label: "Notification", value: 4 },
+    { label: "Settings", value: 5 },
   ];
 
   const handleClick = (e, tabValue) => {
@@ -64,6 +66,8 @@
       <TabHighlight />
     {:else if activeTabValue === 4}
       <TabNotification />
+    {:else if activeTabValue === 5}
+      <TabSettings />
     {/if}
   </div>
 </div>
