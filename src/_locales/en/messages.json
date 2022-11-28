@@ -1,5 +1,10 @@
 {
-  "appTitle": {
-    "message": "Hello"
+  "quickSearchLang": {
+    "title": "Search for cryptocurrency or token you want to know",
+    "input-placeholder": "Search...",
+    "status": "Searching...",
+    "results": "Results",
+    "no-results": "No results",
+    "source-data-charts": "*Chart data by CoinGekko"
   }
 }

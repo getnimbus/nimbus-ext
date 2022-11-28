@@ -1,5 +1,10 @@
 {
-  "appTitle": {
-    "message": "Xin chào"
+  "quickSearchLang": {
+    "title": "Tìm kiếm tiền điện tử hoặc token mà bạn muốn biết",
+    "input-placeholder": "Tìm kiếm...",
+    "status": "Đa tìm kiếm...",
+    "results": "Kết quả",
+    "no-results": "Không có kết quả",
+    "source-data-charts": "*Dữ liệu của biểu đồ được cung cấp bởi CoinGekko"
   }
 }

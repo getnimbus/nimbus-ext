@@ -34,7 +34,20 @@
   let currentUrl = window.location.href;
   let timer;
   let isLoading = false;
-  let helloText = i18n("appTitle.message", "Xin chao {name}", { name: "Binh" });
+  let MultipleLang = {
+    title: i18n(
+      "quickSearchLang.title",
+      "Search for cryptocurrency or token you want to know"
+    ),
+    input_placeholder: i18n("quickSearchLang.input-placeholder", "Search..."),
+    status: i18n("quickSearchLang.status", "Searching..."),
+    results: i18n("quickSearchLang.results", "Results"),
+    empty: i18n("quickSearchLang.no-results", "No results"),
+    sources: i18n(
+      "quickSearchLang.source-data-charts",
+      "*Chart data by CoinGekko"
+    ),
+  };
 
   onMount(() => {
     getConfigPages();
@@ -314,7 +327,7 @@
           on:blur={() => (isFocused = false)}
           autofocus
           value={search}
-          placeholder="Search..."
+          placeholder={MultipleLang.input_placeholder}
           type="text"
           class="input-1 text-black"
         />
@@ -393,12 +406,12 @@
       {#if search !== ""}
         {#if isLoading}
           <div class="text-4 leading-6 font-medium mt-10 text-center">
-            Searching...
+            {MultipleLang.status}
           </div>
         {:else if !isLoading}
           {#if tokenDataSearch.length !== 0}
             <div class="mb-2">
-              <div class="title-2">Results</div>
+              <div class="title-2">{MultipleLang.results}</div>
             </div>
             <div class="flex flex-col gap-y-3">
               {#each tokenDataSearch as item}
@@ -406,11 +419,11 @@
               {/each}
             </div>
             <div class="text-xs leading-4 italic text-gray-700 mt-3">
-              *Chart data by CoinGekko
+              {MultipleLang.sources}
             </div>
           {:else}
             <div class="text-4 leading-6 font-medium mt-10 text-center">
-              No results
+              {MultipleLang.empty}
             </div>
           {/if}
         {/if}
@@ -434,8 +447,7 @@
           </div>
         {:else}
           <div class="text-4 leading-6 font-medium mt-10 text-center">
-            Search for cryptocurrency or token you want to know
-            {helloText}
+            {MultipleLang.title}
           </div>
         {/if}
       {/if}
