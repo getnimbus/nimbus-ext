@@ -1,10 +1,13 @@
 {
   "quickSearchLang": {
+    "message": "hello",
     "title": "Tìm kiếm tiền điện tử hoặc token mà bạn muốn biết",
+    "second-title": "Tại trang hiện tại",
     "input-placeholder": "Tìm kiếm...",
     "status": "Đa tìm kiếm...",
     "results": "Kết quả",
     "no-results": "Không có kết quả",
-    "source-data-charts": "*Dữ liệu của biểu đồ được cung cấp bởi CoinGekko"
+    "source-data-charts": "*Dữ liệu của biểu đồ được cung cấp bởi CoinGekko",
+    "read-more": "Đọc thêm"
   }
 }
