@@ -16,7 +16,7 @@
   import "./CheckSafety.custom.svelte";
   import { track } from "~/lib/data-tracking";
   import FullLogo from "../assets/full-logo.svg";
-  import { i18n, setLang } from "~/lib/i18n";
+  import { i18n } from "~/lib/i18n";
 
   let listPageConfig = [];
   let listTermData;
@@ -439,8 +439,6 @@
           </div>
         {/if}
       {/if}
-
-      <button on:click={() => setLang("vi")}>change lang</button>
 
       <!-- <a
       href="https://feedback.getnimbus.io/"

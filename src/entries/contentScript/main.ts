@@ -8,6 +8,7 @@ import "./views/QuickSearch.custom.svelte";
 import { sendMessage } from "webext-bridge";
 import { track } from "~/lib/data-tracking";
 import * as dg from "~/lib/debug";
+import * as browser from "webextension-polyfill";
 
 const regexETHTrx = /0x[a-fA-F0-9]{64}/g; // TODO: Ignore longer address
 const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex
@@ -78,7 +79,15 @@ const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex
   }
 
   console.timeEnd("Nimbus marking");
-
-  const quickSearchEle = document.createElement("quick-search");
+  let quickSearchEle = document.createElement("quick-search");
   document.body.appendChild(quickSearchEle);
+
+  browser.storage.onChanged.addListener((changes) => {
+    if (changes?.options?.newValue?.lang) {
+      document.body.removeChild(quickSearchEle)
+      quickSearchEle = document.createElement("quick-search");
+      document.body.appendChild(quickSearchEle);
+      console.log("Change Lang!");
+    }
+  });
 })();

@@ -12,6 +12,10 @@ browser.storage.onChanged.addListener((changes) => {
   }
 });
 
+browser.storage.sync.get("options").then((res) => {
+  currentLang = res.options.lang
+})
+
 export const setLang = async (lang: LANG) => {
   currentLang = lang;
   await browser.storage.sync.set({
