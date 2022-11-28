@@ -50,5 +50,19 @@
     "settings-page-content": {
       "change-lang-label": "Chọn ngôn ngữ"
     }
+  },
+  "newtabPage": {
+    "message": "Newtab page languages", 
+
+    "title": "Xin chào,",
+    "sub-title": "Những thay đổi mới nhất hôm nay",
+    "settings": "Cài đặt",
+
+    "your-portfolio": "Danh mục đầu tư của bạn",
+    "portfolio-breakdown": "Phân tích danh mục đầu tư",
+    "recent-transaction": "Giao dịch gần đây",
+    "news-title": "Bạn có thể quan tâm đến",
+
+    "btn-text": "Đề xuất một nội dung"
   }
 }

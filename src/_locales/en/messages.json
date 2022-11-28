@@ -50,5 +50,19 @@
     "settings-page-content": {
       "change-lang-label": "Select languages"
     }
+  },
+  "newtabPage": {
+    "message": "Newtab page languages",
+
+    "title": "Hi there,",
+    "sub-title": "Today update",
+    "settings": "Settings",
+
+    "your-portfolio": "Your portfolio",
+    "portfolio-breakdown": "Portfolio breakdown",
+    "recent-transaction": "Recent transaction",
+    "news-title": "You might interested in",
+
+    "btn-text": "Suggest a content"
   }
 }

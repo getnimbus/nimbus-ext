@@ -6,11 +6,31 @@
   import { chart } from "svelte-apexcharts";
   import { Avatar, Button, ImagePlaceholder } from "flowbite-svelte";
   import numeral from "numeral";
+  import { i18n } from "~/lib/i18n";
 
   import TxCardInfo from "~/components/TxCardInfo.svelte";
   import NewCard from "~/components/NewCard.svelte";
 
   import logo from "../../assets/user.png";
+
+  let MultipleLang = {
+    title: i18n("newtabPage.title", "Hi there,"),
+    sub_title: i18n("newtabPage.sub-title", "Today update"),
+
+    settings: i18n("newtabPage.settings", "Settings"),
+    your_portfolio: i18n("newtabPage.your-portfolio", "Your portfolio"),
+    portfolio_breakdown: i18n(
+      "newtabPage.portfolio-breakdown",
+      "Portfolio breakdown"
+    ),
+    recent_transaction: i18n(
+      "newtabPage.recent-transaction",
+      "Recent transaction"
+    ),
+    news_title: i18n("newtabPage.news-title", "You might interested in"),
+
+    btn_text: i18n("newtabPage.btn-text", "Suggest a content"),
+  };
 
   let totalBalanceUsd = 0;
 
@@ -137,13 +157,19 @@
   onMount(() => {
     getPieChartData();
   });
+
+  browser.storage.onChanged.addListener((changes) => {
+    if (changes?.options?.newValue?.lang) {
+      window.location.reload();
+    }
+  });
 </script>
 
 <div class="max-w-[2000px] m-auto w-[90%] h-full py-6">
   <div class="flex justify-between items-start">
     <div class="flex flex-col gap-2">
-      <div class="title-1">Hi there,</div>
-      <div class="title-2">Today update</div>
+      <div class="title-1">{MultipleLang.title}</div>
+      <div class="title-2">{MultipleLang.sub_title}</div>
     </div>
     <div class="flex justify-between items-center gap-6">
       <a
@@ -170,7 +196,7 @@
             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
           />
         </svg>
-        <div>Settings</div>
+        <div>{MultipleLang.settings}</div>
       </a>
       <div class="w-[48px] h-[48px] rounded-full overflow-hidden">
         <Avatar src={logo} />
@@ -181,20 +207,26 @@
   <div class="mt-12 flex flex-col gap-12">
     <div class="flex lg:flex-row flex-col justify-between gap-6">
       <div class="flex-1">
-        <div class="title-3 text-gray-500 mb-4">Your portfolio</div>
+        <div class="title-3 text-gray-500 mb-4">
+          {MultipleLang.your_portfolio}
+        </div>
         <div class="border shadow rounded-lg p-3">
           <div use:chart={optionLineChart} />
         </div>
       </div>
       <div class="flex-1">
-        <div class="title-3 text-gray-500 mb-4">Portfolio breakdown</div>
+        <div class="title-3 text-gray-500 mb-4">
+          {MultipleLang.portfolio_breakdown}
+        </div>
         <div class="border shadow rounded-lg p-3">
           <div use:chart={optionPieChart} />
         </div>
       </div>
     </div>
     <div>
-      <div class="title-3 text-gray-500 mb-4">Recent Transaction</div>
+      <div class="title-3 text-gray-500 mb-4">
+        {MultipleLang.recent_transaction}
+      </div>
       <div
         class="border rounded-lg py-6 px-8 flex flex-col gap-4 max-h-[660px] overflow-y-auto shadow"
       >
@@ -203,7 +235,7 @@
       </div>
     </div>
     <div>
-      <div class="title-3 text-gray-500 mb-4">You might interested in</div>
+      <div class="title-3 text-gray-500 mb-4">{MultipleLang.news_title}</div>
       <div class="flex flex-col gap-4">
         <NewCard />
         <NewCard />
@@ -215,7 +247,7 @@
         </div>
       </div>
       <div class="mt-4 flex justify-center">
-        <Button gradient color="cyanToBlue">Suggest a content</Button>
+        <Button gradient color="cyanToBlue">{MultipleLang.btn_text}</Button>
       </div>
     </div>
   </div>
