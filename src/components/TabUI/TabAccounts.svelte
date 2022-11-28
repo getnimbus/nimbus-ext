@@ -15,6 +15,7 @@
     Checkbox,
     Button,
   } from "flowbite-svelte";
+  import { i18n } from "~/lib/i18n";
 
   import AppOverlay from "../Overlay.svelte";
 
@@ -24,6 +25,63 @@
   let selectedItemEdit: any = {};
   let isOpenEditModal = false;
   let isOpenAddModal = false;
+  let MultipleLang = {
+    title: i18n("optionsPage.accounts-page-title", "My address"),
+    content: {
+      btn_text: i18n(
+        "optionsPage.accounts-page-content.btn-text",
+        "Add Address"
+      ),
+      address_header_table: i18n(
+        "optionsPage.accounts-page-content.address-header-table",
+        "Address"
+      ),
+      label_header_table: i18n(
+        "optionsPage.accounts-page-content.label-header-table",
+        "Label"
+      ),
+      action_header_table: i18n(
+        "optionsPage.accounts-page-content.action-header-table",
+        "Action"
+      ),
+      modal_cancel: i18n(
+        "optionsPage.accounts-page-content.modal-cancel",
+        "Cancel"
+      ),
+      modal_add: i18n("optionsPage.accounts-page-content.modal-add", "Add"),
+      modal_edit: i18n("optionsPage.accounts-page-content.modal-edit", "Edit"),
+      modal_delete: i18n(
+        "optionsPage.accounts-page-content.modal-delete",
+        "Delete"
+      ),
+
+      modal_address_label: i18n(
+        "optionsPage.accounts-page-content.modal-address-label",
+        "Address"
+      ),
+      modal_label_label: i18n(
+        "optionsPage.accounts-page-content.modal-label-label",
+        "Label"
+      ),
+      modal_add_title: i18n(
+        "optionsPage.accounts-page-content.modal-add-title",
+        "Add Your Address"
+      ),
+      modal_add_sub_title: i18n(
+        "optionsPage.accounts-page-content.modal-add-sub-title",
+        "Add your address will give you more option to see the information at page new tab"
+      ),
+
+      modal_edit_title: i18n(
+        "optionsPage.accounts-page-content.modal-edit-title",
+        "Edit Your Address"
+      ),
+      modal_edit_sub_title: i18n(
+        "optionsPage.accounts-page-content.modal-edit-sub-title",
+        "Edit your address will make change the information at page new tab"
+      ),
+    },
+  };
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -229,62 +287,25 @@
 
 <div class="flex flex-col gap-2">
   <div class="flex justify-between items-center">
-    <div class="title-3 text-gray-500">My address</div>
+    <div class="title-3 text-gray-500">{MultipleLang.title}</div>
     <Button
       gradient
       color="cyanToBlue"
       on:click={() => (isOpenAddModal = true)}
     >
-      <div class="uppercase">Add Address</div>
+      <div class="uppercase">{MultipleLang.content.btn_text}</div>
     </Button>
   </div>
-
-  <!-- <form on:submit|preventDefault={onSubmit} class="flex gap-2">
-    <div class="relative">
-      <input
-        type="text"
-        id="address"
-        name="address"
-        placeholder="Address..."
-        value=""
-        class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-[500px] p-3"
-        class:input-border-error={errors.address && errors.address.required}
-        on:blur={onBlur}
-      />
-      {#if errors.address && errors.address.required}
-        <div class="text-red-500 absolute -bottom-4 left-0">
-          {errors.address.msg}
-        </div>
-      {/if}
-    </div>
-    <div class="relative">
-      <input
-        type="text"
-        id="label"
-        name="label"
-        placeholder="Label..."
-        value=""
-        class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-[200px] p-3"
-        class:input-border-error={errors.label && errors.label.required}
-        on:blur={onBlur}
-      />
-      {#if errors.label && errors.label.required}
-        <div class="text-red-500 absolute -bottom-4 left-0">
-          {errors.label.msg}
-        </div>
-      {/if}
-    </div>
-    <Button gradient color="cyanToBlue" type="submit">
-      <div class="uppercase">Add Address</div>
-    </Button>
-  </form> -->
 
   <div class="table-border mt-2 rounded">
     <Table hoverable={true}>
       <TableHead>
-        <TableHeadCell>Address</TableHeadCell>
-        <TableHeadCell>Label</TableHeadCell>
-        <TableHeadCell>Action</TableHeadCell>
+        <TableHeadCell
+          >{MultipleLang.content.address_header_table}</TableHeadCell
+        >
+        <TableHeadCell>{MultipleLang.content.label_header_table}</TableHeadCell>
+        <TableHeadCell>{MultipleLang.content.action_header_table}</TableHeadCell
+        >
       </TableHead>
       <TableBody class="divide-y">
         {#each listAddress as item}
@@ -304,13 +325,13 @@
                 class="text-red-600 hover:underline dark:text-red-500 transition-all cursor-pointer font-semibold"
                 on:click={() => handleDelete(item)}
               >
-                Delete
+                {MultipleLang.content.modal_delete}
               </div>
               <div
                 class="text-blue-600 hover:underline dark:text-blue-500 transition-all cursor-pointer font-semibold"
                 on:click={() => handleEdit(item)}
               >
-                Edit
+                {MultipleLang.content.modal_edit}
               </div>
             </TableBodyCell>
           </TableBodyRow>
@@ -323,24 +344,28 @@
     isOpen={isOpenEditModal}
     on:close={() => (isOpenEditModal = false)}
   >
-    <div class="flex flex-col gap-1 items-start">
-      <div class="title-4 text-gray-600 font-semibold">Edit Your Address</div>
+    <div class="flex flex-col gap-1 items-start max-w-[530px]">
+      <div class="title-4 text-gray-600 font-semibold">
+        {MultipleLang.content.modal_edit_title}
+      </div>
       <div class="text-sm text-gray-500">
-        Edit your address will make change the information at page new tab
+        {MultipleLang.content.modal_edit_sub_title}
       </div>
     </div>
     <form
       on:submit|preventDefault={onSubmitEdit}
       class="flex flex-col gap-2 mt-4"
     >
-      <div class="flex flex-col gap-1 w-[485px]">
-        <div class="text-sm font-medium text-gray-700">Address</div>
-        <div class="relative w-[485px]">
+      <div class="flex flex-col gap-1 w-[530px]">
+        <div class="text-sm font-medium text-gray-700">
+          {MultipleLang.content.modal_address_label}
+        </div>
+        <div class="relative w-[530px]">
           <input
             type="text"
             id="address"
             name="address"
-            placeholder="Address..."
+            placeholder={`${MultipleLang.content.modal_address_label}...`}
             bind:value={selectedItemEdit.address}
             class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
             class:input-border-error={errorsEdit.address &&
@@ -355,17 +380,19 @@
         </div>
       </div>
       <div
-        class="flex flex-col gap-1 w-[485px]"
+        class="flex flex-col gap-1 w-[530px]"
         class:form-item-translate={errorsEdit.address &&
           errorsEdit.address.required}
       >
-        <div class="text-sm font-medium text-gray-700">Label</div>
-        <div class="relative">
+        <div class="text-sm font-medium text-gray-700">
+          {MultipleLang.content.modal_label_label}
+        </div>
+        <div class="relative w-[530px]">
           <input
             type="text"
             id="label"
             name="label"
-            placeholder="Label..."
+            placeholder={`${MultipleLang.content.modal_label_label}...`}
             bind:value={selectedItemEdit.label}
             class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
             class:input-border-error={errorsEdit.label &&
@@ -394,21 +421,24 @@
             isOpenEditModal = false;
           }}
         >
-          <div class="uppercase text-sky-500">Cancel</div>
+          <div class="uppercase text-sky-500">
+            {MultipleLang.content.modal_cancel}
+          </div>
         </Button>
         <Button gradient color="cyanToBlue" type="submit">
-          <div class="uppercase">Edit</div>
+          <div class="uppercase">{MultipleLang.content.modal_edit}</div>
         </Button>
       </div>
     </form>
   </AppOverlay>
 
   <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
-    <div class="flex flex-col gap-1 items-start">
-      <div class="title-4 text-gray-600 font-semibold">Add Your Address</div>
+    <div class="flex flex-col gap-1 items-start max-w-[530px]">
+      <div class="title-4 text-gray-600 font-semibold">
+        {MultipleLang.content.modal_add_title}
+      </div>
       <div class="text-sm text-gray-500">
-        Add your address will give you more option to see the information at
-        page new tab
+        {MultipleLang.content.modal_add_sub_title}
       </div>
     </div>
     <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
@@ -416,13 +446,15 @@
         class="flex flex-col gap-1 w-[530px]"
         class:form-item-translate={errors.address && errors.address.required}
       >
-        <div class="text-sm font-medium text-gray-700">Address</div>
+        <div class="text-sm font-medium text-gray-700">
+          {MultipleLang.content.modal_address_label}
+        </div>
         <div class="relative">
           <input
             type="text"
             id="address"
             name="address"
-            placeholder="Address..."
+            placeholder={`${MultipleLang.content.modal_address_label}...`}
             value=""
             class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
             class:input-border-error={errors.address && errors.address.required}
@@ -439,13 +471,15 @@
         class="flex flex-col gap-1 w-[530px]"
         class:form-item-translate={errors.label && errors.label.required}
       >
-        <div class="text-sm font-medium text-gray-700">Label</div>
+        <div class="text-sm font-medium text-gray-700">
+          {MultipleLang.content.modal_label_label}
+        </div>
         <div class="relative">
           <input
             type="text"
             id="label"
             name="label"
-            placeholder="Label..."
+            placeholder={`${MultipleLang.content.modal_label_label}...`}
             value=""
             class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
             class:input-border-error={errors.label && errors.label.required}
@@ -472,10 +506,12 @@
             isOpenAddModal = false;
           }}
         >
-          <div class="uppercase text-sky-500">Cancel</div>
+          <div class="uppercase text-sky-500">
+            {MultipleLang.content.modal_cancel}
+          </div>
         </Button>
         <Button gradient color="cyanToBlue" type="submit">
-          <div class="uppercase">Add</div>
+          <div class="uppercase">{MultipleLang.content.modal_add}</div>
         </Button>
       </div>
     </form>

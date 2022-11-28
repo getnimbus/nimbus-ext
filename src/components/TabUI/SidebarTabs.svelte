@@ -9,15 +9,25 @@
     SidebarItem,
     SidebarWrapper,
   } from "flowbite-svelte";
+  import { i18n } from "~/lib/i18n";
 
   export let activeTabValue = 1;
 
   let items = [
-    { label: "Accounts", value: 1 },
-    { label: "Dashboard", value: 2 },
-    { label: "Highlight", value: 3 },
-    { label: "Notification", value: 4 },
-    { label: "Settings", value: 5 },
+    { label: i18n("optionsPage.tab-title-accounts", "Accounts"), value: 1 },
+    {
+      label: i18n("optionsPage.tab-title-dashboard", "Dashboard"),
+      value: 2,
+    },
+    {
+      label: i18n("optionsPage.tab-title-highlight", "Highlight"),
+      value: 3,
+    },
+    {
+      label: i18n("optionsPage.tab-title-notification", "Notification"),
+      value: 4,
+    },
+    { label: i18n("optionsPage.tab-title-settings", "Settings"), value: 5 },
   ];
 
   const handleClick = (e, tabValue) => {

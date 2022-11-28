@@ -12,7 +12,7 @@
 
   browser.storage.onChanged.addListener((changes) => {
     if (changes?.options?.newValue?.lang) {
-      console.log("Change Lang!");
+      window.location.reload();
     }
   });
 </script>
