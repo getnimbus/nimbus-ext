@@ -16,18 +16,18 @@
 
     "tab-title-accounts": "Tài khoản",
     "tab-title-dashboard": "Bảng điều khiển",
-    "tab-title-highlight": "Điểm nổi bật",
+    "tab-title-highlight": "Highlight",
     "tab-title-notification": "Thông báo",
     "tab-title-settings": "Cài đặt",
 
-    "accounts-page-title": "Địa chỉ của tôi",
+    "accounts-page-title": "Ví của tôi",
     "dashboard-page-title": "Bảng điều khiển",
     "highlight-page-title": "Điểm nổi bật",
     "notification-page-title": "Thông báo",
     "settings-page-title": "Cài đặt",
 
     "accounts-page-content": {
-      "btn-text": "Thêm địa chỉ",
+      "btn-text": "Thêm ví",
       "address-header-table": "Địa chỉ",
       "label-header-table": "Nhãn",
       "action-header-table": "Hành động",
