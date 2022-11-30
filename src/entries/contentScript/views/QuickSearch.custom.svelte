@@ -16,6 +16,7 @@
   import "./CheckSafety.custom.svelte";
   import { track } from "~/lib/data-tracking";
   import FullLogo from "../assets/full-logo.svg";
+  import { i18n } from "~/lib/i18n";
 
   let listPageConfig = [];
   let listTermData;
@@ -33,6 +34,22 @@
   let currentUrl = window.location.href;
   let timer;
   let isLoading = false;
+  let MultipleLang = {
+    title: i18n(
+      "quickSearchLang.title",
+      "Search for cryptocurrency or token you want to know"
+    ),
+    second_title: i18n("quickSearchLang.second-title", "On this page"),
+    input_placeholder: i18n("quickSearchLang.input-placeholder", "Search..."),
+    status: i18n("quickSearchLang.status", "Searching..."),
+    results: i18n("quickSearchLang.results", "Results"),
+    empty: i18n("quickSearchLang.no-results", "No results"),
+    sources: i18n(
+      "quickSearchLang.source-data-charts",
+      "*Chart data by CoinGekko"
+    ),
+    read_more: i18n("quickSearchLang.read-more", "Read more"),
+  };
 
   onMount(() => {
     getConfigPages();
@@ -312,7 +329,7 @@
           on:blur={() => (isFocused = false)}
           autofocus
           value={search}
-          placeholder="Search..."
+          placeholder={MultipleLang.input_placeholder}
           type="text"
           class="input-1 text-black"
         />
@@ -335,7 +352,7 @@
                     href={item.url}
                     class="inline-flex items-center text-sm text-sky-600 font-medium no-underline hover:underline"
                   >
-                    Read more
+                    {MultipleLang.read_more}
                   </a>
                 {/if}
               </div>
@@ -368,7 +385,7 @@
                   href={item.url}
                   class="inline-flex shrink-0 items-center text-sm text-sky-600 font-medium no-underline hover:underline"
                 >
-                  Read more
+                  {MultipleLang.read_more}
                 </a>
               {/if}
             </div>
@@ -391,12 +408,12 @@
       {#if search !== ""}
         {#if isLoading}
           <div class="text-4 leading-6 font-medium mt-10 text-center">
-            Searching...
+            {MultipleLang.status}
           </div>
         {:else if !isLoading}
           {#if tokenDataSearch.length !== 0}
             <div class="mb-2">
-              <div class="title-2">Results</div>
+              <div class="title-2">{MultipleLang.results}</div>
             </div>
             <div class="flex flex-col gap-y-3">
               {#each tokenDataSearch as item}
@@ -404,18 +421,18 @@
               {/each}
             </div>
             <div class="text-xs leading-4 italic text-gray-700 mt-3">
-              *Chart data by CoinGekko
+              {MultipleLang.sources}
             </div>
           {:else}
             <div class="text-4 leading-6 font-medium mt-10 text-center">
-              No results
+              {MultipleLang.empty}
             </div>
           {/if}
         {/if}
       {:else if search === ""}
         {#if selectedTokenData.length !== 0}
           <div class="mb-2">
-            <div class="title-2">On this page</div>
+            <div class="title-2">{MultipleLang.second_title}</div>
           </div>
           <div class="flex flex-col gap-y-3">
             {#each selectedTokenData as item}
@@ -428,11 +445,11 @@
           </div>
 
           <div class="text-xs leading-4 italic text-gray-700 mt-3">
-            *Chart data by CoinGekko
+            {MultipleLang.sources}
           </div>
         {:else}
           <div class="text-4 leading-6 font-medium mt-10 text-center">
-            Search for cryptocurrency or token you want to know
+            {MultipleLang.title}
           </div>
         {/if}
       {/if}

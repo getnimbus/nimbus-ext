@@ -1,0 +1,68 @@
+{
+  "quickSearchLang": {
+    "message": "Quick search languages",
+
+    "title": "Search for cryptocurrency or token you want to know",
+    "second-title": "On this page",
+    "input-placeholder": "Search...",
+    "status": "Searching...",
+    "results": "Results",
+    "no-results": "No results",
+    "source-data-charts": "*Chart data by CoinGekko",
+    "read-more": "Read more"
+  },
+  "optionsPage": {
+    "message": "Options page languages",
+
+    "tab-title-accounts": "Accounts",
+    "tab-title-dashboard": "Dashboard",
+    "tab-title-highlight": "Highlight",
+    "tab-title-notification": "Notification",
+    "tab-title-settings": "Settings",
+
+    "accounts-page-title": "My address",
+    "dashboard-page-title": "Dashboard",
+    "highlight-page-title": "Highlight",
+    "notification-page-title": "Notification",
+    "settings-page-title": "Settings",
+
+    "accounts-page-content": {
+      "btn-text": "Add Address",
+      "address-header-table": "Address",
+      "label-header-table": "Label",
+      "action-header-table": "Action",
+
+      "modal-cancel": "Cancel",
+      "modal-add": "Add",
+      "modal-edit": "Edit",
+      "modal-delete": "Delete",
+
+      "modal-address-label": "Address",
+      "modal-label-label": "Label",
+
+      "modal-add-title": "Add Your Address",
+      "modal-add-sub-title": "Add your address will give you more option to see the information at page new tab",
+
+      "modal-edit-title": "Edit Your Address",
+      "modal-edit-sub-title": "Edit your address will make change the information at page new tab"
+    },
+    
+    "settings-page-content": {
+      "change-lang-label": "Select languages"
+    }
+  },
+  "newtabPage": {
+    "message": "Newtab page languages",
+
+    "title": "Hi there,",
+    "sub-title": "Today update",
+    "settings": "Settings",
+
+    "your-portfolio": "Your portfolio",
+    "portfolio-breakdown": "Portfolio breakdown",
+    "recent-transaction": "Recent transaction",
+    "news-title": "You might interested in",
+
+    "btn-text": "Suggest a content"
+  }
+}

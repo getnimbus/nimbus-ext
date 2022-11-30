@@ -10,13 +10,13 @@ const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
   icons: {
     512: "icons/logo-icon.png",
   },
-  // options_ui: {
-  //   page: "src/entries/options/index.html",
-  //   open_in_tab: true,
-  // },
-  // chrome_url_overrides: {
-  //   newtab: "src/entries/newTab/index.html",
-  // },
+  options_ui: {
+    page: "src/entries/options/index.html",
+    open_in_tab: true,
+  },
+  chrome_url_overrides: {
+    newtab: "src/entries/newTab/index.html",
+  },
   web_accessible_resources: [
     {
       resources: ["src/entries/contentScript/assets/full-logo.svg"],
@@ -47,6 +47,7 @@ const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
     // type: "module",
   },
   host_permissions: ["*://*/*"],
+  default_locale: "en",
 };
 
 export function getManifest(): chrome.runtime.ManifestV3 {
