@@ -14,20 +14,31 @@
   export let activeTabValue = 1;
 
   let items = [
-    { label: i18n("optionsPage.tab-title-accounts", "Accounts"), value: 1 },
+    {
+      label: i18n("optionsPage.tab-title-accounts", "Accounts"),
+      value: 1,
+      type: "Accounts",
+    },
     {
       label: i18n("optionsPage.tab-title-dashboard", "Dashboard"),
       value: 2,
+      type: "Dashboard",
     },
     {
       label: i18n("optionsPage.tab-title-highlight", "Highlight"),
       value: 3,
+      type: "Highlight",
     },
     {
       label: i18n("optionsPage.tab-title-notification", "Notification"),
       value: 4,
+      type: "Notification",
     },
-    { label: i18n("optionsPage.tab-title-settings", "Settings"), value: 5 },
+    {
+      label: i18n("optionsPage.tab-title-settings", "Settings"),
+      value: 5,
+      type: "Settings",
+    },
   ];
 
   const handleClick = (e, tabValue) => {
@@ -51,7 +62,7 @@
         >
           <svelte:fragment slot="icon">
             <Icon
-              type={item.label}
+              type={item.type}
               active={activeTabValue === item.value ? true : false}
             />
           </svelte:fragment>
