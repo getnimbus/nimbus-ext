@@ -29,7 +29,7 @@
     ),
     news_title: i18n("newtabPage.news-title", "You might interested in"),
 
-    btn_text: i18n("newtabPage.btn-text", "Suggest a content"),
+    btn_text: i18n("newtabPage.suggest-btn-text", "Suggest a content"),
   };
 
   let totalBalanceUsd = 0;

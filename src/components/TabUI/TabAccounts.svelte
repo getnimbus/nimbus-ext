@@ -29,7 +29,7 @@
     title: i18n("optionsPage.accounts-page-title", "My address"),
     content: {
       btn_text: i18n(
-        "optionsPage.accounts-page-content.btn-text",
+        "optionsPage.accounts-page-content.address-btn-text",
         "Add Address"
       ),
       address_header_table: i18n(
@@ -365,7 +365,7 @@
             type="text"
             id="address"
             name="address"
-            placeholder={`${MultipleLang.content.modal_address_label}...`}
+            placeholder={MultipleLang.content.modal_address_label}
             bind:value={selectedItemEdit.address}
             class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
             class:input-border-error={errorsEdit.address &&
@@ -392,7 +392,7 @@
             type="text"
             id="label"
             name="label"
-            placeholder={`${MultipleLang.content.modal_label_label}...`}
+            placeholder={MultipleLang.content.modal_label_label}
             bind:value={selectedItemEdit.label}
             class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
             class:input-border-error={errorsEdit.label &&
@@ -454,7 +454,7 @@
             type="text"
             id="address"
             name="address"
-            placeholder={`${MultipleLang.content.modal_address_label}...`}
+            placeholder={MultipleLang.content.modal_address_label}
             value=""
             class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
             class:input-border-error={errors.address && errors.address.required}
@@ -479,7 +479,7 @@
             type="text"
             id="label"
             name="label"
-            placeholder={`${MultipleLang.content.modal_label_label}...`}
+            placeholder={MultipleLang.content.modal_label_label}
             value=""
             class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
             class:input-border-error={errors.label && errors.label.required}

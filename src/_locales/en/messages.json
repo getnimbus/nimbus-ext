@@ -27,7 +27,7 @@
     "settings-page-title": "Settings",
 
     "accounts-page-content": {
-      "btn-text": "Add Address",
+      "address-btn-text": "Add Address",
       "address-header-table": "Address",
       "label-header-table": "Label",
       "action-header-table": "Action",
@@ -37,8 +37,8 @@
       "modal-edit": "Edit",
       "modal-delete": "Delete",
 
-      "modal-address-label": "Address",
-      "modal-label-label": "Label",
+      "modal-address-label": "Address...",
+      "modal-label-label": "Label...",
 
       "modal-add-title": "Add Your Address",
       "modal-add-sub-title": "Add your address will give you more option to see the information at page new tab",
@@ -63,6 +63,6 @@
     "recent-transaction": "Recent transaction",
     "news-title": "You might interested in",
 
-    "btn-text": "Suggest a content"
+    "suggest-btn-text": "Suggest a content"
   }
 }

@@ -27,7 +27,7 @@
     "settings-page-title": "Cài đặt",
 
     "accounts-page-content": {
-      "btn-text": "Thêm ví",
+      "address-btn-text": "Thêm ví",
       "address-header-table": "Địa chỉ",
       "label-header-table": "Nhãn",
       "action-header-table": "Hành động",
@@ -37,8 +37,8 @@
       "modal-edit": "Sửa",
       "modal-delete": "Xóa",
 
-      "modal-address-label": "Địa chỉ",
-      "modal-label-label": "Nhãn",
+      "modal-address-label": "Địa chỉ...",
+      "modal-label-label": "Nhãn...",
 
       "modal-add-title": "Thêm địa chỉ của bạn",
       "modal-add-sub-title": "Việc thêm địa chỉ của bạn sẽ cho bạn thêm sự đa dạng hơn về các thông tin được hiển thị tại trang mới",
@@ -63,6 +63,6 @@
     "recent-transaction": "Giao dịch gần đây",
     "news-title": "Bạn có thể quan tâm đến",
 
-    "btn-text": "Đề xuất một nội dung"
+    "suggest-btn-text": "Đề xuất một nội dung"
   }
 }
