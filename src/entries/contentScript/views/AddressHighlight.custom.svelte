@@ -3,7 +3,7 @@
 <script>
   import tooltip from "./tooltip";
   import AddressInfo from "./AddressInfo.custom.svelte";
-  import AddressSpreadText from "./AddressSpreadText.svelte";
+  import AddressSpreadText from "./AddressSpreadText.custom.svelte";
   export let address;
 </script>
 
