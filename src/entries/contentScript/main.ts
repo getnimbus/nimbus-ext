@@ -57,7 +57,7 @@ const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex
       instance.markRegExp(regexETHAddress, {
         element: "address-highlight",
         className: "nimbus-ext",
-        exclude: ["[data-markjs]", ".nimbus-ext", "address-info", "address-speardtext"],
+        exclude: ["[data-markjs]", ".nimbus-ext", "address-info", "address-spreadtext"],
         // acrossElements: true,
         debug: false,
         accuracy: "exactly",

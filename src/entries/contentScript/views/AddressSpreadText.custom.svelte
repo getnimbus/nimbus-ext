@@ -18,7 +18,7 @@
 </script>
 
 <div
-  class={`rounded-lg bg-white shadow-xl font-sans text-sm text-gray-400 transition-all overflow-hidden min-w-[350px] max-h-[600px]`}
+  class={`rounded-lg bg-white shadow-xl font-sans text-base text-gray-400 transition-all overflow-hidden min-w-[350px] max-h-[600px] py-3 px-4`}
 >
   <div class="address-wrapper">
     {#each addressSpreadWordArr as word}
