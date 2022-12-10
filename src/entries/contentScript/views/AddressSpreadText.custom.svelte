@@ -17,64 +17,36 @@
   }
 </script>
 
-<div
-  class={`rounded-lg bg-white shadow-xl font-sans text-base text-gray-400 transition-all overflow-hidden min-w-[350px] max-h-[600px] py-3 px-4`}
->
-  <div class="address-wrapper">
-    {#each addressSpreadWordArr as word}
-      <span>{word}</span>
-    {/each}
+<div class="text-center w-[700px] text-center">
+  <div
+    class={`rounded inline bg-white shadow font-sans text-sm text-gray-400 transition-all overflow-hidden py-1 px-2`}
+  >
+    <div class="address-wrapper font-medium">
+      {#each addressSpreadWordArr as word}
+        <span class="odd:text-gray-500 even:text-gray-800">{word}</span>
+      {/each}
+    </div>
   </div>
 </div>
 
 <style>
   .address-wrapper {
-    display: flex;
-    gap: 6px;
-  }
-
-  .address-wrapper span {
-    opacity: 0;
-    display: inline-block;
+    display: inline-flex;
+    /* gap: 8px; */
     animation-name: wordAnimation;
-    animation-duration: 3s;
+    animation-duration: 0.6s;
     animation-fill-mode: forwards;
     animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
-  }
-  .address-wrapper span:nth-child(1) {
-    animation-delay: 0.1s;
-  }
-  .address-wrapper span:nth-child(2) {
     animation-delay: 0.2s;
+    font-size: 0.8rem;
   }
-  .address-wrapper span:nth-child(3) {
-    animation-delay: 0.3s;
-  }
-  .address-wrapper span:nth-child(4) {
-    animation-delay: 0.4s;
-  }
-  .address-wrapper span:nth-child(5) {
-    animation-delay: 0.5s;
-  }
-  .address-wrapper span:nth-child(6) {
-    animation-delay: 0.6s;
-  }
-  .address-wrapper span:nth-child(7) {
-    animation-delay: 0.7s;
-  }
-  .address-wrapper span:nth-child(8) {
-    animation-delay: 0.8s;
-  }
+
   @keyframes wordAnimation {
     0% {
-      opacity: 0;
-      transform: translateX(-100px) skewY(10deg) skewX(10deg) rotateZ(30deg);
-      filter: blur(10px);
+      gap: 0;
     }
     100% {
-      opacity: 1;
-      transform: translateX(0px) skewY(0deg) skewX(0deg) rotateZ(0deg);
-      filter: blur(0px);
+      gap: 8px;
     }
   }
 </style>

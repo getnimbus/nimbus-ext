@@ -2,8 +2,6 @@
 
 <script>
   import tooltip from "./tooltip";
-  import AddressInfo from "./AddressInfo.custom.svelte";
-  import AddressSpreadText from "./AddressSpreadText.custom.svelte";
   export let address;
 </script>
 
@@ -16,8 +14,8 @@
       // content: popperElement,
       content: `<address-spreadtext address="${address}" />`,
       allowHTML: true,
-      placement: "bottom-start",
-      animation: "shift-away",
+      offset: [0, 5],
+      placement: "top",
     }}
   >
     <slot />
@@ -33,7 +31,6 @@
       allowHTML: true,
       placement: "bottom-start",
       arrow: false,
-      animation: "shift-away",
     }}
     class="ml-[0.5em] inline-block whitespace-nowrap transition-all text-sky-400 rounded-[3px] py-[2px] px-1 max-w-[8em] cursor-pointer overflow-hidden bg-sky-100 hover:max-w-[7rem] select-none"
   >
