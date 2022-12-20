@@ -213,16 +213,16 @@
   {/if}
 
   {#if unknownSmartContract}
-    <div class="py-4 pr-4 text-center">
-      <img
-        class="w-[64px] h-auto my-[20px] mx-auto"
-        src={SmartContractIcon}
-        width={50}
-        alt=""
-      />
-      <div>SmartContract info will be supported soon</div>
-    </div>
-    <div class="flex gap-4 justify-around my-2">
+    <div class="p-4 flex flex-col gap-4">
+      <div class="text-center">
+        <img
+          class="w-[64px] h-auto my-[20px] mx-auto"
+          src={SmartContractIcon}
+          width={50}
+          alt=""
+        />
+        <div>SmartContract info will be supported soon</div>
+      </div>
       <button
         class="btn-primary w-full"
         on:click={() =>

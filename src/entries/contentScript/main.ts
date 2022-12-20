@@ -3,6 +3,7 @@ import Mark from "mark.js";
 import "@webcomponents/webcomponentsjs/webcomponents-bundle.js";
 
 import "./views/AddressHighlight.custom.svelte";
+import "./views/AddressSpreadText.custom.svelte";
 import "./views/TrxHighlight.custom.svelte";
 import "./views/QuickSearch.custom.svelte";
 import { sendMessage } from "webext-bridge";
@@ -56,7 +57,7 @@ const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex
       instance.markRegExp(regexETHAddress, {
         element: "address-highlight",
         className: "nimbus-ext",
-        exclude: ["[data-markjs]", ".nimbus-ext", "address-info"],
+        exclude: ["[data-markjs]", ".nimbus-ext", "address-info", "address-spreadtext"],
         // acrossElements: true,
         debug: false,
         accuracy: "exactly",
