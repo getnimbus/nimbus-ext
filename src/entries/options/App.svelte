@@ -17,7 +17,7 @@
   });
 </script>
 
-<div class="max-w-[2000px] m-auto w-[100%] h-screen flex gap-1">
+<div class="max-w-[2000px] m-auto w-[100%] h-screen flex gap-1 font-family">
   <SidebarTabs bind:activeTabValue />
 
   <div class="flex-1 px-6 pt-2">
@@ -36,4 +36,9 @@
 </div>
 
 <style windi:preflights:global windi:safelist:global>
+  .font-family {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
+      Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  }
 </style>
