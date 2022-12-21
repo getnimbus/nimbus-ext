@@ -40,7 +40,7 @@ export const getTokenLogo = (address: string, chainId: number) => {
 };
 
 export const getCgLogo = (coinId: string) => {
-  return `https://utils.getnimbus.io/logo-cg/${coinId}`;
+  return `https://api.getnimbus.io/logo-cg/${coinId}`;
 };
 
 export const escapeRegex = (string: string) => {
