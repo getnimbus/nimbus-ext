@@ -26,28 +26,28 @@ const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex
   function runMarkElement() {
     console.time("Nimbus marking");
 
-    (() => {
-      console.time("Marking tx");
-      const context = document;
-      const instance = new Mark(context);
-      instance.markRegExp(regexETHTrx, {
-        element: "trx-highlight",
-        className: "nimbus-ext",
-        exclude: ["[data-markjs]", ".nimbus-ext", "address-info"],
-        // acrossElements: true,
-        debug: false,
-        accuracy: "exactly",
-        diacritics: false,
-        each(item: any) {
-          // Inject address as props
-          item.setAttribute("hash", item.innerText);
-        },
-        done() {
-          console.timeEnd("Marking tx");
-          // console.log("Done mark addresses");
-        },
-      });
-    })();
+    // (() => {
+    //   console.time("Marking tx");
+    //   const context = document;
+    //   const instance = new Mark(context);
+    //   instance.markRegExp(regexETHTrx, {
+    //     element: "trx-highlight",
+    //     className: "nimbus-ext",
+    //     exclude: ["[data-markjs]", ".nimbus-ext", "address-info"],
+    //     // acrossElements: true,
+    //     debug: false,
+    //     accuracy: "exactly",
+    //     diacritics: false,
+    //     each(item: any) {
+    //       // Inject address as props
+    //       item.setAttribute("hash", item.innerText);
+    //     },
+    //     done() {
+    //       console.timeEnd("Marking tx");
+    //       // console.log("Done mark addresses");
+    //     },
+    //   });
+    // })();
 
     (() => {
       console.time("Marking address");
@@ -57,7 +57,12 @@ const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex
       instance.markRegExp(regexETHAddress, {
         element: "address-highlight",
         className: "nimbus-ext",
-        exclude: ["[data-markjs]", ".nimbus-ext", "address-info", "address-spreadtext"],
+        exclude: [
+          "[data-markjs]",
+          ".nimbus-ext",
+          "address-info",
+          "address-spreadtext",
+        ],
         // acrossElements: true,
         debug: false,
         accuracy: "exactly",
@@ -85,7 +90,7 @@ const regexETHAddress = /0x[a-fA-F0-9]{40}/g; // TODO: Solana, Near regex
 
   browser.storage.onChanged.addListener((changes) => {
     if (changes?.options?.newValue?.lang) {
-      document.body.removeChild(quickSearchEle)
+      document.body.removeChild(quickSearchEle);
       quickSearchEle = document.createElement("quick-search");
       document.body.appendChild(quickSearchEle);
       console.log("Change Lang!");

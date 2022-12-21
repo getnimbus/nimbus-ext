@@ -14,9 +14,9 @@ const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
     page: "src/entries/options/index.html",
     open_in_tab: true,
   },
-  chrome_url_overrides: {
-    newtab: "src/entries/newTab/index.html",
-  },
+  // chrome_url_overrides: {
+  //   newtab: "src/entries/newTab/index.html",
+  // },
   web_accessible_resources: [
     {
       resources: ["src/entries/contentScript/assets/full-logo.svg"],
