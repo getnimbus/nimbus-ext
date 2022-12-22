@@ -128,8 +128,8 @@
 
       if (detectUrlPath === null) return;
       return item.selector.forEach((selectDOM) => {
-        const context = document.querySelector(selectDOM);
-        innerTextMatchContext = context.innerText.match(regex);
+        const context = selectDOM && document.querySelector(selectDOM);
+        innerTextMatchContext = context && context.innerText.match(regex);
       });
     });
 
@@ -139,7 +139,7 @@
   const handleGetTermFromPage = () => {
     const innerTextMatch = handleDetectRegex(regexTerm);
     selectedTermData =
-      innerTextMatch.length > 0
+      innerTextMatch && innerTextMatch.length > 0
         ? [
             ...new Set(
               innerTextMatch.map((item) => {
@@ -153,7 +153,7 @@
   const handleGetCoinDataFromPage = () => {
     const innerTextMatch = handleDetectRegex(regexToken);
     selectedTokenData =
-      innerTextMatch.length > 0
+      innerTextMatch && innerTextMatch.length > 0
         ? [
             ...new Set(
               innerTextMatch.map((item) => {
@@ -246,6 +246,8 @@
   Mousetrap.bindGlobal(["command+shift+k", "ctrl+shift+k"], function () {
     isShowSideBar = !isShowSideBar;
   });
+
+  $: console.log("isShowSideBar: ", isShowSideBar);
 </script>
 
 <reset-style>
