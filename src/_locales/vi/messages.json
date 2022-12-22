@@ -2,10 +2,10 @@
   "quickSearchLang": {
     "message": "Quick search languages",
     
-    "title": "Tìm kiếm tiền điện tử hoặc token mà bạn muốn biết",
+    "title": "Tìm kiếm tiền điện tử mà bạn quan tâm",
     "second-title": "Tại trang hiện tại",
     "input-placeholder": "Tìm kiếm...",
-    "status": "Đa tìm kiếm...",
+    "status": "Đang tìm kiếm...",
     "results": "Kết quả",
     "no-results": "Không có kết quả",
     "source-data-charts": "*Dữ liệu của biểu đồ được cung cấp bởi CoinGekko",
@@ -41,10 +41,10 @@
       "modal-label-label": "Nhãn...",
 
       "modal-add-title": "Thêm địa chỉ của bạn",
-      "modal-add-sub-title": "Việc thêm địa chỉ của bạn sẽ cho bạn thêm sự đa dạng hơn về các thông tin được hiển thị tại trang mới",
+      "modal-add-sub-title": "Việc thêm địa chỉ của bạn sẽ cho bạn thêm sự đa dạng hơn về các thông tin được hiển thị tại Tab mới",
 
       "modal-edit-title": "Thay đổi địa chỉ của bạn",
-      "modal-edit-sub-title": "Việc thay đổi địa chỉ của bạn sẽ làm thay đổi các thông tin được hiển thị tại trang mới"
+      "modal-edit-sub-title": "Việc thay đổi địa chỉ của bạn sẽ làm thay đổi các thông tin được hiển thị tại Tab mới"
     },
     
     "settings-page-content": {

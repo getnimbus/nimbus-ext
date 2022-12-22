@@ -17,17 +17,19 @@
   }
 </script>
 
-<div class="text-center w-[700px] text-center">
-  <div
-    class={`rounded inline bg-white shadow font-sans text-sm text-gray-400 transition-all overflow-hidden py-1 px-2`}
-  >
-    <div class="address-wrapper font-medium">
-      {#each addressSpreadWordArr as word}
-        <span class="odd:text-gray-500 even:text-gray-800">{word}</span>
-      {/each}
+<reset-style>
+  <div class="text-center w-[700px] text-center">
+    <div
+      class={`rounded inline bg-white shadow font-sans text-sm text-gray-400 transition-all overflow-hidden py-1 px-2`}
+    >
+      <div class="address-wrapper font-medium">
+        {#each addressSpreadWordArr as word}
+          <span class="odd:text-gray-500 even:text-gray-800">{word}</span>
+        {/each}
+      </div>
     </div>
   </div>
-</div>
+</reset-style>
 
 <style>
   .address-wrapper {

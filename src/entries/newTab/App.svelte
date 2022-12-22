@@ -165,7 +165,7 @@
   });
 </script>
 
-<div class="max-w-[2000px] m-auto w-[90%] h-full py-6">
+<div class="max-w-[2000px] m-auto w-[90%] h-full py-6 font-family">
   <div class="flex justify-between items-start">
     <div class="flex flex-col gap-2">
       <div class="title-1">{MultipleLang.title}</div>
@@ -256,5 +256,11 @@
 <style windi:preflights:global windi:safelist:global>
   .border {
     border: 0.2px solid rgb(229, 231, 235);
+  }
+
+  .font-family {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
+      Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
   }
 </style>

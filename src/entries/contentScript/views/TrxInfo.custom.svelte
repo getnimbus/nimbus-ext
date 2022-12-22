@@ -110,157 +110,161 @@
   });
 </script>
 
-<div
-  class={`rounded-lg bg-white border-1 border-gray-200 border-solid font-sans text-sm text-gray-600 transition-all overflow-hidden min-w-[520px] w-full max-w-[700px] ${
-    isLoading && popup && "w-[350px] max-w-[400px] max-h-[120px] "
-  } ${popup ? "max-h-[680px]" : ""}`}
-  class:shadow-xl={popup}
->
-  {#if isLoading}
-    <div class="w-full h-[120px] flex justify-center items-center">
-      <loading-icon />
-    </div>
-  {:else}
-    <div class="p-3">
-      {#if unknownTRX}
-        <div class="py-2">
-          We're decoding this transaction and will get back to you soon!
-        </div>
-      {:else}
-        <div class="flex flex-col mb-4 text-xs">
-          <div class="flex justify-between items-center gap-3">
-            <div class="w-7 h-7 rounded-full overflow-hidden">
-              <img
-                src={info.chain.logo}
-                alt={info.chain.nativeToken}
-                class="w-full h-full object-cover"
-              />
+<reset-style>
+  <div
+    class={`rounded-lg bg-white border-1 border-gray-200 border-solid font-sans text-sm text-gray-600 transition-all overflow-hidden min-w-[520px] w-full max-w-[700px] ${
+      isLoading && popup && "w-[350px] max-w-[400px] max-h-[120px] "
+    } ${popup ? "max-h-[680px]" : ""}`}
+    class:shadow-xl={popup}
+  >
+    {#if isLoading}
+      <div class="w-full h-[120px] flex justify-center items-center">
+        <loading-icon />
+      </div>
+    {:else}
+      <div class="p-3">
+        {#if unknownTRX}
+          <div class="py-2">
+            We're decoding this transaction and will get back to you soon!
+          </div>
+        {:else}
+          <div class="flex flex-col mb-4 text-xs">
+            <div class="flex justify-between items-center gap-3">
+              <div class="w-7 h-7 rounded-full overflow-hidden">
+                <img
+                  src={info.chain.logo}
+                  alt={info.chain.nativeToken}
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div class="w-full flex flex-col text-xs">
+                <a
+                  href={`${info.chain.explorer}/tx/${hash}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  class="text-blue-400 no-underline"
+                >
+                  {hash}
+                </a>
+                <div class="text-gray-500">
+                  {`${moment(info.block_signed_at).fromNow()} - ${moment(
+                    info.block_signed_at
+                  ).format("DD/MM/YYYY hh:mm A")}`}
+                </div>
+              </div>
             </div>
-            <div class="w-full flex flex-col text-xs">
-              <a
-                href={`${info.chain.explorer}/tx/${hash}`}
-                target="_blank"
-                rel="noreferrer"
-                class="text-blue-400 no-underline"
+
+            <div class="flex gap-2 items-center justify-end mt-1">
+              <div class="text-gray-500">Only Sender change</div>
+              <label class="switch">
+                <input type="checkbox" bind:checked={enabledFilter} />
+                <span class="slider" />
+              </label>
+            </div>
+
+            <div class="flex justify-between items-center mt-2 gap-2">
+              <div
+                class="flex flex-col items-center justify-between flex-[0.4]"
               >
-                {hash}
-              </a>
-              <div class="text-gray-500">
-                {`${moment(info.block_signed_at).fromNow()} - ${moment(
-                  info.block_signed_at
-                ).format("DD/MM/YYYY hh:mm A")}`}
-              </div>
-            </div>
-          </div>
-
-          <div class="flex gap-2 items-center justify-end mt-1">
-            <div class="text-gray-500">Only Sender change</div>
-            <label class="switch">
-              <input type="checkbox" bind:checked={enabledFilter} />
-              <span class="slider" />
-            </label>
-          </div>
-
-          <div class="flex justify-between items-center mt-2 gap-2">
-            <div class="flex flex-col items-center justify-between flex-[0.4]">
-              <div class="w-full">
-                <user-info
-                  name="Sender"
-                  avatar={info.from_address_logo}
-                  label={info.from_address_label}
-                  address={info.from_address}
-                  explorer={info.chain.explorer}
-                />
-              </div>
-              <div class="h-9 my-2 relative line-arrow">
-                <div
-                  class="absolute -bottom-[1px] -left-[5.5px] h-0 w-0 transform rotate-180 arrow"
-                />
-              </div>
-              <div class="w-full">
-                <user-info
-                  name="Receiver"
-                  avatar={info.to_address_logo}
-                  label={info.to_address_label}
-                  address={info.to_address}
-                  explorer={info.chain.explorer}
-                />
-              </div>
-            </div>
-
-            <div
-              class="pl-3 space-y-4 py-3 flex-1 w-full border-0 border-l-1 border-solid border-sky-200"
-            >
-              {#if info.successful}
-                <div class="max-h-[400px] overflow-y-auto py-3">
-                  <change-list
-                    data={info.changes}
-                    id={info.chainId}
+                <div class="w-full">
+                  <user-info
+                    name="Sender"
+                    avatar={info.from_address_logo}
+                    label={info.from_address_label}
+                    address={info.from_address}
                     explorer={info.chain.explorer}
-                    from={info.from_address}
-                    to={info.to_address}
-                    enable={enabledFilter}
                   />
                 </div>
-              {:else}
-                <div class="title-5 text-center font-semibold">
-                  The transaction failed and has been reverted
+                <div class="h-9 my-2 relative line-arrow">
+                  <div
+                    class="absolute -bottom-[1px] -left-[5.5px] h-0 w-0 transform rotate-180 arrow"
+                  />
                 </div>
-              {/if}
+                <div class="w-full">
+                  <user-info
+                    name="Receiver"
+                    avatar={info.to_address_logo}
+                    label={info.to_address_label}
+                    address={info.to_address}
+                    explorer={info.chain.explorer}
+                  />
+                </div>
+              </div>
 
-              <div class="text-right">
-                <span class="text-gray-500 mr-1">Gas fee:</span>
-                <span class="font-bold">
-                  {`${numeral(info.fees_paid_value).format("0,0.00000")} ${
-                    info.chain.nativeToken
-                  } (${numeral(info.gas_quote).format("0,0.0000")}$)`}
-                </span>
+              <div
+                class="pl-3 space-y-4 py-3 flex-1 w-full border-0 border-l-1 border-solid border-sky-200"
+              >
+                {#if info.successful}
+                  <div class="max-h-[400px] overflow-y-auto py-3">
+                    <change-list
+                      data={info.changes}
+                      id={info.chainId}
+                      explorer={info.chain.explorer}
+                      from={info.from_address}
+                      to={info.to_address}
+                      enable={enabledFilter}
+                    />
+                  </div>
+                {:else}
+                  <div class="title-5 text-center font-semibold">
+                    The transaction failed and has been reverted
+                  </div>
+                {/if}
+
+                <div class="text-right">
+                  <span class="text-gray-500 mr-1">Gas fee:</span>
+                  <span class="font-bold">
+                    {`${numeral(info.fees_paid_value).format("0,0.00000")} ${
+                      info.chain.nativeToken
+                    } (${numeral(info.gas_quote).format("0,0.0000")}$)`}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      {/if}
+        {/if}
 
-      <div
-        class="mb-2"
-        class:text-center={unknownTRX}
-        class:text-right={!unknownTRX}
-      >
-        <a
-          href="https://feedback.getnimbus.io/"
-          target="_blank"
-          class="inline-flex no-underline cursor-pointer items-center px-2.5 py-1.5 border-1 border-solid border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
+        <div
+          class="mb-2"
+          class:text-center={unknownTRX}
+          class:text-right={!unknownTRX}
         >
-          Report
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-3 w-3 ml-1"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </a>
-      </div>
-    </div>
-
-    <nimbus-footer>
-      <ul class="list-disc list-outside px-3">
-        <li class="italic">
           <a
-            class="text-blue-400 no-underline"
-            href="https://ethereum.org/en/developers/docs/transactions/"
-            target="_blank">What is transaction?</a
+            href="https://feedback.getnimbus.io/"
+            target="_blank"
+            class="inline-flex no-underline cursor-pointer items-center px-2.5 py-1.5 border-1 border-solid border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
           >
-        </li>
-      </ul>
-    </nimbus-footer>
-  {/if}
-</div>
+            Report
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-3 w-3 ml-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <nimbus-footer>
+        <ul class="list-disc list-outside px-3">
+          <li class="italic">
+            <a
+              class="text-blue-400 no-underline"
+              href="https://ethereum.org/en/developers/docs/transactions/"
+              target="_blank">What is transaction?</a
+            >
+          </li>
+        </ul>
+      </nimbus-footer>
+    {/if}
+  </div>
+</reset-style>
 
 <style>
   .line-arrow {
