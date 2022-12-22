@@ -15,7 +15,7 @@
 
     -webkit-font-smoothing: antialiased;
 
-    z-index: 999999;
+    z-index: 2147483647;
   }
 
   .nimbus-reset-style input {

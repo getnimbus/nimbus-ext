@@ -250,7 +250,7 @@
 
 <reset-style>
   <div
-    style="z-index: 999999;"
+    style="z-index: 2147483647;"
     on:click={() => (isShowSideBar = true)}
     class="fixed top-[140px] right-0 p-2 bg-sky-100 opacity-80 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-1"
   >
@@ -273,7 +273,7 @@
   {#if isShowSideBar}
     <div
       transition:fly={{ x: 650, opacity: 1 }}
-      style="z-index: 999999;"
+      style="z-index: 2147483647;"
       class="fixed top-0 right-0 h-[98vh] p-4 bg-gray-100 overflow-y-auto w-[350px] flex flex-col text-gray-900 border-0 border-l-1 border-solid border-l-gray-200"
     >
       <div
