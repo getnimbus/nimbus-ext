@@ -246,8 +246,6 @@
   Mousetrap.bindGlobal(["command+shift+k", "ctrl+shift+k"], function () {
     isShowSideBar = !isShowSideBar;
   });
-
-  $: console.log("isShowSideBar: ", isShowSideBar);
 </script>
 
 <reset-style>
