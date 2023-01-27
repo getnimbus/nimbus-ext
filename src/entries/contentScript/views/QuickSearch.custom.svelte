@@ -46,7 +46,7 @@
     empty: i18n("quickSearchLang.no-results", "No results"),
     sources: i18n(
       "quickSearchLang.source-data-charts",
-      "*Chart data by CoinGekko"
+      "*Chart data by CoinGecko"
     ),
     read_more: i18n("quickSearchLang.read-more", "Read more"),
   };
