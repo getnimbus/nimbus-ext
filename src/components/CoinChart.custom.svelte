@@ -4,7 +4,7 @@
   import { createChart, LineStyle } from "lightweight-charts";
   import { onDestroy, onMount, tick } from "svelte";
   import dayjs from "dayjs";
-  import { formatCurrency } from "./utils";
+  import { formatCurrency } from "../entries/contentScript/views/utils";
   import { sendMessage } from "webext-bridge";
   import { isEmpty } from "lodash";
 

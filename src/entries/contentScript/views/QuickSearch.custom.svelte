@@ -13,7 +13,7 @@
 
   import "~/components/ResetStyle.custom.svelte";
   import "./NativeTokenInfo.custom.svelte";
-  import "./CheckSafety.custom.svelte";
+  import "~/components/CheckSafety.custom.svelte";
   import { track } from "~/lib/data-tracking";
   import FullLogo from "../assets/full-logo.svg";
   import { i18n } from "~/lib/i18n";

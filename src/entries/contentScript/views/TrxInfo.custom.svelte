@@ -9,8 +9,8 @@
   import numeral from "numeral";
 
   import "~/components/Loading.custom.svelte";
-  import "./CoinChart.custom.svelte";
-  import "./PriceConvert.custom.svelte";
+  import "~/components/CoinChart.custom.svelte";
+  import "~/components/PriceConvert.custom.svelte";
   import "~/components/Switch.custom.svelte";
   import "~/components/TxInfo/User.custom.svelte";
   import "~/components/TxInfo/MoneyMove.custom.svelte";

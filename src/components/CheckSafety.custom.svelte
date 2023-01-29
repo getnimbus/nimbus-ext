@@ -9,7 +9,7 @@
   let data = {};
   const IS_AUDITED_CODE = 1;
 
-  const checkSafeteCurrentUrl = async () => {
+  const checkSafetyCurrentUrl = async () => {
     let currentUrl = window.location.href;
     isLoading = true;
 
@@ -22,7 +22,7 @@
   };
 
   onMount(() => {
-    checkSafeteCurrentUrl();
+    checkSafetyCurrentUrl();
   });
 </script>
 

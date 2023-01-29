@@ -7,8 +7,8 @@
   import { formatCurrency, getCgLogo } from "./utils";
 
   import "~/components/ResetStyle.custom.svelte";
-  import "./CoinChart.custom.svelte";
-  import "./PriceConvert.custom.svelte";
+  import "~/components/CoinChart.custom.svelte";
+  import "~/components/PriceConvert.custom.svelte";
 
   export let name;
   export let id;
