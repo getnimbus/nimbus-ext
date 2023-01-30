@@ -10,8 +10,16 @@
     <span
       use:tooltip={{
         interactive: true,
-        delay: [300, null],
+        delay: [100, null],
         appendTo: () => document.body,
+        onTrigger: () => {
+          const selectedTooltip = document.getElementsByClassName(
+            "tooltip fade bs-tooltip-top show"
+          );
+          if (selectedTooltip.length > 0) {
+            selectedTooltip[0].parentNode.removeChild(selectedTooltip[0]);
+          }
+        },
         // content: popperElement,
         content: `<address-spreadtext address="${address}" />`,
         allowHTML: true,
