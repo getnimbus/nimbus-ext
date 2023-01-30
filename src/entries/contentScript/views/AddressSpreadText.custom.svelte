@@ -18,15 +18,13 @@
 </script>
 
 <reset-style>
-  <div class="text-center w-[700px] text-center">
-    <div
-      class={`rounded inline bg-white shadow font-sans text-sm text-gray-400 transition-all overflow-hidden py-1 px-2`}
-    >
-      <div class="address-wrapper font-medium">
-        {#each addressSpreadWordArr as word}
-          <span class="odd:text-gray-500 even:text-gray-800">{word}</span>
-        {/each}
-      </div>
+  <div
+    class="rounded inline bg-white shadow font-sans transition-all overflow-hidden py-1 px-2"
+  >
+    <div class="address-wrapper font-medium">
+      {#each addressSpreadWordArr as word}
+        <span class="odd:text-gray-500 even:text-gray-800">{word}</span>
+      {/each}
     </div>
   </div>
 </reset-style>
@@ -40,7 +38,7 @@
     animation-fill-mode: forwards;
     animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
     animation-delay: 0.2s;
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
 
   @keyframes wordAnimation {
