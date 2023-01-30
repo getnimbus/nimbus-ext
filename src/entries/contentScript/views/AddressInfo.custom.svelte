@@ -3,7 +3,7 @@
 <script>
   import { onMount } from "svelte";
   import detectEthereumProvider from "@metamask/detect-provider";
-  import { formatBalance, formatCurrency } from "./utils";
+  import { formatBalance, formatCurrency } from "../../../utils";
 
   import "~/components/Loading.custom.svelte";
   import "~/components/Footer.custom.svelte";

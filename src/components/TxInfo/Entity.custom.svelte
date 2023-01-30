@@ -2,10 +2,7 @@
 
 <script>
   import tooltip from "~/entries/contentScript/views/tooltip";
-  import {
-    getTokenLogo,
-    shorterAddress,
-  } from "~/entries/contentScript/views/utils";
+  import { getTokenLogo, shorterAddress } from "../../utils";
   import Tooltip from "../Tooltip.custom.svelte";
 
   export let name;
