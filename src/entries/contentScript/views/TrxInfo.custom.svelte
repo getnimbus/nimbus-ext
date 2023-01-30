@@ -3,7 +3,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { nimbus } from "../../../lib/network";
-  import { chainIdData } from "./utils";
+  import { chainIdData } from "../../../utils";
   import { isEmpty, get } from "lodash";
   import moment from "moment";
   import numeral from "numeral";
