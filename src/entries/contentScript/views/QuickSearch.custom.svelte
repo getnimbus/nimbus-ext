@@ -3,7 +3,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { fly } from "svelte/transition";
-  import { escapeRegex, getLocalImg } from "../views/utils";
+  import { escapeRegex, getLocalImg } from "../../../utils";
   import UrlPattern from "url-pattern";
   import { sendMessage } from "webext-bridge";
   import * as browser from "webextension-polyfill";
