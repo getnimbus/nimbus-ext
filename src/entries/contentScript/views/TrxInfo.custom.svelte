@@ -3,14 +3,14 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { nimbus } from "../../../lib/network";
-  import { chainIdData } from "./utils";
+  import { chainIdData } from "../../../utils";
   import { isEmpty, get } from "lodash";
   import moment from "moment";
   import numeral from "numeral";
 
   import "~/components/Loading.custom.svelte";
-  import "./CoinChart.custom.svelte";
-  import "./PriceConvert.custom.svelte";
+  import "~/components/CoinChart.custom.svelte";
+  import "~/components/PriceConvert.custom.svelte";
   import "~/components/Switch.custom.svelte";
   import "~/components/TxInfo/User.custom.svelte";
   import "~/components/TxInfo/MoneyMove.custom.svelte";

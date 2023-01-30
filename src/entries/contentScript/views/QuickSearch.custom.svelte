@@ -3,7 +3,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { fly } from "svelte/transition";
-  import { escapeRegex, getLocalImg } from "../views/utils";
+  import { escapeRegex, getLocalImg } from "../../../utils";
   import UrlPattern from "url-pattern";
   import { sendMessage } from "webext-bridge";
   import * as browser from "webextension-polyfill";
@@ -13,7 +13,7 @@
 
   import "~/components/ResetStyle.custom.svelte";
   import "./NativeTokenInfo.custom.svelte";
-  import "./CheckSafety.custom.svelte";
+  import "~/components/CheckSafety.custom.svelte";
   import { track } from "~/lib/data-tracking";
   import FullLogo from "../assets/full-logo.svg";
   import { i18n } from "~/lib/i18n";

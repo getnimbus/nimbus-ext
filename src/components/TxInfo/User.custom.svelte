@@ -2,7 +2,7 @@
 
 <script>
   import tooltip from "~/entries/contentScript/views/tooltip";
-  import { shorterAddress } from "~/entries/contentScript/views/utils";
+  import { shorterAddress } from "../../utils";
   import Tooltip from "../Tooltip.custom.svelte";
 
   export let avatar;

@@ -3,12 +3,12 @@
 <script>
   import { onMount } from "svelte";
   import detectEthereumProvider from "@metamask/detect-provider";
-  import { formatBalance, formatCurrency } from "./utils";
+  import { formatBalance, formatCurrency } from "../../../utils";
 
   import "~/components/Loading.custom.svelte";
   import "~/components/Footer.custom.svelte";
-  import "./CoinChart.custom.svelte";
-  import "./PriceConvert.custom.svelte";
+  import "~/components/CoinChart.custom.svelte";
+  import "~/components/PriceConvert.custom.svelte";
 
   import SmartContractIcon from "../assets/smart-contract.png";
   import MetaMaskIcon from "../assets/metamask-icon.png";

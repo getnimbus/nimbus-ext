@@ -3,7 +3,7 @@
 <script>
   import "./MoneyMove.custom.svelte";
   import NoResultsIcon from "~/entries/contentScript/assets/no-results.png";
-  import { getLocalImg } from "~/entries/contentScript/views/utils";
+  import { getLocalImg } from "../../utils";
 
   export let data;
   export let id;
