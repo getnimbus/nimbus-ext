@@ -12,7 +12,7 @@
     use:tooltip={{
       interactive: true,
       delay: [300, null],
-      trigger: "click",
+      trigger: "click focusin",
       appendTo: () => document.body,
       // content: popperElement,
       content: `<trx-info hash="${hash}" />`,

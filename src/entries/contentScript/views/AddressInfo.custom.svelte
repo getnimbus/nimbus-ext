@@ -1,6 +1,6 @@
 <svelte:options tag="address-info" />
 
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import detectEthereumProvider from "@metamask/detect-provider";
   import { formatBalance, formatCurrency } from "../../../utils";
@@ -19,6 +19,7 @@
   import { nimbus } from "../../../lib/network";
 
   export let address;
+  export let popup: boolean = true;
 
   let isLoading = true;
   let balance = 0;
@@ -81,9 +82,10 @@
 
 <reset-style>
   <div
-    class={`rounded-lg bg-white shadow-xl font-sans text-sm text-gray-400 transition-all overflow-hidden min-w-[350px] max-w-[400px] max-h-[600px] ${
-      isLoading && "w-[350px] max-w-[400px] max-h-[120px]"
-    }`}
+    class={`rounded-lg bg-white border-1 border-gray-200 border-solid font-sans text-sm text-gray-600 transition-all overflow-hidden min-w-[520px] w-full max-w-[700px] ${
+      isLoading && popup && "w-[350px] max-w-[400px] max-h-[120px] "
+    } ${popup ? "max-h-[680px]" : ""}`}
+    class:shadow-xl={popup}
   >
     {#if isLoading}
       <!-- {#if false} -->
@@ -241,12 +243,12 @@
     {/if}
 
     <!-- <nimbus-footer>
-    <div class="text-xs">
-      Data from <a href="https://debank.com" target="blank"
-        >https://debank.com</a
-      >
-    </div>
-  </nimbus-footer> -->
+      <div class="text-xs">
+        Data from <a href="https://debank.com" target="blank"
+          >https://debank.com</a
+        >
+      </div>
+    </nimbus-footer> -->
   </div>
 </reset-style>
 
