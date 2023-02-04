@@ -12,6 +12,7 @@
       delay: [100, null],
       appendTo: () => document.body,
       onTrigger: () => {
+        // hide default tooltip for ethscan page
         const selectedTooltip = document.getElementsByClassName(
           "tooltip fade bs-tooltip-top show"
         );
