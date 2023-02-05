@@ -11,118 +11,7 @@ import { sendMessage } from "webext-bridge";
 import { track } from "~/lib/data-tracking";
 import * as dg from "~/lib/debug";
 import * as browser from "webextension-polyfill";
-
-const regexETHTrx = /0x[a-fA-F0-9]{64}/g; // TODO: Ignore longer address
-const regexETHAddress = /(\b0x[a-fA-F0-9]{1,40}\b)/g; // TODO: Solana, Near regex
-const regexBTCAddress = /(\b(?!0x.*$)([13]|bc1)[a-zA-HJ-NP-Z0-9]{25,39}\b)/g;
-const regexBTCTrx = /(\b(?!0x.*$)[a-fA-F0-9]{64})/g;
-
-function MarkBTC() {
-  (() => {
-    console.time("Marking tx");
-    const context = document;
-    const instance = new Mark(context);
-    instance.markRegExp(regexBTCTrx, {
-      element: "trx-highlight",
-      className: "nimbus-ext",
-      exclude: ["[data-markjs]", ".nimbus-ext", "address-info"],
-      // acrossElements: true,
-      debug: false,
-      accuracy: "exactly",
-      diacritics: false,
-      each(item: any) {
-        // Inject address as props
-        item.setAttribute("hash", item.innerText);
-      },
-      done() {
-        console.timeEnd("Marking tx");
-        // console.log("Done mark addresses");
-      },
-    });
-  })();
-
-  (() => {
-    console.time("Marking address");
-    const context = document;
-    const instance = new Mark(context);
-    // /0x[a-fA-F0-9]{64}/g
-    instance.markRegExp(regexBTCAddress, {
-      element: "address-highlight",
-      className: "nimbus-ext",
-      exclude: [
-        "[data-markjs]",
-        ".nimbus-ext",
-        "address-info",
-        "address-spreadtext",
-      ],
-      // acrossElements: true,
-      debug: false,
-      accuracy: "exactly",
-      diacritics: false,
-      each(item: any) {
-        // Inject address as props
-        item.setAttribute("address", item.innerText);
-      },
-      done() {
-        console.timeEnd("Marking address");
-        // console.log("Done mark addresses");
-      },
-    });
-  })();
-}
-
-function MarkETH() {
-  // (() => {
-  //   console.time("Marking tx");
-  //   const context = document;
-  //   const instance = new Mark(context);
-  //   instance.markRegExp(regexETHTrx, {
-  //     element: "trx-highlight",
-  //     className: "nimbus-ext",
-  //     exclude: ["[data-markjs]", ".nimbus-ext", "address-info"],
-  //     // acrossElements: true,
-  //     debug: false,
-  //     accuracy: "exactly",
-  //     diacritics: false,
-  //     each(item: any) {
-  //       // Inject address as props
-  //       item.setAttribute("hash", item.innerText);
-  //     },
-  //     done() {
-  //       console.timeEnd("Marking tx");
-  //       // console.log("Done mark addresses");
-  //     },
-  //   });
-  // })();
-
-  (() => {
-    console.time("Marking address");
-    const context = document;
-    const instance = new Mark(context);
-    instance.markRegExp(regexETHAddress, {
-      element: "address-highlight",
-      className: "nimbus-ext",
-      exclude: [
-        "[data-markjs]",
-        ".nimbus-ext",
-        "address-info",
-        "address-spreadtext",
-      ],
-      // acrossElements: true,
-      debug: false,
-      accuracy: "exactly",
-      diacritics: false,
-      each(item: any) {
-        // Inject address as props
-        item.setAttribute("address", item.innerText);
-      },
-      done() {
-        console.timeEnd("Marking address");
-        // console.log("Done mark addresses");
-      },
-    });
-  })();
-}
+import { regexList } from "../../utils";
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
 (async () => {
@@ -130,8 +19,61 @@ function MarkETH() {
 
   function runMarkElement() {
     console.time("Nimbus marking");
-    MarkETH();
-    MarkBTC();
+
+    // (() => {
+    //   console.time("Marking tx");
+    //   const context = document;
+    //   const instance = new Mark(context);
+    //   regexList.map((item) => {
+    //     instance.markRegExp(item.regex_trx, {
+    //       element: "trx-highlight",
+    //       className: "nimbus-ext",
+    //       exclude: ["[data-markjs]", ".nimbus-ext", "address-info"],
+    //       // acrossElements: true,
+    //       debug: false,
+    //       accuracy: "exactly",
+    //       diacritics: false,
+    //       each(item: any) {
+    //         // Inject address as props
+    //         item.setAttribute("hash", item.innerText);
+    //       },
+    //       done() {
+    //         console.timeEnd("Marking tx");
+    //         // console.log("Done mark addresses");
+    //       },
+    //     });
+    //   })
+    // })();
+
+    (() => {
+      console.time("Marking address");
+      const context = document;
+      const instance = new Mark(context);
+      regexList.map((item) => {
+        instance.markRegExp(item.regex_address, {
+          element: "address-highlight",
+          className: "nimbus-ext",
+          exclude: [
+            "[data-markjs]",
+            ".nimbus-ext",
+            "address-info",
+            "address-spreadtext",
+          ],
+          // acrossElements: true,
+          debug: false,
+          accuracy: "exactly",
+          diacritics: false,
+          each(item: any) {
+            // Inject address as props
+            item.setAttribute("address", item.innerText);
+          },
+          done() {
+            console.timeEnd("Marking address");
+            // console.log("Done mark addresses");
+          },
+        })
+      })
+    })();
   }
   runMarkElement();
 
