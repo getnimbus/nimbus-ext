@@ -13,8 +13,8 @@ export const regexList = [
   },
   {
     name: "Solana",
-    regex_address: /(\b[a-zA-Z0-9]{44}\b)/g,
-    regex_trx: /(\b[a-zA-Z0-9]{88}\b)/g
+    regex_address: /(\b[a-zA-Z0-9]{32,44}\b)/g,
+    regex_trx: /(\b[a-zA-Z0-9]{87,88}\b)/g
   }
 ]
 
