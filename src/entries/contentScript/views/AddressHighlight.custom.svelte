@@ -3,33 +3,38 @@
 <script>
   import tooltip from "./tooltip";
   export let address;
+  export let name;
 </script>
 
 <span>
-  <span
-    use:tooltip={{
-      interactive: true,
-      delay: [100, null],
-      appendTo: () => document.body,
-      onTrigger: () => {
-        // hide default tooltip for ethscan page
-        const selectedTooltip = document.getElementsByClassName(
-          "tooltip fade bs-tooltip-top show"
-        );
-        if (selectedTooltip.length > 0) {
-          selectedTooltip[0].parentNode.removeChild(selectedTooltip[0]);
-        }
-      },
-      // content: popperElement,
-      content: `<address-spreadtext address="${address}" />`,
-      allowHTML: true,
-      offset: [0, 5],
-      placement: "top",
-      animation: "shift-away",
-    }}
-  >
+  {#if name !== "NEAR1"}
+    <span
+      use:tooltip={{
+        interactive: true,
+        delay: [100, null],
+        appendTo: () => document.body,
+        onTrigger: () => {
+          // hide default tooltip for ethscan page
+          const selectedTooltip = document.getElementsByClassName(
+            "tooltip fade bs-tooltip-top show"
+          );
+          if (selectedTooltip.length > 0) {
+            selectedTooltip[0].parentNode.removeChild(selectedTooltip[0]);
+          }
+        },
+        // content: popperElement,
+        content: `<address-spreadtext address="${address}" />`,
+        allowHTML: true,
+        offset: [0, 5],
+        placement: "top",
+        animation: "shift-away",
+      }}
+    >
+      <slot />
+    </span>
+  {:else}
     <slot />
-  </span>
+  {/if}
   <span
     use:tooltip={{
       interactive: true,
@@ -46,7 +51,8 @@
     }}
     class="mx-[0.4em] -mb-[6px] inline-block whitespace-nowrap transition-all text-sky-400 rounded-[3px] py-[2px] px-1 max-w-[8em] cursor-pointer overflow-hidden bg-sky-100 hover:max-w-[7rem] select-none"
   >
-    📒 <span class="font-sans">More info</span>
+    {#if name === "ETH" || name === "BTC"} 📒 {/if}
+    <span class="font-sans">More info</span>
   </span>
 </span>
 
