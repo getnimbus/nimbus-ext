@@ -23,7 +23,7 @@ export const regexList = [
   },
   {
     name: "NEAR1",
-    regex_address: /(\b\w+(?:\.\w+)*\.(?:testnet|near)\b)/g,
+    regex_address: /(\b\w+(?:\.\w+)*\.near\b)/g,
     regex_trx: /(\b[a-zA-Z0-9]{43,44}\b)/g,
   }
 ]
