@@ -1,5 +1,33 @@
 import numeral from "numeral";
 
+export const regexList = [
+  {
+    name: "ETH",
+    regex_address: /(\b0x[a-fA-F0-9]{40}\b)/g,
+    regex_trx: /(\b0x[a-fA-F0-9]{64}\b)/g
+  },
+  {
+    name: "BTC",
+    regex_address: /(\b(?!0x.*$)([13]|bc1)[a-zA-HJ-NP-Z0-9]{25,39}\b)/g,
+    regex_trx: /(\b(?!0x.*$)[a-fA-F0-9]{64}\b)/g
+  },
+  {
+    name: "Solana",
+    regex_address: /(\b[a-zA-Z0-9]{32,44}\b)/g,
+    regex_trx: /(\b[a-zA-Z0-9]{87,88}\b)/g
+  },
+  {
+    name: "NEAR",
+    regex_address: /(\b[a-zA-Z0-9]{64}\b)/g,
+    regex_trx: /(\b[a-zA-Z0-9]{43,44}\b)/g,
+  },
+  {
+    name: "NEAR1",
+    regex_address: /(\b\w+(?:\.\w+)*\.(?:testnet|near)\b)/g,
+    regex_trx: /(\b[a-zA-Z0-9]{43,44}\b)/g,
+  }
+]
+
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.00") === "NaN"
     ? longNumberString(input)
