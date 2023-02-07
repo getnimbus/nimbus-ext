@@ -20,6 +20,32 @@ import { regexList } from "../../utils";
   function runMarkElement() {
     console.time("Nimbus marking");
 
+    // (() => {
+    //   console.time("Marking tx");
+    //   const context = document;
+    //   const instance = new Mark(context);
+    //   regexList.map((regex) => {
+    //     instance.markRegExp(regex.regex_trx, {
+    //       element: "trx-highlight",
+    //       className: "nimbus-ext",
+    //       exclude: ["[data-markjs]", ".nimbus-ext", "address-info"],
+    //       // acrossElements: true,
+    //       debug: false,
+    //       accuracy: "exactly",
+    //       diacritics: false,
+    //       each(item: any) {
+    //         // Inject address as props
+    //         item.setAttribute("hash", item.innerText);
+    //         item.setAttribute("name", regex.name);
+    //       },
+    //       done() {
+    //         console.timeEnd("Marking tx");
+    //         // console.log("Done mark addresses");
+    //       },
+    //     });
+    //   })
+    // })();
+
     (() => {
       console.time("Marking address");
       const context = document;
@@ -48,32 +74,6 @@ import { regexList } from "../../utils";
             // console.log("Done mark addresses");
           },
         })
-      })
-    })();
-
-    (() => {
-      console.time("Marking tx");
-      const context = document;
-      const instance = new Mark(context);
-      regexList.map((regex) => {
-        instance.markRegExp(regex.regex_trx, {
-          element: "trx-highlight",
-          className: "nimbus-ext",
-          exclude: ["[data-markjs]", ".nimbus-ext", "address-info"],
-          // acrossElements: true,
-          debug: false,
-          accuracy: "exactly",
-          diacritics: false,
-          each(item: any) {
-            // Inject address as props
-            item.setAttribute("hash", item.innerText);
-            item.setAttribute("name", regex.name);
-          },
-          done() {
-            console.timeEnd("Marking tx");
-            // console.log("Done mark addresses");
-          },
-        });
       })
     })();
   }
