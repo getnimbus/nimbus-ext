@@ -274,7 +274,8 @@
 <reset-style>
   <div
     style="z-index: 2147483647; top:{DraggableY}px;"
-    class="fixed right-0 p-2 bg-sky-100 opacity-80 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-1"
+    class="transform translate-x-[82%] transition-transform duration-500 ease-in-out fixed right-0 pr-2 pl-1 h-10 bg-sky-100 opacity-80 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-1 shadow-lg"
+    class:hover:translate-x-0={!moving && !isShowSideBar}
     on:mousedown={onMouseDown}
     on:mouseup={onMouseUp}
     on:click={onClick}
@@ -293,6 +294,9 @@
         d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
       />
     </svg>
+    <div class="font-bold flex justify-center items-center">
+      ⌘ <span class="text-sm">(Ctrl) + Shift + K</span>
+    </div>
   </div>
 
   {#if isShowSideBar}
@@ -325,7 +329,7 @@
         <img
           src={getLocalImg(FullLogo)}
           class="w-auto h-16 object-contain"
-          alt="Nimbus logo"
+          alt="Nimbus"
         />
       </div>
 
