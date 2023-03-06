@@ -51,6 +51,29 @@
     read_more: i18n("quickSearchLang.read-more", "Read more"),
   };
 
+  let DraggableY = parseInt(localStorage.getItem("DraggableY")) || 140;
+  let moving = false;
+
+  function onMouseDown() {
+    moving = true;
+  }
+
+  function onMouseMove(e) {
+    if (moving) {
+      DraggableY += e.movementY;
+    }
+  }
+
+  function onMouseUp() {
+    moving = false;
+  }
+
+  function onClick() {
+    isShowSideBar = true;
+  }
+
+  $: localStorage.setItem("DraggableY", DraggableY.toString());
+
   onMount(() => {
     getConfigPages();
     getCoinList();
@@ -250,9 +273,11 @@
 
 <reset-style>
   <div
-    style="z-index: 2147483647;"
-    on:click={() => (isShowSideBar = true)}
-    class="fixed top-[140px] right-0 p-2 bg-sky-100 opacity-80 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-1"
+    style="z-index: 2147483647; top:{DraggableY}px;"
+    class="fixed right-0 p-2 bg-sky-100 opacity-80 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-1"
+    on:mousedown={onMouseDown}
+    on:mouseup={onMouseUp}
+    on:click={onClick}
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -465,6 +490,8 @@
   {/if}
 </reset-style>
 
+<svelte:window on:mousemove={onMouseMove} />
+
 <style>
   .btn-border {
     border-top: 1px;
@@ -473,10 +500,6 @@
     border-left: 0px;
     border-style: solid;
   }
-
-  /* .border {
-    border: 1px solid red;
-  } */
 
   .input-border-focus {
     border: 1px solid #0369a1;
