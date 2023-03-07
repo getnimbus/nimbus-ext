@@ -47,6 +47,7 @@
     "mousetrap": "^1.6.5",
     "numeral": "^2.0.6",
     "svelte-apexcharts": "^1.0.2",
+    "svelte-system-info": "^1.0.0",
     "svelte-windicss-preprocess": "^4.2.8",
     "tailwindcss": "^3.1.8",
     "tippy.js": "^6.3.7",

@@ -10,6 +10,7 @@
   import Mousetrap from "mousetrap";
   import addGlobalBinds from "bind-mousetrap-global";
   addGlobalBinds(Mousetrap);
+  import System from "svelte-system-info";
 
   import "~/components/ResetStyle.custom.svelte";
   import "./NativeTokenInfo.custom.svelte";
@@ -274,7 +275,7 @@
 <reset-style>
   <div
     style="z-index: 2147483647; top:{DraggableY}px;"
-    class="transform translate-x-[82%] transition-transform duration-500 ease-in-out fixed right-0 pr-2 pl-1 h-10 bg-sky-100 opacity-80 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-1 shadow-lg"
+    class="transform translate-x-[82%] transition-transform ease-in-out fixed right-0 pr-2 pl-1 h-10 bg-sky-100 opacity-80 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-1 shadow-lg"
     class:hover:translate-x-0={!moving && !isShowSideBar}
     on:mousedown={onMouseDown}
     on:mouseup={onMouseUp}
@@ -295,7 +296,8 @@
       />
     </svg>
     <div class="font-bold flex justify-center items-center">
-      ⌘ <span class="text-sm">(Ctrl) + Shift + K</span>
+      {System.OSName === "macOS" ? "⌘" : "Ctrl"}
+      <span class="text-sm"> + Shift + K</span>
     </div>
   </div>
 
