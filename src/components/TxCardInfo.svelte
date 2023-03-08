@@ -1,48 +1,28 @@
 <script>
-  import logo from "../assets/btc.png";
 </script>
 
-<div class="border-bottom pb-4 flex justify-between items-center gap-16">
-  <div class="flex items-center gap-30">
-    <div class="flex flex-col gap-1 text-gray-400">
-      <div>2022/02/13 15:30:24</div>
-      <div class="flex items-center gap-2">
-        <div
-          class="bg-sky-200 w-[20px] h-[20px] rounded-full overflow-hidden border"
-        >
-          <img class="w-full h-full object-contain" src={logo} alt="avatar" />
-        </div>
-        <div>0x82fe...db97</div>
-      </div>
-    </div>
-
-    <div class="flex items-center gap-3">
-      <div
-        class="bg-sky-200 w-[36px] h-[36px] rounded-full overflow-hidden border"
-      >
-        <img class="w-full h-full object-contain" src={logo} alt="avatar" />
-      </div>
-      <div class="flex flex-col gap-1">
-        <div class="text-gray-400">Receive</div>
-        <div>0x28c6...1d60</div>
-      </div>
-    </div>
-
+<div
+  class="border-t-[1.5px] border-light-500 py-4 px-3 grid grid-cols-11 items-center"
+>
+  <div class="col-span-3 flex flex-col gap-1">
     <div class="flex items-center gap-2">
+      <div class="text-sm">Bitcoin</div>
       <div
-        class="bg-sky-200 w-[20px] h-[20px] rounded-full overflow-hidden border"
+        class="flex items-center text-xs justyfy-center px-2 py-1 text-sky-500 bg-sky-100 rounded"
       >
-        <img class="w-full h-full object-contain" src={logo} alt="avatar" />
+        Farm up to 45% APY
       </div>
-      <div>+0.0938 ETH</div>
     </div>
+    <div class="text-gray-500">BTC</div>
   </div>
-
-  <div>Gas Fee: 0.0018 ETH ($5.21)</div>
+  <div class="col-span-3 text-sm">10,000$</div>
+  <div class="col-span-2 text-sm">1</div>
+  <div class="col-span-2 text-sm">10,000$</div>
+  <div class="col-span-1 flex items-center gap-2 text-sm">
+    <div>icon</div>
+    <div class="text-green-400">12,000$</div>
+  </div>
 </div>
 
 <style>
-  .border-bottom {
-    border-bottom: 0.2px solid rgb(229, 231, 235);
-  }
 </style>

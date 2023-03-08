@@ -3,14 +3,15 @@
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
-  import { chart } from "svelte-apexcharts";
-  import { Avatar, Button, ImagePlaceholder } from "flowbite-svelte";
+  import { Avatar, Button } from "flowbite-svelte";
   import numeral from "numeral";
   import { i18n } from "~/lib/i18n";
 
   import TxCardInfo from "~/components/TxCardInfo.svelte";
+  import PositionCard from "~/components/PositionCard.svelte";
   import NewCard from "~/components/NewCard.svelte";
   import EChart from "~/components/EChart.svelte";
+  import OpportunityCard from "~/components/OpportunityCard.svelte";
 
   import logo from "../../assets/user.png";
 
@@ -121,21 +122,35 @@
 
   let optionPie = {
     title: {
-      text: "Token Allocation",
-      left: "center",
+      text: "",
     },
     tooltip: {
       trigger: "item",
     },
     legend: {
-      orient: "vertical",
-      left: "left",
+      top: "5%",
+      left: "center",
     },
     series: [
       {
         name: "Access From",
         type: "pie",
-        radius: "50%",
+        radius: ["40%", "70%"],
+        avoidLabelOverlap: false,
+        label: {
+          show: false,
+          position: "center",
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: 40,
+            fontWeight: "bold",
+          },
+        },
+        labelLine: {
+          show: false,
+        },
         data: [
           { value: 1048, name: "Search Engine" },
           { value: 735, name: "Direct" },
@@ -143,13 +158,6 @@
           { value: 484, name: "Union Ads" },
           { value: 300, name: "Video Ads" },
         ],
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: "rgba(0, 0, 0, 0.5)",
-          },
-        },
       },
     ],
   };
@@ -213,10 +221,10 @@
   };
 </script>
 
-<div class="max-w-[2000px] m-auto w-[90%] h-full py-6 font-family">
+<div class="max-w-[2000px] m-auto w-[90%] h-full pt-6 pb-7 font-family">
   <div class="flex justify-between items-start">
-    <div class="flex flex-col gap-2">
-      <div class="title-1">{MultipleLang.title}</div>
+    <div class="flex flex-col gap-1">
+      <div class="title-2">{MultipleLang.title}</div>
       <div class="title-2">{MultipleLang.sub_title}</div>
     </div>
     <div class="flex justify-between items-center gap-6">
@@ -252,51 +260,128 @@
       </div>
     </div>
   </div>
+
   <div class="mt-12 flex flex-col gap-12">
+    <div class="flex flex-col gap-5">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-5">
+          <div class="title-1">Overview</div>
+          <a href="#" class="underline text-blue-500 font-medium">
+            View full analytic
+          </a>
+        </div>
+        <div class="flex items-center gap-2">
+          <div>icon</div>
+          <div class="text-sm text-black font-medium">
+            Data updated 2 minutes ago
+          </div>
+        </div>
+      </div>
+      <div class="flex lg:flex-row flex-col justify-between gap-6">
+        <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
+          <div class="flex-1 border shadow rounded-lg p-4 flex flex-col gap-3">
+            <div class="title-5 text-gray-500 font-bold">Networth</div>
+            <div class="title-1 font-semibold text-cyan-400">7,000,000</div>
+            <div class="flex items-center gap-2">
+              <div>icon</div>
+              <div class="font-extrabold text-green-500">5.39%</div>
+              <div class="font-semibold text-gray-500">24h</div>
+            </div>
+          </div>
+          <div class="flex-1 border shadow rounded-lg p-4 flex flex-col gap-3">
+            <div class="title-5 text-gray-500 font-bold">Claimable</div>
+            <div class="title-1 font-semibold text-cyan-400">50,000</div>
+            <div class="flex items-center gap-2">
+              <div>icon</div>
+              <div class="font-extrabold text-green-500">5.39%</div>
+              <div class="font-semibold text-gray-500">24h</div>
+            </div>
+          </div>
+        </div>
+        <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
+          <div class="flex-1 border shadow rounded-lg p-4 flex flex-col gap-3">
+            <div class="title-5 text-gray-500 font-bold">Total assets</div>
+            <div class="title-1 font-semibold text-cyan-400">5,000,000</div>
+            <div class="flex items-center gap-2">
+              <div>icon</div>
+              <div class="font-extrabold text-green-500">5.39%</div>
+              <div class="font-semibold text-gray-500">24h</div>
+            </div>
+          </div>
+          <div class="flex-1 border shadow rounded-lg p-4 flex flex-col gap-3">
+            <div class="title-5 text-gray-500 font-bold">Total Debts</div>
+            <div class="title-1 font-semibold text-cyan-400">2,000,000</div>
+            <div class="flex items-center gap-2">
+              <div>icon</div>
+              <div class="font-extrabold text-green-500">5.39%</div>
+              <div class="font-semibold text-gray-500">24h</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex lg:flex-row flex-col justify-between gap-6 -mt-5">
+      <div class="flex-1 border shadow rounded-lg p-3">
+        <div class="title-4 text-gray-700 mb-1 pl-4">Token Allocation</div>
+        <EChart id={2} theme="white" option={optionPie} height={465} />
+      </div>
+      <div class="flex-1 border shadow rounded-lg p-3">
+        <div class="title-4 text-gray-700 mb-1 pl-4">Performance</div>
+        <EChart id={1} theme="white" option={optionLine} height={433} />
+      </div>
+    </div>
+
     <div class="flex lg:flex-row flex-col justify-between gap-6">
-      <div class="flex-1">
-        <div class="title-3 text-gray-500 mb-4">
-          {MultipleLang.your_portfolio}
-        </div>
-        <div class="border shadow rounded-lg p-3">
-          <EChart id={2} theme="white" option={optionPie} height={465} />
+      <div class="flex-1 flex flex-col gap-4">
+        <div class="title-1">Opportunities</div>
+        <div class="flex flex-col gap-4">
+          <OpportunityCard />
+          <OpportunityCard />
         </div>
       </div>
-      <div class="flex-1">
-        <div class="title-3 text-gray-500 mb-4">
-          {MultipleLang.portfolio_breakdown}
+      <div class="flex-1 flex flex-col gap-4">
+        <div class="flex items-center gap-5">
+          <div class="title-1">News</div>
+          <a href="#" class="underline text-blue-500 font-medium">
+            View more
+          </a>
         </div>
-        <div class="border shadow rounded-lg p-3">
-          <div class="title-4 text-gray-700 mb-1 pl-4">Performance</div>
-          <EChart id={1} theme="white" option={optionLine} height={433} />
+        <div class="flex flex-col gap-6">
+          <NewCard />
+          <NewCard />
         </div>
       </div>
     </div>
-    <div>
-      <div class="title-3 text-gray-500 mb-4">
-        {MultipleLang.recent_transaction}
-      </div>
-      <div
-        class="border rounded-lg py-6 px-8 flex flex-col gap-4 max-h-[660px] overflow-y-auto shadow"
-      >
-        <TxCardInfo />
+
+    <div class="flex flex-col gap-4">
+      <div class="title-1">Wallet</div>
+      <div class="border-[1.5px] border-light-500 rounded shadow">
+        <div class="grid grid-cols-11 bg-light-400 p-3">
+          <div class="col-span-3 text-base font-medium text-gray-500">
+            Assets
+          </div>
+          <div class="col-span-3 text-base font-medium text-gray-500">
+            Market Price
+          </div>
+          <div class="col-span-2 text-base font-medium text-gray-500">
+            Amount
+          </div>
+          <div class="col-span-2 text-base font-medium text-gray-500">
+            Value
+          </div>
+          <div class="col-span-1 text-base font-medium text-gray-500">
+            Profit
+          </div>
+        </div>
         <TxCardInfo />
       </div>
     </div>
-    <div>
-      <div class="title-3 text-gray-500 mb-4">{MultipleLang.news_title}</div>
-      <div class="flex flex-col gap-4">
-        <NewCard />
-        <NewCard />
-        <NewCard />
-        <NewCard />
-        <NewCard />
-        <div class="rounded-lg border p-3 shadow flex gap-6 justify-between">
-          <ImagePlaceholder />
-        </div>
-      </div>
-      <div class="mt-4 flex justify-center">
-        <Button gradient color="cyanToBlue">{MultipleLang.btn_text}</Button>
+
+    <div class="flex flex-col gap-4">
+      <div class="title-1">Position</div>
+      <div class="border-[1.5px] border-light-500 rounded p-4 shadow">
+        <PositionCard />
       </div>
     </div>
   </div>
