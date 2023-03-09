@@ -233,11 +233,7 @@ onMessage<any, any>("checkSafety", async ({ data: { currentUrl } }) => {
   return await cacheOrAPI(
     key,
     () => {
-      return goplus.get("/dapp_security", {
-        params: {
-          url: currentUrl,
-        },
-      });
+      return goplus.get(`/dapp_security?url=${currentUrl}`);
     },
     { defaultValue: null }
   );
