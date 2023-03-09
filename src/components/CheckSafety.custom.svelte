@@ -31,11 +31,15 @@
 </script>
 
 <reset-style>
-  {#if !isEmpty(data) && data.is_audit === IS_AUDITED_CODE}
-    <div
-      class="flex gap-2 items-center pl-4 py-2 mx-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
-      role="alert"
-    >
+  <div
+    class={`flex items-center gap-2 pl-4 py-2 text-sm ${
+      !isEmpty(data) && data.is_audit === IS_AUDITED_CODE
+        ? "text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+        : "text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800"
+    }`}
+    role="alert"
+  >
+    {#if !isEmpty(data) && data.is_audit === IS_AUDITED_CODE}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="20"
@@ -71,12 +75,7 @@
           Audit report
         </a>
       </div>
-    </div>
-  {:else if data.is_audit !== IS_AUDITED_CODE}
-    <div
-      class="flex gap-2 pl-4 py-2 mx-4 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800"
-      role="alert"
-    >
+    {:else if data.is_audit !== IS_AUDITED_CODE}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="20"
@@ -114,8 +113,8 @@
         />
       </svg>
       <div>This page is not support.</div>
-    </div>
-  {/if}
+    {/if}
+  </div>
 </reset-style>
 
 <style>
