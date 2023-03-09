@@ -61,6 +61,12 @@
 
   function onMouseMove(e) {
     if (moving) {
+      if (DraggableY < 0) {
+        DraggableY = 0;
+      }
+      if (DraggableY >= window.innerHeight - 50) {
+        DraggableY = window.innerHeight - 50;
+      }
       DraggableY += e.movementY;
     }
   }
@@ -72,8 +78,6 @@
   function onClick() {
     isShowSideBar = true;
   }
-
-  $: localStorage.setItem("DraggableY", DraggableY.toString());
 
   onMount(() => {
     getConfigPages();
@@ -219,6 +223,12 @@
   };
 
   $: {
+    if (DraggableY >= 0 && DraggableY <= window.innerHeight - 50) {
+      localStorage.setItem("DraggableY", DraggableY.toString());
+    }
+  }
+
+  $: {
     if (listPageConfig && coinListData) {
       handleGetCoinDataFromPage();
     }
@@ -276,9 +286,10 @@
   <div
     style="z-index: 2147483647; top:{DraggableY}px;"
     class="transform translate-x-[82%] transition-transform ease-in-out fixed right-0 pr-2 pl-1 h-10 bg-sky-100 opacity-80 text-sky-400 rounded-tl rounded-bl cursor-pointer flex items-center gap-1 shadow-lg"
-    class:hover:translate-x-0={!moving && !isShowSideBar}
+    class:hover:translate-x-0={!isShowSideBar}
     on:mousedown={onMouseDown}
     on:mouseup={onMouseUp}
+    on:mouseleave={() => (moving = false)}
     on:click={onClick}
   >
     <svg
@@ -496,7 +507,7 @@
   {/if}
 </reset-style>
 
-<svelte:window on:mousemove={onMouseMove} />
+<svelte:window on:mouseup={onMouseUp} on:mousemove={onMouseMove} />
 
 <style>
   .btn-border {
