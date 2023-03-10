@@ -39,6 +39,13 @@ browser.action.onClicked.addListener(() => {
   });
 });
 
+chrome.runtime.onInstalled.addListener((details) => {
+  const reason = details.reason
+  if (reason === 'install') {
+    chrome.tabs.create({ url: 'src/entries/onboard/index.html' });
+  }
+})
+
 const fetchBasicData = async () => {
   const list = await coinGeko.get("/search");
   browser.storage.local
