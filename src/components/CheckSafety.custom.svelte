@@ -32,7 +32,7 @@
 
 <reset-style>
   <div
-    class={`flex items-center gap-2 pl-4 py-2 text-sm ${
+    class={`flex items-start gap-2 pl-4 py-2 text-sm ${
       !isEmpty(data) && data.is_audit === IS_AUDITED_CODE
         ? "text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
         : "text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800"
@@ -65,15 +65,18 @@
           stroke-width="16"
         />
       </svg>
-      <div>
-        The page has been audited.
-        <a
-          href={data?.audit_info?.[0]?.audit_link}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Audit report
-        </a>
+      <div class="flex flex-col">
+        <div>
+          The page has been audited.
+          <a
+            href={data?.audit_info?.[0]?.audit_link}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Audit report
+          </a>
+        </div>
+        <div class="text-xs font-light">Scan by Go+</div>
       </div>
     {:else if data.is_audit !== IS_AUDITED_CODE}
       <svg
@@ -112,7 +115,10 @@
           stroke-width="16"
         />
       </svg>
-      <div>This page is not support.</div>
+      <div class="flex flex-col">
+        <div>This page is not support.</div>
+        <div class="text-xs font-light">Scan by Go+</div>
+      </div>
     {/if}
   </div>
 </reset-style>
