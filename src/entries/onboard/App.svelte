@@ -15,29 +15,9 @@
 
   let mySwiper;
   let activeSlide = 0;
-  const slides = [
-    {
-      title: "Welcome page",
-    },
-    {
-      title: "Pin the extension",
-    },
-    {
-      title: "Sidebar Search with command",
-    },
-    {
-      title: "Highlight check the address/transaction",
-    },
-    {
-      title: "Add an address to watch the portfolio",
-    },
-    {
-      title: "Feedback is welcome (Email to subscribe)",
-    },
-  ];
 
   const slideToLast = () => {
-    const lastSlideIndex = slides.length - 1;
+    const lastSlideIndex = 6 - 1;
     mySwiper.slideTo(lastSlideIndex);
   };
 </script>
@@ -53,48 +33,29 @@
     pagination={{ clickable: true, dynamicBullets: true }}
     on:activeIndexChange={(e) => (activeSlide = e.detail[0][0].activeIndex)}
   >
-    {#each slides as item, index}
-      <SwiperSlide>
-        <div
-          class="border-2 border-red-500 h-screen flex justify-center items-center"
-        >
-          <div class="flex flex-col gap-6">
-            <div>{item.title}</div>
-            {#if activeSlide === 0}
-              <SlideOne />
-            {:else if activeSlide === 1}
-              <SlideTwo />
-            {:else if activeSlide === 2}
-              <SlideThree />
-            {:else if activeSlide === 3}
-              <SlideFour />
-            {:else if activeSlide === 4}
-              <SlideFive />
-            {:else}
-              <SlideSix />
-            {/if}
+    <SwiperSlide>
+      <SlideOne />
+    </SwiperSlide>
 
-            {#if index < 5}
-              <div class="next cursor-pointer">
-                {#if index === 0}
-                  Get Started
-                {:else}
-                  Continue
-                {/if}
-              </div>
-            {/if}
+    <SwiperSlide>
+      <SlideTwo skip={slideToLast} />
+    </SwiperSlide>
 
-            {#if index > 0 && index < 5}
-              <button on:click={slideToLast}>skip</button>
-            {/if}
+    <SwiperSlide>
+      <SlideThree skip={slideToLast} />
+    </SwiperSlide>
 
-            {#if index === 5}
-              <button>Open Nimbus</button>
-            {/if}
-          </div>
-        </div>
-      </SwiperSlide>
-    {/each}
+    <SwiperSlide>
+      <SlideFour skip={slideToLast} />
+    </SwiperSlide>
+
+    <SwiperSlide>
+      <SlideFive skip={slideToLast} />
+    </SwiperSlide>
+
+    <SwiperSlide>
+      <SlideSix />
+    </SwiperSlide>
   </Swiper>
 </div>
 
