@@ -141,12 +141,12 @@
     },
     {
       logo: logo,
-      label: "Ethereum",
+      label: "Ethereum Wallet",
       value: "eth",
     },
     {
       logo: logo,
-      label: "BNB",
+      label: "BNB Wallet",
       value: "bnb",
     },
     {
@@ -165,6 +165,9 @@
       value: "avalanche",
     },
   ];
+
+  let selectedWallet = chainList[0];
+  let selectedChain = chainList[0];
 
   let optionPie = {
     title: {
@@ -282,43 +285,57 @@
     <div
       class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]"
     >
-      <img src={Logo} alt="logo" width={177} height={60} class="-ml-5" />
-      <div class="flex items-center gap-4">
+      <img
+        src={Logo}
+        alt="logo"
+        class="-ml-8 xl:w-[177px] xl:h-[60px] w-[167px] h-[50px]"
+      />
+      <div class="flex items-center xl:gap-4 gap-3">
         <a
           href="#"
-          class="flex items-center gap-3 cursor-pointer py-2 px-4 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
         >
           <img src={Portfolio} alt="Portfolio" />
-          <span class="text-white font-semibold text-base">Portfolio</span>
+          <span class="text-white font-semibold xl:text-base text-sm">
+            Portfolio
+          </span>
         </a>
         <a
           href="#"
-          class="flex items-center gap-3 cursor-pointer py-2 px-4 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
         >
           <img src={Analytic} alt="Analytic" />
-          <span class="text-white font-semibold text-base">Analytic</span>
+          <span class="text-white font-semibold xl:text-base text-sm">
+            Analytic
+          </span>
         </a>
         <a
           href="#"
-          class="flex items-center gap-3 cursor-pointer py-2 px-4 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
         >
           <img src={Transactions} alt="Transactions" />
-          <span class="text-white font-semibold text-base">Transactions</span>
+          <span class="text-white font-semibold xl:text-base text-sm">
+            Transactions
+          </span>
         </a>
         <a
           href={`chrome-extension://${browser.runtime.id}/src/entries/options/index.html`}
           target="_blank"
-          class="flex items-center gap-3 cursor-pointer py-2 px-4 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
         >
           <img src={Settings} alt="Settings" />
-          <span class="text-white font-semibold text-base">Settings</span>
+          <span class="text-white font-semibold xl:text-base text-sm">
+            Settings
+          </span>
         </a>
       </div>
-      <div class="flex justify-between items-center gap-4">
-        <div class="bg-[#525B8C] pl-4 flex items-center gap-1 rounded-[1000px]">
+      <div class="flex justify-between items-center xl:gap-4 gap-2">
+        <div
+          class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center gap-1 rounded-[1000px]"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-7 w-7 text-white"
+            class="xl:h-7 xl:w-7 h-5 w-5 text-white"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -336,7 +353,7 @@
             value={search}
             placeholder="Search by address"
             type="text"
-            class="bg-[#525B8C] w-full py-2 pr-4 rounded-r-[1000px] text-[#ffffff80] border-none focus:outline-none focus:ring-0"
+            class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] border-none focus:outline-none focus:ring-0"
           />
         </div>
         <div
@@ -346,7 +363,7 @@
             viewBox="0 0 24 25"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6 text-white"
+            class="xl:h-6 xl:w-6 h-5 w-5 text-white"
           >
             <path
               d="M9.61249 21.9553C9.87859 22.4208 10.2621 22.8084 10.7247 23.0794C11.1873 23.3504 11.7129 23.4954 12.249 23.4999C12.7852 23.5044 13.3131 23.3683 13.7803 23.1051C14.2474 22.8419 14.6373 22.4609 14.9112 21.9999"
@@ -374,7 +391,30 @@
     <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
       <div class="flex flex-col gap-14 mb-5">
         <div class="flex justify-between items-center">
-          <div>list wallet</div>
+          <div class="flex items-center gap-5">
+            {#each chainList.slice(0, 4) as chain}
+              <div
+                id={chain.value}
+                class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
+                  chain.value === selectedWallet.value && "bg-[#ffffff1c]"
+                }`}
+                class:hover:no-underline={chain.value === selectedWallet.value}
+                on:click={() => {
+                  selectedWallet = chain;
+                }}
+              >
+                {#if chain.value === selectedWallet.value}
+                  <img src={chain.logo} alt="logo" width="18" height="18" />
+                {/if}
+                {chain.label}
+              </div>
+            {/each}
+            <Select
+              isSelectWallet={true}
+              listSelect={chainList.slice(4, chainList.length)}
+              bind:selected={selectedWallet}
+            />
+          </div>
           <button
             class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
           >
@@ -394,10 +434,10 @@
               </div>
             </div>
           </div>
-          <Select {chainList} />
+          <Select listSelect={chainList} bind:selected={selectedChain} />
         </div>
       </div>
-      <div class="flex lg:flex-row flex-col justify-between gap-6">
+      <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
             <div class="text-[#00000099] text-base font-medium">Networth</div>
@@ -446,7 +486,7 @@
       class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
       style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
     >
-      <div class="flex lg:flex-row flex-col justify-between gap-6">
+      <div class="flex xl:flex-row flex-col justify-between gap-6">
         <!-- Token Allocation -->
         <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
           <div class="flex justify-between mb-1">
@@ -486,7 +526,7 @@
         </div>
       </div>
 
-      <div class="flex lg:flex-row flex-col justify-between gap-6">
+      <div class="flex xl:flex-row flex-col justify-between gap-6">
         <!-- Wallet -->
         <div
           class="flex-1 flex-col border border-[#0000001a] rounded-[20px] p-6"

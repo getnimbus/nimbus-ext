@@ -199,7 +199,7 @@ export const chainIdData = (chainId: number) => {
   return null;
 };
 
-export const add3Dots = (string, limit) => {
+export const add3Dots = (string: string, limit: number) => {
   const dots = "...";
   if (string.length > limit) {
     string = string.substring(0, limit) + dots;

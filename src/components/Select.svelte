@@ -1,16 +1,25 @@
 <script>
   import UpArrow from "~/assets/up-arrow.svg";
 
-  export let chainList;
-  let selectedItem = chainList[0];
+  export let listSelect;
+  export let selected;
+  export let isSelectWallet = false;
   let open = false;
 </script>
 
 <div class="wrapper">
-  <div class="button" on:click={() => (open = !open)}>
+  <div
+    class="button"
+    class:button-wallet={isSelectWallet}
+    on:click={() => (open = !open)}
+  >
     <div class="label_container">
-      <img src={selectedItem.logo} alt="logo" width="18" height="18" />
-      <div class="label">{selectedItem.label}</div>
+      {#if !isSelectWallet}
+        <img src={selected.logo} alt="logo" width="18" height="18" />
+        <div class="label">{selected.label}</div>
+      {:else}
+        <div class="label">Other ({listSelect.length})</div>
+      {/if}
     </div>
     <img
       src={UpArrow}
@@ -22,13 +31,13 @@
 
   {#if open}
     <div class="content">
-      {#each chainList as chain}
+      {#each listSelect as chain}
         <div
           class="content_item"
-          class:active={chain.value === selectedItem.value}
+          class:active={chain.value === selected.value}
           id={chain.value}
           on:click={() => {
-            selectedItem = chain;
+            selected = chain;
             open = false;
           }}
         >
@@ -62,6 +71,11 @@
     cursor: pointer;
   }
 
+  .button.button-wallet {
+    min-width: 112px;
+    width: 112px;
+  }
+
   .button .label_container {
     display: flex;
     align-items: center;
@@ -91,8 +105,7 @@
     max-height: 400px;
     overflow-y: overlay;
     position: absolute;
-    right: 0;
-    z-index: 2147483647;
+    z-index: 2147483646;
     margin-top: 5.5px;
     background: #ffffff;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);

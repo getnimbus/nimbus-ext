@@ -1,14 +1,19 @@
 <svelte:options tag="tab-settings" />
 
-<script>
-  import { Select, Label } from "flowbite-svelte";
+<script lang="ts">
   import { setLang, currentLang, i18n } from "~/lib/i18n";
 
-  let selectedLang = currentLang;
-  let langs = [
-    { value: "vi", name: "Vietnamese" },
-    { value: "en", name: "English" },
+  import Select from "~/components/Select.svelte";
+
+  import English from "~/assets/english.svg";
+  import Vietnam from "~/assets/vietnam.svg";
+
+  const langs = [
+    { logo: Vietnam, value: "vi", label: "Vietnamese" },
+    { logo: English, value: "en", label: "English" },
   ];
+
+  let selectedLang: any = langs.filter((item) => item.value === currentLang)[0];
 
   let MultipleLang = {
     title: i18n("optionsPage.settings-page-title", "Settings"),
@@ -20,15 +25,13 @@
     },
   };
 
-  $: setLang(selectedLang);
+  $: setLang(selectedLang.value);
 </script>
 
 <div class="flex flex-col gap-2">
   <div class="title-3 text-gray-500 mb-2">{MultipleLang.title}</div>
-  <Label
-    >{MultipleLang.content.change_lang_label}
-    <Select class="mt-2" items={langs} bind:value={selectedLang} />
-  </Label>
+  {MultipleLang.content.change_lang_label}
+  <Select listSelect={langs} bind:selected={selectedLang} />
 </div>
 
 <style>
