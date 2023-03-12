@@ -11,7 +11,11 @@
   import NewCard from "~/components/NewCard.svelte";
   import EChart from "~/components/EChart.svelte";
   import OpportunityCard from "~/components/OpportunityCard.svelte";
+  import Select from "~/components/Select.svelte";
 
+  import logo from "~/assets/btc.png";
+  import Plus from "~/assets/plus.svg";
+  import MoveUp from "~/assets/move-up.svg";
   import Avatar from "~/assets/user.svg";
   import Logo from "~/assets/logo-white.svg";
   import Reload from "~/assets/reload.svg";
@@ -20,24 +24,24 @@
   import Settings from "~/assets/settings.svg";
   import Transactions from "~/assets/transactions.svg";
 
-  let MultipleLang = {
-    title: i18n("newtabPage.title", "Hi there,"),
-    sub_title: i18n("newtabPage.sub-title", "Today update"),
+  // let MultipleLang = {
+  //   title: i18n("newtabPage.title", "Hi there,"),
+  //   sub_title: i18n("newtabPage.sub-title", "Today update"),
 
-    settings: i18n("newtabPage.settings", "Settings"),
-    your_portfolio: i18n("newtabPage.your-portfolio", "Your portfolio"),
-    portfolio_breakdown: i18n(
-      "newtabPage.portfolio-breakdown",
-      "Portfolio breakdown"
-    ),
-    recent_transaction: i18n(
-      "newtabPage.recent-transaction",
-      "Recent transaction"
-    ),
-    news_title: i18n("newtabPage.news-title", "You might interested in"),
+  //   settings: i18n("newtabPage.settings", "Settings"),
+  //   your_portfolio: i18n("newtabPage.your-portfolio", "Your portfolio"),
+  //   portfolio_breakdown: i18n(
+  //     "newtabPage.portfolio-breakdown",
+  //     "Portfolio breakdown"
+  //   ),
+  //   recent_transaction: i18n(
+  //     "newtabPage.recent-transaction",
+  //     "Recent transaction"
+  //   ),
+  //   news_title: i18n("newtabPage.news-title", "You might interested in"),
 
-    btn_text: i18n("newtabPage.suggest-btn-text", "Suggest a content"),
-  };
+  //   btn_text: i18n("newtabPage.suggest-btn-text", "Suggest a content"),
+  // };
 
   // let totalBalanceUsd = 0;
 
@@ -129,12 +133,38 @@
   let timer;
   let selectedTokenAllocation = "token";
 
-  const debounce = (value) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      search = value;
-    }, 300);
-  };
+  let chainList = [
+    {
+      logo: logo,
+      label: "All chains",
+      value: "all",
+    },
+    {
+      logo: logo,
+      label: "Ethereum",
+      value: "eth",
+    },
+    {
+      logo: logo,
+      label: "BNB",
+      value: "bnb",
+    },
+    {
+      logo: logo,
+      label: "Polygon Wallet",
+      value: "polygon",
+    },
+    {
+      logo: logo,
+      label: "Optimism Wallet",
+      value: "optimism",
+    },
+    {
+      logo: logo,
+      label: "Avalanche Wallet",
+      value: "avalanche",
+    },
+  ];
 
   let optionPie = {
     title: {
@@ -235,9 +265,16 @@
       },
     ],
   };
+
+  const debounce = (value) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      search = value;
+    }, 300);
+  };
 </script>
 
-<div class="flex flex-col font-family pb-12">
+<div class="flex flex-col pb-10">
   <div
     class="border-header py-1 sticky top-0 bg-[#27326F]"
     style="z-index: 2147483647; box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
@@ -333,14 +370,19 @@
       </div>
     </div>
   </div>
-  <div class="header-container">
+  <div id="top" class="header-container">
     <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
       <div class="flex flex-col gap-14 mb-5">
         <div class="flex justify-between items-center">
           <div>list wallet</div>
-          <div>add wallet</div>
+          <button
+            class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
+          >
+            <img src={Plus} alt="" width="12" height="12" />
+            <div class="text-base font-medium text-white">Add Wallet</div>
+          </button>
         </div>
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-end">
           <div class="flex items-center gap-6">
             <div class="text-5xl text-white font-semibold">Overview</div>
             <div class="flex items-center gap-2 mt-3">
@@ -352,7 +394,7 @@
               </div>
             </div>
           </div>
-          <div>all chains</div>
+          <Select {chainList} />
         </div>
       </div>
       <div class="flex lg:flex-row flex-col justify-between gap-6">
@@ -534,6 +576,15 @@
       </div>
     </div>
   </div>
+  <div class="sticky bottom-4 flex justify-end pr-4">
+    <a
+      class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F]"
+      style="box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);"
+      href="#top"
+    >
+      <img src={MoveUp} alt="UP" width="20" height="20" />
+    </a>
+  </div>
 </div>
 
 <style windi:preflights:global windi:safelist:global>
@@ -562,11 +613,5 @@
 
   .border {
     border: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .font-family {
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-      Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
-      Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
   }
 </style>
