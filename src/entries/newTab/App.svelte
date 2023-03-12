@@ -3,7 +3,6 @@
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
-  import { Avatar, Button } from "flowbite-svelte";
   import numeral from "numeral";
   import { i18n } from "~/lib/i18n";
 
@@ -13,7 +12,13 @@
   import EChart from "~/components/EChart.svelte";
   import OpportunityCard from "~/components/OpportunityCard.svelte";
 
-  import logo from "../../assets/user.png";
+  import Avatar from "~/assets/user.svg";
+  import Logo from "~/assets/logo-white.svg";
+  import Reload from "~/assets/reload.svg";
+  import Analytic from "~/assets/analytic.svg";
+  import Portfolio from "~/assets/portfolio.svg";
+  import Settings from "~/assets/settings.svg";
+  import Transactions from "~/assets/transactions.svg";
 
   let MultipleLang = {
     title: i18n("newtabPage.title", "Hi there,"),
@@ -34,91 +39,102 @@
     btn_text: i18n("newtabPage.suggest-btn-text", "Suggest a content"),
   };
 
-  let totalBalanceUsd = 0;
+  // let totalBalanceUsd = 0;
 
-  let optionPieChart = {
-    series: [],
-    labels: [],
-    plotOptions: {
-      pie: {
-        donut: {
-          labels: {
-            show: true,
-            total: {
-              show: true,
-              label: "Total balance (USD)",
-              color: "#000",
-              formatter: () => {
-                return totalBalanceUsd;
-              },
-            },
-          },
-        },
-      },
-    },
-    chart: {
-      type: "donut",
-      height: 465,
-    },
-    tooltip: {
-      enabled: false,
-    },
-    responsive: [
-      {
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 200,
-          },
-          legend: {
-            position: "bottom",
-          },
-        },
-      },
-    ],
-  };
+  // let optionPieChart = {
+  //   series: [],
+  //   labels: [],
+  //   plotOptions: {
+  //     pie: {
+  //       donut: {
+  //         labels: {
+  //           show: true,
+  //           total: {
+  //             show: true,
+  //             label: "Total balance (USD)",
+  //             color: "#000",
+  //             formatter: () => {
+  //               return totalBalanceUsd;
+  //             },
+  //           },
+  //         },
+  //       },
+  //     },
+  //   },
+  //   chart: {
+  //     type: "donut",
+  //     height: 465,
+  //   },
+  //   tooltip: {
+  //     enabled: false,
+  //   },
+  //   responsive: [
+  //     {
+  //       breakpoint: 480,
+  //       options: {
+  //         chart: {
+  //           width: 200,
+  //         },
+  //         legend: {
+  //           position: "bottom",
+  //         },
+  //       },
+  //     },
+  //   ],
+  // };
 
-  const getPieChartData = async () => {
-    try {
-      // const data = (await sendMessage("getPieChartData", undefined)) as any;
+  // const getPieChartData = async () => {
+  //   try {
+  //     // const data = (await sendMessage("getPieChartData", undefined)) as any;
 
-      const data = await fetch(
-        `https://utils.getnimbus.io/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`
-      ).then((response) => response.json());
+  //     const data = await fetch(
+  //       `https://utils.getnimbus.io/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`
+  //     ).then((response) => response.json());
 
-      const dataFormat = data.data.assets.filter((item) => {
-        return parseFloat(item.balanceUsd) > 0;
-      });
+  //     const dataFormat = data.data.assets.filter((item) => {
+  //       return parseFloat(item.balanceUsd) > 0;
+  //     });
 
-      const balanceList = dataFormat.map((item) => {
-        return parseFloat(numeral(item.balanceUsd).format("0,0.0000"));
-      });
+  //     const balanceList = dataFormat.map((item) => {
+  //       return parseFloat(numeral(item.balanceUsd).format("0,0.0000"));
+  //     });
 
-      const tokenList = dataFormat.map((item) => {
-        return item.tokenName;
-      });
+  //     const tokenList = dataFormat.map((item) => {
+  //       return item.tokenName;
+  //     });
 
-      totalBalanceUsd = numeral(data.data.totalBalanceUsd).format("0,0.0000");
+  //     totalBalanceUsd = numeral(data.data.totalBalanceUsd).format("0,0.0000");
 
-      optionPieChart = {
-        ...optionPieChart,
-        series: balanceList,
-        labels: tokenList,
-      };
-    } catch (e) {
-      console.log("e: ", e);
-    }
-  };
+  //     optionPieChart = {
+  //       ...optionPieChart,
+  //       series: balanceList,
+  //       labels: tokenList,
+  //     };
+  //   } catch (e) {
+  //     console.log("e: ", e);
+  //   }
+  // };
 
-  onMount(() => {
-    getPieChartData();
-  });
+  // onMount(() => {
+  //   getPieChartData();
+  // });
 
   browser.storage.onChanged.addListener((changes) => {
     if (changes?.options?.newValue?.lang) {
       window.location.reload();
     }
   });
+
+  let search = "";
+  let timer;
+  let selectedTokenAllocation = "token";
+
+  const debounce = (value) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      search = value;
+    }, 300);
+  };
 
   let optionPie = {
     title: {
@@ -221,175 +237,331 @@
   };
 </script>
 
-<div class="max-w-[2000px] m-auto w-[90%] h-full pt-6 pb-7 font-family">
-  <div class="flex justify-between items-start">
-    <div class="flex flex-col gap-1">
-      <div class="title-2">{MultipleLang.title}</div>
-      <div class="title-2">{MultipleLang.sub_title}</div>
-    </div>
-    <div class="flex justify-between items-center gap-6">
-      <a
-        href={`chrome-extension://${browser.runtime.id}/src/entries/options/index.html`}
-        target="_blank"
-        class="flex flex-col items-center gap-1 cursor-pointer"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-6 h-6"
+<div class="flex flex-col font-family pb-12">
+  <div
+    class="border-header py-1 sticky top-0 bg-[#27326F]"
+    style="z-index: 2147483647; box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
+  >
+    <div
+      class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]"
+    >
+      <img src={Logo} alt="logo" width={177} height={60} class="-ml-5" />
+      <div class="flex items-center gap-4">
+        <a
+          href="#"
+          class="flex items-center gap-3 cursor-pointer py-2 px-4 rounded-[1000px] hover:bg-[#525B8C] transition-all"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
+          <img src={Portfolio} alt="Portfolio" />
+          <span class="text-white font-semibold text-base">Portfolio</span>
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 cursor-pointer py-2 px-4 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+        >
+          <img src={Analytic} alt="Analytic" />
+          <span class="text-white font-semibold text-base">Analytic</span>
+        </a>
+        <a
+          href="#"
+          class="flex items-center gap-3 cursor-pointer py-2 px-4 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+        >
+          <img src={Transactions} alt="Transactions" />
+          <span class="text-white font-semibold text-base">Transactions</span>
+        </a>
+        <a
+          href={`chrome-extension://${browser.runtime.id}/src/entries/options/index.html`}
+          target="_blank"
+          class="flex items-center gap-3 cursor-pointer py-2 px-4 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+        >
+          <img src={Settings} alt="Settings" />
+          <span class="text-white font-semibold text-base">Settings</span>
+        </a>
+      </div>
+      <div class="flex justify-between items-center gap-4">
+        <div class="bg-[#525B8C] pl-4 flex items-center gap-1 rounded-[1000px]">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-7 w-7 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          <input
+            on:keyup={({ target: { value } }) => debounce(value)}
+            autofocus
+            value={search}
+            placeholder="Search by address"
+            type="text"
+            class="bg-[#525B8C] w-full py-2 pr-4 rounded-r-[1000px] text-[#ffffff80] border-none focus:outline-none focus:ring-0"
           />
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-        </svg>
-        <div>{MultipleLang.settings}</div>
-      </a>
-      <div class="w-[48px] h-[48px] rounded-full overflow-hidden">
-        <Avatar src={logo} />
-        <!-- <img class="w-full h-full object-contain" src={logo} alt="avatar" /> -->
+        </div>
+        <div
+          class="bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
+        >
+          <svg
+            viewBox="0 0 24 25"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-white"
+          >
+            <path
+              d="M9.61249 21.9553C9.87859 22.4208 10.2621 22.8084 10.7247 23.0794C11.1873 23.3504 11.7129 23.4954 12.249 23.4999C12.7852 23.5044 13.3131 23.3683 13.7803 23.1051C14.2474 22.8419 14.6373 22.4609 14.9112 21.9999"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M19.7375 11.5V8.425C19.7375 4.45 16.25 1 12.2375 1C10.2622 1.04393 8.37994 1.84821 6.98283 3.24533C5.58571 4.64244 4.78143 6.52467 4.7375 8.5V11.5C4.7375 14.9125 2 15.4375 2 17.35C2 19.075 5.9375 20.425 12.2375 20.425C18.5375 20.425 22.475 19.075 22.475 17.35C22.475 15.4375 19.7375 14.9125 19.7375 11.5Z"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <div class="w-[40px] h-[40px] rounded-full overflow-hidden">
+          <img src={Avatar} alt="avatar" class="w-full h-full object-cover" />
+        </div>
       </div>
     </div>
   </div>
-
-  <div class="mt-12 flex flex-col gap-12">
-    <div class="flex flex-col gap-5">
-      <div class="flex justify-between items-center">
-        <div class="flex items-center gap-5">
-          <div class="title-1">Overview</div>
-          <a href="#" class="underline text-blue-500 font-medium">
-            View full analytic
-          </a>
+  <div class="header-container">
+    <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
+      <div class="flex flex-col gap-14 mb-5">
+        <div class="flex justify-between items-center">
+          <div>list wallet</div>
+          <div>add wallet</div>
         </div>
-        <div class="flex items-center gap-2">
-          <div>icon</div>
-          <div class="text-sm text-black font-medium">
-            Data updated 2 minutes ago
+        <div class="flex justify-between items-center">
+          <div class="flex items-center gap-6">
+            <div class="text-5xl text-white font-semibold">Overview</div>
+            <div class="flex items-center gap-2 mt-3">
+              <div class="cursor-pointer">
+                <img src={Reload} alt="" />
+              </div>
+              <div class="text-xs text-white font-medium">
+                Data updated 2 minutes ago
+              </div>
+            </div>
           </div>
+          <div>all chains</div>
         </div>
       </div>
       <div class="flex lg:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <div class="flex-1 border shadow rounded-lg p-4 flex flex-col gap-3">
-            <div class="title-5 text-gray-500 font-bold">Networth</div>
-            <div class="title-1 font-semibold text-cyan-400">7,000,000</div>
-            <div class="flex items-center gap-2">
-              <div>icon</div>
-              <div class="font-extrabold text-green-500">5.39%</div>
-              <div class="font-semibold text-gray-500">24h</div>
+          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
+            <div class="text-[#00000099] text-base font-medium">Networth</div>
+            <div class="text-3xl text-black">$7,000,000</div>
+            <div class="flex items-center gap-3">
+              <div class="text-[#00A878] text-lg font-medium">↑2,32%</div>
+              <div class="text-[#00000066] text-base font-medium">24h</div>
             </div>
           </div>
-          <div class="flex-1 border shadow rounded-lg p-4 flex flex-col gap-3">
-            <div class="title-5 text-gray-500 font-bold">Claimable</div>
-            <div class="title-1 font-semibold text-cyan-400">50,000</div>
-            <div class="flex items-center gap-2">
-              <div>icon</div>
-              <div class="font-extrabold text-green-500">5.39%</div>
-              <div class="font-semibold text-gray-500">24h</div>
+          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
+            <div class="text-[#00000099] text-base font-medium">Claimable</div>
+            <div class="text-3xl text-black">$50,000</div>
+            <div class="flex items-center gap-3">
+              <div class="text-[#00A878] text-lg font-medium">↑5.39%</div>
+              <div class="text-[#00000066] text-base font-medium">24h</div>
             </div>
           </div>
         </div>
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <div class="flex-1 border shadow rounded-lg p-4 flex flex-col gap-3">
-            <div class="title-5 text-gray-500 font-bold">Total assets</div>
-            <div class="title-1 font-semibold text-cyan-400">5,000,000</div>
-            <div class="flex items-center gap-2">
-              <div>icon</div>
-              <div class="font-extrabold text-green-500">5.39%</div>
-              <div class="font-semibold text-gray-500">24h</div>
+          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
+            <div class="text-[#00000099] text-base font-medium">
+              Total assets
+            </div>
+            <div class="text-3xl text-black">$5,000,000</div>
+            <div class="flex items-center gap-3">
+              <div class="text-[#00A878] text-lg font-medium">↑5.39%</div>
+              <div class="text-[#00000066] text-base font-medium">24h</div>
             </div>
           </div>
-          <div class="flex-1 border shadow rounded-lg p-4 flex flex-col gap-3">
-            <div class="title-5 text-gray-500 font-bold">Total Debts</div>
-            <div class="title-1 font-semibold text-cyan-400">2,000,000</div>
-            <div class="flex items-center gap-2">
-              <div>icon</div>
-              <div class="font-extrabold text-green-500">5.39%</div>
-              <div class="font-semibold text-gray-500">24h</div>
+          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
+            <div class="text-[#00000099] text-base font-medium">
+              Total Debts
+            </div>
+            <div class="text-3xl text-black">$2,000,000</div>
+            <div class="flex items-center gap-3">
+              <div class="text-[#00A878] text-lg font-medium">↑5.39%</div>
+              <div class="text-[#00000066] text-base font-medium">24h</div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+  <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
+    <div
+      class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
+      style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+    >
+      <div class="flex lg:flex-row flex-col justify-between gap-6">
+        <!-- Token Allocation -->
+        <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
+          <div class="flex justify-between mb-1">
+            <div class="pl-4 text-2xl font-medium text-black">
+              Token Allocation
+            </div>
+            <div class="flex items-center gap-2">
+              <div
+                class={`cursor-pointer text-base font-medium py-[6px] px-4 rounded-[100px] transition-all ${
+                  selectedTokenAllocation === "token" &&
+                  "bg-[#1E96FC] text-white"
+                }`}
+                on:click={() => (selectedTokenAllocation = "token")}
+              >
+                Token
+              </div>
+              <div
+                class={`cursor-pointer text-base font-medium py-[6px] px-4 rounded-[100px] transition-all ${
+                  selectedTokenAllocation === "chain" &&
+                  "bg-[#1E96FC] text-white"
+                }`}
+                on:click={() => (selectedTokenAllocation = "chain")}
+              >
+                Chain
+              </div>
+            </div>
+          </div>
+          <EChart id={2} theme="white" option={optionPie} height={465} />
+        </div>
 
-    <div class="flex lg:flex-row flex-col justify-between gap-6 -mt-5">
-      <div class="flex-1 border shadow rounded-lg p-3">
-        <div class="title-4 text-gray-700 mb-1 pl-4">Token Allocation</div>
-        <EChart id={2} theme="white" option={optionPie} height={465} />
-      </div>
-      <div class="flex-1 border shadow rounded-lg p-3">
-        <div class="title-4 text-gray-700 mb-1 pl-4">Performance</div>
-        <EChart id={1} theme="white" option={optionLine} height={433} />
-      </div>
-    </div>
-
-    <div class="flex lg:flex-row flex-col justify-between gap-6">
-      <div class="flex-1 flex flex-col gap-4">
-        <div class="title-1">Opportunities</div>
-        <div class="flex flex-col gap-4">
-          <OpportunityCard />
-          <OpportunityCard />
+        <!-- Performance -->
+        <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
+          <div class="pl-4 text-2xl font-medium text-black mb-3">
+            Performance
+          </div>
+          <EChart id={1} theme="white" option={optionLine} height={433} />
         </div>
       </div>
-      <div class="flex-1 flex flex-col gap-4">
-        <div class="flex items-center gap-5">
-          <div class="title-1">News</div>
-          <a href="#" class="underline text-blue-500 font-medium">
-            View more
-          </a>
+
+      <div class="flex lg:flex-row flex-col justify-between gap-6">
+        <!-- Wallet -->
+        <div
+          class="flex-1 flex-col border border-[#0000001a] rounded-[20px] p-6"
+        >
+          <div class="text-2xl font-medium text-black mb-6">Wallet</div>
+          <div class="border border-[#0000000d] rounded-[10px]">
+            <div
+              class="grid grid-cols-12 bg-[#f4f5f880] p-3 rounded-t-left-[10px]"
+            >
+              <div
+                class="col-span-4 text-sm uppercase font-semibold text-black"
+              >
+                Assets
+              </div>
+              <div
+                class="col-span-3 text-sm uppercase font-semibold text-black"
+              >
+                Market Price
+              </div>
+              <div
+                class="col-span-2 text-sm uppercase font-semibold text-black"
+              >
+                Amount
+              </div>
+              <div
+                class="col-span-2 text-sm uppercase font-semibold text-black"
+              >
+                Value
+              </div>
+              <div
+                class="col-span-1 text-sm uppercase font-semibold text-black"
+              >
+                Profit
+              </div>
+            </div>
+            <TxCardInfo />
+            <TxCardInfo />
+            <TxCardInfo />
+            <TxCardInfo />
+          </div>
         </div>
-        <div class="flex flex-col gap-6">
+
+        <!-- Opportunities -->
+        <div
+          class="flex-[0.4] flex flex-col border border-[#0000001a] rounded-[20px] p-6"
+        >
+          <div class="text-2xl font-medium text-black mb-6">Opportunities</div>
+          <div class="flex flex-col gap-4 overflow-y-auto">
+            <OpportunityCard background="#a795fd1a" />
+            <OpportunityCard background="#ffcb591a" />
+            <OpportunityCard background="#6ac7f51a" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Position -->
+      <div
+        class="flex flex-col gap-4 border border-[#0000001a] rounded-[20px] p-6"
+      >
+        <div
+          class="text-2xl font-medium text-black border-b border-[#00000014] pb-4"
+        >
+          Position
+        </div>
+        <div class="flex flex-col gap-10">
+          <PositionCard />
+          <PositionCard />
+        </div>
+      </div>
+
+      <!-- News -->
+      <div
+        class="flex flex-col gap-10 border border-[#0000001a] rounded-[20px] p-6"
+      >
+        <div class="flex justify-between border-b border-[#00000014] pb-4">
+          <div class="text-2xl font-medium text-black">News</div>
+          <a href="#" class="font-bold text-base">View more</a>
+        </div>
+        <div class="flex flex-wrap gap-10">
+          <NewCard />
+          <NewCard />
+          <NewCard />
+          <NewCard />
           <NewCard />
           <NewCard />
         </div>
-      </div>
-    </div>
-
-    <div class="flex flex-col gap-4">
-      <div class="title-1">Wallet</div>
-      <div class="border-[1.5px] border-light-500 rounded shadow">
-        <div class="grid grid-cols-11 bg-light-400 p-3">
-          <div class="col-span-3 text-base font-medium text-gray-500">
-            Assets
-          </div>
-          <div class="col-span-3 text-base font-medium text-gray-500">
-            Market Price
-          </div>
-          <div class="col-span-2 text-base font-medium text-gray-500">
-            Amount
-          </div>
-          <div class="col-span-2 text-base font-medium text-gray-500">
-            Value
-          </div>
-          <div class="col-span-1 text-base font-medium text-gray-500">
-            Profit
-          </div>
-        </div>
-        <TxCardInfo />
-      </div>
-    </div>
-
-    <div class="flex flex-col gap-4">
-      <div class="title-1">Position</div>
-      <div class="border-[1.5px] border-light-500 rounded p-4 shadow">
-        <PositionCard />
       </div>
     </div>
   </div>
 </div>
 
 <style windi:preflights:global windi:safelist:global>
+  .test {
+    border: 1px solid red;
+  }
+
+  .header-container {
+    background-image: url("~/assets/capa.svg");
+    background-color: #27326f;
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-attachment: fixed;
+    background-position: top right;
+    padding-bottom: 164px;
+    padding-top: 24px;
+  }
+
+  .shadow {
+    box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  .border-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
   .border {
-    border: 0.2px solid rgb(229, 231, 235);
+    border: 1px solid rgba(0, 0, 0, 0.1);
   }
 
   .font-family {
