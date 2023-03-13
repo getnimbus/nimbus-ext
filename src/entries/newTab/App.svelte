@@ -185,7 +185,7 @@
       trigger: "item",
       formatter: function (params) {
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; width: 170px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 170px;">
               <div style="display: flex; align-items: centers; gap: 4px">
                 <img src=${params.data.logo} alt="" width=20 height=20 /> 
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">

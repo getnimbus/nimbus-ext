@@ -70,11 +70,8 @@
             </div>
           </td>
           <td class="pr-3 py-4">
-            <div
-              class="text-right text-sm text-[#00000099] font-medium flex items-center gap-1"
-            >
-              <div class="text-[#00A878]">$12,000</div>
-              <img src={TrendUp} alt="trend" class="mb-1" />
+            <div class="text-right text-sm text-[#00000099] font-medium">
+              $12,000
             </div>
           </td>
         </tr>
