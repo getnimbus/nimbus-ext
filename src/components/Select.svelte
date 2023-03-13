@@ -5,12 +5,14 @@
   export let selected;
   export let isSelectWallet = false;
   let open = false;
+
+  export let isOptionsPage = false;
 </script>
 
 <div class="wrapper">
   <div
-    class="button"
-    class:button-wallet={isSelectWallet}
+    class={`button ${isOptionsPage ? "bg-[#1E96FC]" : "hover:bg-[#525b8c]"}`}
+    class:active={open}
     on:click={() => (open = !open)}
   >
     <div class="label_container">
@@ -30,7 +32,7 @@
   </div>
 
   {#if open}
-    <div class="content">
+    <div class="content" class:right-0={!isOptionsPage}>
       {#each listSelect as chain}
         <div
           class="content_item"
@@ -55,10 +57,8 @@
   }
 
   .button {
-    min-width: 154px;
-    width: 154px;
+    width: max-content;
     border-radius: 1000px;
-    background: #20295b;
     padding: 8px 12px;
     color: white;
     font-weight: 400;
@@ -69,22 +69,17 @@
     justify-content: space-between;
     gap: 8px;
     cursor: pointer;
+    transition: all 0.3s ease;
   }
 
-  .button.button-wallet {
-    min-width: 112px;
-    width: 112px;
+  .button.active {
+    background: #20295b;
   }
 
   .button .label_container {
     display: flex;
     align-items: center;
     gap: 8px;
-
-    white-space: nowrap;
-    max-width: 120px;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .button .label_container .label {
@@ -92,11 +87,6 @@
     font-size: 14px;
     line-height: 17px;
     color: white;
-
-    white-space: nowrap;
-    max-width: 80px;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .content {

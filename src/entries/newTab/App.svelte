@@ -1,6 +1,6 @@
 <script lang="ts">
   import "flowbite/dist/flowbite.css";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
   import numeral from "numeral";
@@ -12,6 +12,7 @@
   import EChart from "~/components/EChart.svelte";
   import OpportunityCard from "~/components/OpportunityCard.svelte";
   import Select from "~/components/Select.svelte";
+  import CountUpNumber from "~/components/CountUpNumber.svelte";
 
   import logo from "~/assets/btc.png";
   import Plus from "~/assets/plus.svg";
@@ -129,11 +130,7 @@
     }
   });
 
-  let search = "";
-  let timer;
-  let selectedTokenAllocation = "token";
-
-  let chainList = [
+  const chainList = [
     {
       logo: logo,
       label: "All chains",
@@ -166,6 +163,11 @@
     },
   ];
 
+  let search = "";
+  let timer;
+  let selectedTokenAllocation = "token";
+  let headerScrollY = false;
+
   let selectedWallet = chainList[0];
   let selectedChain = chainList[0];
 
@@ -175,16 +177,40 @@
     },
     tooltip: {
       trigger: "item",
+      formatter: function (params) {
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; width: 170px;">
+              <div style="display: flex; align-items: centers; gap: 4px">
+                <img src=${params.data.logo} alt="" width=20 height=20 /> 
+                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                  ${params.name}
+                </div>
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${params.data.name_balance}</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">${params.data.value_balance}</div>
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${params.data.name_value}</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">$${params.data.value_value}</div>
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${params.data.name_ratio}</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">${params.value}%</div>
+              </div>
+            </div>`;
+      },
     },
     legend: {
-      top: "5%",
-      left: "center",
+      orient: "vertical",
+      right: "right",
+      bottom: "center",
     },
     series: [
       {
-        name: "Access From",
         type: "pie",
-        radius: ["40%", "70%"],
+        radius: ["30%", "70%"],
+        left: -140,
         avoidLabelOverlap: false,
         label: {
           show: false,
@@ -192,7 +218,7 @@
         },
         emphasis: {
           label: {
-            show: true,
+            show: false,
             fontSize: 40,
             fontWeight: "bold",
           },
@@ -201,11 +227,46 @@
           show: false,
         },
         data: [
-          { value: 1048, name: "Search Engine" },
-          { value: 735, name: "Direct" },
-          { value: 580, name: "Email" },
-          { value: 484, name: "Union Ads" },
-          { value: 300, name: "Video Ads" },
+          {
+            logo: logo,
+            name: "Bitcoin",
+            name_ratio: "Ratio",
+            value: 35,
+            name_value: "Value",
+            value_value: 2212.13,
+            name_balance: "Balance",
+            value_balance: 15212,
+          },
+          {
+            logo: logo,
+            name: "Ethereum",
+            name_ratio: "Ratio",
+            value: 25,
+            name_value: "Value",
+            value_value: 2812.48,
+            name_balance: "Balance",
+            value_balance: 5212,
+          },
+          {
+            logo: logo,
+            name: "Matic",
+            name_ratio: "Ratio",
+            value: 10,
+            name_value: "Value",
+            value_value: 1812.28,
+            name_balance: "Balance",
+            value_balance: 2212,
+          },
+          {
+            logo: logo,
+            name: "Solana",
+            name_ratio: "Ratio",
+            value: 30,
+            name_value: "Value",
+            value_value: 2812.5,
+            name_balance: "Balance",
+            value_balance: 3212,
+          },
         ],
       },
     ],
@@ -218,9 +279,7 @@
     tooltip: {
       trigger: "axis",
     },
-    legend: {
-      data: ["Email", "Union Ads", "Video Ads", "Direct", "Search Engine"],
-    },
+    legend: {},
     grid: {
       left: "3%",
       right: "4%",
@@ -237,34 +296,40 @@
     },
     series: [
       {
-        name: "Email",
+        name: "Your Portfolio",
         type: "line",
         stack: "Total",
         data: [120, 132, 101, 134, 90, 230, 210],
       },
       {
-        name: "Union Ads",
+        name: "Bitcoin",
         type: "line",
         stack: "Total",
+        lineStyle: {
+          width: 2,
+          type: "dashed",
+        },
         data: [220, 182, 191, 234, 290, 330, 310],
       },
       {
-        name: "Video Ads",
+        name: "Ethereum",
         type: "line",
         stack: "Total",
+        lineStyle: {
+          width: 2,
+          type: "dashed",
+        },
         data: [150, 232, 201, 154, 190, 330, 410],
       },
       {
-        name: "Direct",
+        name: "Solana",
         type: "line",
         stack: "Total",
+        lineStyle: {
+          width: 2,
+          type: "dashed",
+        },
         data: [320, 332, 301, 334, 390, 330, 320],
-      },
-      {
-        name: "Search Engine",
-        type: "line",
-        stack: "Total",
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
       },
     ],
   };
@@ -275,12 +340,26 @@
       search = value;
     }, 300);
   };
+
+  onMount(() => {
+    const lastScrollY = window.pageYOffset;
+    const handleCheckIsSticky = () => {
+      const scrollY = window.pageYOffset;
+      headerScrollY = scrollY > lastScrollY;
+    };
+    window.addEventListener("scroll", handleCheckIsSticky);
+    return () => {
+      window.removeEventListener("scroll", handleCheckIsSticky);
+    };
+  });
 </script>
 
 <div class="flex flex-col pb-10">
   <div
     class="border-header py-1 sticky top-0 bg-[#27326F]"
-    style="z-index: 2147483647; box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
+    style="z-index: 2147483647; {headerScrollY
+      ? 'box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);'
+      : ''}"
   >
     <div
       class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]"
@@ -410,7 +489,7 @@
               </div>
             {/each}
             <Select
-              isSelectWallet={true}
+              isSelectWallet
               listSelect={chainList.slice(4, chainList.length)}
               bind:selected={selectedWallet}
             />
@@ -423,9 +502,9 @@
           </button>
         </div>
         <div class="flex justify-between items-end">
-          <div class="flex items-center gap-6">
+          <div class="flex items-end gap-6">
             <div class="text-5xl text-white font-semibold">Overview</div>
-            <div class="flex items-center gap-2 mt-3">
+            <div class="flex items-center gap-2 mb-1">
               <div class="cursor-pointer">
                 <img src={Reload} alt="" />
               </div>
@@ -441,17 +520,25 @@
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
             <div class="text-[#00000099] text-base font-medium">Networth</div>
-            <div class="text-3xl text-black">$7,000,000</div>
+            <div class="text-3xl text-black">
+              $<CountUpNumber id="networth" number={63910.82} />
+            </div>
             <div class="flex items-center gap-3">
-              <div class="text-[#00A878] text-lg font-medium">↑2,32%</div>
+              <div class="text-[#00A878] text-lg font-medium">
+                ↑<CountUpNumber id="networth_grouth" number={2.55} />%
+              </div>
               <div class="text-[#00000066] text-base font-medium">24h</div>
             </div>
           </div>
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
             <div class="text-[#00000099] text-base font-medium">Claimable</div>
-            <div class="text-3xl text-black">$50,000</div>
+            <div class="text-3xl text-black">
+              $<CountUpNumber id="claimable" number={50000} />
+            </div>
             <div class="flex items-center gap-3">
-              <div class="text-[#00A878] text-lg font-medium">↑5.39%</div>
+              <div class="text-[#00A878] text-lg font-medium">
+                ↑<CountUpNumber id="claimable_grouth" number={3.59} />%
+              </div>
               <div class="text-[#00000066] text-base font-medium">24h</div>
             </div>
           </div>
@@ -461,9 +548,13 @@
             <div class="text-[#00000099] text-base font-medium">
               Total assets
             </div>
-            <div class="text-3xl text-black">$5,000,000</div>
+            <div class="text-3xl text-black">
+              $<CountUpNumber id="total_assets" number={50000} />
+            </div>
             <div class="flex items-center gap-3">
-              <div class="text-[#00A878] text-lg font-medium">↑5.39%</div>
+              <div class="text-[#00A878] text-lg font-medium">
+                ↑<CountUpNumber id="total_assets_grouth" number={1.89} />%
+              </div>
               <div class="text-[#00000066] text-base font-medium">24h</div>
             </div>
           </div>
@@ -471,9 +562,13 @@
             <div class="text-[#00000099] text-base font-medium">
               Total Debts
             </div>
-            <div class="text-3xl text-black">$2,000,000</div>
+            <div class="text-3xl text-black">
+              $<CountUpNumber id="total_debts" number={70000} />
+            </div>
             <div class="flex items-center gap-3">
-              <div class="text-[#00A878] text-lg font-medium">↑5.39%</div>
+              <div class="text-[#00A878] text-lg font-medium">
+                ↑<CountUpNumber id="total_debts_grouth" number={1.25} />%
+              </div>
               <div class="text-[#00000066] text-base font-medium">24h</div>
             </div>
           </div>
@@ -574,7 +669,7 @@
           class="flex-[0.4] flex flex-col border border-[#0000001a] rounded-[20px] p-6"
         >
           <div class="text-2xl font-medium text-black mb-6">Opportunities</div>
-          <div class="flex flex-col gap-4 overflow-y-auto">
+          <div class="flex flex-col gap-4 overflow-y-auto basis-0 grow">
             <OpportunityCard background="#a795fd1a" />
             <OpportunityCard background="#ffcb591a" />
             <OpportunityCard background="#6ac7f51a" />
@@ -605,7 +700,7 @@
           <div class="text-2xl font-medium text-black">News</div>
           <a href="#" class="font-bold text-base">View more</a>
         </div>
-        <div class="flex flex-wrap gap-10">
+        <div class="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-10">
           <NewCard />
           <NewCard />
           <NewCard />
@@ -628,10 +723,6 @@
 </div>
 
 <style windi:preflights:global windi:safelist:global>
-  .test {
-    border: 1px solid red;
-  }
-
   .header-container {
     background-image: url("~/assets/capa.svg");
     background-color: #27326f;

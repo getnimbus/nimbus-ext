@@ -5,7 +5,7 @@
   import logo from "~/assets/btc.png";
 </script>
 
-<div class="flex gap-6 xl:w-[570px] w-full">
+<div class="flex gap-6">
   <div class="w-[250px] h-[160px] overflow-hidden rounded-[10px]">
     <img class="w-full h-full object-cover" src={newImage} alt="new" />
   </div>

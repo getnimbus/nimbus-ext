@@ -42,18 +42,18 @@
         </div>
       </div>
       <div class="col-span-3 text-sm text-[#00000099] font-medium">
-        500 CAKE (10,000$)
+        500 CAKE ($10,000)
       </div>
       <div class="col-span-2 text-sm text-[#00000099] font-medium">
-        1 CAKE (100$)
+        1 CAKE ($100)
       </div>
       <div class="col-span-2 text-sm text-[#00000099] font-medium">
         27/09/2023
       </div>
-      <div class="col-span-2 text-sm text-[#00000099] font-medium">10,000$</div>
-      <div class="col-span-1 flex items-center text-sm font-medium">
-        <div class="text-[#00A878]">12,000$</div>
-        <img src={TrendUp} alt="trend" />
+      <div class="col-span-2 text-sm text-[#00000099] font-medium">$10,000</div>
+      <div class="col-span-1 flex items-center gap-1 text-sm font-medium">
+        <div class="text-[#00A878]">$12,000</div>
+        <img src={TrendUp} alt="trend" class="mb-1" />
       </div>
     </div>
   </div>
