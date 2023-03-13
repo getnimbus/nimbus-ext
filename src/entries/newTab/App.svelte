@@ -7,13 +7,19 @@
   import { i18n } from "~/lib/i18n";
 
   import TxCardInfo from "~/components/TxCardInfo.svelte";
-  import PositionCard from "~/components/PositionCard.svelte";
   import NewCard from "~/components/NewCard.svelte";
   import EChart from "~/components/EChart.svelte";
   import OpportunityCard from "~/components/OpportunityCard.svelte";
   import Select from "~/components/Select.svelte";
   import CountUpNumber from "~/components/CountUpNumber.svelte";
 
+  import LpProvider from "~/components/PositionTable/LPProvider.svelte";
+  import Staking from "~/components/PositionTable/Staking.svelte";
+  import StakingLocked from "~/components/PositionTable/StakingLocked.svelte";
+  import LendingProvider from "~/components/PositionTable/LendingProvider.svelte";
+  import LendingBorrow from "~/components/PositionTable/LendingBorrow.svelte";
+
+  import All from "~/assets/all.svg";
   import logo from "~/assets/btc.png";
   import Plus from "~/assets/plus.svg";
   import MoveUp from "~/assets/move-up.svg";
@@ -471,7 +477,7 @@
       <div class="flex flex-col gap-14 mb-5">
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-5">
-            {#each chainList.slice(0, 4) as chain}
+            {#each chainList.slice(0, 4) as chain, index}
               <div
                 id={chain.value}
                 class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
@@ -482,9 +488,12 @@
                   selectedWallet = chain;
                 }}
               >
-                {#if chain.value === selectedWallet.value}
-                  <img src={chain.logo} alt="logo" width="18" height="18" />
-                {/if}
+                <img
+                  src={index === 0 ? All : chain.logo}
+                  alt="logo"
+                  width="18"
+                  height="18"
+                />
                 {chain.label}
               </div>
             {/each}
@@ -624,52 +633,70 @@
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <!-- Wallet -->
         <div
-          class="flex-1 flex-col border border-[#0000001a] rounded-[20px] p-6"
+          class="xl:w-[65%] w-full flex-col border border-[#0000001a] rounded-[20px] p-6"
         >
           <div class="text-2xl font-medium text-black mb-6">Wallet</div>
-          <div class="border border-[#0000000d] rounded-[10px]">
-            <div
-              class="grid grid-cols-12 bg-[#f4f5f880] p-3 rounded-t-left-[10px]"
-            >
-              <div
-                class="col-span-4 text-sm uppercase font-semibold text-black"
-              >
-                Assets
-              </div>
-              <div
-                class="col-span-3 text-sm uppercase font-semibold text-black"
-              >
-                Market Price
-              </div>
-              <div
-                class="col-span-2 text-sm uppercase font-semibold text-black"
-              >
-                Amount
-              </div>
-              <div
-                class="col-span-2 text-sm uppercase font-semibold text-black"
-              >
-                Value
-              </div>
-              <div
-                class="col-span-1 text-sm uppercase font-semibold text-black"
-              >
-                Profit
-              </div>
-            </div>
-            <TxCardInfo />
-            <TxCardInfo />
-            <TxCardInfo />
-            <TxCardInfo />
+          <div
+            class="border border-[#0000000d] rounded-[10px] overflow-x-scroll"
+          >
+            <table class="table-fixed 2xl:w-full w-auto">
+              <thead>
+                <tr class="bg-[#f4f5f880]">
+                  <th class="pl-3 py-3">
+                    <div
+                      class="text-left text-sm uppercase font-semibold text-black min-w-[220px]"
+                    >
+                      Assets
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
+                    >
+                      Market Price
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
+                    >
+                      Amount
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
+                    >
+                      Value
+                    </div>
+                  </th>
+                  <th class="pr-3 py-3">
+                    <div
+                      class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
+                    >
+                      Profit
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <TxCardInfo />
+                <TxCardInfo />
+                <TxCardInfo />
+                <TxCardInfo />
+                <TxCardInfo />
+                <TxCardInfo />
+              </tbody>
+            </table>
           </div>
         </div>
 
         <!-- Opportunities -->
         <div
-          class="flex-[0.4] flex flex-col border border-[#0000001a] rounded-[20px] p-6"
+          class="xl:w-[35%] w-full flex flex-col border border-[#0000001a] rounded-[20px] p-6"
         >
           <div class="text-2xl font-medium text-black mb-6">Opportunities</div>
-          <div class="flex flex-col gap-4 overflow-y-auto basis-0 grow">
+          <div class="flex flex-col gap-4 overflow-y-auto xl:basis-0 grow">
             <OpportunityCard background="#a795fd1a" />
             <OpportunityCard background="#ffcb591a" />
             <OpportunityCard background="#6ac7f51a" />
@@ -687,8 +714,11 @@
           Position
         </div>
         <div class="flex flex-col gap-10">
-          <PositionCard />
-          <PositionCard />
+          <LpProvider />
+          <Staking />
+          <StakingLocked />
+          <LendingProvider />
+          <LendingBorrow />
         </div>
       </div>
 

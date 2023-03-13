@@ -1,5 +1,6 @@
 <script>
   import UpArrow from "~/assets/up-arrow.svg";
+  import All from "~/assets/all.svg";
 
   export let listSelect;
   export let selected;
@@ -17,7 +18,12 @@
   >
     <div class="label_container">
       {#if !isSelectWallet}
-        <img src={selected.logo} alt="logo" width="18" height="18" />
+        <img
+          src={selected.value === "all" ? All : selected.logo}
+          alt="logo"
+          width="18"
+          height="18"
+        />
         <div class="label">{selected.label}</div>
       {:else}
         <div class="label">Other ({listSelect.length})</div>
@@ -43,7 +49,12 @@
             open = false;
           }}
         >
-          <img src={chain.logo} alt="logo" width="18" height="18" />
+          <img
+            src={chain.value === "all" ? All : chain.logo}
+            alt="logo"
+            width="18"
+            height="18"
+          />
           <div class="name">{chain.label}</div>
         </div>
       {/each}
