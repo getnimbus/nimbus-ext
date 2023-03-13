@@ -5,6 +5,7 @@
   import { sendMessage } from "webext-bridge";
   import numeral from "numeral";
   import { i18n } from "~/lib/i18n";
+  import { nimbusApi } from "~/lib/network";
 
   import TxCardInfo from "~/components/TxCardInfo.svelte";
   import NewCard from "~/components/NewCard.svelte";
@@ -129,6 +130,21 @@
   // onMount(() => {
   //   getPieChartData();
   // });
+
+  let overviewData;
+
+  const getOverviewData = async () => {
+    try {
+      const response = await nimbusApi.get("/overview");
+      overviewData = response;
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  onMount(() => {
+    getOverviewData();
+  });
 
   browser.storage.onChanged.addListener((changes) => {
     if (changes?.options?.newValue?.lang) {
@@ -518,7 +534,7 @@
                 <img src={Reload} alt="" />
               </div>
               <div class="text-xs text-white font-medium">
-                Data updated 2 minutes ago
+                Data updated {overviewData?.updatedAt}
               </div>
             </div>
           </div>

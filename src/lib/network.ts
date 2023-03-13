@@ -48,3 +48,7 @@ export const mixpanel = createAxiosInterface({
 export const goplus = createAxiosInterface({
   baseURL: "https://api.gopluslabs.io/api/v1",
 });
+
+export const nimbusApi = createAxiosInterface({
+  baseURL: "https://nimbus-api-production.up.railway.app/api",
+});
