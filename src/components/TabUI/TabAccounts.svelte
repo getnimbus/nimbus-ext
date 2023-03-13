@@ -12,12 +12,12 @@
     TableBodyRow,
     TableHead,
     TableHeadCell,
-    Checkbox,
-    Button,
   } from "flowbite-svelte";
   import { i18n } from "~/lib/i18n";
 
-  import AppOverlay from "../Overlay.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+
+  import Plus from "~/assets/plus.svg";
 
   let errors: any = {};
   let errorsEdit: any = {};
@@ -288,13 +288,15 @@
 <div class="flex flex-col gap-2">
   <div class="flex justify-between items-center">
     <div class="title-3 text-gray-500">{MultipleLang.title}</div>
-    <Button
-      gradient
-      color="cyanToBlue"
+    <button
+      class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
       on:click={() => (isOpenAddModal = true)}
     >
-      <div class="uppercase">{MultipleLang.content.btn_text}</div>
-    </Button>
+      <img src={Plus} alt="" width="12" height="12" />
+      <div class="text-base font-medium text-white">
+        {MultipleLang.content.btn_text}
+      </div>
+    </button>
   </div>
 
   <div class="table-border mt-2 rounded">
@@ -367,7 +369,7 @@
             name="address"
             placeholder={MultipleLang.content.modal_address_label}
             bind:value={selectedItemEdit.address}
-            class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
+            class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
             class:input-border-error={errorsEdit.address &&
               errorsEdit.address.required}
             on:blur={onBlurEdit}
@@ -394,7 +396,7 @@
             name="label"
             placeholder={MultipleLang.content.modal_label_label}
             bind:value={selectedItemEdit.label}
-            class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
+            class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
             class:input-border-error={errorsEdit.label &&
               errorsEdit.label.required}
             on:blur={onBlurEdit}
@@ -412,22 +414,25 @@
           errorsEdit.label.required) ||
           (errorsEdit.address && errorsEdit.address.required)}
       >
-        <Button
-          outline
-          gradient
-          color="cyanToBlue"
+        <button
+          class="flex items-center gap-3 px-4 py-2 border border-[#1E96FC] rounded-xl"
           on:click={() => {
             errorsEdit = {};
             isOpenEditModal = false;
           }}
         >
-          <div class="uppercase text-sky-500">
+          <div class="text-base font-medium text-[#1E96FC]">
             {MultipleLang.content.modal_cancel}
           </div>
-        </Button>
-        <Button gradient color="cyanToBlue" type="submit">
-          <div class="uppercase">{MultipleLang.content.modal_edit}</div>
-        </Button>
+        </button>
+        <button
+          class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
+          type="submit"
+        >
+          <div class="text-base font-medium text-white">
+            {MultipleLang.content.modal_edit}
+          </div>
+        </button>
       </div>
     </form>
   </AppOverlay>
@@ -456,7 +461,7 @@
             name="address"
             placeholder={MultipleLang.content.modal_address_label}
             value=""
-            class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
+            class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
             class:input-border-error={errors.address && errors.address.required}
             on:blur={onBlur}
           />
@@ -481,7 +486,7 @@
             name="label"
             placeholder={MultipleLang.content.modal_label_label}
             value=""
-            class="input-2 input-border focus:ring-sky-300 focus:border-sky-300 w-full p-3"
+            class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
             class:input-border-error={errors.label && errors.label.required}
             on:blur={onBlur}
           />
@@ -497,22 +502,25 @@
         class:form-item-translate={(errors.label && errors.label.required) ||
           (errors.address && errors.address.required)}
       >
-        <Button
-          outline
-          gradient
-          color="cyanToBlue"
+        <button
+          class="flex items-center gap-3 px-4 py-2 border border-[#1E96FC] rounded-xl"
           on:click={() => {
             errors = {};
             isOpenAddModal = false;
           }}
         >
-          <div class="uppercase text-sky-500">
+          <div class="text-base font-medium text-[#1E96FC]">
             {MultipleLang.content.modal_cancel}
           </div>
-        </Button>
-        <Button gradient color="cyanToBlue" type="submit">
-          <div class="uppercase">{MultipleLang.content.modal_add}</div>
-        </Button>
+        </button>
+        <button
+          class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
+          type="submit"
+        >
+          <div class="text-base font-medium text-white">
+            {MultipleLang.content.modal_add}
+          </div>
+        </button>
       </div>
     </form>
   </AppOverlay>
