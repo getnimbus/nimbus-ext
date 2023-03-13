@@ -11,7 +11,7 @@
   import { nimbusApi } from "~/lib/network";
   import { formatBalance } from "~/utils";
 
-  import TxCardInfo from "~/components/TxCardInfo.svelte";
+  import HoldingInfo from "~/components/HoldingInfo.svelte";
   import NewCard from "~/components/NewCard.svelte";
   import EChart from "~/components/EChart.svelte";
   import OpportunityCard from "~/components/OpportunityCard.svelte";
@@ -58,6 +58,7 @@
   let overviewData;
   let opportunitiesData;
   let newsData;
+  let walletData;
 
   let optionPie = {
     title: {
@@ -261,10 +262,21 @@
     }
   };
 
+  const getWalletData = async () => {
+    try {
+      const response = await nimbusApi.get("/holding");
+      walletData = response.holding;
+      console.log("res data Wallet: ", response);
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
   onMount(() => {
     getOverviewData();
     getOpportunitiesData();
     getNewsData();
+    getWalletData();
   });
 
   onMount(() => {
@@ -730,10 +742,13 @@
                 </tr>
               </thead>
               <tbody>
-                <TxCardInfo />
-                <TxCardInfo />
-                <TxCardInfo />
-                <TxCardInfo />
+                {#if walletData && walletData.length}
+                  {#each walletData as holding}
+                    <HoldingInfo data={holding} />
+                  {/each}
+                {:else}
+                  <div>Empty</div>
+                {/if}
               </tbody>
             </table>
           </div>
@@ -750,7 +765,7 @@
                 <OpportunityCard data={opportunity} />
               {/each}
             {:else}
-              <div>Loading...</div>
+              <div>Empty</div>
             {/if}
           </div>
         </div>
@@ -788,7 +803,7 @@
               <NewCard data={news} />
             {/each}
           {:else}
-            <div>Loading...</div>
+            <div>Empty</div>
           {/if}
         </div>
       </div>
