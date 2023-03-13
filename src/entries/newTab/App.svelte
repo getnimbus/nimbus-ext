@@ -5,7 +5,11 @@
   import { sendMessage } from "webext-bridge";
   import numeral from "numeral";
   import { i18n } from "~/lib/i18n";
+  import dayjs from "dayjs";
+  import relativeTime from "dayjs/plugin/relativeTime";
+  dayjs.extend(relativeTime);
   import { nimbusApi } from "~/lib/network";
+  import { formatBalance } from "~/utils";
 
   import TxCardInfo from "~/components/TxCardInfo.svelte";
   import NewCard from "~/components/NewCard.svelte";
@@ -51,92 +55,207 @@
   //   btn_text: i18n("newtabPage.suggest-btn-text", "Suggest a content"),
   // };
 
-  // let totalBalanceUsd = 0;
-
-  // let optionPieChart = {
-  //   series: [],
-  //   labels: [],
-  //   plotOptions: {
-  //     pie: {
-  //       donut: {
-  //         labels: {
-  //           show: true,
-  //           total: {
-  //             show: true,
-  //             label: "Total balance (USD)",
-  //             color: "#000",
-  //             formatter: () => {
-  //               return totalBalanceUsd;
-  //             },
-  //           },
-  //         },
-  //       },
-  //     },
-  //   },
-  //   chart: {
-  //     type: "donut",
-  //     height: 465,
-  //   },
-  //   tooltip: {
-  //     enabled: false,
-  //   },
-  //   responsive: [
-  //     {
-  //       breakpoint: 480,
-  //       options: {
-  //         chart: {
-  //           width: 200,
-  //         },
-  //         legend: {
-  //           position: "bottom",
-  //         },
-  //       },
-  //     },
-  //   ],
-  // };
-
-  // const getPieChartData = async () => {
-  //   try {
-  //     // const data = (await sendMessage("getPieChartData", undefined)) as any;
-
-  //     const data = await fetch(
-  //       `https://utils.getnimbus.io/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`
-  //     ).then((response) => response.json());
-
-  //     const dataFormat = data.data.assets.filter((item) => {
-  //       return parseFloat(item.balanceUsd) > 0;
-  //     });
-
-  //     const balanceList = dataFormat.map((item) => {
-  //       return parseFloat(numeral(item.balanceUsd).format("0,0.0000"));
-  //     });
-
-  //     const tokenList = dataFormat.map((item) => {
-  //       return item.tokenName;
-  //     });
-
-  //     totalBalanceUsd = numeral(data.data.totalBalanceUsd).format("0,0.0000");
-
-  //     optionPieChart = {
-  //       ...optionPieChart,
-  //       series: balanceList,
-  //       labels: tokenList,
-  //     };
-  //   } catch (e) {
-  //     console.log("e: ", e);
-  //   }
-  // };
-
-  // onMount(() => {
-  //   getPieChartData();
-  // });
-
   let overviewData;
+  let opportunitiesData;
+  let newsData;
+
+  let optionPie = {
+    title: {
+      text: "",
+    },
+    tooltip: {
+      trigger: "item",
+      formatter: function (params) {
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 170px;">
+              <div style="display: flex; align-items: centers; gap: 4px">
+                <img src=${params.data.logo} alt="" width=20 height=20 /> 
+                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                  ${params.name} (${params.data.symbol})
+                </div>
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${
+                  params.data.name_balance
+                }</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">${
+                  params.data.value_balance
+                }</div>
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${
+                  params.data.name_value
+                }</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">$${
+                  params.data.value_value
+                }</div>
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${
+                  params.data.name_ratio
+                }</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">${formatBalance(
+                  params.value
+                )}%</div>
+              </div>
+            </div>`;
+      },
+    },
+    legend: {
+      orient: "vertical",
+      right: "right",
+      bottom: "center",
+    },
+    series: [
+      {
+        type: "pie",
+        radius: ["30%", "70%"],
+        left: -140,
+        avoidLabelOverlap: false,
+        label: {
+          show: false,
+          position: "center",
+        },
+        emphasis: {
+          label: {
+            show: false,
+            fontSize: 40,
+            fontWeight: "bold",
+          },
+        },
+        labelLine: {
+          show: false,
+        },
+        data: [],
+      },
+    ],
+  };
+
+  let optionLine = {
+    title: {
+      text: "",
+    },
+    tooltip: {
+      trigger: "axis",
+    },
+    legend: {},
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "3%",
+      containLabel: true,
+    },
+    xAxis: {
+      type: "category",
+      boundaryGap: false,
+      data: [],
+    },
+    yAxis: {
+      type: "value",
+    },
+    series: [],
+  };
 
   const getOverviewData = async () => {
     try {
       const response = await nimbusApi.get("/overview");
+      console.log("res data Overview: ", response);
       overviewData = response;
+
+      let sum = 0;
+      overviewData?.breakdownToken.map((item) => (sum += item.value));
+
+      const formatDataPieChart = overviewData?.breakdownToken.map((item) => {
+        return {
+          logo: item.logo,
+          name: item.name,
+          symbol: item.symbol,
+          name_ratio: "Ratio",
+          value: (item.value / sum) * 100,
+          name_value: "Value",
+          value_value: item.value,
+          name_balance: "Balance",
+          value_balance: item.amount,
+        };
+      });
+
+      optionPie = {
+        ...optionPie,
+        series: [
+          {
+            ...optionPie.series[0],
+            data: formatDataPieChart,
+          },
+        ],
+      };
+
+      const formatXAxis = overviewData?.performance.map((item) => {
+        return dayjs(item.date).format("DD/MM/YY");
+      });
+
+      const formatDataPortfolio = overviewData?.performance.map((item) => {
+        return item.portfolio;
+      });
+      const formatDataETH = overviewData?.performance.map((item) => {
+        return item.eth;
+      });
+      const formatDataBTC = overviewData?.performance.map((item) => {
+        return item.btc;
+      });
+
+      optionLine = {
+        ...optionLine,
+        xAxis: {
+          ...optionLine.xAxis,
+          data: formatXAxis,
+        },
+        series: [
+          {
+            name: "Your Portfolio",
+            type: "line",
+            stack: "Total",
+            data: formatDataPortfolio,
+          },
+          {
+            name: "Bitcoin",
+            type: "line",
+            stack: "Total",
+            lineStyle: {
+              width: 2,
+              type: "dashed",
+            },
+            data: formatDataBTC,
+          },
+          {
+            name: "Ethereum",
+            type: "line",
+            stack: "Total",
+            lineStyle: {
+              width: 2,
+              type: "dashed",
+            },
+            data: formatDataETH,
+          },
+        ],
+      };
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const getOpportunitiesData = async () => {
+    try {
+      const response = await nimbusApi.get("/opportunities");
+      opportunitiesData = response.opportunities;
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const getNewsData = async () => {
+    try {
+      const response = await nimbusApi.get("/news");
+      newsData = response.news;
     } catch (e) {
       console.log("error: ", e);
     }
@@ -144,6 +263,20 @@
 
   onMount(() => {
     getOverviewData();
+    getOpportunitiesData();
+    getNewsData();
+  });
+
+  onMount(() => {
+    const lastScrollY = window.pageYOffset;
+    const handleCheckIsSticky = () => {
+      const scrollY = window.pageYOffset;
+      headerScrollY = scrollY > lastScrollY;
+    };
+    window.addEventListener("scroll", handleCheckIsSticky);
+    return () => {
+      window.removeEventListener("scroll", handleCheckIsSticky);
+    };
   });
 
   browser.storage.onChanged.addListener((changes) => {
@@ -193,187 +326,12 @@
   let selectedWallet = chainList[0];
   let selectedChain = chainList[0];
 
-  let optionPie = {
-    title: {
-      text: "",
-    },
-    tooltip: {
-      trigger: "item",
-      formatter: function (params) {
-        return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 170px;">
-              <div style="display: flex; align-items: centers; gap: 4px">
-                <img src=${params.data.logo} alt="" width=20 height=20 /> 
-                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                  ${params.name}
-                </div>
-              </div>
-              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${params.data.name_balance}</div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">${params.data.value_balance}</div>
-              </div>
-              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${params.data.name_value}</div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">$${params.data.value_value}</div>
-              </div>
-              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${params.data.name_ratio}</div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">${params.value}%</div>
-              </div>
-            </div>`;
-      },
-    },
-    legend: {
-      orient: "vertical",
-      right: "right",
-      bottom: "center",
-    },
-    series: [
-      {
-        type: "pie",
-        radius: ["30%", "70%"],
-        left: -140,
-        avoidLabelOverlap: false,
-        label: {
-          show: false,
-          position: "center",
-        },
-        emphasis: {
-          label: {
-            show: false,
-            fontSize: 40,
-            fontWeight: "bold",
-          },
-        },
-        labelLine: {
-          show: false,
-        },
-        data: [
-          {
-            logo: logo,
-            name: "Bitcoin",
-            name_ratio: "Ratio",
-            value: 35,
-            name_value: "Value",
-            value_value: 2212.13,
-            name_balance: "Balance",
-            value_balance: 15212,
-          },
-          {
-            logo: logo,
-            name: "Ethereum",
-            name_ratio: "Ratio",
-            value: 25,
-            name_value: "Value",
-            value_value: 2812.48,
-            name_balance: "Balance",
-            value_balance: 5212,
-          },
-          {
-            logo: logo,
-            name: "Matic",
-            name_ratio: "Ratio",
-            value: 10,
-            name_value: "Value",
-            value_value: 1812.28,
-            name_balance: "Balance",
-            value_balance: 2212,
-          },
-          {
-            logo: logo,
-            name: "Solana",
-            name_ratio: "Ratio",
-            value: 30,
-            name_value: "Value",
-            value_value: 2812.5,
-            name_balance: "Balance",
-            value_balance: 3212,
-          },
-        ],
-      },
-    ],
-  };
-
-  let optionLine = {
-    title: {
-      text: "",
-    },
-    tooltip: {
-      trigger: "axis",
-    },
-    legend: {},
-    grid: {
-      left: "3%",
-      right: "4%",
-      bottom: "3%",
-      containLabel: true,
-    },
-    xAxis: {
-      type: "category",
-      boundaryGap: false,
-      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    },
-    yAxis: {
-      type: "value",
-    },
-    series: [
-      {
-        name: "Your Portfolio",
-        type: "line",
-        stack: "Total",
-        data: [120, 132, 101, 134, 90, 230, 210],
-      },
-      {
-        name: "Bitcoin",
-        type: "line",
-        stack: "Total",
-        lineStyle: {
-          width: 2,
-          type: "dashed",
-        },
-        data: [220, 182, 191, 234, 290, 330, 310],
-      },
-      {
-        name: "Ethereum",
-        type: "line",
-        stack: "Total",
-        lineStyle: {
-          width: 2,
-          type: "dashed",
-        },
-        data: [150, 232, 201, 154, 190, 330, 410],
-      },
-      {
-        name: "Solana",
-        type: "line",
-        stack: "Total",
-        lineStyle: {
-          width: 2,
-          type: "dashed",
-        },
-        data: [320, 332, 301, 334, 390, 330, 320],
-      },
-    ],
-  };
-
   const debounce = (value) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       search = value;
     }, 300);
   };
-
-  onMount(() => {
-    const lastScrollY = window.pageYOffset;
-    const handleCheckIsSticky = () => {
-      const scrollY = window.pageYOffset;
-      headerScrollY = scrollY > lastScrollY;
-    };
-    window.addEventListener("scroll", handleCheckIsSticky);
-    return () => {
-      window.removeEventListener("scroll", handleCheckIsSticky);
-    };
-  });
 </script>
 
 <div class="flex flex-col pb-10">
@@ -534,7 +492,7 @@
                 <img src={Reload} alt="" />
               </div>
               <div class="text-xs text-white font-medium">
-                Data updated {overviewData?.updatedAt}
+                Data updated {dayjs(overviewData?.updatedAt).fromNow()}
               </div>
             </div>
           </div>
@@ -544,27 +502,65 @@
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
-            <div class="text-[#00000099] text-base font-medium">Networth</div>
+            <div class="text-[#00000099] text-base font-medium">Networth:</div>
             <div class="text-3xl text-black">
-              $<CountUpNumber id="networth" number={63910.82} />
+              $<CountUpNumber
+                id="networth"
+                number={overviewData?.overview.networth}
+              />
             </div>
             <div class="flex items-center gap-3">
-              <div class="text-[#00A878] text-lg font-medium">
-                ↑<CountUpNumber id="networth_grouth" number={2.55} />%
+              <div
+                class={`text-lg font-medium ${
+                  overviewData?.overview.networthChange < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                {#if overviewData?.overview.networthChange < 0}
+                  ↓
+                {:else}
+                  ↑
+                {/if}
+                <CountUpNumber
+                  id="networth_grouth"
+                  number={Math.abs(overviewData?.overview.networthChange)}
+                />%
               </div>
-              <div class="text-[#00000066] text-base font-medium">24h</div>
+              <div class="text-[#00000066] text-base font-medium">
+                {overviewData?.overview.change}
+              </div>
             </div>
           </div>
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
             <div class="text-[#00000099] text-base font-medium">Claimable</div>
             <div class="text-3xl text-black">
-              $<CountUpNumber id="claimable" number={50000} />
+              $<CountUpNumber
+                id="claimable"
+                number={overviewData?.overview.claimable}
+              />
             </div>
             <div class="flex items-center gap-3">
-              <div class="text-[#00A878] text-lg font-medium">
-                ↑<CountUpNumber id="claimable_grouth" number={3.59} />%
+              <div
+                class={`text-lg font-medium ${
+                  overviewData?.overview.claimableChange < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                {#if overviewData?.overview.claimableChange < 0}
+                  ↓
+                {:else}
+                  ↑
+                {/if}
+                <CountUpNumber
+                  id="claimable_grouth"
+                  number={Math.abs(overviewData?.overview.claimableChange)}
+                />%
               </div>
-              <div class="text-[#00000066] text-base font-medium">24h</div>
+              <div class="text-[#00000066] text-base font-medium">
+                {overviewData?.overview.change}
+              </div>
             </div>
           </div>
         </div>
@@ -574,13 +570,32 @@
               Total assets
             </div>
             <div class="text-3xl text-black">
-              $<CountUpNumber id="total_assets" number={50000} />
+              $<CountUpNumber
+                id="total_assets"
+                number={overviewData?.overview.assets}
+              />
             </div>
             <div class="flex items-center gap-3">
-              <div class="text-[#00A878] text-lg font-medium">
-                ↑<CountUpNumber id="total_assets_grouth" number={1.89} />%
+              <div
+                class={`text-lg font-medium ${
+                  overviewData?.overview.assetsChange < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                {#if overviewData?.overview.assetsChange < 0}
+                  ↓
+                {:else}
+                  ↑
+                {/if}
+                <CountUpNumber
+                  id="total_assets_grouth"
+                  number={Math.abs(overviewData?.overview.assetsChange)}
+                />%
               </div>
-              <div class="text-[#00000066] text-base font-medium">24h</div>
+              <div class="text-[#00000066] text-base font-medium">
+                {overviewData?.overview.change}
+              </div>
             </div>
           </div>
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
@@ -588,13 +603,32 @@
               Total Debts
             </div>
             <div class="text-3xl text-black">
-              $<CountUpNumber id="total_debts" number={70000} />
+              $<CountUpNumber
+                id="total_debts"
+                number={overviewData?.overview.debts}
+              />
             </div>
             <div class="flex items-center gap-3">
-              <div class="text-[#00A878] text-lg font-medium">
-                ↑<CountUpNumber id="total_debts_grouth" number={1.25} />%
+              <div
+                class={`text-lg font-medium ${
+                  overviewData?.overview.debtsChange < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                {#if overviewData?.overview.debtsChange < 0}
+                  ↓
+                {:else}
+                  ↑
+                {/if}
+                <CountUpNumber
+                  id="total_debts_grouth"
+                  number={Math.abs(overviewData?.overview.debtsChange)}
+                />%
               </div>
-              <div class="text-[#00000066] text-base font-medium">24h</div>
+              <div class="text-[#00000066] text-base font-medium">
+                {overviewData?.overview.change}
+              </div>
             </div>
           </div>
         </div>
@@ -700,8 +734,6 @@
                 <TxCardInfo />
                 <TxCardInfo />
                 <TxCardInfo />
-                <TxCardInfo />
-                <TxCardInfo />
               </tbody>
             </table>
           </div>
@@ -713,9 +745,13 @@
         >
           <div class="text-2xl font-medium text-black mb-6">Opportunities</div>
           <div class="flex flex-col gap-4 overflow-y-auto xl:basis-0 grow">
-            <OpportunityCard background="#a795fd1a" />
-            <OpportunityCard background="#ffcb591a" />
-            <OpportunityCard background="#6ac7f51a" />
+            {#if opportunitiesData && opportunitiesData.length}
+              {#each opportunitiesData as opportunity}
+                <OpportunityCard data={opportunity} />
+              {/each}
+            {:else}
+              <div>Loading...</div>
+            {/if}
           </div>
         </div>
       </div>
@@ -747,12 +783,13 @@
           <a href="#" class="font-bold text-base">View more</a>
         </div>
         <div class="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-10">
-          <NewCard />
-          <NewCard />
-          <NewCard />
-          <NewCard />
-          <NewCard />
-          <NewCard />
+          {#if newsData && newsData.length}
+            {#each newsData as news}
+              <NewCard data={news} />
+            {/each}
+          {:else}
+            <div>Loading...</div>
+          {/if}
         </div>
       </div>
     </div>
