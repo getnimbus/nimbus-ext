@@ -216,7 +216,7 @@
 
   const getOverviewData = async () => {
     try {
-      const response = await nimbusApi.get("/overview");
+      const response = (await sendMessage("getOverview", undefined)) as any;
       overviewData = response;
 
       let sum = 0;
@@ -346,8 +346,11 @@
 
   const getOpportunitiesData = async () => {
     try {
-      const response = await nimbusApi.get("/opportunities");
-      opportunitiesData = response.opportunities;
+      const response = (await sendMessage(
+        "getListOpportunity",
+        undefined
+      )) as any;
+      opportunitiesData = response;
     } catch (e) {
       console.log("error: ", e);
     }
@@ -355,8 +358,8 @@
 
   const getNewsData = async () => {
     try {
-      const response = await nimbusApi.get("/news");
-      newsData = response.news;
+      const response = (await sendMessage("getListNew", undefined)) as any;
+      newsData = response;
     } catch (e) {
       console.log("error: ", e);
     }
@@ -364,8 +367,8 @@
 
   const getWalletData = async () => {
     try {
-      const response = await nimbusApi.get("/holding");
-      walletData = response.holding;
+      const response = (await sendMessage("getWalletData", undefined)) as any;
+      walletData = response;
     } catch (e) {
       console.log("error: ", e);
     }
@@ -373,8 +376,8 @@
 
   const getPositionsData = async () => {
     try {
-      const response = await nimbusApi.get("/positions");
-      positionsData = response.positions;
+      const response = (await sendMessage("getPositionData", undefined)) as any;
+      positionsData = response;
     } catch (e) {
       console.log("error: ", e);
     }
@@ -746,7 +749,9 @@
               {/if}
             </div>
           {:else}
-            <div class="text-white">No wallet add yet.</div>
+            <div class="text-white text-base font-semibold">
+              No wallet add yet.
+            </div>
           {/if}
           <button
             class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
