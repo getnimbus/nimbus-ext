@@ -18,12 +18,6 @@
   import Select from "~/components/Select.svelte";
   import CountUpNumber from "~/components/CountUpNumber.svelte";
 
-  import LpProvider from "~/components/PositionTable/LPProvider.svelte";
-  import Staking from "~/components/PositionTable/Staking.svelte";
-  import StakingLocked from "~/components/PositionTable/StakingLocked.svelte";
-  import LendingProvider from "~/components/PositionTable/LendingProvider.svelte";
-  import LendingBorrow from "~/components/PositionTable/LendingBorrow.svelte";
-
   import All from "~/assets/all.svg";
   import logo from "~/assets/btc.png";
   import Plus from "~/assets/plus.svg";
@@ -35,6 +29,7 @@
   import Portfolio from "~/assets/portfolio.svg";
   import Settings from "~/assets/settings.svg";
   import Transactions from "~/assets/transactions.svg";
+  import Table from "~/components/PositionTable/Table.svelte";
 
   // let MultipleLang = {
   //   title: i18n("newtabPage.title", "Hi there,"),
@@ -59,6 +54,7 @@
   let opportunitiesData;
   let newsData;
   let walletData;
+  let positionsData;
 
   let optionPie = {
     title: {
@@ -165,7 +161,6 @@
   const getOverviewData = async () => {
     try {
       const response = await nimbusApi.get("/overview");
-      console.log("res data Overview: ", response);
       overviewData = response;
 
       let sum = 0;
@@ -207,6 +202,7 @@
           },
         };
       });
+
       const formatDataETH = overviewData?.performance.map((item) => {
         return {
           value: item.eth,
@@ -215,6 +211,7 @@
           },
         };
       });
+
       const formatDataBTC = overviewData?.performance.map((item) => {
         return {
           value: item.btc,
@@ -313,7 +310,16 @@
     try {
       const response = await nimbusApi.get("/holding");
       walletData = response.holding;
-      console.log("res data Wallet: ", response);
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const getPositionsData = async () => {
+    try {
+      const response = await nimbusApi.get("/positions");
+      positionsData = response.positions;
+      console.log("res data Position: ", response);
     } catch (e) {
       console.log("error: ", e);
     }
@@ -324,6 +330,7 @@
     getOpportunitiesData();
     getNewsData();
     getWalletData();
+    getPositionsData();
   });
 
   onMount(() => {
@@ -344,7 +351,7 @@
     }
   });
 
-  const chainList = [
+  const walletList = [
     {
       logo: logo,
       label: "All chains",
@@ -377,12 +384,25 @@
     },
   ];
 
+  const chainList = [
+    {
+      logo: logo,
+      label: "All chains",
+      value: "all",
+    },
+    {
+      logo: logo,
+      label: "Ethereum Wallet",
+      value: "eth",
+    },
+  ];
+
   let search = "";
   let timer;
   let selectedTokenAllocation = "token";
   let headerScrollY = false;
 
-  let selectedWallet = chainList[0];
+  let selectedWallet = walletList[0];
   let selectedChain = chainList[0];
 
   const debounce = (value) => {
@@ -510,7 +530,7 @@
       <div class="flex flex-col gap-14 mb-5">
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-5">
-            {#each chainList.slice(0, 4) as chain, index}
+            {#each walletList.slice(0, 4) as chain, index}
               <div
                 id={chain.value}
                 class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
@@ -532,7 +552,7 @@
             {/each}
             <Select
               isSelectWallet
-              listSelect={chainList.slice(4, chainList.length)}
+              listSelect={walletList.slice(4, walletList.length)}
               bind:selected={selectedWallet}
             />
           </div>
@@ -706,7 +726,7 @@
             <div class="pl-4 text-2xl font-medium text-black">
               Token Allocation
             </div>
-            <div class="flex items-center gap-2">
+            <!-- <div class="flex items-center gap-2">
               <div
                 class={`cursor-pointer text-base font-medium py-[6px] px-4 rounded-[100px] transition-all ${
                   selectedTokenAllocation === "token" &&
@@ -725,7 +745,7 @@
               >
                 Chain
               </div>
-            </div>
+            </div> -->
           </div>
           <EChart id={2} theme="white" option={optionPie} height={465} />
         </div>
@@ -828,11 +848,13 @@
           Position
         </div>
         <div class="flex flex-col gap-10">
-          <LpProvider />
-          <Staking />
-          <StakingLocked />
-          <LendingProvider />
-          <LendingBorrow />
+          {#if positionsData && positionsData.length}
+            {#each positionsData as position}
+              <Table data={position} />
+            {/each}
+          {:else}
+            <div>Empty</div>
+          {/if}
         </div>
       </div>
 
