@@ -33,6 +33,7 @@
   import Portfolio from "~/assets/portfolio.svg";
   import Settings from "~/assets/settings.svg";
   import Transactions from "~/assets/transactions.svg";
+  import News from "~/assets/news.svg";
 
   let MultipleLang = {
     // title: i18n("newtabPage.title", "Hi there,"),
@@ -94,6 +95,7 @@
     },
   };
 
+  let navActive = "portfolio";
   let overviewData;
   let opportunitiesData;
   let newsData;
@@ -576,34 +578,47 @@
         alt="logo"
         class="-ml-8 xl:w-[177px] xl:h-[60px] w-[167px] h-[50px]"
       />
-      <div class="flex items-center xl:gap-4 gap-3">
-        <a
-          href="#"
+      <div class="flex items-center gap-3">
+        <div
           class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class:bg-[#525B8C]={navActive === "portfolio"}
+          on:click={() => (navActive = "portfolio")}
         >
           <img src={Portfolio} alt="Portfolio" />
           <span class="text-white font-semibold xl:text-base text-sm">
             Portfolio
           </span>
-        </a>
-        <a
-          href="#"
+        </div>
+        <div
           class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class:bg-[#525B8C]={navActive === "analytic"}
+          on:click={() => (navActive = "analytic")}
         >
           <img src={Analytic} alt="Analytic" />
           <span class="text-white font-semibold xl:text-base text-sm">
             Analytic
           </span>
-        </a>
-        <a
-          href="#"
+        </div>
+        <div
           class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class:bg-[#525B8C]={navActive === "transactions"}
+          on:click={() => (navActive = "transactions")}
         >
           <img src={Transactions} alt="Transactions" />
           <span class="text-white font-semibold xl:text-base text-sm">
             Transactions
           </span>
-        </a>
+        </div>
+        <div
+          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class:bg-[#525B8C]={navActive === "news"}
+          on:click={() => (navActive = "news")}
+        >
+          <img src={News} alt="News" />
+          <span class="text-white font-semibold xl:text-base text-sm">
+            News
+          </span>
+        </div>
         <a
           href={`chrome-extension://${browser.runtime.id}/src/entries/options/index.html`}
           target="_blank"
@@ -1065,7 +1080,6 @@
       <img src={MoveUp} alt="UP" width="20" height="20" />
     </a>
   </div>
-
   <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
     <div class="flex flex-col gap-1 items-start max-w-[530px]">
       <div class="title-4 text-gray-600 font-semibold">
