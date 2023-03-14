@@ -5,7 +5,7 @@
   $: color = active ? "#0ea5e9" : "#000000";
 </script>
 
-{#if type === "Accounts"}
+{#if type === "Wallets"}
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
