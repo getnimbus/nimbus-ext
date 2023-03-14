@@ -139,7 +139,12 @@
     tooltip: {
       trigger: "axis",
     },
-    legend: {},
+    legend: {
+      lineStyle: {
+        type: "solid",
+      },
+      data: [],
+    },
     grid: {
       left: "3%",
       right: "4%",
@@ -195,17 +200,55 @@
       });
 
       const formatDataPortfolio = overviewData?.performance.map((item) => {
-        return item.portfolio;
+        return {
+          value: item.portfolio,
+          itemStyle: {
+            color: "#00b580",
+          },
+        };
       });
       const formatDataETH = overviewData?.performance.map((item) => {
-        return item.eth;
+        return {
+          value: item.eth,
+          itemStyle: {
+            color: "#547fef",
+          },
+        };
       });
       const formatDataBTC = overviewData?.performance.map((item) => {
-        return item.btc;
+        return {
+          value: item.btc,
+          itemStyle: {
+            color: "#f7931a",
+          },
+        };
       });
 
       optionLine = {
         ...optionLine,
+        legend: {
+          ...optionLine.legend,
+          data: [
+            {
+              name: "Your Portfolio",
+              itemStyle: {
+                color: "#00b580",
+              },
+            },
+            {
+              name: "Bitcoin",
+              itemStyle: {
+                color: "#f7931a",
+              },
+            },
+            {
+              name: "Ethereum",
+              itemStyle: {
+                color: "#547fef",
+              },
+            },
+          ],
+        },
         xAxis: {
           ...optionLine.xAxis,
           data: formatXAxis,
@@ -215,6 +258,10 @@
             name: "Your Portfolio",
             type: "line",
             stack: "Total",
+            lineStyle: {
+              type: "solid",
+              color: "#00b580",
+            },
             data: formatDataPortfolio,
           },
           {
@@ -222,8 +269,8 @@
             type: "line",
             stack: "Total",
             lineStyle: {
-              width: 2,
               type: "dashed",
+              color: "#f7931a",
             },
             data: formatDataBTC,
           },
@@ -232,8 +279,8 @@
             type: "line",
             stack: "Total",
             lineStyle: {
-              width: 2,
               type: "dashed",
+              color: "#547fef",
             },
             data: formatDataETH,
           },
