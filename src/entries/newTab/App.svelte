@@ -2,7 +2,7 @@
   import "flowbite/dist/flowbite.css";
   import { onMount, onDestroy } from "svelte";
   import * as browser from "webextension-polyfill";
-  import { sendMessage } from "webext-bridge";
+  import { sendMessage, getCurrentContext } from "webext-bridge";
   import numeral from "numeral";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
@@ -10,6 +10,7 @@
   dayjs.extend(relativeTime);
   import { nimbusApi } from "~/lib/network";
   import { formatBalance } from "~/utils";
+  import { v4 as uuidv4 } from "uuid";
 
   import HoldingInfo from "~/components/HoldingInfo.svelte";
   import NewCard from "~/components/NewCard.svelte";
@@ -17,7 +18,10 @@
   import OpportunityCard from "~/components/OpportunityCard.svelte";
   import Select from "~/components/Select.svelte";
   import CountUpNumber from "~/components/CountUpNumber.svelte";
+  import Table from "~/components/PositionTable/Table.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
 
+  import Wallet from "~/assets/wallet.svg";
   import All from "~/assets/all.svg";
   import logo from "~/assets/btc.png";
   import Plus from "~/assets/plus.svg";
@@ -29,32 +33,82 @@
   import Portfolio from "~/assets/portfolio.svg";
   import Settings from "~/assets/settings.svg";
   import Transactions from "~/assets/transactions.svg";
-  import Table from "~/components/PositionTable/Table.svelte";
 
-  // let MultipleLang = {
-  //   title: i18n("newtabPage.title", "Hi there,"),
-  //   sub_title: i18n("newtabPage.sub-title", "Today update"),
+  let MultipleLang = {
+    // title: i18n("newtabPage.title", "Hi there,"),
+    // sub_title: i18n("newtabPage.sub-title", "Today update"),
 
-  //   settings: i18n("newtabPage.settings", "Settings"),
-  //   your_portfolio: i18n("newtabPage.your-portfolio", "Your portfolio"),
-  //   portfolio_breakdown: i18n(
-  //     "newtabPage.portfolio-breakdown",
-  //     "Portfolio breakdown"
-  //   ),
-  //   recent_transaction: i18n(
-  //     "newtabPage.recent-transaction",
-  //     "Recent transaction"
-  //   ),
-  //   news_title: i18n("newtabPage.news-title", "You might interested in"),
+    // settings: i18n("newtabPage.settings", "Settings"),
+    // your_portfolio: i18n("newtabPage.your-portfolio", "Your portfolio"),
+    // portfolio_breakdown: i18n(
+    //   "newtabPage.portfolio-breakdown",
+    //   "Portfolio breakdown"
+    // ),
+    // recent_transaction: i18n(
+    //   "newtabPage.recent-transaction",
+    //   "Recent transaction"
+    // ),
+    // news_title: i18n("newtabPage.news-title", "You might interested in"),
 
-  //   btn_text: i18n("newtabPage.suggest-btn-text", "Suggest a content"),
-  // };
+    // btn_text: i18n("newtabPage.suggest-btn-text", "Suggest a content"),
+
+    content: {
+      btn_text: i18n(
+        "optionsPage.accounts-page-content.address-btn-text",
+        "Add Wallet"
+      ),
+      address_header_table: i18n(
+        "optionsPage.accounts-page-content.address-header-table",
+        "Wallet"
+      ),
+      label_header_table: i18n(
+        "optionsPage.accounts-page-content.label-header-table",
+        "Label"
+      ),
+      action_header_table: i18n(
+        "optionsPage.accounts-page-content.action-header-table",
+        "Action"
+      ),
+      modal_cancel: i18n(
+        "optionsPage.accounts-page-content.modal-cancel",
+        "Cancel"
+      ),
+      modal_add: i18n("optionsPage.accounts-page-content.modal-add", "Add"),
+
+      modal_address_label: i18n(
+        "optionsPage.accounts-page-content.modal-address-label",
+        "Wallet"
+      ),
+      modal_label_label: i18n(
+        "optionsPage.accounts-page-content.modal-label-label",
+        "Label"
+      ),
+      modal_add_title: i18n(
+        "optionsPage.accounts-page-content.modal-add-title",
+        "Add Your Wallet"
+      ),
+      modal_add_sub_title: i18n(
+        "optionsPage.accounts-page-content.modal-add-sub-title",
+        "Add your wallet will give you more option to see the information at page new tab"
+      ),
+    },
+  };
 
   let overviewData;
   let opportunitiesData;
   let newsData;
   let walletData;
   let positionsData;
+  let listAddress = [
+    {
+      logo: Wallet,
+      label: "All wallet",
+      value: "all",
+    },
+  ];
+  let selectedWallet = listAddress[0];
+  let isOpenAddModal = false;
+  let errors: any = {};
 
   let optionPie = {
     title: {
@@ -319,9 +373,30 @@
     try {
       const response = await nimbusApi.get("/positions");
       positionsData = response.positions;
-      console.log("res data Position: ", response);
     } catch (e) {
       console.log("error: ", e);
+    }
+  };
+
+  const getListAddress = async () => {
+    try {
+      const response = (await sendMessage(
+        "getListAddress",
+        undefined
+      )) as any[];
+
+      const structWalletData = response.map((item) => {
+        return {
+          id: item.id,
+          logo: item.logo || Wallet,
+          label: item.label,
+          value: item.address,
+        };
+      });
+
+      listAddress = listAddress.concat(structWalletData);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -331,6 +406,7 @@
     getNewsData();
     getWalletData();
     getPositionsData();
+    getListAddress();
   });
 
   onMount(() => {
@@ -351,38 +427,113 @@
     }
   });
 
-  const walletList = [
-    {
-      logo: logo,
-      label: "All chains",
-      value: "all",
-    },
-    {
-      logo: logo,
-      label: "Ethereum Wallet",
-      value: "eth",
-    },
-    {
-      logo: logo,
-      label: "BNB Wallet",
-      value: "bnb",
-    },
-    {
-      logo: logo,
-      label: "Polygon Wallet",
-      value: "polygon",
-    },
-    {
-      logo: logo,
-      label: "Optimism Wallet",
-      value: "optimism",
-    },
-    {
-      logo: logo,
-      label: "Avalanche Wallet",
-      value: "avalanche",
-    },
-  ];
+  // handle add wallet
+  const isRequiredFieldValid = (value) => {
+    return value != null && value !== "";
+  };
+
+  const validateForm = (data) => {
+    if (!isRequiredFieldValid(data.address)) {
+      errors["address"] = {
+        ...errors["address"],
+        required: true,
+        msg: "Address is required",
+      };
+    } else {
+      errors["address"] = { ...errors["address"], required: false };
+    }
+
+    if (!isRequiredFieldValid(data.label)) {
+      errors["label"] = {
+        ...errors["label"],
+        required: true,
+        msg: "Label is required",
+      };
+    } else {
+      errors["label"] = { ...errors["label"], required: false };
+    }
+  };
+
+  const onBlur = (e) => {
+    if (e.target.name === "address" && e.target.value) {
+      errors["address"] = { ...errors["address"], required: false };
+    }
+    if (e.target.name === "label" && e.target.value) {
+      errors["label"] = { ...errors["label"], required: false };
+    }
+  };
+
+  const onSubmit = (e) => {
+    const formData = new FormData(e.target);
+    const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
+
+    const data: any = {};
+    for (let field of formData) {
+      const [key, value] = field;
+      data[key] = value;
+    }
+
+    validateForm(data);
+
+    if (
+      !Object.keys(errors).some((inputName) => errors[inputName]["required"])
+    ) {
+      if (data.address && !regexETHAddress.test(data.address)) {
+        errors["address"] = {
+          ...errors["address"],
+          required: true,
+          msg: "Please enter your address again",
+        };
+        return;
+      }
+
+      const isDuplicatedAddress = listAddress.some((item) => {
+        return item.value === data.address;
+      });
+
+      if (isDuplicatedAddress) {
+        errors["address"] = {
+          ...errors["address"],
+          required: true,
+          msg: "This address is duplicated",
+        };
+        return;
+      }
+
+      Object.assign(data, { id: uuidv4() });
+
+      const dataFormat = {
+        id: data.id,
+        logo: Wallet,
+        label: data.label,
+        value: data.address,
+      };
+
+      const addWallet = [...listAddress, dataFormat];
+      listAddress = addWallet;
+
+      const filterWalletList = addWallet.filter((item) => item.value !== "all");
+      const structWalletList = filterWalletList.map((item) => {
+        return {
+          id: data.id,
+          logo: Wallet,
+          label: item.label,
+          address: item.value,
+        };
+      });
+
+      browser.storage.sync
+        .set({ listAddress: JSON.stringify(structWalletList) })
+        .then(() => {
+          console.log("save address to sync storage");
+        });
+
+      e.target.reset();
+      isOpenAddModal = false;
+    } else {
+      console.log("Invalid Form");
+    }
+  };
 
   const chainList = [
     {
@@ -392,17 +543,14 @@
     },
     {
       logo: logo,
-      label: "Ethereum Wallet",
+      label: "Ethereum",
       value: "eth",
     },
   ];
-
   let search = "";
   let timer;
   let selectedTokenAllocation = "token";
   let headerScrollY = false;
-
-  let selectedWallet = walletList[0];
   let selectedChain = chainList[0];
 
   const debounce = (value) => {
@@ -529,35 +677,65 @@
     <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
       <div class="flex flex-col gap-14 mb-5">
         <div class="flex justify-between items-center">
-          <div class="flex items-center gap-5">
-            {#each walletList.slice(0, 4) as chain, index}
-              <div
-                id={chain.value}
-                class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
-                  chain.value === selectedWallet.value && "bg-[#ffffff1c]"
-                }`}
-                class:hover:no-underline={chain.value === selectedWallet.value}
-                on:click={() => {
-                  selectedWallet = chain;
-                }}
-              >
-                <img
-                  src={index === 0 ? All : chain.logo}
-                  alt="logo"
-                  width="18"
-                  height="18"
+          {#if listAddress && listAddress.length > 1}
+            <div class="flex items-center gap-5">
+              {#if listAddress.length > 4}
+                {#each listAddress.slice(0, 4) as item, index}
+                  <div
+                    id={item.value}
+                    class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
+                      item.value === selectedWallet.value && "bg-[#ffffff1c]"
+                    }`}
+                    class:hover:no-underline={item.value ===
+                      selectedWallet.value}
+                    on:click={() => {
+                      selectedWallet = item;
+                    }}
+                  >
+                    <img
+                      src={index === 0 ? All : item.logo}
+                      alt="logo"
+                      width="16"
+                      height="16"
+                    />
+                    {item.label}
+                  </div>
+                {/each}
+                <Select
+                  isSelectWallet
+                  listSelect={listAddress.slice(4, listAddress.length)}
+                  bind:selected={selectedWallet}
                 />
-                {chain.label}
-              </div>
-            {/each}
-            <Select
-              isSelectWallet
-              listSelect={walletList.slice(4, walletList.length)}
-              bind:selected={selectedWallet}
-            />
-          </div>
+              {:else}
+                {#each listAddress as item, index}
+                  <div
+                    id={item.value}
+                    class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
+                      item.value === selectedWallet.value && "bg-[#ffffff1c]"
+                    }`}
+                    class:hover:no-underline={item.value ===
+                      selectedWallet.value}
+                    on:click={() => {
+                      selectedWallet = item;
+                    }}
+                  >
+                    <img
+                      src={index === 0 ? All : item.logo}
+                      alt="logo"
+                      width="16"
+                      height="16"
+                    />
+                    {item.label}
+                  </div>
+                {/each}
+              {/if}
+            </div>
+          {:else}
+            <div class="text-white">No wallet add yet.</div>
+          {/if}
           <button
             class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
+            on:click={() => (isOpenAddModal = true)}
           >
             <img src={Plus} alt="" width="12" height="12" />
             <div class="text-base font-medium text-white">Add Wallet</div>
@@ -887,6 +1065,94 @@
       <img src={MoveUp} alt="UP" width="20" height="20" />
     </a>
   </div>
+
+  <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
+    <div class="flex flex-col gap-1 items-start max-w-[530px]">
+      <div class="title-4 text-gray-600 font-semibold">
+        {MultipleLang.content.modal_add_title}
+      </div>
+      <div class="text-sm text-gray-500">
+        {MultipleLang.content.modal_add_sub_title}
+      </div>
+    </div>
+    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
+      <div
+        class="flex flex-col gap-1 w-[530px]"
+        class:form-item-translate={errors.address && errors.address.required}
+      >
+        <div class="text-sm font-medium text-gray-700">
+          {MultipleLang.content.modal_address_label}
+        </div>
+        <div class="relative">
+          <input
+            type="text"
+            id="address"
+            name="address"
+            placeholder={MultipleLang.content.modal_address_label}
+            value=""
+            class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
+            class:input-border-error={errors.address && errors.address.required}
+            on:blur={onBlur}
+          />
+          {#if errors.address && errors.address.required}
+            <div class="text-red-500 absolute -bottom-4 left-0">
+              {errors.address.msg}
+            </div>
+          {/if}
+        </div>
+      </div>
+      <div
+        class="flex flex-col gap-1 w-[530px]"
+        class:form-item-translate={errors.label && errors.label.required}
+      >
+        <div class="text-sm font-medium text-gray-700">
+          {MultipleLang.content.modal_label_label}
+        </div>
+        <div class="relative">
+          <input
+            type="text"
+            id="label"
+            name="label"
+            placeholder={MultipleLang.content.modal_label_label}
+            value=""
+            class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
+            class:input-border-error={errors.label && errors.label.required}
+            on:blur={onBlur}
+          />
+          {#if errors.label && errors.label.required}
+            <div class="text-red-500 absolute -bottom-4 left-0">
+              {errors.label.msg}
+            </div>
+          {/if}
+        </div>
+      </div>
+      <div
+        class="flex justify-end gap-2 mt-1"
+        class:form-item-translate={(errors.label && errors.label.required) ||
+          (errors.address && errors.address.required)}
+      >
+        <button
+          class="flex items-center gap-3 px-4 py-2 border border-[#1E96FC] rounded-xl"
+          on:click={() => {
+            errors = {};
+            isOpenAddModal = false;
+          }}
+        >
+          <div class="text-base font-medium text-[#1E96FC]">
+            {MultipleLang.content.modal_cancel}
+          </div>
+        </button>
+        <button
+          class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
+          type="submit"
+        >
+          <div class="text-base font-medium text-white">
+            {MultipleLang.content.modal_add}
+          </div>
+        </button>
+      </div>
+    </form>
+  </AppOverlay>
 </div>
 
 <style windi:preflights:global windi:safelist:global>
