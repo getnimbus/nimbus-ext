@@ -222,7 +222,9 @@
     try {
       const response = (await sendMessage("reloadNewTab", undefined)) as any;
       if (response) {
-        isReload = false;
+        setTimeout(() => {
+          isReload = false;
+        }, 2000);
       }
     } catch (e) {
       console.log("e: ", e);
