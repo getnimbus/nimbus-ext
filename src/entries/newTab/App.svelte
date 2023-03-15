@@ -113,6 +113,7 @@
   let selectedWallet = listAddress[0];
   let isOpenAddModal = false;
   let errors: any = {};
+  let isReload = false;
 
   let optionPie = {
     title: {
@@ -214,6 +215,19 @@
       type: "value",
     },
     series: [],
+  };
+
+  const handleReload = async () => {
+    isReload = true;
+    try {
+      const response = (await sendMessage("reloadNewTab", undefined)) as any;
+      if (response) {
+        isReload = false;
+      }
+    } catch (e) {
+      console.log("e: ", e);
+      isReload = false;
+    }
   };
 
   const getOverviewData = async () => {
@@ -767,7 +781,11 @@
           <div class="flex items-end gap-6">
             <div class="text-5xl text-white font-semibold">Overview</div>
             <div class="flex items-center gap-2 mb-1">
-              <div class="cursor-pointer loading">
+              <div
+                class="cursor-pointer"
+                class:loading={isReload}
+                on:click={handleReload}
+              >
                 <img src={Reload} alt="" />
               </div>
               <div class="text-xs text-white font-medium">
