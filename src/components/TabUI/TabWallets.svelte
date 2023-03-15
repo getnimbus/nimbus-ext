@@ -48,7 +48,10 @@
         "optionsPage.accounts-page-content.modal-cancel",
         "Cancel"
       ),
-      modal_add: i18n("optionsPage.accounts-page-content.modal-add", "Add"),
+      modal_add: i18n(
+        "optionsPage.accounts-page-content.modal-add-wallet",
+        "Add"
+      ),
       modal_edit: i18n("optionsPage.accounts-page-content.modal-edit", "Edit"),
       modal_delete: i18n(
         "optionsPage.accounts-page-content.modal-delete",
