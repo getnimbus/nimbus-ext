@@ -8,7 +8,6 @@
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { nimbusApi } from "~/lib/network";
   import { formatBalance } from "~/utils";
   import { v4 as uuidv4 } from "uuid";
 
@@ -765,7 +764,7 @@
           <div class="flex items-end gap-6">
             <div class="text-5xl text-white font-semibold">Overview</div>
             <div class="flex items-center gap-2 mb-1">
-              <div class="cursor-pointer">
+              <div class="cursor-pointer loading">
                 <img src={Reload} alt="" />
               </div>
               <div class="text-xs text-white font-medium">
@@ -966,7 +965,7 @@
           <div
             class="border border-[#0000000d] rounded-[10px] overflow-x-scroll"
           >
-            <table class="table-fixed 2xl:w-full w-auto">
+            <table class="table-auto 2xl:w-full xl:w-auto w-full">
               <thead>
                 <tr class="bg-[#f4f5f880]">
                   <th class="pl-3 py-3">
@@ -992,14 +991,14 @@
                   </th>
                   <th class="py-3">
                     <div
-                      class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
+                      class="text-right text-sm uppercase font-semibold text-black min-w-[130px]"
                     >
                       Value
                     </div>
                   </th>
                   <th class="pr-3 py-3">
                     <div
-                      class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
+                      class="text-right text-sm uppercase font-semibold text-black min-w-[125px]"
                     >
                       Profit
                     </div>
@@ -1196,5 +1195,18 @@
 
   .border {
     border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .loading {
+    animation: loading 1.4s ease-in-out alternate infinite;
+  }
+
+  @keyframes loading {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 </style>
