@@ -4365,10 +4365,9 @@ web-ext@^6.6.0:
     yargs "16.2.0"
     zip-dir "2.0.0"
 
-webext-bridge@^5.0.5:
+"webext-bridge@https://github.com/binhnguyen2501/webext-bridge.git":
   version "5.0.5"
-  resolved "https://registry.yarnpkg.com/webext-bridge/-/webext-bridge-5.0.5.tgz#1465135343fbe5ee944323294ac90cd97b663304"
-  integrity sha512-STCv6pLfQtUHmZQ96Tmov+CrdGjjc08xG6o/VH7TlDvchAPmXEG7faPdHfIzkcs0qp0sedDkq7oDzXAei19vtw==
+  resolved "https://github.com/binhnguyen2501/webext-bridge.git#bd743a26e7efa689bb98dfe96d63b1d4575e3cb6"
   dependencies:
     "@types/webextension-polyfill" "^0.8.3"
     nanoevents "^6.0.2"

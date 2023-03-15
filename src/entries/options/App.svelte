@@ -2,7 +2,7 @@
   import * as browser from "webextension-polyfill";
   import "flowbite/dist/flowbite.css";
   import SidebarTabs from "~/components/TabUI/SidebarTabs.svelte";
-  import TabAccounts from "~/components/TabUI/TabAccounts.svelte";
+  import TabWallets from "~/components/TabUI/TabWallets.svelte";
   import TabDashboard from "~/components/TabUI/TabDashboard.svelte";
   import TabHighlight from "~/components/TabUI/TabHighlight.svelte";
   import TabNotification from "~/components/TabUI/TabNotification.svelte";
@@ -22,7 +22,7 @@
 
   <div class="flex-1 px-6 pt-2">
     {#if activeTabValue === 1}
-      <TabAccounts />
+      <TabWallets />
     {:else if activeTabValue === 2}
       <TabDashboard />
     {:else if activeTabValue === 3}

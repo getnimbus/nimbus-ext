@@ -1,5 +1,4 @@
 <script>
-  import { onMount, onDestroy } from "svelte";
   import { CountUp } from "countup.js";
 
   export let id;
@@ -8,17 +7,15 @@
 
   let countUp = null;
 
-  onMount(() => {
-    countUp = new CountUp(id, number, {
-      decimalPlaces: format,
-      duration: 1,
-    });
-    countUp.start();
-  });
-
-  onDestroy(() => {
-    countUp.destroy();
-  });
+  $: {
+    if (number) {
+      countUp = new CountUp(id, number, {
+        decimalPlaces: format,
+        duration: 1,
+      });
+      countUp.start();
+    }
+  }
 </script>
 
 <span {id} />
