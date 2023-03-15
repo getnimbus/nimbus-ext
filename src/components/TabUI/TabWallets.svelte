@@ -26,15 +26,15 @@
   let isOpenEditModal = false;
   let isOpenAddModal = false;
   let MultipleLang = {
-    title: i18n("optionsPage.accounts-page-title", "My address"),
+    title: i18n("optionsPage.accounts-page-title", "My wallets"),
     content: {
       btn_text: i18n(
         "optionsPage.accounts-page-content.address-btn-text",
-        "Add Address"
+        "Add Wallet"
       ),
       address_header_table: i18n(
         "optionsPage.accounts-page-content.address-header-table",
-        "Address"
+        "Wallet"
       ),
       label_header_table: i18n(
         "optionsPage.accounts-page-content.label-header-table",
@@ -57,7 +57,7 @@
 
       modal_address_label: i18n(
         "optionsPage.accounts-page-content.modal-address-label",
-        "Address"
+        "Wallet"
       ),
       modal_label_label: i18n(
         "optionsPage.accounts-page-content.modal-label-label",
@@ -65,20 +65,20 @@
       ),
       modal_add_title: i18n(
         "optionsPage.accounts-page-content.modal-add-title",
-        "Add Your Address"
+        "Add Your Wallet"
       ),
       modal_add_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-add-sub-title",
-        "Add your address will give you more option to see the information at page new tab"
+        "Add your wallet will give you more option to see the information at page new tab"
       ),
 
       modal_edit_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-title",
-        "Edit Your Address"
+        "Edit Your wallet"
       ),
       modal_edit_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-sub-title",
-        "Edit your address will make change the information at page new tab"
+        "Edit your wallet will make change the information at page new tab"
       ),
     },
   };

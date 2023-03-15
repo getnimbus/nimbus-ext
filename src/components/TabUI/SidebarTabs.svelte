@@ -17,7 +17,7 @@
     {
       label: i18n("optionsPage.tab-title-accounts", "Accounts"),
       value: 1,
-      type: "Accounts",
+      type: "Wallets",
     },
     {
       label: i18n("optionsPage.tab-title-dashboard", "Dashboard"),

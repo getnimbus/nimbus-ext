@@ -2,7 +2,7 @@ import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
 import dayjs from "dayjs";
 import _, { isEmpty } from "lodash";
-import { coinGeko, mixpanel, nimbus, goplus } from "../../lib/network";
+import { coinGeko, mixpanel, nimbus, goplus, nimbusApi } from "../../lib/network";
 import { cacheOrAPI } from "./utils";
 import type { JsonValue, JsonObject } from "type-fest";
 import langEN from "../../_locales/en/messages.json";
@@ -13,6 +13,11 @@ browser.runtime.onStartup.addListener(async () => {
   await fetchBasicData();
   await fetchConfigPages();
   await fetchListTerm();
+  await fetchOpportunities();
+  await fetchOverview();
+  await fetchNews();
+  await fetchWalletData();
+  await fetchPositionData();
 });
 
 browser.runtime.onInstalled.addListener(() => {
@@ -71,6 +76,62 @@ const fetchListTerm = async () => {
   });
 };
 
+const fetchOverview = async () => {
+  try {
+    const data = await nimbusApi.get("/overview").then((response) => response);
+    browser.storage.local.set({ overview: JSON.stringify(data) }).then(() => {
+      console.log("Loaded overview");
+    });
+  } catch (e) {
+    console.log("error: ", e);
+  }
+};
+
+const fetchOpportunities = async () => {
+  try {
+    const data = await nimbusApi.get("/opportunities").then((response) => response.opportunities);
+    browser.storage.local.set({ opportunityList: JSON.stringify(data) }).then(() => {
+      console.log("Loaded list opportunity");
+    });
+  } catch (e) {
+    console.log("error: ", e);
+  }
+};
+
+const fetchNews = async () => {
+  try {
+    const data = await nimbusApi.get("/news").then((response) => response.news);
+    browser.storage.local.set({ newList: JSON.stringify(data) }).then(() => {
+      console.log("Loaded list new");
+    });
+  } catch (e) {
+    console.log("error: ", e);
+  }
+};
+
+const fetchWalletData = async () => {
+  try {
+    const data = await nimbusApi.get("/holding").then((response) => response.holding);
+    browser.storage.local.set({ walletData: JSON.stringify(data) }).then(() => {
+      console.log("Loaded wallet data");
+    });
+  } catch (e) {
+    console.log("error: ", e);
+  }
+};
+
+const fetchPositionData = async () => {
+  try {
+    const data = await nimbusApi.get("/positions").then((response) => response.positions);
+    browser.storage.local.set({ positionData: JSON.stringify(data) }).then(() => {
+      console.log("Loaded position data");
+    });
+  } catch (e) {
+    console.log("error: ", e);
+  }
+};
+
+
 interface ICoinListInput {
   limit: number;
 }
@@ -111,6 +172,46 @@ onMessage("configPageList", async () => {
 onMessage("getListTerm", async () => {
   try {
     return JSON.parse((await browser.storage.local.get("termList")).termList);
+  } catch (error) {
+    return [];
+  }
+});
+
+onMessage("getOverview", async () => {
+  try {
+    return JSON.parse((await browser.storage.local.get("overview")).overview);
+  } catch (error) {
+    return [];
+  }
+});
+
+onMessage("getListOpportunity", async () => {
+  try {
+    return JSON.parse((await browser.storage.local.get("opportunityList")).opportunityList);
+  } catch (error) {
+    return [];
+  }
+});
+
+onMessage("getListNew", async () => {
+  try {
+    return JSON.parse((await browser.storage.local.get("newList")).newList);
+  } catch (error) {
+    return [];
+  }
+});
+
+onMessage("getWalletData", async () => {
+  try {
+    return JSON.parse((await browser.storage.local.get("walletData")).walletData);
+  } catch (error) {
+    return [];
+  }
+});
+
+onMessage("getPositionData", async () => {
+  try {
+    return JSON.parse((await browser.storage.local.get("positionData")).positionData);
   } catch (error) {
     return [];
   }
@@ -267,3 +368,8 @@ onMessage<II18nMsg, "i18n">(
 fetchBasicData();
 fetchConfigPages();
 fetchListTerm();
+fetchOpportunities();
+fetchOverview();
+fetchNews();
+fetchWalletData();
+fetchPositionData();

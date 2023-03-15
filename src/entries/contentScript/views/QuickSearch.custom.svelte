@@ -153,8 +153,7 @@
     selectedPageFromCurrentUrl?.urlPattern.map((item) => {
       const patternUrlPath = new UrlPattern(item.path);
       const detectUrlPath = patternUrlPath.match(location.pathname);
-
-      if (detectUrlPath === null) return;
+      // if (detectUrlPath === null) return;
       return item.selector.forEach((selectDOM) => {
         const context = selectDOM && document.querySelector(selectDOM);
         innerTextMatchContext = context && context.innerText.match(regex);
@@ -180,6 +179,7 @@
 
   const handleGetCoinDataFromPage = () => {
     const innerTextMatch = handleDetectRegex(regexToken);
+    console.log(innerTextMatch);
     selectedTokenData =
       innerTextMatch && innerTextMatch.length > 0
         ? [
@@ -381,37 +381,39 @@
 
       {#if selectedSearchTermData.length === 0}
         {#if selectedTermData.length !== 0}
-          {#each selectedTermData as item}
-            <div
-              class="p-3 max-w-sm bg-white rounded border border-gray-200 shadow mb-4"
-            >
-              <div class="flex justify-between items-baseline">
-                <div class="text-xl font-bold tracking-tight text-gray-900">
-                  {item.term}
+          <div class="mt-2">
+            {#each selectedTermData as item}
+              <div
+                class="p-3 max-w-sm bg-white rounded border border-gray-200 shadow mb-4"
+              >
+                <div class="flex justify-between items-baseline">
+                  <div class="text-xl font-bold tracking-tight text-gray-900">
+                    {item.term}
+                  </div>
+                  {#if item.url !== null}
+                    <a
+                      href={item.url}
+                      class="inline-flex items-center text-sm text-sky-600 font-medium no-underline hover:underline"
+                    >
+                      {MultipleLang.read_more}
+                    </a>
+                  {/if}
                 </div>
-                {#if item.url !== null}
-                  <a
-                    href={item.url}
-                    class="inline-flex items-center text-sm text-sky-600 font-medium no-underline hover:underline"
-                  >
-                    {MultipleLang.read_more}
-                  </a>
+                {#if item.img !== null}
+                  <div class="w-full h-[300px] border rounded overflow-hidden">
+                    <img
+                      src={item.img}
+                      alt="img"
+                      class="w-full h-full object-contain"
+                    />
+                  </div>
                 {/if}
+                <p class="mb-1 font-normal leading-6 text-gray-700">
+                  {item.define}
+                </p>
               </div>
-              {#if item.img !== null}
-                <div class="w-full h-[300px] border rounded overflow-hidden">
-                  <img
-                    src={item.img}
-                    alt="img"
-                    class="w-full h-full object-contain"
-                  />
-                </div>
-              {/if}
-              <p class="mb-1 font-normal leading-6 text-gray-700">
-                {item.define}
-              </p>
-            </div>
-          {/each}
+            {/each}
+          </div>
         {/if}
       {:else}
         {#each selectedSearchTermData as item}

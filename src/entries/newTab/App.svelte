@@ -2,23 +2,26 @@
   import "flowbite/dist/flowbite.css";
   import { onMount, onDestroy } from "svelte";
   import * as browser from "webextension-polyfill";
-  import { sendMessage } from "webext-bridge";
+  import { sendMessage, getCurrentContext } from "webext-bridge";
   import numeral from "numeral";
   import { i18n } from "~/lib/i18n";
+  import dayjs from "dayjs";
+  import relativeTime from "dayjs/plugin/relativeTime";
+  dayjs.extend(relativeTime);
+  import { nimbusApi } from "~/lib/network";
+  import { formatBalance } from "~/utils";
+  import { v4 as uuidv4 } from "uuid";
 
-  import TxCardInfo from "~/components/TxCardInfo.svelte";
+  import HoldingInfo from "~/components/HoldingInfo.svelte";
   import NewCard from "~/components/NewCard.svelte";
   import EChart from "~/components/EChart.svelte";
   import OpportunityCard from "~/components/OpportunityCard.svelte";
   import Select from "~/components/Select.svelte";
   import CountUpNumber from "~/components/CountUpNumber.svelte";
+  import Table from "~/components/PositionTable/Table.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
 
-  import LpProvider from "~/components/PositionTable/LPProvider.svelte";
-  import Staking from "~/components/PositionTable/Staking.svelte";
-  import StakingLocked from "~/components/PositionTable/StakingLocked.svelte";
-  import LendingProvider from "~/components/PositionTable/LendingProvider.svelte";
-  import LendingBorrow from "~/components/PositionTable/LendingBorrow.svelte";
-
+  import Wallet from "~/assets/wallet.svg";
   import All from "~/assets/all.svg";
   import logo from "~/assets/btc.png";
   import Plus from "~/assets/plus.svg";
@@ -30,152 +33,84 @@
   import Portfolio from "~/assets/portfolio.svg";
   import Settings from "~/assets/settings.svg";
   import Transactions from "~/assets/transactions.svg";
+  import News from "~/assets/news.svg";
 
-  // let MultipleLang = {
-  //   title: i18n("newtabPage.title", "Hi there,"),
-  //   sub_title: i18n("newtabPage.sub-title", "Today update"),
+  let MultipleLang = {
+    // title: i18n("newtabPage.title", "Hi there,"),
+    // sub_title: i18n("newtabPage.sub-title", "Today update"),
 
-  //   settings: i18n("newtabPage.settings", "Settings"),
-  //   your_portfolio: i18n("newtabPage.your-portfolio", "Your portfolio"),
-  //   portfolio_breakdown: i18n(
-  //     "newtabPage.portfolio-breakdown",
-  //     "Portfolio breakdown"
-  //   ),
-  //   recent_transaction: i18n(
-  //     "newtabPage.recent-transaction",
-  //     "Recent transaction"
-  //   ),
-  //   news_title: i18n("newtabPage.news-title", "You might interested in"),
+    // settings: i18n("newtabPage.settings", "Settings"),
+    // your_portfolio: i18n("newtabPage.your-portfolio", "Your portfolio"),
+    // portfolio_breakdown: i18n(
+    //   "newtabPage.portfolio-breakdown",
+    //   "Portfolio breakdown"
+    // ),
+    // recent_transaction: i18n(
+    //   "newtabPage.recent-transaction",
+    //   "Recent transaction"
+    // ),
+    // news_title: i18n("newtabPage.news-title", "You might interested in"),
 
-  //   btn_text: i18n("newtabPage.suggest-btn-text", "Suggest a content"),
-  // };
+    // btn_text: i18n("newtabPage.suggest-btn-text", "Suggest a content"),
 
-  // let totalBalanceUsd = 0;
+    content: {
+      btn_text: i18n(
+        "optionsPage.accounts-page-content.address-btn-text",
+        "Add Wallet"
+      ),
+      address_header_table: i18n(
+        "optionsPage.accounts-page-content.address-header-table",
+        "Wallet"
+      ),
+      label_header_table: i18n(
+        "optionsPage.accounts-page-content.label-header-table",
+        "Label"
+      ),
+      action_header_table: i18n(
+        "optionsPage.accounts-page-content.action-header-table",
+        "Action"
+      ),
+      modal_cancel: i18n(
+        "optionsPage.accounts-page-content.modal-cancel",
+        "Cancel"
+      ),
+      modal_add: i18n("optionsPage.accounts-page-content.modal-add", "Add"),
 
-  // let optionPieChart = {
-  //   series: [],
-  //   labels: [],
-  //   plotOptions: {
-  //     pie: {
-  //       donut: {
-  //         labels: {
-  //           show: true,
-  //           total: {
-  //             show: true,
-  //             label: "Total balance (USD)",
-  //             color: "#000",
-  //             formatter: () => {
-  //               return totalBalanceUsd;
-  //             },
-  //           },
-  //         },
-  //       },
-  //     },
-  //   },
-  //   chart: {
-  //     type: "donut",
-  //     height: 465,
-  //   },
-  //   tooltip: {
-  //     enabled: false,
-  //   },
-  //   responsive: [
-  //     {
-  //       breakpoint: 480,
-  //       options: {
-  //         chart: {
-  //           width: 200,
-  //         },
-  //         legend: {
-  //           position: "bottom",
-  //         },
-  //       },
-  //     },
-  //   ],
-  // };
+      modal_address_label: i18n(
+        "optionsPage.accounts-page-content.modal-address-label",
+        "Wallet"
+      ),
+      modal_label_label: i18n(
+        "optionsPage.accounts-page-content.modal-label-label",
+        "Label"
+      ),
+      modal_add_title: i18n(
+        "optionsPage.accounts-page-content.modal-add-title",
+        "Add Your Wallet"
+      ),
+      modal_add_sub_title: i18n(
+        "optionsPage.accounts-page-content.modal-add-sub-title",
+        "Add your wallet will give you more option to see the information at page new tab"
+      ),
+    },
+  };
 
-  // const getPieChartData = async () => {
-  //   try {
-  //     // const data = (await sendMessage("getPieChartData", undefined)) as any;
-
-  //     const data = await fetch(
-  //       `https://utils.getnimbus.io/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`
-  //     ).then((response) => response.json());
-
-  //     const dataFormat = data.data.assets.filter((item) => {
-  //       return parseFloat(item.balanceUsd) > 0;
-  //     });
-
-  //     const balanceList = dataFormat.map((item) => {
-  //       return parseFloat(numeral(item.balanceUsd).format("0,0.0000"));
-  //     });
-
-  //     const tokenList = dataFormat.map((item) => {
-  //       return item.tokenName;
-  //     });
-
-  //     totalBalanceUsd = numeral(data.data.totalBalanceUsd).format("0,0.0000");
-
-  //     optionPieChart = {
-  //       ...optionPieChart,
-  //       series: balanceList,
-  //       labels: tokenList,
-  //     };
-  //   } catch (e) {
-  //     console.log("e: ", e);
-  //   }
-  // };
-
-  // onMount(() => {
-  //   getPieChartData();
-  // });
-
-  browser.storage.onChanged.addListener((changes) => {
-    if (changes?.options?.newValue?.lang) {
-      window.location.reload();
-    }
-  });
-
-  const chainList = [
+  let navActive = "portfolio";
+  let overviewData;
+  let opportunitiesData;
+  let newsData;
+  let walletData;
+  let positionsData;
+  let listAddress = [
     {
-      logo: logo,
-      label: "All chains",
+      logo: Wallet,
+      label: "All wallet",
       value: "all",
     },
-    {
-      logo: logo,
-      label: "Ethereum Wallet",
-      value: "eth",
-    },
-    {
-      logo: logo,
-      label: "BNB Wallet",
-      value: "bnb",
-    },
-    {
-      logo: logo,
-      label: "Polygon Wallet",
-      value: "polygon",
-    },
-    {
-      logo: logo,
-      label: "Optimism Wallet",
-      value: "optimism",
-    },
-    {
-      logo: logo,
-      label: "Avalanche Wallet",
-      value: "avalanche",
-    },
   ];
-
-  let search = "";
-  let timer;
-  let selectedTokenAllocation = "token";
-  let headerScrollY = false;
-
-  let selectedWallet = chainList[0];
-  let selectedChain = chainList[0];
+  let selectedWallet = listAddress[0];
+  let isOpenAddModal = false;
+  let errors: any = {};
 
   let optionPie = {
     title: {
@@ -185,24 +120,36 @@
       trigger: "item",
       formatter: function (params) {
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; width: 170px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 170px;">
               <div style="display: flex; align-items: centers; gap: 4px">
                 <img src=${params.data.logo} alt="" width=20 height=20 /> 
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                  ${params.name}
+                  ${params.name} (${params.data.symbol})
                 </div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${params.data.name_balance}</div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">${params.data.value_balance}</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${
+                  params.data.name_balance
+                }</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">${
+                  params.data.value_balance
+                }</div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${params.data.name_value}</div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">$${params.data.value_value}</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${
+                  params.data.name_value
+                }</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">$${
+                  params.data.value_value
+                }</div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${params.data.name_ratio}</div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">${params.value}%</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${
+                  params.data.name_ratio
+                }</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">${formatBalance(
+                  params.value
+                )}%</div>
               </div>
             </div>`;
       },
@@ -232,48 +179,7 @@
         labelLine: {
           show: false,
         },
-        data: [
-          {
-            logo: logo,
-            name: "Bitcoin",
-            name_ratio: "Ratio",
-            value: 35,
-            name_value: "Value",
-            value_value: 2212.13,
-            name_balance: "Balance",
-            value_balance: 15212,
-          },
-          {
-            logo: logo,
-            name: "Ethereum",
-            name_ratio: "Ratio",
-            value: 25,
-            name_value: "Value",
-            value_value: 2812.48,
-            name_balance: "Balance",
-            value_balance: 5212,
-          },
-          {
-            logo: logo,
-            name: "Matic",
-            name_ratio: "Ratio",
-            value: 10,
-            name_value: "Value",
-            value_value: 1812.28,
-            name_balance: "Balance",
-            value_balance: 2212,
-          },
-          {
-            logo: logo,
-            name: "Solana",
-            name_ratio: "Ratio",
-            value: 30,
-            name_value: "Value",
-            value_value: 2812.5,
-            name_balance: "Balance",
-            value_balance: 3212,
-          },
-        ],
+        data: [],
       },
     ],
   };
@@ -285,7 +191,12 @@
     tooltip: {
       trigger: "axis",
     },
-    legend: {},
+    legend: {
+      lineStyle: {
+        type: "solid",
+      },
+      data: [],
+    },
     grid: {
       left: "3%",
       right: "4%",
@@ -295,57 +206,213 @@
     xAxis: {
       type: "category",
       boundaryGap: false,
-      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      data: [],
     },
     yAxis: {
       type: "value",
     },
-    series: [
-      {
-        name: "Your Portfolio",
-        type: "line",
-        stack: "Total",
-        data: [120, 132, 101, 134, 90, 230, 210],
-      },
-      {
-        name: "Bitcoin",
-        type: "line",
-        stack: "Total",
-        lineStyle: {
-          width: 2,
-          type: "dashed",
-        },
-        data: [220, 182, 191, 234, 290, 330, 310],
-      },
-      {
-        name: "Ethereum",
-        type: "line",
-        stack: "Total",
-        lineStyle: {
-          width: 2,
-          type: "dashed",
-        },
-        data: [150, 232, 201, 154, 190, 330, 410],
-      },
-      {
-        name: "Solana",
-        type: "line",
-        stack: "Total",
-        lineStyle: {
-          width: 2,
-          type: "dashed",
-        },
-        data: [320, 332, 301, 334, 390, 330, 320],
-      },
-    ],
+    series: [],
   };
 
-  const debounce = (value) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      search = value;
-    }, 300);
+  const getOverviewData = async () => {
+    try {
+      const response = (await sendMessage("getOverview", undefined)) as any;
+      overviewData = response;
+
+      let sum = 0;
+      overviewData?.breakdownToken.map((item) => (sum += item.value));
+
+      const formatDataPieChart = overviewData?.breakdownToken.map((item) => {
+        return {
+          logo: item.logo,
+          name: item.name,
+          symbol: item.symbol,
+          name_ratio: "Ratio",
+          value: (item.value / sum) * 100,
+          name_value: "Value",
+          value_value: item.value,
+          name_balance: "Balance",
+          value_balance: item.amount,
+        };
+      });
+
+      optionPie = {
+        ...optionPie,
+        series: [
+          {
+            ...optionPie.series[0],
+            data: formatDataPieChart,
+          },
+        ],
+      };
+
+      const formatXAxis = overviewData?.performance.map((item) => {
+        return dayjs(item.date).format("DD/MM/YY");
+      });
+
+      const formatDataPortfolio = overviewData?.performance.map((item) => {
+        return {
+          value: item.portfolio,
+          itemStyle: {
+            color: "#00b580",
+          },
+        };
+      });
+
+      const formatDataETH = overviewData?.performance.map((item) => {
+        return {
+          value: item.eth,
+          itemStyle: {
+            color: "#547fef",
+          },
+        };
+      });
+
+      const formatDataBTC = overviewData?.performance.map((item) => {
+        return {
+          value: item.btc,
+          itemStyle: {
+            color: "#f7931a",
+          },
+        };
+      });
+
+      optionLine = {
+        ...optionLine,
+        legend: {
+          ...optionLine.legend,
+          data: [
+            {
+              name: "Your Portfolio",
+              itemStyle: {
+                color: "#00b580",
+              },
+            },
+            {
+              name: "Bitcoin",
+              itemStyle: {
+                color: "#f7931a",
+              },
+            },
+            {
+              name: "Ethereum",
+              itemStyle: {
+                color: "#547fef",
+              },
+            },
+          ],
+        },
+        xAxis: {
+          ...optionLine.xAxis,
+          data: formatXAxis,
+        },
+        series: [
+          {
+            name: "Your Portfolio",
+            type: "line",
+            stack: "Total",
+            lineStyle: {
+              type: "solid",
+              color: "#00b580",
+            },
+            data: formatDataPortfolio,
+          },
+          {
+            name: "Bitcoin",
+            type: "line",
+            stack: "Total",
+            lineStyle: {
+              type: "dashed",
+              color: "#f7931a",
+            },
+            data: formatDataBTC,
+          },
+          {
+            name: "Ethereum",
+            type: "line",
+            stack: "Total",
+            lineStyle: {
+              type: "dashed",
+              color: "#547fef",
+            },
+            data: formatDataETH,
+          },
+        ],
+      };
+    } catch (e) {
+      console.log("error: ", e);
+    }
   };
+
+  const getOpportunitiesData = async () => {
+    try {
+      const response = (await sendMessage(
+        "getListOpportunity",
+        undefined
+      )) as any;
+      opportunitiesData = response;
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const getNewsData = async () => {
+    try {
+      const response = (await sendMessage("getListNew", undefined)) as any;
+      newsData = response;
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const getWalletData = async () => {
+    try {
+      const response = (await sendMessage("getWalletData", undefined)) as any;
+      walletData = response;
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const getPositionsData = async () => {
+    try {
+      const response = (await sendMessage("getPositionData", undefined)) as any;
+      positionsData = response;
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const getListAddress = async () => {
+    try {
+      const response = (await sendMessage(
+        "getListAddress",
+        undefined
+      )) as any[];
+
+      const structWalletData = response.map((item) => {
+        return {
+          id: item.id,
+          logo: item.logo || Wallet,
+          label: item.label,
+          value: item.address,
+        };
+      });
+
+      listAddress = listAddress.concat(structWalletData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  onMount(() => {
+    getOverviewData();
+    getOpportunitiesData();
+    getNewsData();
+    getWalletData();
+    getPositionsData();
+    getListAddress();
+  });
 
   onMount(() => {
     const lastScrollY = window.pageYOffset;
@@ -358,6 +425,145 @@
       window.removeEventListener("scroll", handleCheckIsSticky);
     };
   });
+
+  browser.storage.onChanged.addListener((changes) => {
+    if (changes?.options?.newValue?.lang) {
+      window.location.reload();
+    }
+  });
+
+  // handle add wallet
+  const isRequiredFieldValid = (value) => {
+    return value != null && value !== "";
+  };
+
+  const validateForm = (data) => {
+    if (!isRequiredFieldValid(data.address)) {
+      errors["address"] = {
+        ...errors["address"],
+        required: true,
+        msg: "Address is required",
+      };
+    } else {
+      errors["address"] = { ...errors["address"], required: false };
+    }
+
+    if (!isRequiredFieldValid(data.label)) {
+      errors["label"] = {
+        ...errors["label"],
+        required: true,
+        msg: "Label is required",
+      };
+    } else {
+      errors["label"] = { ...errors["label"], required: false };
+    }
+  };
+
+  const onBlur = (e) => {
+    if (e.target.name === "address" && e.target.value) {
+      errors["address"] = { ...errors["address"], required: false };
+    }
+    if (e.target.name === "label" && e.target.value) {
+      errors["label"] = { ...errors["label"], required: false };
+    }
+  };
+
+  const onSubmit = (e) => {
+    const formData = new FormData(e.target);
+    const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
+
+    const data: any = {};
+    for (let field of formData) {
+      const [key, value] = field;
+      data[key] = value;
+    }
+
+    validateForm(data);
+
+    if (
+      !Object.keys(errors).some((inputName) => errors[inputName]["required"])
+    ) {
+      if (data.address && !regexETHAddress.test(data.address)) {
+        errors["address"] = {
+          ...errors["address"],
+          required: true,
+          msg: "Please enter your address again",
+        };
+        return;
+      }
+
+      const isDuplicatedAddress = listAddress.some((item) => {
+        return item.value === data.address;
+      });
+
+      if (isDuplicatedAddress) {
+        errors["address"] = {
+          ...errors["address"],
+          required: true,
+          msg: "This address is duplicated",
+        };
+        return;
+      }
+
+      Object.assign(data, { id: uuidv4() });
+
+      const dataFormat = {
+        id: data.id,
+        logo: Wallet,
+        label: data.label,
+        value: data.address,
+      };
+
+      const addWallet = [...listAddress, dataFormat];
+      listAddress = addWallet;
+
+      const filterWalletList = addWallet.filter((item) => item.value !== "all");
+      const structWalletList = filterWalletList.map((item) => {
+        return {
+          id: data.id,
+          logo: Wallet,
+          label: item.label,
+          address: item.value,
+        };
+      });
+
+      browser.storage.sync
+        .set({ listAddress: JSON.stringify(structWalletList) })
+        .then(() => {
+          console.log("save address to sync storage");
+        });
+
+      e.target.reset();
+      isOpenAddModal = false;
+    } else {
+      console.log("Invalid Form");
+    }
+  };
+
+  const chainList = [
+    {
+      logo: logo,
+      label: "All chains",
+      value: "all",
+    },
+    {
+      logo: logo,
+      label: "Ethereum",
+      value: "eth",
+    },
+  ];
+  let search = "";
+  let timer;
+  let selectedTokenAllocation = "token";
+  let headerScrollY = false;
+  let selectedChain = chainList[0];
+
+  const debounce = (value) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      search = value;
+    }, 300);
+  };
 </script>
 
 <div class="flex flex-col pb-10">
@@ -375,34 +581,47 @@
         alt="logo"
         class="-ml-8 xl:w-[177px] xl:h-[60px] w-[167px] h-[50px]"
       />
-      <div class="flex items-center xl:gap-4 gap-3">
-        <a
-          href="#"
+      <div class="flex items-center gap-3">
+        <div
           class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class:bg-[#525B8C]={navActive === "portfolio"}
+          on:click={() => (navActive = "portfolio")}
         >
           <img src={Portfolio} alt="Portfolio" />
           <span class="text-white font-semibold xl:text-base text-sm">
             Portfolio
           </span>
-        </a>
-        <a
-          href="#"
+        </div>
+        <div
           class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class:bg-[#525B8C]={navActive === "analytic"}
+          on:click={() => (navActive = "analytic")}
         >
           <img src={Analytic} alt="Analytic" />
           <span class="text-white font-semibold xl:text-base text-sm">
             Analytic
           </span>
-        </a>
-        <a
-          href="#"
+        </div>
+        <div
           class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class:bg-[#525B8C]={navActive === "transactions"}
+          on:click={() => (navActive = "transactions")}
         >
           <img src={Transactions} alt="Transactions" />
           <span class="text-white font-semibold xl:text-base text-sm">
             Transactions
           </span>
-        </a>
+        </div>
+        <div
+          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class:bg-[#525B8C]={navActive === "news"}
+          on:click={() => (navActive = "news")}
+        >
+          <img src={News} alt="News" />
+          <span class="text-white font-semibold xl:text-base text-sm">
+            News
+          </span>
+        </div>
         <a
           href={`chrome-extension://${browser.runtime.id}/src/entries/options/index.html`}
           target="_blank"
@@ -476,35 +695,67 @@
     <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
       <div class="flex flex-col gap-14 mb-5">
         <div class="flex justify-between items-center">
-          <div class="flex items-center gap-5">
-            {#each chainList.slice(0, 4) as chain, index}
-              <div
-                id={chain.value}
-                class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
-                  chain.value === selectedWallet.value && "bg-[#ffffff1c]"
-                }`}
-                class:hover:no-underline={chain.value === selectedWallet.value}
-                on:click={() => {
-                  selectedWallet = chain;
-                }}
-              >
-                <img
-                  src={index === 0 ? All : chain.logo}
-                  alt="logo"
-                  width="18"
-                  height="18"
+          {#if listAddress && listAddress.length > 1}
+            <div class="flex items-center gap-5">
+              {#if listAddress.length > 4}
+                {#each listAddress.slice(0, 4) as item, index}
+                  <div
+                    id={item.value}
+                    class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
+                      item.value === selectedWallet.value && "bg-[#ffffff1c]"
+                    }`}
+                    class:hover:no-underline={item.value ===
+                      selectedWallet.value}
+                    on:click={() => {
+                      selectedWallet = item;
+                    }}
+                  >
+                    <img
+                      src={index === 0 ? All : item.logo}
+                      alt="logo"
+                      width="16"
+                      height="16"
+                    />
+                    {item.label}
+                  </div>
+                {/each}
+                <Select
+                  isSelectWallet
+                  listSelect={listAddress.slice(4, listAddress.length)}
+                  bind:selected={selectedWallet}
                 />
-                {chain.label}
-              </div>
-            {/each}
-            <Select
-              isSelectWallet
-              listSelect={chainList.slice(4, chainList.length)}
-              bind:selected={selectedWallet}
-            />
-          </div>
+              {:else}
+                {#each listAddress as item, index}
+                  <div
+                    id={item.value}
+                    class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
+                      item.value === selectedWallet.value && "bg-[#ffffff1c]"
+                    }`}
+                    class:hover:no-underline={item.value ===
+                      selectedWallet.value}
+                    on:click={() => {
+                      selectedWallet = item;
+                    }}
+                  >
+                    <img
+                      src={index === 0 ? All : item.logo}
+                      alt="logo"
+                      width="16"
+                      height="16"
+                    />
+                    {item.label}
+                  </div>
+                {/each}
+              {/if}
+            </div>
+          {:else}
+            <div class="text-white text-base font-semibold">
+              No wallet add yet.
+            </div>
+          {/if}
           <button
             class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
+            on:click={() => (isOpenAddModal = true)}
           >
             <img src={Plus} alt="" width="12" height="12" />
             <div class="text-base font-medium text-white">Add Wallet</div>
@@ -518,7 +769,7 @@
                 <img src={Reload} alt="" />
               </div>
               <div class="text-xs text-white font-medium">
-                Data updated 2 minutes ago
+                Data updated {dayjs(overviewData?.updatedAt).fromNow()}
               </div>
             </div>
           </div>
@@ -528,27 +779,65 @@
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
-            <div class="text-[#00000099] text-base font-medium">Networth</div>
+            <div class="text-[#00000099] text-base font-medium">Networth:</div>
             <div class="text-3xl text-black">
-              $<CountUpNumber id="networth" number={63910.82} />
+              $<CountUpNumber
+                id="networth"
+                number={overviewData?.overview.networth}
+              />
             </div>
             <div class="flex items-center gap-3">
-              <div class="text-[#00A878] text-lg font-medium">
-                ↑<CountUpNumber id="networth_grouth" number={2.55} />%
+              <div
+                class={`text-lg font-medium ${
+                  overviewData?.overview.networthChange < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                {#if overviewData?.overview.networthChange < 0}
+                  ↓
+                {:else}
+                  ↑
+                {/if}
+                <CountUpNumber
+                  id="networth_grouth"
+                  number={Math.abs(overviewData?.overview.networthChange)}
+                />%
               </div>
-              <div class="text-[#00000066] text-base font-medium">24h</div>
+              <div class="text-[#00000066] text-base font-medium">
+                {overviewData?.overview.change}
+              </div>
             </div>
           </div>
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
             <div class="text-[#00000099] text-base font-medium">Claimable</div>
             <div class="text-3xl text-black">
-              $<CountUpNumber id="claimable" number={50000} />
+              $<CountUpNumber
+                id="claimable"
+                number={overviewData?.overview.claimable}
+              />
             </div>
             <div class="flex items-center gap-3">
-              <div class="text-[#00A878] text-lg font-medium">
-                ↑<CountUpNumber id="claimable_grouth" number={3.59} />%
+              <div
+                class={`text-lg font-medium ${
+                  overviewData?.overview.claimableChange < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                {#if overviewData?.overview.claimableChange < 0}
+                  ↓
+                {:else}
+                  ↑
+                {/if}
+                <CountUpNumber
+                  id="claimable_grouth"
+                  number={Math.abs(overviewData?.overview.claimableChange)}
+                />%
               </div>
-              <div class="text-[#00000066] text-base font-medium">24h</div>
+              <div class="text-[#00000066] text-base font-medium">
+                {overviewData?.overview.change}
+              </div>
             </div>
           </div>
         </div>
@@ -558,13 +847,32 @@
               Total assets
             </div>
             <div class="text-3xl text-black">
-              $<CountUpNumber id="total_assets" number={50000} />
+              $<CountUpNumber
+                id="total_assets"
+                number={overviewData?.overview.assets}
+              />
             </div>
             <div class="flex items-center gap-3">
-              <div class="text-[#00A878] text-lg font-medium">
-                ↑<CountUpNumber id="total_assets_grouth" number={1.89} />%
+              <div
+                class={`text-lg font-medium ${
+                  overviewData?.overview.assetsChange < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                {#if overviewData?.overview.assetsChange < 0}
+                  ↓
+                {:else}
+                  ↑
+                {/if}
+                <CountUpNumber
+                  id="total_assets_grouth"
+                  number={Math.abs(overviewData?.overview.assetsChange)}
+                />%
               </div>
-              <div class="text-[#00000066] text-base font-medium">24h</div>
+              <div class="text-[#00000066] text-base font-medium">
+                {overviewData?.overview.change}
+              </div>
             </div>
           </div>
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
@@ -572,13 +880,32 @@
               Total Debts
             </div>
             <div class="text-3xl text-black">
-              $<CountUpNumber id="total_debts" number={70000} />
+              $<CountUpNumber
+                id="total_debts"
+                number={overviewData?.overview.debts}
+              />
             </div>
             <div class="flex items-center gap-3">
-              <div class="text-[#00A878] text-lg font-medium">
-                ↑<CountUpNumber id="total_debts_grouth" number={1.25} />%
+              <div
+                class={`text-lg font-medium ${
+                  overviewData?.overview.debtsChange < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                {#if overviewData?.overview.debtsChange < 0}
+                  ↓
+                {:else}
+                  ↑
+                {/if}
+                <CountUpNumber
+                  id="total_debts_grouth"
+                  number={Math.abs(overviewData?.overview.debtsChange)}
+                />%
               </div>
-              <div class="text-[#00000066] text-base font-medium">24h</div>
+              <div class="text-[#00000066] text-base font-medium">
+                {overviewData?.overview.change}
+              </div>
             </div>
           </div>
         </div>
@@ -597,7 +924,7 @@
             <div class="pl-4 text-2xl font-medium text-black">
               Token Allocation
             </div>
-            <div class="flex items-center gap-2">
+            <!-- <div class="flex items-center gap-2">
               <div
                 class={`cursor-pointer text-base font-medium py-[6px] px-4 rounded-[100px] transition-all ${
                   selectedTokenAllocation === "token" &&
@@ -616,7 +943,7 @@
               >
                 Chain
               </div>
-            </div>
+            </div> -->
           </div>
           <EChart id={2} theme="white" option={optionPie} height={465} />
         </div>
@@ -680,12 +1007,13 @@
                 </tr>
               </thead>
               <tbody>
-                <TxCardInfo />
-                <TxCardInfo />
-                <TxCardInfo />
-                <TxCardInfo />
-                <TxCardInfo />
-                <TxCardInfo />
+                {#if walletData && walletData.length}
+                  {#each walletData as holding}
+                    <HoldingInfo data={holding} />
+                  {/each}
+                {:else}
+                  <div>Empty</div>
+                {/if}
               </tbody>
             </table>
           </div>
@@ -697,9 +1025,13 @@
         >
           <div class="text-2xl font-medium text-black mb-6">Opportunities</div>
           <div class="flex flex-col gap-4 overflow-y-auto xl:basis-0 grow">
-            <OpportunityCard background="#a795fd1a" />
-            <OpportunityCard background="#ffcb591a" />
-            <OpportunityCard background="#6ac7f51a" />
+            {#if opportunitiesData && opportunitiesData.length}
+              {#each opportunitiesData as opportunity}
+                <OpportunityCard data={opportunity} />
+              {/each}
+            {:else}
+              <div>Empty</div>
+            {/if}
           </div>
         </div>
       </div>
@@ -714,11 +1046,13 @@
           Position
         </div>
         <div class="flex flex-col gap-10">
-          <LpProvider />
-          <Staking />
-          <StakingLocked />
-          <LendingProvider />
-          <LendingBorrow />
+          {#if positionsData && positionsData.length}
+            {#each positionsData as position}
+              <Table data={position} />
+            {/each}
+          {:else}
+            <div>Empty</div>
+          {/if}
         </div>
       </div>
 
@@ -731,12 +1065,13 @@
           <a href="#" class="font-bold text-base">View more</a>
         </div>
         <div class="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-10">
-          <NewCard />
-          <NewCard />
-          <NewCard />
-          <NewCard />
-          <NewCard />
-          <NewCard />
+          {#if newsData && newsData.length}
+            {#each newsData as news}
+              <NewCard data={news} />
+            {/each}
+          {:else}
+            <div>Empty</div>
+          {/if}
         </div>
       </div>
     </div>
@@ -750,6 +1085,93 @@
       <img src={MoveUp} alt="UP" width="20" height="20" />
     </a>
   </div>
+  <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
+    <div class="flex flex-col gap-1 items-start max-w-[530px]">
+      <div class="title-4 text-gray-600 font-semibold">
+        {MultipleLang.content.modal_add_title}
+      </div>
+      <div class="text-sm text-gray-500">
+        {MultipleLang.content.modal_add_sub_title}
+      </div>
+    </div>
+    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
+      <div
+        class="flex flex-col gap-1 w-[530px]"
+        class:form-item-translate={errors.address && errors.address.required}
+      >
+        <div class="text-sm font-medium text-gray-700">
+          {MultipleLang.content.modal_address_label}
+        </div>
+        <div class="relative">
+          <input
+            type="text"
+            id="address"
+            name="address"
+            placeholder={MultipleLang.content.modal_address_label}
+            value=""
+            class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
+            class:input-border-error={errors.address && errors.address.required}
+            on:blur={onBlur}
+          />
+          {#if errors.address && errors.address.required}
+            <div class="text-red-500 absolute -bottom-4 left-0">
+              {errors.address.msg}
+            </div>
+          {/if}
+        </div>
+      </div>
+      <div
+        class="flex flex-col gap-1 w-[530px]"
+        class:form-item-translate={errors.label && errors.label.required}
+      >
+        <div class="text-sm font-medium text-gray-700">
+          {MultipleLang.content.modal_label_label}
+        </div>
+        <div class="relative">
+          <input
+            type="text"
+            id="label"
+            name="label"
+            placeholder={MultipleLang.content.modal_label_label}
+            value=""
+            class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
+            class:input-border-error={errors.label && errors.label.required}
+            on:blur={onBlur}
+          />
+          {#if errors.label && errors.label.required}
+            <div class="text-red-500 absolute -bottom-4 left-0">
+              {errors.label.msg}
+            </div>
+          {/if}
+        </div>
+      </div>
+      <div
+        class="flex justify-end gap-2 mt-1"
+        class:form-item-translate={(errors.label && errors.label.required) ||
+          (errors.address && errors.address.required)}
+      >
+        <button
+          class="flex items-center gap-3 px-4 py-2 border border-[#1E96FC] rounded-xl"
+          on:click={() => {
+            errors = {};
+            isOpenAddModal = false;
+          }}
+        >
+          <div class="text-base font-medium text-[#1E96FC]">
+            {MultipleLang.content.modal_cancel}
+          </div>
+        </button>
+        <button
+          class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
+          type="submit"
+        >
+          <div class="text-base font-medium text-white">
+            {MultipleLang.content.modal_add}
+          </div>
+        </button>
+      </div>
+    </form>
+  </AppOverlay>
 </div>
 
 <style windi:preflights:global windi:safelist:global>

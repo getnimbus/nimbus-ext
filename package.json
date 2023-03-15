@@ -56,7 +56,7 @@
     "url-pattern": "^1.0.3",
     "uuid": "^9.0.0",
     "vite-imagetools": "^4.0.4",
-    "webext-bridge": "^5.0.5",
+    "webext-bridge": "https://github.com/binhnguyen2501/webext-bridge.git",
     "webextension-polyfill": "^0.9.0",
     "windicss": "^3.5.6"
   },
