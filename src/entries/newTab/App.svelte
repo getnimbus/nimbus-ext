@@ -165,7 +165,7 @@
     series: [
       {
         type: "pie",
-        radius: ["30%", "70%"],
+        radius: ["40%", "60%"],
         left: -140,
         avoidLabelOverlap: false,
         label: {
@@ -736,6 +736,8 @@
                     />
                     {item.label}
                   </div>
+                {:else}
+                  <div>Loading...</div>
                 {/each}
                 <Select
                   isSelectWallet
@@ -763,6 +765,8 @@
                     />
                     {item.label}
                   </div>
+                {:else}
+                  <div>Loading...</div>
                 {/each}
               {/if}
             </div>
@@ -1032,6 +1036,8 @@
                 {#if walletData && walletData.length}
                   {#each walletData as holding}
                     <HoldingInfo data={holding} />
+                  {:else}
+                    <div>Loading...</div>
                   {/each}
                 {:else}
                   <div>Empty</div>
@@ -1050,6 +1056,8 @@
             {#if opportunitiesData && opportunitiesData.length}
               {#each opportunitiesData as opportunity}
                 <OpportunityCard data={opportunity} />
+              {:else}
+                <div>Loading...</div>
               {/each}
             {:else}
               <div>Empty</div>
@@ -1071,6 +1079,8 @@
           {#if positionsData && positionsData.length}
             {#each positionsData as position}
               <Table data={position} />
+            {:else}
+              <div>Loading...</div>
             {/each}
           {:else}
             <div>Empty</div>
@@ -1090,6 +1100,8 @@
           {#if newsData && newsData.length}
             {#each newsData as news}
               <NewCard data={news} />
+            {:else}
+              <div>Loading...</div>
             {/each}
           {:else}
             <div>Empty</div>
