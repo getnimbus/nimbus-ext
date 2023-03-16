@@ -19,6 +19,7 @@
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import Table from "~/components/PositionTable/Table.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
+  import "~/components/Loading.custom.svelte";
 
   import Wallet from "~/assets/wallet.svg";
   import All from "~/assets/all.svg";
@@ -737,7 +738,9 @@
                     {item.label}
                   </div>
                 {:else}
-                  <div>Loading...</div>
+                  <div class="w-full flex justify-center items-center">
+                    <loading-icon />
+                  </div>
                 {/each}
                 <Select
                   isSelectWallet
@@ -766,7 +769,9 @@
                     {item.label}
                   </div>
                 {:else}
-                  <div>Loading...</div>
+                  <div class="w-full flex justify-center items-center">
+                    <loading-icon />
+                  </div>
                 {/each}
               {/if}
             </div>
@@ -1037,7 +1042,13 @@
                   {#each walletData as holding}
                     <HoldingInfo data={holding} />
                   {:else}
-                    <div>Loading...</div>
+                    <tr>
+                      <td colspan="5">
+                        <div class="flex justify-center items-center py-4 px-3">
+                          <loading-icon />
+                        </div>
+                      </td>
+                    </tr>
                   {/each}
                 {:else}
                   <div>Empty</div>
@@ -1057,7 +1068,9 @@
               {#each opportunitiesData as opportunity}
                 <OpportunityCard data={opportunity} />
               {:else}
-                <div>Loading...</div>
+                <div class="w-full h-[120px] flex justify-center items-center">
+                  <loading-icon />
+                </div>
               {/each}
             {:else}
               <div>Empty</div>
@@ -1080,7 +1093,9 @@
             {#each positionsData as position}
               <Table data={position} />
             {:else}
-              <div>Loading...</div>
+              <div class="w-full h-[120px] flex justify-center items-center">
+                <loading-icon />
+              </div>
             {/each}
           {:else}
             <div>Empty</div>
@@ -1096,12 +1111,21 @@
           <div class="text-2xl font-medium text-black">News</div>
           <a href="#" class="font-bold text-base">View more</a>
         </div>
-        <div class="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-10">
+
+        <div
+          class={`grid ${
+            newsData && newsData.length
+              ? "2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1"
+              : "grid-cols-1"
+          } gap-10`}
+        >
           {#if newsData && newsData.length}
             {#each newsData as news}
               <NewCard data={news} />
             {:else}
-              <div>Loading...</div>
+              <div class="w-full h-[120px] flex justify-center items-center">
+                <loading-icon />
+              </div>
             {/each}
           {:else}
             <div>Empty</div>
