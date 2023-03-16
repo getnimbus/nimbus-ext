@@ -8,7 +8,6 @@
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { nimbusApi } from "~/lib/network";
   import { formatBalance } from "~/utils";
   import { v4 as uuidv4 } from "uuid";
 
@@ -20,6 +19,7 @@
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import Table from "~/components/PositionTable/Table.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
+  import "~/components/Loading.custom.svelte";
 
   import Wallet from "~/assets/wallet.svg";
   import All from "~/assets/all.svg";
@@ -114,6 +114,7 @@
   let selectedWallet = listAddress[0];
   let isOpenAddModal = false;
   let errors: any = {};
+  let isReload = false;
 
   let optionPie = {
     title: {
@@ -165,7 +166,7 @@
     series: [
       {
         type: "pie",
-        radius: ["30%", "70%"],
+        radius: ["40%", "60%"],
         left: -140,
         avoidLabelOverlap: false,
         label: {
@@ -215,6 +216,21 @@
       type: "value",
     },
     series: [],
+  };
+
+  const handleReload = async () => {
+    isReload = true;
+    try {
+      const response = (await sendMessage("reloadNewTab", undefined)) as any;
+      if (response) {
+        setTimeout(() => {
+          isReload = false;
+        }, 2000);
+      }
+    } catch (e) {
+      console.log("e: ", e);
+      isReload = false;
+    }
   };
 
   const getOverviewData = async () => {
@@ -721,6 +737,10 @@
                     />
                     {item.label}
                   </div>
+                {:else}
+                  <div class="w-full flex justify-center items-center">
+                    <loading-icon />
+                  </div>
                 {/each}
                 <Select
                   isSelectWallet
@@ -748,6 +768,10 @@
                     />
                     {item.label}
                   </div>
+                {:else}
+                  <div class="w-full flex justify-center items-center">
+                    <loading-icon />
+                  </div>
                 {/each}
               {/if}
             </div>
@@ -768,7 +792,11 @@
           <div class="flex items-end gap-6">
             <div class="text-5xl text-white font-semibold">Overview</div>
             <div class="flex items-center gap-2 mb-1">
-              <div class="cursor-pointer">
+              <div
+                class="cursor-pointer"
+                class:loading={isReload}
+                on:click={handleReload}
+              >
                 <img src={Reload} alt="" />
               </div>
               <div class="text-xs text-white font-medium">
@@ -969,7 +997,7 @@
           <div
             class="border border-[#0000000d] rounded-[10px] overflow-x-scroll"
           >
-            <table class="table-fixed 2xl:w-full w-auto">
+            <table class="table-auto 2xl:w-full xl:w-auto w-full">
               <thead>
                 <tr class="bg-[#f4f5f880]">
                   <th class="pl-3 py-3">
@@ -995,14 +1023,14 @@
                   </th>
                   <th class="py-3">
                     <div
-                      class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
+                      class="text-right text-sm uppercase font-semibold text-black min-w-[130px]"
                     >
                       Value
                     </div>
                   </th>
                   <th class="pr-3 py-3">
                     <div
-                      class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
+                      class="text-right text-sm uppercase font-semibold text-black min-w-[125px]"
                     >
                       Profit
                     </div>
@@ -1013,6 +1041,14 @@
                 {#if walletData && walletData.length}
                   {#each walletData as holding}
                     <HoldingInfo data={holding} />
+                  {:else}
+                    <tr>
+                      <td colspan="5">
+                        <div class="flex justify-center items-center py-4 px-3">
+                          <loading-icon />
+                        </div>
+                      </td>
+                    </tr>
                   {/each}
                 {:else}
                   <div>Empty</div>
@@ -1031,6 +1067,10 @@
             {#if opportunitiesData && opportunitiesData.length}
               {#each opportunitiesData as opportunity}
                 <OpportunityCard data={opportunity} />
+              {:else}
+                <div class="w-full h-[120px] flex justify-center items-center">
+                  <loading-icon />
+                </div>
               {/each}
             {:else}
               <div>Empty</div>
@@ -1052,6 +1092,10 @@
           {#if positionsData && positionsData.length}
             {#each positionsData as position}
               <Table data={position} />
+            {:else}
+              <div class="w-full h-[120px] flex justify-center items-center">
+                <loading-icon />
+              </div>
             {/each}
           {:else}
             <div>Empty</div>
@@ -1067,10 +1111,21 @@
           <div class="text-2xl font-medium text-black">News</div>
           <a href="#" class="font-bold text-base">View more</a>
         </div>
-        <div class="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-10">
+
+        <div
+          class={`grid ${
+            newsData && newsData.length
+              ? "2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1"
+              : "grid-cols-1"
+          } gap-10`}
+        >
           {#if newsData && newsData.length}
             {#each newsData as news}
               <NewCard data={news} />
+            {:else}
+              <div class="w-full h-[120px] flex justify-center items-center">
+                <loading-icon />
+              </div>
             {/each}
           {:else}
             <div>Empty</div>
@@ -1199,5 +1254,18 @@
 
   .border {
     border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .loading {
+    animation: loading 1.4s ease-in-out alternate infinite;
+  }
+
+  @keyframes loading {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 </style>

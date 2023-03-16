@@ -82,6 +82,7 @@ const fetchOverview = async () => {
     browser.storage.local.set({ overview: JSON.stringify(data) }).then(() => {
       console.log("Loaded overview");
     });
+    return data
   } catch (e) {
     console.log("error: ", e);
   }
@@ -93,6 +94,7 @@ const fetchOpportunities = async () => {
     browser.storage.local.set({ opportunityList: JSON.stringify(data) }).then(() => {
       console.log("Loaded list opportunity");
     });
+    return data
   } catch (e) {
     console.log("error: ", e);
   }
@@ -104,6 +106,7 @@ const fetchNews = async () => {
     browser.storage.local.set({ newList: JSON.stringify(data) }).then(() => {
       console.log("Loaded list new");
     });
+    return data
   } catch (e) {
     console.log("error: ", e);
   }
@@ -115,6 +118,7 @@ const fetchWalletData = async () => {
     browser.storage.local.set({ walletData: JSON.stringify(data) }).then(() => {
       console.log("Loaded wallet data");
     });
+    return data
   } catch (e) {
     console.log("error: ", e);
   }
@@ -126,6 +130,7 @@ const fetchPositionData = async () => {
     browser.storage.local.set({ positionData: JSON.stringify(data) }).then(() => {
       console.log("Loaded position data");
     });
+    return data
   } catch (e) {
     console.log("error: ", e);
   }
@@ -216,6 +221,23 @@ onMessage("getPositionData", async () => {
     return [];
   }
 });
+
+onMessage("reloadNewTab", async () => {
+  try {
+    const overviewData = fetchOverview();
+    const opportunityData = fetchOpportunities();
+    const newsData = fetchNews();
+    const walletData = fetchWalletData();
+    const positionData = fetchPositionData();
+    if (overviewData && opportunityData && newsData && walletData && positionData) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return [];
+  }
+})
 
 onMessage<ISearchInput, any>("getSearchData", async ({ data: { search } }) => {
   try {
