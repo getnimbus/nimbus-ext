@@ -13,7 +13,7 @@
   <img src={data.logo} alt="logo" width={45} height={45} />
   <div class="flex flex-col gap-2">
     <div class="text-sm text-[#00000099] font-medium">
-      <div contenteditable="true" bind:innerHTML={data.content} />
+      <div contenteditable="false" bind:innerHTML={data.content} />
     </div>
     <div class="text-[#00000066] text-xs font-medium">
       {dayjs(data.updatedAt).fromNow()}
