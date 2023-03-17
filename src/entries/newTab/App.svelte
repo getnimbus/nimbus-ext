@@ -10,6 +10,12 @@
   dayjs.extend(relativeTime);
   import { formatBalance } from "~/utils";
   import { v4 as uuidv4 } from "uuid";
+  import type { OverviewData } from "~/types/OverviewData";
+  import type { OpportunityData } from "~/types/OpportunityData";
+  import type { NewData } from "~/types/NewData";
+  import type { WalletData } from "~/types/WalletData";
+  import type { PositionData } from "~/types/PositionData";
+  import type { AddressData } from "~/types/AddressData";
 
   import HoldingInfo from "~/components/HoldingInfo.svelte";
   import NewCard from "~/components/NewCard.svelte";
@@ -99,11 +105,26 @@
   };
 
   let navActive = "portfolio";
-  let overviewData;
-  let opportunitiesData;
-  let newsData;
-  let walletData;
-  let positionsData;
+  let overviewData: OverviewData = {
+    breakdownToken: [],
+    overview: {
+      assets: 0,
+      assetsChange: 0,
+      change: "",
+      claimable: 0,
+      claimableChange: 0,
+      debts: 0,
+      debtsChange: 0,
+      networth: 0,
+      networthChange: 0,
+    },
+    performance: [],
+    updatedAt: "",
+  };
+  let opportunitiesData: OpportunityData = [];
+  let newsData: NewData = [];
+  let walletData: WalletData = [];
+  let positionsData: PositionData = [];
   let listAddress = [
     {
       logo: Wallet,
@@ -221,7 +242,7 @@
   const handleReload = async () => {
     isReload = true;
     try {
-      const response = (await sendMessage("reloadNewTab", undefined)) as any;
+      const response: boolean = await sendMessage("reloadNewTab", undefined);
       if (response) {
         setTimeout(() => {
           isReload = false;
@@ -235,7 +256,10 @@
 
   const getOverviewData = async () => {
     try {
-      const response = (await sendMessage("getOverview", undefined)) as any;
+      const response: OverviewData = await sendMessage(
+        "getOverview",
+        undefined
+      );
       overviewData = response;
 
       let sum = 0;
@@ -365,10 +389,10 @@
 
   const getOpportunitiesData = async () => {
     try {
-      const response = (await sendMessage(
+      const response: OpportunityData = await sendMessage(
         "getListOpportunity",
         undefined
-      )) as any;
+      );
       opportunitiesData = response;
     } catch (e) {
       console.log("error: ", e);
@@ -377,7 +401,7 @@
 
   const getNewsData = async () => {
     try {
-      const response = (await sendMessage("getListNew", undefined)) as any;
+      const response: NewData = await sendMessage("getListNew", undefined);
       newsData = response;
     } catch (e) {
       console.log("error: ", e);
@@ -386,7 +410,10 @@
 
   const getWalletData = async () => {
     try {
-      const response = (await sendMessage("getWalletData", undefined)) as any;
+      const response: WalletData = await sendMessage(
+        "getWalletData",
+        undefined
+      );
       walletData = response;
     } catch (e) {
       console.log("error: ", e);
@@ -395,7 +422,10 @@
 
   const getPositionsData = async () => {
     try {
-      const response = (await sendMessage("getPositionData", undefined)) as any;
+      const response: PositionData = await sendMessage(
+        "getPositionData",
+        undefined
+      );
       positionsData = response;
     } catch (e) {
       console.log("error: ", e);
@@ -404,10 +434,12 @@
 
   const getListAddress = async () => {
     try {
-      const response = (await sendMessage(
+      const response: AddressData = await sendMessage(
         "getListAddress",
         undefined
-      )) as any[];
+      );
+
+      console.log("response: ", response);
 
       const structWalletData = response.map((item) => {
         return {

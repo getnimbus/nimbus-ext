@@ -235,7 +235,7 @@ onMessage("reloadNewTab", async () => {
       return false;
     }
   } catch (error) {
-    return [];
+    return false;
   }
 })
 

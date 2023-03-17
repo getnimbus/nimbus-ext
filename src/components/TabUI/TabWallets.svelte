@@ -14,6 +14,7 @@
     TableHeadCell,
   } from "flowbite-svelte";
   import { i18n } from "~/lib/i18n";
+  import type { AddressData } from "~/types/AddressData";
 
   import AppOverlay from "~/components/Overlay.svelte";
 
@@ -261,7 +262,11 @@
   };
 
   const getListAddress = async () => {
-    listAddress = (await sendMessage("getListAddress", undefined)) as any[];
+    const response: AddressData = await sendMessage(
+      "getListAddress",
+      undefined
+    );
+    listAddress = response;
   };
 
   const handleDelete = (item) => {
