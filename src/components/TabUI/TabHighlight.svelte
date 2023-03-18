@@ -2,7 +2,7 @@
 
 <script>
   import { i18n } from "~/lib/i18n";
-  let MultipleLang = {
+  const MultipleLang = {
     title: i18n("optionsPage.highlight-page-title", "Highlight"),
   };
 </script>

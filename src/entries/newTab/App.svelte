@@ -41,40 +41,37 @@
   import Transactions from "~/assets/transactions.svg";
   import News from "~/assets/news.svg";
 
-  let MultipleLang = {
-    // title: i18n("newtabPage.title", "Hi there,"),
-    // sub_title: i18n("newtabPage.sub-title", "Today update"),
-
-    // settings: i18n("newtabPage.settings", "Settings"),
-    // your_portfolio: i18n("newtabPage.your-portfolio", "Your portfolio"),
-    // portfolio_breakdown: i18n(
-    //   "newtabPage.portfolio-breakdown",
-    //   "Portfolio breakdown"
-    // ),
-    // recent_transaction: i18n(
-    //   "newtabPage.recent-transaction",
-    //   "Recent transaction"
-    // ),
-    // news_title: i18n("newtabPage.news-title", "You might interested in"),
-
-    // btn_text: i18n("newtabPage.suggest-btn-text", "Suggest a content"),
+  const MultipleLang = {
+    portfolio: i18n("newtabPage.portfolio", "Portfolio"),
+    analytic: i18n("newtabPage.analytic", "Analytic"),
+    transactions: i18n("newtabPage.transactions", "Transactions"),
+    news: i18n("newtabPage.news", "News"),
+    settings: i18n("newtabPage.settings", "Settings"),
+    wallet: i18n("newtabPage.wallet", "Wallet"),
+    view_more: i18n("newtabPage.view-more", "View more"),
+    opportunities: i18n("newtabPage.opportunities", "Opportunities"),
+    positions: i18n("newtabPage.positions", "Positions"),
+    assets: i18n("newtabPage.assets", "Assets"),
+    market_price: i18n("newtabPage.market-price", "Market price"),
+    amount: i18n("newtabPage.amount", "Amount"),
+    value: i18n("newtabPage.value", "Value"),
+    profit: i18n("newtabPage.profit", "Profit"),
+    overview: i18n("newtabPage.overview", "Overview"),
+    token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
+    performance: i18n("newtabPage.performance", "Performance"),
+    networth: i18n("newtabPage.networth", "Networth"),
+    claimable: i18n("newtabPage.claimable", "Claimable"),
+    total_assets: i18n("newtabPage.total-assets", "Total Assets"),
+    total_debts: i18n("newtabPage.total-debts", "Total Debts"),
+    empty_wallet: i18n("newtabPage.empty-wallet", "No wallet add yet."),
+    Balance: i18n("newtabPage.Balance", "Balance"),
+    Ratio: i18n("newtabPage.Ratio", "Ratio"),
+    Value: i18n("newtabPage.Value", "Value"),
 
     content: {
       btn_text: i18n(
         "optionsPage.accounts-page-content.address-btn-text",
         "Add Wallet"
-      ),
-      address_header_table: i18n(
-        "optionsPage.accounts-page-content.address-header-table",
-        "Wallet"
-      ),
-      label_header_table: i18n(
-        "optionsPage.accounts-page-content.label-header-table",
-        "Label"
-      ),
-      action_header_table: i18n(
-        "optionsPage.accounts-page-content.action-header-table",
-        "Action"
       ),
       modal_cancel: i18n(
         "optionsPage.accounts-page-content.modal-cancel",
@@ -84,7 +81,6 @@
         "optionsPage.accounts-page-content.modal-add-wallet",
         "Add"
       ),
-
       modal_address_label: i18n(
         "optionsPage.accounts-page-content.modal-address-label",
         "Wallet"
@@ -100,6 +96,22 @@
       modal_add_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-add-sub-title",
         "Add your wallet will give you more option to see the information at page new tab"
+      ),
+      address_required: i18n(
+        "optionsPage.accounts-page-content.address-required",
+        "Address is required"
+      ),
+      label_required: i18n(
+        "optionsPage.accounts-page-content.label-required",
+        "Label is required"
+      ),
+      re_input_address: i18n(
+        "optionsPage.accounts-page-content.re-input-address",
+        "Please enter your wallet address again!"
+      ),
+      duplicate_address: i18n(
+        "optionsPage.accounts-page-content.duplicate-address",
+        "This wallet address is duplicated!"
       ),
     },
   };
@@ -153,28 +165,26 @@
                 </div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${
-                  params.data.name_balance
-                }</div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">${
-                  params.data.value_balance
-                }</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                  ${MultipleLang[params.data.name_balance]}
+                </div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                  ${formatBalance(params.data.value_balance)}</div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${
-                  params.data.name_value
-                }</div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">$${
-                  params.data.value_value
-                }</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                  ${MultipleLang[params.data.name_value]}
+                </div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                  $${formatBalance(params.data.value_value)}</div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">${
-                  params.data.name_ratio
-                }</div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">${formatBalance(
-                  params.value
-                )}%</div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                  ${MultipleLang[params.data.name_ratio]}
+                </div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                  ${formatBalance(params.value)}%
+                </div>
               </div>
             </div>`;
       },
@@ -439,8 +449,6 @@
         undefined
       );
 
-      console.log("response: ", response);
-
       const structWalletData = response.map((item) => {
         return {
           id: item.id,
@@ -493,7 +501,7 @@
       errors["address"] = {
         ...errors["address"],
         required: true,
-        msg: "Address is required",
+        msg: MultipleLang.content.address_required,
       };
     } else {
       errors["address"] = { ...errors["address"], required: false };
@@ -503,7 +511,7 @@
       errors["label"] = {
         ...errors["label"],
         required: true,
-        msg: "Label is required",
+        msg: MultipleLang.content.label_required,
       };
     } else {
       errors["label"] = { ...errors["label"], required: false };
@@ -538,7 +546,7 @@
         errors["address"] = {
           ...errors["address"],
           required: true,
-          msg: "Please enter your address again",
+          msg: MultipleLang.content.re_input_address,
         };
         return;
       }
@@ -551,7 +559,7 @@
         errors["address"] = {
           ...errors["address"],
           required: true,
-          msg: "This address is duplicated",
+          msg: MultipleLang.content.duplicate_address,
         };
         return;
       }
@@ -615,6 +623,12 @@
       search = value;
     }, 300);
   };
+
+  browser.storage.onChanged.addListener((changes) => {
+    if (changes?.options?.newValue?.lang) {
+      window.location.reload();
+    }
+  });
 </script>
 
 <div class="flex flex-col pb-10">
@@ -640,7 +654,7 @@
         >
           <img src={Portfolio} alt="Portfolio" />
           <span class="text-white font-semibold xl:text-base text-sm">
-            Portfolio
+            {MultipleLang.portfolio}
           </span>
         </div>
         <div
@@ -650,7 +664,7 @@
         >
           <img src={Analytic} alt="Analytic" />
           <span class="text-white font-semibold xl:text-base text-sm">
-            Analytic
+            {MultipleLang.analytic}
           </span>
         </div>
         <div
@@ -660,7 +674,7 @@
         >
           <img src={Transactions} alt="Transactions" />
           <span class="text-white font-semibold xl:text-base text-sm">
-            Transactions
+            {MultipleLang.transactions}
           </span>
         </div>
         <div
@@ -670,7 +684,7 @@
         >
           <img src={News} alt="News" />
           <span class="text-white font-semibold xl:text-base text-sm">
-            News
+            {MultipleLang.news}
           </span>
         </div>
         <a
@@ -680,7 +694,7 @@
         >
           <img src={Settings} alt="Settings" />
           <span class="text-white font-semibold xl:text-base text-sm">
-            Settings
+            {MultipleLang.settings}
           </span>
         </a>
       </div>
@@ -809,7 +823,7 @@
             </div>
           {:else}
             <div class="text-white text-base font-semibold">
-              No wallet add yet.
+              {MultipleLang.empty_wallet}
             </div>
           {/if}
           <button
@@ -817,12 +831,16 @@
             on:click={() => (isOpenAddModal = true)}
           >
             <img src={Plus} alt="" width="12" height="12" />
-            <div class="text-base font-medium text-white">Add Wallet</div>
+            <div class="text-base font-medium text-white">
+              {MultipleLang.content.btn_text}
+            </div>
           </button>
         </div>
         <div class="flex justify-between items-end">
           <div class="flex items-end gap-6">
-            <div class="text-5xl text-white font-semibold">Overview</div>
+            <div class="text-5xl text-white font-semibold">
+              {MultipleLang.overview}
+            </div>
             <div class="flex items-center gap-2 mb-1">
               <div
                 class="cursor-pointer"
@@ -842,7 +860,9 @@
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
-            <div class="text-[#00000099] text-base font-medium">Networth:</div>
+            <div class="text-[#00000099] text-base font-medium">
+              {MultipleLang.networth}
+            </div>
             <div class="text-3xl text-black">
               $<CountUpNumber
                 id="networth"
@@ -873,7 +893,9 @@
             </div>
           </div>
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
-            <div class="text-[#00000099] text-base font-medium">Claimable</div>
+            <div class="text-[#00000099] text-base font-medium">
+              {MultipleLang.claimable}
+            </div>
             <div class="text-3xl text-black">
               $<CountUpNumber
                 id="claimable"
@@ -907,7 +929,7 @@
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
             <div class="text-[#00000099] text-base font-medium">
-              Total assets
+              {MultipleLang.total_assets}
             </div>
             <div class="text-3xl text-black">
               $<CountUpNumber
@@ -940,7 +962,7 @@
           </div>
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
             <div class="text-[#00000099] text-base font-medium">
-              Total Debts
+              {MultipleLang.total_debts}
             </div>
             <div class="text-3xl text-black">
               $<CountUpNumber
@@ -981,11 +1003,10 @@
       style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
     >
       <div class="flex xl:flex-row flex-col justify-between gap-6">
-        <!-- Token Allocation -->
         <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
           <div class="flex justify-between mb-1">
             <div class="pl-4 text-2xl font-medium text-black">
-              Token Allocation
+              {MultipleLang.token_allocation}
             </div>
             <!-- <div class="flex items-center gap-2">
               <div
@@ -1011,21 +1032,21 @@
           <EChart id={2} theme="white" option={optionPie} height={465} />
         </div>
 
-        <!-- Performance -->
         <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
           <div class="pl-4 text-2xl font-medium text-black mb-3">
-            Performance
+            {MultipleLang.performance}
           </div>
           <EChart id={1} theme="white" option={optionLine} height={433} />
         </div>
       </div>
 
       <div class="flex xl:flex-row flex-col justify-between gap-6">
-        <!-- Wallet -->
         <div
           class="xl:w-[65%] w-full flex-col border border-[#0000001a] rounded-[20px] p-6"
         >
-          <div class="text-2xl font-medium text-black mb-6">Wallet</div>
+          <div class="text-2xl font-medium text-black mb-6">
+            {MultipleLang.wallet}
+          </div>
           <div
             class="border border-[#0000000d] rounded-[10px] overflow-x-scroll"
           >
@@ -1036,35 +1057,35 @@
                     <div
                       class="text-left text-sm uppercase font-semibold text-black min-w-[220px]"
                     >
-                      Assets
+                      {MultipleLang.assets}
                     </div>
                   </th>
                   <th class="py-3">
                     <div
                       class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
                     >
-                      Market Price
+                      {MultipleLang.market_price}
                     </div>
                   </th>
                   <th class="py-3">
                     <div
                       class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
                     >
-                      Amount
+                      {MultipleLang.amount}
                     </div>
                   </th>
                   <th class="py-3">
                     <div
                       class="text-right text-sm uppercase font-semibold text-black min-w-[130px]"
                     >
-                      Value
+                      {MultipleLang.value}
                     </div>
                   </th>
                   <th class="pr-3 py-3">
                     <div
                       class="text-right text-sm uppercase font-semibold text-black min-w-[125px]"
                     >
-                      Profit
+                      {MultipleLang.profit}
                     </div>
                   </th>
                 </tr>
@@ -1090,11 +1111,12 @@
           </div>
         </div>
 
-        <!-- Opportunities -->
         <div
           class="xl:w-[35%] w-full flex flex-col border border-[#0000001a] rounded-[20px] p-6"
         >
-          <div class="text-2xl font-medium text-black mb-6">Opportunities</div>
+          <div class="text-2xl font-medium text-black mb-6">
+            {MultipleLang.opportunities}
+          </div>
           <div class="flex flex-col gap-4 overflow-y-auto xl:basis-0 grow">
             {#if opportunitiesData && opportunitiesData.length}
               {#each opportunitiesData as opportunity}
@@ -1111,14 +1133,13 @@
         </div>
       </div>
 
-      <!-- Position -->
       <div
         class="flex flex-col gap-4 border border-[#0000001a] rounded-[20px] p-6"
       >
         <div
           class="text-2xl font-medium text-black border-b border-[#00000014] pb-4"
         >
-          Position
+          {MultipleLang.positions}
         </div>
         <div class="flex flex-col gap-10">
           {#if positionsData && positionsData.length}
@@ -1135,13 +1156,12 @@
         </div>
       </div>
 
-      <!-- News -->
       <div
         class="flex flex-col gap-10 border border-[#0000001a] rounded-[20px] p-6"
       >
         <div class="flex justify-between border-b border-[#00000014] pb-4">
-          <div class="text-2xl font-medium text-black">News</div>
-          <a href="#" class="font-bold text-base">View more</a>
+          <div class="text-2xl font-medium text-black">{MultipleLang.news}</div>
+          <a href="#" class="font-bold text-base">{MultipleLang.view_more}</a>
         </div>
 
         <div
@@ -1177,7 +1197,7 @@
   </div>
   <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
     <div class="flex flex-col gap-1 items-start max-w-[530px]">
-      <div class="title-4 text-gray-600 font-semibold">
+      <div class="title-3 text-gray-600 font-semibold">
         {MultipleLang.content.modal_add_title}
       </div>
       <div class="text-sm text-gray-500">
@@ -1189,10 +1209,10 @@
         class="flex flex-col gap-1 w-[530px]"
         class:form-item-translate={errors.address && errors.address.required}
       >
-        <div class="text-sm font-medium text-gray-700">
+        <div class="text-base font-semibold text-gray-700">
           {MultipleLang.content.modal_address_label}
         </div>
-        <div class="relative">
+        <div class="flex flex-col gap-1">
           <input
             type="text"
             id="address"
@@ -1204,7 +1224,7 @@
             on:blur={onBlur}
           />
           {#if errors.address && errors.address.required}
-            <div class="text-red-500 absolute -bottom-4 left-0">
+            <div class="text-red-500 font-medium">
               {errors.address.msg}
             </div>
           {/if}
@@ -1214,10 +1234,10 @@
         class="flex flex-col gap-1 w-[530px]"
         class:form-item-translate={errors.label && errors.label.required}
       >
-        <div class="text-sm font-medium text-gray-700">
+        <div class="text-base font-semibold text-gray-700">
           {MultipleLang.content.modal_label_label}
         </div>
-        <div class="relative">
+        <div class="flex flex-col gap-1">
           <input
             type="text"
             id="label"
@@ -1229,7 +1249,7 @@
             on:blur={onBlur}
           />
           {#if errors.label && errors.label.required}
-            <div class="text-red-500 absolute -bottom-4 left-0">
+            <div class="text-red-500 font-medium">
               {errors.label.msg}
             </div>
           {/if}
@@ -1286,6 +1306,14 @@
 
   .border {
     border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .input-border {
+    border: 1px solid rgb(229, 231, 235);
+  }
+
+  .input-border-error {
+    border: 1px solid red;
   }
 
   .loading {

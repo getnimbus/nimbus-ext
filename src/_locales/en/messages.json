@@ -36,7 +36,11 @@
       "modal-add-title": "Add Your Wallet",
       "modal-add-sub-title": "Add your wallet will give you more option to see the information at page new tab",
       "modal-edit-title": "Edit Your wallet",
-      "modal-edit-sub-title": "Edit your wallet will make change the information at page new tab"
+      "modal-edit-sub-title": "Edit your wallet will make change the information at page new tab",
+      "address-required": "Wallet address is required!",
+      "label-required": "Label is required!",
+      "re-input-address": "Please enter your wallet address again!",
+      "duplicate-address": "This wallet address is duplicated!"
     },
     "settings-page-content": {
       "change-lang-label": "Select languages"
@@ -44,13 +48,30 @@
   },
   "newtabPage": {
     "message": "Newtab page languages",
-    "title": "Hi there,",
-    "sub-title": "Today update",
+    "portfolio": "Portfolio",
+    "analytic": "Analytic",
+    "transactions": "Transactions",
+    "news": "News",
     "settings": "Settings",
-    "your-portfolio": "Your portfolio",
-    "portfolio-breakdown": "Portfolio breakdown",
-    "recent-transaction": "Recent transaction",
-    "news-title": "You might interested in",
-    "suggest-btn-text": "Suggest a content"
+    "wallet": "Wallet",
+    "view-more": "View more",
+    "opportunities": "Opportunities",
+    "positions": "Positions",
+    "assets": "Assets",
+    "market-price": "Market price",
+    "amount": "Amount",
+    "value": "Value",
+    "profit": "Profit",
+    "overview": "Overview",
+    "token-allocation": "Token Allocation",
+    "performance": "Performance",
+    "networth": "Networth",
+    "claimable": "Claimable",
+    "total-assets": "Total Assets",
+    "total-debts": "Total Debts",
+    "empty-wallet": "No wallet add yet.",
+    "Balance": "Balance",
+    "Ratio": "Ratio",
+    "Value": "Value"
   }
 }

@@ -26,7 +26,7 @@
   let selectedItemEdit: any = {};
   let isOpenEditModal = false;
   let isOpenAddModal = false;
-  let MultipleLang = {
+  const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "My wallets"),
     content: {
       btn_text: i18n(
@@ -84,6 +84,22 @@
         "optionsPage.accounts-page-content.modal-edit-sub-title",
         "Edit your wallet will make change the information at page new tab"
       ),
+      address_required: i18n(
+        "optionsPage.accounts-page-content.address-required",
+        "Address is required"
+      ),
+      label_required: i18n(
+        "optionsPage.accounts-page-content.label-required",
+        "Label is required"
+      ),
+      re_input_address: i18n(
+        "optionsPage.accounts-page-content.re-input-address",
+        "Please enter your wallet address again!"
+      ),
+      duplicate_address: i18n(
+        "optionsPage.accounts-page-content.duplicate-address",
+        "This wallet address is duplicated!"
+      ),
     },
   };
 
@@ -96,7 +112,7 @@
       errors["address"] = {
         ...errors["address"],
         required: true,
-        msg: "Address is required",
+        msg: MultipleLang.content.address_required,
       };
     } else {
       errors["address"] = { ...errors["address"], required: false };
@@ -106,7 +122,7 @@
       errors["label"] = {
         ...errors["label"],
         required: true,
-        msg: "Label is required",
+        msg: MultipleLang.content.label_required,
       };
     } else {
       errors["label"] = { ...errors["label"], required: false };
@@ -118,7 +134,7 @@
       errorsEdit["address"] = {
         ...errorsEdit["address"],
         required: true,
-        msg: "Address is required",
+        msg: MultipleLang.content.address_required,
       };
     } else {
       errorsEdit["address"] = { ...errorsEdit["address"], required: false };
@@ -128,7 +144,7 @@
       errorsEdit["label"] = {
         ...errorsEdit["label"],
         required: true,
-        msg: "Label is required",
+        msg: MultipleLang.content.label_required,
       };
     } else {
       errorsEdit["label"] = { ...errorsEdit["label"], required: false };
@@ -172,7 +188,7 @@
         errors["address"] = {
           ...errors["address"],
           required: true,
-          msg: "Please enter your address again",
+          msg: MultipleLang.content.re_input_address,
         };
         return;
       }
@@ -185,7 +201,7 @@
         errors["address"] = {
           ...errors["address"],
           required: true,
-          msg: "This address is duplicated",
+          msg: MultipleLang.content.duplicate_address,
         };
         return;
       }
@@ -230,7 +246,7 @@
         errorsEdit["address"] = {
           ...errorsEdit["address"],
           required: true,
-          msg: "Invalid address, please try input again",
+          msg: MultipleLang.content.re_input_address,
         };
         return;
       }
@@ -355,7 +371,7 @@
     on:close={() => (isOpenEditModal = false)}
   >
     <div class="flex flex-col gap-1 items-start max-w-[530px]">
-      <div class="title-4 text-gray-600 font-semibold">
+      <div class="title-3 text-gray-600 font-semibold">
         {MultipleLang.content.modal_edit_title}
       </div>
       <div class="text-sm text-gray-500">
@@ -367,10 +383,10 @@
       class="flex flex-col gap-2 mt-4"
     >
       <div class="flex flex-col gap-1 w-[530px]">
-        <div class="text-sm font-medium text-gray-700">
+        <div class="text-base font-semibold text-gray-700">
           {MultipleLang.content.modal_address_label}
         </div>
-        <div class="relative w-[530px]">
+        <div class="flex flex-col gap-1 w-[530px]">
           <input
             type="text"
             id="address"
@@ -383,7 +399,7 @@
             on:blur={onBlurEdit}
           />
           {#if errorsEdit.address && errorsEdit.address.required}
-            <div class="text-red-500 absolute -bottom-4 left-0">
+            <div class="text-red-500 font-medium">
               {errorsEdit.address.msg}
             </div>
           {/if}
@@ -394,10 +410,10 @@
         class:form-item-translate={errorsEdit.address &&
           errorsEdit.address.required}
       >
-        <div class="text-sm font-medium text-gray-700">
+        <div class="text-base font-semibold text-gray-700">
           {MultipleLang.content.modal_label_label}
         </div>
-        <div class="relative w-[530px]">
+        <div class="flex flex-col gap-1 w-[530px]">
           <input
             type="text"
             id="label"
@@ -410,7 +426,7 @@
             on:blur={onBlurEdit}
           />
           {#if errorsEdit.label && errorsEdit.label.required}
-            <div class="text-red-500 absolute -bottom-4 left-0">
+            <div class="text-red-500 font-medium">
               {errorsEdit.label.msg}
             </div>
           {/if}
@@ -447,7 +463,7 @@
 
   <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
     <div class="flex flex-col gap-1 items-start max-w-[530px]">
-      <div class="title-4 text-gray-600 font-semibold">
+      <div class="title-3 text-gray-600 font-semibold">
         {MultipleLang.content.modal_add_title}
       </div>
       <div class="text-sm text-gray-500">
@@ -459,10 +475,10 @@
         class="flex flex-col gap-1 w-[530px]"
         class:form-item-translate={errors.address && errors.address.required}
       >
-        <div class="text-sm font-medium text-gray-700">
+        <div class="text-base font-semibold text-gray-700">
           {MultipleLang.content.modal_address_label}
         </div>
-        <div class="relative">
+        <div class="flex flex-col gap-1">
           <input
             type="text"
             id="address"
@@ -474,7 +490,7 @@
             on:blur={onBlur}
           />
           {#if errors.address && errors.address.required}
-            <div class="text-red-500 absolute -bottom-4 left-0">
+            <div class="text-red-500 font-medium">
               {errors.address.msg}
             </div>
           {/if}
@@ -484,10 +500,10 @@
         class="flex flex-col gap-1 w-[530px]"
         class:form-item-translate={errors.label && errors.label.required}
       >
-        <div class="text-sm font-medium text-gray-700">
+        <div class="text-base font-semibold text-gray-700">
           {MultipleLang.content.modal_label_label}
         </div>
-        <div class="relative">
+        <div class="flex flex-col gap-1">
           <input
             type="text"
             id="label"
@@ -499,7 +515,7 @@
             on:blur={onBlur}
           />
           {#if errors.label && errors.label.required}
-            <div class="text-red-500 absolute -bottom-4 left-0">
+            <div class="text-red-500 font-medium">
               {errors.label.msg}
             </div>
           {/if}
@@ -536,10 +552,10 @@
 
 <style>
   .input-border {
-    border: 1px solid rgb(229, 231, 235);
+    border: 0.5px solid rgb(229, 231, 235);
   }
   .input-border-error {
-    border: 1px solid red;
+    border: 0.5px solid red;
   }
   .form-item-translate {
     margin-top: 10px;

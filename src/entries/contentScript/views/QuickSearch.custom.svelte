@@ -35,7 +35,7 @@
   let currentUrl = window.location.href;
   let timer;
   let isLoading = false;
-  let MultipleLang = {
+  const MultipleLang = {
     title: i18n(
       "quickSearchLang.title",
       "Search for cryptocurrency or token you want to know"

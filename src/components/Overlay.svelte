@@ -24,7 +24,7 @@
     on:click={clickOutSideToClose ? handleClose : null}
   >
     <div
-      class="bg-white rounded-md px-8 py-10 relative min-w-lg"
+      class="bg-white rounded-xl px-8 py-10 relative min-w-lg"
       on:click|stopPropagation
     >
       <div

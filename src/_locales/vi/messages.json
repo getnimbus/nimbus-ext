@@ -36,7 +36,11 @@
       "modal-add-title": "Thêm ví của bạn",
       "modal-add-sub-title": "Việc thêm ví của bạn sẽ cho bạn thêm sự đa dạng hơn về các thông tin được hiển thị tại Tab mới",
       "modal-edit-title": "Thay đổi ví của bạn",
-      "modal-edit-sub-title": "Việc thay đổi ví của bạn sẽ làm thay đổi các thông tin được hiển thị tại Tab mới"
+      "modal-edit-sub-title": "Việc thay đổi ví của bạn sẽ làm thay đổi các thông tin được hiển thị tại Tab mới",
+      "address-required": "Địa chỉ ví là bắt buộc!",
+      "label-required": "Tên là bắt buộc!",
+      "re-input-address": "Vui lòng điền lại địa chỉ ví!",
+      "duplicate-address": "Địa chỉ ví đã được lưu!"
     },
     "settings-page-content": {
       "change-lang-label": "Chọn ngôn ngữ"
@@ -44,13 +48,30 @@
   },
   "newtabPage": {
     "message": "Newtab page languages",
-    "title": "Xin chào,",
-    "sub-title": "Những thay đổi mới nhất hôm nay",
+    "portfolio": "Hồ sơ",
+    "analytic": "Phân tích",
+    "transactions": "Giao dịch",
+    "news": "Tin tức",
     "settings": "Cài đặt",
-    "your-portfolio": "Danh mục đầu tư của bạn",
-    "portfolio-breakdown": "Phân tích danh mục đầu tư",
-    "recent-transaction": "Giao dịch gần đây",
-    "news-title": "Bạn có thể quan tâm đến",
-    "suggest-btn-text": "Đề xuất một nội dung"
+    "wallet": "Ví",
+    "view-more": "Xem thêm",
+    "opportunities": "Các cơ hội",
+    "positions": "Các sàn giao dịch",
+    "assets": "Tài sản",
+    "market-price": "Giá trên sàn",
+    "amount": "Số lượng",
+    "value": "Giá",
+    "profit": "Lợi nhuận",
+    "overview": "Tổng quát",
+    "token-allocation": "Phân bổ token",
+    "performance": "Hiệu năng",
+    "networth": "Giá trị ròng",
+    "claimable": "Tài sản lợi nhuận",
+    "total-assets": "Tổng tài sản",
+    "total-debts": "Tổng nợ",
+    "empty-wallet": "Chưa thêm ví.",
+    "Balance": "Số dư",
+    "Ratio": "Tỉ lệ",
+    "Value": "Giá"
   }
 }
