@@ -72,6 +72,7 @@
     "empty-wallet": "No wallet add yet.",
     "Balance": "Balance",
     "Ratio": "Ratio",
-    "Value": "Value"
+    "Value": "Value",
+    "data-updated": "Data updated"
   }
 }

@@ -4,10 +4,13 @@
   import * as browser from "webextension-polyfill";
   import { sendMessage, getCurrentContext } from "webext-bridge";
   import numeral from "numeral";
-  import { i18n } from "~/lib/i18n";
+  import { i18n, currentLang } from "~/lib/i18n";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
+  import "dayjs/locale/vi";
+  import "dayjs/locale/en";
   dayjs.extend(relativeTime);
+  dayjs.locale(currentLang);
   import { formatBalance } from "~/utils";
   import { v4 as uuidv4 } from "uuid";
   import type { OverviewData } from "~/types/OverviewData";
@@ -67,6 +70,7 @@
     Balance: i18n("newtabPage.Balance", "Balance"),
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
+    data_updated: i18n("newtabPage.data-updated", "Data updated"),
 
     content: {
       btn_text: i18n(
@@ -850,7 +854,8 @@
                 <img src={Reload} alt="" />
               </div>
               <div class="text-xs text-white font-medium">
-                Data updated {dayjs(overviewData?.updatedAt).fromNow()}
+                {MultipleLang.data_updated}
+                {dayjs(overviewData?.updatedAt).fromNow()}
               </div>
             </div>
           </div>
