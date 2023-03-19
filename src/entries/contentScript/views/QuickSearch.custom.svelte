@@ -22,6 +22,7 @@
   import More from "../../../assets/more.svg";
   import Close from "../../../assets/close.svg";
   import Line from "../../../assets/line.svg";
+  import Coin from "../../../assets/coin.svg";
 
   const MultipleLang = {
     title: i18n(
@@ -57,6 +58,12 @@
   let timer;
   let isLoading = false;
   let tabSelected = "all";
+  const defaultSuggestList = ["bitcoin", "ethereum", "bnb"];
+  let suggestList = JSON.parse(localStorage.getItem("SuggestList")) || [
+    "bitcoin",
+    "ethereum",
+    "bnb",
+  ];
 
   let DraggableY = parseInt(localStorage.getItem("DraggableY")) || 140;
   let moving = false;
@@ -197,12 +204,30 @@
     }
   });
 
-  const debounce = (value) => {
+  const debounce = (value: string) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       search = value;
     }, 300);
   };
+
+  $: {
+    if (search && !suggestList.includes(search)) {
+      if (JSON.stringify(suggestList) === JSON.stringify(defaultSuggestList)) {
+        suggestList = [search];
+      } else {
+        if (suggestList.length < 3) {
+          suggestList = [...suggestList, search];
+        } else {
+          suggestList = [...suggestList.slice(1), search];
+        }
+      }
+    }
+  }
+
+  $: {
+    localStorage.setItem("SuggestList", JSON.stringify(suggestList));
+  }
 
   $: {
     if (DraggableY >= 0 && DraggableY <= window.innerHeight - 50) {
@@ -484,8 +509,31 @@
                 {MultipleLang.sources}
               </div>
             {:else}
-              <div class="text-4 leading-6 font-medium mt-10 text-center">
-                {MultipleLang.title}
+              <div
+                class="flex flex-col items-center justify-center gap-4 mt-16"
+              >
+                <img
+                  src={getLocalImg(Coin)}
+                  width={48}
+                  height="48"
+                  alt="coin"
+                />
+                <div
+                  class="text-sm text-[#00000099] font-medium text-center px-12"
+                >
+                  {MultipleLang.title}
+                </div>
+                <div class="flex gap-2 text-sm font-medium mt-8">
+                  <div class="text-black">Suggest keyword:</div>
+                  {#each suggestList as suggest}
+                    <div
+                      class="text-[#1E96FC] cursor-pointer"
+                      on:click={() => (search = suggest)}
+                    >
+                      {suggest}
+                    </div>
+                  {/each}
+                </div>
               </div>
             {/if}
           {/if}
