@@ -1295,7 +1295,6 @@
     background-color: #27326f;
     background-repeat: no-repeat;
     background-size: auto;
-    background-attachment: fixed;
     background-position: top right;
     padding-bottom: 164px;
     padding-top: 24px;

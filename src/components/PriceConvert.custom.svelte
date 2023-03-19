@@ -43,20 +43,22 @@
 </script>
 
 <reset-style>
-  <div class="my-1 flex items-end justify-between">
-    <div class="flex flex-col text-black">
-      <div class="mb-1 font-semibold text-center">{symbol}</div>
+  <div class="mt-2 flex items-center justify-between gap-2">
+    <div
+      class="flex-1 flex flex-col input-border px-3 py-[6px] gap-1 rounded-[5px]"
+    >
+      <div class="text-[#666666] text-xs font-medium">{symbol}</div>
       <input
-        class="input-2 input-border text-black"
+        class="text-black border-none outline-none bg-transparent text-sm font-medium w-full"
         type="text"
         bind:value={amount1}
         on:input={onInputAmount1}
       />
     </div>
-    <div>
+    <div class="w-6 h-6">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="w-6 h-6 text-gray-600"
+        class="w-6 h-6 text-[#212121]"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -69,10 +71,12 @@
         />
       </svg>
     </div>
-    <div class="flex flex-col text-black">
-      <div class="mb-1 font-semibold text-center">USD</div>
+    <div
+      class="flex-1 flex flex-col input-border px-3 py-[6px] gap-1 rounded-[5px]"
+    >
+      <div class="text-[#666666] text-xs font-medium">USD</div>
       <input
-        class="input-2 input-border text-black"
+        class="text-black border-none outline-none bg-transparent text-sm font-medium w-full"
         type="text"
         bind:value={amount2}
         on:input={onInputAmount2}
@@ -83,6 +87,6 @@
 
 <style>
   .input-border {
-    border: 1px solid skyblue;
+    border: 1px solid #00000014;
   }
 </style>

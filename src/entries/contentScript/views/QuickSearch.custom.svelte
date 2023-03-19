@@ -56,6 +56,7 @@
   let currentUrl = window.location.href;
   let timer;
   let isLoading = false;
+  let tabSelected = "all";
 
   let DraggableY = parseInt(localStorage.getItem("DraggableY")) || 140;
   let moving = false;
@@ -307,12 +308,9 @@
       </div>
 
       <div
-        class="p-4 bg-[#27326f]"
+        class="p-4 bg-[#27326f] bg-auto bg-no-repeat"
         style="
           background-image: url({getLocalImg(Line)});
-          background-repeat: no-repeat;
-          background-size: auto;
-          background-attachment: fixed;
           background-position: right 80%;
         "
       >
@@ -358,9 +356,67 @@
       <div class="px-3 pb-3 pt-2">
         <check-safety />
 
-        {#if selectedSearchTermData.length === 0}
-          {#if selectedTermData.length !== 0}
-            {#each selectedTermData as item}
+        {#if search}
+          <div class="flex items-center gap-2 mt-4 mb-3">
+            <div
+              class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+              class:bg-[#E1F4FD]={tabSelected === "all"}
+              on:click={() => (tabSelected = "all")}
+            >
+              All
+            </div>
+            <div
+              class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+              class:bg-[#E1F4FD]={tabSelected === "term"}
+              on:click={() => (tabSelected = "term")}
+            >
+              Term Explain
+            </div>
+            <div
+              class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+              class:bg-[#E1F4FD]={tabSelected === "search"}
+              on:click={() => (tabSelected = "search")}
+            >
+              Chart
+            </div>
+          </div>
+        {/if}
+
+        {#if tabSelected === "all"}
+          {#if selectedSearchTermData.length === 0}
+            {#if selectedTermData.length !== 0}
+              {#each selectedTermData as item}
+                <div class="p-4 max-w-sm bg-white rounded-[10px] mb-4">
+                  <div class="flex justify-between items-center">
+                    <a
+                      href={item.url}
+                      class="text-xl font-medium text-black no-underline"
+                    >
+                      {item.term}
+                    </a>
+                    <div class="cursor-pointer mt-1">
+                      <img src={getLocalImg(More)} alt="more" />
+                    </div>
+                  </div>
+                  {#if item.img !== null}
+                    <div
+                      class="w-full h-[300px] border rounded overflow-hidden"
+                    >
+                      <img
+                        src={item.img}
+                        alt="img"
+                        class="w-full h-full object-contain"
+                      />
+                    </div>
+                  {/if}
+                  <div class="text-sm font-normal text-[#00000099] mt-[10px]">
+                    {item.define}
+                  </div>
+                </div>
+              {/each}
+            {/if}
+          {:else}
+            {#each selectedSearchTermData as item}
               <div class="p-4 max-w-sm bg-white rounded-[10px] mb-4">
                 <div class="flex justify-between items-center">
                   <a
@@ -388,46 +444,40 @@
               </div>
             {/each}
           {/if}
-        {:else}
-          {#each selectedSearchTermData as item}
-            <div class="p-4 max-w-sm bg-white rounded-[10px] mb-4">
-              <div class="flex justify-between items-center">
-                <a
-                  href={item.url}
-                  class="text-xl font-medium text-black no-underline"
-                >
-                  {item.term}
-                </a>
-                <div class="cursor-pointer mt-1">
-                  <img src={getLocalImg(More)} alt="more" />
-                </div>
+
+          {#if search !== ""}
+            {#if isLoading}
+              <div class="text-4 leading-6 font-medium mt-10 text-center">
+                {MultipleLang.status}
               </div>
-              {#if item.img !== null}
-                <div class="w-full h-[300px] border rounded overflow-hidden">
-                  <img
-                    src={item.img}
-                    alt="img"
-                    class="w-full h-full object-contain"
-                  />
+            {:else if !isLoading}
+              {#if tokenDataSearch.length !== 0}
+                <div class="flex flex-col gap-y-3">
+                  {#each tokenDataSearch as item}
+                    <native-token-info
+                      id={item.id}
+                      name={item.symbol}
+                      {loaded}
+                    />
+                  {/each}
+                </div>
+                <div class="text-xs leading-4 italic text-gray-700 mt-3">
+                  {MultipleLang.sources}
+                </div>
+              {:else}
+                <div class="text-4 leading-6 font-medium mt-10 text-center">
+                  {MultipleLang.empty}
                 </div>
               {/if}
-              <div class="text-sm font-normal text-[#00000099] mt-[10px]">
-                {item.define}
+            {/if}
+          {:else if search === ""}
+            {#if selectedTokenData.length !== 0}
+              <div class="mb-2">
+                <div class="title-2">{MultipleLang.second_title}</div>
               </div>
-            </div>
-          {/each}
-        {/if}
-
-        {#if search !== ""}
-          {#if isLoading}
-            <div class="text-4 leading-6 font-medium mt-10 text-center">
-              {MultipleLang.status}
-            </div>
-          {:else if !isLoading}
-            {#if tokenDataSearch.length !== 0}
               <div class="flex flex-col gap-y-3">
-                {#each tokenDataSearch as item}
-                  <native-token-info id={item.id} name={item.symbol} {loaded} />
+                {#each selectedTokenData as item}
+                  <native-token-info id={item.id} name={item.symbol} />
                 {/each}
               </div>
               <div class="text-xs leading-4 italic text-gray-700 mt-3">
@@ -435,27 +485,116 @@
               </div>
             {:else}
               <div class="text-4 leading-6 font-medium mt-10 text-center">
-                {MultipleLang.empty}
+                {MultipleLang.title}
               </div>
             {/if}
           {/if}
-        {:else if search === ""}
-          {#if selectedTokenData.length !== 0}
-            <div class="mb-2">
-              <div class="title-2">{MultipleLang.second_title}</div>
-            </div>
-            <div class="flex flex-col gap-y-3">
-              {#each selectedTokenData as item}
-                <native-token-info id={item.id} name={item.symbol} />
+        {:else if tabSelected === "term"}
+          {#if selectedSearchTermData.length === 0}
+            {#if selectedTermData.length !== 0}
+              {#each selectedTermData as item}
+                <div class="p-4 max-w-sm bg-white rounded-[10px] mb-4">
+                  <div class="flex justify-between items-center">
+                    <a
+                      href={item.url}
+                      class="text-xl font-medium text-black no-underline"
+                    >
+                      {item.term}
+                    </a>
+                    <div class="cursor-pointer mt-1">
+                      <img src={getLocalImg(More)} alt="more" />
+                    </div>
+                  </div>
+                  {#if item.img !== null}
+                    <div
+                      class="w-full h-[300px] border rounded overflow-hidden"
+                    >
+                      <img
+                        src={item.img}
+                        alt="img"
+                        class="w-full h-full object-contain"
+                      />
+                    </div>
+                  {/if}
+                  <div class="text-sm font-normal text-[#00000099] mt-[10px]">
+                    {item.define}
+                  </div>
+                </div>
               {/each}
-            </div>
-            <div class="text-xs leading-4 italic text-gray-700 mt-3">
-              {MultipleLang.sources}
-            </div>
+            {/if}
           {:else}
-            <div class="text-4 leading-6 font-medium mt-10 text-center">
-              {MultipleLang.title}
-            </div>
+            {#each selectedSearchTermData as item}
+              <div class="p-4 max-w-sm bg-white rounded-[10px] mb-4">
+                <div class="flex justify-between items-center">
+                  <a
+                    href={item.url}
+                    class="text-xl font-medium text-black no-underline"
+                  >
+                    {item.term}
+                  </a>
+                  <div class="cursor-pointer mt-1">
+                    <img src={getLocalImg(More)} alt="more" />
+                  </div>
+                </div>
+                {#if item.img !== null}
+                  <div class="w-full h-[300px] border rounded overflow-hidden">
+                    <img
+                      src={item.img}
+                      alt="img"
+                      class="w-full h-full object-contain"
+                    />
+                  </div>
+                {/if}
+                <div class="text-sm font-normal text-[#00000099] mt-[10px]">
+                  {item.define}
+                </div>
+              </div>
+            {/each}
+          {/if}
+        {:else if tabSelected === "search"}
+          {#if search !== ""}
+            {#if isLoading}
+              <div class="text-4 leading-6 font-medium mt-10 text-center">
+                {MultipleLang.status}
+              </div>
+            {:else if !isLoading}
+              {#if tokenDataSearch.length !== 0}
+                <div class="flex flex-col gap-y-3">
+                  {#each tokenDataSearch as item}
+                    <native-token-info
+                      id={item.id}
+                      name={item.symbol}
+                      {loaded}
+                    />
+                  {/each}
+                </div>
+                <div class="text-xs leading-4 italic text-gray-700 mt-3">
+                  {MultipleLang.sources}
+                </div>
+              {:else}
+                <div class="text-4 leading-6 font-medium mt-10 text-center">
+                  {MultipleLang.empty}
+                </div>
+              {/if}
+            {/if}
+          {:else if search === ""}
+            {#if selectedTokenData.length !== 0}
+              <div class="mb-2">
+                <div class="title-2">{MultipleLang.second_title}</div>
+              </div>
+              <div class="flex flex-col gap-y-3">
+                {#each selectedTokenData as item}
+                  <native-token-info id={item.id} name={item.symbol} />
+                {/each}
+              </div>
+              <div class="text-xs leading-4 italic text-gray-700 mt-3">
+                {MultipleLang.sources}
+              </div>
+            {:else}
+              <div class="text-4 leading-6 font-medium mt-10 text-center">
+                {MultipleLang.title}
+              </div>
+            {/if}
           {/if}
         {/if}
 
