@@ -18,7 +18,7 @@
       trigger: "click focusin",
       appendTo: () => document.body,
       // content: popperElement,
-      content: `<native-token-info name="${name}" id="${id}" />`,
+      content: `<native-token-info name="${name}" id="${id}" loaded="${true}" />`,
       allowHTML: true,
       placement: "bottom-start",
       arrow: false,

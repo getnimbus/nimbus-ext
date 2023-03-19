@@ -24,7 +24,7 @@
 
   const getChartData = async () => {
     const dataLocal = (await sendMessage("chartDataLocal", {
-      symbol: symbol.toLowerCase(),
+      symbol: symbol?.toLowerCase(),
     })) as any;
 
     if (dataLocal) {
@@ -36,7 +36,7 @@
   const callNewDataChart = async () => {
     if (hasData) return;
     const newestData = (await sendMessage("chartData", {
-      symbol: symbol.toLowerCase(),
+      symbol: symbol?.toLowerCase(),
     })) as any;
 
     if (newestData) {
