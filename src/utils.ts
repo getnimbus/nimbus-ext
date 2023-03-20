@@ -28,31 +28,67 @@ export const regexList = [
   }
 ]
 
-export const formatCurrency = (input: number) => {
-  return numeral(input).format("0,0.00") === "NaN"
-    ? longNumberString(input)
-    : numeral(input).format("0,0.00");
+export const exponentialToDecimal = (exponential: number) => {
+  let decimal = exponential.toString().toLowerCase();
+  if (decimal.includes("e+")) {
+    const exponentialSplitted = decimal.split("e+");
+    let postfix = "";
+    for (
+      let i = 0;
+      i <
+      +exponentialSplitted[1] -
+      (exponentialSplitted[0].includes(".")
+        ? exponentialSplitted[0].split(".")[1].length
+        : 0);
+      i++
+    ) {
+      postfix += "0";
+    }
+    const addCommas = (text) => {
+      let j = 3;
+      let textLength = text.length;
+      while (j < textLength) {
+        text = `${text.slice(0, textLength - j)},${text.slice(
+          textLength - j,
+          textLength
+        )}`;
+        textLength++;
+        j += 3 + 1;
+      }
+      return text;
+    };
+    decimal = addCommas(exponentialSplitted[0].replace(".", "") + postfix);
+  }
+  if (decimal.toLowerCase().includes("e-")) {
+    const exponentialSplitted = decimal.split("e-");
+    let prefix = "0.";
+    for (let i = 0; i < +exponentialSplitted[1] - 1; i++) {
+      prefix += "0";
+    }
+    decimal = prefix + exponentialSplitted[0].replace(".", "");
+  }
+  return decimal;
 };
 
-export const longNumberString = (n) => {
-  let str,
-    str2 = "",
-    mag,
-    data = n.toExponential().replace(".", "").split(/e/i);
-  (str = data[0]), (mag = Number(data[1]));
-  if (mag >= 0 && str.length > mag) {
-    mag += 1;
-    return str.substring(0, mag) + "." + str.substring(mag);
+export const formatLongNumber = (number: number) => {
+  if (!number.toString().includes("e-")) {
+    return number;
   }
-  if (mag < 0) {
-    while (++mag) str2 += "0";
-    return "0." + str2 + str;
-  }
-  mag = mag - str.length + 1;
-  while (mag > str2.length) {
-    str2 += "0";
-  }
-  return str + str2;
+  const firstValueChar = exponentialToDecimal(number).indexOf(
+    number.toString().slice(0, 1)
+  );
+  const zeroReplace = exponentialToDecimal(number).slice(2, firstValueChar);
+  const formatNumber = exponentialToDecimal(number).replace(
+    zeroReplace,
+    "0..."
+  );
+  return formatNumber;
+};
+
+export const formatCurrency = (input: number) => {
+  return numeral(input).format("0,0.00") === "NaN"
+    ? formatLongNumber(input)
+    : numeral(input).format("0,0.00");
 };
 
 export const formatBalance = (input: number) => {
