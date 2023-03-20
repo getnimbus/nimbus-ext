@@ -249,8 +249,8 @@
   }
 
   .content {
-    min-width: 150px;
-    width: 150px;
+    min-width: 120px;
+    width: 120px;
     max-height: 400px;
     overflow-y: overlay;
     position: absolute;
