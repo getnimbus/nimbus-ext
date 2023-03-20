@@ -3,8 +3,15 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { coinGeko } from "~/lib/network";
+  import numeral from "numeral";
   import { sendMessage } from "webext-bridge";
-  import { formatCurrency, getCgLogo, getLocalImg, add3Dots } from "~/utils";
+  import {
+    formatCurrency,
+    exponentialToDecimal,
+    getCgLogo,
+    getLocalImg,
+    add3Dots,
+  } from "~/utils";
 
   import "~/components/ResetStyle.custom.svelte";
   import "~/components/CoinChart.custom.svelte";
@@ -21,6 +28,7 @@
   let price = 0;
   let openShowCategoryList = false;
   let showTooltip = false;
+  let numberTooltip = false;
 
   let min = 20;
   let max = 1400;
@@ -136,9 +144,24 @@
             </div>
             <div class="flex items-start gap-1">
               <div class="flex flex-col items-end gap-1">
-                <div class="text-base font-medium text-black">
-                  {price ? `$${formatCurrency(price)}` : "--"}
+                <div class="relative">
+                  <div
+                    class="text-base font-medium text-black"
+                    on:mouseenter={() => (numberTooltip = true)}
+                    on:mouseleave={() => (numberTooltip = false)}
+                  >
+                    {price ? `$${formatCurrency(price)}` : "--"}
+                  </div>
+                  {#if numberTooltip && numeral(price).format("0,0.00") === "NaN"}
+                    <div
+                      class="absolute -top-7 right-0"
+                      style="z-index: 2147483646;"
+                    >
+                      <tooltip-detail address={exponentialToDecimal(price)} />
+                    </div>
+                  {/if}
                 </div>
+
                 <div
                   class={`text-[13px] font-medium ${
                     2.32 < 0 ? "text-red-500" : "text-[#00A878]"
