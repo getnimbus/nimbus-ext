@@ -51,6 +51,8 @@ chrome.runtime.onInstalled.addListener((details) => {
   }
 })
 
+chrome.runtime.setUninstallURL('https://getnimbus.io/uninstall')
+
 const fetchBasicData = async () => {
   const list = await coinGeko.get("/search");
   browser.storage.local
