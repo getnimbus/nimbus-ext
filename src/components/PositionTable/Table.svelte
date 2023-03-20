@@ -39,7 +39,7 @@
     {#each data.positions as position}
       <div class="flex flex-col gap-2">
         <div class="text-base font-semibold">{position.type}</div>
-        <div class="border border-[#0000000d] rounded-[10px] overflow-x-scroll">
+        <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
           {#if position.type === "LP-Provider"}
             <LpProvider data={position} />
           {:else if position.type === "Staking"}

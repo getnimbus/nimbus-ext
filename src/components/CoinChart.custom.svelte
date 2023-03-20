@@ -71,7 +71,6 @@
       try {
         console.log("Start chart");
         chart = createChart(chartElement, {
-          width: 300,
           height: 200,
           handleScroll: {
             mouseWheel: false,

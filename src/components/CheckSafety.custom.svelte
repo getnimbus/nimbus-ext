@@ -47,7 +47,7 @@
         {#if !isEmpty(data) && data.is_audit === IS_AUDITED_CODE}
           <img src={getLocalImg(Success)} alt="Success" />
           <div class="text-xs">
-            The page has been audited.
+            <div>The page has been audited.</div>
             <a
               href={data?.audit_info?.[0]?.audit_link}
               target="_blank"

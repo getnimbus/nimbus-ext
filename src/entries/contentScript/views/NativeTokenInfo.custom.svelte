@@ -24,7 +24,7 @@
 
   let min = 20;
   let max = 1400;
-  let currentMarketcap = 1400;
+  let currentMarketcap = 60;
   let percent = 0;
 
   let coinInfo = {
@@ -100,7 +100,7 @@
                     </div>
                     {#if showTooltip && coinInfo?.name.length >= 10}
                       <div
-                        class="absolute -top-8 -left-1"
+                        class="absolute -top-7 -left-1"
                         style="z-index: 2147483646;"
                       >
                         <tooltip-detail address={coinInfo?.name} />
@@ -152,9 +152,9 @@
                   {Math.abs(2.32)}%
                 </div>
               </div>
-              <div class="cursor-pointer -mt-[2px]">
+              <!-- <div class="cursor-pointer -mt-[2px]">
                 <img src={getLocalImg(More)} alt="more" />
-              </div>
+              </div> -->
             </div>
           </div>
 
@@ -276,6 +276,7 @@
     background: #6ac7f533;
     color: #27326f;
     font-size: 11px;
+    line-height: 20px;
     font-weight: 400;
   }
 </style>

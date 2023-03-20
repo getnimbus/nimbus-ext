@@ -59,11 +59,15 @@
   let isLoading = false;
   let tabSelected = "all";
   const defaultSuggestList = ["bitcoin", "ethereum", "bnb"];
-  let suggestList = JSON.parse(localStorage.getItem("SuggestList")) || [
-    "bitcoin",
-    "ethereum",
-    "bnb",
-  ];
+  let suggestList = ["bitcoin", "ethereum", "bnb"];
+
+  const getSuggestList = async () => {
+    const suggestListRes = (await browser.storage.local.get("SuggestList"))
+      .SuggestList;
+    if (suggestListRes) {
+      suggestList = JSON.parse(suggestListRes);
+    }
+  };
 
   let DraggableY = parseInt(localStorage.getItem("DraggableY")) || 140;
   let moving = false;
@@ -196,6 +200,7 @@
     getConfigPages();
     getCoinList();
     getTermList();
+    getSuggestList();
   });
 
   onDestroy(() => {
@@ -226,7 +231,9 @@
   }
 
   $: {
-    localStorage.setItem("SuggestList", JSON.stringify(suggestList));
+    if (JSON.stringify(suggestList) !== JSON.stringify(defaultSuggestList)) {
+      browser.storage.local.set({ SuggestList: JSON.stringify(suggestList) });
+    }
   }
 
   $: {
@@ -322,8 +329,8 @@
   {#if isShowSideBar}
     <div
       transition:fly={{ x: 650, opacity: 1 }}
-      style="z-index: 2147483647; border-left: 1px solid #27326F;"
-      class="fixed top-0 right-0 h-screen bg-[#F8F8F8] overflow-y-auto w-[350px] flex flex-col text-gray-900 border-0 border-l-1 border-solid border-l-gray-200"
+      style="z-index: 2147483647;"
+      class="fixed top-0 right-0 h-screen bg-[#F8F8F8] overflow-y-auto w-[350px] flex flex-col"
     >
       <div
         class="cursor-pointer text-white font-semibold absolute top-7 left-0 border-gray-700 pt-[3px] pb-1 px-2 bg-[#38427B] rounded-tr-[5px] rounded-br-[5px]"
@@ -373,7 +380,7 @@
             value={search}
             placeholder={MultipleLang.input_placeholder}
             type="text"
-            class="input-1 text-white bg-[#38427B]"
+            class="input-1 text-white bg-[#38427B] placeholder-white"
           />
         </div>
       </div>
@@ -395,14 +402,14 @@
               class:bg-[#E1F4FD]={tabSelected === "term"}
               on:click={() => (tabSelected = "term")}
             >
-              Term Explain
+              Terms
             </div>
             <div
               class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
-              class:bg-[#E1F4FD]={tabSelected === "search"}
-              on:click={() => (tabSelected = "search")}
+              class:bg-[#E1F4FD]={tabSelected === "token"}
+              on:click={() => (tabSelected = "token")}
             >
-              Chart
+              Tokens
             </div>
           </div>
         {/if}
@@ -419,9 +426,9 @@
                     >
                       {item.term}
                     </a>
-                    <div class="cursor-pointer mt-1">
+                    <!-- <div class="cursor-pointer mt-1">
                       <img src={getLocalImg(More)} alt="more" />
-                    </div>
+                    </div> -->
                   </div>
                   {#if item.img !== null}
                     <div
@@ -450,9 +457,9 @@
                   >
                     {item.term}
                   </a>
-                  <div class="cursor-pointer mt-1">
+                  <!-- <div class="cursor-pointer mt-1">
                     <img src={getLocalImg(More)} alt="more" />
-                  </div>
+                  </div> -->
                 </div>
                 {#if item.img !== null}
                   <div class="w-full h-[300px] border rounded overflow-hidden">
@@ -524,7 +531,12 @@
                   {MultipleLang.title}
                 </div>
                 <div class="flex gap-2 text-sm font-medium mt-8">
-                  <div class="text-black">Suggest keyword:</div>
+                  <div class="text-black">
+                    {JSON.stringify(suggestList) ===
+                    JSON.stringify(defaultSuggestList)
+                      ? "Suggest keyword:"
+                      : "Recent search:"}
+                  </div>
                   {#each suggestList as suggest}
                     <div
                       class="text-[#1E96FC] cursor-pointer"
@@ -549,9 +561,9 @@
                     >
                       {item.term}
                     </a>
-                    <div class="cursor-pointer mt-1">
+                    <!-- <div class="cursor-pointer mt-1">
                       <img src={getLocalImg(More)} alt="more" />
-                    </div>
+                    </div> -->
                   </div>
                   {#if item.img !== null}
                     <div
@@ -580,9 +592,9 @@
                   >
                     {item.term}
                   </a>
-                  <div class="cursor-pointer mt-1">
+                  <!-- <div class="cursor-pointer mt-1">
                     <img src={getLocalImg(More)} alt="more" />
-                  </div>
+                  </div> -->
                 </div>
                 {#if item.img !== null}
                   <div class="w-full h-[300px] border rounded overflow-hidden">
@@ -599,7 +611,7 @@
               </div>
             {/each}
           {/if}
-        {:else if tabSelected === "search"}
+        {:else if tabSelected === "token"}
           {#if search !== ""}
             {#if isLoading}
               <div class="text-4 leading-6 font-medium mt-10 text-center">

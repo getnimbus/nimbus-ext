@@ -726,7 +726,7 @@
             value={search}
             placeholder="Search by address"
             type="text"
-            class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] border-none focus:outline-none focus:ring-0"
+            class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
           />
         </div>
         <div
@@ -1052,9 +1052,7 @@
           <div class="text-2xl font-medium text-black mb-6">
             {MultipleLang.wallet}
           </div>
-          <div
-            class="border border-[#0000000d] rounded-[10px] overflow-x-scroll"
-          >
+          <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
             <table class="table-auto 2xl:w-full xl:w-auto w-full">
               <thead>
                 <tr class="bg-[#f4f5f880]">
