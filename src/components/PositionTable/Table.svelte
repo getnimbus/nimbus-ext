@@ -1,12 +1,16 @@
 <script>
   export let data;
-
+  import { i18n } from "~/lib/i18n";
   import { formatBalance } from "~/utils";
   import LpProvider from "./LPProvider.svelte";
   import Staking from "./Staking.svelte";
   import StakingLocked from "./StakingLocked.svelte";
   import LendingProvider from "./LendingProvider.svelte";
   import LendingBorrow from "./LendingBorrow.svelte";
+
+  const MultipleLang = {
+    claimable: i18n("newtabPage.claimable", "Claimable"),
+  };
 </script>
 
 <div class="flex flex-col gap-5">
@@ -26,7 +30,7 @@
         ${formatBalance(data.currentValue)}
       </div>
       <div class="text-lg font-medium text-gray-600">
-        Claimable: ${formatBalance(data.claimable)}
+        {MultipleLang.claimable}: ${formatBalance(data.claimable)}
       </div>
     </div>
   </div>
@@ -35,7 +39,7 @@
     {#each data.positions as position}
       <div class="flex flex-col gap-2">
         <div class="text-base font-semibold">{position.type}</div>
-        <div class="border border-[#0000000d] rounded-[10px] overflow-x-scroll">
+        <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
           {#if position.type === "LP-Provider"}
             <LpProvider data={position} />
           {:else if position.type === "Staking"}

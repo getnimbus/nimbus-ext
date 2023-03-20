@@ -56,7 +56,7 @@ export default defineConfig({
     "title-4": "text-lg font-semibold",
     "title-5": "text-base font-medium",
     "input-1": "w-full py-2 border-none bg-white focus:outline-none",
-    "input-2": "w-30 py-2 px-1 flex-1 rounded bg-white focus:outline-none",
+    "input-2": "w-30 py-2 px-1 flex-1 rounded-lg border bg-white focus:outline-none",
   },
   plugins: [
     require("flowbite/plugin"),

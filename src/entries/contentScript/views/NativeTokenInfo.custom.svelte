@@ -2,20 +2,30 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import { coinGeko } from "../../../lib/network";
+  import { coinGeko } from "~/lib/network";
   import { sendMessage } from "webext-bridge";
-  import { formatCurrency, getCgLogo } from "../../../utils";
+  import { formatCurrency, getCgLogo, getLocalImg, add3Dots } from "~/utils";
 
   import "~/components/ResetStyle.custom.svelte";
   import "~/components/CoinChart.custom.svelte";
   import "~/components/PriceConvert.custom.svelte";
+  import "~/components/Tooltip.custom.svelte";
+
+  import More from "../../../assets/more.svg";
 
   export let name;
   export let id;
-  export let popup = true;
+  export let loaded = true;
 
   let isLoading = false;
   let price = 0;
+  let openShowCategoryList = false;
+  let showTooltip = false;
+
+  let min = 20;
+  let max = 1400;
+  let currentMarketcap = 60;
+  let percent = 0;
 
   let coinInfo = {
     symbol: "",
@@ -23,8 +33,6 @@
     logo_url: "",
     categories: [],
   };
-
-  export let loaded;
 
   const loadSymbolInfo = async () => {
     isLoading = true;
@@ -48,45 +56,63 @@
   onMount(() => {
     loadSymbolInfo();
   });
+
+  $: {
+    if (currentMarketcap === max) {
+      percent = 100;
+    } else if (currentMarketcap === min) {
+      percent = 0;
+    } else {
+      percent = ((currentMarketcap - min) / (max - min)) * 100;
+    }
+  }
 </script>
 
 <reset-style>
-  <div
-    class={`rounded bg-white shadow font-sans text-sm leading-5 text-gray-400 transition-all overflow-hidden w-full max-h-[600px] ${
-      isLoading && "w-full max-h-[120px]"
-    }`}
-  >
+  <div class="p-4 rounded-[10px] bg-white">
     {#if isLoading}
       <div class="w-full h-[120px] flex justify-center items-center">
         <loading-icon />
       </div>
-    {/if}
-
-    {#if coinInfo}
-      <div class="p-3">
-        <div class="flex gap-4 items-center">
-          <a href={`https://www.coingecko.com/en/coins/${id}`} target="_blank">
-            <img
-              class="w-[52px] h-[52px] rounded-full"
-              src={getCgLogo(id)}
-              alt={name}
-            />
-          </a>
-          <div class="flex flex-col text-gray-900 text-sm leading-5">
-            <div class="flex flex-col">
+    {:else}
+      <div class="max-w-sm max-h-[600px]">
+        {#if coinInfo}
+          <div class="flex justify-between items-center">
+            <div class="flex gap-2">
+              <img
+                class="w-[40px] h-[40px] rounded-full"
+                src={getCgLogo(id)}
+                alt={name}
+              />
               <a
                 href={`https://www.coingecko.com/en/coins/${id}`}
                 target="_blank"
-                class="no-underline text-gray-800 hover:text-gray-900"
+                class="no-underline flex flex-col gap-1"
               >
-                <div class="flex flex-col font-medium">
-                  <div class="flex items-center">
-                    {name}
+                <div class="flex items-center gap-2">
+                  <div class="relative">
+                    <div
+                      class="text-sm font-medium text-black flex-1"
+                      on:mouseenter={() => (showTooltip = true)}
+                      on:mouseleave={() => (showTooltip = false)}
+                    >
+                      {coinInfo?.name ? add3Dots(coinInfo?.name, 10) : "-"}
+                    </div>
+                    {#if showTooltip && coinInfo?.name.length >= 10}
+                      <div
+                        class="absolute -top-7 -left-1"
+                        style="z-index: 2147483646;"
+                      >
+                        <tooltip-detail address={coinInfo?.name} />
+                      </div>
+                    {/if}
+                  </div>
+                  <div class="h-4 w-4 -mt-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
                       fill="currentColor"
-                      class="ml-1 w-4 h-4"
+                      class="w-full h-full object-contain text-[#212121]"
                     >
                       <path
                         fill-rule="evenodd"
@@ -100,53 +126,118 @@
                       />
                     </svg>
                   </div>
-                  {coinInfo?.name ? coinInfo?.name : "-"}
+                </div>
+                <div
+                  class="text-[11px] text-[#00000099] font-normal py-[2px] px-1 rounded bg-[#E9EBF1] w-max"
+                >
+                  {name}
                 </div>
               </a>
-              <div class="flex items-center">
-                Price: <span class="font-medium ml-1">
+            </div>
+            <div class="flex items-start gap-1">
+              <div class="flex flex-col items-end gap-1">
+                <div class="text-base font-medium text-black">
                   {price ? `$${formatCurrency(price)}` : "--"}
-                </span>
+                </div>
+                <div
+                  class={`text-[13px] font-medium ${
+                    2.32 < 0 ? "text-red-500" : "text-[#00A878]"
+                  }`}
+                >
+                  {#if 2.32 < 0}
+                    ↓
+                  {:else}
+                    ↑
+                  {/if}
+                  {Math.abs(2.32)}%
+                </div>
+              </div>
+              <!-- <div class="cursor-pointer -mt-[2px]">
+                <img src={getLocalImg(More)} alt="more" />
+              </div> -->
+            </div>
+          </div>
+
+          <div class="flex gap-1 flex-wrap mt-3 mx-auto">
+            {#each coinInfo.categories.slice(0, 3) as category}
+              <div
+                class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px]"
+              >
+                {category}
+              </div>
+            {/each}
+            {#if coinInfo.categories.length > 3}
+              <div class="relative">
+                <div
+                  class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px] flex items-center gap-1 cursor-pointer"
+                  on:click={() =>
+                    (openShowCategoryList = !openShowCategoryList)}
+                >
+                  More...
+                </div>
+                {#if openShowCategoryList}
+                  <div class="content">
+                    {#each coinInfo.categories.slice(3) as category}
+                      <div class="content_item" id={category.value}>
+                        {category}
+                      </div>
+                    {/each}
+                  </div>
+                {/if}
+              </div>
+            {/if}
+          </div>
+
+          <div class="mt-4">
+            <div class="flex justify-between mb-[6px]">
+              <div class="text-xs text-[#000000B2] font-normal">Marketcap</div>
+              <div class="text-xs text-[#000000B2] font-medium">
+                ${currentMarketcap}
               </div>
             </div>
-            <!-- <div class="font-medium">Goverment token of stepN App</div> -->
-          </div>
-        </div>
-
-        <div class="flex gap-2 flex-wrap mt-2 mx-auto">
-          {#each coinInfo.categories.slice(0, 3) as category}
-            <div
-              class="flex items-center text-xs justyfy-center px-2 py-1 text-sky-500 bg-sky-100 rounded"
-            >
-              {category}
+            <div class="flex flex-col gap-1">
+              <div class="h-[6px] rounded-[5px] bg-[#27326F1A] relative">
+                <div
+                  style="left: {percent}%"
+                  class={`absolute top-0 w-1 h-[6px] bg-[#4D4D4D]`}
+                />
+              </div>
+              <div class="flex justify-between">
+                <div class="text-[#000000B2] text-xs font-medium">
+                  ${min}
+                </div>
+                <div class="text-[#000000B2] text-xs font-medium">
+                  ${max}
+                </div>
+              </div>
             </div>
-          {/each}
-        </div>
+          </div>
 
-        <div class="mt-2">
-          <coin-chart symbol={id} {loaded} />
-        </div>
+          <div class="mt-2">
+            <coin-chart symbol={id} {loaded} />
+          </div>
 
-        {#if price}
-          <price-convert symbol={name} {price} />
-        {:else}
-          <div>No data price</div>
+          {#if price}
+            <price-convert symbol={name} {price} />
+          {:else}
+            <div>No data price</div>
+          {/if}
+
+          <!-- <div class="flex gap-4 items-center my-4">
+            <div
+              on:click={() => alert("Comming soon")}
+              class="flex items-center justyfy-center btn-border px-3 py-2 text-white bg-sky-500 rounded cursor-pointer"
+            >
+              More info
+            </div>
+            <div
+              on:click={() => alert("Comming soon")}
+              class="flex items-center justyfy-center btn-border px-3 py-2 text-sky-500 rounded cursor-pointer"
+            >
+              Follow this coin
+            </div>
+          </div> -->
         {/if}
-
-        <!-- <div class="flex gap-4 items-center my-4">
-        <div
-          on:click={() => alert("Comming soon")}
-          class="flex items-center justyfy-center btn-border px-3 py-2 text-white bg-sky-500 rounded cursor-pointer"
-        >
-          More info
-        </div>
-        <div
-          on:click={() => alert("Comming soon")}
-          class="flex items-center justyfy-center btn-border px-3 py-2 text-sky-500 rounded cursor-pointer"
-        >
-          Follow this coin
-        </div>
-      </div> -->
       </div>
     {/if}
   </div>
@@ -155,5 +246,37 @@
 <style>
   .btn-border {
     border: 1px solid #0ea5e9;
+  }
+
+  .content {
+    min-width: 150px;
+    width: 150px;
+    max-height: 400px;
+    overflow-y: overlay;
+    position: absolute;
+    left: 0;
+    margin-top: 6px;
+    z-index: 2147483646;
+    background: #ffffff;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .content::-webkit-scrollbar {
+    display: none;
+  }
+
+  .content .content_item {
+    padding: 1px 4px;
+    border-radius: 5px;
+    background: #6ac7f533;
+    color: #27326f;
+    font-size: 11px;
+    line-height: 20px;
+    font-weight: 400;
   }
 </style>

@@ -15,7 +15,7 @@
 
   let selectedLang: any = langs.filter((item) => item.value === currentLang)[0];
 
-  let MultipleLang = {
+  const MultipleLang = {
     title: i18n("optionsPage.settings-page-title", "Settings"),
     content: {
       change_lang_label: i18n(

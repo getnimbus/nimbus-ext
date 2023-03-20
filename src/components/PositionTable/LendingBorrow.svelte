@@ -1,8 +1,12 @@
 <script>
   import dayjs from "dayjs";
   import { formatBalance } from "~/utils";
+  import TrendUp from "~/assets/trend-up.svg";
+  import TrendDown from "~/assets/trend-down.svg";
 
   export let data;
+
+  let profit = Math.random() * 100 * (Math.random() > 0.5 ? 1 : -1);
 </script>
 
 <table class="table-fixed w-full">
@@ -36,6 +40,11 @@
       <th class="pr-3 py-3">
         <div class="text-sm font-semibold text-black uppercase text-right">
           Value (USD)
+        </div>
+      </th>
+      <th class="pr-3 py-3">
+        <div class="text-sm font-semibold text-black uppercase text-right">
+          Profit & Loss
         </div>
       </th>
     </tr>
@@ -87,6 +96,20 @@
       <td class="pr-3 py-4">
         <div class="text-right text-sm text-[#00000099] font-medium">
           ${formatBalance(data.currentValue)}
+        </div>
+      </td>
+      <td class="pr-3 py-4">
+        <div
+          class="flex items-center justify-end gap-1 text-sm font-medium min-w-[125px]"
+        >
+          <div class={`${profit >= 0 ? "text-[#00A878]" : "text-red-500"}`}>
+            ${formatBalance(profit)}
+          </div>
+          <img
+            src={profit >= 0 ? TrendUp : TrendDown}
+            alt="trend"
+            class="mb-1"
+          />
         </div>
       </td>
     </tr>
