@@ -62,7 +62,7 @@
     overview: i18n("newtabPage.overview", "Overview"),
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
     performance: i18n("newtabPage.performance", "Performance"),
-    networth: i18n("newtabPage.networth", "Networth"),
+    networth: i18n("newtabPage.networth", "Net Worth"),
     claimable: i18n("newtabPage.claimable", "Claimable"),
     total_assets: i18n("newtabPage.total-assets", "Total Assets"),
     total_debts: i18n("newtabPage.total-debts", "Total Debts"),
