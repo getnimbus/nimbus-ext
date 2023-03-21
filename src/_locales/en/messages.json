@@ -35,6 +35,8 @@
       "modal-label-label": "Label",
       "modal-add-title": "Add Your Wallet",
       "modal-add-sub-title": "Add your wallet will give you more option to see the information at page new tab",
+      "modal-delete-title": "Are you sure?",
+      "modal-delete-sub-title": "Do you really want to delete this wallet? This process cannot be undone",
       "modal-edit-title": "Edit Your wallet",
       "modal-edit-sub-title": "Edit your wallet will make change the information at page new tab",
       "address-required": "Wallet address is required!",
