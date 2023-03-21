@@ -18,6 +18,8 @@
   let selectedItemEdit: any = {};
   let isOpenEditModal = false;
   let isOpenAddModal = false;
+  let isOpenConfirmDelete = false;
+  let selectedWallet = {};
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "My wallets"),
     content: {
@@ -66,6 +68,15 @@
       modal_add_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-add-sub-title",
         "Add your wallet will give you more option to see the information at page new tab"
+      ),
+
+      modal_delete_title: i18n(
+        "optionsPage.accounts-page-content.modal-delete-title",
+        "Are you sure?"
+      ),
+      modal_delete_sub_title: i18n(
+        "optionsPage.accounts-page-content.modal-delete-sub-title",
+        "Do you really want to delete this wallet? This process cannot be undone"
       ),
 
       modal_edit_title: i18n(
@@ -288,6 +299,7 @@
         });
 
       getListAddress();
+      isOpenConfirmDelete = false;
     }
   };
 
@@ -355,7 +367,10 @@
               <div class="flex justify-end gap-6">
                 <div
                   class="text-red-600 hover:underline dark:text-red-500 transition-all cursor-pointer font-semibold"
-                  on:click={() => handleDelete(item)}
+                  on:click={() => {
+                    isOpenConfirmDelete = true;
+                    selectedWallet = item;
+                  }}
                 >
                   {MultipleLang.content.modal_delete}
                 </div>
@@ -552,6 +567,43 @@
       </button>
     </div>
   </form>
+</AppOverlay>
+
+<AppOverlay
+  isOpen={isOpenConfirmDelete}
+  on:close={() => (isOpenConfirmDelete = false)}
+>
+  <div class="flex flex-col gap-1 items-start max-w-[530px]">
+    <div class="title-3 text-gray-600 font-semibold">
+      {MultipleLang.content.modal_delete_title}
+    </div>
+    <div class="text-sm text-gray-500">
+      {MultipleLang.content.modal_delete_sub_title}
+    </div>
+  </div>
+  <div class="flex justify-end gap-2 mt-4">
+    <button
+      class="flex items-center gap-3 px-4 py-2 border border-[#1E96FC] rounded-xl"
+      on:click={() => {
+        isOpenConfirmDelete = false;
+        selectedWallet = {};
+      }}
+    >
+      <div class="text-base font-medium text-[#1E96FC]">
+        {MultipleLang.content.modal_cancel}
+      </div>
+    </button>
+    <button
+      class="flex items-center gap-3 px-4 py-2 bg-red-500 rounded-xl"
+      on:click={() => {
+        handleDelete(selectedWallet);
+      }}
+    >
+      <div class="text-base font-medium text-white">
+        {MultipleLang.content.modal_delete}
+      </div>
+    </button>
+  </div>
 </AppOverlay>
 
 <style>
