@@ -323,232 +323,244 @@
     </button>
   </div>
 
-  <div class="table-border mt-2 rounded">
-    <Table hoverable={true}>
-      <TableHead>
-        <TableHeadCell
-          >{MultipleLang.content.address_header_table}</TableHeadCell
-        >
-        <TableHeadCell>{MultipleLang.content.label_header_table}</TableHeadCell>
-        <TableHeadCell>{MultipleLang.content.action_header_table}</TableHeadCell
-        >
-      </TableHead>
-      <TableBody class="divide-y">
+  <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto mt-2">
+    <table class="table-auto w-full">
+      <thead>
+        <tr class="bg-[#f4f5f880]">
+          <th class="pl-3 py-3">
+            <div class="text-left text-sm uppercase font-semibold text-black">
+              {MultipleLang.content.address_header_table}
+            </div>
+          </th>
+          <th class="py-3">
+            <div class="text-left text-sm uppercase font-semibold text-black">
+              {MultipleLang.content.label_header_table}
+            </div>
+          </th>
+          <th class="pr-3 py-3">
+            <div class="text-right text-sm uppercase font-semibold text-black">
+              {MultipleLang.content.action_header_table}
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
         {#each listAddress as item}
-          <TableBodyRow>
-            <TableBodyCell>
-              <div class="font-medium">
+          <tr>
+            <td class="pl-3 py-4">
+              <div class="text-left flex items-start gap-2">
                 {item.address}
               </div>
-            </TableBodyCell>
-            <TableBodyCell>
-              <div class="bg-gray-100 text-gray-500 w-max px-3 py-1 rounded-xl">
+            </td>
+            <td class="py-4">
+              <div
+                class="bg-gray-100 text-[#00000099] w-max px-3 py-1 rounded-xl"
+              >
                 {item.label}
               </div>
-            </TableBodyCell>
-            <TableBodyCell class="flex gap-6">
-              <div
-                class="text-red-600 hover:underline dark:text-red-500 transition-all cursor-pointer font-semibold"
-                on:click={() => handleDelete(item)}
-              >
-                {MultipleLang.content.modal_delete}
+            </td>
+            <td class="pr-3 py-4">
+              <div class="flex justify-end gap-6">
+                <div
+                  class="text-red-600 hover:underline dark:text-red-500 transition-all cursor-pointer font-semibold"
+                  on:click={() => handleDelete(item)}
+                >
+                  {MultipleLang.content.modal_delete}
+                </div>
+                <div
+                  class="text-blue-600 hover:underline dark:text-blue-500 transition-all cursor-pointer font-semibold"
+                  on:click={() => handleEdit(item)}
+                >
+                  {MultipleLang.content.modal_edit}
+                </div>
               </div>
-              <div
-                class="text-blue-600 hover:underline dark:text-blue-500 transition-all cursor-pointer font-semibold"
-                on:click={() => handleEdit(item)}
-              >
-                {MultipleLang.content.modal_edit}
-              </div>
-            </TableBodyCell>
-          </TableBodyRow>
+            </td>
+          </tr>
         {/each}
-      </TableBody>
-    </Table>
+      </tbody>
+    </table>
   </div>
-
-  <AppOverlay
-    isOpen={isOpenEditModal}
-    on:close={() => (isOpenEditModal = false)}
-  >
-    <div class="flex flex-col gap-1 items-start max-w-[530px]">
-      <div class="title-3 text-gray-600 font-semibold">
-        {MultipleLang.content.modal_edit_title}
-      </div>
-      <div class="text-sm text-gray-500">
-        {MultipleLang.content.modal_edit_sub_title}
-      </div>
-    </div>
-    <form
-      on:submit|preventDefault={onSubmitEdit}
-      class="flex flex-col gap-2 mt-4"
-    >
-      <div class="flex flex-col gap-1 w-[530px]">
-        <div class="text-base font-semibold text-gray-700">
-          {MultipleLang.content.modal_address_label}
-        </div>
-        <div class="flex flex-col gap-1 w-[530px]">
-          <input
-            type="text"
-            id="address"
-            name="address"
-            placeholder={MultipleLang.content.modal_address_label}
-            bind:value={selectedItemEdit.address}
-            class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
-            class:input-border-error={errorsEdit.address &&
-              errorsEdit.address.required}
-            on:blur={onBlurEdit}
-          />
-          {#if errorsEdit.address && errorsEdit.address.required}
-            <div class="text-red-500 font-medium">
-              {errorsEdit.address.msg}
-            </div>
-          {/if}
-        </div>
-      </div>
-      <div
-        class="flex flex-col gap-1 w-[530px]"
-        class:form-item-translate={errorsEdit.address &&
-          errorsEdit.address.required}
-      >
-        <div class="text-base font-semibold text-gray-700">
-          {MultipleLang.content.modal_label_label}
-        </div>
-        <div class="flex flex-col gap-1 w-[530px]">
-          <input
-            type="text"
-            id="label"
-            name="label"
-            placeholder={MultipleLang.content.modal_label_label}
-            bind:value={selectedItemEdit.label}
-            class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
-            class:input-border-error={errorsEdit.label &&
-              errorsEdit.label.required}
-            on:blur={onBlurEdit}
-          />
-          {#if errorsEdit.label && errorsEdit.label.required}
-            <div class="text-red-500 font-medium">
-              {errorsEdit.label.msg}
-            </div>
-          {/if}
-        </div>
-      </div>
-      <div
-        class="flex justify-end gap-2 mt-1"
-        class:form-item-translate={(errorsEdit.label &&
-          errorsEdit.label.required) ||
-          (errorsEdit.address && errorsEdit.address.required)}
-      >
-        <button
-          class="flex items-center gap-3 px-4 py-2 border border-[#1E96FC] rounded-xl"
-          on:click={() => {
-            errorsEdit = {};
-            isOpenEditModal = false;
-          }}
-        >
-          <div class="text-base font-medium text-[#1E96FC]">
-            {MultipleLang.content.modal_cancel}
-          </div>
-        </button>
-        <button
-          class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
-          type="submit"
-        >
-          <div class="text-base font-medium text-white">
-            {MultipleLang.content.modal_edit}
-          </div>
-        </button>
-      </div>
-    </form>
-  </AppOverlay>
-
-  <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
-    <div class="flex flex-col gap-1 items-start max-w-[530px]">
-      <div class="title-3 text-gray-600 font-semibold">
-        {MultipleLang.content.modal_add_title}
-      </div>
-      <div class="text-sm text-gray-500">
-        {MultipleLang.content.modal_add_sub_title}
-      </div>
-    </div>
-    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
-      <div
-        class="flex flex-col gap-1 w-[530px]"
-        class:form-item-translate={errors.address && errors.address.required}
-      >
-        <div class="text-base font-semibold text-gray-700">
-          {MultipleLang.content.modal_address_label}
-        </div>
-        <div class="flex flex-col gap-1">
-          <input
-            type="text"
-            id="address"
-            name="address"
-            placeholder={MultipleLang.content.modal_address_label}
-            value=""
-            class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
-            class:input-border-error={errors.address && errors.address.required}
-            on:blur={onBlur}
-          />
-          {#if errors.address && errors.address.required}
-            <div class="text-red-500 font-medium">
-              {errors.address.msg}
-            </div>
-          {/if}
-        </div>
-      </div>
-      <div
-        class="flex flex-col gap-1 w-[530px]"
-        class:form-item-translate={errors.label && errors.label.required}
-      >
-        <div class="text-base font-semibold text-gray-700">
-          {MultipleLang.content.modal_label_label}
-        </div>
-        <div class="flex flex-col gap-1">
-          <input
-            type="text"
-            id="label"
-            name="label"
-            placeholder={MultipleLang.content.modal_label_label}
-            value=""
-            class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
-            class:input-border-error={errors.label && errors.label.required}
-            on:blur={onBlur}
-          />
-          {#if errors.label && errors.label.required}
-            <div class="text-red-500 font-medium">
-              {errors.label.msg}
-            </div>
-          {/if}
-        </div>
-      </div>
-      <div
-        class="flex justify-end gap-2 mt-1"
-        class:form-item-translate={(errors.label && errors.label.required) ||
-          (errors.address && errors.address.required)}
-      >
-        <button
-          class="flex items-center gap-3 px-4 py-2 border border-[#1E96FC] rounded-xl"
-          on:click={() => {
-            errors = {};
-            isOpenAddModal = false;
-          }}
-        >
-          <div class="text-base font-medium text-[#1E96FC]">
-            {MultipleLang.content.modal_cancel}
-          </div>
-        </button>
-        <button
-          class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
-          type="submit"
-        >
-          <div class="text-base font-medium text-white">
-            {MultipleLang.content.modal_add}
-          </div>
-        </button>
-      </div>
-    </form>
-  </AppOverlay>
 </div>
+
+<AppOverlay isOpen={isOpenEditModal} on:close={() => (isOpenEditModal = false)}>
+  <div class="flex flex-col gap-1 items-start max-w-[530px]">
+    <div class="title-3 text-gray-600 font-semibold">
+      {MultipleLang.content.modal_edit_title}
+    </div>
+    <div class="text-sm text-gray-500">
+      {MultipleLang.content.modal_edit_sub_title}
+    </div>
+  </div>
+  <form
+    on:submit|preventDefault={onSubmitEdit}
+    class="flex flex-col gap-2 mt-4"
+  >
+    <div class="flex flex-col gap-1 w-[530px]">
+      <div class="text-base font-semibold text-gray-700">
+        {MultipleLang.content.modal_address_label}
+      </div>
+      <div class="flex flex-col gap-1 w-[530px]">
+        <input
+          type="text"
+          id="address"
+          name="address"
+          placeholder={MultipleLang.content.modal_address_label}
+          bind:value={selectedItemEdit.address}
+          class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
+          class:input-border-error={errorsEdit.address &&
+            errorsEdit.address.required}
+          on:blur={onBlurEdit}
+        />
+        {#if errorsEdit.address && errorsEdit.address.required}
+          <div class="text-red-500 font-medium">
+            {errorsEdit.address.msg}
+          </div>
+        {/if}
+      </div>
+    </div>
+    <div
+      class="flex flex-col gap-1 w-[530px]"
+      class:form-item-translate={errorsEdit.address &&
+        errorsEdit.address.required}
+    >
+      <div class="text-base font-semibold text-gray-700">
+        {MultipleLang.content.modal_label_label}
+      </div>
+      <div class="flex flex-col gap-1 w-[530px]">
+        <input
+          type="text"
+          id="label"
+          name="label"
+          placeholder={MultipleLang.content.modal_label_label}
+          bind:value={selectedItemEdit.label}
+          class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
+          class:input-border-error={errorsEdit.label &&
+            errorsEdit.label.required}
+          on:blur={onBlurEdit}
+        />
+        {#if errorsEdit.label && errorsEdit.label.required}
+          <div class="text-red-500 font-medium">
+            {errorsEdit.label.msg}
+          </div>
+        {/if}
+      </div>
+    </div>
+    <div
+      class="flex justify-end gap-2 mt-1"
+      class:form-item-translate={(errorsEdit.label &&
+        errorsEdit.label.required) ||
+        (errorsEdit.address && errorsEdit.address.required)}
+    >
+      <button
+        class="flex items-center gap-3 px-4 py-2 border border-[#1E96FC] rounded-xl"
+        on:click={() => {
+          errorsEdit = {};
+          isOpenEditModal = false;
+        }}
+      >
+        <div class="text-base font-medium text-[#1E96FC]">
+          {MultipleLang.content.modal_cancel}
+        </div>
+      </button>
+      <button
+        class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
+        type="submit"
+      >
+        <div class="text-base font-medium text-white">
+          {MultipleLang.content.modal_edit}
+        </div>
+      </button>
+    </div>
+  </form>
+</AppOverlay>
+
+<AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
+  <div class="flex flex-col gap-1 items-start max-w-[530px]">
+    <div class="title-3 text-gray-600 font-semibold">
+      {MultipleLang.content.modal_add_title}
+    </div>
+    <div class="text-sm text-gray-500">
+      {MultipleLang.content.modal_add_sub_title}
+    </div>
+  </div>
+  <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
+    <div
+      class="flex flex-col gap-1 w-[530px]"
+      class:form-item-translate={errors.address && errors.address.required}
+    >
+      <div class="text-base font-semibold text-gray-700">
+        {MultipleLang.content.modal_address_label}
+      </div>
+      <div class="flex flex-col gap-1">
+        <input
+          type="text"
+          id="address"
+          name="address"
+          placeholder={MultipleLang.content.modal_address_label}
+          value=""
+          class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
+          class:input-border-error={errors.address && errors.address.required}
+          on:blur={onBlur}
+        />
+        {#if errors.address && errors.address.required}
+          <div class="text-red-500 font-medium">
+            {errors.address.msg}
+          </div>
+        {/if}
+      </div>
+    </div>
+    <div
+      class="flex flex-col gap-1 w-[530px]"
+      class:form-item-translate={errors.label && errors.label.required}
+    >
+      <div class="text-base font-semibold text-gray-700">
+        {MultipleLang.content.modal_label_label}
+      </div>
+      <div class="flex flex-col gap-1">
+        <input
+          type="text"
+          id="label"
+          name="label"
+          placeholder={MultipleLang.content.modal_label_label}
+          value=""
+          class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
+          class:input-border-error={errors.label && errors.label.required}
+          on:blur={onBlur}
+        />
+        {#if errors.label && errors.label.required}
+          <div class="text-red-500 font-medium">
+            {errors.label.msg}
+          </div>
+        {/if}
+      </div>
+    </div>
+    <div
+      class="flex justify-end gap-2 mt-1"
+      class:form-item-translate={(errors.label && errors.label.required) ||
+        (errors.address && errors.address.required)}
+    >
+      <button
+        class="flex items-center gap-3 px-4 py-2 border border-[#1E96FC] rounded-xl"
+        on:click={() => {
+          errors = {};
+          isOpenAddModal = false;
+        }}
+      >
+        <div class="text-base font-medium text-[#1E96FC]">
+          {MultipleLang.content.modal_cancel}
+        </div>
+      </button>
+      <button
+        class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
+        type="submit"
+      >
+        <div class="text-base font-medium text-white">
+          {MultipleLang.content.modal_add}
+        </div>
+      </button>
+    </div>
+  </form>
+</AppOverlay>
 
 <style>
   .input-border {
