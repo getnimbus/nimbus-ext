@@ -30,9 +30,9 @@
   let showTooltip = false;
   let numberTooltip = false;
 
-  let min = 20;
-  let max = 1400;
-  let currentMarketcap = 60;
+  let min = 0;
+  let max = 0;
+  let currentMarketcap = 0;
   let percent = 0;
 
   let coinInfo = {
@@ -46,6 +46,10 @@
     isLoading = true;
     try {
       const data = (await sendMessage("tokenInfoData", { id: id })) as any;
+
+      currentMarketcap = data.marketcap.current;
+      min = data.marketcap.min;
+      max = data.marketcap.max;
 
       price = data?.price?.usd;
       coinInfo = {
@@ -215,7 +219,7 @@
             <div class="flex justify-between mb-[6px]">
               <div class="text-xs text-[#000000B2] font-normal">Marketcap</div>
               <div class="text-xs text-[#000000B2] font-medium">
-                ${currentMarketcap}
+                ${numeral(currentMarketcap).format("0,0.00")}
               </div>
             </div>
             <div class="flex flex-col gap-1">
@@ -227,10 +231,10 @@
               </div>
               <div class="flex justify-between">
                 <div class="text-[#000000B2] text-xs font-medium">
-                  ${min}
+                  ${numeral(min).format("0,0.00")}
                 </div>
                 <div class="text-[#000000B2] text-xs font-medium">
-                  ${max}
+                  ${numeral(max).format("0,0.00")}
                 </div>
               </div>
             </div>
