@@ -175,7 +175,7 @@
   {:else if !isErrorDataChart}
     {#if !hasData}
       <div
-        class="w-full h-[180px] my-3 skeleton rounded flex items-center justify-center flex-col text-center"
+        class="w-full h-[200px] my-3 skeleton rounded flex items-center justify-center flex-col text-center"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +198,7 @@
     {:else}
       <div class="w-full h-[200px] relative">
         <div class="w-full h-[200px]" bind:this={chartElement} />
-        <div class="absolute bottom-2 left-2 z-10">
+        <div class="absolute top-1 left-0 z-10">
           <div
             class="inline-block px-1 bg-[#22c55e] text-white rounded text-sm"
           >

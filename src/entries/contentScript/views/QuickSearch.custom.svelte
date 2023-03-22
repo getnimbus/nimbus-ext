@@ -41,6 +41,8 @@
     read_more: i18n("quickSearchLang.read-more", "Read more"),
   };
 
+  const defaultSuggestList = ["bitcoin", "ethereum", "bnb"];
+
   let listPageConfig = [];
   let listTermData;
   let coinListData;
@@ -57,9 +59,18 @@
   let currentUrl = window.location.href;
   let timer;
   let isLoading = false;
-  let tabSelected = "all";
-  const defaultSuggestList = ["bitcoin", "ethereum", "bnb"];
+  let tabSelected: "all" | "term" | "token" = "all";
   let suggestList = ["bitcoin", "ethereum", "bnb"];
+  let DraggableY = parseInt(localStorage.getItem("DraggableY")) || 140;
+  let moving = false;
+
+  const getTabSelected = async () => {
+    const tabSelectedRes = (await browser.storage.local.get("TabSelected"))
+      .TabSelected;
+    if (tabSelectedRes) {
+      tabSelected = tabSelectedRes;
+    }
+  };
 
   const getSuggestList = async () => {
     const suggestListRes = (await browser.storage.local.get("SuggestList"))
@@ -68,9 +79,6 @@
       suggestList = JSON.parse(suggestListRes);
     }
   };
-
-  let DraggableY = parseInt(localStorage.getItem("DraggableY")) || 140;
-  let moving = false;
 
   const getConfigPages = async () => {
     listPageConfig = (await sendMessage("configPageList", undefined)) as any[];
@@ -201,6 +209,7 @@
     getCoinList();
     getTermList();
     getSuggestList();
+    getTabSelected();
   });
 
   onDestroy(() => {
@@ -231,7 +240,11 @@
   }
 
   $: {
-    if (JSON.stringify(suggestList) !== JSON.stringify(defaultSuggestList)) {
+    if (
+      JSON.stringify(suggestList) !== JSON.stringify(defaultSuggestList) &&
+      search &&
+      isFocused === false
+    ) {
       browser.storage.local.set({ SuggestList: JSON.stringify(suggestList) });
     }
   }
@@ -393,21 +406,30 @@
             <div
               class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
               class:bg-[#E1F4FD]={tabSelected === "all"}
-              on:click={() => (tabSelected = "all")}
+              on:click={() => {
+                tabSelected = "all";
+                browser.storage.local.set({ TabSelected: "all" });
+              }}
             >
               All
             </div>
             <div
               class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
               class:bg-[#E1F4FD]={tabSelected === "term"}
-              on:click={() => (tabSelected = "term")}
+              on:click={() => {
+                tabSelected = "term";
+                browser.storage.local.set({ TabSelected: "term" });
+              }}
             >
               Terms
             </div>
             <div
               class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
               class:bg-[#E1F4FD]={tabSelected === "token"}
-              on:click={() => (tabSelected = "token")}
+              on:click={() => {
+                tabSelected = "token";
+                browser.storage.local.set({ TabSelected: "token" });
+              }}
             >
               Tokens
             </div>
@@ -497,7 +519,9 @@
                   {MultipleLang.sources}
                 </div>
               {:else}
-                <div class="text-4 leading-6 font-medium mt-10 text-center">
+                <div
+                  class="text-4 leading-6 font-medium mt-10 text-center text-black"
+                >
                   {MultipleLang.empty}
                 </div>
               {/if}
@@ -581,6 +605,48 @@
                   </div>
                 </div>
               {/each}
+            {:else}
+              <div>
+                {#if search === ""}
+                  <div
+                    class="flex flex-col items-center justify-center gap-4 mt-16"
+                  >
+                    <img
+                      src={getLocalImg(Coin)}
+                      width={48}
+                      height="48"
+                      alt="coin"
+                    />
+                    <div
+                      class="text-sm text-[#00000099] font-medium text-center px-12"
+                    >
+                      {MultipleLang.title}
+                    </div>
+                    <div class="flex gap-2 text-sm font-medium mt-8">
+                      <div class="text-black">
+                        {JSON.stringify(suggestList) ===
+                        JSON.stringify(defaultSuggestList)
+                          ? "Suggest keyword:"
+                          : "Recent search:"}
+                      </div>
+                      {#each suggestList as suggest}
+                        <div
+                          class="text-[#1E96FC] cursor-pointer"
+                          on:click={() => (search = suggest)}
+                        >
+                          {suggest}
+                        </div>
+                      {/each}
+                    </div>
+                  </div>
+                {:else}
+                  <div
+                    class="text-4 leading-6 font-medium mt-10 text-center text-black"
+                  >
+                    No terms
+                  </div>
+                {/if}
+              </div>
             {/if}
           {:else}
             {#each selectedSearchTermData as item}
@@ -632,8 +698,10 @@
                   {MultipleLang.sources}
                 </div>
               {:else}
-                <div class="text-4 leading-6 font-medium mt-10 text-center">
-                  {MultipleLang.empty}
+                <div
+                  class="text-4 leading-6 font-medium mt-10 text-center text-black"
+                >
+                  No tokens
                 </div>
               {/if}
             {/if}
@@ -651,8 +719,36 @@
                 {MultipleLang.sources}
               </div>
             {:else}
-              <div class="text-4 leading-6 font-medium mt-10 text-center">
-                {MultipleLang.title}
+              <div
+                class="flex flex-col items-center justify-center gap-4 mt-16"
+              >
+                <img
+                  src={getLocalImg(Coin)}
+                  width={48}
+                  height="48"
+                  alt="coin"
+                />
+                <div
+                  class="text-sm text-[#00000099] font-medium text-center px-12"
+                >
+                  {MultipleLang.title}
+                </div>
+                <div class="flex gap-2 text-sm font-medium mt-8">
+                  <div class="text-black">
+                    {JSON.stringify(suggestList) ===
+                    JSON.stringify(defaultSuggestList)
+                      ? "Suggest keyword:"
+                      : "Recent search:"}
+                  </div>
+                  {#each suggestList as suggest}
+                    <div
+                      class="text-[#1E96FC] cursor-pointer"
+                      on:click={() => (search = suggest)}
+                    >
+                      {suggest}
+                    </div>
+                  {/each}
+                </div>
               </div>
             {/if}
           {/if}
