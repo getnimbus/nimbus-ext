@@ -26,6 +26,7 @@
 
   let isLoading = false;
   let price = 0;
+  let priceChange = 0;
   let openShowCategoryList = false;
   let showTooltip = false;
   let numberTooltip = false;
@@ -46,6 +47,10 @@
     isLoading = true;
     try {
       const data = (await sendMessage("tokenInfoData", { id: id })) as any;
+
+      console.log("data: ", data);
+
+      priceChange = data.price.usd_24h_change;
 
       currentMarketcap = data.marketcap.current;
       min = data.marketcap.min;
@@ -168,15 +173,15 @@
 
                 <div
                   class={`text-[13px] font-medium ${
-                    2.32 < 0 ? "text-red-500" : "text-[#00A878]"
+                    priceChange < 0 ? "text-red-500" : "text-[#00A878]"
                   }`}
                 >
-                  {#if 2.32 < 0}
+                  {#if priceChange < 0}
                     ↓
                   {:else}
                     ↑
                   {/if}
-                  {Math.abs(2.32)}%
+                  ${numeral(Math.abs(priceChange)).format("0,0.00")}
                 </div>
               </div>
               <!-- <div class="cursor-pointer -mt-[2px]">
