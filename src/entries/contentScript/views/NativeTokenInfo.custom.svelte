@@ -48,13 +48,11 @@
     try {
       const data = (await sendMessage("tokenInfoData", { id: id })) as any;
 
-      console.log("data: ", data);
+      priceChange = data?.price?.usd_24h_change;
 
-      priceChange = data.price.usd_24h_change;
-
-      currentMarketcap = data.marketcap.current;
-      min = data.marketcap.min;
-      max = data.marketcap.max;
+      currentMarketcap = data?.marketcap?.current;
+      min = data?.marketcap?.min;
+      max = data?.marketcap?.max;
 
       price = data?.price?.usd;
       coinInfo = {
@@ -223,8 +221,8 @@
           <div class="mt-4">
             <div class="flex justify-between mb-[6px]">
               <div class="text-xs text-[#000000B2] font-normal">Marketcap</div>
-              <div class="text-xs text-[#000000B2] font-medium">
-                ${numeral(currentMarketcap).format("0,0.00")}
+              <div class="text-xs text-[#000000B2] font-medium uppercase">
+                ${numeral(currentMarketcap).format("0,0.00 a")}
               </div>
             </div>
             <div class="flex flex-col gap-1">
@@ -235,11 +233,11 @@
                 />
               </div>
               <div class="flex justify-between">
-                <div class="text-[#000000B2] text-xs font-medium">
-                  ${numeral(min).format("0,0.00")}
+                <div class="text-[#000000B2] text-xs font-medium uppercase">
+                  ${numeral(min).format("0,0.00 a")}
                 </div>
-                <div class="text-[#000000B2] text-xs font-medium">
-                  ${numeral(max).format("0,0.00")}
+                <div class="text-[#000000B2] text-xs font-medium uppercase">
+                  ${numeral(max).format("0,0.00 a")}
                 </div>
               </div>
             </div>
