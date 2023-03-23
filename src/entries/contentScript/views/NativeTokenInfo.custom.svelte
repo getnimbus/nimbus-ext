@@ -181,7 +181,7 @@
                   {:else}
                     ↑
                   {/if}
-                  ${numeral(Math.abs(priceChange)).format("0,0.00")}
+                  {numeral(Math.abs(priceChange)).format("0,0.00")}%
                 </div>
               </div>
               <!-- <div class="cursor-pointer -mt-[2px]">
