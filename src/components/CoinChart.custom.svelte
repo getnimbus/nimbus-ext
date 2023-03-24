@@ -12,6 +12,7 @@
 
   export let symbol;
   export let loaded;
+  export let price;
 
   let chartElement;
   let chart;
@@ -117,6 +118,9 @@
           lineWidth: 2,
           priceLineVisible: false,
           lastValueVisible: false,
+          topColor: price < 0 ? "#ef44444d" : "#22c55e4d",
+          bottomColor: price < 0 ? "#ef44444d" : "#22c55e4d",
+          lineColor: price < 0 ? "#EF4444" : "#22c55e",
         });
         areaChart.setData(priceData);
         chart.timeScale().fitContent();
@@ -149,6 +153,8 @@
       callNewDataChart();
     }
   }
+
+  $: console.log("price: ", price);
 </script>
 
 <reset-style>
@@ -201,12 +207,14 @@
         <div class="absolute top-1 left-0 z-10">
           <div
             class="inline-block px-1 bg-[#22c55e] text-white rounded text-sm"
+            class:bg-[#EF4444]={price < 0}
           >
             {dayjs(hoverDate).format("YYYY/MM/DD HH:mm")}
           </div>
           <br />
           <div
             class="inline-block px-1 bg-[#22c55e] text-white rounded text-sm"
+            class:bg-[#EF4444]={price < 0}
           >
             ${hoverPrice && formatCurrency(hoverPrice)}
           </div>

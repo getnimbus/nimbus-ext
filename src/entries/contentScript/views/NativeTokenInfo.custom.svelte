@@ -171,7 +171,7 @@
 
                 <div
                   class={`text-[13px] font-medium ${
-                    priceChange < 0 ? "text-red-500" : "text-[#00A878]"
+                    priceChange < 0 ? "text-[#EF4444]" : "text-[#00A878]"
                   }`}
                 >
                   {#if priceChange < 0}
@@ -244,7 +244,7 @@
           </div>
 
           <div class="mt-2">
-            <coin-chart symbol={id} {loaded} />
+            <coin-chart symbol={id} {loaded} price={priceChange} />
           </div>
 
           {#if price}
