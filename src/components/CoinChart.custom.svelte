@@ -113,13 +113,12 @@
             },
           },
         });
-        // TODO: Change chart color based on up or down
         areaChart = chart.addAreaSeries({
           lineWidth: 2,
           priceLineVisible: false,
           lastValueVisible: false,
-          topColor: price < 0 ? "#ef44444d" : "#22c55e4d",
-          bottomColor: price < 0 ? "#ef44444d" : "#22c55e4d",
+          topColor: price < 0 ? "#ef444433" : "#22c55e33",
+          bottomColor: "#fff",
           lineColor: price < 0 ? "#EF4444" : "#22c55e",
         });
         areaChart.setData(priceData);
