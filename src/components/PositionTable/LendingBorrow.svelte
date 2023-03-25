@@ -103,7 +103,7 @@
           class="flex items-center justify-end gap-1 text-sm font-medium min-w-[125px]"
         >
           <div class={`${profit >= 0 ? "text-[#00A878]" : "text-red-500"}`}>
-            ${formatBalance(profit)}
+            ${formatBalance(Math.abs(profit))}
           </div>
           <img
             src={profit >= 0 ? TrendUp : TrendDown}

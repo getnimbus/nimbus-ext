@@ -12,14 +12,6 @@
 
   import Plus from "~/assets/plus.svg";
 
-  let errors: any = {};
-  let errorsEdit: any = {};
-  let listAddress = [];
-  let selectedItemEdit: any = {};
-  let isOpenEditModal = false;
-  let isOpenAddModal = false;
-  let isOpenConfirmDelete = false;
-  let selectedWallet = {};
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "My wallets"),
     content: {
@@ -63,7 +55,7 @@
       ),
       modal_add_title: i18n(
         "optionsPage.accounts-page-content.modal-add-title",
-        "Add Your Wallet"
+        "Add your wallet"
       ),
       modal_add_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-add-sub-title",
@@ -81,7 +73,7 @@
 
       modal_edit_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-title",
-        "Edit Your wallet"
+        "Edit your wallet"
       ),
       modal_edit_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-sub-title",
@@ -105,6 +97,17 @@
       ),
     },
   };
+
+  let errors: any = {};
+  let errorsEdit: any = {};
+  let listAddress = [];
+  let selectedItemEdit: any = {};
+  let isOpenEditModal = false;
+  let isOpenAddModal = false;
+  let isOpenConfirmDelete = false;
+  let selectedWallet = {};
+  let address = "";
+  let label = "";
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -150,24 +153,6 @@
         msg: MultipleLang.content.label_required,
       };
     } else {
-      errorsEdit["label"] = { ...errorsEdit["label"], required: false };
-    }
-  };
-
-  const onBlur = (e) => {
-    if (e.target.name === "address" && e.target.value) {
-      errors["address"] = { ...errors["address"], required: false };
-    }
-    if (e.target.name === "label" && e.target.value) {
-      errors["label"] = { ...errors["label"], required: false };
-    }
-  };
-
-  const onBlurEdit = (e) => {
-    if (e.target.name === "address" && e.target.value) {
-      errorsEdit["address"] = { ...errorsEdit["address"], required: false };
-    }
-    if (e.target.name === "label" && e.target.value) {
       errorsEdit["label"] = { ...errorsEdit["label"], required: false };
     }
   };
@@ -304,13 +289,24 @@
   };
 
   const handleEdit = (item) => {
-    isOpenEditModal = true;
     selectedItemEdit = item;
+    address = item.address;
+    label = item.label;
+    isOpenEditModal = true;
   };
 
   onMount(() => {
     getListAddress();
   });
+
+  $: {
+    if (address) {
+      errors["address"] = { ...errors["address"], required: false, msg: "" };
+    }
+    if (label) {
+      errors["label"] = { ...errors["label"], required: false, msg: "" };
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-2">
@@ -326,7 +322,6 @@
       </div>
     </button>
   </div>
-
   <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto mt-2">
     <table class="table-auto w-full">
       <thead>
@@ -390,74 +385,71 @@
 </div>
 
 <AppOverlay isOpen={isOpenEditModal} on:close={() => (isOpenEditModal = false)}>
-  <div class="flex flex-col gap-1 items-start max-w-[530px]">
-    <div class="title-3 text-gray-600 font-semibold">
-      {MultipleLang.content.modal_edit_title}
-    </div>
-    <div class="text-sm text-gray-500">
-      {MultipleLang.content.modal_edit_sub_title}
-    </div>
+  <div class="title-3 text-gray-600 font-semibold max-w-[530px]">
+    {MultipleLang.content.modal_edit_title}
   </div>
   <form
     on:submit|preventDefault={onSubmitEdit}
-    class="flex flex-col gap-2 mt-4"
+    class="flex flex-col gap-3 mt-4"
   >
     <div class="flex flex-col gap-1 w-[530px]">
-      <div class="text-base font-semibold text-gray-700">
-        {MultipleLang.content.modal_address_label}
-      </div>
-      <div class="flex flex-col gap-1 w-[530px]">
+      <div
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+          address ? "bg-[#F0F2F7]" : ""
+        }`}
+        class:input-border-error={errorsEdit.address &&
+          errorsEdit.address.required}
+      >
+        <div class="text-base font-semibold text-gray-700">
+          {MultipleLang.content.modal_address_label}
+        </div>
         <input
           type="text"
           id="address"
           name="address"
           placeholder={MultipleLang.content.modal_address_label}
           bind:value={selectedItemEdit.address}
-          class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
-          class:input-border-error={errorsEdit.address &&
-            errorsEdit.address.required}
-          on:blur={onBlurEdit}
+          class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            address ? "bg-[#F0F2F7]" : ""
+          }`}
+          on:keyup={({ target: { value } }) => (address = value)}
         />
-        {#if errorsEdit.address && errorsEdit.address.required}
-          <div class="text-red-500 font-medium">
-            {errorsEdit.address.msg}
-          </div>
-        {/if}
       </div>
+      {#if errorsEdit.address && errorsEdit.address.required}
+        <div class="text-red-500 font-medium">
+          {errorsEdit.address.msg}
+        </div>
+      {/if}
     </div>
-    <div
-      class="flex flex-col gap-1 w-[530px]"
-      class:form-item-translate={errorsEdit.address &&
-        errorsEdit.address.required}
-    >
-      <div class="text-base font-semibold text-gray-700">
-        {MultipleLang.content.modal_label_label}
-      </div>
-      <div class="flex flex-col gap-1 w-[530px]">
+    <div class="flex flex-col gap-1 w-[530px]">
+      <div
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+          label ? "bg-[#F0F2F7]" : ""
+        }`}
+        class:input-border-error={errorsEdit.label && errorsEdit.label.required}
+      >
+        <div class="text-base font-semibold text-gray-700">
+          {MultipleLang.content.modal_label_label}
+        </div>
         <input
           type="text"
           id="label"
           name="label"
           placeholder={MultipleLang.content.modal_label_label}
           bind:value={selectedItemEdit.label}
-          class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
-          class:input-border-error={errorsEdit.label &&
-            errorsEdit.label.required}
-          on:blur={onBlurEdit}
+          class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            label ? "bg-[#F0F2F7]" : ""
+          }`}
+          on:keyup={({ target: { value } }) => (label = value)}
         />
-        {#if errorsEdit.label && errorsEdit.label.required}
-          <div class="text-red-500 font-medium">
-            {errorsEdit.label.msg}
-          </div>
-        {/if}
       </div>
+      {#if errorsEdit.label && errorsEdit.label.required}
+        <div class="text-red-500 font-medium">
+          {errorsEdit.label.msg}
+        </div>
+      {/if}
     </div>
-    <div
-      class="flex justify-end gap-2 mt-1"
-      class:form-item-translate={(errorsEdit.label &&
-        errorsEdit.label.required) ||
-        (errorsEdit.address && errorsEdit.address.required)}
-    >
+    <div class="flex justify-end gap-2">
       <button
         class="flex items-center gap-3 px-4 py-2 border border-[#1E96FC] rounded-xl"
         on:click={() => {
@@ -482,33 +474,34 @@
 </AppOverlay>
 
 <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
-  <div class="flex flex-col gap-1 items-start max-w-[530px]">
-    <div class="title-3 text-gray-600 font-semibold">
-      {MultipleLang.content.modal_add_title}
-    </div>
-    <div class="text-sm text-gray-500">
-      {MultipleLang.content.modal_add_sub_title}
-    </div>
+  <div class="title-3 text-gray-600 font-semibold max-w-[530px]">
+    {MultipleLang.content.modal_add_title}
   </div>
   <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
-    <div
-      class="flex flex-col gap-1 w-[530px]"
-      class:form-item-translate={errors.address && errors.address.required}
-    >
-      <div class="text-base font-semibold text-gray-700">
-        {MultipleLang.content.modal_address_label}
-      </div>
+    <div class="flex flex-col gap-1 w-[530px]">
       <div class="flex flex-col gap-1">
-        <input
-          type="text"
-          id="address"
-          name="address"
-          placeholder={MultipleLang.content.modal_address_label}
-          value=""
-          class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            address ? "bg-[#F0F2F7]" : ""
+          }`}
           class:input-border-error={errors.address && errors.address.required}
-          on:blur={onBlur}
-        />
+        >
+          <div class="text-xs text-[#666666] font-medium">
+            {MultipleLang.content.modal_address_label}
+          </div>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            placeholder={MultipleLang.content.modal_address_label}
+            value=""
+            class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              address ? "bg-[#F0F2F7]" : ""
+            }
+              `}
+            on:keyup={({ target: { value } }) => (address = value)}
+          />
+        </div>
         {#if errors.address && errors.address.required}
           <div class="text-red-500 font-medium">
             {errors.address.msg}
@@ -516,24 +509,30 @@
         {/if}
       </div>
     </div>
-    <div
-      class="flex flex-col gap-1 w-[530px]"
-      class:form-item-translate={errors.label && errors.label.required}
-    >
-      <div class="text-base font-semibold text-gray-700">
-        {MultipleLang.content.modal_label_label}
-      </div>
+    <div class="flex flex-col gap-1 w-[530px]">
       <div class="flex flex-col gap-1">
-        <input
-          type="text"
-          id="label"
-          name="label"
-          placeholder={MultipleLang.content.modal_label_label}
-          value=""
-          class="input-2 input-border focus:ring-[#1E96FC] focus:border-[#1E96FC] w-full p-3"
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            label ? "bg-[#F0F2F7]" : ""
+          }`}
           class:input-border-error={errors.label && errors.label.required}
-          on:blur={onBlur}
-        />
+        >
+          <div class="text-xs text-[#666666] font-medium">
+            {MultipleLang.content.modal_label_label}
+          </div>
+          <input
+            type="text"
+            id="label"
+            name="label"
+            placeholder={MultipleLang.content.modal_label_label}
+            value=""
+            class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              label ? "bg-[#F0F2F7]" : ""
+            }
+              `}
+            on:keyup={({ target: { value } }) => (label = value)}
+          />
+        </div>
         {#if errors.label && errors.label.required}
           <div class="text-red-500 font-medium">
             {errors.label.msg}
@@ -541,11 +540,7 @@
         {/if}
       </div>
     </div>
-    <div
-      class="flex justify-end gap-2 mt-1"
-      class:form-item-translate={(errors.label && errors.label.required) ||
-        (errors.address && errors.address.required)}
-    >
+    <div class="flex justify-end gap-2">
       <button
         class="flex items-center gap-3 px-4 py-2 border border-[#1E96FC] rounded-xl"
         on:click={() => {

@@ -24,11 +24,12 @@
     on:click={clickOutSideToClose ? handleClose : null}
   >
     <div
-      class="bg-white rounded-xl px-8 py-10 relative min-w-lg"
+      class="bg-white rounded-xl px-6 pt-9 pb-7 relative min-w-lg"
+      style="box-shadow: 0px 4px 20px 0px #00000026;"
       on:click|stopPropagation
     >
       <div
-        class="absolute top-2 right-3 text-4xl text-gray-500 hover:text-sky-500 transition-all cursor-pointer"
+        class="absolute top-3 right-5 text-4xl text-gray-500 cursor-pointer"
         on:click|stopPropagation={handleClose}
       >
         &times;
