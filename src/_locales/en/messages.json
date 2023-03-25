@@ -2,6 +2,8 @@
   "quickSearchLang": {
     "message": "Quick search languages",
     "title": "Search for cryptocurrency or token you want to know",
+    "recent-search": "Recent search:",
+    "suggest-keyword": "Suggest keyword:",
     "second-title": "On this page",
     "input-placeholder": "Search...",
     "status": "Searching...",

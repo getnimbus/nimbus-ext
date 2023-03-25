@@ -2,6 +2,8 @@
   "quickSearchLang": {
     "message": "Quick search languages",
     "title": "Tìm kiếm tiền điện tử mà bạn quan tâm",
+    "recent-search": "Tìm kiếm gần đây:",
+    "suggest-keyword": "Từ khóa gợi ý:",
     "second-title": "Tại trang hiện tại",
     "input-placeholder": "Tìm kiếm...",
     "status": "Đang tìm kiếm...",
