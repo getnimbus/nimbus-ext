@@ -26,13 +26,14 @@
 
   let isLoading = false;
   let price = 0;
+  let priceChange = 0;
   let openShowCategoryList = false;
   let showTooltip = false;
   let numberTooltip = false;
 
-  let min = 20;
-  let max = 1400;
-  let currentMarketcap = 60;
+  let min = 0;
+  let max = 0;
+  let currentMarketcap = 0;
   let percent = 0;
 
   let coinInfo = {
@@ -46,6 +47,12 @@
     isLoading = true;
     try {
       const data = (await sendMessage("tokenInfoData", { id: id })) as any;
+
+      priceChange = data?.price?.usd_24h_change;
+
+      currentMarketcap = data?.marketcap?.current;
+      min = data?.marketcap?.min;
+      max = data?.marketcap?.max;
 
       price = data?.price?.usd;
       coinInfo = {
@@ -164,15 +171,15 @@
 
                 <div
                   class={`text-[13px] font-medium ${
-                    2.32 < 0 ? "text-red-500" : "text-[#00A878]"
+                    priceChange < 0 ? "text-[#EF4444]" : "text-[#00A878]"
                   }`}
                 >
-                  {#if 2.32 < 0}
+                  {#if priceChange < 0}
                     ↓
                   {:else}
                     ↑
                   {/if}
-                  {Math.abs(2.32)}%
+                  {numeral(Math.abs(priceChange)).format("0,0.00")}%
                 </div>
               </div>
               <!-- <div class="cursor-pointer -mt-[2px]">
@@ -214,8 +221,8 @@
           <div class="mt-4">
             <div class="flex justify-between mb-[6px]">
               <div class="text-xs text-[#000000B2] font-normal">Marketcap</div>
-              <div class="text-xs text-[#000000B2] font-medium">
-                ${currentMarketcap}
+              <div class="text-xs text-[#000000B2] font-medium uppercase">
+                ${numeral(currentMarketcap).format("0,0.00 a")}
               </div>
             </div>
             <div class="flex flex-col gap-1">
@@ -226,18 +233,18 @@
                 />
               </div>
               <div class="flex justify-between">
-                <div class="text-[#000000B2] text-xs font-medium">
-                  ${min}
+                <div class="text-[#000000B2] text-xs font-medium uppercase">
+                  ${numeral(min).format("0,0.00 a")}
                 </div>
-                <div class="text-[#000000B2] text-xs font-medium">
-                  ${max}
+                <div class="text-[#000000B2] text-xs font-medium uppercase">
+                  ${numeral(max).format("0,0.00 a")}
                 </div>
               </div>
             </div>
           </div>
 
           <div class="mt-2">
-            <coin-chart symbol={id} {loaded} />
+            <coin-chart symbol={id} {loaded} price={priceChange} />
           </div>
 
           {#if price}
