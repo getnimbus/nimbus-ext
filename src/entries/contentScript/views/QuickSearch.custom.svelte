@@ -29,6 +29,11 @@
       "quickSearchLang.title",
       "Search for cryptocurrency or token you want to know"
     ),
+    suggest_keyword: i18n(
+      "quickSearchLang.suggest-keyword",
+      "Suggest keyword:"
+    ),
+    recent_search: i18n("quickSearchLang.recent-search", "Recent search:"),
     second_title: i18n("quickSearchLang.second-title", "On this page"),
     input_placeholder: i18n("quickSearchLang.input-placeholder", "Search..."),
     status: i18n("quickSearchLang.status", "Searching..."),
@@ -558,8 +563,8 @@
                   <div class="text-black">
                     {JSON.stringify(suggestList) ===
                     JSON.stringify(defaultSuggestList)
-                      ? "Suggest keyword:"
-                      : "Recent search:"}
+                      ? MultipleLang.suggest_keyword
+                      : MultipleLang.recent_search}
                   </div>
                   {#each suggestList as suggest}
                     <div
