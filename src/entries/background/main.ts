@@ -140,6 +140,10 @@ interface ISearchInput {
   search: string;
 }
 
+interface ITrxHashInput {
+  hash: string
+}
+
 interface ISymbolInput {
   symbol: string;
 }
@@ -252,6 +256,18 @@ onMessage<ISearchInput, any>("getSearchData", async ({ data: { search } }) => {
     return [];
   }
 });
+
+onMessage<ITrxHashInput, any>("TrxHashInfo", async ({ data: { hash } }) => {
+  return await cacheOrAPI(
+    hash,
+    () => {
+      return nimbus
+        .get(`/tx/${hash}`)
+        .then((response) => response.data);
+    },
+    { defaultValue: null }
+  );
+})
 
 onMessage<ISymbolInput, any>("chartDataLocal", async ({ data: { symbol } }) => {
   try {

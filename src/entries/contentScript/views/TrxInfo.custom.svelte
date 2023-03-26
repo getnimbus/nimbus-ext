@@ -3,10 +3,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { nimbus } from "../../../lib/network";
-  import { chainIdData } from "../../../utils";
+  import { chainIdData, shorterAddress } from "../../../utils";
   import { isEmpty, get } from "lodash";
   import moment from "moment";
   import numeral from "numeral";
+  import { sendMessage } from "webext-bridge";
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   import "~/components/Loading.custom.svelte";
   import "~/components/CoinChart.custom.svelte";
@@ -20,9 +22,9 @@
 
   export let hash;
   export let popup: boolean = true;
-  let mouted = false;
 
-  let isLoading = true;
+  let mouted = false;
+  let isLoading = false;
   let unknownTRX = false;
   let enabledFilter = false;
 
@@ -56,6 +58,10 @@
     let response;
 
     try {
+      const res = (await sendMessage("TrxHashInfo", {
+        hash,
+      })) as any;
+
       response = await nimbus
         .get(`/tx/${hash}`)
         .then((response) => response.data);
@@ -111,18 +117,18 @@
 </script>
 
 <reset-style>
-  <div
-    class={`rounded-lg bg-white border-1 border-gray-200 border-solid font-sans text-sm text-gray-600 transition-all overflow-hidden min-w-[520px] w-full max-w-[700px] ${
-      isLoading && popup && "w-[350px] max-w-[400px] max-h-[120px] "
+  <!-- <div
+    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all overflow-hidden min-w-[520px] w-full max-w-[700px] ${
+      isLoading && popup && "w-[350px] max-w-[400px] max-h-[120px]"
     } ${popup ? "max-h-[680px]" : ""}`}
-    class:shadow-xl={popup}
+    class:shadow={popup}
   >
     {#if isLoading}
       <div class="w-full h-[120px] flex justify-center items-center">
         <loading-icon />
       </div>
     {:else}
-      <div class="p-3">
+      <div class="p-4">
         {#if unknownTRX}
           <div class="py-2">
             We're decoding this transaction and will get back to you soon!
@@ -192,7 +198,7 @@
               </div>
 
               <div
-                class="pl-3 space-y-4 py-3 flex-1 w-full border-0 border-l-1 border-solid border-sky-200"
+                class="pl-3 space-y-4 py-3 flex-1 w-full border-0 border-l-1 border-sky-200"
               >
                 {#if info.successful}
                   <div class="max-h-[400px] overflow-y-auto py-3">
@@ -232,12 +238,182 @@
           <a
             href="https://feedback.getnimbus.io/"
             target="_blank"
-            class="inline-flex no-underline cursor-pointer items-center px-2.5 py-1.5 border-1 border-solid border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
+            class="inline-flex no-underline cursor-pointer items-center bg-[#1E96FC4D] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
           >
             Report
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-3 w-3 ml-1"
+              class="h-3 w-3 ml-1 text-[#27326F]"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <nimbus-footer>
+        <ul class="list-disc list-outside px-3">
+          <li class="italic">
+            <a
+              class="text-blue-400 no-underline"
+              href="https://ethereum.org/en/developers/docs/transactions/"
+              target="_blank">What is transaction?</a
+            >
+          </li>
+        </ul>
+      </nimbus-footer>
+    {/if}
+  </div> -->
+
+  <div
+    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all overflow-hidden min-w-[520px] w-full max-w-[700px] ${
+      isLoading && popup && "w-[350px] max-w-[400px] max-h-[120px]"
+    } ${popup ? "max-h-[680px]" : ""}`}
+    class:shadow={popup}
+  >
+    {#if isLoading}
+      <div class="w-full h-[120px] flex justify-center items-center">
+        <loading-icon />
+      </div>
+    {:else}
+      <div class="p-4">
+        {#if unknownTRX}
+          <div class="py-2">
+            We're decoding this transaction and will get back to you soon!
+          </div>
+        {:else}
+          <div class="flex flex-col">
+            <div class="pb-4 border-bottom flex flex-col gap-4">
+              <div class="flex justify-between items-center">
+                <a
+                  href={`${info.chain.explorer}/tx/${hash}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  class="no-underline flex items-center gap-1"
+                >
+                  <div
+                    class="text-[#FF7D00] px-[6px] py-1 rounded-lg bg-[#ff7d001a] text-xs"
+                    use:tooltip={{
+                      content: `<tooltip-detail address="${hash}" />`,
+                      allowHTML: true,
+                      placement: "top",
+                    }}
+                  >
+                    {shorterAddress(hash)}
+                  </div>
+                  <div class="h-4 w-4">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      class="w-full h-full object-contain text-[#212121]"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z"
+                        clip-rule="evenodd"
+                      />
+                      <path
+                        fill-rule="evenodd"
+                        d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </a>
+                <div class="text-xs text-[#5E656B] font-normal">
+                  3 month ago - 26/04/2022 10:45 PM
+                </div>
+              </div>
+              <div class="flex justify-between items-center gap-4">
+                <div class="w-max">
+                  <user-info
+                    name="Sender"
+                    avatar={info.from_address_logo}
+                    label={info.from_address_label}
+                    address={info.from_address}
+                    explorer={info.chain.explorer}
+                  />
+                </div>
+                <div class="relative line-arrow flex-1">
+                  <div
+                    class="absolute -bottom-[3px] -right-[5.5px] h-0 w-0 transform rotate-90 arrow"
+                  />
+                </div>
+                <div class="w-max">
+                  <user-info
+                    name="Receiver"
+                    avatar={info.to_address_logo}
+                    label={info.to_address_label}
+                    address={info.to_address}
+                    explorer={info.chain.explorer}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-2 mt-4">
+              <div class="text-black text-xs font-normal">
+                Transaction Detail
+              </div>
+              <div class="flex items-center gap-2">
+                <label class="switch">
+                  <input type="checkbox" bind:checked={enabledFilter} />
+                  <span class="slider" />
+                </label>
+                <div class="text-black text-xs font-normal">
+                  Only Sender change
+                </div>
+              </div>
+            </div>
+
+            <div class="my-6">
+              {#if info.successful}
+                <div class="max-h-[400px] overflow-y-auto">
+                  <change-list
+                    data={info.changes}
+                    id={info.chainId}
+                    explorer={info.chain.explorer}
+                    from={info.from_address}
+                    to={info.to_address}
+                    enable={enabledFilter}
+                  />
+                </div>
+              {:else}
+                <div class="title-5 text-center font-semibold">
+                  The transaction failed and has been reverted
+                </div>
+              {/if}
+            </div>
+
+            <div class="text-center text-xs font-medium text-[#27326F]">
+              Gas fee: {`${numeral(info.fees_paid_value).format("0,0.00000")} ${
+                info.chain.nativeToken
+              } ($${numeral(info.gas_quote).format("0,0.0000")})`}
+            </div>
+          </div>
+        {/if}
+
+        <div
+          class="mb-2"
+          class:text-center={unknownTRX}
+          class:text-right={!unknownTRX}
+        >
+          <a
+            href="https://feedback.getnimbus.io/"
+            target="_blank"
+            class="inline-flex no-underline cursor-pointer items-center bg-[#1E96FC4D] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
+          >
+            Report
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-3 w-3 ml-1 text-[#27326F]"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -267,13 +443,22 @@
 </reset-style>
 
 <style>
-  .line-arrow {
-    border-left: 1px solid gray;
+  .border-bottom {
+    border-bottom: 1px solid #00000014;
   }
+
+  .shadow {
+    box-shadow: 0px 0px 40px 0px #0000001a;
+  }
+
+  .line-arrow {
+    border-top: 1px solid #27326f;
+  }
+
   .arrow {
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-bottom: 8px solid gray;
+    border-bottom: 8px solid #27326f;
   }
 
   .switch {
@@ -282,11 +467,13 @@
     width: 40px;
     height: 20px;
   }
+
   .switch input {
     opacity: 0;
     width: 0;
     height: 0;
   }
+
   .slider {
     position: absolute;
     cursor: pointer;
@@ -299,6 +486,7 @@
     transition: 0.4s;
     border-radius: 34px;
   }
+
   .slider:before {
     position: absolute;
     content: "";
@@ -311,12 +499,15 @@
     transition: 0.4s;
     border-radius: 50%;
   }
+
   input:checked + .slider {
     background-color: #2196f3;
   }
+
   input:checked + .slider {
     box-shadow: 0 0 1px #2196f3;
   }
+
   input:checked + .slider:before {
     -webkit-transform: translateX(16px);
     -ms-transform: translateX(16px);
