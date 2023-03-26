@@ -17,7 +17,6 @@
   import "~/components/TxInfo/User.custom.svelte";
   import "~/components/TxInfo/MoneyMove.custom.svelte";
   import "~/components/TxInfo/Changes.custom.svelte";
-  import "~/components/Footer.custom.svelte";
   import { track } from "~/lib/data-tracking";
 
   export let hash;
@@ -399,45 +398,54 @@
             </div>
           </div>
         {/if}
-
-        <div
-          class="mb-2"
-          class:text-center={unknownTRX}
-          class:text-right={!unknownTRX}
-        >
-          <a
-            href="https://feedback.getnimbus.io/"
-            target="_blank"
-            class="inline-flex no-underline cursor-pointer items-center bg-[#1E96FC4D] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
-          >
-            Report
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-3 w-3 ml-1 text-[#27326F]"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </a>
-        </div>
       </div>
-
-      <nimbus-footer>
-        <ul class="list-disc list-outside px-3">
-          <li class="italic">
-            <a
-              class="text-blue-400 no-underline"
-              href="https://ethereum.org/en/developers/docs/transactions/"
-              target="_blank">What is transaction?</a
-            >
-          </li>
-        </ul>
-      </nimbus-footer>
+      <div class="flex justify-between px-4 pb-4">
+        <div class="flex items-center gap-1">
+          <svg
+            width="20"
+            height="30"
+            viewBox="0 0 508 542"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M315 209H192V227H315V209Z" fill="#27326F" />
+            <path
+              d="M164.757 190.973C164.757 171.524 180.655 155.789 200.243 155.789C219.831 155.789 235.729 171.551 235.729 190.973H253.486C253.486 172.074 243.442 155.514 228.349 146.189C232.566 131.444 246.106 120.55 262.337 120.55C281.953 120.55 297.851 136.313 297.851 155.761V164.564H315.608C330.313 164.564 342.243 176.393 342.243 190.973H360C360 166.682 340.134 146.986 315.608 146.986C315.33 146.986 315.108 147.041 314.831 147.069C310.614 122.063 288.778 103 262.365 103C238.726 103 218.694 118.295 211.73 139.476C208.039 138.679 204.183 138.211 200.243 138.211C170.833 138.211 147 161.841 147 191H164.757V190.973Z"
+              fill="#27326F"
+            />
+            <path
+              d="M253.486 306.503V227H244.672L183 359.497H253.486V439H262.3L324 306.503H253.486ZM210.682 341.823L235.885 287.698V324.177H296.318L271.115 378.302V341.823H210.682Z"
+              fill="#27326F"
+            />
+            <path
+              d="M95 493H413V50H95V493ZM112.673 67.72H395.327V475.28H112.673V67.72Z"
+              fill="#27326F"
+            />
+          </svg>
+          <div class="text-[#27326F] text-xs font-medium">
+            Nimbus - A personalized portfolio
+          </div>
+        </div>
+        <a
+          href="https://feedback.getnimbus.io/"
+          target="_blank"
+          class="inline-flex no-underline cursor-pointer items-center bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
+        >
+          Report
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-3 w-3 ml-1 text-[#27326F]"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+      </div>
     {/if}
   </div>
 </reset-style>
