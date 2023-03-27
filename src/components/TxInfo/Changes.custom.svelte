@@ -2,7 +2,7 @@
 
 <script>
   import "./MoneyMove.custom.svelte";
-  import NoResultsIcon from "~/entries/contentScript/assets/no-results.png";
+  import NoResultsIcon from "../../assets/no-results.png";
   import { getLocalImg } from "../../utils";
 
   export let data;
@@ -19,7 +19,7 @@
     : data;
 </script>
 
-<div class="flex flex-col gap-5">
+<div class="flex flex-col gap-10">
   {#if changeList && changeList.length}
     {#each changeList as change}
       <money-move data={change} {id} {explorer} {from} {to} />
@@ -32,3 +32,5 @@
     />
   {/if}
 </div>
+
+<style></style>

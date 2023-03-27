@@ -5,18 +5,18 @@
 <div class="line-arrow relative">
   <slot />
   <div
-    class="absolute -bottom-[5px] h-0 w-0 transform -right-[5.5px] rotate-90 arrow"
+    class="absolute -bottom-[4.5px] -right-[8px] h-0 w-0 transform rotate-90 arrow"
   />
 </div>
 
 <style>
   .line-arrow {
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid #27326f66;
   }
 
   .arrow {
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-bottom: 8px solid gray;
+    border-bottom: 8px solid #27326f66;
   }
 </style>

@@ -353,7 +353,7 @@
             </td>
             <td class="py-4">
               <div
-                class="bg-gray-100 text-[#00000099] w-max px-3 py-1 rounded-xl"
+                class="bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
               >
                 {item.label}
               </div>

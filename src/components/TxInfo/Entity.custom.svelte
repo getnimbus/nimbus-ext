@@ -3,7 +3,6 @@
 <script>
   import tooltip from "~/entries/contentScript/views/tooltip";
   import { getTokenLogo, shorterAddress } from "../../utils";
-  import Tooltip from "../Tooltip.custom.svelte";
 
   export let name;
   export let address;
@@ -31,9 +30,11 @@
     use:tooltip={{
       content: `<tooltip-detail address="${address}" />`,
       allowHTML: true,
-      placement: "bottom",
+      placement: "top",
     }}
   >
     {`${name || (address && shorterAddress(address))}`}
   </a>
 </div>
+
+<style></style>
