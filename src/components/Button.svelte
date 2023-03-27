@@ -66,28 +66,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 40px;
+    height: 44px;
     min-width: 200px;
     width: 100%;
-    color: rgb(56 189 248);
-    font-weight: 700;
+    color: #ffffff;
+    font-weight: 500;
     font-size: 16px;
-    border-radius: 8px;
-    padding: 8px 12px;
+    line-height: 24px;
+    border-radius: 12px;
+    padding: 10px 16px;
     gap: 6px;
   }
 
   .button[type="submit"],
   .button[type="button"] {
-    background-color: rgb(224 242 254);
-  }
-
-  .button:hover {
-    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.1);
+    background: #27326f;
   }
 
   .button .container {
-    height: 22px;
+    height: 44px;
     min-width: max-content;
     display: flex;
     align-items: center;
@@ -109,21 +106,21 @@
   }
 
   .secondary {
-    color: rgb(56 189 248);
-    border: 1px solid rgb(224 242 254);
+    color: #27326f;
+    border: 1px solid #27326f;
   }
   .secondary[type="submit"],
   .secondary[type="button"] {
-    background-color: white;
+    background: #fff;
   }
 
   .no_outlined {
-    color: rgb(56 189 248);
+    color: #27326f;
     border: none;
   }
   .no_outlined[type="submit"],
   .no_outlined[type="button"] {
-    background-color: white;
+    background: #fff;
   }
 
   .disabled {
@@ -132,10 +129,7 @@
   }
   .disabled[type="submit"],
   .disabled[type="button"] {
-    background-color: #e2e4e9;
-  }
-  .disabled:hover {
-    box-shadow: none;
+    background: #e2e4e9;
   }
 
   .loading {
@@ -144,15 +138,12 @@
   }
 
   .underlined {
-    color: rgb(56 189 248);
+    color: #27326f;
     border: none;
     text-decoration: underline;
   }
   .underlined[type="submit"],
   .underlined[type="button"] {
-    background-color: white;
-  }
-  .underlined:hover {
-    box-shadow: none;
+    background: #fff;
   }
 </style>
