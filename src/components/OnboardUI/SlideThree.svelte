@@ -11,7 +11,7 @@
       <div class="flex flex-col items-center gap-2">
         <div class="text-3xl text-black font-normal">Search from any where</div>
         <div class="text-sm text-black font-normal">
-          Click the arrow on left right edge or use shortcut Cmd + Shift + K to
+          Click the arrow on the right edge or use shortcut Cmd + Shift + K to
           open the sidebar
         </div>
       </div>
