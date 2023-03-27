@@ -301,10 +301,14 @@
   });
 
   $: {
-    if (address) {
+    if (
+      address &&
+      errors.address &&
+      errors.address.msg === "Address is required"
+    ) {
       errors["address"] = { ...errors["address"], required: false, msg: "" };
     }
-    if (label) {
+    if (label && errors.label && errors.label.msg === "Label is required") {
       errors["label"] = { ...errors["label"], required: false, msg: "" };
     }
   }

@@ -26,11 +26,12 @@
   <Swiper
     cssMode={true}
     slidesPerView={1}
+    speed={1000}
     on:swiper={(e) => (mySwiper = e.detail[0])}
     navigation={{
       nextEl: ".next",
     }}
-    pagination={{ clickable: true, dynamicBullets: true }}
+    pagination={{ clickable: false, dynamicBullets: true }}
     on:activeIndexChange={(e) => (activeSlide = e.detail[0][0].activeIndex)}
   >
     <SwiperSlide>
