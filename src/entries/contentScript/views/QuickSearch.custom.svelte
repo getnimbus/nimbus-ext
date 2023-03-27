@@ -3,7 +3,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { fly } from "svelte/transition";
-  import { escapeRegex, getLocalImg } from "~/utils";
+  import { escapeRegex, getLocalImg, add3Dots } from "~/utils";
   import UrlPattern from "url-pattern";
   import { sendMessage } from "webext-bridge";
   import * as browser from "webextension-polyfill";
@@ -750,7 +750,7 @@
                       class="text-[#1E96FC] cursor-pointer"
                       on:click={() => (search = suggest)}
                     >
-                      {suggest}
+                      {add3Dots(suggest)}
                     </div>
                   {/each}
                 </div>
@@ -758,14 +758,6 @@
             {/if}
           {/if}
         {/if}
-
-        <!-- <a
-          href="https://feedback.getnimbus.io/"
-          target="_blank"
-          class="flex items-center justify-center border border-sky-400 px-3 py-2 text-sky-500 rounded cursor-pointer bg-white no-underline mt-auto"
-        >
-          Feedback
-        </a> -->
       </div>
     </div>
   {/if}

@@ -3,7 +3,7 @@
 </script>
 
 <div class="h-[95vh] flex justify-center items-center">
-  <div class="flex flex-col items-center gap-6">
+  <div class="flex flex-col items-center gap-10">
     <div class="flex-1">
       <div class="flex flex-col items-center gap-2">
         <div class="text-4xl text-black font-normal">
