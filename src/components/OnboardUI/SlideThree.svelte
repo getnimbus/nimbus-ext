@@ -10,7 +10,7 @@
   <div class="h-[85%] flex flex-col justify-between items-center">
     <div class="flex-1 flex flex-col items-center justify-center gap-4">
       <div class="flex flex-col items-center gap-2">
-        <div class="text-4xl text-black font-normal">Search from any where</div>
+      <div class="text-4xl text-black font-normal">Search from any where</div>
         <div class="text-base text-[#00000099] font-normal">
           Click the arrow on left right edge or use shortcut
           <span
