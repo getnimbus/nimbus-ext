@@ -80,15 +80,13 @@
 
       Object.assign(data, { id: uuidv4() });
 
-      // listAddress = [...listAddress, data];
+      listAddress = [...listAddress, data];
 
-      // browser.storage.sync
-      //   .set({ listAddress: JSON.stringify(listAddress) })
-      //   .then(() => {
-      //     console.log("save address to sync storage");
-      //   });
-
-      console.log("data: ", data);
+      browser.storage.sync
+        .set({ listAddress: JSON.stringify(listAddress) })
+        .then(() => {
+          console.log("save address to sync storage");
+        });
 
       e.target.reset();
       skip();
