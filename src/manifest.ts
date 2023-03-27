@@ -15,11 +15,12 @@ const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
     open_in_tab: true,
   },
   chrome_url_overrides: {
-    newtab: "src/entries/newTab/index.html",
+    // newtab: "src/entries/newTab/index.html",
+    newtab: "src/entries/onboard/index.html",
   },
   web_accessible_resources: [
     {
-      resources: ["src/entries/contentScript/assets/full-logo.svg"],
+      resources: ["src/entries/contentScript/assets/full-logo.svg", "src/entries/onboard/index.html"],
       matches: ["*://*/*"],
     },
   ],
