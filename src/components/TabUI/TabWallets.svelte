@@ -9,6 +9,7 @@
   import type { AddressData } from "~/types/AddressData";
 
   import AppOverlay from "~/components/Overlay.svelte";
+  import Button from "~/components/Button.svelte";
 
   import Plus from "~/assets/plus.svg";
 
@@ -450,25 +451,19 @@
       {/if}
     </div>
     <div class="flex justify-end gap-2">
-      <button
-        class="flex items-center gap-3 px-4 py-2 border border-[#1E96FC] rounded-xl"
+      <Button
+        variant="secondary"
+        width={70}
         on:click={() => {
           errorsEdit = {};
           isOpenEditModal = false;
         }}
       >
-        <div class="text-base font-medium text-[#1E96FC]">
-          {MultipleLang.content.modal_cancel}
-        </div>
-      </button>
-      <button
-        class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
-        type="submit"
+        {MultipleLang.content.modal_cancel}</Button
       >
-        <div class="text-base font-medium text-white">
-          {MultipleLang.content.modal_edit}
-        </div>
-      </button>
+      <Button width={70} type="submit">
+        {MultipleLang.content.modal_edit}</Button
+      >
     </div>
   </form>
 </AppOverlay>
@@ -541,25 +536,19 @@
       </div>
     </div>
     <div class="flex justify-end gap-2">
-      <button
-        class="flex items-center gap-3 px-4 py-2 border border-[#1E96FC] rounded-xl"
+      <Button
+        variant="secondary"
+        width={70}
         on:click={() => {
           errors = {};
           isOpenAddModal = false;
         }}
       >
-        <div class="text-base font-medium text-[#1E96FC]">
-          {MultipleLang.content.modal_cancel}
-        </div>
-      </button>
-      <button
-        class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
-        type="submit"
+        {MultipleLang.content.modal_cancel}</Button
       >
-        <div class="text-base font-medium text-white">
-          {MultipleLang.content.modal_add}
-        </div>
-      </button>
+      <Button width={70} type="submit">
+        {MultipleLang.content.modal_add}</Button
+      >
     </div>
   </form>
 </AppOverlay>

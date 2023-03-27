@@ -67,7 +67,6 @@
     align-items: center;
     justify-content: center;
     height: 44px;
-    min-width: 200px;
     width: 100%;
     color: #ffffff;
     font-weight: 500;

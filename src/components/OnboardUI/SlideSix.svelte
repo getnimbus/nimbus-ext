@@ -10,11 +10,15 @@
           You are ready to enjoy
         </div>
         <div class="text-sm text-black font-normal">
-          Join us on Discord amd build Nimbus together. WAGMI
+          Join us on Discord amd build Nimbus together. WAGMI 🙌
         </div>
       </div>
     </div>
-    <Button on:click={() => console.log("HELLO WORLD")}>Open Nimbus</Button>
+    <Button
+      on:click={() => {
+        window.open(`https://discord.gg/u5b9dTrSTr`, "_blank");
+      }}>Join Discord</Button
+    >
   </div>
 </div>
 
