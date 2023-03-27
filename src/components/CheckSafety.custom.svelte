@@ -5,9 +5,19 @@
   import { sendMessage } from "webext-bridge";
   import { isEmpty } from "lodash";
   import { getLocalImg } from "~/utils";
+  import { i18n } from "~/lib/i18n";
 
   import Success from "~/assets/shield-done.svg";
   import Fail from "~/assets/shield-fail.svg";
+
+  const MultipleLang = {
+    not_audited: i18n(
+      "quickSearchLang.not-audited",
+      "This page is not support."
+    ),
+    audited: i18n("quickSearchLang.audited", "The page has been audited."),
+    scan_by_go_plus: i18n("quickSearchLang.scan-with-go-plus", "Scan by Go+"),
+  };
 
   let isLoading = true;
   let data: any = {};
@@ -47,7 +57,7 @@
         {#if !isEmpty(data) && data.is_audit === IS_AUDITED_CODE}
           <img src={getLocalImg(Success)} alt="Success" />
           <div class="text-xs">
-            <div>The page has been audited.</div>
+            <div>{MultipleLang.audited}</div>
             <a
               href={data?.audit_info?.[0]?.audit_link}
               target="_blank"
@@ -58,10 +68,12 @@
           </div>
         {:else if data.is_audit !== IS_AUDITED_CODE}
           <img src={getLocalImg(Fail)} alt="fail" />
-          <div class="text-xs">This page is not support.</div>
+          <div class="text-xs">{MultipleLang.not_audited}</div>
         {/if}
       </div>
-      <div class="text-[10px] text-[#00000066]">Scan by Go+</div>
+      <div class="text-[10px] text-[#00000066]">
+        {MultipleLang.scan_by_go_plus}
+      </div>
     </div>
   </div>
 </reset-style>
