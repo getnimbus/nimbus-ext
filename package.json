@@ -48,6 +48,7 @@
     "mousetrap": "^1.6.5",
     "numeral": "^2.0.6",
     "sass": "^1.59.2",
+    "svelte-copy-to-clipboard": "^0.2.5",
     "svelte-system-info": "^1.0.0",
     "svelte-windicss-preprocess": "^4.2.8",
     "swiper": "6",

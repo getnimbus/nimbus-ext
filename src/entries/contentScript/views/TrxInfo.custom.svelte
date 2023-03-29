@@ -9,6 +9,7 @@
   import numeral from "numeral";
   import { sendMessage } from "webext-bridge";
   import tooltip from "~/entries/contentScript/views/tooltip";
+  import { track } from "~/lib/data-tracking";
 
   import "~/components/Loading.custom.svelte";
   import "~/components/CoinChart.custom.svelte";
@@ -17,7 +18,6 @@
   import "~/components/TxInfo/User.custom.svelte";
   import "~/components/TxInfo/MoneyMove.custom.svelte";
   import "~/components/TxInfo/Changes.custom.svelte";
-  import { track } from "~/lib/data-tracking";
 
   export let hash;
   export let popup: boolean = true;
@@ -61,9 +61,11 @@
         hash,
       })) as any;
 
-      response = await nimbus
-        .get(`/tx/${hash}`)
-        .then((response) => response.data);
+      // response = await nimbus
+      //   .get(`/tx/${hash}`)
+      //   .then((response) => response.data);
+
+      response = {};
 
       const transactionInfo = get(response, "data");
 
@@ -283,7 +285,7 @@
     {:else}
       <div class="p-4">
         {#if unknownTRX}
-          <div class="py-2">
+          <div class="py-2 title-5 text-center font-semibold">
             We're decoding this transaction and will get back to you soon!
           </div>
         {:else}

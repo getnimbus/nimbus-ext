@@ -66,8 +66,19 @@
   let isLoading = false;
   let tabSelected: "all" | "term" | "token" = "all";
   let suggestList = ["bitcoin", "ethereum", "bnb"];
-  let DraggableY = parseInt(localStorage.getItem("DraggableY")) || 140;
+  let DraggableY = 140;
   let moving = false;
+  let startTime = null;
+  let endTime = null;
+  let timeHold = 0;
+
+  const getDraggableY = async () => {
+    const draggableYRes = (await browser.storage.local.get("DraggableY"))
+      .DraggableY;
+    if (draggableYRes) {
+      DraggableY = draggableYRes;
+    }
+  };
 
   const getTabSelected = async () => {
     const tabSelectedRes = (await browser.storage.local.get("TabSelected"))
@@ -215,6 +226,7 @@
     getTermList();
     getSuggestList();
     getTabSelected();
+    getDraggableY();
   });
 
   onDestroy(() => {
@@ -256,7 +268,9 @@
 
   $: {
     if (DraggableY >= 0 && DraggableY <= window.innerHeight - 50) {
-      localStorage.setItem("DraggableY", DraggableY.toString());
+      setTimeout(() => {
+        browser.storage.local.set({ DraggableY: DraggableY });
+      }, 200);
     }
   }
 
@@ -312,6 +326,20 @@
   Mousetrap.bindGlobal(["command+shift+k", "ctrl+shift+k"], function () {
     isShowSideBar = !isShowSideBar;
   });
+
+  $: {
+    if (startTime && endTime) {
+      let timeDiff = endTime - startTime;
+      timeDiff /= 1;
+      timeHold = Math.round(timeDiff % 100000000);
+    }
+  }
+
+  $: {
+    if (timeHold > 50) {
+      moving = true;
+    }
+  }
 </script>
 
 <reset-style>
@@ -319,10 +347,22 @@
     style="z-index: 2147483647; top:{DraggableY}px;"
     class="transform translate-x-[80%] transition-transform ease-in-out fixed right-0 pr-2 pl-1 h-10 bg-[#27326f] opacity-80 text-white rounded-tl-[5px] rounded-bl-[5px] cursor-pointer flex items-center gap-1 shadow-lg"
     class:hover:translate-x-0={!isShowSideBar}
-    on:mousedown={() => (moving = true)}
-    on:mouseup={() => (moving = false)}
-    on:mouseleave={() => (moving = false)}
-    on:click={() => (isShowSideBar = true)}
+    on:mousedown={() => {
+      startTime = new Date();
+    }}
+    on:mouseup={() => {
+      moving = false;
+      if (timeHold < 50) {
+        isShowSideBar = true;
+      }
+      timeHold = 0;
+      startTime = null;
+    }}
+    on:mouseleave={() => {
+      moving = false;
+      timeHold = 0;
+      startTime = null;
+    }}
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -764,8 +804,15 @@
 </reset-style>
 
 <svelte:window
-  on:mouseup={() => (moving = false)}
+  on:mouseup={() => {
+    moving = false;
+    timeHold = 0;
+    startTime = null;
+  }}
   on:mousemove={(e) => {
+    if (startTime) {
+      endTime = new Date();
+    }
     if (moving) {
       if (DraggableY < 0) {
         DraggableY = 0;

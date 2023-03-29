@@ -5,12 +5,14 @@
   import { coinGeko } from "~/lib/network";
   import numeral from "numeral";
   import { sendMessage } from "webext-bridge";
+  import CopyToClipboard from "svelte-copy-to-clipboard";
   import {
     formatCurrency,
     exponentialToDecimal,
     getCgLogo,
     getLocalImg,
     add3Dots,
+    shorterAddress,
   } from "~/utils";
 
   import "~/components/ResetStyle.custom.svelte";
@@ -23,6 +25,7 @@
   export let name;
   export let id;
   export let loaded = true;
+  export let address = "";
 
   let isLoading = false;
   let price = 0;
@@ -90,7 +93,7 @@
         <loading-icon />
       </div>
     {:else}
-      <div class="max-w-sm max-h-[600px]">
+      <div class="max-h-[600px] w-full">
         {#if coinInfo}
           <div class="flex justify-between items-center">
             <div class="flex gap-2">
@@ -99,11 +102,7 @@
                 src={getCgLogo(id)}
                 alt={name}
               />
-              <a
-                href={`https://www.coingecko.com/en/coins/${id}`}
-                target="_blank"
-                class="no-underline flex flex-col gap-1"
-              >
+              <div class="flex flex-col gap-1">
                 <div class="flex items-center gap-2">
                   <div class="relative">
                     <div
@@ -122,7 +121,11 @@
                       </div>
                     {/if}
                   </div>
-                  <div class="h-4 w-4 -mt-2">
+                  <a
+                    href={`https://www.coingecko.com/en/coins/${id}`}
+                    target="_blank"
+                    class="h-4 w-4 -mt-2"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
@@ -140,14 +143,47 @@
                         clip-rule="evenodd"
                       />
                     </svg>
+                  </a>
+                </div>
+                {#if address}
+                  <CopyToClipboard text={address} let:copy on:copy={() => {}}>
+                    <div class="flex items-center gap-2 -mt-2">
+                      <div class="text-[11px] text-[#00000099] font-normal">
+                        {shorterAddress(address)}
+                      </div>
+                      <div class="cursor-pointer" on:click={copy}>
+                        <svg
+                          width="12"
+                          height="11"
+                          viewBox="0 0 12 11"
+                          fill="none"
+                          class="w-full h-full object-contain text-[#212121]"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                            stroke="#212121"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                          <path
+                            d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                            stroke="#212121"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </CopyToClipboard>
+                {:else}
+                  <div
+                    class="text-[11px] text-[#00000099] font-normal py-[2px] px-1 rounded bg-[#E9EBF1] w-max"
+                  >
+                    {name}
                   </div>
-                </div>
-                <div
-                  class="text-[11px] text-[#00000099] font-normal py-[2px] px-1 rounded bg-[#E9EBF1] w-max"
-                >
-                  {name}
-                </div>
-              </a>
+                {/if}
+              </div>
             </div>
             <div class="flex items-start gap-1">
               <div class="flex flex-col items-end gap-1">
@@ -168,18 +204,24 @@
                     </div>
                   {/if}
                 </div>
-
-                <div
-                  class={`text-[13px] font-medium ${
-                    priceChange < 0 ? "text-[#EF4444]" : "text-[#00A878]"
-                  }`}
-                >
-                  {#if priceChange < 0}
-                    ↓
+                <div class="flex items-center gap-1">
+                  {#if priceChange}
+                    <div
+                      class={`text-[13px] font-medium ${
+                        priceChange < 0 ? "text-[#EF4444]" : "text-[#00A878]"
+                      }`}
+                    >
+                      {#if priceChange < 0}
+                        ↓
+                      {:else}
+                        ↑
+                      {/if}
+                      {numeral(Math.abs(priceChange)).format("0,0.00")}%
+                    </div>
                   {:else}
-                    ↑
+                    <div class="text-[13px] font-medium text-black">--</div>
                   {/if}
-                  {numeral(Math.abs(priceChange)).format("0,0.00")}%
+                  <div class="text-[#00000066] text-xs font-medium">24h</div>
                 </div>
               </div>
               <!-- <div class="cursor-pointer -mt-[2px]">
@@ -250,23 +292,8 @@
           {#if price}
             <price-convert symbol={name} {price} />
           {:else}
-            <div>No data price</div>
+            <div class="text-xs">No data price</div>
           {/if}
-
-          <!-- <div class="flex gap-4 items-center my-4">
-            <div
-              on:click={() => alert("Comming soon")}
-              class="flex items-center justyfy-center btn-border px-3 py-2 text-white bg-sky-500 rounded cursor-pointer"
-            >
-              More info
-            </div>
-            <div
-              on:click={() => alert("Comming soon")}
-              class="flex items-center justyfy-center btn-border px-3 py-2 text-sky-500 rounded cursor-pointer"
-            >
-              Follow this coin
-            </div>
-          </div> -->
         {/if}
       </div>
     {/if}

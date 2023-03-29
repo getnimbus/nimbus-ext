@@ -6,6 +6,8 @@
     "suggest-keyword": "Từ khóa gợi ý:",
     "not-audited": "Trang này không được hỗ trợ.",
     "audited": "Trang đã được kiểm toán.",
+    "not-audited-address": "Hợp đồng này được đánh dấu là rủi ro.",
+    "audited-address": "Hợp đồng này được đánh dấu đã được kiểm toán.",
     "scan-with-go-plus": "Quét bằng Go+",
     "second-title": "Tại trang hiện tại",
     "input-placeholder": "Tìm kiếm...",

@@ -1,4 +1,4 @@
-<svelte:options tag="check-safety" />
+<svelte:options tag="check-safety-address" />
 
 <script lang="ts">
   import { onMount } from "svelte";
@@ -8,34 +8,39 @@
   import { i18n } from "~/lib/i18n";
 
   import Success from "~/assets/shield-done.svg";
-  import Fail from "~/assets/shield-fail.svg";
+  import Fail from "~/assets/shield-fail-address.svg";
 
   const MultipleLang = {
-    not_audited: i18n(
-      "quickSearchLang.not-audited",
-      "This page is not support."
+    not_audited_address: i18n(
+      "quickSearchLang.not-audited-address",
+      "This contract is marked as risky."
     ),
-    audited: i18n("quickSearchLang.audited", "The page has been audited."),
+    audited_address: i18n(
+      "quickSearchLang.audited-address",
+      "This contract is marked as audited."
+    ),
     scan_by_go_plus: i18n("quickSearchLang.scan-with-go-plus", "Scan by Go+"),
   };
+
+  export let address;
+  export let chainId;
 
   let data: any = {};
   const IS_AUDITED_CODE = 1;
 
-  const checkSafetyCurrentUrl = async () => {
-    let currentUrl = window.location.href;
+  const checkSafetyAddress = async () => {
     const response: {
       code: number;
       message: string;
       result: any;
-    } = await sendMessage("checkSafety", { currentUrl });
+    } = await sendMessage("checkSafetyAddress", { address, chainId });
     if (response.result) {
       data = response.result;
     }
   };
 
   onMount(() => {
-    checkSafetyCurrentUrl();
+    checkSafetyAddress();
   });
 </script>
 
@@ -44,7 +49,7 @@
     class={`pl-2 pr-3 py-[6px] rounded-lg ${
       !isEmpty(data) && data.is_audit === IS_AUDITED_CODE
         ? "text-green-700 bg-green-100"
-        : "text-black bg-[#FFCB5999]"
+        : "text-[#F25F5C] bg-[#f25f5c4d]"
     }`}
   >
     <div class="flex justify-between items-center">
@@ -52,18 +57,13 @@
         {#if !isEmpty(data) && data.is_audit === IS_AUDITED_CODE}
           <img src={getLocalImg(Success)} alt="Success" />
           <div class="text-xs">
-            <div>{MultipleLang.audited}</div>
-            <a
-              href={data?.audit_info?.[0]?.audit_link}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Audit report
-            </a>
+            <div>{MultipleLang.audited_address}</div>
           </div>
         {:else if data.is_audit !== IS_AUDITED_CODE}
           <img src={getLocalImg(Fail)} alt="fail" />
-          <div class="text-xs">{MultipleLang.not_audited}</div>
+          <div class="text-xs">
+            {MultipleLang.not_audited_address}
+          </div>
         {/if}
       </div>
       <div class="text-[10px] text-[#00000066]">

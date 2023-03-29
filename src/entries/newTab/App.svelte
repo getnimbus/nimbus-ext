@@ -1042,14 +1042,24 @@
               </div>
             </div> -->
           </div>
-          <EChart id={2} theme="white" option={optionPie} height={465} />
+          <EChart
+            id="pie-chart"
+            theme="white"
+            option={optionPie}
+            height={465}
+          />
         </div>
 
         <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
           <div class="pl-4 text-2xl font-medium text-black mb-3">
             {MultipleLang.performance}
           </div>
-          <EChart id={1} theme="white" option={optionLine} height={433} />
+          <EChart
+            id="line-chart"
+            theme="white"
+            option={optionLine}
+            height={433}
+          />
         </div>
       </div>
 

@@ -387,6 +387,17 @@ onMessage<any, any>("checkSafety", async ({ data: { currentUrl } }) => {
   );
 });
 
+onMessage<any, any>("checkSafetyAddress", async ({ data: { address, chainId } }) => {
+  const key = address + "_info";
+  return await cacheOrAPI(
+    key,
+    () => {
+      return goplus.get(`/address_security/${address}?chain_id=${chainId}`);
+    },
+    { defaultValue: null }
+  );
+});
+
 interface II18nMsg extends JsonObject {
   key: string;
   lang?: "vi" | "en";
