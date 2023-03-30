@@ -288,15 +288,47 @@ onMessage<ISymbolInput, any>("chartDataLocal", async ({ data: { symbol } }) => {
 });
 
 onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
-  return await cacheOrAPI(
-    symbol,
-    () => {
-      return nimbus
-        .get(`/price-history/${symbol}`)
-        .then((response) => response.data);
-    },
-    { defaultValue: null }
-  );
+  try {
+    const resCoingeko = await cacheOrAPI(
+      symbol,
+      () => {
+        return coinGeko
+          .get(`/coins/${symbol}/market_chart/range`, {
+            params: {
+              vs_currency: "usd",
+              from: dayjs().subtract(7, "d").unix(),
+              to: dayjs().unix(),
+            }
+          })
+          .then((response) => {
+            return response
+          })
+      },
+      { defaultValue: null }
+    );
+
+    if (!resCoingeko) {
+      const res = await cacheOrAPI(
+        symbol,
+        () => {
+          return nimbus
+            .get(`/token/price-history/${symbol}`)
+            .then((response) => {
+              return response.data
+            });
+        }, {
+        defaultValue: null
+      })
+      if (res) {
+        return res
+      }
+      return {}
+    }
+    return resCoingeko
+  } catch (error) {
+    console.log("error: ", error)
+    return {}
+  }
 });
 
 onMessage<IIdInput, any>("tokenInfoData", async ({ data: { id } }) => {

@@ -10,7 +10,13 @@ interface IOption {
 const createAxiosInterface = ({ baseURL }: IOption) => {
   return {
     get(url: string, config?: any) {
-      return fetch(`${baseURL}${url}`, config).then((response) =>
+      const apiUrl = new URL(`${baseURL}${url}`);
+      if (config?.params) {
+        Object.keys(config.params).forEach((key) =>
+          apiUrl.searchParams.append(key, config.params[key])
+        );
+      }
+      return fetch(apiUrl, config).then((response) =>
         response.json()
       );
     },

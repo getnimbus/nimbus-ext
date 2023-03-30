@@ -152,8 +152,6 @@
       callNewDataChart();
     }
   }
-
-  $: console.log("price: ", price);
 </script>
 
 <reset-style>
