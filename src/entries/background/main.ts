@@ -27,12 +27,6 @@ browser.runtime.onInstalled.addListener(() => {
 browser.commands.onCommand.addListener((command) => {
   if (command === "open-quick-search") {
     browser.tabs.query({ active: true, currentWindow: true }).then((tab) => {
-      // let tabSelected = tab[0]
-      // if (tabSelected) {
-      //   browser.tabs.sendMessage(tabSelected[0].id, { action: "toggleSidebar" })
-      // } else {
-      //   console.log("no active tab")
-      // }
       browser.tabs.sendMessage(tab[0].id, { action: "toggleSidebar" });
     });
   }
@@ -138,25 +132,34 @@ const fetchPositionData = async () => {
   }
 };
 
-
-interface ICoinListInput {
+interface ICoinListInput extends JsonObject {
   limit: number;
 }
 
-interface ISearchInput {
+interface ISearchInput extends JsonObject {
   search: string;
 }
 
-interface ITrxHashInput {
+interface ITrxHashInput extends JsonObject {
   hash: string
 }
 
-interface ISymbolInput {
+interface ISymbolInput extends JsonObject {
   symbol: string;
 }
 
-interface IIdInput {
+interface IIdInput extends JsonObject {
   id: string;
+}
+
+interface IUrl extends JsonObject {
+  currentUrl: string;
+}
+
+interface II18nMsg extends JsonObject {
+  key: string;
+  lang?: "vi" | "en";
+  defaultText?: string;
 }
 
 onMessage<ICoinListInput, any>("coinList", async ({ data: { limit } }) => {
@@ -340,23 +343,12 @@ onMessage<IIdInput, any>("tokenInfoData", async ({ data: { id } }) => {
         .get(`/token/${id}`)
         .then((response) => response.data);
       return tokenData;
-      // const [priceData, coinData] = await Promise.all([
-      //   coinGeko
-      //     .get(`/simple/price?ids=${id}&vs_currencies=usd`)
-      //     .then((response) => response.data),
-      //   coinGeko
-      //     .get(
-      //       `/coins/${id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`
-      //     )
-      //     .then((response) => response.data),
-      // ]);
-      // return { priceData: priceData, coinData: coinData };
     },
     { defaultValue: {} }
   );
 });
 
-onMessage("getListAddress", async () => {
+onMessage<any, any>("getListAddress", async () => {
   try {
     return JSON.parse(
       (await browser.storage.sync.get("listAddress")).listAddress
@@ -366,22 +358,7 @@ onMessage("getListAddress", async () => {
   }
 });
 
-onMessage("getPieChartData", async () => {
-  return await cacheOrAPI(
-    "dataPieChart",
-    () => {
-      // const listAddress = JSON.parse(
-      //   (await browser.storage.sync.get("listAddress")).listAddress
-      // );
-      return nimbus.get(
-        `/portfolio/${"0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb"}`
-      );
-    },
-    { defaultValue: [] }
-  );
-});
-
-onMessage("trackEvent", async ({ data: { type, payload } }) => {
+onMessage<any, any>("trackEvent", async ({ data: { type, payload } }) => {
   try {
     return await mixpanel.post(
       "/track",
@@ -408,7 +385,7 @@ onMessage("trackEvent", async ({ data: { type, payload } }) => {
   }
 });
 
-onMessage<any, any>("checkSafety", async ({ data: { currentUrl } }) => {
+onMessage<IUrl, any>("checkSafety", async ({ data: { currentUrl } }) => {
   const key = currentUrl + "_info";
   return await cacheOrAPI(
     key,
@@ -430,19 +407,12 @@ onMessage<any, any>("checkSafetyAddress", async ({ data: { address, chainId } })
   );
 });
 
-interface II18nMsg extends JsonObject {
-  key: string;
-  lang?: "vi" | "en";
-  defaultText?: string;
-}
-
 onMessage<II18nMsg, "i18n">(
   "i18n",
   async ({ data: { key, lang = "en", defaultText } }) => {
     if (lang === "vi") {
       return _.get(langVI, key, defaultText);
     }
-
     return _.get(langEN, key, defaultText);
   }
 );

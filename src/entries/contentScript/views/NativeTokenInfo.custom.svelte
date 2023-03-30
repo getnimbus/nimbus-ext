@@ -2,7 +2,6 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import { coinGeko } from "~/lib/network";
   import numeral from "numeral";
   import { sendMessage } from "webext-bridge";
   import CopyToClipboard from "svelte-copy-to-clipboard";
@@ -14,6 +13,7 @@
     add3Dots,
     shorterAddress,
   } from "~/utils";
+  import type { TokenInfoData } from "~/types/TokenInfoData";
 
   import "~/components/ResetStyle.custom.svelte";
   import "~/components/CoinChart.custom.svelte";
@@ -24,7 +24,7 @@
 
   export let name;
   export let id;
-  export let loaded = true;
+  export let loaded;
   export let address = "";
 
   let isLoading = false;
@@ -46,10 +46,12 @@
     categories: [],
   };
 
-  const loadSymbolInfo = async () => {
+  const getTokeInfo = async () => {
     isLoading = true;
     try {
-      const data = (await sendMessage("tokenInfoData", { id: id })) as any;
+      const data: TokenInfoData = await sendMessage("tokenInfoData", {
+        id: id,
+      });
 
       priceChange = data?.price?.usd_24h_change;
 
@@ -58,10 +60,11 @@
       max = data?.marketcap?.max;
 
       price = data?.price?.usd;
+
       coinInfo = {
         symbol: data?.symbol,
         name: data?.name,
-        logo_url: data?.image?.large,
+        logo_url: data?.logo_url,
         categories: data?.categories || [],
       };
     } catch (e) {
@@ -72,7 +75,7 @@
   };
 
   onMount(() => {
-    loadSymbolInfo();
+    getTokeInfo();
   });
 
   $: {
@@ -286,7 +289,7 @@
           </div>
 
           <div class="mt-2">
-            <coin-chart symbol={id} {loaded} price={priceChange} />
+            <coin-chart symbol={id} {loaded} />
           </div>
 
           {#if price}

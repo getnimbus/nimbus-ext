@@ -7,12 +7,15 @@
   import { formatCurrency } from "../utils";
   import { sendMessage } from "webext-bridge";
   import { isEmpty } from "lodash";
+  import type {
+    LocalChartTokenData,
+    ChartTokenData,
+  } from "~/types/ChartTokenData";
 
   import "~/components/ResetStyle.custom.svelte";
 
   export let symbol;
   export let loaded;
-  export let price;
 
   let chartElement;
   let chart;
@@ -22,11 +25,12 @@
   let isErrorDataChart = false;
   let hasData = false;
   let hasChart = false;
+  let isDownPrice = 0;
 
   const getChartData = async () => {
-    const dataLocal = (await sendMessage("chartDataLocal", {
+    const dataLocal: LocalChartTokenData = await sendMessage("chartDataLocal", {
       symbol: symbol?.toLowerCase(),
-    })) as any;
+    });
 
     if (dataLocal) {
       hasData = true;
@@ -34,11 +38,11 @@
     }
   };
 
-  const callNewDataChart = async () => {
+  const getNewDataChart = async () => {
     if (hasData) return;
-    const newestData = (await sendMessage("chartData", {
+    const newestData: ChartTokenData = await sendMessage("chartData", {
       symbol: symbol?.toLowerCase(),
-    })) as any;
+    });
 
     if (newestData) {
       hasData = true;
@@ -52,11 +56,13 @@
     if (isEmpty(data)) {
       isErrorDataChart = true;
     } else {
-      const priceData = data.prices.map(([time, price]) => ({
+      const priceData = data?.prices?.map(([time, price]) => ({
         time: dayjs(time).unix(),
         value: price,
       }));
-      const lastPrice = data.prices[data.prices.length - 1] || [];
+      const lastPrice =
+        (data?.prices && data?.prices[data?.prices?.length - 1]) || [];
+      const firstPrice = data?.prices && data?.prices[0];
 
       if (lastPrice.length === 0) {
         isErrorDataChart = true;
@@ -69,8 +75,9 @@
       hoverPrice = lastPrice[1];
       hoverDate = dayjs.unix(dayjs(lastPrice[0]).unix()).toDate();
 
+      isDownPrice = firstPrice[1] - lastPrice[1];
+
       try {
-        console.log("Start chart");
         chart = createChart(chartElement, {
           height: 200,
           handleScroll: {
@@ -117,9 +124,9 @@
           lineWidth: 2,
           priceLineVisible: false,
           lastValueVisible: false,
-          topColor: price < 0 ? "#ef444433" : "#22c55e33",
+          topColor: isDownPrice < 0 ? "#ef444433" : "#22c55e33",
           bottomColor: "#fff",
-          lineColor: price < 0 ? "#EF4444" : "#22c55e",
+          lineColor: isDownPrice < 0 ? "#EF4444" : "#22c55e",
         });
         areaChart.setData(priceData);
         chart.timeScale().fitContent();
@@ -149,7 +156,7 @@
 
   $: {
     if (loaded) {
-      callNewDataChart();
+      getNewDataChart();
     }
   }
 </script>
@@ -204,14 +211,14 @@
         <div class="absolute top-1 left-0 z-10">
           <div
             class="inline-block px-1 bg-[#22c55e] text-white rounded text-sm"
-            class:bg-[#EF4444]={price < 0}
+            class:bg-[#EF4444]={isDownPrice < 0}
           >
             {dayjs(hoverDate).format("YYYY/MM/DD HH:mm")}
           </div>
           <br />
           <div
             class="inline-block px-1 bg-[#22c55e] text-white rounded text-sm"
-            class:bg-[#EF4444]={price < 0}
+            class:bg-[#EF4444]={isDownPrice < 0}
           >
             ${hoverPrice && formatCurrency(hoverPrice)}
           </div>
