@@ -1,7 +1,6 @@
 <script lang="ts">
   import "flowbite/dist/flowbite.css";
   import { onMount, onDestroy } from "svelte";
-  import { writable } from "svelte/store";
   import * as browser from "webextension-polyfill";
   import { sendMessage, getCurrentContext } from "webext-bridge";
   import numeral from "numeral";
@@ -14,7 +13,6 @@
   dayjs.locale(currentLang);
   import { formatBalance } from "~/utils";
   import { v4 as uuidv4 } from "uuid";
-  import io from "socket.io-client";
 
   import type { OverviewData } from "~/types/OverviewData";
   import type { OpportunityData } from "~/types/OpportunityData";
@@ -125,7 +123,6 @@
   };
 
   const socket = new WebSocket("ws://143.198.84.240:3031/ws");
-  const messages = writable([]);
 
   socket.onopen = () => {
     console.log("WebSocket connection established");
@@ -133,7 +130,7 @@
 
   socket.onmessage = (event) => {
     const { data } = event;
-    messages.update((msgs) => [...msgs, data]);
+    console.log("data: ", data);
   };
 
   let navActive = "portfolio";
