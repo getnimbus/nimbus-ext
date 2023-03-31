@@ -235,7 +235,6 @@
     tooltip: {
       trigger: "axis",
       formatter: function (params) {
-        console.log("params: ", params);
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 190px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
