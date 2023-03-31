@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import * as browser from "webextension-polyfill";
   import "flowbite/dist/flowbite.css";
   import SidebarTabs from "~/components/TabUI/SidebarTabs.svelte";

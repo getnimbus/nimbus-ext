@@ -6,6 +6,7 @@
   import { sendMessage } from "webext-bridge";
   import { v4 as uuidv4 } from "uuid";
   import { i18n } from "~/lib/i18n";
+
   import type { AddressData } from "~/types/AddressData";
 
   import AppOverlay from "~/components/Overlay.svelte";

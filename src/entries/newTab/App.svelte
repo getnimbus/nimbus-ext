@@ -15,6 +15,7 @@
   import { formatBalance } from "~/utils";
   import { v4 as uuidv4 } from "uuid";
   import io from "socket.io-client";
+
   import type { OverviewData } from "~/types/OverviewData";
   import type { OpportunityData } from "~/types/OpportunityData";
   import type { NewData } from "~/types/NewData";
@@ -728,45 +729,55 @@
           </span>
         </div>
         <div
-          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
           class:bg-[#525B8C]={navActive === "analytic"}
-          on:click={() => (navActive = "analytic")}
+          on:click={() => {
+            // navActive = "analytic";
+          }}
         >
           <img src={Analytic} alt="Analytic" />
           <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.analytic}
+            {MultipleLang.analytic} (soon)
           </span>
         </div>
         <div
-          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
           class:bg-[#525B8C]={navActive === "transactions"}
-          on:click={() => (navActive = "transactions")}
+          on:click={() => {
+            // navActive = "transactions";
+          }}
         >
           <img src={Transactions} alt="Transactions" />
           <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.transactions}
+            {MultipleLang.transactions} (soon)
           </span>
         </div>
         <div
           class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
           class:bg-[#525B8C]={navActive === "news"}
-          on:click={() => (navActive = "news")}
+          on:click={() => {
+            navActive = "news";
+            chrome.tabs.create({ url: "src/entries/news/index.html" });
+          }}
         >
           <img src={News} alt="News" />
           <span class="text-white font-semibold xl:text-base text-sm">
             {MultipleLang.news}
           </span>
         </div>
-        <a
-          href={`chrome-extension://${browser.runtime.id}/src/entries/options/index.html`}
-          target="_blank"
+        <div
           class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class:bg-[#525B8C]={navActive === "options"}
+          on:click={() => {
+            navActive = "options";
+            chrome.tabs.create({ url: "src/entries/options/index.html" });
+          }}
         >
           <img src={Settings} alt="Settings" />
           <span class="text-white font-semibold xl:text-base text-sm">
             {MultipleLang.settings}
           </span>
-        </a>
+        </div>
       </div>
       <div class="flex justify-between items-center xl:gap-4 gap-2">
         <div
@@ -795,7 +806,7 @@
             class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
           />
         </div>
-        <div
+        <!-- <div
           class="bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
         >
           <svg
@@ -822,7 +833,7 @@
         </div>
         <div class="w-[40px] h-[40px] rounded-full overflow-hidden">
           <img src={Avatar} alt="avatar" class="w-full h-full object-cover" />
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -1193,8 +1204,15 @@
         </div>
 
         <div
-          class="xl:w-[35%] w-full flex flex-col border border-[#0000001a] rounded-[20px] p-6"
+          class="xl:w-[35%] w-full flex flex-col border border-[#0000001a] rounded-[20px] p-6 relative overflow-hidden"
         >
+          <div
+            class="absolute top-0 left-0 w-full h-full bg-[#000000cc] flex justify-center items-center"
+          >
+            <div class="text-white text-base font-semibold text-center">
+              Investment opportunities to optimize your holding. Coming soon 🥳
+            </div>
+          </div>
           <div class="text-2xl font-medium text-black mb-6">
             {MultipleLang.opportunities}
           </div>
@@ -1242,9 +1260,15 @@
       >
         <div class="flex justify-between border-b border-[#00000014] pb-4">
           <div class="text-2xl font-medium text-black">{MultipleLang.news}</div>
-          <a href="#" class="font-bold text-base">{MultipleLang.view_more}</a>
+          <div
+            class="font-bold text-base cursor-pointer"
+            on:click={() => {
+              chrome.tabs.create({ url: "src/entries/news/index.html" });
+            }}
+          >
+            {MultipleLang.view_more}
+          </div>
         </div>
-
         <div
           class={`grid ${
             newsData && newsData.length

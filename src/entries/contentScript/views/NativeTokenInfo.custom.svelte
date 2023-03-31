@@ -13,6 +13,7 @@
     add3Dots,
     shorterAddress,
   } from "~/utils";
+
   import type { TokenInfoData } from "~/types/TokenInfoData";
 
   import "~/components/ResetStyle.custom.svelte";

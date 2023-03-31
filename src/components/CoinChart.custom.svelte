@@ -7,6 +7,7 @@
   import { formatCurrency } from "../utils";
   import { sendMessage } from "webext-bridge";
   import { isEmpty } from "lodash";
+
   import type {
     LocalChartTokenData,
     ChartTokenData,
