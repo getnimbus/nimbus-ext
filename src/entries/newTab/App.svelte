@@ -13,6 +13,7 @@
   dayjs.locale(currentLang);
   import { formatBalance } from "~/utils";
   import { v4 as uuidv4 } from "uuid";
+  import io from "socket.io-client";
   import type { OverviewData } from "~/types/OverviewData";
   import type { OpportunityData } from "~/types/OpportunityData";
   import type { NewData } from "~/types/NewData";
@@ -121,6 +122,9 @@
     },
   };
 
+  const socket = io("blabla");
+  $: console.log("socket: ", socket);
+
   let navActive = "portfolio";
   let overviewData: OverviewData = {
     breakdownToken: [],
@@ -162,7 +166,7 @@
       trigger: "item",
       formatter: function (params) {
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 170px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 190px;">
               <div style="display: flex; align-items: centers; gap: 4px">
                 <img src=${params.data.logo} alt="" width=20 height=20 /> 
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
@@ -230,6 +234,48 @@
     },
     tooltip: {
       trigger: "axis",
+      formatter: function (params) {
+        console.log("params: ", params);
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 190px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                ${params[0].axisValue}
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between;">
+                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
+                  <div style="background: #00b580; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
+                  ${params[0].seriesName}
+                </div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                  params[0].value >= 0 ? "rgba(0, 0, 0, 0.7)" : "red"
+                };">
+                  ${params[0].value}%
+                </div>
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between;">
+                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
+                  <div style="background: #f7931a; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
+                  ${params[1].seriesName}
+                </div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                  params[1].value >= 0 ? "rgba(0, 0, 0, 0.7)" : "red"
+                };">
+                  ${params[1].value}%
+                </div>
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between;">
+                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
+                  <div style="background: #547fef; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
+                  ${params[2].seriesName}
+                </div>
+                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                  params[2].value >= 0 ? "rgba(0, 0, 0, 0.7)" : "red"
+                };">
+                  ${params[2].value}%
+                </div>
+              </div>
+            </div>`;
+      },
     },
     legend: {
       lineStyle: {
@@ -250,6 +296,9 @@
     },
     yAxis: {
       type: "value",
+      axisLabel: {
+        formatter: "{value}%",
+      },
     },
     series: [],
   };
@@ -308,7 +357,7 @@
       };
 
       const formatXAxis = overviewData?.performance.map((item) => {
-        return dayjs(item.date).format("DD/MM/YY");
+        return dayjs(item.date).format("DD MMM YYYY");
       });
 
       const formatDataPortfolio = overviewData?.performance.map((item) => {
@@ -1016,7 +1065,9 @@
       style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
     >
       <div class="flex xl:flex-row flex-col justify-between gap-6">
-        <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
+        <div
+          class="xl:flex-[0.8] flex-1 border border-[#0000001a] rounded-[20px] p-6"
+        >
           <div class="flex justify-between mb-1">
             <div class="pl-4 text-2xl font-medium text-black">
               {MultipleLang.token_allocation}

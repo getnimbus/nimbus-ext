@@ -221,7 +221,7 @@
   onMount(() => {
     setTimeout(() => {
       makeChart();
-    }, 300);
+    }, 200);
   });
 
   onDestroy(() => {
@@ -232,6 +232,14 @@
   $: if (chart && "white") {
     makeChart();
     setOption();
+  }
+
+  $: {
+    if (chartContainer) {
+      setTimeout(() => {
+        makeChart();
+      }, 200);
+    }
   }
 
   let addressLabel = "";
