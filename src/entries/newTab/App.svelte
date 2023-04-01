@@ -1204,16 +1204,18 @@
           class="xl:w-[35%] w-full flex flex-col border border-[#0000001a] rounded-[20px] p-6 relative overflow-hidden"
         >
           <div
-            class="absolute top-0 left-0 w-full h-full bg-[#000000cc] flex justify-center items-center"
+            class="absolute top-0 left-0 w-full h-full bg-[#fff opacity-70 flex justify-center items-center"
           >
-            <div class="text-white text-base font-semibold text-center">
+            <div class="text-black text-base font-semibold text-center">
               Investment opportunities to optimize your holding. Coming soon 🥳
             </div>
           </div>
-          <div class="text-2xl font-medium text-black mb-6">
+          <div class="text-2xl font-medium text-black mb-6 blur-sm">
             {MultipleLang.opportunities}
           </div>
-          <div class="flex flex-col gap-4 overflow-y-auto xl:basis-0 grow">
+          <div
+            class="flex flex-col gap-4 overflow-y-auto xl:basis-0 grow blur-sm"
+          >
             {#if opportunitiesData && opportunitiesData.length}
               {#each opportunitiesData as opportunity}
                 <OpportunityCard data={opportunity} />
