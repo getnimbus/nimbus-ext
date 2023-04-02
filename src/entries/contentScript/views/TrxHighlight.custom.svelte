@@ -1,12 +1,17 @@
 <svelte:options tag="trx-highlight" />
 
-<script>
+<script lang="ts">
   import tooltip from "./tooltip";
   import "./TrxInfo.custom.svelte";
   export let hash;
   export let name;
 
   let isShow = false;
+
+  $: isDarkMode =
+    document.querySelector("html").getAttribute("data-theme") === "dark"
+      ? true
+      : false;
 </script>
 
 <span>
@@ -31,9 +36,12 @@
       animation: "shift-away",
       maxWidth: "none",
     }}
-    class="rounded-[1000px] py-1 px-2 bg-[#1E96FC4D] select-none cursor-pointer"
+    class="rounded-[1000px] py-1 px-2 bg-[#1E96FC4D] select-none cursor-pointer whitespace-nowrap"
   >
-    <span class="text-[#27326F] text-sm font-medium">More info</span>
+    <span
+      class="text-[#27326F] text-sm font-medium"
+      class:text-white={isDarkMode}>More info</span
+    >
     {#if isShow}
       <svg
         width="12"
@@ -41,10 +49,12 @@
         viewBox="0 0 12 13"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        class="stroke-[#27326F]"
+        class:stroke-white={isDarkMode}
       >
         <path
           d="M10 8.86365L6 4.50001L2 8.86365"
-          stroke="#27326F"
+          stroke="auto"
           stroke-width="1.5"
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -57,10 +67,12 @@
         viewBox="0 0 12 13"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        class="stroke-[#27326F]"
+        class:stroke-white={isDarkMode}
       >
         <path
           d="M2 5.13635L6 9.49999L10 5.13635"
-          stroke="#27326F"
+          stroke="auto"
           stroke-width="1.5"
           stroke-linecap="round"
           stroke-linejoin="round"

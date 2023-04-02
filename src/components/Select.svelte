@@ -45,6 +45,10 @@
           class:active={chain.value === selected.value}
           id={chain.value}
           on:click={() => {
+            if (chain.value !== "all" && chain.value !== "eth") {
+              open = false;
+              return;
+            }
             selected = chain;
             open = false;
           }}
@@ -55,7 +59,12 @@
             width="18"
             height="18"
           />
-          <div class="name">{chain.label}</div>
+          <div class="name">
+            {chain.label}
+            {#if chain.value !== "all" && chain.value !== "eth"}
+              (Soon)
+            {/if}
+          </div>
         </div>
       {/each}
     </div>

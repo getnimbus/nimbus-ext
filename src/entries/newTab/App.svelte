@@ -31,10 +31,16 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
   import "~/components/Loading.custom.svelte";
+  import "~/components/Tooltip.custom.svelte";
 
   import Wallet from "~/assets/wallet.svg";
   import All from "~/assets/all.svg";
   import logo from "~/assets/btc.png";
+  import Ethereum from "~/assets/ethereum.png";
+  import Bnb from "~/assets/bnb.png";
+  import Polygon from "~/assets/polygon.png";
+  import Arbitrum from "~/assets/arbitrum.png";
+  import Solana from "~/assets/solana.png";
   import Plus from "~/assets/plus.svg";
   import MoveUp from "~/assets/move-up.svg";
   import Avatar from "~/assets/user.svg";
@@ -254,7 +260,7 @@
                   ${params[0].seriesName}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[0].value >= 0 ? "rgba(0, 0, 0, 0.7)" : "red"
+                  params[0].value >= 0 ? "green" : "red"
                 };">
                   ${params[0].value}%
                 </div>
@@ -265,7 +271,7 @@
                   ${params[1].seriesName}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[1].value >= 0 ? "rgba(0, 0, 0, 0.7)" : "red"
+                  params[1].value >= 0 ? "green" : "red"
                 };">
                   ${params[1].value}%
                 </div>
@@ -276,7 +282,7 @@
                   ${params[2].seriesName}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[2].value >= 0 ? "rgba(0, 0, 0, 0.7)" : "red"
+                  params[2].value >= 0 ? "green" : "red"
                 };">
                   ${params[2].value}%
                 </div>
@@ -661,9 +667,29 @@
       value: "all",
     },
     {
-      logo: logo,
+      logo: Ethereum,
       label: "Ethereum",
       value: "eth",
+    },
+    {
+      logo: Bnb,
+      label: "BNB",
+      value: "bnb",
+    },
+    {
+      logo: Polygon,
+      label: "Polygon",
+      value: "polygon",
+    },
+    {
+      logo: Solana,
+      label: "Solana",
+      value: "solana",
+    },
+    {
+      logo: Arbitrum,
+      label: "Arbitrum",
+      value: "arbitrum",
     },
   ];
   let search = "";
@@ -671,6 +697,8 @@
   let selectedTokenAllocation = "token";
   let headerScrollY = false;
   let selectedChain = chainList[0];
+  let showTooltipAnalytic = false;
+  let showTooltipTransactions = false;
 
   const debounce = (value) => {
     clearTimeout(timer);
@@ -725,29 +753,47 @@
             {MultipleLang.portfolio}
           </span>
         </div>
-        <div
-          class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
-          class:bg-[#525B8C]={navActive === "analytic"}
-          on:click={() => {
-            // navActive = "analytic";
-          }}
-        >
-          <img src={Analytic} alt="Analytic" />
-          <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.analytic} (soon)
-          </span>
+        <div class="relative">
+          <div
+            class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
+            class:bg-[#525B8C]={navActive === "analytic"}
+            on:click={() => {
+              // navActive = "analytic";
+            }}
+            on:mouseenter={() => (showTooltipAnalytic = true)}
+            on:mouseleave={() => (showTooltipAnalytic = false)}
+          >
+            <img src={Analytic} alt="Analytic" />
+            <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
+              {MultipleLang.analytic}
+            </span>
+          </div>
+          {#if showTooltipAnalytic}
+            <div class="absolute -bottom-6 left-4" style="z-index: 2147483648;">
+              <tooltip-detail address={"Soon"} />
+            </div>
+          {/if}
         </div>
-        <div
-          class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
-          class:bg-[#525B8C]={navActive === "transactions"}
-          on:click={() => {
-            // navActive = "transactions";
-          }}
-        >
-          <img src={Transactions} alt="Transactions" />
-          <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.transactions} (soon)
-          </span>
+        <div class="relative">
+          <div
+            class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
+            class:bg-[#525B8C]={navActive === "transactions"}
+            on:click={() => {
+              // navActive = "transactions";
+            }}
+            on:mouseenter={() => (showTooltipTransactions = true)}
+            on:mouseleave={() => (showTooltipTransactions = false)}
+          >
+            <img src={Transactions} alt="Transactions" />
+            <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
+              {MultipleLang.transactions}
+            </span>
+          </div>
+          {#if showTooltipTransactions}
+            <div class="absolute -bottom-6 left-4" style="z-index: 2147483648;">
+              <tooltip-detail address={"Soon"} />
+            </div>
+          {/if}
         </div>
         <div
           class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"

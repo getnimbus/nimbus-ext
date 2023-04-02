@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
-  import { sendMessage } from "webext-bridge";
   import { nimbusApi } from "../../lib/network";
 
   import type { NewData } from "~/types/NewData";
@@ -18,8 +17,6 @@
       const response: NewData = await nimbusApi
         .get("/news")
         .then((response) => response.news);
-
-      // const response: NewData = await sendMessage("getListNew", undefined);
 
       console.log("response: ", response);
 
