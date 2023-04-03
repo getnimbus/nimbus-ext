@@ -18,8 +18,6 @@
         .get("/news")
         .then((response) => response.news);
 
-      console.log("response: ", response);
-
       newsData = response;
     } catch (e) {
       console.log("error: ", e);

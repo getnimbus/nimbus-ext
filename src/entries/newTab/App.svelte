@@ -52,6 +52,39 @@
   import Transactions from "~/assets/transactions.svg";
   import News from "~/assets/news.svg";
 
+  const chainList = [
+    {
+      logo: logo,
+      label: "All chains",
+      value: "all",
+    },
+    {
+      logo: Ethereum,
+      label: "Ethereum",
+      value: "eth",
+    },
+    {
+      logo: Bnb,
+      label: "BNB",
+      value: "bnb",
+    },
+    {
+      logo: Polygon,
+      label: "Polygon",
+      value: "polygon",
+    },
+    {
+      logo: Solana,
+      label: "Solana",
+      value: "solana",
+    },
+    {
+      logo: Arbitrum,
+      label: "Arbitrum",
+      value: "arbitrum",
+    },
+  ];
+
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
     analytic: i18n("newtabPage.analytic", "Analytic"),
@@ -129,11 +162,9 @@
   };
 
   const socket = new WebSocket("ws://143.198.84.240:3031/ws");
-
   socket.onopen = () => {
     console.log("WebSocket connection established");
   };
-
   socket.onmessage = (event) => {
     const { data } = event;
     console.log("data: ", data);
@@ -171,6 +202,11 @@
   let isOpenAddModal = false;
   let errors: any = {};
   let isReload = false;
+  let headerScrollY = false;
+  let address = "";
+  let label = "";
+  let search = "";
+  let timerDebounce;
 
   let optionPie = {
     title: {
@@ -316,8 +352,12 @@
     series: [],
   };
 
-  let address = "";
-  let label = "";
+  const debounceSearch = (value) => {
+    clearTimeout(timerDebounce);
+    timerDebounce = setTimeout(() => {
+      search = value;
+    }, 300);
+  };
 
   const handleReload = async () => {
     isReload = true;
@@ -660,58 +700,10 @@
     }
   };
 
-  const chainList = [
-    {
-      logo: logo,
-      label: "All chains",
-      value: "all",
-    },
-    {
-      logo: Ethereum,
-      label: "Ethereum",
-      value: "eth",
-    },
-    {
-      logo: Bnb,
-      label: "BNB",
-      value: "bnb",
-    },
-    {
-      logo: Polygon,
-      label: "Polygon",
-      value: "polygon",
-    },
-    {
-      logo: Solana,
-      label: "Solana",
-      value: "solana",
-    },
-    {
-      logo: Arbitrum,
-      label: "Arbitrum",
-      value: "arbitrum",
-    },
-  ];
-  let search = "";
-  let timer;
   let selectedTokenAllocation = "token";
-  let headerScrollY = false;
   let selectedChain = chainList[0];
   let showTooltipAnalytic = false;
   let showTooltipTransactions = false;
-
-  const debounce = (value) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      search = value;
-    }, 300);
-  };
-
-  browser.storage.onChanged.addListener((changes) => {
-    if (changes?.options?.newValue?.lang) {
-      window.location.reload();
-    }
-  });
 
   $: {
     if (
@@ -723,6 +715,12 @@
     }
     if (label && errors.label && errors.label.msg === "Label is required") {
       errors["label"] = { ...errors["label"], required: false, msg: "" };
+    }
+  }
+
+  $: {
+    if (selectedWallet) {
+      handleReload();
     }
   }
 </script>
@@ -841,7 +839,7 @@
             />
           </svg>
           <input
-            on:keyup={({ target: { value } }) => debounce(value)}
+            on:keyup={({ target: { value } }) => debounceSearch(value)}
             autofocus
             value={search}
             placeholder="Search by address"
