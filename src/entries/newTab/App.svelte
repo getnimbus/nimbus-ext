@@ -1252,7 +1252,7 @@
           <div
             class="absolute top-0 left-0 w-full h-full bg-[#fff opacity-70 flex justify-center items-center"
           >
-            <div class="text-black text-base font-semibold text-center">
+            <div class="text-black text-base font-semibold text-center mx-4">
               Investment opportunities to optimize your holding. Coming soon 🥳
             </div>
           </div>
