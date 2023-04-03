@@ -13,8 +13,6 @@
     { logo: English, value: "en", label: "English" },
   ];
 
-  let selectedLang: any = langs.filter((item) => item.value === currentLang)[0];
-
   const MultipleLang = {
     title: i18n("optionsPage.settings-page-title", "Settings"),
     content: {
@@ -25,7 +23,13 @@
     },
   };
 
-  $: setLang(selectedLang.value);
+  let selectedLang: any = langs.filter((item) => item.value === currentLang)[0];
+
+  $: {
+    if (selectedLang) {
+      setLang(selectedLang.value);
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-2">

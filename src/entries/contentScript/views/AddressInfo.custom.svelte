@@ -16,6 +16,7 @@
   } from "../../../utils";
   import { track } from "~/lib/data-tracking";
   import { nimbus } from "../../../lib/network";
+  import { isSaveAddressLabel } from "../../../store";
 
   import "~/components/Loading.custom.svelte";
   import "~/components/CoinChart.custom.svelte";
@@ -272,8 +273,10 @@
       browser.storage.sync.set({
         [address]: addressLabel,
       });
+      isSaveAddressLabel.update((n) => (n = true));
     } else {
       addressLabel = address;
+      isSaveAddressLabel.update((n) => (n = false));
     }
   };
 </script>
@@ -489,7 +492,7 @@
                       </div>
                     </div>
                     <a
-                      href={`https://www.coingecko.com/en/coins/${name}`}
+                      href={`https://etherscan.io/address/${address}`}
                       target="_blank"
                       class="h-4 w-4"
                     >
@@ -550,6 +553,7 @@
                   if (addressLabel !== address) {
                     browser.storage.sync.remove([address]);
                     addressLabel = address;
+                    isSaveAddressLabel.update((n) => (n = true));
                   } else {
                     showChangeAddressLabel = true;
                   }

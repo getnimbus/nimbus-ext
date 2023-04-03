@@ -1,7 +1,7 @@
 <svelte:options tag="sidebar-tabs" />
 
 <script>
-  import Icon from "~/components/TabUI/Icon.svelte";
+  import Icon from "~/components/OptionUI/Icon.svelte";
   import logo from "../../assets/logo-1.svg";
   import {
     Sidebar,

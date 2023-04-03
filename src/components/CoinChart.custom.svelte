@@ -7,6 +7,7 @@
   import { formatCurrency } from "../utils";
   import { sendMessage } from "webext-bridge";
   import { isEmpty } from "lodash";
+
   import type {
     LocalChartTokenData,
     ChartTokenData,
@@ -124,9 +125,9 @@
           lineWidth: 2,
           priceLineVisible: false,
           lastValueVisible: false,
-          topColor: isDownPrice < 0 ? "#ef444433" : "#22c55e33",
+          topColor: isDownPrice > 0 ? "#ef444433" : "#22c55e33",
           bottomColor: "#fff",
-          lineColor: isDownPrice < 0 ? "#EF4444" : "#22c55e",
+          lineColor: isDownPrice > 0 ? "#EF4444" : "#22c55e",
         });
         areaChart.setData(priceData);
         chart.timeScale().fitContent();
@@ -211,14 +212,14 @@
         <div class="absolute top-1 left-0 z-10">
           <div
             class="inline-block px-1 bg-[#22c55e] text-white rounded text-sm"
-            class:bg-[#EF4444]={isDownPrice < 0}
+            class:bg-[#EF4444]={isDownPrice > 0}
           >
             {dayjs(hoverDate).format("YYYY/MM/DD HH:mm")}
           </div>
           <br />
           <div
             class="inline-block px-1 bg-[#22c55e] text-white rounded text-sm"
-            class:bg-[#EF4444]={isDownPrice < 0}
+            class:bg-[#EF4444]={isDownPrice > 0}
           >
             ${hoverPrice && formatCurrency(hoverPrice)}
           </div>

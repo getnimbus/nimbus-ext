@@ -13,7 +13,7 @@
   dayjs.locale(currentLang);
   import { formatBalance } from "~/utils";
   import { v4 as uuidv4 } from "uuid";
-  import io from "socket.io-client";
+
   import type { OverviewData } from "~/types/OverviewData";
   import type { OpportunityData } from "~/types/OpportunityData";
   import type { NewData } from "~/types/NewData";
@@ -31,10 +31,16 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
   import "~/components/Loading.custom.svelte";
+  import "~/components/Tooltip.custom.svelte";
 
   import Wallet from "~/assets/wallet.svg";
   import All from "~/assets/all.svg";
   import logo from "~/assets/btc.png";
+  import Ethereum from "~/assets/ethereum.png";
+  import Bnb from "~/assets/bnb.png";
+  import Polygon from "~/assets/polygon.png";
+  import Arbitrum from "~/assets/arbitrum.png";
+  import Solana from "~/assets/solana.png";
   import Plus from "~/assets/plus.svg";
   import MoveUp from "~/assets/move-up.svg";
   import Avatar from "~/assets/user.svg";
@@ -45,6 +51,39 @@
   import Settings from "~/assets/settings.svg";
   import Transactions from "~/assets/transactions.svg";
   import News from "~/assets/news.svg";
+
+  const chainList = [
+    {
+      logo: logo,
+      label: "All chains",
+      value: "all",
+    },
+    {
+      logo: Ethereum,
+      label: "Ethereum",
+      value: "eth",
+    },
+    {
+      logo: Bnb,
+      label: "BNB",
+      value: "bnb",
+    },
+    {
+      logo: Polygon,
+      label: "Polygon",
+      value: "polygon",
+    },
+    {
+      logo: Solana,
+      label: "Solana",
+      value: "solana",
+    },
+    {
+      logo: Arbitrum,
+      label: "Arbitrum",
+      value: "arbitrum",
+    },
+  ];
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -122,8 +161,14 @@
     },
   };
 
-  const socket = io("blabla");
-  $: console.log("socket: ", socket);
+  const socket = new WebSocket("ws://143.198.84.240:3031/ws");
+  socket.onopen = () => {
+    console.log("WebSocket connection established");
+  };
+  socket.onmessage = (event) => {
+    const { data } = event;
+    console.log("data: ", data);
+  };
 
   let navActive = "portfolio";
   let overviewData: OverviewData = {
@@ -157,6 +202,11 @@
   let isOpenAddModal = false;
   let errors: any = {};
   let isReload = false;
+  let headerScrollY = false;
+  let address = "";
+  let label = "";
+  let search = "";
+  let timerDebounce;
 
   let optionPie = {
     title: {
@@ -246,7 +296,7 @@
                   ${params[0].seriesName}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[0].value >= 0 ? "rgba(0, 0, 0, 0.7)" : "red"
+                  params[0].value >= 0 ? "green" : "red"
                 };">
                   ${params[0].value}%
                 </div>
@@ -257,7 +307,7 @@
                   ${params[1].seriesName}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[1].value >= 0 ? "rgba(0, 0, 0, 0.7)" : "red"
+                  params[1].value >= 0 ? "green" : "red"
                 };">
                   ${params[1].value}%
                 </div>
@@ -268,7 +318,7 @@
                   ${params[2].seriesName}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[2].value >= 0 ? "rgba(0, 0, 0, 0.7)" : "red"
+                  params[2].value >= 0 ? "green" : "red"
                 };">
                   ${params[2].value}%
                 </div>
@@ -302,8 +352,12 @@
     series: [],
   };
 
-  let address = "";
-  let label = "";
+  const debounceSearch = (value) => {
+    clearTimeout(timerDebounce);
+    timerDebounce = setTimeout(() => {
+      search = value;
+    }, 300);
+  };
 
   const handleReload = async () => {
     isReload = true;
@@ -646,36 +700,10 @@
     }
   };
 
-  const chainList = [
-    {
-      logo: logo,
-      label: "All chains",
-      value: "all",
-    },
-    {
-      logo: logo,
-      label: "Ethereum",
-      value: "eth",
-    },
-  ];
-  let search = "";
-  let timer;
   let selectedTokenAllocation = "token";
-  let headerScrollY = false;
   let selectedChain = chainList[0];
-
-  const debounce = (value) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      search = value;
-    }, 300);
-  };
-
-  browser.storage.onChanged.addListener((changes) => {
-    if (changes?.options?.newValue?.lang) {
-      window.location.reload();
-    }
-  });
+  let showTooltipAnalytic = false;
+  let showTooltipTransactions = false;
 
   $: {
     if (
@@ -687,6 +715,12 @@
     }
     if (label && errors.label && errors.label.msg === "Label is required") {
       errors["label"] = { ...errors["label"], required: false, msg: "" };
+    }
+  }
+
+  $: {
+    if (selectedWallet) {
+      handleReload();
     }
   }
 </script>
@@ -717,46 +751,80 @@
             {MultipleLang.portfolio}
           </span>
         </div>
-        <div
-          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "analytic"}
-          on:click={() => (navActive = "analytic")}
-        >
-          <img src={Analytic} alt="Analytic" />
-          <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.analytic}
-          </span>
+        <div class="relative">
+          <div
+            class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
+            class:bg-[#525B8C]={navActive === "analytic"}
+            on:click={() => {
+              // navActive = "analytic";
+            }}
+            on:mouseenter={() => (showTooltipAnalytic = true)}
+            on:mouseleave={() => (showTooltipAnalytic = false)}
+          >
+            <img src={Analytic} alt="Analytic" />
+            <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
+              {MultipleLang.analytic}
+            </span>
+          </div>
+          {#if showTooltipAnalytic}
+            <div
+              class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
+              style="z-index: 2147483648;"
+            >
+              <tooltip-detail address={"Soon"} />
+            </div>
+          {/if}
         </div>
-        <div
-          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "transactions"}
-          on:click={() => (navActive = "transactions")}
-        >
-          <img src={Transactions} alt="Transactions" />
-          <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.transactions}
-          </span>
+        <div class="relative">
+          <div
+            class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
+            class:bg-[#525B8C]={navActive === "transactions"}
+            on:click={() => {
+              // navActive = "transactions";
+            }}
+            on:mouseenter={() => (showTooltipTransactions = true)}
+            on:mouseleave={() => (showTooltipTransactions = false)}
+          >
+            <img src={Transactions} alt="Transactions" />
+            <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
+              {MultipleLang.transactions}
+            </span>
+          </div>
+          {#if showTooltipTransactions}
+            <div
+              class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
+              style="z-index: 2147483648;"
+            >
+              <tooltip-detail address={"Soon"} />
+            </div>
+          {/if}
         </div>
         <div
           class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
           class:bg-[#525B8C]={navActive === "news"}
-          on:click={() => (navActive = "news")}
+          on:click={() => {
+            navActive = "news";
+            chrome.tabs.create({ url: "src/entries/news/index.html" });
+          }}
         >
           <img src={News} alt="News" />
           <span class="text-white font-semibold xl:text-base text-sm">
             {MultipleLang.news}
           </span>
         </div>
-        <a
-          href={`chrome-extension://${browser.runtime.id}/src/entries/options/index.html`}
-          target="_blank"
+        <div
           class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class:bg-[#525B8C]={navActive === "options"}
+          on:click={() => {
+            navActive = "options";
+            chrome.tabs.create({ url: "src/entries/options/index.html" });
+          }}
         >
           <img src={Settings} alt="Settings" />
           <span class="text-white font-semibold xl:text-base text-sm">
             {MultipleLang.settings}
           </span>
-        </a>
+        </div>
       </div>
       <div class="flex justify-between items-center xl:gap-4 gap-2">
         <div
@@ -777,7 +845,7 @@
             />
           </svg>
           <input
-            on:keyup={({ target: { value } }) => debounce(value)}
+            on:keyup={({ target: { value } }) => debounceSearch(value)}
             autofocus
             value={search}
             placeholder="Search by address"
@@ -785,7 +853,7 @@
             class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
           />
         </div>
-        <div
+        <!-- <div
           class="bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
         >
           <svg
@@ -812,7 +880,7 @@
         </div>
         <div class="w-[40px] h-[40px] rounded-full overflow-hidden">
           <img src={Avatar} alt="avatar" class="w-full h-full object-cover" />
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -1183,12 +1251,21 @@
         </div>
 
         <div
-          class="xl:w-[35%] w-full flex flex-col border border-[#0000001a] rounded-[20px] p-6"
+          class="xl:w-[35%] w-full flex flex-col border border-[#0000001a] rounded-[20px] p-6 relative overflow-hidden"
         >
-          <div class="text-2xl font-medium text-black mb-6">
+          <div
+            class="absolute top-0 left-0 w-full h-full bg-[#fff opacity-70 flex justify-center items-center"
+          >
+            <div class="text-black text-base font-semibold text-center mx-4">
+              Investment opportunities to optimize your holding. Coming soon 🥳
+            </div>
+          </div>
+          <div class="text-2xl font-medium text-black mb-6 blur-sm">
             {MultipleLang.opportunities}
           </div>
-          <div class="flex flex-col gap-4 overflow-y-auto xl:basis-0 grow">
+          <div
+            class="flex flex-col gap-4 overflow-y-auto xl:basis-0 grow blur-sm"
+          >
             {#if opportunitiesData && opportunitiesData.length}
               {#each opportunitiesData as opportunity}
                 <OpportunityCard data={opportunity} />
@@ -1232,9 +1309,15 @@
       >
         <div class="flex justify-between border-b border-[#00000014] pb-4">
           <div class="text-2xl font-medium text-black">{MultipleLang.news}</div>
-          <a href="#" class="font-bold text-base">{MultipleLang.view_more}</a>
+          <div
+            class="font-bold text-base cursor-pointer"
+            on:click={() => {
+              chrome.tabs.create({ url: "src/entries/news/index.html" });
+            }}
+          >
+            {MultipleLang.view_more}
+          </div>
         </div>
-
         <div
           class={`grid ${
             newsData && newsData.length
