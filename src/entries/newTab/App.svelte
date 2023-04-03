@@ -1,5 +1,4 @@
 <script lang="ts">
-  import "flowbite/dist/flowbite.css";
   import { onMount, onDestroy } from "svelte";
   import * as browser from "webextension-polyfill";
   import { sendMessage, getCurrentContext } from "webext-bridge";
@@ -112,7 +111,6 @@
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
     data_updated: i18n("newtabPage.data-updated", "Data updated"),
-
     content: {
       btn_text: i18n(
         "optionsPage.accounts-page-content.address-btn-text",
@@ -191,14 +189,8 @@
   let newsData: NewData = [];
   let walletData: WalletData = [];
   let positionsData: PositionData = [];
-  let listAddress = [
-    {
-      logo: Wallet,
-      label: "All wallet",
-      value: "all",
-    },
-  ];
-  let selectedWallet = listAddress[0];
+  let listAddress = [];
+  let selectedWallet;
   let isOpenAddModal = false;
   let errors: any = {};
   let isReload = false;
@@ -569,8 +561,19 @@
       });
 
       listAddress = listAddress.concat(structWalletData);
+
+      if (listAddress.length === 1) {
+        selectedWallet = listAddress[0];
+      }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const getSelectedWallet = async () => {
+    const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
+    if (selectedWalletRes) {
+      selectedWallet = selectedWalletRes.selectedWallet;
     }
   };
 
@@ -581,6 +584,7 @@
     getWalletData();
     getPositionsData();
     getListAddress();
+    getSelectedWallet();
   });
 
   onMount(() => {
@@ -677,6 +681,10 @@
       const addWallet = [...listAddress, dataFormat];
       listAddress = addWallet;
 
+      if (addWallet.length === 1) {
+        selectedWallet = listAddress[0];
+      }
+
       const filterWalletList = addWallet.filter((item) => item.value !== "all");
       const structWalletList = filterWalletList.map((item) => {
         return {
@@ -705,6 +713,8 @@
   let showTooltipAnalytic = false;
   let showTooltipTransactions = false;
 
+  $: console.log("selectedWallet: ", selectedWallet);
+
   $: {
     if (
       address &&
@@ -721,13 +731,20 @@
   $: {
     if (selectedWallet) {
       handleReload();
+      browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
+        console.log("save selected address to sync storage");
+      });
     }
   }
 </script>
 
-<div class="flex flex-col pb-10">
+<div class="flex flex-col" class:pb-10={listAddress && listAddress.length > 0}>
   <div
-    class="border-header py-1 sticky top-0 bg-[#27326F]"
+    class={`border-header py-1 top-0 bg-[#27326F] ${
+      listAddress && listAddress.length > 0
+        ? "sticky"
+        : "absolute left-0 right-0"
+    }`}
     style="z-index: 2147483647; {headerScrollY
       ? 'box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);'
       : ''}"
@@ -884,36 +901,34 @@
       </div>
     </div>
   </div>
-  <div id="top" class="header-container">
-    <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
+  <div
+    id="top"
+    class="header-container"
+    class:h-screen={listAddress.length === 0}
+  >
+    <div
+      class="flex flex-col max-w-[2000px] m-auto w-[82%]"
+      class:pt-14={listAddress.length === 0}
+    >
       <div class="flex flex-col gap-14 mb-5">
         <div class="flex justify-between items-center">
-          {#if listAddress && listAddress.length > 1}
+          {#if listAddress && listAddress.length > 0}
             <div class="flex items-center gap-5">
               {#if listAddress.length > 4}
                 {#each listAddress.slice(0, 4) as item, index}
                   <div
                     id={item.value}
                     class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
-                      item.value === selectedWallet.value && "bg-[#ffffff1c]"
+                      item.value === selectedWallet?.value && "bg-[#ffffff1c]"
                     }`}
                     class:hover:no-underline={item.value ===
-                      selectedWallet.value}
+                      selectedWallet?.value}
                     on:click={() => {
                       selectedWallet = item;
                     }}
                   >
-                    <img
-                      src={index === 0 ? All : item.logo}
-                      alt="logo"
-                      width="16"
-                      height="16"
-                    />
+                    <img src={item.logo} alt="logo" width="16" height="16" />
                     {item.label}
-                  </div>
-                {:else}
-                  <div class="w-full flex justify-center items-center">
-                    <loading-icon />
                   </div>
                 {/each}
                 <Select
@@ -926,25 +941,16 @@
                   <div
                     id={item.value}
                     class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
-                      item.value === selectedWallet.value && "bg-[#ffffff1c]"
+                      item.value === selectedWallet?.value && "bg-[#ffffff1c]"
                     }`}
                     class:hover:no-underline={item.value ===
-                      selectedWallet.value}
+                      selectedWallet?.value}
                     on:click={() => {
                       selectedWallet = item;
                     }}
                   >
-                    <img
-                      src={index === 0 ? All : item.logo}
-                      alt="logo"
-                      width="16"
-                      height="16"
-                    />
+                    <img src={item.logo} alt="logo" width="16" height="16" />
                     {item.label}
-                  </div>
-                {:else}
-                  <div class="w-full flex justify-center items-center">
-                    <loading-icon />
                   </div>
                 {/each}
               {/if}
@@ -964,182 +970,195 @@
             </div>
           </button>
         </div>
-        <div class="flex justify-between items-end">
-          <div class="flex items-end gap-6">
-            <div class="text-5xl text-white font-semibold">
-              {MultipleLang.overview}
-            </div>
-            <div class="flex items-center gap-2 mb-1">
-              <div
-                class="cursor-pointer"
-                class:loading={isReload}
-                on:click={handleReload}
-              >
-                <img src={Reload} alt="" />
+        {#if listAddress && listAddress.length > 0}
+          <div class="flex justify-between items-end">
+            <div class="flex items-end gap-6">
+              <div class="text-5xl text-white font-semibold">
+                {MultipleLang.overview}
               </div>
-              <div class="text-xs text-white font-medium">
-                {MultipleLang.data_updated}
-                {dayjs(overviewData?.updatedAt).fromNow()}
+              <div class="flex items-center gap-2 mb-1">
+                <div
+                  class="cursor-pointer"
+                  class:loading={isReload}
+                  on:click={() => handleReload()}
+                >
+                  <img src={Reload} alt="" />
+                </div>
+                <div class="text-xs text-white font-medium">
+                  {MultipleLang.data_updated}
+                  {dayjs(overviewData?.updatedAt).fromNow()}
+                </div>
               </div>
             </div>
+            <Select listSelect={chainList} bind:selected={selectedChain} />
           </div>
-          <Select listSelect={chainList} bind:selected={selectedChain} />
-        </div>
+        {/if}
       </div>
-      <div class="flex xl:flex-row flex-col justify-between gap-6">
-        <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              {MultipleLang.networth}
-            </div>
-            <div class="text-3xl text-black">
-              $<CountUpNumber
-                id="networth"
-                number={overviewData?.overview.networth}
-              />
-            </div>
-            <div class="flex items-center gap-3">
-              <div
-                class={`text-lg font-medium ${
-                  overviewData?.overview.networthChange < 0
-                    ? "text-red-500"
-                    : "text-[#00A878]"
-                }`}
-              >
-                {#if overviewData?.overview.networthChange < 0}
-                  ↓
-                {:else}
-                  ↑
-                {/if}
-                <CountUpNumber
-                  id="networth_grouth"
-                  number={Math.abs(overviewData?.overview.networthChange)}
-                />%
+      {#if listAddress && listAddress.length > 0}
+        <div class="flex xl:flex-row flex-col justify-between gap-6">
+          <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
+            <div
+              class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white"
+            >
+              <div class="text-[#00000099] text-base font-medium">
+                {MultipleLang.networth}
               </div>
-              <div class="text-[#00000066] text-base font-medium">
-                {overviewData?.overview.change}
+              <div class="text-3xl text-black">
+                $<CountUpNumber
+                  id="networth"
+                  number={overviewData?.overview.networth}
+                />
+              </div>
+              <div class="flex items-center gap-3">
+                <div
+                  class={`text-lg font-medium ${
+                    overviewData?.overview.networthChange < 0
+                      ? "text-red-500"
+                      : "text-[#00A878]"
+                  }`}
+                >
+                  {#if overviewData?.overview.networthChange < 0}
+                    ↓
+                  {:else}
+                    ↑
+                  {/if}
+                  <CountUpNumber
+                    id="networth_grouth"
+                    number={Math.abs(overviewData?.overview.networthChange)}
+                  />%
+                </div>
+                <div class="text-[#00000066] text-base font-medium">
+                  {overviewData?.overview.change}
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white"
+            >
+              <div class="text-[#00000099] text-base font-medium">
+                {MultipleLang.claimable}
+              </div>
+              <div class="text-3xl text-black">
+                $<CountUpNumber
+                  id="claimable"
+                  number={overviewData?.overview.claimable}
+                />
+              </div>
+              <div class="flex items-center gap-3">
+                <div
+                  class={`text-lg font-medium ${
+                    overviewData?.overview.claimableChange < 0
+                      ? "text-red-500"
+                      : "text-[#00A878]"
+                  }`}
+                >
+                  {#if overviewData?.overview.claimableChange < 0}
+                    ↓
+                  {:else}
+                    ↑
+                  {/if}
+                  <CountUpNumber
+                    id="claimable_grouth"
+                    number={Math.abs(overviewData?.overview.claimableChange)}
+                  />%
+                </div>
+                <div class="text-[#00000066] text-base font-medium">
+                  {overviewData?.overview.change}
+                </div>
               </div>
             </div>
           </div>
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              {MultipleLang.claimable}
-            </div>
-            <div class="text-3xl text-black">
-              $<CountUpNumber
-                id="claimable"
-                number={overviewData?.overview.claimable}
-              />
-            </div>
-            <div class="flex items-center gap-3">
-              <div
-                class={`text-lg font-medium ${
-                  overviewData?.overview.claimableChange < 0
-                    ? "text-red-500"
-                    : "text-[#00A878]"
-                }`}
-              >
-                {#if overviewData?.overview.claimableChange < 0}
-                  ↓
-                {:else}
-                  ↑
-                {/if}
-                <CountUpNumber
-                  id="claimable_grouth"
-                  number={Math.abs(overviewData?.overview.claimableChange)}
-                />%
+          <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
+            <div
+              class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white"
+            >
+              <div class="text-[#00000099] text-base font-medium">
+                {MultipleLang.total_assets}
               </div>
-              <div class="text-[#00000066] text-base font-medium">
-                {overviewData?.overview.change}
+              <div class="text-3xl text-black">
+                $<CountUpNumber
+                  id="total_assets"
+                  number={overviewData?.overview.assets}
+                />
+              </div>
+              <div class="flex items-center gap-3">
+                <div
+                  class={`text-lg font-medium ${
+                    overviewData?.overview.assetsChange < 0
+                      ? "text-red-500"
+                      : "text-[#00A878]"
+                  }`}
+                >
+                  {#if overviewData?.overview.assetsChange < 0}
+                    ↓
+                  {:else}
+                    ↑
+                  {/if}
+                  <CountUpNumber
+                    id="total_assets_grouth"
+                    number={Math.abs(overviewData?.overview.assetsChange)}
+                  />%
+                </div>
+                <div class="text-[#00000066] text-base font-medium">
+                  {overviewData?.overview.change}
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white"
+            >
+              <div class="text-[#00000099] text-base font-medium">
+                {MultipleLang.total_debts}
+              </div>
+              <div class="text-3xl text-black">
+                $<CountUpNumber
+                  id="total_debts"
+                  number={overviewData?.overview.debts}
+                />
+              </div>
+              <div class="flex items-center gap-3">
+                <div
+                  class={`text-lg font-medium ${
+                    overviewData?.overview.debtsChange < 0
+                      ? "text-red-500"
+                      : "text-[#00A878]"
+                  }`}
+                >
+                  {#if overviewData?.overview.debtsChange < 0}
+                    ↓
+                  {:else}
+                    ↑
+                  {/if}
+                  <CountUpNumber
+                    id="total_debts_grouth"
+                    number={Math.abs(overviewData?.overview.debtsChange)}
+                  />%
+                </div>
+                <div class="text-[#00000066] text-base font-medium">
+                  {overviewData?.overview.change}
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              {MultipleLang.total_assets}
-            </div>
-            <div class="text-3xl text-black">
-              $<CountUpNumber
-                id="total_assets"
-                number={overviewData?.overview.assets}
-              />
-            </div>
-            <div class="flex items-center gap-3">
-              <div
-                class={`text-lg font-medium ${
-                  overviewData?.overview.assetsChange < 0
-                    ? "text-red-500"
-                    : "text-[#00A878]"
-                }`}
-              >
-                {#if overviewData?.overview.assetsChange < 0}
-                  ↓
-                {:else}
-                  ↑
-                {/if}
-                <CountUpNumber
-                  id="total_assets_grouth"
-                  number={Math.abs(overviewData?.overview.assetsChange)}
-                />%
-              </div>
-              <div class="text-[#00000066] text-base font-medium">
-                {overviewData?.overview.change}
-              </div>
-            </div>
-          </div>
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              {MultipleLang.total_debts}
-            </div>
-            <div class="text-3xl text-black">
-              $<CountUpNumber
-                id="total_debts"
-                number={overviewData?.overview.debts}
-              />
-            </div>
-            <div class="flex items-center gap-3">
-              <div
-                class={`text-lg font-medium ${
-                  overviewData?.overview.debtsChange < 0
-                    ? "text-red-500"
-                    : "text-[#00A878]"
-                }`}
-              >
-                {#if overviewData?.overview.debtsChange < 0}
-                  ↓
-                {:else}
-                  ↑
-                {/if}
-                <CountUpNumber
-                  id="total_debts_grouth"
-                  number={Math.abs(overviewData?.overview.debtsChange)}
-                />%
-              </div>
-              <div class="text-[#00000066] text-base font-medium">
-                {overviewData?.overview.change}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/if}
     </div>
   </div>
-  <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
-    <div
-      class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
-      style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
-    >
-      <div class="flex xl:flex-row flex-col justify-between gap-6">
-        <div
-          class="xl:flex-[0.8] flex-1 border border-[#0000001a] rounded-[20px] p-6"
-        >
-          <div class="flex justify-between mb-1">
-            <div class="pl-4 text-2xl font-medium text-black">
-              {MultipleLang.token_allocation}
-            </div>
-            <!-- <div class="flex items-center gap-2">
+  {#if listAddress && listAddress.length > 0}
+    <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
+      <div
+        class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
+        style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+      >
+        <div class="flex xl:flex-row flex-col justify-between gap-6">
+          <div
+            class="xl:flex-[0.8] flex-1 border border-[#0000001a] rounded-[20px] p-6"
+          >
+            <div class="flex justify-between mb-1">
+              <div class="pl-4 text-2xl font-medium text-black">
+                {MultipleLang.token_allocation}
+              </div>
+              <!-- <div class="flex items-center gap-2">
               <div
                 class={`cursor-pointer text-base font-medium py-[6px] px-4 rounded-[100px] transition-all ${
                   selectedTokenAllocation === "token" &&
@@ -1159,116 +1178,184 @@
                 Chain
               </div>
             </div> -->
+            </div>
+            <EChart
+              id="pie-chart"
+              theme="white"
+              option={optionPie}
+              height={465}
+            />
           </div>
-          <EChart
-            id="pie-chart"
-            theme="white"
-            option={optionPie}
-            height={465}
-          />
-        </div>
 
-        <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
-          <div class="pl-4 text-2xl font-medium text-black mb-3">
-            {MultipleLang.performance}
-          </div>
-          <EChart
-            id="line-chart"
-            theme="white"
-            option={optionLine}
-            height={433}
-          />
-        </div>
-      </div>
-
-      <div class="flex xl:flex-row flex-col justify-between gap-6">
-        <div
-          class="xl:w-[65%] w-full flex-col border border-[#0000001a] rounded-[20px] p-6"
-        >
-          <div class="text-2xl font-medium text-black mb-6">
-            {MultipleLang.wallet}
-          </div>
-          <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
-            <table class="table-auto 2xl:w-full xl:w-auto w-full">
-              <thead>
-                <tr class="bg-[#f4f5f880]">
-                  <th class="pl-3 py-3">
-                    <div
-                      class="text-left text-sm uppercase font-semibold text-black min-w-[220px]"
-                    >
-                      {MultipleLang.assets}
-                    </div>
-                  </th>
-                  <th class="py-3">
-                    <div
-                      class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
-                    >
-                      {MultipleLang.market_price}
-                    </div>
-                  </th>
-                  <th class="py-3">
-                    <div
-                      class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
-                    >
-                      {MultipleLang.amount}
-                    </div>
-                  </th>
-                  <th class="py-3">
-                    <div
-                      class="text-right text-sm uppercase font-semibold text-black min-w-[130px]"
-                    >
-                      {MultipleLang.value}
-                    </div>
-                  </th>
-                  <th class="pr-3 py-3">
-                    <div
-                      class="text-right text-sm uppercase font-semibold text-black min-w-[125px]"
-                    >
-                      {MultipleLang.profit}
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {#if walletData && walletData.length}
-                  {#each walletData as holding}
-                    <HoldingInfo data={holding} />
-                  {:else}
-                    <tr>
-                      <td colspan="5">
-                        <div class="flex justify-center items-center py-4 px-3">
-                          <loading-icon />
-                        </div>
-                      </td>
-                    </tr>
-                  {/each}
-                {:else}
-                  <div>Empty</div>
-                {/if}
-              </tbody>
-            </table>
+          <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
+            <div class="pl-4 text-2xl font-medium text-black mb-3">
+              {MultipleLang.performance}
+            </div>
+            <EChart
+              id="line-chart"
+              theme="white"
+              option={optionLine}
+              height={433}
+            />
           </div>
         </div>
 
-        <div
-          class="xl:w-[35%] w-full flex flex-col border border-[#0000001a] rounded-[20px] p-6 relative overflow-hidden"
-        >
+        <div class="flex xl:flex-row flex-col justify-between gap-6">
           <div
-            class="absolute top-0 left-0 w-full h-full bg-[#fff opacity-70 flex justify-center items-center"
+            class="xl:w-[65%] w-full flex-col border border-[#0000001a] rounded-[20px] p-6"
           >
-            <div class="text-black text-base font-semibold text-center mx-4">
-              Investment opportunities to optimize your holding. Coming soon 🥳
+            <div class="text-2xl font-medium text-black mb-6">
+              {MultipleLang.wallet}
+            </div>
+            <div
+              class="border border-[#0000000d] rounded-[10px] overflow-x-auto"
+            >
+              <table class="table-auto 2xl:w-full xl:w-auto w-full">
+                <thead>
+                  <tr class="bg-[#f4f5f880]">
+                    <th class="pl-3 py-3">
+                      <div
+                        class="text-left text-sm uppercase font-semibold text-black min-w-[220px]"
+                      >
+                        {MultipleLang.assets}
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
+                      >
+                        {MultipleLang.market_price}
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
+                      >
+                        {MultipleLang.amount}
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right text-sm uppercase font-semibold text-black min-w-[130px]"
+                      >
+                        {MultipleLang.value}
+                      </div>
+                    </th>
+                    <th class="pr-3 py-3">
+                      <div
+                        class="text-right text-sm uppercase font-semibold text-black min-w-[125px]"
+                      >
+                        {MultipleLang.profit}
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {#if walletData && walletData.length}
+                    {#each walletData as holding}
+                      <HoldingInfo data={holding} />
+                    {:else}
+                      <tr>
+                        <td colspan="5">
+                          <div
+                            class="flex justify-center items-center py-4 px-3"
+                          >
+                            <loading-icon />
+                          </div>
+                        </td>
+                      </tr>
+                    {/each}
+                  {:else}
+                    <div>Empty</div>
+                  {/if}
+                </tbody>
+              </table>
             </div>
           </div>
-          <div class="text-2xl font-medium text-black mb-6 blur-sm">
-            {MultipleLang.opportunities}
+
+          <div
+            class="xl:w-[35%] w-full flex flex-col border border-[#0000001a] rounded-[20px] p-6 relative overflow-hidden"
+          >
+            <div
+              class="absolute top-0 left-0 w-full h-full bg-[#fff opacity-70 flex justify-center items-center"
+            >
+              <div class="text-black text-base font-semibold text-center mx-4">
+                Investment opportunities to optimize your holding. Coming soon
+                🥳
+              </div>
+            </div>
+            <div class="text-2xl font-medium text-black mb-6 blur-sm">
+              {MultipleLang.opportunities}
+            </div>
+            <div
+              class="flex flex-col gap-4 overflow-y-auto xl:basis-0 grow blur-sm"
+            >
+              {#if opportunitiesData && opportunitiesData.length}
+                {#each opportunitiesData as opportunity}
+                  <OpportunityCard data={opportunity} />
+                {:else}
+                  <div
+                    class="w-full h-[120px] flex justify-center items-center"
+                  >
+                    <loading-icon />
+                  </div>
+                {/each}
+              {:else}
+                <div>Empty</div>
+              {/if}
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-col gap-4 border border-[#0000001a] rounded-[20px] p-6"
+        >
+          <div
+            class="text-2xl font-medium text-black border-b border-[#00000014] pb-4"
+          >
+            {MultipleLang.positions}
+          </div>
+          <div class="flex flex-col gap-10">
+            {#if positionsData && positionsData.length}
+              {#each positionsData as position}
+                <Table data={position} />
+              {:else}
+                <div class="w-full h-[120px] flex justify-center items-center">
+                  <loading-icon />
+                </div>
+              {/each}
+            {:else}
+              <div>Empty</div>
+            {/if}
+          </div>
+        </div>
+
+        <div
+          class="flex flex-col gap-10 border border-[#0000001a] rounded-[20px] p-6"
+        >
+          <div class="flex justify-between border-b border-[#00000014] pb-4">
+            <div class="text-2xl font-medium text-black">
+              {MultipleLang.news}
+            </div>
+            <div
+              class="font-bold text-base cursor-pointer"
+              on:click={() => {
+                chrome.tabs.create({ url: "src/entries/news/index.html" });
+              }}
+            >
+              {MultipleLang.view_more}
+            </div>
           </div>
           <div
-            class="flex flex-col gap-4 overflow-y-auto xl:basis-0 grow blur-sm"
+            class={`grid ${
+              newsData && newsData.length
+                ? "2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1"
+                : "grid-cols-1"
+            } gap-10`}
           >
-            {#if opportunitiesData && opportunitiesData.length}
-              {#each opportunitiesData as opportunity}
-                <OpportunityCard data={opportunity} />
+            {#if newsData && newsData.length}
+              {#each newsData as news}
+                <NewCard data={news} />
               {:else}
                 <div class="w-full h-[120px] flex justify-center items-center">
                   <loading-icon />
@@ -1280,75 +1367,17 @@
           </div>
         </div>
       </div>
-
-      <div
-        class="flex flex-col gap-4 border border-[#0000001a] rounded-[20px] p-6"
-      >
-        <div
-          class="text-2xl font-medium text-black border-b border-[#00000014] pb-4"
-        >
-          {MultipleLang.positions}
-        </div>
-        <div class="flex flex-col gap-10">
-          {#if positionsData && positionsData.length}
-            {#each positionsData as position}
-              <Table data={position} />
-            {:else}
-              <div class="w-full h-[120px] flex justify-center items-center">
-                <loading-icon />
-              </div>
-            {/each}
-          {:else}
-            <div>Empty</div>
-          {/if}
-        </div>
-      </div>
-
-      <div
-        class="flex flex-col gap-10 border border-[#0000001a] rounded-[20px] p-6"
-      >
-        <div class="flex justify-between border-b border-[#00000014] pb-4">
-          <div class="text-2xl font-medium text-black">{MultipleLang.news}</div>
-          <div
-            class="font-bold text-base cursor-pointer"
-            on:click={() => {
-              chrome.tabs.create({ url: "src/entries/news/index.html" });
-            }}
-          >
-            {MultipleLang.view_more}
-          </div>
-        </div>
-        <div
-          class={`grid ${
-            newsData && newsData.length
-              ? "2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1"
-              : "grid-cols-1"
-          } gap-10`}
-        >
-          {#if newsData && newsData.length}
-            {#each newsData as news}
-              <NewCard data={news} />
-            {:else}
-              <div class="w-full h-[120px] flex justify-center items-center">
-                <loading-icon />
-              </div>
-            {/each}
-          {:else}
-            <div>Empty</div>
-          {/if}
-        </div>
-      </div>
     </div>
-  </div>
-  <div class="sticky bottom-4 flex justify-end pr-4">
-    <a
-      class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F]"
-      style="box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);"
-      href="#top"
-    >
-      <img src={MoveUp} alt="UP" width="20" height="20" />
-    </a>
-  </div>
+    <div class="sticky bottom-4 flex justify-end pr-4">
+      <a
+        class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F]"
+        style="box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);"
+        href="#top"
+      >
+        <img src={MoveUp} alt="UP" width="20" height="20" />
+      </a>
+    </div>
+  {/if}
   <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
     <div class="title-3 text-gray-600 font-semibold max-w-[530px]">
       {MultipleLang.content.modal_add_title}

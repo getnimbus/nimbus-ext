@@ -58,3 +58,7 @@ export const goplus = createAxiosInterface({
 export const nimbusApi = createAxiosInterface({
   baseURL: "https://nimbus-api-production.up.railway.app/api",
 });
+
+export const test = createAxiosInterface({
+  baseURL: "https://mkxhfo3tne.execute-api.ap-southeast-1.amazonaws.com",
+});

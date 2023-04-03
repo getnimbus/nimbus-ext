@@ -586,6 +586,7 @@
       width={70}
       on:click={() => {
         handleDelete(selectedWallet);
+        browser.storage.sync.remove("selectedWallet");
       }}
     >
       {MultipleLang.content.modal_delete}
