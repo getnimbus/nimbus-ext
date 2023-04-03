@@ -59,7 +59,13 @@
             width="18"
             height="18"
           />
-          <div class="name">
+          <div
+            class={`name ${
+              chain.value !== "all" && chain.value !== "eth"
+                ? "text-[#00000066]"
+                : "text-[#000000b3]"
+            }`}
+          >
             {chain.label}
             {#if chain.value !== "all" && chain.value !== "eth"}
               (Soon)
@@ -156,7 +162,6 @@
     font-weight: 500;
     font-size: 14px;
     line-height: 17px;
-    color: rgba(0, 0, 0, 0.7);
     transition: all 0.3s ease;
   }
 </style>

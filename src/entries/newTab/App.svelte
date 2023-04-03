@@ -767,7 +767,10 @@
             </span>
           </div>
           {#if showTooltipAnalytic}
-            <div class="absolute -bottom-6 left-4" style="z-index: 2147483648;">
+            <div
+              class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
+              style="z-index: 2147483648;"
+            >
               <tooltip-detail address={"Soon"} />
             </div>
           {/if}
@@ -788,7 +791,10 @@
             </span>
           </div>
           {#if showTooltipTransactions}
-            <div class="absolute -bottom-6 left-4" style="z-index: 2147483648;">
+            <div
+              class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
+              style="z-index: 2147483648;"
+            >
               <tooltip-detail address={"Soon"} />
             </div>
           {/if}
