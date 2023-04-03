@@ -2,12 +2,12 @@
   import * as browser from "webextension-polyfill";
   import "flowbite/dist/flowbite.css";
 
-  import SidebarTabs from "~/components/TabUI/SidebarTabs.svelte";
-  import TabWallets from "~/components/TabUI/TabWallets.svelte";
-  import TabDashboard from "~/components/TabUI/TabDashboard.svelte";
-  import TabHighlight from "~/components/TabUI/TabHighlight.svelte";
-  import TabNotification from "~/components/TabUI/TabNotification.svelte";
-  import TabSettings from "~/components/TabUI/TabSettings.svelte";
+  import SidebarTabs from "~/components/OptionUI/SidebarTabs.svelte";
+  import TabWallets from "~/components/OptionUI/TabWallets.svelte";
+  import TabDashboard from "~/components/OptionUI/TabDashboard.svelte";
+  import TabHighlight from "~/components/OptionUI/TabHighlight.svelte";
+  import TabNotification from "~/components/OptionUI/TabNotification.svelte";
+  import TabSettings from "~/components/OptionUI/TabSettings.svelte";
 
   let activeTabValue;
 

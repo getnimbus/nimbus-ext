@@ -6,6 +6,7 @@
     | "secondary"
     | "no-outlined"
     | "underlined"
+    | "delete"
     | "" = "primary";
   export let width: number = 200;
   export let className: string = "";
@@ -19,6 +20,7 @@
     ["underlined"]: variant === "underlined",
     ["secondary"]: variant === "secondary",
     ["no_outlined"]: variant === "no-outlined",
+    ["delete"]: variant === "delete",
     ["large"]: size === "large",
     ["small"]: size === "small",
     ["loading"]: isLoading,
@@ -111,6 +113,15 @@
   .secondary[type="submit"],
   .secondary[type="button"] {
     background: #fff;
+  }
+
+  .delete {
+    color: #fff;
+    border: none;
+  }
+  .delete[type="submit"],
+  .delete[type="button"] {
+    background: red;
   }
 
   .no_outlined {
