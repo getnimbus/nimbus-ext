@@ -914,7 +914,7 @@
   {#if isSyncError}
     <div class="flex justify-center items-center h-screen">
       <div
-        class="border border-[#0000001a] rounded-[20px] p-6 w-1/2 flex flex-col gap-2 justify-center items-center"
+        class="border border-[#0000001a] rounded-[20px] p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
       >
         <div class="text-lg">
           There are some problem with our server. Please try again!
@@ -927,7 +927,7 @@
       {#if listAddress.length === 0}
         <div class="flex justify-center items-center h-screen">
           <div
-            class="border border-[#0000001a] rounded-[20px] p-6 w-1/2 flex flex-col gap-2 justify-center items-center"
+            class="border border-[#0000001a] rounded-[20px] p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
           >
             <div class="text-lg">
               Please add a wallet to keep up to date with the latest
