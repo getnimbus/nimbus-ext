@@ -2,7 +2,7 @@ import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
 import dayjs from "dayjs";
 import _, { isEmpty } from "lodash";
-import { coinGeko, mixpanel, nimbus, goplus, nimbusApi } from "../../lib/network";
+import { coinGeko, mixpanel, nimbus, goplus, nimbusApi, test } from "../../lib/network";
 import { cacheOrAPI } from "./utils";
 import type { JsonValue, JsonObject } from "type-fest";
 import langEN from "../../_locales/en/messages.json";
@@ -13,11 +13,6 @@ browser.runtime.onStartup.addListener(async () => {
   await fetchBasicData();
   await fetchConfigPages();
   await fetchListTerm();
-  await fetchOpportunities();
-  await fetchOverview();
-  await fetchNews();
-  await fetchWalletData();
-  await fetchPositionData();
 });
 
 browser.runtime.onInstalled.addListener(() => {
@@ -72,65 +67,9 @@ const fetchListTerm = async () => {
   });
 };
 
-const fetchOverview = async () => {
-  try {
-    const data = await nimbusApi.get("/overview").then((response) => response);
-    browser.storage.local.set({ overview: JSON.stringify(data) }).then(() => {
-      console.log("Loaded overview");
-    });
-    return data
-  } catch (e) {
-    console.log("error: ", e);
-  }
-};
-
-const fetchOpportunities = async () => {
-  try {
-    const data = await nimbusApi.get("/opportunities").then((response) => response.opportunities);
-    browser.storage.local.set({ opportunityList: JSON.stringify(data) }).then(() => {
-      console.log("Loaded list opportunity");
-    });
-    return data
-  } catch (e) {
-    console.log("error: ", e);
-  }
-};
-
-const fetchNews = async () => {
-  try {
-    const data = await nimbusApi.get("/news").then((response) => response.news);
-    browser.storage.local.set({ newList: JSON.stringify(data) }).then(() => {
-      console.log("Loaded list new");
-    });
-    return data
-  } catch (e) {
-    console.log("error: ", e);
-  }
-};
-
-const fetchWalletData = async () => {
-  try {
-    const data = await nimbusApi.get("/holding").then((response) => response.holding);
-    browser.storage.local.set({ walletData: JSON.stringify(data) }).then(() => {
-      console.log("Loaded wallet data");
-    });
-    return data
-  } catch (e) {
-    console.log("error: ", e);
-  }
-};
-
-const fetchPositionData = async () => {
-  try {
-    const data = await nimbusApi.get("/positions").then((response) => response.positions);
-    browser.storage.local.set({ positionData: JSON.stringify(data) }).then(() => {
-      console.log("Loaded position data");
-    });
-    return data
-  } catch (e) {
-    console.log("error: ", e);
-  }
-};
+interface IAddressInput extends JsonObject {
+  address: string;
+}
 
 interface ICoinListInput extends JsonObject {
   limit: number;
@@ -191,62 +130,69 @@ onMessage("getListTerm", async () => {
   }
 });
 
-onMessage("getOverview", async () => {
+onMessage<IAddressInput, any>("getPreview", async ({ data: { address } }) => {
   try {
-    return JSON.parse((await browser.storage.local.get("overview")).overview);
+    return await test.get(`/address/${address}/preview`).then((response) => response.data);
   } catch (error) {
-    return [];
+    return {};
   }
 });
 
-onMessage("getListOpportunity", async () => {
+onMessage<IAddressInput, any>("getSync", async ({ data: { address } }) => {
   try {
-    return JSON.parse((await browser.storage.local.get("opportunityList")).opportunityList);
+    return await test.post(`/address/${address}/sync`, {}).then((response) => response);
   } catch (error) {
-    return [];
+    return {};
   }
 });
 
-onMessage("getListNew", async () => {
+onMessage<IAddressInput, any>("getSyncStatus", async ({ data: { address } }) => {
   try {
-    return JSON.parse((await browser.storage.local.get("newList")).newList);
+    return await test.get(`/address/${address}/sync-status`).then((response) => response);
   } catch (error) {
-    return [];
+    return {};
   }
 });
 
-onMessage("getWalletData", async () => {
+onMessage<IAddressInput, any>("getOverview", async ({ data: { address } }) => {
   try {
-    return JSON.parse((await browser.storage.local.get("walletData")).walletData);
+    return await test.get(`/address/${address}/overview`).then((response) => response.data);
   } catch (error) {
-    return [];
+    return {};
   }
 });
 
-onMessage("getPositionData", async () => {
+onMessage<IAddressInput, any>("getPositions", async ({ data: { address } }) => {
   try {
-    return JSON.parse((await browser.storage.local.get("positionData")).positionData);
+    return await test.get(`/address/${address}/positions`).then((response) => response.data.positions);
   } catch (error) {
-    return [];
+    return {};
   }
 });
 
-onMessage("reloadNewTab", async () => {
+onMessage<IAddressInput, any>("getHolding", async ({ data: { address } }) => {
   try {
-    const overviewData = fetchOverview();
-    const opportunityData = fetchOpportunities();
-    const newsData = fetchNews();
-    const walletData = fetchWalletData();
-    const positionData = fetchPositionData();
-    if (overviewData && opportunityData && newsData && walletData && positionData) {
-      return true;
-    } else {
-      return false;
-    }
+    return await test.get(`/address/${address}/holding`).then((response) => response.data);
   } catch (error) {
-    return false;
+    return {};
   }
-})
+});
+
+onMessage<IAddressInput, any>("getNews", async ({ data: { address } }) => {
+  try {
+    return await test.get(`/news/${address}`).then((response) => response.data.news);
+  } catch (error) {
+    return {};
+  }
+});
+
+onMessage<IAddressInput, any>("getOpportunities", async ({ data: { address } }) => {
+  try {
+    return await nimbusApi.get("/opportunities").then((response) => response.opportunities);
+  } catch (error) {
+    return {};
+  }
+});
 
 onMessage<ISearchInput, any>("getSearchData", async ({ data: { search } }) => {
   try {
@@ -421,8 +367,3 @@ onMessage<II18nMsg, "i18n">(
 fetchBasicData();
 fetchConfigPages();
 fetchListTerm();
-fetchOpportunities();
-fetchOverview();
-fetchNews();
-fetchWalletData();
-fetchPositionData();

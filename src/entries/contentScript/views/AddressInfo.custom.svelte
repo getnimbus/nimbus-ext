@@ -3,6 +3,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import * as browser from "webextension-polyfill";
+  import { sendMessage } from "webext-bridge";
   import { isEmpty } from "lodash";
   import detectEthereumProvider from "@metamask/detect-provider";
   import * as echarts from "echarts";
@@ -39,8 +40,14 @@
   let token = null;
   let unknownSmartContract = false;
 
-  let type = 2;
-  let categories = ["hello1", "hello2", "hello3"];
+  let type: "ADDRESS" | "ERC20" = "ADDRESS";
+  let addressInfo = {
+    categories: [],
+    networth: 0,
+    priceChange: 0,
+    symbol: "",
+    id: "",
+  };
   let openShowCategoryList = false;
   let selectedTokenAllocation = "token";
   let chart;
@@ -152,29 +159,17 @@
 
   const loadUserAddressInfo = async () => {
     isLoading = true;
-
     // TODO: What if this is a smart contract or ERC20 a address
     const addressPortfolio = await nimbus
       .get(`/portfolio/${address}`)
       .then((response) => response.data.data);
 
-    console.log(addressPortfolio);
     if (addressPortfolio) {
       balance = addressPortfolio.totalBalanceUsd;
       tokenList = addressPortfolio.assets;
-    } else {
-      unknownSmartContract = true;
     }
     isLoading = false;
   };
-
-  onMount(() => {
-    loadUserAddressInfo();
-    track("Address Info", {
-      url: window.location.href,
-      address,
-    });
-  });
 
   const handleAddToken = async () => {
     if (!token) {
@@ -220,6 +215,12 @@
   };
 
   onMount(() => {
+    loadUserAddressInfo();
+    track("Address Info", {
+      url: window.location.href,
+      address,
+    });
+
     setTimeout(() => {
       makeChart();
     }, 200);
@@ -256,8 +257,32 @@
     }
   };
 
+  const getPreview = async () => {
+    try {
+      const response: any = await sendMessage("getPreview", {
+        address: address,
+      });
+
+      if (response) {
+        type = response.type;
+        addressInfo.categories = response?.tags;
+        addressInfo.networth = response?.networth;
+        addressInfo.priceChange = response?.priceChange;
+        addressInfo.symbol = response?.symbol;
+        addressInfo.id = response?.cg_id;
+        console.log("res preview: ", response);
+      } else {
+        unknownSmartContract = true;
+      }
+    } catch (e) {
+      console.log("e: ", e);
+      unknownSmartContract = true;
+    }
+  };
+
   onMount(() => {
     getAddressLabel();
+    getPreview();
   });
 
   const debounce = (value: string) => {
@@ -287,7 +312,6 @@
       isLoading && popup && "w-[350px] max-h-[120px]"
     } ${popup ? "max-h-[680px]" : ""}`}
     class:shadow={popup}
-    style="width: {type === 1 ? '350' : '500'}px;"
   >
     {#if isLoading}
       <div class="w-full h-[120px] flex justify-center items-center">
@@ -442,20 +466,18 @@
           </div>
         {/if} -->
 
-        <!-- Smart Contract Token -->
-        {#if type === 1}
+        {#if type === "ERC20"}
           <div class="m-[-16px]">
             <native-token-info
-              id={"asd"}
-              name={"BTC"}
+              id={addressInfo.id}
+              name={addressInfo.symbol}
               loaded={true}
               {address}
             />
           </div>
         {/if}
 
-        <!-- Smart Contract -->
-        {#if type === 2}
+        {#if type === "ADDRESS"}
           <div class="flex flex-col gap-4">
             <div class="flex justify-between items-start">
               <div class="flex gap-2">
@@ -570,14 +592,14 @@
               </div>
             </div>
             <div class="flex gap-1 flex-wrap">
-              {#each categories.slice(0, 2) as category}
+              {#each addressInfo.categories.slice(0, 2) as category}
                 <div
                   class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px]"
                 >
                   {category}
                 </div>
               {/each}
-              {#if categories.length > 2}
+              {#if addressInfo.categories.length > 2}
                 <div class="relative">
                   <div
                     class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px] flex items-center gap-1 cursor-pointer"
@@ -589,7 +611,7 @@
                   </div>
                   {#if openShowCategoryList}
                     <div class="content">
-                      {#each categories.slice(2) as category}
+                      {#each addressInfo.categories.slice(2) as category}
                         <div class="content_item" id={category}>
                           {category}
                         </div>
@@ -603,20 +625,26 @@
             <div class="flex flex-col gap-2">
               <div class="text-[#00000099] text-sm">Networth</div>
               <div class="flex items-end gap-4">
-                <div class="text-2xl font-medium text-black">$6,391.82</div>
+                <div class="text-2xl font-medium text-black">
+                  ${numeral(addressInfo.networth).format("0,0.00")}
+                </div>
                 <div class="flex items-center gap-2">
-                  {#if 2.32}
+                  {#if addressInfo.priceChange}
                     <div
                       class={`text-lg font-medium ${
-                        2.32 < 0 ? "text-[#EF4444]" : "text-[#00A878]"
+                        addressInfo.priceChange < 0
+                          ? "text-[#EF4444]"
+                          : "text-[#00A878]"
                       }`}
                     >
-                      {#if 2.32 < 0}
+                      {#if addressInfo.priceChange < 0}
                         ↓
                       {:else}
                         ↑
                       {/if}
-                      {numeral(Math.abs(2.32)).format("0,0.00")}%
+                      {numeral(Math.abs(addressInfo.priceChange)).format(
+                        "0,0.00"
+                      )}%
                     </div>
                   {:else}
                     <div class="text-lg font-medium text-black">--</div>
@@ -656,7 +684,7 @@
           </div>
         {/if}
 
-        <!-- {#if unknownSmartContract}
+        {#if unknownSmartContract}
           <div class="flex flex-col items-center gap-4 pt-3">
             <div class="text-center flex flex-col items-center gap-2">
               <img src={getLocalImg(SmartContractIcon)} width={50} alt="" />
@@ -675,7 +703,7 @@
               Etherscan
             </button>
           </div>
-        {/if} -->
+        {/if}
       </div>
 
       <div class="flex justify-between px-4 pb-4">

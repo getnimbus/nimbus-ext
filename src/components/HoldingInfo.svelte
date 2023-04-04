@@ -55,7 +55,7 @@
             : "text-red-500"
         }`}
       >
-        ${formatBalance(data.amount * data.rate - data.rate)}
+        ${formatBalance(Math.abs(data.amount * data.rate - data.rate))}
       </div>
       <img
         src={data.amount * data.rate - data.rate >= 0 ? TrendUp : TrendDown}

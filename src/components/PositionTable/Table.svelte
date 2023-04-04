@@ -1,5 +1,4 @@
 <script>
-  export let data;
   import { i18n } from "~/lib/i18n";
   import { formatBalance } from "~/utils";
   import LpProvider from "./LPProvider.svelte";
@@ -7,6 +6,8 @@
   import StakingLocked from "./StakingLocked.svelte";
   import LendingProvider from "./LendingProvider.svelte";
   import LendingBorrow from "./LendingBorrow.svelte";
+
+  export let data;
 
   const MultipleLang = {
     claimable: i18n("newtabPage.claimable", "Claimable"),
@@ -35,7 +36,7 @@
     </div>
   </div>
 
-  {#if data.positions && data.positions.length}
+  {#if data.positions && data.positions.length !== 0}
     {#each data.positions as position}
       <div class="flex flex-col gap-2">
         <div class="text-base font-semibold">{position.type}</div>

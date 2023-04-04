@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
-  import { nimbusApi } from "../../lib/network";
+  import { nimbusApi, test } from "../../lib/network";
 
   import type { NewData } from "~/types/NewData";
 
@@ -14,10 +14,9 @@
 
   const getNewsData = async () => {
     try {
-      const response: NewData = await nimbusApi
+      const response: NewData = await test
         .get("/news")
-        .then((response) => response.news);
-
+        .then((response) => response.data.news);
       newsData = response;
     } catch (e) {
       console.log("error: ", e);
@@ -50,7 +49,7 @@
         : "grid-cols-1"
     } gap-10`}
   >
-    {#if newsData}
+    {#if newsData && newsData.length !== 0}
       {#each newsData as news}
         <NewCard data={news} />
       {:else}
