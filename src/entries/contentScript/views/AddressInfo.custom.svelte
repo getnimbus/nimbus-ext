@@ -9,6 +9,7 @@
   import * as echarts from "echarts";
   import numeral from "numeral";
   import CopyToClipboard from "svelte-copy-to-clipboard";
+  import { i18n } from "~/lib/i18n";
   import {
     formatBalance,
     formatCurrency,
@@ -25,21 +26,27 @@
   import "~/components/CheckSafetyAddress.custom.svelte";
 
   import SmartContractIcon from "../assets/smart-contract.png";
-  import MetaMaskIcon from "../assets/metamask-icon.png";
-  import CoinMarketCapIcon from "../assets/CoinMarketCap_logo.png";
-  import CoinGekoIcon from "../assets/coingecko-logo.png";
+  // import MetaMaskIcon from "../assets/metamask-icon.png";
+  // import CoinMarketCapIcon from "../assets/CoinMarketCap_logo.png";
+  // import CoinGekoIcon from "../assets/coingecko-logo.png";
   import CoinDefaultIcon from "../assets/coin-default.svg";
   import Edit from "../../../assets/edit.svg";
 
   export let address;
   export let popup: boolean = true;
 
-  let isLoading = true;
-  let balance = 0;
-  let tokenList = [];
-  let token = null;
-  let unknownSmartContract = false;
+  const MultipleLang = {
+    Balance: i18n("newtabPage.Balance", "Balance"),
+    Ratio: i18n("newtabPage.Ratio", "Ratio"),
+    Value: i18n("newtabPage.Value", "Value"),
+  };
 
+  // let balance = 0;
+  // let tokenList = [];
+  // let token = null;
+
+  let isLoading = false;
+  let unknownSmartContract = false;
   let type: "ADDRESS" | "ERC20" = "ADDRESS";
   let addressInfo = {
     categories: [],
@@ -52,7 +59,6 @@
   let selectedTokenAllocation = "token";
   let chart;
   let chartContainer;
-
   let option = {
     title: {
       text: "",
@@ -61,7 +67,7 @@
       trigger: "item",
       formatter: function (params) {
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 170px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 190px;">
               <div style="display: flex; align-items: centers; gap: 4px">
                 <img src=${params.data.logo} alt="" width=20 height=20 /> 
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
@@ -70,21 +76,21 @@
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
-                  Balance:
+                  ${MultipleLang[params.data.name_balance]}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
                   ${formatBalance(params.data.value_balance)}</div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
-                  Value:
+                  ${MultipleLang[params.data.name_value]}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
                   $${formatBalance(params.data.value_value)}</div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
-                  Ratio:
+                  ${MultipleLang[params.data.name_ratio]}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
                   ${formatBalance(params.value)}%
@@ -102,7 +108,7 @@
       {
         type: "pie",
         radius: ["40%", "60%"],
-        left: -100,
+        left: -140,
         avoidLabelOverlap: false,
         label: {
           show: false,
@@ -118,84 +124,53 @@
         labelLine: {
           show: false,
         },
-        data: [
-          {
-            logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
-            name: "Bitcoin",
-            name_balance: "Balance",
-            name_ratio: "Ratio",
-            name_value: "Value",
-            symbol: "BTC",
-            value: 98.01987360419021,
-            value_balance: 10,
-            value_value: 201000,
-          },
-          {
-            logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
-            name: "Ethereum",
-            name_balance: "Balance",
-            name_ratio: "Ratio",
-            name_value: "Value",
-            symbol: "ETH",
-            value: 1.1723371947486232,
-            value_balance: 2,
-            value_value: 2404,
-          },
-          {
-            logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png",
-            name: "Solana",
-            name_balance: "Balance",
-            name_ratio: "Ratio",
-            name_value: "Value",
-            symbol: "SOL",
-            value: 0.21066957908960285,
-            value_balance: 12,
-            value_value: 432,
-          },
-        ],
+        data: [],
       },
     ],
   };
+  let addressLabel = "";
+  let showChangeAddressLabel = false;
+  let timer;
 
-  const loadUserAddressInfo = async () => {
-    isLoading = true;
-    // TODO: What if this is a smart contract or ERC20 a address
-    const addressPortfolio = await nimbus
-      .get(`/portfolio/${address}`)
-      .then((response) => response.data.data);
+  // const loadUserAddressInfo = async () => {
+  //   isLoading = true;
+  //   // TODO: What if this is a smart contract or ERC20 a address
+  //   const addressPortfolio = await nimbus
+  //     .get(`/portfolio/${address}`)
+  //     .then((response) => response.data.data);
 
-    if (addressPortfolio) {
-      balance = addressPortfolio.totalBalanceUsd;
-      tokenList = addressPortfolio.assets;
-    }
-    isLoading = false;
-  };
+  //   if (addressPortfolio) {
+  //     balance = addressPortfolio.totalBalanceUsd;
+  //     tokenList = addressPortfolio.assets;
+  //   }
+  //   isLoading = false;
+  // };
 
-  const handleAddToken = async () => {
-    if (!token) {
-      // No token info
-      return;
-    }
-    const provider = await detectEthereumProvider();
-    if (provider && window.ethereum) {
-      const wasAdded = await ethereum.request({
-        method: "wallet_watchAsset",
-        params: {
-          type: "ERC20",
-          options: {
-            address: address,
-            symbol: token.symbol,
-            decimals: token.decimals,
-            image: token.logo_url,
-          },
-        },
-      });
-      console.log(wasAdded);
-    } else {
-      // TODO: Show some toast to user
-      console.log("Please install MetaMask!");
-    }
-  };
+  // const handleAddToken = async () => {
+  //   if (!token) {
+  //     // No token info
+  //     return;
+  //   }
+  //   const provider = await detectEthereumProvider();
+  //   if (provider && window.ethereum) {
+  //     const wasAdded = await ethereum.request({
+  //       method: "wallet_watchAsset",
+  //       params: {
+  //         type: "ERC20",
+  //         options: {
+  //           address: address,
+  //           symbol: token.symbol,
+  //           decimals: token.decimals,
+  //           image: token.logo_url,
+  //         },
+  //       },
+  //     });
+  //     console.log(wasAdded);
+  //   } else {
+  //     // TODO: Show some toast to user
+  //     console.log("Please install MetaMask!");
+  //   }
+  // };
 
   const setOption = () => {
     if (chart && !chart.isDisposed()) {
@@ -214,39 +189,59 @@
     chart = echarts.init(chartContainer, "white");
   };
 
-  onMount(() => {
-    loadUserAddressInfo();
-    track("Address Info", {
-      url: window.location.href,
-      address,
-    });
+  const getPreview = async () => {
+    isLoading = true;
+    try {
+      const response: any = await sendMessage("getPreview", {
+        address: address,
+      });
 
-    setTimeout(() => {
-      makeChart();
-    }, 200);
-  });
+      if (response) {
+        type = response?.type;
+        addressInfo.categories = response?.tags;
+        addressInfo.networth = response?.networth;
+        addressInfo.priceChange = response?.priceChange;
+        addressInfo.symbol = response?.symbol;
+        addressInfo.id = response?.cg_id;
 
-  onDestroy(() => {
-    destroyChart();
-  });
+        if (response?.type === "ADDRESS") {
+          let sum = 0;
+          response?.breakdown.map((item) => (sum += Number(item.value)));
 
-  $: option && setOption();
-  $: if (chart && "white") {
-    makeChart();
-    setOption();
-  }
+          const formatDataPieChart = response?.breakdown.map((item) => {
+            return {
+              logo: item.logo,
+              name: item.name,
+              symbol: item.symbol,
+              name_ratio: "Ratio",
+              value: (Number(item.value) / sum) * 100,
+              name_value: "Value",
+              value_value: Number(item.value),
+              name_balance: "Balance",
+              value_balance: Number(item.amount),
+            };
+          });
 
-  $: {
-    if (chartContainer) {
-      setTimeout(() => {
-        makeChart();
-      }, 200);
+          option = {
+            ...option,
+            series: [
+              {
+                ...option.series[0],
+                data: formatDataPieChart,
+              },
+            ],
+          };
+        }
+      } else {
+        unknownSmartContract = true;
+      }
+    } catch (e) {
+      console.log("e: ", e);
+      unknownSmartContract = true;
+    } finally {
+      isLoading = false;
     }
-  }
-
-  let addressLabel = "";
-  let showChangeAddressLabel = false;
-  let timer;
+  };
 
   const getAddressLabel = async () => {
     const addressLabelRes = await browser.storage.sync.get(address);
@@ -256,34 +251,6 @@
       addressLabel = address;
     }
   };
-
-  const getPreview = async () => {
-    try {
-      const response: any = await sendMessage("getPreview", {
-        address: address,
-      });
-
-      if (response) {
-        type = response.type;
-        addressInfo.categories = response?.tags;
-        addressInfo.networth = response?.networth;
-        addressInfo.priceChange = response?.priceChange;
-        addressInfo.symbol = response?.symbol;
-        addressInfo.id = response?.cg_id;
-        console.log("res preview: ", response);
-      } else {
-        unknownSmartContract = true;
-      }
-    } catch (e) {
-      console.log("e: ", e);
-      unknownSmartContract = true;
-    }
-  };
-
-  onMount(() => {
-    getAddressLabel();
-    getPreview();
-  });
 
   const debounce = (value: string) => {
     clearTimeout(timer);
@@ -304,12 +271,45 @@
       isSaveAddressLabel.update((n) => (n = false));
     }
   };
+
+  onMount(() => {
+    // loadUserAddressInfo();
+    // track("Address Info", {
+    //   url: window.location.href,
+    //   address,
+    // });
+
+    setTimeout(() => {
+      makeChart();
+    }, 200);
+
+    getAddressLabel();
+    getPreview();
+  });
+
+  onDestroy(() => {
+    destroyChart();
+  });
+
+  $: option && setOption();
+  $: if (chart && "white") {
+    makeChart();
+    setOption();
+  }
+
+  $: {
+    if (chartContainer) {
+      setTimeout(() => {
+        makeChart();
+      }, 200);
+    }
+  }
 </script>
 
 <reset-style>
   <div
-    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all overflow-hidden ${
-      isLoading && popup && "w-[350px] max-h-[120px]"
+    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all overflow-hidden w-[450px] ${
+      isLoading && popup && "max-h-[120px]"
     } ${popup ? "max-h-[680px]" : ""}`}
     class:shadow={popup}
   >
@@ -466,7 +466,7 @@
           </div>
         {/if} -->
 
-        {#if type === "ERC20"}
+        {#if type === "ERC20" && unknownSmartContract === false}
           <div class="m-[-16px]">
             <native-token-info
               id={addressInfo.id}
@@ -477,7 +477,7 @@
           </div>
         {/if}
 
-        {#if type === "ADDRESS"}
+        {#if type === "ADDRESS" && unknownSmartContract === false}
           <div class="flex flex-col gap-4">
             <div class="flex justify-between items-start">
               <div class="flex gap-2">
@@ -621,7 +621,7 @@
                 </div>
               {/if}
             </div>
-            <check-safety-address {address} chainId={"56"} />
+            <!-- <check-safety-address {address} chainId={"1"} /> -->
             <div class="flex flex-col gap-2">
               <div class="text-[#00000099] text-sm">Networth</div>
               <div class="flex items-end gap-4">
