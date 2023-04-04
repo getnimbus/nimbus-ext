@@ -198,7 +198,7 @@
   let label = "";
   let search = "";
   let timerDebounce;
-  let isReload = false;
+  let isLoading = false;
   let isSyncError = false;
 
   let optionPie = {
@@ -516,6 +516,7 @@
         address: selectedWallet.value,
       });
       newsData = response;
+      return response;
     } catch (e) {
       console.log("error: ", e);
     }
@@ -527,6 +528,7 @@
         address: selectedWallet.value,
       });
       opportunitiesData = response;
+      return response;
     } catch (e) {
       console.log("error: ", e);
     }
@@ -538,13 +540,14 @@
         address: selectedWallet.value,
       });
       console.log("res sync status: ", response);
+      return response;
     } catch (e) {
       console.log("e: ", e);
     }
   };
 
   const getSync = async () => {
-    isReload = true;
+    isLoading = true;
     try {
       const response: any = await sendMessage("getSync", {
         address: selectedWallet.value,
@@ -557,13 +560,25 @@
         getPositions();
         getNews();
         getSyncStatus();
+
+        const res = await Promise.all([
+          getOverview(),
+          getOpportunities(),
+          getHolding(),
+          getPositions(),
+          getNews(),
+          getSyncStatus(),
+        ]);
+
+        if (res) {
+          isLoading = false;
+        }
       } else {
         isSyncError = true;
       }
     } catch (e) {
       console.log("error: ", e);
-    } finally {
-      isReload = false;
+      isLoading = false;
     }
   };
 
@@ -919,7 +934,7 @@
         <div class="text-lg">
           There are some problem with our server. Please try again!
         </div>
-        <Button on:click={() => getSync()} isLoading={isReload}>Reload</Button>
+        <Button on:click={() => getSync()} {isLoading}>Reload</Button>
       </div>
     </div>
   {:else}
@@ -1027,7 +1042,7 @@
                   <div class="flex items-center gap-2 mb-1">
                     <div
                       class="cursor-pointer"
-                      class:loading={isReload}
+                      class:loading={isLoading}
                       on:click={() => getSync()}
                     >
                       <img src={Reload} alt="" />
@@ -1229,27 +1244,37 @@
                     </div>
                   </div> -->
                 </div>
-                <EChart
-                  id="pie-chart"
-                  theme="white"
-                  option={optionPie}
-                  height={465}
-                />
+                {#if isLoading}
+                  <div class="flex items-center justify-center h-[465px]">
+                    <loading-icon />
+                  </div>
+                {:else}
+                  <EChart
+                    id="pie-chart"
+                    theme="white"
+                    option={optionPie}
+                    height={465}
+                  />
+                {/if}
               </div>
-
               <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
                 <div class="pl-4 text-2xl font-medium text-black mb-3">
                   {MultipleLang.performance}
                 </div>
-                <EChart
-                  id="line-chart"
-                  theme="white"
-                  option={optionLine}
-                  height={433}
-                />
+                {#if isLoading}
+                  <div class="flex items-center justify-center h-[433px]">
+                    <loading-icon />
+                  </div>
+                {:else}
+                  <EChart
+                    id="line-chart"
+                    theme="white"
+                    option={optionLine}
+                    height={433}
+                  />
+                {/if}
               </div>
             </div>
-
             <div class="flex xl:flex-row flex-col justify-between gap-6">
               <div
                 class="xl:w-[65%] w-full flex-col border border-[#0000001a] rounded-[20px] p-6"
@@ -1316,7 +1341,15 @@
                           </tr>
                         {/each}
                       {:else}
-                        <div>Empty</div>
+                        <tr>
+                          <td colspan="5">
+                            <div
+                              class="flex justify-center items-center py-4 px-3"
+                            >
+                              No data
+                            </div>
+                          </td>
+                        </tr>
                       {/if}
                     </tbody>
                   </table>
@@ -1339,12 +1372,20 @@
                   {MultipleLang.opportunities}
                 </div>
                 <div class="flex flex-col gap-4 xl:basis-0 grow blur-sm">
-                  {#if opportunitiesData && opportunitiesData.length !== 0}
-                    {#each opportunitiesData as opportunity}
-                      <OpportunityCard data={opportunity} />
-                    {/each}
+                  {#if isLoading}
+                    <div class="flex items-center justify-center">
+                      <loading-icon />
+                    </div>
                   {:else}
-                    <div>Empty</div>
+                    <div>
+                      {#if opportunitiesData && opportunitiesData.length !== 0}
+                        {#each opportunitiesData as opportunity}
+                          <OpportunityCard data={opportunity} />
+                        {/each}
+                      {:else}
+                        <div>No data</div>
+                      {/if}
+                    </div>
                   {/if}
                 </div>
               </div>
@@ -1358,12 +1399,20 @@
                 {MultipleLang.positions}
               </div>
               <div class="flex flex-col gap-10">
-                {#if positionsData && positionsData.length !== 0}
-                  {#each positionsData as position}
-                    <Table data={position} />
-                  {/each}
+                {#if isLoading}
+                  <div class="flex items-center justify-center">
+                    <loading-icon />
+                  </div>
                 {:else}
-                  <div>Empty</div>
+                  <div>
+                    {#if positionsData && positionsData.length !== 0}
+                      {#each positionsData as position}
+                        <Table data={position} />
+                      {/each}
+                    {:else}
+                      <div>No data</div>
+                    {/if}
+                  </div>
                 {/if}
               </div>
             </div>
@@ -1387,21 +1436,27 @@
                   {MultipleLang.view_more}
                 </div>
               </div>
-              <div
-                class={`grid ${
-                  newsData && newsData.length
-                    ? "2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1"
-                    : "grid-cols-1"
-                } gap-10`}
-              >
-                {#if newsData && newsData.length !== 0}
-                  {#each newsData as news}
-                    <NewCard data={news} />
-                  {/each}
-                {:else}
-                  <div>Empty</div>
-                {/if}
-              </div>
+              {#if isLoading}
+                <div class="flex items-center justify-center">
+                  <loading-icon />
+                </div>
+              {:else}
+                <div
+                  class={`grid ${
+                    newsData && newsData.length
+                      ? "2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1"
+                      : "grid-cols-1"
+                  } gap-10`}
+                >
+                  {#if newsData && newsData.length !== 0}
+                    {#each newsData as news}
+                      <NewCard data={news} />
+                    {/each}
+                  {:else}
+                    <div>No data</div>
+                  {/if}
+                </div>
+              {/if}
             </div>
           </div>
         </div>
