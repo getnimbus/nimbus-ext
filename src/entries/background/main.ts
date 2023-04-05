@@ -217,8 +217,8 @@ onMessage<ITrxHashInput, any>("TrxHashInfo", async ({ data: { hash } }) => {
   return await cacheOrAPI(
     hash,
     () => {
-      return nimbus
-        .get(`/tx/${hash}`)
+      return test
+        .get(`/tx/receipt/${hash}`)
         .then((response) => response.data);
     },
     { defaultValue: null }
