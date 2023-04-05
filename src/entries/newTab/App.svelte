@@ -1309,13 +1309,16 @@
                     {MultipleLang.wallet}
                   </div>
                   <div class="flex items-center gap-2">
-                    <span class="text-sm font-regular text-black"
+                    <label
+                      class="text-sm font-regular text-gray-400"
+                      for="filter-value"
                       >Hide tokens less than $1
-                    </span>
+                    </label>
                     <input
                       type="checkbox"
+                      id="filter-value"
                       bind:checked={filteredHolding}
-                      class="cursor-pointer"
+                      class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     />
                   </div>
                 </div>
@@ -1401,7 +1404,7 @@
                   <div
                     class="text-black text-base font-semibold text-center mx-4"
                   >
-                    Investment opportunities to optimize your holding. Coming
+                    Investment opportunities to optimize your holding. <br /> Coming
                     soon 🥳
                   </div>
                 </div>
