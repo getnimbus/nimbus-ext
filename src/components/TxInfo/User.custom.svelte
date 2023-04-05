@@ -11,33 +11,8 @@
   export let avatar;
   export let label = "";
   export let explorer;
-  export let id = 0;
+  export let id = 1;
 </script>
-
-<!-- <div class="flex items-center justify-start gap-2">
-  <div
-    class="w-9 h-9 rounded-full overflow-hidden flex justify-center items-center bg-gray-100"
-  >
-    {#if avatar}
-      <img class="w-6 h-6 object-cover" src={avatar} alt="avatar" />
-    {/if}
-  </div>
-  <div class="text-xs">
-    <a
-      href={`${explorer}/address/${address}`}
-      target="_blank"
-      class="text-blue-400 no-underline"
-      use:tooltip={{
-        content: `<tooltip-detail address="${address}" />`,
-        allowHTML: true,
-        placement: "bottom",
-      }}
-    >
-      {address && shorterAddress(address)}
-    </a>
-    <div>{label || name || "unknown"}</div>
-  </div>
-</div> -->
 
 <div class="flex items-center justify-start gap-2">
   <div
@@ -78,18 +53,17 @@
   </div>
   <div class="flex flex-col">
     <a
-      href={`${explorer}/address/${address}`}
+      href={`https://etherscan.io/address/${address}`}
       target="_blank"
       class="no-underline text-sm text-black font-medium"
       use:tooltip={{
-        content: `<tooltip-detail address="${"0x678224FE6766E0792dB0607A9Ca123624FE6766"}" />`,
+        content: `<tooltip-detail address="${address}" />`,
         allowHTML: true,
         placement: "top",
       }}
     >
-      {shorterAddress("0x678224FE6766E0792dB0607A9Ca123624FE6766")}
+      {address && shorterAddress(address)}
     </a>
-
     {#if name === "Sender" || name === "Receiver"}
       <div class="text-sm text-[#5E656B] font-normal">
         {label || name || "unknown"}

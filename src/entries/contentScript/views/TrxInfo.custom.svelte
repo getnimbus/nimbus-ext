@@ -10,6 +10,7 @@
   import { sendMessage } from "webext-bridge";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import { track } from "~/lib/data-tracking";
+  import { formatCurrency } from "../../../utils";
 
   import "~/components/Loading.custom.svelte";
   import "~/components/CoinChart.custom.svelte";
@@ -22,75 +23,28 @@
   export let hash;
   export let popup: boolean = true;
 
-  let mouted = false;
   let isLoading = false;
   let unknownTRX = false;
   let enabledFilter = false;
-
-  let info = {
-    name: "",
-    block_signed_at: "",
-    chain: {},
-    chainId: 0,
-    trx_hash: "",
-
-    to_address: "",
-    to_address_label: "",
-    to_address_logo: "",
-
-    from_address: "",
-    from_address_label: "",
-    from_address_logo: "",
-
-    changes: [],
-    successful: false,
-    fees_paid_value: "",
-    gas_quote: "",
-  };
+  let info;
 
   const loadTrxInfo = async (hash) => {
     // TODO: Verify trx hash before calling api
     if (hash?.length < 10) {
+      unknownTRX = true;
       return;
     }
     isLoading = true;
-    let response;
-
     try {
-      const res = (await sendMessage("TrxHashInfo", {
+      const response: any = await sendMessage("TrxHashInfo", {
         hash,
-      })) as any;
-      console.log("res: ", res);
-
-      response = {};
-
-      const transactionInfo = get(response, "data");
-
-      if (isEmpty(transactionInfo)) {
+      });
+      if (isEmpty(response)) {
         unknownTRX = true;
       } else {
         unknownTRX = false;
-        info = transactionInfo;
-        // info.name = transactionInfo.name;
-        // info.block_signed_at = transactionInfo.block_signed_at;
-        info.chain = chainIdData(transactionInfo.chainId);
-        // info.chainId = transactionInfo.chainId;
-        // info.trx_hash = transactionInfo.tx_hash;
-
-        // info.from_address = transactionInfo.from_address;
-        // info.from_address_label = transactionInfo.from_address_label;
-        // info.from_address_logo = transactionInfo.from_address_logo;
-
-        // info.to_address = transactionInfo.to_address;
-        // info.to_address_label = transactionInfo.to_address_label;
-        // info.to_address_logo = transactionInfo.to_address_logo;
-
-        // info.successful = transactionInfo.successful;
-        info.changes = transactionInfo.changes || [];
-        info.fees_paid_value = transactionInfo.fees_paid_value || "unknown";
-        info.gas_quote = transactionInfo.gas_quote || "unknown";
+        info = response;
       }
-
       isLoading = false;
     } catch (e) {
       console.log(e);
@@ -99,179 +53,21 @@
     }
   };
 
-  $: {
-    if (mouted) {
-      loadTrxInfo(hash);
-    }
-  }
-
   onMount(() => {
-    mouted = true;
+    loadTrxInfo(hash);
     track("Trx Info", {
       url: window.location.href,
       hash,
     });
   });
+
+  $: console.log("info: ", info);
 </script>
 
 <reset-style>
-  <!-- <div
-    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all overflow-hidden min-w-[520px] w-full max-w-[700px] ${
-      isLoading && popup && "w-[350px] max-w-[400px] max-h-[120px]"
-    } ${popup ? "max-h-[680px]" : ""}`}
-    class:shadow={popup}
-  >
-    {#if isLoading}
-      <div class="w-full h-[120px] flex justify-center items-center">
-        <loading-icon />
-      </div>
-    {:else}
-      <div class="p-4">
-        {#if unknownTRX}
-          <div class="py-2">
-            We're decoding this transaction and will get back to you soon!
-          </div>
-        {:else}
-          <div class="flex flex-col mb-4 text-xs">
-            <div class="flex justify-between items-center gap-3">
-              <div class="w-7 h-7 rounded-full overflow-hidden">
-                <img
-                  src={info.chain.logo}
-                  alt={info.chain.nativeToken}
-                  class="w-full h-full object-cover"
-                />
-              </div>
-              <div class="w-full flex flex-col text-xs">
-                <a
-                  href={`${info.chain.explorer}/tx/${hash}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  class="text-blue-400 no-underline"
-                >
-                  {hash}
-                </a>
-                <div class="text-gray-500">
-                  {`${moment(info.block_signed_at).fromNow()} - ${moment(
-                    info.block_signed_at
-                  ).format("DD/MM/YYYY hh:mm A")}`}
-                </div>
-              </div>
-            </div>
-
-            <div class="flex gap-2 items-center justify-end mt-1">
-              <div class="text-gray-500">Only Sender change</div>
-              <label class="switch">
-                <input type="checkbox" bind:checked={enabledFilter} />
-                <span class="slider" />
-              </label>
-            </div>
-
-            <div class="flex justify-between items-center mt-2 gap-2">
-              <div
-                class="flex flex-col items-center justify-between flex-[0.4]"
-              >
-                <div class="w-full">
-                  <user-info
-                    name="Sender"
-                    avatar={info.from_address_logo}
-                    label={info.from_address_label}
-                    address={info.from_address}
-                    explorer={info.chain.explorer}
-                  />
-                </div>
-                <div class="h-9 my-2 relative line-arrow">
-                  <div
-                    class="absolute -bottom-[1px] -left-[5.5px] h-0 w-0 transform rotate-180 arrow"
-                  />
-                </div>
-                <div class="w-full">
-                  <user-info
-                    name="Receiver"
-                    avatar={info.to_address_logo}
-                    label={info.to_address_label}
-                    address={info.to_address}
-                    explorer={info.chain.explorer}
-                  />
-                </div>
-              </div>
-
-              <div
-                class="pl-3 space-y-4 py-3 flex-1 w-full border-0 border-l-1 border-sky-200"
-              >
-                {#if info.successful}
-                  <div class="max-h-[400px] overflow-y-auto py-3">
-                    <change-list
-                      data={info.changes}
-                      id={info.chainId}
-                      explorer={info.chain.explorer}
-                      from={info.from_address}
-                      to={info.to_address}
-                      enable={enabledFilter}
-                    />
-                  </div>
-                {:else}
-                  <div class="title-5 text-center font-semibold">
-                    The transaction failed and has been reverted
-                  </div>
-                {/if}
-
-                <div class="text-right">
-                  <span class="text-gray-500 mr-1">Gas fee:</span>
-                  <span class="font-bold">
-                    {`${numeral(info.fees_paid_value).format("0,0.00000")} ${
-                      info.chain.nativeToken
-                    } (${numeral(info.gas_quote).format("0,0.0000")}$)`}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        {/if}
-
-        <div
-          class="mb-2"
-          class:text-center={unknownTRX}
-          class:text-right={!unknownTRX}
-        >
-          <a
-            href="https://feedback.getnimbus.io/"
-            target="_blank"
-            class="inline-flex no-underline cursor-pointer items-center bg-[#1E96FC4D] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
-          >
-            Report
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-3 w-3 ml-1 text-[#27326F]"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </a>
-        </div>
-      </div>
-
-      <nimbus-footer>
-        <ul class="list-disc list-outside px-3">
-          <li class="italic">
-            <a
-              class="text-blue-400 no-underline"
-              href="https://ethereum.org/en/developers/docs/transactions/"
-              target="_blank">What is transaction?</a
-            >
-          </li>
-        </ul>
-      </nimbus-footer>
-    {/if}
-  </div> -->
-
   <div
-    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all overflow-hidden min-w-[520px] w-full max-w-[700px] ${
-      isLoading && popup && "w-[350px] max-w-[400px] max-h-[120px]"
+    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all overflow-hidden w-[550px] ${
+      isLoading && popup && "max-h-[120px]"
     } ${popup ? "max-h-[680px]" : ""}`}
     class:shadow={popup}
   >
@@ -290,7 +86,7 @@
             <div class="pb-4 border-bottom flex flex-col gap-4">
               <div class="flex justify-between items-center">
                 <a
-                  href={`${info.chain.explorer}/tx/${hash}`}
+                  href={`https://etherscan.io/tx/${hash}`}
                   target="_blank"
                   rel="noreferrer"
                   class="no-underline flex items-center gap-1"
@@ -333,10 +129,10 @@
                 <div class="w-max">
                   <user-info
                     name="Sender"
-                    avatar={info.from_address_logo}
-                    label={info.from_address_label}
-                    address={info.from_address}
-                    explorer={info.chain.explorer}
+                    avatar={info?.from_logo}
+                    label={info?.from_label}
+                    address={info?.from}
+                    explorer={info?.chain?.explorer}
                   />
                 </div>
                 <div class="relative line-arrow flex-1">
@@ -347,39 +143,48 @@
                 <div class="w-max">
                   <user-info
                     name="Receiver"
-                    avatar={info.to_address_logo}
-                    label={info.to_address_label}
-                    address={info.to_address}
-                    explorer={info.chain.explorer}
+                    avatar={info?.to_logo}
+                    label={info?.to_label}
+                    address={info?.to}
+                    explorer={info?.chain?.explorer}
                   />
                 </div>
               </div>
             </div>
-
-            <div class="flex items-center justify-between gap-2 mt-4">
-              <div class="text-black text-xs font-normal">
-                Transaction Detail
-              </div>
-              <div class="flex items-center gap-2">
-                <label class="switch">
-                  <input type="checkbox" bind:checked={enabledFilter} />
-                  <span class="slider" />
-                </label>
+            <div class="flex items-start justify-between gap-2 mt-4">
+              <div class="flex flex-col gap-1">
                 <div class="text-black text-xs font-normal">
-                  Only Sender change
+                  Transaction Detail
+                </div>
+                <div
+                  class="text-xs font-medium text-[#27326F] px-1 py-[2px] bg-[#6AC7F533] rounded-[5px]"
+                >
+                  Gas fee: {`${formatCurrency(Number(info?.gasUsed))} ${
+                    info?.nativeToken
+                  } ($${formatCurrency(Number(info?.gasUsed) * info?.rate)})`}
                 </div>
               </div>
+              {#if info?.logs && info?.logs.length !== 0}
+                <div class="flex items-center gap-2">
+                  <label class="switch">
+                    <input type="checkbox" bind:checked={enabledFilter} />
+                    <span class="slider" />
+                  </label>
+                  <div class="text-black text-xs font-normal">
+                    Only Sender change
+                  </div>
+                </div>
+              {/if}
             </div>
-
             <div class="my-6">
-              {#if info.successful}
+              {#if info?.logs}
                 <div class="max-h-[400px] overflow-y-auto">
                   <change-list
-                    data={info.changes}
-                    id={info.chainId}
-                    explorer={info.chain.explorer}
-                    from={info.from_address}
-                    to={info.to_address}
+                    data={info?.logs}
+                    id={1}
+                    explorer={info?.chain?.explorer}
+                    from={info?.from}
+                    to={info?.to}
                     enable={enabledFilter}
                   />
                 </div>
@@ -388,12 +193,6 @@
                   The transaction failed and has been reverted
                 </div>
               {/if}
-            </div>
-
-            <div class="text-center text-xs font-medium text-[#27326F]">
-              Gas fee: {`${numeral(info.fees_paid_value).format("0,0.00000")} ${
-                info.chain.nativeToken
-              } ($${numeral(info.gas_quote).format("0,0.0000")})`}
             </div>
           </div>
         {/if}
