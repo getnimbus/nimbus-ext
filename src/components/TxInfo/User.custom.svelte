@@ -9,58 +9,19 @@
   export let name;
   export let address;
   export let avatar;
-  export let label = "";
-  export let explorer;
-  export let id = 0;
+  export let id;
 </script>
-
-<!-- <div class="flex items-center justify-start gap-2">
-  <div
-    class="w-9 h-9 rounded-full overflow-hidden flex justify-center items-center bg-gray-100"
-  >
-    {#if avatar}
-      <img class="w-6 h-6 object-cover" src={avatar} alt="avatar" />
-    {/if}
-  </div>
-  <div class="text-xs">
-    <a
-      href={`${explorer}/address/${address}`}
-      target="_blank"
-      class="text-blue-400 no-underline"
-      use:tooltip={{
-        content: `<tooltip-detail address="${address}" />`,
-        allowHTML: true,
-        placement: "bottom",
-      }}
-    >
-      {address && shorterAddress(address)}
-    </a>
-    <div>{label || name || "unknown"}</div>
-  </div>
-</div> -->
 
 <div class="flex items-center justify-start gap-2">
   <div
-    class={`rounded-full flex justify-center items-center bg-gray-100 relative ${
-      name === "Sender" || name === "Receiver"
-        ? "w-[40px] h-[40px]"
-        : "w-[32px] h-[32px]"
-    }`}
+    class="rounded-full flex justify-center items-center bg-gray-100 relative w-[40px] h-[40px]"
   >
     {#if avatar}
-      {#if name === "Sender" || name === "Receiver"}
-        <img
-          class="w-full h-full object-cover"
-          src={avatar}
-          alt={name || address}
-        />
-      {:else}
-        <img
-          class="w-full h-full object-cover"
-          src={avatar || getTokenLogo(address, id)}
-          alt={name || address}
-        />
-      {/if}
+      <img
+        class="w-full h-full object-cover"
+        src={avatar || getTokenLogo(address, id)}
+        alt=""
+      />
     {/if}
     {#if name === "Sender" || name === "Receiver"}
       <div
@@ -78,23 +39,22 @@
   </div>
   <div class="flex flex-col">
     <a
-      href={`${explorer}/address/${address}`}
+      href={`https://etherscan.io/address/${address}`}
       target="_blank"
       class="no-underline text-sm text-black font-medium"
       use:tooltip={{
-        content: `<tooltip-detail address="${"0x678224FE6766E0792dB0607A9Ca123624FE6766"}" />`,
+        content: `<tooltip-detail address="${address}" />`,
         allowHTML: true,
         placement: "top",
       }}
     >
-      {shorterAddress("0x678224FE6766E0792dB0607A9Ca123624FE6766")}
+      {address && shorterAddress(address)}
     </a>
-
-    {#if name === "Sender" || name === "Receiver"}
-      <div class="text-sm text-[#5E656B] font-normal">
-        {label || name || "unknown"}
-      </div>
-    {/if}
+    <div class="text-sm text-[#5E656B] font-normal">
+      {#if name === "Sender" || name === "Receiver"}
+        {name}
+      {/if}
+    </div>
   </div>
 </div>
 

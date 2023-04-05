@@ -12,12 +12,10 @@
   const MultipleLang = {
     claimable: i18n("newtabPage.claimable", "Claimable"),
   };
-
-  $: console.log("data: ", data);
 </script>
 
-<div class="flex flex-col gap-5">
-  <div class="flex justify-between items-center">
+<div class="flex flex-col">
+  <div class="flex justify-between items-center my-6">
     <div class="flex items-center gap-3">
       <img src={data.logo} alt="logo" width={40} height={40} />
       <a
@@ -37,10 +35,9 @@
       </div>
     </div>
   </div>
-
   {#if data.positions && data.positions.length !== 0}
     {#each data.positions as position}
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-2 -mt-3">
         <div class="text-base font-semibold">{position.type}</div>
         <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
           {#if position.type === "LP-Provider"}
@@ -69,4 +66,8 @@
   {/if}
 </div>
 
-<style></style>
+<style>
+  .test {
+    border: 1px solid red;
+  }
+</style>

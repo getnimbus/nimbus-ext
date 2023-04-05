@@ -10,7 +10,7 @@
   import "dayjs/locale/en";
   dayjs.extend(relativeTime);
   dayjs.locale(currentLang);
-  import { formatBalance } from "~/utils";
+  import { formatBalance, formatCurrency } from "~/utils";
   import { v4 as uuidv4 } from "uuid";
 
   import type { OverviewData } from "~/types/OverviewData";
@@ -201,6 +201,8 @@
   let timerDebounce;
   let isLoading = false;
   let isSyncError = false;
+  let filteredHolding = true;
+  let filteredHoldingData;
 
   let optionPie = {
     title: {
@@ -292,7 +294,7 @@
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                   params[0].value >= 0 ? "green" : "red"
                 };">
-                  ${params[0].value}%
+                  ${formatCurrency(params[0].value)}%
                 </div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between;">
@@ -303,7 +305,7 @@
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                   params[1].value >= 0 ? "green" : "red"
                 };">
-                  ${params[1].value}%
+                  ${formatCurrency(params[1].value)}%
                 </div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between;">
@@ -314,7 +316,7 @@
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                   params[2].value >= 0 ? "green" : "red"
                 };">
-                  ${params[2].value}%
+                  ${formatCurrency(params[2].value)}%
                 </div>
               </div>
             </div>`;
@@ -492,7 +494,21 @@
       const response: WalletData = await sendMessage("getHolding", {
         address: selectedWallet.value,
       });
-      walletData = response;
+      const formatData = response.map((item) => {
+        return {
+          ...item,
+          value: item.amount * item.rate,
+        };
+      });
+      walletData = formatData.sort((a, b) => {
+        if (a.value < b.value) {
+          return 1;
+        }
+        if (a.value > b.value) {
+          return -1;
+        }
+        return 0;
+      });
       return response;
     } catch (e) {
       console.log("error: ", e);
@@ -760,6 +776,14 @@
         console.log("save selected address to sync storage");
       });
       getSync();
+    }
+  }
+
+  $: {
+    if (filteredHolding) {
+      filteredHoldingData = walletData.filter((item: any) => item.value > 1);
+    } else {
+      filteredHoldingData = walletData;
     }
   }
 </script>
@@ -1280,8 +1304,16 @@
               <div
                 class="xl:w-[65%] w-full flex-col border border-[#0000001a] rounded-[20px] p-6"
               >
-                <div class="text-2xl font-medium text-black mb-6">
-                  {MultipleLang.wallet}
+                <div class="mb-6 flex justify-between items-center">
+                  <div class="text-2xl font-medium text-black">
+                    {MultipleLang.wallet}
+                  </div>
+                  <label class="flex items-center gap-2">
+                    <span class="text-sm font-regular text-black"
+                      >Hide tokens less than $1</span
+                    >
+                    <input type="checkbox" bind:checked={filteredHolding} />
+                  </label>
                 </div>
                 <div
                   class="border border-[#0000000d] rounded-[10px] overflow-x-auto"
@@ -1327,8 +1359,8 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {#if walletData && walletData.length !== 0}
-                        {#each walletData as holding}
+                      {#if filteredHoldingData && filteredHoldingData.length !== 0}
+                        {#each filteredHoldingData as holding}
                           <HoldingInfo data={holding} />
                         {:else}
                           <tr>
@@ -1392,7 +1424,7 @@
               </div>
             </div>
             <div
-              class="flex flex-col gap-4 border border-[#0000001a] rounded-[20px] p-6"
+              class="flex flex-col border border-[#0000001a] rounded-[20px] p-6"
             >
               <div
                 class="text-2xl font-medium text-black border-b border-[#00000014] pb-4"

@@ -86,9 +86,9 @@ export const formatLongNumber = (number: number) => {
 };
 
 export const formatCurrency = (input: number) => {
-  return numeral(input).format("0,0.00") === "NaN"
+  return numeral(input).format("0,0.0000") === "NaN"
     ? formatLongNumber(input)
-    : numeral(input).format("0,0.00");
+    : numeral(input).format("0,0.0000");
 };
 
 export const formatBalance = (input: number) => {

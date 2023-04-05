@@ -14,7 +14,10 @@
 
   $: changeList = enable
     ? data.filter((item) => {
-        return item.from === from || item.to === from;
+        return (
+          item.from.toLowerCase() === from.toLowerCase() ||
+          item.to.toLowerCase() === to.toLowerCase()
+        );
       })
     : data;
 </script>
