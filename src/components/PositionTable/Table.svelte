@@ -52,6 +52,13 @@
             <LendingBorrow data={position} />
           {/if}
         </div>
+
+        {#if position.type === "LP-Provider"}
+          <div class="text-xs text-gray-400 text-right">
+            Profit is calculated by buying & hold on every time you add/remove
+            liquidity
+          </div>
+        {/if}
       </div>
     {/each}
   {:else}

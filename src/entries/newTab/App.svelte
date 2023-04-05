@@ -50,6 +50,7 @@
   import Settings from "~/assets/settings.svg";
   import Transactions from "~/assets/transactions.svg";
   import News from "~/assets/news.svg";
+  import { disconnectWs, initWS } from "~/lib/price-ws";
 
   const chainList = [
     {
@@ -159,14 +160,13 @@
     },
   };
 
-  const socket = new WebSocket("ws://143.198.84.240:3031/ws");
-  socket.onopen = () => {
-    console.log("WebSocket connection established");
-  };
-  socket.onmessage = (event) => {
-    const { data } = event;
-    console.log("data: ", data);
-  };
+  onMount(() => {
+    initWS();
+  });
+
+  onDestroy(() => {
+    disconnectWs();
+  });
 
   let navActive = "portfolio";
   let overviewData: OverviewData = {
