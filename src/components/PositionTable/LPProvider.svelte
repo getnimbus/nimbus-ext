@@ -22,7 +22,7 @@
 
   onMount(() => {
     const token0 = Number(data?.token0Info?.info?.cmc_id);
-    const token1 = Number(data?.token0Info?.info?.cmc_id);
+    const token1 = Number(data?.token1Info?.info?.cmc_id);
     if (token0) {
       priceSubscribe([token0], (data) => {
         price0 = data.p;
@@ -34,6 +34,8 @@
       });
     }
   });
+
+  $: console.log({ price0, price1 });
 </script>
 
 <table class="table-fixed w-full">
@@ -42,6 +44,11 @@
       <th class="pl-3 py-3">
         <div class="text-sm font-semibold text-black uppercase text-left">
           Pool
+        </div>
+      </th>
+      <th class="py-3">
+        <div class="text-right text-sm font-semibold text-black uppercase">
+          Liquidity Range
         </div>
       </th>
       <th class="py-3">
@@ -92,6 +99,11 @@
               <div>None</div>
             {/if}
           </div>
+        </div>
+      </td>
+      <td class="py-4">
+        <div class="text-right text-sm text-[#00000099] font-medium">
+          {data.isActive ? "In range" : "No"}
         </div>
       </td>
       <td class="py-4">
