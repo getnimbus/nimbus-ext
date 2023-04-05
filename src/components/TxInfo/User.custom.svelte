@@ -9,33 +9,19 @@
   export let name;
   export let address;
   export let avatar;
-  export let label = "";
-  export let explorer;
-  export let id = 1;
+  export let id;
 </script>
 
 <div class="flex items-center justify-start gap-2">
   <div
-    class={`rounded-full flex justify-center items-center bg-gray-100 relative ${
-      name === "Sender" || name === "Receiver"
-        ? "w-[40px] h-[40px]"
-        : "w-[32px] h-[32px]"
-    }`}
+    class="rounded-full flex justify-center items-center bg-gray-100 relative w-[40px] h-[40px]"
   >
     {#if avatar}
-      {#if name === "Sender" || name === "Receiver"}
-        <img
-          class="w-full h-full object-cover"
-          src={avatar}
-          alt={name || address}
-        />
-      {:else}
-        <img
-          class="w-full h-full object-cover"
-          src={avatar || getTokenLogo(address, id)}
-          alt={name || address}
-        />
-      {/if}
+      <img
+        class="w-full h-full object-cover"
+        src={avatar || getTokenLogo(address, id)}
+        alt=""
+      />
     {/if}
     {#if name === "Sender" || name === "Receiver"}
       <div
@@ -64,11 +50,11 @@
     >
       {address && shorterAddress(address)}
     </a>
-    {#if name === "Sender" || name === "Receiver"}
-      <div class="text-sm text-[#5E656B] font-normal">
-        {label || name || "unknown"}
-      </div>
-    {/if}
+    <div class="text-sm text-[#5E656B] font-normal">
+      {#if name === "Sender" || name === "Receiver"}
+        {name}
+      {/if}
+    </div>
   </div>
 </div>
 

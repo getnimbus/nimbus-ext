@@ -11,6 +11,9 @@
   import tooltip from "~/entries/contentScript/views/tooltip";
   import { track } from "~/lib/data-tracking";
   import { formatCurrency } from "../../../utils";
+  import dayjs from "dayjs";
+  import relativeTime from "dayjs/plugin/relativeTime";
+  dayjs.extend(relativeTime);
 
   import "~/components/Loading.custom.svelte";
   import "~/components/CoinChart.custom.svelte";
@@ -122,7 +125,9 @@
                   </div>
                 </a>
                 <div class="text-xs text-[#5E656B] font-normal">
-                  3 month ago - 26/04/2022 10:45 PM
+                  {dayjs(info?.timestamp).fromNow()} - {dayjs(
+                    info?.timestamp
+                  ).format("DD/MM/YYYY HH:mm A")}
                 </div>
               </div>
               <div class="flex justify-between items-center gap-4">
@@ -130,9 +135,8 @@
                   <user-info
                     name="Sender"
                     avatar={info?.from_logo}
-                    label={info?.from_label}
                     address={info?.from}
-                    explorer={info?.chain?.explorer}
+                    id={1}
                   />
                 </div>
                 <div class="relative line-arrow flex-1">
@@ -144,9 +148,8 @@
                   <user-info
                     name="Receiver"
                     avatar={info?.to_logo}
-                    label={info?.to_label}
                     address={info?.to}
-                    explorer={info?.chain?.explorer}
+                    id={1}
                   />
                 </div>
               </div>

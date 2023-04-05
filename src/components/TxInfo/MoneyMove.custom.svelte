@@ -8,42 +8,39 @@
   import "./User.custom.svelte";
 
   export let data;
-  export let id;
   export let from;
   export let to;
-  export let explorer;
-
-  $: getAddressLabel = (address, from, to) => {
-    if (address === from) {
-      return "Sender";
-    }
-    if (address === to) {
-      return "Receiver";
-    }
-    return address;
-  };
+  export let id;
 </script>
 
 {#if data}
   <div class="flex justify-between items-center gap-10">
     <div class="w-max">
       <user-info
-        name={getAddressLabel(data.from, from, to)}
+        name={from &&
+        to &&
+        data?.from &&
+        data.from.toLowerCase() === from.toLowerCase()
+          ? "Sender"
+          : data?.from.toLowerCase() === to.toLowerCase()
+          ? "Receiver"
+          : data?.from}
         avatar={data.from_logo}
-        {id}
         address={data.from}
-        {explorer}
+        {id}
       />
     </div>
     <div class="flex-1">
       <app-arrow>
         <div class="flex justify-center items-center gap-2">
           <div class="w-4 h-4 inline-block bg-gray-100 rounded-full">
-            <img
-              src={data?.tokenLogo}
-              alt=""
-              class="w-full h-full object-cover"
-            />
+            {#if data?.tokenLogo}
+              <img
+                src={data?.tokenLogo}
+                alt=""
+                class="w-full h-full object-cover"
+              />
+            {/if}
           </div>
           <div class=" text-black text-sm font-medium">
             {formatCurrency(data?.value)}
@@ -61,11 +58,17 @@
     </div>
     <div class="w-max">
       <user-info
-        name={getAddressLabel(data.to, from, to)}
+        name={from &&
+        to &&
+        data?.to &&
+        data.to.toLowerCase() === from.toLowerCase()
+          ? "Sender"
+          : data?.to.toLowerCase() === to.toLowerCase()
+          ? "Receiver"
+          : data?.to}
         avatar={data.to_logo}
-        {id}
         address={data.to}
-        {explorer}
+        {id}
       />
     </div>
   </div>
