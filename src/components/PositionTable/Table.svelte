@@ -57,7 +57,7 @@
         </div>
 
         {#if position.type === "LP-Provider"}
-          <div class="text-xs text-gray-400 text-right mb-3">
+          <div class="text-xs text-gray-400 text-right mb-5">
             Profit is calculated by buying & hold on every time you add/remove
             liquidity
           </div>
