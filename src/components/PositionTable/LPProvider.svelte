@@ -34,9 +34,6 @@
       });
     }
   });
-
-  $: console.log(price0);
-  $: console.log(price1);
 </script>
 
 <table class="table-fixed w-full">
