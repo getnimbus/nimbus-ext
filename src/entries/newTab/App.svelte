@@ -201,6 +201,8 @@
   let timerDebounce;
   let isLoading = false;
   let isSyncError = false;
+  let filteredHolding = true;
+  let filteredHoldingData;
 
   let optionPie = {
     title: {
@@ -776,6 +778,14 @@
       getSync();
     }
   }
+
+  $: {
+    if (filteredHolding) {
+      filteredHoldingData = walletData.filter((item: any) => item.value > 1);
+    } else {
+      filteredHoldingData = walletData;
+    }
+  }
 </script>
 
 <div class="flex flex-col" class:pb-10={listAddress && listAddress.length > 0}>
@@ -1294,8 +1304,16 @@
               <div
                 class="xl:w-[65%] w-full flex-col border border-[#0000001a] rounded-[20px] p-6"
               >
-                <div class="text-2xl font-medium text-black mb-6">
-                  {MultipleLang.wallet}
+                <div class="mb-6 flex justify-between items-center">
+                  <div class="text-2xl font-medium text-black">
+                    {MultipleLang.wallet}
+                  </div>
+                  <label class="flex items-center gap-2">
+                    <span class="text-sm font-regular text-black"
+                      >Hide tokens less than $1</span
+                    >
+                    <input type="checkbox" bind:checked={filteredHolding} />
+                  </label>
                 </div>
                 <div
                   class="border border-[#0000000d] rounded-[10px] overflow-x-auto"
@@ -1341,8 +1359,8 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {#if walletData && walletData.length !== 0}
-                        {#each walletData as holding}
+                      {#if filteredHoldingData && filteredHoldingData.length !== 0}
+                        {#each filteredHoldingData as holding}
                           <HoldingInfo data={holding} />
                         {:else}
                           <tr>
