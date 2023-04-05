@@ -6,7 +6,6 @@
   import { sendMessage } from "webext-bridge";
   import { v4 as uuidv4 } from "uuid";
   import { i18n } from "~/lib/i18n";
-
   import type { AddressData } from "~/types/AddressData";
 
   import AppOverlay from "~/components/Overlay.svelte";
@@ -571,26 +570,27 @@
     </div>
   </div>
   <div class="flex justify-end gap-2 mt-4">
-    <Button
-      variant="secondary"
-      width={70}
+    <button
+      class="flex items-center gap-3 px-4 py-2 border border-[#1E96FC] rounded-xl"
       on:click={() => {
         isOpenConfirmDelete = false;
         selectedWallet = {};
       }}
     >
-      {MultipleLang.content.modal_cancel}
-    </Button>
-    <Button
-      variant="delete"
-      width={70}
+      <div class="text-base font-medium text-[#1E96FC]">
+        {MultipleLang.content.modal_cancel}
+      </div>
+    </button>
+    <button
+      class="flex items-center gap-3 px-4 py-2 bg-red-500 rounded-xl"
       on:click={() => {
         handleDelete(selectedWallet);
-        browser.storage.sync.remove("selectedWallet");
       }}
     >
-      {MultipleLang.content.modal_delete}
-    </Button>
+      <div class="text-base font-medium text-white">
+        {MultipleLang.content.modal_delete}
+      </div>
+    </button>
   </div>
 </AppOverlay>
 

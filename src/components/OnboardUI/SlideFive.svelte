@@ -9,6 +9,7 @@
 
   import PerformanceOneFeat from "../../assets/performance_one_feat.svg";
   import PerformanceTwoFeat from "../../assets/performance_two_feat.svg";
+  import Wallet from "../../assets/wallet.svg";
 
   let address = "";
   let label = "";
@@ -86,6 +87,19 @@
         .set({ listAddress: JSON.stringify(listAddress) })
         .then(() => {
           console.log("save address to sync storage");
+        });
+
+      browser.storage.sync
+        .set({
+          selectedWallet: {
+            logo: Wallet,
+            id: data.id,
+            label: data.label,
+            value: data.address,
+          },
+        })
+        .then(() => {
+          console.log("save selected address to sync storage");
         });
 
       e.target.reset();

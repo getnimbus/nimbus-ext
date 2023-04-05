@@ -60,10 +60,7 @@
       const res = (await sendMessage("TrxHashInfo", {
         hash,
       })) as any;
-
-      // response = await nimbus
-      //   .get(`/tx/${hash}`)
-      //   .then((response) => response.data);
+      console.log("res: ", res);
 
       response = {};
 

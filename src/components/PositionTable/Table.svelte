@@ -1,5 +1,4 @@
 <script>
-  export let data;
   import { i18n } from "~/lib/i18n";
   import { formatBalance } from "~/utils";
   import LpProvider from "./LPProvider.svelte";
@@ -8,9 +7,13 @@
   import LendingProvider from "./LendingProvider.svelte";
   import LendingBorrow from "./LendingBorrow.svelte";
 
+  export let data;
+
   const MultipleLang = {
     claimable: i18n("newtabPage.claimable", "Claimable"),
   };
+
+  $: console.log("data: ", data);
 </script>
 
 <div class="flex flex-col gap-5">
@@ -35,7 +38,7 @@
     </div>
   </div>
 
-  {#if data.positions && data.positions.length}
+  {#if data.positions && data.positions.length !== 0}
     {#each data.positions as position}
       <div class="flex flex-col gap-2">
         <div class="text-base font-semibold">{position.type}</div>
@@ -44,14 +47,21 @@
             <LpProvider data={position} />
           {:else if position.type === "Staking"}
             <Staking data={position} />
-          {:else if position.type === "Staking-Locked"}
+          {:else if position.type === "Staking locked"}
             <StakingLocked data={position} />
-          {:else if position.type === "Lending-Provider"}
+          {:else if position.type === "Lending provider"}
             <LendingProvider data={position} />
-          {:else if position.type === "Lending-Borrow"}
+          {:else if position.type === "Lending borrow"}
             <LendingBorrow data={position} />
           {/if}
         </div>
+
+        {#if position.type === "LP-Provider"}
+          <div class="text-xs text-gray-400 text-right">
+            Profit is calculated by buying & hold on every time you add/remove
+            liquidity
+          </div>
+        {/if}
       </div>
     {/each}
   {:else}
