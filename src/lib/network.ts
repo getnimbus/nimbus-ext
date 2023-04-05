@@ -60,5 +60,5 @@ export const nimbusApi = createAxiosInterface({
 });
 
 export const test = createAxiosInterface({
-  baseURL: "https://mkxhfo3tne.execute-api.ap-southeast-1.amazonaws.com",
+  baseURL: "https://l6s5o2dq4a.execute-api.ap-southeast-1.amazonaws.com",
 });

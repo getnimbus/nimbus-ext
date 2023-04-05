@@ -189,6 +189,7 @@
   let newsData: NewData = [];
   let walletData: WalletData = [];
   let positionsData: PositionData = [];
+  let dataUpdatedTime;
   let listAddress = [];
   let selectedWallet;
   let isOpenAddModal = false;
@@ -539,7 +540,7 @@
       const response: any = await sendMessage("getSyncStatus", {
         address: selectedWallet.value,
       });
-      console.log("res sync status: ", response);
+      dataUpdatedTime = response?.data?.lastSync;
       return response;
     } catch (e) {
       console.log("e: ", e);
@@ -934,7 +935,7 @@
         <div class="text-lg">
           There are some problem with our server. Please try again!
         </div>
-        <Button on:click={() => getSync()} {isLoading}>Reload</Button>
+        <Button on:click={() => getSync()}>Reload</Button>
       </div>
     </div>
   {:else}
@@ -1049,7 +1050,7 @@
                     </div>
                     <div class="text-xs text-white font-medium">
                       {MultipleLang.data_updated}
-                      {dayjs(overviewData?.updatedAt).fromNow()}
+                      {dayjs(dataUpdatedTime).fromNow()}
                     </div>
                   </div>
                 </div>

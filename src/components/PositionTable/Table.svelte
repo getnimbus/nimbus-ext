@@ -12,6 +12,8 @@
   const MultipleLang = {
     claimable: i18n("newtabPage.claimable", "Claimable"),
   };
+
+  $: console.log("data: ", data);
 </script>
 
 <div class="flex flex-col gap-5">
@@ -45,11 +47,11 @@
             <LpProvider data={position} />
           {:else if position.type === "Staking"}
             <Staking data={position} />
-          {:else if position.type === "Staking-Locked"}
+          {:else if position.type === "Staking locked"}
             <StakingLocked data={position} />
-          {:else if position.type === "Lending-Provider"}
+          {:else if position.type === "Lending provider"}
             <LendingProvider data={position} />
-          {:else if position.type === "Lending-Borrow"}
+          {:else if position.type === "Lending borrow"}
             <LendingBorrow data={position} />
           {/if}
         </div>
