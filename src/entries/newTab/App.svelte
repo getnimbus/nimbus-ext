@@ -1308,12 +1308,16 @@
                   <div class="text-2xl font-medium text-black">
                     {MultipleLang.wallet}
                   </div>
-                  <label class="flex items-center gap-2">
+                  <div class="flex items-center gap-2">
                     <span class="text-sm font-regular text-black"
-                      >Hide tokens less than $1</span
-                    >
-                    <input type="checkbox" bind:checked={filteredHolding} />
-                  </label>
+                      >Hide tokens less than $1
+                    </span>
+                    <input
+                      type="checkbox"
+                      bind:checked={filteredHolding}
+                      class="cursor-pointer"
+                    />
+                  </div>
                 </div>
                 <div
                   class="border border-[#0000000d] rounded-[10px] overflow-x-auto"
