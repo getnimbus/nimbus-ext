@@ -28,7 +28,7 @@
     target="_blank"
     class="mt-1 text-blue-400 no-underline"
     use:tooltip={{
-      content: `<tooltip-detail address="${address}" />`,
+      content: `<tooltip-detail text="${address}" />`,
       allowHTML: true,
       placement: "top",
     }}

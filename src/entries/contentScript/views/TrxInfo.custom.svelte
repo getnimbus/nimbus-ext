@@ -97,7 +97,7 @@
                   <div
                     class="text-[#FF7D00] px-[6px] py-1 rounded-lg bg-[#ff7d001a] text-xs"
                     use:tooltip={{
-                      content: `<tooltip-detail address="${hash}" />`,
+                      content: `<tooltip-detail text="${hash}" />`,
                       allowHTML: true,
                       placement: "top",
                     }}

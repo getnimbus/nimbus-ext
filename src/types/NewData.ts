@@ -1,5 +1,10 @@
 export type NewData = New[]
 
+export type NewDataRes = {
+  result: NewData,
+  address: string
+}
+
 export type New = {
   description: string;
   img: string;
@@ -13,4 +18,12 @@ export type TokenInfo = {
   logo: string;
   name: string;
   symbol: string;
+}
+
+export type NewDataLocal = {
+  createdAt: string;
+  result: {
+    address: string;
+    result: NewData
+  }
 }

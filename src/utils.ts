@@ -95,6 +95,10 @@ export const formatBalance = (input: number) => {
   return numeral(input).format("0,0.00");
 };
 
+export const formatSmallBalance = (input: number) => {
+  return numeral(input).format("0.000e+0");
+};
+
 export const shorterAddress = (string: string) => {
   return string.slice(0, 6) + "...." + string.substr(-4);
 };

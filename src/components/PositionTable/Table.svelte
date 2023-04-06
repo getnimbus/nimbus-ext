@@ -90,7 +90,7 @@
                   </th>
                 </tr>
               </thead>
-              {#each data.positions["LP-Provider"] as item}
+              {#each data?.positions["LP-Provider"] as item}
                 <LpProvider data={item} />
               {/each}
             {:else if position === "Staking"}
@@ -140,7 +140,7 @@
                   </th>
                 </tr>
               </thead>
-              {#each data.positions["Staking"] as item}
+              {#each data?.positions["Staking"] as item}
                 <Staking data={item} />
               {/each}
             {:else if position === "Staking locked"}
@@ -197,7 +197,7 @@
                   </th>
                 </tr>
               </thead>
-              {#each data.positions["Staking locked"] as item}
+              {#each data?.positions["Staking locked"] as item}
                 <StakingLocked data={item} />
               {/each}
             {:else if position === "Lending provider"}
@@ -247,7 +247,7 @@
                   </th>
                 </tr>
               </thead>
-              {#each data.positions["Lending provider"] as item}
+              {#each data?.positions["Lending provider"] as item}
                 <LendingProvider data={item} />
               {/each}
             {:else if position === "Lending borrow"}
@@ -304,7 +304,7 @@
                   </th>
                 </tr>
               </thead>
-              {#each data.positions["Lending borrow"] as item}
+              {#each data?.positions["Lending borrow"] as item}
                 <LendingBorrow data={item} />
               {/each}
             {/if}

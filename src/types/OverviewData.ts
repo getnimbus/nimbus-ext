@@ -15,6 +15,11 @@ export type OverviewData = {
   updatedAt: string;
 }
 
+export type OverviewDataRes = {
+  result: OverviewData,
+  address: string
+}
+
 export type BreakdownTokenDetail = {
   id: number | string;
   amount: number;
@@ -29,4 +34,12 @@ export type PerformanceDetail = {
   date: string;
   eth: number;
   portfolio: number;
+}
+
+export type OverviewDataLocal = {
+  createdAt: string;
+  result: {
+    address: string;
+    result: OverviewData
+  }
 }

@@ -43,7 +43,7 @@
       target="_blank"
       class="no-underline text-sm text-black font-medium"
       use:tooltip={{
-        content: `<tooltip-detail address="${address}" />`,
+        content: `<tooltip-detail text="${address}" />`,
         allowHTML: true,
         placement: "top",
       }}

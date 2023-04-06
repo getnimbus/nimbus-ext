@@ -1,5 +1,10 @@
 export type WalletData = Wallet[]
 
+export type WalletDataRes = {
+  result: WalletData,
+  address: string
+}
+
 export type Wallet = {
   amount: number,
   avgCost: number;
@@ -9,4 +14,12 @@ export type Wallet = {
   name: string;
   rate: number;
   symbol: string;
+}
+
+export type WalletDataLocal = {
+  createdAt: string;
+  result: {
+    address: string;
+    result: WalletData
+  }
 }

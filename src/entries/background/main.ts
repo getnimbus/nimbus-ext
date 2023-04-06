@@ -156,15 +156,65 @@ onMessage<IAddressInput, any>("getSyncStatus", async ({ data: { address } }) => 
 
 onMessage<IAddressInput, any>("getOverview", async ({ data: { address } }) => {
   try {
-    return await test.get(`/address/${address}/overview`).then((response) => response.data);
+    const key = address + "_overview";
+    const res = await cacheOrAPI(
+      key,
+      () => {
+        return test.get(`/address/${address}/overview`).then((response) => {
+          return {
+            result: response.data,
+            address: address
+          }
+        });
+      },
+      { defaultValue: null }
+    );
+    return res
   } catch (error) {
+    return {};
+  }
+});
+
+onMessage<IAddressInput, any>("getOverviewLocal", async ({ data: { address } }) => {
+  try {
+    const key = address + "_overview";
+    const dataLocal = await browser.storage.local.get(key);
+    if (!isEmpty(dataLocal[key]) && dataLocal.hasOwnProperty(key)) {
+      return JSON.parse(dataLocal[key]);
+    }
+  } catch (e) {
     return {};
   }
 });
 
 onMessage<IAddressInput, any>("getPositions", async ({ data: { address } }) => {
   try {
-    return await test.get(`/address/${address}/positions`).then((response) => response.data.positions);
+    const key = address + "_positions";
+    const res = await cacheOrAPI(
+      key,
+      () => {
+        return test.get(`/address/${address}/positions`).then((response) => {
+          return {
+            result: response.data.positions,
+            address: address
+          }
+        });
+      },
+      { defaultValue: null }
+    );
+    return res
+  } catch (error) {
+    return {};
+  }
+});
+
+onMessage<IAddressInput, any>("getPositionsLocal", async ({ data: { address } }) => {
+  try {
+    const key = address + "_positions";
+    const dataLocal = await browser.storage.local.get(key);
+    if (!isEmpty(dataLocal[key]) && dataLocal.hasOwnProperty(key)) {
+      return JSON.parse(dataLocal[key]);
+    }
   } catch (error) {
     return {};
   }
@@ -172,7 +222,32 @@ onMessage<IAddressInput, any>("getPositions", async ({ data: { address } }) => {
 
 onMessage<IAddressInput, any>("getHolding", async ({ data: { address } }) => {
   try {
-    return await test.get(`/address/${address}/holding`).then((response) => response.data);
+    const key = address + "_holding";
+    const res = await cacheOrAPI(
+      key,
+      () => {
+        return test.get(`/address/${address}/holding`).then((response) => {
+          return {
+            result: response.data,
+            address: address
+          }
+        });
+      },
+      { defaultValue: null }
+    );
+    return res
+  } catch (error) {
+    return {};
+  }
+});
+
+onMessage<IAddressInput, any>("getHoldingLocal", async ({ data: { address } }) => {
+  try {
+    const key = address + "_holding";
+    const dataLocal = await browser.storage.local.get(key);
+    if (!isEmpty(dataLocal[key]) && dataLocal.hasOwnProperty(key)) {
+      return JSON.parse(dataLocal[key]);
+    }
   } catch (error) {
     return {};
   }
@@ -180,7 +255,32 @@ onMessage<IAddressInput, any>("getHolding", async ({ data: { address } }) => {
 
 onMessage<IAddressInput, any>("getNews", async ({ data: { address } }) => {
   try {
-    return await test.get(`/news/${address}`).then((response) => response.data.news);
+    const key = address + "_news";
+    const res = await cacheOrAPI(
+      key,
+      () => {
+        return test.get(`/news/${address}`).then((response) => {
+          return {
+            result: response.data.news,
+            address: address
+          }
+        });
+      },
+      { defaultValue: null }
+    );
+    return res
+  } catch (error) {
+    return {};
+  }
+});
+
+onMessage<IAddressInput, any>("getNewsLocal", async ({ data: { address } }) => {
+  try {
+    const key = address + "_news";
+    const dataLocal = await browser.storage.local.get(key);
+    if (!isEmpty(dataLocal[key]) && dataLocal.hasOwnProperty(key)) {
+      return JSON.parse(dataLocal[key]);
+    }
   } catch (error) {
     return {};
   }

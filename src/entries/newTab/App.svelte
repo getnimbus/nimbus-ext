@@ -1,8 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import * as browser from "webextension-polyfill";
-  import { sendMessage, getCurrentContext } from "webext-bridge";
-  import numeral from "numeral";
+  import { sendMessage } from "webext-bridge";
   import { i18n, currentLang } from "~/lib/i18n";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
@@ -15,24 +14,35 @@
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import { groupBy } from "lodash";
 
-  import type { OverviewData } from "~/types/OverviewData";
+  import type {
+    OverviewData,
+    OverviewDataLocal,
+    OverviewDataRes,
+  } from "~/types/OverviewData";
   import type { OpportunityData } from "~/types/OpportunityData";
-  import type { NewData } from "~/types/NewData";
-  import type { WalletData } from "~/types/WalletData";
-  import type { PositionData } from "~/types/PositionData";
+  import type { NewData, NewDataRes, NewDataLocal } from "~/types/NewData";
+  import type {
+    WalletData,
+    WalletDataRes,
+    WalletDataLocal,
+  } from "~/types/WalletData";
+  import type {
+    PositionData,
+    PositionDataLocal,
+    PositionDataRes,
+  } from "~/types/PositionData";
   import type { AddressData } from "~/types/AddressData";
 
-  import HoldingInfo from "~/components/HoldingInfo.svelte";
-  import NewCard from "~/components/NewCard.svelte";
-  import EChart from "~/components/EChart.svelte";
-  import OpportunityCard from "~/components/OpportunityCard.svelte";
   import Select from "~/components/Select.svelte";
-  import CountUpNumber from "~/components/CountUpNumber.svelte";
-  import Table from "~/components/PositionTable/Table.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
-  import "~/components/Loading.custom.svelte";
   import "~/components/Tooltip.custom.svelte";
+  import Overview from "~/components/NewTabUI/Overview.svelte";
+  import Positions from "~/components/NewTabUI/Positions.svelte";
+  import News from "~/components/NewTabUI/News.svelte";
+  import Charts from "~/components/NewTabUI/Charts.svelte";
+  import Holding from "~/components/NewTabUI/Holding.svelte";
+  import Opportunities from "~/components/NewTabUI/Opportunities.svelte";
 
   import Wallet from "~/assets/wallet.png";
   import All from "~/assets/all.svg";
@@ -47,11 +57,13 @@
   import Avatar from "~/assets/user.svg";
   import Logo from "~/assets/logo-white.svg";
   import Reload from "~/assets/reload.svg";
-  import Analytic from "~/assets/analytic.svg";
-  import Portfolio from "~/assets/portfolio.svg";
-  import Settings from "~/assets/settings.svg";
-  import Transactions from "~/assets/transactions.svg";
-  import News from "~/assets/news.svg";
+  import AnalyticIcon from "~/assets/analytic.svg";
+  import PortfolioIcon from "~/assets/portfolio.svg";
+  import SettingsIcon from "~/assets/settings.svg";
+  import TransactionsIcon from "~/assets/transactions.svg";
+  import NewsIcon from "~/assets/news.svg";
+  import Search from "~/assets/search.svg";
+  import Bell from "~/assets/bell.svg";
 
   const chainList = [
     {
@@ -92,22 +104,7 @@
     transactions: i18n("newtabPage.transactions", "Transactions"),
     news: i18n("newtabPage.news", "News"),
     settings: i18n("newtabPage.settings", "Settings"),
-    wallet: i18n("newtabPage.wallet", "Wallet"),
-    view_more: i18n("newtabPage.view-more", "View more"),
-    opportunities: i18n("newtabPage.opportunities", "Opportunities"),
-    positions: i18n("newtabPage.positions", "Positions"),
-    assets: i18n("newtabPage.assets", "Assets"),
-    market_price: i18n("newtabPage.market-price", "Market price"),
-    amount: i18n("newtabPage.amount", "Amount"),
-    value: i18n("newtabPage.value", "Value"),
-    profit: i18n("newtabPage.profit", "Profit"),
     overview: i18n("newtabPage.overview", "Overview"),
-    token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
-    performance: i18n("newtabPage.performance", "Performance"),
-    networth: i18n("newtabPage.networth", "Net Worth"),
-    claimable: i18n("newtabPage.claimable", "Claimable"),
-    total_assets: i18n("newtabPage.total-assets", "Total Assets"),
-    total_debts: i18n("newtabPage.total-debts", "Total Debts"),
     empty_wallet: i18n("newtabPage.empty-wallet", "No wallet add yet."),
     Balance: i18n("newtabPage.Balance", "Balance"),
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
@@ -161,14 +158,6 @@
     },
   };
 
-  onMount(() => {
-    initWS();
-  });
-
-  onDestroy(() => {
-    disconnectWs();
-  });
-
   let navActive = "portfolio";
   let overviewData: OverviewData = {
     breakdownToken: [],
@@ -202,8 +191,7 @@
   let timerDebounce;
   let isLoading = false;
   let isSyncError = false;
-  let filteredHolding = true;
-  let filteredHoldingData;
+  let isLoadingListAddress = false;
 
   let optionPie = {
     title: {
@@ -358,159 +346,279 @@
 
   const getOverview = async () => {
     try {
-      const response: OverviewData = await sendMessage("getOverview", {
+      const response: OverviewDataRes = await sendMessage("getOverview", {
         address: selectedWallet.value,
       });
-      overviewData = response;
 
-      let sum = 0;
-      overviewData?.breakdownToken.map((item) => (sum += Number(item.value)));
+      if (selectedWallet.value === response.address) {
+        overviewData = response.result;
 
-      const formatDataPieChart = overviewData?.breakdownToken.map((item) => {
-        return {
-          logo: item.logo,
-          name: item.name,
-          symbol: item.symbol,
-          name_ratio: "Ratio",
-          value: (Number(item.value) / sum) * 100,
-          name_value: "Value",
-          value_value: Number(item.value),
-          name_balance: "Balance",
-          value_balance: Number(item.amount),
+        let sum = 0;
+        overviewData?.breakdownToken.map((item) => (sum += Number(item.value)));
+
+        const formatDataPieChart = overviewData?.breakdownToken.map((item) => {
+          return {
+            logo: item.logo,
+            name: item.name,
+            symbol: item.symbol,
+            name_ratio: "Ratio",
+            value: (Number(item.value) / sum) * 100,
+            name_value: "Value",
+            value_value: Number(item.value),
+            name_balance: "Balance",
+            value_balance: Number(item.amount),
+          };
+        });
+
+        optionPie = {
+          ...optionPie,
+          series: [
+            {
+              ...optionPie.series[0],
+              data: formatDataPieChart,
+            },
+          ],
         };
-      });
 
-      optionPie = {
-        ...optionPie,
-        series: [
-          {
-            ...optionPie.series[0],
-            data: formatDataPieChart,
+        const formatXAxis = overviewData?.performance.map((item) => {
+          return dayjs(item.date).format("DD MMM YYYY");
+        });
+
+        const formatDataPortfolio = overviewData?.performance.map((item) => {
+          return {
+            value: item.portfolio,
+            itemStyle: {
+              color: "#00b580",
+            },
+          };
+        });
+
+        const formatDataETH = overviewData?.performance.map((item) => {
+          return {
+            value: item.eth,
+            itemStyle: {
+              color: "#547fef",
+            },
+          };
+        });
+
+        const formatDataBTC = overviewData?.performance.map((item) => {
+          return {
+            value: item.btc,
+            itemStyle: {
+              color: "#f7931a",
+            },
+          };
+        });
+
+        optionLine = {
+          ...optionLine,
+          legend: {
+            ...optionLine.legend,
+            data: [
+              {
+                name: "Your Portfolio",
+                itemStyle: {
+                  color: "#00b580",
+                },
+              },
+              {
+                name: "Bitcoin",
+                itemStyle: {
+                  color: "#f7931a",
+                },
+              },
+              {
+                name: "Ethereum",
+                itemStyle: {
+                  color: "#547fef",
+                },
+              },
+            ],
           },
-        ],
-      };
-
-      const formatXAxis = overviewData?.performance.map((item) => {
-        return dayjs(item.date).format("DD MMM YYYY");
-      });
-
-      const formatDataPortfolio = overviewData?.performance.map((item) => {
-        return {
-          value: item.portfolio,
-          itemStyle: {
-            color: "#00b580",
+          xAxis: {
+            ...optionLine.xAxis,
+            data: formatXAxis,
           },
-        };
-      });
-
-      const formatDataETH = overviewData?.performance.map((item) => {
-        return {
-          value: item.eth,
-          itemStyle: {
-            color: "#547fef",
-          },
-        };
-      });
-
-      const formatDataBTC = overviewData?.performance.map((item) => {
-        return {
-          value: item.btc,
-          itemStyle: {
-            color: "#f7931a",
-          },
-        };
-      });
-
-      optionLine = {
-        ...optionLine,
-        legend: {
-          ...optionLine.legend,
-          data: [
+          series: [
             {
               name: "Your Portfolio",
-              itemStyle: {
+              type: "line",
+              stack: "Total",
+              lineStyle: {
+                type: "solid",
                 color: "#00b580",
               },
+              data: formatDataPortfolio,
             },
             {
               name: "Bitcoin",
-              itemStyle: {
+              type: "line",
+              stack: "Total",
+              lineStyle: {
+                type: "dashed",
                 color: "#f7931a",
               },
+              data: formatDataBTC,
             },
             {
               name: "Ethereum",
-              itemStyle: {
+              type: "line",
+              stack: "Total",
+              lineStyle: {
+                type: "dashed",
                 color: "#547fef",
               },
+              data: formatDataETH,
             },
           ],
-        },
-        xAxis: {
-          ...optionLine.xAxis,
-          data: formatXAxis,
-        },
-        series: [
-          {
-            name: "Your Portfolio",
-            type: "line",
-            stack: "Total",
-            lineStyle: {
-              type: "solid",
-              color: "#00b580",
-            },
-            data: formatDataPortfolio,
-          },
-          {
-            name: "Bitcoin",
-            type: "line",
-            stack: "Total",
-            lineStyle: {
-              type: "dashed",
-              color: "#f7931a",
-            },
-            data: formatDataBTC,
-          },
-          {
-            name: "Ethereum",
-            type: "line",
-            stack: "Total",
-            lineStyle: {
-              type: "dashed",
-              color: "#547fef",
-            },
-            data: formatDataETH,
-          },
-        ],
-      };
+        };
 
-      return response;
+        return response;
+      } else {
+        // console.log("response: ", response)
+      }
     } catch (e) {
       console.log("error: ", e);
     }
   };
 
-  const getHolding = async () => {
+  const getOverviewLocal = async () => {
     try {
-      const response: WalletData = await sendMessage("getHolding", {
-        address: selectedWallet.value,
-      });
-      const formatData = response.map((item) => {
-        return {
-          ...item,
-          value: item.amount * item.rate,
+      const response: OverviewDataLocal = await sendMessage(
+        "getOverviewLocal",
+        {
+          address: selectedWallet.value,
+        }
+      );
+      if (response) {
+        overviewData = response.result.result;
+
+        let sum = 0;
+        overviewData?.breakdownToken.map((item) => (sum += Number(item.value)));
+
+        const formatDataPieChart = overviewData?.breakdownToken.map((item) => {
+          return {
+            logo: item.logo,
+            name: item.name,
+            symbol: item.symbol,
+            name_ratio: "Ratio",
+            value: (Number(item.value) / sum) * 100,
+            name_value: "Value",
+            value_value: Number(item.value),
+            name_balance: "Balance",
+            value_balance: Number(item.amount),
+          };
+        });
+
+        optionPie = {
+          ...optionPie,
+          series: [
+            {
+              ...optionPie.series[0],
+              data: formatDataPieChart,
+            },
+          ],
         };
-      });
-      walletData = formatData.sort((a, b) => {
-        if (a.value < b.value) {
-          return 1;
-        }
-        if (a.value > b.value) {
-          return -1;
-        }
-        return 0;
-      });
-      return response;
+
+        const formatXAxis = overviewData?.performance.map((item) => {
+          return dayjs(item.date).format("DD MMM YYYY");
+        });
+
+        const formatDataPortfolio = overviewData?.performance.map((item) => {
+          return {
+            value: item.portfolio,
+            itemStyle: {
+              color: "#00b580",
+            },
+          };
+        });
+
+        const formatDataETH = overviewData?.performance.map((item) => {
+          return {
+            value: item.eth,
+            itemStyle: {
+              color: "#547fef",
+            },
+          };
+        });
+
+        const formatDataBTC = overviewData?.performance.map((item) => {
+          return {
+            value: item.btc,
+            itemStyle: {
+              color: "#f7931a",
+            },
+          };
+        });
+
+        optionLine = {
+          ...optionLine,
+          legend: {
+            ...optionLine.legend,
+            data: [
+              {
+                name: "Your Portfolio",
+                itemStyle: {
+                  color: "#00b580",
+                },
+              },
+              {
+                name: "Bitcoin",
+                itemStyle: {
+                  color: "#f7931a",
+                },
+              },
+              {
+                name: "Ethereum",
+                itemStyle: {
+                  color: "#547fef",
+                },
+              },
+            ],
+          },
+          xAxis: {
+            ...optionLine.xAxis,
+            data: formatXAxis,
+          },
+          series: [
+            {
+              name: "Your Portfolio",
+              type: "line",
+              stack: "Total",
+              lineStyle: {
+                type: "solid",
+                color: "#00b580",
+              },
+              data: formatDataPortfolio,
+            },
+            {
+              name: "Bitcoin",
+              type: "line",
+              stack: "Total",
+              lineStyle: {
+                type: "dashed",
+                color: "#f7931a",
+              },
+              data: formatDataBTC,
+            },
+            {
+              name: "Ethereum",
+              type: "line",
+              stack: "Total",
+              lineStyle: {
+                type: "dashed",
+                color: "#547fef",
+              },
+              data: formatDataETH,
+            },
+          ],
+        };
+
+        return response;
+      } else {
+        return getOverview();
+      }
     } catch (e) {
       console.log("error: ", e);
     }
@@ -518,18 +626,108 @@
 
   const getPositions = async () => {
     try {
-      const response: PositionData = await sendMessage("getPositions", {
+      const response: PositionDataRes = await sendMessage("getPositions", {
         address: selectedWallet.value,
       });
-      const formatData = response.map((item) => {
-        const groupPosition = groupBy(item.positions, "type");
-        return {
-          ...item,
-          positions: groupPosition,
-        };
+      if (selectedWallet.value === response.address) {
+        const formatData = response.result.map((item) => {
+          const groupPosition = groupBy(item.positions, "type");
+          return {
+            ...item,
+            positions: groupPosition,
+          };
+        });
+        positionsData = formatData;
+        return response;
+      } else {
+        // console.log("response: ", response)
+      }
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const getPositionsLocal = async () => {
+    try {
+      const response: PositionDataLocal = await sendMessage(
+        "getPositionsLocal",
+        {
+          address: selectedWallet.value,
+        }
+      );
+      if (response) {
+        const formatData = response.result.result.map((item) => {
+          const groupPosition = groupBy(item.positions, "type");
+          return {
+            ...item,
+            positions: groupPosition,
+          };
+        });
+        positionsData = formatData;
+        return response;
+      } else {
+        return getPositions();
+      }
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const getHolding = async () => {
+    try {
+      const response: WalletDataRes = await sendMessage("getHolding", {
+        address: selectedWallet.value,
       });
-      positionsData = formatData;
-      return response;
+      if (selectedWallet.value === response.address) {
+        const formatData = response.result.map((item) => {
+          return {
+            ...item,
+            value: item.amount * item.rate,
+          };
+        });
+        walletData = formatData.sort((a, b) => {
+          if (a.value < b.value) {
+            return 1;
+          }
+          if (a.value > b.value) {
+            return -1;
+          }
+          return 0;
+        });
+        return response;
+      } else {
+        // console.log("response: ", response)
+      }
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const getHoldingLocal = async () => {
+    try {
+      const response: WalletDataLocal = await sendMessage("getHoldingLocal", {
+        address: selectedWallet.value,
+      });
+      if (response) {
+        const formatData = response.result.result.map((item) => {
+          return {
+            ...item,
+            value: item.amount * item.rate,
+          };
+        });
+        walletData = formatData.sort((a, b) => {
+          if (a.value < b.value) {
+            return 1;
+          }
+          if (a.value > b.value) {
+            return -1;
+          }
+          return 0;
+        });
+        return response;
+      } else {
+        return getHolding();
+      }
     } catch (e) {
       console.log("error: ", e);
     }
@@ -537,11 +735,33 @@
 
   const getNews = async () => {
     try {
-      const response: NewData = await sendMessage("getNews", {
+      const response: NewDataRes = await sendMessage("getNews", {
         address: selectedWallet.value,
       });
-      newsData = response;
-      return response;
+      console.log("news: ", response);
+      if (selectedWallet.value === response.address) {
+        newsData = response.result;
+        return response;
+      } else {
+        // console.log("response: ", response)
+      }
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const getNewsLocal = async () => {
+    try {
+      const response: NewDataLocal = await sendMessage("getNewsLocal", {
+        address: selectedWallet.value,
+      });
+      console.log("news local: ", response);
+      if (response) {
+        newsData = response.result.result;
+        return response;
+      } else {
+        return getNews();
+      }
     } catch (e) {
       console.log("error: ", e);
     }
@@ -573,25 +793,35 @@
 
   const getSync = async () => {
     isLoading = true;
+    overviewData = {
+      breakdownToken: [],
+      overview: {
+        assets: 0,
+        assetsChange: 0,
+        change: "",
+        claimable: 0,
+        claimableChange: 0,
+        debts: 0,
+        debtsChange: 0,
+        networth: 0,
+        networthChange: 0,
+      },
+      performance: [],
+      updatedAt: "",
+    };
     try {
       const response: any = await sendMessage("getSync", {
         address: selectedWallet.value,
       });
       if (response.data) {
         isSyncError = false;
-        getOverview();
-        getOpportunities();
-        getHolding();
-        getPositions();
-        getNews();
-        getSyncStatus();
 
         const res = await Promise.all([
-          getOverview(),
+          getOverviewLocal(),
+          getHoldingLocal(),
+          getPositionsLocal(),
+          getNewsLocal(),
           getOpportunities(),
-          getHolding(),
-          getPositions(),
-          getNews(),
           getSyncStatus(),
         ]);
 
@@ -608,6 +838,7 @@
   };
 
   const getListAddress = async () => {
+    isLoadingListAddress = true;
     try {
       const response: AddressData = await sendMessage(
         "getListAddress",
@@ -624,8 +855,10 @@
       });
 
       listAddress = listAddress.concat(structWalletData);
+      isLoadingListAddress = false;
     } catch (error) {
       console.log(error);
+      isLoadingListAddress = false;
     }
   };
 
@@ -639,6 +872,7 @@
   onMount(() => {
     getListAddress();
     getSelectedWallet();
+    initWS();
 
     const lastScrollY = window.pageYOffset;
     const handleCheckIsSticky = () => {
@@ -649,6 +883,10 @@
     return () => {
       window.removeEventListener("scroll", handleCheckIsSticky);
     };
+  });
+
+  onDestroy(() => {
+    disconnectWs();
   });
 
   browser.storage.onChanged.addListener((changes) => {
@@ -786,14 +1024,6 @@
       getSync();
     }
   }
-
-  $: {
-    if (filteredHolding) {
-      filteredHoldingData = walletData.filter((item: any) => item.value > 1);
-    } else {
-      filteredHoldingData = walletData;
-    }
-  }
 </script>
 
 <div class="flex flex-col" class:pb-10={listAddress && listAddress.length > 0}>
@@ -821,7 +1051,7 @@
           class:bg-[#525B8C]={navActive === "portfolio"}
           on:click={() => (navActive = "portfolio")}
         >
-          <img src={Portfolio} alt="Portfolio" />
+          <img src={PortfolioIcon} alt="" />
           <span class="text-white font-semibold xl:text-base text-sm">
             {MultipleLang.portfolio}
           </span>
@@ -836,7 +1066,7 @@
             on:mouseenter={() => (showTooltipAnalytic = true)}
             on:mouseleave={() => (showTooltipAnalytic = false)}
           >
-            <img src={Analytic} alt="Analytic" />
+            <img src={AnalyticIcon} alt="" />
             <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
               {MultipleLang.analytic}
             </span>
@@ -846,7 +1076,7 @@
               class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
               style="z-index: 2147483648;"
             >
-              <tooltip-detail address={"Soon"} />
+              <tooltip-detail text={"Soon"} />
             </div>
           {/if}
         </div>
@@ -860,7 +1090,7 @@
             on:mouseenter={() => (showTooltipTransactions = true)}
             on:mouseleave={() => (showTooltipTransactions = false)}
           >
-            <img src={Transactions} alt="Transactions" />
+            <img src={TransactionsIcon} alt="" />
             <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
               {MultipleLang.transactions}
             </span>
@@ -870,7 +1100,7 @@
               class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
               style="z-index: 2147483648;"
             >
-              <tooltip-detail address={"Soon"} />
+              <tooltip-detail text={"Soon"} />
             </div>
           {/if}
         </div>
@@ -882,7 +1112,7 @@
             chrome.tabs.create({ url: "src/entries/news/index.html" });
           }}
         >
-          <img src={News} alt="News" />
+          <img src={NewsIcon} alt="" />
           <span class="text-white font-semibold xl:text-base text-sm">
             {MultipleLang.news}
           </span>
@@ -895,7 +1125,7 @@
             chrome.tabs.create({ url: "src/entries/options/index.html" });
           }}
         >
-          <img src={Settings} alt="Settings" />
+          <img src={SettingsIcon} alt="" />
           <span class="text-white font-semibold xl:text-base text-sm">
             {MultipleLang.settings}
           </span>
@@ -905,20 +1135,7 @@
         <div
           class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center gap-1 rounded-[1000px]"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="xl:h-7 xl:w-7 h-5 w-5 text-white"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
+          <img src={Search} alt="" />
           <input
             on:keyup={({ target: { value } }) => debounceSearch(value)}
             autofocus
@@ -931,27 +1148,7 @@
         <!-- <div
           class="bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
         >
-          <svg
-            viewBox="0 0 24 25"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            class="xl:h-6 xl:w-6 h-5 w-5 text-white"
-          >
-            <path
-              d="M9.61249 21.9553C9.87859 22.4208 10.2621 22.8084 10.7247 23.0794C11.1873 23.3504 11.7129 23.4954 12.249 23.4999C12.7852 23.5044 13.3131 23.3683 13.7803 23.1051C14.2474 22.8419 14.6373 22.4609 14.9112 21.9999"
-              stroke="white"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M19.7375 11.5V8.425C19.7375 4.45 16.25 1 12.2375 1C10.2622 1.04393 8.37994 1.84821 6.98283 3.24533C5.58571 4.64244 4.78143 6.52467 4.7375 8.5V11.5C4.7375 14.9125 2 15.4375 2 17.35C2 19.075 5.9375 20.425 12.2375 20.425C18.5375 20.425 22.475 19.075 22.475 17.35C22.475 15.4375 19.7375 14.9125 19.7375 11.5Z"
-              stroke="white"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
+          <img src={Bell} alt="" />
         </div>
         <div class="w-[40px] h-[40px] rounded-full overflow-hidden">
           <img src={Avatar} alt="avatar" class="w-full h-full object-cover" />
@@ -972,91 +1169,21 @@
     </div>
   {:else}
     <div>
-      {#if listAddress.length === 0}
-        <div class="flex justify-center items-center h-screen">
-          <div
-            class="border border-[#0000001a] rounded-[20px] p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
-          >
-            <div class="text-lg">
-              Please add a wallet to keep up to date with the latest
-              developments on your investments.
-            </div>
-            <button
-              class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
-              on:click={() => (isOpenAddModal = true)}
-            >
-              <img src={Plus} alt="" width="12" height="12" />
-              <div class="text-base font-medium text-white">
-                {MultipleLang.content.btn_text}
-              </div>
-            </button>
-          </div>
+      {#if isLoadingListAddress}
+        <div class="flex items-center justify-center h-screen">
+          <loading-icon />
         </div>
       {:else}
-        <div id="top" class="header-container">
-          <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
-            <div class="flex flex-col gap-14 mb-5">
-              <div class="flex justify-between items-center">
-                {#if listAddress && listAddress.length > 0}
-                  <div class="flex items-center gap-5">
-                    {#if listAddress.length > 4}
-                      {#each listAddress.slice(0, 4) as item}
-                        <div
-                          id={item.value}
-                          class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
-                            item.value === selectedWallet?.value &&
-                            "bg-[#ffffff1c]"
-                          }`}
-                          class:hover:no-underline={item.value ===
-                            selectedWallet?.value}
-                          on:click={() => {
-                            selectedWallet = item;
-                          }}
-                        >
-                          <img
-                            src={item.logo}
-                            alt="logo"
-                            width="16"
-                            height="16"
-                          />
-                          {item.label}
-                        </div>
-                      {/each}
-                      <Select
-                        isSelectWallet
-                        listSelect={listAddress.slice(4, listAddress.length)}
-                        bind:selected={selectedWallet}
-                      />
-                    {:else}
-                      {#each listAddress as item}
-                        <div
-                          id={item.value}
-                          class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
-                            item.value === selectedWallet?.value &&
-                            "bg-[#ffffff1c]"
-                          }`}
-                          class:hover:no-underline={item.value ===
-                            selectedWallet?.value}
-                          on:click={() => {
-                            selectedWallet = item;
-                          }}
-                        >
-                          <img
-                            src={item.logo}
-                            alt="logo"
-                            width="16"
-                            height="16"
-                          />
-                          {item.label}
-                        </div>
-                      {/each}
-                    {/if}
-                  </div>
-                {:else}
-                  <div class="text-white text-base font-semibold">
-                    {MultipleLang.empty_wallet}
-                  </div>
-                {/if}
+        <div>
+          {#if listAddress.length === 0}
+            <div class="flex justify-center items-center h-screen">
+              <div
+                class="border border-[#0000001a] rounded-[20px] p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
+              >
+                <div class="text-lg">
+                  Please add a wallet to keep up to date with the latest
+                  developments on your investments.
+                </div>
                 <button
                   class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
                   on:click={() => (isOpenAddModal = true)}
@@ -1067,455 +1194,137 @@
                   </div>
                 </button>
               </div>
-              <div class="flex justify-between items-end">
-                <div class="flex items-end gap-6">
-                  <div class="text-5xl text-white font-semibold">
-                    {MultipleLang.overview}
-                  </div>
-                  <div class="flex items-center gap-2 mb-1">
-                    <div
-                      class="cursor-pointer"
-                      class:loading={isLoading}
-                      on:click={() => getSync()}
-                    >
-                      <img src={Reload} alt="" />
-                    </div>
-                    <div class="text-xs text-white font-medium">
-                      {MultipleLang.data_updated}
-                      {dayjs(dataUpdatedTime).fromNow()}
-                    </div>
-                  </div>
-                </div>
-                <Select listSelect={chainList} bind:selected={selectedChain} />
-              </div>
             </div>
-            <div class="flex xl:flex-row flex-col justify-between gap-6">
-              <div
-                class="flex-1 flex md:flex-row flex-col justify-between gap-6"
-              >
-                <div
-                  class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white"
-                >
-                  <div class="text-[#00000099] text-base font-medium">
-                    {MultipleLang.networth}
-                  </div>
-                  <div class="text-3xl text-black">
-                    $<CountUpNumber
-                      id="networth"
-                      number={overviewData?.overview.networth}
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <div
-                      class={`text-lg font-medium ${
-                        overviewData?.overview.networthChange < 0
-                          ? "text-red-500"
-                          : "text-[#00A878]"
-                      }`}
-                    >
-                      {#if overviewData?.overview.networthChange < 0}
-                        ↓
-                      {:else}
-                        ↑
-                      {/if}
-                      <CountUpNumber
-                        id="networth_grouth"
-                        number={Math.abs(overviewData?.overview.networthChange)}
-                      />%
-                    </div>
-                    <div class="text-[#00000066] text-base font-medium">
-                      {overviewData?.overview.change}
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white"
-                >
-                  <div class="text-[#00000099] text-base font-medium">
-                    {MultipleLang.claimable}
-                  </div>
-                  <div class="text-3xl text-black">
-                    $<CountUpNumber
-                      id="claimable"
-                      number={overviewData?.overview.claimable}
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <div
-                      class={`text-lg font-medium ${
-                        overviewData?.overview.claimableChange < 0
-                          ? "text-red-500"
-                          : "text-[#00A878]"
-                      }`}
-                    >
-                      {#if overviewData?.overview.claimableChange < 0}
-                        ↓
-                      {:else}
-                        ↑
-                      {/if}
-                      <CountUpNumber
-                        id="claimable_grouth"
-                        number={Math.abs(
-                          overviewData?.overview.claimableChange
-                        )}
-                      />%
-                    </div>
-                    <div class="text-[#00000066] text-base font-medium">
-                      {overviewData?.overview.change}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="flex-1 flex md:flex-row flex-col justify-between gap-6"
-              >
-                <div
-                  class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white"
-                >
-                  <div class="text-[#00000099] text-base font-medium">
-                    {MultipleLang.total_assets}
-                  </div>
-                  <div class="text-3xl text-black">
-                    $<CountUpNumber
-                      id="total_assets"
-                      number={overviewData?.overview.assets}
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <div
-                      class={`text-lg font-medium ${
-                        overviewData?.overview.assetsChange < 0
-                          ? "text-red-500"
-                          : "text-[#00A878]"
-                      }`}
-                    >
-                      {#if overviewData?.overview.assetsChange < 0}
-                        ↓
-                      {:else}
-                        ↑
-                      {/if}
-                      <CountUpNumber
-                        id="total_assets_grouth"
-                        number={Math.abs(overviewData?.overview.assetsChange)}
-                      />%
-                    </div>
-                    <div class="text-[#00000066] text-base font-medium">
-                      {overviewData?.overview.change}
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white"
-                >
-                  <div class="text-[#00000099] text-base font-medium">
-                    {MultipleLang.total_debts}
-                  </div>
-                  <div class="text-3xl text-black">
-                    $<CountUpNumber
-                      id="total_debts"
-                      number={overviewData?.overview.debts}
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <div
-                      class={`text-lg font-medium ${
-                        overviewData?.overview.debtsChange < 0
-                          ? "text-red-500"
-                          : "text-[#00A878]"
-                      }`}
-                    >
-                      {#if overviewData?.overview.debtsChange < 0}
-                        ↓
-                      {:else}
-                        ↑
-                      {/if}
-                      <CountUpNumber
-                        id="total_debts_grouth"
-                        number={Math.abs(overviewData?.overview.debtsChange)}
-                      />%
-                    </div>
-                    <div class="text-[#00000066] text-base font-medium">
-                      {overviewData?.overview.change}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
-          <div
-            class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
-            style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
-          >
-            <div class="flex xl:flex-row flex-col justify-between gap-6">
-              <div
-                class="xl:flex-[0.8] flex-1 border border-[#0000001a] rounded-[20px] p-6"
-              >
-                <div class="flex justify-between mb-1">
-                  <div class="pl-4 text-2xl font-medium text-black">
-                    {MultipleLang.token_allocation}
-                  </div>
-                  <!-- <div class="flex items-center gap-2">
-                    <div
-                      class={`cursor-pointer text-base font-medium py-[6px] px-4 rounded-[100px] transition-all ${
-                        selectedTokenAllocation === "token" &&
-                        "bg-[#1E96FC] text-white"
-                      }`}
-                      on:click={() => (selectedTokenAllocation = "token")}
-                    >
-                      Token
-                    </div>
-                    <div
-                      class={`cursor-pointer text-base font-medium py-[6px] px-4 rounded-[100px] transition-all ${
-                        selectedTokenAllocation === "chain" &&
-                        "bg-[#1E96FC] text-white"
-                      }`}
-                      on:click={() => (selectedTokenAllocation = "chain")}
-                    >
-                      Chain
-                    </div>
-                  </div> -->
-                </div>
-                {#if isLoading}
-                  <div class="flex items-center justify-center h-[465px]">
-                    <loading-icon />
-                  </div>
-                {:else}
-                  <EChart
-                    id="pie-chart"
-                    theme="white"
-                    option={optionPie}
-                    height={465}
-                  />
-                {/if}
-              </div>
-              <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
-                <div class="pl-4 text-2xl font-medium text-black mb-3">
-                  {MultipleLang.performance}
-                </div>
-                {#if isLoading}
-                  <div class="flex items-center justify-center h-[433px]">
-                    <loading-icon />
-                  </div>
-                {:else}
-                  <EChart
-                    id="line-chart"
-                    theme="white"
-                    option={optionLine}
-                    height={433}
-                  />
-                {/if}
-              </div>
-            </div>
-            <div class="flex xl:flex-row flex-col justify-between gap-6">
-              <div
-                class="xl:w-[65%] w-full flex-col border border-[#0000001a] rounded-[20px] p-6"
-              >
-                <div class="mb-6 flex justify-between items-center">
-                  <div class="text-2xl font-medium text-black">
-                    {MultipleLang.wallet}
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <label
-                      class="text-sm font-regular text-gray-400"
-                      for="filter-value"
-                      >Hide tokens less than $1
-                    </label>
-                    <input
-                      type="checkbox"
-                      id="filter-value"
-                      bind:checked={filteredHolding}
-                      class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
-                    />
-                  </div>
-                </div>
-                <div
-                  class="border border-[#0000000d] rounded-[10px] overflow-x-auto"
-                >
-                  <table class="table-auto 2xl:w-full xl:w-auto w-full">
-                    <thead>
-                      <tr class="bg-[#f4f5f880]">
-                        <th class="pl-3 py-3">
-                          <div
-                            class="text-left text-sm uppercase font-semibold text-black min-w-[220px]"
-                          >
-                            {MultipleLang.assets}
-                          </div>
-                        </th>
-                        <th class="py-3">
-                          <div
-                            class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
-                          >
-                            {MultipleLang.market_price}
-                          </div>
-                        </th>
-                        <th class="py-3">
-                          <div
-                            class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
-                          >
-                            {MultipleLang.amount}
-                          </div>
-                        </th>
-                        <th class="py-3">
-                          <div
-                            class="text-right text-sm uppercase font-semibold text-black min-w-[130px]"
-                          >
-                            {MultipleLang.value}
-                          </div>
-                        </th>
-                        <th class="pr-3 py-3">
-                          <div
-                            class="text-right text-sm uppercase font-semibold text-black min-w-[125px]"
-                          >
-                            {MultipleLang.profit}
-                          </div>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {#if isLoading}
-                        <tr>
-                          <td colspan="5">
+          {:else}
+            <div id="top" class="header-container">
+              <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
+                <div class="flex flex-col gap-14 mb-5">
+                  <div class="flex justify-between items-center">
+                    {#if listAddress && listAddress.length > 0}
+                      <div class="flex items-center gap-5">
+                        {#if listAddress.length > 4}
+                          {#each listAddress.slice(0, 4) as item}
                             <div
-                              class="flex justify-center items-center py-4 px-3"
+                              id={item.value}
+                              class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
+                                item.value === selectedWallet?.value &&
+                                "bg-[#ffffff1c]"
+                              }`}
+                              class:hover:no-underline={item.value ===
+                                selectedWallet?.value}
+                              on:click={() => {
+                                selectedWallet = item;
+                              }}
                             >
-                              <loading-icon />
+                              <img
+                                src={item.logo}
+                                alt="logo"
+                                width="16"
+                                height="16"
+                              />
+                              {item.label}
                             </div>
-                          </td>
-                        </tr>
-                      {:else if filteredHoldingData && filteredHoldingData.length !== 0}
-                        {#each filteredHoldingData as holding}
-                          <HoldingInfo data={holding} />
-                        {/each}
-                      {:else}
-                        <tr>
-                          <td colspan="5">
+                          {/each}
+                          <Select
+                            isSelectWallet
+                            listSelect={listAddress.slice(
+                              4,
+                              listAddress.length
+                            )}
+                            bind:selected={selectedWallet}
+                          />
+                        {:else}
+                          {#each listAddress as item}
                             <div
-                              class="flex justify-center items-center py-4 px-3"
+                              id={item.value}
+                              class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
+                                item.value === selectedWallet?.value &&
+                                "bg-[#ffffff1c]"
+                              }`}
+                              class:hover:no-underline={item.value ===
+                                selectedWallet?.value}
+                              on:click={() => {
+                                selectedWallet = item;
+                              }}
                             >
-                              No data
+                              <img
+                                src={item.logo}
+                                alt="logo"
+                                width="16"
+                                height="16"
+                              />
+                              {item.label}
                             </div>
-                          </td>
-                        </tr>
-                      {/if}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div
-                class="xl:w-[35%] w-full flex flex-col border border-[#0000001a] rounded-[20px] p-6 relative"
-              >
-                <div
-                  class="absolute top-0 left-0 w-full h-full bg-[#fff] opacity-70 flex justify-center items-center rounded-[20px]"
-                >
-                  <div
-                    class="text-black text-base font-semibold text-center mx-4"
-                  >
-                    Investment opportunities to optimize your holding. <br /> Coming
-                    soon 🥳
-                  </div>
-                </div>
-                <div class="text-2xl font-medium text-black mb-6 blur-sm">
-                  {MultipleLang.opportunities}
-                </div>
-                <div class="flex flex-col gap-4 xl:basis-0 grow blur-sm">
-                  {#if isLoading}
-                    <div class="flex items-center justify-center">
-                      <loading-icon />
-                    </div>
-                  {:else}
-                    <div>
-                      {#if opportunitiesData && opportunitiesData.length !== 0}
-                        {#each opportunitiesData as opportunity}
-                          <OpportunityCard data={opportunity} />
-                        {/each}
-                      {:else}
-                        <div>No data</div>
-                      {/if}
-                    </div>
-                  {/if}
-                </div>
-              </div>
-            </div>
-            <div
-              class="flex flex-col border border-[#0000001a] rounded-[20px] p-6"
-            >
-              <div
-                class="text-2xl font-medium text-black border-b border-[#00000014] pb-4"
-              >
-                {MultipleLang.positions}
-              </div>
-              <div class="flex flex-col gap-10">
-                {#if isLoading}
-                  <div class="flex items-center justify-center pt-6">
-                    <loading-icon />
-                  </div>
-                {:else}
-                  <div>
-                    {#if positionsData && positionsData.length !== 0}
-                      {#each positionsData as position}
-                        <Table data={position} />
-                      {/each}
+                          {/each}
+                        {/if}
+                      </div>
                     {:else}
-                      <div>No data</div>
+                      <div class="text-white text-base font-semibold">
+                        {MultipleLang.empty_wallet}
+                      </div>
                     {/if}
+                    <button
+                      class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
+                      on:click={() => (isOpenAddModal = true)}
+                    >
+                      <img src={Plus} alt="" width="12" height="12" />
+                      <div class="text-base font-medium text-white">
+                        {MultipleLang.content.btn_text}
+                      </div>
+                    </button>
                   </div>
-                {/if}
+                  <div class="flex justify-between items-end">
+                    <div class="flex items-end gap-6">
+                      <div class="text-5xl text-white font-semibold">
+                        {MultipleLang.overview}
+                      </div>
+                      <div class="flex items-center gap-2 mb-1">
+                        <div
+                          class="cursor-pointer"
+                          class:loading={isLoading}
+                          on:click={() => getSync()}
+                        >
+                          <img src={Reload} alt="" />
+                        </div>
+                        <div class="text-xs text-white font-medium">
+                          {MultipleLang.data_updated}
+                          {dayjs(dataUpdatedTime).fromNow()}
+                        </div>
+                      </div>
+                    </div>
+                    <Select
+                      listSelect={chainList}
+                      bind:selected={selectedChain}
+                    />
+                  </div>
+                </div>
+                <Overview data={overviewData} />
               </div>
             </div>
-            <div
-              class="flex flex-col gap-10 border border-[#0000001a] rounded-[20px] p-6"
-            >
+            <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
               <div
-                class="flex justify-between border-b border-[#00000014] pb-4"
+                class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
+                style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
               >
-                <div class="text-2xl font-medium text-black">
-                  {MultipleLang.news}
+                <Charts {isLoading} {optionPie} {optionLine} />
+                <div class="flex xl:flex-row flex-col justify-between gap-6">
+                  <Holding {isLoading} data={walletData} />
+                  <Opportunities {isLoading} data={opportunitiesData} />
                 </div>
-                <div
-                  class="font-bold text-base cursor-pointer"
-                  on:click={() => {
-                    chrome.tabs.create({
-                      url: "src/entries/news/index.html",
-                    });
-                  }}
-                >
-                  {MultipleLang.view_more}
-                </div>
+                <Positions {isLoading} data={positionsData} />
+                <News {isLoading} data={newsData} />
               </div>
-              {#if isLoading}
-                <div class="flex items-center justify-center">
-                  <loading-icon />
-                </div>
-              {:else}
-                <div
-                  class={`grid ${
-                    newsData && newsData.length
-                      ? "2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1"
-                      : "grid-cols-1"
-                  } gap-10`}
-                >
-                  {#if newsData && newsData.length !== 0}
-                    {#each newsData as news}
-                      <NewCard data={news} />
-                    {/each}
-                  {:else}
-                    <div>No data</div>
-                  {/if}
-                </div>
-              {/if}
             </div>
-          </div>
-        </div>
-        <div class="sticky bottom-4 flex justify-end pr-4">
-          <a
-            class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F]"
-            style="box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);"
-            href="#top"
-          >
-            <img src={MoveUp} alt="UP" width="20" height="20" />
-          </a>
+            <div class="sticky bottom-4 flex justify-end pr-4">
+              <a
+                class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F]"
+                style="box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);"
+                href="#top"
+              >
+                <img src={MoveUp} alt="UP" width="20" height="20" />
+              </a>
+            </div>
+          {/if}
         </div>
       {/if}
     </div>

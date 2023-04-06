@@ -16,15 +16,13 @@
   };
 
   $: {
-    if (number) {
-      countUp = new CountUp(id, number, {
-        decimalPlaces: format,
-        duration: 1,
-        startVal: (number * 70) / 100,
-        easingFn,
-      });
-      countUp.start();
-    }
+    countUp = new CountUp(id, number, {
+      decimalPlaces: format,
+      duration: 1,
+      startVal: (number * 70) / 100,
+      easingFn,
+    });
+    countUp.start();
   }
 </script>
 

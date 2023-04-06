@@ -2,6 +2,11 @@ import type { TokenInfo } from "./NewData";
 
 export type PositionData = Position[]
 
+export type PositionDataRes = {
+  result: PositionData,
+  address: string
+}
+
 export type Position = {
   claimable: number;
   currentValue: number;
@@ -21,4 +26,12 @@ export type PositionDetail = {
   poolId: number | string;
   tokens: TokenInfo[];
   type: string;
+}
+
+export type PositionDataLocal = {
+  createdAt: string;
+  result: {
+    address: string;
+    result: PositionData
+  }
 }

@@ -121,7 +121,7 @@
                         class="absolute -top-7 -left-1"
                         style="z-index: 2147483646;"
                       >
-                        <tooltip-detail address={coinInfo?.name} />
+                        <tooltip-detail text={coinInfo?.name} />
                       </div>
                     {/if}
                   </div>
@@ -204,7 +204,7 @@
                       class="absolute -top-7 right-0"
                       style="z-index: 2147483646;"
                     >
-                      <tooltip-detail address={exponentialToDecimal(price)} />
+                      <tooltip-detail text={exponentialToDecimal(price)} />
                     </div>
                   {/if}
                 </div>
