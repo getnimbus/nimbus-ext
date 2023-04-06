@@ -837,6 +837,52 @@
     }
   };
 
+  const handleReload = async () => {
+    isLoading = true;
+    overviewData = {
+      breakdownToken: [],
+      overview: {
+        assets: 0,
+        assetsChange: 0,
+        change: "",
+        claimable: 0,
+        claimableChange: 0,
+        debts: 0,
+        debtsChange: 0,
+        networth: 0,
+        networthChange: 0,
+      },
+      performance: [],
+      updatedAt: "",
+    };
+    try {
+      const response: any = await sendMessage("getSync", {
+        address: selectedWallet.value,
+      });
+      if (response.data) {
+        isSyncError = false;
+
+        const res = await Promise.all([
+          getOverview(),
+          getHolding(),
+          getPositions(),
+          getNews(),
+          getOpportunities(),
+          getSyncStatus(),
+        ]);
+
+        if (res) {
+          isLoading = false;
+        }
+      } else {
+        isSyncError = true;
+      }
+    } catch (e) {
+      console.log("error: ", e);
+      isLoading = false;
+    }
+  };
+
   const getListAddress = async () => {
     isLoadingListAddress = true;
     try {
@@ -1164,7 +1210,7 @@
         <div class="text-lg">
           There are some problem with our server. Please try again!
         </div>
-        <Button on:click={() => getSync()}>Reload</Button>
+        <Button on:click={handleReload}>Reload</Button>
       </div>
     </div>
   {:else}
@@ -1282,7 +1328,7 @@
                         <div
                           class="cursor-pointer"
                           class:loading={isLoading}
-                          on:click={() => getSync()}
+                          on:click={handleReload}
                         >
                           <img src={Reload} alt="" />
                         </div>
