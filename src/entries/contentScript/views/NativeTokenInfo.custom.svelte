@@ -103,7 +103,7 @@
             <div class="flex gap-2">
               <img
                 class="w-[40px] h-[40px] rounded-full"
-                src={getCgLogo(id)}
+                src={coinInfo.logo_url}
                 alt={name}
               />
               <div class="flex flex-col gap-1">

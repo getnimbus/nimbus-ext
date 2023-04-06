@@ -44,7 +44,7 @@ export const coinGeko = createAxiosInterface({
 });
 
 export const nimbus = createAxiosInterface({
-  baseURL: "https://api.getnimbus.io",
+  baseURL: "https://l6s5o2dq4a.execute-api.ap-southeast-1.amazonaws.com",
 });
 
 export const mixpanel = createAxiosInterface({

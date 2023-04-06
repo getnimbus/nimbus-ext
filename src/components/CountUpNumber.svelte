@@ -28,6 +28,6 @@
   }
 </script>
 
-<span {id} />
+<span {id}>{number}</span>
 
 <style></style>
