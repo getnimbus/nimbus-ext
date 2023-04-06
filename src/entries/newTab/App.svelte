@@ -12,6 +12,8 @@
   dayjs.locale(currentLang);
   import { formatBalance, formatCurrency } from "~/utils";
   import { v4 as uuidv4 } from "uuid";
+  import { disconnectWs, initWS } from "~/lib/price-ws";
+  import { groupBy } from "lodash";
 
   import type { OverviewData } from "~/types/OverviewData";
   import type { OpportunityData } from "~/types/OpportunityData";
@@ -32,7 +34,7 @@
   import "~/components/Loading.custom.svelte";
   import "~/components/Tooltip.custom.svelte";
 
-  import Wallet from "~/assets/wallet.svg";
+  import Wallet from "~/assets/wallet.png";
   import All from "~/assets/all.svg";
   import logo from "~/assets/btc.png";
   import Ethereum from "~/assets/ethereum.png";
@@ -50,7 +52,6 @@
   import Settings from "~/assets/settings.svg";
   import Transactions from "~/assets/transactions.svg";
   import News from "~/assets/news.svg";
-  import { disconnectWs, initWS } from "~/lib/price-ws";
 
   const chainList = [
     {
@@ -253,7 +254,7 @@
       {
         type: "pie",
         radius: ["40%", "60%"],
-        left: -140,
+        left: -200,
         avoidLabelOverlap: false,
         label: {
           show: false,
@@ -520,7 +521,14 @@
       const response: PositionData = await sendMessage("getPositions", {
         address: selectedWallet.value,
       });
-      positionsData = response;
+      const formatData = response.map((item) => {
+        const groupPosition = groupBy(item.positions, "type");
+        return {
+          ...item,
+          positions: groupPosition,
+        };
+      });
+      positionsData = formatData;
       return response;
     } catch (e) {
       console.log("error: ", e);
@@ -1318,7 +1326,7 @@
                       type="checkbox"
                       id="filter-value"
                       bind:checked={filteredHolding}
-                      class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
                     />
                   </div>
                 </div>
@@ -1366,19 +1374,19 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {#if filteredHoldingData && filteredHoldingData.length !== 0}
+                      {#if isLoading}
+                        <tr>
+                          <td colspan="5">
+                            <div
+                              class="flex justify-center items-center py-4 px-3"
+                            >
+                              <loading-icon />
+                            </div>
+                          </td>
+                        </tr>
+                      {:else if filteredHoldingData && filteredHoldingData.length !== 0}
                         {#each filteredHoldingData as holding}
                           <HoldingInfo data={holding} />
-                        {:else}
-                          <tr>
-                            <td colspan="5">
-                              <div
-                                class="flex justify-center items-center py-4 px-3"
-                              >
-                                <loading-icon />
-                              </div>
-                            </td>
-                          </tr>
                         {/each}
                       {:else}
                         <tr>
@@ -1440,7 +1448,7 @@
               </div>
               <div class="flex flex-col gap-10">
                 {#if isLoading}
-                  <div class="flex items-center justify-center">
+                  <div class="flex items-center justify-center pt-6">
                     <loading-icon />
                   </div>
                 {:else}

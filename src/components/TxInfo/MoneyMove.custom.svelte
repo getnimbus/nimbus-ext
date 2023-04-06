@@ -33,7 +33,7 @@
     <div class="flex-1">
       <app-arrow>
         <div class="flex justify-center items-center gap-2">
-          <div class="w-4 h-4 inline-block bg-gray-100 rounded-full">
+          <div class="w-4 h-4 inline-block bg-gray-100 rounded-full -mt-1">
             {#if data?.tokenLogo}
               <img
                 src={data?.tokenLogo}
@@ -42,7 +42,7 @@
               />
             {/if}
           </div>
-          <div class=" text-black text-sm font-medium">
+          <div class="text-black text-xs font-medium">
             {formatCurrency(data?.value)}
             {data?.symbol}
           </div>
