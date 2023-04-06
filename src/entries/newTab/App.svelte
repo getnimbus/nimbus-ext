@@ -791,7 +791,7 @@
     }
   };
 
-  const getSync = async () => {
+  const handleGetAllData = async (type: string) => {
     isLoading = true;
     overviewData = {
       breakdownToken: [],
@@ -815,61 +815,29 @@
       });
       if (response.data) {
         isSyncError = false;
+        let res;
 
-        const res = await Promise.all([
-          getOverviewLocal(),
-          getHoldingLocal(),
-          getPositionsLocal(),
-          getNewsLocal(),
-          getOpportunities(),
-          getSyncStatus(),
-        ]);
-
-        if (res) {
-          isLoading = false;
+        if (type === "reload") {
+          res = await Promise.all([
+            getOverview(),
+            getHolding(),
+            getPositions(),
+            getNews(),
+            getOpportunities(),
+            getSyncStatus(),
+          ]);
         }
-      } else {
-        isSyncError = true;
-      }
-    } catch (e) {
-      console.log("error: ", e);
-      isLoading = false;
-    }
-  };
 
-  const handleReload = async () => {
-    isLoading = true;
-    overviewData = {
-      breakdownToken: [],
-      overview: {
-        assets: 0,
-        assetsChange: 0,
-        change: "",
-        claimable: 0,
-        claimableChange: 0,
-        debts: 0,
-        debtsChange: 0,
-        networth: 0,
-        networthChange: 0,
-      },
-      performance: [],
-      updatedAt: "",
-    };
-    try {
-      const response: any = await sendMessage("getSync", {
-        address: selectedWallet.value,
-      });
-      if (response.data) {
-        isSyncError = false;
-
-        const res = await Promise.all([
-          getOverview(),
-          getHolding(),
-          getPositions(),
-          getNews(),
-          getOpportunities(),
-          getSyncStatus(),
-        ]);
+        if (type === "sync") {
+          res = await Promise.all([
+            getOverviewLocal(),
+            getHoldingLocal(),
+            getPositionsLocal(),
+            getNewsLocal(),
+            getOpportunities(),
+            getSyncStatus(),
+          ]);
+        }
 
         if (res) {
           isLoading = false;
@@ -1067,7 +1035,7 @@
       browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
         console.log("save selected address to sync storage");
       });
-      getSync();
+      handleGetAllData("sync");
     }
   }
 </script>
@@ -1210,7 +1178,7 @@
         <div class="text-lg">
           There are some problem with our server. Please try again!
         </div>
-        <Button on:click={handleReload}>Reload</Button>
+        <Button on:click={() => handleGetAllData("reload")}>Reload</Button>
       </div>
     </div>
   {:else}
@@ -1328,7 +1296,7 @@
                         <div
                           class="cursor-pointer"
                           class:loading={isLoading}
-                          on:click={handleReload}
+                          on:click={() => handleGetAllData("reload")}
                         >
                           <img src={Reload} alt="" />
                         </div>
@@ -1493,7 +1461,10 @@
   }
 
   .loading {
-    animation: loading 1.4s ease-in-out alternate infinite;
+    animation-name: loading;
+    animation-duration: 1.4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
   }
 
   @keyframes loading {
