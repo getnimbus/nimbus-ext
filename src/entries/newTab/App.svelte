@@ -845,8 +845,9 @@
             getPositionsLocal(),
             getNewsLocal(),
             getOpportunities(),
-            getSyncStatus(),
           ]);
+
+          getSyncStatus(); // Separate the get sync res
         }
 
         if (res) {
