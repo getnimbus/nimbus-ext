@@ -111,6 +111,10 @@
     Value: i18n("newtabPage.Value", "Value"),
     data_updated: i18n("newtabPage.data-updated", "Data updated"),
     search_placeholder: i18n("newtabPage.search-placeholder", "Search"),
+    missed_protocol: i18n(
+      "newtabPage.missed-protocol",
+      "Missed your protocol?"
+    ),
     content: {
       btn_text: i18n(
         "optionsPage.accounts-page-content.address-btn-text",
@@ -1329,6 +1333,15 @@
                   <Opportunities {isLoading} data={opportunitiesData} />
                 </div>
                 <Positions {isLoading} data={positionsData} />
+                <a
+                  href="https://nimbus.sleekplan.app/"
+                  target="_blank"
+                  class="mx-auto"
+                >
+                  <Button variant="secondary"
+                    >{MultipleLang.missed_protocol}</Button
+                  >
+                </a>
                 <News {isLoading} data={newsData} />
               </div>
             </div>
@@ -1433,6 +1446,9 @@
 </div>
 
 <style windi:preflights:global windi:safelist:global>
+  .test {
+    border: 1px solid red;
+  }
   .header-container {
     background-image: url("~/assets/capa.svg");
     background-color: #27326f;

@@ -12,10 +12,6 @@
 
   const MultipleLang = {
     claimable: i18n("newtabPage.claimable", "Claimable"),
-    lp_provider_desc: i18n(
-      "newtabPage.lp-provider-desc",
-      "Profit is calculated by buying & hold on every time you add/remove liquidity"
-    ),
   };
 
   let types = Object.getOwnPropertyNames(data.positions);
@@ -317,7 +313,8 @@
         </div>
         {#if position === "LP-Provider"}
           <div class="text-xs text-gray-400 text-right mb-5">
-            {MultipleLang.lp_provider_desc}
+            Profit is calculated by buying & hold on every time you add/remove
+            liquidity
           </div>
         {/if}
       </div>
