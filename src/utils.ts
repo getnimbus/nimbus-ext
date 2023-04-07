@@ -99,6 +99,22 @@ export const formatSmallBalance = (input: number) => {
   return numeral(input).format("0.000e+0");
 };
 
+export const formatBigBalance = (input: number) => {
+  const regExp = /[a-zA-Z]/g;
+  const numberFormat = numeral(input).format("0.00 a")
+  if (regExp.test(numberFormat)) {
+    return {
+      number_format: Number(numberFormat.slice(0, -2)),
+      number_size: numberFormat.slice("-1").toUpperCase()
+    }
+  } else {
+    return {
+      number_format: Number(numberFormat),
+      number_size: ""
+    }
+  }
+}
+
 export const shorterAddress = (string: string) => {
   return string.slice(0, 6) + "...." + string.substr(-4);
 };

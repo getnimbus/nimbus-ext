@@ -750,7 +750,6 @@
       const response: NewDataRes = await sendMessage("getNews", {
         address: selectedWallet.value,
       });
-      console.log("news: ", response);
       if (selectedWallet.value === response.address) {
         newsData = response.result;
         return response;
