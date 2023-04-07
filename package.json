@@ -3,7 +3,7 @@
   "displayName": "Nimbus",
   "version": "0.0.1",
   "author": "Thanh Le - thanhle@getnimbus.io",
-  "description": "Make Web3 simple for everyone",
+  "description": "A personalized Web3 portfolio tool",
   "scripts": {
     "build": "vite build",
     "build:components": "vite build -c vite.config.components.ts",

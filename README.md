@@ -1,4 +1,4 @@
-# Nimbus - Make Web3 simple for everyone era
+# Nimbus - A personalized Web3 portfolio tool
 
 ![Nimbus](./doc/intro.png)
 
