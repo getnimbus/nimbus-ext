@@ -35,7 +35,12 @@
 <div class="flex flex-col gap-2">
   <div class="title-3 text-gray-500 mb-2">{MultipleLang.title}</div>
   {MultipleLang.content.change_lang_label}
-  <Select listSelect={langs} bind:selected={selectedLang} isOptionsPage />
+  <Select
+    isOptionsPage={true}
+    isSelectWallet={false}
+    listSelect={langs}
+    bind:selected={selectedLang}
+  />
 </div>
 
 <style>

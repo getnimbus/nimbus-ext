@@ -82,6 +82,7 @@
     "Balance": "Balance",
     "Ratio": "Ratio",
     "Value": "Value",
-    "data-updated": "Data updated"
+    "data-updated": "Data updated",
+    "hide-less-than-1": "Hide tokens less than $1"
   }
 }

@@ -1,6 +1,7 @@
 <script>
   import { i18n } from "~/lib/i18n";
   import { formatBalance } from "~/utils";
+
   import LpProvider from "./LPProvider.svelte";
   import Staking from "./Staking.svelte";
   import StakingLocked from "./StakingLocked.svelte";

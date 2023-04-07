@@ -69,7 +69,7 @@
     "assets": "Tài sản",
     "market-price": "Giá trên sàn",
     "amount": "Số lượng",
-    "value": "Giá",
+    "value": "Tổng giá",
     "profit": "Lãi & lỗ",
     "overview": "Tổng quan",
     "token-allocation": "Phân bổ token",
@@ -82,6 +82,7 @@
     "Balance": "Số dư",
     "Ratio": "Tỉ lệ",
     "Value": "Giá",
-    "data-updated": "Dữ liệu cập nhật"
+    "data-updated": "Dữ liệu cập nhật",
+    "hide-less-than-1": "Ẩn các token dưới $1"
   }
 }

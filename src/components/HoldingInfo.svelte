@@ -129,7 +129,4 @@
 </tr>
 
 <style>
-  .test {
-    border: 1px solid red;
-  }
 </style>

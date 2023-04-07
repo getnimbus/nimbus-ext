@@ -41,7 +41,7 @@
 </script>
 
 <tbody>
-  <tr>
+  <tr class="hover:bg-gray-100 transition-all">
     <td class="pl-3 py-4">
       <div class="text-left flex items-start gap-2">
         <div class="flex space-x-1">

@@ -5,9 +5,9 @@
   export let listSelect;
   export let selected;
   export let isSelectWallet = false;
-  let open = false;
-
   export let isOptionsPage = false;
+
+  let open = false;
 </script>
 
 <div class="wrapper">
@@ -39,35 +39,39 @@
 
   {#if open}
     <div class="content" class:right-0={!isOptionsPage}>
-      {#each listSelect as chain}
+      {#each listSelect as item}
         <div
           class="content_item"
-          class:active={chain.value === selected.value}
-          id={chain.value}
+          class:active={item.value === selected.value}
+          id={item.value}
           on:click={() => {
-            if (chain.value !== "all" && chain.value !== "eth") {
+            if (
+              item.value !== "all" &&
+              item.value !== "eth" &&
+              !isOptionsPage
+            ) {
               open = false;
               return;
             }
-            selected = chain;
+            selected = item;
             open = false;
           }}
         >
           <img
-            src={chain.value === "all" ? All : chain.logo}
+            src={item.value === "all" ? All : item.logo}
             alt="logo"
             width="18"
             height="18"
           />
           <div
             class={`name ${
-              chain.value !== "all" && chain.value !== "eth"
+              item.value !== "all" && item.value !== "eth" && !isOptionsPage
                 ? "text-[#00000066]"
                 : "text-[#000000b3]"
             }`}
           >
-            {chain.label}
-            {#if chain.value !== "all" && chain.value !== "eth"}
+            {item.label}
+            {#if item.value !== "all" && item.value !== "eth" && !isOptionsPage}
               (Soon)
             {/if}
           </div>

@@ -755,7 +755,6 @@
       const response: NewDataLocal = await sendMessage("getNewsLocal", {
         address: selectedWallet.value,
       });
-      console.log("news local: ", response);
       if (response) {
         newsData = response.result.result;
         return response;
@@ -1240,7 +1239,8 @@
                             </div>
                           {/each}
                           <Select
-                            isSelectWallet
+                            isOptionsPage={false}
+                            isSelectWallet={true}
                             listSelect={listAddress.slice(
                               4,
                               listAddress.length
@@ -1307,6 +1307,8 @@
                       </div>
                     </div>
                     <Select
+                      isOptionsPage={false}
+                      isSelectWallet={false}
                       listSelect={chainList}
                       bind:selected={selectedChain}
                     />
