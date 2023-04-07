@@ -7,7 +7,7 @@
 
   let filteredHolding = true;
   let filteredHoldingData;
-  let sum = 0;
+  // let sum = 0;
 
   import HoldingInfo from "../HoldingInfo.svelte";
   import "~/components/Loading.custom.svelte";
@@ -30,9 +30,7 @@
     }
   }
 
-  $: {
-    data.map((item) => (sum = sum + item.value));
-  }
+  $: sum = (data || []).reduce((prev, item) => prev + item.value, 0);
 </script>
 
 <div
