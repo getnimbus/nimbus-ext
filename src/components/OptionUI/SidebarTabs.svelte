@@ -49,7 +49,7 @@
 
 <Sidebar asideClass="bg-gray-50 w-64">
   <SidebarWrapper>
-    <img src={logo} alt="logo" class="mb-4" width={200} />
+    <img src={logo} alt="logo" class="mb-4 mx-auto" width={150} />
     <SidebarGroup>
       {#each items as item}
         <SidebarItem
