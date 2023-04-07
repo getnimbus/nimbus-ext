@@ -114,7 +114,7 @@
     search_placeholder: i18n("newtabPage.search-placeholder", "Search"),
     missed_protocol: i18n(
       "newtabPage.missed-protocol",
-      "Missed your protocol?"
+      "Missing your protocol?"
     ),
     content: {
       btn_text: i18n(
