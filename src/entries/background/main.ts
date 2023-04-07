@@ -167,7 +167,7 @@ onMessage<IAddressInput, any>("getOverview", async ({ data: { address } }) => {
           }
         });
       },
-      { defaultValue: null }
+      { defaultValue: null, ttl: 60 }
     );
     return res
   } catch (error) {
@@ -200,7 +200,7 @@ onMessage<IAddressInput, any>("getPositions", async ({ data: { address } }) => {
           }
         });
       },
-      { defaultValue: null }
+      { defaultValue: null, ttl: 60 }
     );
     return res
   } catch (error) {
@@ -233,7 +233,7 @@ onMessage<IAddressInput, any>("getHolding", async ({ data: { address } }) => {
           }
         });
       },
-      { defaultValue: null }
+      { defaultValue: null, ttl: 60 }
     );
     return res
   } catch (error) {
@@ -266,7 +266,7 @@ onMessage<IAddressInput, any>("getNews", async ({ data: { address } }) => {
           }
         });
       },
-      { defaultValue: null }
+      { defaultValue: null, ttl: 5 * 60 }
     );
     return res
   } catch (error) {
