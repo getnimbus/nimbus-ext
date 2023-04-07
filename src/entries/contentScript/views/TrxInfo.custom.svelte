@@ -69,7 +69,7 @@
 
 <reset-style>
   <div
-    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all overflow-hidden w-[550px] ${
+    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all overflow-hidden w-[600px] ${
       isLoading && popup && "max-h-[120px]"
     } ${popup ? "max-h-[680px]" : ""}`}
     class:shadow={popup}
@@ -181,7 +181,7 @@
             </div>
             <div class="my-6">
               {#if info?.logs}
-                <div class="max-h-[400px] overflow-y-auto">
+                <div class="max-h-[400px] h-[135px] overflow-y-auto">
                   <change-list
                     data={info?.logs}
                     id={1}

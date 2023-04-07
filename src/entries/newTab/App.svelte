@@ -44,7 +44,7 @@
   import Holding from "~/components/NewTabUI/Holding.svelte";
   import Opportunities from "~/components/NewTabUI/Opportunities.svelte";
 
-  import Wallet from "~/assets/wallet.png";
+  import Wallet from "~/assets/wallet.svg";
   import All from "~/assets/all.svg";
   import logo from "~/assets/btc.png";
   import Ethereum from "~/assets/ethereum.png";
@@ -110,6 +110,7 @@
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
     data_updated: i18n("newtabPage.data-updated", "Data updated"),
+    search_placeholder: i18n("newtabPage.search-placeholder", "Search"),
     content: {
       btn_text: i18n(
         "optionsPage.accounts-page-content.address-btn-text",
@@ -1153,7 +1154,7 @@
             on:keyup={({ target: { value } }) => debounceSearch(value)}
             autofocus
             value={search}
-            placeholder="Search by address"
+            placeholder={MultipleLang.search_placeholder}
             type="text"
             class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
           />

@@ -69,7 +69,7 @@
     "assets": "Tài sản",
     "market-price": "Giá trên sàn",
     "amount": "Số lượng",
-    "value": "Tổng giá",
+    "value": "Giá trị",
     "profit": "Lãi & lỗ",
     "overview": "Tổng quan",
     "token-allocation": "Phân bổ token",
@@ -83,6 +83,9 @@
     "Ratio": "Tỉ lệ",
     "Value": "Giá",
     "data-updated": "Dữ liệu cập nhật",
-    "hide-less-than-1": "Ẩn các token dưới $1"
+    "hide-less-than-1": "Ẩn các token dưới $1",
+    "news-page-title": "Xem các bài viết mới nhất về blockchain và tiền điện tử mà chúng tôi đã tổng hợp",
+    "lp-provider-desc": "Lợi nhuận được tính bằng cách mua và giữ mỗi khi bạn thêm/xóa thanh khoản",
+    "search-placeholder": "Tìm kiếm"
   }
 }

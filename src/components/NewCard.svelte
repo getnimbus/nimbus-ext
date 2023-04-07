@@ -14,7 +14,7 @@
         target="_blank"
         class="text-xl font-bold cursor-pointer"
       >
-        {data.title}
+        {add3Dots(data.title, 50)}
       </a>
       <div class="text-sm font-normal text-[#00000099]">
         {add3Dots(data.description, 80)}
@@ -22,13 +22,13 @@
       {#if data.token.id !== null}
         <div class="flex items-center gap-3 flex-wrap">
           <!-- {#each data.tokens as token}
-          <div
-            class="flex items-center justyfy-center gap-2 px-2 py-1 text-base text-black bg-[#efaac433] rounded-[10px]"
-          >
-            <img src={token.logo} alt={token.symbol} width="16" height="16" />
-            {token.name} ({token.symbol})
-          </div>
-        {/each} -->
+            <div
+              class="flex items-center justyfy-center gap-2 px-2 py-1 text-base text-black bg-[#efaac433] rounded-[10px]"
+            >
+              <img src={token.logo} alt={token.symbol} width="16" height="16" />
+              {token.name} ({token.symbol})
+            </div>
+          {/each} -->
           <div
             class="flex items-center justyfy-center gap-2 px-2 py-1 text-base text-black bg-[#efaac433] rounded-[10px]"
           >

@@ -2,7 +2,7 @@ import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
 import dayjs from "dayjs";
 import _, { isEmpty } from "lodash";
-import { coinGeko, mixpanel, nimbus, goplus, nimbusApi, test } from "../../lib/network";
+import { coinGeko, mixpanel, nimbus, goplus, nimbusApi } from "../../lib/network";
 import { cacheOrAPI } from "./utils";
 import type { JsonValue, JsonObject } from "type-fest";
 import langEN from "../../_locales/en/messages.json";
@@ -132,7 +132,7 @@ onMessage("getListTerm", async () => {
 
 onMessage<IAddressInput, any>("getPreview", async ({ data: { address } }) => {
   try {
-    return await test.get(`/address/${address}/preview`).then((response) => response.data);
+    return await nimbus.get(`/address/${address}/preview`).then((response) => response.data);
   } catch (error) {
     return {};
   }
@@ -140,7 +140,7 @@ onMessage<IAddressInput, any>("getPreview", async ({ data: { address } }) => {
 
 onMessage<IAddressInput, any>("getSync", async ({ data: { address } }) => {
   try {
-    return await test.post(`/address/${address}/sync`, {}).then((response) => response);
+    return await nimbus.post(`/address/${address}/sync`, {}).then((response) => response);
   } catch (error) {
     return {};
   }
@@ -148,7 +148,7 @@ onMessage<IAddressInput, any>("getSync", async ({ data: { address } }) => {
 
 onMessage<IAddressInput, any>("getSyncStatus", async ({ data: { address } }) => {
   try {
-    return await test.get(`/address/${address}/sync-status`).then((response) => response);
+    return await nimbus.get(`/address/${address}/sync-status`).then((response) => response);
   } catch (error) {
     return {};
   }
@@ -160,7 +160,7 @@ onMessage<IAddressInput, any>("getOverview", async ({ data: { address } }) => {
     const res = await cacheOrAPI(
       key,
       () => {
-        return test.get(`/address/${address}/overview`).then((response) => {
+        return nimbus.get(`/address/${address}/overview`).then((response) => {
           return {
             result: response.data,
             address: address
@@ -193,7 +193,7 @@ onMessage<IAddressInput, any>("getPositions", async ({ data: { address } }) => {
     const res = await cacheOrAPI(
       key,
       () => {
-        return test.get(`/address/${address}/positions`).then((response) => {
+        return nimbus.get(`/address/${address}/positions`).then((response) => {
           return {
             result: response.data.positions,
             address: address
@@ -226,7 +226,7 @@ onMessage<IAddressInput, any>("getHolding", async ({ data: { address } }) => {
     const res = await cacheOrAPI(
       key,
       () => {
-        return test.get(`/address/${address}/holding`).then((response) => {
+        return nimbus.get(`/address/${address}/holding`).then((response) => {
           return {
             result: response.data,
             address: address
@@ -259,7 +259,7 @@ onMessage<IAddressInput, any>("getNews", async ({ data: { address } }) => {
     const res = await cacheOrAPI(
       key,
       () => {
-        return test.get(`/news/${address}`).then((response) => {
+        return nimbus.get(`/news/${address}`).then((response) => {
           return {
             result: response.data.news,
             address: address
@@ -317,7 +317,7 @@ onMessage<ITrxHashInput, any>("TrxHashInfo", async ({ data: { hash } }) => {
   return await cacheOrAPI(
     hash,
     () => {
-      return test
+      return nimbus
         .get(`/tx/receipt/${hash}`)
         .then((response) => response.data);
     },

@@ -83,6 +83,9 @@
     "Ratio": "Ratio",
     "Value": "Value",
     "data-updated": "Data updated",
-    "hide-less-than-1": "Hide tokens less than $1"
+    "hide-less-than-1": "Hide tokens less than $1",
+    "news-page-title": "Check out the latest blockchain and crypto articles we've put together",
+    "lp-provider-desc": "Profit is calculated by buying & hold on every time you add/remove liquidity",
+    "search-placeholder": "Search"
   }
 }

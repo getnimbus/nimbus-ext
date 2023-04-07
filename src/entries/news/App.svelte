@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
-  import { nimbusApi, test } from "../../lib/network";
+  import { nimbus } from "../../lib/network";
+  import { i18n } from "~/lib/i18n";
 
   import type { NewData } from "~/types/NewData";
 
@@ -10,13 +11,21 @@
 
   import logo from "../../assets/logo-1.svg";
 
+  const MultipleLang = {
+    news: i18n("newtabPage.news", "News"),
+    news_page_title: i18n(
+      "newtabPage.news-page-title",
+      "Check out the latest blockchain and crypto articles we've put together"
+    ),
+  };
+
   let newsData: NewData = [];
   let isLoading = false;
 
   const getNewsData = async () => {
     isLoading = true;
     try {
-      const response: NewData = await test
+      const response: NewData = await nimbus
         .get("/news")
         .then((response) => response.data.news);
       newsData = response;
@@ -41,9 +50,9 @@
 <div class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col gap-10">
   <img src={logo} alt="logo" width={200} class="-ml-6" />
   <div class="flex flex-col gap-1 -mt-6">
-    <div class="text-4xl text-black font-semibold">News</div>
+    <div class="text-4xl text-black font-semibold">{MultipleLang.news}</div>
     <div class="text-xl text-black font-medium">
-      Check out the latest blockchain and crypto articles we've put together
+      {MultipleLang.news_page_title}
     </div>
   </div>
   {#if isLoading}

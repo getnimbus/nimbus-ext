@@ -1,8 +1,9 @@
 <svelte:options tag="user-info" />
 
 <script>
-  import tooltip from "~/entries/contentScript/views/tooltip";
   import { shorterAddress, getLocalImg, getTokenLogo } from "../../utils";
+
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   import Arrow from "../../assets/arrow-right.svg";
 

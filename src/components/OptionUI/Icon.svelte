@@ -7,42 +7,34 @@
 
 {#if type === "Wallets"}
   <svg
+    version="1.0"
     xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
+    width="22"
+    height="22"
     fill={color}
-    viewBox="0 0 256 256"
-    ><rect width="256" height="256" fill="none" /><circle
-      cx="88"
-      cy="108"
-      r="52"
-      fill="none"
-      stroke={color}
-      stroke-miterlimit="10"
-      stroke-width="16"
-    /><path
-      d="M155.4,57.9A54.5,54.5,0,0,1,169.5,56a52,52,0,0,1,0,104"
-      fill="none"
-      stroke={color}
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="16"
-    /><path
-      d="M16,197.4a88,88,0,0,1,144,0"
-      fill="none"
-      stroke={color}
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="16"
-    /><path
-      d="M169.5,160a87.9,87.9,0,0,1,72,37.4"
-      fill="none"
-      stroke={color}
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="16"
-    /></svg
+    viewBox="0 0 64.000000 64.000000"
+    preserveAspectRatio="xMidYMid meet"
   >
+    <g
+      transform="translate(0.000000,64.000000) scale(0.100000,-0.100000)"
+      fill={color}
+      stroke="none"
+    >
+      <path
+        d="M261 585 c-170 -18 -206 -25 -218 -40 -10 -15 -13 -72 -13 -245 0
+-218 1 -228 21 -246 20 -18 39 -19 269 -19 230 0 249 1 269 19 20 18 21 29 21
+198 0 165 -1 179 -20 198 -11 11 -29 20 -40 20 -17 0 -20 7 -20 48 0 52 -13
+77 -45 85 -11 2 -112 -6 -224 -18z m237 -17 c7 -7 12 -31 12 -55 l0 -43 -214
+0 c-118 0 -221 -3 -230 -6 -12 -5 -16 1 -16 24 0 16 6 35 14 41 13 11 291 47
+382 50 22 0 45 -4 52 -11z m72 -138 c12 -12 20 -33 20 -55 l0 -35 -75 0 c-112
+0 -145 -21 -145 -95 0 -25 8 -40 31 -59 27 -23 39 -26 110 -26 l79 0 0 -28 c0
+-15 -7 -38 -16 -50 -15 -22 -18 -22 -254 -22 -236 0 -239 0 -254 22 -13 18
+-16 53 -16 175 0 209 -23 193 270 193 217 0 231 -1 250 -20z m20 -180 l0 -60
+-79 0 c-58 0 -84 4 -95 15 -25 25 -29 54 -12 80 15 23 22 25 101 25 l85 0 0
+-60z"
+      />
+    </g>
+  </svg>
 {:else if type === "Dashboard"}
   <svg
     xmlns="http://www.w3.org/2000/svg"

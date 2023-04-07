@@ -1,7 +1,9 @@
 <svelte:options tag="money-move" />
 
 <script>
-  import { formatCurrency } from "~/utils";
+  import { formatCurrency, formatBalance, formatSmallBalance } from "~/utils";
+
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   import "../Arrow.custom.svelte";
   import "./Entity.custom.svelte";
@@ -14,8 +16,8 @@
 </script>
 
 {#if data}
-  <div class="flex justify-between items-center gap-10">
-    <div class="w-max">
+  <div class="flex justify-between items-center gap-5">
+    <div class="w-[160px]">
       <user-info
         name={from &&
         to &&
@@ -42,8 +44,19 @@
               />
             {/if}
           </div>
-          <div class="text-black text-xs font-medium">
-            {formatCurrency(data?.value)}
+          <div
+            class="text-black text-xs font-medium"
+            use:tooltip={{
+              content: `<tooltip-detail text="${formatCurrency(data?.value)} ${
+                data?.symbol
+              }" />`,
+              allowHTML: true,
+              placement: "top",
+            }}
+          >
+            {formatBalance(data?.value) === "NaN"
+              ? formatSmallBalance(data?.value)
+              : formatBalance(data?.value)}
             {data?.symbol}
           </div>
         </div>
@@ -56,7 +69,7 @@
         </div>
       </app-arrow>
     </div>
-    <div class="w-max">
+    <div class="w-[160px]">
       <user-info
         name={from &&
         to &&

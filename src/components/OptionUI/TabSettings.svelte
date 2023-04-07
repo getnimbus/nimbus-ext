@@ -15,12 +15,10 @@
 
   const MultipleLang = {
     title: i18n("optionsPage.settings-page-title", "Settings"),
-    content: {
-      change_lang_label: i18n(
-        "optionsPage.settings-page-content.change-lang-label",
-        "Select languages"
-      ),
-    },
+    change_lang_label: i18n(
+      "optionsPage.settings-page-content.change-lang-label",
+      "Select languages"
+    ),
   };
 
   let selectedLang: any = langs.filter((item) => item.value === currentLang)[0];
@@ -34,7 +32,7 @@
 
 <div class="flex flex-col gap-2">
   <div class="title-3 text-gray-500 mb-2">{MultipleLang.title}</div>
-  {MultipleLang.content.change_lang_label}
+  {MultipleLang.change_lang_label}
   <Select
     isOptionsPage={true}
     isSelectWallet={false}
