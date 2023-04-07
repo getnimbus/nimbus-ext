@@ -1202,11 +1202,10 @@
           {#if listAddress.length === 0}
             <div class="flex justify-center items-center h-screen">
               <div
-                class="border border-[#0000001a] rounded-[20px] p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
+                class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
               >
                 <div class="text-lg">
-                  Please add a wallet to keep up to date with the latest
-                  developments on your investments.
+                  Add your wallet to keep track of your investments.
                 </div>
                 <button
                   class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
