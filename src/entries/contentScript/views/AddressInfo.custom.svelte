@@ -198,20 +198,19 @@
 
       if (response) {
         type = response?.type;
-        addressInfo.categories = response?.tags;
-        addressInfo.networth = response?.networth;
-        addressInfo.priceChange = response?.priceChange;
-        addressInfo.symbol = response?.symbol;
-        addressInfo.id = response?.cg_id;
 
         if (response?.type === "ADDRESS") {
+          addressInfo.categories = response?.tags;
+          addressInfo.networth = response?.networth;
+          addressInfo.priceChange = response?.priceChange;
+
           let sum = 0;
           response?.breakdown.map((item) => (sum += Number(item.value)));
 
           const formatDataPieChart = response?.breakdown.map((item) => {
             return {
               logo: item.logo,
-              name: item.name,
+              name: item.name || item.symbol,
               symbol: item.symbol,
               name_ratio: "Ratio",
               value: (Number(item.value) / sum) * 100,
@@ -231,6 +230,11 @@
               },
             ],
           };
+        }
+
+        if (response?.type === "ERC20") {
+          addressInfo.symbol = response?.symbol;
+          addressInfo.id = response?.cg_id;
         }
       } else {
         unknownSmartContract = true;
