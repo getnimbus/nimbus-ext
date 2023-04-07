@@ -26,7 +26,7 @@
   <Swiper
     cssMode={true}
     slidesPerView={1}
-    speed={1000}
+    speed={2000}
     on:swiper={(e) => (mySwiper = e.detail[0])}
     navigation={{
       nextEl: ".next",
