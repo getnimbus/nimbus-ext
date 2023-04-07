@@ -12,7 +12,7 @@
   };
 </script>
 
-<div class="flex flex-col border border-[#0000001a] rounded-[20px] p-6">
+<div class="flex flex-col">
   <div class="text-2xl font-medium text-black border-b border-[#00000014] pb-4">
     {MultipleLang.positions}
   </div>

@@ -3,6 +3,7 @@
 <script>
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
+
   export let isOpen = false;
   export let clickOutSideToClose = false;
 

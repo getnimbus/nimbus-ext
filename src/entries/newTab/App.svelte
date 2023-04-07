@@ -13,6 +13,7 @@
   import { v4 as uuidv4 } from "uuid";
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import { groupBy } from "lodash";
+  import { Motion } from "svelte-motion";
 
   import type {
     OverviewData,
@@ -53,7 +54,7 @@
   import Arbitrum from "~/assets/arbitrum.png";
   import Solana from "~/assets/solana.png";
   import Plus from "~/assets/plus.svg";
-  import MoveUp from "~/assets/move-up.svg";
+  import Comment from "~/assets/comment-bubble-icon.svg";
   import Avatar from "~/assets/user.svg";
   import Logo from "~/assets/logo-white.svg";
   import Reload from "~/assets/reload.svg";
@@ -163,6 +164,11 @@
     },
   };
 
+  const variants = {
+    visible: { opacity: 1, y: 0, display: "flex" },
+    hidden: { opacity: 0, y: 500, display: "none" },
+  };
+
   let navActive = "portfolio";
   let overviewData: OverviewData = {
     breakdownToken: [],
@@ -197,6 +203,7 @@
   let isLoading = false;
   let isSyncError = false;
   let isLoadingListAddress = false;
+  let isShowChat = false;
 
   let optionPie = {
     title: {
@@ -1214,7 +1221,7 @@
               </div>
             </div>
           {:else}
-            <div id="top" class="header-container">
+            <div class="header-container">
               <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
                 <div class="flex flex-col gap-14 mb-5">
                   <div class="flex justify-between items-center">
@@ -1332,27 +1339,60 @@
                   <Holding {isLoading} data={walletData} />
                   <Opportunities {isLoading} data={opportunitiesData} />
                 </div>
-                <Positions {isLoading} data={positionsData} />
-                <a
-                  href="https://nimbus.sleekplan.app/"
-                  target="_blank"
-                  class="mx-auto"
+                <div
+                  class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
                 >
-                  <Button variant="secondary"
-                    >{MultipleLang.missed_protocol}</Button
+                  <Positions {isLoading} data={positionsData} />
+                  <div
+                    on:click={() => {
+                      isShowChat = true;
+                    }}
+                    class="mx-auto"
                   >
-                </a>
+                    <Button variant="secondary"
+                      >{MultipleLang.missed_protocol}</Button
+                    >
+                  </div>
+                </div>
                 <News {isLoading} data={newsData} />
               </div>
             </div>
             <div class="sticky bottom-4 flex justify-end pr-4">
-              <a
-                class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F]"
+              <div
+                class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F] cursor-pointer"
                 style="box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);"
-                href="#top"
+                on:click={() => {
+                  isShowChat = !isShowChat;
+                }}
               >
-                <img src={MoveUp} alt="UP" width="20" height="20" />
-              </a>
+                <img src={Comment} alt="cmt" width="20" height="20" />
+              </div>
+              <Motion
+                initial="hidden"
+                animate={isShowChat ? "visible" : "hidden"}
+                {variants}
+                let:motion
+              >
+                <div
+                  class="h-[630px] w-[430px] absolute right-4 bottom-0 p-4 bg-white rounded-[20px] items-end"
+                  style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+                  use:motion
+                >
+                  <iframe
+                    id="feedback-board"
+                    src="https://embed-609567819.sleekplan.app/?style=intercom#"
+                    class="h-[580px] w-full"
+                  />
+                  <div
+                    class="absolute top-3 right-5 cursor-pointer font-medium"
+                    on:click={() => {
+                      isShowChat = false;
+                    }}
+                  >
+                    Close
+                  </div>
+                </div>
+              </Motion>
             </div>
           {/if}
         </div>
@@ -1446,9 +1486,6 @@
 </div>
 
 <style windi:preflights:global windi:safelist:global>
-  .test {
-    border: 1px solid red;
-  }
   .header-container {
     background-image: url("~/assets/capa.svg");
     background-color: #27326f;

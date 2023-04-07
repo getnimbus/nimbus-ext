@@ -29,7 +29,9 @@
   <tr class="hover:bg-gray-100 transition-all">
     <td class="pl-3 py-4">
       <div class="text-left flex items-start gap-2">
-        <img src={data.logo} alt="token" width="20" height="20" />
+        {#each data.tokens as token}
+          <img src={token.logo} alt={token.symbol} width="20" height="20" />
+        {/each}
         <div class="flex flex-col gap-1">
           <div class="text-black text-sm font-medium">{data.name}</div>
           {#if data.tokens && data.tokens.length}
