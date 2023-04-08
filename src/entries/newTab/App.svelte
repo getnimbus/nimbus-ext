@@ -581,7 +581,7 @@
     }
   };
 
-  const handleGetAllData = async () => {
+  const handleGetAllData = async (type: string) => {
     isLoading = true;
     overviewData = {
       breakdownToken: [],
@@ -600,9 +600,11 @@
       updatedAt: "",
     };
     try {
-      await sendMessage("getSync", {
-        address: selectedWallet.value,
-      });
+      if (type === "reload") {
+        await sendMessage("getSync", {
+          address: selectedWallet.value,
+        });
+      }
 
       while (true) {
         try {
@@ -611,18 +613,21 @@
 
           if (syncStatus.data?.lastSync) {
             const res = await Promise.all([
-              getOverview(true),
-              getHolding(true),
-              getPositions(true),
-              getNews(true),
-              getOpportunities(true),
+              getOverview(type === "reload"),
+              getHolding(type === "reload"),
+              getPositions(type === "reload"),
+              getNews(type === "reload"),
+              getOpportunities(type === "reload"),
             ]);
-            console.log(res);
 
             if (res) {
               isLoading = false;
             }
             break;
+          } else {
+            await sendMessage("getSync", {
+              address: selectedWallet.value,
+            });
           }
         } catch (e) {
           console.log(e.message);
@@ -822,7 +827,7 @@
       browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
         console.log("save selected address to sync storage");
       });
-      handleGetAllData();
+      handleGetAllData("sync");
     }
   }
 </script>
@@ -966,7 +971,7 @@
         <div class="text-lg">
           There are some problem with our server. Please try again!
         </div>
-        <Button on:click={() => handleGetAllData()}>Reload</Button>
+        <Button on:click={() => handleGetAllData("reload")}>Reload</Button>
       </div>
     </div>
   {:else}
@@ -1084,7 +1089,7 @@
                         <div
                           class="cursor-pointer"
                           class:loading={isLoading}
-                          on:click={() => handleGetAllData()}
+                          on:click={() => handleGetAllData("reload")}
                         >
                           <img src={Reload} alt="" />
                         </div>
