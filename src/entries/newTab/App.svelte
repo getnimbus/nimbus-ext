@@ -609,19 +609,20 @@
           let syncStatus = await getSyncStatus();
           console.log({ syncStatus });
 
-          if (syncStatus.data?.lastSync) break;
+          if (syncStatus.data?.lastSync) {
+            const res = await Promise.all([
+              getOverview(true),
+              getHolding(true),
+              getPositions(true),
+              getNews(true),
+              getOpportunities(true),
+            ]);
+            console.log(res);
 
-          const res = await Promise.all([
-            getOverview(true),
-            getHolding(true),
-            getPositions(true),
-            getNews(true),
-            getOpportunities(true),
-          ]);
-          console.log(res);
-
-          if (res) {
-            isLoading = false;
+            if (res) {
+              isLoading = false;
+            }
+            break;
           }
         } catch (e) {
           console.log(e.message);
