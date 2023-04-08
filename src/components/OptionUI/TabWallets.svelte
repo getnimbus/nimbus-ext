@@ -458,7 +458,7 @@
     <div class="flex justify-end gap-2">
       <Button
         variant="secondary"
-        width={70}
+        width={90}
         on:click={() => {
           errorsEdit = {};
           isOpenEditModal = false;
@@ -466,7 +466,7 @@
       >
         {MultipleLang.content.modal_cancel}</Button
       >
-      <Button width={70} type="submit">
+      <Button width={90} type="submit">
         {MultipleLang.content.modal_edit}</Button
       >
     </div>
@@ -543,7 +543,7 @@
     <div class="flex justify-end gap-2">
       <Button
         variant="secondary"
-        width={70}
+        width={90}
         on:click={() => {
           errors = {};
           isOpenAddModal = false;
@@ -551,7 +551,7 @@
       >
         {MultipleLang.content.modal_cancel}</Button
       >
-      <Button width={70} type="submit">
+      <Button width={90} type="submit">
         {MultipleLang.content.modal_add}</Button
       >
     </div>
@@ -573,7 +573,7 @@
   <div class="flex justify-end gap-2 mt-4">
     <Button
       variant="secondary"
-      width={70}
+      width={90}
       on:click={() => {
         isOpenConfirmDelete = false;
         selectedWallet = {};
@@ -583,7 +583,7 @@
     </Button>
     <Button
       variant="delete"
-      width={70}
+      width={90}
       on:click={() => {
         handleDelete(selectedWallet);
         browser.storage.sync.remove("selectedWallet");

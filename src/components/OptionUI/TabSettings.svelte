@@ -34,6 +34,7 @@
   <div class="title-3 text-gray-500 mb-2">{MultipleLang.title}</div>
   {MultipleLang.change_lang_label}
   <Select
+    isWalletSelect={false}
     isOptionsPage={true}
     isSelectWallet={false}
     listSelect={langs}

@@ -190,7 +190,6 @@
   let search = "";
   let timerDebounce;
   let isLoading = false;
-  let isSyncError = false;
   let isLoadingListAddress = false;
   let isShowChat = false;
 
@@ -355,13 +354,52 @@
       if (selectedWallet.value === response.address) {
         overviewData = response.result;
 
-        let sum = 0;
-        overviewData?.breakdownToken.map((item) => (sum += Number(item.value)));
+        const sum = (overviewData?.breakdownToken || []).reduce(
+          (prev, item) => prev + Number(item.value),
+          0
+        );
 
-        const formatDataPieChart = overviewData?.breakdownToken.map((item) => {
+        const sortBreakdown = overviewData?.breakdownToken.sort((a, b) => {
+          if (a.value < b.value) {
+            return 1;
+          }
+          if (a.value > b.value) {
+            return -1;
+          }
+          return 0;
+        });
+
+        const topFourBreakdown = sortBreakdown.slice(0, 4);
+        const orderBreakdown = sortBreakdown.slice(4, sortBreakdown.length);
+
+        const sumOrderBreakdown = (orderBreakdown || []).reduce(
+          (prev, item) => prev + Number(item.value),
+          0
+        );
+
+        const sumAmountOrderBreakdown = (orderBreakdown || []).reduce(
+          (prev, item) => prev + Number(item.amount),
+          0
+        );
+
+        const dataPieChartOrderBreakdown = [
+          {
+            logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
+            name: "Order",
+            symbol: "Order tokens",
+            name_ratio: "Ratio",
+            value: (sumOrderBreakdown / sum) * 100,
+            name_value: "Value",
+            value_value: sumOrderBreakdown,
+            name_balance: "Balance",
+            value_balance: sumAmountOrderBreakdown,
+          },
+        ];
+
+        const formatDataPieChartTopFour = topFourBreakdown.map((item) => {
           return {
             logo: item.logo,
-            name: item.name,
+            name: item.name || item.symbol,
             symbol: item.symbol,
             name_ratio: "Ratio",
             value: (Number(item.value) / sum) * 100,
@@ -377,7 +415,9 @@
           series: [
             {
               ...optionPie.series[0],
-              data: formatDataPieChart,
+              data: formatDataPieChartTopFour.concat(
+                dataPieChartOrderBreakdown
+              ),
             },
           ],
         };
@@ -841,7 +881,7 @@
 <div class="flex flex-col" class:pb-10={listAddress && listAddress.length > 0}>
   <div
     class={`border-header py-1 top-0 bg-[#27326F] ${
-      listAddress && listAddress.length > 0 && !isSyncError
+      listAddress && listAddress.length > 0
         ? "sticky"
         : "absolute left-0 right-0"
     }`}
@@ -969,33 +1009,98 @@
       </div>
     </div>
   </div>
-  {#if isSyncError}
-    <div class="flex justify-center items-center h-screen">
-      <div
-        class="border border-[#0000001a] rounded-[20px] p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
-      >
-        <div class="text-lg">
-          There are some problem with our server. Please try again!
-        </div>
-        <Button on:click={() => handleGetAllData("reload")}>Reload</Button>
-      </div>
+  {#if isLoadingListAddress}
+    <div class="flex items-center justify-center h-screen">
+      <loading-icon />
     </div>
   {:else}
     <div>
-      {#if isLoadingListAddress}
-        <div class="flex items-center justify-center h-screen">
-          <loading-icon />
+      {#if listAddress.length === 0}
+        <div class="flex justify-center items-center h-screen">
+          <div
+            class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
+          >
+            <div class="text-lg">
+              Add your wallet to keep track of your investments.
+            </div>
+            <button
+              class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
+              on:click={() => (isOpenAddModal = true)}
+            >
+              <img src={Plus} alt="" width="12" height="12" />
+              <div class="text-base font-medium text-white">
+                {MultipleLang.content.btn_text}
+              </div>
+            </button>
+          </div>
         </div>
       {:else}
-        <div>
-          {#if listAddress.length === 0}
-            <div class="flex justify-center items-center h-screen">
-              <div
-                class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
-              >
-                <div class="text-lg">
-                  Add your wallet to keep track of your investments.
-                </div>
+        <div class="header-container">
+          <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
+            <div class="flex flex-col gap-14 mb-5">
+              <div class="flex justify-between items-center">
+                {#if listAddress && listAddress.length > 0}
+                  <div class="flex items-center gap-5">
+                    {#if listAddress.length > 4}
+                      {#each listAddress.slice(0, 4) as item}
+                        <div
+                          id={item.value}
+                          class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
+                            item.value === selectedWallet?.value &&
+                            "bg-[#ffffff1c]"
+                          }`}
+                          class:hover:no-underline={item.value ===
+                            selectedWallet?.value}
+                          on:click={() => {
+                            selectedWallet = item;
+                          }}
+                        >
+                          <img
+                            src={item.logo}
+                            alt="logo"
+                            width="16"
+                            height="16"
+                          />
+                          {item.label}
+                        </div>
+                      {/each}
+                      <Select
+                        isWalletSelect={true}
+                        isOptionsPage={true}
+                        isSelectWallet={true}
+                        listSelect={listAddress.slice(4, listAddress.length)}
+                        bind:selected={selectedWallet}
+                      />
+                    {:else}
+                      {#each listAddress as item}
+                        <div
+                          id={item.value}
+                          class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
+                            item.value === selectedWallet?.value &&
+                            "bg-[#ffffff1c]"
+                          }`}
+                          class:hover:no-underline={item.value ===
+                            selectedWallet?.value}
+                          on:click={() => {
+                            selectedWallet = item;
+                          }}
+                        >
+                          <img
+                            src={item.logo}
+                            alt="logo"
+                            width="16"
+                            height="16"
+                          />
+                          {item.label}
+                        </div>
+                      {/each}
+                    {/if}
+                  </div>
+                {:else}
+                  <div class="text-white text-base font-semibold">
+                    {MultipleLang.empty_wallet}
+                  </div>
+                {/if}
                 <button
                   class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
                   on:click={() => (isOpenAddModal = true)}
@@ -1006,182 +1111,101 @@
                   </div>
                 </button>
               </div>
-            </div>
-          {:else}
-            <div class="header-container">
-              <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
-                <div class="flex flex-col gap-14 mb-5">
-                  <div class="flex justify-between items-center">
-                    {#if listAddress && listAddress.length > 0}
-                      <div class="flex items-center gap-5">
-                        {#if listAddress.length > 4}
-                          {#each listAddress.slice(0, 4) as item}
-                            <div
-                              id={item.value}
-                              class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
-                                item.value === selectedWallet?.value &&
-                                "bg-[#ffffff1c]"
-                              }`}
-                              class:hover:no-underline={item.value ===
-                                selectedWallet?.value}
-                              on:click={() => {
-                                selectedWallet = item;
-                              }}
-                            >
-                              <img
-                                src={item.logo}
-                                alt="logo"
-                                width="16"
-                                height="16"
-                              />
-                              {item.label}
-                            </div>
-                          {/each}
-                          <Select
-                            isOptionsPage={true}
-                            isSelectWallet={true}
-                            listSelect={listAddress.slice(
-                              4,
-                              listAddress.length
-                            )}
-                            bind:selected={selectedWallet}
-                          />
-                        {:else}
-                          {#each listAddress as item}
-                            <div
-                              id={item.value}
-                              class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
-                                item.value === selectedWallet?.value &&
-                                "bg-[#ffffff1c]"
-                              }`}
-                              class:hover:no-underline={item.value ===
-                                selectedWallet?.value}
-                              on:click={() => {
-                                selectedWallet = item;
-                              }}
-                            >
-                              <img
-                                src={item.logo}
-                                alt="logo"
-                                width="16"
-                                height="16"
-                              />
-                              {item.label}
-                            </div>
-                          {/each}
-                        {/if}
-                      </div>
-                    {:else}
-                      <div class="text-white text-base font-semibold">
-                        {MultipleLang.empty_wallet}
-                      </div>
-                    {/if}
-                    <button
-                      class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
-                      on:click={() => (isOpenAddModal = true)}
-                    >
-                      <img src={Plus} alt="" width="12" height="12" />
-                      <div class="text-base font-medium text-white">
-                        {MultipleLang.content.btn_text}
-                      </div>
-                    </button>
+              <div class="flex justify-between items-end">
+                <div class="flex items-end gap-6">
+                  <div class="text-5xl text-white font-semibold">
+                    {MultipleLang.overview}
                   </div>
-                  <div class="flex justify-between items-end">
-                    <div class="flex items-end gap-6">
-                      <div class="text-5xl text-white font-semibold">
-                        {MultipleLang.overview}
-                      </div>
-                      <div class="flex items-center gap-2 mb-1">
-                        <div
-                          class="cursor-pointer"
-                          class:loading={isLoading}
-                          on:click={() => handleGetAllData("reload")}
-                        >
-                          <img src={Reload} alt="" />
-                        </div>
-                        <div class="text-xs text-white font-medium">
-                          {MultipleLang.data_updated}
-                          {dayjs(dataUpdatedTime).fromNow()}
-                        </div>
-                      </div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <div
+                      class="cursor-pointer"
+                      class:loading={isLoading}
+                      on:click={() => handleGetAllData("reload")}
+                    >
+                      <img src={Reload} alt="" />
                     </div>
-                    <Select
-                      isOptionsPage={false}
-                      isSelectWallet={false}
-                      listSelect={chainList}
-                      bind:selected={selectedChain}
-                    />
+                    <div class="text-xs text-white font-medium">
+                      {MultipleLang.data_updated}
+                      {dayjs(dataUpdatedTime).fromNow()}
+                    </div>
                   </div>
                 </div>
-                <Overview data={overviewData} />
+                <Select
+                  isWalletSelect={false}
+                  isOptionsPage={false}
+                  isSelectWallet={false}
+                  listSelect={chainList}
+                  bind:selected={selectedChain}
+                />
               </div>
             </div>
-            <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
-              <div
-                class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
-                style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
-              >
-                <Charts {isLoading} {optionPie} {optionLine} />
-                <div class="flex xl:flex-row flex-col justify-between gap-6">
-                  <Holding {isLoading} data={walletData} />
-                  <Opportunities {isLoading} data={opportunitiesData} />
-                </div>
-                <div
-                  class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
-                >
-                  <Positions {isLoading} data={positionsData} />
-                  <div
-                    on:click={() => {
-                      isShowChat = true;
-                    }}
-                    class="mx-auto"
-                  >
-                    <Button variant="secondary"
-                      >{MultipleLang.missed_protocol}</Button
-                    >
-                  </div>
-                </div>
-                <News {isLoading} data={newsData} />
-              </div>
+            <Overview data={overviewData} />
+          </div>
+        </div>
+        <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
+          <div
+            class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
+            style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+          >
+            <Charts {isLoading} {optionPie} {optionLine} />
+            <div class="flex xl:flex-row flex-col justify-between gap-6">
+              <Holding {isLoading} data={walletData} />
+              <Opportunities {isLoading} data={opportunitiesData} />
             </div>
-            <div class="sticky bottom-4 flex justify-end pr-4">
+            <div
+              class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
+            >
+              <Positions {isLoading} data={positionsData} />
               <div
-                class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F] cursor-pointer"
-                style="box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);"
                 on:click={() => {
-                  isShowChat = !isShowChat;
+                  isShowChat = true;
+                }}
+                class="mx-auto"
+              >
+                <Button variant="secondary"
+                  >{MultipleLang.missed_protocol}</Button
+                >
+              </div>
+            </div>
+            <News {isLoading} data={newsData} />
+          </div>
+        </div>
+        <div class="sticky bottom-4 flex justify-end pr-4">
+          <div
+            class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F] cursor-pointer"
+            style="box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);"
+            on:click={() => {
+              isShowChat = !isShowChat;
+            }}
+          >
+            <img src={Comment} alt="cmt" width="20" height="20" />
+          </div>
+          <Motion
+            initial="hidden"
+            animate={isShowChat ? "visible" : "hidden"}
+            {variants}
+            let:motion
+          >
+            <div
+              class="h-[630px] w-[430px] absolute right-4 bottom-0 p-4 bg-white rounded-[20px] items-end"
+              style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+              use:motion
+            >
+              <iframe
+                id="feedback-board"
+                src="https://embed-609567819.sleekplan.app/?style=intercom#"
+                class="h-[580px] w-full"
+              />
+              <div
+                class="absolute top-3 right-5 cursor-pointer font-medium"
+                on:click={() => {
+                  isShowChat = false;
                 }}
               >
-                <img src={Comment} alt="cmt" width="20" height="20" />
+                Close
               </div>
-              <Motion
-                initial="hidden"
-                animate={isShowChat ? "visible" : "hidden"}
-                {variants}
-                let:motion
-              >
-                <div
-                  class="h-[630px] w-[430px] absolute right-4 bottom-0 p-4 bg-white rounded-[20px] items-end"
-                  style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
-                  use:motion
-                >
-                  <iframe
-                    id="feedback-board"
-                    src="https://embed-609567819.sleekplan.app/?style=intercom#"
-                    class="h-[580px] w-full"
-                  />
-                  <div
-                    class="absolute top-3 right-5 cursor-pointer font-medium"
-                    on:click={() => {
-                      isShowChat = false;
-                    }}
-                  >
-                    Close
-                  </div>
-                </div>
-              </Motion>
             </div>
-          {/if}
+          </Motion>
         </div>
       {/if}
     </div>
@@ -1256,7 +1280,7 @@
       <div class="flex justify-end gap-2">
         <Button
           variant="secondary"
-          width={70}
+          width={90}
           on:click={() => {
             errors = {};
             isOpenAddModal = false;
@@ -1264,7 +1288,7 @@
         >
           {MultipleLang.content.modal_cancel}</Button
         >
-        <Button width={70} type="submit">
+        <Button width={90} type="submit">
           {MultipleLang.content.modal_add}</Button
         >
       </div>

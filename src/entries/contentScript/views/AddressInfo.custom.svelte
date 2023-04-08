@@ -10,6 +10,7 @@
   import numeral from "numeral";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { i18n } from "~/lib/i18n";
+  import { wait } from "~/entries/background/utils";
   import {
     formatBalance,
     formatCurrency,
@@ -79,21 +80,21 @@
                   ${MultipleLang[params.data.name_balance]}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatBalance(params.data.value_balance)}</div>
+                  ${formatCurrency(params.data.value_balance)}</div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
                   ${MultipleLang[params.data.name_value]}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  $${formatBalance(params.data.value_value)}</div>
+                  $${formatCurrency(params.data.value_value)}</div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
                   ${MultipleLang[params.data.name_ratio]}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatBalance(params.value)}%
+                  ${formatCurrency(params.value)}%
                 </div>
               </div>
             </div>`;
@@ -108,7 +109,7 @@
       {
         type: "pie",
         radius: ["40%", "60%"],
-        left: -140,
+        left: -190,
         avoidLabelOverlap: false,
         label: {
           show: false,
@@ -131,6 +132,7 @@
   let addressLabel = "";
   let showChangeAddressLabel = false;
   let timer;
+  let isCopied = false;
 
   // const loadUserAddressInfo = async () => {
   //   isLoading = true;
@@ -204,10 +206,49 @@
           addressInfo.networth = response?.networth;
           addressInfo.priceChange = response?.priceChange;
 
-          let sum = 0;
-          response?.breakdown.map((item) => (sum += Number(item.value)));
+          const sum = (response?.breakdown || []).reduce(
+            (prev, item) => prev + Number(item.value),
+            0
+          );
 
-          const formatDataPieChart = response?.breakdown.map((item) => {
+          const sortBreakdown = response?.breakdown.sort((a, b) => {
+            if (a.value < b.value) {
+              return 1;
+            }
+            if (a.value > b.value) {
+              return -1;
+            }
+            return 0;
+          });
+
+          const topFourBreakdown = sortBreakdown.slice(0, 4);
+          const orderBreakdown = sortBreakdown.slice(4, sortBreakdown.length);
+
+          const sumOrderBreakdown = (orderBreakdown || []).reduce(
+            (prev, item) => prev + Number(item.value),
+            0
+          );
+
+          const sumAmountOrderBreakdown = (orderBreakdown || []).reduce(
+            (prev, item) => prev + Number(item.amount),
+            0
+          );
+
+          const dataPieChartOrderBreakdown = [
+            {
+              logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
+              name: "Order",
+              symbol: "Order tokens",
+              name_ratio: "Ratio",
+              value: (sumOrderBreakdown / sum) * 100,
+              name_value: "Value",
+              value_value: sumOrderBreakdown,
+              name_balance: "Balance",
+              value_balance: sumAmountOrderBreakdown,
+            },
+          ];
+
+          const formatDataPieChartTopFour = topFourBreakdown.map((item) => {
             return {
               logo: item.logo,
               name: item.name || item.symbol,
@@ -226,7 +267,9 @@
             series: [
               {
                 ...option.series[0],
-                data: formatDataPieChart,
+                data: formatDataPieChartTopFour.concat(
+                  dataPieChartOrderBreakdown
+                ),
               },
             ],
           };
@@ -541,33 +584,61 @@
                       </svg>
                     </a>
                   </div>
-                  <CopyToClipboard text={address} let:copy on:copy={() => {}}>
+                  <CopyToClipboard
+                    text={address}
+                    let:copy
+                    on:copy={async () => {
+                      isCopied = true;
+                      await wait(1000);
+                      isCopied = false;
+                    }}
+                  >
                     <div class="flex items-center gap-2">
                       <div class="text-sm text-[#00000099] font-normal">
                         {shorterAddress(address)}
                       </div>
                       <div class="cursor-pointer" on:click={copy}>
-                        <svg
-                          width="12"
-                          height="11"
-                          viewBox="0 0 12 11"
-                          fill="none"
-                          class="w-full h-full object-contain text-[#212121]"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
-                            stroke="#212121"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                          <path
-                            d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
-                            stroke="#212121"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
+                        {#if isCopied}
+                          <svg
+                            id="Layer_1"
+                            data-name="Layer 1"
+                            class="w-3 h-3 object-contain text-[#212121]"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 512 457.57"
+                            ><defs
+                              ><style>
+                                .cls-1 {
+                                  fill-rule: evenodd;
+                                }
+                              </style></defs
+                            ><path
+                              class="cls-1"
+                              d="M0,220.57c100.43-1.33,121-5.2,191.79,81.5,54.29-90,114.62-167.9,179.92-235.86C436-.72,436.5-.89,512,.24,383.54,143,278.71,295.74,194.87,457.57,150,361.45,87.33,280.53,0,220.57Z"
+                            /></svg
+                          >
+                        {:else}
+                          <svg
+                            width="12"
+                            height="11"
+                            viewBox="0 0 12 11"
+                            fill="none"
+                            class="w-full h-full object-contain text-[#212121]"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                              stroke="#212121"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                              stroke="#212121"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        {/if}
                       </div>
                     </div>
                   </CopyToClipboard>

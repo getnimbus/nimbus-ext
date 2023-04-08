@@ -6,6 +6,7 @@
   export let selected;
   export let isSelectWallet = false;
   export let isOptionsPage = false;
+  export let isWalletSelect = false;
 
   let open = false;
 </script>
@@ -57,12 +58,14 @@
             open = false;
           }}
         >
-          <img
-            src={item.value === "all" ? All : item.logo}
-            alt="logo"
-            width="18"
-            height="18"
-          />
+          {#if !isWalletSelect}
+            <img
+              src={item.value === "all" ? All : item.logo}
+              alt="logo"
+              width="18"
+              height="18"
+            />
+          {/if}
           <div
             class={`name ${
               item.value !== "all" && item.value !== "eth" && !isOptionsPage

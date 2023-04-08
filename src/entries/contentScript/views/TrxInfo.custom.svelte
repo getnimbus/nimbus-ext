@@ -63,8 +63,6 @@
       hash,
     });
   });
-
-  $: console.log("info: ", info);
 </script>
 
 <reset-style>
