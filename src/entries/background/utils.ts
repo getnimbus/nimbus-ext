@@ -40,3 +40,11 @@ export const cacheOrAPI = async (
     return typeof defaultValue !== "undefined" ? defaultValue : e;
   }
 };
+
+export const wait = (time: number) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, time);
+  });
+};

@@ -14,6 +14,7 @@
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import { groupBy } from "lodash";
   import { Motion } from "svelte-motion";
+  import { wait } from "../background/utils";
 
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
   import type { OpportunityData } from "~/types/OpportunityData";
@@ -609,9 +610,13 @@
       while (true) {
         try {
           let syncStatus = await getSyncStatus();
-          console.log({ syncStatus });
+          await wait(5000);
 
-          if (syncStatus.data?.lastSync) {
+          if (!syncStatus?.data?.lastSync) {
+            await sendMessage("getSync", {
+              address: selectedWallet.value,
+            });
+          } else {
             const res = await Promise.all([
               getOverview(type === "reload"),
               getHolding(type === "reload"),
@@ -624,10 +629,6 @@
               isLoading = false;
             }
             break;
-          } else {
-            await sendMessage("getSync", {
-              address: selectedWallet.value,
-            });
           }
         } catch (e) {
           console.log(e.message);
