@@ -191,7 +191,7 @@
   let search = "";
   let timerDebounce;
   let isLoading = false;
-  let isLoadingListAddress = false;
+  let isLoadingFullPage = false;
   let isShowChat = false;
   let isCopied = false;
 
@@ -625,7 +625,6 @@
   };
 
   const handleGetAllData = async (type: string) => {
-    isLoading = true;
     overviewData = {
       breakdownToken: [],
       overview: {
@@ -650,8 +649,10 @@
       }
 
       if (type === "sync") {
+        isLoading = true;
         let syncStatus = await getSyncStatus();
         if (!syncStatus?.data?.lastSync) {
+          isLoadingFullPage = true; // Only show full page loading if this is a new address
           await sendMessage("getSync", {
             address: selectedWallet.value,
           });
@@ -662,17 +663,14 @@
         try {
           let syncStatus = await getSyncStatus();
           if (syncStatus?.data?.lastSync) {
-            const res = await Promise.all([
-              getOverview(type === "reload"),
-              getHolding(type === "reload"),
-              getPositions(type === "reload"),
-              getNews(type === "reload"),
-              getOpportunities(type === "reload"),
-            ]);
-
-            if (res) {
-              isLoading = false;
-            }
+            // Call without result
+            getOverview(type === "reload").then();
+            getHolding(type === "reload").then();
+            getPositions(type === "reload").then();
+            getNews(type === "reload").then();
+            getOpportunities(type === "reload").then();
+            isLoadingFullPage = false;
+            isLoading = false;
             break;
           } else {
             await wait(5000);
@@ -685,12 +683,12 @@
       }
     } catch (e) {
       console.log("error: ", e);
-      isLoading = false;
+      isLoadingFullPage = false;
     }
   };
 
   const getListAddress = async () => {
-    isLoadingListAddress = true;
+    isLoadingFullPage = true;
     try {
       const response: AddressData = await sendMessage(
         "getListAddress",
@@ -707,10 +705,10 @@
       });
 
       listAddress = listAddress.concat(structWalletData);
-      isLoadingListAddress = false;
+      isLoadingFullPage = false;
     } catch (error) {
       console.log(error);
-      isLoadingListAddress = false;
+      isLoadingFullPage = false;
     }
   };
 
@@ -1011,7 +1009,7 @@
       </div>
     </div>
   </div>
-  {#if isLoadingListAddress}
+  {#if isLoadingFullPage}
     <div class="flex items-center justify-center h-screen">
       <loading-icon />
     </div>
