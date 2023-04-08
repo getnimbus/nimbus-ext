@@ -15,23 +15,11 @@
   import { groupBy } from "lodash";
   import { Motion } from "svelte-motion";
 
-  import type {
-    OverviewData,
-    OverviewDataLocal,
-    OverviewDataRes,
-  } from "~/types/OverviewData";
+  import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
   import type { OpportunityData } from "~/types/OpportunityData";
-  import type { NewData, NewDataRes, NewDataLocal } from "~/types/NewData";
-  import type {
-    WalletData,
-    WalletDataRes,
-    WalletDataLocal,
-  } from "~/types/WalletData";
-  import type {
-    PositionData,
-    PositionDataLocal,
-    PositionDataRes,
-  } from "~/types/PositionData";
+  import type { NewData, NewDataRes } from "~/types/NewData";
+  import type { WalletData, WalletDataRes } from "~/types/WalletData";
+  import type { PositionData, PositionDataRes } from "~/types/PositionData";
   import type { AddressData } from "~/types/AddressData";
 
   import Select from "~/components/Select.svelte";
@@ -496,147 +484,6 @@
     }
   };
 
-  const getOverviewLocal = async () => {
-    try {
-      const response: OverviewDataLocal = await sendMessage(
-        "getOverviewLocal",
-        {
-          address: selectedWallet.value,
-        }
-      );
-      if (response) {
-        overviewData = response.result.result;
-
-        let sum = 0;
-        overviewData?.breakdownToken.map((item) => (sum += Number(item.value)));
-
-        const formatDataPieChart = overviewData?.breakdownToken.map((item) => {
-          return {
-            logo: item.logo,
-            name: item.name,
-            symbol: item.symbol,
-            name_ratio: "Ratio",
-            value: (Number(item.value) / sum) * 100,
-            name_value: "Value",
-            value_value: Number(item.value),
-            name_balance: "Balance",
-            value_balance: Number(item.amount),
-          };
-        });
-
-        optionPie = {
-          ...optionPie,
-          series: [
-            {
-              ...optionPie.series[0],
-              data: formatDataPieChart,
-            },
-          ],
-        };
-
-        const formatXAxis = overviewData?.performance.map((item) => {
-          return dayjs(item.date).format("DD MMM YYYY");
-        });
-
-        const formatDataPortfolio = overviewData?.performance.map((item) => {
-          return {
-            value: item.portfolio,
-            itemStyle: {
-              color: "#00b580",
-            },
-          };
-        });
-
-        const formatDataETH = overviewData?.performance.map((item) => {
-          return {
-            value: item.eth,
-            itemStyle: {
-              color: "#547fef",
-            },
-          };
-        });
-
-        const formatDataBTC = overviewData?.performance.map((item) => {
-          return {
-            value: item.btc,
-            itemStyle: {
-              color: "#f7931a",
-            },
-          };
-        });
-
-        optionLine = {
-          ...optionLine,
-          legend: {
-            ...optionLine.legend,
-            data: [
-              {
-                name: "Your Portfolio",
-                itemStyle: {
-                  color: "#00b580",
-                },
-              },
-              {
-                name: "Bitcoin",
-                itemStyle: {
-                  color: "#f7931a",
-                },
-              },
-              {
-                name: "Ethereum",
-                itemStyle: {
-                  color: "#547fef",
-                },
-              },
-            ],
-          },
-          xAxis: {
-            ...optionLine.xAxis,
-            data: formatXAxis,
-          },
-          series: [
-            {
-              name: "Your Portfolio",
-              type: "line",
-              stack: "Total",
-              lineStyle: {
-                type: "solid",
-                color: "#00b580",
-              },
-              data: formatDataPortfolio,
-            },
-            {
-              name: "Bitcoin",
-              type: "line",
-              stack: "Total",
-              lineStyle: {
-                type: "dashed",
-                color: "#f7931a",
-              },
-              data: formatDataBTC,
-            },
-            {
-              name: "Ethereum",
-              type: "line",
-              stack: "Total",
-              lineStyle: {
-                type: "dashed",
-                color: "#547fef",
-              },
-              data: formatDataETH,
-            },
-          ],
-        };
-
-        return response;
-      } else {
-        return getOverview();
-      }
-    } catch (e) {
-      console.log("error: ", e);
-    }
-  };
-
   const getPositions = async (isReload: boolean = false) => {
     try {
       const response: PositionDataRes = await sendMessage("getPositions", {
@@ -655,32 +502,6 @@
         return response;
       } else {
         // console.log("response: ", response)
-      }
-    } catch (e) {
-      console.log("error: ", e);
-    }
-  };
-
-  const getPositionsLocal = async () => {
-    try {
-      const response: PositionDataLocal = await sendMessage(
-        "getPositionsLocal",
-        {
-          address: selectedWallet.value,
-        }
-      );
-      if (response) {
-        const formatData = response.result.result.map((item) => {
-          const groupPosition = groupBy(item.positions, "type");
-          return {
-            ...item,
-            positions: groupPosition,
-          };
-        });
-        positionsData = formatData;
-        return response;
-      } else {
-        return getPositions();
       }
     } catch (e) {
       console.log("error: ", e);
@@ -718,36 +539,6 @@
     }
   };
 
-  const getHoldingLocal = async () => {
-    try {
-      const response: WalletDataLocal = await sendMessage("getHoldingLocal", {
-        address: selectedWallet.value,
-      });
-      if (response) {
-        const formatData = response.result.result.map((item) => {
-          return {
-            ...item,
-            value: item.amount * item.rate,
-          };
-        });
-        walletData = formatData.sort((a, b) => {
-          if (a.value < b.value) {
-            return 1;
-          }
-          if (a.value > b.value) {
-            return -1;
-          }
-          return 0;
-        });
-        return response;
-      } else {
-        return getHolding();
-      }
-    } catch (e) {
-      console.log("error: ", e);
-    }
-  };
-
   const getNews = async (isReload: boolean = false) => {
     try {
       const response: NewDataRes = await sendMessage("getNews", {
@@ -759,22 +550,6 @@
         return response;
       } else {
         // console.log("response: ", response)
-      }
-    } catch (e) {
-      console.log("error: ", e);
-    }
-  };
-
-  const getNewsLocal = async () => {
-    try {
-      const response: NewDataLocal = await sendMessage("getNewsLocal", {
-        address: selectedWallet.value,
-      });
-      if (response) {
-        newsData = response.result.result;
-        return response;
-      } else {
-        return getNews();
       }
     } catch (e) {
       console.log("error: ", e);
@@ -806,7 +581,7 @@
     }
   };
 
-  const handleGetAllData = async (type: string) => {
+  const handleGetAllData = async () => {
     isLoading = true;
     overviewData = {
       breakdownToken: [],
@@ -825,39 +600,34 @@
       updatedAt: "",
     };
     try {
-      // const response: any = await sendMessage("getSync", {
-      //   address: selectedWallet.value,
-      // });
-      const syncStatus = await getSyncStatus();
-      console.log({ type, syncStatus });
-      if (!syncStatus.data?.lastSync) {
-        type = "reload";
-      }
+      await sendMessage("getSync", {
+        address: selectedWallet.value,
+      });
 
-      console.log("new type", type);
-      if (type === "reload") {
-        const response: any = await sendMessage("getSync", {
-          address: selectedWallet.value,
-        });
-        if (response.data) {
-          isSyncError = false;
-        } else {
-          isSyncError = true;
+      while (true) {
+        try {
+          let syncStatus = await getSyncStatus();
+          console.log({ syncStatus });
+
+          if (syncStatus.data?.lastSync) break;
+
+          const res = await Promise.all([
+            getOverview(true),
+            getHolding(true),
+            getPositions(true),
+            getNews(true),
+            getOpportunities(true),
+          ]);
+          console.log(res);
+
+          if (res) {
+            isLoading = false;
+          }
+        } catch (e) {
+          console.log(e.message);
+          isLoading = false;
+          break;
         }
-      }
-
-      const res = await Promise.all([
-        getOverview(type === "reload"),
-        getHolding(type === "reload"),
-        getPositions(type === "reload"),
-        getNews(type === "reload"),
-        getOpportunities(type === "reload"),
-      ]);
-
-      console.log(res);
-
-      if (res) {
-        isLoading = false;
       }
     } catch (e) {
       console.log("error: ", e);
@@ -1051,7 +821,7 @@
       browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
         console.log("save selected address to sync storage");
       });
-      handleGetAllData("sync");
+      handleGetAllData();
     }
   }
 </script>
@@ -1195,7 +965,7 @@
         <div class="text-lg">
           There are some problem with our server. Please try again!
         </div>
-        <Button on:click={() => handleGetAllData("reload")}>Reload</Button>
+        <Button on:click={() => handleGetAllData()}>Reload</Button>
       </div>
     </div>
   {:else}
@@ -1256,7 +1026,7 @@
                             </div>
                           {/each}
                           <Select
-                            isOptionsPage={false}
+                            isOptionsPage={true}
                             isSelectWallet={true}
                             listSelect={listAddress.slice(
                               4,
@@ -1313,7 +1083,7 @@
                         <div
                           class="cursor-pointer"
                           class:loading={isLoading}
-                          on:click={() => handleGetAllData("reload")}
+                          on:click={() => handleGetAllData()}
                         >
                           <img src={Reload} alt="" />
                         </div>

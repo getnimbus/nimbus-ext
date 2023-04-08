@@ -15,11 +15,3 @@ export type Wallet = {
   rate: number;
   symbol: string;
 }
-
-export type WalletDataLocal = {
-  createdAt: string;
-  result: {
-    address: string;
-    result: WalletData
-  }
-}

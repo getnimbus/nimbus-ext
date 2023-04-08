@@ -175,18 +175,6 @@ onMessage<IAddressInput, any>("getOverview", async ({ data: { address, reload = 
   }
 });
 
-onMessage<IAddressInput, any>("getOverviewLocal", async ({ data: { address } }) => {
-  try {
-    const key = address + "_overview";
-    const dataLocal = await browser.storage.local.get(key);
-    if (!isEmpty(dataLocal[key]) && dataLocal.hasOwnProperty(key)) {
-      return JSON.parse(dataLocal[key]);
-    }
-  } catch (e) {
-    return {};
-  }
-});
-
 onMessage<IAddressInput, any>("getPositions", async ({ data: { address, reload } }) => {
   try {
     const key = address + "_positions";
@@ -203,18 +191,6 @@ onMessage<IAddressInput, any>("getPositions", async ({ data: { address, reload }
       { defaultValue: null, ttl: 60, disabled: reload }
     );
     return res
-  } catch (error) {
-    return {};
-  }
-});
-
-onMessage<IAddressInput, any>("getPositionsLocal", async ({ data: { address } }) => {
-  try {
-    const key = address + "_positions";
-    const dataLocal = await browser.storage.local.get(key);
-    if (!isEmpty(dataLocal[key]) && dataLocal.hasOwnProperty(key)) {
-      return JSON.parse(dataLocal[key]);
-    }
   } catch (error) {
     return {};
   }
@@ -241,18 +217,6 @@ onMessage<IAddressInput, any>("getHolding", async ({ data: { address, reload } }
   }
 });
 
-onMessage<IAddressInput, any>("getHoldingLocal", async ({ data: { address } }) => {
-  try {
-    const key = address + "_holding";
-    const dataLocal = await browser.storage.local.get(key);
-    if (!isEmpty(dataLocal[key]) && dataLocal.hasOwnProperty(key)) {
-      return JSON.parse(dataLocal[key]);
-    }
-  } catch (error) {
-    return {};
-  }
-});
-
 onMessage<IAddressInput, any>("getNews", async ({ data: { address, reload } }) => {
   try {
     const key = address + "_news";
@@ -269,18 +233,6 @@ onMessage<IAddressInput, any>("getNews", async ({ data: { address, reload } }) =
       { defaultValue: null, ttl: 5 * 60, disabled: reload }
     );
     return res
-  } catch (error) {
-    return {};
-  }
-});
-
-onMessage<IAddressInput, any>("getNewsLocal", async ({ data: { address } }) => {
-  try {
-    const key = address + "_news";
-    const dataLocal = await browser.storage.local.get(key);
-    if (!isEmpty(dataLocal[key]) && dataLocal.hasOwnProperty(key)) {
-      return JSON.parse(dataLocal[key]);
-    }
   } catch (error) {
     return {};
   }

@@ -27,11 +27,3 @@ export type PositionDetail = {
   tokens: TokenInfo[];
   type: string;
 }
-
-export type PositionDataLocal = {
-  createdAt: string;
-  result: {
-    address: string;
-    result: PositionData
-  }
-}

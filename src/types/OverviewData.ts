@@ -35,11 +35,3 @@ export type PerformanceDetail = {
   eth: number;
   portfolio: number;
 }
-
-export type OverviewDataLocal = {
-  createdAt: string;
-  result: {
-    address: string;
-    result: OverviewData
-  }
-}
