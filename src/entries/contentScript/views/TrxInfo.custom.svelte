@@ -162,7 +162,7 @@
                 >
                   Gas fee: {`${formatCurrency(Number(info?.gasUsed))} ${
                     info?.nativeToken
-                  } ($${formatCurrency(Number(info?.gasUsed) * info?.rate)})`}
+                  } ($${formatCurrency(info?.transactionFee)})`}
                 </div>
               </div>
               {#if info?.logs && info?.logs.length !== 0}
