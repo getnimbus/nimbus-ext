@@ -7,7 +7,6 @@
 
   let filteredHolding = true;
   let filteredHoldingData;
-  // let sum = 0;
 
   import HoldingInfo from "../HoldingInfo.svelte";
   import "~/components/Loading.custom.svelte";

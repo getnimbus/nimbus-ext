@@ -13,6 +13,7 @@
   let countUp = null;
   let numberFormat = 0;
   let numberSize = "";
+  let showTooltip = false;
 
   const easingFn = function (t, b, c, d) {
     var ts = (t /= d) * t;
@@ -36,13 +37,16 @@
 </script>
 
 <span
-  use:tooltip={{
-    content: `<tooltip-detail text="${formatBalance(number)}" />`,
-    allowHTML: true,
-    placement: "top",
-  }}
+  class="relative"
+  on:mouseenter={() => (showTooltip = true)}
+  on:mouseleave={() => (showTooltip = false)}
 >
   <span {id}>{numberFormat}</span><span>{numberSize}</span>
+  {#if showTooltip && numberSize}
+    <span class="absolute -top-7 right-0" style="z-index: 2147483648;">
+      <tooltip-detail text={formatBalance(number)} />
+    </span>
+  {/if}
 </span>
 
 <style></style>
