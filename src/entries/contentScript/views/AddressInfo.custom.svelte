@@ -602,9 +602,11 @@
                           <svg
                             id="Layer_1"
                             data-name="Layer 1"
-                            class="w-3 h-3 object-contain text-[#212121]"
+                            width="12"
+                            height="12"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 512 457.57"
+                            fill="#212121"
                             ><defs
                               ><style>
                                 .cls-1 {
@@ -612,6 +614,7 @@
                                 }
                               </style></defs
                             ><path
+                              stroke="#212121"
                               class="cls-1"
                               d="M0,220.57c100.43-1.33,121-5.2,191.79,81.5,54.29-90,114.62-167.9,179.92-235.86C436-.72,436.5-.89,512,.24,383.54,143,278.71,295.74,194.87,457.57,150,361.45,87.33,280.53,0,220.57Z"
                             /></svg
@@ -619,10 +622,9 @@
                         {:else}
                           <svg
                             width="12"
-                            height="11"
+                            height="12"
                             viewBox="0 0 12 11"
                             fill="none"
-                            class="w-full h-full object-contain text-[#212121]"
                             xmlns="http://www.w3.org/2000/svg"
                           >
                             <path

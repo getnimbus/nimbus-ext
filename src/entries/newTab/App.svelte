@@ -14,6 +14,7 @@
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import { groupBy } from "lodash";
   import { Motion } from "svelte-motion";
+  import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "../background/utils";
 
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
@@ -192,6 +193,7 @@
   let isLoading = false;
   let isLoadingListAddress = false;
   let isShowChat = false;
+  let isCopied = false;
 
   let optionPie = {
     title: {
@@ -1112,23 +1114,85 @@
                 </button>
               </div>
               <div class="flex justify-between items-end">
-                <div class="flex items-end gap-6">
-                  <div class="text-5xl text-white font-semibold">
-                    {MultipleLang.overview}
-                  </div>
-                  <div class="flex items-center gap-2 mb-1">
-                    <div
-                      class="cursor-pointer"
-                      class:loading={isLoading}
-                      on:click={() => handleGetAllData("reload")}
-                    >
-                      <img src={Reload} alt="" />
+                <div class="flex flex-col gap-3">
+                  <div class="flex items-end gap-6">
+                    <div class="text-5xl text-white font-semibold">
+                      {MultipleLang.overview}
                     </div>
-                    <div class="text-xs text-white font-medium">
-                      {MultipleLang.data_updated}
-                      {dayjs(dataUpdatedTime).fromNow()}
+                    <div class="flex items-center gap-2 mb-1">
+                      <div
+                        class="cursor-pointer"
+                        class:loading={isLoading}
+                        on:click={() => handleGetAllData("reload")}
+                      >
+                        <img src={Reload} alt="" />
+                      </div>
+                      <div class="text-xs text-white font-medium">
+                        {MultipleLang.data_updated}
+                        {dayjs(dataUpdatedTime).fromNow()}
+                      </div>
                     </div>
                   </div>
+                  <CopyToClipboard
+                    text={selectedWallet.value}
+                    let:copy
+                    on:copy={async () => {
+                      isCopied = true;
+                      await wait(1000);
+                      isCopied = false;
+                    }}
+                  >
+                    <div class="flex items-center gap-2">
+                      <div class="text-base text-white font-normal">
+                        {selectedWallet.value}
+                      </div>
+                      <div class="cursor-pointer" on:click={copy}>
+                        {#if isCopied}
+                          <svg
+                            width="16"
+                            height="16"
+                            id="Layer_1"
+                            data-name="Layer 1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 512 457.57"
+                            fill="#fff"
+                            ><defs
+                              ><style>
+                                .cls-1 {
+                                  fill-rule: evenodd;
+                                }
+                              </style></defs
+                            ><path
+                              class="cls-1"
+                              stroke="#fff"
+                              d="M0,220.57c100.43-1.33,121-5.2,191.79,81.5,54.29-90,114.62-167.9,179.92-235.86C436-.72,436.5-.89,512,.24,383.54,143,278.71,295.74,194.87,457.57,150,361.45,87.33,280.53,0,220.57Z"
+                            /></svg
+                          >
+                        {:else}
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 12 11"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                              stroke="#fff"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                              stroke="#fff"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                        {/if}
+                      </div>
+                    </div>
+                  </CopyToClipboard>
                 </div>
                 <Select
                   isWalletSelect={false}
