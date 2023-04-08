@@ -60,36 +60,34 @@
         <thead>
           <tr class="bg-[#f4f5f880]">
             <th class="pl-3 py-3">
-              <div
-                class="text-left text-sm uppercase font-semibold text-black min-w-[220px]"
-              >
+              <div class="text-left text-sm uppercase font-semibold text-black">
                 {MultipleLang.assets}
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
+                class="text-right text-sm uppercase font-semibold text-black"
               >
                 {MultipleLang.market_price}
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-right text-sm uppercase font-semibold text-black min-w-[120px]"
+                class="text-right text-sm uppercase font-semibold text-black"
               >
                 {MultipleLang.amount}
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-right text-sm uppercase font-semibold text-black min-w-[130px]"
+                class="text-right text-sm uppercase font-semibold text-black"
               >
                 {MultipleLang.value}
               </div>
             </th>
             <th class="pr-3 py-3">
               <div
-                class="text-right text-sm uppercase font-semibold text-black min-w-[125px]"
+                class="text-right text-sm uppercase font-semibold text-black"
               >
                 {MultipleLang.profit}
               </div>

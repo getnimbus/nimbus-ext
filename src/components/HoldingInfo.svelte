@@ -28,7 +28,7 @@
 
 <tr class="hover:bg-gray-100 transition-all">
   <td class="pl-3 py-4">
-    <div class="text-left flex items-start gap-2 min-w-[220px]">
+    <div class="text-left flex items-start gap-2">
       <img src={data.logo} alt="token" width="20" height="20" />
       <div class="flex flex-col gap-1">
         <div class="text-black text-sm font-medium">{data.name}</div>
@@ -51,7 +51,7 @@
   </td>
   <td class="py-4">
     <div
-      class="text-sm text-[#00000099] font-medium text-right min-w-[120px] relative"
+      class="text-sm text-[#00000099] font-medium text-right relative"
       on:mouseenter={() => (showTooltipMarketPrice = true)}
       on:mouseleave={() => (showTooltipMarketPrice = false)}
     >
@@ -67,7 +67,7 @@
   </td>
   <td class="py-4">
     <div
-      class="text-sm text-[#00000099] font-medium text-right min-w-[120px] relative"
+      class="text-sm text-[#00000099] font-medium text-right relative"
       on:mouseenter={() => (showTooltipAmount = true)}
       on:mouseleave={() => (showTooltipAmount = false)}
     >
@@ -83,7 +83,7 @@
   </td>
   <td class="py-4">
     <div
-      class="text-sm text-[#00000099] font-medium text-right min-w-[130px] relative"
+      class="text-sm text-[#00000099] font-medium text-right relative"
       on:mouseenter={() => (showTooltipValue = true)}
       on:mouseleave={() => (showTooltipValue = false)}
     >
@@ -99,7 +99,7 @@
   </td>
   <td class="pr-3 py-4">
     <div
-      class="flex items-center justify-end gap-1 text-sm font-medium min-w-[125px] relative"
+      class="flex items-center justify-end gap-1 text-sm font-medium relative"
     >
       {#if data.symbol === "ETH"}
         <div />
