@@ -609,7 +609,6 @@
 
       if (type === "sync") {
         let syncStatus = await getSyncStatus();
-        await wait(5000);
         if (!syncStatus?.data?.lastSync) {
           await sendMessage("getSync", {
             address: selectedWallet.value,
@@ -620,8 +619,6 @@
       while (true) {
         try {
           let syncStatus = await getSyncStatus();
-          await wait(5000);
-
           if (syncStatus?.data?.lastSync) {
             const res = await Promise.all([
               getOverview(type === "reload"),
@@ -635,6 +632,8 @@
               isLoading = false;
             }
             break;
+          } else {
+            await wait(5000);
           }
         } catch (e) {
           console.log(e.message);
