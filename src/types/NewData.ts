@@ -19,11 +19,3 @@ export type TokenInfo = {
   name: string;
   symbol: string;
 }
-
-export type NewDataLocal = {
-  createdAt: string;
-  result: {
-    address: string;
-    result: NewData
-  }
-}
