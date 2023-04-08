@@ -356,10 +356,11 @@
     }, 300);
   };
 
-  const getOverview = async () => {
+  const getOverview = async (isReload: boolean = false) => {
     try {
       const response: OverviewDataRes = await sendMessage("getOverview", {
         address: selectedWallet.value,
+        reload: isReload,
       });
 
       if (selectedWallet.value === response.address) {
@@ -636,10 +637,11 @@
     }
   };
 
-  const getPositions = async () => {
+  const getPositions = async (isReload: boolean = false) => {
     try {
       const response: PositionDataRes = await sendMessage("getPositions", {
         address: selectedWallet.value,
+        reload: isReload,
       });
       if (selectedWallet.value === response.address) {
         const formatData = response.result.map((item) => {
@@ -685,10 +687,11 @@
     }
   };
 
-  const getHolding = async () => {
+  const getHolding = async (isReload: boolean = false) => {
     try {
       const response: WalletDataRes = await sendMessage("getHolding", {
         address: selectedWallet.value,
+        reload: isReload,
       });
       if (selectedWallet.value === response.address) {
         const formatData = response.result.map((item) => {
@@ -745,10 +748,11 @@
     }
   };
 
-  const getNews = async () => {
+  const getNews = async (isReload: boolean = false) => {
     try {
       const response: NewDataRes = await sendMessage("getNews", {
         address: selectedWallet.value,
+        reload: isReload,
       });
       if (selectedWallet.value === response.address) {
         newsData = response.result;
@@ -777,10 +781,11 @@
     }
   };
 
-  const getOpportunities = async () => {
+  const getOpportunities = async (isReload: boolean = false) => {
     try {
       const response: OpportunityData = await sendMessage("getOpportunities", {
         address: selectedWallet.value,
+        reload: isReload,
       });
       opportunitiesData = response;
       return response;
@@ -820,41 +825,39 @@
       updatedAt: "",
     };
     try {
-      const response: any = await sendMessage("getSync", {
-        address: selectedWallet.value,
-      });
-      if (response.data) {
-        isSyncError = false;
-        let res;
+      // const response: any = await sendMessage("getSync", {
+      //   address: selectedWallet.value,
+      // });
+      const syncStatus = await getSyncStatus();
+      console.log({ type, syncStatus });
+      if (!syncStatus.data?.lastSync) {
+        type = "reload";
+      }
 
-        if (type === "reload") {
-          res = await Promise.all([
-            getOverview(),
-            getHolding(),
-            getPositions(),
-            getNews(),
-            getOpportunities(),
-            getSyncStatus(),
-          ]);
+      console.log("new type", type);
+      if (type === "reload") {
+        const response: any = await sendMessage("getSync", {
+          address: selectedWallet.value,
+        });
+        if (response.data) {
+          isSyncError = false;
+        } else {
+          isSyncError = true;
         }
+      }
 
-        if (type === "sync") {
-          res = await Promise.all([
-            getOverviewLocal(),
-            getHoldingLocal(),
-            getPositionsLocal(),
-            getNewsLocal(),
-            getOpportunities(),
-          ]);
+      const res = await Promise.all([
+        getOverview(type === "reload"),
+        getHolding(type === "reload"),
+        getPositions(type === "reload"),
+        getNews(type === "reload"),
+        getOpportunities(type === "reload"),
+      ]);
 
-          getSyncStatus(); // Separate the get sync res
-        }
+      console.log(res);
 
-        if (res) {
-          isLoading = false;
-        }
-      } else {
-        isSyncError = true;
+      if (res) {
+        isLoading = false;
       }
     } catch (e) {
       console.log("error: ", e);
@@ -1016,6 +1019,8 @@
           console.log("save address to sync storage");
         });
 
+      // sendMessage("getSync", { address: dataFormat.value }); // Auto call sync when we add wallet?
+
       e.target.reset();
       isOpenAddModal = false;
     } else {
@@ -1157,7 +1162,8 @@
         </div>
       </div>
       <div class="flex justify-between items-center xl:gap-4 gap-2">
-        <div
+        <div class="w-[170px]" />
+        <!-- <div
           class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center gap-1 rounded-[1000px]"
         >
           <img src={Search} alt="" />
@@ -1169,7 +1175,7 @@
             type="text"
             class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
           />
-        </div>
+        </div> -->
         <!-- <div
           class="bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
         >

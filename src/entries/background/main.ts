@@ -154,7 +154,7 @@ onMessage<IAddressInput, any>("getSyncStatus", async ({ data: { address } }) => 
   }
 });
 
-onMessage<IAddressInput, any>("getOverview", async ({ data: { address } }) => {
+onMessage<IAddressInput, any>("getOverview", async ({ data: { address, reload = false } }) => {
   try {
     const key = address + "_overview";
     const res = await cacheOrAPI(
@@ -167,7 +167,7 @@ onMessage<IAddressInput, any>("getOverview", async ({ data: { address } }) => {
           }
         });
       },
-      { defaultValue: null, ttl: 60 }
+      { defaultValue: null, ttl: 60, reload }
     );
     return res
   } catch (error) {
@@ -187,7 +187,7 @@ onMessage<IAddressInput, any>("getOverviewLocal", async ({ data: { address } }) 
   }
 });
 
-onMessage<IAddressInput, any>("getPositions", async ({ data: { address } }) => {
+onMessage<IAddressInput, any>("getPositions", async ({ data: { address, reload } }) => {
   try {
     const key = address + "_positions";
     const res = await cacheOrAPI(
@@ -200,7 +200,7 @@ onMessage<IAddressInput, any>("getPositions", async ({ data: { address } }) => {
           }
         });
       },
-      { defaultValue: null, ttl: 60 }
+      { defaultValue: null, ttl: 60, disabled: reload }
     );
     return res
   } catch (error) {
@@ -220,7 +220,7 @@ onMessage<IAddressInput, any>("getPositionsLocal", async ({ data: { address } })
   }
 });
 
-onMessage<IAddressInput, any>("getHolding", async ({ data: { address } }) => {
+onMessage<IAddressInput, any>("getHolding", async ({ data: { address, reload } }) => {
   try {
     const key = address + "_holding";
     const res = await cacheOrAPI(
@@ -233,7 +233,7 @@ onMessage<IAddressInput, any>("getHolding", async ({ data: { address } }) => {
           }
         });
       },
-      { defaultValue: null, ttl: 60 }
+      { defaultValue: null, ttl: 60, disabled: reload }
     );
     return res
   } catch (error) {
@@ -253,7 +253,7 @@ onMessage<IAddressInput, any>("getHoldingLocal", async ({ data: { address } }) =
   }
 });
 
-onMessage<IAddressInput, any>("getNews", async ({ data: { address } }) => {
+onMessage<IAddressInput, any>("getNews", async ({ data: { address, reload } }) => {
   try {
     const key = address + "_news";
     const res = await cacheOrAPI(
@@ -266,7 +266,7 @@ onMessage<IAddressInput, any>("getNews", async ({ data: { address } }) => {
           }
         });
       },
-      { defaultValue: null, ttl: 5 * 60 }
+      { defaultValue: null, ttl: 5 * 60, disabled: reload }
     );
     return res
   } catch (error) {
@@ -288,7 +288,15 @@ onMessage<IAddressInput, any>("getNewsLocal", async ({ data: { address } }) => {
 
 onMessage<IAddressInput, any>("getOpportunities", async ({ data: { address } }) => {
   try {
-    return await nimbusApi.get("/opportunities").then((response) => response.opportunities);
+    const res = await cacheOrAPI(
+      "opportunities", // TODO: Update to address after change
+      () => {
+        return nimbusApi.get("/opportunities").then((response) => response.opportunities);
+      },
+      { defaultValue: [] }
+    );
+    return res
+    // return await nimbusApi.get("/opportunities").then((response) => response.opportunities);
   } catch (error) {
     return {};
   }
