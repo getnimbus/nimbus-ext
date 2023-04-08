@@ -18,26 +18,36 @@ export const disconnectWs = () => {
 }
 
 export const decodeEvent = (ev: MessageEvent) => {
-  const data = JSON.parse(ev.data);
+  try {
+    const data = JSON.parse(ev.data);
 
-  return data;
+    return data;
+  } catch (error) {
+    console.log(ev.data);
+    console.log(error);
+    return null;
+  }
 }
 
 export const priceSubscribe = (cmc_id: number[] | string[], callback: (any) => void) => {
-  if (!socket) {
-    console.log('WS is not initiated');
-    initWS(() => priceSubscribe(cmc_id, callback));
-    return;
-  }
-
-  socket.send(JSON.stringify({ "ids": cmc_id.join(',') }));
-
-  socket.addEventListener('message', (ev) => {
-    const data = decodeEvent(ev);
-    if (data?.d?.id) {
-      if (cmc_id.includes(data.d.id)) {
-        callback(data.d)
-      }
+  try {
+    if (!socket) {
+      console.log('WS is not initiated');
+      initWS(() => priceSubscribe(cmc_id, callback));
+      return;
     }
-  })
+
+    socket.send(JSON.stringify({ "ids": cmc_id.join(',') }));
+
+    socket.addEventListener('message', (ev) => {
+      const data = decodeEvent(ev);
+      if (data?.d?.id) {
+        if (cmc_id.includes(data.d.id)) {
+          callback(data.d)
+        }
+      }
+    })
+  } catch (error) {
+    console.log("Socket error", error);
+  }
 }
