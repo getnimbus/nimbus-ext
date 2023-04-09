@@ -642,6 +642,8 @@
       updatedAt: "",
     };
     try {
+      isLoading = true;
+
       if (type === "reload") {
         await sendMessage("getSync", {
           address: selectedWallet.value,
@@ -649,10 +651,8 @@
       }
 
       if (type === "sync") {
-        isLoading = true;
         let syncStatus = await getSyncStatus();
         if (!syncStatus?.data?.lastSync) {
-          isLoadingFullPage = true; // Only show full page loading if this is a new address
           await sendMessage("getSync", {
             address: selectedWallet.value,
           });
@@ -669,7 +669,6 @@
             getPositions(type === "reload").then();
             getNews(type === "reload").then();
             getOpportunities(type === "reload").then();
-            isLoadingFullPage = false;
             isLoading = false;
             break;
           } else {
@@ -683,7 +682,6 @@
       }
     } catch (e) {
       console.log("error: ", e);
-      isLoadingFullPage = false;
     }
   };
 
