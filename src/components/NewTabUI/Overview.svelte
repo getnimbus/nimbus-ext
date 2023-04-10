@@ -40,9 +40,7 @@
             number={Math.abs(data?.overview.networthChange)}
           />%
         </div>
-        <div class="text-[#00000066] text-base font-medium">
-          {data?.overview.change}
-        </div>
+        <div class="text-[#00000066] text-base font-medium">24h</div>
       </div>
     </div>
     <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
@@ -70,9 +68,7 @@
             number={Math.abs(data?.overview.claimableChange)}
           />%
         </div>
-        <div class="text-[#00000066] text-base font-medium">
-          {data?.overview.change}
-        </div>
+        <div class="text-[#00000066] text-base font-medium">24h</div>
       </div>
     </div>
   </div>
@@ -100,9 +96,7 @@
             number={Math.abs(data?.overview.assetsChange)}
           />%
         </div>
-        <div class="text-[#00000066] text-base font-medium">
-          {data?.overview.change}
-        </div>
+        <div class="text-[#00000066] text-base font-medium">24h</div>
       </div>
     </div>
     <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
@@ -128,9 +122,7 @@
             number={Math.abs(data?.overview.debtsChange)}
           />%
         </div>
-        <div class="text-[#00000066] text-base font-medium">
-          {data?.overview.change}
-        </div>
+        <div class="text-[#00000066] text-base font-medium">24h</div>
       </div>
     </div>
   </div>
