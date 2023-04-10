@@ -9,7 +9,8 @@
   let isShow = false;
 
   $: isDarkMode =
-    document.querySelector("html").getAttribute("data-theme") === "dark"
+    document.querySelector("html").getAttribute("data-theme") ||
+    document.querySelector("html").getAttribute("data-bs-theme") === "dark"
       ? true
       : false;
 </script>

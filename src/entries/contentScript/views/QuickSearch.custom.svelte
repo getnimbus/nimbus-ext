@@ -485,7 +485,7 @@
           {#if selectedSearchTermData.length === 0}
             {#if selectedTermData.length !== 0}
               {#each selectedTermData as item}
-                <div class="p-4 max-w-sm bg-white rounded-[10px] mb-4">
+                <div class="p-4 max-w-sm bg-white rounded-[10px] my-4">
                   <div class="flex justify-between items-center">
                     <a
                       href={item.url}

@@ -37,7 +37,8 @@
   $: isUnfocus && getAddressLabel();
 
   $: isDarkMode =
-    document.querySelector("html").getAttribute("data-theme") === "dark"
+    document.querySelector("html").getAttribute("data-theme") ||
+    document.querySelector("html").getAttribute("data-bs-theme") === "dark"
       ? true
       : false;
 </script>
@@ -50,7 +51,7 @@
         delay: [100, null],
         appendTo: () => document.body,
         onTrigger: () => {
-          // hide default tooltip for ethscan page
+          // hide default tooltip for etherscan page
           const selectedTooltip = document.getElementsByClassName(
             "tooltip fade bs-tooltip-top show"
           );
@@ -81,10 +82,14 @@
       delay: [300, null],
       trigger: "click focusin",
       appendTo: () => document.body,
-      onTrigger: () => {
+      onTrigger: (_, e) => {
+        e.preventDefault();
+        e.stopPropagation();
         isShow = true;
       },
-      onUntrigger: () => {
+      onUntrigger: (_, e) => {
+        e.preventDefault();
+        e.stopPropagation();
         isShow = false;
       },
       // content: popperElement,
