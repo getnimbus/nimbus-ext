@@ -11,6 +11,7 @@ export type OverviewData = {
     networth: number;
     networthChange: number;
     postionNetworth: number;
+    postionNetworthChange: number;
   };
   performance: PerformanceDetail[];
   updatedAt: string;

@@ -113,17 +113,19 @@
       <div class="flex items-center gap-3">
         <div
           class={`text-lg font-medium ${
-            data?.overview.debtsChange < 0 ? "text-red-500" : "text-[#00A878]"
+            data?.overview.postionNetworthChange < 0
+              ? "text-red-500"
+              : "text-[#00A878]"
           }`}
         >
-          {#if data?.overview.debtsChange < 0}
+          {#if data?.overview.postionNetworthChange < 0}
             ↓
           {:else}
             ↑
           {/if}
           <CountUpNumber
             id="total_debts_grouth"
-            number={Math.abs(data?.overview.debtsChange)}
+            number={Math.abs(data?.overview.postionNetworthChange)}
           />%
         </div>
         <div class="text-[#00000066] text-base font-medium">24h</div>
