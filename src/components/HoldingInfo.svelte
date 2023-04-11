@@ -23,7 +23,7 @@
   });
 
   $: price = data?.amount * marketPrice;
-  $: profitAndLoss = data?.amount * marketPrice - data?.avgCost;
+  $: profitAndLoss = data?.amount * marketPrice + (data?.avgCost || 0);
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">
