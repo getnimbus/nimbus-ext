@@ -12,23 +12,23 @@
   let amount2 = 0;
 
   const onInputAmount1 = (e) => {
-    if (Number.isNaN(Number(e.target.value))) {
+    if (Number.isNaN(parseFloat(e.target.value))) {
       return;
     }
-    amount1 = Number(e.target.value) || 0;
-    amount2 = Number((amount1 * price).toFixed(4));
+    amount1 = e.target.value;
+    amount2 = amount1 * price;
   };
 
   const onInputAmount2 = (e) => {
-    if (Number.isNaN(Number(e.target.value))) {
+    if (Number.isNaN(parseFloat(e.target.value))) {
       return;
     }
-    amount2 = Number(e.target.value);
+    amount2 = e.target.value;
     amount1 = amount2 / price;
   };
 
   onMount(() => {
-    amount2 = formatCurrency(Number(amount1 * price));
+    amount2 = amount1 * price;
   });
 
   $: {
@@ -50,7 +50,9 @@
       <div class="text-[#666666] text-xs font-medium">{symbol}</div>
       <input
         class="text-black border-none outline-none bg-transparent text-sm font-medium w-full"
-        type="text"
+        type="number"
+        min="0"
+        step="0.01"
         bind:value={amount1}
         on:input={onInputAmount1}
       />
@@ -77,16 +79,32 @@
       <div class="text-[#666666] text-xs font-medium">USD</div>
       <input
         class="text-black border-none outline-none bg-transparent text-sm font-medium w-full"
-        type="text"
+        type="number"
+        min="0"
+        step="0.01"
         bind:value={amount2}
         on:input={onInputAmount2}
       />
     </div>
+  </div>
+  <div class="text-[10px] text-gray-700 mt-2">
+    {formatCurrency(amount1)}
+    {symbol} equals ${formatCurrency(amount2)} USD
   </div>
 </reset-style>
 
 <style>
   .input-border {
     border: 1px solid #00000014;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
   }
 </style>

@@ -31,6 +31,10 @@
     chart = echarts.init(document.getElementById(id), theme);
   };
 
+  window.onresize = function () {
+    chart.resize();
+  };
+
   onMount(() => {
     makeChart();
   });
