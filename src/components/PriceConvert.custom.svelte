@@ -12,23 +12,17 @@
   let amount2 = 0;
 
   const onInputAmount1 = (e) => {
-    if (Number.isNaN(Number(e.target.value))) {
-      return;
-    }
-    amount1 = Number(e.target.value) || 0;
-    amount2 = Number((amount1 * price).toFixed(4));
+    amount1 = e.target.value;
+    amount2 = amount1 * price;
   };
 
   const onInputAmount2 = (e) => {
-    if (Number.isNaN(Number(e.target.value))) {
-      return;
-    }
-    amount2 = Number(e.target.value);
+    amount2 = e.target.value;
     amount1 = amount2 / price;
   };
 
   onMount(() => {
-    amount2 = formatCurrency(Number(amount1 * price));
+    amount2 = amount1 * price;
   });
 
   $: {
