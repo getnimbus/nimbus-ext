@@ -92,7 +92,12 @@ export const formatCurrency = (input: number) => {
 };
 
 export const formatBalance = (input: number) => {
-  return numeral(input).format("0,0.00");
+  const normalFormat = numeral(input).format("0,0.00");
+  if (normalFormat === "NaN") {
+    return formatSmallBalance(input)
+  }
+
+  return normalFormat
 };
 
 export const formatSmallBalance = (input: number) => {
