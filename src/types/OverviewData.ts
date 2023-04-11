@@ -10,6 +10,7 @@ export type OverviewData = {
     debtsChange: number;
     networth: number;
     networthChange: number;
+    postionNetworth: number;
   };
   performance: PerformanceDetail[];
   updatedAt: string;

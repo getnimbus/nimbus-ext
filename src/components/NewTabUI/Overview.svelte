@@ -10,6 +10,7 @@
     claimable: i18n("newtabPage.claimable", "Claimable"),
     total_assets: i18n("newtabPage.total-assets", "Total Assets"),
     total_debts: i18n("newtabPage.total-debts", "Total Debts"),
+    total_positions: i18n("newtabPage.total-positions", "Total Positions"),
   };
 </script>
 
@@ -101,10 +102,13 @@
     </div>
     <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
       <div class="text-[#00000099] text-base font-medium">
-        {MultipleLang.total_debts}
+        {MultipleLang.total_positions}
       </div>
       <div class="text-3xl text-black">
-        $<CountUpNumber id="total_debts" number={data?.overview.debts} />
+        $<CountUpNumber
+          id="total_debts"
+          number={data?.overview.postionNetworth}
+        />
       </div>
       <div class="flex items-center gap-3">
         <div
