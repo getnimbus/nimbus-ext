@@ -13,7 +13,13 @@
 
 <div class="wrapper">
   <div
-    class={`button ${isOptionsPage ? "bg-[#1E96FC]" : "hover:bg-[#525b8c]"}`}
+    class={`button ${
+      isOptionsPage
+        ? !isSelectWallet
+          ? "bg-[#1E96FC]"
+          : ""
+        : "hover:bg-[#525b8c]"
+    }`}
     class:active={open}
     on:click={() => (open = !open)}
   >
