@@ -23,6 +23,7 @@
 
   $: profit = marketPrice * data?.currentValue - data?.avgCost;
   $: value = marketPrice * data?.currentValue;
+  $: profitPercent = profit / data.inputValue;
 </script>
 
 <tbody>
@@ -53,7 +54,7 @@
     </td>
     <td class="py-4">
       <div class="text-right text-sm text-[#00000099] font-medium">
-        {formatBalance(data.inputValue)}
+        {formatBalance(Math.abs(data.inputValue))}
       </div>
     </td>
     <td class="py-4">
@@ -84,16 +85,33 @@
     </td>
     <td class="pr-3 py-4">
       <div
-        class="flex items-center justify-end gap-1 text-sm font-medium min-w-[125px] relative"
+        class="text-sm font-medium min-w-[125px] relative"
         on:mouseenter={() => (showTooltipProfit = true)}
         on:mouseleave={() => (showTooltipProfit = false)}
       >
-        <div class={`${profit >= 0 ? "text-[#00A878]" : "text-red-500"}`}>
-          ${formatBalance(Math.abs(profit)) === "NaN"
-            ? formatSmallBalance(Math.abs(profit))
-            : formatBalance(Math.abs(profit))}
+        <div class="flex flex-col">
+          <div class="flex items-center justify-end gap-1">
+            <div class={`${profit >= 0 ? "text-[#00A878]" : "text-red-500"}`}>
+              ${formatBalance(Math.abs(profit)) === "NaN"
+                ? formatSmallBalance(Math.abs(profit))
+                : formatBalance(Math.abs(profit))}
+            </div>
+            <img
+              src={profit >= 0 ? TrendUp : TrendDown}
+              alt="trend"
+              class="mb-1"
+            />
+          </div>
+          <div
+            class={`${
+              profitPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+            } text-right`}
+          >
+            {formatBalance(Math.abs(profitPercent)) === "NaN"
+              ? formatSmallBalance(Math.abs(profitPercent))
+              : formatBalance(Math.abs(profitPercent))}%
+          </div>
         </div>
-        <img src={profit >= 0 ? TrendUp : TrendDown} alt="trend" class="mb-1" />
         {#if showTooltipProfit && formatBalance(Math.abs(profit)) === "NaN"}
           <div class="absolute -top-7 right-0" style="z-index: 2147483648;">
             <tooltip-detail text={formatCurrency(Math.abs(profit))} />

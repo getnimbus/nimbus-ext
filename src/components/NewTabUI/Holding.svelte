@@ -40,7 +40,7 @@
       {MultipleLang.wallet}
     </div>
     <div class="text-3xl font-semibold text-right">
-      ${formatBalance(sum)}
+      ${isLoading ? 0 : formatBalance(sum)}
     </div>
   </div>
   <div class="flex flex-col gap-2">

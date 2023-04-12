@@ -101,6 +101,7 @@
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
     data_updated: i18n("newtabPage.data-updated", "Data updated"),
+    updating_data: i18n("newtabPage.updating-data", "Updating data"),
     search_placeholder: i18n("newtabPage.search-placeholder", "Search"),
     missed_protocol: i18n(
       "newtabPage.missed-protocol",
@@ -626,6 +627,8 @@
     }
   };
 
+  let isLoadingSync = false;
+
   const handleGetAllData = async (type: string) => {
     overviewData = {
       breakdownToken: [],
@@ -645,9 +648,8 @@
       performance: [],
       updatedAt: "",
     };
+    isLoading = true;
     try {
-      isLoading = true;
-
       if (type === "reload") {
         await sendMessage("getSync", {
           address: selectedWallet.value,
@@ -667,16 +669,24 @@
         try {
           let syncStatus = await getSyncStatus();
           if (syncStatus?.data?.lastSync) {
-            // Call without result
-            getOverview(type === "reload").then();
-            getHolding(type === "reload").then();
-            getPositions(type === "reload").then();
-            getNews(type === "reload").then();
-            getOpportunities(type === "reload").then();
-            isLoading = false;
+            const res = await Promise.all([
+              getOverview(type === "reload"),
+              getHolding(type === "reload"),
+              getPositions(type === "reload"),
+              getNews(type === "reload"),
+              getOpportunities(type === "reload"),
+            ]);
+
+            if (res) {
+              isLoading = false;
+            }
+
+            isLoadingSync = false;
+
             break;
           } else {
             await wait(5000);
+            isLoadingSync = true;
           }
         } catch (e) {
           console.log(e.message);
@@ -686,6 +696,7 @@
       }
     } catch (e) {
       console.log("error: ", e);
+      isLoading = false;
     }
   };
 
@@ -1113,127 +1124,148 @@
                   </div>
                 </button>
               </div>
-              <div class="flex justify-between items-end">
-                <div class="flex flex-col gap-3">
-                  <div class="flex items-end gap-6">
-                    <div class="text-5xl text-white font-semibold">
-                      {MultipleLang.overview}
-                    </div>
-                    <div class="flex items-center gap-2 mb-1">
-                      <div
-                        class="cursor-pointer"
-                        class:loading={isLoading}
-                        on:click={() => handleGetAllData("reload")}
-                      >
-                        <img src={Reload} alt="" />
+
+              {#if !isLoadingSync}
+                <div class="flex justify-between items-end">
+                  <div class="flex flex-col gap-3">
+                    <div class="flex items-end gap-6">
+                      <div class="text-5xl text-white font-semibold">
+                        {MultipleLang.overview}
                       </div>
-                      <div class="text-xs text-white font-medium">
-                        {MultipleLang.data_updated}
-                        {dayjs(dataUpdatedTime).fromNow()}
+                      <div class="flex items-center gap-2 mb-1">
+                        <div
+                          class="cursor-pointer"
+                          class:loading={isLoading}
+                          on:click={() => handleGetAllData("reload")}
+                        >
+                          <img src={Reload} alt="" />
+                        </div>
+                        <div class="text-xs text-white font-medium">
+                          {#if isLoading}
+                            {MultipleLang.updating_data}
+                          {:else}
+                            {MultipleLang.data_updated}
+                            {dayjs(dataUpdatedTime).fromNow()}
+                          {/if}
+                        </div>
                       </div>
                     </div>
+                    <CopyToClipboard
+                      text={selectedWallet.value}
+                      let:copy
+                      on:copy={async () => {
+                        isCopied = true;
+                        await wait(1000);
+                        isCopied = false;
+                      }}
+                    >
+                      <div class="flex items-center gap-2">
+                        <div class="text-base text-white font-normal">
+                          {selectedWallet.value}
+                        </div>
+                        <div class="cursor-pointer" on:click={copy}>
+                          {#if isCopied}
+                            <svg
+                              width="16"
+                              height="16"
+                              id="Layer_1"
+                              data-name="Layer 1"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 512 457.57"
+                              fill="#fff"
+                              ><defs
+                                ><style>
+                                  .cls-1 {
+                                    fill-rule: evenodd;
+                                  }
+                                </style></defs
+                              ><path
+                                class="cls-1"
+                                stroke="#fff"
+                                d="M0,220.57c100.43-1.33,121-5.2,191.79,81.5,54.29-90,114.62-167.9,179.92-235.86C436-.72,436.5-.89,512,.24,383.54,143,278.71,295.74,194.87,457.57,150,361.45,87.33,280.53,0,220.57Z"
+                              /></svg
+                            >
+                          {:else}
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 12 11"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                                stroke="#fff"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                                stroke="#fff"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                          {/if}
+                        </div>
+                      </div>
+                    </CopyToClipboard>
                   </div>
-                  <CopyToClipboard
-                    text={selectedWallet.value}
-                    let:copy
-                    on:copy={async () => {
-                      isCopied = true;
-                      await wait(1000);
-                      isCopied = false;
-                    }}
-                  >
-                    <div class="flex items-center gap-2">
-                      <div class="text-base text-white font-normal">
-                        {selectedWallet.value}
-                      </div>
-                      <div class="cursor-pointer" on:click={copy}>
-                        {#if isCopied}
-                          <svg
-                            width="16"
-                            height="16"
-                            id="Layer_1"
-                            data-name="Layer 1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 512 457.57"
-                            fill="#fff"
-                            ><defs
-                              ><style>
-                                .cls-1 {
-                                  fill-rule: evenodd;
-                                }
-                              </style></defs
-                            ><path
-                              class="cls-1"
-                              stroke="#fff"
-                              d="M0,220.57c100.43-1.33,121-5.2,191.79,81.5,54.29-90,114.62-167.9,179.92-235.86C436-.72,436.5-.89,512,.24,383.54,143,278.71,295.74,194.87,457.57,150,361.45,87.33,280.53,0,220.57Z"
-                            /></svg
-                          >
-                        {:else}
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 12 11"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
-                              stroke="#fff"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
-                              stroke="#fff"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
-                        {/if}
-                      </div>
-                    </div>
-                  </CopyToClipboard>
+                  <Select
+                    isWalletSelect={false}
+                    isOptionsPage={false}
+                    isSelectWallet={false}
+                    listSelect={chainList}
+                    bind:selected={selectedChain}
+                  />
                 </div>
-                <Select
-                  isWalletSelect={false}
-                  isOptionsPage={false}
-                  isSelectWallet={false}
-                  listSelect={chainList}
-                  bind:selected={selectedChain}
-                />
-              </div>
+              {/if}
             </div>
-            <Overview data={overviewData} />
+            {#if !isLoadingSync}
+              <Overview data={overviewData} />
+            {/if}
           </div>
         </div>
+
         <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
-          <div
-            class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
-            style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
-          >
-            <Charts {isLoading} {optionPie} {optionLine} />
-            <div class="flex xl:flex-row flex-col justify-between gap-6">
-              <Holding {isLoading} data={walletData} />
-              <Opportunities {isLoading} data={opportunitiesData} />
-            </div>
+          {#if isLoadingSync}
             <div
-              class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
+              class="bg-white text-xl font-medium flex flex-col gap-5 justify-center items-center border border-[#0000001a] rounded-[20px] p-6 h-screen"
             >
-              <Positions {isLoading} data={positionsData} />
-              <div
-                on:click={() => {
-                  isShowChat = true;
-                }}
-                class="mx-auto"
-              >
-                <Button variant="secondary"
-                  >{MultipleLang.missed_protocol}</Button
-                >
-              </div>
+              Loading data to sync at the first time take too long. So wait for
+              a minute
+              <loading-icon />
             </div>
-            <News {isLoading} data={newsData} />
-          </div>
+          {:else}
+            <div
+              class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
+              style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+            >
+              <Charts {isLoading} {optionPie} {optionLine} />
+              <div class="flex xl:flex-row flex-col justify-between gap-6">
+                <Holding {isLoading} data={walletData} />
+                <Opportunities {isLoading} data={opportunitiesData} />
+              </div>
+              <div
+                class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
+              >
+                <Positions {isLoading} data={positionsData} />
+                <div
+                  on:click={() => {
+                    isShowChat = true;
+                  }}
+                  class="mx-auto"
+                >
+                  <Button variant="secondary"
+                    >{MultipleLang.missed_protocol}</Button
+                  >
+                </div>
+              </div>
+              <News {isLoading} data={newsData} />
+            </div>
+          {/if}
         </div>
+
         <div class="sticky bottom-4 flex justify-end pr-4">
           <div
             class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F] cursor-pointer"
