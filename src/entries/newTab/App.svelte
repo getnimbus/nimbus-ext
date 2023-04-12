@@ -491,7 +491,6 @@
             {
               name: "Your Portfolio",
               type: "line",
-              stack: "Total",
               lineStyle: {
                 type: "solid",
                 color: "#00b580",
@@ -501,7 +500,6 @@
             {
               name: "Bitcoin",
               type: "line",
-              stack: "Total",
               lineStyle: {
                 type: "dashed",
                 color: "#f7931a",
@@ -511,7 +509,6 @@
             {
               name: "Ethereum",
               type: "line",
-              stack: "Total",
               lineStyle: {
                 type: "dashed",
                 color: "#547fef",
