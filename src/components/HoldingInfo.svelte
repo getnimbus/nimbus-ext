@@ -1,7 +1,12 @@
 <script>
   import { onMount } from "svelte";
   import { priceSubscribe } from "~/lib/price-ws";
-  import { formatBalance, formatCurrency, formatSmallBalance } from "~/utils";
+  import {
+    formatBalance,
+    formatCurrency,
+    formatSmallBalance,
+    shorterName,
+  } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
 
@@ -15,24 +20,40 @@
   let showTooltipProfit = false;
   let showTooltipAmount = false;
   let showTooltipMarketPrice = false;
+  let showTooltipName = false;
+
+  $: price = data?.amount * marketPrice;
+  $: profitAndLoss = data?.amount * marketPrice + (data?.avgCost || 0);
+  $: profitAndLossPercent =
+    Math.abs(data?.avgCost || 0) === 0
+      ? 0
+      : profitAndLoss / Math.abs(data?.avgCost || 0);
 
   onMount(() => {
     priceSubscribe([data?.cmc_id], (data) => {
       marketPrice = data.p;
     });
   });
-
-  $: price = data?.amount * marketPrice;
-  $: profitAndLoss = data?.amount * marketPrice + (data?.avgCost || 0);
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">
   <td class="pl-3 py-4">
     <div class="text-left flex items-start gap-2">
       <img src={data.logo} alt="token" width="20" height="20" />
-      <div class="flex flex-col gap-1">
-        <div class="text-black text-sm font-medium">{data.name}</div>
+      <div class="flex flex-col gap-1 relative">
+        <div
+          class="text-black text-sm font-medium"
+          on:mouseenter={() => (showTooltipName = true)}
+          on:mouseleave={() => (showTooltipName = false)}
+        >
+          {shorterName(data.name)}
+        </div>
         <div class="text-[#00000080] text-xs font-medium">{data.symbol}</div>
+        {#if showTooltipName && data.name.length > 22}
+          <div class="absolute -top-7 right-0" style="z-index: 2147483648;">
+            <tooltip-detail text={data.name} />
+          </div>
+        {/if}
       </div>
       <div class="flex flex-wrap gap-2">
         {#if data.suggest && data.suggest.length}
@@ -51,7 +72,7 @@
   </td>
   <td class="py-4">
     <div
-      class="text-sm text-[#00000099] font-medium text-right relative"
+      class="text-sm text-[#00000099] font-medium text-left relative"
       on:mouseenter={() => (showTooltipMarketPrice = true)}
       on:mouseleave={() => (showTooltipMarketPrice = false)}
     >
@@ -98,26 +119,39 @@
     </div>
   </td>
   <td class="pr-3 py-4">
-    <div
-      class="flex items-center justify-end gap-1 text-sm font-medium relative"
-    >
+    <div class="text-sm font-medium relative">
       {#if data.symbol === "ETH"}
         <div />
       {:else}
-        <div
-          class={`${profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"}`}
-          on:mouseenter={() => (showTooltipProfit = true)}
-          on:mouseleave={() => (showTooltipProfit = false)}
-        >
-          ${formatBalance(Math.abs(profitAndLoss)) === "NaN"
-            ? formatSmallBalance(Math.abs(profitAndLoss))
-            : formatBalance(Math.abs(profitAndLoss))}
+        <div class="flex flex-col">
+          <div class="flex items-center justify-end gap-1">
+            <div
+              class={`${
+                profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
+              }`}
+              on:mouseenter={() => (showTooltipProfit = true)}
+              on:mouseleave={() => (showTooltipProfit = false)}
+            >
+              ${formatBalance(Math.abs(profitAndLoss)) === "NaN"
+                ? formatSmallBalance(Math.abs(profitAndLoss))
+                : formatBalance(Math.abs(profitAndLoss))}
+            </div>
+            <img
+              src={profitAndLoss >= 0 ? TrendUp : TrendDown}
+              alt="trend"
+              class="mb-1"
+            />
+          </div>
+          <div
+            class={`${
+              profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+            } text-right`}
+          >
+            {formatBalance(Math.abs(profitAndLossPercent)) === "NaN"
+              ? formatSmallBalance(Math.abs(profitAndLossPercent))
+              : formatBalance(Math.abs(profitAndLossPercent))}%
+          </div>
         </div>
-        <img
-          src={profitAndLoss >= 0 ? TrendUp : TrendDown}
-          alt="trend"
-          class="mb-1"
-        />
       {/if}
       {#if showTooltipProfit && formatBalance(Math.abs(profitAndLoss)) === "NaN"}
         <div class="absolute -top-7 right-0" style="z-index: 2147483648;">

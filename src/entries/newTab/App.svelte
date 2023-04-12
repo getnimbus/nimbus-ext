@@ -1283,7 +1283,7 @@
             let:motion
           >
             <div
-              class="h-[630px] w-[430px] absolute right-4 bottom-0 p-4 bg-white rounded-[20px] items-end"
+              class="h-[630px] w-[430px] absolute right-4 bottom-15 p-4 bg-white rounded-[20px] items-end"
               style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
               use:motion
             >

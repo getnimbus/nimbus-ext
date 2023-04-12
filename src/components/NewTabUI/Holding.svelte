@@ -65,9 +65,7 @@
               </div>
             </th>
             <th class="py-3">
-              <div
-                class="text-right text-sm uppercase font-semibold text-black"
-              >
+              <div class="text-left text-sm uppercase font-semibold text-black">
                 {MultipleLang.market_price}
               </div>
             </th>

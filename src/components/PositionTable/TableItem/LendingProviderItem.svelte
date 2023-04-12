@@ -15,15 +15,18 @@
   let showTooltipValue = false;
   let marketPrice = data?.price.price || 0;
 
+  $: profit = marketPrice * data?.currentValue - data?.avgCost;
+  $: value = marketPrice * data?.currentValue;
+  $: profitPercent =
+    Math.abs(data.inputValue || 0) === 0
+      ? 0
+      : profit / Math.abs(data.inputValue);
+
   onMount(() => {
     priceSubscribe([data?.cmc_id], (data) => {
       marketPrice = data.p;
     });
   });
-
-  $: profit = marketPrice * data?.currentValue - data?.avgCost;
-  $: value = marketPrice * data?.currentValue;
-  $: profitPercent = profit / data.inputValue;
 </script>
 
 <tbody>
@@ -54,14 +57,14 @@
     </td>
     <td class="py-4">
       <div class="text-right text-sm text-[#00000099] font-medium">
-        {formatBalance(Math.abs(data.inputValue))}
+        ${formatBalance(Math.abs(data.inputValue))}
       </div>
     </td>
-    <td class="py-4">
+    <!-- <td class="py-4">
       <div class="text-right text-sm text-[#00000099] font-medium">
         {dayjs(data.inputTime).format("DD/MM/YYYY - HH:mm")}
       </div>
-    </td>
+    </td> -->
     <td class="py-4">
       <div class="text-right text-sm text-[#00000099] font-medium">
         {formatBalance(data.apy)}

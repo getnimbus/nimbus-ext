@@ -23,7 +23,10 @@
   $: value = balance0 + balance1 + claim0 + claim1;
 
   $: profit = data.inputValue + value;
-  $: profitPercent = profit / data.inputValue;
+  $: profitPercent =
+    Math.abs(data.inputValue || 0) === 0
+      ? 0
+      : profit / Math.abs(data.inputValue);
 
   onMount(() => {
     const token0 = Number(data?.token0Info?.info?.cmc_id);
@@ -148,9 +151,9 @@
               profitPercent >= 0 ? "text-[#00A878]" : "text-red-500"
             } text-right`}
           >
-            {formatBalance(profitPercent) === "NaN"
-              ? formatSmallBalance(profitPercent)
-              : formatBalance(profitPercent)}%
+            {formatBalance(Math.abs(profitPercent)) === "NaN"
+              ? formatSmallBalance(Math.abs(profitPercent))
+              : formatBalance(Math.abs(profitPercent))}%
           </div>
         </div>
         {#if showTooltipProfit && formatBalance(Math.abs(profit)) === "NaN"}

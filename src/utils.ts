@@ -125,8 +125,8 @@ export const shorterAddress = (string: string) => {
 };
 
 export const shorterName = (string: string) => {
-  if (string.length > 23) {
-    return string.slice(0, 23) + "....";
+  if (string.length > 22) {
+    return string.slice(0, 22) + "....";
   } else {
     return string
   }

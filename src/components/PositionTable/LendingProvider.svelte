@@ -15,11 +15,11 @@
         Entry (USD)
       </div>
     </th>
-    <th class="py-3">
+    <!-- <th class="py-3">
       <div class="text-right text-sm font-semibold text-black uppercase">
         Entry Time
       </div>
-    </th>
+    </th> -->
     <th class="py-3">
       <div class="text-right text-sm font-semibold text-black uppercase">
         APY (%)
