@@ -16,6 +16,7 @@
     formatCurrency,
     getLocalImg,
     shorterAddress,
+    shorterName,
   } from "../../../utils";
   import { track } from "~/lib/data-tracking";
   import { nimbus } from "../../../lib/network";
@@ -251,7 +252,7 @@
           const formatDataPieChartTopFour = topFourBreakdown.map((item) => {
             return {
               logo: item.logo,
-              name: item.name || item.symbol,
+              name: shorterName(item.name) || item.symbol,
               symbol: item.symbol,
               name_ratio: "Ratio",
               value: (Number(item.value) / sum) * 100,

@@ -124,6 +124,14 @@ export const shorterAddress = (string: string) => {
   return string.slice(0, 6) + "...." + string.substr(-4);
 };
 
+export const shorterName = (string: string) => {
+  if (string.length > 23) {
+    return string.slice(0, 23) + "....";
+  } else {
+    return string
+  }
+}
+
 export const getTokenLogo = (address: string, chainId: number) => {
   return `https://logo.getnimbus.io/logo/${chainId}/${address}`;
 };
