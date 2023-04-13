@@ -3,6 +3,7 @@
   import { formatBalance } from "~/utils";
 
   import LpProvider from "./LPProvider.svelte";
+  import LpProviderV2 from "./LPProviderV2.svelte";
   import Staking from "./Staking.svelte";
   import StakingLocked from "./StakingLocked.svelte";
   import LendingProvider from "./LendingProvider.svelte";
@@ -48,6 +49,8 @@
           <table class="table-auto w-full">
             {#if position === "LP-Provider"}
               <LpProvider data={data?.positions?.["LP-Provider"] || []} />
+            {:else if position === "LP-Provider v2"}
+              <LpProviderV2 data={data?.positions?.["LP-Provider v2"] || []} />
             {:else if position === "Staking"}
               <Staking data={data?.positions?.["Staking"] || []} />
             {:else if position === "Staking locked"}
