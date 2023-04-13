@@ -15,6 +15,8 @@
   };
 
   let types = Object.getOwnPropertyNames(data.positions);
+
+  $: console.log("data: ", data);
 </script>
 
 <div class="flex flex-col">
@@ -43,7 +45,7 @@
       <div class="flex flex-col gap-2 -mt-3">
         <div class="text-base font-semibold">{position}</div>
         <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
-          <table class="table-fixed w-full">
+          <table class="table-auto w-full">
             {#if position === "LP-Provider"}
               <LpProvider data={data?.positions?.["LP-Provider"] || []} />
             {:else if position === "Staking"}

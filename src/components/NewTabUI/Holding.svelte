@@ -14,7 +14,7 @@
   const MultipleLang = {
     wallet: i18n("newtabPage.wallet", "Wallet"),
     assets: i18n("newtabPage.assets", "Assets"),
-    market_price: i18n("newtabPage.market-price", "Market price"),
+    price: i18n("newtabPage.price", "Price"),
     amount: i18n("newtabPage.amount", "Amount"),
     value: i18n("newtabPage.value", "Value"),
     profit: i18n("newtabPage.profit", "Profit"),
@@ -55,39 +55,35 @@
         class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
       />
     </div>
-    <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
+    <div class="border border-[#0000000d] rounded-[10px]">
       <table class="table-fixed w-full">
         <thead>
           <tr class="bg-[#f4f5f880]">
-            <th class="pl-3 py-3 w-[230px]">
-              <div class="text-left text-sm uppercase font-semibold text-black">
+            <th class="pl-3 py-3 w-[220px]">
+              <div class="text-left text-xs uppercase font-semibold text-black">
                 {MultipleLang.assets}
               </div>
             </th>
             <th class="py-3">
-              <div
-                class="text-right text-sm uppercase font-semibold text-black"
-              >
-                {MultipleLang.market_price}
+              <div class="text-left text-xs uppercase font-semibold text-black">
+                {MultipleLang.price} ($)
               </div>
             </th>
             <th class="py-3">
-              <div
-                class="text-right text-sm uppercase font-semibold text-black"
-              >
+              <div class="text-left text-xs uppercase font-semibold text-black">
                 {MultipleLang.amount}
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-right text-sm uppercase font-semibold text-black"
+                class="text-right text-xs uppercase font-semibold text-black"
               >
-                {MultipleLang.value}
+                {MultipleLang.value} ($)
               </div>
             </th>
             <th class="pr-3 py-3">
               <div
-                class="text-right text-sm uppercase font-semibold text-black"
+                class="text-right text-xs uppercase font-semibold text-black"
               >
                 {MultipleLang.profit}
               </div>

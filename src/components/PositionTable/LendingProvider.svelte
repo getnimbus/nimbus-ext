@@ -12,7 +12,7 @@
     </th>
     <th class="py-3">
       <div class="text-right text-sm font-semibold text-black uppercase">
-        Entry (USD)
+        Entry ($)
       </div>
     </th>
     <!-- <th class="py-3">
@@ -20,14 +20,14 @@
         Entry Time
       </div>
     </th> -->
-    <th class="py-3">
+    <!-- <th class="py-3">
       <div class="text-right text-sm font-semibold text-black uppercase">
         APY (%)
       </div>
-    </th>
-    <th class="pr-3 py-3">
+    </th> -->
+    <th class="py-3">
       <div class="text-sm font-semibold text-black uppercase text-right">
-        Value (USD)
+        Value ($)
       </div>
     </th>
     <th class="pr-3 py-3">

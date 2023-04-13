@@ -6,9 +6,11 @@
     formatCurrency,
     formatSmallBalance,
     shorterName,
+    formatPercent,
   } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
+  import TooltipBalance from "~/components/TooltipBalance.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -16,9 +18,7 @@
   export let data;
 
   let marketPrice = data?.rate || 0;
-  let showTooltipValue = false;
-  let showTooltipProfit = false;
-  let showTooltipAmount = false;
+
   let showTooltipMarketPrice = false;
   let showTooltipName = false;
 
@@ -37,7 +37,7 @@
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">
-  <td class="pl-3 py-4 w-[230px]">
+  <td class="pl-3 py-4 w-[220px]">
     <div class="text-left flex items-start gap-2">
       <img src={data.logo} alt="token" width="20" height="20" />
       <div class="flex flex-col gap-1 relative">
@@ -49,7 +49,7 @@
           {shorterName(data.name)}
         </div>
         <div class="text-[#00000080] text-xs font-medium">{data.symbol}</div>
-        {#if showTooltipName && data.name.length > 22}
+        {#if showTooltipName && data.name.length > 16}
           <div class="absolute -top-7 right-0" style="z-index: 2147483648;">
             <tooltip-detail text={data.name} />
           </div>
@@ -70,73 +70,59 @@
       </div>
     </div>
   </td>
+
   <td class="py-4">
-    <div
-      class="text-sm text-[#00000099] font-medium text-right relative"
-      on:mouseenter={() => (showTooltipMarketPrice = true)}
-      on:mouseleave={() => (showTooltipMarketPrice = false)}
-    >
-      ${formatBalance(marketPrice) === "NaN"
-        ? formatSmallBalance(marketPrice)
-        : formatBalance(marketPrice)}
-      {#if showTooltipMarketPrice && formatBalance(marketPrice) === "NaN"}
-        <div class="absolute -top-7 right-0" style="z-index: 2147483648;">
-          <tooltip-detail text={formatCurrency(marketPrice)} />
-        </div>
-      {/if}
+    <div class="text-sm text-[#00000099] font-medium text-left">
+      <TooltipBalance
+        text={formatBalance(marketPrice)}
+        originalText={formatCurrency(marketPrice)}
+      />
     </div>
   </td>
+
   <td class="py-4">
-    <div
-      class="text-sm text-[#00000099] font-medium text-right relative"
-      on:mouseenter={() => (showTooltipAmount = true)}
-      on:mouseleave={() => (showTooltipAmount = false)}
-    >
-      {formatBalance(data.amount) === "NaN"
-        ? formatSmallBalance(data.amount)
-        : formatBalance(data.amount)}
-      {#if showTooltipAmount && formatBalance(data.amount) === "NaN"}
-        <div class="absolute -top-7 right-0" style="z-index: 2147483648;">
-          <tooltip-detail text={formatCurrency(data.amount)} />
-        </div>
-      {/if}
+    <div class="text-sm text-[#00000099] font-medium text-left">
+      <TooltipBalance
+        text={formatBalance(data.amount)}
+        originalText={formatCurrency(data.amount)}
+      />
     </div>
   </td>
+
   <td class="py-4">
-    <div
-      class="text-sm text-[#00000099] font-medium text-right relative"
-      on:mouseenter={() => (showTooltipValue = true)}
-      on:mouseleave={() => (showTooltipValue = false)}
-    >
-      ${formatBalance(price) === "NaN"
-        ? formatSmallBalance(price)
-        : formatBalance(price)}
-      {#if showTooltipValue && formatBalance(price) === "NaN"}
-        <div class="absolute -top-7 right-0" style="z-index: 2147483648;">
-          <tooltip-detail text={formatCurrency(price)} />
-        </div>
-      {/if}
+    <div class="text-sm text-[#00000099] font-medium text-right">
+      <TooltipBalance
+        text={formatBalance(price)}
+        originalText={formatCurrency(price)}
+      />
     </div>
   </td>
+
   <td class="pr-3 py-4">
-    <div
-      class="flex items-center justify-end gap-1 text-sm font-medium relative"
-    >
+    <div class="flex items-center justify-end gap-1 text-sm font-medium">
       {#if data.symbol === "ETH"}
         <div />
       {:else}
         <div class="flex flex-col">
-          <div class="flex items-center justify-end gap-1">
+          <div class="text-right">
             <div
               class={`${
                 profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
-              on:mouseenter={() => (showTooltipProfit = true)}
-              on:mouseleave={() => (showTooltipProfit = false)}
             >
-              ${formatBalance(Math.abs(profitAndLoss)) === "NaN"
-                ? formatSmallBalance(Math.abs(profitAndLoss))
-                : formatBalance(Math.abs(profitAndLoss))}
+              <TooltipBalance
+                text={formatBalance(Math.abs(profitAndLoss))}
+                originalText={formatCurrency(Math.abs(profitAndLoss))}
+              />
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-1">
+            <div
+              class={`${
+                profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+              }`}
+            >
+              {formatPercent(Math.abs(profitAndLossPercent))}%
             </div>
             <img
               src={profitAndLoss >= 0 ? TrendUp : TrendDown}
@@ -144,20 +130,6 @@
               class="mb-1"
             />
           </div>
-          <div
-            class={`${
-              profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
-            } text-right`}
-          >
-            {formatBalance(Math.abs(profitAndLossPercent)) === "NaN"
-              ? formatSmallBalance(Math.abs(profitAndLossPercent))
-              : formatBalance(Math.abs(profitAndLossPercent))}%
-          </div>
-        </div>
-      {/if}
-      {#if showTooltipProfit && formatBalance(Math.abs(profitAndLoss)) === "NaN"}
-        <div class="absolute -top-7 right-0" style="z-index: 2147483648;">
-          <tooltip-detail text={formatCurrency(Math.abs(profitAndLoss))} />
         </div>
       {/if}
     </div>

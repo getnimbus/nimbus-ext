@@ -86,19 +86,22 @@ export const formatLongNumber = (number: number) => {
 };
 
 export const formatCurrency = (input: number) => {
-  return numeral(input).format("0,0.0000") === "NaN"
+  return numeral(input).format("0,0.00") === "NaN"
     ? formatLongNumber(input)
-    : numeral(input).format("0,0.0000");
+    : numeral(input).format("0,0.00");
 };
 
 export const formatBalance = (input: number) => {
-  const normalFormat = numeral(input).format("0,0.00");
-  if (normalFormat === "NaN") {
-    return formatSmallBalance(input)
-  }
-
-  return normalFormat
+  return numeral(input).format("0,0.00") === "NaN" ? formatSmallBalance(input) : numeral(input).format("0,0.00")
 };
+
+export const checkFormatBalance = (input: number) => {
+  return numeral(input).format("0,0.00")
+}
+
+export const formatPercent = (input: number) => {
+  return numeral(input).format("0,0.0000") === "NaN" ? 0 : numeral(input).format("0,0.0000")
+}
 
 export const formatSmallBalance = (input: number) => {
   return numeral(input).format("0.000e+0");
@@ -125,8 +128,8 @@ export const shorterAddress = (string: string) => {
 };
 
 export const shorterName = (string: string) => {
-  if (string.length > 22) {
-    return string.slice(0, 22) + "....";
+  if (string.length > 16) {
+    return string.slice(0, 16) + "....";
   } else {
     return string
   }
