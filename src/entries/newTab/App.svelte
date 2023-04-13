@@ -648,6 +648,7 @@
     isLoading = true;
     try {
       if (type === "reload") {
+        console.log("Going to full sync");
         await sendMessage("getSync", {
           address: selectedWallet.value,
         });
@@ -656,6 +657,8 @@
       if (type === "sync") {
         let syncStatus = await getSyncStatus();
         if (!syncStatus?.data?.lastSync) {
+          console.log("Going to full sync");
+          isLoadingSync = true;
           await sendMessage("getSync", {
             address: selectedWallet.value,
           });
@@ -666,20 +669,16 @@
         try {
           let syncStatus = await getSyncStatus();
           if (syncStatus?.data?.lastSync) {
-            const res = await Promise.all([
+            await Promise.all([
               getOverview(type === "reload"),
               getHolding(type === "reload"),
               getPositions(type === "reload"),
               getNews(type === "reload"),
               getOpportunities(type === "reload"),
             ]);
-
-            if (res) {
-              isLoading = false;
-            }
-
+            
+            isLoading = false;
             isLoadingSync = false;
-
             break;
           } else {
             isLoadingSync = true;
@@ -1229,7 +1228,8 @@
             <div
               class="bg-white text-xl font-medium flex flex-col gap-5 justify-center items-center border border-[#0000001a] rounded-[20px] p-6 h-screen"
             >
-              Getting your data ready, depends on your historical activity. So it might take some minutes 😤
+              Getting your data ready, depends on your historical activity. So
+              it might take some minutes 😤
               <loading-icon />
             </div>
           {:else}
