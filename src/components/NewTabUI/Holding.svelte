@@ -56,16 +56,18 @@
       />
     </div>
     <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
-      <table class="table-auto w-full">
+      <table class="table-fixed w-full">
         <thead>
           <tr class="bg-[#f4f5f880]">
-            <th class="pl-3 py-3">
+            <th class="pl-3 py-3 w-[230px]">
               <div class="text-left text-sm uppercase font-semibold text-black">
                 {MultipleLang.assets}
               </div>
             </th>
             <th class="py-3">
-              <div class="text-left text-sm uppercase font-semibold text-black">
+              <div
+                class="text-right text-sm uppercase font-semibold text-black"
+              >
                 {MultipleLang.market_price}
               </div>
             </th>

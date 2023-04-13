@@ -37,7 +37,7 @@
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">
-  <td class="pl-3 py-4">
+  <td class="pl-3 py-4 w-[230px]">
     <div class="text-left flex items-start gap-2">
       <img src={data.logo} alt="token" width="20" height="20" />
       <div class="flex flex-col gap-1 relative">
@@ -72,7 +72,7 @@
   </td>
   <td class="py-4">
     <div
-      class="text-sm text-[#00000099] font-medium text-left relative"
+      class="text-sm text-[#00000099] font-medium text-right relative"
       on:mouseenter={() => (showTooltipMarketPrice = true)}
       on:mouseleave={() => (showTooltipMarketPrice = false)}
     >
@@ -119,7 +119,9 @@
     </div>
   </td>
   <td class="pr-3 py-4">
-    <div class="text-sm font-medium relative">
+    <div
+      class="flex items-center justify-end gap-1 text-sm font-medium relative"
+    >
       {#if data.symbol === "ETH"}
         <div />
       {:else}
