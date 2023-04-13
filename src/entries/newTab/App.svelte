@@ -682,8 +682,8 @@
 
             break;
           } else {
-            await wait(5000);
             isLoadingSync = true;
+            await wait(5000);
           }
         } catch (e) {
           console.log(e.message);
@@ -1229,8 +1229,7 @@
             <div
               class="bg-white text-xl font-medium flex flex-col gap-5 justify-center items-center border border-[#0000001a] rounded-[20px] p-6 h-screen"
             >
-              Loading data to sync at the first time take too long. So wait for
-              a minute
+              Getting your data ready, depends on your historical activity. So it might take some minutes 😤
               <loading-icon />
             </div>
           {:else}
