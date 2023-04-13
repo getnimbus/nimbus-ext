@@ -8,7 +8,7 @@
 </script>
 
 <div
-  class="relative"
+  class="relative w-max"
   on:mouseenter={() => (showTooltip = true)}
   on:mouseleave={() => (showTooltip = false)}
 >
@@ -19,3 +19,6 @@
     </div>
   {/if}
 </div>
+
+<style>
+</style>

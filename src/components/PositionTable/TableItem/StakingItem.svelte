@@ -39,7 +39,7 @@
     </td>
 
     <td class="py-4">
-      <div class="text-right text-sm text-[#00000099] font-medium">
+      <div class="flex justify-end text-sm text-[#00000099] font-medium">
         <TooltipBalance
           text={formatBalance(Math.abs(data.avgCost))}
           originalText={formatCurrency(Math.abs(data.avgCost))}
@@ -54,7 +54,7 @@
     </td> -->
 
     <td class="py-4">
-      <div class="text-right text-sm text-[#00000099] font-medium">
+      <div class="flex justify-end text-sm text-[#00000099] font-medium">
         <TooltipBalance
           text={formatBalance(data.claimable)}
           originalText={formatCurrency(data.claimable)}
@@ -63,7 +63,7 @@
     </td>
 
     <td class="py-4">
-      <div class="text-right text-sm text-[#00000099] font-medium">
+      <div class="flex justify-end text-sm text-[#00000099] font-medium">
         <TooltipBalance
           text={formatBalance(value)}
           originalText={formatCurrency(value)}
@@ -74,13 +74,15 @@
     <td class="pr-3 py-4">
       <div class="text-sm font-medium min-w-[125px]">
         <div class="flex flex-col">
-          <div class="text-right">
-            <div class={`${profit >= 0 ? "text-[#00A878]" : "text-red-500"}`}>
-              <TooltipBalance
-                text={formatBalance(Math.abs(profit))}
-                originalText={formatCurrency(Math.abs(profit))}
-              />
-            </div>
+          <div
+            class={`flex justify-end ${
+              profit >= 0 ? "text-[#00A878]" : "text-red-500"
+            }`}
+          >
+            <TooltipBalance
+              text={formatBalance(Math.abs(profit))}
+              originalText={formatCurrency(Math.abs(profit))}
+            />
           </div>
           <div class="flex items-center justify-end gap-1">
             <div

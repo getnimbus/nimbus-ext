@@ -18,8 +18,6 @@
   export let data;
 
   let marketPrice = data?.rate || 0;
-
-  let showTooltipMarketPrice = false;
   let showTooltipName = false;
 
   $: price = data?.amount * marketPrice;
@@ -72,7 +70,7 @@
   </td>
 
   <td class="py-4">
-    <div class="text-sm text-[#00000099] font-medium text-left">
+    <div class="text-sm text-[#00000099] font-medium flex justify-start">
       <TooltipBalance
         text={formatBalance(marketPrice)}
         originalText={formatCurrency(marketPrice)}
@@ -81,7 +79,7 @@
   </td>
 
   <td class="py-4">
-    <div class="text-sm text-[#00000099] font-medium text-left">
+    <div class="text-sm text-[#00000099] font-medium flex justify-start">
       <TooltipBalance
         text={formatBalance(data.amount)}
         originalText={formatCurrency(data.amount)}
@@ -90,7 +88,7 @@
   </td>
 
   <td class="py-4">
-    <div class="text-sm text-[#00000099] font-medium text-right">
+    <div class="text-sm text-[#00000099] font-medium flex justify-end">
       <TooltipBalance
         text={formatBalance(price)}
         originalText={formatCurrency(price)}
@@ -104,17 +102,15 @@
         <div />
       {:else}
         <div class="flex flex-col">
-          <div class="text-right">
-            <div
-              class={`${
-                profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
-              }`}
-            >
-              <TooltipBalance
-                text={formatBalance(Math.abs(profitAndLoss))}
-                originalText={formatCurrency(Math.abs(profitAndLoss))}
-              />
-            </div>
+          <div
+            class={`flex justify-end ${
+              profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
+            }`}
+          >
+            <TooltipBalance
+              text={formatBalance(Math.abs(profitAndLoss))}
+              originalText={formatCurrency(Math.abs(profitAndLoss))}
+            />
           </div>
           <div class="flex items-center justify-end gap-1">
             <div

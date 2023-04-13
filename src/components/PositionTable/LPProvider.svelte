@@ -1,6 +1,8 @@
 <script lang="ts">
   export let data;
   import LpProviderItem from "./TableItem/LPProviderItem.svelte";
+
+  $: console.log("data: ", data);
 </script>
 
 <thead>
