@@ -676,7 +676,7 @@
               getNews(type === "reload"),
               getOpportunities(type === "reload"),
             ]);
-            
+
             isLoading = false;
             isLoadingSync = false;
             break;

@@ -1,7 +1,7 @@
 <svelte:options tag="user-info" />
 
 <script>
-  import { shorterAddress, getLocalImg, getTokenLogo } from "../../utils";
+  import { shorterAddress, getLocalImg } from "../../utils";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
 
@@ -18,11 +18,7 @@
     class="rounded-full flex justify-center items-center bg-gray-100 relative w-[40px] h-[40px]"
   >
     {#if avatar}
-      <img
-        class="w-full h-full object-cover"
-        src={avatar || getTokenLogo(address, id)}
-        alt=""
-      />
+      <img class="w-full h-full object-cover" src={avatar} alt="" />
     {/if}
     {#if name === "Sender" || name === "Receiver"}
       <div

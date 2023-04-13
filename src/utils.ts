@@ -135,14 +135,6 @@ export const shorterName = (string: string) => {
   }
 }
 
-export const getTokenLogo = (address: string, chainId: number) => {
-  return `https://logo.getnimbus.io/logo/${chainId}/${address}`;
-};
-
-export const getCgLogo = (coinId: string) => {
-  return `https://api.getnimbus.io/logo-cg/${coinId}`;
-};
-
 export const escapeRegex = (string: string) => {
   return string.toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
 };

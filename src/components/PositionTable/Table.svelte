@@ -16,8 +16,6 @@
   };
 
   let types = Object.getOwnPropertyNames(data.positions);
-
-  $: console.log("data: ", data);
 </script>
 
 <div class="flex flex-col">

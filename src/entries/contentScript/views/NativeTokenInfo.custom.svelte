@@ -8,7 +8,6 @@
   import {
     formatCurrency,
     exponentialToDecimal,
-    getCgLogo,
     getLocalImg,
     add3Dots,
     shorterAddress,

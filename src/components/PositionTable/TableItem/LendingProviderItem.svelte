@@ -104,7 +104,7 @@
                 profitPercent >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
             >
-              {formatPercent(Math.abs(profitPercent))}%
+              {formatPercent(Math.abs(profitPercent) * 100)}%
             </div>
             <img
               src={profit >= 0 ? TrendUp : TrendDown}

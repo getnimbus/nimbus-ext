@@ -160,7 +160,7 @@
                 <div
                   class="text-xs font-medium text-[#27326F] px-1 py-[2px] bg-[#6AC7F533] rounded-[5px]"
                 >
-                  Gas fee: {`${formatCurrency(Number(info?.gasUsed))} ${
+                  Gas fee: {`${Number(info?.gasUsed)} ${
                     info?.nativeToken
                   } ($${formatCurrency(info?.transactionFee)})`}
                 </div>

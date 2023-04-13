@@ -25,7 +25,7 @@
   $: profitAndLossPercent =
     Math.abs(data?.avgCost || 0) === 0
       ? 0
-      : profitAndLoss / Math.abs(data?.avgCost || 0);
+      : profitAndLoss / Math.abs(data?.avgCost);
 
   onMount(() => {
     priceSubscribe([data?.cmc_id], (data) => {
@@ -118,7 +118,7 @@
                 profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
             >
-              {formatPercent(Math.abs(profitAndLossPercent))}%
+              {formatPercent(Math.abs(profitAndLossPercent) * 100)}%
             </div>
             <img
               src={profitAndLoss >= 0 ? TrendUp : TrendDown}

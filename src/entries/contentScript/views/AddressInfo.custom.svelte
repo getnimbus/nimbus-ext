@@ -202,6 +202,8 @@
       if (response) {
         type = response?.type;
 
+        console.log("response: ", response);
+
         if (response?.type === "ADDRESS") {
           addressInfo.categories = response?.tags;
           addressInfo.networth = response?.networth;
@@ -252,7 +254,11 @@
           const formatDataPieChartTopFour = topFourBreakdown.map((item) => {
             return {
               logo: item.logo,
-              name: shorterName(item.name) || item.symbol,
+              name: item.name
+                ? shorterName(item.name)
+                : item.symbol
+                ? item.symbol
+                : "--",
               symbol: item.symbol,
               name_ratio: "Ratio",
               value: (Number(item.value) / sum) * 100,

@@ -2,7 +2,7 @@
 
 <script>
   import tooltip from "~/entries/contentScript/views/tooltip";
-  import { getTokenLogo, shorterAddress } from "../../utils";
+  import { shorterAddress } from "../../utils";
 
   export let name;
   export let address;
@@ -16,11 +16,7 @@
     class="w-9 h-9 rounded-full overflow-hidden flex justify-center items-center bg-gray-100"
   >
     {#if logo || (address && id)}
-      <img
-        class="w-6 h-6 object-cover"
-        src={logo || getTokenLogo(address, id)}
-        alt={name || address}
-      />
+      <img class="w-6 h-6 object-cover" src={logo} alt={name || address} />
     {/if}
   </div>
   <a
