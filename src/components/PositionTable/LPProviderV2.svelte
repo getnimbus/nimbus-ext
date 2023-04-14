@@ -7,11 +7,13 @@
   $: {
     if (data) {
       const formatData = data.map((item) => {
+        const price0 = item?.amount0Price?.price || 0;
+        const price1 = item?.amount1Price?.price || 0;
+
         return {
           ...item,
           initialValue:
-            (Number(item.amount0out) * item?.amount0Price?.price || 0) +
-            (Number(item.amount1out) * item?.amount1Price?.price || 0),
+            Number(item.amount0out) * price0 + Number(item.amount1out) * price1,
         };
       });
 
@@ -42,7 +44,7 @@
     </th>
     <th class="pr-3 py-3">
       <div class="text-sm font-semibold text-black uppercase text-right">
-        Value (USD)
+        Value ($)
       </div>
     </th>
     <th class="pr-3 py-3">

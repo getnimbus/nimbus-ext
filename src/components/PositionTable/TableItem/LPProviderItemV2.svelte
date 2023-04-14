@@ -1,17 +1,16 @@
 <script lang="typescript">
   import { onMount } from "svelte";
   import { priceSubscribe } from "~/lib/price-ws";
-  import { formatBalance, formatCurrency, formatSmallBalance } from "~/utils";
+  import { formatBalance, formatCurrency, formatPercent } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
+  import TooltipBalance from "~/components/TooltipBalance.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
 
   export let data;
 
-  let showTooltipProfit = false;
-  let showTooltipValue = false;
   let price0 = data?.amount0Price?.price || 0;
   let price1 = data?.amount1Price?.price || 0;
 
@@ -70,48 +69,69 @@
         </div>
       </div>
     </td>
+
     <td class="py-4">
-      <div class="text-right text-sm text-[#00000099] font-medium">
-        <div class="flex flex-col">
-          <div>
-            {formatBalance(Number(data.amount0out))}
-            {data.amount0Price.symbol} | ${formatBalance(balance0)}
+      <div class="text-sm text-[#00000099] font-medium flex flex-col items-end">
+        <div class="flex flex-col items-end">
+          <div class="flex items-center gap-1">
+            <div class="flex items-center gap-1">
+              <TooltipBalance
+                text={formatBalance(Number(data.amount0out))}
+                originalText={formatCurrency(Number(data.amount0out))}
+              />
+              {data.amount0Price.symbol} |
+            </div>
+            <TooltipBalance
+              text={formatBalance(balance0)}
+              originalText={formatCurrency(balance0)}
+            />
           </div>
-          <div>
-            {formatBalance(Number(data.amount1out))}
-            {data.amount1Price.symbol} | ${formatBalance(balance1)}
+          <div class="flex items-center gap-1">
+            <div class="flex items-center gap-1">
+              <TooltipBalance
+                text={formatBalance(Number(data.amount1out))}
+                originalText={formatCurrency(Number(data.amount1out))}
+              />
+              {data.amount1Price.symbol} |
+            </div>
+            <TooltipBalance
+              text={formatBalance(balance1)}
+              originalText={formatCurrency(balance1)}
+            />
           </div>
         </div>
       </div>
     </td>
-    <td class="pr-3 py-4">
-      <div
-        class="text-right text-sm text-[#000000] font-medium relative"
-        on:mouseenter={() => (showTooltipValue = true)}
-        on:mouseleave={() => (showTooltipValue = false)}
-      >
-        ${formatBalance(value) === "NaN"
-          ? formatSmallBalance(value)
-          : formatBalance(value)}
-        {#if showTooltipValue && formatBalance(value) === "NaN"}
-          <div class="absolute -top-7 right-0" style="z-index: 2147483648;">
-            <tooltip-detail text={formatCurrency(value)} />
-          </div>
-        {/if}
+
+    <td class="py-4">
+      <div class="flex justify-end text-sm text-[#000000] font-medium">
+        <TooltipBalance
+          text={formatBalance(value)}
+          originalText={formatCurrency(value)}
+        />
       </div>
     </td>
+
     <td class="pr-3 py-4">
-      <div
-        class="text-sm font-medium min-w-[125px] relative"
-        on:mouseenter={() => (showTooltipProfit = true)}
-        on:mouseleave={() => (showTooltipProfit = false)}
-      >
+      <div class="text-sm font-medium">
         <div class="flex flex-col">
+          <div
+            class={`flex justify-end ${
+              profit >= 0 ? "text-[#00A878]" : "text-red-500"
+            }`}
+          >
+            <TooltipBalance
+              text={formatBalance(Math.abs(profit))}
+              originalText={formatCurrency(Math.abs(profit))}
+            />
+          </div>
           <div class="flex items-center justify-end gap-1">
-            <div class={`${profit >= 0 ? "text-[#00A878]" : "text-red-500"}`}>
-              ${formatBalance(Math.abs(profit)) === "NaN"
-                ? formatSmallBalance(Math.abs(profit))
-                : formatBalance(Math.abs(profit))}
+            <div
+              class={`${
+                profitPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+              } text-right`}
+            >
+              {formatPercent(Math.abs(profitPercent))}%
             </div>
             <img
               src={profit >= 0 ? TrendUp : TrendDown}
@@ -119,21 +139,7 @@
               class="mb-1"
             />
           </div>
-          <div
-            class={`${
-              profitPercent >= 0 ? "text-[#00A878]" : "text-red-500"
-            } text-right`}
-          >
-            {formatBalance(Math.abs(profitPercent)) === "NaN"
-              ? formatSmallBalance(Math.abs(profitPercent))
-              : formatBalance(Math.abs(profitPercent))}%
-          </div>
         </div>
-        {#if showTooltipProfit && formatBalance(Math.abs(profit)) === "NaN"}
-          <div class="absolute -top-7 right-0" style="z-index: 2147483648;">
-            <tooltip-detail text={formatCurrency(Math.abs(profit))} />
-          </div>
-        {/if}
       </div>
     </td>
   </tr>

@@ -7,15 +7,16 @@
   $: {
     if (data) {
       const formatData = data.map((item) => {
+        const price0 = item?.amount0Price?.price || 0;
+        const price1 = item?.amount1Price?.price || 0;
+
         return {
           ...item,
           initialValue:
-            (Number(item.amount0out) * item?.amount0Price?.price ||
-              0 + item.claimable0Amount * item?.amount0Price?.price ||
-              0) +
-            (Number(item.amount1out) * item?.amount1Price?.price ||
-              0 + item.claimable1Amount * item?.amount1Price?.price ||
-              0),
+            Number(item.amount0out) * price0 +
+            Number(item.amount1out) * price1 +
+            item.claimable0Amount * price0 +
+            item.claimable1Amount * price1,
         };
       });
 

@@ -1,6 +1,6 @@
 <script>
   import { i18n } from "~/lib/i18n";
-  import { formatBalance } from "~/utils";
+  import { formatBalance, formatCurrency } from "~/utils";
 
   import LpProvider from "./LPProvider.svelte";
   import LpProviderV2 from "./LPProviderV2.svelte";
@@ -8,6 +8,7 @@
   import StakingLocked from "./StakingLocked.svelte";
   import LendingProvider from "./LendingProvider.svelte";
   import LendingBorrow from "./LendingBorrow.svelte";
+  import TooltipBalance from "~/components/TooltipBalance.svelte";
 
   export let data;
 
@@ -31,11 +32,17 @@
       </a>
     </div>
     <div class="flex flex-col gap-1">
-      <div class="text-3xl font-semibold text-right">
-        ${formatBalance(data.currentValue)}
+      <div class="text-3xl font-semibold flex justify-end">
+        $<TooltipBalance
+          text={formatBalance(data.currentValue)}
+          originalText={formatCurrency(data.currentValue)}
+        />
       </div>
-      <div class="text-lg font-medium text-gray-600">
-        {MultipleLang.claimable}: ${formatBalance(data.claimable)}
+      <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
+        {MultipleLang.claimable}: $<TooltipBalance
+          text={formatBalance(data.claimable)}
+          originalText={formatCurrency(data.claimable)}
+        />
       </div>
     </div>
   </div>
