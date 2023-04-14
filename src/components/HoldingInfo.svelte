@@ -1,13 +1,5 @@
 <script>
-  import { onMount } from "svelte";
-  import { priceSubscribe } from "~/lib/price-ws";
-  import {
-    formatBalance,
-    formatCurrency,
-    formatSmallBalance,
-    shorterName,
-    formatPercent,
-  } from "~/utils";
+  import { shorterName, formatPercent } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import TooltipBalance from "~/components/TooltipBalance.svelte";
@@ -17,21 +9,14 @@
 
   export let data;
 
-  let marketPrice = data?.rate || 0;
   let showTooltipName = false;
 
-  $: price = data?.amount * marketPrice;
-  $: profitAndLoss = data?.amount * marketPrice + (data?.avgCost || 0);
+  $: price = data?.amount * data?.market_price;
+  $: profitAndLoss = data?.amount * data?.market_price + (data?.avgCost || 0);
   $: profitAndLossPercent =
     Math.abs(data?.avgCost || 0) === 0
       ? 0
       : profitAndLoss / Math.abs(data?.avgCost);
-
-  onMount(() => {
-    priceSubscribe([data?.cmc_id], (data) => {
-      marketPrice = data.p;
-    });
-  });
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">
@@ -71,7 +56,7 @@
 
   <td class="py-4">
     <div class="text-sm text-[#00000099] font-medium flex justify-start">
-      <TooltipBalance number={marketPrice} />
+      <TooltipBalance number={data.market_price} />
     </div>
   </td>
 

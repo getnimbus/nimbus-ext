@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
   import { formatBalance } from "~/utils";
 
@@ -7,6 +8,9 @@
 
   let filteredHolding = true;
   let filteredHoldingData;
+  let marketPrice;
+  let formatData = [];
+  let sum = 0;
 
   import HoldingInfo from "../HoldingInfo.svelte";
   import "~/components/Loading.custom.svelte";
@@ -22,14 +26,53 @@
   };
 
   $: {
-    if (filteredHolding) {
+    if (data) {
       filteredHoldingData = data.filter((item) => item.value > 1);
-    } else {
-      filteredHoldingData = data;
+      sum = data.reduce((prev, item) => prev + item.value, 0);
+      data.map((item) => {
+        priceSubscribe([item?.cmc_id], (data) => {
+          marketPrice = {
+            id: data.id,
+            market_price: data.p,
+          };
+        });
+      });
     }
   }
 
-  $: sum = (data || []).reduce((prev, item) => prev + item.value, 0);
+  $: {
+    if (marketPrice && data) {
+      formatData = data.map((item) => {
+        if (marketPrice.id === item.cmc_id) {
+          return {
+            ...item,
+            market_price: marketPrice.market_price,
+          };
+        } else {
+          return {
+            ...item,
+            market_price: item?.rate || 0,
+          };
+        }
+      });
+    }
+  }
+
+  $: {
+    if (formatData) {
+      if (filteredHolding) {
+        filteredHoldingData = formatData.filter(
+          (item) => item?.amount * item.market_price > 1
+        );
+      } else {
+        filteredHoldingData = formatData;
+      }
+      sum = (formatData || []).reduce(
+        (prev, item) => prev + item?.amount * item.market_price,
+        0
+      );
+    }
+  }
 </script>
 
 <div
@@ -99,11 +142,7 @@
                 </div>
               </td>
             </tr>
-          {:else if filteredHoldingData && filteredHoldingData.length !== 0}
-            {#each filteredHoldingData as holding}
-              <HoldingInfo data={holding} />
-            {/each}
-          {:else}
+          {:else if !isLoading && filteredHoldingData && filteredHoldingData.length === 0}
             <tr>
               <td colspan="5">
                 <div class="flex justify-center items-center py-4 px-3">
@@ -111,6 +150,10 @@
                 </div>
               </td>
             </tr>
+          {:else}
+            {#each filteredHoldingData as holding}
+              <HoldingInfo data={holding} />
+            {/each}
           {/if}
         </tbody>
       </table>
