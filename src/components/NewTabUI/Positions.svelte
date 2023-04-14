@@ -13,26 +13,27 @@
 </script>
 
 <div class="flex flex-col">
-  <div class="text-2xl font-medium text-black border-b border-[#00000014] pb-4">
+  <div
+    class="text-2xl font-medium text-black border-b border-[#00000014] pb-4 mb-4"
+  >
     {MultipleLang.positions}
   </div>
-  <div class="flex flex-col gap-10">
-    {#if isLoading}
-      <div class="flex items-center justify-center pt-6">
-        <loading-icon />
-      </div>
-    {:else}
-      <div>
-        {#if data && data.length !== 0}
-          {#each data as position}
-            <Table data={position} />
-          {/each}
-        {:else}
-          <div>No data</div>
-        {/if}
-      </div>
-    {/if}
-  </div>
+
+  {#if isLoading}
+    <div class="flex items-center justify-center pt-6">
+      <loading-icon />
+    </div>
+  {:else}
+    <div>
+      {#if data && data.length !== 0}
+        {#each data as position}
+          <Table data={position} />
+        {/each}
+      {:else}
+        <div>No data</div>
+      {/if}
+    </div>
+  {/if}
 </div>
 
 <style>

@@ -27,7 +27,14 @@
 
   $: {
     if (data) {
-      filteredHoldingData = data.filter((item) => item.value > 1);
+      filteredHoldingData = data
+        .map((item) => {
+          return {
+            ...item,
+            market_price: item?.rate || 0,
+          };
+        })
+        .filter((item) => item.value > 1);
       sum = data.reduce((prev, item) => prev + item.value, 0);
       data.map((item) => {
         priceSubscribe([item?.cmc_id], (data) => {
