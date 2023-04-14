@@ -13,8 +13,8 @@
             (Number(item.amount0out) * item?.amount0Price?.price ||
               0 + item.claimable0Amount * item?.amount0Price?.price ||
               0) +
-            (Number(item.amount0out) * item?.amount0Price?.price ||
-              0 + item.claimable0Amount * item?.amount0Price?.price ||
+            (Number(item.amount1out) * item?.amount1Price?.price ||
+              0 + item.claimable1Amount * item?.amount1Price?.price ||
               0),
         };
       });

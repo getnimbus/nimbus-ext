@@ -1,6 +1,31 @@
 <script lang="ts">
   export let data;
   import LpProviderItemV2 from "./TableItem/LPProviderItemV2.svelte";
+
+  let dataPositionFormat = [];
+
+  $: {
+    if (data) {
+      const formatData = data.map((item) => {
+        return {
+          ...item,
+          initialValue:
+            (Number(item.amount0out) * item?.amount0Price?.price || 0) +
+            (Number(item.amount1out) * item?.amount1Price?.price || 0),
+        };
+      });
+
+      dataPositionFormat = formatData.sort((a, b) => {
+        if (a.initialValue < b.initialValue) {
+          return 1;
+        }
+        if (a.initialValue > b.initialValue) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+  }
 </script>
 
 <thead>
@@ -27,7 +52,7 @@
     </th>
   </tr>
 </thead>
-{#each data as item}
+{#each dataPositionFormat as item}
   <LpProviderItemV2 data={item} />
 {/each}
 
