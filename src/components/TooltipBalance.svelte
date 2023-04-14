@@ -1,8 +1,7 @@
 <script>
-  import { checkFormatBalance } from "~/utils";
+  import { checkFormatBalance, formatBalance, formatCurrency } from "~/utils";
 
-  export let text;
-  export let originalText;
+  export let number;
 
   let showTooltip = false;
 </script>
@@ -12,10 +11,10 @@
   on:mouseenter={() => (showTooltip = true)}
   on:mouseleave={() => (showTooltip = false)}
 >
-  {text}
-  {#if showTooltip && checkFormatBalance(text) === "NaN"}
+  {formatBalance(number)}
+  {#if showTooltip && checkFormatBalance(number) === "NaN"}
     <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
-      <tooltip-detail text={originalText} />
+      <tooltip-detail text={formatCurrency(number)} />
     </div>
   {/if}
 </div>

@@ -40,10 +40,7 @@
 
     <td class="py-4">
       <div class="flex justify-end text-sm text-[#00000099] font-medium">
-        <TooltipBalance
-          text={formatBalance(Math.abs(data.avgCost))}
-          originalText={formatCurrency(Math.abs(data.avgCost))}
-        />
+        <TooltipBalance number={Math.abs(data.avgCost)} />
       </div>
     </td>
 
@@ -55,19 +52,13 @@
 
     <td class="py-4">
       <div class="flex justify-end text-sm text-[#00000099] font-medium">
-        <TooltipBalance
-          text={formatBalance(data.claimable)}
-          originalText={formatCurrency(data.claimable)}
-        />
+        <TooltipBalance number={data.claimable} />
       </div>
     </td>
 
     <td class="py-4">
       <div class="flex justify-end text-sm text-[#00000099] font-medium">
-        <TooltipBalance
-          text={formatBalance(value)}
-          originalText={formatCurrency(value)}
-        />
+        <TooltipBalance number={value} />
       </div>
     </td>
 
@@ -79,10 +70,7 @@
               profit >= 0 ? "text-[#00A878]" : "text-red-500"
             }`}
           >
-            <TooltipBalance
-              text={formatBalance(Math.abs(profit))}
-              originalText={formatCurrency(Math.abs(profit))}
-            />
+            <TooltipBalance number={Math.abs(profit)} />
           </div>
           <div class="flex items-center justify-end gap-1">
             <div
@@ -90,7 +78,7 @@
                 profitPercent >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
             >
-              {formatPercent(Math.abs(profitPercent))}%
+              {formatPercent(Math.abs(profitPercent) * 100)}%
             </div>
             <img
               src={profit >= 0 ? TrendUp : TrendDown}

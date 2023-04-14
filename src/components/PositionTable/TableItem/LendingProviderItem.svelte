@@ -57,10 +57,7 @@
 
     <td class="py-4">
       <div class="flex justify-end text-sm text-[#00000099] font-medium">
-        <TooltipBalance
-          text={formatBalance(Math.abs(data.inputValue))}
-          originalText={formatCurrency(Math.abs(data.inputValue))}
-        />
+        <TooltipBalance number={Math.abs(data.inputValue)} />
       </div>
     </td>
 
@@ -78,10 +75,7 @@
 
     <td class="py-4">
       <div class="flex justify-end text-sm text-[#00000099] font-medium">
-        <TooltipBalance
-          text={formatBalance(value)}
-          originalText={formatCurrency(value)}
-        />
+        <TooltipBalance number={value} />
       </div>
     </td>
 
@@ -93,10 +87,7 @@
               profit >= 0 ? "text-[#00A878]" : "text-red-500"
             }`}
           >
-            <TooltipBalance
-              text={formatBalance(Math.abs(profit))}
-              originalText={formatCurrency(Math.abs(profit))}
-            />
+            <TooltipBalance number={Math.abs(profit)} />
           </div>
           <div class="flex items-center justify-end gap-1">
             <div

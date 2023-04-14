@@ -33,16 +33,10 @@
     </div>
     <div class="flex flex-col gap-1">
       <div class="text-3xl font-semibold flex justify-end">
-        $<TooltipBalance
-          text={formatBalance(data.currentValue)}
-          originalText={formatCurrency(data.currentValue)}
-        />
+        $<TooltipBalance number={data.currentValue} />
       </div>
       <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
-        {MultipleLang.claimable}: $<TooltipBalance
-          text={formatBalance(data.claimable)}
-          originalText={formatCurrency(data.claimable)}
-        />
+        {MultipleLang.claimable}: $<TooltipBalance number={data.claimable} />
       </div>
     </div>
   </div>

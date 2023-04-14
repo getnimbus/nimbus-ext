@@ -83,37 +83,22 @@
         <div class="flex flex-col items-end">
           <div class="flex items-center gap-1">
             <div class="flex items-center gap-1">
-              <TooltipBalance
-                text={formatBalance(Number(data.amount0out))}
-                originalText={formatCurrency(Number(data.amount0out))}
-              />
+              <TooltipBalance number={Number(data.amount0out)} />
               {data.amount0Price.symbol} |
             </div>
-            <TooltipBalance
-              text={formatBalance(balance0)}
-              originalText={formatCurrency(balance0)}
-            />
+            <TooltipBalance number={balance0} />
           </div>
           <div class="flex items-center gap-1">
             <div class="flex items-center gap-1">
-              <TooltipBalance
-                text={formatBalance(Number(data.amount1out))}
-                originalText={formatCurrency(Number(data.amount1out))}
-              />
+              <TooltipBalance number={Number(data.amount1out)} />
               {data.amount1Price.symbol} |
             </div>
-            <TooltipBalance
-              text={formatBalance(balance1)}
-              originalText={formatCurrency(balance1)}
-            />
+            <TooltipBalance number={balance1} />
           </div>
         </div>
         <div class="text-black flex items-center gap-1">
           Total:
-          <TooltipBalance
-            text={formatBalance(balance0 + balance1)}
-            originalText={formatCurrency(balance0 + balance1)}
-          />
+          <TooltipBalance number={balance0 + balance1} />
         </div>
       </div>
     </td>
@@ -123,47 +108,29 @@
         <div class="flex flex-col items-end">
           <div class="flex items-center gap-1">
             <div class="flex items-center gap-1">
-              <TooltipBalance
-                text={formatBalance(Number(data.claimable0Amount))}
-                originalText={formatCurrency(Number(data.claimable0Amount))}
-              />
+              <TooltipBalance number={Number(data.claimable0Amount)} />
               {data.amount0Price.symbol} |
             </div>
-            <TooltipBalance
-              text={formatBalance(claim0)}
-              originalText={formatCurrency(claim0)}
-            />
+            <TooltipBalance number={claim0} />
           </div>
           <div class="flex items-center gap-1">
             <div class="flex items-center gap-1">
-              <TooltipBalance
-                text={formatBalance(Number(data.claimable1Amount))}
-                originalText={formatCurrency(Number(data.claimable1Amount))}
-              />
+              <TooltipBalance number={Number(data.claimable1Amount)} />
               {data.amount1Price.symbol} |
             </div>
-            <TooltipBalance
-              text={formatBalance(claim1)}
-              originalText={formatCurrency(claim1)}
-            />
+            <TooltipBalance number={claim1} />
           </div>
         </div>
         <div class="text-black flex items-center gap-1">
           Total:
-          <TooltipBalance
-            text={formatBalance(claim0 + claim1)}
-            originalText={formatCurrency(claim0 + claim1)}
-          />
+          <TooltipBalance number={claim0 + claim1} />
         </div>
       </div>
     </td>
 
     <td class="py-4">
       <div class="flex justify-end text-sm text-[#000000] font-medium">
-        <TooltipBalance
-          text={formatBalance(value)}
-          originalText={formatCurrency(value)}
-        />
+        <TooltipBalance number={value} />
       </div>
     </td>
 
@@ -175,10 +142,7 @@
               profit >= 0 ? "text-[#00A878]" : "text-red-500"
             }`}
           >
-            <TooltipBalance
-              text={formatBalance(Math.abs(profit))}
-              originalText={formatCurrency(Math.abs(profit))}
-            />
+            <TooltipBalance number={Math.abs(profit)} />
           </div>
           <div class="flex items-center justify-end gap-1">
             <div
@@ -186,7 +150,7 @@
                 profitPercent >= 0 ? "text-[#00A878]" : "text-red-500"
               } text-right`}
             >
-              {formatPercent(Math.abs(profitPercent))}%
+              {formatPercent(Math.abs(profitPercent) * 100)}%
             </div>
             <img
               src={profit >= 0 ? TrendUp : TrendDown}
