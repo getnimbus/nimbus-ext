@@ -8,6 +8,7 @@
 
   let filteredHolding = true;
   let filteredHoldingData = [];
+  let defaultDataFormat = [];
   let marketPrice;
   let formatData = [];
   let sum = 0;
@@ -28,14 +29,13 @@
   $: {
     if (data) {
       // initial render api default data
-      filteredHoldingData = data
-        .map((item) => {
-          return {
-            ...item,
-            market_price: item?.rate || 0,
-          };
-        })
-        .filter((item) => item.value > 1);
+      defaultDataFormat = data.map((item) => {
+        return {
+          ...item,
+          market_price: item?.rate || 0,
+        };
+      });
+      filteredHoldingData = defaultDataFormat.filter((item) => item.value > 1);
       sum = data.reduce((prev, item) => prev + item.value, 0);
       // sub token with ws to get market price realtime data
       data.map((item) => {
@@ -50,21 +50,19 @@
   }
 
   $: {
-    if (marketPrice && data) {
+    if (marketPrice) {
       // format data with market price realtime data
-      formatData = data.map((item) => {
+      const formatDataWithMarketPrice = defaultDataFormat.map((item) => {
         if (marketPrice.id === item.cmc_id) {
           return {
             ...item,
             market_price: marketPrice.market_price,
           };
-        } else {
-          return {
-            ...item,
-            market_price: item?.rate || 0,
-          };
         }
+        return { ...item };
       });
+      defaultDataFormat = formatDataWithMarketPrice;
+      formatData = formatDataWithMarketPrice;
     }
   }
 

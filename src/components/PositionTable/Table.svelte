@@ -9,8 +9,6 @@
   export let data;
 
   let types = Object.getOwnPropertyNames(data.positions);
-
-  $: console.log("data: ", data);
 </script>
 
 {#if types && types.length !== 0}
