@@ -7,7 +7,7 @@
   export let isLoading;
 
   let filteredHolding = true;
-  let filteredHoldingData;
+  let filteredHoldingData = [];
   let marketPrice;
   let formatData = [];
   let sum = 0;
@@ -27,6 +27,7 @@
 
   $: {
     if (data) {
+      // initial render api default data
       filteredHoldingData = data
         .map((item) => {
           return {
@@ -36,6 +37,7 @@
         })
         .filter((item) => item.value > 1);
       sum = data.reduce((prev, item) => prev + item.value, 0);
+      // sub token with ws to get market price realtime data
       data.map((item) => {
         priceSubscribe([item?.cmc_id], (data) => {
           marketPrice = {
@@ -49,6 +51,7 @@
 
   $: {
     if (marketPrice && data) {
+      // format data with market price realtime data
       formatData = data.map((item) => {
         if (marketPrice.id === item.cmc_id) {
           return {
@@ -66,19 +69,17 @@
   }
 
   $: {
-    if (formatData) {
-      if (filteredHolding) {
-        filteredHoldingData = formatData.filter(
-          (item) => item?.amount * item.market_price > 1
-        );
-      } else {
-        filteredHoldingData = formatData;
-      }
-      sum = (formatData || []).reduce(
-        (prev, item) => prev + item?.amount * item.market_price,
-        0
+    if (filteredHolding) {
+      filteredHoldingData = formatData.filter(
+        (item) => item?.amount * item.market_price > 1
       );
+    } else {
+      filteredHoldingData = formatData;
     }
+    sum = (formatData || []).reduce(
+      (prev, item) => prev + item?.amount * item.market_price,
+      0
+    );
   }
 </script>
 
