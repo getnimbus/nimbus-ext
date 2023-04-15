@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
   import { formatBalance } from "~/utils";
 
@@ -6,7 +7,11 @@
   export let isLoading;
 
   let filteredHolding = true;
-  let filteredHoldingData;
+  let filteredHoldingData = [];
+  let defaultDataFormat = [];
+  let marketPrice;
+  let formatData = [];
+  let sum = 0;
 
   import HoldingInfo from "../HoldingInfo.svelte";
   import "~/components/Loading.custom.svelte";
@@ -22,14 +27,58 @@
   };
 
   $: {
-    if (filteredHolding) {
-      filteredHoldingData = data.filter((item) => item.value > 1);
-    } else {
-      filteredHoldingData = data;
+    if (data) {
+      // initial render api default data
+      defaultDataFormat = data.map((item) => {
+        return {
+          ...item,
+          market_price: item?.rate || 0,
+        };
+      });
+      filteredHoldingData = defaultDataFormat.filter((item) => item.value > 1);
+      sum = data.reduce((prev, item) => prev + item.value, 0);
+      // sub token with ws to get market price realtime data
+      data.map((item) => {
+        priceSubscribe([item?.cmc_id], (data) => {
+          marketPrice = {
+            id: data.id,
+            market_price: data.p,
+          };
+        });
+      });
     }
   }
 
-  $: sum = (data || []).reduce((prev, item) => prev + item.value, 0);
+  $: {
+    if (marketPrice) {
+      // format data with market price realtime data
+      const formatDataWithMarketPrice = defaultDataFormat.map((item) => {
+        if (marketPrice.id === item.cmc_id) {
+          return {
+            ...item,
+            market_price: marketPrice.market_price,
+          };
+        }
+        return { ...item };
+      });
+      defaultDataFormat = formatDataWithMarketPrice;
+      formatData = formatDataWithMarketPrice;
+    }
+  }
+
+  $: {
+    if (filteredHolding) {
+      filteredHoldingData = formatData.filter(
+        (item) => item?.amount * item.market_price > 1
+      );
+    } else {
+      filteredHoldingData = formatData;
+    }
+    sum = (formatData || []).reduce(
+      (prev, item) => prev + item?.amount * item.market_price,
+      0
+    );
+  }
 </script>
 
 <div
@@ -99,11 +148,7 @@
                 </div>
               </td>
             </tr>
-          {:else if filteredHoldingData && filteredHoldingData.length !== 0}
-            {#each filteredHoldingData as holding}
-              <HoldingInfo data={holding} />
-            {/each}
-          {:else}
+          {:else if !isLoading && filteredHoldingData && filteredHoldingData.length === 0}
             <tr>
               <td colspan="5">
                 <div class="flex justify-center items-center py-4 px-3">
@@ -111,6 +156,10 @@
                 </div>
               </td>
             </tr>
+          {:else}
+            {#each filteredHoldingData as holding}
+              <HoldingInfo data={holding} />
+            {/each}
           {/if}
         </tbody>
       </table>
