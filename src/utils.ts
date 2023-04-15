@@ -100,7 +100,7 @@ export const checkFormatBalance = (input: number) => {
 }
 
 export const formatPercent = (input: number) => {
-  return numeral(input).format("0,0.0000") === "NaN" ? 0 : numeral(input).format("0,0.0000")
+  return numeral(input).format("0,0.00") === "NaN" ? 0 : numeral(input).format("0,0.00")
 }
 
 export const formatSmallBalance = (input: number) => {
