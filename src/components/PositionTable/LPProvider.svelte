@@ -14,8 +14,7 @@
 
   let defaultDataPositionFormat = [];
   let dataPositionFormat = [];
-  let marketPrice0;
-  let marketPrice1;
+  let marketPrice;
   let sum = 0;
   let claimable = 0;
 
@@ -38,22 +37,12 @@
       positions.map((item) => {
         const token0 = Number(item?.token0Info?.info?.cmc_id);
         const token1 = Number(item?.token1Info?.info?.cmc_id);
-        if (token0) {
-          priceSubscribe([token0], (data) => {
-            marketPrice0 = {
-              id: data.id,
-              market_price: data.p,
-            };
-          });
-        }
-        if (token1) {
-          priceSubscribe([token1], (data) => {
-            marketPrice1 = {
-              id: data.id,
-              market_price: data.p,
-            };
-          });
-        }
+        priceSubscribe([token0, token1], (data) => {
+          marketPrice = {
+            id: data.id,
+            market_price: data.p,
+          };
+        });
       });
 
       dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
@@ -69,29 +58,29 @@
   }
 
   $: {
-    if (marketPrice0 !== undefined && marketPrice1 !== undefined) {
+    if (marketPrice !== undefined) {
       const formatDataWithMarketPrice = defaultDataPositionFormat.map(
         (item) => {
-          if (marketPrice0.id === Number(item?.token0Info?.info?.cmc_id)) {
+          if (marketPrice.id === Number(item?.token0Info?.info?.cmc_id)) {
             return {
               ...item,
-              market_price0: marketPrice0.market_price,
-            };
-          }
-          if (marketPrice1.id === Number(item?.token1Info?.info?.cmc_id)) {
-            return {
-              ...item,
-              market_price1: marketPrice1.market_price,
-            };
-          }
-          if (marketPrice0.market_price && marketPrice1.marketPrice1) {
-            return {
-              ...item,
+              market_price0: marketPrice.market_price,
               initialValue:
-                Number(item.amount0out) * marketPrice0.market_price +
-                Number(item.amount1out) * marketPrice1.market_price +
-                item.claimable0Amount * marketPrice0.market_price +
-                item.claimable1Amount * marketPrice1.market_price,
+                Number(item.amount0out) * marketPrice.market_price +
+                Number(item.amount1out) * item.market_price1 +
+                item.claimable0Amount * marketPrice.market_price +
+                item.claimable1Amount * item.market_price1,
+            };
+          }
+          if (marketPrice.id === Number(item?.token1Info?.info?.cmc_id)) {
+            return {
+              ...item,
+              market_price1: marketPrice.market_price,
+              initialValue:
+                Number(item.amount0out) * item.market_price0 +
+                Number(item.amount1out) * marketPrice.market_price +
+                item.claimable0Amount * item.market_price0 +
+                item.claimable1Amount * marketPrice.market_price,
             };
           }
 
