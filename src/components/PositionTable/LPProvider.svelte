@@ -128,11 +128,6 @@
       );
     }
   }
-
-  $: console.log({
-    defaultDataPositionFormat,
-    positions,
-  });
 </script>
 
 <div class="flex flex-col gap-5">
