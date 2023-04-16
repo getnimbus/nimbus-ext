@@ -75,13 +75,13 @@
           if (marketPrice0.id === Number(item?.token0Info?.info?.cmc_id)) {
             return {
               ...item,
-              market_price0: item?.amount0Price?.price || 0,
+              market_price0: marketPrice0.market_price,
             };
           }
           if (marketPrice1.id === Number(item?.token1Info?.info?.cmc_id)) {
             return {
               ...item,
-              market_price1: item?.amount1Price?.price || 0,
+              market_price1: marketPrice1.market_price,
             };
           }
           if (marketPrice0.market_price && marketPrice1.marketPrice1) {
@@ -128,6 +128,11 @@
       );
     }
   }
+
+  $: console.log({
+    defaultDataPositionFormat,
+    positions,
+  });
 </script>
 
 <div class="flex flex-col gap-5">
