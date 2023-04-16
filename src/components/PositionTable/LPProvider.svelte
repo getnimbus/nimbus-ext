@@ -24,13 +24,13 @@
       defaultDataPositionFormat = positions.map((item) => {
         return {
           ...item,
-          market_price0: item?.amount0Price?.price || 0,
-          market_price1: item?.amount1Price?.price || 0,
+          market_price0: Number(item?.amount0Price?.price) || 0,
+          market_price1: Number(item?.amount1Price?.price) || 0,
           initialValue:
-            Number(item.amount0out) * item?.amount0Price?.price ||
-            0 + Number(item.amount1out) * item?.amount1Price?.price ||
-            0 + item.claimable0Amount * item?.amount0Price?.price ||
-            0 + item.claimable1Amount * item?.amount1Price?.price ||
+            Number(item.amount0out) * (Number(item?.amount0Price?.price) || 0) +
+              Number(item.amount1out) * Number(item?.amount1Price?.price) ||
+            0 + item.claimable0Amount * Number(item?.amount0Price?.price) ||
+            0 + item.claimable1Amount * Number(item?.amount1Price?.price) ||
             0,
         };
       });
