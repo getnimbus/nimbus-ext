@@ -367,42 +367,51 @@
               </div>
             </td>
           </tr>
-        {/if}
-        {#each listAddress as item}
+        {:else if !isLoading && listAddress && listAddress.length === 0}
           <tr>
-            <td class="pl-3 py-4">
-              <div class="text-left flex items-start gap-2">
-                {item.address}
-              </div>
-            </td>
-            <td class="py-4">
-              <div
-                class="bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
-              >
-                {item.label}
-              </div>
-            </td>
-            <td class="pr-3 py-4">
-              <div class="flex justify-end gap-6">
-                <div
-                  class="text-red-600 hover:underline dark:text-red-500 transition-all cursor-pointer font-semibold"
-                  on:click={() => {
-                    isOpenConfirmDelete = true;
-                    selectedWallet = item;
-                  }}
-                >
-                  {MultipleLang.content.modal_delete}
-                </div>
-                <div
-                  class="text-blue-600 hover:underline dark:text-blue-500 transition-all cursor-pointer font-semibold"
-                  on:click={() => handleEdit(item)}
-                >
-                  {MultipleLang.content.modal_edit}
-                </div>
+            <td colspan="3">
+              <div class="flex justify-center items-center py-4 px-3">
+                No address
               </div>
             </td>
           </tr>
-        {/each}
+        {:else}
+          {#each listAddress as item}
+            <tr>
+              <td class="pl-3 py-4">
+                <div class="text-left flex items-start gap-2">
+                  {item.address}
+                </div>
+              </td>
+              <td class="py-4">
+                <div
+                  class="bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
+                >
+                  {item.label}
+                </div>
+              </td>
+              <td class="pr-3 py-4">
+                <div class="flex justify-end gap-6">
+                  <div
+                    class="text-red-600 hover:underline dark:text-red-500 transition-all cursor-pointer font-semibold"
+                    on:click={() => {
+                      isOpenConfirmDelete = true;
+                      selectedWallet = item;
+                    }}
+                  >
+                    {MultipleLang.content.modal_delete}
+                  </div>
+                  <div
+                    class="text-blue-600 hover:underline dark:text-blue-500 transition-all cursor-pointer font-semibold"
+                    on:click={() => handleEdit(item)}
+                  >
+                    {MultipleLang.content.modal_edit}
+                  </div>
+                </div>
+              </td>
+            </tr>
+          {/each}
+        {/if}
       </tbody>
     </table>
   </div>
