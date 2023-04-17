@@ -5,7 +5,6 @@
   import LpProviderItem from "./TableItem/LPProviderItem.svelte";
   import TooltipBalance from "~/components/TooltipBalance.svelte";
 
-  export let data;
   export let positions;
   export let position;
 
@@ -143,7 +142,7 @@
     <div class="text-xl font-semibold">{position}</div>
     <div class="flex flex-col gap-1">
       <div class="text-3xl font-semibold flex justify-end">
-        $<TooltipBalance number={sum || data.currentValue} />
+        $<TooltipBalance number={sum} />
       </div>
       <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
         {MultipleLang.claimable}: $<TooltipBalance number={claimable} />
@@ -186,9 +185,11 @@
           </th>
         </tr>
       </thead>
-      {#each dataPositionFormat as item}
-        <LpProviderItem data={item} />
-      {/each}
+      <tbody>
+        {#each dataPositionFormat as item}
+          <LpProviderItem data={item} />
+        {/each}
+      </tbody>
     </table>
   </div>
 </div>

@@ -1,8 +1,6 @@
 <script>
-  import { onMount } from "svelte";
   import dayjs from "dayjs";
-  import { priceSubscribe } from "~/lib/price-ws";
-  import { formatBalance, formatCurrency, formatPercent } from "~/utils";
+  import { formatPercent } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import TooltipBalance from "~/components/TooltipBalance.svelte";
@@ -12,20 +10,12 @@
 
   export let data;
 
-  let marketPrice = data?.price.price || 0;
-
-  $: profit = marketPrice * data?.currentValue + (data.inputValue || 0);
-  $: value = marketPrice * data?.currentValue;
+  $: profit = data.market_price * data?.currentValue + (data.inputValue || 0);
+  $: value = data.market_price * data?.currentValue;
   $: profitPercent =
     Math.abs(data.inputValue || 0) === 0
       ? 0
       : profit / Math.abs(data.inputValue);
-
-  onMount(() => {
-    priceSubscribe([data?.cmc_id], (data) => {
-      marketPrice = data.p;
-    });
-  });
 </script>
 
 <tbody>

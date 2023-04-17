@@ -31,7 +31,6 @@
         {#if position === "LP-Provider"}
           <LpProvider
             positions={data?.positions?.["LP-Provider"] || []}
-            {data}
             {position}
           />
         {:else if position === "LP-Provider v2"}
@@ -41,11 +40,7 @@
             {position}
           />
         {:else if position === "Staking"}
-          <Staking
-            positions={data?.positions?.["Staking"] || []}
-            {data}
-            {position}
-          />
+          <Staking positions={data?.positions?.["Staking"] || []} {position} />
         {:else if position === "Staking locked"}
           <StakingLocked
             positions={data?.positions?.["Staking locked"] || []}
@@ -55,13 +50,11 @@
         {:else if position === "Lending"}
           <LendingProvider
             positions={data?.positions?.["Lending"] || []}
-            {data}
             {position}
           />
         {:else if position === "Borrow"}
           <LendingBorrow
             positions={data?.positions["Borrow"] || []}
-            {data}
             {position}
           />
         {/if}

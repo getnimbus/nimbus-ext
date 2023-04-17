@@ -12,10 +12,8 @@
   };
 </script>
 
-<div class="flex flex-col">
-  <div
-    class="text-2xl font-medium text-black border-b border-[#00000014] pb-4 mb-4"
-  >
+<div class="flex flex-col gap-4">
+  <div class="text-2xl font-medium text-black">
     {MultipleLang.positions}
   </div>
 

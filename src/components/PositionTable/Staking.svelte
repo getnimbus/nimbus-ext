@@ -5,7 +5,6 @@
   import StakingItem from "./TableItem/StakingItem.svelte";
   import TooltipBalance from "~/components/TooltipBalance.svelte";
 
-  export let data;
   export let positions;
   export let position;
 
@@ -23,7 +22,7 @@
       defaultDataPositionFormat = positions.map((item) => {
         return {
           ...item,
-          market_price: data?.price?.price || 0,
+          market_price: item?.price?.price || 0,
         };
       });
 
@@ -37,7 +36,7 @@
       });
 
       sum = (defaultDataPositionFormat || []).reduce(
-        (prev, item) => prev + (data?.price?.price || 0) * item?.amount,
+        (prev, item) => prev + (item?.price?.price || 0) * item?.amount,
         0
       );
 
@@ -125,9 +124,11 @@
           </th>
         </tr>
       </thead>
-      {#each defaultDataPositionFormat as item}
-        <StakingItem data={item} />
-      {/each}
+      <tbody>
+        {#each defaultDataPositionFormat as item}
+          <StakingItem data={item} />
+        {/each}
+      </tbody>
     </table>
   </div>
 </div>
