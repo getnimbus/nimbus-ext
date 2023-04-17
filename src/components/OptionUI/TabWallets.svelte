@@ -11,6 +11,7 @@
 
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
+  import "~/components/Loading.custom.svelte";
 
   import Plus from "~/assets/plus.svg";
 
@@ -100,6 +101,7 @@
     },
   };
 
+  let isLoading = false;
   let errors: any = {};
   let errorsEdit: any = {};
   let listAddress = [];
@@ -268,11 +270,18 @@
   };
 
   const getListAddress = async () => {
-    const response: AddressData = await sendMessage(
-      "getListAddress",
-      undefined
-    );
-    listAddress = response;
+    isLoading = true;
+    try {
+      const response: AddressData = await sendMessage(
+        "getListAddress",
+        undefined
+      );
+      listAddress = response;
+    } catch (e) {
+      console.log("e: ", e);
+    } finally {
+      isLoading = false;
+    }
   };
 
   const handleDelete = (item) => {
@@ -350,6 +359,15 @@
         </tr>
       </thead>
       <tbody>
+        {#if isLoading}
+          <tr>
+            <td colspan="3">
+              <div class="flex justify-center items-center py-4 px-3">
+                <loading-icon />
+              </div>
+            </td>
+          </tr>
+        {/if}
         {#each listAddress as item}
           <tr>
             <td class="pl-3 py-4">
