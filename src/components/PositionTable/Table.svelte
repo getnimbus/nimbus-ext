@@ -38,15 +38,15 @@
           {data}
           {position}
         />
-      {:else if position === "Lending provider"}
+      {:else if position === "Lending"}
         <LendingProvider
-          positions={data?.positions?.["Lending provider"] || []}
+          positions={data?.positions?.["Lending"] || []}
           {data}
           {position}
         />
-      {:else if position === "Lending borrow"}
+      {:else if position === "Borrow"}
         <LendingBorrow
-          positions={data?.positions["Lending borrow"] || []}
+          positions={data?.positions["Borrow"] || []}
           {data}
           {position}
         />
