@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { priceSubscribe } from "~/lib/price-ws";
-  import { formatBalance, formatCurrency, formatPercent } from "~/utils";
+  import { formatPercent } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import TooltipBalance from "~/components/TooltipBalance.svelte";
@@ -11,13 +9,10 @@
 
   export let data;
 
-  let price0 = data?.amount0Price?.price || 0;
-  let price1 = data?.amount1Price?.price || 0;
-
-  $: balance0 = Number(data.amount0out) * price0;
-  $: balance1 = Number(data.amount1out) * price1;
-  $: claim0 = data.claimable0Amount * price0;
-  $: claim1 = data.claimable1Amount * price1;
+  $: balance0 = Number(data.amount0out) * data.market_price0;
+  $: balance1 = Number(data.amount1out) * data.market_price1;
+  $: claim0 = data.claimable0Amount * data.market_price0;
+  $: claim1 = data.claimable1Amount * data.market_price1;
 
   $: value = balance0 + balance1 + claim0 + claim1;
 
@@ -26,21 +21,6 @@
     Math.abs(data.inputValue || 0) === 0
       ? 0
       : profit / Math.abs(data.inputValue);
-
-  onMount(() => {
-    const token0 = Number(data?.token0Info?.info?.cmc_id);
-    const token1 = Number(data?.token1Info?.info?.cmc_id);
-    if (token0) {
-      priceSubscribe([token0], (data) => {
-        price0 = data.p;
-      });
-    }
-    if (token1) {
-      priceSubscribe([token1], (data) => {
-        price1 = data.p;
-      });
-    }
-  });
 </script>
 
 <tbody>
