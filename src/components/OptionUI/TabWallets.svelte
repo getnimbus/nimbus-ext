@@ -210,8 +210,6 @@
 
       e.target.reset();
       isOpenAddModal = false;
-
-      getListAddress();
     } else {
       console.log("Invalid Form");
     }
@@ -261,8 +259,6 @@
 
         e.target.reset();
         isOpenEditModal = false;
-
-        getListAddress();
       }
     } else {
       console.log("Invalid Form");

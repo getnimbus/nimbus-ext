@@ -14,31 +14,41 @@
 {#if types && types.length !== 0}
   {#each types as position}
     <div class="flex flex-col mb-10">
-      <div class="text-base font-semibold">{position}</div>
-
       {#if position === "LP-Provider"}
-        <LpProvider positions={data?.positions?.["LP-Provider"] || []} {data} />
+        <LpProvider
+          positions={data?.positions?.["LP-Provider"] || []}
+          {data}
+          {position}
+        />
       {:else if position === "LP-Provider v2"}
         <LpProviderV2
           positions={data?.positions?.["LP-Provider v2"] || []}
           {data}
+          {position}
         />
       {:else if position === "Staking"}
-        <Staking positions={data?.positions?.["Staking"] || []} {data} />
+        <Staking
+          positions={data?.positions?.["Staking"] || []}
+          {data}
+          {position}
+        />
       {:else if position === "Staking locked"}
         <StakingLocked
           positions={data?.positions?.["Staking locked"] || []}
           {data}
+          {position}
         />
       {:else if position === "Lending provider"}
         <LendingProvider
           positions={data?.positions?.["Lending provider"] || []}
           {data}
+          {position}
         />
       {:else if position === "Lending borrow"}
         <LendingBorrow
           positions={data?.positions["Lending borrow"] || []}
           {data}
+          {position}
         />
       {/if}
 
