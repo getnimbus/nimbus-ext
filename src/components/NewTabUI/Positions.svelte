@@ -24,7 +24,7 @@
       <loading-icon />
     </div>
   {:else}
-    <div>
+    <div class="flex flex-col gap-7">
       {#if data && data.length !== 0}
         {#each data as position}
           <Table data={position} />

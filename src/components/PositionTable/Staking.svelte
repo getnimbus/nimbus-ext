@@ -1,39 +1,91 @@
 <script>
+  import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
 
   import StakingItem from "./TableItem/StakingItem.svelte";
   import TooltipBalance from "~/components/TooltipBalance.svelte";
 
+  export let data;
+  export let positions;
+  export let position;
+
   const MultipleLang = {
     claimable: i18n("newtabPage.claimable", "Claimable"),
   };
 
-  export let data;
-  export let positions;
-  export let position;
+  let defaultDataPositionFormat = [];
+  let marketPrice;
+  let sum = 0;
+  let claimable = 0;
+
+  $: {
+    if (positions) {
+      defaultDataPositionFormat = positions.map((item) => {
+        return {
+          ...item,
+          market_price: data?.price?.price || 0,
+        };
+      });
+
+      positions.map((item) => {
+        priceSubscribe([item?.cmc_id], (data) => {
+          marketPrice = {
+            id: data.id,
+            market_price: data.p,
+          };
+        });
+      });
+
+      sum = (defaultDataPositionFormat || []).reduce(
+        (prev, item) => prev + (data?.price?.price || 0) * item?.amount,
+        0
+      );
+
+      claimable = (defaultDataPositionFormat || []).reduce(
+        (prev, item) => prev + item.claimable,
+        0
+      );
+    }
+  }
+
+  $: {
+    if (marketPrice !== undefined) {
+      const formatDataWithMarketPrice = defaultDataPositionFormat.map(
+        (item) => {
+          if (marketPrice.id === item?.cmc_id) {
+            return {
+              ...item,
+              market_price: marketPrice.market_price,
+            };
+          }
+
+          return { ...item };
+        }
+      );
+      defaultDataPositionFormat = formatDataWithMarketPrice;
+
+      sum = (formatDataWithMarketPrice || []).reduce(
+        (prev, item) => prev + item.market_price * item?.amount,
+        0
+      );
+
+      claimable = (formatDataWithMarketPrice || []).reduce(
+        (prev, item) => prev + item.claimable,
+        0
+      );
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-5">
-  <div class="flex justify-between items-center">
-    <div class="flex flex-col gap-3">
-      <div class="flex items-center gap-3">
-        <img src={data.logo} alt="logo" width={40} height={40} />
-        <a
-          href={data.url}
-          target="_blank"
-          class="text-lg font-semibold uppercase"
-        >
-          {data.protocol}
-        </a>
-      </div>
-      <div class="text-base font-semibold">{position}</div>
-    </div>
+  <div class="flex justify-between items-end">
+    <div class="text-xl font-semibold">{position}</div>
     <div class="flex flex-col gap-1">
       <div class="text-3xl font-semibold flex justify-end">
-        $<TooltipBalance number={data.currentValue} />
+        $<TooltipBalance number={sum} />
       </div>
       <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
-        {MultipleLang.claimable}: $<TooltipBalance number={data.claimable} />
+        {MultipleLang.claimable}: $<TooltipBalance number={claimable} />
       </div>
     </div>
   </div>
@@ -73,7 +125,7 @@
           </th>
         </tr>
       </thead>
-      {#each positions as item}
+      {#each defaultDataPositionFormat as item}
         <StakingItem data={item} />
       {/each}
     </table>
