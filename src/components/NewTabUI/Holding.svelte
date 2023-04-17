@@ -139,8 +139,8 @@
             </th>
           </tr>
         </thead>
-        <tbody>
-          {#if isLoading}
+        {#if isLoading}
+          <tbody>
             <tr>
               <td colspan="5">
                 <div class="flex justify-center items-center py-4 px-3">
@@ -148,20 +148,24 @@
                 </div>
               </td>
             </tr>
-          {:else if !isLoading && filteredHoldingData && filteredHoldingData.length === 0}
-            <tr>
-              <td colspan="5">
-                <div class="flex justify-center items-center py-4 px-3">
-                  No data
-                </div>
-              </td>
-            </tr>
-          {:else}
-            {#each filteredHoldingData as holding}
-              <HoldingInfo data={holding} />
-            {/each}
-          {/if}
-        </tbody>
+          </tbody>
+        {:else}
+          <tbody>
+            {#if filteredHoldingData && filteredHoldingData.length === 0}
+              <tr>
+                <td colspan="5">
+                  <div class="flex justify-center items-center py-4 px-3">
+                    No data
+                  </div>
+                </td>
+              </tr>
+            {:else}
+              {#each filteredHoldingData as holding}
+                <HoldingInfo data={holding} />
+              {/each}
+            {/if}
+          </tbody>
+        {/if}
       </table>
     </div>
   </div>
