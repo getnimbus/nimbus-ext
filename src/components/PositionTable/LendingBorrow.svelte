@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "~/lib/i18n";
 
-  import LendingBorrowItem from "./TableItem/LendingBorrowItem.svelte";
+  import LendingProviderItem from "./TableItem/LendingProviderItem.svelte";
   import TooltipBalance from "~/components/TooltipBalance.svelte";
 
   export let data;
@@ -36,10 +36,10 @@
           </th>
           <th class="py-3">
             <div class="text-right text-sm font-semibold text-black uppercase">
-              Entry
+              Entry ($)
             </div>
           </th>
-          <th class="py-3">
+          <!-- <th class="py-3">
             <div class="text-right text-sm font-semibold text-black uppercase">
               Entry Time
             </div>
@@ -48,13 +48,8 @@
             <div class="text-right text-sm font-semibold text-black uppercase">
               APY (%)
             </div>
-          </th>
+          </th> -->
           <th class="py-3">
-            <div class="text-right text-sm font-semibold text-black uppercase">
-              Healthy
-            </div>
-          </th>
-          <th class="pr-3 py-3">
             <div class="text-sm font-semibold text-black uppercase text-right">
               Value ($)
             </div>
@@ -67,7 +62,7 @@
         </tr>
       </thead>
       {#each positions as item}
-        <LendingBorrowItem data={item} />
+        <LendingProviderItem data={item} />
       {/each}
     </table>
   </div>

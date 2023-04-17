@@ -14,7 +14,7 @@
 
   let marketPrice = data?.price.price || 0;
 
-  $: profit = marketPrice * data?.currentValue - Math.abs(data.inputValue || 0);
+  $: profit = marketPrice * data?.currentValue + (data.inputValue || 0);
   $: value = marketPrice * data?.currentValue;
   $: profitPercent =
     Math.abs(data.inputValue || 0) === 0

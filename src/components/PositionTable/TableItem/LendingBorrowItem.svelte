@@ -2,25 +2,39 @@
   import { onMount } from "svelte";
   import dayjs from "dayjs";
   import { priceSubscribe } from "~/lib/price-ws";
-  import { formatBalance, formatCurrency, formatSmallBalance } from "~/utils";
+  import { formatBalance, formatCurrency, formatPercent } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
+  import TooltipBalance from "~/components/TooltipBalance.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
 
   export let data;
 
-  let showTooltipProfit = false;
-  let showTooltipCurrentValue = false;
-  let profit = Math.random() * 100 * (Math.random() > 0.5 ? 1 : -1);
+  let marketPrice = data?.price.price || 0;
+
+  $: profit = marketPrice * data?.currentValue + (data.inputValue || 0);
+  $: value = marketPrice * data?.currentValue;
+  $: profitPercent =
+    Math.abs(data.inputValue || 0) === 0
+      ? 0
+      : profit / Math.abs(data.inputValue);
+
+  onMount(() => {
+    priceSubscribe([data?.cmc_id], (data) => {
+      marketPrice = data.p;
+    });
+  });
 </script>
 
 <tbody>
   <tr class="hover:bg-gray-100 transition-all">
     <td class="pl-3 py-4">
       <div class="text-left flex items-start gap-2">
-        <img src={data.logo} alt="token" width="20" height="20" />
+        {#each data.tokens as token}
+          <img src={token.logo} alt={token.symbol} width="20" height="20" />
+        {/each}
         <div class="flex flex-col gap-1">
           <div class="text-black text-sm font-medium">{data.name}</div>
           {#if data.tokens && data.tokens.length}
@@ -40,59 +54,56 @@
         </div>
       </div>
     </td>
+
     <td class="py-4">
-      <div class="text-right text-sm text-[#00000099] font-medium">
-        {formatBalance(data.inputValue)}
+      <div class="flex justify-end text-sm text-[#00000099] font-medium">
+        <TooltipBalance number={Math.abs(data.inputValue)} />
       </div>
     </td>
-    <td class="py-4">
+
+    <!-- <td class="py-4">
       <div class="text-right text-sm text-[#00000099] font-medium">
         {dayjs(data.inputTime).format("DD/MM/YYYY - HH:mm")}
       </div>
-    </td>
-    <td class="py-4">
+    </td> -->
+
+    <!-- <td class="py-4">
       <div class="text-right text-sm text-[#00000099] font-medium">
         {formatBalance(data.apy)}
       </div>
-    </td>
+    </td> -->
+
     <td class="py-4">
-      <div class="text-right text-sm text-[#00000099] font-medium">
-        {formatBalance(data.healthyScore)}
+      <div class="flex justify-end text-sm text-[#00000099] font-medium">
+        <TooltipBalance number={value} />
       </div>
     </td>
+
     <td class="pr-3 py-4">
-      <div
-        class="text-right text-sm text-[#00000099] font-medium relative"
-        on:mouseenter={() => (showTooltipCurrentValue = true)}
-        on:mouseleave={() => (showTooltipCurrentValue = false)}
-      >
-        ${formatBalance(data.currentValue) === "NaN"
-          ? formatSmallBalance(data.currentValue)
-          : formatBalance(data.currentValue)}
-        {#if showTooltipCurrentValue && formatBalance(data.currentValue) === "NaN"}
-          <div class="absolute -top-7 right-0" style="z-index: 2147483648;">
-            <tooltip-detail text={formatCurrency(data.currentValue)} />
+      <div class="text-sm font-medium min-w-[125px]">
+        <div class="flex flex-col">
+          <div
+            class={`flex justify-end ${
+              profit >= 0 ? "text-[#00A878]" : "text-red-500"
+            }`}
+          >
+            <TooltipBalance number={Math.abs(profit)} />
           </div>
-        {/if}
-      </div>
-    </td>
-    <td class="pr-3 py-4">
-      <div
-        class="flex items-center justify-end gap-1 text-sm font-medium min-w-[125px] relative"
-        on:mouseenter={() => (showTooltipProfit = true)}
-        on:mouseleave={() => (showTooltipProfit = false)}
-      >
-        <div class={`${profit >= 0 ? "text-[#00A878]" : "text-red-500"}`}>
-          ${formatBalance(Math.abs(profit)) === "NaN"
-            ? formatSmallBalance(Math.abs(profit))
-            : formatBalance(Math.abs(profit))}
+          <div class="flex items-center justify-end gap-1">
+            <div
+              class={`${
+                profitPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+              }`}
+            >
+              {formatPercent(Math.abs(profitPercent) * 100)}%
+            </div>
+            <img
+              src={profit >= 0 ? TrendUp : TrendDown}
+              alt="trend"
+              class="mb-1"
+            />
+          </div>
         </div>
-        <img src={profit >= 0 ? TrendUp : TrendDown} alt="trend" class="mb-1" />
-        {#if showTooltipProfit && formatBalance(Math.abs(profit)) === "NaN"}
-          <div class="absolute -top-7 right-0" style="z-index: 2147483648;">
-            <tooltip-detail text={formatCurrency(Math.abs(profit))} />
-          </div>
-        {/if}
       </div>
     </td>
   </tr>
