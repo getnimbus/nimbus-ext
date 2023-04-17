@@ -36,8 +36,15 @@
         });
       });
 
-      sum = data.currentValue;
-      claimable = data.claimable;
+      sum = (defaultDataPositionFormat || []).reduce(
+        (prev, item) => prev + (data?.price?.price || 0) * item?.amount,
+        0
+      );
+
+      claimable = (defaultDataPositionFormat || []).reduce(
+        (prev, item) => prev + item.claimable,
+        0
+      );
     }
   }
 
@@ -71,20 +78,8 @@
 </script>
 
 <div class="flex flex-col gap-5">
-  <div class="flex justify-between items-center">
-    <div class="flex flex-col gap-3">
-      <div class="flex items-center gap-3">
-        <img src={data.logo} alt="logo" width={40} height={40} />
-        <a
-          href={data.url}
-          target="_blank"
-          class="text-lg font-semibold uppercase"
-        >
-          {data.protocol}
-        </a>
-      </div>
-      <div class="text-base font-semibold">{position}</div>
-    </div>
+  <div class="flex justify-between items-end">
+    <div class="text-xl font-semibold">{position}</div>
     <div class="flex flex-col gap-1">
       <div class="text-3xl font-semibold flex justify-end">
         $<TooltipBalance number={sum} />
