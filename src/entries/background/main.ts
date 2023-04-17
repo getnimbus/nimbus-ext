@@ -15,6 +15,15 @@ browser.runtime.onStartup.addListener(async () => {
   await fetchListTerm();
 });
 
+chrome.storage.sync.get("defaultnewtab", function (storage) {
+  if (!storage.defaultnewtab) {
+    chrome.tabs.update({
+      url: "chrome-search://local-ntp/local-ntp.html"
+    })
+  }
+})
+
+
 browser.runtime.onInstalled.addListener(() => {
   console.log("Extension installed");
 });

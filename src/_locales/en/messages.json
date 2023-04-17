@@ -53,6 +53,9 @@
     },
     "settings-page-content": {
       "change-lang-label": "Select languages"
+    },
+    "dashboard-page-content": {
+      "show-portfolio-label": "Show your Portfolio on new tab"
     }
   },
   "newtabPage": {

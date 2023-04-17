@@ -53,6 +53,9 @@
     },
     "settings-page-content": {
       "change-lang-label": "Chọn ngôn ngữ"
+    },
+    "dashboard-page-content": {
+      "show-portfolio-label": "Hiển thị danh mục đầu tư của bạn ở trang mới"
     }
   },
   "newtabPage": {
