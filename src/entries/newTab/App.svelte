@@ -1282,9 +1282,10 @@
               style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
               use:motion
             >
+              <!-- src="https://embed-609567819.sleekplan.app/?style=intercom#" -->
               <iframe
                 id="feedback-board"
-                src="https://embed-609567819.sleekplan.app/?style=intercom#"
+                src="https://tawk.to/chat/643d59714247f20fefec1e8d/1gu7qapef"
                 class="h-[580px] w-full"
               />
               <div
