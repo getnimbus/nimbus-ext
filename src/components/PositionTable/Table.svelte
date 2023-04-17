@@ -1,19 +1,12 @@
 <script>
-  import { i18n } from "~/lib/i18n";
-
   import LpProvider from "./LPProvider.svelte";
   import LpProviderV2 from "./LPProviderV2.svelte";
   import Staking from "./Staking.svelte";
   import StakingLocked from "./StakingLocked.svelte";
   import LendingProvider from "./LendingProvider.svelte";
   import LendingBorrow from "./LendingBorrow.svelte";
-  import TooltipBalance from "~/components/TooltipBalance.svelte";
 
   export let data;
-
-  const MultipleLang = {
-    claimable: i18n("newtabPage.claimable", "Claimable"),
-  };
 
   let types = Object.getOwnPropertyNames(data.positions);
 </script>
@@ -36,7 +29,6 @@
         {:else if position === "LP-Provider v2"}
           <LpProviderV2
             positions={data?.positions?.["LP-Provider v2"] || []}
-            {data}
             {position}
           />
         {:else if position === "Staking"}
