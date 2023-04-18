@@ -197,6 +197,7 @@
   let isLoadingFullPage = false;
   let isShowChat = false;
   let isCopied = false;
+  let showTooltipCopyAddress = false;
   let totalPositions = 0;
   let totalClaimable = 0;
   let totalAssets = 0;
@@ -1184,26 +1185,44 @@
                               /></svg
                             >
                           {:else}
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 12 11"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
+                            <div
+                              class="relative"
+                              on:mouseenter={() =>
+                                (showTooltipCopyAddress = true)}
+                              on:mouseleave={() =>
+                                (showTooltipCopyAddress = false)}
                             >
-                              <path
-                                d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
-                                stroke="#fff"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                              <path
-                                d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
-                                stroke="#fff"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                            </svg>
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 12 11"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                                  stroke="#fff"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                                  stroke="#fff"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
+                              {#if showTooltipCopyAddress}
+                                <div
+                                  class="absolute -top-7 left-1/2 transform -translate-x-1/2"
+                                  style="z-index: 2147483648;"
+                                >
+                                  <tooltip-detail
+                                    text={"Copy address to clipboard"}
+                                  />
+                                </div>
+                              {/if}
+                            </div>
                           {/if}
                         </div>
                       </div>

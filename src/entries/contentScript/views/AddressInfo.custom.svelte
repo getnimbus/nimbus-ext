@@ -26,6 +26,7 @@
   import "~/components/CoinChart.custom.svelte";
   import "~/components/PriceConvert.custom.svelte";
   import "~/components/CheckSafetyAddress.custom.svelte";
+  import "~/components/Tooltip.custom.svelte";
 
   import SmartContractIcon from "../assets/smart-contract.png";
   // import MetaMaskIcon from "../assets/metamask-icon.png";
@@ -134,6 +135,8 @@
   let showChangeAddressLabel = false;
   let timer;
   let isCopied = false;
+  let showTooltipCopyAddress = false;
+  let showTooltipGotoDetailAddress = false;
 
   // const loadUserAddressInfo = async () => {
   //   isLoading = true;
@@ -201,8 +204,6 @@
 
       if (response) {
         type = response?.type;
-
-        console.log("response: ", response);
 
         if (response?.type === "ADDRESS") {
           addressInfo.categories = response?.tags;
@@ -362,7 +363,7 @@
 
 <reset-style>
   <div
-    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all overflow-hidden w-[450px] ${
+    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all w-[450px] ${
       isLoading && popup && "max-h-[120px]"
     } ${popup ? "max-h-[680px]" : ""}`}
     class:shadow={popup}
@@ -570,7 +571,11 @@
                     <a
                       href={`https://etherscan.io/address/${address}`}
                       target="_blank"
-                      class="h-4 w-4"
+                      class="h-4 w-4 relative"
+                      on:mouseenter={() =>
+                        (showTooltipGotoDetailAddress = true)}
+                      on:mouseleave={() =>
+                        (showTooltipGotoDetailAddress = false)}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -589,6 +594,14 @@
                           clip-rule="evenodd"
                         />
                       </svg>
+                      {#if showTooltipGotoDetailAddress}
+                        <div
+                          class="absolute -top-7 left-1/2 transform -translate-x-1/2"
+                          style="z-index: 2147483648;"
+                        >
+                          <tooltip-detail text={"Go to address detail"} />
+                        </div>
+                      {/if}
                     </a>
                   </div>
                   <CopyToClipboard
@@ -626,26 +639,44 @@
                             /></svg
                           >
                         {:else}
-                          <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 12 11"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                          <div
+                            class="relative"
+                            on:mouseenter={() =>
+                              (showTooltipCopyAddress = true)}
+                            on:mouseleave={() =>
+                              (showTooltipCopyAddress = false)}
                           >
-                            <path
-                              d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
-                              stroke="#212121"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
-                              stroke="#212121"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </svg>
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 12 11"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                                stroke="#212121"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                                stroke="#212121"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                            {#if showTooltipCopyAddress}
+                              <div
+                                class="absolute -top-7 left-1/2 transform -translate-x-1/2"
+                                style="z-index: 2147483648;"
+                              >
+                                <tooltip-detail
+                                  text={"Copy address to clipboard"}
+                                />
+                              </div>
+                            {/if}
+                          </div>
                         {/if}
                       </div>
                     </div>

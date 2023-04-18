@@ -43,7 +43,7 @@
 >
   <span {id}>{numberFormat}</span><span>{numberSize}</span>
   {#if showTooltip && numberSize}
-    <span class="absolute -top-7 right-0" style="z-index: 2147483648;">
+    <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
       <tooltip-detail text={formatBalance(number)} />
     </span>
   {/if}
