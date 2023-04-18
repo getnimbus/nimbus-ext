@@ -197,6 +197,9 @@
   let isLoadingFullPage = false;
   let isShowChat = false;
   let isCopied = false;
+  let totalPositions = 0;
+  let totalClaimable = 0;
+  let totalAssets = 0;
 
   let optionPie = {
     title: {
@@ -1217,7 +1220,12 @@
               {/if}
             </div>
             {#if !isLoadingSync}
-              <Overview data={overviewData} />
+              <Overview
+                data={overviewData}
+                {totalPositions}
+                {totalClaimable}
+                {totalAssets}
+              />
             {/if}
           </div>
         </div>
@@ -1238,13 +1246,18 @@
             >
               <Charts {isLoading} {optionPie} {optionLine} />
               <div class="flex xl:flex-row flex-col justify-between gap-6">
-                <Holding {isLoading} data={walletData} />
+                <Holding {isLoading} data={walletData} bind:totalAssets />
                 <Opportunities {isLoading} data={opportunitiesData} />
               </div>
               <div
                 class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
               >
-                <Positions {isLoading} data={positionsData} />
+                <Positions
+                  {isLoading}
+                  data={positionsData}
+                  bind:totalPositions
+                  bind:totalClaimable
+                />
                 <div
                   on:click={() => {
                     isShowChat = true;

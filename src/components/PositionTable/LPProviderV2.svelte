@@ -1,111 +1,11 @@
 <script lang="ts">
-  import { priceSubscribe } from "~/lib/price-ws";
-
   import LpProviderItemV2 from "./TableItem/LPProviderItemV2.svelte";
   import TooltipBalance from "~/components/TooltipBalance.svelte";
 
   export let positions;
   export let position;
-
-  let defaultDataPositionFormat = [];
-  let dataPositionFormat = [];
-  let marketPrice;
-  let sum = 0;
-
-  $: {
-    if (positions) {
-      defaultDataPositionFormat = positions.map((item) => {
-        return {
-          ...item,
-          market_price0: Number(item?.amount0Price?.price) || 0,
-          market_price1: Number(item?.amount1Price?.price) || 0,
-          initialValue:
-            Number(item.amount0out) * (Number(item?.amount0Price?.price) || 0) +
-              Number(item.amount1out) * Number(item?.amount1Price?.price) || 0,
-        };
-      });
-
-      positions.map((item) => {
-        const token0 = Number(item?.token0Info?.info?.cmc_id);
-        const token1 = Number(item?.token1Info?.info?.cmc_id);
-        priceSubscribe([token0, token1], (data) => {
-          marketPrice = {
-            id: data.id,
-            market_price: data.p,
-          };
-        });
-      });
-
-      dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
-        if (a.initialValue < b.initialValue) {
-          return 1;
-        }
-        if (a.initialValue > b.initialValue) {
-          return -1;
-        }
-        return 0;
-      });
-
-      sum = (defaultDataPositionFormat || []).reduce(
-        (prev, item) =>
-          prev +
-            Number(item.amount0out) * (Number(item?.amount0Price?.price) || 0) +
-            Number(item.amount1out) * Number(item?.amount1Price?.price) || 0,
-        0
-      );
-    }
-  }
-
-  $: {
-    if (marketPrice !== undefined) {
-      const formatDataWithMarketPrice = defaultDataPositionFormat.map(
-        (item) => {
-          if (marketPrice.id === Number(item?.token0Info?.info?.cmc_id)) {
-            return {
-              ...item,
-              market_price0: marketPrice.market_price,
-              initialValue:
-                Number(item.amount0out) * marketPrice.market_price +
-                Number(item.amount1out) * item.market_price1 +
-                item.claimable0Amount * marketPrice.market_price +
-                item.claimable1Amount * item.market_price1,
-            };
-          }
-          if (marketPrice.id === Number(item?.token1Info?.info?.cmc_id)) {
-            return {
-              ...item,
-              market_price1: marketPrice.market_price,
-              initialValue:
-                Number(item.amount0out) * item.market_price0 +
-                Number(item.amount1out) * marketPrice.market_price +
-                item.claimable0Amount * item.market_price0 +
-                item.claimable1Amount * marketPrice.market_price,
-            };
-          }
-
-          return { ...item };
-        }
-      );
-      defaultDataPositionFormat = formatDataWithMarketPrice;
-      dataPositionFormat = formatDataWithMarketPrice.sort((a, b) => {
-        if (a.initialValue < b.initialValue) {
-          return 1;
-        }
-        if (a.initialValue > b.initialValue) {
-          return -1;
-        }
-        return 0;
-      });
-
-      sum = (formatDataWithMarketPrice || []).reduce(
-        (prev, item) =>
-          prev +
-          Number(item.amount0out) * item.market_price0 +
-          Number(item.amount1out) * item.market_price1,
-        0
-      );
-    }
-  }
+  export let sum;
+  export let sum_claimable;
 </script>
 
 <div class="flex flex-col gap-5">
@@ -142,7 +42,7 @@
         </tr>
       </thead>
       <tbody>
-        {#each dataPositionFormat as item}
+        {#each positions as item}
           <LpProviderItemV2 data={item} />
         {/each}
       </tbody>
