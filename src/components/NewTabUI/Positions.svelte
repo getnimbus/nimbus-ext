@@ -4,6 +4,8 @@
 
   export let data;
   export let isLoading;
+  export let totalPositions;
+  export let totalClaimable;
 
   import Table from "../PositionTable/Table.svelte";
   import "~/components/Loading.custom.svelte";
@@ -19,6 +21,70 @@
   let marketPrice;
   let sum = 0;
   let claimable = 0;
+  let sumPositions = 0;
+  let sumClaimablePositions = 0;
+
+  $: {
+    if (data) {
+      data.map((eachData) => {
+        let type = Object.getOwnPropertyNames(eachData.positions);
+        if (type[0] === "LP-Provider") {
+          eachData.positions?.["LP-Provider"].map((item) => {
+            const token0 = Number(item?.token0Info?.info?.cmc_id);
+            const token1 = Number(item?.token1Info?.info?.cmc_id);
+            priceSubscribe([token0, token1], (data) => {
+              marketPrice = {
+                id: data.id,
+                market_price: data.p,
+              };
+            });
+          });
+        }
+        if (type[0] === "LP-Provider v2") {
+          eachData.positions?.["LP-Provider v2"].map((item) => {
+            const token0 = Number(item?.token0Info?.info?.cmc_id);
+            const token1 = Number(item?.token1Info?.info?.cmc_id);
+            priceSubscribe([token0, token1], (data) => {
+              marketPrice = {
+                id: data.id,
+                market_price: data.p,
+              };
+            });
+          });
+        }
+        if (type[0] === "Staking") {
+          eachData.positions?.["Staking"].map((item) => {
+            priceSubscribe([item?.cmc_id], (data) => {
+              marketPrice = {
+                id: data.id,
+                market_price: data.p,
+              };
+            });
+          });
+        }
+        if (type[0] === "Lending") {
+          eachData.positions?.["Lending"].map((item) => {
+            priceSubscribe([item?.cmc_id], (data) => {
+              marketPrice = {
+                id: data.id,
+                market_price: data.p,
+              };
+            });
+          });
+        }
+        if (type[0] === "Borrow") {
+          eachData.positions?.["Borrow"].map((item) => {
+            priceSubscribe([item?.cmc_id], (data) => {
+              marketPrice = {
+                id: data.id,
+                market_price: data.p,
+              };
+            });
+          });
+        }
+      });
+    }
+  }
 
   $: {
     if (data) {
@@ -45,17 +111,6 @@
               };
             }
           );
-
-          eachData.positions?.["LP-Provider"].map((item) => {
-            const token0 = Number(item?.token0Info?.info?.cmc_id);
-            const token1 = Number(item?.token1Info?.info?.cmc_id);
-            priceSubscribe([token0, token1], (data) => {
-              marketPrice = {
-                id: data.id,
-                market_price: data.p,
-              };
-            });
-          });
 
           dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
             if (a.initialValue < b.initialValue) {
@@ -173,17 +228,6 @@
             };
           });
 
-          eachData.positions?.["LP-Provider v2"].map((item) => {
-            const token0 = Number(item?.token0Info?.info?.cmc_id);
-            const token1 = Number(item?.token1Info?.info?.cmc_id);
-            priceSubscribe([token0, token1], (data) => {
-              marketPrice = {
-                id: data.id,
-                market_price: data.p,
-              };
-            });
-          });
-
           dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
             if (a.initialValue < b.initialValue) {
               return 1;
@@ -277,15 +321,6 @@
             }
           );
 
-          eachData.positions?.["Staking"].map((item) => {
-            priceSubscribe([item?.cmc_id], (data) => {
-              marketPrice = {
-                id: data.id,
-                market_price: data.p,
-              };
-            });
-          });
-
           sum = (defaultDataPositionFormat || []).reduce(
             (prev, item) => prev + (item?.price?.price || 0) * item?.amount,
             0
@@ -342,15 +377,6 @@
               };
             }
           );
-
-          eachData.positions?.["Lending"].map((item) => {
-            priceSubscribe([item?.cmc_id], (data) => {
-              marketPrice = {
-                id: data.id,
-                market_price: data.p,
-              };
-            });
-          });
 
           dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
             if (a.initialValue < b.initialValue) {
@@ -429,15 +455,6 @@
             }
           );
 
-          eachData.positions?.["Borrow"].map((item) => {
-            priceSubscribe([item?.cmc_id], (data) => {
-              marketPrice = {
-                id: data.id,
-                market_price: data.p,
-              };
-            });
-          });
-
           dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
             if (a.initialValue < b.initialValue) {
               return 1;
@@ -507,26 +524,23 @@
     }
   }
 
-  $: sumPositions = (formatPositionsDataTable || []).reduce(
-    (prev, item) => prev + item.sum,
-    0
-  );
-
-  $: sumClaimablePositions = (formatPositionsDataTable || []).reduce(
-    (prev, item) => prev + item.sum_claimable,
-    0
-  );
+  $: {
+    if (formatPositionsDataTable) {
+      totalPositions = formatPositionsDataTable.reduce(
+        (prev, item) => prev + item.sum,
+        0
+      );
+      totalClaimable = formatPositionsDataTable.reduce(
+        (prev, item) => prev + item.sum_claimable,
+        0
+      );
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-4">
   <div class="text-2xl font-medium text-black">
     {MultipleLang.positions}
-  </div>
-
-  <div class="text-2xl">
-    sum: {sumPositions}
-    <br />
-    sum_claimable: {sumClaimablePositions}
   </div>
 
   {#if isLoading}

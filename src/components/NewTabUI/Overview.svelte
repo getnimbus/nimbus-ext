@@ -1,15 +1,17 @@
 <script lang="ts">
   import { i18n } from "~/lib/i18n";
 
-  export let data;
-
   import CountUpNumber from "../CountUpNumber.svelte";
+
+  export let data;
+  export let totalPositions;
+  export let totalClaimable;
+  export let totalAssets;
 
   const MultipleLang = {
     networth: i18n("newtabPage.networth", "Net Worth"),
     claimable: i18n("newtabPage.claimable", "Claimable"),
     total_assets: i18n("newtabPage.total-assets", "Total Assets"),
-    total_debts: i18n("newtabPage.total-debts", "Total Debts"),
     total_positions: i18n("newtabPage.total-positions", "Total Positions"),
   };
 </script>
@@ -21,7 +23,7 @@
         {MultipleLang.networth}
       </div>
       <div class="text-3xl text-black">
-        $<CountUpNumber id="networth" number={data?.overview.networth} />
+        $<CountUpNumber id="networth" number={totalAssets + totalPositions} />
       </div>
       <div class="flex items-center gap-3">
         <div
@@ -49,7 +51,7 @@
         {MultipleLang.claimable}
       </div>
       <div class="text-3xl text-black">
-        $<CountUpNumber id="claimable" number={data?.overview.claimable} />
+        $<CountUpNumber id="claimable" number={totalClaimable} />
       </div>
       <div class="flex items-center gap-3">
         <div
@@ -79,7 +81,7 @@
         {MultipleLang.total_assets}
       </div>
       <div class="text-3xl text-black">
-        $<CountUpNumber id="total_assets" number={data?.overview.assets} />
+        $<CountUpNumber id="total_assets" number={totalAssets} />
       </div>
       <div class="flex items-center gap-3">
         <div
@@ -105,10 +107,7 @@
         {MultipleLang.total_positions}
       </div>
       <div class="text-3xl text-black">
-        $<CountUpNumber
-          id="total_debts"
-          number={data?.overview.postionNetworth}
-        />
+        $<CountUpNumber id="total_positions" number={totalPositions} />
       </div>
       <div class="flex items-center gap-3">
         <div
@@ -124,7 +123,7 @@
             ↑
           {/if}
           <CountUpNumber
-            id="total_debts_grouth"
+            id="total_positions_grouth"
             number={Math.abs(data?.overview.postionNetworthChange)}
           />%
         </div>
