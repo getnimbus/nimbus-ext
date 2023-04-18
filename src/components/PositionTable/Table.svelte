@@ -25,14 +25,23 @@
           <LpProvider
             positions={data?.positions?.["LP-Provider"] || []}
             {position}
+            sum={data.sum}
+            sum_claimable={data.sum_claimable}
           />
         {:else if position === "LP-Provider v2"}
           <LpProviderV2
             positions={data?.positions?.["LP-Provider v2"] || []}
             {position}
+            sum={data.sum}
+            sum_claimable={data.sum_claimable}
           />
         {:else if position === "Staking"}
-          <Staking positions={data?.positions?.["Staking"] || []} {position} />
+          <Staking
+            positions={data?.positions?.["Staking"] || []}
+            {position}
+            sum={data.sum}
+            sum_claimable={data.sum_claimable}
+          />
         {:else if position === "Staking locked"}
           <StakingLocked
             positions={data?.positions?.["Staking locked"] || []}
@@ -43,11 +52,15 @@
           <LendingProvider
             positions={data?.positions?.["Lending"] || []}
             {position}
+            sum={data.sum}
+            sum_claimable={data.sum_claimable}
           />
         {:else if position === "Borrow"}
           <LendingBorrow
             positions={data?.positions["Borrow"] || []}
             {position}
+            sum={data.sum}
+            sum_claimable={data.sum_claimable}
           />
         {/if}
 

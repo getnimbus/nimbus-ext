@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
 
   import LendingBorrowItem from "./TableItem/LendingBorrowItem.svelte";
@@ -7,95 +6,12 @@
 
   export let positions;
   export let position;
+  export let sum;
+  export let sum_claimable;
 
   const MultipleLang = {
     claimable: i18n("newtabPage.claimable", "Claimable"),
   };
-
-  let defaultDataPositionFormat = [];
-  let dataPositionFormat = [];
-  let marketPrice;
-  let sum = 0;
-  let claimable = 0;
-
-  $: {
-    if (positions) {
-      defaultDataPositionFormat = positions.map((item) => {
-        return {
-          ...item,
-          market_price: item?.price?.price || 0,
-          initialValue: item?.price?.price || 0 * item?.amount,
-        };
-      });
-
-      positions.map((item) => {
-        priceSubscribe([item?.cmc_id], (data) => {
-          marketPrice = {
-            id: data.id,
-            market_price: data.p,
-          };
-        });
-      });
-
-      dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
-        if (a.initialValue < b.initialValue) {
-          return 1;
-        }
-        if (a.initialValue > b.initialValue) {
-          return -1;
-        }
-        return 0;
-      });
-
-      claimable = (defaultDataPositionFormat || []).reduce(
-        (prev, item) => prev + item.claimable,
-        0
-      );
-
-      sum = (defaultDataPositionFormat || []).reduce(
-        (prev, item) => prev + (item?.price?.price || 0) * item?.amount,
-        0
-      );
-    }
-  }
-
-  $: {
-    if (marketPrice !== undefined) {
-      const formatDataWithMarketPrice = defaultDataPositionFormat.map(
-        (item) => {
-          if (marketPrice.id === item?.cmc_id) {
-            return {
-              ...item,
-              market_price: marketPrice.market_price,
-              initialValue: marketPrice.market_price * item?.amount,
-            };
-          }
-
-          return { ...item };
-        }
-      );
-      defaultDataPositionFormat = formatDataWithMarketPrice;
-      dataPositionFormat = formatDataWithMarketPrice.sort((a, b) => {
-        if (a.initialValue < b.initialValue) {
-          return 1;
-        }
-        if (a.initialValue > b.initialValue) {
-          return -1;
-        }
-        return 0;
-      });
-
-      claimable = (defaultDataPositionFormat || []).reduce(
-        (prev, item) => prev + item.claimable,
-        0
-      );
-
-      sum = (defaultDataPositionFormat || []).reduce(
-        (prev, item) => prev + item.market_price * item?.amount,
-        0
-      );
-    }
-  }
 </script>
 
 <div class="flex flex-col gap-5">
@@ -106,7 +22,7 @@
         $<TooltipBalance number={sum} />
       </div>
       <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
-        {MultipleLang.claimable}: $<TooltipBalance number={claimable} />
+        {MultipleLang.claimable}: $<TooltipBalance number={sum_claimable} />
       </div>
     </div>
   </div>
@@ -152,7 +68,7 @@
         </tr>
       </thead>
       <tbody>
-        {#each dataPositionFormat as item}
+        {#each positions as item}
           <LendingBorrowItem data={item} />
         {/each}
       </tbody>
