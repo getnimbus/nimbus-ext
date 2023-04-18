@@ -10,8 +10,8 @@
 
   export let data;
 
-  $: profit = data.market_price * data?.currentValue + (data.inputValue || 0);
-  $: value = data.market_price * data?.currentValue;
+  $: profit = data.market_price * data?.amount + (data.inputValue || 0);
+  $: value = data.market_price * data?.amount;
   $: profitPercent =
     Math.abs(data.inputValue || 0) === 0
       ? 0
@@ -41,6 +41,12 @@
           <div>None</div>
         {/if}
       </div>
+    </div>
+  </td>
+
+  <td class="py-4">
+    <div class="flex justify-end text-sm text-[#00000099] font-medium">
+      <TooltipBalance number={data.amount} />
     </div>
   </td>
 

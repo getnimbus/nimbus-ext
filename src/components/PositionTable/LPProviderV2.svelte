@@ -1,6 +1,5 @@
 <script lang="ts">
   import { priceSubscribe } from "~/lib/price-ws";
-  import { i18n } from "~/lib/i18n";
 
   import LpProviderItemV2 from "./TableItem/LPProviderItemV2.svelte";
   import TooltipBalance from "~/components/TooltipBalance.svelte";
@@ -8,15 +7,10 @@
   export let positions;
   export let position;
 
-  const MultipleLang = {
-    claimable: i18n("newtabPage.claimable", "Claimable"),
-  };
-
   let defaultDataPositionFormat = [];
   let dataPositionFormat = [];
   let marketPrice;
   let sum = 0;
-  let claimable = 0;
 
   $: {
     if (positions) {
@@ -27,10 +21,7 @@
           market_price1: Number(item?.amount1Price?.price) || 0,
           initialValue:
             Number(item.amount0out) * (Number(item?.amount0Price?.price) || 0) +
-              Number(item.amount1out) * Number(item?.amount1Price?.price) ||
-            0 + item.claimable0Amount * Number(item?.amount0Price?.price) ||
-            0 + item.claimable1Amount * Number(item?.amount1Price?.price) ||
-            0,
+              Number(item.amount1out) * Number(item?.amount1Price?.price) || 0,
         };
       });
 
@@ -55,21 +46,11 @@
         return 0;
       });
 
-      claimable = (defaultDataPositionFormat || []).reduce(
-        (prev, item) =>
-          prev + item.claimable0Amount * Number(item?.amount0Price?.price) ||
-          0 + item.claimable1Amount * Number(item?.amount1Price?.price) ||
-          0,
-        0
-      );
-
       sum = (defaultDataPositionFormat || []).reduce(
         (prev, item) =>
-          prev + Number(item.amount0out) * Number(item?.amount0Price?.price) ||
-          0 + Number(item.amount1out) * Number(item?.amount1Price?.price) ||
-          0 + item.claimable0Amount * Number(item?.amount0Price?.price) ||
-          0 + item.claimable1Amount * Number(item?.amount1Price?.price) ||
-          0,
+          prev +
+            Number(item.amount0out) * (Number(item?.amount0Price?.price) || 0) +
+            Number(item.amount1out) * Number(item?.amount1Price?.price) || 0,
         0
       );
     }
@@ -116,21 +97,11 @@
         return 0;
       });
 
-      claimable = (formatDataWithMarketPrice || []).reduce(
-        (prev, item) =>
-          prev +
-          item.claimable0Amount * item.market_price0 +
-          item.claimable1Amount * item.market_price1,
-        0
-      );
-
       sum = (formatDataWithMarketPrice || []).reduce(
         (prev, item) =>
           prev +
           Number(item.amount0out) * item.market_price0 +
-          Number(item.amount1out) * item.market_price1 +
-          item.claimable0Amount * item.market_price0 +
-          item.claimable1Amount * item.market_price1,
+          Number(item.amount1out) * item.market_price1,
         0
       );
     }
@@ -140,13 +111,8 @@
 <div class="flex flex-col gap-5">
   <div class="flex justify-between items-end">
     <div class="text-xl font-semibold">{position}</div>
-    <div class="flex flex-col gap-1">
-      <div class="text-3xl font-semibold flex justify-end">
-        $<TooltipBalance number={sum} />
-      </div>
-      <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
-        {MultipleLang.claimable}: $<TooltipBalance number={claimable} />
-      </div>
+    <div class="text-3xl font-semibold flex justify-end">
+      $<TooltipBalance number={sum} />
     </div>
   </div>
   <div class="border border-[#0000000d] rounded-[10px]">

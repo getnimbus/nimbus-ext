@@ -24,7 +24,7 @@
         return {
           ...item,
           market_price: item?.price?.price || 0,
-          initialValue: item?.price?.price || 0 * item?.currentValue,
+          initialValue: item?.price?.price || 0 * item?.amount,
         };
       });
 
@@ -53,7 +53,7 @@
       );
 
       sum = (defaultDataPositionFormat || []).reduce(
-        (prev, item) => prev + (item?.price?.price || 0) * item?.currentValue,
+        (prev, item) => prev + (item?.price?.price || 0) * item?.amount,
         0
       );
     }
@@ -67,7 +67,7 @@
             return {
               ...item,
               market_price: marketPrice.market_price,
-              initialValue: marketPrice.market_price * item?.currentValue,
+              initialValue: marketPrice.market_price * item?.amount,
             };
           }
 
@@ -91,7 +91,7 @@
       );
 
       sum = (defaultDataPositionFormat || []).reduce(
-        (prev, item) => prev + item.market_price * item?.currentValue,
+        (prev, item) => prev + item.market_price * item?.amount,
         0
       );
     }
@@ -117,6 +117,11 @@
           <th class="pl-3 py-3">
             <div class="text-sm font-semibold text-black uppercase text-left">
               Pool
+            </div>
+          </th>
+          <th class="py-3">
+            <div class="text-right text-sm font-semibold text-black uppercase">
+              Amount
             </div>
           </th>
           <th class="py-3">
