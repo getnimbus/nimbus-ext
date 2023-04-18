@@ -7,6 +7,7 @@
   export let totalPositions;
   export let totalClaimable;
   export let totalAssets;
+  export let isLoading;
 
   const MultipleLang = {
     networth: i18n("newtabPage.networth", "Net Worth"),
@@ -23,7 +24,10 @@
         {MultipleLang.networth}
       </div>
       <div class="text-3xl text-black">
-        $<CountUpNumber id="networth" number={totalAssets + totalPositions} />
+        $<CountUpNumber
+          id="networth"
+          number={isLoading ? 0 : totalAssets + totalPositions}
+        />
       </div>
       <div class="flex items-center gap-3">
         <div
@@ -51,7 +55,10 @@
         {MultipleLang.claimable}
       </div>
       <div class="text-3xl text-black">
-        $<CountUpNumber id="claimable" number={totalClaimable} />
+        $<CountUpNumber
+          id="claimable"
+          number={isLoading ? 0 : totalClaimable}
+        />
       </div>
       <div class="flex items-center gap-3">
         <div
@@ -81,7 +88,10 @@
         {MultipleLang.total_assets}
       </div>
       <div class="text-3xl text-black">
-        $<CountUpNumber id="total_assets" number={totalAssets} />
+        $<CountUpNumber
+          id="total_assets"
+          number={isLoading ? 0 : totalAssets}
+        />
       </div>
       <div class="flex items-center gap-3">
         <div
@@ -107,7 +117,10 @@
         {MultipleLang.total_positions}
       </div>
       <div class="text-3xl text-black">
-        $<CountUpNumber id="total_positions" number={totalPositions} />
+        $<CountUpNumber
+          id="total_positions"
+          number={isLoading ? 0 : totalPositions}
+        />
       </div>
       <div class="flex items-center gap-3">
         <div

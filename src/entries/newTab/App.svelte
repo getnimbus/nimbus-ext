@@ -1225,6 +1225,7 @@
                 {totalPositions}
                 {totalClaimable}
                 {totalAssets}
+                {isLoading}
               />
             {/if}
           </div>

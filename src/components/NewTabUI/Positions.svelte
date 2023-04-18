@@ -21,8 +21,6 @@
   let marketPrice;
   let sum = 0;
   let claimable = 0;
-  let sumPositions = 0;
-  let sumClaimablePositions = 0;
 
   $: {
     if (data) {
