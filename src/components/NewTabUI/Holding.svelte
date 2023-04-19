@@ -9,7 +9,6 @@
 
   let filteredHolding = true;
   let filteredHoldingData = [];
-  let defaultDataFormat = [];
   let marketPrice;
   let formatData = [];
   let sum = 0;
@@ -42,13 +41,13 @@
 
   $: {
     if (data) {
-      defaultDataFormat = data.map((item) => {
+      formatData = data.map((item) => {
         return {
           ...item,
           market_price: item?.rate || 0,
         };
       });
-      filteredHoldingData = defaultDataFormat.filter((item) => item.value > 1);
+      filteredHoldingData = formatData.filter((item) => item.value > 1);
       sum = data.reduce((prev, item) => prev + item.value, 0);
       totalAssets = data.reduce((prev, item) => prev + item.value, 0);
     }
@@ -56,7 +55,7 @@
 
   $: {
     if (marketPrice) {
-      const formatDataWithMarketPrice = defaultDataFormat.map((item) => {
+      const formatDataWithMarketPrice = formatData.map((item) => {
         if (marketPrice.id === item.cmc_id) {
           return {
             ...item,
@@ -65,7 +64,6 @@
         }
         return { ...item };
       });
-      defaultDataFormat = formatDataWithMarketPrice;
       formatData = formatDataWithMarketPrice;
     }
   }

@@ -22,7 +22,10 @@
         $<TooltipBalance number={sum} />
       </div>
       <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
-        {MultipleLang.claimable}: $<TooltipBalance number={sum_claimable} />
+        {MultipleLang.claimable}:
+        <span>
+          $<TooltipBalance number={sum_claimable} />
+        </span>
       </div>
     </div>
   </div>

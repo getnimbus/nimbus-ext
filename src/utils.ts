@@ -135,6 +135,12 @@ export const shorterName = (string: string) => {
   }
 }
 
+export const flattenArray = (arr) => {
+  return arr.reduce(function (flat, toFlatten) {
+    return flat.concat(Array.isArray(toFlatten) ? flattenArray(toFlatten) : toFlatten);
+  }, [])
+}
+
 export const escapeRegex = (string: string) => {
   return string.toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
 };

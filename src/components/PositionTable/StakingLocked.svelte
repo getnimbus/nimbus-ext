@@ -4,9 +4,10 @@
   import StakingLockedItem from "./TableItem/StakingLockedItem.svelte";
   import TooltipBalance from "~/components/TooltipBalance.svelte";
 
-  export let data;
   export let positions;
   export let position;
+  export let sum;
+  export let sum_claimable;
 
   const MultipleLang = {
     claimable: i18n("newtabPage.claimable", "Claimable"),
@@ -18,10 +19,13 @@
     <div class="text-xl font-semibold">{position}</div>
     <div class="flex flex-col gap-1">
       <div class="text-3xl font-semibold flex justify-end">
-        $<TooltipBalance number={data.currentValue} />
+        $<TooltipBalance number={sum} />
       </div>
       <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
-        {MultipleLang.claimable}: $<TooltipBalance number={data.claimable} />
+        {MultipleLang.claimable}:
+        <span>
+          $<TooltipBalance number={sum_claimable} />
+        </span>
       </div>
     </div>
   </div>
