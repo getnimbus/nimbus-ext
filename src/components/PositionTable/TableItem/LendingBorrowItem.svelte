@@ -46,7 +46,7 @@
 
   <td class="py-4">
     <div class="flex justify-end text-sm text-[#00000099] font-medium">
-      <TooltipBalance number={data.amount} />
+      <TooltipBalance number={Math.abs(data.amount)} />
     </div>
   </td>
 
@@ -70,7 +70,7 @@
 
   <td class="py-4">
     <div class="flex justify-end text-sm text-[#00000099] font-medium">
-      <TooltipBalance number={value} />
+      <TooltipBalance number={Math.abs(value)} />
     </div>
   </td>
 

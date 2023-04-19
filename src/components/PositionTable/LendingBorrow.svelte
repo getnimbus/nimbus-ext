@@ -19,14 +19,14 @@
     <div class="text-xl font-semibold">{position}</div>
     <div class="flex flex-col gap-1">
       <div class="text-3xl font-semibold flex justify-end">
-        $<TooltipBalance number={sum} />
+        $<TooltipBalance number={Math.abs(sum)} />
       </div>
-      <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
+      <!-- <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
         {MultipleLang.claimable}:
         <span>
           $<TooltipBalance number={sum_claimable} />
         </span>
-      </div>
+      </div> -->
     </div>
   </div>
   <div class="border border-[#0000000d] rounded-[10px]">
