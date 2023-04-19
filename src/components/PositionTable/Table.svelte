@@ -8,7 +8,7 @@
 
   export let data;
 
-  let types = Object.getOwnPropertyNames(data.positions);
+  $: types = data.positions.map((type) => Object.getOwnPropertyNames(type)[0]);
 </script>
 
 <div class="flex flex-col gap-2 border border-[#00000014] rounded-[10px] p-4">
@@ -23,44 +23,81 @@
       <div class="flex flex-col mb-10 test">
         {#if position === "LP-Provider"}
           <LpProvider
-            positions={data?.positions?.["LP-Provider"] || []}
             {position}
-            sum={data.sum}
-            sum_claimable={data.sum_claimable}
+            positions={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].data || []}
+            sum={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum || 0}
+            sum_claimable={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum_claimable || 0}
           />
         {:else if position === "LP-Provider v2"}
           <LpProviderV2
-            positions={data?.positions?.["LP-Provider v2"] || []}
             {position}
-            sum={data.sum}
-            sum_claimable={data.sum_claimable}
+            positions={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].data || []}
+            sum={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum || 0}
+            sum_claimable={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum_claimable || 0}
           />
         {:else if position === "Staking"}
           <Staking
-            positions={data?.positions?.["Staking"] || []}
+            positions={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].data || []}
             {position}
-            sum={data.sum}
-            sum_claimable={data.sum_claimable}
+            sum={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum || 0}
+            sum_claimable={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum_claimable || 0}
           />
         {:else if position === "Staking locked"}
           <StakingLocked
-            positions={data?.positions?.["Staking locked"] || []}
-            {data}
             {position}
+            positions={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].data || []}
+            sum={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum || 0}
+            sum_claimable={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum_claimable || 0}
           />
         {:else if position === "Lending"}
           <LendingProvider
-            positions={data?.positions?.["Lending"] || []}
             {position}
-            sum={data.sum}
-            sum_claimable={data.sum_claimable}
+            positions={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].data || []}
+            sum={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum || 0}
+            sum_claimable={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum_claimable || 0}
           />
         {:else if position === "Borrow"}
           <LendingBorrow
-            positions={data?.positions["Borrow"] || []}
             {position}
-            sum={data.sum}
-            sum_claimable={data.sum_claimable}
+            positions={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].data || []}
+            sum={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum || 0}
+            sum_claimable={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum_claimable || 0}
           />
         {/if}
 

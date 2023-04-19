@@ -143,8 +143,6 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    animation: growDown 300ms ease-in-out forwards;
-    transform-origin: top center;
   }
 
   .content::-webkit-scrollbar {
@@ -178,17 +176,5 @@
     font-size: 14px;
     line-height: 17px;
     transition: all 0.3s ease;
-  }
-
-  @keyframes growDown {
-    0% {
-      transform: scaleY(0);
-    }
-    80% {
-      transform: scaleY(1.05);
-    }
-    100% {
-      transform: scaleY(1);
-    }
   }
 </style>

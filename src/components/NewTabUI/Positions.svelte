@@ -1,6 +1,7 @@
 <script lang="ts">
   import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
+  import { flattenArray } from "~/utils";
 
   export let data;
   export let isLoading;
@@ -9,13 +10,13 @@
 
   import Table from "../PositionTable/Table.svelte";
   import "~/components/Loading.custom.svelte";
-  import { flattenArray } from "~/utils";
 
   const MultipleLang = {
     positions: i18n("newtabPage.positions", "Positions"),
   };
 
   let formatPositionsDataTable = [];
+  let flattenPositionsDataTable = [];
 
   let defaultDataPositionFormat = [];
   let dataPositionFormat = [];
@@ -27,7 +28,6 @@
     if (data) {
       data.map((eachData) => {
         let types = Object.getOwnPropertyNames(eachData.positions);
-
         types.map((type) => {
           if (type === "LP-Provider") {
             eachData.positions?.["LP-Provider"].map((item) => {
@@ -41,7 +41,6 @@
               });
             });
           }
-
           if (type === "LP-Provider v2") {
             eachData.positions?.["LP-Provider v2"].map((item) => {
               const token0 = Number(item?.token0Info?.info?.cmc_id);
@@ -54,7 +53,6 @@
               });
             });
           }
-
           if (type === "Staking") {
             eachData.positions?.["Staking"].map((item) => {
               priceSubscribe([item?.cmc_id], (data) => {
@@ -65,7 +63,6 @@
               });
             });
           }
-
           if (type === "Lending") {
             eachData.positions?.["Lending"].map((item) => {
               priceSubscribe([item?.cmc_id], (data) => {
@@ -76,7 +73,6 @@
               });
             });
           }
-
           if (type === "Borrow") {
             eachData.positions?.["Borrow"].map((item) => {
               priceSubscribe([item?.cmc_id], (data) => {
@@ -94,9 +90,7 @@
 
   $: {
     if (data) {
-      console.log("data: ", data);
-
-      formatPositionsDataTable = data.map((eachData) => {
+      const realtimePositionsDataTable = data.map((eachData) => {
         let types = Object.getOwnPropertyNames(eachData.positions);
 
         const eachTypeDataList = types.map((type) => {
@@ -227,7 +221,6 @@
               sum_claimable: claimable,
             };
           }
-
           if (type === "LP-Provider v2") {
             defaultDataPositionFormat = eachData.positions?.[
               "LP-Provider v2"
@@ -264,7 +257,15 @@
               0
             );
 
-            claimable = 0;
+            claimable = (defaultDataPositionFormat || []).reduce(
+              (prev, item) =>
+                prev +
+                  Number(item.amount0out) *
+                    (Number(item?.amount0Price?.price) || 0) +
+                  Number(item.amount1out) * Number(item?.amount1Price?.price) ||
+                0,
+              0
+            );
 
             if (marketPrice !== undefined) {
               const formatDataWithMarketPrice = defaultDataPositionFormat.map(
@@ -318,7 +319,13 @@
                 0
               );
 
-              claimable = 0;
+              claimable = (formatDataWithMarketPrice || []).reduce(
+                (prev, item) =>
+                  prev +
+                  Number(item.amount0out) * item.market_price0 +
+                  Number(item.amount1out) * item.market_price1,
+                0
+              );
             }
 
             return {
@@ -330,7 +337,6 @@
               sum_claimable: claimable,
             };
           }
-
           if (type === "Staking") {
             defaultDataPositionFormat = eachData.positions?.["Staking"].map(
               (item) => {
@@ -386,7 +392,6 @@
               sum_claimable: claimable,
             };
           }
-
           if (type === "Lending") {
             defaultDataPositionFormat = eachData.positions?.["Lending"].map(
               (item) => {
@@ -409,7 +414,7 @@
             });
 
             claimable = (defaultDataPositionFormat || []).reduce(
-              (prev, item) => prev + item.claimable,
+              (prev, item) => prev + (item?.price?.price || 0) * item?.amount,
               0
             );
 
@@ -444,7 +449,7 @@
               });
 
               claimable = (defaultDataPositionFormat || []).reduce(
-                (prev, item) => prev + item.claimable,
+                (prev, item) => prev + item.market_price * item?.amount,
                 0
               );
 
@@ -463,7 +468,6 @@
               sum_claimable: claimable,
             };
           }
-
           if (type === "Borrow") {
             defaultDataPositionFormat = eachData.positions?.["Borrow"].map(
               (item) => {
@@ -545,34 +549,45 @@
         return eachTypeDataList;
       });
 
-      const formatData = formatPositionsDataTable.map((item) => {
-        return item.map((eachItem) => {
+      flattenPositionsDataTable = flattenArray(
+        realtimePositionsDataTable.map((item) => item)
+      );
+
+      formatPositionsDataTable = data.map((item, index) => {
+        const types = Object.getOwnPropertyNames(item.positions);
+
+        const selectedPositionData = types.map((type) => {
+          const selectedData = realtimePositionsDataTable[index].filter(
+            (selected) =>
+              Object.getOwnPropertyNames(selected.positions)[0] === type
+          );
+
+          const formatSelectedData = {
+            data: selectedData[0].positions[type],
+            sum: selectedData[0].sum,
+            sum_claimable: selectedData[0].sum_claimable,
+          };
+
           return {
-            ...eachItem,
-            ["total" + Object.getOwnPropertyNames(eachItem.positions)]: {
-              sum: eachItem.sum,
-              sum_claimable: eachItem.sum_claimable,
-            },
+            [type]: formatSelectedData,
           };
         });
+
+        return {
+          ...item,
+          positions: selectedPositionData,
+        };
       });
-
-      const flatten = flattenArray(formatData.map((item) => item));
-      console.log("flatten: ", flatten);
-
-      const blabla = data.map((item) => {});
-
-      console.log("formatData: ", formatData);
     }
   }
 
   $: {
-    if (formatPositionsDataTable) {
-      totalPositions = formatPositionsDataTable.reduce(
+    if (flattenPositionsDataTable) {
+      totalPositions = flattenPositionsDataTable.reduce(
         (prev, item) => prev + item.sum,
         0
       );
-      totalClaimable = formatPositionsDataTable.reduce(
+      totalClaimable = flattenPositionsDataTable.reduce(
         (prev, item) => prev + item.sum_claimable,
         0
       );

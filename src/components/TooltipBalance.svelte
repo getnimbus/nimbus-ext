@@ -6,7 +6,7 @@
   let showTooltip = false;
 </script>
 
-<div
+<span
   class="relative w-max"
   on:mouseenter={() => (showTooltip = true)}
   on:mouseleave={() => (showTooltip = false)}
@@ -17,7 +17,7 @@
       <tooltip-detail text={formatCurrency(number)} />
     </div>
   {/if}
-</div>
+</span>
 
 <style>
 </style>
