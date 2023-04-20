@@ -891,9 +891,6 @@
       handleGetAllData("sync");
     }
   }
-
-  $: console.log("listAddress: ", listAddress);
-  $: console.log("selectedWallet: ", selectedWallet);
 </script>
 
 <div class="flex flex-col" class:pb-10={listAddress && listAddress.length > 0}>

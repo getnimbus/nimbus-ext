@@ -39,10 +39,10 @@
   </td>
 
   <!-- <td class="py-4">
-      <div class="text-right text-sm text-[#00000099] font-medium">
-        {dayjs(data.inputTime).format("DD/MM/YYYY - HH:mm")}
-      </div>
-    </td> -->
+    <div class="text-right text-sm text-[#00000099] font-medium">
+      {dayjs(data.inputTime).format("DD/MM/YYYY - HH:mm")}
+    </div>
+  </td> -->
 
   <td class="py-4">
     <div class="flex justify-end text-sm text-[#00000099] font-medium">

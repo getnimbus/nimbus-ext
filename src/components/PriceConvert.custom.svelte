@@ -50,9 +50,11 @@
       <div class="text-[#666666] text-xs font-medium">{symbol}</div>
       <input
         class="text-black border-none outline-none bg-transparent text-sm font-medium w-full"
-        type="number"
-        min="0"
-        step="0.01"
+        inputmode="decimal"
+        pattern="[0-9]*(.[0-9]+)?"
+        type="text"
+        autocorrect="off"
+        autocomplete="off"
         bind:value={amount1}
         on:input={onInputAmount1}
       />
@@ -79,18 +81,24 @@
       <div class="text-[#666666] text-xs font-medium">USD</div>
       <input
         class="text-black border-none outline-none bg-transparent text-sm font-medium w-full"
-        type="number"
-        min="0"
-        step="0.01"
+        inputmode="decimal"
+        pattern="[0-9]*(.[0-9]+)?"
+        type="text"
+        autocorrect="off"
+        autocomplete="off"
         bind:value={amount2}
         on:input={onInputAmount2}
       />
     </div>
   </div>
-  <div class="text-[10px] text-gray-700 mt-2">
-    {formatCurrency(amount1)}
-    {symbol} equals ${formatCurrency(amount2)} USD
-  </div>
+  {#if amount2.toString() === "NaN" || amount1.toString() === "NaN"}
+    <div class="text-[10px] text-red-700 mt-2">Invalid number</div>
+  {:else}
+    <div class="text-[10px] text-gray-700 mt-2">
+      {formatCurrency(amount1)}
+      {symbol} equals ${formatCurrency(amount2)} USD
+    </div>
+  {/if}
 </reset-style>
 
 <style>
