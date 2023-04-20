@@ -1,5 +1,9 @@
 <script>
-  import { formatBigBalance, formatBalance } from "~/utils";
+  import {
+    formatBigBalance,
+    checkFormatBalance,
+    formatCurrency,
+  } from "~/utils";
 
   export let number;
   export let isFormatPercent = false;
@@ -24,9 +28,9 @@
   on:mouseleave={() => (showTooltip = false)}
 >
   <span>{numberFormat}</span><span>{numberSize}</span>
-  {#if showTooltip && numberSize}
+  {#if showTooltip && (numberSize || checkFormatBalance(number) === "NaN")}
     <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
-      <tooltip-detail text={formatBalance(number)} />
+      <tooltip-detail text={formatCurrency(number)} />
     </span>
   {/if}
 </span>
