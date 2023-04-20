@@ -18,7 +18,13 @@
 <tr class="hover:bg-gray-100 transition-all">
   <td class="pl-3 py-4">
     <div class="text-left flex items-start gap-2">
-      <img src={data.logo} alt="token" width="20" height="20" />
+      <img
+        src={data.logo}
+        alt="token"
+        width="20"
+        height="20"
+        class="rounded-full"
+      />
       <div class="flex flex-col gap-1">
         <div class="text-black text-sm font-medium">{data.name}</div>
         <div class="text-[#00000080] text-xs font-medium">ETH</div>

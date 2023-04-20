@@ -21,7 +21,13 @@
   <td class="pl-3 py-4">
     <div class="text-left flex items-start gap-2">
       {#each data.tokens as token}
-        <img src={token.logo} alt={token.symbol} width="20" height="20" />
+        <img
+          src={token.logo}
+          alt={token.symbol}
+          width="20"
+          height="20"
+          class="rounded-full"
+        />
       {/each}
       <div class="flex flex-col gap-1">
         <div class="text-black text-sm font-medium">{data.name}</div>

@@ -26,7 +26,13 @@
     <div class="text-left flex items-start gap-2">
       <div class="flex space-x-1">
         {#each data.tokens as token, index}
-          <img src={token.logo} alt="token" width="20" height="20" />
+          <img
+            src={token.logo}
+            alt="token"
+            width="20"
+            height="20"
+            class="rounded-full"
+          />
         {/each}
       </div>
       <div class="flex flex-col gap-1">
