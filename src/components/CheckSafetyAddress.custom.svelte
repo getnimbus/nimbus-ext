@@ -12,11 +12,11 @@
   const MultipleLang = {
     not_audited_address: i18n(
       "quickSearchLang.not-audited-address",
-      "This contract is marked as risky."
+      "This address is marked as unsafe."
     ),
     audited_address: i18n(
       "quickSearchLang.audited-address",
-      "This contract is marked as audited."
+      "This address is marked as safe."
     ),
     scan_by_go_plus: i18n("quickSearchLang.scan-with-go-plus", "Scan by Go+"),
   };
@@ -37,9 +37,11 @@
       const vals = Object.keys(response.result).map(
         (key) => response.result[key]
       );
-      isAudited = vals.every((currentValue) => currentValue === "1");
+      isAudited = vals.every((currentValue) => {
+        return currentValue === "0" || currentValue === "";
+      });
     } else {
-      isAudited = true;
+      isAudited = false;
     }
   };
 
@@ -51,17 +53,24 @@
 <reset-style>
   <div
     class={`pl-2 pr-3 py-[6px] rounded-lg ${
-      !isAudited
+      isAudited
         ? "text-green-700 bg-green-100"
         : "text-[#F25F5C] bg-[#f25f5c4d]"
     }`}
   >
     <div class="flex justify-between items-center">
       <div class="flex items-center gap-2">
-        {#if !isAudited}
+        {#if isAudited}
           <img src={getLocalImg(Success)} alt="Success" />
           <div class="text-xs">
             <div>{MultipleLang.audited_address}</div>
+            <a
+              href={`https://gopluslabs.io/malicious-address-detection/${address}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Audit report
+            </a>
           </div>
         {:else}
           <img src={getLocalImg(Fail)} alt="fail" />
