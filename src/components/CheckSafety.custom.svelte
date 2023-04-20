@@ -17,6 +17,7 @@
     ),
     audited: i18n("quickSearchLang.audited", "The page has been audited."),
     scan_by_go_plus: i18n("quickSearchLang.scan-with-go-plus", "Scan by Go+"),
+    audit_report: i18n("quickSearchLang.audit-report", "Audit report"),
   };
 
   let data: any = {};
@@ -58,7 +59,7 @@
               target="_blank"
               rel="noopener noreferrer"
             >
-              Audit report
+              {MultipleLang.audit_report}
             </a>
           </div>
         {:else if data.is_audit !== IS_AUDITED_CODE}

@@ -19,6 +19,7 @@
       "This address is marked as safe."
     ),
     scan_by_go_plus: i18n("quickSearchLang.scan-with-go-plus", "Scan by Go+"),
+    learn_more: i18n("quickSearchLang.learn-more", "Learn more"),
   };
 
   export let address;
@@ -69,13 +70,20 @@
               target="_blank"
               rel="noopener noreferrer"
             >
-              Audit report
+              {MultipleLang.learn_more}
             </a>
           </div>
         {:else}
           <img src={getLocalImg(Fail)} alt="fail" />
           <div class="text-xs">
-            {MultipleLang.not_audited_address}
+            <div>{MultipleLang.not_audited_address}</div>
+            <a
+              href={`https://gopluslabs.io/malicious-address-detection/${address}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {MultipleLang.learn_more}
+            </a>
           </div>
         {/if}
       </div>

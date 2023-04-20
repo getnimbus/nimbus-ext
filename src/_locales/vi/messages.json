@@ -15,7 +15,9 @@
     "results": "Kết quả",
     "no-results": "Không có kết quả",
     "source-data-charts": "*Dữ liệu của biểu đồ được cung cấp bởi CoinGecko",
-    "read-more": "Đọc thêm"
+    "read-more": "Đọc thêm",
+    "learn-more": "Tìm hiểu thêm",
+    "audit-report": "Báo cáo kiểm toán"
   },
   "optionsPage": {
     "message": "Options page languages",

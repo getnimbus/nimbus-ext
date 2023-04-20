@@ -15,7 +15,9 @@
     "results": "Results",
     "no-results": "No results",
     "source-data-charts": "*Chart data by CoinGecko",
-    "read-more": "Read more"
+    "read-more": "Read more",
+    "learn-more": "Learn more",
+    "audit-report": "Audit report"
   },
   "optionsPage": {
     "message": "Options page languages",
