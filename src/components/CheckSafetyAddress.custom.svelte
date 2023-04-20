@@ -3,7 +3,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { sendMessage } from "webext-bridge";
-  import { isEmpty } from "lodash";
   import { getLocalImg } from "~/utils";
   import { i18n } from "~/lib/i18n";
 
@@ -25,8 +24,7 @@
   export let address;
   export let chainId;
 
-  let data: any = {};
-  const IS_AUDITED_CODE = 1;
+  let isAudited = false;
 
   const checkSafetyAddress = async () => {
     const response: {
@@ -34,8 +32,14 @@
       message: string;
       result: any;
     } = await sendMessage("checkSafetyAddress", { address, chainId });
+
     if (response.result) {
-      data = response.result;
+      const vals = Object.keys(response.result).map(
+        (key) => response.result[key]
+      );
+      isAudited = vals.every((currentValue) => currentValue === "1");
+    } else {
+      isAudited = true;
     }
   };
 
@@ -47,19 +51,19 @@
 <reset-style>
   <div
     class={`pl-2 pr-3 py-[6px] rounded-lg ${
-      !isEmpty(data) && data.is_audit === IS_AUDITED_CODE
+      !isAudited
         ? "text-green-700 bg-green-100"
         : "text-[#F25F5C] bg-[#f25f5c4d]"
     }`}
   >
     <div class="flex justify-between items-center">
       <div class="flex items-center gap-2">
-        {#if !isEmpty(data) && data.is_audit === IS_AUDITED_CODE}
+        {#if !isAudited}
           <img src={getLocalImg(Success)} alt="Success" />
           <div class="text-xs">
             <div>{MultipleLang.audited_address}</div>
           </div>
-        {:else if data.is_audit !== IS_AUDITED_CODE}
+        {:else}
           <img src={getLocalImg(Fail)} alt="fail" />
           <div class="text-xs">
             {MultipleLang.not_audited_address}

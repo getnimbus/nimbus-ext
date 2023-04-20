@@ -735,7 +735,7 @@
                 </div>
               {/if}
             </div>
-            <!-- <check-safety-address {address} chainId={"1"} /> -->
+            <check-safety-address {address} chainId={"1"} />
             <div class="flex flex-col gap-2">
               <div class="text-[#00000099] text-sm">Networth</div>
               <div class="flex items-end gap-4">
