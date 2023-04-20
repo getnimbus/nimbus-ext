@@ -24,7 +24,7 @@
   let selectedLang: any = langs.filter((item) => item.value === currentLang)[0];
 
   $: {
-    if (selectedLang) {
+    if (selectedLang && selectedLang.value !== currentLang) {
       setLang(selectedLang.value);
     }
   }
