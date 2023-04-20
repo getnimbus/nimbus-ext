@@ -29,7 +29,10 @@
 >
   <span>{numberFormat}</span><span>{numberSize}</span>
   {#if showTooltip && (numberSize || checkFormatBalance(number) === "NaN")}
-    <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
+    <span
+      class="absolute -top-7 left-1/2 transform -translate-x-1/2"
+      style="z-index: 2147483648;"
+    >
       <tooltip-detail text={formatCurrency(number)} />
     </span>
   {/if}
