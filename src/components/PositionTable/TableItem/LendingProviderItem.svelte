@@ -91,12 +91,15 @@
         </div>
         <div class="flex items-center justify-end gap-1">
           <div
-            class={`${profitPercent >= 0 ? "text-[#00A878]" : "text-red-500"}`}
+            class={`flex items-center${
+              profitPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+            }`}
           >
             <TooltipBalance
               number={Math.abs(profitPercent) * 100}
               isFormatPercent
-            />%
+            />
+            <span>%</span>
           </div>
           <img
             src={profit >= 0 ? TrendUp : TrendDown}
