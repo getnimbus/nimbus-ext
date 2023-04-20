@@ -12,7 +12,7 @@
   import { formatBalance, formatCurrency } from "~/utils";
   import { v4 as uuidv4 } from "uuid";
   import { disconnectWs, initWS } from "~/lib/price-ws";
-  import { groupBy } from "lodash";
+  import { groupBy, isEmpty } from "lodash";
   import { Motion } from "svelte-motion";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { wait } from "../background/utils";
@@ -718,6 +718,16 @@
       });
 
       listAddress = listAddress.concat(structWalletData);
+
+      const selectedWalletRes = await browser.storage.sync.get(
+        "selectedWallet"
+      );
+      if (selectedWalletRes && !isEmpty(selectedWalletRes)) {
+        selectedWallet = selectedWalletRes.selectedWallet;
+      } else {
+        selectedWallet = listAddress[0];
+      }
+
       isLoadingFullPage = false;
     } catch (error) {
       console.log(error);
@@ -725,16 +735,8 @@
     }
   };
 
-  const getSelectedWallet = async () => {
-    const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
-    if (selectedWalletRes) {
-      selectedWallet = selectedWalletRes.selectedWallet;
-    }
-  };
-
   onMount(() => {
     getListAddress();
-    getSelectedWallet();
     initWS();
 
     const lastScrollY = window.pageYOffset;
@@ -889,6 +891,9 @@
       handleGetAllData("sync");
     }
   }
+
+  $: console.log("listAddress: ", listAddress);
+  $: console.log("selectedWallet: ", selectedWallet);
 </script>
 
 <div class="flex flex-col" class:pb-10={listAddress && listAddress.length > 0}>

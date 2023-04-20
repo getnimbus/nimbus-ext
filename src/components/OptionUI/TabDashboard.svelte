@@ -1,6 +1,7 @@
 <svelte:options tag="tab-dashboard" />
 
 <script>
+  import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
 
   const MultipleLang = {
@@ -13,8 +14,10 @@
 
   let checked = true;
 
-  chrome.storage.sync.get("defaultnewtab", function (storage) {
-    checked = storage.defaultnewtab;
+  onMount(() => {
+    chrome.storage.sync.get("defaultnewtab", function (storage) {
+      checked = storage.defaultnewtab;
+    });
   });
 </script>
 

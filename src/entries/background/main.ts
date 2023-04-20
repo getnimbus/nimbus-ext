@@ -15,19 +15,6 @@ browser.runtime.onStartup.addListener(async () => {
   await fetchListTerm();
 });
 
-chrome.storage.sync.get("defaultnewtab", function (storage) {
-  if (!storage.defaultnewtab) {
-    chrome.tabs.update({
-      url: "chrome-search://local-ntp/local-ntp.html"
-    })
-  }
-})
-
-
-browser.runtime.onInstalled.addListener(() => {
-  console.log("Extension installed");
-});
-
 browser.commands.onCommand.addListener((command) => {
   if (command === "open-quick-search") {
     browser.tabs.query({ active: true, currentWindow: true }).then((tab) => {
@@ -42,14 +29,24 @@ browser.action.onClicked.addListener(() => {
   });
 });
 
-chrome.runtime.onInstalled.addListener((details) => {
+browser.runtime.onInstalled.addListener((details) => {
+  console.log("Extension installed");
   const reason = details.reason
   if (reason === 'install') {
     chrome.tabs.create({ url: 'src/entries/onboard/index.html' });
+    chrome.storage.sync.set({ defaultnewtab: true });
   }
 })
 
-chrome.runtime.setUninstallURL('https://getnimbus.io/uninstall')
+browser.runtime.setUninstallURL('https://getnimbus.io/uninstall')
+
+chrome.storage.sync.get("defaultnewtab", function (storage) {
+  if (storage.defaultnewtab === false) {
+    chrome.tabs.update({
+      url: "chrome-search://local-ntp/local-ntp.html"
+    })
+  }
+})
 
 const fetchBasicData = async () => {
   const list = await coinGeko.get("/search");
