@@ -2,7 +2,11 @@
   import { onMount } from "svelte";
   import { CountUp } from "countup.js";
   import { wait } from "~/entries/background/utils";
-  import { formatBigBalance, formatBalance } from "~/utils";
+  import {
+    formatBigBalance,
+    formatCurrency,
+    checkFormatBalance,
+  } from "~/utils";
 
   export let id;
   export let number;
@@ -32,7 +36,7 @@
   };
 
   $: {
-    const { number_format, number_size } = formatBigBalance(number);
+    const { number_format, number_size } = formatBigBalance(number, false);
     numberFormat = number_format;
     numberSize = number_size;
     countUp = new CountUp(id, number_format, {
@@ -57,9 +61,9 @@
   on:mouseleave={() => (showTooltip = false)}
 >
   <span {id}>{numberFormat}</span><span>{numberSize}</span>
-  {#if showTooltip && numberSize}
+  {#if showTooltip && (numberSize || checkFormatBalance(number) === "NaN")}
     <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
-      <tooltip-detail text={formatBalance(number)} />
+      <tooltip-detail text={formatCurrency(number)} />
     </span>
   {/if}
 </span>
