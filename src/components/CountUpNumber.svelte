@@ -1,5 +1,3 @@
-<svelte:options tag="countup-number" />
-
 <script>
   import { onMount } from "svelte";
   import { CountUp } from "countup.js";

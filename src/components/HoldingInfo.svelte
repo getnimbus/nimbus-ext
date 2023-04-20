@@ -1,5 +1,5 @@
 <script>
-  import { shorterName, formatPercent } from "~/utils";
+  import { shorterName } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import TooltipBalance from "~/components/TooltipBalance.svelte";
@@ -91,7 +91,10 @@
                 profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
             >
-              {formatPercent(Math.abs(profitAndLossPercent) * 100)}%
+              <TooltipBalance
+                number={Math.abs(profitAndLossPercent) * 100}
+                isFormatPercent
+              />%
             </div>
             <img
               src={profitAndLoss >= 0 ? TrendUp : TrendDown}

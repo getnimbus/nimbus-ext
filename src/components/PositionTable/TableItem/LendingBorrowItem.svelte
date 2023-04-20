@@ -1,6 +1,5 @@
 <script>
   import dayjs from "dayjs";
-  import { formatPercent } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import TooltipBalance from "~/components/TooltipBalance.svelte";
@@ -88,7 +87,10 @@
           <div
             class={`${profitPercent >= 0 ? "text-[#00A878]" : "text-red-500"}`}
           >
-            {formatPercent(Math.abs(profitPercent) * 100)}%
+            <TooltipBalance
+              number={Math.abs(profitPercent) * 100}
+              isFormatPercent
+            />%
           </div>
           <img
             src={profit >= 0 ? TrendUp : TrendDown}

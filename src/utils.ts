@@ -99,26 +99,29 @@ export const checkFormatBalance = (input: number) => {
   return numeral(input).format("0,0.00")
 }
 
-export const formatPercent = (input: number) => {
-  return numeral(input).format("0,0.00") === "NaN" ? 0 : numeral(input).format("0,0.00")
-}
-
 export const formatSmallBalance = (input: number) => {
   return numeral(input).format("0.000e+0");
 };
 
-export const formatBigBalance = (input: number) => {
-  const regExp = /[a-zA-Z]/g;
-  const numberFormat = numeral(input).format("0.00 a")
-  if (regExp.test(numberFormat)) {
+export const formatBigBalance = (input: number, isFormatPercent: boolean) => {
+  if (checkFormatBalance(input) === "NaN") {
     return {
-      number_format: Number(numberFormat.slice(0, -2)),
-      number_size: numberFormat.slice("-1").toUpperCase()
+      number_format: isFormatPercent ? 0 : formatSmallBalance(input),
+      number_size: ""
     }
   } else {
-    return {
-      number_format: Number(numberFormat),
-      number_size: ""
+    const regExp = /[a-zA-Z]/g;
+    const numberFormat = numeral(input).format("0.00a")
+    if (regExp.test(numberFormat)) {
+      return {
+        number_format: Number(numberFormat.slice(0, -1)),
+        number_size: numberFormat.slice("-1").toUpperCase()
+      }
+    } else {
+      return {
+        number_format: Number(numberFormat),
+        number_size: ""
+      }
     }
   }
 }
