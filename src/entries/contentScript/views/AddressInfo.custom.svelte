@@ -137,6 +137,7 @@
   let isCopied = false;
   let showTooltipCopyAddress = false;
   let showTooltipGotoDetailAddress = false;
+  let isEmptyTokens = false;
 
   // const loadUserAddressInfo = async () => {
   //   isLoading = true;
@@ -209,6 +210,10 @@
           addressInfo.categories = response?.tags;
           addressInfo.networth = response?.networth;
           addressInfo.priceChange = response?.priceChange;
+
+          if (response?.breakdown.length === 0) {
+            isEmptyTokens = true;
+          }
 
           const sum = (response?.breakdown || []).reduce(
             (prev, item) => prev + Number(item.value),
@@ -793,7 +798,11 @@
                   </div>
                 </div> -->
               </div>
-              <div bind:this={chartContainer} class="h-[300px]" />
+              {#if isEmptyTokens}
+                Empty
+              {:else}
+                <div bind:this={chartContainer} class="h-[300px]" />
+              {/if}
             </div>
           </div>
         {/if}

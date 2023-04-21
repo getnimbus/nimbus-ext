@@ -201,6 +201,7 @@
   let totalPositions = 0;
   let totalClaimable = 0;
   let totalAssets = 0;
+  let isEmptyDataPie = false;
 
   let optionPie = {
     title: {
@@ -362,6 +363,10 @@
 
       if (selectedWallet.value === response.address) {
         overviewData = response.result;
+
+        if (overviewData?.breakdownToken.length === 0) {
+          isEmptyDataPie = true;
+        }
 
         const sum = (overviewData?.breakdownToken || []).reduce(
           (prev, item) => prev + Number(item.value),
@@ -1266,7 +1271,7 @@
               class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
               style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
             >
-              <Charts {isLoading} {optionPie} {optionLine} />
+              <Charts {isLoading} {optionPie} {optionLine} {isEmptyDataPie} />
               <div class="flex xl:flex-row flex-col justify-between gap-6">
                 <Holding {isLoading} data={walletData} bind:totalAssets />
                 <Opportunities {isLoading} data={opportunitiesData} />

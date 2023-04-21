@@ -356,7 +356,7 @@
           {#if price}
             <price-convert symbol={name} {price} />
           {:else}
-            <div class="text-xs">No data price</div>
+            <div class="text-xs">Empty price</div>
           {/if}
         {/if}
       </div>

@@ -4,6 +4,7 @@
   export let optionPie;
   export let optionLine;
   export let isLoading;
+  export let isEmptyDataPie;
 
   import EChart from "../EChart.svelte";
   import "~/components/Loading.custom.svelte";
@@ -44,7 +45,18 @@
         <loading-icon />
       </div>
     {:else}
-      <EChart id="pie-chart" theme="white" option={optionPie} height={465} />
+      <div>
+        {#if isEmptyDataPie}
+          Empty
+        {:else}
+          <EChart
+            id="pie-chart"
+            theme="white"
+            option={optionPie}
+            height={465}
+          />
+        {/if}
+      </div>
     {/if}
   </div>
   <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">

@@ -72,7 +72,7 @@
           <NewCard data={news} />
         {/each}
       {:else}
-        <div>No data</div>
+        <div>Empty</div>
       {/if}
     </div>
   {/if}

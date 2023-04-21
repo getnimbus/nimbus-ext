@@ -161,7 +161,7 @@
               <tr>
                 <td colspan="5">
                   <div class="flex justify-center items-center py-4 px-3">
-                    No data
+                    Empty
                   </div>
                 </td>
               </tr>
