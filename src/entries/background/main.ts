@@ -173,7 +173,7 @@ onMessage<IAddressInput, any>("getOverview", async ({ data: { address, reload = 
           }
         });
       },
-      { defaultValue: null, ttl: 60, reload }
+      { defaultValue: null, ttl: 60, disabled: reload, swr: true }
     );
     return res
   } catch (error) {
@@ -194,7 +194,7 @@ onMessage<IAddressInput, any>("getPositions", async ({ data: { address, reload }
           }
         });
       },
-      { defaultValue: null, ttl: 60, disabled: reload }
+      { defaultValue: null, ttl: 60, disabled: reload, swr: true }
     );
     return res
   } catch (error) {
@@ -215,7 +215,7 @@ onMessage<IAddressInput, any>("getHolding", async ({ data: { address, reload } }
           }
         });
       },
-      { defaultValue: null, ttl: 60, disabled: reload }
+      { defaultValue: null, ttl: 60, disabled: reload, swr: true }
     );
     return res
   } catch (error) {
@@ -236,7 +236,7 @@ onMessage<IAddressInput, any>("getNews", async ({ data: { address, reload } }) =
           }
         });
       },
-      { defaultValue: null, ttl: 5 * 60, disabled: reload }
+      { defaultValue: null, ttl: 5 * 60, disabled: reload, swr: true }
     );
     return res
   } catch (error) {
@@ -251,7 +251,7 @@ onMessage<IAddressInput, any>("getOpportunities", async ({ data: { address } }) 
       () => {
         return nimbusApi.get("/opportunities").then((response) => response.opportunities);
       },
-      { defaultValue: [] }
+      { defaultValue: [], swr: true }
     );
     return res
     // return await nimbusApi.get("/opportunities").then((response) => response.opportunities);
