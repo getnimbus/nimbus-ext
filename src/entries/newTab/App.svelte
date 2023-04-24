@@ -202,6 +202,7 @@
   let totalClaimable = 0;
   let totalAssets = 0;
   let isEmptyDataPie = false;
+  let syncMsg = "";
 
   let optionPie = {
     title: {
@@ -360,6 +361,8 @@
         address: selectedWallet.value,
         reload: isReload,
       });
+
+      console.log(response);
 
       if (selectedWallet.value === response.address) {
         overviewData = response.result;
@@ -566,6 +569,8 @@
         address: selectedWallet.value,
         reload: isReload,
       });
+
+      console.log("Response", response);
       if (selectedWallet.value === response.address) {
         const formatData = response.result.map((item) => {
           return {
@@ -655,6 +660,7 @@
       updatedAt: "",
     };
     isLoading = true;
+    isLoadingSync = false;
     try {
       if (type === "reload") {
         console.log("Going to full sync");
@@ -663,21 +669,26 @@
         });
       }
 
-      if (type === "sync") {
-        let syncStatus = await getSyncStatus();
-        if (!syncStatus?.data?.lastSync) {
-          console.log("Going to full sync");
-          isLoadingSync = true;
-          await sendMessage("getSync", {
-            address: selectedWallet.value,
-          });
+      let syncStatus = await getSyncStatus();
+      if (syncStatus?.data?.error) {
+        syncMsg = syncStatus?.data?.error;
+        isLoadingSync = true;
+        if (!syncStatus?.data?.canWait) {
+          // Cut call when we can not wait
+          return;
         }
+      }
+      if (!syncStatus?.data?.lastSync) {
+        console.log("Going to full sync");
+        await sendMessage("getSync", {
+          address: selectedWallet.value,
+        });
       }
 
       while (true) {
         try {
-          let syncStatus = await getSyncStatus();
           if (syncStatus?.data?.lastSync) {
+            console.log("start load data");
             await Promise.all([
               getOverview(type === "reload"),
               getHolding(type === "reload"),
@@ -685,6 +696,7 @@
               getNews(type === "reload"),
               getOpportunities(type === "reload"),
             ]);
+            syncMsg = "";
 
             isLoading = false;
             isLoadingSync = false;
@@ -692,6 +704,7 @@
           } else {
             isLoadingSync = true;
             await wait(5000);
+            syncStatus = await getSyncStatus();
           }
         } catch (e) {
           console.log(e.message);
@@ -707,6 +720,7 @@
 
   const getListAddress = async () => {
     isLoadingFullPage = true;
+    console.log("Start get list address");
     try {
       const response: AddressData = await sendMessage(
         "getListAddress",
@@ -1262,8 +1276,7 @@
             <div
               class="bg-white text-xl font-medium flex flex-col gap-5 justify-center items-center border border-[#0000001a] rounded-[20px] p-6 h-screen"
             >
-              Getting your data ready, depends on your historical activity. So
-              it might take some minutes 😤
+              {syncMsg}
               <loading-icon />
             </div>
           {:else}

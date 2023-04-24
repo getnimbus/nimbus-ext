@@ -127,12 +127,12 @@ export const formatBigBalance = (input: number, isFormatPercent: boolean) => {
 }
 
 export const shorterAddress = (string: string) => {
-  return string.slice(0, 6) + "...." + string.substr(-4);
+  return string.slice(0, 6) + "..." + string.substr(-4);
 };
 
 export const shorterName = (string: string) => {
-  if (string.length > 16) {
-    return string.slice(0, 16) + "....";
+  if (string?.length > 16) {
+    return string.slice(0, 16) + "...";
   } else {
     return string
   }
