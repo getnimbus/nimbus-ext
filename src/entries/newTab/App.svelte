@@ -356,6 +356,7 @@
   };
 
   const getOverview = async (isReload: boolean = false) => {
+    isEmptyDataPie = false;
     try {
       const response: OverviewDataRes = await sendMessage("getOverview", {
         address: selectedWallet.value,
