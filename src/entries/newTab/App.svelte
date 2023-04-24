@@ -55,6 +55,8 @@
   import NewsIcon from "~/assets/news.svg";
   import Search from "~/assets/search.svg";
   import Bell from "~/assets/bell.svg";
+  import TrendUp from "~/assets/trend-up.svg";
+  import TrendDown from "~/assets/trend-down.svg";
 
   const chainList = [
     {
@@ -282,7 +284,7 @@
       trigger: "axis",
       formatter: function (params) {
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 190px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
                 ${params[0].axisValue}
               </div>
@@ -291,10 +293,15 @@
                   <div style="background: #00b580; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
                   ${params[0].seriesName}
                 </div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                   params[0].value >= 0 ? "green" : "red"
                 };">
-                  ${formatCurrency(params[0].value)}%
+                  ${formatCurrency(Math.abs(params[0].value))}%
+                  <img
+                    src=${params[0].value >= 0 ? TrendUp : TrendDown} 
+                    alt=""
+                    style="margin-bottom: 4px;"
+                  />
                 </div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between;">
@@ -302,10 +309,15 @@
                   <div style="background: #f7931a; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
                   ${params[1].seriesName}
                 </div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                   params[1].value >= 0 ? "green" : "red"
                 };">
-                  ${formatCurrency(params[1].value)}%
+                  ${formatCurrency(Math.abs(params[1].value))}%
+                  <img
+                    src=${params[1].value >= 0 ? TrendUp : TrendDown} 
+                    alt=""
+                    style="margin-bottom: 4px;"
+                  />
                 </div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between;">
@@ -313,10 +325,15 @@
                   <div style="background: #547fef; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
                   ${params[2].seriesName}
                 </div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                   params[2].value >= 0 ? "green" : "red"
                 };">
-                  ${formatCurrency(params[2].value)}%
+                  ${formatCurrency(Math.abs(params[2].value))}%
+                  <img
+                    src=${params[2].value >= 0 ? TrendUp : TrendDown} 
+                    alt=""
+                    style="margin-bottom: 4px;"
+                  />
                 </div>
               </div>
             </div>`;
