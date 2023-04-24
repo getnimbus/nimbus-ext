@@ -687,6 +687,14 @@
 
       while (true) {
         try {
+          if (syncStatus?.data?.error) {
+            syncMsg = syncStatus?.data?.error;
+            isLoadingSync = true;
+            if (!syncStatus?.data?.canWait) {
+              // Cut call when we can not wait
+              return;
+            }
+          }
           if (syncStatus?.data?.lastSync) {
             console.log("start load data");
             await Promise.all([

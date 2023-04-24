@@ -38,7 +38,7 @@
           {shorterName(data.name)}
         </div>
         <div class="text-[#00000080] text-xs font-medium">{data.symbol}</div>
-        {#if showTooltipName && data.name.length > 16}
+        {#if showTooltipName && data?.name?.length > 16}
           <div class="absolute -top-7 right-0" style="z-index: 2147483648;">
             <tooltip-detail text={data.name} />
           </div>
