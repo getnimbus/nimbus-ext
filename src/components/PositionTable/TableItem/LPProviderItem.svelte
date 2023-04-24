@@ -74,7 +74,7 @@
         <div class="flex items-center gap-1">
           <div class="flex items-center gap-1">
             <TooltipBalance number={Number(data.amount1out)} />
-            {data.amount1Price?.symbol ? data.amount0Price?.symbol : ""} |
+            {data.amount1Price?.symbol ? data.amount1Price?.symbol : ""} |
           </div>
           <TooltipBalance number={balance1} />
         </div>

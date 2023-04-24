@@ -253,7 +253,7 @@
       {
         type: "pie",
         radius: ["40%", "60%"],
-        left: -200,
+        left: -250,
         avoidLabelOverlap: false,
         label: {
           show: false,
@@ -361,8 +361,6 @@
         address: selectedWallet.value,
         reload: isReload,
       });
-
-      console.log(response);
 
       if (selectedWallet.value === response.address) {
         overviewData = response.result;
@@ -570,7 +568,6 @@
         reload: isReload,
       });
 
-      console.log("Response", response);
       if (selectedWallet.value === response.address) {
         const formatData = response.result.map((item) => {
           return {

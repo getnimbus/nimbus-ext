@@ -27,8 +27,12 @@
   on:mouseenter={() => (showTooltip = true)}
   on:mouseleave={() => (showTooltip = false)}
 >
-  <span>{numberFormat}</span><span>{numberSize}</span>
-  {#if showTooltip && (numberSize || checkFormatBalance(number) === "NaN")}
+  {#if numberSize === "K"}
+    <span>{formatCurrency(number)}</span>
+  {:else}
+    <span>{numberFormat}</span><span>{numberSize}</span>
+  {/if}
+  {#if showTooltip && ((numberSize && numberSize !== "K") || checkFormatBalance(number) === "NaN")}
     <span
       class="absolute -top-7 left-1/2 transform -translate-x-1/2"
       style="z-index: 2147483648;"

@@ -555,6 +555,11 @@
                             on:keyup={({ target: { value } }) =>
                               debounce(value)}
                             on:blur={handleSaveAddressLabel}
+                            on:keydown={(event) => {
+                              if (event.which == 13 || event.keyCode == 13) {
+                                handleSaveAddressLabel();
+                              }
+                            }}
                             autofocus={showChangeAddressLabel}
                             bind:value={addressLabel}
                             type="text"

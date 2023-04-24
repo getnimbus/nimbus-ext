@@ -39,7 +39,7 @@
     const { number_format, number_size } = formatBigBalance(number, false);
     numberFormat = number_format;
     numberSize = number_size;
-    countUp = new CountUp(id, number_format, {
+    countUp = new CountUp(id, number_size === "K" ? number : number_format, {
       decimalPlaces: format,
       duration: 4,
       startVal: isFirstTime ? number_format : (number_format * 70) / 100,
@@ -60,8 +60,17 @@
   on:mouseenter={() => (showTooltip = true)}
   on:mouseleave={() => (showTooltip = false)}
 >
-  <span {id}>{numberFormat}</span><span>{numberSize}</span>
-  {#if showTooltip && (numberSize || checkFormatBalance(number) === "NaN")}
+  <span {id}>
+    {#if numberSize === "K"}
+      {formatCurrency(number)}
+    {:else}
+      {numberFormat}
+    {/if}
+  </span>
+  {#if numberSize !== "K"}
+    <span>{numberSize}</span>
+  {/if}
+  {#if showTooltip && ((numberSize && numberSize !== "K") || checkFormatBalance(number) === "NaN")}
     <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
       <tooltip-detail text={formatCurrency(number)} />
     </span>
