@@ -249,7 +249,9 @@ onMessage<IAddressInput, any>("getOpportunities", async ({ data: { address } }) 
     const res = await cacheOrAPI(
       "opportunities", // TODO: Update to address after change
       () => {
-        return nimbusApi.get("/opportunities").then((response) => response.opportunities);
+        // return nimbusApi.get("/opportunities").then((response) => response.opportunities);
+
+        return [{ "logo": "https://portfolio.nansen.ai/static/images/logos/pancakeswap.png", "content": "You can join IFO in <strong>PancakeSwap</strong> to get NIS tokens on March 21th, 2023", "updatedAt": "2023-04-22T15:47:59.018Z" }, { "logo": "https://portfolio.nansen.ai/static/images/logos/venus.png", "content": "Lock your VSX on <strong>Venus</strong> to get 14% APY", "updatedAt": "2023-04-22T15:47:59.018Z" }, { "logo": "https://portfolio.nansen.ai/static/images/logos/aave.png", "content": "You can lend your <strong>LINK</strong> on <strong>AAVE</strong> to get 12.76% APY", "updatedAt": "2023-04-22T15:47:59.018Z" }]
       },
       { defaultValue: [] }
     );
