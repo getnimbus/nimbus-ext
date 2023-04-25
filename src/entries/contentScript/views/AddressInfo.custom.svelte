@@ -107,6 +107,7 @@
       {
         type: "pie",
         radius: ["40%", "60%"],
+        center: ["50%", "50%"],
         left: 0,
         avoidLabelOverlap: false,
         label: {
@@ -336,6 +337,7 @@
           {
             ...option.series[0],
             left: -190,
+            center: ["50%", "50%"],
           },
         ],
       };
@@ -346,6 +348,13 @@
           top: "5%",
           left: "0%",
         },
+        series: [
+          {
+            ...option.series[0],
+            left: 0,
+            center: ["50%", "65%"],
+          },
+        ],
       };
     }
   }
@@ -353,10 +362,10 @@
 
 <reset-style>
   <div
-    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all ${
-      isAddressDetail ? "w-[450px]" : "w-full"
+    class={`bg-white font-sans text-sm text-gray-600 transition-all ${
+      isAddressDetail ? "w-[450px] rounded-[20px]" : "w-full rounded-[10px]"
     } ${isLoading && popup && "max-h-[120px]"} ${popup ? "max-h-[680px]" : ""}`}
-    class:shadow={popup}
+    class:shadow={popup && isAddressDetail}
   >
     {#if isLoading}
       <div class="w-full h-[120px] flex justify-center items-center">

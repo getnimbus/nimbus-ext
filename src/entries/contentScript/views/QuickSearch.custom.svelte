@@ -629,9 +629,7 @@
                         class="text-[#1E96FC] cursor-pointer"
                         on:click={() => (search = suggest)}
                       >
-                        {regexETHAddress.test(suggest)
-                          ? shorterAddress(suggest)
-                          : suggest}
+                        {suggest.length > 9 ? shorterAddress(suggest) : suggest}
                       </div>
                     {/each}
                   </div>
@@ -701,7 +699,7 @@
                             class="text-[#1E96FC] cursor-pointer"
                             on:click={() => (search = suggest)}
                           >
-                            {regexETHAddress.test(suggest)
+                            {suggest.length > 9
                               ? shorterAddress(suggest)
                               : suggest}
                           </div>
