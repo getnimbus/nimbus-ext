@@ -4545,7 +4545,7 @@ web-ext@^6.6.0:
 
 "webext-bridge@https://github.com/binhnguyen2501/webext-bridge.git":
   version "5.0.5"
-  resolved "https://github.com/binhnguyen2501/webext-bridge.git#bd743a26e7efa689bb98dfe96d63b1d4575e3cb6"
+  resolved "https://github.com/binhnguyen2501/webext-bridge.git#43446a7fecbfe2c52ef579d71661b1edfba6088b"
   dependencies:
     "@types/webextension-polyfill" "^0.8.3"
     nanoevents "^6.0.2"

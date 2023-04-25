@@ -45,9 +45,13 @@
         <loading-icon />
       </div>
     {:else}
-      <div>
+      <div class="h-full">
         {#if isEmptyDataPie}
-          Empty
+          <div
+            class="flex justify-center items-center h-full text-lg text-gray-400"
+          >
+            Empty
+          </div>
         {:else}
           <EChart
             id="pie-chart"

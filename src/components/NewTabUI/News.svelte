@@ -33,19 +33,17 @@
       <loading-icon />
     </div>
   {:else}
-    <div
-      class={`grid ${
-        data && data.length
-          ? "2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1"
-          : "grid-cols-1"
-      } gap-10`}
-    >
+    <div>
       {#if data && data.length !== 0}
-        {#each data as news}
-          <NewCard data={news} />
-        {/each}
+        <div class="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-10">
+          {#each data as news}
+            <NewCard data={news} />
+          {/each}
+        </div>
       {:else}
-        <div>Empty</div>
+        <div class="flex items-center justify-center text-lg text-gray-400">
+          Empty
+        </div>
       {/if}
     </div>
   {/if}

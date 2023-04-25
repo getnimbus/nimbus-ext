@@ -611,7 +611,9 @@
           <Table data={position} />
         {/each}
       {:else}
-        <div>Empty</div>
+        <div class="flex justify-center items-center text-lg text-gray-400">
+          Empty
+        </div>
       {/if}
     </div>
   {/if}
