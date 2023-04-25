@@ -238,7 +238,7 @@
               {
                 ...option.series[0],
                 data:
-                  orderBreakdown.length !== 0
+                  sumOrderBreakdown > 0
                     ? formatDataPieChartTopFour.concat(
                         dataPieChartOrderBreakdown
                       )
