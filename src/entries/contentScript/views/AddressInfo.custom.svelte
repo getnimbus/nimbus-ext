@@ -280,9 +280,12 @@
             series: [
               {
                 ...option.series[0],
-                data: formatDataPieChartTopFour.concat(
-                  dataPieChartOrderBreakdown
-                ),
+                data:
+                  orderBreakdown.length !== 0
+                    ? formatDataPieChartTopFour.concat(
+                        dataPieChartOrderBreakdown
+                      )
+                    : formatDataPieChartTopFour,
               },
             ],
           };

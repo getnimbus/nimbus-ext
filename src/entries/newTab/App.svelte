@@ -294,7 +294,7 @@
                   ${params[0].seriesName}
                 </div>
                 <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[0].value >= 0 ? "green" : "red"
+                  params[0].value >= 0 ? "#05a878" : "#f25f5d"
                 };">
                   ${formatCurrency(Math.abs(params[0].value))}%
                   <img
@@ -310,7 +310,7 @@
                   ${params[1].seriesName}
                 </div>
                 <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[1].value >= 0 ? "green" : "red"
+                  params[1].value >= 0 ? "#05a878" : "#f25f5d"
                 };">
                   ${formatCurrency(Math.abs(params[1].value))}%
                   <img
@@ -326,7 +326,7 @@
                   ${params[2].seriesName}
                 </div>
                 <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[2].value >= 0 ? "green" : "red"
+                  params[2].value >= 0 ? "#05a878" : "#f25f5d"
                 };">
                   ${formatCurrency(Math.abs(params[2].value))}%
                   <img
@@ -448,9 +448,10 @@
           series: [
             {
               ...optionPie.series[0],
-              data: formatDataPieChartTopFour.concat(
-                dataPieChartOrderBreakdown
-              ),
+              data:
+                orderBreakdown.length !== 0
+                  ? formatDataPieChartTopFour.concat(dataPieChartOrderBreakdown)
+                  : formatDataPieChartTopFour,
             },
           ],
         };
