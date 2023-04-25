@@ -196,6 +196,8 @@
   let search = "";
   let timerDebounce;
   let isLoading = false;
+
+  let isLoadingSync = false;
   let isLoadingFullPage = false;
   let isShowChat = false;
   let isCopied = false;
@@ -218,16 +220,22 @@
               <div style="display: flex; align-items: centers; gap: 4px">
                 <img src=${params.data.logo} alt="" width=20 height=20 /> 
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                  ${params.name} ${params.data.symbol ? `(${params.data.symbol})` : ''}
+                  ${params.name} ${
+          params.data.symbol ? `(${params.data.symbol})` : ""
+        }
                 </div>
               </div>
-              ${params.data.name_balance ? `<div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
+              ${
+                params.data.name_balance
+                  ? `<div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
                   ${MultipleLang[params.data.name_balance]}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
                   ${formatBalance(params.data.value_balance)}</div>
-              </div>` : ''}
+              </div>`
+                  : ""
+              }
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
                   ${MultipleLang[params.data.name_value]}
@@ -649,7 +657,11 @@
     }
   };
 
-  let isLoadingSync = false;
+  let loadingOverview = false;
+  let loadingHolding = false;
+  let loadingPositions = false;
+  let loadingNews = false;
+  let loadingOpportunities = false;
 
   const handleGetAllData = async (type: string) => {
     overviewData = {
@@ -670,6 +682,12 @@
       performance: [],
       updatedAt: "",
     };
+    loadingOverview = true;
+    loadingHolding = true;
+    loadingPositions = true;
+    loadingNews = true;
+    loadingOpportunities = true;
+
     isLoading = true;
     isLoadingSync = false;
     try {
@@ -708,17 +726,44 @@
           }
           if (syncStatus?.data?.lastSync) {
             console.log("start load data");
-            await Promise.all([
-              getOverview(type === "reload"),
-              getHolding(type === "reload"),
-              getPositions(type === "reload"),
-              getNews(type === "reload"),
-              getOpportunities(type === "reload"),
-            ]);
-            syncMsg = "";
 
-            isLoading = false;
-            isLoadingSync = false;
+            const resOverview = await getOverview(type === "reload");
+            if (resOverview) {
+              loadingOverview = false;
+            }
+
+            const resHolding = await getHolding(type === "reload");
+            if (resHolding) {
+              loadingHolding = false;
+            }
+
+            const resPositions = await getPositions(type === "reload");
+            if (resPositions) {
+              loadingPositions = false;
+            }
+
+            const resNews = await getNews(type === "reload");
+            if (resNews) {
+              loadingNews = false;
+            }
+
+            const resOpportunities = await getOpportunities(type === "reload");
+            if (resOpportunities) {
+              loadingOpportunities = false;
+            }
+
+            if (
+              resOverview &&
+              resHolding &&
+              resPositions &&
+              resNews &&
+              resOpportunities
+            ) {
+              syncMsg = "";
+              isLoading = false;
+              isLoadingSync = false;
+            }
+
             break;
           } else {
             isLoadingSync = true;
@@ -727,7 +772,13 @@
           }
         } catch (e) {
           console.log(e.message);
+          syncMsg = "";
           isLoading = false;
+          loadingOverview = false;
+          loadingHolding = false;
+          loadingPositions = false;
+          loadingNews = false;
+          loadingOpportunities = false;
           break;
         }
       }
@@ -1213,7 +1264,7 @@
                 {totalPositions}
                 {totalClaimable}
                 {totalAssets}
-                {isLoading}
+                isLoading={loadingOverview}
               />
             {/if}
           </div>
@@ -1232,16 +1283,28 @@
               class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
               style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
             >
-              <Charts {isLoading} {optionPie} {optionLine} {isEmptyDataPie} />
+              <Charts
+                isLoading={loadingOverview}
+                {optionPie}
+                {optionLine}
+                {isEmptyDataPie}
+              />
               <div class="flex xl:flex-row flex-col justify-between gap-6">
-                <Holding {isLoading} data={walletData} bind:totalAssets />
-                <Opportunities {isLoading} data={opportunitiesData} />
+                <Holding
+                  isLoading={loadingHolding}
+                  data={walletData}
+                  bind:totalAssets
+                />
+                <Opportunities
+                  isLoading={loadingOpportunities}
+                  data={opportunitiesData}
+                />
               </div>
               <div
                 class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
               >
                 <Positions
-                  {isLoading}
+                  isLoading={loadingPositions}
                   data={positionsData}
                   bind:totalPositions
                   bind:totalClaimable
@@ -1257,7 +1320,7 @@
                   >
                 </div>
               </div>
-              <News {isLoading} data={newsData} />
+              <News isLoading={loadingNews} data={newsData} />
             </div>
           {/if}
         </div>
