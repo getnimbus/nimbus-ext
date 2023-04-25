@@ -5,7 +5,6 @@
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
   import { isEmpty } from "lodash";
-  import detectEthereumProvider from "@metamask/detect-provider";
   import * as echarts from "echarts";
   import numeral from "numeral";
   import { i18n } from "~/lib/i18n";
@@ -37,6 +36,7 @@
 
   export let address;
   export let popup: boolean = true;
+  export let isAddressDetail;
 
   const MultipleLang = {
     Balance: i18n("newtabPage.Balance", "Balance"),
@@ -102,16 +102,12 @@
             </div>`;
       },
     },
-    legend: {
-      orient: "vertical",
-      right: "right",
-      bottom: "center",
-    },
+    legend: {},
     series: [
       {
         type: "pie",
         radius: ["40%", "60%"],
-        left: -190,
+        left: 0,
         avoidLabelOverlap: false,
         label: {
           show: false,
@@ -138,46 +134,6 @@
   let showTooltipCopyAddress = false;
   let showTooltipGotoDetailAddress = false;
   let isEmptyTokens = false;
-
-  // const loadUserAddressInfo = async () => {
-  //   isLoading = true;
-  //   // TODO: What if this is a smart contract or ERC20 a address
-  //   const addressPortfolio = await nimbus
-  //     .get(`/portfolio/${address}`)
-  //     .then((response) => response.data.data);
-
-  //   if (addressPortfolio) {
-  //     balance = addressPortfolio.totalBalanceUsd;
-  //     tokenList = addressPortfolio.assets;
-  //   }
-  //   isLoading = false;
-  // };
-
-  // const handleAddToken = async () => {
-  //   if (!token) {
-  //     // No token info
-  //     return;
-  //   }
-  //   const provider = await detectEthereumProvider();
-  //   if (provider && window.ethereum) {
-  //     const wasAdded = await ethereum.request({
-  //       method: "wallet_watchAsset",
-  //       params: {
-  //         type: "ERC20",
-  //         options: {
-  //           address: address,
-  //           symbol: token.symbol,
-  //           decimals: token.decimals,
-  //           image: token.logo_url,
-  //         },
-  //       },
-  //     });
-  //     console.log(wasAdded);
-  //   } else {
-  //     // TODO: Show some toast to user
-  //     console.log("Please install MetaMask!");
-  //   }
-  // };
 
   const setOption = () => {
     if (chart && !chart.isDisposed()) {
@@ -336,11 +292,10 @@
   };
 
   onMount(() => {
-    // loadUserAddressInfo();
-    // track("Address Info", {
-    //   url: window.location.href,
-    //   address,
-    // });
+    track("Address Info", {
+      url: window.location.href,
+      address,
+    });
 
     setTimeout(() => {
       makeChart();
@@ -367,13 +322,40 @@
       }, 200);
     }
   }
+
+  $: {
+    if (isAddressDetail) {
+      option = {
+        ...option,
+        legend: {
+          orient: "vertical",
+          right: "right",
+          bottom: "center",
+        },
+        series: [
+          {
+            ...option.series[0],
+            left: -190,
+          },
+        ],
+      };
+    } else {
+      option = {
+        ...option,
+        legend: {
+          top: "5%",
+          left: "0%",
+        },
+      };
+    }
+  }
 </script>
 
 <reset-style>
   <div
-    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all w-[450px] ${
-      isLoading && popup && "max-h-[120px]"
-    } ${popup ? "max-h-[680px]" : ""}`}
+    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all ${
+      isAddressDetail ? "w-[450px]" : "w-full"
+    } ${isLoading && popup && "max-h-[120px]"} ${popup ? "max-h-[680px]" : ""}`}
     class:shadow={popup}
   >
     {#if isLoading}
@@ -382,153 +364,6 @@
       </div>
     {:else}
       <div class="p-4">
-        <!-- {#if balance}
-          <div>
-            {#if balance}
-              <div class="flex items-center mb-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-[32px] h-[32px] mr-3 text-sky-300"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-
-                <div class="flex flex-col">
-                  <div>Balance (Including all tokens in all chains)</div>
-                  <div class="font-bold">
-                    ${formatCurrency(balance)}
-                  </div>
-                </div>
-              </div>
-            {/if}
-
-            {#if tokenList.length}
-              <div>
-                <div class="font-bold my-1">Top assets</div>
-                <div class="grid grid-cols-3 mb-1">
-                  <div class="p-1 border">Asset</div>
-                  <div class="p-1 text-right border">Balance</div>
-                  <div class="p-1 text-right border">Value</div>
-                </div>
-                <div class="grid grid-cols-3 gap-2">
-                  {#each tokenList
-                    .sort((a, b) => Number(b.balanceUsd) - Number(a.balanceUsd))
-                    .slice(0, 5) as item}
-                    <div class="flex items-center px-1">
-                      <img
-                        src={item.thumbnail || getLocalImg(CoinDefaultIcon)}
-                        alt=""
-                        class="w-[20px] h-[20px] rounded-full mr-1"
-                      />
-                      {item.tokenSymbol}
-                    </div>
-                    <div class="text-right px-1">
-                      {formatBalance(item.balance)}
-                    </div>
-                    <div class="text-right px-1">
-                      <strong>
-                        ${formatCurrency(item.balanceUsd)}
-                      </strong>
-                    </div>
-                  {/each}
-                </div>
-              </div>
-            {/if}
-
-            <div class="flex justify-between gap-4 my-2">
-              <div class="flex-1">
-                <button
-                  class="btn-primary"
-                  on:click={() =>
-                    window.open(
-                      `https://debank.com/profile/${address}`,
-                      "_blank"
-                    )}
-                >
-                  DeBank
-                </button>
-              </div>
-              <div class="flex-1">
-                <button
-                  class="btn-primary"
-                  on:click={() =>
-                    window.open(
-                      `https://etherscan.io/address/${address}`,
-                      "_blank"
-                    )}
-                >
-                  Etherscan
-                </button>
-              </div>
-            </div>
-          </div>
-        {/if}
-
-        {#if token}
-          <div>
-            <coin-chart symbol={token.symbol} loaded={true} />
-            <div class="text-center mt-2">
-              <img
-                class="w-[72px] h-[72px] rounded-full"
-                src={token.logo_url || getLocalImg(CoinDefaultIcon)}
-                alt={token.name}
-              />
-              <div>
-                {token.name} - <span class="text-gray-400">{token.symbol}</span>
-              </div>
-              <div>
-                Price: <strong>${formatCurrency(token.price)}</strong>
-              </div>
-
-              <price-convert symbol={token.symbol} price={token.price} />
-
-              <div class="flex gap-4 justify-between items-center my-2">
-                <div
-                  on:click={handleAddToken}
-                  class="flex items-center justyfy-center gap-1 btn-border px-3 py-1 text-sky-500 cursor-pointer"
-                >
-                  <img
-                    src={getLocalImg(MetaMaskIcon)}
-                    width={14}
-                    height={14}
-                    alt=""
-                  /> Add to MetaMask
-                </div>
-                <div class="flex gap-2">
-                  <a
-                    href="https://coinmarketcap.com/currencies/bitcoin"
-                    target="blank"
-                  >
-                    <img
-                      src={getLocalImg(CoinMarketCapIcon)}
-                      width={22}
-                      height={22}
-                      alt=""
-                    />
-                  </a>
-                  <a
-                    href="https://www.coingecko.com/en/coins/bitcoin"
-                    target="blank"
-                  >
-                    <img
-                      src={getLocalImg(CoinGekoIcon)}
-                      width={22}
-                      height={22}
-                      alt=""
-                    />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        {/if} -->
-
         {#if type === "ERC20" && unknownSmartContract === false}
           <div class="m-[-16px]">
             <native-token-info

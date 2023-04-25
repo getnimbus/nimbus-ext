@@ -87,7 +87,7 @@
         isShow = false;
       },
       // content: popperElement,
-      content: `<address-info address="${address}" />`,
+      content: `<address-info address="${address}" isAddressDetail=${true} />`,
       allowHTML: true,
       placement: "bottom-start",
       arrow: false,

@@ -13,7 +13,9 @@
   import System from "svelte-system-info";
   import { i18n } from "~/lib/i18n";
   import { track } from "~/lib/data-tracking";
+  import { shorterAddress } from "~/utils";
 
+  import "./AddressInfo.custom.svelte";
   import "./NativeTokenInfo.custom.svelte";
   import "~/components/ResetStyle.custom.svelte";
   import "~/components/CheckSafety.custom.svelte";
@@ -47,6 +49,7 @@
   };
 
   const defaultSuggestList = ["bitcoin", "ethereum", "bnb"];
+  const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
 
   let listPageConfig = [];
   let listTermData;
@@ -388,7 +391,7 @@
     <div
       transition:fly={{ x: 650, opacity: 1 }}
       style="z-index: 2147483647;"
-      class="fixed top-0 right-0 h-screen bg-[#F8F8F8] overflow-y-auto w-[350px] flex flex-col"
+      class="fixed top-0 right-0 h-screen bg-[#F8F8F8] overflow-y-auto w-[400px] flex flex-col"
     >
       <div
         class="cursor-pointer text-white font-semibold absolute top-7 left-0 border-gray-700 pt-[3px] pb-1 px-2 bg-[#38427B] rounded-tr-[5px] rounded-br-[5px]"
@@ -447,185 +450,82 @@
         <check-safety />
 
         {#if search}
-          <div class="flex items-center gap-2 mt-4 mb-3">
-            <div
-              class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
-              class:bg-[#E1F4FD]={tabSelected === "all"}
-              on:click={() => {
-                tabSelected = "all";
-                browser.storage.local.set({ TabSelected: "all" });
-              }}
-            >
-              All
+          {#if !regexETHAddress.test(search)}
+            <div class="flex items-center gap-2 mt-4 mb-3">
+              <div
+                class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+                class:bg-[#E1F4FD]={tabSelected === "all"}
+                on:click={() => {
+                  tabSelected = "all";
+                  browser.storage.local.set({ TabSelected: "all" });
+                }}
+              >
+                All
+              </div>
+              <div
+                class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+                class:bg-[#E1F4FD]={tabSelected === "term"}
+                on:click={() => {
+                  tabSelected = "term";
+                  browser.storage.local.set({ TabSelected: "term" });
+                }}
+              >
+                Terms
+              </div>
+              <div
+                class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+                class:bg-[#E1F4FD]={tabSelected === "token"}
+                on:click={() => {
+                  tabSelected = "token";
+                  browser.storage.local.set({ TabSelected: "token" });
+                }}
+              >
+                Tokens
+              </div>
             </div>
-            <div
-              class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
-              class:bg-[#E1F4FD]={tabSelected === "term"}
-              on:click={() => {
-                tabSelected = "term";
-                browser.storage.local.set({ TabSelected: "term" });
-              }}
-            >
-              Terms
+          {:else}
+            <div class="mt-3">
+              <address-info address={search} isAddressDetail={false} />
             </div>
-            <div
-              class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
-              class:bg-[#E1F4FD]={tabSelected === "token"}
-              on:click={() => {
-                tabSelected = "token";
-                browser.storage.local.set({ TabSelected: "token" });
-              }}
-            >
-              Tokens
-            </div>
-          </div>
+          {/if}
         {/if}
 
-        {#if tabSelected === "all"}
-          {#if selectedSearchTermData.length === 0}
-            {#if selectedTermData.length !== 0}
-              {#each selectedTermData as item}
-                <div class="p-4 max-w-sm bg-white rounded-[10px] my-4">
-                  <div class="flex justify-between items-center">
-                    <a
-                      href={item.url}
-                      class="text-xl font-medium text-black no-underline"
-                    >
-                      {item.term}
-                    </a>
-                    <!-- <div class="cursor-pointer mt-1">
+        {#if !regexETHAddress.test(search)}
+          {#if tabSelected === "all"}
+            {#if selectedSearchTermData.length === 0}
+              {#if selectedTermData.length !== 0}
+                {#each selectedTermData as item}
+                  <div class="p-4 max-w-sm bg-white rounded-[10px] my-4">
+                    <div class="flex justify-between items-center">
+                      <a
+                        href={item.url}
+                        class="text-xl font-medium text-black no-underline"
+                      >
+                        {item.term}
+                      </a>
+                      <!-- <div class="cursor-pointer mt-1">
                       <img src={getLocalImg(More)} alt="more" />
                     </div> -->
-                  </div>
-                  {#if item.img !== null}
-                    <div
-                      class="w-full h-[300px] border rounded overflow-hidden"
-                    >
-                      <img
-                        src={item.img}
-                        alt="img"
-                        class="w-full h-full object-contain"
-                      />
                     </div>
-                  {/if}
-                  <div class="text-sm font-normal text-[#00000099] mt-[10px]">
-                    {item.define}
+                    {#if item.img !== null}
+                      <div
+                        class="w-full h-[300px] border rounded overflow-hidden"
+                      >
+                        <img
+                          src={item.img}
+                          alt="img"
+                          class="w-full h-full object-contain"
+                        />
+                      </div>
+                    {/if}
+                    <div class="text-sm font-normal text-[#00000099] mt-[10px]">
+                      {item.define}
+                    </div>
                   </div>
-                </div>
-              {/each}
-            {/if}
-          {:else}
-            {#each selectedSearchTermData as item}
-              <div class="p-4 max-w-sm bg-white rounded-[10px] mb-4">
-                <div class="flex justify-between items-center">
-                  <a
-                    href={item.url}
-                    class="text-xl font-medium text-black no-underline"
-                  >
-                    {item.term}
-                  </a>
-                  <!-- <div class="cursor-pointer mt-1">
-                    <img src={getLocalImg(More)} alt="more" />
-                  </div> -->
-                </div>
-                {#if item.img !== null}
-                  <div class="w-full h-[300px] border rounded overflow-hidden">
-                    <img
-                      src={item.img}
-                      alt="img"
-                      class="w-full h-full object-contain"
-                    />
-                  </div>
-                {/if}
-                <div class="text-sm font-normal text-[#00000099] mt-[10px]">
-                  {item.define}
-                </div>
-              </div>
-            {/each}
-          {/if}
-
-          {#if search !== ""}
-            {#if isLoading}
-              <div class="text-4 leading-6 font-medium mt-10 text-center">
-                {MultipleLang.status}
-              </div>
-            {:else if !isLoading}
-              {#if tokenDataSearch.length !== 0}
-                <div class="flex flex-col gap-y-3">
-                  {#each tokenDataSearch as item}
-                    <native-token-info
-                      id={item.id}
-                      name={item.symbol}
-                      {loaded}
-                    />
-                  {/each}
-                </div>
-                <div class="text-xs leading-4 italic text-gray-700 mt-3">
-                  {MultipleLang.sources}
-                </div>
-              {:else}
-                <div
-                  class="text-4 leading-6 font-medium mt-10 text-center text-black"
-                >
-                  {MultipleLang.empty}
-                </div>
-              {/if}
-            {/if}
-          {:else if search === ""}
-            {#if selectedTokenData.length !== 0}
-              <div class="mb-2">
-                <div class="title-2">{MultipleLang.second_title}</div>
-              </div>
-              <div class="flex flex-col gap-y-3">
-                {#each selectedTokenData as item}
-                  <native-token-info
-                    id={item.id}
-                    name={item.symbol}
-                    loaded={true}
-                  />
                 {/each}
-              </div>
-              <div class="text-xs leading-4 italic text-gray-700 mt-3">
-                {MultipleLang.sources}
-              </div>
+              {/if}
             {:else}
-              <div
-                class="flex flex-col items-center justify-center gap-4 mt-16"
-              >
-                <img
-                  src={getLocalImg(Coin)}
-                  width={48}
-                  height="48"
-                  alt="coin"
-                />
-                <div
-                  class="text-sm text-[#00000099] font-medium text-center px-12"
-                >
-                  {MultipleLang.title}
-                </div>
-                <div class="flex gap-2 text-sm font-medium mt-8">
-                  <div class="text-black">
-                    {JSON.stringify(suggestList) ===
-                    JSON.stringify(defaultSuggestList)
-                      ? MultipleLang.suggest_keyword
-                      : MultipleLang.recent_search}
-                  </div>
-                  {#each suggestList as suggest}
-                    <div
-                      class="text-[#1E96FC] cursor-pointer"
-                      on:click={() => (search = suggest)}
-                    >
-                      {suggest}
-                    </div>
-                  {/each}
-                </div>
-              </div>
-            {/if}
-          {/if}
-        {:else if tabSelected === "term"}
-          {#if selectedSearchTermData.length === 0}
-            {#if selectedTermData.length !== 0}
-              {#each selectedTermData as item}
+              {#each selectedSearchTermData as item}
                 <div class="p-4 max-w-sm bg-white rounded-[10px] mb-4">
                   <div class="flex justify-between items-center">
                     <a
@@ -635,8 +535,8 @@
                       {item.term}
                     </a>
                     <!-- <div class="cursor-pointer mt-1">
-                      <img src={getLocalImg(More)} alt="more" />
-                    </div> -->
+                    <img src={getLocalImg(More)} alt="more" />
+                  </div> -->
                   </div>
                   {#if item.img !== null}
                     <div
@@ -654,92 +554,46 @@
                   </div>
                 </div>
               {/each}
-            {:else}
-              <div>
-                {#if search === ""}
-                  <div
-                    class="flex flex-col items-center justify-center gap-4 mt-16"
-                  >
-                    <img
-                      src={getLocalImg(Coin)}
-                      width={48}
-                      height="48"
-                      alt="coin"
-                    />
-                    <div
-                      class="text-sm text-[#00000099] font-medium text-center px-12"
-                    >
-                      {MultipleLang.title}
-                    </div>
-                    <div class="flex gap-2 text-sm font-medium mt-8">
-                      <div class="text-black">
-                        {JSON.stringify(suggestList) ===
-                        JSON.stringify(defaultSuggestList)
-                          ? "Suggest keyword:"
-                          : "Recent search:"}
-                      </div>
-                      {#each suggestList as suggest}
-                        <div
-                          class="text-[#1E96FC] cursor-pointer"
-                          on:click={() => (search = suggest)}
-                        >
-                          {suggest}
-                        </div>
-                      {/each}
-                    </div>
+            {/if}
+
+            {#if search !== ""}
+              {#if isLoading}
+                <div class="text-4 leading-6 font-medium mt-10 text-center">
+                  {MultipleLang.status}
+                </div>
+              {:else if !isLoading}
+                {#if tokenDataSearch.length !== 0}
+                  <div class="flex flex-col gap-y-3">
+                    {#each tokenDataSearch as item}
+                      <native-token-info
+                        id={item.id}
+                        name={item.symbol}
+                        {loaded}
+                      />
+                    {/each}
+                  </div>
+                  <div class="text-xs leading-4 italic text-gray-700 mt-3">
+                    {MultipleLang.sources}
                   </div>
                 {:else}
                   <div
                     class="text-4 leading-6 font-medium mt-10 text-center text-black"
                   >
-                    No terms
+                    {MultipleLang.empty}
                   </div>
                 {/if}
-              </div>
-            {/if}
-          {:else}
-            {#each selectedSearchTermData as item}
-              <div class="p-4 max-w-sm bg-white rounded-[10px] mb-4">
-                <div class="flex justify-between items-center">
-                  <a
-                    href={item.url}
-                    class="text-xl font-medium text-black no-underline"
-                  >
-                    {item.term}
-                  </a>
-                  <!-- <div class="cursor-pointer mt-1">
-                    <img src={getLocalImg(More)} alt="more" />
-                  </div> -->
+              {/if}
+            {:else if search === ""}
+              {#if selectedTokenData.length !== 0}
+                <div class="mb-2">
+                  <div class="title-2">{MultipleLang.second_title}</div>
                 </div>
-                {#if item.img !== null}
-                  <div class="w-full h-[300px] border rounded overflow-hidden">
-                    <img
-                      src={item.img}
-                      alt="img"
-                      class="w-full h-full object-contain"
-                    />
-                  </div>
-                {/if}
-                <div class="text-sm font-normal text-[#00000099] mt-[10px]">
-                  {item.define}
-                </div>
-              </div>
-            {/each}
-          {/if}
-        {:else if tabSelected === "token"}
-          {#if search !== ""}
-            {#if isLoading}
-              <div class="text-4 leading-6 font-medium mt-10 text-center">
-                {MultipleLang.status}
-              </div>
-            {:else if !isLoading}
-              {#if tokenDataSearch.length !== 0}
                 <div class="flex flex-col gap-y-3">
-                  {#each tokenDataSearch as item}
+                  {#each selectedTokenData as item}
                     <native-token-info
                       id={item.id}
                       name={item.symbol}
-                      {loaded}
+                      loaded={true}
                     />
                   {/each}
                 </div>
@@ -748,61 +602,230 @@
                 </div>
               {:else}
                 <div
-                  class="text-4 leading-6 font-medium mt-10 text-center text-black"
+                  class="flex flex-col items-center justify-center gap-4 mt-16"
                 >
-                  No tokens
+                  <img
+                    src={getLocalImg(Coin)}
+                    width={48}
+                    height="48"
+                    alt="coin"
+                  />
+                  <div
+                    class="text-sm text-[#00000099] font-medium text-center px-12"
+                  >
+                    {MultipleLang.title}
+                  </div>
+                  <div
+                    class="flex justify-center gap-2 text-sm font-medium mt-8 w-full"
+                  >
+                    <div class="text-black">
+                      {JSON.stringify(suggestList) ===
+                      JSON.stringify(defaultSuggestList)
+                        ? MultipleLang.suggest_keyword
+                        : MultipleLang.recent_search}
+                    </div>
+                    {#each suggestList as suggest}
+                      <div
+                        class="text-[#1E96FC] cursor-pointer"
+                        on:click={() => (search = suggest)}
+                      >
+                        {regexETHAddress.test(suggest)
+                          ? shorterAddress(suggest)
+                          : suggest}
+                      </div>
+                    {/each}
+                  </div>
                 </div>
               {/if}
             {/if}
-          {:else if search === ""}
-            {#if selectedTokenData.length !== 0}
-              <div class="mb-2">
-                <div class="title-2">{MultipleLang.second_title}</div>
-              </div>
-              <div class="flex flex-col gap-y-3">
-                {#each selectedTokenData as item}
-                  <native-token-info
-                    id={item.id}
-                    name={item.symbol}
-                    loaded={true}
-                  />
-                {/each}
-              </div>
-              <div class="text-xs leading-4 italic text-gray-700 mt-3">
-                {MultipleLang.sources}
-              </div>
-            {:else}
-              <div
-                class="flex flex-col items-center justify-center gap-4 mt-16"
-              >
-                <img
-                  src={getLocalImg(Coin)}
-                  width={48}
-                  height="48"
-                  alt="coin"
-                />
-                <div
-                  class="text-sm text-[#00000099] font-medium text-center px-12"
-                >
-                  {MultipleLang.title}
-                </div>
-                <div class="flex gap-2 text-sm font-medium mt-8">
-                  <div class="text-black">
-                    {JSON.stringify(suggestList) ===
-                    JSON.stringify(defaultSuggestList)
-                      ? "Suggest keyword:"
-                      : "Recent search:"}
-                  </div>
-                  {#each suggestList as suggest}
-                    <div
-                      class="text-[#1E96FC] cursor-pointer"
-                      on:click={() => (search = suggest)}
-                    >
-                      {add3Dots(suggest)}
+          {:else if tabSelected === "term"}
+            {#if selectedSearchTermData.length === 0}
+              {#if selectedTermData.length !== 0}
+                {#each selectedTermData as item}
+                  <div class="p-4 max-w-sm bg-white rounded-[10px] mb-4">
+                    <div class="flex justify-between items-center">
+                      <a
+                        href={item.url}
+                        class="text-xl font-medium text-black no-underline"
+                      >
+                        {item.term}
+                      </a>
+                      <!-- <div class="cursor-pointer mt-1">
+                      <img src={getLocalImg(More)} alt="more" />
+                    </div> -->
                     </div>
+                    {#if item.img !== null}
+                      <div
+                        class="w-full h-[300px] border rounded overflow-hidden"
+                      >
+                        <img
+                          src={item.img}
+                          alt="img"
+                          class="w-full h-full object-contain"
+                        />
+                      </div>
+                    {/if}
+                    <div class="text-sm font-normal text-[#00000099] mt-[10px]">
+                      {item.define}
+                    </div>
+                  </div>
+                {/each}
+              {:else}
+                <div>
+                  {#if search === ""}
+                    <div
+                      class="flex flex-col items-center justify-center gap-4 mt-16"
+                    >
+                      <img
+                        src={getLocalImg(Coin)}
+                        width={48}
+                        height="48"
+                        alt="coin"
+                      />
+                      <div
+                        class="text-sm text-[#00000099] font-medium text-center px-12"
+                      >
+                        {MultipleLang.title}
+                      </div>
+                      <div
+                        class="flex justify-center gap-2 text-sm font-medium mt-8 w-full"
+                      >
+                        <div class="text-black">
+                          {JSON.stringify(suggestList) ===
+                          JSON.stringify(defaultSuggestList)
+                            ? MultipleLang.suggest_keyword
+                            : MultipleLang.recent_search}
+                        </div>
+                        {#each suggestList as suggest}
+                          <div
+                            class="text-[#1E96FC] cursor-pointer"
+                            on:click={() => (search = suggest)}
+                          >
+                            {regexETHAddress.test(suggest)
+                              ? shorterAddress(suggest)
+                              : suggest}
+                          </div>
+                        {/each}
+                      </div>
+                    </div>
+                  {:else}
+                    <div
+                      class="text-4 leading-6 font-medium mt-10 text-center text-black"
+                    >
+                      No terms
+                    </div>
+                  {/if}
+                </div>
+              {/if}
+            {:else}
+              {#each selectedSearchTermData as item}
+                <div class="p-4 max-w-sm bg-white rounded-[10px] mb-4">
+                  <div class="flex justify-between items-center">
+                    <a
+                      href={item.url}
+                      class="text-xl font-medium text-black no-underline"
+                    >
+                      {item.term}
+                    </a>
+                    <!-- <div class="cursor-pointer mt-1">
+                    <img src={getLocalImg(More)} alt="more" />
+                  </div> -->
+                  </div>
+                  {#if item.img !== null}
+                    <div
+                      class="w-full h-[300px] border rounded overflow-hidden"
+                    >
+                      <img
+                        src={item.img}
+                        alt="img"
+                        class="w-full h-full object-contain"
+                      />
+                    </div>
+                  {/if}
+                  <div class="text-sm font-normal text-[#00000099] mt-[10px]">
+                    {item.define}
+                  </div>
+                </div>
+              {/each}
+            {/if}
+          {:else if tabSelected === "token"}
+            {#if search !== ""}
+              {#if isLoading}
+                <div class="text-4 leading-6 font-medium mt-10 text-center">
+                  {MultipleLang.status}
+                </div>
+              {:else if !isLoading}
+                {#if tokenDataSearch.length !== 0}
+                  <div class="flex flex-col gap-y-3">
+                    {#each tokenDataSearch as item}
+                      <native-token-info
+                        id={item.id}
+                        name={item.symbol}
+                        {loaded}
+                      />
+                    {/each}
+                  </div>
+                  <div class="text-xs leading-4 italic text-gray-700 mt-3">
+                    {MultipleLang.sources}
+                  </div>
+                {:else}
+                  <div
+                    class="text-4 leading-6 font-medium mt-10 text-center text-black"
+                  >
+                    No tokens
+                  </div>
+                {/if}
+              {/if}
+            {:else if search === ""}
+              {#if selectedTokenData.length !== 0}
+                <div class="mb-2">
+                  <div class="title-2">{MultipleLang.second_title}</div>
+                </div>
+                <div class="flex flex-col gap-y-3">
+                  {#each selectedTokenData as item}
+                    <native-token-info
+                      id={item.id}
+                      name={item.symbol}
+                      loaded={true}
+                    />
                   {/each}
                 </div>
-              </div>
+                <div class="text-xs leading-4 italic text-gray-700 mt-3">
+                  {MultipleLang.sources}
+                </div>
+              {:else}
+                <div
+                  class="flex flex-col items-center justify-center gap-4 mt-16"
+                >
+                  <img
+                    src={getLocalImg(Coin)}
+                    width={48}
+                    height="48"
+                    alt="coin"
+                  />
+                  <div
+                    class="text-sm text-[#00000099] font-medium text-center px-12"
+                  >
+                    {MultipleLang.title}
+                  </div>
+                  <div class="flex gap-2 text-sm font-medium mt-8 w-full">
+                    <div class="text-black">
+                      {JSON.stringify(suggestList) ===
+                      JSON.stringify(defaultSuggestList)
+                        ? "Suggest keyword:"
+                        : "Recent search:"}
+                    </div>
+                    {#each suggestList as suggest}
+                      <div
+                        class="text-[#1E96FC] cursor-pointer"
+                        on:click={() => (search = suggest)}
+                      >
+                        {add3Dots(suggest)}
+                      </div>
+                    {/each}
+                  </div>
+                </div>
+              {/if}
             {/if}
           {/if}
         {/if}

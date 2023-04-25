@@ -127,7 +127,7 @@ export const formatBigBalance = (input: number, isFormatPercent: boolean) => {
 }
 
 export const shorterAddress = (string: string) => {
-  return string.slice(0, 6) + "..." + string.substr(-4);
+  return string ? string.slice(0, 6) + "..." + string.substr(-4) : string;
 };
 
 export const shorterName = (string: string) => {
