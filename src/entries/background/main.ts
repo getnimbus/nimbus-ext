@@ -24,9 +24,18 @@ browser.commands.onCommand.addListener((command) => {
 });
 
 browser.action.onClicked.addListener(() => {
-  browser.tabs.query({ active: true, currentWindow: true }).then((tab) => {
-    browser.tabs.sendMessage(tab[0].id, { action: "toggleSidebar" });
-  });
+  chrome.storage.sync.get("defaultnewtab", function (storage) {
+    if (storage.defaultnewtab === false) {
+      console.log("Create new tab");
+      chrome.tabs.create({ url: "src/entries/newTab/index.html#normal" }); // #normal to open and break the condition new tab default
+    } else {
+      browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+        tabs.forEach(tab => {
+          browser.tabs.sendMessage(tab.id, { action: "toggleSidebar" });
+        })
+      });
+    }
+  })
 });
 
 browser.runtime.onInstalled.addListener((details) => {
@@ -38,15 +47,7 @@ browser.runtime.onInstalled.addListener((details) => {
   }
 })
 
-browser.runtime.setUninstallURL('https://getnimbus.io/uninstall')
-
-chrome.storage.sync.get("defaultnewtab", function (storage) {
-  if (storage.defaultnewtab === false) {
-    chrome.tabs.update({
-      url: "chrome-search://local-ntp/local-ntp.html"
-    })
-  }
-})
+browser.runtime.setUninstallURL('https://getnimbus.io/uninstall');
 
 const fetchBasicData = async () => {
   const list = await coinGeko.get("/search");
@@ -152,7 +153,7 @@ onMessage<IAddressInput, any>("getSync", async ({ data: { address } }) => {
   }
 });
 
-onMessage<IAddressInput, any>("getSyncStatus", async ({ data: { address } }) => {
+onMessage<IAddressInput, any>("getSyncStatus", async ({ data: { address }, ...rest }) => {
   try {
     return await nimbus.get(`/address/${address}/sync-status`).then((response) => response);
   } catch (error) {

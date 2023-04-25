@@ -15,7 +15,7 @@ import { regexList } from "../../utils";
 
 // Firefox `browser.tabs.executeScript()` requires scripts return a primitive value
 (async () => {
-  console.info("[Nimbus 🌩] Make Web3 simple for everyone era");
+  console.info("[Nimbus 🌩] Make Web3 simple for everyone");
 
   function runMarkElement() {
     console.time("Nimbus marking");
