@@ -218,16 +218,16 @@
               <div style="display: flex; align-items: centers; gap: 4px">
                 <img src=${params.data.logo} alt="" width=20 height=20 /> 
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                  ${params.name} (${params.data.symbol})
+                  ${params.name} ${params.data.symbol ? `(${params.data.symbol})` : ''}
                 </div>
               </div>
-              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
+              ${params.data.name_balance ? `<div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
                   ${MultipleLang[params.data.name_balance]}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
                   ${formatBalance(params.data.value_balance)}</div>
-              </div>
+              </div>` : ''}
               <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
                   ${MultipleLang[params.data.name_value]}
@@ -410,22 +410,17 @@
           0
         );
 
-        const sumAmountOrderBreakdown = (orderBreakdown || []).reduce(
-          (prev, item) => prev + Number(item.amount),
-          0
-        );
-
         const dataPieChartOrderBreakdown = [
           {
             logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
-            name: "Others",
-            symbol: "Others tokens",
+            name: "Others tokens",
+            symbol: "",
             name_ratio: "Ratio",
             value: (sumOrderBreakdown / sum) * 100,
             name_value: "Value",
             value_value: sumOrderBreakdown,
-            name_balance: "Balance",
-            value_balance: sumAmountOrderBreakdown,
+            name_balance: "",
+            value_balance: 0,
           },
         ];
 
@@ -449,7 +444,7 @@
             {
               ...optionPie.series[0],
               data:
-                orderBreakdown.length !== 0
+                sumOrderBreakdown > 0
                   ? formatDataPieChartTopFour.concat(dataPieChartOrderBreakdown)
                   : formatDataPieChartTopFour,
             },
