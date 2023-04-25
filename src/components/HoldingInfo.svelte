@@ -81,37 +81,33 @@
 
   <td class="pr-3 py-4">
     <div class="flex items-center justify-end gap-1 text-sm font-medium">
-      {#if data.symbol === "ETH"}
-        <div />
-      {:else}
-        <div class="flex flex-col">
+      <div class="flex flex-col">
+        <div
+          class={`flex justify-end ${
+            profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
+          }`}
+        >
+          <TooltipBalance number={Math.abs(profitAndLoss)} />
+        </div>
+        <div class="flex items-center justify-end gap-1">
           <div
-            class={`flex justify-end ${
-              profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
+            class={`flex items-center ${
+              profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
             }`}
           >
-            <TooltipBalance number={Math.abs(profitAndLoss)} />
-          </div>
-          <div class="flex items-center justify-end gap-1">
-            <div
-              class={`flex items-center ${
-                profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
-              }`}
-            >
-              <TooltipBalance
-                number={Math.abs(profitAndLossPercent) * 100}
-                isFormatPercent
-              />
-              <span>%</span>
-            </div>
-            <img
-              src={profitAndLoss >= 0 ? TrendUp : TrendDown}
-              alt="trend"
-              class="mb-1"
+            <TooltipBalance
+              number={Math.abs(profitAndLossPercent) * 100}
+              isFormatPercent
             />
+            <span>%</span>
           </div>
+          <img
+            src={profitAndLoss >= 0 ? TrendUp : TrendDown}
+            alt="trend"
+            class="mb-1"
+          />
         </div>
-      {/if}
+      </div>
     </div>
   </td>
 </tr>
