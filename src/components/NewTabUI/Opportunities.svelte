@@ -24,25 +24,27 @@
   <div class="text-2xl font-medium text-black mb-6 blur-sm">
     {MultipleLang.opportunities}
   </div>
-  <div class="flex flex-col gap-4 xl:basis-0 grow blur-sm">
-    {#if isLoading}
-      <div class="flex items-center justify-center">
-        <loading-icon />
-      </div>
-    {:else}
-      <div>
-        {#if data && data.length !== 0}
+  {#if isLoading}
+    <div class="flex items-center justify-center h-full">
+      <loading-icon />
+    </div>
+  {:else}
+    <div class="h-full">
+      {#if data && data.length !== 0}
+        <div class="flex flex-col gap-4 xl:basis-0 grow blur-sm">
           {#each data as opportunity}
             <OpportunityCard data={opportunity} />
           {/each}
-        {:else}
-          <div class="flex justify-center items-center text-lg text-gray-400">
-            Empty
-          </div>
-        {/if}
-      </div>
-    {/if}
-  </div>
+        </div>
+      {:else}
+        <div
+          class="flex justify-center items-center h-full text-lg text-gray-400"
+        >
+          Empty
+        </div>
+      {/if}
+    </div>
+  {/if}
 </div>
 
 <style>
