@@ -177,6 +177,9 @@
       </table>
     </div>
   </div>
+  <div class="text-xs text-gray-400 text-right mt-2">
+    Profit and loss is calculated by transactions that swaps the tokens
+  </div>
 </div>
 
 <style>

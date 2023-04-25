@@ -103,8 +103,8 @@
 
         {#if position === "LP-Provider"}
           <div class="text-xs text-gray-400 text-right mt-2">
-            Profit is calculated by buying & hold on every time you add/remove
-            liquidity
+            Profit and loss is calculated by buying & hold on every time you
+            add/remove liquidity
           </div>
         {/if}
       </div>
