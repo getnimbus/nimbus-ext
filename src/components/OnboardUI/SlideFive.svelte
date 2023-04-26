@@ -1,7 +1,6 @@
 <script lang="ts">
   import * as browser from "webextension-polyfill";
   import { getLocalImg } from "~/utils";
-  import { v4 as uuidv4 } from "uuid";
 
   export let skip = () => {};
 
@@ -79,7 +78,7 @@
         return;
       }
 
-      Object.assign(data, { id: uuidv4() });
+      Object.assign(data, { id: data.address });
 
       listAddress = [...listAddress, data];
 

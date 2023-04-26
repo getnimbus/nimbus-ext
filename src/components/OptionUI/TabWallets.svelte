@@ -4,7 +4,6 @@
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
-  import { v4 as uuidv4 } from "uuid";
   import { i18n } from "~/lib/i18n";
 
   import type { AddressData } from "~/types/AddressData";
@@ -198,7 +197,7 @@
         return;
       }
 
-      Object.assign(data, { id: uuidv4() });
+      Object.assign(data, { id: data.address });
 
       listAddress = [...listAddress, data];
 

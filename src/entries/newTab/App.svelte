@@ -10,7 +10,6 @@
   dayjs.extend(relativeTime);
   dayjs.locale(currentLang);
   import { formatBalance, formatCurrency } from "~/utils";
-  import { v4 as uuidv4 } from "uuid";
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import { groupBy, isEmpty } from "lodash";
   import { Motion } from "svelte-motion";
@@ -914,10 +913,8 @@
         return;
       }
 
-      Object.assign(data, { id: uuidv4() });
-
       const dataFormat = {
-        id: data.id,
+        id: data.address,
         logo: Wallet,
         label: data.label,
         value: data.address,
@@ -933,7 +930,7 @@
       const filterWalletList = addWallet.filter((item) => item.value !== "all");
       const structWalletList = filterWalletList.map((item) => {
         return {
-          id: data.id,
+          id: item.value,
           logo: Wallet,
           label: item.label,
           address: item.value,
@@ -1367,91 +1364,91 @@
       {/if}
     </div>
   {/if}
-  <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
-    <div class="title-3 text-gray-600 font-semibold max-w-[530px]">
-      {MultipleLang.content.modal_add_title}
-    </div>
-    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
-      <div class="flex flex-col gap-1 w-[530px]">
-        <div class="flex flex-col gap-1">
-          <div
-            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-              address ? "bg-[#F0F2F7]" : ""
-            }`}
-            class:input-border-error={errors.address && errors.address.required}
-          >
-            <div class="text-xs text-[#666666] font-medium">
-              {MultipleLang.content.modal_address_label}
-            </div>
-            <input
-              type="text"
-              id="address"
-              name="address"
-              placeholder={MultipleLang.content.modal_address_label}
-              value=""
-              class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                address ? "bg-[#F0F2F7]" : ""
-              }
-              `}
-              on:keyup={({ target: { value } }) => (address = value)}
-            />
-          </div>
-          {#if errors.address && errors.address.required}
-            <div class="text-red-500">
-              {errors.address.msg}
-            </div>
-          {/if}
-        </div>
-      </div>
-      <div class="flex flex-col gap-1 w-[530px]">
-        <div class="flex flex-col gap-1">
-          <div
-            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-              label ? "bg-[#F0F2F7]" : ""
-            }`}
-            class:input-border-error={errors.label && errors.label.required}
-          >
-            <div class="text-xs text-[#666666] font-medium">
-              {MultipleLang.content.modal_label_label}
-            </div>
-            <input
-              type="text"
-              id="label"
-              name="label"
-              placeholder={MultipleLang.content.modal_label_label}
-              value=""
-              class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                label ? "bg-[#F0F2F7]" : ""
-              }
-              `}
-              on:keyup={({ target: { value } }) => (label = value)}
-            />
-          </div>
-          {#if errors.label && errors.label.required}
-            <div class="text-red-500">
-              {errors.label.msg}
-            </div>
-          {/if}
-        </div>
-      </div>
-      <div class="flex justify-end gap-2">
-        <Button
-          variant="secondary"
-          width={90}
-          on:click={() => {
-            errors = {};
-            isOpenAddModal = false;
-          }}
-        >
-          {MultipleLang.content.modal_cancel}</Button
-        >
-        <Button width={90} type="submit">
-          {MultipleLang.content.modal_add}</Button
-        >
-      </div>
-    </form>
-  </AppOverlay>
 </div>
+<AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
+  <div class="title-3 text-gray-600 font-semibold max-w-[530px]">
+    {MultipleLang.content.modal_add_title}
+  </div>
+  <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
+    <div class="flex flex-col gap-1 w-[530px]">
+      <div class="flex flex-col gap-1">
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            address ? "bg-[#F0F2F7]" : ""
+          }`}
+          class:input-border-error={errors.address && errors.address.required}
+        >
+          <div class="text-xs text-[#666666] font-medium">
+            {MultipleLang.content.modal_address_label}
+          </div>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            placeholder={MultipleLang.content.modal_address_label}
+            value=""
+            class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              address ? "bg-[#F0F2F7]" : ""
+            }
+              `}
+            on:keyup={({ target: { value } }) => (address = value)}
+          />
+        </div>
+        {#if errors.address && errors.address.required}
+          <div class="text-red-500">
+            {errors.address.msg}
+          </div>
+        {/if}
+      </div>
+    </div>
+    <div class="flex flex-col gap-1 w-[530px]">
+      <div class="flex flex-col gap-1">
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            label ? "bg-[#F0F2F7]" : ""
+          }`}
+          class:input-border-error={errors.label && errors.label.required}
+        >
+          <div class="text-xs text-[#666666] font-medium">
+            {MultipleLang.content.modal_label_label}
+          </div>
+          <input
+            type="text"
+            id="label"
+            name="label"
+            placeholder={MultipleLang.content.modal_label_label}
+            value=""
+            class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              label ? "bg-[#F0F2F7]" : ""
+            }
+              `}
+            on:keyup={({ target: { value } }) => (label = value)}
+          />
+        </div>
+        {#if errors.label && errors.label.required}
+          <div class="text-red-500">
+            {errors.label.msg}
+          </div>
+        {/if}
+      </div>
+    </div>
+    <div class="flex justify-end gap-2">
+      <Button
+        variant="secondary"
+        width={90}
+        on:click={() => {
+          errors = {};
+          isOpenAddModal = false;
+        }}
+      >
+        {MultipleLang.content.modal_cancel}</Button
+      >
+      <Button width={90} type="submit">
+        {MultipleLang.content.modal_add}</Button
+      >
+    </div>
+  </form>
+</AppOverlay>
 
 <style windi:preflights:global windi:safelist:global>
   .header-container {
