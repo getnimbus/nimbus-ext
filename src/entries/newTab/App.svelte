@@ -574,8 +574,7 @@
           };
         });
         positionsData = formatData;
-        console.log("res: ", response);
-        console.log("res format: ", formatData);
+
         return response;
       } else {
         // console.log("response: ", response)
