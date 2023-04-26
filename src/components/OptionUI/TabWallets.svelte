@@ -117,6 +117,11 @@
   };
 
   const validateForm = (data) => {
+    const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
+    const isDuplicatedAddress = listAddress.some((item) => {
+      return item.address === data.address;
+    });
+
     if (!isRequiredFieldValid(data.address)) {
       errors["address"] = {
         ...errors["address"],
@@ -124,7 +129,22 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      errors["address"] = { ...errors["address"], required: false };
+      if (data.address && !regexETHAddress.test(data.address)) {
+        errors["address"] = {
+          ...errors["address"],
+          required: true,
+          msg: MultipleLang.content.re_input_address,
+        };
+      } else if (isDuplicatedAddress) {
+        errors["address"] = {
+          ...errors["address"],
+          required: true,
+          msg: MultipleLang.content.duplicate_address,
+        };
+        return;
+      } else {
+        errors["address"] = { ...errors["address"], required: false };
+      }
     }
 
     if (!isRequiredFieldValid(data.label)) {
@@ -139,6 +159,8 @@
   };
 
   const validateFormEdit = (data) => {
+    const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
+
     if (!isRequiredFieldValid(data.address)) {
       errorsEdit["address"] = {
         ...errorsEdit["address"],
@@ -146,7 +168,15 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      errorsEdit["address"] = { ...errorsEdit["address"], required: false };
+      if (!regexETHAddress.test(data.address)) {
+        errorsEdit["address"] = {
+          ...errorsEdit["address"],
+          required: true,
+          msg: MultipleLang.content.re_input_address,
+        };
+      } else {
+        errorsEdit["address"] = { ...errorsEdit["address"], required: false };
+      }
     }
 
     if (!isRequiredFieldValid(data.label)) {
@@ -162,7 +192,6 @@
 
   const onSubmit = (e) => {
     const formData = new FormData(e.target);
-    const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
 
     const data: any = {};
     for (let field of formData) {
@@ -175,28 +204,6 @@
     if (
       !Object.keys(errors).some((inputName) => errors[inputName]["required"])
     ) {
-      if (data.address && !regexETHAddress.test(data.address)) {
-        errors["address"] = {
-          ...errors["address"],
-          required: true,
-          msg: MultipleLang.content.re_input_address,
-        };
-        return;
-      }
-
-      const isDuplicatedAddress = listAddress.some((item) => {
-        return item.address === data.address;
-      });
-
-      if (isDuplicatedAddress) {
-        errors["address"] = {
-          ...errors["address"],
-          required: true,
-          msg: MultipleLang.content.duplicate_address,
-        };
-        return;
-      }
-
       Object.assign(data, { id: data.address });
 
       listAddress = [...listAddress, data];
@@ -216,7 +223,6 @@
 
   const onSubmitEdit = (e) => {
     const formData = new FormData(e.target);
-    const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
 
     const data: any = {};
     for (let field of formData) {
@@ -231,16 +237,7 @@
         (inputName) => errorsEdit[inputName]["required"]
       )
     ) {
-      if (data.address && !regexETHAddress.test(data.address)) {
-        errorsEdit["address"] = {
-          ...errorsEdit["address"],
-          required: true,
-          msg: MultipleLang.content.re_input_address,
-        };
-        return;
-      }
-
-      Object.assign(data, { id: selectedItemEdit.id });
+      Object.assign(data, { id: data.address });
 
       const foundItemEdit = listAddress.find(
         (element) => element.id === selectedItemEdit.id
@@ -309,12 +306,34 @@
     if (
       address &&
       errors.address &&
-      errors.address.msg === "Address is required"
+      errors.address.msg === MultipleLang.content.address_required
     ) {
       errors["address"] = { ...errors["address"], required: false, msg: "" };
     }
-    if (label && errors.label && errors.label.msg === "Label is required") {
+    if (
+      address &&
+      errorsEdit.address &&
+      errorsEdit.address.msg === MultipleLang.content.address_required
+    ) {
+      errorsEdit["address"] = {
+        ...errors["address"],
+        required: false,
+        msg: "",
+      };
+    }
+    if (
+      label &&
+      errors.label &&
+      errors.label.msg === MultipleLang.content.label_required
+    ) {
       errors["label"] = { ...errors["label"], required: false, msg: "" };
+    }
+    if (
+      label &&
+      errorsEdit.label &&
+      errorsEdit.label.msg === MultipleLang.content.label_required
+    ) {
+      errorsEdit["label"] = { ...errors["label"], required: false, msg: "" };
     }
   }
 </script>

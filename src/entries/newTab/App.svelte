@@ -855,6 +855,11 @@
   };
 
   const validateForm = (data) => {
+    const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
+    const isDuplicatedAddress = listAddress.some((item) => {
+      return item.value === data.address;
+    });
+
     if (!isRequiredFieldValid(data.address)) {
       errors["address"] = {
         ...errors["address"],
@@ -862,7 +867,23 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      errors["address"] = { ...errors["address"], required: false };
+      if (data.address && !regexETHAddress.test(data.address)) {
+        errors["address"] = {
+          ...errors["address"],
+          required: true,
+          msg: MultipleLang.content.re_input_address,
+        };
+        return;
+      } else if (isDuplicatedAddress) {
+        errors["address"] = {
+          ...errors["address"],
+          required: true,
+          msg: MultipleLang.content.duplicate_address,
+        };
+        return;
+      } else {
+        errors["address"] = { ...errors["address"], required: false };
+      }
     }
 
     if (!isRequiredFieldValid(data.label)) {
@@ -878,7 +899,6 @@
 
   const onSubmit = (e) => {
     const formData = new FormData(e.target);
-    const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
 
     const data: any = {};
     for (let field of formData) {
@@ -891,28 +911,6 @@
     if (
       !Object.keys(errors).some((inputName) => errors[inputName]["required"])
     ) {
-      if (data.address && !regexETHAddress.test(data.address)) {
-        errors["address"] = {
-          ...errors["address"],
-          required: true,
-          msg: MultipleLang.content.re_input_address,
-        };
-        return;
-      }
-
-      const isDuplicatedAddress = listAddress.some((item) => {
-        return item.value === data.address;
-      });
-
-      if (isDuplicatedAddress) {
-        errors["address"] = {
-          ...errors["address"],
-          required: true,
-          msg: MultipleLang.content.duplicate_address,
-        };
-        return;
-      }
-
       const dataFormat = {
         id: data.address,
         logo: Wallet,
@@ -961,11 +959,15 @@
     if (
       address &&
       errors.address &&
-      errors.address.msg === "Address is required"
+      errors.address.msg === MultipleLang.content.address_required
     ) {
       errors["address"] = { ...errors["address"], required: false, msg: "" };
     }
-    if (label && errors.label && errors.label.msg === "Label is required") {
+    if (
+      label &&
+      errors.label &&
+      errors.label.msg === MultipleLang.content.label_required
+    ) {
       errors["label"] = { ...errors["label"], required: false, msg: "" };
     }
   }
