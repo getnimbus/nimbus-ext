@@ -264,9 +264,11 @@
   };
 
   const getAddressLabel = async () => {
-    const addressLabelRes = await browser.storage.sync.get(address);
+    const addressLabelRes = await browser.storage.sync.get(
+      address.toString().toLowerCase()
+    );
     if (!isEmpty(addressLabelRes)) {
-      addressLabel = addressLabelRes[address];
+      addressLabel = addressLabelRes[address.toString().toLowerCase()];
     } else {
       addressLabel = address;
     }
@@ -283,7 +285,7 @@
     showChangeAddressLabel = false;
     if (addressLabel) {
       browser.storage.sync.set({
-        [address]: addressLabel,
+        [address.toString().toLowerCase()]: addressLabel,
       });
       isSaveAddressLabel.update((n) => (n = true));
     } else {
@@ -473,7 +475,9 @@
                 class="py-[2px] px-2 flex gap-1 items-center cursor-pointer hover:bg-[#A5D5FE4D] rounded-[1000px]"
                 on:click={() => {
                   if (addressLabel !== address) {
-                    browser.storage.sync.remove([address]);
+                    browser.storage.sync.remove([
+                      address.toString().toLowerCase(),
+                    ]);
                     addressLabel = address;
                     isSaveAddressLabel.update((n) => (n = true));
                   } else {

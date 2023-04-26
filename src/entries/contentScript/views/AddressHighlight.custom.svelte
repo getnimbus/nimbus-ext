@@ -21,9 +21,11 @@
   });
 
   const getAddressLabel = async () => {
-    const addressLabelRes = await browser.storage.sync.get(address);
+    const addressLabelRes = await browser.storage.sync.get(
+      address?.toString().toLowerCase()
+    );
     if (!isEmpty(addressLabelRes)) {
-      addressLabel = addressLabelRes[address];
+      addressLabel = addressLabelRes[address?.toString().toLowerCase()];
     } else {
       addressLabel = address;
     }
@@ -34,7 +36,7 @@
     getAddressLabel();
   });
 
-  $: isUnfocus && getAddressLabel();
+  $: (isUnfocus && getAddressLabel()) || (address && getAddressLabel());
 </script>
 
 <span>
@@ -61,7 +63,7 @@
         animation: "shift-away",
       }}
     >
-      {#if addressLabel && addressLabel !== address}
+      {#if addressLabel}
         {addressLabel}
       {:else}
         <slot />

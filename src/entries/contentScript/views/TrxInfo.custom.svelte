@@ -171,14 +171,18 @@
                     <span class="slider" />
                   </label>
                   <div class="text-black text-xs font-normal">
-                    Only Sender change
+                    Only Sender & Receiver change
                   </div>
                 </div>
               {/if}
             </div>
             <div class="my-6">
               {#if info?.logs}
-                <div class="max-h-[400px] h-[135px] overflow-y-auto">
+                <div
+                  class={`max-h-[400px] ${
+                    info?.logs.length > 2 ? "h-[175px]" : "h-[155px]"
+                  }`}
+                >
                   <change-list
                     data={info?.logs}
                     id={1}
@@ -249,6 +253,9 @@
 </reset-style>
 
 <style>
+  .test {
+    border: 1px solid red;
+  }
   .border-bottom {
     border-bottom: 1px solid #00000014;
   }

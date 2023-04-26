@@ -16,24 +16,28 @@
     ? data.filter((item) => {
         return (
           item.from.toLowerCase() === from.toLowerCase() ||
-          item.to.toLowerCase() === to.toLowerCase()
+          item.to.toLowerCase() === to.toLowerCase() ||
+          item.from.toLowerCase() === to.toLowerCase() ||
+          item.from.toLowerCase() === to.toLowerCase()
         );
       })
     : data;
 </script>
 
-<div class="flex flex-col gap-10">
-  {#if changeList && changeList.length}
+{#if changeList && changeList.length}
+  <div class="flex flex-col gap-10 h-full overflow-y-auto">
     {#each changeList as change}
       <money-move data={change} {id} {explorer} {from} {to} />
     {/each}
-  {:else}
+  </div>
+{:else}
+  <div class="flex justify-center items-center h-full">
     <img
-      class="w-[84px] h-[84px] mx-auto"
+      class="w-[84px] h-[84px]"
       src={getLocalImg(NoResultsIcon)}
       alt="no-results"
     />
-  {/if}
-</div>
+  </div>
+{/if}
 
 <style></style>

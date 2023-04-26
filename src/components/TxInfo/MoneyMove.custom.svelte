@@ -35,7 +35,7 @@
     <div class="flex-1">
       <app-arrow>
         <div class="flex justify-center items-center gap-2">
-          <div class="w-4 h-4 inline-block bg-gray-100 rounded-full -mt-1">
+          <div class="w-4 h-4 inline-block bg-gray-100 rounded-full">
             {#if data?.tokenLogo}
               <img
                 src={data?.tokenLogo}

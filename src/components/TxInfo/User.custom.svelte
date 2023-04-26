@@ -6,6 +6,7 @@
   import tooltip from "~/entries/contentScript/views/tooltip";
 
   import Arrow from "../../assets/arrow-right.svg";
+  import CoinDefaultIcon from "../../entries/contentScript/assets/coin-default.svg";
 
   export let name;
   export let address;
@@ -17,9 +18,11 @@
   <div
     class="rounded-full flex justify-center items-center bg-gray-100 relative w-[40px] h-[40px]"
   >
-    {#if avatar}
-      <img class="w-full h-full object-cover" src={avatar} alt="" />
-    {/if}
+    <img
+      class="w-full h-full object-cover"
+      src={avatar || getLocalImg(CoinDefaultIcon)}
+      alt=""
+    />
     {#if name === "Sender" || name === "Receiver"}
       <div
         class={`absolute bottom-0 right-0 border w-[18px] h-[18px] rounded-full flex items-center justify-center ${
