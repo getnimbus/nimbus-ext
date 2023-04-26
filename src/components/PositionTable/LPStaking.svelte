@@ -1,5 +1,5 @@
 <script lang="ts">
-  import LpProviderItemV2 from "./TableItem/LPProviderItemV2.svelte";
+  import LpStakingItem from "./TableItem/LPStakingItem.svelte";
   import TooltipBalance from "~/components/TooltipBalance.svelte";
 
   export let positions;
@@ -29,21 +29,26 @@
               Balance ($)
             </div>
           </th>
+          <th class="py-3">
+            <div class="text-right text-sm font-semibold text-black uppercase">
+              Rewards ($)
+            </div>
+          </th>
           <th class="pr-3 py-3">
             <div class="text-sm font-semibold text-black uppercase text-right">
               Value ($)
             </div>
           </th>
-          <th class="pr-3 py-3">
+          <!-- <th class="pr-3 py-3">
             <div class="text-sm font-semibold text-black uppercase text-right">
               Profit & Loss
             </div>
-          </th>
+          </th> -->
         </tr>
       </thead>
       <tbody>
         {#each positions as item}
-          <LpProviderItemV2 data={item} />
+          <LpStakingItem data={item} />
         {/each}
       </tbody>
     </table>

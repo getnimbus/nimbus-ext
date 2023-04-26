@@ -1,6 +1,7 @@
 <script>
   import LpProvider from "./LPProvider.svelte";
   import LpProviderV2 from "./LPProviderV2.svelte";
+  import LpStaking from "./LPStaking.svelte";
   import Staking from "./Staking.svelte";
   import StakingLocked from "./StakingLocked.svelte";
   import LendingProvider from "./LendingProvider.svelte";
@@ -36,6 +37,19 @@
           />
         {:else if position === "LP-Provider v2"}
           <LpProviderV2
+            {position}
+            positions={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].data || []}
+            sum={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum || 0}
+            sum_claimable={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum_claimable || 0}
+          />
+        {:else if position === "LP Staking"}
+          <LpStaking
             {position}
             positions={data.positions.filter((item) => {
               return Object.getOwnPropertyNames(item)[0] === position;
