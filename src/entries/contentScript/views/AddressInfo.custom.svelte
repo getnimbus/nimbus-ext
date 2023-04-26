@@ -410,7 +410,7 @@
                             autofocus={showChangeAddressLabel}
                             bind:value={addressLabel}
                             type="text"
-                            class="border-none focus:outline-none focus:ring-0"
+                            class="border-none focus:outline-none focus:ring-0 bg-white"
                           />
                         {:else}
                           <div class="text-sm font-medium text-black">
