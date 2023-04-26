@@ -616,7 +616,7 @@
                     {MultipleLang.title}
                   </div>
                   <div
-                    class="flex justify-center gap-2 text-sm font-medium mt-8 w-full"
+                    class="flex justify-center items-center gap-2 text-sm font-medium mt-8 w-full"
                   >
                     <div class="text-black">
                       {JSON.stringify(suggestList) ===
@@ -626,7 +626,7 @@
                     </div>
                     {#each suggestList as suggest}
                       <div
-                        class="text-[#1E96FC] cursor-pointer"
+                        class="text-[#1E96FC] text-xs cursor-pointer"
                         on:click={() => (search = suggest)}
                       >
                         {suggest.length > 9 ? shorterAddress(suggest) : suggest}
@@ -686,7 +686,7 @@
                         {MultipleLang.title}
                       </div>
                       <div
-                        class="flex justify-center gap-2 text-sm font-medium mt-8 w-full"
+                        class="flex justify-center items-center gap-2 text-sm font-medium mt-8 w-full"
                       >
                         <div class="text-black">
                           {JSON.stringify(suggestList) ===
@@ -696,7 +696,7 @@
                         </div>
                         {#each suggestList as suggest}
                           <div
-                            class="text-[#1E96FC] cursor-pointer"
+                            class="text-[#1E96FC] text-xs cursor-pointer"
                             on:click={() => (search = suggest)}
                           >
                             {suggest.length > 9

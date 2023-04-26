@@ -375,7 +375,8 @@
     max-height: 400px;
     overflow-y: overlay;
     position: absolute;
-    left: 0;
+    left: 50%;
+    transform: translate(-50%, 0%);
     margin-top: 6px;
     z-index: 2147483646;
     background: #ffffff;
