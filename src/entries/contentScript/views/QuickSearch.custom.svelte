@@ -806,7 +806,9 @@
                   >
                     {MultipleLang.title}
                   </div>
-                  <div class="flex gap-2 text-xs font-medium mt-8 w-full">
+                  <div
+                    class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
+                  >
                     <div class="text-black">
                       {JSON.stringify(suggestList) ===
                       JSON.stringify(defaultSuggestList)

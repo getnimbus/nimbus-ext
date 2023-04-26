@@ -37,6 +37,7 @@
   let showTooltipCopyAddress = false;
   let showTooltipGotoDetailToken = false;
   let isCopied = false;
+  let moreElement;
 
   let min = 0;
   let max = 0;
@@ -306,13 +307,21 @@
               <div class="relative">
                 <div
                   class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px] flex items-center gap-1 cursor-pointer"
+                  bind:this={moreElement}
                   on:click={() =>
                     (openShowCategoryList = !openShowCategoryList)}
                 >
                   More...
                 </div>
                 {#if openShowCategoryList}
-                  <div class="content">
+                  <div
+                    class={`content ${
+                      moreElement &&
+                      moreElement.getBoundingClientRect().left > 1300
+                        ? "right-0"
+                        : "left-0"
+                    }`}
+                  >
                     {#each coinInfo.categories.slice(3) as category}
                       <div class="content_item" id={category.value}>
                         {category}
@@ -375,8 +384,6 @@
     max-height: 400px;
     overflow-y: overlay;
     position: absolute;
-    left: 50%;
-    transform: translate(-50%, 0%);
     margin-top: 6px;
     z-index: 2147483646;
     background: #ffffff;
