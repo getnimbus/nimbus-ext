@@ -127,24 +127,26 @@
         >
           <TooltipBalance number={Math.abs(profit)} />
         </div>
-        <div class="flex items-center justify-end gap-1">
-          <div
-            class={`flex items-center ${
-              profitPercent >= 0 ? "text-[#00A878]" : "text-red-500"
-            } text-right`}
-          >
-            <TooltipBalance
-              number={Math.abs(profitPercent) * 100}
-              isFormatPercent
+        {#if value > 0}
+          <div class="flex items-center justify-end gap-1">
+            <div
+              class={`flex items-center ${
+                profitPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+              } text-right`}
+            >
+              <TooltipBalance
+                number={Math.abs(profitPercent) * 100}
+                isFormatPercent
+              />
+              <span>%</span>
+            </div>
+            <img
+              src={profit >= 0 ? TrendUp : TrendDown}
+              alt="trend"
+              class="mb-1"
             />
-            <span>%</span>
           </div>
-          <img
-            src={profit >= 0 ? TrendUp : TrendDown}
-            alt="trend"
-            class="mb-1"
-          />
-        </div>
+        {/if}
       </div>
     </div>
   </td>
