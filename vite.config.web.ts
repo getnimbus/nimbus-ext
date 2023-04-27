@@ -50,7 +50,8 @@ export default defineConfig(({ mode }) => {
     build: {
       rollupOptions: {
         input: {
-          newTab: path.resolve(__dirname, "./src/index.html"),
+          app: path.resolve(__dirname, "./src/index.html"),
+          news: path.resolve(__dirname, "./src/entries/news/index.html"),
         },
         output: {
           entryFileNames: `assets/[name].js`,
