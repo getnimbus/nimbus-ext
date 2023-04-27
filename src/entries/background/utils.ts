@@ -9,11 +9,13 @@ export const cacheOrAPI = async (
 ) => {
   try {
     const dataLocal = await browser.storage.local.get(key);
+    console.log({ key, dataLocal });
     if (disabled) {
       console.log(`${key} DISABLED`);
     }
     if (!disabled && !isEmpty(dataLocal[key]) && dataLocal.hasOwnProperty(key)) {
       const parsedData = JSON.parse(dataLocal[key]);
+      console.log({ parsedData });
       if (
         dayjs().subtract(ttl, "second").toDate() <
         new Date(parsedData?.createdAt)

@@ -8,72 +8,6 @@ import type { JsonValue, JsonObject } from "type-fest";
 import langEN from "../../_locales/en/messages.json";
 import langVI from "../../_locales/vi/messages.json";
 
-browser.runtime.onStartup.addListener(async () => {
-  console.log("onStartup....");
-  await fetchBasicData();
-  await fetchConfigPages();
-  await fetchListTerm();
-});
-
-browser.commands.onCommand.addListener((command) => {
-  if (command === "open-quick-search") {
-    browser.tabs.query({ active: true, currentWindow: true }).then((tab) => {
-      browser.tabs.sendMessage(tab[0].id, { action: "toggleSidebar" });
-    });
-  }
-});
-
-browser.action.onClicked.addListener(() => {
-  chrome.storage.sync.get("defaultnewtab", function (storage) {
-    if (storage.defaultnewtab === false) {
-      console.log("Create new tab");
-      chrome.tabs.create({ url: "src/entries/newTab/index.html#normal" }); // #normal to open and break the condition new tab default
-    } else {
-      browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-        tabs.forEach(tab => {
-          browser.tabs.sendMessage(tab.id, { action: "toggleSidebar" });
-        })
-      });
-    }
-  })
-});
-
-browser.runtime.onInstalled.addListener((details) => {
-  console.log("Extension installed");
-  const reason = details.reason
-  if (reason === 'install') {
-    chrome.tabs.create({ url: 'src/entries/onboard/index.html' });
-    chrome.storage.sync.set({ defaultnewtab: true });
-  }
-})
-
-browser.runtime.setUninstallURL('https://getnimbus.io/uninstall');
-
-const fetchBasicData = async () => {
-  const list = await coinGeko.get("/search");
-  browser.storage.local
-    .set({ coinList: JSON.stringify(list.coins) })
-    .then(() => {
-      console.log("Loaded crypto list");
-    });
-};
-
-const fetchConfigPages = async () => {
-  const listConfigPages = await nimbus.get("/config/pages");
-  browser.storage.local
-    .set({ configPageList: JSON.stringify(listConfigPages.data) })
-    .then(() => {
-      console.log("Loaded config page list");
-    });
-};
-
-const fetchListTerm = async () => {
-  const listTerm = await nimbus.get("/terms").then((response) => response.data);
-  browser.storage.local.set({ termList: JSON.stringify(listTerm) }).then(() => {
-    console.log("Loaded list term");
-  });
-};
-
 interface IAddressInput extends JsonObject {
   address: string;
 }
@@ -164,9 +98,11 @@ onMessage<IAddressInput, any>("getSyncStatus", async ({ data: { address }, ...re
 onMessage<IAddressInput, any>("getOverview", async ({ data: { address, reload = false } }) => {
   try {
     const key = address + "_overview";
+    console.log({ key, address, reload });
     const res = await cacheOrAPI(
       key,
       () => {
+        console.log("goint to send api");
         return nimbus.get(`/address/${address}/overview`).then((response) => {
           return {
             result: response.data,
@@ -174,7 +110,7 @@ onMessage<IAddressInput, any>("getOverview", async ({ data: { address, reload = 
           }
         });
       },
-      { defaultValue: null, ttl: 60, reload }
+      { defaultValue: null, ttl: 1, reload }
     );
     return res
   } catch (error) {
@@ -257,7 +193,6 @@ onMessage<IAddressInput, any>("getOpportunities", async ({ data: { address } }) 
       { defaultValue: [] }
     );
     return res
-    // return await nimbusApi.get("/opportunities").then((response) => response.opportunities);
   } catch (error) {
     return {};
   }
@@ -431,8 +366,3 @@ onMessage<II18nMsg, "i18n">(
     return _.get(langEN, key, defaultText);
   }
 );
-
-// Run on init
-fetchBasicData();
-fetchConfigPages();
-fetchListTerm();

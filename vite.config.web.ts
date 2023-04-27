@@ -9,6 +9,7 @@ import AutoImport from "unplugin-auto-import/vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
 // https://vitejs.dev/config/
+/** @type {import('vite').UserConfig} */
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   return {
@@ -24,16 +25,6 @@ export default defineConfig(({ mode }) => {
           },
         },
       }),
-      webExtension({
-        manifest: getManifest(),
-      }),
-      AutoImport({
-        imports: [
-          {
-            "webextension-polyfill": [["default", "browser"]],
-          },
-        ],
-      }),
       viteStaticCopy({
         targets: [
           {
@@ -46,25 +37,29 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "~": path.resolve(__dirname, "./src"),
+        "webext-bridge": path.resolve(__dirname, "./src/lib/web-bridge"),
+        "webextension-polyfill": path.resolve(__dirname, "./src/lib/web-chrome"),
       },
     },
     define: {
       APP_TYPE: {
-        TYPE: 'EXT'
+        TYPE: 'WEB'
       }
     },
+    root: path.resolve(__dirname, "./src"),
     build: {
       rollupOptions: {
+        input: {
+          newTab: path.resolve(__dirname, "./src/index.html"),
+        },
         output: {
           entryFileNames: `assets/[name].js`,
           chunkFileNames: `assets/[name].js`,
           assetFileNames: `assets/[name].[hash].[ext]`,
         },
       },
+      outDir: path.resolve(__dirname, "web-build"),
       sourcemap: env.WATCH === "true" ? "inline" : false,
-    },
-    optimizeDeps: {
-      include: ["webextension-polyfill"],
     },
   };
 });
