@@ -27,7 +27,7 @@
       />
       <div class="flex flex-col gap-1">
         <div class="text-black text-sm font-medium">{data.name}</div>
-        <div class="text-[#00000080] text-xs font-medium">ETH</div>
+        <div class="text-[#00000080] text-xs font-medium">{data.symbol}</div>
       </div>
     </div>
   </td>
