@@ -5,6 +5,7 @@
     formatBigBalance,
     formatCurrency,
     checkFormatBalance,
+    formatCurrencyV2,
   } from "~/utils";
 
   export let id;
@@ -58,7 +59,7 @@
 >
   <span {id}>
     {#if numberSize === "K"}
-      {formatCurrency(number)}
+      {formatCurrencyV2(number)}
     {:else}
       {numberFormat}
     {/if}

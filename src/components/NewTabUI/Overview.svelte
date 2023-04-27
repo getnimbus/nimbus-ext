@@ -15,6 +15,8 @@
     total_assets: i18n("newtabPage.total-assets", "Total Assets"),
     total_positions: i18n("newtabPage.total-positions", "Total Positions"),
   };
+
+  $: console.log("overview loading: ", isLoading);
 </script>
 
 <div class="flex xl:flex-row flex-col justify-between gap-6">

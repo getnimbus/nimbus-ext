@@ -1264,7 +1264,9 @@
                 {totalPositions}
                 {totalClaimable}
                 {totalAssets}
-                isLoading={loadingOverview}
+                isLoading={loadingOverview &&
+                  loadingPositions &&
+                  loadingHolding}
               />
             {/if}
           </div>

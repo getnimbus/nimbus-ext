@@ -3,6 +3,7 @@
     formatBigBalance,
     checkFormatBalance,
     formatCurrency,
+    formatCurrencyV2,
   } from "~/utils";
 
   export let number;
@@ -28,7 +29,7 @@
   on:mouseleave={() => (showTooltip = false)}
 >
   {#if numberSize === "K"}
-    <span>{formatCurrency(number)}</span>
+    <span>{formatCurrencyV2(number)}</span>
   {:else}
     <span>{numberFormat}</span><span>{numberSize}</span>
   {/if}
