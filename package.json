@@ -1,14 +1,16 @@
 {
   "name": "nimbus-ext",
   "displayName": "Nimbus",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "Thanh Le - thanhle@getnimbus.io",
   "description": "A personalized Web3 portfolio tool",
   "scripts": {
     "build": "vite build",
     "build:components": "vite build -c vite.config.components.ts",
+    "build:web": "vite build -c vite.config.web.ts",
     "watch": "WATCH=true vite build --watch",
     "dev": "WATCH=true vite build --watch",
+    "dev:web": "vite -c vite.config.web.ts",
     "serve:firefox": "web-ext run --start-url \"about:debugging#/runtime/this-firefox\"  --source-dir ./dist/",
     "serve:chrome": "web-ext run -t chromium --start-url \"https://google.com\" --source-dir ./dist/",
     "check": "svelte-check --tsconfig ./tsconfig.json"
@@ -46,6 +48,7 @@
     "lodash": "^4.17.21",
     "mark.js": "^8.11.1",
     "mousetrap": "^1.6.5",
+    "nanoid": "^4.0.2",
     "numeral": "^2.0.6",
     "sass": "^1.59.2",
     "socket.io-client": "^4.6.1",

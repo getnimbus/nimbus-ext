@@ -1,61 +1,55 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
-  import * as browser from "webextension-polyfill";
-  import { sendMessage } from "webext-bridge";
-  import { i18n, currentLang } from "~/lib/i18n";
   import dayjs from "dayjs";
-  import relativeTime from "dayjs/plugin/relativeTime";
-  import "dayjs/locale/vi";
   import "dayjs/locale/en";
-  dayjs.extend(relativeTime);
-  dayjs.locale(currentLang);
-  import { formatBalance, formatCurrency } from "~/utils";
-  import { disconnectWs, initWS } from "~/lib/price-ws";
+  import "dayjs/locale/vi";
+  import relativeTime from "dayjs/plugin/relativeTime";
   import { groupBy, isEmpty } from "lodash";
+  import { onDestroy, onMount } from "svelte";
   import { Motion } from "svelte-motion";
+  import { sendMessage } from "webext-bridge";
+  import * as browser from "webextension-polyfill";
+  import { currentLang, i18n } from "~/lib/i18n";
+  import { disconnectWs, initWS } from "~/lib/price-ws";
+  import { formatBalance, formatCurrency } from "~/utils";
   import { wait } from "../background/utils";
 
-  import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
-  import type { OpportunityData } from "~/types/OpportunityData";
-  import type { NewData, NewDataRes } from "~/types/NewData";
-  import type { WalletData, WalletDataRes } from "~/types/WalletData";
-  import type { PositionData, PositionDataRes } from "~/types/PositionData";
   import type { AddressData } from "~/types/AddressData";
+  import type { NewData, NewDataRes } from "~/types/NewData";
+  import type { OpportunityData } from "~/types/OpportunityData";
+  import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
+  import type { PositionData, PositionDataRes } from "~/types/PositionData";
+  import type { WalletData, WalletDataRes } from "~/types/WalletData";
 
-  import Select from "~/components/Select.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
-  import "~/components/Tooltip.custom.svelte";
-  import Overview from "~/components/NewTabUI/Overview.svelte";
-  import Positions from "~/components/NewTabUI/Positions.svelte";
-  import News from "~/components/NewTabUI/News.svelte";
+  import CopyToClipboard from "~/components/CopyToClipboard.svelte";
   import Charts from "~/components/NewTabUI/Charts.svelte";
   import Holding from "~/components/NewTabUI/Holding.svelte";
+  import News from "~/components/NewTabUI/News.svelte";
   import Opportunities from "~/components/NewTabUI/Opportunities.svelte";
-  import CopyToClipboard from "~/components/CopyToClipboard.svelte";
+  import Overview from "~/components/NewTabUI/Overview.svelte";
+  import Positions from "~/components/NewTabUI/Positions.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+  import Select from "~/components/Select.svelte";
+  import "~/components/Tooltip.custom.svelte";
 
-  import Wallet from "~/assets/wallet.svg";
-  import All from "~/assets/all.svg";
-  import logo from "~/assets/btc.png";
-  import Ethereum from "~/assets/ethereum.png";
-  import Bnb from "~/assets/bnb.png";
-  import Polygon from "~/assets/polygon.png";
-  import Arbitrum from "~/assets/arbitrum.png";
-  import Solana from "~/assets/solana.png";
-  import Plus from "~/assets/plus.svg";
-  import Comment from "~/assets/comment-bubble-icon.svg";
-  import Avatar from "~/assets/user.svg";
-  import Logo from "~/assets/logo-white.svg";
-  import Reload from "~/assets/reload.svg";
   import AnalyticIcon from "~/assets/analytic.svg";
-  import PortfolioIcon from "~/assets/portfolio.svg";
-  import SettingsIcon from "~/assets/settings.svg";
-  import TransactionsIcon from "~/assets/transactions.svg";
+  import Arbitrum from "~/assets/arbitrum.png";
+  import Bnb from "~/assets/bnb.png";
+  import logo from "~/assets/btc.png";
+  import Comment from "~/assets/comment-bubble-icon.svg";
+  import Ethereum from "~/assets/ethereum.png";
+  import Logo from "~/assets/logo-white.svg";
   import NewsIcon from "~/assets/news.svg";
-  import Search from "~/assets/search.svg";
-  import Bell from "~/assets/bell.svg";
-  import TrendUp from "~/assets/trend-up.svg";
+  import Plus from "~/assets/plus.svg";
+  import Polygon from "~/assets/polygon.png";
+  import PortfolioIcon from "~/assets/portfolio.svg";
+  import Reload from "~/assets/reload.svg";
+  import SettingsIcon from "~/assets/settings.svg";
+  import Solana from "~/assets/solana.png";
+  import TransactionsIcon from "~/assets/transactions.svg";
   import TrendDown from "~/assets/trend-down.svg";
+  import TrendUp from "~/assets/trend-up.svg";
+  import Wallet from "~/assets/wallet.svg";
 
   const chainList = [
     {
@@ -386,6 +380,8 @@
         address: selectedWallet.value,
         reload: isReload,
       });
+
+      console.log(response);
 
       if (selectedWallet.value === response.address) {
         overviewData = response.result;
@@ -799,10 +795,8 @@
 
       const structWalletData = response.map((item) => {
         return {
-          id: item.id,
+          ...item,
           logo: item.logo || Wallet,
-          label: item.label,
-          value: item.address,
         };
       });
 
@@ -811,6 +805,8 @@
       const selectedWalletRes = await browser.storage.sync.get(
         "selectedWallet"
       );
+
+      console.log({ selectedWalletRes });
       if (selectedWalletRes && !isEmpty(selectedWalletRes)) {
         selectedWallet = selectedWalletRes.selectedWallet;
       } else {
@@ -828,6 +824,12 @@
     getListAddress();
     initWS();
 
+    browser.storage.onChanged.addListener((changes) => {
+      if (changes?.options?.newValue?.lang) {
+        window.location.reload();
+      }
+    });
+
     const lastScrollY = window.pageYOffset;
     const handleCheckIsSticky = () => {
       const scrollY = window.pageYOffset;
@@ -841,12 +843,6 @@
 
   onDestroy(() => {
     disconnectWs();
-  });
-
-  browser.storage.onChanged.addListener((changes) => {
-    if (changes?.options?.newValue?.lang) {
-      window.location.reload();
-    }
   });
 
   // handle add wallet
@@ -1065,7 +1061,7 @@
           class:bg-[#525B8C]={navActive === "news"}
           on:click={() => {
             navActive = "news";
-            chrome.tabs.create({ url: "src/entries/news/index.html" });
+            browser.tabs.create({ url: "src/entries/news/index.html" });
           }}
         >
           <img src={NewsIcon} alt="" />
@@ -1078,7 +1074,7 @@
           class:bg-[#525B8C]={navActive === "options"}
           on:click={() => {
             navActive = "options";
-            chrome.tabs.create({ url: "src/entries/options/index.html" });
+            browser.tabs.create({ url: "src/entries/options/index.html" });
           }}
         >
           <img src={SettingsIcon} alt="" />

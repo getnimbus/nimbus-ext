@@ -1,5 +1,6 @@
 <script lang="ts">
   import { i18n } from "~/lib/i18n";
+  import * as browser from "webextension-polyfill";
 
   export let data;
   export let isLoading;
@@ -20,7 +21,7 @@
     <div
       class="font-bold text-base cursor-pointer"
       on:click={() => {
-        chrome.tabs.create({
+        browser.tabs.create({
           url: "src/entries/news/index.html",
         });
       }}
