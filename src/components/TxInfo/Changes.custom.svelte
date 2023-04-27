@@ -18,7 +18,7 @@
           item.from.toLowerCase() === from.toLowerCase() ||
           item.to.toLowerCase() === to.toLowerCase() ||
           item.from.toLowerCase() === to.toLowerCase() ||
-          item.from.toLowerCase() === to.toLowerCase()
+          item.to.toLowerCase() === from.toLowerCase()
         );
       })
     : data;
