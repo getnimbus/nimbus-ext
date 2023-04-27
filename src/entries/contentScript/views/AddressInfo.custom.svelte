@@ -8,7 +8,6 @@
   import * as echarts from "echarts";
   import numeral from "numeral";
   import { i18n } from "~/lib/i18n";
-  import { wait } from "~/entries/background/utils";
   import {
     formatBalance,
     formatCurrency,
@@ -131,8 +130,6 @@
   let addressLabel = "";
   let showChangeAddressLabel = false;
   let timer;
-  let isCopied = false;
-  let showTooltipCopyAddress = false;
   let showTooltipGotoDetailAddress = false;
   let isEmptyTokens = false;
 

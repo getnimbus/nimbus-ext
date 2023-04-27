@@ -4,6 +4,7 @@
   export let variant:
     | "primary"
     | "secondary"
+    | "tertiary"
     | "no-outlined"
     | "underlined"
     | "delete"
@@ -19,6 +20,7 @@
     ["disabled"]: disabled,
     ["underlined"]: variant === "underlined",
     ["secondary"]: variant === "secondary",
+    ["tertiary"]: variant === "tertiary",
     ["no_outlined"]: variant === "no-outlined",
     ["delete"]: variant === "delete",
     ["large"]: size === "large",
@@ -113,6 +115,19 @@
   .secondary[type="submit"],
   .secondary[type="button"] {
     background: #fff;
+  }
+
+  .tertiary {
+    color: #fff;
+    border: none;
+    width: max-content;
+    height: max-content;
+    padding: 8px 16px;
+  }
+  .tertiary[type="submit"],
+  .tertiary[type="button"] {
+    color: #fff;
+    background: #1e96fc;
   }
 
   .delete {

@@ -341,15 +341,16 @@
 <div class="flex flex-col gap-2">
   <div class="flex justify-between items-center">
     <div class="title-3 text-gray-500">{MultipleLang.title}</div>
-    <button
-      class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
+    <Button
+      variant="tertiary"
+      width={136}
       on:click={() => (isOpenAddModal = true)}
     >
       <img src={Plus} alt="" width="12" height="12" />
       <div class="text-base font-medium text-white">
         {MultipleLang.content.btn_text}
       </div>
-    </button>
+    </Button>
   </div>
   <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto mt-2">
     <table class="table-auto w-full">

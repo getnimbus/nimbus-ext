@@ -190,12 +190,10 @@
   let search = "";
   let timerDebounce;
   let isLoading = false;
-
   let isLoadingSync = false;
   let isLoadingFullPage = false;
   let isShowChat = false;
-  let isCopied = false;
-  let showTooltipCopyAddress = false;
+  let showDisableAddWallet = false;
   let totalPositions = 0;
   let totalClaimable = 0;
   let totalAssets = 0;
@@ -1055,21 +1053,40 @@
             </div>
           {/if}
         </div>
+        {#if APP_TYPE.TYPE === "EXT"}
+          <div
+            class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+            class:bg-[#525B8C]={navActive === "news"}
+            on:click={() => {
+              navActive = "news";
+              browser.tabs.create({ url: "src/entries/news/index.html" });
+            }}
+          >
+            <img src={NewsIcon} alt="" />
+            <span class="text-white font-semibold xl:text-base text-sm">
+              {MultipleLang.news}
+            </span>
+          </div>
+        {:else}
+          <a
+            class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+            class:bg-[#525B8C]={navActive === "news"}
+            on:click={() => {
+              navActive = "news";
+            }}
+            href="/entries/news/index.html"
+            target="_blank"
+          >
+            <img src={NewsIcon} alt="" />
+            <span class="text-white font-semibold xl:text-base text-sm">
+              {MultipleLang.news}
+            </span>
+          </a>
+        {/if}
         <div
-          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "news"}
-          on:click={() => {
-            navActive = "news";
-            browser.tabs.create({ url: "src/entries/news/index.html" });
-          }}
-        >
-          <img src={NewsIcon} alt="" />
-          <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.news}
-          </span>
-        </div>
-        <div
-          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class={`${
+            APP_TYPE.TYPE === "EXT" ? "flex" : "hidden"
+          } items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
           class:bg-[#525B8C]={navActive === "options"}
           on:click={() => {
             navActive = "options";
@@ -1122,15 +1139,16 @@
             <div class="text-lg">
               Add your wallet to keep track of your investments.
             </div>
-            <button
-              class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
+            <Button
+              variant="tertiary"
+              width={136}
               on:click={() => (isOpenAddModal = true)}
             >
               <img src={Plus} alt="" width="12" height="12" />
               <div class="text-base font-medium text-white">
                 {MultipleLang.content.btn_text}
               </div>
-            </button>
+            </Button>
           </div>
         </div>
       {:else}
@@ -1200,15 +1218,43 @@
                     {MultipleLang.empty_wallet}
                   </div>
                 {/if}
-                <button
-                  class="flex items-center gap-3 px-4 py-2 bg-[#1E96FC] rounded-xl"
-                  on:click={() => (isOpenAddModal = true)}
-                >
-                  <img src={Plus} alt="" width="12" height="12" />
-                  <div class="text-base font-medium text-white">
-                    {MultipleLang.content.btn_text}
+                <div class="relative">
+                  <div
+                    on:mouseenter={() => {
+                      if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
+                        showDisableAddWallet = true;
+                      }
+                    }}
+                    on:mouseleave={() => {
+                      if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
+                        showDisableAddWallet = false;
+                      }
+                    }}
+                  >
+                    <Button
+                      variant="tertiary"
+                      width={136}
+                      on:click={() => (isOpenAddModal = true)}
+                      disabled={APP_TYPE.TYPE !== "EXT" &&
+                        listAddress.length === 3}
+                    >
+                      <img src={Plus} alt="" width="12" height="12" />
+                      <div class="text-base font-medium text-white">
+                        {MultipleLang.content.btn_text}
+                      </div>
+                    </Button>
+                    {#if showDisableAddWallet}
+                      <div
+                        class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                        style="z-index: 2147483648;"
+                      >
+                        <tooltip-detail
+                          text={"Install our extension to add more wallet"}
+                        />
+                      </div>
+                    {/if}
                   </div>
-                </button>
+                </div>
               </div>
 
               {#if !isLoadingSync}
