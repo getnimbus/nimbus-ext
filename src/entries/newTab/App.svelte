@@ -3,6 +3,7 @@
   import "dayjs/locale/en";
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
+  dayjs.extend(relativeTime);
   import { groupBy, isEmpty } from "lodash";
   import { onDestroy, onMount } from "svelte";
   import { Motion } from "svelte-motion";
@@ -200,6 +201,11 @@
   let totalAssets = 0;
   let isEmptyDataPie = false;
   let syncMsg = "";
+  let loadingOverview = false;
+  let loadingHolding = false;
+  let loadingPositions = false;
+  let loadingNews = false;
+  let loadingOpportunities = false;
 
   let optionPie = {
     title: {
@@ -380,8 +386,6 @@
         address: selectedWallet.value,
         reload: isReload,
       });
-
-      console.log(response);
 
       if (selectedWallet.value === response.address) {
         overviewData = response.result;
@@ -653,12 +657,6 @@
     }
   };
 
-  let loadingOverview = false;
-  let loadingHolding = false;
-  let loadingPositions = false;
-  let loadingNews = false;
-  let loadingOpportunities = false;
-
   const handleGetAllData = async (type: string) => {
     overviewData = {
       breakdownToken: [],
@@ -795,8 +793,10 @@
 
       const structWalletData = response.map((item) => {
         return {
-          ...item,
+          id: item.id,
           logo: item.logo || Wallet,
+          label: item.label,
+          value: item.address,
         };
       });
 
@@ -806,7 +806,6 @@
         "selectedWallet"
       );
 
-      console.log({ selectedWalletRes });
       if (selectedWalletRes && !isEmpty(selectedWalletRes)) {
         selectedWallet = selectedWalletRes.selectedWallet;
       } else {
