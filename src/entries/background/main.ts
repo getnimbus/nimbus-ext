@@ -98,11 +98,9 @@ onMessage<IAddressInput, any>("getSyncStatus", async ({ data: { address }, ...re
 onMessage<IAddressInput, any>("getOverview", async ({ data: { address, reload = false } }) => {
   try {
     const key = address + "_overview";
-    console.log({ key, address, reload });
     const res = await cacheOrAPI(
       key,
       () => {
-        console.log("goint to send api");
         return nimbus.get(`/address/${address}/overview`).then((response) => {
           return {
             result: response.data,
