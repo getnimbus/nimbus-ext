@@ -1061,7 +1061,7 @@
           class:bg-[#525B8C]={navActive === "news"}
           on:click={() => {
             navActive = "news";
-            chrome.tabs.create({ url: "src/entries/news/index.html" });
+            browser.tabs.create({ url: "src/entries/news/index.html" });
           }}
         >
           <img src={NewsIcon} alt="" />
@@ -1074,7 +1074,7 @@
           class:bg-[#525B8C]={navActive === "options"}
           on:click={() => {
             navActive = "options";
-            chrome.tabs.create({ url: "src/entries/options/index.html" });
+            browser.tabs.create({ url: "src/entries/options/index.html" });
           }}
         >
           <img src={SettingsIcon} alt="" />

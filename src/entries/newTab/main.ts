@@ -8,7 +8,7 @@ browser.storage.sync.get("options").then(async (res) => {
   if (!defaultnewtab?.defaultnewtab && !window.location.hash.includes('normal')) {
     // Ignore render when default new tab = false
     console.log("Going to change tab", window.location);
-    chrome.tabs.update({
+    browser.tabs.update({
       url: "chrome-search://local-ntp/local-ntp.html"
     })
     return;

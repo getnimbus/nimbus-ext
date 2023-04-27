@@ -44,5 +44,11 @@ export const storage = {
     async remove(name: string) {
       return localStorage.removeItem(name);
     }
+  },
+}
+
+export const tabs = {
+  create(url) {
+    console.log("Going to open new tab ", url);
   }
 }

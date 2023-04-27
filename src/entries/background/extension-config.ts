@@ -43,10 +43,10 @@ browser.commands.onCommand.addListener((command) => {
 });
 
 browser.action.onClicked.addListener(() => {
-  chrome.storage.sync.get("defaultnewtab", function (storage) {
+  browser.storage.sync.get("defaultnewtab").then(function (storage) {
     if (storage.defaultnewtab === false) {
       console.log("Create new tab");
-      chrome.tabs.create({ url: "src/entries/newTab/index.html#normal" }); // #normal to open and break the condition new tab default
+      browser.tabs.create({ url: "src/entries/newTab/index.html#normal" }); // #normal to open and break the condition new tab default
     } else {
       browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
         tabs.forEach(tab => {
@@ -61,8 +61,8 @@ browser.runtime.onInstalled.addListener((details) => {
   console.log("Extension installed");
   const reason = details.reason
   if (reason === 'install') {
-    chrome.tabs.create({ url: 'src/entries/onboard/index.html' });
-    chrome.storage.sync.set({ defaultnewtab: true });
+    browser.tabs.create({ url: 'src/entries/onboard/index.html' });
+    browser.storage.sync.set({ defaultnewtab: true });
   }
 })
 

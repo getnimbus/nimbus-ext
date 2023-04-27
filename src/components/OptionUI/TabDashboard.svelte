@@ -3,6 +3,7 @@
 <script>
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
+  import * as browser from "webextension-polyfill";
 
   const MultipleLang = {
     title: i18n("optionsPage.dashboard-page-title", "Dashboard"),
@@ -15,7 +16,7 @@
   let checked = true;
 
   onMount(() => {
-    chrome.storage.sync.get("defaultnewtab", function (storage) {
+    browser.storage.sync.get("defaultnewtab").then(function (storage) {
       checked = storage.defaultnewtab;
     });
   });
@@ -30,7 +31,7 @@
         type="checkbox"
         bind:checked
         on:change={(e) => {
-          chrome.storage.sync.set({ defaultnewtab: e.target.checked });
+          browser.storage.sync.set({ defaultnewtab: e.target.checked });
         }}
       />
       <span class="slider" />
