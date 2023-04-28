@@ -77,7 +77,10 @@ import { regexList } from "../../utils";
       })
     })();
   }
-  runMarkElement();
+
+  if (window.location.href !== "https://app.getnimbus.io/") {
+    runMarkElement();
+  }
 
   console.timeEnd("Nimbus marking");
   let quickSearchEle = document.createElement("quick-search");

@@ -210,11 +210,9 @@
   const observer = new MutationObserver((e) => {
     if (window.location.href !== currentUrl) {
       currentUrl = window.location.href;
-      // handleDectecSupportUrl();
       handleGetCoinDataFromPage();
       handleGetTermFromPage();
       setTimeout(() => {
-        // handleDectecSupportUrl();
         handleGetCoinDataFromPage();
         handleGetTermFromPage();
       }, 3000);
