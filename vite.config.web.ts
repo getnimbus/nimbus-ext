@@ -46,6 +46,9 @@ export default defineConfig(({ mode }) => {
         TYPE: 'WEB'
       }
     },
+    server: {
+      port: 5173,
+    },
     root: path.resolve(__dirname, "./src"),
     build: {
       rollupOptions: {
