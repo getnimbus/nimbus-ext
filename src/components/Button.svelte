@@ -8,6 +8,7 @@
     | "no-outlined"
     | "underlined"
     | "delete"
+    | "disabled"
     | "" = "primary";
   export let width: number = 200;
   export let className: string = "";
@@ -17,7 +18,7 @@
   export let type: "button" | "submit" | "reset" = "button";
 
   const buttonClassName = classNames(className, "button", "container", {
-    ["disabled"]: disabled,
+    ["disabled"]: disabled || variant === "disabled",
     ["underlined"]: variant === "underlined",
     ["secondary"]: variant === "secondary",
     ["tertiary"]: variant === "tertiary",
@@ -149,12 +150,12 @@
   }
 
   .disabled {
-    color: #7f859f;
+    color: #fff;
     border: 1px solid transparent;
   }
   .disabled[type="submit"],
   .disabled[type="button"] {
-    background: #e2e4e9;
+    background: #dddddd;
   }
 
   .loading {

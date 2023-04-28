@@ -1232,11 +1232,24 @@
                     }}
                   >
                     <Button
-                      variant="tertiary"
+                      variant={APP_TYPE.TYPE !== "EXT" &&
+                      listAddress.length === 3
+                        ? "disabled"
+                        : "tertiary"}
                       width={136}
-                      on:click={() => (isOpenAddModal = true)}
-                      disabled={APP_TYPE.TYPE !== "EXT" &&
-                        listAddress.length === 3}
+                      on:click={() => {
+                        if (
+                          APP_TYPE.TYPE !== "EXT" &&
+                          listAddress.length === 3
+                        ) {
+                          window.open(
+                            "https://chrome.google.com/webstore/detail/nimbus/edmjifiafngnpfefmbbaoipelifjgpfg?hl=en&authuser=0",
+                            "_blank"
+                          );
+                        } else {
+                          isOpenAddModal = true;
+                        }
+                      }}
                     >
                       <img src={Plus} alt="" width="12" height="12" />
                       <div class="text-base font-medium text-white">

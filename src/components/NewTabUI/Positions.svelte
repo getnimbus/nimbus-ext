@@ -505,7 +505,7 @@
             );
 
             claimable = (defaultDataPositionFormat || []).reduce(
-              (prev, item) => prev + item.claimable,
+              (prev, item) => prev + (item?.price?.price || 0) * item?.amount,
               0
             );
 
@@ -530,7 +530,7 @@
               );
 
               claimable = (formatDataWithMarketPrice || []).reduce(
-                (prev, item) => prev + item.claimable,
+                (prev, item) => prev + item.market_price * item?.amount,
                 0
               );
             }
