@@ -17,11 +17,12 @@
     dispatch("close");
   };
 
-  $: if (isOpen) {
-    document.body.style.overflow = "hidden";
-  } else {
-    document.body.style.overflow = "unset";
-  }
+  // Prevent layout flick
+  // $: if (isOpen) {
+  //   document.body.style.overflow = "hidden";
+  // } else {
+  //   document.body.style.overflow = "unset";
+  // }
 </script>
 
 {#if isOpen}
