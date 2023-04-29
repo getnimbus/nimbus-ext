@@ -6,6 +6,7 @@
   export let isLoading;
 
   import NewCard from "../NewCard.svelte";
+  import ErrorBoundary from "../ErrorBoundary.svelte";
 
   const MultipleLang = {
     news: i18n("newtabPage.news", "News"),
@@ -13,42 +14,46 @@
   };
 </script>
 
-<div class="flex flex-col gap-10 border border-[#0000001a] rounded-[20px] p-6">
-  <div class="flex justify-between border-b border-[#00000014] pb-4">
-    <div class="text-2xl font-medium text-black">
-      {MultipleLang.news}
+<ErrorBoundary>
+  <div
+    class="flex flex-col gap-10 border border-[#0000001a] rounded-[20px] p-6"
+  >
+    <div class="flex justify-between border-b border-[#00000014] pb-4">
+      <div class="text-2xl font-medium text-black">
+        {MultipleLang.news}
+      </div>
+      <div
+        class="font-bold text-base cursor-pointer"
+        on:click={() => {
+          browser.tabs.create({
+            url: "src/entries/news/index.html",
+          });
+        }}
+      >
+        {MultipleLang.view_more}
+      </div>
     </div>
-    <div
-      class="font-bold text-base cursor-pointer"
-      on:click={() => {
-        browser.tabs.create({
-          url: "src/entries/news/index.html",
-        });
-      }}
-    >
-      {MultipleLang.view_more}
-    </div>
+    {#if isLoading}
+      <div class="flex items-center justify-center">
+        <loading-icon />
+      </div>
+    {:else}
+      <div>
+        {#if data && data.length !== 0}
+          <div class="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-10">
+            {#each data as news}
+              <NewCard data={news} />
+            {/each}
+          </div>
+        {:else}
+          <div class="flex items-center justify-center text-lg text-gray-400">
+            Empty
+          </div>
+        {/if}
+      </div>
+    {/if}
   </div>
-  {#if isLoading}
-    <div class="flex items-center justify-center">
-      <loading-icon />
-    </div>
-  {:else}
-    <div>
-      {#if data && data.length !== 0}
-        <div class="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-10">
-          {#each data as news}
-            <NewCard data={news} />
-          {/each}
-        </div>
-      {:else}
-        <div class="flex items-center justify-center text-lg text-gray-400">
-          Empty
-        </div>
-      {/if}
-    </div>
-  {/if}
-</div>
+</ErrorBoundary>
 
 <style>
 </style>

@@ -10,6 +10,7 @@
 
   import Table from "../PositionTable/Table.svelte";
   import "~/components/Loading.custom.svelte";
+  import ErrorBoundary from "../ErrorBoundary.svelte";
 
   const MultipleLang = {
     positions: i18n("newtabPage.positions", "Positions"),
@@ -753,29 +754,31 @@
   }
 </script>
 
-<div class="flex flex-col gap-4">
-  <div class="text-2xl font-medium text-black">
-    {MultipleLang.positions}
-  </div>
+<ErrorBoundary>
+  <div class="flex flex-col gap-4">
+    <div class="text-2xl font-medium text-black">
+      {MultipleLang.positions}
+    </div>
 
-  {#if isLoading}
-    <div class="flex items-center justify-center pt-6">
-      <loading-icon />
-    </div>
-  {:else}
-    <div class="flex flex-col gap-7">
-      {#if formatPositionsDataTable && formatPositionsDataTable.length !== 0}
-        {#each formatPositionsDataTable as position}
-          <Table data={position} />
-        {/each}
-      {:else}
-        <div class="flex justify-center items-center text-lg text-gray-400">
-          Empty
-        </div>
-      {/if}
-    </div>
-  {/if}
-</div>
+    {#if isLoading}
+      <div class="flex items-center justify-center pt-6">
+        <loading-icon />
+      </div>
+    {:else}
+      <div class="flex flex-col gap-7">
+        {#if formatPositionsDataTable && formatPositionsDataTable.length !== 0}
+          {#each formatPositionsDataTable as position}
+            <Table data={position} />
+          {/each}
+        {:else}
+          <div class="flex justify-center items-center text-lg text-gray-400">
+            Empty
+          </div>
+        {/if}
+      </div>
+    {/if}
+  </div>
+</ErrorBoundary>
 
 <style>
 </style>

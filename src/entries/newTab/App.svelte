@@ -13,6 +13,7 @@
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import { formatBalance, formatCurrency } from "~/utils";
   import { wait } from "../background/utils";
+  import { isOpenReport } from "~/store";
 
   import type { AddressData } from "~/types/AddressData";
   import type { NewData, NewDataRes } from "~/types/NewData";
@@ -51,6 +52,7 @@
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
   import Wallet from "~/assets/wallet.svg";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   const chainList = [
     {
@@ -193,6 +195,9 @@
   let isLoadingSync = false;
   let isLoadingFullPage = false;
   let isShowChat = false;
+  isOpenReport.subscribe((value) => {
+    isShowChat = value;
+  });
   let showDisableAddWallet = false;
   let totalPositions = 0;
   let totalClaimable = 0;
@@ -970,543 +975,559 @@
       browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
         console.log("save selected address to sync storage");
       });
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + `?address=${selectedWallet.value}`
+      );
       handleGetAllData("sync");
     }
   }
 </script>
 
-<div class="flex flex-col" class:pb-10={listAddress && listAddress.length > 0}>
+<ErrorBoundary>
   <div
-    class={`border-header py-1 top-0 bg-[#27326F] ${
-      listAddress && listAddress.length > 0
-        ? "sticky"
-        : "absolute left-0 right-0"
-    }`}
-    style="z-index: 2147483647; {headerScrollY
-      ? 'box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);'
-      : ''}"
+    class="flex flex-col"
+    class:pb-10={listAddress && listAddress.length > 0}
   >
     <div
-      class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]"
+      class={`border-header py-1 top-0 bg-[#27326F] ${
+        listAddress && listAddress.length > 0
+          ? "sticky"
+          : "absolute left-0 right-0"
+      }`}
+      style="z-index: 2147483647; {headerScrollY
+        ? 'box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);'
+        : ''}"
     >
-      <img
-        src={Logo}
-        alt="logo"
-        class="-ml-8 xl:w-[177px] xl:h-[60px] w-[167px] h-[50px]"
-      />
-      <div class="flex items-center gap-3">
-        <div
-          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "portfolio"}
-          on:click={() => (navActive = "portfolio")}
-        >
-          <img src={PortfolioIcon} alt="" />
-          <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.portfolio}
-          </span>
-        </div>
-        <div class="relative">
-          <div
-            class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
-            class:bg-[#525B8C]={navActive === "analytic"}
-            on:click={() => {
-              // navActive = "analytic";
-            }}
-            on:mouseenter={() => (showTooltipAnalytic = true)}
-            on:mouseleave={() => (showTooltipAnalytic = false)}
-          >
-            <img src={AnalyticIcon} alt="" />
-            <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
-              {MultipleLang.analytic}
-            </span>
-          </div>
-          {#if showTooltipAnalytic}
-            <div
-              class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
-              style="z-index: 2147483648;"
-            >
-              <tooltip-detail text={"Soon"} />
-            </div>
-          {/if}
-        </div>
-        <div class="relative">
-          <div
-            class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
-            class:bg-[#525B8C]={navActive === "transactions"}
-            on:click={() => {
-              // navActive = "transactions";
-            }}
-            on:mouseenter={() => (showTooltipTransactions = true)}
-            on:mouseleave={() => (showTooltipTransactions = false)}
-          >
-            <img src={TransactionsIcon} alt="" />
-            <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
-              {MultipleLang.transactions}
-            </span>
-          </div>
-          {#if showTooltipTransactions}
-            <div
-              class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
-              style="z-index: 2147483648;"
-            >
-              <tooltip-detail text={"Soon"} />
-            </div>
-          {/if}
-        </div>
-        {#if APP_TYPE.TYPE === "EXT"}
+      <div
+        class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]"
+      >
+        <img
+          src={Logo}
+          alt="logo"
+          class="-ml-8 xl:w-[177px] xl:h-[60px] w-[167px] h-[50px]"
+        />
+        <div class="flex items-center gap-3">
           <div
             class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-            class:bg-[#525B8C]={navActive === "news"}
+            class:bg-[#525B8C]={navActive === "portfolio"}
+            on:click={() => (navActive = "portfolio")}
+          >
+            <img src={PortfolioIcon} alt="" />
+            <span class="text-white font-semibold xl:text-base text-sm">
+              {MultipleLang.portfolio}
+            </span>
+          </div>
+          <div class="relative">
+            <div
+              class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
+              class:bg-[#525B8C]={navActive === "analytic"}
+              on:click={() => {
+                // navActive = "analytic";
+              }}
+              on:mouseenter={() => (showTooltipAnalytic = true)}
+              on:mouseleave={() => (showTooltipAnalytic = false)}
+            >
+              <img src={AnalyticIcon} alt="" />
+              <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
+                {MultipleLang.analytic}
+              </span>
+            </div>
+            {#if showTooltipAnalytic}
+              <div
+                class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
+                style="z-index: 2147483648;"
+              >
+                <tooltip-detail text={"Soon"} />
+              </div>
+            {/if}
+          </div>
+          <div class="relative">
+            <div
+              class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
+              class:bg-[#525B8C]={navActive === "transactions"}
+              on:click={() => {
+                // navActive = "transactions";
+              }}
+              on:mouseenter={() => (showTooltipTransactions = true)}
+              on:mouseleave={() => (showTooltipTransactions = false)}
+            >
+              <img src={TransactionsIcon} alt="" />
+              <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
+                {MultipleLang.transactions}
+              </span>
+            </div>
+            {#if showTooltipTransactions}
+              <div
+                class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
+                style="z-index: 2147483648;"
+              >
+                <tooltip-detail text={"Soon"} />
+              </div>
+            {/if}
+          </div>
+          {#if APP_TYPE.TYPE === "EXT"}
+            <div
+              class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+              class:bg-[#525B8C]={navActive === "news"}
+              on:click={() => {
+                navActive = "news";
+                browser.tabs.create({ url: "src/entries/news/index.html" });
+              }}
+            >
+              <img src={NewsIcon} alt="" />
+              <span class="text-white font-semibold xl:text-base text-sm">
+                {MultipleLang.news}
+              </span>
+            </div>
+          {:else}
+            <a
+              class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+              class:bg-[#525B8C]={navActive === "news"}
+              on:click={() => {
+                navActive = "news";
+              }}
+              href="/entries/news/index.html"
+              target="_blank"
+            >
+              <img src={NewsIcon} alt="" />
+              <span class="text-white font-semibold xl:text-base text-sm">
+                {MultipleLang.news}
+              </span>
+            </a>
+          {/if}
+          <div
+            class={`${
+              APP_TYPE.TYPE === "EXT" ? "flex" : "hidden"
+            } items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
+            class:bg-[#525B8C]={navActive === "options"}
             on:click={() => {
-              navActive = "news";
-              browser.tabs.create({ url: "src/entries/news/index.html" });
+              navActive = "options";
+              browser.tabs.create({ url: "src/entries/options/index.html" });
             }}
           >
-            <img src={NewsIcon} alt="" />
+            <img src={SettingsIcon} alt="" />
             <span class="text-white font-semibold xl:text-base text-sm">
-              {MultipleLang.news}
+              {MultipleLang.settings}
             </span>
+          </div>
+        </div>
+        <div class="flex justify-between items-center xl:gap-4 gap-2">
+          <div class="w-[170px]" />
+          <!-- <div
+            class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center gap-1 rounded-[1000px]"
+          >
+            <img src={Search} alt="" />
+            <input
+              on:keyup={({ target: { value } }) => debounceSearch(value)}
+              autofocus
+              value={search}
+              placeholder={MultipleLang.search_placeholder}
+              type="text"
+              class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
+            />
+          </div>
+          <div
+            class="bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
+          >
+            <img src={Bell} alt="" />
+          </div>
+          <div class="w-[40px] h-[40px] rounded-full overflow-hidden">
+            <img src={Avatar} alt="avatar" class="w-full h-full object-cover" />
+          </div> -->
+        </div>
+      </div>
+    </div>
+    {#if isLoadingFullPage}
+      <div class="flex items-center justify-center h-screen">
+        <loading-icon />
+      </div>
+    {:else}
+      <div>
+        {#if listAddress.length === 0}
+          <div class="flex justify-center items-center h-screen">
+            <div
+              class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
+            >
+              <div class="text-lg">
+                Add your wallet to keep track of your investments.
+              </div>
+              <Button
+                variant="tertiary"
+                width={136}
+                on:click={() => (isOpenAddModal = true)}
+              >
+                <img src={Plus} alt="" width="12" height="12" />
+                <div class="text-base font-medium text-white">
+                  {MultipleLang.content.btn_text}
+                </div>
+              </Button>
+            </div>
           </div>
         {:else}
-          <a
-            class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-            class:bg-[#525B8C]={navActive === "news"}
-            on:click={() => {
-              navActive = "news";
-            }}
-            href="/entries/news/index.html"
-            target="_blank"
-          >
-            <img src={NewsIcon} alt="" />
-            <span class="text-white font-semibold xl:text-base text-sm">
-              {MultipleLang.news}
-            </span>
-          </a>
-        {/if}
-        <div
-          class={`${
-            APP_TYPE.TYPE === "EXT" ? "flex" : "hidden"
-          } items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
-          class:bg-[#525B8C]={navActive === "options"}
-          on:click={() => {
-            navActive = "options";
-            browser.tabs.create({ url: "src/entries/options/index.html" });
-          }}
-        >
-          <img src={SettingsIcon} alt="" />
-          <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.settings}
-          </span>
-        </div>
-      </div>
-      <div class="flex justify-between items-center xl:gap-4 gap-2">
-        <div class="w-[170px]" />
-        <!-- <div
-          class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center gap-1 rounded-[1000px]"
-        >
-          <img src={Search} alt="" />
-          <input
-            on:keyup={({ target: { value } }) => debounceSearch(value)}
-            autofocus
-            value={search}
-            placeholder={MultipleLang.search_placeholder}
-            type="text"
-            class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
-          />
-        </div> -->
-        <!-- <div
-          class="bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
-        >
-          <img src={Bell} alt="" />
-        </div>
-        <div class="w-[40px] h-[40px] rounded-full overflow-hidden">
-          <img src={Avatar} alt="avatar" class="w-full h-full object-cover" />
-        </div> -->
-      </div>
-    </div>
-  </div>
-  {#if isLoadingFullPage}
-    <div class="flex items-center justify-center h-screen">
-      <loading-icon />
-    </div>
-  {:else}
-    <div>
-      {#if listAddress.length === 0}
-        <div class="flex justify-center items-center h-screen">
-          <div
-            class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
-          >
-            <div class="text-lg">
-              Add your wallet to keep track of your investments.
-            </div>
-            <Button
-              variant="tertiary"
-              width={136}
-              on:click={() => (isOpenAddModal = true)}
-            >
-              <img src={Plus} alt="" width="12" height="12" />
-              <div class="text-base font-medium text-white">
-                {MultipleLang.content.btn_text}
-              </div>
-            </Button>
-          </div>
-        </div>
-      {:else}
-        <div class="header-container">
-          <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
-            <div class="flex flex-col gap-14 mb-5">
-              <div class="flex justify-between items-center">
-                {#if listAddress && listAddress.length > 0}
-                  <div class="flex items-center gap-5">
-                    {#if listAddress.length > 4}
-                      {#each listAddress.slice(0, 4) as item}
-                        <div
-                          id={item.value}
-                          class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
-                            item.value === selectedWallet?.value &&
-                            "bg-[#ffffff1c]"
-                          }`}
-                          class:hover:no-underline={item.value ===
-                            selectedWallet?.value}
-                          on:click={() => {
-                            selectedWallet = item;
-                          }}
-                        >
-                          <img
-                            src={item.logo}
-                            alt="logo"
-                            width="16"
-                            height="16"
-                          />
-                          {item.label}
-                        </div>
-                      {/each}
-                      <Select
-                        isWalletSelect={true}
-                        isOptionsPage={true}
-                        isSelectWallet={true}
-                        listSelect={listAddress.slice(4, listAddress.length)}
-                        bind:selected={selectedWallet}
-                      />
-                    {:else}
-                      {#each listAddress as item}
-                        <div
-                          id={item.value}
-                          class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
-                            item.value === selectedWallet?.value &&
-                            "bg-[#ffffff1c]"
-                          }`}
-                          class:hover:no-underline={item.value ===
-                            selectedWallet?.value}
-                          on:click={() => {
-                            selectedWallet = item;
-                          }}
-                        >
-                          <img
-                            src={item.logo}
-                            alt="logo"
-                            width="16"
-                            height="16"
-                          />
-                          {item.label}
-                        </div>
-                      {/each}
-                    {/if}
-                  </div>
-                {:else}
-                  <div class="text-white text-base font-semibold">
-                    {MultipleLang.empty_wallet}
-                  </div>
-                {/if}
-                <div class="relative">
-                  <div
-                    on:mouseenter={() => {
-                      if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
-                        showDisableAddWallet = true;
-                      }
-                    }}
-                    on:mouseleave={() => {
-                      if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
-                        showDisableAddWallet = false;
-                      }
-                    }}
-                  >
-                    <Button
-                      variant={APP_TYPE.TYPE !== "EXT" &&
-                      listAddress.length === 3
-                        ? "disabled"
-                        : "tertiary"}
-                      width={136}
-                      on:click={() => {
+          <div class="header-container">
+            <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
+              <div class="flex flex-col gap-14 mb-5">
+                <div class="flex justify-between items-center">
+                  {#if listAddress && listAddress.length > 0}
+                    <div class="flex items-center gap-5">
+                      {#if listAddress.length > 4}
+                        {#each listAddress.slice(0, 4) as item}
+                          <div
+                            id={item.value}
+                            class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
+                              item.value === selectedWallet?.value &&
+                              "bg-[#ffffff1c]"
+                            }`}
+                            class:hover:no-underline={item.value ===
+                              selectedWallet?.value}
+                            on:click={() => {
+                              selectedWallet = item;
+                            }}
+                          >
+                            <img
+                              src={item.logo}
+                              alt="logo"
+                              width="16"
+                              height="16"
+                            />
+                            {item.label}
+                          </div>
+                        {/each}
+                        <Select
+                          isWalletSelect={true}
+                          isOptionsPage={true}
+                          isSelectWallet={true}
+                          listSelect={listAddress.slice(4, listAddress.length)}
+                          bind:selected={selectedWallet}
+                        />
+                      {:else}
+                        {#each listAddress as item}
+                          <div
+                            id={item.value}
+                            class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
+                              item.value === selectedWallet?.value &&
+                              "bg-[#ffffff1c]"
+                            }`}
+                            class:hover:no-underline={item.value ===
+                              selectedWallet?.value}
+                            on:click={() => {
+                              selectedWallet = item;
+                            }}
+                          >
+                            <img
+                              src={item.logo}
+                              alt="logo"
+                              width="16"
+                              height="16"
+                            />
+                            {item.label}
+                          </div>
+                        {/each}
+                      {/if}
+                    </div>
+                  {:else}
+                    <div class="text-white text-base font-semibold">
+                      {MultipleLang.empty_wallet}
+                    </div>
+                  {/if}
+                  <div class="relative">
+                    <div
+                      on:mouseenter={() => {
                         if (
                           APP_TYPE.TYPE !== "EXT" &&
                           listAddress.length === 3
                         ) {
-                          window.open(
-                            "https://chrome.google.com/webstore/detail/nimbus/edmjifiafngnpfefmbbaoipelifjgpfg?hl=en&authuser=0",
-                            "_blank"
-                          );
-                        } else {
-                          isOpenAddModal = true;
+                          showDisableAddWallet = true;
+                        }
+                      }}
+                      on:mouseleave={() => {
+                        if (
+                          APP_TYPE.TYPE !== "EXT" &&
+                          listAddress.length === 3
+                        ) {
+                          showDisableAddWallet = false;
                         }
                       }}
                     >
-                      <img src={Plus} alt="" width="12" height="12" />
-                      <div class="text-base font-medium text-white">
-                        {MultipleLang.content.btn_text}
-                      </div>
-                    </Button>
-                    {#if showDisableAddWallet}
-                      <div
-                        class="absolute -top-8 left-1/2 transform -translate-x-1/2"
-                        style="z-index: 2147483648;"
+                      <Button
+                        variant={APP_TYPE.TYPE !== "EXT" &&
+                        listAddress.length === 3
+                          ? "disabled"
+                          : "tertiary"}
+                        width={136}
+                        on:click={() => {
+                          if (
+                            APP_TYPE.TYPE !== "EXT" &&
+                            listAddress.length === 3
+                          ) {
+                            window.open(
+                              "https://chrome.google.com/webstore/detail/nimbus/edmjifiafngnpfefmbbaoipelifjgpfg?hl=en&authuser=0",
+                              "_blank"
+                            );
+                          } else {
+                            isOpenAddModal = true;
+                          }
+                        }}
                       >
-                        <tooltip-detail
-                          text={"Install our extension to add more wallet"}
-                        />
-                      </div>
-                    {/if}
+                        <img src={Plus} alt="" width="12" height="12" />
+                        <div class="text-base font-medium text-white">
+                          {MultipleLang.content.btn_text}
+                        </div>
+                      </Button>
+                      {#if showDisableAddWallet}
+                        <div
+                          class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                          style="z-index: 2147483648;"
+                        >
+                          <tooltip-detail
+                            text={"Install our extension to add more wallet"}
+                          />
+                        </div>
+                      {/if}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {#if !isLoadingSync}
-                <div class="flex justify-between items-end">
-                  <div class="flex flex-col gap-3">
-                    <div class="flex items-end gap-6">
-                      <div class="text-5xl text-white font-semibold">
-                        {MultipleLang.overview}
-                      </div>
-                      <div class="flex items-center gap-2 mb-1">
-                        <div
-                          class="cursor-pointer"
-                          class:loading={isLoading}
-                          on:click={() => handleGetAllData("reload")}
-                        >
-                          <img src={Reload} alt="" />
+                {#if !isLoadingSync}
+                  <div class="flex justify-between items-end">
+                    <div class="flex flex-col gap-3">
+                      <div class="flex items-end gap-6">
+                        <div class="text-5xl text-white font-semibold">
+                          {MultipleLang.overview}
                         </div>
-                        <div class="text-xs text-white font-medium">
-                          {#if isLoading}
-                            {MultipleLang.updating_data}
-                          {:else}
-                            {MultipleLang.data_updated}
-                            {dayjs(dataUpdatedTime).fromNow()}
-                          {/if}
+                        <div class="flex items-center gap-2 mb-1">
+                          <div
+                            class="cursor-pointer"
+                            class:loading={isLoading}
+                            on:click={() => handleGetAllData("reload")}
+                          >
+                            <img src={Reload} alt="" />
+                          </div>
+                          <div class="text-xs text-white font-medium">
+                            {#if isLoading}
+                              {MultipleLang.updating_data}
+                            {:else}
+                              {MultipleLang.data_updated}
+                              {dayjs(dataUpdatedTime).fromNow()}
+                            {/if}
+                          </div>
                         </div>
                       </div>
+                      <CopyToClipboard
+                        iconSize={16}
+                        address={selectedWallet.value}
+                        isAddressInfo={false}
+                        iconColor="#fff"
+                      />
                     </div>
-                    <CopyToClipboard
-                      iconSize={16}
-                      address={selectedWallet.value}
-                      isAddressInfo={false}
-                      iconColor="#fff"
+                    <Select
+                      isWalletSelect={false}
+                      isOptionsPage={false}
+                      isSelectWallet={false}
+                      listSelect={chainList}
+                      bind:selected={selectedChain}
                     />
                   </div>
-                  <Select
-                    isWalletSelect={false}
-                    isOptionsPage={false}
-                    isSelectWallet={false}
-                    listSelect={chainList}
-                    bind:selected={selectedChain}
-                  />
-                </div>
+                {/if}
+              </div>
+              {#if !isLoadingSync}
+                <Overview
+                  data={overviewData}
+                  {totalPositions}
+                  {totalClaimable}
+                  {totalAssets}
+                  isLoading={loadingOverview &&
+                    loadingPositions &&
+                    loadingHolding}
+                />
               {/if}
             </div>
-            {#if !isLoadingSync}
-              <Overview
-                data={overviewData}
-                {totalPositions}
-                {totalClaimable}
-                {totalAssets}
-                isLoading={loadingOverview &&
-                  loadingPositions &&
-                  loadingHolding}
-              />
+          </div>
+
+          <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
+            {#if isLoadingSync}
+              <div
+                class="bg-white text-xl font-medium flex flex-col gap-5 justify-center items-center border border-[#0000001a] rounded-[20px] p-6 h-screen"
+              >
+                {syncMsg}
+                <loading-icon />
+              </div>
+            {:else}
+              <div
+                class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
+                style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+              >
+                <Charts
+                  isLoading={loadingOverview}
+                  {optionPie}
+                  {optionLine}
+                  {isEmptyDataPie}
+                />
+                <div class="flex xl:flex-row flex-col justify-between gap-6">
+                  <Holding
+                    isLoading={loadingHolding}
+                    data={walletData}
+                    bind:totalAssets
+                  />
+                  <Opportunities
+                    isLoading={loadingOpportunities}
+                    data={opportunitiesData}
+                  />
+                </div>
+                <div
+                  class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
+                >
+                  <Positions
+                    isLoading={loadingPositions}
+                    data={positionsData}
+                    bind:totalPositions
+                    bind:totalClaimable
+                  />
+                  <div
+                    on:click={() => {
+                      isOpenReport.update((n) => (n = true));
+                    }}
+                    class="mx-auto"
+                  >
+                    <Button variant="secondary"
+                      >{MultipleLang.missed_protocol}</Button
+                    >
+                  </div>
+                </div>
+                <News isLoading={loadingNews} data={newsData} />
+              </div>
             {/if}
           </div>
-        </div>
 
-        <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
-          {#if isLoadingSync}
+          <div class="sticky bottom-4 flex justify-end pr-4">
             <div
-              class="bg-white text-xl font-medium flex flex-col gap-5 justify-center items-center border border-[#0000001a] rounded-[20px] p-6 h-screen"
+              class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F] cursor-pointer"
+              style="box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);"
+              on:click={() => {
+                isOpenReport.update((n) => (n = !n));
+              }}
             >
-              {syncMsg}
-              <loading-icon />
+              <img src={Comment} alt="cmt" width="20" height="20" />
             </div>
-          {:else}
-            <div
-              class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
-              style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+            <Motion
+              initial="hidden"
+              animate={isShowChat ? "visible" : "hidden"}
+              {variants}
+              let:motion
             >
-              <Charts
-                isLoading={loadingOverview}
-                {optionPie}
-                {optionLine}
-                {isEmptyDataPie}
-              />
-              <div class="flex xl:flex-row flex-col justify-between gap-6">
-                <Holding
-                  isLoading={loadingHolding}
-                  data={walletData}
-                  bind:totalAssets
-                />
-                <Opportunities
-                  isLoading={loadingOpportunities}
-                  data={opportunitiesData}
-                />
-              </div>
               <div
-                class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
+                class="h-[630px] w-[430px] absolute right-4 bottom-15 p-4 bg-white rounded-[20px] items-end"
+                style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+                use:motion
               >
-                <Positions
-                  isLoading={loadingPositions}
-                  data={positionsData}
-                  bind:totalPositions
-                  bind:totalClaimable
+                <!-- src="https://embed-609567819.sleekplan.app/?style=intercom#" -->
+                <iframe
+                  id="feedback-board"
+                  src="https://tawk.to/chat/643d59714247f20fefec1e8d/1gu7qapef"
+                  class="h-[580px] w-full"
                 />
                 <div
+                  class="absolute top-3 right-5 cursor-pointer font-medium"
                   on:click={() => {
-                    isShowChat = true;
+                    isOpenReport.update((n) => (n = false));
                   }}
-                  class="mx-auto"
                 >
-                  <Button variant="secondary"
-                    >{MultipleLang.missed_protocol}</Button
-                  >
+                  Close
                 </div>
               </div>
-              <News isLoading={loadingNews} data={newsData} />
+            </Motion>
+          </div>
+        {/if}
+      </div>
+    {/if}
+  </div>
+  <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
+    <div class="title-3 text-gray-600 font-semibold max-w-[530px]">
+      {MultipleLang.content.modal_add_title}
+    </div>
+    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
+      <div class="flex flex-col gap-1 w-[530px]">
+        <div class="flex flex-col gap-1">
+          <div
+            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+              address ? "bg-[#F0F2F7]" : ""
+            }`}
+            class:input-border-error={errors.address && errors.address.required}
+          >
+            <div class="text-xs text-[#666666] font-medium">
+              {MultipleLang.content.modal_address_label}
+            </div>
+            <input
+              type="text"
+              id="address"
+              name="address"
+              placeholder={MultipleLang.content.modal_address_label}
+              value=""
+              class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                address ? "bg-[#F0F2F7]" : ""
+              }
+              `}
+              on:keyup={({ target: { value } }) => (address = value)}
+            />
+          </div>
+          {#if errors.address && errors.address.required}
+            <div class="text-red-500">
+              {errors.address.msg}
             </div>
           {/if}
         </div>
-
-        <div class="sticky bottom-4 flex justify-end pr-4">
+      </div>
+      <div class="flex flex-col gap-1 w-[530px]">
+        <div class="flex flex-col gap-1">
           <div
-            class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F] cursor-pointer"
-            style="box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);"
-            on:click={() => {
-              isShowChat = !isShowChat;
-            }}
-          >
-            <img src={Comment} alt="cmt" width="20" height="20" />
-          </div>
-          <Motion
-            initial="hidden"
-            animate={isShowChat ? "visible" : "hidden"}
-            {variants}
-            let:motion
-          >
-            <div
-              class="h-[630px] w-[430px] absolute right-4 bottom-15 p-4 bg-white rounded-[20px] items-end"
-              style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
-              use:motion
-            >
-              <!-- src="https://embed-609567819.sleekplan.app/?style=intercom#" -->
-              <iframe
-                id="feedback-board"
-                src="https://tawk.to/chat/643d59714247f20fefec1e8d/1gu7qapef"
-                class="h-[580px] w-full"
-              />
-              <div
-                class="absolute top-3 right-5 cursor-pointer font-medium"
-                on:click={() => {
-                  isShowChat = false;
-                }}
-              >
-                Close
-              </div>
-            </div>
-          </Motion>
-        </div>
-      {/if}
-    </div>
-  {/if}
-</div>
-<AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
-  <div class="title-3 text-gray-600 font-semibold max-w-[530px]">
-    {MultipleLang.content.modal_add_title}
-  </div>
-  <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
-    <div class="flex flex-col gap-1 w-[530px]">
-      <div class="flex flex-col gap-1">
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            address ? "bg-[#F0F2F7]" : ""
-          }`}
-          class:input-border-error={errors.address && errors.address.required}
-        >
-          <div class="text-xs text-[#666666] font-medium">
-            {MultipleLang.content.modal_address_label}
-          </div>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            placeholder={MultipleLang.content.modal_address_label}
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              address ? "bg-[#F0F2F7]" : ""
-            }
-              `}
-            on:keyup={({ target: { value } }) => (address = value)}
-          />
-        </div>
-        {#if errors.address && errors.address.required}
-          <div class="text-red-500">
-            {errors.address.msg}
-          </div>
-        {/if}
-      </div>
-    </div>
-    <div class="flex flex-col gap-1 w-[530px]">
-      <div class="flex flex-col gap-1">
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            label ? "bg-[#F0F2F7]" : ""
-          }`}
-          class:input-border-error={errors.label && errors.label.required}
-        >
-          <div class="text-xs text-[#666666] font-medium">
-            {MultipleLang.content.modal_label_label}
-          </div>
-          <input
-            type="text"
-            id="label"
-            name="label"
-            placeholder={MultipleLang.content.modal_label_label}
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
               label ? "bg-[#F0F2F7]" : ""
-            }
+            }`}
+            class:input-border-error={errors.label && errors.label.required}
+          >
+            <div class="text-xs text-[#666666] font-medium">
+              {MultipleLang.content.modal_label_label}
+            </div>
+            <input
+              type="text"
+              id="label"
+              name="label"
+              placeholder={MultipleLang.content.modal_label_label}
+              value=""
+              class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                label ? "bg-[#F0F2F7]" : ""
+              }
               `}
-            on:keyup={({ target: { value } }) => (label = value)}
-          />
-        </div>
-        {#if errors.label && errors.label.required}
-          <div class="text-red-500">
-            {errors.label.msg}
+              on:keyup={({ target: { value } }) => (label = value)}
+            />
           </div>
-        {/if}
+          {#if errors.label && errors.label.required}
+            <div class="text-red-500">
+              {errors.label.msg}
+            </div>
+          {/if}
+        </div>
       </div>
-    </div>
-    <div class="flex justify-end gap-2">
-      <Button
-        variant="secondary"
-        width={90}
-        on:click={() => {
-          errors = {};
-          isOpenAddModal = false;
-        }}
-      >
-        {MultipleLang.content.modal_cancel}</Button
-      >
-      <Button width={90} type="submit">
-        {MultipleLang.content.modal_add}</Button
-      >
-    </div>
-  </form>
-</AppOverlay>
+      <div class="flex justify-end gap-2">
+        <Button
+          variant="secondary"
+          width={90}
+          on:click={() => {
+            errors = {};
+            isOpenAddModal = false;
+          }}
+        >
+          {MultipleLang.content.modal_cancel}</Button
+        >
+        <Button width={90} type="submit">
+          {MultipleLang.content.modal_add}</Button
+        >
+      </div>
+    </form>
+  </AppOverlay>
+</ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global>
   .header-container {
