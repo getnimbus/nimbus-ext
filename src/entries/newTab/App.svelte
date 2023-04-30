@@ -723,28 +723,32 @@
           }
           if (syncStatus?.data?.lastSync) {
             console.log("start load data");
+            const [
+              resOverview,
+              resHolding,
+              resPositions,
+              resNews,
+              resOpportunities,
+            ] = await Promise.all([
+              getOverview(type === "reload"),
+              getHolding(type === "reload"),
+              getPositions(type === "reload"),
+              getNews(type === "reload"),
+              getOpportunities(type === "reload"),
+            ]);
 
-            const resOverview = await getOverview(type === "reload");
             if (resOverview) {
               loadingOverview = false;
             }
-
-            const resHolding = await getHolding(type === "reload");
             if (resHolding) {
               loadingHolding = false;
             }
-
-            const resPositions = await getPositions(type === "reload");
             if (resPositions) {
               loadingPositions = false;
             }
-
-            const resNews = await getNews(type === "reload");
             if (resNews) {
               loadingNews = false;
             }
-
-            const resOpportunities = await getOpportunities(type === "reload");
             if (resOpportunities) {
               loadingOpportunities = false;
             }
@@ -813,6 +817,15 @@
         selectedWallet = selectedWalletRes.selectedWallet;
       } else {
         selectedWallet = listAddress[0];
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const addressParams = urlParams.get("address");
+      if (addressParams && selectedWallet.value !== addressParams) {
+        selectedWallet = {
+          ...selectedWallet,
+          value: addressParams,
+        };
       }
 
       isLoadingFullPage = false;
