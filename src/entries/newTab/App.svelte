@@ -730,28 +730,28 @@
               resNews,
               resOpportunities,
             ] = await Promise.all([
-              getOverview(type === "reload"),
-              getHolding(type === "reload"),
-              getPositions(type === "reload"),
-              getNews(type === "reload"),
-              getOpportunities(type === "reload"),
-            ]);
+              getOverview(type === "reload").then((res) => {
+                loadingOverview = false;
+                return res;
+              }),
+              getHolding(type === "reload").then((res) => {
+                loadingHolding = false;
+                return res;
+              }),
+              getPositions(type === "reload").then((res) => {
+                loadingPositions = false;
+                return res;
+              }),
+              getNews(type === "reload").then((res) => {
+                loadingNews = false;
+                return res;
+              }),
 
-            if (resOverview) {
-              loadingOverview = false;
-            }
-            if (resHolding) {
-              loadingHolding = false;
-            }
-            if (resPositions) {
-              loadingPositions = false;
-            }
-            if (resNews) {
-              loadingNews = false;
-            }
-            if (resOpportunities) {
-              loadingOpportunities = false;
-            }
+              getOpportunities(type === "reload").then((res) => {
+                loadingOpportunities = false;
+                return res;
+              }),
+            ]);
 
             if (
               resOverview &&
