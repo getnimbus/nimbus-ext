@@ -132,7 +132,7 @@
               </th>
               <th class="py-3">
                 <div
-                  class="text-left text-xs uppercase font-semibold text-black"
+                  class="text-right text-xs uppercase font-semibold text-black"
                 >
                   {MultipleLang.amount}
                 </div>
@@ -144,7 +144,7 @@
                   {MultipleLang.value} ($)
                 </div>
               </th>
-              <th class="pr-3 py-3">
+              <th class="pr-3 py-3 w-[170px]">
                 <div
                   class="text-right text-xs uppercase font-semibold text-black"
                 >

@@ -1,5 +1,5 @@
 <script>
-  import { formatCurrencyV2, shorterName } from "~/utils";
+  import { formatCurrency, shorterName } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import TooltipBalance from "~/components/TooltipBalance.svelte";
@@ -62,12 +62,12 @@
 
   <td class="py-4">
     <div class="text-sm text-[#00000099] font-medium flex justify-start">
-      {formatCurrencyV2(data.market_price)}
+      {formatCurrency(data.market_price)}
     </div>
   </td>
 
   <td class="py-4">
-    <div class="text-sm text-[#00000099] font-medium flex justify-start">
+    <div class="text-sm text-[#00000099] font-medium flex justify-end">
       <TooltipBalance number={data.amount} />
     </div>
   </td>
@@ -78,7 +78,7 @@
     </div>
   </td>
 
-  <td class="pr-3 py-4">
+  <td class="pr-3 py-4 w-[170px]">
     <div class="flex items-center justify-end gap-1 text-sm font-medium">
       <div class="flex flex-col">
         <div

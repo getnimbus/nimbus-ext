@@ -46,7 +46,6 @@
         "optionsPage.accounts-page-content.modal-delete",
         "Delete"
       ),
-
       modal_address_label: i18n(
         "optionsPage.accounts-page-content.modal-address-label",
         "Wallet"
@@ -63,7 +62,6 @@
         "optionsPage.accounts-page-content.modal-add-sub-title",
         "Add your wallet will give you more option to see the information at page new tab"
       ),
-
       modal_delete_title: i18n(
         "optionsPage.accounts-page-content.modal-delete-title",
         "Are you sure?"
@@ -72,7 +70,6 @@
         "optionsPage.accounts-page-content.modal-delete-sub-title",
         "Do you really want to delete this wallet? This process cannot be undone"
       ),
-
       modal_edit_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-title",
         "Edit your wallet"
@@ -208,11 +205,7 @@
 
       listAddress = [...listAddress, data];
 
-      browser.storage.sync
-        .set({ listAddress: JSON.stringify(listAddress) })
-        .then(() => {
-          console.log("save address to sync storage");
-        });
+      browser.storage.sync.set({ listAddress: JSON.stringify(listAddress) });
 
       e.target.reset();
       isOpenAddModal = false;
@@ -247,11 +240,7 @@
       if (index > -1) {
         listAddress[index] = data;
 
-        browser.storage.sync
-          .set({ listAddress: JSON.stringify(listAddress) })
-          .then(() => {
-            console.log("save address to sync storage");
-          });
+        browser.storage.sync.set({ listAddress: JSON.stringify(listAddress) });
 
         e.target.reset();
         isOpenEditModal = false;
@@ -280,11 +269,7 @@
     const index = listAddress.indexOf(item);
     if (index > -1) {
       listAddress.splice(index, 1);
-      browser.storage.sync
-        .set({ listAddress: JSON.stringify(listAddress) })
-        .then(() => {
-          console.log("save address to sync storage");
-        });
+      browser.storage.sync.set({ listAddress: JSON.stringify(listAddress) });
 
       getListAddress();
       isOpenConfirmDelete = false;
