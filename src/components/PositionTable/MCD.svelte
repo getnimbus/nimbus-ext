@@ -59,7 +59,7 @@
           </th>
           <th class="py-3">
             <div
-              class="text-left flex items-center gap-2 text-sm font-semibold text-black uppercase"
+              class="text-left flex items-center gap-1 text-sm font-semibold text-black uppercase"
             >
               Health
               <span
@@ -67,11 +67,7 @@
                 on:mouseenter={() => (showTooltip = true)}
                 on:mouseleave={() => (showTooltip = false)}
               >
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 12 12"
-                  class="Tips_icon__2BHWL"
+                <svg width="12" height="12" viewBox="0 0 12 12"
                   ><g
                     id="assets-overview"
                     stroke="none"

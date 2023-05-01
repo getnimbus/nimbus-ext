@@ -837,11 +837,6 @@
       );
     }
   }
-
-  $: console.log({
-    data,
-    formatPositionsDataTable,
-  });
 </script>
 
 <ErrorBoundary>

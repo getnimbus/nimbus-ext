@@ -33,6 +33,7 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Select from "~/components/Select.svelte";
   import "~/components/Tooltip.custom.svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   import AnalyticIcon from "~/assets/analytic.svg";
   import Arbitrum from "~/assets/arbitrum.png";
@@ -52,7 +53,7 @@
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
   import Wallet from "~/assets/wallet.svg";
-  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Search from "~/assets/search.svg";
 
   const chainList = [
     {
@@ -379,7 +380,7 @@
     clearTimeout(timerDebounce);
     timerDebounce = setTimeout(() => {
       search = value;
-    }, 300);
+    }, 500);
   };
 
   const getOverview = async (isReload: boolean = false) => {
@@ -996,6 +997,24 @@
       handleGetAllData("sync");
     }
   }
+
+  $: {
+    if (search) {
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + `?address=${search}`
+      );
+      const urlParams = new URLSearchParams(window.location.search);
+      const addressParams = urlParams.get("address");
+      if (addressParams && selectedWallet?.value !== addressParams) {
+        selectedWallet = {
+          ...selectedWallet,
+          value: addressParams,
+        };
+      }
+    }
+  }
 </script>
 
 <ErrorBoundary>
@@ -1127,8 +1146,7 @@
           {/if}
         </div>
         <div class="flex justify-between items-center xl:gap-4 gap-2">
-          <div class="w-[170px]" />
-          <!-- <div
+          <div
             class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center gap-1 rounded-[1000px]"
           >
             <img src={Search} alt="" />
@@ -1141,7 +1159,7 @@
               class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
             />
           </div>
-          <div
+          <!-- <div
             class="bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
           >
             <img src={Bell} alt="" />

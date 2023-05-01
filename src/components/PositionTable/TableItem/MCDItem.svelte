@@ -76,12 +76,12 @@
 
   <th class="py-3">
     <div
-      class="flex justify-start items-center gap-2 text-sm text-[#000000] font-medium"
+      class="flex justify-start items-center gap-1 text-sm text-[#000000] font-medium"
     >
       {#if data.healthRate > 10}
         <div>>10</div>
       {:else}
-        ⚠️
+        <span class="text-red-500">⚠️</span>
         <TooltipBalance number={data.healthRate} isFormatPercent />
       {/if}
     </div>
