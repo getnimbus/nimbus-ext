@@ -19,11 +19,7 @@
   let formatPositionsDataTable = [];
   let flattenPositionsDataTable = [];
 
-  let defaultDataPositionFormat = [];
-  let dataPositionFormat = [];
   let marketPrice;
-  let sum = 0;
-  let claimable = 0;
 
   $: {
     if (data) {
@@ -99,6 +95,17 @@
               });
             });
           }
+          if (type === "MCD") {
+            eachData.positions?.["MCD"].map((item) => {
+              const token = Number(item?.token?.cmc_id);
+              priceSubscribe([token], (data) => {
+                marketPrice = {
+                  id: data.id,
+                  market_price: data.p,
+                };
+              });
+            });
+          }
         });
       });
     }
@@ -111,29 +118,27 @@
 
         const eachTypeDataList = types.map((type) => {
           if (type === "LP-Provider") {
-            defaultDataPositionFormat = eachData.positions?.["LP-Provider"].map(
-              (item) => {
-                return {
-                  ...item,
-                  market_price0: Number(item?.amount0Price?.price) || 0,
-                  market_price1: Number(item?.amount1Price?.price) || 0,
-                  initialValue:
-                    Number(item.amount0out) *
-                      (Number(item?.amount0Price?.price) || 0) +
-                      Number(item.amount1out) *
-                        Number(item?.amount1Price?.price) ||
-                    0 +
-                      item.claimable0Amount *
-                        Number(item?.amount0Price?.price) ||
-                    0 +
-                      item.claimable1Amount *
-                        Number(item?.amount1Price?.price) ||
-                    0,
-                };
-              }
-            );
+            let defaultDataPositionFormat = eachData.positions?.[
+              "LP-Provider"
+            ].map((item) => {
+              return {
+                ...item,
+                market_price0: Number(item?.amount0Price?.price) || 0,
+                market_price1: Number(item?.amount1Price?.price) || 0,
+                initialValue:
+                  Number(item.amount0out) *
+                    (Number(item?.amount0Price?.price) || 0) +
+                    Number(item.amount1out) *
+                      Number(item?.amount1Price?.price) ||
+                  0 +
+                    item.claimable0Amount * Number(item?.amount0Price?.price) ||
+                  0 +
+                    item.claimable1Amount * Number(item?.amount1Price?.price) ||
+                  0,
+              };
+            });
 
-            dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
+            let dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
               if (a.initialValue < b.initialValue) {
                 return 1;
               }
@@ -143,7 +148,7 @@
               return 0;
             });
 
-            claimable = (defaultDataPositionFormat || []).reduce(
+            let claimable = (defaultDataPositionFormat || []).reduce(
               (prev, item) =>
                 prev +
                   item.claimable0Amount * Number(item?.amount0Price?.price) ||
@@ -152,7 +157,7 @@
               0
             );
 
-            sum = (defaultDataPositionFormat || []).reduce(
+            let sum = (defaultDataPositionFormat || []).reduce(
               (prev, item) =>
                 prev +
                   Number(item.amount0out) * Number(item?.amount0Price?.price) ||
@@ -238,7 +243,7 @@
             };
           }
           if (type === "LP-Provider v2") {
-            defaultDataPositionFormat = eachData.positions?.[
+            let defaultDataPositionFormat = eachData.positions?.[
               "LP-Provider v2"
             ].map((item) => {
               return {
@@ -253,7 +258,7 @@
               };
             });
 
-            dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
+            let dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
               if (a.initialValue < b.initialValue) {
                 return 1;
               }
@@ -263,7 +268,7 @@
               return 0;
             });
 
-            sum = (defaultDataPositionFormat || []).reduce(
+            let sum = (defaultDataPositionFormat || []).reduce(
               (prev, item) =>
                 prev +
                   Number(item.amount0out) *
@@ -273,7 +278,7 @@
               0
             );
 
-            claimable = (defaultDataPositionFormat || []).reduce(
+            let claimable = (defaultDataPositionFormat || []).reduce(
               (prev, item) =>
                 prev +
                   Number(item.amount0out) *
@@ -350,27 +355,27 @@
             };
           }
           if (type === "LP Staking") {
-            defaultDataPositionFormat = eachData.positions?.["LP Staking"].map(
-              (item) => {
-                return {
-                  ...item,
-                  market_price0: Number(item?.amount0Price?.price) || 0,
-                  market_price1: Number(item?.amount1Price?.price) || 0,
-                  rewardToken0:
-                    Number(item?.rewardTokens[0]?.info?.price?.price) || 0,
-                  initialValue:
-                    Number(item.amount0out) *
-                      (Number(item?.amount0Price?.price) || 0) +
-                      Number(item.amount1out) *
-                        Number(item?.amount1Price?.price) ||
-                    0 +
-                      item?.rewardTokens[0]?.rewardOut *
-                        Number(item?.rewardTokens[0]?.info?.price?.price),
-                };
-              }
-            );
+            let defaultDataPositionFormat = eachData.positions?.[
+              "LP Staking"
+            ].map((item) => {
+              return {
+                ...item,
+                market_price0: Number(item?.amount0Price?.price) || 0,
+                market_price1: Number(item?.amount1Price?.price) || 0,
+                rewardToken0:
+                  Number(item?.rewardTokens[0]?.info?.price?.price) || 0,
+                initialValue:
+                  Number(item.amount0out) *
+                    (Number(item?.amount0Price?.price) || 0) +
+                    Number(item.amount1out) *
+                      Number(item?.amount1Price?.price) ||
+                  0 +
+                    item?.rewardTokens[0]?.rewardOut *
+                      Number(item?.rewardTokens[0]?.info?.price?.price),
+              };
+            });
 
-            dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
+            let dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
               if (a.initialValue < b.initialValue) {
                 return 1;
               }
@@ -380,7 +385,7 @@
               return 0;
             });
 
-            sum = (defaultDataPositionFormat || []).reduce(
+            let sum = (defaultDataPositionFormat || []).reduce(
               (prev, item) =>
                 prev +
                   Number(item.amount0out) *
@@ -392,7 +397,7 @@
               0
             );
 
-            claimable = (defaultDataPositionFormat || []).reduce(
+            let claimable = (defaultDataPositionFormat || []).reduce(
               (prev, item) =>
                 prev +
                   Number(item.amount0out) *
@@ -491,7 +496,7 @@
             };
           }
           if (type === "Staking") {
-            defaultDataPositionFormat = eachData.positions?.["Staking"].map(
+            let defaultDataPositionFormat = eachData.positions?.["Staking"].map(
               (item) => {
                 return {
                   ...item,
@@ -500,12 +505,12 @@
               }
             );
 
-            sum = (defaultDataPositionFormat || []).reduce(
+            let sum = (defaultDataPositionFormat || []).reduce(
               (prev, item) => prev + (item?.price?.price || 0) * item?.amount,
               0
             );
 
-            claimable = (defaultDataPositionFormat || []).reduce(
+            let claimable = (defaultDataPositionFormat || []).reduce(
               (prev, item) => prev + (item?.price?.price || 0) * item?.amount,
               0
             );
@@ -546,7 +551,7 @@
             };
           }
           if (type === "Lending") {
-            defaultDataPositionFormat = eachData.positions?.["Lending"].map(
+            let defaultDataPositionFormat = eachData.positions?.["Lending"].map(
               (item) => {
                 return {
                   ...item,
@@ -556,7 +561,7 @@
               }
             );
 
-            dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
+            let dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
               if (a.initialValue < b.initialValue) {
                 return 1;
               }
@@ -566,12 +571,12 @@
               return 0;
             });
 
-            claimable = (defaultDataPositionFormat || []).reduce(
+            let claimable = (defaultDataPositionFormat || []).reduce(
               (prev, item) => prev + (item?.price?.price || 0) * item?.amount,
               0
             );
 
-            sum = (defaultDataPositionFormat || []).reduce(
+            let sum = (defaultDataPositionFormat || []).reduce(
               (prev, item) => prev + (item?.price?.price || 0) * item?.amount,
               0
             );
@@ -622,7 +627,7 @@
             };
           }
           if (type === "Borrow") {
-            defaultDataPositionFormat = eachData.positions?.["Borrow"].map(
+            let defaultDataPositionFormat = eachData.positions?.["Borrow"].map(
               (item) => {
                 return {
                   ...item,
@@ -632,7 +637,7 @@
               }
             );
 
-            dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
+            let dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
               if (a.initialValue < b.initialValue) {
                 return 1;
               }
@@ -642,12 +647,12 @@
               return 0;
             });
 
-            claimable = (defaultDataPositionFormat || []).reduce(
+            let claimable = (defaultDataPositionFormat || []).reduce(
               (prev, item) => prev + item.claimable,
               0
             );
 
-            sum = (defaultDataPositionFormat || []).reduce(
+            let sum = (defaultDataPositionFormat || []).reduce(
               (prev, item) => prev + (item?.price?.price || 0) * item?.amount,
               0
             );
@@ -684,6 +689,86 @@
 
               sum = (defaultDataPositionFormat || []).reduce(
                 (prev, item) => prev + item.market_price * item?.amount,
+                0
+              );
+            }
+
+            return {
+              ...eachData,
+              positions: {
+                [type]: dataPositionFormat,
+              },
+              sum,
+              sum_claimable: claimable,
+            };
+          }
+          if (type === "MCD") {
+            let defaultDataPositionFormat = eachData.positions?.["MCD"].map(
+              (item) => {
+                const value =
+                  item?.collateralAmount * item?.price?.price -
+                  item?.debtAmount * 1;
+                return {
+                  ...item,
+                  market_price: item?.price?.price || 0,
+                  initialValue: value,
+                };
+              }
+            );
+
+            let dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
+              if (a.initialValue < b.initialValue) {
+                return 1;
+              }
+              if (a.initialValue > b.initialValue) {
+                return -1;
+              }
+              return 0;
+            });
+
+            let claimable = 0;
+
+            let sum = (defaultDataPositionFormat || []).reduce(
+              (prev, item) =>
+                prev +
+                item?.collateralAmount * item?.price?.price -
+                item?.debtAmount * 1,
+              0
+            );
+
+            if (marketPrice !== undefined) {
+              const formatDataWithMarketPrice = defaultDataPositionFormat.map(
+                (item) => {
+                  if (marketPrice.id === Number(item?.token?.cmc_id)) {
+                    const value =
+                      item?.collateralAmount * marketPrice.market_price +
+                      item?.debtAmount * 1 * -1;
+                    return {
+                      ...item,
+                      market_price: marketPrice.market_price,
+                      initialValue: value,
+                    };
+                  }
+
+                  return { ...item };
+                }
+              );
+              defaultDataPositionFormat = formatDataWithMarketPrice;
+              dataPositionFormat = formatDataWithMarketPrice.sort((a, b) => {
+                if (a.initialValue < b.initialValue) {
+                  return 1;
+                }
+                if (a.initialValue > b.initialValue) {
+                  return -1;
+                }
+                return 0;
+              });
+
+              sum = (defaultDataPositionFormat || []).reduce(
+                (prev, item) =>
+                  prev +
+                  item?.collateralAmount * item?.market_price -
+                  item?.debtAmount * 1,
                 0
               );
             }
@@ -752,6 +837,11 @@
       );
     }
   }
+
+  $: console.log({
+    data,
+    formatPositionsDataTable,
+  });
 </script>
 
 <ErrorBoundary>
