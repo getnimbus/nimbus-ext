@@ -1083,9 +1083,7 @@
           {#if APP_TYPE.TYPE === "EXT"}
             <div
               class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-              class:bg-[#525B8C]={navActive === "news"}
               on:click={() => {
-                navActive = "news";
                 browser.tabs.create({ url: "src/entries/news/index.html" });
               }}
             >
@@ -1094,13 +1092,20 @@
                 {MultipleLang.news}
               </span>
             </div>
+            <div
+              class={`flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
+              on:click={() => {
+                browser.tabs.create({ url: "src/entries/options/index.html" });
+              }}
+            >
+              <img src={SettingsIcon} alt="" />
+              <span class="text-white font-semibold xl:text-base text-sm">
+                {MultipleLang.settings}
+              </span>
+            </div>
           {:else}
             <a
               class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-              class:bg-[#525B8C]={navActive === "news"}
-              on:click={() => {
-                navActive = "news";
-              }}
               href="/entries/news/index.html"
               target="_blank"
             >
@@ -1109,22 +1114,17 @@
                 {MultipleLang.news}
               </span>
             </a>
+            <a
+              class={`flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
+              href="/entries/options/index.html"
+              target="_blank"
+            >
+              <img src={SettingsIcon} alt="" />
+              <span class="text-white font-semibold xl:text-base text-sm">
+                {MultipleLang.settings}
+              </span>
+            </a>
           {/if}
-          <div
-            class={`${
-              APP_TYPE.TYPE === "EXT" ? "flex" : "hidden"
-            } items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
-            class:bg-[#525B8C]={navActive === "options"}
-            on:click={() => {
-              navActive = "options";
-              browser.tabs.create({ url: "src/entries/options/index.html" });
-            }}
-          >
-            <img src={SettingsIcon} alt="" />
-            <span class="text-white font-semibold xl:text-base text-sm">
-              {MultipleLang.settings}
-            </span>
-          </div>
         </div>
         <div class="flex justify-between items-center xl:gap-4 gap-2">
           <div class="w-[170px]" />

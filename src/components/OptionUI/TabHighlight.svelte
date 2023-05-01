@@ -145,89 +145,95 @@
 </script>
 
 <div class="flex flex-col gap-2">
-  <div class="title-3 text-gray-500">{MultipleLang.title}</div>
-  <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto mt-2">
-    <table class="table-auto w-full">
-      <thead>
-        <tr class="bg-[#f4f5f880]">
-          <th class="pl-3 py-3">
-            <div class="text-left text-sm uppercase font-semibold text-black">
-              {MultipleLang.content.address_header_table}
-            </div>
-          </th>
-          <th class="py-3">
-            <div class="text-left text-sm uppercase font-semibold text-black">
-              {MultipleLang.content.label_header_table}
-            </div>
-          </th>
-          <th class="pr-3 py-3">
-            <div class="text-right text-sm uppercase font-semibold text-black">
-              {MultipleLang.content.action_header_table}
-            </div>
-          </th>
-        </tr>
-      </thead>
-      {#if isLoading}
-        <tbody>
-          <tr>
-            <td colspan="3">
-              <div class="flex justify-center items-center py-4 px-3">
-                <loading-icon />
+  <div class="title-3 text-gray-500 mb-2">{MultipleLang.title}</div>
+  {#if APP_TYPE.TYPE === "WEB"}
+    <div class="title-5">Install our extension to try out this feature</div>
+  {:else}
+    <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto mt-2">
+      <table class="table-auto w-full">
+        <thead>
+          <tr class="bg-[#f4f5f880]">
+            <th class="pl-3 py-3">
+              <div class="text-left text-sm uppercase font-semibold text-black">
+                {MultipleLang.content.address_header_table}
               </div>
-            </td>
+            </th>
+            <th class="py-3">
+              <div class="text-left text-sm uppercase font-semibold text-black">
+                {MultipleLang.content.label_header_table}
+              </div>
+            </th>
+            <th class="pr-3 py-3">
+              <div
+                class="text-right text-sm uppercase font-semibold text-black"
+              >
+                {MultipleLang.content.action_header_table}
+              </div>
+            </th>
           </tr>
-        </tbody>
-      {:else}
-        <tbody>
-          {#if listAddressLabel && listAddressLabel.length === 0}
+        </thead>
+        {#if isLoading}
+          <tbody>
             <tr>
               <td colspan="3">
                 <div class="flex justify-center items-center py-4 px-3">
-                  No address
+                  <loading-icon />
                 </div>
               </td>
             </tr>
-          {:else}
-            {#each listAddressLabel as item}
-              <tr class="hover:bg-gray-100 transition-all">
-                <td class="pl-3 py-4">
-                  <div class="text-left flex items-start gap-2">
-                    {item.address}
-                  </div>
-                </td>
-                <td class="py-4">
-                  <div
-                    class="bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
-                  >
-                    {item.label}
-                  </div>
-                </td>
-                <td class="pr-3 py-4">
-                  <div class="flex justify-end gap-6">
-                    <div
-                      class="text-red-600 hover:underline dark:text-red-500 transition-all cursor-pointer font-semibold"
-                      on:click={() => {
-                        isOpenConfirmDelete = true;
-                        selectedHighlight = item;
-                      }}
-                    >
-                      {MultipleLang.content.modal_delete}
-                    </div>
-                    <div
-                      class="text-blue-600 hover:underline dark:text-blue-500 transition-all cursor-pointer font-semibold"
-                      on:click={() => handleEdit(item)}
-                    >
-                      {MultipleLang.content.modal_edit}
-                    </div>
+          </tbody>
+        {:else}
+          <tbody>
+            {#if listAddressLabel && listAddressLabel.length === 0}
+              <tr>
+                <td colspan="3">
+                  <div class="flex justify-center items-center py-4 px-3">
+                    No highlight
                   </div>
                 </td>
               </tr>
-            {/each}
-          {/if}
-        </tbody>
-      {/if}
-    </table>
-  </div>
+            {:else}
+              {#each listAddressLabel as item}
+                <tr class="hover:bg-gray-100 transition-all">
+                  <td class="pl-3 py-4">
+                    <div class="text-left flex items-start gap-2">
+                      {item.address}
+                    </div>
+                  </td>
+                  <td class="py-4">
+                    <div
+                      class="bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
+                    >
+                      {item.label}
+                    </div>
+                  </td>
+                  <td class="pr-3 py-4">
+                    <div class="flex justify-end gap-6">
+                      <div
+                        class="text-red-600 hover:underline dark:text-red-500 transition-all cursor-pointer font-semibold"
+                        on:click={() => {
+                          isOpenConfirmDelete = true;
+                          selectedHighlight = item;
+                        }}
+                      >
+                        {MultipleLang.content.modal_delete}
+                      </div>
+                      <div
+                        class="text-blue-600 hover:underline dark:text-blue-500 transition-all cursor-pointer font-semibold"
+                        on:click={() => handleEdit(item)}
+                      >
+                        {MultipleLang.content.modal_edit}
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              {/each}
+            {/if}
+          </tbody>
+        {/if}
+      </table>
+    </div>
+  {/if}
 </div>
 
 <AppOverlay isOpen={isOpenEditModal} on:close={() => (isOpenEditModal = false)}>

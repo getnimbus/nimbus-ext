@@ -257,7 +257,9 @@
         "getListAddress",
         undefined
       );
-      listAddress = response;
+      if (response) {
+        listAddress = response;
+      }
     } catch (e) {
       console.log("e: ", e);
     } finally {
