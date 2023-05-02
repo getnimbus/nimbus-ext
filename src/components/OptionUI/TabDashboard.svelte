@@ -26,9 +26,8 @@
   <div class="title-3 text-gray-500 mb-2">{MultipleLang.title}</div>
   {#if APP_TYPE.TYPE === "WEB"}
     <div class="title-5">
-      Install <a href="https://app.getnimbus.io/" target="_blank"
-        >our extension</a
-      > to try out this feature
+      Install <a href="https://getnimbus.io/" target="_blank">our extension</a> to
+      try out this feature
     </div>
   {:else}
     <div class="flex items-center gap-2">
