@@ -42,6 +42,11 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@crownframework/svelte-error-boundary@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@crownframework/svelte-error-boundary/-/svelte-error-boundary-1.0.3.tgz#f251254075bfe25cff0e8b40e9c81ddcd552f894"
+  integrity sha512-ZtfYF9if48Ok8BTx/fn7bERJFKHKO6Ih5d/fkY6/pC3DQEnJq4vy6JOBFcisnpKYcZbjG5F/D4r06kqX7JKyqw==
+
 "@devicefarmer/adbkit-logcat@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@devicefarmer/adbkit-logcat/-/adbkit-logcat-1.1.0.tgz#866d3406dc9f3791446adfe3ae622ffc48607db4"

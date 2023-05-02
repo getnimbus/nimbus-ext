@@ -88,7 +88,7 @@ export const formatLongNumber = (number: number) => {
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.00") === "NaN"
     ? formatLongNumber(input)
-    : numeral(input).format("0,0.0[00000]");
+    : numeral(input).format("0,0.0[000000]");
 };
 
 export const formatCurrencyV2 = (input: number) => {
@@ -158,131 +158,10 @@ export const getLocalImg = (src: string) => {
   return new URL(src, import.meta.url).href;
 };
 
-const CHAIN_IDS = {
-  ETH: 1,
-  ETH_KOVAN: 42,
-  POLYGON: 137,
-  POLYGON_TESTNET: 80001,
-  AVAX: 43114,
-  AVAX_TESTNET: 43113,
-  BSC: 56,
-  BSC_TESTNET: 97,
-  FANTOM: 250,
-  FANTOM_TESTNET: 4002,
-};
-
-export const chainIdData = (chainId: number) => {
-  switch (chainId) {
-    case CHAIN_IDS.ETH:
-      return {
-        explorer: "https://etherscan.io",
-        explorerAPI: "https://api.etherscan.io/api",
-        explorerAPIKey: "",
-        networkName: "Ethereum Mainnet",
-        molarisChain: "eth",
-        nativeToken: "ETH",
-        logo: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png",
-      };
-    case CHAIN_IDS.ETH_KOVAN:
-      return {
-        explore: "https://kovan.etherscan.io",
-        explorerAPI: "",
-        explorerAPIKey: "",
-        networkName: "Kovan",
-        molarisChain: "kov",
-        nativeToken: "KOV",
-        logo: "",
-      };
-    case CHAIN_IDS.POLYGON:
-      return {
-        explore: "https://polygonscan.com",
-        explorerAPI: "",
-        explorerAPIKey: "",
-        networkName: "Polygon Mainnet",
-        molarisChain: "matic",
-        nativeToken: "MATIC",
-        logo: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/fantom/info/logo.png",
-      };
-    case CHAIN_IDS.POLYGON_TESTNET:
-      return {
-        explore: "https://mumbai.polygonscan.com",
-        explorerAPI: "",
-        explorerAPIKey: "",
-        networkName: "Mumbai",
-        molarisChain: "matic",
-        nativeToken: "MATIC",
-        logo: "",
-      };
-    case CHAIN_IDS.AVAX:
-      return {
-        explore: "https://avascan.info/blockchain/c",
-        explorerAPI: "",
-        explorerAPIKey: "",
-        networkName: "Avalanche C-Chain",
-        molarisChain: "avax",
-        nativeToken: "AVAX",
-        logo: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/avalanchec/info/logo.png",
-      };
-    case CHAIN_IDS.AVAX_TESTNET:
-      return {
-        explore: "https://snowtrace.io",
-        explorerAPI: "",
-        explorerAPIKey: "",
-        networkName: "Avalanche Fuji Testnet",
-        molarisChain: "avax",
-        nativeToken: "AVAX",
-        logo: "",
-      };
-    case CHAIN_IDS.BSC:
-      return {
-        explorer: "https://bscscan.com",
-        explorerAPI: "https://api.bscscan.com/api/",
-        explorerAPIKey: "9RPBSP17IT7YGHAX9Q1CVB2BQB4N8V9U9N",
-        networkName: "Binance Smart Chain Mainnet",
-        molarisChain: "bsc",
-        nativeToken: "BNB",
-        logo: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/smartchain/info/logo.png",
-      };
-    case CHAIN_IDS.BSC_TESTNET:
-      return {
-        explore: "https://bscscan.com",
-        explorerAPI: "",
-        explorerAPIKey: "",
-        networkName: "Binance Smart Chain Testnet",
-        molarisChain: "bsc",
-        nativeToken: "tBNB",
-        logo: "",
-      };
-    case CHAIN_IDS.FANTOM:
-      return {
-        explore: "https://ftmscan.com",
-        explorerAPI: "",
-        explorerAPIKey: "",
-        networkName: "Fantom Opera",
-        molarisChain: "ftm",
-        nativeToken: "FTM",
-        logo: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/fantom/info/logo.png",
-      };
-    case CHAIN_IDS.FANTOM_TESTNET:
-      return {
-        explore: "https://ftmscan.com",
-        explorerAPI: "",
-        explorerAPIKey: "",
-        networkName: "Fantom Testnet",
-        molarisChain: "ftm",
-        nativeToken: "FTM",
-        logo: "",
-      };
-  }
-
-  return null;
-};
-
 export const add3Dots = (string: string, limit: number) => {
   const dots = "...";
   if (string.length > limit) {
     string = string.substring(0, limit) + dots;
   }
-
   return string;
 }

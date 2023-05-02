@@ -55,6 +55,7 @@ export default defineConfig(({ mode }) => {
         input: {
           app: path.resolve(__dirname, "./src/index.html"),
           news: path.resolve(__dirname, "./src/entries/news/index.html"),
+          options: path.resolve(__dirname, "./src/entries/options/index.html"),
         },
         output: {
           entryFileNames: `assets/[name].js`,

@@ -4,7 +4,9 @@
   export let text;
 </script>
 
-<div class="text-white bg-black py-1 px-2 text-xs rounded relative w-max">
+<div
+  class="text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+>
   {text}
   <!-- <div class="tooltip-arrow" /> -->
 </div>

@@ -24,19 +24,26 @@
 
 <div class="flex flex-col gap-2">
   <div class="title-3 text-gray-500 mb-2">{MultipleLang.title}</div>
-  <div class="flex items-center gap-2">
-    <div class="title-5">{MultipleLang.show_portfolio_label}</div>
-    <label class="switch">
-      <input
-        type="checkbox"
-        bind:checked
-        on:change={(e) => {
-          browser.storage.sync.set({ defaultnewtab: e.target.checked });
-        }}
-      />
-      <span class="slider" />
-    </label>
-  </div>
+  {#if APP_TYPE.TYPE === "WEB"}
+    <div class="title-5">
+      Install <a href="https://getnimbus.io/" target="_blank">our extension</a> to
+      try out this feature
+    </div>
+  {:else}
+    <div class="flex items-center gap-2">
+      <div class="title-5">{MultipleLang.show_portfolio_label}</div>
+      <label class="switch">
+        <input
+          type="checkbox"
+          bind:checked
+          on:change={(e) => {
+            browser.storage.sync.set({ defaultnewtab: e.target.checked });
+          }}
+        />
+        <span class="slider" />
+      </label>
+    </div>
+  {/if}
 </div>
 
 <style>

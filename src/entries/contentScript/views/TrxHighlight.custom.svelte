@@ -3,6 +3,7 @@
 <script lang="ts">
   import tooltip from "./tooltip";
   import "./TrxInfo.custom.svelte";
+
   export let hash;
   export let name;
 

@@ -132,6 +132,7 @@
   let timer;
   let showTooltipGotoDetailAddress = false;
   let isEmptyTokens = false;
+  let listAddressLabel = [];
 
   const setOption = () => {
     if (chart && !chart.isDisposed()) {
@@ -264,6 +265,12 @@
     const addressLabelRes = await browser.storage.sync.get(
       address.toString().toLowerCase()
     );
+    const listAddressLabelRes = (
+      await browser.storage.sync.get("ListAddressLabel")
+    ).ListAddressLabel;
+    if (listAddressLabelRes) {
+      listAddressLabel = JSON.parse(listAddressLabelRes);
+    }
     if (!isEmpty(addressLabelRes)) {
       addressLabel = addressLabelRes[address.toString().toLowerCase()];
     } else {
@@ -283,6 +290,15 @@
     if (addressLabel) {
       browser.storage.sync.set({
         [address.toString().toLowerCase()]: addressLabel,
+      });
+      browser.storage.sync.set({
+        ListAddressLabel: JSON.stringify([
+          ...listAddressLabel,
+          {
+            address: address.toString().toLowerCase(),
+            label: addressLabel,
+          },
+        ]),
       });
       isSaveAddressLabel.update((n) => (n = true));
     } else {
@@ -475,6 +491,13 @@
                     browser.storage.sync.remove([
                       address.toString().toLowerCase(),
                     ]);
+                    const removeAddressLabel = listAddressLabel.filter(
+                      (item) =>
+                        item.address !== address.toString().toLowerCase()
+                    );
+                    browser.storage.sync.set({
+                      ListAddressLabel: JSON.stringify(removeAddressLabel),
+                    });
                     addressLabel = address;
                     isSaveAddressLabel.update((n) => (n = true));
                   } else {

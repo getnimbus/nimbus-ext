@@ -6,6 +6,7 @@
   import StakingLocked from "./StakingLocked.svelte";
   import LendingProvider from "./LendingProvider.svelte";
   import LendingBorrow from "./LendingBorrow.svelte";
+  import Mcd from "./MCD.svelte";
 
   export let data;
 
@@ -102,6 +103,19 @@
           />
         {:else if position === "Borrow"}
           <LendingBorrow
+            {position}
+            positions={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].data || []}
+            sum={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum || 0}
+            sum_claimable={data.positions.filter((item) => {
+              return Object.getOwnPropertyNames(item)[0] === position;
+            })[0][position].sum_claimable || 0}
+          />
+        {:else if position === "MCD"}
+          <Mcd
             {position}
             positions={data.positions.filter((item) => {
               return Object.getOwnPropertyNames(item)[0] === position;
