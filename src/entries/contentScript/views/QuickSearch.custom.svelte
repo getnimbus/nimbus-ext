@@ -584,7 +584,9 @@
             {:else if search === ""}
               {#if selectedTokenData.length !== 0}
                 <div class="mb-2">
-                  <div class="title-2">{MultipleLang.second_title}</div>
+                  <div class="title-2 text-black">
+                    {MultipleLang.second_title}
+                  </div>
                 </div>
                 <div class="flex flex-col gap-y-3">
                   {#each selectedTokenData as item}

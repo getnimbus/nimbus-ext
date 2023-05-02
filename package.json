@@ -1,7 +1,7 @@
 {
   "name": "nimbus-ext",
   "displayName": "Nimbus",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "Thanh Le - thanhle@getnimbus.io",
   "description": "A personalized Web3 portfolio tool for DEFI users",
   "scripts": {

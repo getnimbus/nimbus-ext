@@ -78,7 +78,7 @@ import { regexList } from "../../utils";
     })();
   }
 
-  if (window.location.origin !== "https://app.getnimbus.io/") {
+  if (window.location.href !== "https://app.getnimbus.io/") {
     runMarkElement();
   }
 
