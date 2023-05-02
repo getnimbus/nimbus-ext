@@ -662,7 +662,7 @@
           </div>
         </div>
         <a
-          href="https://nimbus.sleekplan.app/"
+          href="https://nimbus.featurebase.app/"
           target="_blank"
           class="inline-flex no-underline cursor-pointer items-center bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
         >
