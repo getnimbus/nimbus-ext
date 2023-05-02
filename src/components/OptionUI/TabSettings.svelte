@@ -33,7 +33,12 @@
 <div class="flex flex-col gap-2">
   <div class="title-3 text-gray-500 mb-2">{MultipleLang.title}</div>
   {#if APP_TYPE.TYPE === "WEB"}
-    <div class="title-5">Install our extension to try out this feature</div>
+    <div class="title-5">
+      Install <a
+        href="https://chrome.google.com/webstore/detail/nimbus/edmjifiafngnpfefmbbaoipelifjgpfg?hl=en&authuser=0"
+        target="_blank">our extension</a
+      > to try out this feature
+    </div>
   {:else}
     <div class="flex items-center gap-2">
       <div class="title-5">

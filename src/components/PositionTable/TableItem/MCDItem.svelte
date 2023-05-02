@@ -78,11 +78,12 @@
     <div
       class="flex justify-start items-center gap-1 text-sm text-[#000000] font-medium"
     >
-      {#if data.healthRate > 10}
-        <div>>10</div>
+      {#if data.healthRate < 2}
+        <span class="text-red-500">
+          ⚠️ <TooltipBalance number={data.healthRate} isFormatPercent />
+        </span>
       {:else}
-        <span class="text-red-500">⚠️</span>
-        <TooltipBalance number={data.healthRate} isFormatPercent />
+        <div>>10</div>
       {/if}
     </div>
   </th>
