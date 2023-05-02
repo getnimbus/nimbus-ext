@@ -747,7 +747,6 @@
                 loadingNews = false;
                 return res;
               }),
-
               getOpportunities(type === "reload").then((res) => {
                 loadingOpportunities = false;
                 return res;
@@ -997,24 +996,6 @@
       handleGetAllData("sync");
     }
   }
-
-  $: {
-    if (search) {
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname + `?address=${search}`
-      );
-      const urlParams = new URLSearchParams(window.location.search);
-      const addressParams = urlParams.get("address");
-      if (addressParams && selectedWallet?.value !== addressParams) {
-        selectedWallet = {
-          ...selectedWallet,
-          value: addressParams,
-        };
-      }
-    }
-  }
 </script>
 
 <ErrorBoundary>
@@ -1152,6 +1133,32 @@
             <img src={Search} alt="" />
             <input
               on:keyup={({ target: { value } }) => debounceSearch(value)}
+              on:blur={() => {
+                if (search) {
+                  window.history.replaceState(
+                    null,
+                    "",
+                    window.location.pathname + `?address=${search}`
+                  );
+                  selectedWallet = {
+                    ...selectedWallet,
+                    value: search,
+                  };
+                }
+              }}
+              on:keydown={(event) => {
+                if (search && (event.which == 13 || event.keyCode == 13)) {
+                  window.history.replaceState(
+                    null,
+                    "",
+                    window.location.pathname + `?address=${search}`
+                  );
+                  selectedWallet = {
+                    ...selectedWallet,
+                    value: search,
+                  };
+                }
+              }}
               autofocus
               value={search}
               placeholder={MultipleLang.search_placeholder}

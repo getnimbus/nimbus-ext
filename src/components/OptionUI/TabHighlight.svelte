@@ -148,9 +148,8 @@
   <div class="title-3 text-gray-500 mb-2">{MultipleLang.title}</div>
   {#if APP_TYPE.TYPE === "WEB"}
     <div class="title-5">
-      Install <a
-        href="https://chrome.google.com/webstore/detail/nimbus/edmjifiafngnpfefmbbaoipelifjgpfg?hl=en&authuser=0"
-        target="_blank">our extension</a
+      Install <a href="https://app.getnimbus.io/" target="_blank"
+        >our extension</a
       > to try out this feature
     </div>
   {:else}
