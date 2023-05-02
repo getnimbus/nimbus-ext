@@ -2,7 +2,7 @@
   export let type;
   export let active;
 
-  $: color = active ? "#0ea5e9" : "#000000";
+  $: color = active ? "#3f83f8" : "#000000";
 </script>
 
 {#if type === "Wallets"}
