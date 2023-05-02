@@ -323,6 +323,12 @@
       errorsEdit["label"] = { ...errors["label"], required: false, msg: "" };
     }
   }
+
+  $: {
+    if (listAddress.length === 0) {
+      browser.storage.sync.set({ selectedWallet: {} });
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-2">

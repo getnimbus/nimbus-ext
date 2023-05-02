@@ -813,15 +813,18 @@
         "selectedWallet"
       );
 
-      if (selectedWalletRes && !isEmpty(selectedWalletRes)) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const addressParams = urlParams.get("address");
+
+      if (selectedWalletRes && !isEmpty(selectedWalletRes.selectedWallet)) {
         selectedWallet = selectedWalletRes.selectedWallet;
-      } else {
+      }
+
+      if (selectedWalletRes && isEmpty(selectedWalletRes.selectedWallet)) {
         selectedWallet = listAddress[0];
       }
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const addressParams = urlParams.get("address");
-      if (addressParams && selectedWallet.value !== addressParams) {
+      if (addressParams) {
         selectedWallet = {
           ...selectedWallet,
           value: addressParams,
@@ -1145,18 +1148,38 @@
                     value: search,
                   };
                 }
-              }}
-              on:keydown={(event) => {
-                if (search && (event.which == 13 || event.keyCode == 13)) {
+                if (!search && listAddress.length === 0) {
+                  selectedWallet = undefined;
+                  browser.storage.sync.set({ selectedWallet: {} });
                   window.history.replaceState(
                     null,
                     "",
-                    window.location.pathname + `?address=${search}`
+                    window.location.pathname
                   );
-                  selectedWallet = {
-                    ...selectedWallet,
-                    value: search,
-                  };
+                }
+              }}
+              on:keydown={(event) => {
+                if (event.which == 13 || event.keyCode == 13) {
+                  if (search) {
+                    window.history.replaceState(
+                      null,
+                      "",
+                      window.location.pathname + `?address=${search}`
+                    );
+                    selectedWallet = {
+                      ...selectedWallet,
+                      value: search,
+                    };
+                  }
+                  if (!search && listAddress.length === 0) {
+                    selectedWallet = undefined;
+                    browser.storage.sync.set({ selectedWallet: {} });
+                    window.history.replaceState(
+                      null,
+                      "",
+                      window.location.pathname
+                    );
+                  }
                 }
               }}
               autofocus
@@ -1183,7 +1206,7 @@
       </div>
     {:else}
       <div>
-        {#if listAddress.length === 0}
+        {#if listAddress.length === 0 && selectedWallet === undefined}
           <div class="flex justify-center items-center h-screen">
             <div
               class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
