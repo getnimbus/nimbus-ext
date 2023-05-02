@@ -1436,44 +1436,46 @@
             {/if}
           </div>
 
-          <div class="sticky bottom-4 flex justify-end pr-4">
-            <div
-              class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F] cursor-pointer"
-              style="box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);"
-              on:click={() => {
-                isOpenReport.update((n) => (n = !n));
-              }}
-            >
-              <img src={Comment} alt="cmt" width="20" height="20" />
-            </div>
-            <Motion
-              initial="hidden"
-              animate={isShowChat ? "visible" : "hidden"}
-              {variants}
-              let:motion
-            >
+          {#if APP_TYPE.TYPE === "EXT"}
+            <div class="sticky bottom-4 flex justify-end pr-4">
               <div
-                class="h-[630px] w-[430px] absolute right-4 bottom-15 p-4 bg-white rounded-[20px] items-end"
-                style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
-                use:motion
+                class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F] cursor-pointer"
+                style="box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);"
+                on:click={() => {
+                  isOpenReport.update((n) => (n = !n));
+                }}
               >
-                <!-- src="https://embed-609567819.sleekplan.app/?style=intercom#" -->
-                <iframe
-                  id="feedback-board"
-                  src="https://tawk.to/chat/643d59714247f20fefec1e8d/1gu7qapef"
-                  class="h-[580px] w-full"
-                />
-                <div
-                  class="absolute top-3 right-5 cursor-pointer font-medium"
-                  on:click={() => {
-                    isOpenReport.update((n) => (n = false));
-                  }}
-                >
-                  Close
-                </div>
+                <img src={Comment} alt="cmt" width="20" height="20" />
               </div>
-            </Motion>
-          </div>
+              <Motion
+                initial="hidden"
+                animate={isShowChat ? "visible" : "hidden"}
+                {variants}
+                let:motion
+              >
+                <div
+                  class="h-[630px] w-[430px] absolute right-4 bottom-15 p-4 bg-white rounded-[20px] items-end"
+                  style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+                  use:motion
+                >
+                  <!-- src="https://embed-609567819.sleekplan.app/?style=intercom#" -->
+                  <iframe
+                    id="feedback-board"
+                    src="https://nimbus.featurebase.app"
+                    class="h-[580px] w-full"
+                  />
+                  <div
+                    class="absolute top-3 right-5 cursor-pointer font-medium"
+                    on:click={() => {
+                      isOpenReport.update((n) => (n = false));
+                    }}
+                  >
+                    Close
+                  </div>
+                </div>
+              </Motion>
+            </div>
+          {/if}
         {/if}
       </div>
     {/if}
