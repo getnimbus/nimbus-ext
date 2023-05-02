@@ -1300,10 +1300,7 @@
                             APP_TYPE.TYPE !== "EXT" &&
                             listAddress.length === 3
                           ) {
-                            window.open(
-                              "https://chrome.google.com/webstore/detail/nimbus/edmjifiafngnpfefmbbaoipelifjgpfg?hl=en&authuser=0",
-                              "_blank"
-                            );
+                            window.open("https://getnimbus.io", "_blank");
                           } else {
                             isOpenAddModal = true;
                           }
