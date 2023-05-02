@@ -307,10 +307,6 @@
     }
   };
 
-  $: {
-    console.log("ListAddressLabel: ", listAddressLabel);
-  }
-
   onMount(() => {
     track("Address Info", {
       url: window.location.href,

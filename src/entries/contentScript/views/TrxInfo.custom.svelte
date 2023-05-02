@@ -2,11 +2,8 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import { nimbus } from "../../../lib/network";
-  import { chainIdData, shorterAddress } from "../../../utils";
-  import { isEmpty, get } from "lodash";
-  import moment from "moment";
-  import numeral from "numeral";
+  import { shorterAddress } from "../../../utils";
+  import { isEmpty } from "lodash";
   import { sendMessage } from "webext-bridge";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import { track } from "~/lib/data-tracking";
@@ -253,9 +250,6 @@
 </reset-style>
 
 <style>
-  .test {
-    border: 1px solid red;
-  }
   .border-bottom {
     border-bottom: 1px solid #00000014;
   }
