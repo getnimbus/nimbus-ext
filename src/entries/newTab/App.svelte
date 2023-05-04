@@ -9,9 +9,14 @@
   import { Motion } from "svelte-motion";
   import { sendMessage } from "webext-bridge";
   import * as browser from "webextension-polyfill";
-  import { currentLang, i18n } from "~/lib/i18n";
+  import { i18n } from "~/lib/i18n";
   import { disconnectWs, initWS } from "~/lib/price-ws";
-  import { formatBalance, formatCurrency } from "~/utils";
+  import {
+    chainList,
+    formatBalance,
+    formatCurrency,
+    showChatAnimationVariants,
+  } from "~/utils";
   import { wait } from "../background/utils";
   import { isOpenReport } from "~/store";
 
@@ -36,57 +41,18 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   import AnalyticIcon from "~/assets/analytic.svg";
-  import Arbitrum from "~/assets/arbitrum.png";
-  import Bnb from "~/assets/bnb.png";
-  import logo from "~/assets/btc.png";
   import Comment from "~/assets/comment-bubble-icon.svg";
-  import Ethereum from "~/assets/ethereum.png";
   import Logo from "~/assets/logo-white.svg";
   import NewsIcon from "~/assets/news.svg";
   import Plus from "~/assets/plus.svg";
-  import Polygon from "~/assets/polygon.png";
   import PortfolioIcon from "~/assets/portfolio.svg";
   import Reload from "~/assets/reload.svg";
   import SettingsIcon from "~/assets/settings.svg";
-  import Solana from "~/assets/solana.png";
   import TransactionsIcon from "~/assets/transactions.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
   import Wallet from "~/assets/wallet.svg";
   import Search from "~/assets/search.svg";
-
-  const chainList = [
-    {
-      logo: logo,
-      label: "All chains",
-      value: "all",
-    },
-    {
-      logo: Ethereum,
-      label: "Ethereum",
-      value: "eth",
-    },
-    {
-      logo: Bnb,
-      label: "BNB",
-      value: "bnb",
-    },
-    {
-      logo: Polygon,
-      label: "Polygon",
-      value: "polygon",
-    },
-    {
-      logo: Solana,
-      label: "Solana",
-      value: "solana",
-    },
-    {
-      logo: Arbitrum,
-      label: "Arbitrum",
-      value: "arbitrum",
-    },
-  ];
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -152,11 +118,6 @@
         "This wallet address is duplicated!"
       ),
     },
-  };
-
-  const variants = {
-    visible: { opacity: 1, y: 0, display: "flex" },
-    hidden: { opacity: 0, y: 500, display: "none" },
   };
 
   let navActive = "portfolio";
@@ -1450,7 +1411,7 @@
               <Motion
                 initial="hidden"
                 animate={isShowChat ? "visible" : "hidden"}
-                {variants}
+                variants={showChatAnimationVariants}
                 let:motion
               >
                 <div
