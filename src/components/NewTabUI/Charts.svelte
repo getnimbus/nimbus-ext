@@ -18,7 +18,7 @@
 
 <ErrorBoundary>
   <div class="flex xl:flex-row flex-col justify-between gap-6">
-    <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
+    <div class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6">
       <div class="flex justify-between mb-1">
         <div class="pl-4 text-2xl font-medium text-black">
           {MultipleLang.token_allocation}
@@ -65,7 +65,7 @@
         </div>
       {/if}
     </div>
-    <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
+    <div class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6">
       <div class="pl-4 text-2xl font-medium text-black mb-3">
         {MultipleLang.performance}
       </div>
