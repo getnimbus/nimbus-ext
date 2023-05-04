@@ -68,7 +68,7 @@
       ),
       modal_delete_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-delete-sub-title",
-        "Do you really want to delete this wallet? This process cannot be undone"
+        "Do you really want to delete this wallet? This process cannot revert"
       ),
       modal_edit_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-title",

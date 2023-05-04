@@ -39,7 +39,7 @@
       ),
       modal_delete_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-delete-highlight-sub-title",
-        "Do you really want to delete this wallet highlight? This process cannot be undone"
+        "Do you really want to delete this wallet highlight? This process cannot revert"
       ),
       modal_edit_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-highlight-title",
