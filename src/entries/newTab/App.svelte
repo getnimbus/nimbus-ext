@@ -974,8 +974,6 @@
       handleGetAllData("sync");
     }
   }
-
-  $: console.log("selectedWallet: ", selectedWallet);
 </script>
 
 <ErrorBoundary>
