@@ -3,12 +3,8 @@
 <script>
   import { createEventDispatcher } from "svelte";
   import { Motion } from "svelte-motion";
+  import { showOverlayAnimationVariants } from "~/utils";
   const dispatch = createEventDispatcher();
-
-  const variants = {
-    visible: { opacity: 1, y: 0, display: "block" },
-    hidden: { opacity: 0, y: -50, display: "none" },
-  };
 
   export let isOpen = false;
   export let clickOutSideToClose = false;
@@ -34,7 +30,7 @@
     <Motion
       initial="hidden"
       animate={isOpen ? "visible" : "hidden"}
-      {variants}
+      variants={showOverlayAnimationVariants}
       let:motion
     >
       <div

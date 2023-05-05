@@ -1,5 +1,12 @@
 import numeral from "numeral";
 
+import logo from "~/assets/btc.png";
+import Bnb from "~/assets/bnb.png";
+import Ethereum from "~/assets/ethereum.png";
+import Polygon from "~/assets/polygon.png";
+import Solana from "~/assets/solana.png";
+import Arbitrum from "~/assets/arbitrum.png";
+
 export const regexList = [
   {
     name: "ETH",
@@ -27,6 +34,49 @@ export const regexList = [
   //   regex_trx: /(\b[a-zA-Z0-9]{43,44}\b)/g,
   // }
 ]
+
+export const chainList = [
+  {
+    logo: logo,
+    label: "All chains",
+    value: "all",
+  },
+  {
+    logo: Ethereum,
+    label: "Ethereum",
+    value: "eth",
+  },
+  {
+    logo: Bnb,
+    label: "BNB",
+    value: "bnb",
+  },
+  {
+    logo: Polygon,
+    label: "Polygon",
+    value: "polygon",
+  },
+  {
+    logo: Solana,
+    label: "Solana",
+    value: "solana",
+  },
+  {
+    logo: Arbitrum,
+    label: "Arbitrum",
+    value: "arbitrum",
+  },
+];
+
+export const showChatAnimationVariants = {
+  visible: { opacity: 1, y: 0, display: "flex" },
+  hidden: { opacity: 0, y: 500, display: "none" },
+};
+
+export const showOverlayAnimationVariants = {
+  visible: { opacity: 1, y: 0, display: "block" },
+  hidden: { opacity: 0, y: -50, display: "none" },
+};
 
 export const exponentialToDecimal = (exponential: number) => {
   let decimal = exponential.toString().toLowerCase();
