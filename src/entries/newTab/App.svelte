@@ -974,12 +974,10 @@
       handleGetAllData("sync");
     }
   }
-
-  $: console.log("selectedWallet: ", selectedWallet);
 </script>
 
 <ErrorBoundary>
-  <div class="flex flex-col">
+  <div class="flex flex-col pb-10">
     <div
       class="border-header py-1 top-0 bg-[#27326F] sticky"
       style="z-index: 2147483647; {headerScrollY
