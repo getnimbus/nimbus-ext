@@ -61,7 +61,7 @@
     news: i18n("newtabPage.news", "News"),
     settings: i18n("newtabPage.settings", "Settings"),
     overview: i18n("newtabPage.overview", "Overview"),
-    empty_wallet: i18n("newtabPage.empty-wallet", "No wallet add yet."),
+    empty_wallet: i18n("newtabPage.empty-wallet", "No wallet added yet."),
     Balance: i18n("newtabPage.Balance", "Balance"),
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
