@@ -764,7 +764,7 @@
         undefined
       );
 
-      const structWalletData = response.map((item) => {
+      const structWalletData = (response || []).map((item) => {
         return {
           id: item.id,
           logo: item.logo || Wallet,
@@ -974,6 +974,8 @@
       handleGetAllData("sync");
     }
   }
+
+  $: console.log("selectedWallet: ", selectedWallet);
 </script>
 
 <ErrorBoundary>
