@@ -666,6 +666,11 @@
           return;
         }
       }
+      if (syncStatus?.error) {
+        syncMsg = syncStatus?.error;
+        isLoadingSync = true;
+        return;
+      }
       if (!syncStatus?.data?.lastSync) {
         console.log("Going to full sync");
         await sendMessage("getSync", {
@@ -774,19 +779,31 @@
         "selectedWallet"
       );
 
-      if (selectedWalletRes && !isEmpty(selectedWalletRes)) {
+      if (selectedWalletRes && !isEmpty(selectedWalletRes.selectedWallet)) {
         selectedWallet = selectedWalletRes.selectedWallet;
-      } else {
+      }
+
+      if (selectedWalletRes && isEmpty(selectedWalletRes.selectedWallet)) {
         selectedWallet = listAddress[0];
       }
 
       const urlParams = new URLSearchParams(window.location.search);
       const addressParams = urlParams.get("address");
-      if (addressParams && selectedWallet.value !== addressParams) {
+      if (
+        addressParams &&
+        selectedWallet === undefined &&
+        listAddress.length === 0
+      ) {
+        search = addressParams;
         selectedWallet = {
-          ...selectedWallet,
+          id: addressParams,
+          logo: "",
+          label: "",
           value: addressParams,
         };
+      }
+      if (!addressParams && selectedWallet && listAddress.length === 0) {
+        selectedWallet = undefined;
       }
 
       isLoadingFullPage = false;
@@ -957,19 +974,14 @@
       handleGetAllData("sync");
     }
   }
+
+  $: console.log("selectedWallet: ", selectedWallet);
 </script>
 
 <ErrorBoundary>
-  <div
-    class="flex flex-col"
-    class:pb-10={listAddress && listAddress.length > 0}
-  >
+  <div class="flex flex-col">
     <div
-      class={`border-header py-1 top-0 bg-[#27326F] ${
-        listAddress && listAddress.length > 0
-          ? "sticky"
-          : "absolute left-0 right-0"
-      }`}
+      class="border-header py-1 top-0 bg-[#27326F] sticky"
       style="z-index: 2147483647; {headerScrollY
         ? 'box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);'
         : ''}"
@@ -1144,7 +1156,7 @@
       </div>
     {:else}
       <div>
-        {#if listAddress.length === 0}
+        {#if listAddress.length === 0 && selectedWallet === undefined}
           <div class="flex justify-center items-center h-screen">
             <div
               class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
@@ -1169,7 +1181,7 @@
             <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
               <div class="flex flex-col gap-14 mb-5">
                 <div class="flex justify-between items-center">
-                  {#if listAddress && listAddress.length > 0}
+                  {#if listAddress.length !== 0}
                     <div class="flex items-center gap-5">
                       {#if listAddress.length > 4}
                         {#each listAddress.slice(0, 4) as item}
@@ -1348,7 +1360,9 @@
                 class="bg-white text-xl font-medium flex flex-col gap-5 justify-center items-center border border-[#0000001a] rounded-[20px] p-6 h-screen"
               >
                 {syncMsg}
-                <loading-icon />
+                {#if syncMsg !== "Invalid address"}
+                  <loading-icon />
+                {/if}
               </div>
             {:else}
               <div
