@@ -374,7 +374,14 @@
           return 0;
         });
 
-        const topFourBreakdown = sortBreakdown.slice(0, 4);
+        const topFourBreakdown = sortBreakdown.slice(0, 4).map((item) => {
+          return {
+            ...item,
+            id: item.id || "N/A",
+            symbol: item.symbol || "N/A",
+            name: item.name || "N/A",
+          };
+        });
         const orderBreakdown = sortBreakdown.slice(4, sortBreakdown.length);
 
         const sumOrderBreakdown = (orderBreakdown || []).reduce(

@@ -19,8 +19,6 @@
     Math.abs(data.inputValue || 0) === 0
       ? 0
       : profit / Math.abs(data.inputValue);
-
-  $: console.log("data: ", data);
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">

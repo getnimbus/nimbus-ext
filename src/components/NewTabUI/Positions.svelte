@@ -501,9 +501,20 @@
                 return {
                   ...item,
                   market_price: item?.price?.price || 0,
+                  initialValue: item?.price?.price || 0 * item?.amount,
                 };
               }
             );
+
+            let dataPositionFormat = defaultDataPositionFormat.sort((a, b) => {
+              if (a.initialValue < b.initialValue) {
+                return 1;
+              }
+              if (a.initialValue > b.initialValue) {
+                return -1;
+              }
+              return 0;
+            });
 
             let sum = (defaultDataPositionFormat || []).reduce(
               (prev, item) => prev + (item?.price?.price || 0) * item?.amount,
@@ -522,6 +533,7 @@
                     return {
                       ...item,
                       market_price: marketPrice.market_price,
+                      initialValue: marketPrice.market_price * item?.amount,
                     };
                   }
 
@@ -529,6 +541,15 @@
                 }
               );
               defaultDataPositionFormat = formatDataWithMarketPrice;
+              dataPositionFormat = formatDataWithMarketPrice.sort((a, b) => {
+                if (a.initialValue < b.initialValue) {
+                  return 1;
+                }
+                if (a.initialValue > b.initialValue) {
+                  return -1;
+                }
+                return 0;
+              });
 
               sum = (formatDataWithMarketPrice || []).reduce(
                 (prev, item) => prev + item.market_price * item?.amount,
