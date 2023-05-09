@@ -105,7 +105,7 @@
                   style="z-index: 2147483648;"
                 >
                   <tooltip-detail
-                    text="This position is in staking so the PnL might no accuracy"
+                    text="This position is in staking so the PnL might inaccuracy"
                   />
                 </span>
               {/if}
