@@ -7,6 +7,8 @@
 
   export let data;
 
+  let showTooltip = false;
+
   $: balance0 = Number(data.amount0out) * data.market_price0;
   $: balance1 = Number(data.amount1out) * data.market_price1;
 
@@ -17,6 +19,8 @@
     Math.abs(data.inputValue || 0) === 0
       ? 0
       : profit / Math.abs(data.inputValue);
+
+  $: console.log("data: ", data);
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">
@@ -84,10 +88,29 @@
     <div class="text-sm font-medium">
       <div class="flex flex-col">
         <div
-          class={`flex justify-end ${
+          class={`flex justify-end items-center gap-1 ${
             profit >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
+          {#if data?.isStaking}
+            <span
+              class="relative w-max text-yellow-300"
+              on:mouseenter={() => (showTooltip = true)}
+              on:mouseleave={() => (showTooltip = false)}
+            >
+              ⚠️
+              {#if showTooltip}
+                <span
+                  class="absolute -top-7 left-1/2 transform -translate-x-1/2"
+                  style="z-index: 2147483648;"
+                >
+                  <tooltip-detail
+                    text="This position is in staking so the PnL might no accuracy"
+                  />
+                </span>
+              {/if}
+            </span>
+          {/if}
           <TooltipBalance number={Math.abs(profit)} />
         </div>
         <div class="flex items-center justify-end gap-1">
