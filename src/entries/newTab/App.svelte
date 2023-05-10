@@ -394,7 +394,7 @@
         const dataPieChartOrderBreakdown = [
           {
             logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
-            name: "Others tokens",
+            name: "Other tokens",
             symbol: "",
             name_ratio: "Ratio",
             value: (sumOrderBreakdown / sum) * 100,

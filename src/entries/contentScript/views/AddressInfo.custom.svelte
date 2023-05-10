@@ -204,7 +204,7 @@
             {
               logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
               name: "Others",
-              symbol: "Others tokens",
+              symbol: "Other tokens",
               name_ratio: "Ratio",
               value: (sumOrderBreakdown / sum) * 100,
               name_value: "Value",
