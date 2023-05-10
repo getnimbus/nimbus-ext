@@ -19,6 +19,8 @@
     Math.abs(data.inputValue || 0) === 0
       ? 0
       : profit / Math.abs(data.inputValue);
+
+  $: console.log("profitPercent: ", profitPercent);
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">
@@ -114,7 +116,7 @@
         <div class="flex items-center justify-end gap-1">
           <div
             class={`flex items-center ${
-              profitPercent < 0 ? "text-red-500" : "text-[#00A878]"
+              profit >= 0 ? "text-[#00A878]" : "text-red-500"
             } text-right`}
           >
             <TooltipBalance
