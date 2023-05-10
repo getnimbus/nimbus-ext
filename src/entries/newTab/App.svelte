@@ -39,6 +39,7 @@
   import Select from "~/components/Select.svelte";
   import "~/components/Tooltip.custom.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Auth from "~/components/Auth.svelte";
 
   import AnalyticIcon from "~/assets/analytic.svg";
   import Comment from "~/assets/comment-bubble-icon.svg";
@@ -1141,13 +1142,11 @@
               class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
             />
           </div>
+          <Auth />
           <!-- <div
             class="bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
           >
             <img src={Bell} alt="" />
-          </div>
-          <div class="w-[40px] h-[40px] rounded-full overflow-hidden">
-            <img src={Avatar} alt="avatar" class="w-full h-full object-cover" />
           </div> -->
         </div>
       </div>
