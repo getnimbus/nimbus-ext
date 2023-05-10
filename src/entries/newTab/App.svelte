@@ -182,7 +182,9 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 190px;">
               <div style="display: flex; align-items: centers; gap: 4px">
-                <img src=${params.data.logo} alt="" width=20 height=20 /> 
+                <img src=${
+                  params.data.logo
+                } alt="" width=20 height=20 style="border-radius: 100%" /> 
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
                   ${params.name} ${
           params.data.symbol ? `(${params.data.symbol})` : ""
@@ -374,7 +376,14 @@
           return 0;
         });
 
-        const topFourBreakdown = sortBreakdown.slice(0, 4);
+        const topFourBreakdown = sortBreakdown.slice(0, 4).map((item) => {
+          return {
+            ...item,
+            id: item.id || "N/A",
+            symbol: item.symbol || "N/A",
+            name: item.name || "N/A",
+          };
+        });
         const orderBreakdown = sortBreakdown.slice(4, sortBreakdown.length);
 
         const sumOrderBreakdown = (orderBreakdown || []).reduce(
@@ -385,7 +394,7 @@
         const dataPieChartOrderBreakdown = [
           {
             logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
-            name: "Others tokens",
+            name: "Other tokens",
             symbol: "",
             name_ratio: "Ratio",
             value: (sumOrderBreakdown / sum) * 100,
@@ -789,12 +798,7 @@
 
       const urlParams = new URLSearchParams(window.location.search);
       const addressParams = urlParams.get("address");
-      if (
-        addressParams &&
-        selectedWallet === undefined &&
-        listAddress.length === 0
-      ) {
-        search = addressParams;
+      if (addressParams) {
         selectedWallet = {
           id: addressParams,
           logo: "",

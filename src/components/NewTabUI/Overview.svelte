@@ -29,7 +29,7 @@
           number={isLoading ? 0 : totalAssets + totalPositions}
         />
       </div>
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3 opacity-50">
         <div
           class={`text-lg font-medium ${
             data?.overview.networthChange < 0
@@ -60,7 +60,7 @@
           number={isLoading ? 0 : totalClaimable}
         />
       </div>
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3 opacity-50">
         <div
           class={`text-lg font-medium ${
             data?.overview.claimableChange < 0
@@ -93,7 +93,7 @@
           number={isLoading ? 0 : totalAssets}
         />
       </div>
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3 opacity-50">
         <div
           class={`text-lg font-medium ${
             data?.overview.assetsChange < 0 ? "text-red-500" : "text-[#00A878]"
@@ -122,7 +122,7 @@
           number={isLoading ? 0 : totalPositions}
         />
       </div>
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3 opacity-50">
         <div
           class={`text-lg font-medium ${
             data?.overview.postionNetworthChange < 0

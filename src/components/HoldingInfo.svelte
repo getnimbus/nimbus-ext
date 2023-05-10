@@ -10,6 +10,7 @@
   export let data;
 
   let showTooltipName = false;
+  let showTooltipSymbol = false;
 
   $: price = data?.amount * data?.market_price;
   $: profitAndLoss = data?.amount * data?.market_price + (data?.avgCost || 0);
@@ -30,19 +31,48 @@
         class="rounded-full"
       />
       <div class="flex flex-col gap-1 relative">
-        <div
-          class="text-black text-sm font-medium"
-          on:mouseenter={() => (showTooltipName = true)}
-          on:mouseleave={() => (showTooltipName = false)}
-        >
-          {shorterName(data.name)}
-        </div>
-        <div class="text-[#00000080] text-xs font-medium">{data.symbol}</div>
-        {#if showTooltipName && data?.name?.length > 16}
-          <div class="absolute -top-7 right-0" style="z-index: 2147483648;">
-            <tooltip-detail text={data.name} />
+        <div class="relative">
+          <div
+            class="text-black text-sm font-medium"
+            on:mouseenter={() => (showTooltipName = true)}
+            on:mouseleave={() => (showTooltipName = false)}
+          >
+            {#if data.name === undefined}
+              N/A
+            {:else}
+              {shorterName(data.name)}
+            {/if}
           </div>
-        {/if}
+          {#if showTooltipName && data.name.length > 16}
+            <div
+              class="absolute -top-7 left-1/2 transform -translate-x-1/2"
+              style="z-index: 2147483648;"
+            >
+              <tooltip-detail text={data.name} />
+            </div>
+          {/if}
+        </div>
+        <div class="relative">
+          <div
+            class="text-[#00000080] text-xs font-medium"
+            on:mouseenter={() => (showTooltipSymbol = true)}
+            on:mouseleave={() => (showTooltipSymbol = false)}
+          >
+            {#if data.symbol === undefined}
+              N/A
+            {:else}
+              {shorterName(data.symbol)}
+            {/if}
+          </div>
+          {#if showTooltipSymbol && data.symbol.length > 16}
+            <div
+              class="absolute -top-7 left-1/2 transform -translate-x-1/2"
+              style="z-index: 2147483648;"
+            >
+              <tooltip-detail text={data.symbol} />
+            </div>
+          {/if}
+        </div>
       </div>
       <div class="flex flex-wrap gap-2">
         {#if data.suggest && data.suggest.length}
@@ -62,7 +92,11 @@
 
   <td class="py-4">
     <div class="text-sm text-[#00000099] font-medium flex justify-start">
-      {formatCurrency(data.market_price)}
+      {#if formatCurrency(data.market_price).toString().length > 9}
+        <TooltipBalance number={data.market_price} />
+      {:else}
+        {formatCurrency(data.market_price)}
+      {/if}
     </div>
   </td>
 

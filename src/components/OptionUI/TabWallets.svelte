@@ -5,6 +5,8 @@
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
+  import { flip } from "svelte/animate";
+  import { dndzone } from "svelte-dnd-action";
 
   import type { AddressData } from "~/types/AddressData";
 
@@ -377,7 +379,25 @@
           </tr>
         </tbody>
       {:else}
-        <tbody>
+        <tbody
+          use:dndzone={{
+            items: listAddress,
+            flipDurationMs: 300,
+            dropTargetStyle: { outline: "none" },
+            transformDraggedElement: (draggedEl, data, index) => {
+              draggedEl.classList.add("myStyle");
+            },
+          }}
+          on:consider={(e) => {
+            listAddress = e.detail.items;
+          }}
+          on:finalize={(e) => {
+            listAddress = e.detail.items;
+            browser.storage.sync.set({
+              listAddress: JSON.stringify(listAddress),
+            });
+          }}
+        >
           {#if listAddress && listAddress.length === 0}
             <tr>
               <td colspan="3">
@@ -387,10 +407,25 @@
               </td>
             </tr>
           {:else}
-            {#each listAddress as item}
-              <tr class="hover:bg-gray-100 transition-all">
+            {#each listAddress as item (item.id)}
+              <tr
+                animate:flip={{ duration: 300 }}
+                class="hover:bg-gray-100 transition-all"
+              >
                 <td class="pl-3 py-4">
-                  <div class="text-left flex items-start gap-2">
+                  <div class="text-left flex items-center gap-3">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M21 7.75H3C2.59 7.75 2.25 7.41 2.25 7C2.25 6.59 2.59 6.25 3 6.25H21C21.41 6.25 21.75 6.59 21.75 7C21.75 7.41 21.41 7.75 21 7.75ZM21 12.75H3C2.59 12.75 2.25 12.41 2.25 12C2.25 11.59 2.59 11.25 3 11.25H21C21.41 11.25 21.75 11.59 21.75 12C21.75 12.41 21.41 12.75 21 12.75ZM21 17.75H3C2.59 17.75 2.25 17.41 2.25 17C2.25 16.59 2.59 16.25 3 16.25H21C21.41 16.25 21.75 16.59 21.75 17C21.75 17.41 21.41 17.75 21 17.75Z"
+                        fill="#9ca3af"
+                      />
+                    </svg>
                     {item.address}
                   </div>
                 </td>
@@ -644,5 +679,10 @@
   }
   .table-border {
     border: 0.5px solid rgb(229, 231, 235);
+  }
+
+  .myStyle {
+    display: flex !important;
+    justify-content: space-between !important;
   }
 </style>
