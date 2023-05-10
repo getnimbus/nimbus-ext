@@ -798,11 +798,7 @@
 
       const urlParams = new URLSearchParams(window.location.search);
       const addressParams = urlParams.get("address");
-      if (
-        addressParams &&
-        selectedWallet === undefined &&
-        listAddress.length === 0
-      ) {
+      if (addressParams) {
         search = addressParams;
         selectedWallet = {
           id: addressParams,
