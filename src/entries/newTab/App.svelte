@@ -799,7 +799,6 @@
       const urlParams = new URLSearchParams(window.location.search);
       const addressParams = urlParams.get("address");
       if (addressParams) {
-        search = addressParams;
         selectedWallet = {
           id: addressParams,
           logo: "",
