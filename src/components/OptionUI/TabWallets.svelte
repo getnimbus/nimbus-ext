@@ -6,7 +6,6 @@
   import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
   import { flip } from "svelte/animate";
-  import { dndzone } from "svelte-dnd-action";
 
   import type { AddressData } from "~/types/AddressData";
 
@@ -110,6 +109,7 @@
   let selectedWallet = {};
   let address = "";
   let label = "";
+  let draggedElement = null;
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -331,6 +331,47 @@
       browser.storage.sync.set({ selectedWallet: {} });
     }
   }
+
+  function handleDragStart(event) {
+    draggedElement = event.target;
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/html", draggedElement.innerHTML);
+  }
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    const target = event.target.closest(".element");
+    if (target && target !== draggedElement) {
+      const rect = target.getBoundingClientRect();
+      const next = target.parentNode.insertBefore(
+        document.createTextNode(""),
+        target.nextSibling
+      );
+      const half = rect.height / 2;
+      if (event.clientY - rect.top > half) {
+        target.parentNode.insertBefore(draggedElement, next);
+      } else {
+        target.parentNode.insertBefore(draggedElement, target);
+      }
+    }
+  };
+
+  const updateArray = () => {
+    const sortListAddress = [...document.querySelectorAll(".element")].map(
+      (el) => {
+        return {
+          address: el.dataset.address,
+          label: el.dataset.label,
+          id: el.dataset.id,
+        };
+      }
+    );
+
+    browser.storage.sync.set({
+      listAddress: JSON.stringify(sortListAddress),
+    });
+  };
 </script>
 
 <div class="flex flex-col gap-2">
@@ -379,25 +420,7 @@
           </tr>
         </tbody>
       {:else}
-        <tbody
-          use:dndzone={{
-            items: listAddress,
-            flipDurationMs: 300,
-            dropTargetStyle: { outline: "none" },
-            transformDraggedElement: (draggedEl, data, index) => {
-              draggedEl.classList.add("myStyle");
-            },
-          }}
-          on:consider={(e) => {
-            listAddress = e.detail.items;
-          }}
-          on:finalize={(e) => {
-            listAddress = e.detail.items;
-            browser.storage.sync.set({
-              listAddress: JSON.stringify(listAddress),
-            });
-          }}
-        >
+        <tbody>
           {#if listAddress && listAddress.length === 0}
             <tr>
               <td colspan="3">
@@ -409,23 +432,32 @@
           {:else}
             {#each listAddress as item (item.id)}
               <tr
+                class="hover:bg-gray-100 transition-all element"
+                draggable="true"
+                data-id={item.id}
+                data-address={item.address}
+                data-label={item.label}
+                on:dragstart={handleDragStart}
+                on:dragover={handleDragOver}
+                on:drop={() => updateArray()}
                 animate:flip={{ duration: 300 }}
-                class="hover:bg-gray-100 transition-all"
               >
                 <td class="pl-3 py-4">
                   <div class="text-left flex items-center gap-3">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M21 7.75H3C2.59 7.75 2.25 7.41 2.25 7C2.25 6.59 2.59 6.25 3 6.25H21C21.41 6.25 21.75 6.59 21.75 7C21.75 7.41 21.41 7.75 21 7.75ZM21 12.75H3C2.59 12.75 2.25 12.41 2.25 12C2.25 11.59 2.59 11.25 3 11.25H21C21.41 11.25 21.75 11.59 21.75 12C21.75 12.41 21.41 12.75 21 12.75ZM21 17.75H3C2.59 17.75 2.25 17.41 2.25 17C2.25 16.59 2.59 16.25 3 16.25H21C21.41 16.25 21.75 16.59 21.75 17C21.75 17.41 21.41 17.75 21 17.75Z"
-                        fill="#9ca3af"
-                      />
-                    </svg>
+                    <span class="cursor-pointer">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M21 7.75H3C2.59 7.75 2.25 7.41 2.25 7C2.25 6.59 2.59 6.25 3 6.25H21C21.41 6.25 21.75 6.59 21.75 7C21.75 7.41 21.41 7.75 21 7.75ZM21 12.75H3C2.59 12.75 2.25 12.41 2.25 12C2.25 11.59 2.59 11.25 3 11.25H21C21.41 11.25 21.75 11.59 21.75 12C21.75 12.41 21.41 12.75 21 12.75ZM21 17.75H3C2.59 17.75 2.25 17.41 2.25 17C2.25 16.59 2.59 16.25 3 16.25H21C21.41 16.25 21.75 16.59 21.75 17C21.75 17.41 21.41 17.75 21 17.75Z"
+                          fill="#9ca3af"
+                        />
+                      </svg>
+                    </span>
                     {item.address}
                   </div>
                 </td>
@@ -679,10 +711,5 @@
   }
   .table-border {
     border: 0.5px solid rgb(229, 231, 235);
-  }
-
-  .myStyle {
-    display: flex !important;
-    justify-content: space-between !important;
   }
 </style>
