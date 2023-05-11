@@ -332,11 +332,11 @@
     }
   }
 
-  function handleDragStart(event) {
+  const handleDragStart = (event) => {
     draggedElement = event.target;
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/html", draggedElement.innerHTML);
-  }
+  };
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -357,7 +357,7 @@
     }
   };
 
-  const updateArray = () => {
+  const updatedListAddress = () => {
     const sortListAddress = [...document.querySelectorAll(".element")].map(
       (el) => {
         return {
@@ -439,7 +439,7 @@
                 data-label={item.label}
                 on:dragstart={handleDragStart}
                 on:dragover={handleDragOver}
-                on:drop={() => updateArray()}
+                on:drop={() => updatedListAddress()}
                 animate:flip={{ duration: 300 }}
               >
                 <td class="pl-3 py-4">
