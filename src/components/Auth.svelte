@@ -5,10 +5,14 @@
   let userInfo = {};
   let showPopover = false;
 
+  const clientID =
+    APP_TYPE.TYPE === "EXT"
+      ? "520245364327-hqb03lrk5kdml332nl6uqdk1icrh832k.apps.googleusercontent.com"
+      : "520245364327-4t6vius9egn2qfdrcj2paeefv5l3hgtg.apps.googleusercontent.com";
+
   onMount(() => {
     google.accounts.id.initialize({
-      client_id:
-        "520245364327-4t6vius9egn2qfdrcj2paeefv5l3hgtg.apps.googleusercontent.com",
+      client_id: clientID,
       callback: handleCallbackRes,
       auto_select: true,
     });
@@ -19,20 +23,64 @@
       shape: "pill",
       text: "signin",
     });
+
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) {
+      fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            // User is authenticated and access token is still valid
+          } else {
+            // Access token is invalid or expired, prompt user to sign in again
+            google.accounts.id
+              .prompt({
+                client_id: clientID,
+                response_type: "token",
+                scope: "email profile",
+              })
+              .then((response) => {
+                localStorage.setItem("access_token", response.credential);
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      // Access token not found, prompt user to sign in again
+      google.accounts.id
+        .prompt({
+          client_id: clientID,
+          response_type: "token",
+          scope: "email profile",
+        })
+        .then((response) => {
+          localStorage.setItem("access_token", response.credential);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   });
 
-  function handleCallbackRes(res) {
-    console.log("res: ", res);
+  const handleCallbackRes = (res) => {
     userInfo = jwt_decode(res.credential);
     document.getElementById("signInBtn").hidden = true;
-  }
+  };
 
-  function handleSignOut() {
+  const handleSignOut = () => {
     userInfo = {};
     document.getElementById("signInBtn").hidden = false;
     showPopover = false;
     google.accounts.id.disableAutoSelect();
-  }
+  };
 </script>
 
 <div id="signInBtn" />
@@ -55,3 +103,6 @@
     {/if}
   </div>
 {/if}
+
+<style>
+</style>

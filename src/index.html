@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'wasm-unsafe-eval' 'inline-speculation-rules' http://localhost:* http://127.0.0.1:* https://accounts.google.com;"
+    />
     <title>Nimbus - Your Personalized Portfolio</title>
     <script type="module" src="./main-web.ts"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -33,6 +37,10 @@
 
       * {
         box-sizing: border-box;
+      }
+
+      #credential_picker_container {
+        top: 80px !important;
       }
     </style>
   </head>
