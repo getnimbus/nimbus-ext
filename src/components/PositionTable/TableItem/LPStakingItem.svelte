@@ -12,7 +12,7 @@
   $: rewardToken0 =
     Number(data?.rewardTokens[0]?.rewardOut) * data.rewardToken0;
 
-  $: value = balance0 + balance1;
+  $: value = balance0 + balance1 + rewardToken0;
 
   // $: profit = data.inputValue + value;
   // $: profitPercent =

@@ -1,11 +1,8 @@
-<svelte:options tag="tab-accounts" />
-
 <script lang="ts">
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
-  import { flip } from "svelte/animate";
   import { dndzone } from "svelte-dnd-action";
 
   import type { AddressData } from "~/types/AddressData";
@@ -408,10 +405,7 @@
             </tr>
           {:else}
             {#each listAddress as item (item.id)}
-              <tr
-                animate:flip={{ duration: 300 }}
-                class="hover:bg-gray-100 transition-all"
-              >
+              <tr class="hover:bg-gray-100 transition-all">
                 <td class="pl-3 py-4">
                   <div class="text-left flex items-center gap-3">
                     <svg
