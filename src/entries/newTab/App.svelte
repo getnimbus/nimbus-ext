@@ -991,11 +991,13 @@
       <div
         class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]"
       >
-        <img
-          src={Logo}
-          alt="logo"
-          class="-ml-8 xl:w-[177px] xl:h-[60px] w-[167px] h-[50px]"
-        />
+        <a href="/">
+          <img
+            src={Logo}
+            alt="logo"
+            class="-ml-8 xl:w-[177px] xl:h-[60px] w-[167px] h-[50px]"
+          />
+        </a>
         <div class="flex items-center gap-3">
           <div
             class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
