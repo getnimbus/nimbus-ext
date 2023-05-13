@@ -22,9 +22,11 @@
   let amountValue = "";
   let timerSearchDebounce;
   let timerAmountDebounce;
+  let isLoading = false;
 
   const getMarketData = async () => {
     try {
+      isLoading = true;
       const res = await nimbus
         .get(
           `/trades?minValue=${amountValue || "10000"}&token=${
@@ -35,6 +37,8 @@
       marketData = res;
     } catch (e) {
       console.log("error: ", e);
+    } finally {
+      isLoading = false;
     }
   };
 
@@ -42,14 +46,14 @@
     clearTimeout(timerSearchDebounce);
     timerSearchDebounce = setTimeout(() => {
       searchValue = value;
-    }, 500);
+    }, 300);
   };
 
   const debounceAmount = (value) => {
     clearTimeout(timerAmountDebounce);
     timerAmountDebounce = setTimeout(() => {
       amountValue = value;
-    }, 500);
+    }, 300);
   };
 
   onMount(() => {
@@ -65,7 +69,7 @@
   $: {
     setInterval(() => {
       getMarketData();
-    }, 120000);
+    }, 120000); // 2 mins
   }
 </script>
 
@@ -88,11 +92,10 @@
               getMarketData();
             }
           }}
-          autofocus
           value={searchValue}
-          placeholder="Find by symbol, name, token contract or pair address"
+          placeholder="Find by symbol, name or token contract"
           type="text"
-          class="flex-1 text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000099] focus:outline-none focus:ring-0"
+          class="flex-1 text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
         />
         <input
           on:keyup={({ target: { value } }) => debounceAmount(value)}
@@ -104,22 +107,26 @@
               getMarketData();
             }
           }}
-          autofocus
           value={amountValue}
           placeholder="Enter a USD amount higher than 10000"
           type="text"
-          class="flex-[0.6] text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000099] focus:outline-none focus:ring-0"
+          class="flex-[0.6] text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
         />
       </div>
     </div>
   </div>
-  <div class="border border-[#0000000d] rounded-[10px] -mt-5">
+  <div class="border border-[#0000000d] rounded-[10px]">
     <table class="table-fixed w-full">
       <thead>
         <tr class="bg-[#f4f5f880]">
           <th class="pl-3 py-3 w-[250px]">
             <div class="text-left text-xs uppercase font-semibold text-black">
               Pair
+            </div>
+          </th>
+          <th class="pl-3 py-3">
+            <div class="text-left text-xs uppercase font-semibold text-black">
+              Execution time
             </div>
           </th>
           <th class="py-3">
@@ -145,7 +152,15 @@
         </tr>
       </thead>
       <tbody>
-        {#if marketData.length === 0}
+        {#if isLoading}
+          <tr>
+            <td colspan="5">
+              <div class="flex justify-center items-center py-4 px-3">
+                <loading-icon />
+              </div>
+            </td>
+          </tr>
+        {:else if marketData.length === 0}
           <tr>
             <td colspan="5">
               <div

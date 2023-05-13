@@ -1010,6 +1010,30 @@
               {MultipleLang.portfolio}
             </span>
           </div>
+          {#if APP_TYPE.TYPE === "EXT"}
+            <div
+              class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+              on:click={() => {
+                browser.tabs.create({ url: "src/entries/market/index.html" });
+              }}
+            >
+              <img src={MarketIcon} alt="" />
+              <span class="text-white font-semibold xl:text-base text-sm">
+                {MultipleLang.market}
+              </span>
+            </div>
+            {:else}
+            <a
+              class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+              href="/entries/market/index.html"
+              target="_blank"
+            >
+              <img src={MarketIcon} alt="" />
+              <span class="text-white font-semibold xl:text-base text-sm">
+                {MultipleLang.market}
+              </span>
+            </a>
+          {/if}
           <div class="relative">
             <div
               class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
@@ -1060,28 +1084,6 @@
           </div>
           {#if APP_TYPE.TYPE === "EXT"}
             <div
-              class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-              on:click={() => {
-                browser.tabs.create({ url: "src/entries/market/index.html" });
-              }}
-            >
-              <img src={MarketIcon} alt="" />
-              <span class="text-white font-semibold xl:text-base text-sm">
-                {MultipleLang.market}
-              </span>
-            </div>
-            <!-- <div
-              class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-              on:click={() => {
-                browser.tabs.create({ url: "src/entries/news/index.html" });
-              }}
-            >
-              <img src={NewsIcon} alt="" />
-              <span class="text-white font-semibold xl:text-base text-sm">
-                {MultipleLang.news}
-              </span>
-            </div> -->
-            <div
               class={`flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
               on:click={() => {
                 browser.tabs.create({ url: "src/entries/options/index.html" });
@@ -1093,26 +1095,6 @@
               </span>
             </div>
           {:else}
-            <a
-              class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-              href="/entries/market/index.html"
-              target="_blank"
-            >
-              <img src={MarketIcon} alt="" />
-              <span class="text-white font-semibold xl:text-base text-sm">
-                {MultipleLang.market}
-              </span>
-            </a>
-            <!-- <a
-              class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-              href="/entries/news/index.html"
-              target="_blank"
-            >
-              <img src={NewsIcon} alt="" />
-              <span class="text-white font-semibold xl:text-base text-sm">
-                {MultipleLang.news}
-              </span>
-            </a> -->
             <a
               class={`flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
               href="/entries/options/index.html"
