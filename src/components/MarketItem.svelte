@@ -40,7 +40,7 @@
 
   <td class="py-4 w-[170px]">
     <div
-      class="text-sm text-[#00000099] hover:text-[#0d6efd] font-medium flex justify-center"
+      class="text-sm text-[#00000099] hover:text-[#0d6efd] cursor-pointer font-medium flex justify-center"
     >
       {#if APP_TYPE.TYPE === "EXT"}
         <div

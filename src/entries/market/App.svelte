@@ -13,7 +13,7 @@
     market: i18n("newtabPage.market", "Market"),
     market_page_title: i18n(
       "newtabPage.market-page-title",
-      "Latest big swaps in Ethereum with useful information we've put together"
+      "Latest big swaps with useful information we've put together"
     ),
   };
 
@@ -108,7 +108,7 @@
           value={amountValue}
           placeholder="Enter a USD amount higher than 10000"
           type="text"
-          class="flex-[0.7] text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000099] focus:outline-none focus:ring-0"
+          class="flex-[0.6] text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000099] focus:outline-none focus:ring-0"
         />
       </div>
     </div>
