@@ -70,6 +70,7 @@
     "analytic": "Analytic",
     "transactions": "Transactions",
     "news": "News",
+    "market": "Market",
     "settings": "Settings",
     "wallet": "Wallet",
     "view-more": "View more",
@@ -94,6 +95,7 @@
     "updating-data": "Updating data",
     "hide-less-than-1": "Hide tokens less than $1",
     "news-page-title": "Check out the latest blockchain and crypto articles we've put together",
+    "market_page_title": "Latest big swaps in Ethereum with useful information we've put together",
     "missed-protocol": "Missed your protocol?",
     "search-placeholder": "Search"
   }

@@ -19,7 +19,7 @@ const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
   },
   web_accessible_resources: [
     {
-      resources: ["src/entries/contentScript/assets/full-logo.svg", "src/entries/onboard/index.html", "src/entries/news/index.html"],
+      resources: ["src/entries/contentScript/assets/full-logo.svg", "src/entries/onboard/index.html", "src/entries/news/index.html", "src/entries/market/index.html"],
       matches: ["*://*/*"],
     },
   ],

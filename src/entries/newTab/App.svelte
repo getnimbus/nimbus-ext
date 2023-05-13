@@ -45,6 +45,7 @@
   import Comment from "~/assets/comment-bubble-icon.svg";
   import Logo from "~/assets/logo-white.svg";
   import NewsIcon from "~/assets/news.svg";
+  import MarketIcon from "~/assets/market.svg";
   import Plus from "~/assets/plus.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
   import Reload from "~/assets/reload.svg";
@@ -60,6 +61,7 @@
     analytic: i18n("newtabPage.analytic", "Analytic"),
     transactions: i18n("newtabPage.transactions", "Transactions"),
     news: i18n("newtabPage.news", "News"),
+    market: i18n("newtabPage.market", "Market"),
     settings: i18n("newtabPage.settings", "Settings"),
     overview: i18n("newtabPage.overview", "Overview"),
     empty_wallet: i18n("newtabPage.empty-wallet", "No wallet added yet."),
@@ -997,7 +999,7 @@
           alt="logo"
           class="-ml-8 xl:w-[177px] xl:h-[60px] w-[167px] h-[50px]"
         />
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1">
           <div
             class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
             class:bg-[#525B8C]={navActive === "portfolio"}
@@ -1057,6 +1059,17 @@
             {/if}
           </div>
           {#if APP_TYPE.TYPE === "EXT"}
+            <div
+              class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+              on:click={() => {
+                browser.tabs.create({ url: "src/entries/market/index.html" });
+              }}
+            >
+              <img src={MarketIcon} alt="" />
+              <span class="text-white font-semibold xl:text-base text-sm">
+                {MultipleLang.market}
+              </span>
+            </div>
             <!-- <div
               class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
               on:click={() => {
@@ -1080,6 +1093,16 @@
               </span>
             </div>
           {:else}
+            <a
+              class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+              href="/entries/market/index.html"
+              target="_blank"
+            >
+              <img src={MarketIcon} alt="" />
+              <span class="text-white font-semibold xl:text-base text-sm">
+                {MultipleLang.market}
+              </span>
+            </a>
             <!-- <a
               class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
               href="/entries/news/index.html"

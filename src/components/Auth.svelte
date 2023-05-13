@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import jwt_decode from "jwt-decode";
-  import { nimbus } from "~/lib/network";
 
   let userInfo = {};
   let showPopover = false;
@@ -75,15 +74,20 @@
   };
 
   const handleGetAccessToken = async (code: string) => {
-    const res = await nimbus
-      .post("/auth", {
+    const res = await fetch("https://api.getnimbus.io/auth", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         code,
         direct_url:
           APP_TYPE.TYPE === "EXT"
             ? "https://hjlilcigcidfaialcihialehachkldfd.chromiumapp.org"
             : "http://localhost:5173",
-      })
-      .then((response) => response);
+      }),
+    }).then((response) => response.json());
     if (res.data) {
       localStorage.setItem("token", JSON.stringify(res.data));
       userInfo = jwt_decode(res.data.id_token);
