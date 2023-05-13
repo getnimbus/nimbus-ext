@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import jwt_decode from "jwt-decode";
+  import { nimbus } from "~/lib/network";
 
   let userInfo = {};
   let showPopover = false;
@@ -74,20 +75,15 @@
   };
 
   const handleGetAccessToken = async (code: string) => {
-    const res = await fetch("http://localhost:3000/auth", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    const res = await nimbus
+      .post("/auth", {
         code,
         direct_url:
           APP_TYPE.TYPE === "EXT"
             ? "https://hjlilcigcidfaialcihialehachkldfd.chromiumapp.org"
             : "http://localhost:5173",
-      }),
-    }).then((response) => response.json());
+      })
+      .then((response) => response);
     if (res.data) {
       localStorage.setItem("token", JSON.stringify(res.data));
       userInfo = jwt_decode(res.data.id_token);
@@ -99,9 +95,8 @@
 
   $: {
     const urlParams = new URLSearchParams(window.location.search);
-    const token = localStorage.getItem("token");
-    if (urlParams && APP_TYPE.TYPE !== "EXT" && !token) {
-      const code = urlParams.get("code");
+    const code = urlParams.get("code");
+    if (code && APP_TYPE.TYPE !== "EXT") {
       handleGetAccessToken(code);
     }
   }
