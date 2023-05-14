@@ -49,9 +49,9 @@
 
 <div class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col gap-10">
   <img src={logo} alt="logo" width={200} class="-ml-6" />
-  <div class="flex flex-col gap-1 -mt-6">
-    <div class="text-4xl text-black font-semibold">{MultipleLang.news}</div>
-    <div class="text-xl text-black font-medium">
+  <div class="flex flex-col -mt-6">
+    <div class="text-3xl text-black font-semibold">{MultipleLang.news}</div>
+    <div class="text-lg text-black font-medium">
       {MultipleLang.news_page_title}
     </div>
   </div>

@@ -39,11 +39,13 @@
   import Select from "~/components/Select.svelte";
   import "~/components/Tooltip.custom.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Auth from "~/components/Auth.svelte";
 
   import AnalyticIcon from "~/assets/analytic.svg";
   import Comment from "~/assets/comment-bubble-icon.svg";
   import Logo from "~/assets/logo-white.svg";
   import NewsIcon from "~/assets/news.svg";
+  import MarketIcon from "~/assets/market.svg";
   import Plus from "~/assets/plus.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
   import Reload from "~/assets/reload.svg";
@@ -59,6 +61,7 @@
     analytic: i18n("newtabPage.analytic", "Analytic"),
     transactions: i18n("newtabPage.transactions", "Transactions"),
     news: i18n("newtabPage.news", "News"),
+    market: i18n("newtabPage.market", "Market"),
     settings: i18n("newtabPage.settings", "Settings"),
     overview: i18n("newtabPage.overview", "Overview"),
     empty_wallet: i18n("newtabPage.empty-wallet", "No wallet added yet."),
@@ -991,14 +994,14 @@
       <div
         class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]"
       >
-        <a href="/">
+       <a href="/">
           <img
             src={Logo}
             alt="logo"
             class="-ml-8 xl:w-[177px] xl:h-[60px] w-[167px] h-[50px]"
           />
         </a>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1">
           <div
             class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
             class:bg-[#525B8C]={navActive === "portfolio"}
@@ -1009,6 +1012,30 @@
               {MultipleLang.portfolio}
             </span>
           </div>
+          {#if APP_TYPE.TYPE === "EXT"}
+            <div
+              class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+              on:click={() => {
+                browser.tabs.create({ url: "src/entries/market/index.html" });
+              }}
+            >
+              <img src={MarketIcon} alt="" />
+              <span class="text-white font-semibold xl:text-base text-sm">
+                {MultipleLang.market}
+              </span>
+            </div>
+          {:else}
+            <a
+              class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+              href="/entries/market/index.html"
+              target="_blank"
+            >
+              <img src={MarketIcon} alt="" />
+              <span class="text-white font-semibold xl:text-base text-sm">
+                {MultipleLang.market}
+              </span>
+            </a>
+          {/if}
           <div class="relative">
             <div
               class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
@@ -1058,17 +1085,6 @@
             {/if}
           </div>
           {#if APP_TYPE.TYPE === "EXT"}
-            <!-- <div
-              class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-              on:click={() => {
-                browser.tabs.create({ url: "src/entries/news/index.html" });
-              }}
-            >
-              <img src={NewsIcon} alt="" />
-              <span class="text-white font-semibold xl:text-base text-sm">
-                {MultipleLang.news}
-              </span>
-            </div> -->
             <div
               class={`flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
               on:click={() => {
@@ -1081,16 +1097,6 @@
               </span>
             </div>
           {:else}
-            <!-- <a
-              class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-              href="/entries/news/index.html"
-              target="_blank"
-            >
-              <img src={NewsIcon} alt="" />
-              <span class="text-white font-semibold xl:text-base text-sm">
-                {MultipleLang.news}
-              </span>
-            </a> -->
             <a
               class={`flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
               href="/entries/options/index.html"
@@ -1143,13 +1149,11 @@
               class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
             />
           </div>
+          <!-- <Auth /> -->
           <!-- <div
             class="bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
           >
             <img src={Bell} alt="" />
-          </div>
-          <div class="w-[40px] h-[40px] rounded-full overflow-hidden">
-            <img src={Avatar} alt="avatar" class="w-full h-full object-cover" />
           </div> -->
         </div>
       </div>

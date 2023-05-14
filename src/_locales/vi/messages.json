@@ -70,6 +70,7 @@
     "analytic": "Phân tích",
     "transactions": "Giao dịch",
     "news": "Tin tức",
+    "market": "Thị trường",
     "settings": "Cài đặt",
     "wallet": "Ví",
     "view-more": "Xem thêm",
@@ -95,6 +96,7 @@
     "updating-data": "Đang cập nhật dữ liệu",
     "hide-less-than-1": "Ẩn các token dưới $1",
     "news-page-title": "Xem các bài viết mới nhất về blockchain và tiền điện tử mà chúng tôi đã tổng hợp",
+    "market_page_title": "Các giao dịch giá trị lớn với các thông tin hữu ích mà chúng tôi đã tổng hợp",
     "missed-protocol": "Chưa có giao thức của bạn?",
     "search-placeholder": "Tìm kiếm"
   }
