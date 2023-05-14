@@ -1022,7 +1022,7 @@
                 {MultipleLang.market}
               </span>
             </div>
-            {:else}
+          {:else}
             <a
               class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
               href="/entries/market/index.html"
@@ -1147,7 +1147,7 @@
               class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
             />
           </div>
-          <Auth />
+          <!-- <Auth /> -->
           <!-- <div
             class="bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
           >
