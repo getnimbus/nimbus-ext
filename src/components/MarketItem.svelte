@@ -10,29 +10,33 @@
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">
-  <td class="pl-3 py-4 w-[250px]">
-    <div class="text-left text-black text-sm font-medium">
-      <div class="flex space-x-2">
+  <td class="pl-3 py-4">
+    <div
+      class="text-left text-[#00000080] text-xs font-medium flex items-end gap-1"
+    >
+      <div class="flex flex-col justify-start gap-1">
         <img
           src={data?.from_token_logo}
           class="rounded-full"
           width="20"
           height="20"
         />
+        {data?.price_from?.symbol}
+      </div>
+      <div>-</div>
+      <div class="flex flex-col justify-start gap-1">
         <img
           src={data?.to_token_logo}
           class="rounded-full"
           width="20"
           height="20"
         />
-      </div>
-      <div class="text-[#00000080] text-xs mt-1">
-        {data?.price_from?.symbol} - {data?.price_to?.symbol}
+        {data?.price_to?.symbol}
       </div>
     </div>
   </td>
 
-  <td class="pl-3 py-4">
+  <td class="py-4">
     <div class="text-left text-black text-sm font-medium">
       {dayjs(data?.timestamp).format("YYYY-MM-DD HH:mm:ss")}
       <br />
@@ -95,7 +99,7 @@
     </div>
   </td>
 
-  <td class="pr-3 py-4 w-[190px]">
+  <td class="pr-3 py-4">
     <div class="flex items-center justify-end">
       <a
         href={`https://etherscan.io/tx/${data?.transaction_hash}`}

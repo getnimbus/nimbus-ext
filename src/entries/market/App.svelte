@@ -119,12 +119,12 @@
     <table class="table-fixed w-full">
       <thead>
         <tr class="bg-[#f4f5f880]">
-          <th class="pl-3 py-3 w-[250px]">
+          <th class="pl-3 py-3">
             <div class="text-left text-xs uppercase font-semibold text-black">
               Pair
             </div>
           </th>
-          <th class="pl-3 py-3">
+          <th class="py-3">
             <div class="text-left text-xs uppercase font-semibold text-black">
               Execution time
             </div>
@@ -139,12 +139,12 @@
               Amount In
             </div>
           </th>
-          <th class="py-3 w-[170px]">
+          <th class="py-3">
             <div class="text-center text-xs uppercase font-semibold text-black">
               Maker
             </div>
           </th>
-          <th class="pr-3 py-3 w-[190px]">
+          <th class="pr-3 py-3">
             <div class="text-right text-xs uppercase font-semibold text-black">
               Action
             </div>
