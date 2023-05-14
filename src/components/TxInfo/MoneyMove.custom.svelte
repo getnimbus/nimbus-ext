@@ -48,7 +48,7 @@
             class="text-black text-xs font-medium"
             use:tooltip={{
               content: `<tooltip-detail text="${formatCurrency(data?.value)} ${
-                data?.symbol
+                data?.symbol ? data?.symbol : "N/A"
               }" />`,
               allowHTML: true,
               placement: "top",
