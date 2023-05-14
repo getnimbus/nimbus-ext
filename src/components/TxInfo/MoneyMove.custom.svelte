@@ -57,7 +57,7 @@
             {formatBalance(data?.value) === "NaN"
               ? formatSmallBalance(data?.value)
               : formatBalance(data?.value)}
-            {data?.symbol}
+            {data?.symbol ? data?.symbol : "N/A"}
           </div>
         </div>
         <div class="absolute left-0 right-0 -bottom-6 flex justify-center">
