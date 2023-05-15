@@ -1,21 +1,24 @@
 import numeral from "numeral";
 
-import logo from "~/assets/btc.png";
+import logo from "~/assets/bitcoin.png";
 import Bnb from "~/assets/bnb.png";
 import Ethereum from "~/assets/ethereum.png";
 import Polygon from "~/assets/polygon.png";
 import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 
+export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
+export const BTCAddressRegex = /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}$/g;
+
 export const regexList = [
   {
     name: "ETH",
-    regex_address: /(\b0x[a-fA-F0-9]{40}\b)/g,
+    regex_address: ETHAddressRegex,
     regex_trx: /(\b0x[a-fA-F0-9]{64}\b)/g
   },
   // {
   //   name: "BTC",
-  //   regex_address: /(\b(?!0x.*$)([13]|bc1)[a-zA-HJ-NP-Z0-9]{25,39}\b)/g,
+  //   regex_address: /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}$/g,
   //   regex_trx: /(\b(?!0x.*$)[a-fA-F0-9]{64}\b)/g
   // },
   // {
@@ -34,6 +37,24 @@ export const regexList = [
   //   regex_trx: /(\b[a-zA-Z0-9]{43,44}\b)/g,
   // }
 ]
+
+export const getAddressContext = (address: string) => {
+  if (address.match(ETHAddressRegex)) {
+    return {
+      type: 'EVM',
+      address
+    }
+  }
+
+  if (address.match(BTCAddressRegex)) {
+    return {
+      type: 'BTC',
+      address
+    }
+  }
+
+  return undefined;
+}
 
 export const chainList = [
   {

@@ -12,9 +12,12 @@
   import { i18n } from "~/lib/i18n";
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import {
+    BTCAddressRegex,
+    ETHAddressRegex,
     chainList,
     formatBalance,
     formatCurrency,
+    getAddressContext,
     showChatAnimationVariants,
   } from "~/utils";
   import { wait } from "../background/utils";
@@ -53,7 +56,8 @@
   import TransactionsIcon from "~/assets/transactions.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
-  import Wallet from "~/assets/wallet.svg";
+  import EthereumLogo from "~/assets/ethereum.png";
+  import BitcoinLogo from "~/assets/bitcoin.png";
   import Search from "~/assets/search.svg";
 
   const MultipleLang = {
@@ -777,9 +781,11 @@
       );
 
       const structWalletData = (response || []).map((item) => {
+        const addressContext = getAddressContext(item.address);
+
         return {
           id: item.id,
-          logo: item.logo || Wallet,
+          logo: addressContext.type === "EVM" ? EthereumLogo : BitcoinLogo,
           label: item.label,
           value: item.address,
         };
@@ -851,7 +857,6 @@
   };
 
   const validateForm = (data) => {
-    const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
     const isDuplicatedAddress = listAddress.some((item) => {
       return item.value === data.address;
     });
@@ -863,7 +868,7 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      if (data.address && !regexETHAddress.test(data.address)) {
+      if (data.address && !getAddressContext(data.address)) {
         errors["address"] = {
           ...errors["address"],
           required: true,
@@ -907,9 +912,11 @@
     if (
       !Object.keys(errors).some((inputName) => errors[inputName]["required"])
     ) {
+      const addressContext = getAddressContext(data.address);
+      console.log(addressContext);
       const dataFormat = {
         id: data.address,
-        logo: Wallet,
+        logo: addressContext.type === "EVM" ? EthereumLogo : BitcoinLogo,
         label: data.label,
         value: data.address,
       };
@@ -925,7 +932,7 @@
       const structWalletList = filterWalletList.map((item) => {
         return {
           id: item.value,
-          logo: Wallet,
+          logo: item.logo,
           label: item.label,
           address: item.value,
         };
@@ -994,7 +1001,7 @@
       <div
         class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]"
       >
-       <a href="/">
+        <a href="/">
           <img
             src={Logo}
             alt="logo"
@@ -1400,7 +1407,7 @@
                     >
                   </div>
                 </div>
-                <News isLoading={loadingNews} data={newsData} />
+                <!-- <News isLoading={loadingNews} data={newsData} /> -->
               </div>
             {/if}
           </div>
