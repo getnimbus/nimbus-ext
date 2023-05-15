@@ -14,17 +14,15 @@
   $: tweet = `${shorterAddress(
     data?.sender
   )} made a trade worth $${formatBalance(data?.trade_value)} \n
-        ➖ ${formatBalance(data?.amountIn)} ${
+➖ ${formatBalance(data?.amountIn)} ${
     data?.price_to?.symbol
   } - $${formatBalance(data?.amountIn * data?.price_to?.price)} \n
-        ➕ ${formatBalance(data?.amountOut)} ${
+➕ ${formatBalance(data?.amountOut)} ${
     data?.price_from?.symbol
-  } - $${formatBalance(data?.amountOut * data?.price_from?.price)} \n\n
-        The Whale portfolio: https://app.getnimbus.io/?address=${data?.sender}
-        Tx: https://etherscan.io/tx/${data?.transaction_hash}
-        via @get_nimbus`;
-
-  $: console.log("data: ", data);
+  } - $${formatBalance(data?.amountOut * data?.price_from?.price)} \n
+The Whale portfolio: https://app.getnimbus.io/?address=${data?.sender}
+Tx: https://etherscan.io/tx/${data?.transaction_hash} \n
+(via @get_nimbus)`;
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">
