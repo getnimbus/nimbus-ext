@@ -12,8 +12,6 @@
   import { i18n } from "~/lib/i18n";
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import {
-    BTCAddressRegex,
-    ETHAddressRegex,
     chainList,
     formatBalance,
     formatCurrency,
@@ -545,7 +543,11 @@
         address: selectedWallet.value,
         reload: isReload,
       });
-      if (selectedWallet.value === response.address) {
+      if (
+        selectedWallet.value === response.address &&
+        response &&
+        response.result
+      ) {
         const formatData = response.result.map((item) => {
           const groupPosition = groupBy(item.positions, "type");
           return {
@@ -657,6 +659,9 @@
       performance: [],
       updatedAt: "",
     };
+    positionsData = [];
+    newsData = [];
+    opportunitiesData = [];
     loadingOverview = true;
     loadingHolding = true;
     loadingPositions = true;
@@ -738,7 +743,7 @@
             if (
               resOverview &&
               resHolding &&
-              resPositions &&
+              (resPositions === undefined || resPositions) &&
               resNews &&
               resOpportunities
             ) {

@@ -58,7 +58,7 @@
               Claimable ($)
             </div>
           </th>
-          <th class="pr-3 py-3">
+          <th class="py-3">
             <div class="text-sm font-semibold text-black uppercase text-right">
               Value ($)
             </div>

@@ -65,7 +65,7 @@
         ${formatBalance(data.claimable)}
       </div>
     </td>
-    <td class="pr-3 py-4">
+    <td class="py-4">
       <div
         class="text-right text-sm text-[#00000099] font-medium relative"
         on:mouseenter={() => (showTooltipValue = true)}

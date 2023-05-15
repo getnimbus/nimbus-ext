@@ -23,6 +23,8 @@
         The Whale portfolio: https://app.getnimbus.io/?address=${data?.sender}
         Tx: https://etherscan.io/tx/${data?.transaction_hash}
         via @get_nimbus`;
+
+  $: console.log("data: ", data);
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">
@@ -63,7 +65,7 @@
       class="text-sm text-red-500 font-medium flex flex-col justify-start gap-1"
     >
       <div>
-        <TooltipNumber number={data?.amountIn} />
+        <TooltipNumber number={data?.amountIn} type="amount" />
         {data?.price_to?.symbol}
       </div>
       <div>
@@ -77,7 +79,7 @@
       class="text-sm text-[#00A878] font-medium flex flex-col justify-start gap-1"
     >
       <div>
-        <TooltipNumber number={data?.amountOut} />
+        <TooltipNumber number={data?.amountOut} type="amount" />
         {data?.price_from?.symbol}
       </div>
       <div>

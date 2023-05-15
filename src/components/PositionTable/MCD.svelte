@@ -104,7 +104,7 @@
               </span>
             </div>
           </th>
-          <th class="py-3 pr-3">
+          <th class="pr-3 py-3">
             <div class="text-sm font-semibold text-black uppercase text-right">
               Value ($)
             </div>
