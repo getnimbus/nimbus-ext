@@ -1116,19 +1116,6 @@
             <img src={Search} alt="" />
             <input
               on:keyup={({ target: { value } }) => debounceSearch(value)}
-              on:blur={() => {
-                if (search) {
-                  window.history.replaceState(
-                    null,
-                    "",
-                    window.location.pathname + `?address=${search}`
-                  );
-                  selectedWallet = {
-                    ...selectedWallet,
-                    value: search,
-                  };
-                }
-              }}
               on:keydown={(event) => {
                 if (search && (event.which == 13 || event.keyCode == 13)) {
                   window.history.replaceState(
@@ -1142,7 +1129,6 @@
                   };
                 }
               }}
-              autofocus
               value={search}
               placeholder={MultipleLang.search_placeholder}
               type="text"
