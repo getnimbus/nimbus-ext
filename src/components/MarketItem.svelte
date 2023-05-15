@@ -1,12 +1,28 @@
 <script>
-  import { shorterAddress } from "~/utils";
-  import TooltipNumber from "./TooltipNumber.svelte";
-  import Etherscan from "~/assets/etherscan.jpg";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
+  import { formatBalance, shorterAddress } from "~/utils";
   dayjs.extend(relativeTime);
 
   export let data;
+
+  import TooltipNumber from "./TooltipNumber.svelte";
+
+  import Etherscan from "~/assets/etherscan.jpg";
+  import TwitterLogo from "~/assets/twitter.svg";
+
+  $: tweet = `${shorterAddress(
+    data?.sender
+  )} made a trade worth $${formatBalance(data?.trade_value)} \n
+        ➖ ${formatBalance(data?.amountIn)} ${
+    data?.price_to?.symbol
+  } - $${formatBalance(data?.amountIn * data?.price_to?.price)} \n
+        ➕ ${formatBalance(data?.amountOut)} ${
+    data?.price_from?.symbol
+  } - $${formatBalance(data?.amountOut * data?.price_from?.price)} \n\n
+        The Whale portfolio: https://app.getnimbus.io/?address=${data?.sender}
+        Tx: https://etherscan.io/tx/${data?.transaction_hash}
+        via @get_nimbus`;
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">
@@ -47,11 +63,11 @@
       class="text-sm text-red-500 font-medium flex flex-col justify-start gap-1"
     >
       <div>
-        <TooltipNumber number={data?.amountOut} />
+        <TooltipNumber number={data?.amountIn} />
         {data?.price_to?.symbol}
       </div>
       <div>
-        $<TooltipNumber number={data?.amountOut * data?.price_to?.price} />
+        $<TooltipNumber number={data?.amountIn * data?.price_to?.price} />
       </div>
     </div>
   </td>
@@ -61,11 +77,11 @@
       class="text-sm text-[#00A878] font-medium flex flex-col justify-start gap-1"
     >
       <div>
-        <TooltipNumber number={data?.amountIn} />
+        <TooltipNumber number={data?.amountOut} />
         {data?.price_from?.symbol}
       </div>
       <div>
-        $<TooltipNumber number={data?.amountIn * data?.price_from?.price} />
+        $<TooltipNumber number={data?.amountOut * data?.price_from?.price} />
       </div>
     </div>
   </td>
@@ -96,7 +112,13 @@
   </td>
 
   <td class="pr-3 py-4 w-[190px]">
-    <div class="flex items-center justify-end">
+    <div class="flex items-center justify-end gap-2">
+      <a
+        href={`https://twitter.com/intent/tweet?text=${encodeURI(tweet)}`}
+        target="_blank"
+      >
+        <img src={TwitterLogo} alt="" class="w-5 h-5 rounded-full" />
+      </a>
       <a
         href={`https://etherscan.io/tx/${data?.transaction_hash}`}
         target="_blank"

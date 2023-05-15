@@ -102,7 +102,7 @@
 
   <td class="py-4">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
-      <TooltipNumber number={data.amount} />
+      <TooltipNumber number={data.amount} type="amount" />
     </div>
   </td>
 
