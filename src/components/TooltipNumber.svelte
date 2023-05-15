@@ -7,17 +7,14 @@
   } from "~/utils";
 
   export let number;
-  export let isFormatPercent = false;
+  export let type = "balance";
 
   let numberFormat = 0;
   let numberSize = "";
   let showTooltip = false;
 
   $: {
-    const { number_format, number_size } = formatBigBalance(
-      number,
-      isFormatPercent
-    );
+    const { number_format, number_size } = formatBigBalance(number, type);
     numberFormat = number_format;
     numberSize = number_size;
   }
@@ -28,7 +25,7 @@
   on:mouseenter={() => (showTooltip = true)}
   on:mouseleave={() => (showTooltip = false)}
 >
-  {#if numberSize === "K"}
+  {#if numberSize === "K" || (type === "amount" && number > 100000)}
     <span>{formatCurrencyV2(number)}</span>
   {:else}
     <span>{numberFormat}</span><span>{numberSize}</span>

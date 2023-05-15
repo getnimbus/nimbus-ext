@@ -2,7 +2,7 @@
   import { formatCurrency, shorterName } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
-  import TooltipBalance from "~/components/TooltipBalance.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -93,7 +93,7 @@
   <td class="py-4">
     <div class="text-sm text-[#00000099] font-medium flex justify-start">
       {#if formatCurrency(data.market_price).toString().length > 9}
-        <TooltipBalance number={data.market_price} />
+        <TooltipNumber number={data.market_price} />
       {:else}
         {formatCurrency(data.market_price)}
       {/if}
@@ -102,13 +102,13 @@
 
   <td class="py-4">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
-      <TooltipBalance number={data.amount} />
+      <TooltipNumber number={data.amount} />
     </div>
   </td>
 
   <td class="py-4">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
-      <TooltipBalance number={price} />
+      <TooltipNumber number={price} />
     </div>
   </td>
 
@@ -120,7 +120,7 @@
             profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          <TooltipBalance number={Math.abs(profitAndLoss)} />
+          <TooltipNumber number={Math.abs(profitAndLoss)} />
         </div>
         <div class="flex items-center justify-end gap-1">
           <div
@@ -128,9 +128,9 @@
               profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
             }`}
           >
-            <TooltipBalance
+            <TooltipNumber
               number={Math.abs(profitAndLossPercent) * 100}
-              isFormatPercent
+              type="percent"
             />
             <span>%</span>
           </div>

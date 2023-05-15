@@ -180,10 +180,10 @@ export const formatSmallBalance = (input: number) => {
   return numeral(input).format("0.000e+0");
 };
 
-export const formatBigBalance = (input: number, isFormatPercent: boolean) => {
+export const formatBigBalance = (input: number, type: string) => {
   if (checkFormatBalance(input) === "NaN") {
     return {
-      number_format: isFormatPercent ? 0 : formatSmallBalance(input),
+      number_format: type === 'percent' ? 0 : formatSmallBalance(input),
       number_size: ""
     }
   } else {

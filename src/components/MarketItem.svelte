@@ -1,6 +1,6 @@
 <script>
   import { shorterAddress } from "~/utils";
-  import TooltipBalance from "./TooltipBalance.svelte";
+  import TooltipNumber from "./TooltipNumber.svelte";
   import Etherscan from "~/assets/etherscan.jpg";
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
@@ -47,11 +47,11 @@
       class="text-sm text-red-500 font-medium flex flex-col justify-start gap-1"
     >
       <div>
-        <TooltipBalance number={data?.amountOut} />
+        <TooltipNumber number={data?.amountOut} />
         {data?.price_to?.symbol}
       </div>
       <div>
-        $<TooltipBalance number={data?.amountOut * data?.price_to?.price} />
+        $<TooltipNumber number={data?.amountOut * data?.price_to?.price} />
       </div>
     </div>
   </td>
@@ -61,11 +61,11 @@
       class="text-sm text-[#00A878] font-medium flex flex-col justify-start gap-1"
     >
       <div>
-        <TooltipBalance number={data?.amountIn} />
+        <TooltipNumber number={data?.amountIn} />
         {data?.price_from?.symbol}
       </div>
       <div>
-        $<TooltipBalance number={data?.amountIn * data?.price_from?.price} />
+        $<TooltipNumber number={data?.amountIn * data?.price_from?.price} />
       </div>
     </div>
   </td>

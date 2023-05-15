@@ -2,7 +2,7 @@
   import { i18n } from "~/lib/i18n";
 
   import StakingItem from "./TableItem/StakingItem.svelte";
-  import TooltipBalance from "~/components/TooltipBalance.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let positions;
   export let position;
@@ -19,12 +19,12 @@
     <div class="text-xl font-semibold">{position}</div>
     <div class="flex flex-col gap-1">
       <div class="text-3xl font-semibold flex justify-end">
-        $<TooltipBalance number={sum} />
+        $<TooltipNumber number={sum} />
       </div>
       <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
         {MultipleLang.claimable}:
         <span>
-          $<TooltipBalance number={sum_claimable} />
+          $<TooltipNumber number={sum_claimable} />
         </span>
       </div>
     </div>

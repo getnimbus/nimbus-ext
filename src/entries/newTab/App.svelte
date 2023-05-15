@@ -913,7 +913,6 @@
       !Object.keys(errors).some((inputName) => errors[inputName]["required"])
     ) {
       const addressContext = getAddressContext(data.address);
-      console.log(addressContext);
       const dataFormat = {
         id: data.address,
         logo: addressContext.type === "EVM" ? EthereumLogo : BitcoinLogo,
