@@ -15,14 +15,14 @@
     data?.sender
   )} made a trade worth $${formatBalance(data?.trade_value)} \n
 ➖ ${formatBalance(data?.amountIn)} ${
-    data?.price_to?.symbol
-  } - $${formatBalance(data?.amountIn * data?.price_to?.price)} \n
-➕ ${formatBalance(data?.amountOut)} ${
     data?.price_from?.symbol
-  } - $${formatBalance(data?.amountOut * data?.price_from?.price)} \n
+  } - $${formatBalance(data?.amountIn * data?.price_from?.price)}
+➕ ${formatBalance(data?.amountOut)} ${
+    data?.price_to?.symbol
+  } - $${formatBalance(data?.amountOut * data?.price_to?.price)} \n
 The Whale portfolio: https://app.getnimbus.io/?address=${data?.sender}
 Tx: https://etherscan.io/tx/${data?.transaction_hash} \n
-(via @get_nimbus)`;
+via @get_nimbus`;
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">
@@ -64,10 +64,10 @@ Tx: https://etherscan.io/tx/${data?.transaction_hash} \n
     >
       <div>
         <TooltipNumber number={data?.amountIn} type="amount" />
-        {data?.price_to?.symbol}
+        {data?.price_from?.symbol}
       </div>
       <div>
-        $<TooltipNumber number={data?.amountIn * data?.price_to?.price} />
+        $<TooltipNumber number={data?.amountIn * data?.price_from?.price} />
       </div>
     </div>
   </td>
@@ -78,10 +78,10 @@ Tx: https://etherscan.io/tx/${data?.transaction_hash} \n
     >
       <div>
         <TooltipNumber number={data?.amountOut} type="amount" />
-        {data?.price_from?.symbol}
+        {data?.price_to?.symbol}
       </div>
       <div>
-        $<TooltipNumber number={data?.amountOut * data?.price_from?.price} />
+        $<TooltipNumber number={data?.amountOut * data?.price_to?.price} />
       </div>
     </div>
   </td>
