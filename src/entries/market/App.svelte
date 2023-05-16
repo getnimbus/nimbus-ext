@@ -84,9 +84,6 @@
       <div class="flex flex-1 gap-3">
         <input
           on:keyup={({ target: { value } }) => debounceSearch(value)}
-          on:blur={() => {
-            getMarketData();
-          }}
           on:keydown={(event) => {
             if (event.which == 13 || event.keyCode == 13) {
               getMarketData();
@@ -99,9 +96,6 @@
         />
         <input
           on:keyup={({ target: { value } }) => debounceAmount(value)}
-          on:blur={() => {
-            getMarketData();
-          }}
           on:keydown={(event) => {
             if (event.which == 13 || event.keyCode == 13) {
               getMarketData();
