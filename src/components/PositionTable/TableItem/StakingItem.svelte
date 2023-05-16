@@ -2,7 +2,7 @@
   import dayjs from "dayjs";
 
   import "~/components/Tooltip.custom.svelte";
-  import TooltipBalance from "~/components/TooltipBalance.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -34,7 +34,7 @@
 
   <td class="py-4">
     <div class="flex justify-end text-sm text-[#00000099] font-medium">
-      <TooltipBalance number={Math.abs(data.avgCost)} />
+      <TooltipNumber number={Math.abs(data.avgCost)} />
     </div>
   </td>
 
@@ -46,13 +46,13 @@
 
   <td class="py-4">
     <div class="flex justify-end text-sm text-[#00000099] font-medium">
-      <TooltipBalance number={data.claimable} />
+      <TooltipNumber number={data.claimable} />
     </div>
   </td>
 
   <td class="py-4">
     <div class="flex justify-end text-sm text-[#00000099] font-medium">
-      <TooltipBalance number={value} />
+      <TooltipNumber number={value} />
     </div>
   </td>
 
@@ -64,7 +64,7 @@
             profit >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          <TooltipBalance number={Math.abs(profit)} />
+          <TooltipNumber number={Math.abs(profit)} />
         </div>
         <div class="flex items-center justify-end gap-1">
           <div
@@ -72,9 +72,9 @@
               profit >= 0 ? "text-[#00A878]" : "text-red-500"
             }`}
           >
-            <TooltipBalance
+            <TooltipNumber
               number={Math.abs(profitPercent) * 100}
-              isFormatPercent
+              type="percent"
             />
             <span>%</span>
           </div>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import "~/components/Tooltip.custom.svelte";
-  import TooltipBalance from "~/components/TooltipBalance.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   // import TrendUp from "~/assets/trend-up.svg";
   // import TrendDown from "~/assets/trend-down.svg";
@@ -60,17 +60,17 @@
       <div class="flex flex-col items-end">
         <div class="flex items-center gap-1">
           <div class="flex items-center gap-1">
-            <TooltipBalance number={Number(data.amount0out)} />
+            <TooltipNumber number={Number(data.amount0out)} />
             {data.amount0Price?.symbol ? data.amount0Price?.symbol : ""} |
           </div>
-          <TooltipBalance number={balance0} />
+          <TooltipNumber number={balance0} />
         </div>
         <div class="flex items-center gap-1">
           <div class="flex items-center gap-1">
-            <TooltipBalance number={Number(data.amount1out)} />
+            <TooltipNumber number={Number(data.amount1out)} />
             {data.amount1Price?.symbol ? data.amount1Price?.symbol : ""} |
           </div>
-          <TooltipBalance number={balance1} />
+          <TooltipNumber number={balance1} />
         </div>
       </div>
     </div>
@@ -81,10 +81,10 @@
       <div class="flex flex-col items-end">
         <div class="flex items-center gap-1">
           <div class="flex items-center gap-1">
-            <TooltipBalance number={Number(data?.rewardTokens[0]?.rewardOut)} />
+            <TooltipNumber number={Number(data?.rewardTokens[0]?.rewardOut)} />
             {data.rewardTokens[0]?.symbol ? data.rewardTokens[0]?.symbol : ""} |
           </div>
-          <TooltipBalance number={rewardToken0} />
+          <TooltipNumber number={rewardToken0} />
         </div>
       </div>
     </div>
@@ -92,7 +92,7 @@
 
   <td class="pr-3 py-4">
     <div class="flex justify-end text-sm text-[#000000] font-medium">
-      <TooltipBalance number={value} />
+      <TooltipNumber number={value} />
     </div>
   </td>
 
@@ -104,7 +104,7 @@
             profit >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          <TooltipBalance number={Math.abs(profit)} />
+          <TooltipNumber number={Math.abs(profit)} />
         </div>
         <div class="flex items-center justify-end gap-1">
           <div
@@ -112,9 +112,9 @@
               profit >= 0 ? "text-[#00A878]" : "text-red-500"
             } text-right`}
           >
-            <TooltipBalance
+            <TooltipNumber
               number={Math.abs(profitPercent) * 100}
-              isFormatPercent
+              type="percent"
             />
             <span>%</span>
           </div>

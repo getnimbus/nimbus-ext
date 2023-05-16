@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "~/lib/i18n";
 
-  import TooltipBalance from "~/components/TooltipBalance.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
   import McdItem from "./TableItem/MCDItem.svelte";
 
   export let positions;
@@ -21,13 +21,13 @@
     <div class="text-xl font-semibold">{position}</div>
     <div class="flex flex-col gap-1">
       <div class="text-3xl font-semibold flex justify-end">
-        $<TooltipBalance number={sum} />
+        $<TooltipNumber number={sum} />
       </div>
       {#if sum_claimable !== 0}
         <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
           {MultipleLang.claimable}:
           <span>
-            $<TooltipBalance number={sum_claimable} />
+            $<TooltipNumber number={sum_claimable} />
           </span>
         </div>
       {/if}
@@ -104,7 +104,7 @@
               </span>
             </div>
           </th>
-          <th class="py-3 pr-3">
+          <th class="pr-3 py-3">
             <div class="text-sm font-semibold text-black uppercase text-right">
               Value ($)
             </div>

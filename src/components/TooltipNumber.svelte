@@ -5,19 +5,17 @@
     formatCurrency,
     formatCurrencyV2,
   } from "~/utils";
+  import numeral from "numeral";
 
   export let number;
-  export let isFormatPercent = false;
+  export let type = "balance";
 
   let numberFormat = 0;
   let numberSize = "";
   let showTooltip = false;
 
   $: {
-    const { number_format, number_size } = formatBigBalance(
-      number,
-      isFormatPercent
-    );
+    const { number_format, number_size } = formatBigBalance(number, type);
     numberFormat = number_format;
     numberSize = number_size;
   }
@@ -31,7 +29,17 @@
   {#if numberSize === "K"}
     <span>{formatCurrencyV2(number)}</span>
   {:else}
-    <span>{numberFormat}</span><span>{numberSize}</span>
+    <span>
+      {#if type === "amount" && number < 100000}
+        <span
+          >{numeral(number).format("0,0.0[000000]") === "NaN"
+            ? number
+            : numeral(number).format("0,0.0[000000]")}</span
+        >
+      {:else}
+        <span>{numberFormat}</span><span>{numberSize}</span>
+      {/if}
+    </span>
   {/if}
   {#if showTooltip && ((numberSize && numberSize !== "K") || checkFormatBalance(number) === "NaN")}
     <span

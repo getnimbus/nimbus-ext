@@ -1,6 +1,6 @@
 <script lang="ts">
   import "~/components/Tooltip.custom.svelte";
-  import TooltipBalance from "~/components/TooltipBalance.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -38,10 +38,10 @@
     <div class="text-sm text-[#00000099] font-medium flex flex-col items-start">
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
-          <TooltipBalance number={Number(data?.collateralAmount)} />
+          <TooltipNumber number={Number(data?.collateralAmount)} />
           {data.token?.symbol ? data.token?.symbol : ""} |
         </div>
-        <TooltipBalance number={data?.collateralAmount * data.market_price} />
+        <TooltipNumber number={data?.collateralAmount * data.market_price} />
       </div>
     </div>
   </td>
@@ -66,10 +66,10 @@
     <div class="text-sm text-[#00000099] font-medium flex flex-col items-start">
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
-          <TooltipBalance number={Number(data?.debtAmount)} />
+          <TooltipNumber number={Number(data?.debtAmount)} />
           DAI |
         </div>
-        <TooltipBalance number={data?.debtAmount * 1} />
+        <TooltipNumber number={data?.debtAmount * 1} />
       </div>
     </div>
   </td>
@@ -80,7 +80,7 @@
     >
       {#if data.healthRate < 2}
         <span class="text-yellow-300">
-          ⚠️ <TooltipBalance number={data.healthRate} isFormatPercent />
+          ⚠️ <TooltipNumber number={data.healthRate} type="percent" />
         </span>
       {:else}
         <div>>10</div>
@@ -90,7 +90,7 @@
 
   <td class="py-4 pr-3">
     <div class="flex justify-end text-sm text-[#000000] font-medium">
-      <TooltipBalance
+      <TooltipNumber
         number={Number(
           data?.collateralAmount * data?.market_price - data?.debtAmount * 1
         )}

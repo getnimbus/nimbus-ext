@@ -4,6 +4,7 @@
   import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
   import { dndzone } from "svelte-dnd-action";
+  import { getAddressContext } from "~/utils";
 
   import type { AddressData } from "~/types/AddressData";
 
@@ -113,7 +114,6 @@
   };
 
   const validateForm = (data) => {
-    const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
     const isDuplicatedAddress = listAddress.some((item) => {
       return item.address === data.address;
     });
@@ -125,7 +125,7 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      if (data.address && !regexETHAddress.test(data.address)) {
+      if (data.address && !getAddressContext(data.address)) {
         errors["address"] = {
           ...errors["address"],
           required: true,
@@ -155,8 +155,6 @@
   };
 
   const validateFormEdit = (data) => {
-    const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
-
     if (!isRequiredFieldValid(data.address)) {
       errorsEdit["address"] = {
         ...errorsEdit["address"],
@@ -164,7 +162,7 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      if (!regexETHAddress.test(data.address)) {
+      if (!getAddressContext(data.address)) {
         errorsEdit["address"] = {
           ...errorsEdit["address"],
           required: true,

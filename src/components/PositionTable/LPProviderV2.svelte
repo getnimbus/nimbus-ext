@@ -1,6 +1,6 @@
 <script lang="ts">
   import LpProviderItemV2 from "./TableItem/LPProviderItemV2.svelte";
-  import TooltipBalance from "~/components/TooltipBalance.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let positions;
   export let position;
@@ -12,7 +12,7 @@
   <div class="flex justify-between items-end">
     <div class="text-xl font-semibold">{position}</div>
     <div class="text-3xl font-semibold flex justify-end">
-      $<TooltipBalance number={sum} />
+      $<TooltipNumber number={sum} />
     </div>
   </div>
   <div class="border border-[#0000000d] rounded-[10px]">
@@ -29,7 +29,7 @@
               Balance ($)
             </div>
           </th>
-          <th class="pr-3 py-3">
+          <th class="py-3">
             <div class="text-sm font-semibold text-black uppercase text-right">
               Value ($)
             </div>
