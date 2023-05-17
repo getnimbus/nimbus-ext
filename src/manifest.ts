@@ -8,6 +8,8 @@ const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
     },
   ],
   icons: {
+    96: "icons/96.png",
+    128: "icons/128.png",
     512: "icons/logo-icon.png",
   },
   options_ui: {
@@ -39,7 +41,7 @@ const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
       // 16: "icons/16.png",
       // 19: "icons/19.png",
       // 32: "icons/32.png",
-      38: "icons/logo-icon.png",
+      38: "icons/96.png",
     },
     default_title: "Open Nimbus sidebar",
   },
