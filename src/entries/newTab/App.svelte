@@ -6,6 +6,8 @@
   import Market from "~/components/NewTabUI/Market.svelte";
   import Portfolio from "~/components/NewTabUI/Portfolio.svelte";
   import News from "~/components/NewTabUI/News.svelte";
+  import Analytic from "~/components/NewTabUI/Analytic.svelte";
+  import Transactions from "~/components/NewTabUI/Transactions.svelte";
 
   let selectedWallet;
 </script>
@@ -25,6 +27,14 @@
 
       <Route path="news">
         <News />
+      </Route>
+
+      <Route path="analytic">
+        <Analytic />
+      </Route>
+
+      <Route path="transactions">
+        <Transactions />
       </Route>
     </div>
   </Router>
