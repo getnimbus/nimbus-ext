@@ -74,8 +74,7 @@
 </script>
 
 <div class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col gap-10">
-  <img src={logo} alt="logo" width={200} class="-ml-6" />
-  <div class="flex flex-col -mt-6">
+  <div class="flex flex-col">
     <div class="text-3xl text-black font-semibold">{MultipleLang.market}</div>
     <div class="flex justify-between items-center gap-11">
       <div class="text-lg text-black font-medium w-max">
