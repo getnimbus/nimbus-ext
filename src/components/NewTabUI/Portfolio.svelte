@@ -695,7 +695,7 @@
               resOverview,
               resHolding,
               resPositions,
-              resNews,
+              // resNews,
               resOpportunities,
             ] = await Promise.all([
               getOverview(type === "reload").then((res) => {
@@ -710,10 +710,10 @@
                 loadingPositions = false;
                 return res;
               }),
-              getNews(type === "reload").then((res) => {
-                loadingNews = false;
-                return res;
-              }),
+              // getNews(type === "reload").then((res) => {
+              //   loadingNews = false;
+              //   return res;
+              // }),
               getOpportunities(type === "reload").then((res) => {
                 loadingOpportunities = false;
                 return res;
@@ -724,7 +724,6 @@
               resOverview &&
               resHolding &&
               (resPositions === undefined || resPositions) &&
-              resNews &&
               resOpportunities
             ) {
               syncMsg = "";
