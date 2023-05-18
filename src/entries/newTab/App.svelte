@@ -203,7 +203,7 @@
                   ${MultipleLang[params.data.name_balance]}
                 </div>
                 <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatBalance(params.data.value_balance)}</div>
+                  ${formatCurrency(params.data.value_balance)}</div>
               </div>`
                   : ""
               }
