@@ -116,13 +116,39 @@
     </div>
     {#if showPopover}
       <div
-        class="bg-[#1e96fc] py-1 px-3 rounded-lg absolute -bottom-10 left-1/2 transform -translate-x-1/2 w-max"
-        on:click={() => handleSignOut()}
+        class="bg-white py-2 px-3 text-sm rounded-lg absolute -bottom-17 left-1/2 transform -translate-x-1/2 flex flex-col gap-1"
+        style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
       >
-        <span
-          class="text-white font-semibold xl:text-base text-sm cursor-pointer"
-          >Logout</span
+        {#if APP_TYPE.TYPE === "EXT"}
+          <div
+            class="cursor-pointer text-black"
+            on:click={() => {
+              browser.tabs.create({
+                url: "src/entries/options/index.html?tab=nft",
+              });
+              showPopover = false;
+            }}
+          >
+            Dashboard
+          </div>
+        {:else}
+          <a
+            class="cursor-pointer text-black"
+            href="/entries/options/index.html?tab=nft"
+            target="_blank"
+            on:click={() => {
+              showPopover = false;
+            }}
+          >
+            Dashboard
+          </a>
+        {/if}
+        <div
+          class="cursor-pointer text-red-500 font-medium"
+          on:click={() => handleSignOut()}
         >
+          Logout
+        </div>
       </div>
     {/if}
   </div>

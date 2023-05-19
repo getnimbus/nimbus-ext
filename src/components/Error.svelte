@@ -9,7 +9,7 @@
 </script>
 
 {#if $error}
-  <div class="flex flex-col justify-center items-center gap-2">
+  <div class="flex flex-col justify-center items-center gap-2 mt-2">
     Something when wrong! Please reload your browser to try again
     <Button
       variant="secondary"

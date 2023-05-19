@@ -22,14 +22,7 @@
       <div class="text-2xl font-medium text-black">
         {MultipleLang.news}
       </div>
-      <div
-        class="font-bold text-base cursor-pointer"
-        on:click={() => {
-          browser.tabs.create({
-            url: "src/entries/news/index.html",
-          });
-        }}
-      >
+      <div class="font-bold text-base cursor-pointer">
         {MultipleLang.view_more}
       </div>
     </div>

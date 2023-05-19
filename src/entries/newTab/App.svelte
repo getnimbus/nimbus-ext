@@ -17,7 +17,11 @@
     <div class="flex flex-col pb-10">
       <Header bind:selectedWallet />
 
-      <Route path="/">
+      <Route
+        path={`${
+          APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
+        }`}
+      >
         <Portfolio bind:selectedWallet />
       </Route>
 

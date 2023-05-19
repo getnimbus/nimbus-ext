@@ -146,15 +146,17 @@
     : ''}"
 >
   <div class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]">
-    <a href="/">
-      <img
-        src={Logo}
-        alt="logo"
-        class="-ml-8 xl:w-[177px] xl:h-[60px] w-[167px] h-[50px]"
-      />
-    </a>
+    <img
+      src={Logo}
+      alt="logo"
+      class="-ml-8 xl:w-[177px] xl:h-[60px] w-[167px] h-[50px]"
+    />
     <div class="flex items-center gap-1">
-      <Link to="/">
+      <Link
+        to={`${
+          APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
+        }`}
+      >
         <div
           class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
           class:bg-[#525B8C]={navActive === "portfolio"}
@@ -251,7 +253,9 @@
         <div
           class={`flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
           on:click={() => {
-            browser.tabs.create({ url: "src/entries/options/index.html" });
+            browser.tabs.create({
+              url: "src/entries/options/index.html?tab=wallets",
+            });
           }}
         >
           <img src={SettingsIcon} alt="" />
@@ -262,7 +266,7 @@
       {:else}
         <a
           class={`flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
-          href="/entries/options/index.html"
+          href="/entries/options/index.html?tab=wallets"
           target="_blank"
         >
           <img src={SettingsIcon} alt="" />
@@ -279,19 +283,6 @@
         <img src={Search} alt="" />
         <input
           on:keyup={({ target: { value } }) => debounceSearch(value)}
-          on:blur={() => {
-            if (search) {
-              window.history.replaceState(
-                null,
-                "",
-                window.location.pathname + `?address=${search}`
-              );
-              selectedWallet = {
-                ...selectedWallet,
-                value: search,
-              };
-            }
-          }}
           on:keydown={(event) => {
             if (search && (event.which == 13 || event.keyCode == 13)) {
               window.history.replaceState(
@@ -316,7 +307,7 @@
       >
         <img src={Bell} alt="" />
       </div> -->
-      <!-- <Auth /> -->
+      <Auth />
     </div>
   </div>
 </div>
