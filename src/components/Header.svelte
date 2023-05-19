@@ -2,10 +2,12 @@
   import { Link } from "svelte-navigator";
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
-
+  import jwt_decode from "jwt-decode";
+  import { handleGetAccessToken } from "~/utils";
   import { i18n } from "~/lib/i18n";
 
-  import Auth from "~/components/Auth.svelte";
+  import GoogleAuth from "~/components/GoogleAuth.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
 
   import Logo from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
@@ -83,6 +85,10 @@
         "This wallet address is duplicated!"
       ),
     },
+    modal_login_title: i18n(
+      "newtabPage.modal-login-title",
+      "Login to enjoy more features"
+    ),
   };
 
   export let selectedWallet;
@@ -93,6 +99,9 @@
   let timerDebounce;
   let search = "";
   let navActive = "portfolio";
+  let isOpenAuthModal = false;
+  let userInfo = {};
+  let showPopover = false;
 
   onMount(() => {
     browser.storage.onChanged.addListener((changes) => {
@@ -100,6 +109,35 @@
         window.location.reload();
       }
     });
+
+    const token = localStorage.getItem("token");
+    if (token) {
+      const { access_token, id_token } = JSON.parse(token);
+      fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            // User is authenticated and access token is still valid
+            userInfo = jwt_decode(id_token);
+          } else {
+            // Access token is invalid or expired, prompt user to sign in again
+            userInfo = {};
+            showPopover = false;
+            localStorage.removeItem("token");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      // Access token not found, prompt user to sign in again
+      userInfo = {};
+      showPopover = false;
+      localStorage.removeItem("token");
+    }
 
     const lastScrollY = window.pageYOffset;
     const handleCheckIsSticky = () => {
@@ -119,6 +157,20 @@
     }, 500);
   };
 
+  const handleSignOut = () => {
+    userInfo = {};
+    showPopover = false;
+    localStorage.removeItem("token");
+  };
+
+  const handleGetUserInfo = async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
+    if (code && APP_TYPE.TYPE !== "EXT") {
+      userInfo = await handleGetAccessToken(code);
+    }
+  };
+
   $: {
     switch (window.location.pathname.substring(1)) {
       case "market":
@@ -135,6 +187,12 @@
         break;
       default:
         navActive = "portfolio";
+    }
+
+    handleGetUserInfo();
+
+    if (Object.keys(userInfo).length !== 0) {
+      isOpenAuthModal = false;
     }
   }
 </script>
@@ -307,10 +365,75 @@
       >
         <img src={Bell} alt="" />
       </div> -->
-      <Auth />
+      {#if Object.keys(userInfo).length !== 0}
+        <div class="relative">
+          <div
+            class="w-[40px] h-[40px] rounded-full overflow-hidden cursor-pointer"
+            on:click={() => (showPopover = !showPopover)}
+          >
+            <img
+              src={userInfo.picture}
+              alt=""
+              class="w-full h-full object-cover"
+            />
+          </div>
+          {#if showPopover}
+            <div
+              class="bg-white py-2 px-3 text-sm rounded-lg absolute -bottom-17 left-1/2 transform -translate-x-1/2 flex flex-col gap-1"
+              style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
+            >
+              {#if APP_TYPE.TYPE === "EXT"}
+                <div
+                  class="cursor-pointer text-black"
+                  on:click={() => {
+                    browser.tabs.create({
+                      url: "src/entries/options/index.html?tab=nft",
+                    });
+                    showPopover = false;
+                  }}
+                >
+                  Dashboard
+                </div>
+              {:else}
+                <a
+                  class="cursor-pointer text-black"
+                  href="/entries/options/index.html?tab=nft"
+                  target="_blank"
+                  on:click={() => {
+                    showPopover = false;
+                  }}
+                >
+                  Dashboard
+                </a>
+              {/if}
+              <div
+                class="cursor-pointer text-red-500 font-medium"
+                on:click={() => handleSignOut()}
+              >
+                Logout
+              </div>
+            </div>
+          {/if}
+        </div>
+      {:else}
+        <div
+          on:click={() => {
+            isOpenAuthModal = true;
+          }}
+          class="text-white font-semibold xl:text-base text-sm cursor-pointer"
+        >
+          Login
+        </div>
+      {/if}
     </div>
   </div>
 </div>
+<AppOverlay isOpen={isOpenAuthModal} on:close={() => (isOpenAuthModal = false)}>
+  <div class="title-3 text-gray-600 font-semibold max-w-[530px] mb-5">
+    {MultipleLang.modal_login_title}
+  </div>
+  <GoogleAuth bind:userInfo />
+</AppOverlay>
 
 <style>
 </style>

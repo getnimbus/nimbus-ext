@@ -1168,7 +1168,6 @@
             {/if}
           </div>
         </div>
-
         <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
           {#if isLoadingSync}
             <div
