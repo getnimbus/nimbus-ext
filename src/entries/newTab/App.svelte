@@ -25,9 +25,9 @@
         <Market />
       </Route>
 
-      <Route path="news">
+      <!-- <Route path="news">
         <News />
-      </Route>
+      </Route> -->
 
       <Route path="analytic">
         <Analytic />

@@ -196,7 +196,7 @@
       <Link to="analytic">
         <div class="relative">
           <div
-            class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
+            class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-pointer"
             class:bg-[#525B8C]={navActive === "analytic"}
             on:click={() => {
               navActive = "analytic";
@@ -223,7 +223,7 @@
       <Link to="transactions">
         <div class="relative">
           <div
-            class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-default"
+            class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-pointer"
             class:bg-[#525B8C]={navActive === "transactions"}
             on:click={() => {
               navActive = "transactions";
@@ -311,11 +311,11 @@
           class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
         />
       </div>
-      <div
+      <!-- <div
         class="bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
       >
         <img src={Bell} alt="" />
-      </div>
+      </div> -->
       <!-- <Auth /> -->
     </div>
   </div>
