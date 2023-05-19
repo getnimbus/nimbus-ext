@@ -148,7 +148,7 @@
       <tbody>
         {#if isLoading}
           <tr>
-            <td colspan="5">
+            <td colspan="6">
               <div class="flex justify-center items-center py-4 px-3">
                 <loading-icon />
               </div>
@@ -156,7 +156,7 @@
           </tr>
         {:else if marketData.length === 0}
           <tr>
-            <td colspan="5">
+            <td colspan="6">
               <div
                 class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
               >
