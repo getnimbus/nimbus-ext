@@ -7,6 +7,7 @@
   export let iconSize;
   export let address;
   export let isAddressInfo;
+  export let isOptionsPage = false;
   export let iconColor;
 
   let isCopied = false;
@@ -25,7 +26,11 @@
   <div class="flex items-center gap-2">
     <div
       class={`${
-        isAddressInfo ? "text-sm text-[#00000099]" : "text-base text-white"
+        isOptionsPage
+          ? "text-sm text-black"
+          : isAddressInfo
+          ? "text-sm text-[#00000099]"
+          : "text-base text-white"
       } font-normal`}
     >
       {isAddressInfo ? shorterAddress(address) : address}

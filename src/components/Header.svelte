@@ -7,6 +7,7 @@
   import { i18n } from "~/lib/i18n";
 
   import GoogleAuth from "~/components/GoogleAuth.svelte";
+  import SolanaAuth from "./SolanaAuth.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
 
   import Logo from "~/assets/logo-white.svg";
@@ -433,6 +434,7 @@
     {MultipleLang.modal_login_title}
   </div>
   <GoogleAuth bind:userInfo />
+  <!-- <SolanaAuth /> -->
 </AppOverlay>
 
 <style>

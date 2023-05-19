@@ -10,6 +10,7 @@
 
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
+  import CopyToClipboard from "~/components/CopyToClipboard.svelte";
   import "~/components/Loading.custom.svelte";
 
   import Plus from "~/assets/plus.svg";
@@ -418,7 +419,13 @@
                         fill="#9ca3af"
                       />
                     </svg>
-                    {item.address}
+                    <CopyToClipboard
+                      iconSize={16}
+                      address={item.address}
+                      isAddressInfo={false}
+                      isOptionsPage
+                      iconColor="#000"
+                    />
                   </div>
                 </td>
                 <td class="py-4">
