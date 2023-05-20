@@ -7,7 +7,6 @@
   import { i18n } from "~/lib/i18n";
 
   import GoogleAuth from "~/components/GoogleAuth.svelte";
-  import SolanaAuth from "./SolanaAuth.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
 
   import Logo from "~/assets/logo-white.svg";
@@ -196,6 +195,27 @@
       isOpenAuthModal = false;
     }
   }
+
+  import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import {
+    WalletProvider,
+    WalletMultiButton,
+  } from "@svelte-on-solana/wallet-adapter-ui";
+  import {
+    AnchorConnectionProvider,
+    workSpace,
+  } from "@svelte-on-solana/wallet-adapter-anchor";
+  import { clusterApiUrl } from "@solana/web3.js";
+  import {
+    PhantomWalletAdapter,
+    SolflareWalletAdapter,
+  } from "@solana/wallet-adapter-wallets";
+
+  const localStorageKey = "walletAdapter";
+  const network = clusterApiUrl("devnet"); // localhost or mainnet
+
+  let wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
+  console.log("wallets: ", wallets);
 </script>
 
 <div
@@ -427,6 +447,13 @@
         </div>
       {/if}
     </div>
+
+    <WalletProvider {localStorageKey} {wallets} autoConnect />
+    <AnchorConnectionProvider {network} {idl} />
+    <WalletMultiButton />
+    {#if $walletStore?.connected}
+      <div>My wallet is connected</div>
+    {/if}
   </div>
 </div>
 <AppOverlay isOpen={isOpenAuthModal} on:close={() => (isOpenAuthModal = false)}>
@@ -434,7 +461,6 @@
     {MultipleLang.modal_login_title}
   </div>
   <GoogleAuth bind:userInfo />
-  <!-- <SolanaAuth /> -->
 </AppOverlay>
 
 <style>
