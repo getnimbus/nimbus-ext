@@ -2,6 +2,7 @@
   import { nimbus } from "~/lib/network";
   import { user } from "~/store";
 
+  import EChart from "~/components/EChart.svelte";
   import Button from "~/components/Button.svelte";
   import "~/components/Loading.custom.svelte";
 
@@ -12,6 +13,104 @@
 
   let listNft = [];
   let isLoading = false;
+
+  let optionLine = {
+    title: {
+      text: "",
+    },
+    tooltip: {
+      trigger: "axis",
+    },
+    legend: {
+      data: ["Email", "Union Ads", "Video Ads", "Direct", "Search Engine"],
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "3%",
+      containLabel: true,
+    },
+    xAxis: {
+      type: "category",
+      boundaryGap: false,
+      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    },
+    yAxis: {
+      type: "value",
+    },
+    series: [
+      {
+        name: "Email",
+        type: "line",
+        stack: "Total",
+        data: [120, 132, 101, 134, 90, 230, 210],
+      },
+      {
+        name: "Union Ads",
+        type: "line",
+        stack: "Total",
+        data: [220, 182, 191, 234, 290, 330, 310],
+      },
+      {
+        name: "Video Ads",
+        type: "line",
+        stack: "Total",
+        data: [150, 232, 201, 154, 190, 330, 410],
+      },
+      {
+        name: "Direct",
+        type: "line",
+        stack: "Total",
+        data: [320, 332, 301, 334, 390, 330, 320],
+      },
+      {
+        name: "Search Engine",
+        type: "line",
+        stack: "Total",
+        data: [820, 932, 901, 934, 1290, 1330, 1320],
+      },
+    ],
+  };
+  let optionPie = {
+    title: {
+      text: "",
+    },
+    tooltip: {
+      trigger: "item",
+    },
+    legend: {
+      top: "5%",
+      left: "center",
+    },
+    series: [
+      {
+        type: "pie",
+        radius: ["40%", "60%"],
+        avoidLabelOverlap: false,
+        label: {
+          show: false,
+          position: "center",
+        },
+        emphasis: {
+          label: {
+            show: false,
+            fontSize: 40,
+            fontWeight: "bold",
+          },
+        },
+        labelLine: {
+          show: false,
+        },
+        data: [
+          { value: 1048, name: "Search Engine" },
+          { value: 735, name: "Direct" },
+          { value: 580, name: "Email" },
+          { value: 484, name: "Union Ads" },
+          { value: 300, name: "Video Ads" },
+        ],
+      },
+    ],
+  };
 
   const handleBuy = async () => {
     const res = await nimbus
@@ -73,9 +172,67 @@
       <div>
         {#if listNft && listNft.length !== 0}
           <div
-            class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]"
+            class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col gap-10 relative"
           >
-            Already have NFT
+            <div
+              class="absolute top-0 left-0 w-full h-full bg-[#fff] opacity-70 flex justify-center items-center rounded-[20px]"
+              style="z-index: 2147483646;"
+            >
+              <div class="text-black text-base font-semibold text-center mx-4">
+                Analytic to help optimize your current investments. <br /> Coming
+                soon 🥳
+              </div>
+            </div>
+            <div class="w-full border border-[#0000001a] rounded-[20px] p-6">
+              <div class="pl-4 text-2xl font-medium text-black mb-3">
+                Revenue grow
+              </div>
+              <EChart
+                id="line-chart-one"
+                theme="white"
+                option={optionLine}
+                height={465}
+              />
+            </div>
+            <div class="w-full border border-[#0000001a] rounded-[20px] p-6">
+              <div class="pl-4 text-2xl font-medium text-black mb-3">
+                Shrape Ratio
+              </div>
+              <EChart
+                id="line-chart-two"
+                theme="white"
+                option={optionLine}
+                height={465}
+              />
+            </div>
+            <div class="flex xl:flex-row flex-col justify-between gap-6">
+              <div
+                class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6"
+              >
+                <div class="pl-4 text-2xl font-medium text-black mb-3">
+                  Sector breakdown
+                </div>
+                <EChart
+                  id="pie-chart"
+                  theme="white"
+                  option={optionPie}
+                  height={465}
+                />
+              </div>
+              <div
+                class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6"
+              >
+                <div class="pl-4 text-2xl font-medium text-black mb-3">
+                  Sector performance
+                </div>
+                <EChart
+                  id="line-chart-three"
+                  theme="white"
+                  option={optionLine}
+                  height={465}
+                />
+              </div>
+            </div>
           </div>
         {:else}
           <div class="flex justify-center items-center h-screen">

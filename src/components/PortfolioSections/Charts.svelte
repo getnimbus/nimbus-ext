@@ -6,7 +6,7 @@
   export let isLoading;
   export let isEmptyDataPie;
 
-  import EChart from "../EChart.svelte";
+  import EChart from "~/components/EChart.svelte";
   import "~/components/Loading.custom.svelte";
   import ErrorBoundary from "../ErrorBoundary.svelte";
 
