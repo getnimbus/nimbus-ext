@@ -15,7 +15,7 @@
 
   const handleBuy = async () => {
     const res = await nimbus
-      .get(`/payments/create-session?device=${APP_TYPE.TYPE}`)
+      .get("/payments/create-session")
       .then((response) => response);
     if (res) {
       window.location.replace(res.data.payment_url);

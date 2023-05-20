@@ -80,6 +80,15 @@
     }
   };
 
+  const handleBuy = async () => {
+    const res = await nimbus
+      .get("/payments/create-session")
+      .then((response) => response);
+    if (res) {
+      window.location.replace(res.data.payment_url);
+    }
+  };
+
   $: {
     if (Object.keys(userInfo).length !== 0) {
       handleGetNft();
@@ -124,12 +133,7 @@
       {:else}
         <div class="flex flex-col gap-4">
           <div class="title-5">You need Nimbus NFT to unlock this feature</div>
-          <Button
-            variant="secondary"
-            on:click={() => {
-              window.open("https://nimbus-app-pr-52.onrender.com", "_blank");
-            }}>Buy</Button
-          >
+          <Button variant="secondary" on:click={() => handleBuy()}>Buy</Button>
         </div>
       {/if}
     </div>
