@@ -7,7 +7,12 @@
     <div class="text-lg">
       There are some problem while buying Nimbus NFT. Please try again!
     </div>
-    <Button variant="secondary">Continue</Button>
+    <Button
+      variant="secondary"
+      on:click={() => {
+        window.location.replace("http://localhost:5173");
+      }}>Continue</Button
+    >
   </div>
 </div>
 

@@ -3,10 +3,19 @@
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import jwt_decode from "jwt-decode";
+  import bs58 from "bs58";
   import { handleGetAccessToken } from "~/utils";
   import { i18n } from "~/lib/i18n";
+  import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+  import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
+  import {
+    PhantomWalletAdapter,
+    SolflareWalletAdapter,
+  } from "@solana/wallet-adapter-wallets";
+  import { user } from "~/store";
 
   import GoogleAuth from "~/components/GoogleAuth.svelte";
+  import SolanaAuth from "./SolanaAuth.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
 
   import Logo from "~/assets/logo-white.svg";
@@ -16,9 +25,14 @@
   import AnalyticIcon from "~/assets/analytic.svg";
   import TransactionsIcon from "~/assets/transactions.svg";
   import SettingsIcon from "~/assets/settings.svg";
-
   import Search from "~/assets/search.svg";
   import Bell from "~/assets/bell.svg";
+  import User from "~/assets/user.png";
+  import { nimbus } from "~/lib/network";
+
+  const localStorageKey = "walletAdapter";
+  const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
+  const signatureString = "Hello Nimbus";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -101,7 +115,12 @@
   let navActive = "portfolio";
   let isOpenAuthModal = false;
   let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
   let showPopover = false;
+  let addressWallet = "";
+  let signMessageAddress = "";
 
   onMount(() => {
     browser.storage.onChanged.addListener((changes) => {
@@ -111,32 +130,47 @@
     });
 
     const token = localStorage.getItem("token");
-    if (token) {
-      const { access_token, id_token } = JSON.parse(token);
-      fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      })
-        .then((response) => {
-          if (response.ok) {
-            // User is authenticated and access token is still valid
-            userInfo = jwt_decode(id_token);
-          } else {
-            // Access token is invalid or expired, prompt user to sign in again
-            userInfo = {};
-            showPopover = false;
-            localStorage.removeItem("token");
-          }
+    const solanaToken = localStorage.getItem("solana_token");
+    if (token || solanaToken) {
+      if (token) {
+        const { access_token, id_token } = JSON.parse(token);
+        fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
         })
-        .catch((error) => {
-          console.error(error);
-        });
+          .then((response) => {
+            if (response.ok) {
+              // User is authenticated and access token is still valid
+              user.update((n) => (n = jwt_decode(id_token)));
+            } else {
+              // Access token is invalid or expired, prompt user to sign in again
+              user.update((n) => (n = {}));
+              showPopover = false;
+              localStorage.removeItem("token");
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+      if (solanaToken) {
+        user.update(
+          (n) =>
+            (n = {
+              picture: User,
+            })
+        );
+      }
     } else {
-      // Access token not found, prompt user to sign in again
-      userInfo = {};
+      user.update((n) => (n = {}));
       showPopover = false;
       localStorage.removeItem("token");
+      localStorage.removeItem("solana_address");
+      localStorage.removeItem("solana_token");
+      addressWallet = "";
+      signMessageAddress = "";
+      $walletStore.disconnect();
     }
 
     const lastScrollY = window.pageYOffset;
@@ -157,18 +191,24 @@
     }, 500);
   };
 
-  const handleSignOut = () => {
-    userInfo = {};
-    showPopover = false;
-    localStorage.removeItem("token");
-  };
-
-  const handleGetUserInfo = async () => {
+  const handleGetGoogleUserInfo = async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
     if (code && APP_TYPE.TYPE !== "EXT") {
-      userInfo = await handleGetAccessToken(code);
+      const userData = await handleGetAccessToken(code);
+      user.update((n) => (n = userData));
     }
+  };
+
+  const handleSignOut = () => {
+    user.update((n) => (n = {}));
+    showPopover = false;
+    localStorage.removeItem("token");
+    localStorage.removeItem("solana_address");
+    localStorage.removeItem("solana_token");
+    addressWallet = "";
+    signMessageAddress = "";
+    $walletStore.disconnect();
   };
 
   $: {
@@ -188,34 +228,65 @@
       default:
         navActive = "portfolio";
     }
+    handleGetGoogleUserInfo();
+  }
 
-    handleGetUserInfo();
+  const handleSignAddressMessage = async () => {
+    if ($walletStore.connected) {
+      const res = await $walletStore?.signMessage(
+        Uint8Array.from(
+          Array.from(signatureString).map((letter) => letter.charCodeAt(0))
+        )
+      );
+      signMessageAddress = bs58.encode(res);
+    }
+  };
 
+  const handleGetSolanaToken = async (data) => {
+    const res = await nimbus
+      .post("/auth/solana", data)
+      .then((response) => response);
+    if (res.data.result) {
+      localStorage.setItem("solana_token", res.data.result);
+      user.update(
+        (n) =>
+          (n = {
+            picture: User,
+          })
+      );
+    }
+  };
+
+  $: {
+    addressWallet = $walletStore?.publicKey?.toBase58();
+  }
+
+  $: {
+    if (addressWallet) {
+      const solanaToken = localStorage.getItem("solana_token");
+      if (!solanaToken) {
+        handleSignAddressMessage();
+      }
+    }
+  }
+
+  $: {
+    if (addressWallet && signMessageAddress) {
+      const solanaLoginPayload = {
+        message: signatureString,
+        addressWallet,
+        signMessageAddress,
+      };
+      localStorage.setItem("solana_address", addressWallet);
+      handleGetSolanaToken(solanaLoginPayload);
+    }
+  }
+
+  $: {
     if (Object.keys(userInfo).length !== 0) {
       isOpenAuthModal = false;
     }
   }
-
-  import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
-  import {
-    WalletProvider,
-    WalletMultiButton,
-  } from "@svelte-on-solana/wallet-adapter-ui";
-  import {
-    AnchorConnectionProvider,
-    workSpace,
-  } from "@svelte-on-solana/wallet-adapter-anchor";
-  import { clusterApiUrl } from "@solana/web3.js";
-  import {
-    PhantomWalletAdapter,
-    SolflareWalletAdapter,
-  } from "@solana/wallet-adapter-wallets";
-
-  const localStorageKey = "walletAdapter";
-  const network = clusterApiUrl("devnet"); // localhost or mainnet
-
-  let wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
-  console.log("wallets: ", wallets);
 </script>
 
 <div
@@ -301,32 +372,30 @@
         </div>
       </Link>
 
-      <Link to="transactions">
-        <div class="relative">
-          <div
-            class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-pointer"
-            class:bg-[#525B8C]={navActive === "transactions"}
-            on:click={() => {
-              navActive = "transactions";
-            }}
-            on:mouseenter={() => (showTooltipTransactions = true)}
-            on:mouseleave={() => (showTooltipTransactions = false)}
-          >
-            <img src={TransactionsIcon} alt="" />
-            <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
-              {MultipleLang.transactions}
-            </span>
-          </div>
-          {#if showTooltipTransactions}
-            <div
-              class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
-              style="z-index: 2147483648;"
-            >
-              <tooltip-detail text={"Soon"} />
-            </div>
-          {/if}
+      <div class="relative">
+        <div
+          class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-pointer"
+          class:bg-[#525B8C]={navActive === "transactions"}
+          on:click={() => {
+            // navActive = "transactions";
+          }}
+          on:mouseenter={() => (showTooltipTransactions = true)}
+          on:mouseleave={() => (showTooltipTransactions = false)}
+        >
+          <img src={TransactionsIcon} alt="" />
+          <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
+            {MultipleLang.transactions}
+          </span>
         </div>
-      </Link>
+        {#if showTooltipTransactions}
+          <div
+            class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
+            style="z-index: 2147483648;"
+          >
+            <tooltip-detail text={"Soon"} />
+          </div>
+        {/if}
+      </div>
 
       {#if APP_TYPE.TYPE === "EXT"}
         <div
@@ -447,20 +516,17 @@
         </div>
       {/if}
     </div>
-
     <WalletProvider {localStorageKey} {wallets} autoConnect />
-    <AnchorConnectionProvider {network} {idl} />
-    <WalletMultiButton />
-    {#if $walletStore?.connected}
-      <div>My wallet is connected</div>
-    {/if}
   </div>
 </div>
 <AppOverlay isOpen={isOpenAuthModal} on:close={() => (isOpenAuthModal = false)}>
   <div class="title-3 text-gray-600 font-semibold max-w-[530px] mb-5">
     {MultipleLang.modal_login_title}
   </div>
-  <GoogleAuth bind:userInfo />
+  <div class="flex flex-col justify-center items-center gap-2">
+    <SolanaAuth />
+    <!-- <GoogleAuth /> -->
+  </div>
 </AppOverlay>
 
 <style>

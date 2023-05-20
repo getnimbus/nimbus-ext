@@ -1,5 +1,6 @@
 import numeral from "numeral";
 import jwt_decode from "jwt-decode";
+import { nimbus } from "./lib/network";
 
 import logo from "~/assets/bitcoin.png";
 import Bnb from "~/assets/bnb.png";
@@ -239,20 +240,13 @@ export const add3Dots = (string: string, limit: number) => {
 }
 
 export const handleGetAccessToken = async (code: string) => {
-  const res = await fetch("https://api.getnimbus.io/auth", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      code,
-      direct_url:
-        APP_TYPE.TYPE === "EXT"
-          ? "https://hjlilcigcidfaialcihialehachkldfd.chromiumapp.org"
-          : "http://localhost:5173",
-    }),
-  }).then((response) => response.json());
+  const res = await nimbus.post("/auth", {
+    code,
+    direct_url:
+      APP_TYPE.TYPE === "EXT"
+        ? "https://hjlilcigcidfaialcihialehachkldfd.chromiumapp.org"
+        : "http://localhost:5173",
+  }).then((response) => response)
   if (res.data) {
     localStorage.setItem("token", JSON.stringify(res.data));
     if (APP_TYPE.TYPE !== "EXT") {

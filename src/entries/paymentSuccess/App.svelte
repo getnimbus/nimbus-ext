@@ -10,7 +10,12 @@
         Your card will be added to profile soon
       </div>
     </div>
-    <Button variant="secondary">Continue</Button>
+    <Button
+      variant="secondary"
+      on:click={() => {
+        window.location.replace("http://localhost:5173");
+      }}>Continue</Button
+    >
   </div>
 </div>
 
