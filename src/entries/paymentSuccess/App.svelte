@@ -13,7 +13,7 @@
     <Button
       variant="secondary"
       on:click={() => {
-        window.location.replace("http://localhost:5173");
+        window.location.replace("https://nimbus-app-pr-52.onrender.com");
       }}>Continue</Button
     >
   </div>

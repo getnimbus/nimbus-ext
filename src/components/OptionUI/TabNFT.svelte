@@ -108,8 +108,10 @@
           login
         </span>
       {:else}
-        <a href="http://localhost:5173" target="_blank" class="text-blue-500"
-          >login</a
+        <a
+          href="https://nimbus-app-pr-52.onrender.com"
+          target="_blank"
+          class="text-blue-500">login</a
         >
       {/if} to see your dashboard
     </div>
@@ -125,7 +127,7 @@
           <Button
             variant="secondary"
             on:click={() => {
-              window.open("http://localhost:5173", "_blank");
+              window.open("https://nimbus-app-pr-52.onrender.com", "_blank");
             }}>Buy</Button
           >
         </div>
