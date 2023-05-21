@@ -22,7 +22,7 @@
       trigger: "axis",
     },
     legend: {
-      data: ["Email", "Union Ads", "Video Ads", "Direct", "Search Engine"],
+      data: ["BTC", "Ethereum", "Solana", "SUI", "Other"],
     },
     grid: {
       left: "3%",
@@ -40,31 +40,31 @@
     },
     series: [
       {
-        name: "Email",
+        name: "BTC",
         type: "line",
         stack: "Total",
         data: [120, 132, 101, 134, 90, 230, 210],
       },
       {
-        name: "Union Ads",
+        name: "Ethereum",
         type: "line",
         stack: "Total",
         data: [220, 182, 191, 234, 290, 330, 310],
       },
       {
-        name: "Video Ads",
+        name: "Solana",
         type: "line",
         stack: "Total",
         data: [150, 232, 201, 154, 190, 330, 410],
       },
       {
-        name: "Direct",
+        name: "SUI",
         type: "line",
         stack: "Total",
         data: [320, 332, 301, 334, 390, 330, 320],
       },
       {
-        name: "Search Engine",
+        name: "Other",
         type: "line",
         stack: "Total",
         data: [820, 932, 901, 934, 1290, 1330, 1320],
@@ -102,11 +102,11 @@
           show: false,
         },
         data: [
-          { value: 1048, name: "Search Engine" },
-          { value: 735, name: "Direct" },
-          { value: 580, name: "Email" },
-          { value: 484, name: "Union Ads" },
-          { value: 300, name: "Video Ads" },
+          { value: 1048, name: "Other" },
+          { value: 735, name: "SUI" },
+          { value: 580, name: "BTC" },
+          { value: 484, name: "Ethereum" },
+          { value: 300, name: "Solana" },
         ],
       },
     ],
@@ -174,7 +174,7 @@
           <div
             class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col gap-10 relative"
           >
-            <div
+            <!-- <div
               class="absolute top-0 left-0 w-full h-full bg-[#fff] opacity-70 flex justify-center items-center rounded-[20px]"
               style="z-index: 2147483646;"
             >
@@ -182,7 +182,7 @@
                 Analytic to help optimize your current investments. <br /> Coming
                 soon 🥳
               </div>
-            </div>
+            </div> -->
             <div class="w-full border border-[#0000001a] rounded-[20px] p-6">
               <div class="pl-4 text-2xl font-medium text-black mb-3">
                 Revenue grow
