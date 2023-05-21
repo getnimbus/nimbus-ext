@@ -493,14 +493,14 @@
                     showPopover = false;
                   }}
                 >
-                  Dashboard
+                  My NFT
                 </a>
               {/if}
               <div
                 class="cursor-pointer text-red-500 font-medium"
                 on:click={() => handleSignOut()}
               >
-                Logout
+                Log out
               </div>
             </div>
           {/if}
