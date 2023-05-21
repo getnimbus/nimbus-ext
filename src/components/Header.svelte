@@ -29,6 +29,7 @@
   import Bell from "~/assets/bell.svg";
   import User from "~/assets/user.png";
   import { nimbus } from "~/lib/network";
+  import { CivicProfile, Profile } from "@civic/profile";
 
   const localStorageKey = "walletAdapter";
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
@@ -184,6 +185,12 @@
     };
   });
 
+  const getSolanaProfile = async (user: string) => {
+    const profile: Profile = await CivicProfile.get(user);
+    console.log(profile);
+    return profile;
+  };
+
   const debounceSearch = (value) => {
     clearTimeout(timerDebounce);
     timerDebounce = setTimeout(() => {
@@ -259,6 +266,10 @@
 
   $: {
     addressWallet = $walletStore?.publicKey?.toBase58();
+  }
+
+  $: {
+    getSolanaProfile(addressWallet);
   }
 
   $: {

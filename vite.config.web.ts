@@ -44,7 +44,8 @@ export default defineConfig(({ mode }) => {
     define: {
       APP_TYPE: {
         TYPE: 'WEB'
-      }
+      },
+      global: {},
     },
     server: {
       port: 5173,
