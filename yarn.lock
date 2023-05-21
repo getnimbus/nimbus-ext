@@ -3563,9 +3563,9 @@ detective@^5.2.1:
     defined "^1.0.0"
     minimist "^1.2.6"
 
-"did-jwt@git+https://github.com/civicteam/did-jwt.git":
+"did-jwt@git+https://github.com/civicteam/did-jwt":
   version "6.1.0"
-  resolved "git+https://github.com/civicteam/did-jwt.git#d4e318df78bd88e3127e62784915c7a334881eb6"
+  resolved "git+https://github.com/civicteam/did-jwt#d4e318df78bd88e3127e62784915c7a334881eb6"
   dependencies:
     "@stablelib/ed25519" "^1.0.2"
     "@stablelib/random" "^1.0.1"

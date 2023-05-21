@@ -13,6 +13,8 @@
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
   import { user } from "~/store";
+  import { nimbus } from "~/lib/network";
+  import { CivicProfile, Profile } from "@civic/profile";
 
   import GoogleAuth from "~/components/GoogleAuth.svelte";
   import SolanaAuth from "./SolanaAuth.svelte";
@@ -28,8 +30,6 @@
   import Search from "~/assets/search.svg";
   import Bell from "~/assets/bell.svg";
   import User from "~/assets/user.png";
-  import { nimbus } from "~/lib/network";
-  import { CivicProfile, Profile } from "@civic/profile";
 
   const localStorageKey = "walletAdapter";
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
@@ -269,11 +269,8 @@
   }
 
   $: {
-    getSolanaProfile(addressWallet);
-  }
-
-  $: {
     if (addressWallet) {
+      getSolanaProfile(addressWallet);
       const solanaToken = localStorage.getItem("solana_token");
       if (!solanaToken) {
         handleSignAddressMessage();
