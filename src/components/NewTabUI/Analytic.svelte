@@ -171,18 +171,7 @@
     {:else}
       <div>
         {#if listNft && listNft.length !== 0}
-          <div
-            class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col gap-10 relative"
-          >
-            <!-- <div
-              class="absolute top-0 left-0 w-full h-full bg-[#fff] opacity-70 flex justify-center items-center rounded-[20px]"
-              style="z-index: 2147483646;"
-            >
-              <div class="text-black text-base font-semibold text-center mx-4">
-                Analytic to help optimize your current investments. <br /> Coming
-                soon 🥳
-              </div>
-            </div> -->
+          <div class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col gap-10">
             <div class="w-full border border-[#0000001a] rounded-[20px] p-6">
               <div class="pl-4 text-2xl font-medium text-black mb-3">
                 Revenue grow

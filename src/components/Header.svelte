@@ -345,32 +345,30 @@
         </div>
       </Link> -->
 
-      <Link to="analytic">
-        <div class="relative">
-          <div
-            class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-            class:bg-[#525B8C]={navActive === "analytic"}
-            on:click={() => {
-              navActive = "analytic";
-            }}
-            on:mouseenter={() => (showTooltipAnalytic = true)}
-            on:mouseleave={() => (showTooltipAnalytic = false)}
-          >
-            <img src={AnalyticIcon} alt="" />
-            <span class="text-white font-semibold xl:text-base text-sm">
-              {MultipleLang.analytic}
-            </span>
-          </div>
-          {#if showTooltipAnalytic}
-            <div
-              class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
-              style="z-index: 2147483648;"
-            >
-              <!-- <tooltip-detail text={"Soon"} /> -->
-            </div>
-          {/if}
+      <div class="relative">
+        <div
+          class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-pointer"
+          class:bg-[#525B8C]={navActive === "analytic"}
+          on:click={() => {
+            // navActive = "analytic";
+          }}
+          on:mouseenter={() => (showTooltipAnalytic = true)}
+          on:mouseleave={() => (showTooltipAnalytic = false)}
+        >
+          <img src={AnalyticIcon} alt="" />
+          <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
+            {MultipleLang.analytic}
+          </span>
         </div>
-      </Link>
+        {#if showTooltipAnalytic}
+          <div
+            class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
+            style="z-index: 2147483648;"
+          >
+            <tooltip-detail text={"Soon"} />
+          </div>
+        {/if}
+      </div>
 
       <div class="relative">
         <div
@@ -455,7 +453,7 @@
       >
         <img src={Bell} alt="" />
       </div> -->
-      {#if Object.keys(userInfo).length !== 0}
+      <!-- {#if Object.keys(userInfo).length !== 0}
         <div class="relative">
           <div
             class="w-[40px] h-[40px] rounded-full overflow-hidden cursor-pointer"
@@ -469,7 +467,7 @@
           </div>
           {#if showPopover}
             <div
-              class="bg-white py-2 px-3 text-sm rounded-lg absolute -bottom-17 left-1/2 transform -translate-x-1/2 flex flex-col gap-1"
+              class="bg-white py-2 px-3 text-sm rounded-lg absolute -bottom-17 left-1/2 transform -translate-x-1/2 flex flex-col gap-1 w-[80px]"
               style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
             >
               {#if APP_TYPE.TYPE === "EXT"}
@@ -514,7 +512,7 @@
         >
           Login
         </div>
-      {/if}
+      {/if} -->
     </div>
     <WalletProvider {localStorageKey} {wallets} autoConnect />
   </div>
@@ -525,7 +523,7 @@
   </div>
   <div class="flex flex-col justify-center items-center gap-2">
     <SolanaAuth />
-    <!-- <GoogleAuth /> -->
+    <GoogleAuth />
   </div>
 </AppOverlay>
 
