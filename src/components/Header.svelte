@@ -348,7 +348,7 @@
       <Link to="analytic">
         <div class="relative">
           <div
-            class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-pointer"
+            class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
             class:bg-[#525B8C]={navActive === "analytic"}
             on:click={() => {
               navActive = "analytic";
@@ -357,7 +357,7 @@
             on:mouseleave={() => (showTooltipAnalytic = false)}
           >
             <img src={AnalyticIcon} alt="" />
-            <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
+            <span class="text-white font-semibold xl:text-base text-sm">
               {MultipleLang.analytic}
             </span>
           </div>
@@ -366,7 +366,7 @@
               class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
               style="z-index: 2147483648;"
             >
-              <tooltip-detail text={"Soon"} />
+              <!-- <tooltip-detail text={"Soon"} /> -->
             </div>
           {/if}
         </div>
