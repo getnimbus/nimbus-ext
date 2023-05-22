@@ -37,12 +37,6 @@
   onMount(() => {
     getNewsData();
   });
-
-  browser.storage.onChanged.addListener((changes) => {
-    if (changes?.options?.newValue?.lang) {
-      window.location.reload();
-    }
-  });
 </script>
 
 <div class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col gap-10">
@@ -75,5 +69,4 @@
   {/if}
 </div>
 
-<style windi:preflights:global windi:safelist:global>
-</style>
+<style></style>

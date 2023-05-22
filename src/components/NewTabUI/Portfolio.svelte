@@ -814,12 +814,6 @@
     getListAddress();
     initWS();
 
-    browser.storage.onChanged.addListener((changes) => {
-      if (changes?.options?.newValue?.lang) {
-        window.location.reload();
-      }
-    });
-
     const lastScrollY = window.pageYOffset;
     const handleCheckIsSticky = () => {
       const scrollY = window.pageYOffset;
@@ -1083,6 +1077,7 @@
                         ? "disabled"
                         : "tertiary"}
                       width={136}
+                      className="text-red-500"
                       on:click={() => {
                         if (
                           APP_TYPE.TYPE !== "EXT" &&
@@ -1141,8 +1136,8 @@
                     <CopyToClipboard
                       iconSize={16}
                       address={selectedWallet.value}
-                      isAddressInfo={false}
                       iconColor="#fff"
+                      className="text-base text-white"
                     />
                   </div>
                   <Select
@@ -1354,7 +1349,7 @@
   </AppOverlay>
 </ErrorBoundary>
 
-<style windi:preflights:global windi:safelist:global>
+<style windi:preflights:global windi:global windi:safelist:global>
   .header-container {
     background-image: url("~/assets/capa.svg");
     background-color: #27326f;

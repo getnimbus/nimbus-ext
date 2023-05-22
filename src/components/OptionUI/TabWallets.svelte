@@ -422,9 +422,8 @@
                     <CopyToClipboard
                       iconSize={16}
                       address={item.address}
-                      isAddressInfo={false}
-                      isOptionsPage
                       iconColor="#000"
+                      className="text-sm text-black"
                     />
                   </div>
                 </td>

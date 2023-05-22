@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Router, Route } from "svelte-navigator";
+  import * as browser from "webextension-polyfill";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Header from "~/components/Header.svelte";
@@ -10,6 +11,14 @@
   import Transactions from "~/components/NewTabUI/Transactions.svelte";
 
   let selectedWallet;
+
+  $: {
+    browser.storage.onChanged.addListener((changes) => {
+      if (changes?.options?.newValue?.lang) {
+        window.location.reload();
+      }
+    });
+  }
 </script>
 
 <ErrorBoundary>
@@ -44,4 +53,4 @@
   </Router>
 </ErrorBoundary>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global></style>

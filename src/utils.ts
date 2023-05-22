@@ -245,7 +245,7 @@ export const handleGetAccessToken = async (code: string) => {
     direct_url:
       APP_TYPE.TYPE === "EXT"
         ? "https://hjlilcigcidfaialcihialehachkldfd.chromiumapp.org"
-        : "https://nimbus-app-pr-52.onrender.com",
+        : "https://app.getnimbus.io",
   }).then((response) => response)
   if (res.data) {
     localStorage.setItem("token", JSON.stringify(res.data));

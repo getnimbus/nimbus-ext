@@ -21,11 +21,11 @@
       value: "wallets",
       type: "Wallets",
     },
-    {
-      label: i18n("optionsPage.tab-title-nft", "NFT"),
-      value: "nft",
-      type: "NFT",
-    },
+    // {
+    //   label: i18n("optionsPage.tab-title-nft", "NFT"),
+    //   value: "nft",
+    //   type: "NFT",
+    // },
     {
       label: i18n("optionsPage.tab-title-dashboard", "Dashboard"),
       value: "dashboard",

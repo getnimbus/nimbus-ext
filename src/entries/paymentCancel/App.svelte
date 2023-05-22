@@ -10,7 +10,7 @@
     <Button
       variant="secondary"
       on:click={() => {
-        window.location.replace("https://nimbus-app-pr-52.onrender.com");
+        window.location.replace("https://app.getnimbus.io");
       }}>Continue</Button
     >
   </div>

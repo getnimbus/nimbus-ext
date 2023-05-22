@@ -38,8 +38,8 @@
     <div class="flex-1 px-6 py-4">
       {#if activeTabValue === "wallets"}
         <TabWallets />
-      {:else if activeTabValue === "nft"}
-        <TabNft />
+        <!-- {:else if activeTabValue === "nft"}
+        <TabNft /> -->
       {:else if activeTabValue === "dashboard"}
         <TabDashboard />
       {:else if activeTabValue === "highlight"}

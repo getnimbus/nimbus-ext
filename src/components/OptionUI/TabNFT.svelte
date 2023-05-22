@@ -117,10 +117,8 @@
           login
         </span>
       {:else}
-        <a
-          href="https://nimbus-app-pr-52.onrender.com"
-          target="_blank"
-          class="text-blue-500">login</a
+        <a href="https://app.getnimbus.io" target="_blank" class="text-blue-500"
+          >login</a
         >
       {/if} to see your dashboard
     </div>

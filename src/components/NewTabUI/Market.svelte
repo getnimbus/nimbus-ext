@@ -1,12 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import * as browser from "webextension-polyfill";
   import { nimbus } from "../../lib/network";
   import { i18n } from "~/lib/i18n";
 
   import "~/components/Loading.custom.svelte";
-
-  import logo from "../../assets/logo-1.svg";
   import MarketItem from "~/components/MarketItem.svelte";
 
   const MultipleLang = {
@@ -58,12 +55,6 @@
 
   onMount(() => {
     getMarketData();
-  });
-
-  browser.storage.onChanged.addListener((changes) => {
-    if (changes?.options?.newValue?.lang) {
-      window.location.reload();
-    }
   });
 
   $: {
@@ -173,5 +164,4 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
-</style>
+<style></style>

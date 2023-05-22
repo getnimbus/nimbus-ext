@@ -123,12 +123,6 @@
   let signMessageAddress = "";
 
   onMount(() => {
-    browser.storage.onChanged.addListener((changes) => {
-      if (changes?.options?.newValue?.lang) {
-        window.location.reload();
-      }
-    });
-
     const token = localStorage.getItem("token");
     const solanaToken = localStorage.getItem("solana_token");
     if (token || solanaToken) {
@@ -412,7 +406,7 @@
       {:else}
         <a
           class={`flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
-          href="/entries/options/index.html?tab=wallets"
+          href="entries/options/index.html?tab=wallets"
           target="_blank"
         >
           <img src={SettingsIcon} alt="" />

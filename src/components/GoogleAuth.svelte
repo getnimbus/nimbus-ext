@@ -11,7 +11,7 @@
   const redirectURL = encodeURIComponent(
     APP_TYPE.TYPE === "EXT"
       ? "https://hjlilcigcidfaialcihialehachkldfd.chromiumapp.org"
-      : "https://nimbus-app-pr-52.onrender.com"
+      : "https://app.getnimbus.io"
   );
 
   const handleLogin = async () => {

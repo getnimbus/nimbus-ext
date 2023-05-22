@@ -2,7 +2,7 @@
   import { nimbus } from "~/lib/network";
   import { user } from "~/store";
 
-  import Button from "../Button.svelte";
+  import Button from "~/components/Button.svelte";
   import "~/components/Loading.custom.svelte";
 
   let userInfo = {};
