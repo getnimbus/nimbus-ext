@@ -116,7 +116,7 @@
               Pair
             </div>
           </th>
-          <th class="pl-3 py-3">
+          <th class="py-3">
             <div class="text-left text-xs uppercase font-semibold text-black">
               Execution time
             </div>
@@ -131,7 +131,7 @@
               Amount In
             </div>
           </th>
-          <th class="py-3 w-[170px]">
+          <th class="py-3">
             <div class="text-center text-xs uppercase font-semibold text-black">
               Maker
             </div>

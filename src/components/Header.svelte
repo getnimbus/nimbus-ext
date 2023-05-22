@@ -284,7 +284,7 @@
 </script>
 
 <div
-  class="border-header py-1 top-0 bg-[#27326F] sticky"
+  class="py-1 top-0 bg-[#27326F] sticky"
   style="z-index: 2147483647; {headerScrollY
     ? 'box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);'
     : ''}"

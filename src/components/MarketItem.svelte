@@ -48,7 +48,7 @@ via @get_nimbus`;
     </div>
   </td>
 
-  <td class="pl-3 py-4">
+  <td class="py-4">
     <div class="text-left text-black text-sm font-medium">
       {dayjs(data?.timestamp).format("YYYY-MM-DD HH:mm:ss")}
       <br />
