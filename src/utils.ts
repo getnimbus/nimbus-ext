@@ -1,4 +1,6 @@
 import numeral from "numeral";
+import jwt_decode from "jwt-decode";
+import { nimbus } from "./lib/network";
 
 import logo from "~/assets/bitcoin.png";
 import Bnb from "~/assets/bnb.png";
@@ -236,3 +238,20 @@ export const add3Dots = (string: string, limit: number) => {
   }
   return string;
 }
+
+export const handleGetAccessToken = async (code: string) => {
+  const res = await nimbus.post("/auth", {
+    code,
+    direct_url:
+      APP_TYPE.TYPE === "EXT"
+        ? "https://hjlilcigcidfaialcihialehachkldfd.chromiumapp.org"
+        : "https://app.getnimbus.io",
+  }).then((response) => response)
+  if (res.data) {
+    localStorage.setItem("token", JSON.stringify(res.data));
+    if (APP_TYPE.TYPE !== "EXT") {
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+    return jwt_decode(res.data.id_token);
+  }
+};

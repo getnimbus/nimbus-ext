@@ -80,6 +80,7 @@
     border-radius: 12px;
     padding: 10px 16px;
     gap: 6px;
+    cursor: pointer;
   }
 
   .button[type="submit"],

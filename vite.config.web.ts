@@ -50,12 +50,18 @@ export default defineConfig(({ mode }) => {
       port: 5173,
     },
     root: path.resolve(__dirname, "./src"),
+    optimizeDeps: {
+      esbuildOptions: {
+        target: 'es2020'
+      }
+    },
     build: {
+      target: ['es2020'],
       rollupOptions: {
         input: {
           app: path.resolve(__dirname, "./src/index.html"),
-          news: path.resolve(__dirname, "./src/entries/news/index.html"),
-          market: path.resolve(__dirname, "./src/entries/market/index.html"),
+          paymentSuccess: path.resolve(__dirname, "./src/entries/paymentSuccess/index.html"),
+          paymentCancel: path.resolve(__dirname, "./src/entries/paymentCancel/index.html"),
           options: path.resolve(__dirname, "./src/entries/options/index.html"),
         },
         output: {

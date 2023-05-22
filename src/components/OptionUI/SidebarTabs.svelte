@@ -1,8 +1,6 @@
 <svelte:options tag="sidebar-tabs" />
 
 <script>
-  import Icon from "~/components/OptionUI/Icon.svelte";
-  import logo from "../../assets/logo-1.svg";
   import {
     Sidebar,
     SidebarGroup,
@@ -11,32 +9,41 @@
   } from "flowbite-svelte";
   import { i18n } from "~/lib/i18n";
 
-  export let activeTabValue = 1;
+  import Icon from "~/components/OptionUI/Icon.svelte";
+
+  import logo from "../../assets/logo-1.svg";
+
+  export let activeTabValue;
 
   let items = [
     {
       label: i18n("optionsPage.tab-title-accounts", "Accounts"),
-      value: 1,
+      value: "wallets",
       type: "Wallets",
     },
+    // {
+    //   label: i18n("optionsPage.tab-title-nft", "NFT"),
+    //   value: "nft",
+    //   type: "NFT",
+    // },
     {
       label: i18n("optionsPage.tab-title-dashboard", "Dashboard"),
-      value: 2,
+      value: "dashboard",
       type: "Dashboard",
     },
     {
       label: i18n("optionsPage.tab-title-highlight", "Highlight"),
-      value: 3,
+      value: "highlight",
       type: "Highlight",
     },
     {
       label: i18n("optionsPage.tab-title-notification", "Notification"),
-      value: 4,
+      value: "notification",
       type: "Notification",
     },
     {
       label: i18n("optionsPage.tab-title-settings", "Settings"),
-      value: 5,
+      value: "settings",
       type: "Settings",
     },
   ];
@@ -44,6 +51,11 @@
   const handleClick = (e, tabValue) => {
     e.preventDefault();
     activeTabValue = tabValue;
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + `?tab=${tabValue}`
+    );
   };
 </script>
 

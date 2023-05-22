@@ -29,6 +29,10 @@ const createAxiosInterface = ({ baseURL }: IOption) => {
       }
       return fetch(apiUrl, {
         method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(body),
       }).then((response) => response.json());
     },

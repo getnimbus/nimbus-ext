@@ -1,12 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import * as browser from "webextension-polyfill";
   import { nimbus } from "../../lib/network";
   import { i18n } from "~/lib/i18n";
 
   import "~/components/Loading.custom.svelte";
-
-  import logo from "../../assets/logo-1.svg";
   import MarketItem from "~/components/MarketItem.svelte";
 
   const MultipleLang = {
@@ -14,6 +11,14 @@
     market_page_title: i18n(
       "newtabPage.market-page-title",
       "Latest big swaps with useful information we've put together"
+    ),
+    market_search_symbol: i18n(
+      "newtabPage.market-search-symbol",
+      "Find by symbol, name or token contract"
+    ),
+    market_search_amount: i18n(
+      "newtabPage.market-search-amount",
+      "Enter a USD amount higher than 10000"
     ),
   };
 
@@ -60,12 +65,6 @@
     getMarketData();
   });
 
-  browser.storage.onChanged.addListener((changes) => {
-    if (changes?.options?.newValue?.lang) {
-      window.location.reload();
-    }
-  });
-
   $: {
     setInterval(() => {
       getMarketData();
@@ -74,8 +73,7 @@
 </script>
 
 <div class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col gap-10">
-  <img src={logo} alt="logo" width={200} class="-ml-6" />
-  <div class="flex flex-col -mt-6">
+  <div class="flex flex-col">
     <div class="text-3xl text-black font-semibold">{MultipleLang.market}</div>
     <div class="flex justify-between items-center gap-11">
       <div class="text-lg text-black font-medium w-max">
@@ -90,7 +88,7 @@
             }
           }}
           value={searchValue}
-          placeholder="Find by symbol, name or token contract"
+          placeholder={MultipleLang.market_search_symbol}
           type="text"
           class="flex-1 text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
         />
@@ -102,7 +100,7 @@
             }
           }}
           value={amountValue}
-          placeholder="Enter a USD amount higher than 10000"
+          placeholder={MultipleLang.market_search_amount}
           type="text"
           class="flex-[0.6] text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
         />
@@ -174,5 +172,4 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
-</style>
+<style></style>

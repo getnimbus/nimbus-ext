@@ -26,6 +26,8 @@
     "tab-title-highlight": "Highlight",
     "tab-title-notification": "Thông báo",
     "tab-title-settings": "Cài đặt",
+    "tab-title-nft": "NFT",
+    "nft-page-title": "NFT của tôi",
     "accounts-page-title": "Ví của tôi",
     "dashboard-page-title": "Bảng điều khiển",
     "highlight-page-title": "Điểm nổi bật",
@@ -96,8 +98,12 @@
     "updating-data": "Đang cập nhật dữ liệu",
     "hide-less-than-1": "Ẩn các token dưới $1",
     "news-page-title": "Xem các bài viết mới nhất về blockchain và tiền điện tử mà chúng tôi đã tổng hợp",
-    "market_page_title": "Các giao dịch giá trị lớn với các thông tin hữu ích mà chúng tôi đã tổng hợp",
+    "market-page-title": "Các giao dịch giá trị lớn với các thông tin hữu ích mà chúng tôi đã tổng hợp",
     "missed-protocol": "Chưa có giao thức của bạn?",
-    "search-placeholder": "Tìm kiếm"
+    "search-placeholder": "Tìm kiếm",
+    "modal-login-title": "Đăng nhập để tận hưởng nhiều tính năng hơn",
+    "addwallet": "Thêm ví của bạn để theo dõi các khoản đầu tư của bạn.",
+    "market-search-symbol": "Tìm kiếm theo kí tự, tên hoặc mã hợp đồng",
+    "market-search-amount": "Nhập số tiền USD lớn hơn 10000"
   }
 }
