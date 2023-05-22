@@ -68,6 +68,10 @@
       "newtabPage.missed-protocol",
       "Missing your protocol?"
     ),
+    addwallet: i18n(
+      "newtabPage.addwallet",
+      "Add your wallet to keep track of your investments."
+    ),
     content: {
       btn_text: i18n(
         "optionsPage.accounts-page-content.address-btn-text",
@@ -977,7 +981,7 @@
             class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
           >
             <div class="text-lg">
-              Add your wallet to keep track of your investments.
+              {MultipleLang.addwallet}
             </div>
             <Button
               variant="tertiary"
