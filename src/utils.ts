@@ -194,7 +194,7 @@ export const formatBigBalance = (input: number, type: string) => {
     if (regExp.test(numberFormat)) {
       return {
         number_format: Number(numberFormat.slice(0, -1)),
-        number_size: numberFormat.slice("-1").toUpperCase()
+        number_size: numberFormat.slice(-1).toUpperCase()
       }
     } else {
       return {
