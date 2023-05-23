@@ -43,7 +43,7 @@
               {shorterName(data.name)}
             {/if}
           </div>
-          {#if showTooltipName && data.name.length > 16}
+          {#if showTooltipName && data?.name?.length > 16}
             <div
               class="absolute -top-7 left-1/2 transform -translate-x-1/2"
               style="z-index: 2147483648;"
