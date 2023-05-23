@@ -483,7 +483,7 @@
                     {address}
                     isShorten
                     iconColor="#212121"
-                    className="text-sm text-[#00000099]"
+                    color="#00000099"
                   />
                 </div>
               </div>

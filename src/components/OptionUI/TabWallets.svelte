@@ -419,12 +419,7 @@
                         fill="#9ca3af"
                       />
                     </svg>
-                    <CopyToClipboard
-                      iconSize={16}
-                      address={item.address}
-                      iconColor="#000"
-                      className="text-sm text-black"
-                    />
+                    <CopyToClipboard address={item.address} iconColor="#000" />
                   </div>
                 </td>
                 <td class="py-4">

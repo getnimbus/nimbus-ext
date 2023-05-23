@@ -205,10 +205,8 @@
                   <td class="pl-3 py-4">
                     <div class="text-left flex items-start gap-2">
                       <CopyToClipboard
-                        iconSize={16}
                         address={item.address}
                         iconColor="#000"
-                        className="text-sm text-black"
                       />
                     </div>
                   </td>

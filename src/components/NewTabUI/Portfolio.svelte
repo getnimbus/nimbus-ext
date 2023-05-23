@@ -1138,10 +1138,10 @@
                       </div>
                     </div>
                     <CopyToClipboard
-                      iconSize={16}
                       address={selectedWallet.value}
                       iconColor="#fff"
-                      className="text-base text-white"
+                      color="#fff"
+                      size={16}
                     />
                   </div>
                   <Select
@@ -1353,7 +1353,7 @@
   </AppOverlay>
 </ErrorBoundary>
 
-<style windi:preflights:global windi:global windi:safelist:global>
+<style>
   .header-container {
     background-image: url("~/assets/capa.svg");
     background-color: #27326f;

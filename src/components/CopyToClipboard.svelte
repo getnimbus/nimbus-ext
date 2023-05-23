@@ -1,20 +1,18 @@
 <script lang="ts">
-  import classNames from "classnames";
   import CopyToClipboard from "svelte-copy-to-clipboard";
 
   import { wait } from "../entries/background/utils";
   import { shorterAddress } from "~/utils";
 
-  export let iconSize;
+  export let iconSize = 16;
   export let address;
   export let iconColor;
-  export let className;
   export let isShorten = false;
+  export let color = "#000";
+  export let size = 14;
 
   let isCopied = false;
   let showTooltipCopyAddress = false;
-
-  const addressStyle = classNames(className, "font-normal");
 </script>
 
 <CopyToClipboard
@@ -27,7 +25,7 @@
   }}
 >
   <div class="flex items-center gap-2">
-    <div class={addressStyle}>
+    <div class="font-normal" style={`color: ${color}; fontSize: ${size}px`}>
       {isShorten ? shorterAddress(address) : address}
     </div>
     <div class="cursor-pointer" on:click={copy}>
