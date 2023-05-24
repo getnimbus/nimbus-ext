@@ -13,9 +13,11 @@
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
   import { user } from "~/store";
-  import { CivicProfile, Profile } from "@civic/profile";
+  import { CivicProfile, Profile, GatewayToken } from "@civic/profile";
   import { Connection, clusterApiUrl } from "@solana/web3.js";
-  const solanaConnection: Connection = new Connection(clusterApiUrl("devnet"));
+  const solanaConnection: Connection = new Connection(
+    clusterApiUrl("mainnet-beta")
+  );
 
   import GoogleAuth from "~/components/GoogleAuth.svelte";
   import SolanaAuth from "./SolanaAuth.svelte";
@@ -198,10 +200,15 @@
   };
 
   const handleGetSolanaProfile = async (walletAddress: string) => {
-    const profile: Profile = await CivicProfile.get(walletAddress, {
-      solana: solanaConnection,
-    });
+    const profile: Profile = await CivicProfile.get(
+      "did:sol:FeLTvEKhWQ8UJqGRBWbktv7LY8bPmHYPvVJhWfqyndFW",
+      {
+        solana: solanaConnection,
+      }
+    );
+    const passes: GatewayToken[] = await profile.getPasses();
     console.log("profile: ", profile);
+    console.log("passes: ", passes);
   };
 
   const handleSignOut = () => {
