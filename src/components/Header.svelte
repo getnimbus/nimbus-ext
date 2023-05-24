@@ -258,12 +258,9 @@
       .post("/auth/solana", data)
       .then((response) => response);
 
-    const profile: Profile = await CivicProfile.get(
-      `did:sol:${"FeLTvEKhWQ8UJqGRBWbktv7LY8bPmHYPvVJhWfqyndFW"}`,
-      {
-        solana: solanaConnection,
-      }
-    );
+    const profile: Profile = await CivicProfile.get(`did:sol:${address}`, {
+      solana: solanaConnection,
+    });
     const passes: GatewayToken[] = await profile.getPasses();
     if (res.data.result) {
       localStorage.setItem("solana_token", res.data.result);
