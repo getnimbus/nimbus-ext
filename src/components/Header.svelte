@@ -174,14 +174,7 @@
         }
       }
     } else {
-      user.update((n) => (n = {}));
-      showPopover = false;
-      localStorage.removeItem("token");
-      localStorage.removeItem("solana_address");
-      localStorage.removeItem("solana_token");
-      addressWallet = "";
-      signMessageAddress = "";
-      $walletStore.disconnect();
+      handleSignOut();
     }
 
     const lastScrollY = window.pageYOffset;
@@ -217,6 +210,7 @@
     localStorage.removeItem("token");
     localStorage.removeItem("solana_address");
     localStorage.removeItem("solana_token");
+    localStorage.removeItem("civic_profile");
     addressWallet = "";
     signMessageAddress = "";
     $walletStore.disconnect();
@@ -265,7 +259,7 @@
     if (res.data.result) {
       localStorage.setItem("solana_token", res.data.result);
       localStorage.setItem(
-        "solana_profile",
+        "civic_profile",
         JSON.stringify({
           passes,
           profile,
