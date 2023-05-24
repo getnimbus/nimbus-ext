@@ -13,6 +13,9 @@
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
   import { user } from "~/store";
+  import { CivicProfile, Profile } from "@civic/profile";
+  import { Connection, clusterApiUrl } from "@solana/web3.js";
+  const solanaConnection: Connection = new Connection(clusterApiUrl("devnet"));
 
   import GoogleAuth from "~/components/GoogleAuth.svelte";
   import SolanaAuth from "./SolanaAuth.svelte";
@@ -29,7 +32,6 @@
   import Bell from "~/assets/bell.svg";
   import User from "~/assets/user.png";
   import { nimbus } from "~/lib/network";
-  import { CivicProfile, Profile } from "@civic/profile";
 
   const localStorageKey = "walletAdapter";
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
@@ -195,6 +197,13 @@
     }
   };
 
+  const handleGetSolanaProfile = async (walletAddress: string) => {
+    const profile: Profile = await CivicProfile.get(walletAddress, {
+      solana: solanaConnection,
+    });
+    console.log("profile: ", profile);
+  };
+
   const handleSignOut = () => {
     user.update((n) => (n = {}));
     showPopover = false;
@@ -273,6 +282,7 @@
         signMessageAddress,
       };
       localStorage.setItem("solana_address", addressWallet);
+      handleGetSolanaProfile(addressWallet);
       handleGetSolanaToken(solanaLoginPayload);
     }
   }
