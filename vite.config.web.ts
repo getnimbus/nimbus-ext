@@ -7,6 +7,7 @@ import { windi } from "svelte-windicss-preprocess";
 import sveltePreprocess from "svelte-preprocess";
 import AutoImport from "unplugin-auto-import/vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 // https://vitejs.dev/config/
 /** @type {import('vite').UserConfig} */
@@ -14,6 +15,9 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   return {
     plugins: [
+      nodePolyfills({
+        protocolImports: true,
+      }),
       svelte({
         preprocess: [sveltePreprocess(), windi({})],
         experimental: {
