@@ -130,7 +130,7 @@
   onMount(() => {
     const token = localStorage.getItem("token");
     const solanaToken = localStorage.getItem("solana_token");
-    const solanaProfile = localStorage.getItem("solana_profile");
+    const solanaProfile = localStorage.getItem("civic_profile");
     if (token || solanaToken) {
       if (token) {
         const { access_token, id_token } = JSON.parse(token);
