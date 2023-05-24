@@ -14,10 +14,7 @@
   } from "@solana/wallet-adapter-wallets";
   import { user } from "~/store";
   import { CivicProfile, Profile, GatewayToken } from "@civic/profile";
-  import { Connection, clusterApiUrl } from "@solana/web3.js";
-  const solanaConnection: Connection = new Connection(
-    "https://try-rpc.mainnet.solana.blockdaemon.tech"
-  );
+  import { Connection } from "@solana/web3.js";
 
   import GoogleAuth from "~/components/GoogleAuth.svelte";
   import SolanaAuth from "./SolanaAuth.svelte";
@@ -38,6 +35,9 @@
   const localStorageKey = "walletAdapter";
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
   const signatureString = "Hello Nimbus";
+  const solanaConnection: Connection = new Connection(
+    "https://try-rpc.mainnet.solana.blockdaemon.tech"
+  );
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -130,6 +130,7 @@
   onMount(() => {
     const token = localStorage.getItem("token");
     const solanaToken = localStorage.getItem("solana_token");
+    const solanaProfile = localStorage.getItem("solana_profile");
     if (token || solanaToken) {
       if (token) {
         const { access_token, id_token } = JSON.parse(token);
@@ -154,12 +155,23 @@
           });
       }
       if (solanaToken) {
-        user.update(
-          (n) =>
-            (n = {
-              picture: User,
-            })
-        );
+        const solanaProfileStorage = JSON.parse(solanaProfile);
+        if (solanaProfileStorage) {
+          user.update(
+            (n) =>
+              (n = {
+                picture: solanaProfileStorage.profile.image || User,
+                isPasses: !!solanaProfileStorage.passes.length,
+              })
+          );
+        } else {
+          user.update(
+            (n) =>
+              (n = {
+                picture: User,
+              })
+          );
+        }
       }
     } else {
       user.update((n) => (n = {}));
@@ -197,18 +209,6 @@
       const userData = await handleGetAccessToken(code);
       user.update((n) => (n = userData));
     }
-  };
-
-  const handleGetSolanaProfile = async (walletAddress: string) => {
-    const profile: Profile = await CivicProfile.get(
-      `did:sol:${walletAddress}`,
-      {
-        solana: solanaConnection,
-      }
-    );
-    const passes: GatewayToken[] = await profile.getPasses();
-    console.log("profile: ", profile);
-    console.log("passes: ", passes);
   };
 
   const handleSignOut = () => {
@@ -253,16 +253,32 @@
     }
   };
 
-  const handleGetSolanaToken = async (data) => {
+  const handleGetSolanaToken = async (data, address) => {
     const res = await nimbus
       .post("/auth/solana", data)
       .then((response) => response);
+
+    const profile: Profile = await CivicProfile.get(
+      `did:sol:${"FeLTvEKhWQ8UJqGRBWbktv7LY8bPmHYPvVJhWfqyndFW"}`,
+      {
+        solana: solanaConnection,
+      }
+    );
+    const passes: GatewayToken[] = await profile.getPasses();
     if (res.data.result) {
       localStorage.setItem("solana_token", res.data.result);
+      localStorage.setItem(
+        "solana_profile",
+        JSON.stringify({
+          passes,
+          profile,
+        })
+      );
       user.update(
         (n) =>
           (n = {
-            picture: User,
+            isPasses: !!passes.length,
+            picture: profile.image || User,
           })
       );
     }
@@ -289,8 +305,7 @@
         signMessageAddress,
       };
       localStorage.setItem("solana_address", addressWallet);
-      handleGetSolanaProfile(addressWallet);
-      handleGetSolanaToken(solanaLoginPayload);
+      handleGetSolanaToken(solanaLoginPayload, addressWallet);
     }
   }
 
@@ -299,6 +314,8 @@
       isOpenAuthModal = false;
     }
   }
+
+  $: console.log("userInfo: ", userInfo);
 </script>
 
 <div
@@ -467,15 +484,24 @@
       </div> -->
       {#if Object.keys(userInfo).length !== 0}
         <div class="relative">
-          <div
-            class="w-[40px] h-[40px] rounded-full overflow-hidden cursor-pointer"
-            on:click={() => (showPopover = !showPopover)}
-          >
-            <img
-              src={userInfo.picture}
-              alt=""
-              class="w-full h-full object-cover"
-            />
+          <div class="relative">
+            <div
+              class="w-[40px] h-[40px] rounded-full overflow-hidden cursor-pointer"
+              on:click={() => (showPopover = !showPopover)}
+            >
+              <img
+                src={userInfo.picture}
+                alt=""
+                class="w-full h-full object-cover"
+              />
+            </div>
+            {#if userInfo.isPasses}
+              <div
+                class="text-white bg-red-500 absolute bottom-0 text-[8px] rounded-md"
+              >
+                CIVIC PASS
+              </div>
+            {/if}
           </div>
           {#if showPopover}
             <div
@@ -492,7 +518,7 @@
                     showPopover = false;
                   }}
                 >
-                  Dashboard
+                  My NFT
                 </div>
               {:else}
                 <a
