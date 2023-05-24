@@ -16,7 +16,7 @@
   import { CivicProfile, Profile, GatewayToken } from "@civic/profile";
   import { Connection, clusterApiUrl } from "@solana/web3.js";
   const solanaConnection: Connection = new Connection(
-    clusterApiUrl("mainnet-beta")
+    "https://try-rpc.mainnet.solana.blockdaemon.tech"
   );
 
   import GoogleAuth from "~/components/GoogleAuth.svelte";
@@ -201,7 +201,7 @@
 
   const handleGetSolanaProfile = async (walletAddress: string) => {
     const profile: Profile = await CivicProfile.get(
-      "did:sol:FeLTvEKhWQ8UJqGRBWbktv7LY8bPmHYPvVJhWfqyndFW",
+      `did:sol:${walletAddress}`,
       {
         solana: solanaConnection,
       }
