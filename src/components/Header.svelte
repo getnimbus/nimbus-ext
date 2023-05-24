@@ -29,6 +29,7 @@
   import Bell from "~/assets/bell.svg";
   import User from "~/assets/user.png";
   import { nimbus } from "~/lib/network";
+  import { CivicProfile, Profile } from "@civic/profile";
 
   const localStorageKey = "walletAdapter";
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
@@ -447,7 +448,7 @@
       >
         <img src={Bell} alt="" />
       </div> -->
-      <!-- {#if Object.keys(userInfo).length !== 0}
+      {#if Object.keys(userInfo).length !== 0}
         <div class="relative">
           <div
             class="w-[40px] h-[40px] rounded-full overflow-hidden cursor-pointer"
@@ -506,7 +507,7 @@
         >
           Login
         </div>
-      {/if} -->
+      {/if}
     </div>
     <WalletProvider {localStorageKey} {wallets} autoConnect />
   </div>

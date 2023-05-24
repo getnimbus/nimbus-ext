@@ -32,6 +32,7 @@
     "web-ext": "^6.6.0"
   },
   "dependencies": {
+    "@civic/profile": "^0.2.3",
     "@crownframework/svelte-error-boundary": "^1.0.3",
     "@metamask/detect-provider": "^1.2.0",
     "@popperjs/core": "^2.11.6",
