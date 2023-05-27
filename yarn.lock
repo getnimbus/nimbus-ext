@@ -6637,6 +6637,11 @@ svelte-system-info@^1.0.0:
   resolved "https://registry.yarnpkg.com/svelte-system-info/-/svelte-system-info-1.0.0.tgz#be641e99e18ebd04042a4fb6510d6bf91cb3174b"
   integrity sha512-2mVvB+DX5nkjoJ/yv6e8OKGYX+qh8Zsw4GsH6hxSAI0I5eO/PeEV5Ty879/ZLSXAwNL+EY8vUFgG8oXNkHw4OQ==
 
+svelte-typewriter@^3.1.6:
+  version "3.1.6"
+  resolved "https://registry.yarnpkg.com/svelte-typewriter/-/svelte-typewriter-3.1.6.tgz#3c0155760b4219f9e85bccf1baf36f4b90df4016"
+  integrity sha512-KmY0IWfq6RhTosfLMkZwmBwvwjIKh72jZnWE2taBivtfJJfvBAIrJ3oByObDzisnwUDqyV+ynQZP27SK5UUygg==
+
 svelte-windicss-preprocess@^4.2.8:
   version "4.2.8"
   resolved "https://registry.yarnpkg.com/svelte-windicss-preprocess/-/svelte-windicss-preprocess-4.2.8.tgz#31f05a17366aac15e73a33c74ed04b72a2ff030c"

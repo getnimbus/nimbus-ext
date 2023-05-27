@@ -227,6 +227,19 @@ onMessage<ITrxHashInput, any>("TrxHashInfo", async ({ data: { hash } }) => {
   );
 })
 
+onMessage<ITrxHashInput, any>("TrxHashExplain", async ({ data: { hash } }) => {
+  const key = hash + "_explain";
+  return await cacheOrAPI(
+    key,
+    () => {
+      return nimbus
+        .get(`/tx/explain/${hash}`)
+        .then((response) => response.data);
+    },
+    { defaultValue: null }
+  );
+})
+
 onMessage<ISymbolInput, any>("chartDataLocal", async ({ data: { symbol } }) => {
   try {
     const dataLocal = await browser.storage.local.get(symbol);
