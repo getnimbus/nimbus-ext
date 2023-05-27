@@ -11,6 +11,7 @@
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
+  import { concurrent } from "svelte-typewriter";
 
   import "~/components/Loading.custom.svelte";
   import "~/components/CoinChart.custom.svelte";
@@ -19,6 +20,8 @@
   import "~/components/TxInfo/MoneyMove.custom.svelte";
   import "~/components/TxInfo/Changes.custom.svelte";
 
+  import ExplainIcon from "~/assets/explain.png";
+
   export let hash;
   export let popup: boolean = true;
 
@@ -26,6 +29,7 @@
   let unknownTRX = false;
   let enabledFilter = false;
   let info;
+  let trxExplain = "";
 
   const loadTrxInfo = async (hash) => {
     // TODO: Verify trx hash before calling api
@@ -52,7 +56,21 @@
     }
   };
 
+  const loadTrxExplain = async (hash) => {
+    try {
+      const responseExplain: any = await sendMessage("TrxHashExplain", {
+        hash,
+      });
+      if (responseExplain) {
+        trxExplain = responseExplain?.content;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   onMount(() => {
+    loadTrxExplain(hash);
     loadTrxInfo(hash);
     track("Trx Info", {
       url: window.location.href,
@@ -80,7 +98,11 @@
           </div>
         {:else}
           <div class="flex flex-col">
-            <div class="pb-4 border-bottom flex flex-col gap-4">
+            <div
+              class={`border-bottom flex flex-col gap-4 ${
+                !trxExplain && "pb-4"
+              }`}
+            >
               <div class="flex justify-between items-center">
                 <a
                   href={`https://etherscan.io/tx/${hash}`}
@@ -147,6 +169,23 @@
                   />
                 </div>
               </div>
+              {#if trxExplain}
+                <div class="flex items-start gap-1">
+                  <img
+                    src={ExplainIcon}
+                    alt=""
+                    width="18"
+                    height="18"
+                    class="spin"
+                  />
+                  <div
+                    use:concurrent={{ interval: 30 }}
+                    class="-mt-4 text-sm text-[#5E656B] font-normal"
+                  >
+                    {trxExplain}
+                  </div>
+                </div>
+              {/if}
             </div>
             <div class="flex items-start justify-between gap-2 mt-4">
               <div class="flex flex-col gap-1">
@@ -250,6 +289,13 @@
 </reset-style>
 
 <style>
+  .spin {
+    animation-name: loading;
+    animation-duration: 3.4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+
   .border-bottom {
     border-bottom: 1px solid #00000014;
   }
@@ -319,5 +365,14 @@
     -webkit-transform: translateX(16px);
     -ms-transform: translateX(16px);
     transform: translateX(16px);
+  }
+
+  @keyframes loading {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 </style>
