@@ -8,6 +8,8 @@ import sveltePreprocess from "svelte-preprocess";
 import AutoImport from "unplugin-auto-import/vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
+
 
 // https://vitejs.dev/config/
 /** @type {import('vite').UserConfig} */
@@ -57,10 +59,13 @@ export default defineConfig(({ mode }) => {
     root: path.resolve(__dirname, "./src"),
     optimizeDeps: {
       esbuildOptions: {
-        target: 'es2020'
+        target: 'es2020',
       }
     },
     build: {
+      commonjsOptions: {
+        transformMixedEsModules: true
+      },
       target: ['es2020'],
       rollupOptions: {
         input: {
