@@ -404,7 +404,7 @@
   {#if isShowSideBar}
     <div
       transition:fly={{ x: 650, opacity: 1 }}
-      style="z-index: 2147483647;"
+      style="z-index: 9999;"
       class="fixed top-0 right-0 h-screen bg-[#F8F8F8] overflow-y-auto w-[500px] flex flex-col"
     >
       <div
