@@ -404,7 +404,7 @@
         class="p-4 bg-[#27326f] bg-auto bg-no-repeat"
         style="
           background-image: url({getLocalImg(Line)});
-          background-position: right 80%;
+          background-position: right 100%;
         "
       >
         <div class="text-center">
@@ -413,6 +413,38 @@
             class="w-auto h-14 object-contain"
             alt="Nimbus"
           />
+        </div>
+        <div class="flex items-center mb-2">
+          <div
+            class={`text-sm font-medium cursor-pointer py-1 px-3 rounded-lg ${
+              selectedType === "token"
+                ? "bg-[#E1F4FD] text-[#27326F]"
+                : "text-white"
+            }`}
+            on:click={() => (selectedType = "token")}
+          >
+            Token
+          </div>
+          <div
+            class={`text-sm font-medium cursor-pointer py-1 px-3 rounded-lg ${
+              selectedType === "address"
+                ? "bg-[#E1F4FD] text-[#27326F]"
+                : "text-white"
+            }`}
+            on:click={() => (selectedType = "address")}
+          >
+            Address
+          </div>
+          <div
+            class={`text-sm font-medium cursor-pointer py-1 px-3 rounded-lg ${
+              selectedType === "transaction"
+                ? "bg-[#E1F4FD] text-[#27326F]"
+                : "text-white"
+            }`}
+            on:click={() => (selectedType = "transaction")}
+          >
+            Transaction
+          </div>
         </div>
         <div
           class={`bg-[#38427B] py-1 px-3 rounded-[1000px] flex items-center gap-1 ${
@@ -448,32 +480,6 @@
 
       <div class="px-3 pb-3 pt-2">
         <check-safety />
-
-        {#if !search}
-          <div class="flex items-center gap-2 mt-4 mb-3">
-            <div
-              class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
-              class:bg-[#E1F4FD]={selectedType === "token"}
-              on:click={() => (selectedType = "token")}
-            >
-              Token
-            </div>
-            <div
-              class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
-              class:bg-[#E1F4FD]={selectedType === "address"}
-              on:click={() => (selectedType = "address")}
-            >
-              Address
-            </div>
-            <div
-              class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
-              class:bg-[#E1F4FD]={selectedType === "transaction"}
-              on:click={() => (selectedType = "transaction")}
-            >
-              Transaction
-            </div>
-          </div>
-        {/if}
 
         {#if selectedType === "token"}
           {#if search}
