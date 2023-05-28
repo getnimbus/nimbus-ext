@@ -25,7 +25,7 @@
         isShow = false;
       },
       // content: popperElement,
-      content: `<trx-info hash="${hash}" />`,
+      content: `<trx-info hash="${hash}" isTrxDetail=${true} />`,
       allowHTML: true,
       placement: "bottom-start",
       arrow: false,

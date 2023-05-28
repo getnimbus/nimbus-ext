@@ -397,6 +397,7 @@
               name={addressInfo.symbol}
               loaded={true}
               {address}
+              isSidebarSearch={false}
             />
           </div>
         {/if}

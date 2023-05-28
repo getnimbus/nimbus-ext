@@ -25,6 +25,7 @@
   export let name;
   export let id;
   export let loaded;
+  export let isSidebarSearch = true;
   export let address = "";
 
   let isLoading = false;
@@ -115,9 +116,13 @@
                       on:mouseenter={() => (showTooltip = true)}
                       on:mouseleave={() => (showTooltip = false)}
                     >
-                      {coinInfo?.name ? add3Dots(coinInfo?.name, 10) : "-"}
+                      {coinInfo?.name
+                        ? isSidebarSearch
+                          ? coinInfo?.name
+                          : add3Dots(coinInfo?.name, 10)
+                        : "-"}
                     </div>
-                    {#if showTooltip && coinInfo?.name.length >= 10}
+                    {#if showTooltip && coinInfo?.name.length >= 10 && !isSidebarSearch}
                       <div
                         class="absolute -top-7 -left-1"
                         style="z-index: 2147483646;"

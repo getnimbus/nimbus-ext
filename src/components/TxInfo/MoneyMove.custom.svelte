@@ -16,8 +16,8 @@
 </script>
 
 {#if data}
-  <div class="flex justify-between items-center gap-5">
-    <div class="w-[160px]">
+  <div class="flex justify-between items-center gap-3">
+    <div class="w-[150px]">
       <user-info
         name={from &&
         to &&
@@ -69,7 +69,7 @@
         </div>
       </app-arrow>
     </div>
-    <div class="w-[160px]">
+    <div class="w-[150px]">
       <user-info
         name={from &&
         to &&

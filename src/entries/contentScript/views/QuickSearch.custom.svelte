@@ -16,6 +16,7 @@
   import { shorterAddress } from "~/utils";
 
   import "./AddressInfo.custom.svelte";
+  import "./TrxInfo.custom.svelte";
   import "./NativeTokenInfo.custom.svelte";
   import "~/components/ResetStyle.custom.svelte";
   import "~/components/CheckSafety.custom.svelte";
@@ -74,6 +75,7 @@
   let startTime = null;
   let endTime = null;
   let timeHold = 0;
+  let selectedType = "token";
 
   const getDraggableY = async () => {
     const draggableYRes = (await browser.storage.local.get("DraggableY"))
@@ -244,7 +246,7 @@
   };
 
   $: {
-    if (search && !suggestList.includes(search)) {
+    if (search && !suggestList.includes(search) && !search.includes("0x")) {
       if (JSON.stringify(suggestList) === JSON.stringify(defaultSuggestList)) {
         suggestList = [search];
       } else {
@@ -389,7 +391,7 @@
     <div
       transition:fly={{ x: 650, opacity: 1 }}
       style="z-index: 2147483647;"
-      class="fixed top-0 right-0 h-screen bg-[#F8F8F8] overflow-y-auto w-[400px] flex flex-col"
+      class="fixed top-0 right-0 h-screen bg-[#F8F8F8] overflow-y-auto w-[500px] flex flex-col"
     >
       <div
         class="cursor-pointer text-white font-semibold absolute top-7 left-0 border-gray-700 pt-[3px] pb-1 px-2 bg-[#38427B] rounded-tr-[5px] rounded-br-[5px]"
@@ -447,8 +449,34 @@
       <div class="px-3 pb-3 pt-2">
         <check-safety />
 
-        {#if search}
-          {#if !regexETHAddress.test(search)}
+        {#if !search}
+          <div class="flex items-center gap-2 mt-4 mb-3">
+            <div
+              class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+              class:bg-[#E1F4FD]={selectedType === "token"}
+              on:click={() => (selectedType = "token")}
+            >
+              Token
+            </div>
+            <div
+              class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+              class:bg-[#E1F4FD]={selectedType === "address"}
+              on:click={() => (selectedType = "address")}
+            >
+              Address
+            </div>
+            <div
+              class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+              class:bg-[#E1F4FD]={selectedType === "transaction"}
+              on:click={() => (selectedType = "transaction")}
+            >
+              Transaction
+            </div>
+          </div>
+        {/if}
+
+        {#if selectedType === "token"}
+          {#if search}
             <div class="flex items-center gap-2 mt-4 mb-3">
               <div
                 class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
@@ -481,19 +509,12 @@
                 Tokens
               </div>
             </div>
-          {:else}
-            <div class="mt-3">
-              <address-info address={search} isAddressDetail={false} />
-            </div>
           {/if}
-        {/if}
-
-        {#if !regexETHAddress.test(search)}
           {#if tabSelected === "all"}
             {#if selectedSearchTermData.length === 0}
               {#if selectedTermData.length !== 0}
                 {#each selectedTermData as item}
-                  <div class="p-4 max-w-sm bg-white rounded-[10px] my-4">
+                  <div class="p-4 bg-white rounded-[10px] my-4">
                     <div class="flex justify-between items-center">
                       <a
                         href={item.url}
@@ -502,8 +523,8 @@
                         {item.term}
                       </a>
                       <!-- <div class="cursor-pointer mt-1">
-                      <img src={getLocalImg(More)} alt="more" />
-                    </div> -->
+                        <img src={getLocalImg(More)} alt="more" />
+                      </div> -->
                     </div>
                     {#if item.img !== null}
                       <div
@@ -524,7 +545,7 @@
               {/if}
             {:else}
               {#each selectedSearchTermData as item}
-                <div class="p-4 max-w-sm bg-white rounded-[10px] mb-4">
+                <div class="p-4 bg-white rounded-[10px] mb-4">
                   <div class="flex justify-between items-center">
                     <a
                       href={item.url}
@@ -533,8 +554,8 @@
                       {item.term}
                     </a>
                     <!-- <div class="cursor-pointer mt-1">
-                    <img src={getLocalImg(More)} alt="more" />
-                  </div> -->
+                      <img src={getLocalImg(More)} alt="more" />
+                    </div> -->
                   </div>
                   {#if item.img !== null}
                     <div
@@ -640,7 +661,7 @@
             {#if selectedSearchTermData.length === 0}
               {#if selectedTermData.length !== 0}
                 {#each selectedTermData as item}
-                  <div class="p-4 max-w-sm bg-white rounded-[10px] mb-4">
+                  <div class="p-4 bg-white rounded-[10px] mb-4">
                     <div class="flex justify-between items-center">
                       <a
                         href={item.url}
@@ -649,8 +670,8 @@
                         {item.term}
                       </a>
                       <!-- <div class="cursor-pointer mt-1">
-                      <img src={getLocalImg(More)} alt="more" />
-                    </div> -->
+                        <img src={getLocalImg(More)} alt="more" />
+                      </div> -->
                     </div>
                     {#if item.img !== null}
                       <div
@@ -726,8 +747,8 @@
                       {item.term}
                     </a>
                     <!-- <div class="cursor-pointer mt-1">
-                    <img src={getLocalImg(More)} alt="more" />
-                  </div> -->
+                      <img src={getLocalImg(More)} alt="more" />
+                    </div> -->
                   </div>
                   {#if item.img !== null}
                     <div
@@ -827,6 +848,40 @@
                 </div>
               {/if}
             {/if}
+          {/if}
+        {/if}
+
+        {#if selectedType === "address"}
+          {#if search}
+            <div class="mt-3">
+              <address-info address={search} isAddressDetail={false} />
+            </div>
+          {:else}
+            <div class="flex flex-col items-center justify-center gap-4 mt-16">
+              <img src={getLocalImg(Coin)} width={48} height="48" alt="coin" />
+              <div
+                class="text-sm text-[#00000099] font-medium text-center px-12"
+              >
+                Search for address you want to know
+              </div>
+            </div>
+          {/if}
+        {/if}
+
+        {#if selectedType === "transaction"}
+          {#if search}
+            <div class="mt-3">
+              <trx-info hash={search} isTrxDetail={false} />
+            </div>
+          {:else}
+            <div class="flex flex-col items-center justify-center gap-4 mt-16">
+              <img src={getLocalImg(Coin)} width={48} height="48" alt="coin" />
+              <div
+                class="text-sm text-[#00000099] font-medium text-center px-12"
+              >
+                Search for transaction you want to know
+              </div>
+            </div>
           {/if}
         {/if}
       </div>
