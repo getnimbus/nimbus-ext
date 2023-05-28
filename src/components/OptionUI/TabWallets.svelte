@@ -333,9 +333,17 @@
   <div class="flex justify-between items-center">
     <div class="title-3 text-gray-500">{MultipleLang.title}</div>
     <Button
-      variant="tertiary"
+      variant={APP_TYPE.TYPE !== "EXT" && listAddress.length === 3
+        ? "disabled"
+        : "tertiary"}
       width={136}
-      on:click={() => (isOpenAddModal = true)}
+      on:click={() => {
+        if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
+          window.open("https://getnimbus.io", "_blank");
+        } else {
+          isOpenAddModal = true;
+        }
+      }}
     >
       <img src={Plus} alt="" width="12" height="12" />
       <div class="text-base font-medium text-white">

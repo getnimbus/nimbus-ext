@@ -182,7 +182,7 @@
                     class="spin"
                   />
                   <div
-                    use:concurrent={{ interval: 30 }}
+                    use:concurrent={{ interval: 15 }}
                     class="-mt-4 text-sm text-[#5E656B] font-normal"
                   >
                     {trxExplain}
