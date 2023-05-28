@@ -154,6 +154,7 @@
                     avatar={info?.from_logo}
                     address={info?.from}
                     id={1}
+                    label=""
                   />
                 </div>
                 <div class="relative line-arrow flex-1">
@@ -167,6 +168,7 @@
                     avatar={info?.to_logo}
                     address={info?.to}
                     id={1}
+                    label=""
                   />
                 </div>
               </div>

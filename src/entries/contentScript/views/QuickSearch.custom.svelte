@@ -13,7 +13,7 @@
   import System from "svelte-system-info";
   import { i18n } from "~/lib/i18n";
   import { track } from "~/lib/data-tracking";
-  import { shorterAddress } from "~/utils";
+  import { shorterAddress, regexList } from "~/utils";
 
   import "./AddressInfo.custom.svelte";
   import "./TrxInfo.custom.svelte";
@@ -343,6 +343,20 @@
       moving = true;
     }
   }
+
+  $: {
+    if (search) {
+      regexList.map((regex) => {
+        if (regex.regex_trx.test(search)) {
+          selectedType = "transaction";
+        } else if (regex.regex_address.test(search)) {
+          selectedType = "address";
+        } else {
+          selectedType = "token";
+        }
+      });
+    }
+  }
 </script>
 
 <reset-style>
@@ -399,12 +413,11 @@
       >
         <img src={getLocalImg(Close)} alt="" />
       </div>
-
       <div
         class="p-4 bg-[#27326f] bg-auto bg-no-repeat"
         style="
           background-image: url({getLocalImg(Line)});
-          background-position: right 100%;
+          background-position: right 80%;
         "
       >
         <div class="text-center">
@@ -413,38 +426,6 @@
             class="w-auto h-14 object-contain"
             alt="Nimbus"
           />
-        </div>
-        <div class="flex items-center mb-2">
-          <div
-            class={`text-sm font-medium cursor-pointer py-1 px-3 rounded-lg ${
-              selectedType === "token"
-                ? "bg-[#E1F4FD] text-[#27326F]"
-                : "text-white"
-            }`}
-            on:click={() => (selectedType = "token")}
-          >
-            Token
-          </div>
-          <div
-            class={`text-sm font-medium cursor-pointer py-1 px-3 rounded-lg ${
-              selectedType === "address"
-                ? "bg-[#E1F4FD] text-[#27326F]"
-                : "text-white"
-            }`}
-            on:click={() => (selectedType = "address")}
-          >
-            Address
-          </div>
-          <div
-            class={`text-sm font-medium cursor-pointer py-1 px-3 rounded-lg ${
-              selectedType === "transaction"
-                ? "bg-[#E1F4FD] text-[#27326F]"
-                : "text-white"
-            }`}
-            on:click={() => (selectedType = "transaction")}
-          >
-            Transaction
-          </div>
         </div>
         <div
           class={`bg-[#38427B] py-1 px-3 rounded-[1000px] flex items-center gap-1 ${
@@ -868,7 +849,7 @@
               <div
                 class="text-sm text-[#00000099] font-medium text-center px-12"
               >
-                Search for address you want to know
+                {MultipleLang.title}
               </div>
               <div
                 class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
@@ -903,7 +884,7 @@
               <div
                 class="text-sm text-[#00000099] font-medium text-center px-12"
               >
-                Search for transaction you want to know
+                {MultipleLang.title}
               </div>
               <div
                 class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"

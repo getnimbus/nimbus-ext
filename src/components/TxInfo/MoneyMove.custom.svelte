@@ -13,6 +13,8 @@
   export let from;
   export let to;
   export let id;
+
+  $: console.log("data: ", data);
 </script>
 
 {#if data}
@@ -30,6 +32,7 @@
         avatar={data.from_logo}
         address={data.from}
         {id}
+        label={data.fromLabel}
       />
     </div>
     <div class="flex-1">
@@ -48,7 +51,7 @@
             class="text-black text-xs font-medium"
             use:tooltip={{
               content: `<tooltip-detail text="${formatCurrency(data?.value)} ${
-                data?.symbol
+                data?.symbol ? data?.symbol : "N/A"
               }" />`,
               allowHTML: true,
               placement: "top",
@@ -57,7 +60,7 @@
             {formatBalance(data?.value) === "NaN"
               ? formatSmallBalance(data?.value)
               : formatBalance(data?.value)}
-            {data?.symbol}
+            {data?.symbol ? data?.symbol : "N/A"}
           </div>
         </div>
         <div class="absolute left-0 right-0 -bottom-6 flex justify-center">
@@ -82,6 +85,7 @@
         avatar={data.to_logo}
         address={data.to}
         {id}
+        label={data.toLabel}
       />
     </div>
   </div>
