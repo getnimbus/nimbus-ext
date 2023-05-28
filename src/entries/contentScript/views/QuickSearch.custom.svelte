@@ -246,7 +246,7 @@
   };
 
   $: {
-    if (search && !suggestList.includes(search) && !search.includes("0x")) {
+    if (search && !suggestList.includes(search)) {
       if (JSON.stringify(suggestList) === JSON.stringify(defaultSuggestList)) {
         suggestList = [search];
       } else {
@@ -870,6 +870,24 @@
               >
                 Search for address you want to know
               </div>
+              <div
+                class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
+              >
+                <div class="text-black">
+                  {JSON.stringify(suggestList) ===
+                  JSON.stringify(defaultSuggestList)
+                    ? MultipleLang.suggest_keyword
+                    : MultipleLang.recent_search}
+                </div>
+                {#each suggestList as suggest}
+                  <div
+                    class="text-[#1E96FC] cursor-pointer"
+                    on:click={() => (search = suggest)}
+                  >
+                    {suggest.length > 9 ? shorterAddress(suggest) : suggest}
+                  </div>
+                {/each}
+              </div>
             </div>
           {/if}
         {/if}
@@ -886,6 +904,24 @@
                 class="text-sm text-[#00000099] font-medium text-center px-12"
               >
                 Search for transaction you want to know
+              </div>
+              <div
+                class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
+              >
+                <div class="text-black">
+                  {JSON.stringify(suggestList) ===
+                  JSON.stringify(defaultSuggestList)
+                    ? MultipleLang.suggest_keyword
+                    : MultipleLang.recent_search}
+                </div>
+                {#each suggestList as suggest}
+                  <div
+                    class="text-[#1E96FC] cursor-pointer"
+                    on:click={() => (search = suggest)}
+                  >
+                    {suggest.length > 9 ? shorterAddress(suggest) : suggest}
+                  </div>
+                {/each}
               </div>
             </div>
           {/if}
