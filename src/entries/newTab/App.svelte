@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { Router, Route } from "svelte-navigator";
+  import { Router, Route, createHistory } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
+  import createHashSource from "./hashHistory";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Header from "~/components/Header.svelte";
@@ -9,8 +10,11 @@
   import News from "~/components/NewTabUI/News.svelte";
   import Analytic from "~/components/NewTabUI/Analytic.svelte";
   import Transactions from "~/components/NewTabUI/Transactions.svelte";
+  // TODO: Add Lazyload for each routes
 
   let selectedWallet;
+
+  const hash = createHistory(createHashSource());
 
   $: {
     browser.storage.onChanged.addListener((changes) => {
@@ -22,17 +26,9 @@
 </script>
 
 <ErrorBoundary>
-  <Router>
+  <Router history={APP_TYPE.TYPE === "EXT" ? hash : undefined}>
     <div class="flex flex-col pb-10">
       <Header bind:selectedWallet />
-
-      <Route
-        path={`${
-          APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
-        }`}
-      >
-        <Portfolio bind:selectedWallet />
-      </Route>
 
       <Route path="market">
         <Market />
@@ -48,6 +44,10 @@
 
       <Route path="transactions">
         <Transactions />
+      </Route>
+
+      <Route path={"*"}>
+        <Portfolio bind:selectedWallet />
       </Route>
     </div>
   </Router>

@@ -1,7 +1,7 @@
 <svelte:options tag="user-info" />
 
 <script>
-  import { shorterAddress, getLocalImg } from "../../utils";
+  import { shorterAddress, getLocalImg, add3Dots } from "../../utils";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
 
@@ -12,6 +12,7 @@
   export let address;
   export let avatar;
   export let id;
+  export let label;
 </script>
 
 <div class="flex items-center justify-start gap-2">
@@ -43,12 +44,12 @@
       target="_blank"
       class="no-underline text-sm text-black font-medium"
       use:tooltip={{
-        content: `<tooltip-detail text="${address}" />`,
+        content: `<tooltip-detail text="${label ? label : address}" />`,
         allowHTML: true,
         placement: "top",
       }}
     >
-      {address && shorterAddress(address)}
+      {label ? add3Dots(label, 12) : shorterAddress(address)}
     </a>
     <div class="text-sm text-[#5E656B] font-normal">
       {#if name === "Sender" || name === "Receiver"}

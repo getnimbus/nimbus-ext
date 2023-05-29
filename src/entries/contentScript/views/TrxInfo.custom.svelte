@@ -24,6 +24,7 @@
 
   export let hash;
   export let popup: boolean = true;
+  export let isTrxDetail;
 
   let isLoading = false;
   let unknownTRX = false;
@@ -81,10 +82,10 @@
 
 <reset-style>
   <div
-    class={`rounded-[20px] bg-white font-sans text-sm text-gray-600 transition-all overflow-hidden w-[600px] ${
-      isLoading && popup && "max-h-[120px]"
-    } ${popup ? "max-h-[680px]" : ""}`}
-    class:shadow={popup}
+    class={`bg-white font-sans text-sm text-gray-600 transition-all ${
+      isTrxDetail ? "w-[600px] rounded-[20px]" : "w-full rounded-[10px]"
+    } ${isLoading && popup && "max-h-[120px]"} ${popup ? "max-h-[680px]" : ""}`}
+    class:shadow={popup && isTrxDetail}
   >
     {#if isLoading}
       <div class="w-full h-[120px] flex justify-center items-center">
@@ -153,6 +154,7 @@
                     avatar={info?.from_logo}
                     address={info?.from}
                     id={1}
+                    label=""
                   />
                 </div>
                 <div class="relative line-arrow flex-1">
@@ -166,6 +168,7 @@
                     avatar={info?.to_logo}
                     address={info?.to}
                     id={1}
+                    label=""
                   />
                 </div>
               </div>
@@ -179,7 +182,7 @@
                     class="spin"
                   />
                   <div
-                    use:concurrent={{ interval: 30 }}
+                    use:concurrent={{ interval: 15 }}
                     class="-mt-4 text-sm text-[#5E656B] font-normal"
                   >
                     {trxExplain}
@@ -187,7 +190,11 @@
                 </div>
               {/if}
             </div>
-            <div class="flex items-start justify-between gap-2 mt-4">
+            <div
+              class={`flex items-start justify-between gap-3 mt-4 ${
+                isTrxDetail ? "flex-row" : "flex-col"
+              }`}
+            >
               <div class="flex flex-col gap-1">
                 <div class="text-black text-xs font-normal">
                   Transaction Detail

@@ -2,6 +2,7 @@
   import CopyToClipboard from "svelte-copy-to-clipboard";
 
   import { wait } from "../entries/background/utils";
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import { shorterAddress } from "~/utils";
 
   export let iconSize = 16;
@@ -26,7 +27,17 @@
 >
   <div class="flex items-center gap-2">
     <div class="font-normal" style={`color: ${color}; fontSize: ${size}px`}>
-      {isShorten ? shorterAddress(address) : address}
+      {#if isShorten}
+        <span
+          use:tooltip={{
+            content: `<tooltip-detail text="${address}" />`,
+            allowHTML: true,
+            placement: "top",
+          }}>{shorterAddress(address)}</span
+        >
+      {:else}
+        {address}
+      {/if}
     </div>
     <div class="cursor-pointer" on:click={copy}>
       {#if isCopied}

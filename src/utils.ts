@@ -9,24 +9,28 @@ import Polygon from "~/assets/polygon.png";
 import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 
-export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
-export const BTCAddressRegex = /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}$/g;
+export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
+export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
+export const BTCAddressRegex = /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}$/g
+export const BTCTrxRegex = /(\b(?!0x.*$)[a-fA-F0-9]{64}\b)/g
+export const SOLAddressRegex = /(\b[a-zA-Z0-9]{32,44}\b)/g
+export const SOLTrxRegex = /(\b[a-zA-Z0-9]{87,88}\b)/g
 
 export const regexList = [
   {
     name: "ETH",
     regex_address: ETHAddressRegex,
-    regex_trx: /(\b0x[a-fA-F0-9]{64}\b)/g
+    regex_trx: ETHTrxRegex
   },
   // {
   //   name: "BTC",
-  //   regex_address: /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}$/g,
-  //   regex_trx: /(\b(?!0x.*$)[a-fA-F0-9]{64}\b)/g
+  //   regex_address: BTCAddressRegex,
+  //   regex_trx: BTCTrxRegex
   // },
   // {
   //   name: "Solana",
-  //   regex_address: /(\b[a-zA-Z0-9]{32,44}\b)/g,
-  //   regex_trx: /(\b[a-zA-Z0-9]{87,88}\b)/g
+  //   regex_address: SOLAddressRegex,
+  //   regex_trx: SOLTrxRegex
   // },
   // {
   //   name: "NEAR",
@@ -182,10 +186,10 @@ export const formatSmallBalance = (input: number) => {
   return numeral(input).format("0.000e+0");
 };
 
-export const formatBigBalance = (input: number, type: string) => {
+export const formatBigBalance = (input: number) => {
   if (checkFormatBalance(input) === "NaN") {
     return {
-      number_format: type === 'percent' ? 0 : formatSmallBalance(input),
+      number_format: formatSmallBalance(input),
       number_size: ""
     }
   } else {

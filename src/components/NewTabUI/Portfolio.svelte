@@ -1081,7 +1081,6 @@
                         ? "disabled"
                         : "tertiary"}
                       width={136}
-                      className="text-red-500"
                       on:click={() => {
                         if (
                           APP_TYPE.TYPE !== "EXT" &&
