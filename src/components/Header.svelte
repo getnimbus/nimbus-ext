@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Link } from "svelte-navigator";
+  import { Link, useMatch } from "svelte-navigator";
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import jwt_decode from "jwt-decode";
@@ -112,7 +112,6 @@
   let showTooltipTransactions = false;
   let timerDebounce;
   let search = "";
-  let navActive = "portfolio";
   let isOpenAuthModal = false;
   let userInfo = {};
   user.subscribe((value) => {
@@ -205,23 +204,11 @@
     $walletStore.disconnect();
   };
 
+  const absoluteMatch = useMatch("/:page");
+
+  $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
+
   $: {
-    switch (window.location.pathname.substring(1)) {
-      case "market":
-        navActive = "market";
-        break;
-      case "news":
-        navActive = "news";
-        break;
-      case "analytic":
-        navActive = "analytic";
-        break;
-      case "transactions":
-        navActive = "transactions";
-        break;
-      default:
-        navActive = "portfolio";
-    }
     handleGetGoogleUserInfo();
   }
 
@@ -508,7 +495,7 @@
         </div>
       {/if} -->
     </div>
-    <WalletProvider {localStorageKey} {wallets} autoConnect />
+    <!-- <WalletProvider {localStorageKey} {wallets} autoConnect /> -->
   </div>
 </div>
 <AppOverlay isOpen={isOpenAuthModal} on:close={() => (isOpenAuthModal = false)}>
