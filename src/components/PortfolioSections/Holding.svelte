@@ -6,6 +6,7 @@
   export let data;
   export let isLoading;
   export let totalAssets;
+  export let selectedWallet;
 
   let filteredHolding = true;
   let filteredHoldingData = [];
@@ -177,7 +178,7 @@
                 </tr>
               {:else}
                 {#each filteredHoldingData as holding}
-                  <HoldingInfo data={holding} />
+                  <HoldingInfo data={holding} {selectedWallet} />
                 {/each}
               {/if}
             </tbody>
