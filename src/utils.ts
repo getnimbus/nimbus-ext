@@ -9,9 +9,9 @@ import Polygon from "~/assets/polygon.png";
 import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 
-export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
-export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
-export const BTCAddressRegex = /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}$/g;
+export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
+export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
+export const BTCAddressRegex = /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}$/g
 export const BTCTrxRegex = /(\b(?!0x.*$)[a-fA-F0-9]{64}\b)/g
 export const SOLAddressRegex = /(\b[a-zA-Z0-9]{32,44}\b)/g
 export const SOLTrxRegex = /(\b[a-zA-Z0-9]{87,88}\b)/g
@@ -20,7 +20,7 @@ export const regexList = [
   {
     name: "ETH",
     regex_address: ETHAddressRegex,
-    regex_trx: ETHAddressRegex
+    regex_trx: ETHTrxRegex
   },
   // {
   //   name: "BTC",
@@ -29,8 +29,8 @@ export const regexList = [
   // },
   // {
   //   name: "Solana",
-  //   regex_address: /(\b[a-zA-Z0-9]{32,44}\b)/g,
-  //   regex_trx: /(\b[a-zA-Z0-9]{87,88}\b)/g
+  //   regex_address: SOLAddressRegex,
+  //   regex_trx: SOLTrxRegex
   // },
   // {
   //   name: "NEAR",
