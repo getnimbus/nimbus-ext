@@ -25,7 +25,11 @@
 <tr class="hover:bg-gray-100 transition-all">
   <td class="pl-3 py-4 w-[220px]">
     <Link
-      to={`position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`}
+      to={`${
+        data.positionId
+          ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
+          : "/"
+      }`}
     >
       <div class="text-left flex items-start gap-2">
         <img
@@ -98,11 +102,15 @@
 
   <td class="py-4">
     <Link
-      to={`position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`}
+      to={`${
+        data.positionId
+          ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
+          : "/"
+      }`}
     >
       <div class="text-sm text-[#00000099] font-medium flex justify-start">
         {#if formatCurrency(data.market_price).toString().length > 9}
-          <TooltipNumber number={data.market_price} />
+          <TooltipNumber number={data.market_price} type="amount" />
         {:else}
           {formatCurrency(data.market_price)}
         {/if}
@@ -112,7 +120,11 @@
 
   <td class="py-4">
     <Link
-      to={`position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`}
+      to={`${
+        data.positionId
+          ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
+          : "/"
+      }`}
     >
       <div class="text-sm text-[#00000099] font-medium flex justify-end">
         <TooltipNumber number={data.amount} type="amount" />
@@ -122,7 +134,11 @@
 
   <td class="py-4">
     <Link
-      to={`position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`}
+      to={`${
+        data.positionId
+          ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
+          : "/"
+      }`}
     >
       <div class="text-sm text-[#00000099] font-medium flex justify-end">
         <TooltipNumber number={price} />
@@ -132,7 +148,11 @@
 
   <td class="pr-3 py-4 w-[170px]">
     <Link
-      to={`position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`}
+      to={`${
+        data.positionId
+          ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
+          : "/"
+      }`}
     >
       <div class="flex items-center justify-end gap-1 text-sm font-medium">
         <div class="flex flex-col">
