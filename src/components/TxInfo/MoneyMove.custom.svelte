@@ -13,8 +13,6 @@
   export let from;
   export let to;
   export let id;
-
-  $: console.log("data: ", data);
 </script>
 
 {#if data}

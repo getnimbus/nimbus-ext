@@ -3,7 +3,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { fly } from "svelte/transition";
-  import { escapeRegex, getLocalImg, add3Dots } from "~/utils";
+  import { escapeRegex, getLocalImg, add3Dots, flattenArray } from "~/utils";
   import UrlPattern from "url-pattern";
   import { sendMessage } from "webext-bridge";
   import * as browser from "webextension-polyfill";
@@ -13,7 +13,7 @@
   import System from "svelte-system-info";
   import { i18n } from "~/lib/i18n";
   import { track } from "~/lib/data-tracking";
-  import { shorterAddress, regexList } from "~/utils";
+  import { shorterAddress, ETHAddressRegex, ETHTrxRegex } from "~/utils";
 
   import "./AddressInfo.custom.svelte";
   import "./TrxInfo.custom.svelte";
@@ -50,17 +50,17 @@
   };
 
   const defaultSuggestList = ["bitcoin", "ethereum", "bnb"];
-  const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
 
   let listPageConfig = [];
   let listTermData;
   let coinListData;
   let regexToken;
   let regexTerm;
-  let selectedTokenData = [];
-  let selectedTermData = [];
-  let selectedSearchTermData = [];
-  let tokenDataSearch = [];
+  let dataTokenDetectResult = [];
+  let termDetectResult = [];
+  let data = [];
+  let termSearchResult = [];
+  let dataTokenSearchResult = [];
   let isChangeURL = false;
   let isShowSideBar = false;
   let search = "";
@@ -75,7 +75,6 @@
   let startTime = null;
   let endTime = null;
   let timeHold = 0;
-  let selectedType = "token";
 
   const getDraggableY = async () => {
     const draggableYRes = (await browser.storage.local.get("DraggableY"))
@@ -106,12 +105,10 @@
   };
 
   const getCoinList = async () => {
-    const coinList = (await sendMessage("coinList", { limit: 500 })) as any[];
-    coinListData = coinList;
+    const res = (await sendMessage("coinList", { limit: 500 })) as any[];
+    coinListData = res;
 
-    const nameAndSymbolList = [
-      ...coinList.map((item) => item.symbol.toUpperCase()),
-    ];
+    const nameAndSymbolList = [...res.map((item) => item.symbol.toUpperCase())];
 
     regexToken = new RegExp(
       `\\b(${nameAndSymbolList
@@ -125,10 +122,10 @@
   };
 
   const getTermList = async () => {
-    const listTerm = (await sendMessage("getListTerm", undefined)) as any[];
+    const res = (await sendMessage("getListTerm", undefined)) as any[];
+    listTermData = res;
 
-    listTermData = listTerm;
-    const listTermName = listTerm.map((item) => item.term);
+    const listTermName = res.map((item) => item.term);
 
     regexTerm = new RegExp(
       `\\b(${listTermName
@@ -138,17 +135,6 @@
         .join("|")})\\b`,
       "g"
     );
-  };
-
-  const getSearchData = async (searchValue) => {
-    isLoading = true;
-    const data = (await sendMessage("getSearchData", {
-      search: searchValue,
-    })) as any[];
-    if (data) {
-      isLoading = false;
-      tokenDataSearch = data;
-    }
   };
 
   const handleDetectRegex = (regex) => {
@@ -181,7 +167,7 @@
 
   const handleGetTermFromPage = () => {
     const innerTextMatch = handleDetectRegex(regexTerm);
-    selectedTermData =
+    termDetectResult =
       innerTextMatch && innerTextMatch.length > 0
         ? [
             ...new Set(
@@ -195,7 +181,7 @@
 
   const handleGetCoinDataFromPage = () => {
     const innerTextMatch = handleDetectRegex(regexToken);
-    selectedTokenData =
+    dataTokenDetectResult =
       innerTextMatch && innerTextMatch.length > 0
         ? [
             ...new Set(
@@ -209,6 +195,70 @@
         : [];
   };
 
+  const generateListConfig = (keyword: string) => {
+    return [
+      { type: "term", keyword },
+      { type: "token", keyword },
+      {
+        type: "address",
+        keyword,
+        regex: {
+          eth: ETHAddressRegex,
+        },
+      },
+      {
+        type: "tx",
+        keyword,
+        regex: {
+          eth: ETHTrxRegex,
+        },
+      },
+    ];
+  };
+
+  const getSearchResult = async (keyword: string) => {
+    const configSearch = generateListConfig(keyword);
+    const searchResultByType = await Promise.all(
+      configSearch.map(async (item) => {
+        if (item.type === "term") {
+          return listTermData
+            .filter((item) => item.term.toLowerCase().includes(keyword))
+            .slice(0, 3)
+            .map((row) => ({ ...row, type: item.type }));
+        }
+
+        if (item.type === "token") {
+          isLoading = true;
+          const data = (await sendMessage("getSearchData", {
+            search: keyword,
+          })) as any[];
+          if (data) {
+            isLoading = false;
+            return data.map((row) => ({ ...row, type: item.type }));
+          }
+          return [];
+        }
+
+        if (item.type === "address") {
+          if (keyword.match(item.regex.eth)) {
+            return [{ type: item.type, keyword }];
+          } else {
+            return [];
+          }
+        }
+
+        if (item.type === "tx") {
+          if (keyword.match(item.regex.eth)) {
+            return [{ type: item.type, keyword }];
+          } else {
+            return [];
+          }
+        }
+      })
+    );
+    data = flattenArray(searchResultByType);
+  };
+
   const observer = new MutationObserver((e) => {
     if (window.location.href !== currentUrl) {
       currentUrl = window.location.href;
@@ -220,7 +270,6 @@
       }, 3000);
     }
   });
-
   observer.observe(document, { subtree: true, childList: true });
 
   onMount(() => {
@@ -289,12 +338,6 @@
     }
   }
 
-  $: {
-    if (search) {
-      getSearchData(search);
-    }
-  }
-
   $: loaded = search && isFocused === false;
 
   $: {
@@ -313,12 +356,6 @@
       });
     }
   }
-
-  $: selectedSearchTermData =
-    search &&
-    listTermData
-      .filter((item) => item.term.toLowerCase().includes(search))
-      .slice(0, 3);
 
   browser.runtime.onMessage.addListener(function (msg) {
     if (msg.action && msg.action == "toggleSidebar") {
@@ -346,15 +383,18 @@
 
   $: {
     if (search) {
-      regexList.map((regex) => {
-        if (regex.regex_trx.test(search)) {
-          selectedType = "transaction";
-        } else if (regex.regex_address.test(search)) {
-          selectedType = "address";
-        } else {
-          selectedType = "token";
-        }
-      });
+      getSearchResult(search);
+    } else {
+      data = [];
+      termSearchResult = [];
+      dataTokenSearchResult = [];
+    }
+  }
+
+  $: {
+    if (data.length > 1) {
+      termSearchResult = data.filter((item) => item.type === "term");
+      dataTokenSearchResult = data.filter((item) => item.type === "token");
     }
   }
 </script>
@@ -462,151 +502,12 @@
       <div class="px-3 pb-3 pt-2">
         <check-safety />
 
-        {#if selectedType === "token"}
-          {#if search}
-            <div class="flex items-center gap-2 mt-4 mb-3">
-              <div
-                class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
-                class:bg-[#E1F4FD]={tabSelected === "all"}
-                on:click={() => {
-                  tabSelected = "all";
-                  browser.storage.local.set({ TabSelected: "all" });
-                }}
-              >
-                All
-              </div>
-              <div
-                class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
-                class:bg-[#E1F4FD]={tabSelected === "term"}
-                on:click={() => {
-                  tabSelected = "term";
-                  browser.storage.local.set({ TabSelected: "term" });
-                }}
-              >
-                Terms
-              </div>
-              <div
-                class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
-                class:bg-[#E1F4FD]={tabSelected === "token"}
-                on:click={() => {
-                  tabSelected = "token";
-                  browser.storage.local.set({ TabSelected: "token" });
-                }}
-              >
-                Tokens
-              </div>
-            </div>
-          {/if}
-          {#if tabSelected === "all"}
-            {#if selectedSearchTermData.length === 0}
-              {#if selectedTermData.length !== 0}
-                {#each selectedTermData as item}
-                  <div class="p-4 bg-white rounded-[10px] my-4">
-                    <div class="flex justify-between items-center">
-                      <a
-                        href={item.url}
-                        class="text-xl font-medium text-black no-underline"
-                      >
-                        {item.term}
-                      </a>
-                      <!-- <div class="cursor-pointer mt-1">
-                        <img src={getLocalImg(More)} alt="more" />
-                      </div> -->
-                    </div>
-                    {#if item.img !== null}
-                      <div
-                        class="w-full h-[300px] border rounded overflow-hidden"
-                      >
-                        <img
-                          src={item.img}
-                          alt="img"
-                          class="w-full h-full object-contain"
-                        />
-                      </div>
-                    {/if}
-                    <div class="text-sm font-normal text-[#00000099] mt-[10px]">
-                      {item.define}
-                    </div>
-                  </div>
-                {/each}
-              {/if}
-            {:else}
-              {#each selectedSearchTermData as item}
-                <div class="p-4 bg-white rounded-[10px] mb-4">
-                  <div class="flex justify-between items-center">
-                    <a
-                      href={item.url}
-                      class="text-xl font-medium text-black no-underline"
-                    >
-                      {item.term}
-                    </a>
-                    <!-- <div class="cursor-pointer mt-1">
-                      <img src={getLocalImg(More)} alt="more" />
-                    </div> -->
-                  </div>
-                  {#if item.img !== null}
-                    <div
-                      class="w-full h-[300px] border rounded overflow-hidden"
-                    >
-                      <img
-                        src={item.img}
-                        alt="img"
-                        class="w-full h-full object-contain"
-                      />
-                    </div>
-                  {/if}
-                  <div class="text-sm font-normal text-[#00000099] mt-[10px]">
-                    {item.define}
-                  </div>
-                </div>
-              {/each}
-            {/if}
-
-            {#if search !== ""}
-              {#if isLoading}
-                <div class="text-4 leading-6 font-medium mt-10 text-center">
-                  {MultipleLang.status}
-                </div>
-              {:else if !isLoading}
-                {#if tokenDataSearch.length !== 0}
-                  <div class="flex flex-col gap-y-3">
-                    {#each tokenDataSearch as item}
-                      <native-token-info
-                        id={item.id}
-                        name={item.symbol}
-                        {loaded}
-                      />
-                    {/each}
-                  </div>
-                  <div class="text-xs leading-4 italic text-gray-700 mt-3">
-                    {MultipleLang.sources}
-                  </div>
-                {:else}
-                  <div
-                    class="text-4 leading-6 font-medium mt-10 text-center text-black"
-                  >
-                    {MultipleLang.empty}
-                  </div>
-                {/if}
-              {/if}
-            {:else if search === ""}
-              {#if selectedTokenData.length !== 0}
-                <div class="mb-2">
-                  <div class="title-2 text-black">
-                    {MultipleLang.second_title}
-                  </div>
-                </div>
-                <div class="flex flex-col gap-y-3">
-                  {#each selectedTokenData as item}
-                    <native-token-info
-                      id={item.id}
-                      name={item.symbol}
-                      loaded={true}
-                    />
-                  {/each}
-                </div>
-                <div class="text-xs leading-4 italic text-gray-700 mt-3">
-                  {MultipleLang.sources}
+        {#if data.length === 1}
+          <div>
+            {#if data[0].type === "address"}
+              {#if search}
+                <div class="mt-3">
+                  <address-info address={search} isAddressDetail={false} />
                 </div>
               {:else}
                 <div
@@ -644,10 +545,321 @@
                 </div>
               {/if}
             {/if}
-          {:else if tabSelected === "term"}
-            {#if selectedSearchTermData.length === 0}
-              {#if selectedTermData.length !== 0}
-                {#each selectedTermData as item}
+            {#if data[0].type === "tx"}
+              {#if search}
+                <div class="mt-3">
+                  <trx-info hash={search} isTrxDetail={false} />
+                </div>
+              {:else}
+                <div
+                  class="flex flex-col items-center justify-center gap-4 mt-16"
+                >
+                  <img
+                    src={getLocalImg(Coin)}
+                    width={48}
+                    height="48"
+                    alt="coin"
+                  />
+                  <div
+                    class="text-sm text-[#00000099] font-medium text-center px-12"
+                  >
+                    {MultipleLang.title}
+                  </div>
+                  <div
+                    class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
+                  >
+                    <div class="text-black">
+                      {JSON.stringify(suggestList) ===
+                      JSON.stringify(defaultSuggestList)
+                        ? MultipleLang.suggest_keyword
+                        : MultipleLang.recent_search}
+                    </div>
+                    {#each suggestList as suggest}
+                      <div
+                        class="text-[#1E96FC] cursor-pointer"
+                        on:click={() => (search = suggest)}
+                      >
+                        {suggest.length > 9 ? shorterAddress(suggest) : suggest}
+                      </div>
+                    {/each}
+                  </div>
+                </div>
+              {/if}
+            {/if}
+          </div>
+        {:else}
+          <div>
+            {#if search}
+              <div class="flex items-center gap-2 mt-4 mb-3">
+                <div
+                  class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+                  class:bg-[#E1F4FD]={tabSelected === "all"}
+                  on:click={() => {
+                    tabSelected = "all";
+                    browser.storage.local.set({ TabSelected: "all" });
+                  }}
+                >
+                  All
+                </div>
+                <div
+                  class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+                  class:bg-[#E1F4FD]={tabSelected === "term"}
+                  on:click={() => {
+                    tabSelected = "term";
+                    browser.storage.local.set({ TabSelected: "term" });
+                  }}
+                >
+                  Terms
+                </div>
+                <div
+                  class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+                  class:bg-[#E1F4FD]={tabSelected === "token"}
+                  on:click={() => {
+                    tabSelected = "token";
+                    browser.storage.local.set({ TabSelected: "token" });
+                  }}
+                >
+                  Tokens
+                </div>
+              </div>
+            {/if}
+
+            {#if tabSelected === "all"}
+              {#if termSearchResult.length === 0}
+                {#if termDetectResult.length !== 0}
+                  {#each termDetectResult as item}
+                    <div class="p-4 bg-white rounded-[10px] my-4">
+                      <div class="flex justify-between items-center">
+                        <a
+                          href={item.url}
+                          class="text-xl font-medium text-black no-underline"
+                        >
+                          {item.term}
+                        </a>
+                        <!-- <div class="cursor-pointer mt-1">
+                        <img src={getLocalImg(More)} alt="more" />
+                      </div> -->
+                      </div>
+                      {#if item.img !== null}
+                        <div
+                          class="w-full h-[300px] border rounded overflow-hidden"
+                        >
+                          <img
+                            src={item.img}
+                            alt="img"
+                            class="w-full h-full object-contain"
+                          />
+                        </div>
+                      {/if}
+                      <div
+                        class="text-sm font-normal text-[#00000099] mt-[10px]"
+                      >
+                        {item.define}
+                      </div>
+                    </div>
+                  {/each}
+                {/if}
+              {:else}
+                {#each termSearchResult as item}
+                  <div class="p-4 bg-white rounded-[10px] mb-4">
+                    <div class="flex justify-between items-center">
+                      <a
+                        href={item.url}
+                        class="text-xl font-medium text-black no-underline"
+                      >
+                        {item.term}
+                      </a>
+                      <!-- <div class="cursor-pointer mt-1">
+                      <img src={getLocalImg(More)} alt="more" />
+                    </div> -->
+                    </div>
+                    {#if item.img !== null}
+                      <div
+                        class="w-full h-[300px] border rounded overflow-hidden"
+                      >
+                        <img
+                          src={item.img}
+                          alt="img"
+                          class="w-full h-full object-contain"
+                        />
+                      </div>
+                    {/if}
+                    <div class="text-sm font-normal text-[#00000099] mt-[10px]">
+                      {item.define}
+                    </div>
+                  </div>
+                {/each}
+              {/if}
+
+              {#if search !== ""}
+                {#if isLoading}
+                  <div class="text-4 leading-6 font-medium mt-10 text-center">
+                    {MultipleLang.status}
+                  </div>
+                {:else if !isLoading}
+                  {#if dataTokenSearchResult.length !== 0}
+                    <div class="flex flex-col gap-y-3">
+                      {#each dataTokenSearchResult as item}
+                        <native-token-info
+                          id={item.id}
+                          name={item.symbol}
+                          {loaded}
+                        />
+                      {/each}
+                    </div>
+                    <div class="text-xs leading-4 italic text-gray-700 mt-3">
+                      {MultipleLang.sources}
+                    </div>
+                  {:else}
+                    <div
+                      class="text-4 leading-6 font-medium mt-10 text-center text-black"
+                    >
+                      {MultipleLang.empty}
+                    </div>
+                  {/if}
+                {/if}
+              {:else if search === ""}
+                {#if dataTokenDetectResult.length !== 0}
+                  <div class="mb-2">
+                    <div class="title-2 text-black">
+                      {MultipleLang.second_title}
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-y-3">
+                    {#each dataTokenDetectResult as item}
+                      <native-token-info
+                        id={item.id}
+                        name={item.symbol}
+                        loaded={true}
+                      />
+                    {/each}
+                  </div>
+                  <div class="text-xs leading-4 italic text-gray-700 mt-3">
+                    {MultipleLang.sources}
+                  </div>
+                {:else}
+                  <div
+                    class="flex flex-col items-center justify-center gap-4 mt-16"
+                  >
+                    <img
+                      src={getLocalImg(Coin)}
+                      width={48}
+                      height="48"
+                      alt="coin"
+                    />
+                    <div
+                      class="text-sm text-[#00000099] font-medium text-center px-12"
+                    >
+                      {MultipleLang.title}
+                    </div>
+                    <div
+                      class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
+                    >
+                      <div class="text-black">
+                        {JSON.stringify(suggestList) ===
+                        JSON.stringify(defaultSuggestList)
+                          ? MultipleLang.suggest_keyword
+                          : MultipleLang.recent_search}
+                      </div>
+                      {#each suggestList as suggest}
+                        <div
+                          class="text-[#1E96FC] cursor-pointer"
+                          on:click={() => (search = suggest)}
+                        >
+                          {suggest.length > 9
+                            ? shorterAddress(suggest)
+                            : suggest}
+                        </div>
+                      {/each}
+                    </div>
+                  </div>
+                {/if}
+              {/if}
+            {/if}
+
+            {#if tabSelected === "term"}
+              {#if termSearchResult.length === 0}
+                {#if termDetectResult.length !== 0}
+                  {#each termDetectResult as item}
+                    <div class="p-4 bg-white rounded-[10px] mb-4">
+                      <div class="flex justify-between items-center">
+                        <a
+                          href={item.url}
+                          class="text-xl font-medium text-black no-underline"
+                        >
+                          {item.term}
+                        </a>
+                        <!-- <div class="cursor-pointer mt-1">
+                          <img src={getLocalImg(More)} alt="more" />
+                        </div> -->
+                      </div>
+                      {#if item.img !== null}
+                        <div
+                          class="w-full h-[300px] border rounded overflow-hidden"
+                        >
+                          <img
+                            src={item.img}
+                            alt="img"
+                            class="w-full h-full object-contain"
+                          />
+                        </div>
+                      {/if}
+                      <div
+                        class="text-sm font-normal text-[#00000099] mt-[10px]"
+                      >
+                        {item.define}
+                      </div>
+                    </div>
+                  {/each}
+                {:else}
+                  <div>
+                    {#if search === ""}
+                      <div
+                        class="flex flex-col items-center justify-center gap-4 mt-16"
+                      >
+                        <img
+                          src={getLocalImg(Coin)}
+                          width={48}
+                          height="48"
+                          alt="coin"
+                        />
+                        <div
+                          class="text-sm text-[#00000099] font-medium text-center px-12"
+                        >
+                          {MultipleLang.title}
+                        </div>
+                        <div
+                          class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
+                        >
+                          <div class="text-black">
+                            {JSON.stringify(suggestList) ===
+                            JSON.stringify(defaultSuggestList)
+                              ? MultipleLang.suggest_keyword
+                              : MultipleLang.recent_search}
+                          </div>
+                          {#each suggestList as suggest}
+                            <div
+                              class="text-[#1E96FC] cursor-pointer"
+                              on:click={() => (search = suggest)}
+                            >
+                              {suggest.length > 9
+                                ? shorterAddress(suggest)
+                                : suggest}
+                            </div>
+                          {/each}
+                        </div>
+                      </div>
+                    {:else}
+                      <div
+                        class="text-4 leading-6 font-medium mt-10 text-center text-black"
+                      >
+                        No terms
+                      </div>
+                    {/if}
+                  </div>
+                {/if}
+              {:else}
+                {#each termSearchResult as item}
                   <div class="p-4 bg-white rounded-[10px] mb-4">
                     <div class="flex justify-between items-center">
                       <a
@@ -676,98 +888,48 @@
                     </div>
                   </div>
                 {/each}
-              {:else}
-                <div>
-                  {#if search === ""}
-                    <div
-                      class="flex flex-col items-center justify-center gap-4 mt-16"
-                    >
-                      <img
-                        src={getLocalImg(Coin)}
-                        width={48}
-                        height="48"
-                        alt="coin"
-                      />
-                      <div
-                        class="text-sm text-[#00000099] font-medium text-center px-12"
-                      >
-                        {MultipleLang.title}
-                      </div>
-                      <div
-                        class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
-                      >
-                        <div class="text-black">
-                          {JSON.stringify(suggestList) ===
-                          JSON.stringify(defaultSuggestList)
-                            ? MultipleLang.suggest_keyword
-                            : MultipleLang.recent_search}
-                        </div>
-                        {#each suggestList as suggest}
-                          <div
-                            class="text-[#1E96FC] cursor-pointer"
-                            on:click={() => (search = suggest)}
-                          >
-                            {suggest.length > 9
-                              ? shorterAddress(suggest)
-                              : suggest}
-                          </div>
-                        {/each}
-                      </div>
+              {/if}
+            {/if}
+
+            {#if tabSelected === "token"}
+              {#if search !== ""}
+                {#if isLoading}
+                  <div class="text-4 leading-6 font-medium mt-10 text-center">
+                    {MultipleLang.status}
+                  </div>
+                {:else if !isLoading}
+                  {#if dataTokenSearchResult.length !== 0}
+                    <div class="flex flex-col gap-y-3">
+                      {#each dataTokenSearchResult as item}
+                        <native-token-info
+                          id={item.id}
+                          name={item.symbol}
+                          {loaded}
+                        />
+                      {/each}
+                    </div>
+                    <div class="text-xs leading-4 italic text-gray-700 mt-3">
+                      {MultipleLang.sources}
                     </div>
                   {:else}
                     <div
                       class="text-4 leading-6 font-medium mt-10 text-center text-black"
                     >
-                      No terms
+                      No tokens
                     </div>
                   {/if}
-                </div>
-              {/if}
-            {:else}
-              {#each selectedSearchTermData as item}
-                <div class="p-4 max-w-sm bg-white rounded-[10px] mb-4">
-                  <div class="flex justify-between items-center">
-                    <a
-                      href={item.url}
-                      class="text-xl font-medium text-black no-underline"
-                    >
-                      {item.term}
-                    </a>
-                    <!-- <div class="cursor-pointer mt-1">
-                      <img src={getLocalImg(More)} alt="more" />
-                    </div> -->
+                {/if}
+              {:else if search === ""}
+                {#if dataTokenDetectResult.length !== 0}
+                  <div class="mb-2">
+                    <div class="title-2">{MultipleLang.second_title}</div>
                   </div>
-                  {#if item.img !== null}
-                    <div
-                      class="w-full h-[300px] border rounded overflow-hidden"
-                    >
-                      <img
-                        src={item.img}
-                        alt="img"
-                        class="w-full h-full object-contain"
-                      />
-                    </div>
-                  {/if}
-                  <div class="text-sm font-normal text-[#00000099] mt-[10px]">
-                    {item.define}
-                  </div>
-                </div>
-              {/each}
-            {/if}
-          {:else if tabSelected === "token"}
-            {#if search !== ""}
-              {#if isLoading}
-                <div class="text-4 leading-6 font-medium mt-10 text-center">
-                  {MultipleLang.status}
-                </div>
-              {:else if !isLoading}
-                {#if tokenDataSearch.length !== 0}
                   <div class="flex flex-col gap-y-3">
-                    {#each tokenDataSearch as item}
+                    {#each dataTokenDetectResult as item}
                       <native-token-info
                         id={item.id}
                         name={item.symbol}
-                        {loaded}
+                        loaded={true}
                       />
                     {/each}
                   </div>
@@ -776,136 +938,44 @@
                   </div>
                 {:else}
                   <div
-                    class="text-4 leading-6 font-medium mt-10 text-center text-black"
+                    class="flex flex-col items-center justify-center gap-4 mt-16"
                   >
-                    No tokens
+                    <img
+                      src={getLocalImg(Coin)}
+                      width={48}
+                      height="48"
+                      alt="coin"
+                    />
+                    <div
+                      class="text-sm text-[#00000099] font-medium text-center px-12"
+                    >
+                      {MultipleLang.title}
+                    </div>
+                    <div
+                      class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
+                    >
+                      <div class="text-black">
+                        {JSON.stringify(suggestList) ===
+                        JSON.stringify(defaultSuggestList)
+                          ? MultipleLang.suggest_keyword
+                          : MultipleLang.recent_search}
+                      </div>
+                      {#each suggestList as suggest}
+                        <div
+                          class="text-[#1E96FC] cursor-pointer"
+                          on:click={() => (search = suggest)}
+                        >
+                          {suggest.length > 9
+                            ? shorterAddress(suggest)
+                            : suggest}
+                        </div>
+                      {/each}
+                    </div>
                   </div>
                 {/if}
               {/if}
-            {:else if search === ""}
-              {#if selectedTokenData.length !== 0}
-                <div class="mb-2">
-                  <div class="title-2">{MultipleLang.second_title}</div>
-                </div>
-                <div class="flex flex-col gap-y-3">
-                  {#each selectedTokenData as item}
-                    <native-token-info
-                      id={item.id}
-                      name={item.symbol}
-                      loaded={true}
-                    />
-                  {/each}
-                </div>
-                <div class="text-xs leading-4 italic text-gray-700 mt-3">
-                  {MultipleLang.sources}
-                </div>
-              {:else}
-                <div
-                  class="flex flex-col items-center justify-center gap-4 mt-16"
-                >
-                  <img
-                    src={getLocalImg(Coin)}
-                    width={48}
-                    height="48"
-                    alt="coin"
-                  />
-                  <div
-                    class="text-sm text-[#00000099] font-medium text-center px-12"
-                  >
-                    {MultipleLang.title}
-                  </div>
-                  <div
-                    class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
-                  >
-                    <div class="text-black">
-                      {JSON.stringify(suggestList) ===
-                      JSON.stringify(defaultSuggestList)
-                        ? MultipleLang.suggest_keyword
-                        : MultipleLang.recent_search}
-                    </div>
-                    {#each suggestList as suggest}
-                      <div
-                        class="text-[#1E96FC] cursor-pointer"
-                        on:click={() => (search = suggest)}
-                      >
-                        {suggest.length > 9 ? shorterAddress(suggest) : suggest}
-                      </div>
-                    {/each}
-                  </div>
-                </div>
-              {/if}
             {/if}
-          {/if}
-        {/if}
-
-        {#if selectedType === "address"}
-          {#if search}
-            <div class="mt-3">
-              <address-info address={search} isAddressDetail={false} />
-            </div>
-          {:else}
-            <div class="flex flex-col items-center justify-center gap-4 mt-16">
-              <img src={getLocalImg(Coin)} width={48} height="48" alt="coin" />
-              <div
-                class="text-sm text-[#00000099] font-medium text-center px-12"
-              >
-                {MultipleLang.title}
-              </div>
-              <div
-                class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
-              >
-                <div class="text-black">
-                  {JSON.stringify(suggestList) ===
-                  JSON.stringify(defaultSuggestList)
-                    ? MultipleLang.suggest_keyword
-                    : MultipleLang.recent_search}
-                </div>
-                {#each suggestList as suggest}
-                  <div
-                    class="text-[#1E96FC] cursor-pointer"
-                    on:click={() => (search = suggest)}
-                  >
-                    {suggest.length > 9 ? shorterAddress(suggest) : suggest}
-                  </div>
-                {/each}
-              </div>
-            </div>
-          {/if}
-        {/if}
-
-        {#if selectedType === "transaction"}
-          {#if search}
-            <div class="mt-3">
-              <trx-info hash={search} isTrxDetail={false} />
-            </div>
-          {:else}
-            <div class="flex flex-col items-center justify-center gap-4 mt-16">
-              <img src={getLocalImg(Coin)} width={48} height="48" alt="coin" />
-              <div
-                class="text-sm text-[#00000099] font-medium text-center px-12"
-              >
-                {MultipleLang.title}
-              </div>
-              <div
-                class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
-              >
-                <div class="text-black">
-                  {JSON.stringify(suggestList) ===
-                  JSON.stringify(defaultSuggestList)
-                    ? MultipleLang.suggest_keyword
-                    : MultipleLang.recent_search}
-                </div>
-                {#each suggestList as suggest}
-                  <div
-                    class="text-[#1E96FC] cursor-pointer"
-                    on:click={() => (search = suggest)}
-                  >
-                    {suggest.length > 9 ? shorterAddress(suggest) : suggest}
-                  </div>
-                {/each}
-              </div>
-            </div>
-          {/if}
+          </div>
         {/if}
       </div>
     </div>
