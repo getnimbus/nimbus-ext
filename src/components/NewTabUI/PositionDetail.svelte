@@ -42,13 +42,9 @@
       containLabel: true,
     },
     xAxis: {
-      type: "time",
-      axisTick: {
-        show: false,
-      },
-      splitLine: {
-        show: false,
-      },
+      type: "category",
+      boundaryGap: false,
+      data: [],
     },
     yAxis: [
       {
@@ -88,7 +84,9 @@
         }
 
         const formatXAxis = response?.balances.map((item) => {
-          return dayjs(new Date(item.time)).format("DD/MM/YY hh:mm");
+          return dayjs(new Date(item.timestamp * 1000)).format(
+            "DD/MM/YY hh:mm"
+          );
         });
 
         const lastPrice =
@@ -120,6 +118,7 @@
           },
           xAxis: {
             ...option.xAxis,
+            data: formatXAxis,
           },
           series: [
             {
@@ -132,7 +131,7 @@
               showSymbol: false,
               data: response?.prices.map((item) => {
                 return {
-                  value: [item.timestamp * 1000, item?.price],
+                  value: item?.price,
                   itemStyle: {
                     color: `${isDownPrice > 0 ? "#EF4444" : "#22c55e"}`,
                   },
@@ -151,7 +150,7 @@
               showSymbol: false,
               data: response?.balances.map((item) => {
                 return {
-                  value: [item.timestamp * 1000, item?.balance],
+                  value: item?.balance,
                   itemStyle: {
                     color: "rgba(178,184,255,1)",
                   },
@@ -185,6 +184,10 @@
               },
             },
           ],
+          xAxis: {
+            ...option.xAxis,
+            data: formatXAxis,
+          },
           series: [
             {
               name: "Value",
@@ -199,7 +202,7 @@
               showSymbol: false,
               data: response?.balances.map((item) => {
                 return {
-                  value: [item.timestamp * 1000, item?.value],
+                  value: item?.value,
                   itemStyle: {
                     color: "rgba(0,169,236, 0.8)",
                   },
