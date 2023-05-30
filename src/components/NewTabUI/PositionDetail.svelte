@@ -299,53 +299,65 @@
 <ErrorBoundary>
   <div class="header-container">
     <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
-      <div class="flex flex-col gap-14">
-        <Link
-          to={`${
-            APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
-          }`}
-        >
-          <div class="text-white flex items-center gap-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              id="back-arrow"
-              fill="#fff"
-              ><path fill="none" d="M0 0h24v24H0V0z" opacity=".87" /><path
-                d="M16.62 2.99c-.49-.49-1.28-.49-1.77 0L6.54 11.3c-.39.39-.39 1.02 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"
-              /></svg
-            >
-            <div class="">Back to Portfolio</div>
-          </div>
-        </Link>
-        <div class="flex flex-col gap-2">
-          <div class="flex items-center gap-2 text-white">
-            <img
-              src={positionDetail?.logo}
-              alt=""
-              class="rounded-full w-8 h-8"
-            />
-            <div class="text-3xl font-semibold">
-              {positionDetail?.price?.symbol}
+      <div class="flex flex-col gap-14 mb-5">
+        <div class="flex justify-between items-center">
+          <Link
+            to={`${
+              APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
+            }`}
+            class="cusor-pointer"
+          >
+            <div class="text-white flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                id="back-arrow"
+                fill="#fff"
+                ><path fill="none" d="M0 0h24v24H0V0z" opacity=".87" /><path
+                  d="M16.62 2.99c-.49-.49-1.28-.49-1.77 0L6.54 11.3c-.39.39-.39 1.02 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"
+                /></svg
+              >
+              <div class="">Back to Portfolio</div>
             </div>
+          </Link>
+        </div>
+        <div class="flex justify-between">
+          <div>
+            <div class="flex items-center gap-2 text-white mb-3">
+              <img
+                src={positionDetail?.logo}
+                alt=""
+                class="rounded-full w-8 h-8"
+              />
+              <div class="text-3xl font-semibold">
+                {positionDetail?.price?.symbol}
+              </div>
+            </div>
+            <CopyToClipboard
+              {address}
+              iconColor="#fff"
+              color="#fff"
+              size={16}
+            />
           </div>
-          <CopyToClipboard {address} iconColor="#fff" color="#fff" size={16} />
+          <div class="self-end">
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+                tweet
+              )}`}
+              target="_blank"
+              class="flex justify-end"
+            >
+              <img src={TwitterLogo} alt="" class="w-8 h-8 rounded-full" />
+            </a>
+          </div>
         </div>
       </div>
     </div>
   </div>
   <div class="max-w-[2000px] m-auto w-[90%] -mt-36">
-    <a
-      href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-        tweet
-      )}`}
-      target="_blank"
-      class="flex justify-end"
-    >
-      <img src={TwitterLogo} alt="" class="w-8 h-8 rounded-full" />
-    </a>
     <div
       class="flex flex-col gap-7 bg-white rounded-[20px] p-8 mt-6"
       style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
