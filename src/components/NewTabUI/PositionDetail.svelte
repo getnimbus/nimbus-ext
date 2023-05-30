@@ -10,6 +10,7 @@
   import TwitterLogo from "~/assets/twitter.svg";
   import TooltipNumber from "../TooltipNumber.svelte";
   import Button from "../Button.svelte";
+  // import type { EChartsOption } from "echarts";
 
   let positionDetail;
   let positionDetailPrice;
@@ -38,9 +39,13 @@
       containLabel: true,
     },
     xAxis: {
-      type: "category",
-      boundaryGap: false,
-      data: [],
+      type: "time",
+      axisTick: {
+        show: false,
+      },
+      splitLine: {
+        show: false,
+      },
     },
     yAxis: [
       {
@@ -104,14 +109,14 @@
               {
                 name: "Balance",
                 itemStyle: {
-                  color: "#808080",
+                  color: "#d1d1d1",
                 },
               },
             ],
           },
           xAxis: {
             ...option.xAxis,
-            data: formatXAxis,
+            // data: formatXAxis,
           },
           series: [
             {
@@ -121,9 +126,10 @@
                 type: "solid",
                 color: `${isDownPrice > 0 ? "#EF4444" : "#22c55e"}`,
               },
+              showSymbol: false,
               data: response?.prices.map((item) => {
                 return {
-                  value: item?.price,
+                  value: [item.timestamp * 1000, item?.price],
                   itemStyle: {
                     color: `${isDownPrice > 0 ? "#EF4444" : "#22c55e"}`,
                   },
@@ -132,17 +138,19 @@
             },
             {
               name: "Balance",
-              type: "line",
-              lineStyle: {
+              type: "bar",
+              barStyle: {
                 type: "solid",
-                color: "#808080",
+                color: "rgba(178,184,255,1)",
               },
+              barCategoryGap: "50%",
               yAxisIndex: 1,
+              showSymbol: false,
               data: response?.balances.map((item) => {
                 return {
-                  value: item?.balance,
+                  value: [item.timestamp * 1000, item?.balance],
                   itemStyle: {
-                    color: "#808080",
+                    color: "rgba(178,184,255,1)",
                   },
                 };
               }),
@@ -156,6 +164,10 @@
       isLoadingPositionDetailPrice = false;
     }
   };
+
+  $: {
+    console.log(option);
+  }
 
   const getPositionDetail = async (positionId, positionType, address) => {
     try {
@@ -224,7 +236,7 @@
           $<TooltipNumber number={positionDetail?.price?.price} type="amount" />
         </div>
       </div>
-      {#if option.xAxis.data.length === 0 && option.series.length === 0 && !isEmptyChart}
+      {#if isLoadingPositionDetailPrice}
         <div class="flex justify-center items-center">
           <loading-icon />
         </div>
