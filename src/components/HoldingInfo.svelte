@@ -8,7 +8,7 @@
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
-  import More from "~/assets/more.svg";
+  import Chart from "~/assets/chart.svg";
 
   export let data;
   export let selectedWallet;
@@ -28,7 +28,7 @@
   <td class="pl-3 py-4 w-[200px]">
     <Link
       to={`${
-        data.positionId
+        data.positionId && data.symbol !== "Bitcoin"
           ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
           : "/"
       }`}
@@ -105,7 +105,7 @@
   <td class="py-4">
     <Link
       to={`${
-        data.positionId
+        data.positionId && data.symbol !== "Bitcoin"
           ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
           : "/"
       }`}
@@ -123,7 +123,7 @@
   <td class="py-4">
     <Link
       to={`${
-        data.positionId
+        data.positionId && data.symbol !== "Bitcoin"
           ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
           : "/"
       }`}
@@ -137,7 +137,7 @@
   <td class="py-4">
     <Link
       to={`${
-        data.positionId
+        data.positionId && data.symbol !== "Bitcoin"
           ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
           : "/"
       }`}
@@ -148,10 +148,10 @@
     </Link>
   </td>
 
-  <td class="py-4 w-[170px]">
+  <td class={`py-3 w-[170px] ${!data.positionId && "pr-3"}`}>
     <Link
       to={`${
-        data.positionId
+        data.positionId && data.symbol !== "Bitcoin"
           ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
           : "/"
       }`}
@@ -188,27 +188,31 @@
     </Link>
   </td>
 
-  <td class="py-4 w-10">
-    <div class="flex justify-center">
-      <Link
-        to={`${
-          data.positionId
-            ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
-            : "/"
-        }`}
-      >
-        <div
-          use:tooltip={{
-            content: `<tooltip-detail text="More Info" />`,
-            allowHTML: true,
-            placement: "top",
-          }}
-        >
-          <img src={More} alt="" />
+  {#if data.positionId}
+    <td class="py-4 w-10">
+      {#if data.symbol !== "Bitcoin"}
+        <div class="flex justify-center">
+          <Link
+            to={`${
+              data.positionId && data.symbol !== "Bitcoin"
+                ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
+                : "/"
+            }`}
+          >
+            <div
+              use:tooltip={{
+                content: `<tooltip-detail text="Show detail" />`,
+                allowHTML: true,
+                placement: "top",
+              }}
+            >
+              <img src={Chart} alt="" width={14} height={14} />
+            </div>
+          </Link>
         </div>
-      </Link>
-    </div>
-  </td>
+      {/if}
+    </td>
+  {/if}
 </tr>
 
 <style>

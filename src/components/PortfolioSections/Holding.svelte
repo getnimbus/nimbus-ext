@@ -145,14 +145,22 @@
                   {MultipleLang.value} ($)
                 </div>
               </th>
-              <th class="py-3 w-[170px]">
+              <th
+                class={`py-3 w-[170px] ${
+                  filteredHoldingData.filter((item) => item.positionId)
+                    .length === 0 && "pr-3"
+                }`}
+              >
                 <div
                   class="text-right text-xs uppercase font-semibold text-black"
                 >
                   {MultipleLang.profit}
                 </div>
               </th>
-              <th class="py-3 w-10" />
+
+              {#if filteredHoldingData.filter((item) => item.positionId).length !== 0}
+                <th class="py-3 w-10" />
+              {/if}
             </tr>
           </thead>
           {#if isLoading}

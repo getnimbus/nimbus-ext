@@ -12,6 +12,7 @@
 
   import TwitterLogo from "~/assets/twitter.svg";
   import LeftArrow from "~/assets/left-arrow.svg";
+  import Bitcoin from "~/assets/bitcoin.png";
 
   let positionDetail;
   let positionDetailPrice;
@@ -408,6 +409,44 @@
           {/if}
         </div>
       </div>
+      <!-- <div
+        class="border border-[#0000001a] rounded-[20px] p-6 flex justify-between gap-6"
+      >
+        <div class="flex-[0.7] flex flex-col gap-2">
+          <div class="flex items-center gap-2 font-medium">
+            <div class="text-lg">Equity</div>
+            <div class="text-lg">6.9%</div>
+          </div>
+          <div class="flex flex-col">
+            <div class="text-2xl font-medium text-black">$71,297.31</div>
+            <div class="text-base font-medium">37.365 WETH</div>
+          </div>
+          <div class="flex items-center gap-1">
+            <img src={Bitcoin} alt="" class="rounded-full w-5 h-5" />
+            <div class="text-base font-light">
+              37.365 ETH <span class="text-gray-500">($71,271.53)</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex-1 grid grid-cols-2 grid-rows-2 gap-y-4">
+          <div class="flex flex-col gap-1">
+            <div class="text-lg font-medium">Profit/Loss</div>
+            <div class="text-base">−$16,556.79</div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <div class="text-lg font-medium">Average Cost</div>
+            <div class="text-base">$2,229.91</div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <div class="text-lg font-medium">24-hour Return</div>
+            <div class="text-base">+0.63% ($443.82)</div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <div class="text-lg font-medium">Paid Fees</div>
+            <div class="text-base">$18.71</div>
+          </div>
+        </div>
+      </div> -->
       <div class="border border-[#0000001a] rounded-[20px] p-6">
         <div class="flex flex-col gap-6">
           <div class="text-2xl font-medium text-black">History</div>
