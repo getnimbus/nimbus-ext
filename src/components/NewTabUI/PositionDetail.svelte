@@ -17,6 +17,7 @@
   let isLoadingPositionDetailPrice = false;
   let isEmptyChart = false;
   let isDownPrice = 0;
+  let tweet = "";
 
   const colors = ["#808080", `${isDownPrice > 0 ? "#EF4444" : "#22c55e"}`];
   let option = {
@@ -155,6 +156,7 @@
     if (positionIDParams && positionTypeParams && addressParams) {
       getPositionDetailPrice(positionIDParams, addressParams);
       getPositionDetail(positionIDParams, positionTypeParams, addressParams);
+      tweet = `Check it out on Nimbus 🚀 @get_nimbus https://app.getnimbus.io/position-detail?positionId=${positionIDParams}&positionType=${positionTypeParams}&address=${addressParams}`;
     }
   });
 </script>
@@ -178,7 +180,9 @@
             <Button variant="secondary" width={120}>Back</Button>
           </Link>
           <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURI("hello")}`}
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+              tweet
+            )}`}
             target="_blank"
           >
             <img src={TwitterLogo} alt="" class="w-8 h-8 rounded-full" />
