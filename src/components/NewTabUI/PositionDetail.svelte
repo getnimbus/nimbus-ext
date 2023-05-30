@@ -314,8 +314,8 @@
                       >
                         <div class="text-left flex items-start gap-2">
                           <div class="flex flex-col">
-                            <div>{change?.transactionHash}</div>
-                            <div class="text-gray-400">
+                            <div class="text-sm">{change?.transactionHash}</div>
+                            <div class="text-gray-400 text-xs">
                               {dayjs(new Date(change.timestamp)).format(
                                 "DD MMM YYYY, hh:mm A"
                               )}
@@ -329,9 +329,11 @@
                         href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
                         target="_blank"
                       >
-                        <div class="flex flex-col gap-1 justify-end items-end">
+                        <div
+                          class="flex flex-col gap-1 justify-end items-end text-sm"
+                        >
                           {#if change?.metadata?.btcChange}
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-1">
                               <div
                                 class={`flex items-center gap-1 ${
                                   change?.metadata?.btcChange?.final_result >= 0
@@ -347,7 +349,7 @@
                                 />
                                 <div>{change?.metadata?.btcPrice?.symbol}</div>
                               </div>
-                              <div class="text-gray-500 border-l pl-2">
+                              <div class="text-gray-500">
                                 $<TooltipNumber
                                   number={Math.abs(
                                     change?.metadata?.btcChange?.final_result *
@@ -359,7 +361,7 @@
                             </div>
                           {/if}
 
-                          <div class="flex items-center gap-2">
+                          <div class="flex items-center gap-1">
                             <div
                               class={`flex items-center gap-1 ${
                                 change.metadata.info.total >= 0
@@ -373,7 +375,7 @@
                               />
                               <div>{change?.metadata?.info?.tokenName}</div>
                             </div>
-                            <div class="text-gray-500 border-l pl-2">
+                            <div class="text-gray-500">
                               $<TooltipNumber
                                 number={Math.abs(
                                   change?.metadata?.info?.total *
