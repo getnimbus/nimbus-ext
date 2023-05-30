@@ -18,13 +18,13 @@
     class="xl:w-[35%] w-full flex flex-col border border-[#0000001a] rounded-[20px] p-6 relative"
   >
     <div
-      class="absolute top-0 left-0 w-full h-full bg-[#ffffffb3] flex flex-col justify-center items-center gap-2 rounded-[20px]"
+      class="absolute top-0 left-0 w-full h-full bg-[#ffffffb3] flex flex-col justify-center items-center gap-4 rounded-[20px]"
     >
       <div class="text-black text-base font-semibold text-center mx-4">
         Investment opportunities to optimize your holding. <br /> Coming soon 🥳
       </div>
       <a href="https://forms.gle/HfmvSTzd5frPPYDz8" target="_blank">
-        <Button variant="secondary" className="opacity-100">Notify me</Button>
+        <Button variant="tertiary" className="opacity-100">Notify me</Button>
       </a>
     </div>
     <div class="text-2xl font-medium text-black mb-6 blur-sm">

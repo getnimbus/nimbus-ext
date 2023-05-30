@@ -18,21 +18,24 @@
   let isEmptyChart = false;
   let isDownPrice = 0;
   let tweet = "";
-
-  const colors = ["#808080", `${isDownPrice > 0 ? "#EF4444" : "#22c55e"}`];
   let option = {
-    color: colors,
+    title: {
+      text: "",
+    },
     tooltip: {
       trigger: "axis",
-      axisPointer: {
-        type: "cross",
-      },
-    },
-    grid: {
-      right: "20%",
     },
     legend: {
-      data: ["Price", "Balance"],
+      lineStyle: {
+        type: "solid",
+      },
+      data: [],
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "3%",
+      containLabel: true,
     },
     xAxis: {
       type: "category",
@@ -45,12 +48,6 @@
         name: "Price",
         position: "right",
         alignTicks: true,
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: colors[0],
-          },
-        },
         axisLabel: {
           formatter: "${value}",
         },
@@ -60,12 +57,6 @@
         name: "Balance",
         position: "left",
         alignTicks: true,
-        axisLine: {
-          show: true,
-          lineStyle: {
-            color: colors[1],
-          },
-        },
         axisLabel: {
           formatter: "{value}",
         },
@@ -88,7 +79,7 @@
         }
 
         const formatXAxis = response?.balances.map((item) => {
-          return dayjs(new Date(item.time)).format("DD MMM YYYY");
+          return dayjs(new Date(item.time)).format("DD/MM/YY hh:mm");
         });
 
         const lastPrice =
@@ -101,6 +92,23 @@
 
         option = {
           ...option,
+          legend: {
+            ...option.legend,
+            data: [
+              {
+                name: "Price",
+                itemStyle: {
+                  color: `${isDownPrice > 0 ? "#EF4444" : "#22c55e"}`,
+                },
+              },
+              {
+                name: "Balance",
+                itemStyle: {
+                  color: "#808080",
+                },
+              },
+            ],
+          },
           xAxis: {
             ...option.xAxis,
             data: formatXAxis,
@@ -109,16 +117,34 @@
             {
               name: "Price",
               type: "line",
+              lineStyle: {
+                type: "solid",
+                color: `${isDownPrice > 0 ? "#EF4444" : "#22c55e"}`,
+              },
               data: response?.prices.map((item) => {
-                return item?.price;
+                return {
+                  value: item?.price,
+                  itemStyle: {
+                    color: `${isDownPrice > 0 ? "#EF4444" : "#22c55e"}`,
+                  },
+                };
               }),
             },
             {
               name: "Balance",
               type: "line",
+              lineStyle: {
+                type: "solid",
+                color: "#808080",
+              },
               yAxisIndex: 1,
               data: response?.balances.map((item) => {
-                return item?.balance;
+                return {
+                  value: item?.balance,
+                  itemStyle: {
+                    color: "#808080",
+                  },
+                };
               }),
             },
           ],
@@ -224,86 +250,140 @@
   </div>
 
   <div class="border border-[#0000001a] rounded-[20px] p-6">
-    {#if isLoadingPositionDetail}
-      <div class="flex justify-center items-center">
-        <loading-icon />
-      </div>
-    {:else}
-      <div class="flex flex-col gap-6">
-        <div class="text-2xl font-medium text-black">History</div>
-        {#each positionDetail?.changes || [] as change}
-          <a
-            href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
-            target="_blank"
-            class="flex justify-between items-center"
-          >
-            <div class="flex flex-col">
-              <div>{change?.transactionHash}</div>
-              <div class="text-gray-400">
-                {dayjs(new Date(change.timestamp)).format(
-                  "DD MMM YYYY, hh:mm A"
-                )}
-              </div>
-            </div>
-            <div class="flex flex-col gap-1">
-              {#if change?.metadata?.btcChange}
-                <div class="flex items-center gap-2">
-                  <div
-                    class={`flex items-center gap-1 ${
-                      change?.metadata?.btcChange?.final_result >= 0
-                        ? "text-[#00A878]"
-                        : "text-red-500"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(
-                        change?.metadata?.btcChange?.final_result
-                      )}
-                      type="amount"
-                    />
-                    <div>{change?.metadata?.btcPrice?.symbol}</div>
-                  </div>
-                  <div class="text-gray-500 border-l pl-2">
-                    $<TooltipNumber
-                      number={Math.abs(
-                        change?.metadata?.btcChange?.final_result *
-                          Number(change?.metadata?.btcPrice?.price)
-                      )}
-                      type="amount"
-                    />
-                  </div>
-                </div>
-              {/if}
-
-              <div class="flex items-center gap-2">
+    <div class="flex flex-col gap-6">
+      <div class="text-2xl font-medium text-black">History</div>
+      <div class="border border-[#0000000d] rounded-[10px]">
+        <table class="table-fixed w-full">
+          <thead>
+            <tr class="bg-[#f4f5f880]">
+              <th class="pl-3 py-3">
                 <div
-                  class={`flex items-center gap-1 ${
-                    change.metadata.info.total >= 0
-                      ? "text-[#00A878]"
-                      : "text-red-500"
-                  }`}
+                  class="text-left text-xs uppercase font-semibold text-black"
                 >
-                  <TooltipNumber
-                    number={Math.abs(change?.metadata?.info?.total)}
-                    type="amount"
-                  />
-                  <div>{change?.metadata?.info?.tokenName}</div>
+                  Transaction
                 </div>
-                <div class="text-gray-500 border-l pl-2">
-                  $<TooltipNumber
-                    number={Math.abs(
-                      change?.metadata?.info?.total *
-                        Number(change?.metadata?.price?.price)
-                    )}
-                    type="amount"
-                  />
+              </th>
+              <th class="pr-3 py-3">
+                <div
+                  class="text-right text-xs uppercase font-semibold text-black"
+                >
+                  Change
                 </div>
-              </div>
-            </div>
-          </a>
-        {/each}
+              </th>
+            </tr>
+          </thead>
+          {#if isLoadingPositionDetail}
+            <tbody>
+              <tr>
+                <td colspan="2">
+                  <div class="flex justify-center items-center py-4 px-3">
+                    <loading-icon />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          {:else}
+            <tbody>
+              {#if positionDetail?.changes && positionDetail?.changes.length === 0}
+                <tr>
+                  <td colspan="2">
+                    <div
+                      class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
+                    >
+                      Empty
+                    </div>
+                  </td>
+                </tr>
+              {:else}
+                {#each positionDetail?.changes || [] as change}
+                  <tr class="hover:bg-gray-100 transition-all">
+                    <td class="pl-3 py-4">
+                      <a
+                        href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
+                        target="_blank"
+                      >
+                        <div class="text-left flex items-start gap-2">
+                          <div class="flex flex-col">
+                            <div>{change?.transactionHash}</div>
+                            <div class="text-gray-400">
+                              {dayjs(new Date(change.timestamp)).format(
+                                "DD MMM YYYY, hh:mm A"
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                    <td class="pr-3 py-4">
+                      <a
+                        href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
+                        target="_blank"
+                      >
+                        <div class="flex flex-col gap-1 justify-end items-end">
+                          {#if change?.metadata?.btcChange}
+                            <div class="flex items-center gap-2">
+                              <div
+                                class={`flex items-center gap-1 ${
+                                  change?.metadata?.btcChange?.final_result >= 0
+                                    ? "text-[#00A878]"
+                                    : "text-red-500"
+                                }`}
+                              >
+                                <TooltipNumber
+                                  number={Math.abs(
+                                    change?.metadata?.btcChange?.final_result
+                                  )}
+                                  type="amount"
+                                />
+                                <div>{change?.metadata?.btcPrice?.symbol}</div>
+                              </div>
+                              <div class="text-gray-500 border-l pl-2">
+                                $<TooltipNumber
+                                  number={Math.abs(
+                                    change?.metadata?.btcChange?.final_result *
+                                      Number(change?.metadata?.btcPrice?.price)
+                                  )}
+                                  type="amount"
+                                />
+                              </div>
+                            </div>
+                          {/if}
+
+                          <div class="flex items-center gap-2">
+                            <div
+                              class={`flex items-center gap-1 ${
+                                change.metadata.info.total >= 0
+                                  ? "text-[#00A878]"
+                                  : "text-red-500"
+                              }`}
+                            >
+                              <TooltipNumber
+                                number={Math.abs(change?.metadata?.info?.total)}
+                                type="amount"
+                              />
+                              <div>{change?.metadata?.info?.tokenName}</div>
+                            </div>
+                            <div class="text-gray-500 border-l pl-2">
+                              $<TooltipNumber
+                                number={Math.abs(
+                                  change?.metadata?.info?.total *
+                                    Number(change?.metadata?.price?.price)
+                                )}
+                                type="amount"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                    </td>
+                  </tr>
+                {/each}
+              {/if}
+            </tbody>
+          {/if}
+        </table>
       </div>
-    {/if}
+    </div>
   </div>
 </div>
 
