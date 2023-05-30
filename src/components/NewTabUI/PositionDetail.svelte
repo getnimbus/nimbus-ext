@@ -71,6 +71,7 @@
     ],
     series: [],
   };
+  let option2 = option;
 
   const getPositionDetailPrice = async (positionId, address) => {
     try {
@@ -118,7 +119,6 @@
           },
           xAxis: {
             ...option.xAxis,
-            // data: formatXAxis,
           },
           series: [
             {
@@ -159,6 +159,58 @@
             },
           ],
         };
+
+        option2 = {
+          ...option2,
+          legend: {
+            ...option2.legend,
+            data: [
+              {
+                name: "Value",
+                itemStyle: {
+                  color: "rgba(0,169,236, 0.8)",
+                },
+              },
+            ],
+          },
+          yAxis: [
+            {
+              type: "value",
+              name: "Value",
+              position: "left",
+              alignTicks: true,
+              axisLabel: {
+                formatter: "{value}",
+              },
+            },
+          ],
+          series: [
+            {
+              name: "Value",
+              type: "line",
+              lineStyle: {
+                type: "solid",
+                color: "rgba(0,169,236, 0.8)",
+              },
+              areaStyle: {
+                color: "rgba(0,169,236, 0.5)",
+              },
+              showSymbol: false,
+              data: response?.balances.map((item) => {
+                return {
+                  value: [item.timestamp * 1000, item?.value],
+                  itemStyle: {
+                    color: "rgba(0,169,236, 0.8)",
+                  },
+                };
+              }),
+            },
+          ],
+        };
+
+        setTimeout(() => {
+          syncChartCursor();
+        }, 500);
       }
     } catch (e) {
       console.log("error: ", e);
@@ -167,9 +219,45 @@
     }
   };
 
-  $: {
-    console.log(option);
-  }
+  const syncChartCursor = () => {
+    const onChartMove = (e, chartName) => {
+      if (chartName === "chartBalance") {
+        window.echarts.chartValue.dispatchAction({
+          type: "showTip",
+          x: e.event.offsetX,
+          y: e.event.offsetY,
+        });
+      } else if (chartName === "chartValue") {
+        window.echarts.chartBalance.dispatchAction({
+          type: "showTip",
+          x: e.event.offsetX,
+          y: e.event.offsetY,
+        });
+      }
+    };
+
+    const onMouseOut = () => {
+      window.echarts?.chartValue?.dispatchAction({
+        type: "hideTip",
+      });
+      window.echarts?.chartBalance?.dispatchAction({
+        type: "hideTip",
+      });
+    };
+
+    if (window.echarts?.chartBalance) {
+      window.echarts.chartBalance.on("mousemove", (e) =>
+        onChartMove(e, "chartBalance")
+      );
+      window.echarts.chartBalance.on("mouseout", onMouseOut);
+    }
+    if (window.echarts?.chartValue) {
+      window.echarts.chartValue.on("mousemove", (e) =>
+        onChartMove(e, "chartValue")
+      );
+      window.echarts.chartValue.on("mouseout", onMouseOut);
+    }
+  };
 
   const getPositionDetail = async (positionId, positionType, address) => {
     try {
@@ -267,9 +355,35 @@
         <div
           class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6"
         >
-          <div class="pl-4 text-2xl font-medium text-black mb-3">Chart 1</div>
+          <div class="pl-4 text-2xl font-medium text-black mb-3">
+            Price & Total Balance
+          </div>
           {#if isLoadingPositionDetailPrice}
-            <div class="flex justify-center items-center">
+            <div class="flex justify-center items-center min-h-[420px]">
+              <loading-icon />
+            </div>
+          {:else}
+            <div>
+              {#if isEmptyChart}
+                <div
+                  class="flex justify-center items-center text-lg text-gray-400"
+                >
+                  Empty
+                </div>
+              {:else}
+                <EChart id="chartBalance" theme="white" {option} height={420} />
+              {/if}
+            </div>
+          {/if}
+        </div>
+        <div
+          class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6"
+        >
+          <div class="pl-4 text-2xl font-medium text-black mb-3">
+            Position Value
+          </div>
+          {#if isLoadingPositionDetailPrice}
+            <div class="flex justify-center items-center min-h-[420px]">
               <loading-icon />
             </div>
           {:else}
@@ -282,19 +396,14 @@
                 </div>
               {:else}
                 <EChart
-                  id="double-line-chart"
+                  id="chartValue"
                   theme="white"
-                  {option}
-                  height={565}
+                  option={option2}
+                  height={420}
                 />
               {/if}
             </div>
           {/if}
-        </div>
-        <div
-          class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6"
-        >
-          <div class="pl-4 text-2xl font-medium text-black mb-3">Chart 2</div>
         </div>
       </div>
       <div class="border border-[#0000001a] rounded-[20px] p-6">
