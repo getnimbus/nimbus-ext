@@ -219,18 +219,24 @@
   };
 
   const syncChartCursor = () => {
-    const onChartMove = (e, chartName) => {
+    let currentHightLight = null;
+    const onChartHighlight = (e, chartName) => {
+      const dataIndex = e?.batch?.[0]?.dataIndex;
+      if (currentHightLight === dataIndex) {
+        return;
+      }
+      currentHightLight = dataIndex;
       if (chartName === "chartBalance") {
         window.echarts.chartValue.dispatchAction({
           type: "showTip",
-          x: e.event.offsetX,
-          y: e.event.offsetY,
+          dataIndex,
+          seriesIndex: 0,
         });
       } else if (chartName === "chartValue") {
         window.echarts.chartBalance.dispatchAction({
           type: "showTip",
-          x: e.event.offsetX,
-          y: e.event.offsetY,
+          dataIndex,
+          seriesIndex: 1,
         });
       }
     };
@@ -245,14 +251,15 @@
     };
 
     if (window.echarts?.chartBalance) {
-      window.echarts.chartBalance.on("mousemove", (e) =>
-        onChartMove(e, "chartBalance")
+      // window.echarts.chartBalance.on("highlight", console.log);
+      window.echarts.chartBalance.on("highlight", (e) =>
+        onChartHighlight(e, "chartBalance")
       );
       window.echarts.chartBalance.on("mouseout", onMouseOut);
     }
     if (window.echarts?.chartValue) {
-      window.echarts.chartValue.on("mousemove", (e) =>
-        onChartMove(e, "chartValue")
+      window.echarts.chartValue.on("highlight", (e) =>
+        onChartHighlight(e, "chartValue")
       );
       window.echarts.chartValue.on("mouseout", onMouseOut);
     }
@@ -301,8 +308,8 @@
           <div class="text-white flex items-center gap-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
               id="back-arrow"
               fill="#fff"
@@ -310,7 +317,7 @@
                 d="M16.62 2.99c-.49-.49-1.28-.49-1.77 0L6.54 11.3c-.39.39-.39 1.02 0 1.41l8.31 8.31c.49.49 1.28.49 1.77 0s.49-1.28 0-1.77L9.38 12l7.25-7.25c.48-.48.48-1.28-.01-1.76z"
               /></svg
             >
-            <div class="text-xl">Back</div>
+            <div class="">Back to Portfolio</div>
           </div>
         </Link>
         <div class="flex flex-col gap-2">
@@ -416,7 +423,7 @@
                     <div
                       class="text-right text-xs uppercase font-semibold text-black"
                     >
-                      Change
+                      Token Change
                     </div>
                   </th>
                 </tr>
