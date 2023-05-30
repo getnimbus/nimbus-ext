@@ -3,10 +3,12 @@
   import { formatCurrency, shorterName } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
+  import More from "~/assets/more.svg";
 
   export let data;
   export let selectedWallet;
@@ -146,7 +148,7 @@
     </Link>
   </td>
 
-  <td class="pr-3 py-4 w-[170px]">
+  <td class="py-4 w-[170px]">
     <Link
       to={`${
         data.positionId
@@ -184,6 +186,28 @@
         </div>
       </div>
     </Link>
+  </td>
+
+  <td class="py-4 w-10">
+    <div class="flex justify-center">
+      <Link
+        to={`${
+          data.positionId
+            ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
+            : "/"
+        }`}
+      >
+        <div
+          use:tooltip={{
+            content: `<tooltip-detail text="More Info" />`,
+            allowHTML: true,
+            placement: "top",
+          }}
+        >
+          <img src={More} alt="" />
+        </div>
+      </Link>
+    </div>
   </td>
 </tr>
 

@@ -145,19 +145,20 @@
                   {MultipleLang.value} ($)
                 </div>
               </th>
-              <th class="pr-3 py-3 w-[170px]">
+              <th class="py-3 w-[170px]">
                 <div
                   class="text-right text-xs uppercase font-semibold text-black"
                 >
                   {MultipleLang.profit}
                 </div>
               </th>
+              <th class="py-3 w-10" />
             </tr>
           </thead>
           {#if isLoading}
             <tbody>
               <tr>
-                <td colspan="5">
+                <td colspan="6">
                   <div class="flex justify-center items-center py-4 px-3">
                     <loading-icon />
                   </div>
@@ -168,7 +169,7 @@
             <tbody>
               {#if filteredHoldingData && filteredHoldingData.length === 0}
                 <tr>
-                  <td colspan="5">
+                  <td colspan="6">
                     <div
                       class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
                     >
