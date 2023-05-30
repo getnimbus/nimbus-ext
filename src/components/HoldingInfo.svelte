@@ -26,12 +26,17 @@
 
 <tr class="hover:bg-gray-100 transition-all">
   <td class="pl-3 py-4 w-[200px]">
-    <Link
-      to={`${
+    <a
+      href={`${
         data.positionId && data.symbol !== "Bitcoin"
           ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
-          : "/"
+          : "#"
       }`}
+      on:click={(event) => {
+        if (!data.positionId && data.symbol === "Bitcoin") {
+          event.preventDefault();
+        }
+      }}
     >
       <div class="text-left flex items-start gap-2">
         <img
@@ -99,16 +104,21 @@
           {/if}
         </div>
       </div>
-    </Link>
+    </a>
   </td>
 
   <td class="py-4">
-    <Link
-      to={`${
+    <a
+      href={`${
         data.positionId && data.symbol !== "Bitcoin"
           ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
-          : "/"
+          : "#"
       }`}
+      on:click={(event) => {
+        if (!data.positionId && data.symbol === "Bitcoin") {
+          event.preventDefault();
+        }
+      }}
     >
       <div class="text-sm text-[#00000099] font-medium flex justify-start">
         {#if formatCurrency(data.market_price).toString().length > 9}
@@ -117,44 +127,59 @@
           {formatCurrency(data.market_price)}
         {/if}
       </div>
-    </Link>
+    </a>
   </td>
 
   <td class="py-4">
-    <Link
-      to={`${
+    <a
+      href={`${
         data.positionId && data.symbol !== "Bitcoin"
           ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
-          : "/"
+          : "#"
       }`}
+      on:click={(event) => {
+        if (!data.positionId && data.symbol === "Bitcoin") {
+          event.preventDefault();
+        }
+      }}
     >
       <div class="text-sm text-[#00000099] font-medium flex justify-end">
         <TooltipNumber number={data.amount} type="amount" />
       </div>
-    </Link>
+    </a>
   </td>
 
   <td class="py-4">
-    <Link
-      to={`${
+    <a
+      href={`${
         data.positionId && data.symbol !== "Bitcoin"
           ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
-          : "/"
+          : "#"
       }`}
+      on:click={(event) => {
+        if (!data.positionId && data.symbol === "Bitcoin") {
+          event.preventDefault();
+        }
+      }}
     >
       <div class="text-sm text-[#00000099] font-medium flex justify-end">
         <TooltipNumber number={price} />
       </div>
-    </Link>
+    </a>
   </td>
 
   <td class={`py-3 w-[170px] ${!data.positionId && "pr-3"}`}>
-    <Link
-      to={`${
+    <a
+      href={`${
         data.positionId && data.symbol !== "Bitcoin"
           ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
-          : "/"
+          : "#"
       }`}
+      on:click={(event) => {
+        if (!data.positionId && data.symbol === "Bitcoin") {
+          event.preventDefault();
+        }
+      }}
     >
       <div class="flex items-center justify-end gap-1 text-sm font-medium">
         <div class="flex flex-col">
@@ -185,19 +210,24 @@
           </div>
         </div>
       </div>
-    </Link>
+    </a>
   </td>
 
   {#if data.positionId}
     <td class="py-4 w-10">
       {#if data.symbol !== "Bitcoin"}
         <div class="flex justify-center">
-          <Link
-            to={`${
+          <a
+            href={`${
               data.positionId && data.symbol !== "Bitcoin"
                 ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
-                : "/"
+                : "#"
             }`}
+            on:click={(event) => {
+              if (!data.positionId && data.symbol === "Bitcoin") {
+                event.preventDefault();
+              }
+            }}
           >
             <div
               use:tooltip={{
@@ -208,7 +238,7 @@
             >
               <img src={Chart} alt="" width={14} height={14} />
             </div>
-          </Link>
+          </a>
         </div>
       {/if}
     </td>
