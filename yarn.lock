@@ -7204,9 +7204,9 @@ web-ext@^6.6.0:
     yargs "16.2.0"
     zip-dir "2.0.0"
 
-"webext-bridge@https://github.com/binhnguyen2501/webext-bridge.git":
+"webext-bridge@https://github.com/getnimbus/webext-bridge.git":
   version "5.0.5"
-  resolved "https://github.com/binhnguyen2501/webext-bridge.git#43446a7fecbfe2c52ef579d71661b1edfba6088b"
+  resolved "https://github.com/getnimbus/webext-bridge.git#b8df249ef109cec0fc1c319e5de612d48716db8a"
   dependencies:
     "@types/webextension-polyfill" "^0.8.3"
     nanoevents "^6.0.2"

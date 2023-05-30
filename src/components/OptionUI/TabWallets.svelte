@@ -5,6 +5,8 @@
   import { i18n } from "~/lib/i18n";
   import { dndzone } from "svelte-dnd-action";
   import { getAddressContext } from "~/utils";
+  import { Toast } from "flowbite-svelte";
+  import { fly } from "svelte/transition";
 
   import type { AddressData } from "~/types/AddressData";
 
@@ -109,6 +111,23 @@
   let selectedWallet = {};
   let address = "";
   let label = "";
+  let show = false;
+  let counter = 3;
+  let toastMsg = "";
+  let isSuccess = false;
+
+  const trigger = () => {
+    show = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    show = false;
+    toastMsg = "";
+    isSuccess = false;
+  };
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -207,8 +226,14 @@
 
       e.target.reset();
       isOpenAddModal = false;
+      toastMsg = "Successfully add new wallet!";
+      isSuccess = true;
+      trigger();
     } else {
       console.log("Invalid Form");
+      toastMsg = "Something wrong when add new wallet. Please try again!";
+      isSuccess = false;
+      trigger();
     }
   };
 
@@ -242,9 +267,15 @@
 
         e.target.reset();
         isOpenEditModal = false;
+        toastMsg = "Successfully edit your wallet!";
+        isSuccess = true;
+        trigger();
       }
     } else {
       console.log("Invalid Form");
+      toastMsg = "Something wrong when edit your wallet. Please try again!";
+      isSuccess = false;
+      trigger();
     }
   };
 
@@ -273,6 +304,9 @@
 
       getListAddress();
       isOpenConfirmDelete = false;
+      toastMsg = "Successfully delete your wallet!";
+      isSuccess = true;
+      trigger();
     }
   };
 
@@ -464,6 +498,47 @@
     </table>
   </div>
 </div>
+
+<Toast
+  transition={fly}
+  params={{ x: 200 }}
+  position="top-right"
+  color={isSuccess ? "green" : "red"}
+  bind:open={show}
+>
+  <svelte:fragment slot="icon">
+    {#if isSuccess}
+      <svg
+        aria-hidden="true"
+        class="w-5 h-5"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        ><path
+          fill-rule="evenodd"
+          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+          clip-rule="evenodd"
+        /></svg
+      >
+      <span class="sr-only">Check icon</span>
+    {:else}
+      <svg
+        aria-hidden="true"
+        class="w-5 h-5"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        ><path
+          fill-rule="evenodd"
+          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+          clip-rule="evenodd"
+        /></svg
+      >
+      <span class="sr-only">Error icon</span>
+    {/if}
+  </svelte:fragment>
+  {toastMsg}
+</Toast>
 
 <AppOverlay isOpen={isOpenEditModal} on:close={() => (isOpenEditModal = false)}>
   <div class="title-3 text-gray-600 font-semibold max-w-[530px]">

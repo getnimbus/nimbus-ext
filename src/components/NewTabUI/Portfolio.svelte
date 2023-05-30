@@ -1189,6 +1189,7 @@
               />
               <div class="flex xl:flex-row flex-col justify-between gap-6">
                 <Holding
+                  {selectedWallet}
                   isLoading={loadingHolding}
                   data={walletData}
                   bind:totalAssets

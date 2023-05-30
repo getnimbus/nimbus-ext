@@ -43,6 +43,9 @@ browser.commands.onCommand.addListener((command) => {
 });
 
 browser.action.onClicked.addListener(() => {
+  browser.tabs.create({ url: "src/entries/newTab/index.html" }); // auto jump to normal tab
+  return;
+
   browser.storage.sync.get("defaultnewtab").then(function (storage) {
     if (storage.defaultnewtab === false) {
       console.log("Create new tab");

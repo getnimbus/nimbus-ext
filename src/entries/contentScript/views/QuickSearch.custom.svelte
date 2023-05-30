@@ -401,7 +401,7 @@
 
 <reset-style>
   <div
-    style="z-index: 2147483647; top:{DraggableY}px;"
+    style="z-index: 9998; top:{DraggableY}px;"
     class="transform translate-x-[80%] transition-transform ease-in-out fixed right-0 pr-2 pl-1 h-10 bg-[#27326f] opacity-80 text-white rounded-tl-[5px] rounded-bl-[5px] cursor-pointer flex items-center gap-1 shadow-lg"
     class:hover:translate-x-0={!isShowSideBar}
     on:mousedown={() => {

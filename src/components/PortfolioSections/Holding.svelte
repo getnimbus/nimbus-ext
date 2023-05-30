@@ -6,6 +6,7 @@
   export let data;
   export let isLoading;
   export let totalAssets;
+  export let selectedWallet;
 
   let filteredHolding = true;
   let filteredHoldingData = [];
@@ -116,7 +117,7 @@
         <table class="table-fixed w-full">
           <thead>
             <tr class="bg-[#f4f5f880]">
-              <th class="pl-3 py-3 w-[220px]">
+              <th class="pl-3 py-3 w-[200px]">
                 <div
                   class="text-left text-xs uppercase font-semibold text-black"
                 >
@@ -144,19 +145,28 @@
                   {MultipleLang.value} ($)
                 </div>
               </th>
-              <th class="pr-3 py-3 w-[170px]">
+              <th
+                class={`py-3 w-[170px] ${
+                  filteredHoldingData.filter((item) => item.positionId)
+                    .length === 0 && "pr-3"
+                }`}
+              >
                 <div
                   class="text-right text-xs uppercase font-semibold text-black"
                 >
                   {MultipleLang.profit}
                 </div>
               </th>
+
+              {#if filteredHoldingData.filter((item) => item.positionId).length !== 0}
+                <th class="py-3 w-10" />
+              {/if}
             </tr>
           </thead>
           {#if isLoading}
             <tbody>
               <tr>
-                <td colspan="5">
+                <td colspan="6">
                   <div class="flex justify-center items-center py-4 px-3">
                     <loading-icon />
                   </div>
@@ -167,7 +177,7 @@
             <tbody>
               {#if filteredHoldingData && filteredHoldingData.length === 0}
                 <tr>
-                  <td colspan="5">
+                  <td colspan="6">
                     <div
                       class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
                     >
@@ -177,7 +187,7 @@
                 </tr>
               {:else}
                 {#each filteredHoldingData as holding}
-                  <HoldingInfo data={holding} />
+                  <HoldingInfo data={holding} {selectedWallet} />
                 {/each}
               {/if}
             </tbody>
