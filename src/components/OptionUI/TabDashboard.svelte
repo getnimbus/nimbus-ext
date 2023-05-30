@@ -4,6 +4,8 @@
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import * as browser from "webextension-polyfill";
+  import { Toast } from "flowbite-svelte";
+  import { fly } from "svelte/transition";
 
   const MultipleLang = {
     title: i18n("optionsPage.dashboard-page-title", "Dashboard"),
@@ -13,7 +15,20 @@
     ),
   };
 
+  let show = false;
+  let counter = 3;
   let checked = true;
+
+  const trigger = () => {
+    show = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    show = false;
+  };
 
   onMount(() => {
     browser.storage.sync.get("defaultnewtab").then(function (storage) {
@@ -24,6 +39,31 @@
 
 <div class="flex flex-col gap-2">
   <div class="title-3 text-gray-500 mb-2">{MultipleLang.title}</div>
+  <Toast
+    transition={fly}
+    params={{ x: 200 }}
+    position="top-right"
+    color="green"
+    bind:open={show}
+  >
+    <svelte:fragment slot="icon">
+      <svg
+        aria-hidden="true"
+        class="w-5 h-5"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        ><path
+          fill-rule="evenodd"
+          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+          clip-rule="evenodd"
+        /></svg
+      >
+      <span class="sr-only">Check icon</span>
+    </svelte:fragment>
+    {checked ? "Show" : "Hide"} your Portfolio on new tab
+  </Toast>
+
   {#if APP_TYPE.TYPE === "WEB"}
     <div class="title-5">
       Install <a
@@ -41,6 +81,7 @@
           bind:checked
           on:change={(e) => {
             browser.storage.sync.set({ defaultnewtab: e.target.checked });
+            trigger();
           }}
         />
         <span class="slider" />
