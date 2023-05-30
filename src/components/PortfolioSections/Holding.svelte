@@ -117,7 +117,7 @@
         <table class="table-fixed w-full">
           <thead>
             <tr class="bg-[#f4f5f880]">
-              <th class="pl-3 py-3 w-[220px]">
+              <th class="pl-3 py-3 w-[200px]">
                 <div
                   class="text-left text-xs uppercase font-semibold text-black"
                 >

@@ -16,8 +16,9 @@
   let isLoadingPositionDetail = false;
   let isLoadingPositionDetailPrice = false;
   let isEmptyChart = false;
+  let isDownPrice = 0;
 
-  const colors = ["#5470C6", "#91CC75"];
+  const colors = ["#808080", `${isDownPrice > 0 ? "#EF4444" : "#22c55e"}`];
   let option = {
     color: colors,
     tooltip: {
@@ -81,16 +82,21 @@
       if (response) {
         positionDetailPrice = response;
 
-        if (
-          (!response?.balances && !response?.prices) ||
-          response.length === 0
-        ) {
+        if (response.length === 0) {
           isEmptyChart = true;
         }
 
         const formatXAxis = response?.balances.map((item) => {
           return dayjs(new Date(item.time)).format("DD MMM YYYY");
         });
+
+        const lastPrice =
+          (response?.prices &&
+            response?.prices[response?.prices?.length - 1]) ||
+          [];
+        const firstPrice = (response?.prices && response?.prices[0]) || [];
+
+        isDownPrice = firstPrice[1] - lastPrice[1];
 
         option = {
           ...option,
@@ -151,10 +157,6 @@
       getPositionDetail(positionIDParams, positionTypeParams, addressParams);
     }
   });
-
-  $: {
-    console.log({ positionDetail, positionDetailPrice });
-  }
 </script>
 
 <div class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col gap-10">
@@ -182,15 +184,10 @@
             <img src={TwitterLogo} alt="" class="w-8 h-8 rounded-full" />
           </a>
         </div>
-        <div class="flex items-start gap-2 mt-4">
+        <div class="flex items-center gap-2 mt-4">
           <img src={positionDetail?.logo} alt="" class="rounded-full w-8 h-8" />
-          <div class="flex items-center gap-3">
-            <div class="text-3xl text-black font-semibold">
-              {positionDetail?.price?.name}
-            </div>
-            <div class="text-xl text-[#00000080] font-light">
-              {positionDetail?.price?.symbol}
-            </div>
+          <div class="text-3xl text-black font-semibold">
+            {positionDetail?.price?.symbol}
           </div>
         </div>
         <div class="text-4xl text-black font-medium">
@@ -208,7 +205,7 @@
               Empty
             </div>
           {:else}
-            <div class="ml-20">
+            <div class="ml-26">
               <EChart
                 id="double-line-chart"
                 theme="white"
@@ -221,8 +218,6 @@
       {/if}
     {/if}
   </div>
-
-  <div class="border border-[#0000001a] rounded-[20px] p-6">info</div>
 
   <div class="border border-[#0000001a] rounded-[20px] p-6">
     {#if isLoadingPositionDetail}
@@ -247,30 +242,35 @@
               </div>
             </div>
             <div class="flex flex-col gap-1">
-              <div class="flex items-center gap-2">
-                <div
-                  class={`flex items-center gap-1 ${
-                    change?.metadata?.btcChange?.final_result >= 0
-                      ? "text-[#00A878]"
-                      : "text-red-500"
-                  }`}
-                >
-                  <TooltipNumber
-                    number={Math.abs(change?.metadata?.btcChange?.final_result)}
-                    type="amount"
-                  />
-                  <div>{change.metadata.btcPrice.symbol}</div>
+              {#if change?.metadata?.btcChange}
+                <div class="flex items-center gap-2">
+                  <div
+                    class={`flex items-center gap-1 ${
+                      change?.metadata?.btcChange?.final_result >= 0
+                        ? "text-[#00A878]"
+                        : "text-red-500"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(
+                        change?.metadata?.btcChange?.final_result
+                      )}
+                      type="amount"
+                    />
+                    <div>{change?.metadata?.btcPrice?.symbol}</div>
+                  </div>
+                  <div class="text-gray-500 border-l pl-2">
+                    $<TooltipNumber
+                      number={Math.abs(
+                        change?.metadata?.btcChange?.final_result *
+                          Number(change?.metadata?.btcPrice?.price)
+                      )}
+                      type="amount"
+                    />
+                  </div>
                 </div>
-                <div class="text-gray-500 border-l pl-2">
-                  $<TooltipNumber
-                    number={Math.abs(
-                      change?.metadata?.btcChange?.final_result *
-                        Number(change?.metadata?.btcPrice?.price)
-                    )}
-                    type="amount"
-                  />
-                </div>
-              </div>
+              {/if}
+
               <div class="flex items-center gap-2">
                 <div
                   class={`flex items-center gap-1 ${

@@ -23,7 +23,7 @@
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">
-  <td class="pl-3 py-4 w-[220px]">
+  <td class="pl-3 py-4 w-[200px]">
     <Link
       to={`${
         data.positionId
