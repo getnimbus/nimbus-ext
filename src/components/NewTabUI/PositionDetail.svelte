@@ -109,7 +109,7 @@
               {
                 name: "Balance",
                 itemStyle: {
-                  color: "#d1d1d1",
+                  color: "rgba(178,184,255,1)",
                 },
               },
             ],
