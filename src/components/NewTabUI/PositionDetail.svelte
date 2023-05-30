@@ -235,14 +235,12 @@
               Empty
             </div>
           {:else}
-            <div class="ml-26">
-              <EChart
-                id="double-line-chart"
-                theme="white"
-                {option}
-                height={565}
-              />
-            </div>
+            <EChart
+              id="double-line-chart"
+              theme="white"
+              {option}
+              height={565}
+            />
           {/if}
         </div>
       {/if}
