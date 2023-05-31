@@ -2,7 +2,8 @@ import { writable } from "svelte/store";
 
 export const isSaveAddressLabel = writable(false);
 export const isOpenReport = writable(false);
-export const user = writable({})
+export const user = writable({});
+export const wallet = writable({});
 
 let isFirstTime = true;
 isOpenReport.subscribe((value) => {

@@ -12,7 +12,7 @@
     PhantomWalletAdapter,
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
-  import { user } from "~/store";
+  import { user, wallet } from "~/store";
 
   import GoogleAuth from "~/components/GoogleAuth.svelte";
   import SolanaAuth from "./SolanaAuth.svelte";
@@ -105,7 +105,10 @@
     ),
   };
 
-  export let selectedWallet;
+  let selectedWallet;
+  wallet.subscribe((value) => {
+    selectedWallet = value;
+  });
 
   let headerScrollY = false;
   let showTooltipAnalytic = false;
@@ -411,16 +414,22 @@
         <input
           on:keyup={({ target: { value } }) => debounceSearch(value)}
           on:keydown={(event) => {
-            if (search && (event.which == 13 || event.keyCode == 13)) {
+            if (
+              search.length !== 0 &&
+              (event.which == 13 || event.keyCode == 13)
+            ) {
               window.history.replaceState(
                 null,
                 "",
                 window.location.pathname + `?address=${search}`
               );
-              selectedWallet = {
-                ...selectedWallet,
-                value: search,
-              };
+              wallet.update(
+                (n) =>
+                  (n = {
+                    ...selectedWallet,
+                    value: search,
+                  })
+              );
             }
           }}
           value={search}

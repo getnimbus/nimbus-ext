@@ -13,8 +13,6 @@
   import PositionDetail from "~/components/NewTabUI/PositionDetail.svelte";
   // TODO: Add Lazyload for each routes
 
-  let selectedWallet;
-
   const hash = createHistory(createHashSource());
 
   $: {
@@ -29,7 +27,7 @@
 <ErrorBoundary>
   <Router history={APP_TYPE.TYPE === "EXT" ? hash : undefined}>
     <div class="flex flex-col pb-10">
-      <Header bind:selectedWallet />
+      <Header />
 
       <Route path="market">
         <Market />
@@ -52,7 +50,7 @@
       </Route>
 
       <Route path={"*"}>
-        <Portfolio bind:selectedWallet />
+        <Portfolio />
       </Route>
     </div>
   </Router>

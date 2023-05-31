@@ -19,7 +19,7 @@
     showChatAnimationVariants,
   } from "~/utils";
   import { wait } from "../../entries/background/utils";
-  import { isOpenReport } from "~/store";
+  import { isOpenReport, wallet } from "~/store";
 
   import type { AddressData } from "~/types/AddressData";
   import type { NewData, NewDataRes } from "~/types/NewData";
@@ -120,8 +120,10 @@
     },
   };
 
-  export let selectedWallet;
-
+  let selectedWallet;
+  wallet.subscribe((value) => {
+    selectedWallet = value;
+  });
   let overviewData: OverviewData = {
     breakdownToken: [],
     overview: {
@@ -785,26 +787,31 @@
         "selectedWallet"
       );
 
+      console.log("BLABLA: ", selectedWalletRes);
+
       if (selectedWalletRes && !isEmpty(selectedWalletRes.selectedWallet)) {
-        selectedWallet = selectedWalletRes.selectedWallet;
+        wallet.update((n) => (n = selectedWalletRes.selectedWallet));
       }
 
       if (selectedWalletRes && isEmpty(selectedWalletRes.selectedWallet)) {
-        selectedWallet = listAddress[0];
+        wallet.update((n) => (n = listAddress[0]));
       }
 
       const urlParams = new URLSearchParams(window.location.search);
       const addressParams = urlParams.get("address");
       if (addressParams) {
-        selectedWallet = {
-          id: addressParams,
-          logo: "",
-          label: "",
-          value: addressParams,
-        };
+        wallet.update(
+          (n) =>
+            (n = {
+              id: addressParams,
+              logo: "",
+              label: "",
+              value: addressParams,
+            })
+        );
       }
       if (!addressParams && selectedWallet && listAddress.length === 0) {
-        selectedWallet = undefined;
+        wallet.update((n) => (n = undefined));
       }
 
       isLoadingFullPage = false;
@@ -906,7 +913,7 @@
       listAddress = addWallet;
 
       if (addWallet.length === 1) {
-        selectedWallet = listAddress[0];
+        wallet.update((n) => (n = listAddress[0]));
       }
 
       const filterWalletList = addWallet.filter((item) => item.value !== "all");
@@ -954,7 +961,7 @@
   }
 
   $: {
-    if (selectedWallet) {
+    if (Object.keys(selectedWallet).length !== 0) {
       browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
         console.log("save selected address to sync storage");
       });
@@ -1013,7 +1020,7 @@
                           class:hover:no-underline={item.value ===
                             selectedWallet?.value}
                           on:click={() => {
-                            selectedWallet = item;
+                            wallet.update((n) => (n = item));
                           }}
                         >
                           <img
@@ -1043,7 +1050,7 @@
                           class:hover:no-underline={item.value ===
                             selectedWallet?.value}
                           on:click={() => {
-                            selectedWallet = item;
+                            wallet.update((n) => (n = item));
                           }}
                         >
                           <img
