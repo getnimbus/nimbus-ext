@@ -12,7 +12,6 @@
 
   import TwitterLogo from "~/assets/twitter.svg";
   import LeftArrow from "~/assets/left-arrow.svg";
-  import Bitcoin from "~/assets/bitcoin.png";
 
   let positionDetail;
   let positionDetailPrice;
@@ -348,34 +347,88 @@
           </a>
         </div>
       </div>
-      <!-- <div class="flex xl:flex-row flex-col justify-between gap-6">
+      <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <div class="flex-1 p-6 rounded-lg flex flex-col gap-3 bg-white">
+          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
+            <div class="text-[#00000099] text-base font-medium">Price</div>
+            <div class="text-3xl text-black">
+              $<TooltipNumber
+                number={positionDetail?.overview?.currentPrice}
+                type="amount"
+              />
+            </div>
+          </div>
+          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
             <div class="text-[#00000099] text-base font-medium">
               Profit/Loss
             </div>
-            <div class="text-3xl text-black">$5</div>
-          </div>
-          <div class="flex-1 p-6 rounded-lg flex flex-col gap-3 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              Average Cost
+            <div class="text-3xl text-black">
+              $<TooltipNumber
+                number={Math.abs(
+                  positionDetail?.overview?.profitAndLoss?.value
+                )}
+              />
             </div>
-            <div class="text-3xl text-black">$5</div>
+            <div
+              class={`text-lg ${
+                positionDetail?.overview?.profitAndLoss?.percent >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+              }`}
+            >
+              {#if positionDetail?.overview?.profitAndLoss?.percent < 0}
+                ↓
+              {:else}
+                ↑
+              {/if}
+              <TooltipNumber
+                number={Math.abs(
+                  positionDetail?.overview?.profitAndLoss?.percent
+                ) * 100}
+                type="percent"
+              />%
+            </div>
           </div>
         </div>
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <div class="flex-1 p-6 rounded-lg flex flex-col gap-3 bg-white">
+          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
+            <div class="text-[#00000099] text-base font-medium">
+              Average Cost
+            </div>
+            <div class="text-3xl text-black">
+              $<TooltipNumber number={positionDetail?.overview?.averageCost} />
+            </div>
+          </div>
+          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
             <div class="text-[#00000099] text-base font-medium">
               24-hour Return
             </div>
-            <div class="text-3xl text-black">$5</div>
-          </div>
-          <div class="flex-1 p-6 rounded-lg flex flex-col gap-3 bg-white">
-            <div class="text-[#00000099] text-base font-medium">Paid Fees</div>
-            <div class="text-3xl text-black">$5</div>
+            <div class="text-3xl text-black">
+              $<TooltipNumber
+                number={Math.abs(positionDetail?.overview?.return24h?.value)}
+              />
+            </div>
+            <div
+              class={`text-lg ${
+                positionDetail?.overview?.return24h?.percent >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+              }`}
+            >
+              {#if positionDetail?.overview?.return24h?.percent < 0}
+                ↓
+              {:else}
+                ↑
+              {/if}
+              <TooltipNumber
+                number={Math.abs(positionDetail?.overview?.return24h?.percent) *
+                  100}
+                type="percent"
+              />%
+            </div>
           </div>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
   <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
