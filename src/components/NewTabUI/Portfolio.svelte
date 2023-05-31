@@ -787,8 +787,6 @@
         "selectedWallet"
       );
 
-      console.log("BLABLA: ", selectedWalletRes);
-
       if (selectedWalletRes && !isEmpty(selectedWalletRes.selectedWallet)) {
         wallet.update((n) => (n = selectedWalletRes.selectedWallet));
       }
@@ -961,7 +959,10 @@
   }
 
   $: {
-    if (Object.keys(selectedWallet).length !== 0) {
+    if (
+      selectedWallet !== undefined &&
+      Object.keys(selectedWallet).length !== 0
+    ) {
       browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
         console.log("save selected address to sync storage");
       });
