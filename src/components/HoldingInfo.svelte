@@ -1,5 +1,5 @@
 <script>
-  import { Link } from "svelte-navigator";
+  import { useNavigate } from "svelte-navigator";
   import { formatCurrency, shorterName } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
@@ -12,6 +12,8 @@
 
   export let data;
   export let selectedWallet;
+
+  const navigate = useNavigate();
 
   let showTooltipName = false;
   let showTooltipSymbol = false;
@@ -26,17 +28,21 @@
 
 <tr class="hover:bg-gray-100 transition-all">
   <td class="pl-3 py-4 w-[200px]">
-    <a
-      href={`${
-        data.positionId && data.symbol !== "Bitcoin"
-          ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
-          : "#"
-      }`}
-      on:click={(event) => {
-        if (!data.positionId && data.symbol === "Bitcoin") {
-          event.preventDefault();
+    <div
+      on:click={() => {
+        if (data.positionId && data.symbol !== "Bitcoin") {
+          navigate(
+            `position-detail?positionId=${encodeURIComponent(
+              data.positionId
+            )}&positionType=${encodeURIComponent(
+              data.positionType
+            )}&address=${encodeURIComponent(selectedWallet.value)}`
+          );
         }
       }}
+      class={`${
+        data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
+      }`}
     >
       <div class="text-left flex items-start gap-2">
         <img
@@ -104,21 +110,25 @@
           {/if}
         </div>
       </div>
-    </a>
+    </div>
   </td>
 
   <td class="py-4">
-    <a
-      href={`${
-        data.positionId && data.symbol !== "Bitcoin"
-          ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
-          : "#"
-      }`}
-      on:click={(event) => {
-        if (!data.positionId && data.symbol === "Bitcoin") {
-          event.preventDefault();
+    <div
+      on:click={() => {
+        if (data.positionId && data.symbol !== "Bitcoin") {
+          navigate(
+            `position-detail?positionId=${encodeURIComponent(
+              data.positionId
+            )}&positionType=${encodeURIComponent(
+              data.positionType
+            )}&address=${encodeURIComponent(selectedWallet.value)}`
+          );
         }
       }}
+      class={`${
+        data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
+      }`}
     >
       <div class="text-sm text-[#00000099] font-medium flex justify-start">
         {#if formatCurrency(data.market_price).toString().length > 9}
@@ -127,59 +137,71 @@
           {formatCurrency(data.market_price)}
         {/if}
       </div>
-    </a>
+    </div>
   </td>
 
   <td class="py-4">
-    <a
-      href={`${
-        data.positionId && data.symbol !== "Bitcoin"
-          ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
-          : "#"
-      }`}
-      on:click={(event) => {
-        if (!data.positionId && data.symbol === "Bitcoin") {
-          event.preventDefault();
+    <div
+      on:click={() => {
+        if (data.positionId && data.symbol !== "Bitcoin") {
+          navigate(
+            `position-detail?positionId=${encodeURIComponent(
+              data.positionId
+            )}&positionType=${encodeURIComponent(
+              data.positionType
+            )}&address=${encodeURIComponent(selectedWallet.value)}`
+          );
         }
       }}
+      class={`${
+        data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
+      }`}
     >
       <div class="text-sm text-[#00000099] font-medium flex justify-end">
         <TooltipNumber number={data.amount} type="amount" />
       </div>
-    </a>
+    </div>
   </td>
 
   <td class="py-4">
-    <a
-      href={`${
-        data.positionId && data.symbol !== "Bitcoin"
-          ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
-          : "#"
-      }`}
-      on:click={(event) => {
-        if (!data.positionId && data.symbol === "Bitcoin") {
-          event.preventDefault();
+    <div
+      on:click={() => {
+        if (data.positionId && data.symbol !== "Bitcoin") {
+          navigate(
+            `position-detail?positionId=${encodeURIComponent(
+              data.positionId
+            )}&positionType=${encodeURIComponent(
+              data.positionType
+            )}&address=${encodeURIComponent(selectedWallet.value)}`
+          );
         }
       }}
+      class={`${
+        data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
+      }`}
     >
       <div class="text-sm text-[#00000099] font-medium flex justify-end">
         <TooltipNumber number={price} />
       </div>
-    </a>
+    </div>
   </td>
 
   <td class={`py-3 w-[170px] ${!data.positionId && "pr-3"}`}>
-    <a
-      href={`${
-        data.positionId && data.symbol !== "Bitcoin"
-          ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
-          : "#"
-      }`}
-      on:click={(event) => {
-        if (!data.positionId && data.symbol === "Bitcoin") {
-          event.preventDefault();
+    <div
+      on:click={() => {
+        if (data.positionId && data.symbol !== "Bitcoin") {
+          navigate(
+            `position-detail?positionId=${encodeURIComponent(
+              data.positionId
+            )}&positionType=${encodeURIComponent(
+              data.positionType
+            )}&address=${encodeURIComponent(selectedWallet.value)}`
+          );
         }
       }}
+      class={`${
+        data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
+      }`}
     >
       <div class="flex items-center justify-end gap-1 text-sm font-medium">
         <div class="flex flex-col">
@@ -210,35 +232,37 @@
           </div>
         </div>
       </div>
-    </a>
+    </div>
   </td>
 
   {#if data.positionId}
     <td class="py-4 w-10">
       {#if data.symbol !== "Bitcoin"}
-        <div class="flex justify-center">
-          <a
-            href={`${
-              data.positionId && data.symbol !== "Bitcoin"
-                ? `position-detail?positionId=${data.positionId}&positionType=${data.positionType}&address=${selectedWallet.value}`
-                : "#"
-            }`}
-            on:click={(event) => {
-              if (!data.positionId && data.symbol === "Bitcoin") {
-                event.preventDefault();
-              }
+        <div
+          on:click={() => {
+            if (data.positionId && data.symbol !== "Bitcoin") {
+              navigate(
+                `position-detail?positionId=${encodeURIComponent(
+                  data.positionId
+                )}&positionType=${encodeURIComponent(
+                  data.positionType
+                )}&address=${encodeURIComponent(selectedWallet.value)}`
+              );
+            }
+          }}
+          class={`flex justify-center ${
+            data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
+          }`}
+        >
+          <div
+            use:tooltip={{
+              content: `<tooltip-detail text="Show detail" />`,
+              allowHTML: true,
+              placement: "top",
             }}
           >
-            <div
-              use:tooltip={{
-                content: `<tooltip-detail text="Show detail" />`,
-                allowHTML: true,
-                placement: "top",
-              }}
-            >
-              <img src={Chart} alt="" width={14} height={14} />
-            </div>
-          </a>
+            <img src={Chart} alt="" width={14} height={14} />
+          </div>
         </div>
       {/if}
     </td>

@@ -166,7 +166,12 @@
           {#if isLoading}
             <tbody>
               <tr>
-                <td colspan="6">
+                <td
+                  colspan={filteredHoldingData.filter((item) => item.positionId)
+                    .length === 0
+                    ? 5
+                    : 6}
+                >
                   <div class="flex justify-center items-center py-4 px-3">
                     <loading-icon />
                   </div>
@@ -177,7 +182,13 @@
             <tbody>
               {#if filteredHoldingData && filteredHoldingData.length === 0}
                 <tr>
-                  <td colspan="6">
+                  <td
+                    colspan={filteredHoldingData.filter(
+                      (item) => item.positionId
+                    ).length === 0
+                      ? 5
+                      : 6}
+                  >
                     <div
                       class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
                     >
