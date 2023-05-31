@@ -318,9 +318,9 @@
             </div>
           </Link>
         </div>
-        <div class="flex justify-between">
-          <div>
-            <div class="flex items-center gap-2 text-white mb-3">
+        <div class="flex justify-between items-center">
+          <div class="flex flex-col gap-3">
+            <div class="flex items-center gap-2 text-white">
               <img
                 src={positionDetail?.logo}
                 alt=""
@@ -337,22 +337,48 @@
               size={16}
             />
           </div>
-          <div class="self-end">
-            <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                tweet
-              )}`}
-              target="_blank"
-              class="flex justify-end"
-            >
-              <img src={TwitterLogo} alt="" class="w-8 h-8 rounded-full" />
-            </a>
-          </div>
+          <a
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+              tweet
+            )}`}
+            target="_blank"
+            class="flex justify-end"
+          >
+            <img src={TwitterLogo} alt="" class="w-8 h-8 rounded-full" />
+          </a>
         </div>
       </div>
+      <!-- <div class="flex xl:flex-row flex-col justify-between gap-6">
+        <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
+          <div class="flex-1 p-6 rounded-lg flex flex-col gap-3 bg-white">
+            <div class="text-[#00000099] text-base font-medium">
+              Profit/Loss
+            </div>
+            <div class="text-3xl text-black">$5</div>
+          </div>
+          <div class="flex-1 p-6 rounded-lg flex flex-col gap-3 bg-white">
+            <div class="text-[#00000099] text-base font-medium">
+              Average Cost
+            </div>
+            <div class="text-3xl text-black">$5</div>
+          </div>
+        </div>
+        <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
+          <div class="flex-1 p-6 rounded-lg flex flex-col gap-3 bg-white">
+            <div class="text-[#00000099] text-base font-medium">
+              24-hour Return
+            </div>
+            <div class="text-3xl text-black">$5</div>
+          </div>
+          <div class="flex-1 p-6 rounded-lg flex flex-col gap-3 bg-white">
+            <div class="text-[#00000099] text-base font-medium">Paid Fees</div>
+            <div class="text-3xl text-black">$5</div>
+          </div>
+        </div>
+      </div> -->
     </div>
   </div>
-  <div class="max-w-[2000px] m-auto w-[90%] -mt-36">
+  <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
     <div
       class="flex flex-col gap-7 bg-white rounded-[20px] p-8 mt-6"
       style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
@@ -412,44 +438,6 @@
           {/if}
         </div>
       </div>
-      <!-- <div
-        class="border border-[#0000001a] rounded-[20px] p-6 flex justify-between gap-6"
-      >
-        <div class="flex-[0.7] flex flex-col gap-2">
-          <div class="flex items-center gap-2 font-medium">
-            <div class="text-lg">Equity</div>
-            <div class="text-lg">6.9%</div>
-          </div>
-          <div class="flex flex-col">
-            <div class="text-2xl font-medium text-black">$71,297.31</div>
-            <div class="text-base font-medium">37.365 WETH</div>
-          </div>
-          <div class="flex items-center gap-1">
-            <img src={Bitcoin} alt="" class="rounded-full w-5 h-5" />
-            <div class="text-base font-light">
-              37.365 ETH <span class="text-gray-500">($71,271.53)</span>
-            </div>
-          </div>
-        </div>
-        <div class="flex-1 grid grid-cols-2 grid-rows-2 gap-y-4">
-          <div class="flex flex-col gap-1">
-            <div class="text-lg font-medium">Profit/Loss</div>
-            <div class="text-base">−$16,556.79</div>
-          </div>
-          <div class="flex flex-col gap-1">
-            <div class="text-lg font-medium">Average Cost</div>
-            <div class="text-base">$2,229.91</div>
-          </div>
-          <div class="flex flex-col gap-1">
-            <div class="text-lg font-medium">24-hour Return</div>
-            <div class="text-base">+0.63% ($443.82)</div>
-          </div>
-          <div class="flex flex-col gap-1">
-            <div class="text-lg font-medium">Paid Fees</div>
-            <div class="text-base">$18.71</div>
-          </div>
-        </div>
-      </div> -->
       <div class="border border-[#0000001a] rounded-[20px] p-6">
         <div class="flex flex-col gap-6">
           <div class="text-2xl font-medium text-black">History</div>
