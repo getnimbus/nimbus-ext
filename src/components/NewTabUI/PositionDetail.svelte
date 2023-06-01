@@ -357,12 +357,21 @@
               Latest price
             </div>
             <div class="text-3xl text-black">
-              $<CountUpNumber
-                id="LatestPrice"
-                number={positionDetail?.overview?.currentPrice || 0}
-                format={10}
-                type="amount"
-              />
+              {#if (positionDetail?.overview?.currentPrice)
+                .toString()
+                .toLowerCase()
+                .includes("e-")}
+                $<TooltipNumber
+                  number={positionDetail?.overview?.currentPrice}
+                />
+              {:else}
+                $<CountUpNumber
+                  id="LatestPrice"
+                  number={positionDetail?.overview?.currentPrice}
+                  format={8}
+                  type="amount"
+                />
+              {/if}
             </div>
           </div>
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
@@ -411,12 +420,21 @@
               Average Cost
             </div>
             <div class="text-3xl text-black">
-              $<CountUpNumber
-                id="AverageCost"
-                number={positionDetail?.overview?.averageCost}
-                format={10}
-                type="amount"
-              />
+              {#if (positionDetail?.overview?.averageCost)
+                .toString()
+                .toLowerCase()
+                .includes("e-")}
+                $<TooltipNumber
+                  number={positionDetail?.overview?.averageCost}
+                />
+              {:else}
+                $<CountUpNumber
+                  id="AverageCost"
+                  number={positionDetail?.overview?.averageCost}
+                  format={8}
+                  type="amount"
+                />
+              {/if}
             </div>
           </div>
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
