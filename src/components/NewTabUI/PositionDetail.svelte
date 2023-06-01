@@ -129,6 +129,11 @@
                 color: `${isDownPrice > 0 ? "#EF4444" : "#22c55e"}`,
               },
               showSymbol: false,
+              tooltip: {
+                valueFormatter: function (value) {
+                  return "$" + value;
+                },
+              },
               data: response?.prices.map((item) => {
                 return {
                   value: item?.price,
