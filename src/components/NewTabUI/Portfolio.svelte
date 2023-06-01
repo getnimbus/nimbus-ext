@@ -161,6 +161,7 @@
     isShowChat = value;
   });
   let showDisableAddWallet = false;
+  let showFollowTooltip = false;
   let totalPositions = 0;
   let totalClaimable = 0;
   let totalAssets = 0;
@@ -1070,52 +1071,47 @@
                     {MultipleLang.empty_wallet}
                   </div>
                 {/if}
-                <div class="relative">
-                  <div
-                    on:mouseenter={() => {
+                <div
+                  class="relative"
+                  on:mouseenter={() => {
+                    if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
+                      showDisableAddWallet = true;
+                    }
+                  }}
+                  on:mouseleave={() => {
+                    if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
+                      showDisableAddWallet = false;
+                    }
+                  }}
+                >
+                  <Button
+                    variant={APP_TYPE.TYPE !== "EXT" && listAddress.length === 3
+                      ? "disabled"
+                      : "tertiary"}
+                    width={136}
+                    on:click={() => {
                       if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
-                        showDisableAddWallet = true;
-                      }
-                    }}
-                    on:mouseleave={() => {
-                      if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
-                        showDisableAddWallet = false;
+                        window.open("https://getnimbus.io", "_blank");
+                      } else {
+                        isOpenAddModal = true;
                       }
                     }}
                   >
-                    <Button
-                      variant={APP_TYPE.TYPE !== "EXT" &&
-                      listAddress.length === 3
-                        ? "disabled"
-                        : "tertiary"}
-                      width={136}
-                      on:click={() => {
-                        if (
-                          APP_TYPE.TYPE !== "EXT" &&
-                          listAddress.length === 3
-                        ) {
-                          window.open("https://getnimbus.io", "_blank");
-                        } else {
-                          isOpenAddModal = true;
-                        }
-                      }}
+                    <img src={Plus} alt="" width="12" height="12" />
+                    <div class="text-base font-medium text-white">
+                      {MultipleLang.content.btn_text}
+                    </div>
+                  </Button>
+                  {#if showDisableAddWallet}
+                    <div
+                      class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                      style="z-index: 2147483648;"
                     >
-                      <img src={Plus} alt="" width="12" height="12" />
-                      <div class="text-base font-medium text-white">
-                        {MultipleLang.content.btn_text}
-                      </div>
-                    </Button>
-                    {#if showDisableAddWallet}
-                      <div
-                        class="absolute -top-8 left-1/2 transform -translate-x-1/2"
-                        style="z-index: 2147483648;"
-                      >
-                        <tooltip-detail
-                          text={"Install our extension to add more wallet"}
-                        />
-                      </div>
-                    {/if}
-                  </div>
+                      <tooltip-detail
+                        text={"Install our extension to add more wallet"}
+                      />
+                    </div>
+                  {/if}
                 </div>
               </div>
 
@@ -1144,12 +1140,45 @@
                         </div>
                       </div>
                     </div>
-                    <CopyToClipboard
-                      address={selectedWallet.value}
-                      iconColor="#fff"
-                      color="#fff"
-                      size={16}
-                    />
+                    <div class="flex items-center gap-4">
+                      <CopyToClipboard
+                        address={selectedWallet.value}
+                        iconColor="#fff"
+                        color="#fff"
+                        size={16}
+                      />
+
+                      <div
+                        class="relative"
+                        on:mouseenter={() => {
+                          showFollowTooltip = true;
+                        }}
+                        on:mouseleave={() => {
+                          showFollowTooltip = false;
+                        }}
+                      >
+                        <a
+                          href="https://forms.gle/UdUbaEevMYLp4SFK8"
+                          target="_blank"
+                        >
+                          <Button
+                            variant="secondary"
+                            width={140}
+                            size="supper-small">Follow this whale 🐳</Button
+                          >
+                        </a>
+                        {#if showFollowTooltip}
+                          <div
+                            class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                            style="z-index: 2147483648;"
+                          >
+                            <tooltip-detail
+                              text={"Alert me when it make a move"}
+                            />
+                          </div>
+                        {/if}
+                      </div>
+                    </div>
                   </div>
                   <Select
                     isWalletSelect={false}
