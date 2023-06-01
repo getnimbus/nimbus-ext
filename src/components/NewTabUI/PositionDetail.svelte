@@ -134,7 +134,7 @@
               showSymbol: false,
               tooltip: {
                 valueFormatter: function (value) {
-                  return "$" + value;
+                  return value ? "$" + value : "--";
                 },
               },
               data: response?.prices.map((item) => {
