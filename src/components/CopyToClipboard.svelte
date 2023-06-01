@@ -10,7 +10,6 @@
   export let iconColor;
   export let isShorten = false;
   export let color = "#000";
-  export let size = 14;
 
   let isCopied = false;
   let showTooltipCopyAddress = false;
@@ -26,7 +25,7 @@
   }}
 >
   <div class="flex items-center gap-2">
-    <div class="font-normal" style={`color: ${color}; fontSize: ${size}px`}>
+    <div class="font-normal" style={`color: ${color};`}>
       {#if isShorten}
         <span
           use:tooltip={{

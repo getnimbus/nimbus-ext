@@ -3,6 +3,9 @@ export type TokenInfoData = {
   name: string;
   logo_url: string;
   categories: string[];
+  cg_rank: number;
+  cmc_rank: number;
+  cmc_slug: string;
   price: {
     usd: number,
     usd_market_cap: number,

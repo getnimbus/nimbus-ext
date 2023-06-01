@@ -14,7 +14,7 @@
   export let className: string = "";
   export let disabled: boolean = false;
   export let isLoading: boolean = false;
-  export let size: "small" | "medium" | "large" = "small";
+  export let size: "supper-small" | "small" | "medium" | "large" = "small";
   export let type: "button" | "submit" | "reset" = "button";
 
   const buttonClassName = classNames(className, "button", "container", {
@@ -26,6 +26,7 @@
     ["delete"]: variant === "delete",
     ["large"]: size === "large",
     ["small"]: size === "small",
+    ["supper-small"]: size === "supper-small",
     ["loading"]: isLoading,
   });
 </script>
@@ -101,6 +102,12 @@
     height: fit-content;
     font-size: 14px;
     padding: 6px 9px;
+  }
+
+  .supper-small {
+    height: fit-content;
+    font-size: 12px;
+    padding: 4px 7px;
   }
 
   .large {
