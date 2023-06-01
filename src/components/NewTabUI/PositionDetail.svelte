@@ -553,7 +553,14 @@
                   </th>
                   <th class="pr-3 py-3">
                     <div
-                      class="text-right text-xs uppercase font-semibold text-black"
+                      class="text-left text-xs uppercase font-semibold text-black"
+                    >
+                      Type
+                    </div>
+                  </th>
+                  <th class="pr-3 py-3">
+                    <div
+                      class="text-left text-xs uppercase font-semibold text-black"
                     >
                       Token Change
                     </div>
@@ -563,7 +570,7 @@
               {#if isLoadingPositionDetail}
                 <tbody>
                   <tr>
-                    <td colspan="2">
+                    <td colspan="3">
                       <div class="flex justify-center items-center py-4 px-3">
                         <loading-icon />
                       </div>
@@ -574,7 +581,7 @@
                 <tbody>
                   {#if positionDetail?.changes && positionDetail?.changes.length === 0}
                     <tr>
-                      <td colspan="2">
+                      <td colspan="3">
                         <div
                           class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
                         >
@@ -588,6 +595,7 @@
                         <td class="pl-3 py-4">
                           <a
                             href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
+                            class="hover:text-blue-500"
                             target="_blank"
                           >
                             <div class="text-left flex items-start gap-2">
@@ -604,13 +612,24 @@
                             </div>
                           </a>
                         </td>
+                        <td>
+                          {#if change?.metadata?.action}
+                            <div>
+                              <span
+                                class="px-2 py-1 text-[#27326F] text-[12px] font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
+                              >
+                                {change?.metadata?.action}
+                              </span>
+                            </div>
+                          {/if}
+                        </td>
                         <td class="pr-3 py-4">
                           <a
                             href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
                             target="_blank"
                           >
                             <div
-                              class="flex flex-col gap-1 justify-end items-end text-sm"
+                              class="flex flex-col gap-1 justify-start items-start text-sm"
                             >
                               {#if change?.metadata?.hasOwnProperty("btcChange")}
                                 <div class="flex items-center gap-1">
