@@ -26,20 +26,22 @@
       : profitAndLoss / Math.abs(data?.avgCost);
 </script>
 
-<tr class="hover:bg-gray-100 transition-all">
+<tr
+  class="hover:bg-gray-100 transition-all"
+  on:click={() => {
+    if (data.positionId && data.symbol !== "Bitcoin") {
+      navigate(
+        `position-detail?id=${encodeURIComponent(
+          data.positionId
+        )}&type=${encodeURIComponent(
+          data.positionType
+        )}&address=${encodeURIComponent(selectedWallet.value)}`
+      );
+    }
+  }}
+>
   <td class="pl-3 py-4 w-[200px]">
     <div
-      on:click={() => {
-        if (data.positionId && data.symbol !== "Bitcoin") {
-          navigate(
-            `position-detail?positionId=${encodeURIComponent(
-              data.positionId
-            )}&positionType=${encodeURIComponent(
-              data.positionType
-            )}&address=${encodeURIComponent(selectedWallet.value)}`
-          );
-        }
-      }}
       class={`${
         data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
       }`}
@@ -115,17 +117,6 @@
 
   <td class="py-4">
     <div
-      on:click={() => {
-        if (data.positionId && data.symbol !== "Bitcoin") {
-          navigate(
-            `position-detail?positionId=${encodeURIComponent(
-              data.positionId
-            )}&positionType=${encodeURIComponent(
-              data.positionType
-            )}&address=${encodeURIComponent(selectedWallet.value)}`
-          );
-        }
-      }}
       class={`${
         data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
       }`}
@@ -142,17 +133,6 @@
 
   <td class="py-4">
     <div
-      on:click={() => {
-        if (data.positionId && data.symbol !== "Bitcoin") {
-          navigate(
-            `position-detail?positionId=${encodeURIComponent(
-              data.positionId
-            )}&positionType=${encodeURIComponent(
-              data.positionType
-            )}&address=${encodeURIComponent(selectedWallet.value)}`
-          );
-        }
-      }}
       class={`${
         data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
       }`}
@@ -165,17 +145,6 @@
 
   <td class="py-4">
     <div
-      on:click={() => {
-        if (data.positionId && data.symbol !== "Bitcoin") {
-          navigate(
-            `position-detail?positionId=${encodeURIComponent(
-              data.positionId
-            )}&positionType=${encodeURIComponent(
-              data.positionType
-            )}&address=${encodeURIComponent(selectedWallet.value)}`
-          );
-        }
-      }}
       class={`${
         data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
       }`}
@@ -188,17 +157,6 @@
 
   <td class={`py-3 w-[170px] ${!data.positionId && "pr-3"}`}>
     <div
-      on:click={() => {
-        if (data.positionId && data.symbol !== "Bitcoin") {
-          navigate(
-            `position-detail?positionId=${encodeURIComponent(
-              data.positionId
-            )}&positionType=${encodeURIComponent(
-              data.positionType
-            )}&address=${encodeURIComponent(selectedWallet.value)}`
-          );
-        }
-      }}
       class={`${
         data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
       }`}
@@ -239,17 +197,6 @@
     <td class="py-4 w-10">
       {#if data.symbol !== "Bitcoin"}
         <div
-          on:click={() => {
-            if (data.positionId && data.symbol !== "Bitcoin") {
-              navigate(
-                `position-detail?positionId=${encodeURIComponent(
-                  data.positionId
-                )}&positionType=${encodeURIComponent(
-                  data.positionType
-                )}&address=${encodeURIComponent(selectedWallet.value)}`
-              );
-            }
-          }}
           class={`flex justify-center ${
             data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
           }`}

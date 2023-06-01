@@ -297,9 +297,25 @@
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const positionIDParams = urlParams.get("positionId");
-    const positionTypeParams = urlParams.get("positionType");
-    const addressParams = urlParams.get("address");
+
+    let positionIDParams = urlParams.get("id");
+    let positionTypeParams = urlParams.get("type");
+    let addressParams = urlParams.get("address");
+
+    if (APP_TYPE.TYPE === "EXT") {
+      const params = decodeURIComponent(window.location.hash)
+        .split("?")[1]
+        .split("&")
+        .reduce(function (result, param) {
+          var [key, value] = param.split("=");
+          result[key] = value;
+          return result;
+        }, {});
+
+      positionIDParams = params.id;
+      positionTypeParams = params.type;
+      addressParams = params.address;
+    }
 
     if (positionIDParams && positionTypeParams && addressParams) {
       getPositionDetailPrice(positionIDParams, addressParams);

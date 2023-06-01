@@ -49,7 +49,7 @@
         <Transactions />
       </Route>
 
-      <Route path={"*"}>
+      <Route path="*">
         <Portfolio />
       </Route>
     </div>
