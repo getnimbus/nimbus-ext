@@ -339,12 +339,11 @@
                 {positionDetail?.price?.symbol || "--"}
               </div>
             </div>
-            <CopyToClipboard
-              {address}
-              iconColor="#fff"
-              color="#fff"
-              size={16}
-            />
+            {#if address}
+              <div class="text-base">
+                <CopyToClipboard {address} iconColor="#fff" color="#fff" />
+              </div>
+            {/if}
           </div>
           <a
             href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(

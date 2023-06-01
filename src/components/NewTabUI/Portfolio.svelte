@@ -1141,13 +1141,13 @@
                       </div>
                     </div>
                     <div class="flex items-center gap-4">
-                      <CopyToClipboard
-                        address={selectedWallet.value}
-                        iconColor="#fff"
-                        color="#fff"
-                        size={16}
-                      />
-
+                      <div class="text-base">
+                        <CopyToClipboard
+                          address={selectedWallet.value}
+                          iconColor="#fff"
+                          color="#fff"
+                        />
+                      </div>
                       <div
                         class="relative"
                         on:mouseenter={() => {
