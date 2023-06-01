@@ -334,7 +334,7 @@
                 class="rounded-full w-8 h-8"
               />
               <div class="text-3xl font-semibold">
-                {positionDetail?.price?.symbol}
+                {positionDetail?.price?.symbol || "--"}
               </div>
             </div>
             <CopyToClipboard
@@ -359,24 +359,28 @@
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
             <div class="text-[#00000099] text-base font-medium">
-              Latest price
+              Position value
             </div>
             <div class="text-3xl text-black">
-              {#if (positionDetail?.overview?.currentPrice)
+              {#if (positionDetail?.overview?.holding)
                 .toString()
                 .toLowerCase()
                 .includes("e-")}
-                $<TooltipNumber
-                  number={positionDetail?.overview?.currentPrice}
-                />
+                <TooltipNumber number={positionDetail?.overview?.holding} />
+                {positionDetail?.price?.symbol || ""}
               {:else}
-                $<CountUpNumber
-                  id="LatestPrice"
-                  number={positionDetail?.overview?.currentPrice}
-                  format={8}
-                  type="amount"
+                <CountUpNumber
+                  id="PositionValueHolding"
+                  number={positionDetail?.overview?.holding}
                 />
+                {positionDetail?.price?.symbol || ""}
               {/if}
+            </div>
+            <div class="text-lg">
+              $<CountUpNumber
+                id="PositionValue"
+                number={positionDetail?.overview?.currentValue}
+              />
             </div>
           </div>
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">

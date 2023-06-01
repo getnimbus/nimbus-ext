@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import { CountUp } from "countup.js";
   import numeral from "numeral";
@@ -12,7 +12,7 @@
   export let id;
   export let number;
   export let format = 2;
-  export let type = "balance";
+  export let type: "amount" | "balance" | "percent" = "balance";
 
   let countUp = null;
   let options = {
