@@ -3,7 +3,9 @@
   import { nimbus } from "~/lib/network";
   import { Link } from "svelte-navigator";
   import dayjs from "dayjs";
+  import { shorterAddress } from "~/utils";
 
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import "~/components/Loading.custom.svelte";
   import EChart from "~/components/EChart.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -15,7 +17,6 @@
   import LeftArrow from "~/assets/left-arrow.svg";
 
   let positionDetail;
-  let positionDetailPrice;
   let isLoadingPositionDetail = false;
   let isLoadingPositionDetailPrice = false;
   let isEmptyChart = false;
@@ -550,7 +551,7 @@
         <div class="flex flex-col gap-6">
           <div class="text-2xl font-medium text-black">History</div>
           <div class="border border-[#0000000d] rounded-[10px]">
-            <table class="table-auto w-full">
+            <table class="table-fixed w-full">
               <thead>
                 <tr class="bg-[#f4f5f880]">
                   <th class="pl-3 py-3">
@@ -560,7 +561,7 @@
                       Transaction
                     </div>
                   </th>
-                  <th class="pr-3 py-3">
+                  <th class="py-3">
                     <div
                       class="text-left text-xs uppercase font-semibold text-black"
                     >
@@ -609,8 +610,15 @@
                           >
                             <div class="text-left flex items-start gap-2">
                               <div class="flex flex-col">
-                                <div class="text-sm">
-                                  {change?.transactionHash}
+                                <div
+                                  class="text-sm"
+                                  use:tooltip={{
+                                    content: `<tooltip-detail text="${change?.transactionHash}" />`,
+                                    allowHTML: true,
+                                    placement: "top",
+                                  }}
+                                >
+                                  {shorterAddress(change?.transactionHash)}
                                 </div>
                                 <div class="text-gray-400 text-xs">
                                   {dayjs(new Date(change.timestamp)).format(
@@ -621,7 +629,7 @@
                             </div>
                           </a>
                         </td>
-                        <td>
+                        <td class="py-4">
                           {#if change?.metadata?.action}
                             <div>
                               <span
@@ -679,7 +687,7 @@
                               <div class="flex items-center gap-1">
                                 <div
                                   class={`flex items-center gap-1 ${
-                                    change.metadata.info.total >= 0
+                                    change.event === "deposit"
                                       ? "text-[#00A878]"
                                       : "text-red-500"
                                   }`}
