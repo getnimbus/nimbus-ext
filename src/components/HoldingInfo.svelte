@@ -19,7 +19,7 @@
   let showTooltipSymbol = false;
 
   $: price = data?.amount * data?.market_price;
-  $: profitAndLoss = data?.amount * data?.market_price + (data?.avgCost || 0);
+  $: profitAndLoss = price + (data?.avgCost || 0);
   $: profitAndLossPercent =
     Math.abs(data?.avgCost || 0) === 0
       ? 0

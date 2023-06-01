@@ -9,6 +9,7 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "../TooltipNumber.svelte";
   import CopyToClipboard from "~/components/CopyToClipboard.svelte";
+  import CountUpNumber from "../CountUpNumber.svelte";
 
   import TwitterLogo from "~/assets/twitter.svg";
   import LeftArrow from "~/assets/left-arrow.svg";
@@ -350,20 +351,31 @@
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
-            <div class="text-[#00000099] text-base font-medium">Price</div>
+            <div class="text-[#00000099] text-base font-medium">
+              Latest price
+            </div>
             <div class="text-3xl text-black">
-              $<TooltipNumber
-                number={positionDetail?.overview?.currentPrice}
+              $<CountUpNumber
+                id="LatestPrice"
+                number={positionDetail?.overview?.currentPrice || 0}
+                format={10}
                 type="amount"
               />
             </div>
           </div>
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
             <div class="text-[#00000099] text-base font-medium">
-              Profit/Loss
+              Profit & Loss
             </div>
-            <div class="text-3xl text-black">
-              $<TooltipNumber
+            <div
+              class={`text-3xl  ${
+                positionDetail?.overview?.profitAndLoss?.percent >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+              }`}
+            >
+              $<CountUpNumber
+                id="Profit&Loss"
                 number={Math.abs(
                   positionDetail?.overview?.profitAndLoss?.value
                 )}
@@ -381,7 +393,8 @@
               {:else}
                 ↑
               {/if}
-              <TooltipNumber
+              <CountUpNumber
+                id="Profit&LossPercent"
                 number={Math.abs(
                   positionDetail?.overview?.profitAndLoss?.percent
                 ) * 100}
@@ -396,15 +409,27 @@
               Average Cost
             </div>
             <div class="text-3xl text-black">
-              $<TooltipNumber number={positionDetail?.overview?.averageCost} />
+              $<CountUpNumber
+                id="AverageCost"
+                number={positionDetail?.overview?.averageCost}
+                format={10}
+                type="amount"
+              />
             </div>
           </div>
           <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
             <div class="text-[#00000099] text-base font-medium">
               24-hour Return
             </div>
-            <div class="text-3xl text-black">
-              $<TooltipNumber
+            <div
+              class={`text-3xl ${
+                positionDetail?.overview?.return24h?.percent >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+              }`}
+            >
+              $<CountUpNumber
+                id="24-hourReturn"
                 number={Math.abs(positionDetail?.overview?.return24h?.value)}
               />
             </div>
@@ -420,7 +445,8 @@
               {:else}
                 ↑
               {/if}
-              <TooltipNumber
+              <CountUpNumber
+                id="24-hourReturnPercent"
                 number={Math.abs(positionDetail?.overview?.return24h?.percent) *
                   100}
                 type="percent"
@@ -566,7 +592,7 @@
                             <div
                               class="flex flex-col gap-1 justify-end items-end text-sm"
                             >
-                              {#if change?.metadata?.btcChange}
+                              {#if change?.metadata?.hasOwnProperty("btcChange")}
                                 <div class="flex items-center gap-1">
                                   <div
                                     class={`flex items-center gap-1 ${

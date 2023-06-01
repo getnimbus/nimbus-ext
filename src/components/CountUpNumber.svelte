@@ -1,16 +1,18 @@
 <script>
   import { onMount } from "svelte";
   import { CountUp } from "countup.js";
+  import numeral from "numeral";
   import {
     formatBigBalance,
-    formatCurrency,
     checkFormatBalance,
+    formatCurrency,
     formatCurrencyV2,
   } from "~/utils";
 
   export let id;
   export let number;
   export let format = 2;
+  export let type = "balance";
 
   let countUp = null;
   let options = {
@@ -29,19 +31,32 @@
   });
 
   $: {
-    const { number_format, number_size } = formatBigBalance(number, false);
+    const { number_format, number_size } = formatBigBalance(number);
     numberFormat = number_format;
     numberSize = number_size;
 
-    numberToCount = number_size === "K" ? number : number_format;
+    if (type === "amount") {
+      if (number < 100000) {
+        numberToCount =
+          numeral(number).format("0,0.0[000000]") === "NaN"
+            ? number
+            : numeral(number).format("0,0.0[000000]");
+      } else {
+        numberToCount = number_size === "K" ? number : number_format;
+      }
+    }
+
+    if (type === "balance" || type === "percent") {
+      numberToCount = number_size === "K" ? number : number_format;
+    }
 
     options = {
       ...options,
-      startVal: (numberToCount * 70) / 100,
+      startVal: (Number(numberToCount) * 70) / 100,
     };
 
     if (countUp) {
-      countUp.update(numberToCount);
+      countUp.update(Number(numberToCount));
     }
   }
 
@@ -53,25 +68,49 @@
 </script>
 
 <span
+  {id}
   class="relative"
   on:mouseenter={() => (showTooltip = true)}
   on:mouseleave={() => (showTooltip = false)}
 >
-  <span {id}>
-    {#if numberSize === "K"}
-      {formatCurrencyV2(number)}
-    {:else}
-      {numberFormat}
-    {/if}
-  </span>
-  {#if numberSize !== "K"}
-    <span>{numberSize}</span>
+  {#if type === "balance" || type === "percent"}
+    <span>
+      {#if numberSize === "K"}
+        <span {id}>{formatCurrencyV2(number)}</span>
+      {:else}
+        <span {id}>{numberFormat}</span>
+      {/if}
+    </span>
   {/if}
+
+  {#if type === "amount"}
+    <span>
+      {#if numberSize === "K"}
+        <span>{formatCurrencyV2(number)}</span>
+      {:else}
+        <span>
+          {#if number < 100000}
+            <span
+              >{numeral(number).format("0,0.0[000000]") === "NaN"
+                ? number
+                : numeral(number).format("0,0.0[000000]")}</span
+            >
+          {:else}
+            <span>{numberFormat}</span>
+          {/if}
+        </span>
+      {/if}
+    </span>
+  {/if}
+
   {#if showTooltip && ((numberSize && numberSize !== "K") || checkFormatBalance(number) === "NaN")}
     <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
       <tooltip-detail text={formatCurrency(number)} />
     </span>
   {/if}
 </span>
+{#if numberSize !== "K"}
+  <span>{numberSize}</span>
+{/if}
 
 <style></style>

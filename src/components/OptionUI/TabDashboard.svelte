@@ -73,8 +73,8 @@
       > to try out this feature
     </div>
   {:else}
-    <div class="flex items-center gap-2">
-      <!-- <div class="title-5">{MultipleLang.show_portfolio_label}</div>
+    <!-- <div class="flex items-center gap-2">
+      <div class="title-5">{MultipleLang.show_portfolio_label}</div>
       <label class="switch">
         <input
           type="checkbox"
@@ -85,8 +85,9 @@
           }}
         />
         <span class="slider" />
-      </label> -->
-    </div>
+      </label>
+    </div> -->
+    <div class="title-5">Comming soon...</div>
   {/if}
 </div>
 
