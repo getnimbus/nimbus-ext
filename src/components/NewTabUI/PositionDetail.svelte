@@ -247,12 +247,14 @@
     };
 
     const onMouseOut = () => {
-      window.echarts?.chartValue?.dispatchAction({
-        type: "hideTip",
-      });
-      window.echarts?.chartBalance?.dispatchAction({
-        type: "hideTip",
-      });
+      setTimeout(() => {
+        window.echarts?.chartValue?.dispatchAction({
+          type: "hideTip",
+        });
+        window.echarts?.chartBalance?.dispatchAction({
+          type: "hideTip",
+        });
+      }, 200);
     };
 
     if (window.echarts?.chartBalance) {
