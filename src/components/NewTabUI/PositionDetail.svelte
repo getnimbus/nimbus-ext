@@ -17,6 +17,7 @@
   import LeftArrow from "~/assets/left-arrow.svg";
 
   let positionDetail;
+  let positionDetailPrice;
   let isLoadingPositionDetail = false;
   let isLoadingPositionDetailPrice = false;
   let isEmptyChart = false;
