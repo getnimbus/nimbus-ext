@@ -53,6 +53,7 @@
         type: "value",
         name: "Price",
         position: "right",
+        offset: 10,
         alignTicks: true,
         axisLabel: {
           formatter: "${value}",
