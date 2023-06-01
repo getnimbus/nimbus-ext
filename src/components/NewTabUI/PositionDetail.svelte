@@ -550,7 +550,7 @@
         <div class="flex flex-col gap-6">
           <div class="text-2xl font-medium text-black">History</div>
           <div class="border border-[#0000000d] rounded-[10px]">
-            <table class="table-fixed w-full">
+            <table class="table-auto w-full">
               <thead>
                 <tr class="bg-[#f4f5f880]">
                   <th class="pl-3 py-3">
