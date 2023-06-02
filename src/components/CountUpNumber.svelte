@@ -67,50 +67,51 @@
   }
 </script>
 
-<span
-  {id}
-  class="relative"
-  on:mouseenter={() => (showTooltip = true)}
-  on:mouseleave={() => (showTooltip = false)}
->
-  {#if type === "balance" || type === "percent"}
-    <span>
-      {#if numberSize === "K"}
-        <span {id}>{formatCurrencyV2(number)}</span>
-      {:else}
-        <span {id}>{numberFormat}</span>
-      {/if}
-    </span>
-  {/if}
+<span class="relative">
+  <span
+    {id}
+    on:mouseenter={() => (showTooltip = true)}
+    on:mouseleave={() => (showTooltip = false)}
+  >
+    {#if type === "balance" || type === "percent"}
+      <span>
+        {#if numberSize === "K"}
+          <span {id}>{formatCurrencyV2(number)}</span>
+        {:else}
+          <span {id}>{numberFormat}</span>
+        {/if}
+      </span>
+    {/if}
 
-  {#if type === "amount"}
-    <span>
-      {#if numberSize === "K"}
-        <span>{formatCurrencyV2(number)}</span>
-      {:else}
-        <span>
-          {#if number < 100000}
-            <span
-              >{numeral(number).format("0,0.0[000000]") === "NaN"
-                ? number
-                : numeral(number).format("0,0.0[000000]")}</span
-            >
-          {:else}
-            <span>{numberFormat}</span>
-          {/if}
-        </span>
-      {/if}
-    </span>
+    {#if type === "amount"}
+      <span>
+        {#if numberSize === "K"}
+          <span>{formatCurrencyV2(number)}</span>
+        {:else}
+          <span>
+            {#if number < 100000}
+              <span
+                >{numeral(number).format("0,0.0[000000]") === "NaN"
+                  ? number
+                  : numeral(number).format("0,0.0[000000]")}</span
+              >
+            {:else}
+              <span>{numberFormat}</span>
+            {/if}
+          </span>
+        {/if}
+      </span>
+    {/if}
+  </span>
+  {#if numberSize !== "K"}
+    <span>{numberSize}</span>
   {/if}
-
   {#if showTooltip && ((numberSize && numberSize !== "K") || checkFormatBalance(number) === "NaN")}
     <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
       <tooltip-detail text={formatCurrency(number)} />
     </span>
   {/if}
 </span>
-{#if numberSize !== "K"}
-  <span>{numberSize}</span>
-{/if}
 
-<style></style>
+<style>
+</style>
