@@ -114,7 +114,7 @@
         />
       </div>
       <div class="border border-[#0000000d] rounded-[10px]">
-        <table class="table-fixed w-full">
+        <table class="table-auto w-full">
           <thead>
             <tr class="bg-[#f4f5f880]">
               <th class="pl-3 py-3 w-[200px]">
@@ -124,21 +124,21 @@
                   {MultipleLang.assets}
                 </div>
               </th>
-              <th class="py-3">
+              <th class="py-3 min-w-[160px]">
                 <div
                   class="text-left text-xs uppercase font-semibold text-black"
                 >
                   {MultipleLang.price} ($)
                 </div>
               </th>
-              <th class="py-3">
+              <th class="py-3 w-[160px]">
                 <div
                   class="text-right text-xs uppercase font-semibold text-black"
                 >
                   {MultipleLang.amount}
                 </div>
               </th>
-              <th class="py-3">
+              <th class="py-3 w-[160px]">
                 <div
                   class="text-right text-xs uppercase font-semibold text-black"
                 >
@@ -146,7 +146,7 @@
                 </div>
               </th>
               <th
-                class={`py-3 w-[170px] ${
+                class={`py-3 w-[160px] ${
                   filteredHoldingData.filter((item) => item.positionId)
                     .length === 0 && "pr-3"
                 }`}
