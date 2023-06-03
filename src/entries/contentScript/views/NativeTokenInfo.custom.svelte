@@ -291,7 +291,9 @@
                   Marketcap
                 </div>
                 {#if coinInfo.cmc_rank !== -1}
-                  <div class="text-sm text-black font-medium">
+                  <div
+                    class="text-xs text-[#00000099] font-normal py-[2px] px-1 rounded bg-[#E9EBF1]"
+                  >
                     Rank #{coinInfo.cmc_rank}
                   </div>
                 {/if}
