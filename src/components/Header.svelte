@@ -275,7 +275,7 @@
 
 <div
   class="py-1 top-0 bg-[#27326F] sticky"
-  style="z-index: 2147483647; {headerScrollY
+  style="z-index: 9998; {headerScrollY
     ? 'box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);'
     : ''}"
 >
