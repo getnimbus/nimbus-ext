@@ -2,7 +2,7 @@
   import { getLocalImg } from "~/utils";
   import Button from "~/components/Button.svelte";
   export let skip = () => {};
-  import TrxAddressDetailFeat from "../../assets/trx_address_detail_feat.svg";
+  import TrxAddressDetailFeat from "~/assets/GIFDetect.gif";
 </script>
 
 <div class="h-[95vh] flex justify-center items-center">
@@ -17,8 +17,13 @@
         </div>
       </div>
       <div class="flex flex-col gap-2">
-        <img src={getLocalImg(TrxAddressDetailFeat)} alt="" />
-        <div class="flex items-center gap-3">
+        <img
+          src={getLocalImg(TrxAddressDetailFeat)}
+          alt=""
+          width="500"
+          height="200"
+        />
+        <!-- <div class="flex items-center gap-3">
           <div class="text-[#F37021] font-normal">
             0x1236d48f04823E0792dB0607A9Ca678224FE6766
           </div>
@@ -42,7 +47,7 @@
               />
             </svg>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="flex items-center gap-3">

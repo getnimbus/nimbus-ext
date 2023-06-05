@@ -2,7 +2,7 @@
   import { getLocalImg } from "~/utils";
   export let skip = () => {};
   import Button from "~/components/Button.svelte";
-  import PinEx from "../../assets/pin_ex.svg";
+  import PinEx from "~/assets/GIFPin.gif";
 </script>
 
 <div class="h-[95vh] flex justify-center items-center">
@@ -14,7 +14,7 @@
           Search for any tokens when you click on the extension icon
         </div>
       </div>
-      <img src={getLocalImg(PinEx)} alt="" />
+      <img src={getLocalImg(PinEx)} alt="" width="280" height="280" />
     </div>
     <div class="flex items-center gap-3">
       <Button variant="secondary" on:click={skip}>Skip</Button>
