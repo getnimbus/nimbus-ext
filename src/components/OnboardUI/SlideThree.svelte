@@ -3,7 +3,7 @@
   import { getLocalImg } from "~/utils";
   export let skip = () => {};
   import Button from "~/components/Button.svelte";
-  import SearchFeat from "../../assets/search_feat.svg";
+  import SearchFeat from "~/assets/GIFSidebar.gif";
 </script>
 
 <div class="h-[95vh] flex justify-center items-center">
@@ -33,7 +33,7 @@
           to open the sidebar
         </div>
       </div>
-      <img src={getLocalImg(SearchFeat)} alt="" />
+      <img src={getLocalImg(SearchFeat)} alt="" width="500" height="200" />
     </div>
     <div class="flex items-center gap-3">
       <Button variant="secondary" on:click={skip}>Skip</Button>

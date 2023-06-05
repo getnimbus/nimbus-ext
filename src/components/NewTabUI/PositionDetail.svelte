@@ -385,13 +385,17 @@
                 .toLowerCase()
                 .includes("e-")}
                 <TooltipNumber number={positionDetail?.overview?.holding} />
-                {positionDetail?.price?.symbol || ""}
+                <span class="text-xl text-gray-500"
+                  >{positionDetail?.price?.symbol || ""}</span
+                >
               {:else}
                 <CountUpNumber
                   id="PositionValueHolding"
                   number={positionDetail?.overview?.holding}
                 />
-                {positionDetail?.price?.symbol || ""}
+                <span class="text-xl text-gray-500"
+                  >{positionDetail?.price?.symbol || ""}</span
+                >
               {/if}
             </div>
             <div class="text-lg">

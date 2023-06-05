@@ -17,7 +17,7 @@
 
 {#if data}
   <div class="flex justify-between items-center gap-3">
-    <div class="w-[150px]">
+    <div class="w-[155px]">
       <user-info
         name={from &&
         to &&
@@ -70,7 +70,7 @@
         </div>
       </app-arrow>
     </div>
-    <div class="w-[150px]">
+    <div class="w-[155px]">
       <user-info
         name={from &&
         to &&
