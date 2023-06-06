@@ -8,13 +8,14 @@
   export let totalAssets;
   export let selectedWallet;
 
-  let filteredHolding = true;
-  let filteredHoldingData = [];
+  let filteredHoldingToken = true;
+  let filteredHoldingDataToken = [];
   let marketPrice;
   let formatData = [];
   let sum = 0;
 
-  import HoldingInfo from "../HoldingInfo.svelte";
+  import HoldingToken from "../HoldingToken.svelte";
+  import HoldingNFT from "../HoldingNFT.svelte";
   import "~/components/Loading.custom.svelte";
   import ErrorBoundary from "../ErrorBoundary.svelte";
 
@@ -51,7 +52,7 @@
           market_price: item?.rate || 0,
         };
       });
-      filteredHoldingData = formatData.filter((item) => item.value > 1);
+      filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
       sum = data.reduce((prev, item) => prev + item.value, 0);
       totalAssets = data.reduce((prev, item) => prev + item.value, 0);
     }
@@ -73,12 +74,12 @@
   }
 
   $: {
-    if (filteredHolding) {
-      filteredHoldingData = formatData.filter(
+    if (filteredHoldingToken) {
+      filteredHoldingDataToken = formatData.filter(
         (item) => item?.amount * item.market_price > 1
       );
     } else {
-      filteredHoldingData = formatData;
+      filteredHoldingDataToken = formatData;
     }
     sum = (formatData || []).reduce(
       (prev, item) => prev + item?.amount * item.market_price,
@@ -98,6 +99,7 @@
     <div class="text-2xl font-medium text-black">
       {MultipleLang.holding}
     </div>
+
     <div>
       <div class="mb-2 flex justify-between items-center">
         <div class="text-xl font-medium text-black">
@@ -115,7 +117,7 @@
           <input
             type="checkbox"
             id="filter-value"
-            bind:checked={filteredHolding}
+            bind:checked={filteredHoldingToken}
             class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
           />
         </div>
@@ -153,7 +155,7 @@
                 </th>
                 <th
                   class={`py-3 w-[160px] ${
-                    filteredHoldingData.filter((item) => item.positionId)
+                    filteredHoldingDataToken.filter((item) => item.positionId)
                       .length === 0 && "pr-3"
                   }`}
                 >
@@ -164,7 +166,7 @@
                   </div>
                 </th>
 
-                {#if filteredHoldingData.filter((item) => item.positionId).length !== 0}
+                {#if filteredHoldingDataToken.filter((item) => item.positionId).length !== 0}
                   <th class="py-3 w-10" />
                 {/if}
               </tr>
@@ -173,7 +175,7 @@
               <tbody>
                 <tr>
                   <td
-                    colspan={filteredHoldingData.filter(
+                    colspan={filteredHoldingDataToken.filter(
                       (item) => item.positionId
                     ).length === 0
                       ? 5
@@ -187,10 +189,10 @@
               </tbody>
             {:else}
               <tbody>
-                {#if filteredHoldingData && filteredHoldingData.length === 0}
+                {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
                   <tr>
                     <td
-                      colspan={filteredHoldingData.filter(
+                      colspan={filteredHoldingDataToken.filter(
                         (item) => item.positionId
                       ).length === 0
                         ? 5
@@ -204,8 +206,8 @@
                     </td>
                   </tr>
                 {:else}
-                  {#each filteredHoldingData as holding}
-                    <HoldingInfo data={holding} {selectedWallet} />
+                  {#each filteredHoldingDataToken as holding}
+                    <HoldingToken data={holding} {selectedWallet} />
                   {/each}
                 {/if}
               </tbody>
@@ -217,6 +219,7 @@
         Profit and loss is calculated by transactions that swap the tokens
       </div>
     </div>
+
     <div class="flex flex-col gap-2">
       <div class="text-xl font-medium text-black">
         {MultipleLang.nft}
@@ -274,7 +277,7 @@
             </tbody>
           {:else}
             <tbody>
-              {#if filteredHoldingData && filteredHoldingData.length === 0}
+              {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
                 <tr>
                   <td colspan={6}>
                     <div
@@ -285,45 +288,7 @@
                   </td>
                 </tr>
               {:else}
-                <tr class="hover:bg-gray-100 transition-all">
-                  <td class="pl-3 py-4">
-                    <div
-                      class="text-sm text-[#00000099] font-medium flex justify-start"
-                    >
-                      hello
-                    </div>
-                  </td>
-
-                  <td class="py-4">
-                    <div
-                      class="text-sm text-[#00000099] font-medium flex justify-start"
-                    >
-                      hello
-                    </div>
-                  </td>
-
-                  <td class="py-4">
-                    <div
-                      class="text-sm text-[#00000099] font-medium flex justify-end"
-                    >
-                      hello
-                    </div>
-                  </td>
-
-                  <td class="py-4">
-                    <div
-                      class="text-sm text-[#00000099] font-medium flex justify-end"
-                    >
-                      hello
-                    </div>
-                  </td>
-
-                  <td class="py-3 pr-3">
-                    <div class="flex items-center justify-end gap-1 text-sm">
-                      hello
-                    </div>
-                  </td>
-                </tr>
+                <HoldingNFT />
               {/if}
             </tbody>
           {/if}
