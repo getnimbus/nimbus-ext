@@ -5,6 +5,7 @@ import { nimbus } from "./lib/network";
 import logo from "~/assets/bitcoin.png";
 import Bnb from "~/assets/bnb.png";
 import Ethereum from "~/assets/ethereum.png";
+import Bitcoin from "~/assets/bitcoin.png";
 import Polygon from "~/assets/polygon.png";
 import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
@@ -72,6 +73,11 @@ export const chainList = [
     logo: Ethereum,
     label: "Ethereum",
     value: "eth",
+  },
+  {
+    logo: Bitcoin,
+    label: "Bitcoin",
+    value: "btc",
   },
   {
     logo: Bnb,

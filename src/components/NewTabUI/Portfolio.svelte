@@ -1035,7 +1035,6 @@
                         </div>
                       {/each}
                       <Select
-                        isWalletSelect={true}
                         isOptionsPage={true}
                         isSelectWallet={true}
                         listSelect={listAddress.slice(4, listAddress.length)}
@@ -1181,7 +1180,6 @@
                     </div>
                   </div>
                   <Select
-                    isWalletSelect={false}
                     isOptionsPage={false}
                     isSelectWallet={false}
                     listSelect={chainList}

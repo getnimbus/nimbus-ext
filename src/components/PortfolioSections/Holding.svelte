@@ -19,7 +19,9 @@
   import ErrorBoundary from "../ErrorBoundary.svelte";
 
   const MultipleLang = {
-    wallet: i18n("newtabPage.wallet", "Wallet"),
+    holding: i18n("newtabPage.holding", "Holding"),
+    token: i18n("newtabPage.token", "Tokens"),
+    nft: i18n("newtabPage.nft", "NFTs"),
     assets: i18n("newtabPage.assets", "Assets"),
     price: i18n("newtabPage.price", "Price"),
     amount: i18n("newtabPage.amount", "Amount"),
@@ -91,87 +93,179 @@
 
 <ErrorBoundary>
   <div
-    class="xl:w-[65%] w-full flex-col border border-[#0000001a] rounded-[20px] p-6"
+    class="xl:w-[65%] w-full flex flex-col gap-6 border border-[#0000001a] rounded-[20px] p-6"
   >
-    <div class="mb-6 flex justify-between items-center">
-      <div class="text-2xl font-medium text-black">
-        {MultipleLang.wallet}
+    <div class="text-2xl font-medium text-black">
+      {MultipleLang.holding}
+    </div>
+    <div>
+      <div class="mb-2 flex justify-between items-center">
+        <div class="text-xl font-medium text-black">
+          {MultipleLang.token}
+        </div>
+        <div class="text-3xl font-semibold text-right">
+          ${isLoading ? 0 : formatBalance(sum)}
+        </div>
       </div>
-      <div class="text-3xl font-semibold text-right">
-        ${isLoading ? 0 : formatBalance(sum)}
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center justify-end gap-2">
+          <label class="text-sm font-regular text-gray-400" for="filter-value"
+            >{MultipleLang.hide}
+          </label>
+          <input
+            type="checkbox"
+            id="filter-value"
+            bind:checked={filteredHolding}
+            class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+          />
+        </div>
+        <div class="border border-[#0000000d] rounded-[10px]">
+          <table class="table-auto w-full">
+            <thead>
+              <tr class="bg-[#f4f5f880]">
+                <th class="pl-3 py-3 w-[200px]">
+                  <div
+                    class="text-left text-xs uppercase font-semibold text-black"
+                  >
+                    {MultipleLang.assets}
+                  </div>
+                </th>
+                <th class="py-3 min-w-[160px]">
+                  <div
+                    class="text-left text-xs uppercase font-semibold text-black"
+                  >
+                    {MultipleLang.price} ($)
+                  </div>
+                </th>
+                <th class="py-3 w-[160px]">
+                  <div
+                    class="text-right text-xs uppercase font-semibold text-black"
+                  >
+                    {MultipleLang.amount}
+                  </div>
+                </th>
+                <th class="py-3 w-[160px]">
+                  <div
+                    class="text-right text-xs uppercase font-semibold text-black"
+                  >
+                    {MultipleLang.value} ($)
+                  </div>
+                </th>
+                <th
+                  class={`py-3 w-[160px] ${
+                    filteredHoldingData.filter((item) => item.positionId)
+                      .length === 0 && "pr-3"
+                  }`}
+                >
+                  <div
+                    class="text-right text-xs uppercase font-semibold text-black"
+                  >
+                    {MultipleLang.profit}
+                  </div>
+                </th>
+
+                {#if filteredHoldingData.filter((item) => item.positionId).length !== 0}
+                  <th class="py-3 w-10" />
+                {/if}
+              </tr>
+            </thead>
+            {#if isLoading}
+              <tbody>
+                <tr>
+                  <td
+                    colspan={filteredHoldingData.filter(
+                      (item) => item.positionId
+                    ).length === 0
+                      ? 5
+                      : 6}
+                  >
+                    <div class="flex justify-center items-center py-4 px-3">
+                      <loading-icon />
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            {:else}
+              <tbody>
+                {#if filteredHoldingData && filteredHoldingData.length === 0}
+                  <tr>
+                    <td
+                      colspan={filteredHoldingData.filter(
+                        (item) => item.positionId
+                      ).length === 0
+                        ? 5
+                        : 6}
+                    >
+                      <div
+                        class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
+                      >
+                        Empty
+                      </div>
+                    </td>
+                  </tr>
+                {:else}
+                  {#each filteredHoldingData as holding}
+                    <HoldingInfo data={holding} {selectedWallet} />
+                  {/each}
+                {/if}
+              </tbody>
+            {/if}
+          </table>
+        </div>
+      </div>
+      <div class="text-xs text-gray-400 text-right mt-2">
+        Profit and loss is calculated by transactions that swap the tokens
       </div>
     </div>
     <div class="flex flex-col gap-2">
-      <div class="flex items-center justify-end gap-2">
-        <label class="text-sm font-regular text-gray-400" for="filter-value"
-          >{MultipleLang.hide}
-        </label>
-        <input
-          type="checkbox"
-          id="filter-value"
-          bind:checked={filteredHolding}
-          class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
-        />
+      <div class="text-xl font-medium text-black">
+        {MultipleLang.nft}
       </div>
       <div class="border border-[#0000000d] rounded-[10px]">
         <table class="table-auto w-full">
           <thead>
             <tr class="bg-[#f4f5f880]">
-              <th class="pl-3 py-3 w-[200px]">
+              <th class="pl-3 py-3">
                 <div
                   class="text-left text-xs uppercase font-semibold text-black"
                 >
-                  {MultipleLang.assets}
+                  Collection
                 </div>
               </th>
-              <th class="py-3 min-w-[160px]">
+              <th class="py-3">
                 <div
                   class="text-left text-xs uppercase font-semibold text-black"
                 >
-                  {MultipleLang.price} ($)
+                  Balance
                 </div>
               </th>
-              <th class="py-3 w-[160px]">
+              <th class="py-3">
                 <div
                   class="text-right text-xs uppercase font-semibold text-black"
                 >
-                  {MultipleLang.amount}
+                  Total spent
                 </div>
               </th>
-              <th class="py-3 w-[160px]">
+              <th class="py-3">
                 <div
                   class="text-right text-xs uppercase font-semibold text-black"
                 >
-                  {MultipleLang.value} ($)
+                  Current value ($)
                 </div>
               </th>
-              <th
-                class={`py-3 w-[160px] ${
-                  filteredHoldingData.filter((item) => item.positionId)
-                    .length === 0 && "pr-3"
-                }`}
-              >
+              <th class="py-3 pr-3">
                 <div
                   class="text-right text-xs uppercase font-semibold text-black"
                 >
-                  {MultipleLang.profit}
+                  Profit & Loss
                 </div>
               </th>
-
-              {#if filteredHoldingData.filter((item) => item.positionId).length !== 0}
-                <th class="py-3 w-10" />
-              {/if}
             </tr>
           </thead>
           {#if isLoading}
             <tbody>
               <tr>
-                <td
-                  colspan={filteredHoldingData.filter((item) => item.positionId)
-                    .length === 0
-                    ? 5
-                    : 6}
-                >
+                <td colspan={6}>
                   <div class="flex justify-center items-center py-4 px-3">
                     <loading-icon />
                   </div>
@@ -182,13 +276,7 @@
             <tbody>
               {#if filteredHoldingData && filteredHoldingData.length === 0}
                 <tr>
-                  <td
-                    colspan={filteredHoldingData.filter(
-                      (item) => item.positionId
-                    ).length === 0
-                      ? 5
-                      : 6}
-                  >
+                  <td colspan={6}>
                     <div
                       class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
                     >
@@ -197,17 +285,50 @@
                   </td>
                 </tr>
               {:else}
-                {#each filteredHoldingData as holding}
-                  <HoldingInfo data={holding} {selectedWallet} />
-                {/each}
+                <tr class="hover:bg-gray-100 transition-all">
+                  <td class="pl-3 py-4">
+                    <div
+                      class="text-sm text-[#00000099] font-medium flex justify-start"
+                    >
+                      hello
+                    </div>
+                  </td>
+
+                  <td class="py-4">
+                    <div
+                      class="text-sm text-[#00000099] font-medium flex justify-start"
+                    >
+                      hello
+                    </div>
+                  </td>
+
+                  <td class="py-4">
+                    <div
+                      class="text-sm text-[#00000099] font-medium flex justify-end"
+                    >
+                      hello
+                    </div>
+                  </td>
+
+                  <td class="py-4">
+                    <div
+                      class="text-sm text-[#00000099] font-medium flex justify-end"
+                    >
+                      hello
+                    </div>
+                  </td>
+
+                  <td class="py-3 pr-3">
+                    <div class="flex items-center justify-end gap-1 text-sm">
+                      hello
+                    </div>
+                  </td>
+                </tr>
               {/if}
             </tbody>
           {/if}
         </table>
       </div>
-    </div>
-    <div class="text-xs text-gray-400 text-right mt-2">
-      Profit and loss is calculated by transactions that swap the tokens
     </div>
   </div>
 </ErrorBoundary>

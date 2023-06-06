@@ -46,7 +46,6 @@
         {MultipleLang.change_lang_label}
       </div>
       <Select
-        isWalletSelect={false}
         isOptionsPage={true}
         isSelectWallet={false}
         listSelect={langs}
