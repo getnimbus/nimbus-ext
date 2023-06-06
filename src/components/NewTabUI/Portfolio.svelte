@@ -178,6 +178,7 @@
     },
     tooltip: {
       trigger: "item",
+      extraCssText: "z-index: 9997",
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 190px;">
@@ -255,6 +256,7 @@
     },
     tooltip: {
       trigger: "axis",
+      extraCssText: "z-index: 9997",
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">

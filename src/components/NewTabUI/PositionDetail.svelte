@@ -30,6 +30,7 @@
     },
     tooltip: {
       trigger: "axis",
+      extraCssText: "z-index: 9997",
     },
     legend: {
       lineStyle: {
