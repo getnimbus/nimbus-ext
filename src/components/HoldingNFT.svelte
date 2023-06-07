@@ -28,14 +28,14 @@
         on:mouseenter={() => (showName = true)}
         on:mouseleave={() => (showName = false)}
       >
-        {shorterName("Gutter Punks Flyer - Meebits")}
+        {shorterName("Art Blocks")}
       </div>
-      {#if showName && "Gutter Punks Flyer - Meebits".length > 10}
+      {#if showName && "Art Blocks".length > 10}
         <div
           class="absolute -top-7 left-1/2 transform -translate-x-1/2"
           style="z-index: 2147483648;"
         >
-          <tooltip-detail text={"Gutter Punks Flyer - Meebits"} />
+          <tooltip-detail text={"Art Blocks"} />
         </div>
       {/if}
     </div>
