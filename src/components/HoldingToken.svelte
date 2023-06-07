@@ -27,7 +27,9 @@
 </script>
 
 <tr
-  class="hover:bg-gray-100 transition-all"
+  class={`hover:bg-gray-100 transition-all ${
+    data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
+  }`}
   on:click={() => {
     if (data.positionId && data.symbol !== "Bitcoin") {
       navigate(
@@ -41,153 +43,123 @@
   }}
 >
   <td class="pl-3 py-4 w-[200px]">
-    <div
-      class={`${
-        data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
-      }`}
-    >
-      <div class="text-left flex items-start gap-2">
-        <img
-          src={data.logo}
-          alt="token"
-          width="20"
-          height="20"
-          class="rounded-full"
-        />
-        <div class="flex flex-col gap-1 relative">
-          <div class="relative">
-            <div
-              class="text-black text-sm font-medium"
-              on:mouseenter={() => (showTooltipName = true)}
-              on:mouseleave={() => (showTooltipName = false)}
-            >
-              {#if data.name === undefined}
-                N/A
-              {:else}
-                {shorterName(data.name)}
-              {/if}
-            </div>
-            {#if showTooltipName && data?.name?.length > 10}
-              <div
-                class="absolute -top-7 left-1/2 transform -translate-x-1/2"
-                style="z-index: 2147483648;"
-              >
-                <tooltip-detail text={data.name} />
-              </div>
+    <div class="text-left flex items-start gap-2">
+      <img
+        src={data.logo}
+        alt="token"
+        width="20"
+        height="20"
+        class="rounded-full"
+      />
+      <div class="flex flex-col gap-1 relative">
+        <div class="relative">
+          <div
+            class="text-black text-sm font-medium"
+            on:mouseenter={() => (showTooltipName = true)}
+            on:mouseleave={() => (showTooltipName = false)}
+          >
+            {#if data.name === undefined}
+              N/A
+            {:else}
+              {shorterName(data.name)}
             {/if}
           </div>
-          <div class="relative">
+          {#if showTooltipName && data?.name?.length > 10}
             <div
-              class="text-[#00000080] text-xs font-medium"
-              on:mouseenter={() => (showTooltipSymbol = true)}
-              on:mouseleave={() => (showTooltipSymbol = false)}
+              class="absolute -top-7 left-1/2 transform -translate-x-1/2"
+              style="z-index: 2147483648;"
             >
-              {#if data.symbol === undefined}
-                N/A
-              {:else}
-                {shorterName(data.symbol)}
-              {/if}
+              <tooltip-detail text={data.name} />
             </div>
-            {#if showTooltipSymbol && data.symbol.length > 16}
-              <div
-                class="absolute -top-7 left-1/2 transform -translate-x-1/2"
-                style="z-index: 2147483648;"
-              >
-                <tooltip-detail text={data.symbol} />
-              </div>
-            {/if}
-          </div>
+          {/if}
         </div>
-        <div class="flex flex-wrap gap-2">
-          {#if data.suggest && data.suggest.length}
-            {#each data.suggest as item}
-              <a
-                href={item.url}
-                target="_blank"
-                class="flex items-center justyfy-center px-2 py-1 text-[#27326F] text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px]"
-              >
-                {item.tile}
-              </a>
-            {/each}
+        <div class="relative">
+          <div
+            class="text-[#00000080] text-xs font-medium"
+            on:mouseenter={() => (showTooltipSymbol = true)}
+            on:mouseleave={() => (showTooltipSymbol = false)}
+          >
+            {#if data.symbol === undefined}
+              N/A
+            {:else}
+              {shorterName(data.symbol)}
+            {/if}
+          </div>
+          {#if showTooltipSymbol && data.symbol.length > 16}
+            <div
+              class="absolute -top-7 left-1/2 transform -translate-x-1/2"
+              style="z-index: 2147483648;"
+            >
+              <tooltip-detail text={data.symbol} />
+            </div>
           {/if}
         </div>
       </div>
-    </div>
-  </td>
-
-  <td class="py-4 min-w-[160px]">
-    <div
-      class={`${
-        data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
-      }`}
-    >
-      <div class="text-sm text-[#00000099] font-medium flex justify-start">
-        {#if formatCurrency(data.market_price).toString().length > 9}
-          <TooltipNumber number={data.market_price} type="amount" />
-        {:else}
-          {formatCurrency(data.market_price)}
+      <div class="flex flex-wrap gap-2">
+        {#if data.suggest && data.suggest.length}
+          {#each data.suggest as item}
+            <a
+              href={item.url}
+              target="_blank"
+              class="flex items-center justyfy-center px-2 py-1 text-[#27326F] text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px]"
+            >
+              {item.tile}
+            </a>
+          {/each}
         {/if}
       </div>
     </div>
   </td>
 
-  <td class="py-4 w-[160px]">
-    <div
-      class={`${
-        data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
-      }`}
-    >
-      <div class="text-sm text-[#00000099] font-medium flex justify-end">
-        <TooltipNumber number={data.amount} type="amount" />
-      </div>
+  <td class="py-4 min-w-[160px]">
+    <div class="text-sm text-[#00000099] font-medium flex justify-start">
+      {#if formatCurrency(data.market_price).toString().length > 9}
+        <TooltipNumber number={data.market_price} type="amount" />
+      {:else}
+        {formatCurrency(data.market_price)}
+      {/if}
     </div>
   </td>
 
   <td class="py-4 w-[160px]">
-    <div
-      class={`${
-        data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
-      }`}
-    >
-      <div class="text-sm text-[#00000099] font-medium flex justify-end">
-        <TooltipNumber number={price} />
-      </div>
+    <div class="text-sm text-[#00000099] font-medium flex justify-end">
+      <TooltipNumber number={data.amount} type="amount" />
+    </div>
+  </td>
+
+  <td class="py-4 w-[160px]">
+    <div class="text-sm text-[#00000099] font-medium flex justify-end">
+      <TooltipNumber number={price} />
     </div>
   </td>
 
   <td class={`py-3 w-[160px] ${!data.positionId && "pr-3"}`}>
-    <div
-      class={`${
-        data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
-      }`}
-    >
-      <div class="flex items-center justify-end gap-1 text-sm font-medium">
-        <div class="flex flex-col">
+    <div class="flex items-center justify-end gap-1 text-sm font-medium">
+      <div class="flex flex-col">
+        <div
+          class={`flex justify-end ${
+            profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
+          }`}
+        >
+          <TooltipNumber number={Math.abs(profitAndLoss)} />
+        </div>
+        <div class="flex items-center justify-end gap-1">
           <div
-            class={`flex justify-end ${
-              profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
+            class={`flex items-center ${
+              profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
             }`}
           >
-            <TooltipNumber number={Math.abs(profitAndLoss)} />
-          </div>
-          <div class="flex items-center justify-end gap-1">
-            <div
-              class={`flex items-center ${
-                profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
-              }`}
-            >
-              <TooltipNumber
-                number={Math.abs(profitAndLossPercent) * 100}
-                type="percent"
-              />
-              <span>%</span>
-            </div>
-            <img
-              src={profitAndLoss >= 0 ? TrendUp : TrendDown}
-              alt="trend"
-              class="mb-1"
+            <TooltipNumber
+              number={Math.abs(profitAndLossPercent) * 100}
+              type="percent"
             />
+            <span>%</span>
           </div>
+          <img
+            src={profitAndLoss >= 0 ? TrendUp : TrendDown}
+            alt="trend"
+            class="mb-1"
+          />
         </div>
       </div>
     </div>
@@ -196,11 +168,7 @@
   {#if data.positionId}
     <td class="py-4 w-10">
       {#if data.symbol !== "Bitcoin"}
-        <div
-          class={`flex justify-center ${
-            data.positionId && data.symbol !== "Bitcoin" && "cursor-pointer"
-          }`}
-        >
+        <div class="flex justify-center">
           <div
             use:tooltip={{
               content: `<tooltip-detail text="Show detail" />`,

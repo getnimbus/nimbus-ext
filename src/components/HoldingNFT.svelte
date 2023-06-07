@@ -15,7 +15,12 @@
   let showName = false;
 </script>
 
-<tr class="hover:bg-gray-100 transition-all">
+<tr
+  class="hover:bg-gray-100 transition-all cursor-pointer"
+  on:click={() => {
+    navigate(`nft-detail`);
+  }}
+>
   <td class="pl-3 py-4">
     <div class="relative">
       <div
