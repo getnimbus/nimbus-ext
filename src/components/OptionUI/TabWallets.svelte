@@ -358,7 +358,7 @@
 
   $: {
     if (listAddress.length === 0) {
-      browser.storage.sync.set({ selectedWallet: {} });
+      browser.storage.sync.set({ selectedWallet: JSON.stringify({}) });
     }
   }
 </script>

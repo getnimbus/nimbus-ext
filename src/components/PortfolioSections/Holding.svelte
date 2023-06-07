@@ -94,7 +94,7 @@
 
 <ErrorBoundary>
   <div
-    class="xl:w-[65%] w-full flex flex-col gap-6 border border-[#0000001a] rounded-[20px] p-6"
+    class="xl:w-[70%] w-full flex flex-col gap-6 border border-[#0000001a] rounded-[20px] p-6"
   >
     <div class="text-2xl font-medium text-black">
       {MultipleLang.holding}
@@ -246,6 +246,13 @@
                 <div
                   class="text-right text-xs uppercase font-semibold text-black"
                 >
+                  Floor price
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right text-xs uppercase font-semibold text-black"
+                >
                   Total spent
                 </div>
               </th>
@@ -268,7 +275,7 @@
           {#if isLoading}
             <tbody>
               <tr>
-                <td colspan={6}>
+                <td colspan={7}>
                   <div class="flex justify-center items-center py-4 px-3">
                     <loading-icon />
                   </div>
@@ -279,7 +286,7 @@
             <tbody>
               {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
                 <tr>
-                  <td colspan={6}>
+                  <td colspan={7}>
                     <div
                       class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
                     >

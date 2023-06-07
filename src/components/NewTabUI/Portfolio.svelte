@@ -774,11 +774,8 @@
       );
 
       const structWalletData = (response || []).map((item) => {
-        const addressContext = getAddressContext(item.address);
-
         return {
           id: item.id,
-          logo: addressContext.type === "EVM" ? EthereumLogo : BitcoinLogo,
           label: item.label,
           value: item.address,
         };
@@ -790,11 +787,19 @@
         "selectedWallet"
       );
 
-      if (selectedWalletRes && !isEmpty(selectedWalletRes.selectedWallet)) {
-        wallet.update((n) => (n = selectedWalletRes.selectedWallet));
+      if (
+        selectedWalletRes &&
+        !isEmpty(JSON.parse(selectedWalletRes.selectedWallet))
+      ) {
+        wallet.update(
+          (n) => (n = JSON.parse(selectedWalletRes.selectedWallet))
+        );
       }
 
-      if (selectedWalletRes && isEmpty(selectedWalletRes.selectedWallet)) {
+      if (
+        selectedWalletRes &&
+        isEmpty(JSON.parse(selectedWalletRes.selectedWallet))
+      ) {
         wallet.update((n) => (n = listAddress[0]));
       }
 
@@ -902,10 +907,8 @@
     if (
       !Object.keys(errors).some((inputName) => errors[inputName]["required"])
     ) {
-      const addressContext = getAddressContext(data.address);
       const dataFormat = {
         id: data.address,
-        logo: addressContext.type === "EVM" ? EthereumLogo : BitcoinLogo,
         label: data.label,
         value: data.address,
       };
@@ -966,9 +969,11 @@
       selectedWallet !== undefined &&
       Object.keys(selectedWallet).length !== 0
     ) {
-      browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
-        console.log("save selected address to sync storage");
-      });
+      browser.storage.sync
+        .set({ selectedWallet: JSON.stringify(selectedWallet) })
+        .then(() => {
+          console.log("save selected address to sync storage");
+        });
       window.history.replaceState(
         null,
         "",
@@ -977,6 +982,16 @@
       handleGetAllData("sync");
     }
   }
+
+  $: formatListAddress = listAddress.map((item) => {
+    return {
+      ...item,
+      logo:
+        getAddressContext(item.value).type === "EVM"
+          ? EthereumLogo
+          : BitcoinLogo,
+    };
+  });
 </script>
 
 <ErrorBoundary>
@@ -986,7 +1001,7 @@
     </div>
   {:else}
     <div>
-      {#if listAddress.length === 0 && selectedWallet === undefined}
+      {#if formatListAddress.length === 0 && selectedWallet === undefined}
         <div class="flex justify-center items-center h-screen">
           <div
             class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
@@ -1011,10 +1026,10 @@
           <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
             <div class="flex flex-col gap-14 mb-5">
               <div class="flex justify-between items-center">
-                {#if listAddress.length !== 0}
+                {#if formatListAddress.length !== 0}
                   <div class="flex items-center gap-5">
-                    {#if listAddress.length > 4}
-                      {#each listAddress.slice(0, 4) as item}
+                    {#if formatListAddress.length > 4}
+                      {#each formatListAddress.slice(0, 4) as item}
                         <div
                           id={item.value}
                           class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
@@ -1039,11 +1054,14 @@
                       <Select
                         isOptionsPage={true}
                         isSelectWallet={true}
-                        listSelect={listAddress.slice(4, listAddress.length)}
+                        listSelect={formatListAddress.slice(
+                          4,
+                          formatListAddress.length
+                        )}
                         bind:selected={selectedWallet}
                       />
                     {:else}
-                      {#each listAddress as item}
+                      {#each formatListAddress as item}
                         <div
                           id={item.value}
                           class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
@@ -1075,23 +1093,33 @@
                 <div
                   class="relative"
                   on:mouseenter={() => {
-                    if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
+                    if (
+                      APP_TYPE.TYPE !== "EXT" &&
+                      formatListAddress.length === 3
+                    ) {
                       showDisableAddWallet = true;
                     }
                   }}
                   on:mouseleave={() => {
-                    if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
+                    if (
+                      APP_TYPE.TYPE !== "EXT" &&
+                      formatListAddress.length === 3
+                    ) {
                       showDisableAddWallet = false;
                     }
                   }}
                 >
                   <Button
-                    variant={APP_TYPE.TYPE !== "EXT" && listAddress.length === 3
+                    variant={APP_TYPE.TYPE !== "EXT" &&
+                    formatListAddress.length === 3
                       ? "disabled"
                       : "tertiary"}
                     width={136}
                     on:click={() => {
-                      if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
+                      if (
+                        APP_TYPE.TYPE !== "EXT" &&
+                        formatListAddress.length === 3
+                      ) {
                         window.open("https://getnimbus.io", "_blank");
                       } else {
                         isOpenAddModal = true;

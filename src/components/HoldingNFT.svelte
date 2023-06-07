@@ -69,6 +69,10 @@
   </td>
 
   <td class="py-4">
+    <div class="text-sm text-[#00000099] font-medium flex justify-end">0</div>
+  </td>
+
+  <td class="py-4">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
       0 ETH | $0
     </div>
