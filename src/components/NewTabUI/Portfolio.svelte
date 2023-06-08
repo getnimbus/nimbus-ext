@@ -120,7 +120,7 @@
     },
   };
 
-  let selectedWallet;
+  let selectedWallet = {};
   wallet.subscribe((value) => {
     selectedWallet = value;
   });
@@ -817,7 +817,7 @@
         );
       }
       if (!addressParams && selectedWallet && listAddress.length === 0) {
-        wallet.update((n) => (n = undefined));
+        wallet.update((n) => (n = {}));
       }
 
       isLoadingFullPage = false;
@@ -1001,7 +1001,7 @@
     </div>
   {:else}
     <div>
-      {#if formatListAddress.length === 0 && selectedWallet === undefined}
+      {#if formatListAddress.length === 0 && Object.keys(selectedWallet).length === 0}
         <div class="flex justify-center items-center h-screen">
           <div
             class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"

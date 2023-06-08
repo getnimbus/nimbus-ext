@@ -640,12 +640,14 @@
                 SmartContract info will be supported soon
               </div>
             </div>
-            <button
-              class="btn-primary"
-              on:click={() => window.open(linkMoreInfo, "_blank")}
-            >
-              {labelBtnMoreInfo}
-            </button>
+            {#if linkMoreInfo && labelBtnMoreInfo}
+              <button
+                class="btn-primary"
+                on:click={() => window.open(linkMoreInfo, "_blank")}
+              >
+                {labelBtnMoreInfo}
+              </button>
+            {/if}
           </div>
         {/if}
       </div>
