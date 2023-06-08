@@ -1,11 +1,11 @@
-export type WalletData = Wallet[]
+export type TokenData = Data[]
 
-export type WalletDataRes = {
-  result: WalletData,
+export type HoldingTokenRes = {
+  result: TokenData,
   address: string
 }
 
-export type Wallet = {
+export type Data = {
   amount: number,
   avgCost: number;
   chain: string;

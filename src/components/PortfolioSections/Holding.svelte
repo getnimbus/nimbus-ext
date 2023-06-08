@@ -3,10 +3,16 @@
   import { i18n } from "~/lib/i18n";
   import { formatBalance } from "~/utils";
 
-  export let data;
-  export let isLoading;
+  export let holdingTokenData;
+  export let holdingNFTData;
+  export let isLoadingToken;
+  export let isLoadingNFT;
   export let totalAssets;
   export let selectedWallet;
+
+  $: console.log({
+    holdingNFTData,
+  });
 
   let filteredHoldingToken = true;
   let filteredHoldingDataToken = [];
@@ -32,8 +38,8 @@
   };
 
   $: {
-    if (data) {
-      data.map((item) => {
+    if (holdingTokenData) {
+      holdingTokenData.map((item) => {
         priceSubscribe([item?.cmc_id], (data) => {
           marketPrice = {
             id: data.id,
@@ -45,16 +51,19 @@
   }
 
   $: {
-    if (data) {
-      formatData = data.map((item) => {
+    if (holdingTokenData) {
+      formatData = holdingTokenData.map((item) => {
         return {
           ...item,
           market_price: item?.rate || 0,
         };
       });
       filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
-      sum = data.reduce((prev, item) => prev + item.value, 0);
-      totalAssets = data.reduce((prev, item) => prev + item.value, 0);
+      sum = holdingTokenData.reduce((prev, item) => prev + item.value, 0);
+      totalAssets = holdingTokenData.reduce(
+        (prev, item) => prev + item.value,
+        0
+      );
     }
   }
 
@@ -92,10 +101,10 @@
   }
 </script>
 
-<ErrorBoundary>
-  <div
-    class="xl:w-[70%] w-full flex flex-col gap-6 border border-[#0000001a] rounded-[20px] p-6"
-  >
+<div
+  class="xl:w-[70%] w-full flex flex-col gap-6 border border-[#0000001a] rounded-[20px] p-6"
+>
+  <ErrorBoundary>
     <div class="text-2xl font-medium text-black">
       {MultipleLang.holding}
     </div>
@@ -106,7 +115,7 @@
           {MultipleLang.token}
         </div>
         <div class="text-3xl font-semibold text-right">
-          ${isLoading ? 0 : formatBalance(sum)}
+          ${isLoadingToken ? 0 : formatBalance(sum)}
         </div>
       </div>
       <div class="flex flex-col gap-2">
@@ -171,7 +180,7 @@
                 {/if}
               </tr>
             </thead>
-            {#if isLoading}
+            {#if isLoadingToken}
               <tbody>
                 <tr>
                   <td
@@ -246,7 +255,7 @@
                 <div
                   class="text-right text-xs uppercase font-semibold text-black"
                 >
-                  Floor price
+                  Floor price ($)
                 </div>
               </th>
               <th class="py-3">
@@ -272,7 +281,7 @@
               </th>
             </tr>
           </thead>
-          {#if isLoading}
+          {#if isLoadingNFT}
             <tbody>
               <tr>
                 <td colspan={7}>
@@ -284,7 +293,7 @@
             </tbody>
           {:else}
             <tbody>
-              {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+              {#if holdingNFTData && holdingNFTData.length === 0}
                 <tr>
                   <td colspan={7}>
                     <div
@@ -295,15 +304,17 @@
                   </td>
                 </tr>
               {:else}
-                <HoldingNFT />
+                {#each holdingNFTData as holding}
+                  <HoldingNFT data={holding} {selectedWallet} />
+                {/each}
               {/if}
             </tbody>
           {/if}
         </table>
       </div>
     </div>
-  </div>
-</ErrorBoundary>
+  </ErrorBoundary>
+</div>
 
 <style>
 </style>

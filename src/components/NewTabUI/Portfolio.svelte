@@ -26,7 +26,8 @@
   import type { OpportunityData } from "~/types/OpportunityData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
   import type { PositionData, PositionDataRes } from "~/types/PositionData";
-  import type { WalletData, WalletDataRes } from "~/types/WalletData";
+  import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
+  import type { NFTData, HoldingNFTRes } from "~/types/HoldingNFTData";
 
   import Button from "~/components/Button.svelte";
   import CopyToClipboard from "~/components/CopyToClipboard.svelte";
@@ -120,7 +121,7 @@
     },
   };
 
-  let selectedWallet = {};
+  let selectedWallet: any = {};
   wallet.subscribe((value) => {
     selectedWallet = value;
   });
@@ -144,7 +145,8 @@
   };
   let opportunitiesData: OpportunityData = [];
   let newsData: NewData = [];
-  let walletData: WalletData = [];
+  let holdingTokenData: TokenData = [];
+  let holdingNFTData: NFTData = [];
   let positionsData: PositionData = [];
   let dataUpdatedTime;
   let listAddress = [];
@@ -168,7 +170,8 @@
   let isEmptyDataPie = false;
   let syncMsg = "";
   let loadingOverview = false;
-  let loadingHolding = false;
+  let loadingHoldingToken = false;
+  let loadingHoldingNFT = false;
   let loadingPositions = false;
   let loadingNews = false;
   let loadingOpportunities = false;
@@ -555,9 +558,9 @@
     }
   };
 
-  const getHolding = async (isReload: boolean = false) => {
+  const getHoldingToken = async (isReload: boolean = false) => {
     try {
-      const response: WalletDataRes = await sendMessage("getHolding", {
+      const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
         address: selectedWallet.value,
         reload: isReload,
       });
@@ -569,7 +572,7 @@
             value: item.amount * item.rate,
           };
         });
-        walletData = formatData.sort((a, b) => {
+        holdingTokenData = formatData.sort((a, b) => {
           if (a.value < b.value) {
             return 1;
           }
@@ -578,6 +581,24 @@
           }
           return 0;
         });
+        return response;
+      } else {
+        // console.log("response: ", response)
+      }
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const getHoldingNFT = async (isReload: boolean = false) => {
+    try {
+      const response: HoldingNFTRes = await sendMessage("getHoldingNFT", {
+        address: selectedWallet.value,
+        reload: isReload,
+      });
+
+      if (selectedWallet.value === response.address) {
+        holdingNFTData = response.result;
         return response;
       } else {
         // console.log("response: ", response)
@@ -652,7 +673,8 @@
     newsData = [];
     opportunitiesData = [];
     loadingOverview = true;
-    loadingHolding = true;
+    loadingHoldingToken = true;
+    loadingHoldingNFT = true;
     loadingPositions = true;
     loadingNews = true;
     loadingOpportunities = true;
@@ -702,7 +724,8 @@
             console.log("start load data");
             const [
               resOverview,
-              resHolding,
+              resHoldingToken,
+              resHoldingNFT,
               resPositions,
               // resNews,
               resOpportunities,
@@ -711,8 +734,12 @@
                 loadingOverview = false;
                 return res;
               }),
-              getHolding(type === "reload").then((res) => {
-                loadingHolding = false;
+              getHoldingToken(type === "reload").then((res) => {
+                loadingHoldingToken = false;
+                return res;
+              }),
+              getHoldingNFT(type === "reload").then((res) => {
+                loadingHoldingNFT = false;
                 return res;
               }),
               getPositions(type === "reload").then((res) => {
@@ -731,7 +758,8 @@
 
             if (
               resOverview &&
-              resHolding &&
+              resHoldingToken &&
+              resHoldingNFT &&
               (resPositions === undefined || resPositions) &&
               resOpportunities
             ) {
@@ -751,7 +779,8 @@
           syncMsg = "";
           isLoading = false;
           loadingOverview = false;
-          loadingHolding = false;
+          loadingHoldingToken = false;
+          loadingHoldingNFT = false;
           loadingPositions = false;
           loadingNews = false;
           loadingOpportunities = false;
@@ -1226,7 +1255,8 @@
                 {totalAssets}
                 isLoading={loadingOverview &&
                   loadingPositions &&
-                  loadingHolding}
+                  loadingHoldingToken &&
+                  loadingHoldingNFT}
               />
             {/if}
           </div>
@@ -1255,8 +1285,10 @@
               <div class="flex xl:flex-row flex-col justify-between gap-6">
                 <Holding
                   {selectedWallet}
-                  isLoading={loadingHolding}
-                  data={walletData}
+                  isLoadingNFT={loadingHoldingNFT}
+                  isLoadingToken={loadingHoldingToken}
+                  {holdingTokenData}
+                  {holdingNFTData}
                   bind:totalAssets
                 />
                 <Opportunities
