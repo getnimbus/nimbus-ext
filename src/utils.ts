@@ -23,11 +23,11 @@ export const regexList = [
     regex_address: ETHAddressRegex,
     regex_trx: ETHTrxRegex
   },
-  // {
-  //   name: "BTC",
-  //   regex_address: BTCAddressRegex,
-  //   regex_trx: BTCTrxRegex
-  // },
+  {
+    name: "BTC",
+    regex_address: BTCAddressRegex,
+    // regex_trx: BTCTrxRegex
+  },
   // {
   //   name: "Solana",
   //   regex_address: SOLAddressRegex,

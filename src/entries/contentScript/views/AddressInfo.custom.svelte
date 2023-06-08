@@ -57,6 +57,8 @@
     symbol: "",
     id: "",
   };
+  let linkMoreInfo = "";
+  let labelBtnMoreInfo = "";
   let openShowCategoryList = false;
   let selectedTokenAllocation = "token";
   let chart;
@@ -167,6 +169,20 @@
           addressInfo.categories = response?.tags;
           addressInfo.networth = response?.networth;
           addressInfo.priceChange = response?.priceChange;
+
+          switch (response?.chain) {
+            case "ETH":
+              linkMoreInfo = `https://etherscan.io/address/${address}`;
+              labelBtnMoreInfo = "Etherscan";
+              break;
+            case "BTC":
+              linkMoreInfo = `https://mempool.space/address/${address}`;
+              labelBtnMoreInfo = "mempool";
+              break;
+            default:
+              linkMoreInfo = "";
+              labelBtnMoreInfo = "";
+          }
 
           if (response?.breakdown.length === 0) {
             isEmptyTokens = true;
@@ -444,7 +460,7 @@
                       </div>
                     </div>
                     <a
-                      href={`https://etherscan.io/address/${address}`}
+                      href={linkMoreInfo}
                       target="_blank"
                       class="h-4 w-4 relative"
                       on:mouseenter={() =>
@@ -626,13 +642,9 @@
             </div>
             <button
               class="btn-primary"
-              on:click={() =>
-                window.open(
-                  `https://etherscan.io/address/${address}`,
-                  "_blank"
-                )}
+              on:click={() => window.open(linkMoreInfo, "_blank")}
             >
-              Etherscan
+              {labelBtnMoreInfo}
             </button>
           </div>
         {/if}
