@@ -42,7 +42,7 @@
     }
   }}
 >
-  <td class="pl-3 py-4 w-[200px]">
+  <td class="pl-3 py-3">
     <div class="text-left flex items-start gap-2">
       <img
         src={data.logo}
@@ -51,7 +51,7 @@
         height="20"
         class="rounded-full"
       />
-      <div class="flex flex-col gap-1 relative">
+      <div class="flex flex-col gap-1">
         <div class="relative">
           <div
             class="text-black text-sm font-medium"
@@ -65,10 +65,7 @@
             {/if}
           </div>
           {#if showTooltipName && data?.name?.length > 10}
-            <div
-              class="absolute -top-7 left-1/2 transform -translate-x-1/2"
-              style="z-index: 2147483648;"
-            >
+            <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
               <tooltip-detail text={data.name} />
             </div>
           {/if}
@@ -86,10 +83,7 @@
             {/if}
           </div>
           {#if showTooltipSymbol && data.symbol.length > 16}
-            <div
-              class="absolute -top-7 left-1/2 transform -translate-x-1/2"
-              style="z-index: 2147483648;"
-            >
+            <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
               <tooltip-detail text={data.symbol} />
             </div>
           {/if}
@@ -111,29 +105,29 @@
     </div>
   </td>
 
-  <td class="py-4 min-w-[160px]">
+  <td class="py-3">
     <div class="text-sm text-[#00000099] font-medium flex justify-start">
       {#if formatCurrency(data.market_price).toString().length > 9}
-        <TooltipNumber number={data.market_price} type="amount" />
+        $<TooltipNumber number={data.market_price} type="amount" />
       {:else}
-        {formatCurrency(data.market_price)}
+        ${formatCurrency(data.market_price)}
       {/if}
     </div>
   </td>
 
-  <td class="py-4 w-[160px]">
+  <td class="py-3">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
       <TooltipNumber number={data.amount} type="amount" />
     </div>
   </td>
 
-  <td class="py-4 w-[160px]">
+  <td class="py-3">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
-      <TooltipNumber number={price} />
+      $<TooltipNumber number={price} />
     </div>
   </td>
 
-  <td class={`py-3 w-[160px] ${!data.positionId && "pr-3"}`}>
+  <td class={`py-3 ${!data.positionId && "pr-3"}`}>
     <div class="flex items-center justify-end gap-1 text-sm font-medium">
       <div class="flex flex-col">
         <div
@@ -141,7 +135,7 @@
             profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          <TooltipNumber number={Math.abs(profitAndLoss)} />
+          $<TooltipNumber number={Math.abs(profitAndLoss)} />
         </div>
         <div class="flex items-center justify-end gap-1">
           <div
@@ -166,7 +160,7 @@
   </td>
 
   {#if data.positionId}
-    <td class="py-4 w-10">
+    <td class="py-3 w-10">
       {#if data.symbol !== "Bitcoin"}
         <div class="flex justify-center">
           <div

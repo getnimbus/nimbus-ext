@@ -23,7 +23,6 @@
 
   import type { AddressData } from "~/types/AddressData";
   import type { NewData, NewDataRes } from "~/types/NewData";
-  import type { OpportunityData } from "~/types/OpportunityData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
   import type { PositionData, PositionDataRes } from "~/types/PositionData";
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
@@ -34,7 +33,6 @@
   import Charts from "~/components/PortfolioSections/Charts.svelte";
   import Holding from "~/components/PortfolioSections/Holding.svelte";
   import News from "~/components/PortfolioSections/News.svelte";
-  import Opportunities from "~/components/PortfolioSections/Opportunities.svelte";
   import Overview from "~/components/PortfolioSections/Overview.svelte";
   import Positions from "~/components/PortfolioSections/Positions.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -143,7 +141,6 @@
     performance: [],
     updatedAt: "",
   };
-  let opportunitiesData: OpportunityData = [];
   let newsData: NewData = [];
   let holdingTokenData: TokenData = [];
   let holdingNFTData: NFTData = [];
@@ -174,7 +171,6 @@
   let loadingHoldingNFT = false;
   let loadingPositions = false;
   let loadingNews = false;
-  let loadingOpportunities = false;
   let optionPie = {
     title: {
       text: "",
@@ -625,19 +621,6 @@
     }
   };
 
-  const getOpportunities = async (isReload: boolean = false) => {
-    try {
-      const response: OpportunityData = await sendMessage("getOpportunities", {
-        address: selectedWallet.value,
-        reload: isReload,
-      });
-      opportunitiesData = response;
-      return response;
-    } catch (e) {
-      console.log("error: ", e);
-    }
-  };
-
   const getSyncStatus = async () => {
     try {
       const response: any = await sendMessage("getSyncStatus", {
@@ -671,13 +654,13 @@
     };
     positionsData = [];
     newsData = [];
-    opportunitiesData = [];
+    holdingNFTData = [];
+    holdingTokenData = [];
     loadingOverview = true;
     loadingHoldingToken = true;
     loadingHoldingNFT = true;
     loadingPositions = true;
     loadingNews = true;
-    loadingOpportunities = true;
 
     isLoading = true;
     isLoadingSync = false;
@@ -728,7 +711,6 @@
               resHoldingNFT,
               resPositions,
               // resNews,
-              resOpportunities,
             ] = await Promise.all([
               getOverview(type === "reload").then((res) => {
                 loadingOverview = false;
@@ -750,18 +732,13 @@
               //   loadingNews = false;
               //   return res;
               // }),
-              getOpportunities(type === "reload").then((res) => {
-                loadingOpportunities = false;
-                return res;
-              }),
             ]);
 
             if (
               resOverview &&
               resHoldingToken &&
               resHoldingNFT &&
-              (resPositions === undefined || resPositions) &&
-              resOpportunities
+              (resPositions === undefined || resPositions)
             ) {
               syncMsg = "";
               isLoading = false;
@@ -783,7 +760,7 @@
           loadingHoldingNFT = false;
           loadingPositions = false;
           loadingNews = false;
-          loadingOpportunities = false;
+
           break;
         }
       }
@@ -1231,7 +1208,7 @@
                             style="z-index: 2147483648;"
                           >
                             <tooltip-detail
-                              text={"Alert me when it make a move"}
+                              text={"Alert me when it makes a move"}
                             />
                           </div>
                         {/if}
@@ -1282,20 +1259,15 @@
                 {optionLine}
                 {isEmptyDataPie}
               />
-              <div class="flex xl:flex-row flex-col justify-between gap-6">
-                <Holding
-                  {selectedWallet}
-                  isLoadingNFT={loadingHoldingNFT}
-                  isLoadingToken={loadingHoldingToken}
-                  {holdingTokenData}
-                  {holdingNFTData}
-                  bind:totalAssets
-                />
-                <Opportunities
-                  isLoading={loadingOpportunities}
-                  data={opportunitiesData}
-                />
-              </div>
+
+              <Holding
+                {selectedWallet}
+                isLoadingNFT={loadingHoldingNFT}
+                isLoadingToken={loadingHoldingToken}
+                {holdingTokenData}
+                {holdingNFTData}
+                bind:totalAssets
+              />
               <div
                 class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
               >
