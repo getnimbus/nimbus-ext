@@ -1173,7 +1173,7 @@
                             style="z-index: 2147483648;"
                           >
                             <tooltip-detail
-                              text={"Alert me when it make a move"}
+                              text={"Alert me when it makes a move"}
                             />
                           </div>
                         {/if}
