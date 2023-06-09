@@ -20,9 +20,9 @@
   import "./NativeTokenInfo.custom.svelte";
   import "~/components/ResetStyle.custom.svelte";
   import "~/components/CheckSafety.custom.svelte";
+  import "~/components/TermInfo.custom.svelte";
 
   import Logo from "~/assets/logo-white.svg";
-  import More from "../../../assets/more.svg";
   import Close from "../../../assets/close.svg";
   import Line from "../../../assets/line.svg";
   import Coin from "../../../assets/coin.svg";
@@ -64,7 +64,6 @@
   let isChangeURL = false;
   let isShowSideBar = false;
   let search = "";
-  let searchInput = "";
   let isFocused = false;
   let currentUrl = window.location.href;
   let timer;
@@ -289,7 +288,6 @@
   });
 
   const debounceSearchInput = (value: string) => {
-    searchInput = value;
     clearTimeout(timer);
     timer = setTimeout(() => {
       search = value;
@@ -297,7 +295,6 @@
   };
 
   const handleSetSearch = (value: string) => {
-    searchInput = value;
     search = value;
   };
 
@@ -494,15 +491,17 @@
             />
           </svg>
           <input
+            on:keyup={(e) => {
+              debounceSearchInput(e.target?.value || "");
+            }}
             on:keydown={(e) => {
               e.stopImmediatePropagation();
               e.stopPropagation();
-              debounceSearchInput(e.target?.value || "");
             }}
             on:focus={() => (isFocused = true)}
             on:blur={() => (isFocused = false)}
             autofocus
-            value={searchInput}
+            value={search}
             placeholder={MultipleLang.input_placeholder}
             type="text"
             class="input-1 text-white bg-[#38427B] placeholder-white"
@@ -639,65 +638,15 @@
               {#if termSearchResult.length === 0}
                 {#if termDetectResult.length !== 0}
                   {#each termDetectResult as item}
-                    <div class="p-4 bg-white rounded-[10px] my-4">
-                      <div class="flex justify-between items-center">
-                        <a
-                          href={item.url}
-                          class="text-xl font-medium text-black no-underline"
-                        >
-                          {item.term}
-                        </a>
-                        <!-- <div class="cursor-pointer mt-1">
-                        <img src={getLocalImg(More)} alt="more" />
-                      </div> -->
-                      </div>
-                      {#if item.img !== null}
-                        <div
-                          class="w-full h-[300px] border rounded overflow-hidden"
-                        >
-                          <img
-                            src={item.img}
-                            alt="img"
-                            class="w-full h-full object-contain"
-                          />
-                        </div>
-                      {/if}
-                      <div
-                        class="text-sm font-normal text-[#00000099] mt-[10px]"
-                      >
-                        {item.define}
-                      </div>
+                    <div class="my-4">
+                      <term-info data={item} />
                     </div>
                   {/each}
                 {/if}
               {:else}
                 {#each termSearchResult as item}
-                  <div class="p-4 bg-white rounded-[10px] mb-4">
-                    <div class="flex justify-between items-center">
-                      <a
-                        href={item.url}
-                        class="text-xl font-medium text-black no-underline"
-                      >
-                        {item.term}
-                      </a>
-                      <!-- <div class="cursor-pointer mt-1">
-                      <img src={getLocalImg(More)} alt="more" />
-                    </div> -->
-                    </div>
-                    {#if item.img !== null}
-                      <div
-                        class="w-full h-[300px] border rounded overflow-hidden"
-                      >
-                        <img
-                          src={item.img}
-                          alt="img"
-                          class="w-full h-full object-contain"
-                        />
-                      </div>
-                    {/if}
-                    <div class="text-sm font-normal text-[#00000099] mt-[10px]">
-                      {item.define}
-                    </div>
+                  <div class="mb-4">
+                    <term-info data={item} />
                   </div>
                 {/each}
               {/if}
@@ -792,34 +741,8 @@
               {#if termSearchResult.length === 0}
                 {#if termDetectResult.length !== 0}
                   {#each termDetectResult as item}
-                    <div class="p-4 bg-white rounded-[10px] mb-4">
-                      <div class="flex justify-between items-center">
-                        <a
-                          href={item.url}
-                          class="text-xl font-medium text-black no-underline"
-                        >
-                          {item.term}
-                        </a>
-                        <!-- <div class="cursor-pointer mt-1">
-                          <img src={getLocalImg(More)} alt="more" />
-                        </div> -->
-                      </div>
-                      {#if item.img !== null}
-                        <div
-                          class="w-full h-[300px] border rounded overflow-hidden"
-                        >
-                          <img
-                            src={item.img}
-                            alt="img"
-                            class="w-full h-full object-contain"
-                          />
-                        </div>
-                      {/if}
-                      <div
-                        class="text-sm font-normal text-[#00000099] mt-[10px]"
-                      >
-                        {item.define}
-                      </div>
+                    <div class="mb-4">
+                      <term-info data={item} />
                     </div>
                   {/each}
                 {:else}
@@ -871,32 +794,8 @@
                 {/if}
               {:else}
                 {#each termSearchResult as item}
-                  <div class="p-4 bg-white rounded-[10px] mb-4">
-                    <div class="flex justify-between items-center">
-                      <a
-                        href={item.url}
-                        class="text-xl font-medium text-black no-underline"
-                      >
-                        {item.term}
-                      </a>
-                      <!-- <div class="cursor-pointer mt-1">
-                        <img src={getLocalImg(More)} alt="more" />
-                      </div> -->
-                    </div>
-                    {#if item.img !== null}
-                      <div
-                        class="w-full h-[300px] border rounded overflow-hidden"
-                      >
-                        <img
-                          src={item.img}
-                          alt="img"
-                          class="w-full h-full object-contain"
-                        />
-                      </div>
-                    {/if}
-                    <div class="text-sm font-normal text-[#00000099] mt-[10px]">
-                      {item.define}
-                    </div>
+                  <div class="mb-4">
+                    <term-info data={item} />
                   </div>
                 {/each}
               {/if}
