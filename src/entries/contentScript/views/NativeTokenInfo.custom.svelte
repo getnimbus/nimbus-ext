@@ -359,9 +359,7 @@ z"
                         class="absolute -top-6 left-1/2 transform -translate-x-1/2"
                         style="z-index: 2147483648;"
                       >
-                        <tooltip-detail
-                          text={"Go to token detail by CoinGecko"}
-                        />
+                        <tooltip-detail text={"Go to CoinGecko detail"} />
                       </div>
                     {/if}
                   </a>
@@ -387,7 +385,7 @@ z"
                           class="absolute -top-6 left-1/2 transform -translate-x-1/2"
                           style="z-index: 2147483648;"
                         >
-                          <tooltip-detail text={"Go to token detail by CMC"} />
+                          <tooltip-detail text={"Go to CoinMarketCap detail"} />
                         </div>
                       {/if}
                     </a>

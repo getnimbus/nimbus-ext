@@ -64,6 +64,7 @@
   let isChangeURL = false;
   let isShowSideBar = false;
   let search = "";
+  let searchInput = "";
   let isFocused = false;
   let currentUrl = window.location.href;
   let timer;
@@ -287,11 +288,17 @@
     }
   });
 
-  const debounce = (value: string) => {
+  const debounceSearchInput = (value: string) => {
+    searchInput = value;
     clearTimeout(timer);
     timer = setTimeout(() => {
       search = value;
     }, 300);
+  };
+
+  const handleSetSearch = (value: string) => {
+    searchInput = value;
+    search = value;
   };
 
   $: {
@@ -487,11 +494,15 @@
             />
           </svg>
           <input
-            on:keyup={({ target: { value } }) => debounce(value)}
+            on:keydown={(e) => {
+              e.stopImmediatePropagation();
+              e.stopPropagation();
+              debounceSearchInput(e.target?.value || "");
+            }}
             on:focus={() => (isFocused = true)}
             on:blur={() => (isFocused = false)}
             autofocus
-            value={search}
+            value={searchInput}
             placeholder={MultipleLang.input_placeholder}
             type="text"
             class="input-1 text-white bg-[#38427B] placeholder-white"
@@ -536,7 +547,7 @@
                     {#each suggestList as suggest}
                       <div
                         class="text-[#1E96FC] cursor-pointer"
-                        on:click={() => (search = suggest)}
+                        on:click={() => handleSetSearch(suggest)}
                       >
                         {suggest.length > 9 ? shorterAddress(suggest) : suggest}
                       </div>
@@ -577,7 +588,7 @@
                     {#each suggestList as suggest}
                       <div
                         class="text-[#1E96FC] cursor-pointer"
-                        on:click={() => (search = suggest)}
+                        on:click={() => handleSetSearch(suggest)}
                       >
                         {suggest.length > 9 ? shorterAddress(suggest) : suggest}
                       </div>
@@ -764,7 +775,7 @@
                       {#each suggestList as suggest}
                         <div
                           class="text-[#1E96FC] cursor-pointer"
-                          on:click={() => (search = suggest)}
+                          on:click={() => handleSetSearch(suggest)}
                         >
                           {suggest.length > 9
                             ? shorterAddress(suggest)
@@ -963,7 +974,7 @@
                       {#each suggestList as suggest}
                         <div
                           class="text-[#1E96FC] cursor-pointer"
-                          on:click={() => (search = suggest)}
+                          on:click={() => handleSetSearch(suggest)}
                         >
                           {suggest.length > 9
                             ? shorterAddress(suggest)
