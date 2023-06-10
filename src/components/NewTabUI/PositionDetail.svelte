@@ -378,7 +378,7 @@
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={"Position Value"}>
-            <div class="text-3xl text-black">
+            <div class="text-3xl text-black flex items-end gap-1">
               {#if (positionDetail?.overview?.holding)
                 .toString()
                 .toLowerCase()
@@ -397,7 +397,7 @@
                 >
               {/if}
             </div>
-            <div class="text-lg">
+            <div class="text-lg flex">
               $<CountUpNumber
                 id="PositionValue"
                 number={positionDetail?.overview?.currentValue}
@@ -406,7 +406,7 @@
           </OverviewCard>
           <OverviewCard title={"Profit & Loss"}>
             <div
-              class={`text-3xl  ${
+              class={`text-3xl flex ${
                 positionDetail?.overview?.profitAndLoss?.percent >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -420,7 +420,7 @@
               />
             </div>
             <div
-              class={`text-lg ${
+              class={`text-lg flex ${
                 positionDetail?.overview?.profitAndLoss?.percent >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -443,7 +443,7 @@
         </div>
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={"Average Cost"}>
-            <div class="text-3xl text-black">
+            <div class="text-3xl text-black flex">
               {#if (positionDetail?.overview?.averageCost)
                 .toString()
                 .toLowerCase()
@@ -463,7 +463,7 @@
           </OverviewCard>
           <OverviewCard title={"24-hour Return"}>
             <div
-              class={`text-3xl ${
+              class={`text-3xl flex ${
                 positionDetail?.overview?.return24h?.percent >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -475,7 +475,7 @@
               />
             </div>
             <div
-              class={`text-lg ${
+              class={`text-lg flex ${
                 positionDetail?.overview?.return24h?.percent >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"

@@ -17,7 +17,7 @@
 
   let showName = false;
 
-  $: profitAndLoss = data?.current_value + (data?.totalCost || 0);
+  $: profitAndLoss = data?.current_value - (data?.totalCost || 0);
   $: profitAndLossPercent =
     Math.abs(data?.totalCost || 0) === 0
       ? 0

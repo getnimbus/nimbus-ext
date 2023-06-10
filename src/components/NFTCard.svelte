@@ -1,5 +1,10 @@
 <script lang="ts">
+  import TooltipNumber from "./TooltipNumber.svelte";
+
   export let data;
+  export let marketPrice;
+
+  $: console.log("data: ", data);
 </script>
 
 <div
@@ -17,12 +22,14 @@
       <div class="text-sm font-semibold">Inscription</div>
       <div class="text-sm font-semibold">#{data.inscription_number}</div>
     </div>
-    <div class="flex gap-2 items-center">
-      <div class="text-sm font-semibold">Rarity badge:</div>
-      <div>{data.rarity_badge}</div>
-    </div>
-    <div class="text-xs font-normal text-[#616b84]">
-      Est. value : {data.est_value} BTC
+    <div class="text-xs font-normal text-[#616b84] flex flex-col gap-1">
+      <div>Est. value</div>
+      <div>
+        <TooltipNumber number={data.est_value} type="amount" /> BTC | $<TooltipNumber
+          number={data.est_value * marketPrice}
+          type="amount"
+        />
+      </div>
     </div>
   </div>
 </div>

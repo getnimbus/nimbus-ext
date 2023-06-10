@@ -26,6 +26,10 @@
         .then((res) => res.data);
       if (response) {
         tokens = response.tokens;
+        marketPriceNFT = {
+          id: -1,
+          market_price: response?.btcPrice || 0,
+        };
         data = {
           ...response,
           market_price: response?.btcPrice || 0,
@@ -81,7 +85,7 @@
     }
   }
 
-  $: profitAndLoss = data?.current_value + (data?.overview.totalCost || 0);
+  $: profitAndLoss = data?.current_value - (data?.overview.totalCost || 0);
   $: profitAndLossPercent =
     Math.abs(data?.overview.totalCost || 0) === 0
       ? 0
@@ -106,13 +110,13 @@
           </Link>
         </div>
         <div class="text-3xl font-semibold text-white">
-          {data?.collection_name}
+          {data?.collection_name || "-"}
         </div>
       </div>
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={"Position Value"}>
-            <div class="text-3xl text-black">
+            <div class="text-3xl text-black flex">
               {#if data?.current_value.toString().toLowerCase().includes("e-")}
                 $<TooltipNumber number={data?.current_value} />
               {:else}
@@ -125,7 +129,7 @@
           </OverviewCard>
           <OverviewCard title={"Profit & Loss"}>
             <div
-              class={`text-3xl  ${
+              class={`text-3xl flex ${
                 profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
             >
@@ -135,7 +139,7 @@
               />
             </div>
             <div
-              class={`text-lg ${
+              class={`text-lg flex ${
                 profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
             >
@@ -154,7 +158,7 @@
         </div>
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={"Average Cost"}>
-            <div class="text-3xl text-black">
+            <div class="text-3xl text-black flex">
               {#if (data?.overview?.average_cost)
                 .toString()
                 .toLowerCase()
@@ -172,7 +176,7 @@
           </OverviewCard>
           <OverviewCard title={"24-hour Return"}>
             <div
-              class={`text-3xl ${
+              class={`text-3xl flex ${
                 data?.overview?.return24h?.percent >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -184,7 +188,7 @@
               />
             </div>
             <div
-              class={`text-lg ${
+              class={`text-lg flex ${
                 data?.overview?.return24h?.percent >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -214,22 +218,25 @@
       <div class="border border-[#0000001a] rounded-[20px] p-6">
         <div class="flex flex-col gap-6">
           <div class="text-2xl font-medium text-black">List NFT</div>
-          <div class="grid xl:grid-cols-5 lg:grid-cols-4 gap-6">
+          <div class="grid grid-cols-4 gap-6">
             {#if isLoadingListNFT}
               <div
-                class="min-h-[320px] flex justify-center items-center xl:col-span-5 lg:col-span-4"
+                class="min-h-[320px] flex justify-center items-center col-span-4"
               >
                 <loading-icon />
               </div>
             {:else if !isLoadingListNFT && tokens.length === 0}
               <div
-                class="min-h-[320px] flex justify-center items-center xl:col-span-5 lg:col-span-4 text-lg text-gray-400"
+                class="min-h-[320px] flex justify-center items-center col-span-4 text-lg text-gray-400"
               >
                 Empty
               </div>
             {:else}
               {#each tokens as item}
-                <NftCard data={item} />
+                <NftCard
+                  data={item}
+                  marketPrice={marketPriceNFT.market_price}
+                />
               {/each}
             {/if}
           </div>
