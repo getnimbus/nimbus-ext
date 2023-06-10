@@ -41,9 +41,9 @@
         on:mouseenter={() => (showName = true)}
         on:mouseleave={() => (showName = false)}
       >
-        {shorterName(data?.collection?.name)}
+        {shorterName(data?.collection?.name, 16)}
       </div>
-      {#if showName && data?.collection?.name.length > 10}
+      {#if showName && data?.collection?.name.length > 16}
         <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
           <tooltip-detail text={data?.collection?.name} />
         </div>

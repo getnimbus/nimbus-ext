@@ -219,9 +219,9 @@ export const shorterAddress = (string: string) => {
   return string ? string.slice(0, 6) + "..." + string.substr(-4) : string;
 };
 
-export const shorterName = (string: string) => {
-  if (string?.length > 10) {
-    return string.slice(0, 10) + "...";
+export const shorterName = (string: string, length: number = 10) => {
+  if (string?.length > length) {
+    return string.slice(0, length) + "...";
   } else {
     return string
   }
