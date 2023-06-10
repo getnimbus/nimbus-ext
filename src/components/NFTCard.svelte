@@ -5,7 +5,7 @@
 <div
   class="border border-[#0000000d] rounded-[10px] px-1 pt-1 pb-3 flex flex-col gap-2"
 >
-  <div class="rounded-[10px] overflow-hidden h-[200px]">
+  <div class="rounded-[10px] overflow-hidden h-[270px]">
     <img src={data.image_url} alt="" class="w-full h-full object-cover" />
   </div>
   <div class="flex flex-col gap-1">
