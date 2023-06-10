@@ -1,11 +1,91 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { nimbus } from "~/lib/network";
   import { Link } from "svelte-navigator";
+  import { priceSubscribe } from "~/lib/price-ws";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import TooltipNumber from "../TooltipNumber.svelte";
   import CountUpNumber from "../CountUpNumber.svelte";
   import NftCard from "../NFTCard.svelte";
+  import "~/components/Loading.custom.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
+  import OverviewCard from "../OverviewCard.svelte";
+
+  let isLoadingListNFT = false;
+  let tokens = [];
+  let data;
+  let marketPriceNFT;
+
+  const getCollectionDetail = async (collectionId, address) => {
+    try {
+      isLoadingListNFT = true;
+      const response = await nimbus
+        .get(`/address/${address}/nft-holding/${collectionId}`)
+        .then((res) => res.data);
+      if (response) {
+        tokens = response.tokens;
+        data = {
+          ...response,
+          market_price: response?.btcPrice || 0,
+          current_value:
+            response?.floorPriceBTC * response?.btcPrice * response?.balance,
+        };
+        priceSubscribe([response?.cmc_id], (data) => {
+          marketPriceNFT = {
+            id: data.id,
+            market_price: data.p,
+          };
+        });
+      }
+    } catch (e) {
+      console.log("error: ", e);
+    } finally {
+      isLoadingListNFT = false;
+    }
+  };
+
+  onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    let collectionIDParams = urlParams.get("id");
+    let addressParams = urlParams.get("address");
+
+    if (APP_TYPE.TYPE === "EXT") {
+      const params = decodeURIComponent(window.location.hash)
+        .split("?")[1]
+        .split("&")
+        .reduce(function (result, param) {
+          var [key, value] = param.split("=");
+          result[key] = value;
+          return result;
+        }, {});
+
+      collectionIDParams = params.id;
+      addressParams = params.address;
+    }
+
+    if (collectionIDParams && addressParams) {
+      getCollectionDetail(collectionIDParams, addressParams);
+    }
+  });
+
+  $: {
+    if (marketPriceNFT) {
+      data = {
+        ...data,
+        market_price: marketPriceNFT.market_price,
+        current_value:
+          data?.floorPriceBTC * marketPriceNFT.market_price * data?.balance,
+      };
+    }
+  }
+
+  $: profitAndLoss = data?.current_value + (data?.overview.totalCost || 0);
+  $: profitAndLossPercent =
+    Math.abs(data?.overview.totalCost || 0) === 0
+      ? 0
+      : profitAndLoss / Math.abs(data?.overview.totalCost);
 </script>
 
 <ErrorBoundary>
@@ -25,64 +105,103 @@
             </div>
           </Link>
         </div>
-        <div class="text-3xl font-semibold text-white">Art Blocks</div>
+        <div class="text-3xl font-semibold text-white">
+          {data?.collection_name}
+        </div>
       </div>
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              Items & Holders
-            </div>
+          <OverviewCard title={"Position Value"}>
             <div class="text-3xl text-black">
-              <CountUpNumber id="Items" number={14932} format={0} />
-              <span class="text-xl text-gray-500">Items</span>
+              {#if data?.current_value.toString().toLowerCase().includes("e-")}
+                $<TooltipNumber number={data?.current_value} />
+              {:else}
+                $<CountUpNumber
+                  id="PositionValueHolding"
+                  number={data?.current_value}
+                />
+              {/if}
             </div>
-            <div class="text-3xl text-black">
-              <CountUpNumber id="Holders" number={4869} format={0} />
-              <span class="text-xl text-gray-500">Holders</span>
-            </div>
-          </div>
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              24-hour Volume
-            </div>
-            <div class="text-3xl text-black">
-              <CountUpNumber
-                id="24h_volume"
-                number={6.9308}
-                format={8}
-                type="amount"
+          </OverviewCard>
+          <OverviewCard title={"Profit & Loss"}>
+            <div
+              class={`text-3xl  ${
+                profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+              }`}
+            >
+              $<CountUpNumber
+                id="Profit&Loss"
+                number={Math.abs(profitAndLoss)}
               />
-              <span class="text-xl text-gray-500">ETH</span>
             </div>
-          </div>
+            <div
+              class={`text-lg ${
+                profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+              }`}
+            >
+              {#if profitAndLossPercent < 0}
+                ↓
+              {:else}
+                ↑
+              {/if}
+              <CountUpNumber
+                id="Profit&LossPercent"
+                number={Math.abs(profitAndLossPercent) * 100}
+                type="percent"
+              />%
+            </div>
+          </OverviewCard>
         </div>
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              24-hour Avg Price
-            </div>
+          <OverviewCard title={"Average Cost"}>
             <div class="text-3xl text-black">
-              <CountUpNumber
-                id="24h_avg_price"
-                number={0.3465}
-                format={8}
-                type="amount"
+              {#if (data?.overview?.average_cost)
+                .toString()
+                .toLowerCase()
+                .includes("e-")}
+                $<TooltipNumber number={data?.overview?.average_cost} />
+              {:else}
+                $<CountUpNumber
+                  id="AverageCost"
+                  number={data?.overview?.average_cost}
+                  format={8}
+                  type="amount"
+                />
+              {/if}
+            </div>
+          </OverviewCard>
+          <OverviewCard title={"24-hour Return"}>
+            <div
+              class={`text-3xl ${
+                data?.overview?.return24h?.percent >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+              }`}
+            >
+              $<CountUpNumber
+                id="24-hourReturn"
+                number={Math.abs(data?.overview?.return24h?.value)}
               />
-              <span class="text-xl text-gray-500">ETH</span>
             </div>
-          </div>
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              Active Takers
+            <div
+              class={`text-lg ${
+                data?.overview?.return24h?.percent >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+              }`}
+            >
+              {#if data?.overview?.return24h?.percent < 0}
+                ↓
+              {:else}
+                ↑
+              {/if}
+              <CountUpNumber
+                id="24-hourReturnPercent"
+                number={Math.abs(data?.overview?.return24h?.percent) * 100}
+                type="percent"
+              />%
             </div>
-            <div class="text-3xl text-black">
-              <CountUpNumber id="Active" number={2034} format={0} />
-            </div>
-            <div class="text-3xl text-black">
-              $<CountUpNumber id="Price" number={367326120} />
-            </div>
-          </div>
+          </OverviewCard>
         </div>
       </div>
     </div>
@@ -96,9 +215,23 @@
         <div class="flex flex-col gap-6">
           <div class="text-2xl font-medium text-black">List NFT</div>
           <div class="grid xl:grid-cols-5 lg:grid-cols-4 gap-6">
-            {#each [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as item}
-              <NftCard />
-            {/each}
+            {#if isLoadingListNFT}
+              <div
+                class="min-h-[320px] flex justify-center items-center xl:col-span-5 lg:col-span-4"
+              >
+                <loading-icon />
+              </div>
+            {:else if !isLoadingListNFT && tokens.length === 0}
+              <div
+                class="min-h-[320px] flex justify-center items-center xl:col-span-5 lg:col-span-4 text-lg text-gray-400"
+              >
+                Empty
+              </div>
+            {:else}
+              {#each tokens as item}
+                <NftCard data={item} />
+              {/each}
+            {/if}
           </div>
         </div>
       </div>

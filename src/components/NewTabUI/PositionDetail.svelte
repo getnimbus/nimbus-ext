@@ -12,6 +12,7 @@
   import TooltipNumber from "../TooltipNumber.svelte";
   import CopyToClipboard from "~/components/CopyToClipboard.svelte";
   import CountUpNumber from "../CountUpNumber.svelte";
+  import OverviewCard from "../OverviewCard.svelte";
 
   import TwitterLogo from "~/assets/twitter.svg";
   import LeftArrow from "~/assets/left-arrow.svg";
@@ -376,10 +377,7 @@
       </div>
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              Position value
-            </div>
+          <OverviewCard title={"Position Value"}>
             <div class="text-3xl text-black">
               {#if (positionDetail?.overview?.holding)
                 .toString()
@@ -405,11 +403,8 @@
                 number={positionDetail?.overview?.currentValue}
               />
             </div>
-          </div>
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              Profit & Loss
-            </div>
+          </OverviewCard>
+          <OverviewCard title={"Profit & Loss"}>
             <div
               class={`text-3xl  ${
                 positionDetail?.overview?.profitAndLoss?.percent >= 0
@@ -444,13 +439,10 @@
                 type="percent"
               />%
             </div>
-          </div>
+          </OverviewCard>
         </div>
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              Average Cost
-            </div>
+          <OverviewCard title={"Average Cost"}>
             <div class="text-3xl text-black">
               {#if (positionDetail?.overview?.averageCost)
                 .toString()
@@ -468,11 +460,8 @@
                 />
               {/if}
             </div>
-          </div>
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              24-hour Return
-            </div>
+          </OverviewCard>
+          <OverviewCard title={"24-hour Return"}>
             <div
               class={`text-3xl ${
                 positionDetail?.overview?.return24h?.percent >= 0
@@ -504,7 +493,7 @@
                 type="percent"
               />%
             </div>
-          </div>
+          </OverviewCard>
         </div>
       </div>
     </div>

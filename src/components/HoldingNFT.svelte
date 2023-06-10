@@ -27,7 +27,11 @@
 <tr
   class="hover:bg-gray-100 transition-all cursor-pointer"
   on:click={() => {
-    navigate(`nft-detail`);
+    navigate(
+      `nft-detail?id=${encodeURIComponent(
+        data.collectionId
+      )}&address=${encodeURIComponent(selectedWallet.value)}`
+    );
   }}
 >
   <td class="pl-3 py-3">
