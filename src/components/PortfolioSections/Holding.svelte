@@ -144,7 +144,7 @@
 
 <div class="flex flex-col gap-6 border border-[#0000001a] rounded-[20px] p-6">
   <ErrorBoundary>
-    <div class="flex items-end gap-6">
+    <div class="flex items-end gap-3">
       <div class="text-2xl font-medium text-black">
         {MultipleLang.holding}
       </div>
