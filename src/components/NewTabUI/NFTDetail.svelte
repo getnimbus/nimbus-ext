@@ -162,16 +162,22 @@
         </div>
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={"Average Cost"}>
-            <div class="text-3xl text-black flex">
-              {#if (data?.overview?.average_cost)
+            <div class={`text-3xl flex`}>
+              <CountUpNumber
+                id="AverageCostBTC"
+                number={data?.overview?.avgCostBTC || 0}
+              /><span class="ml-1">BTC</span>
+            </div>
+            <div class={`text-lg flex`}>
+              {#if (data?.overview?.avgCost)
                 .toString()
                 .toLowerCase()
                 .includes("e-")}
-                $<TooltipNumber number={data?.overview?.average_cost} />
+                $<TooltipNumber number={data?.overview?.avgCost} />
               {:else}
                 $<CountUpNumber
                   id="AverageCost"
-                  number={data?.overview?.average_cost}
+                  number={data?.overview?.avgCost}
                   format={8}
                   type="amount"
                 />
@@ -205,30 +211,30 @@
       <div class="border border-[#0000001a] rounded-[20px] p-6">
         <div class="flex flex-col gap-6">
           <div class="text-2xl font-medium text-black">List NFT</div>
-          <div
-            class="grid gid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-6"
-          >
-            {#if isLoadingListNFT}
-              <div
-                class="min-h-[320px] flex justify-center items-center col-span-4"
-              >
-                <loading-icon />
-              </div>
-            {:else if !isLoadingListNFT && tokens.length === 0}
-              <div
-                class="min-h-[320px] flex justify-center items-center col-span-4 text-lg text-gray-400"
-              >
-                Empty
-              </div>
-            {:else}
+          {#if isLoadingListNFT}
+            <div
+              class="min-h-[320px] flex justify-center items-center col-span-4"
+            >
+              <loading-icon />
+            </div>
+          {:else if !isLoadingListNFT && tokens.length === 0}
+            <div
+              class="min-h-[320px] flex justify-center items-center col-span-4 text-lg text-gray-400"
+            >
+              Empty
+            </div>
+          {:else}
+            <div
+              class="grid gid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-6"
+            >
               {#each tokens as item}
                 <NftCard
                   data={item}
                   marketPrice={marketPriceNFT.market_price}
                 />
               {/each}
-            {/if}
-          </div>
+            </div>
+          {/if}
         </div>
       </div>
     </div>
