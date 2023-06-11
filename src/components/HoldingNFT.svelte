@@ -86,7 +86,7 @@
       {#if showTooltipListNFT && data?.balance > 5}
         <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
           <tooltip-detail
-            text={`${data?.balance} NFT on collection ${data?.collection?.name}`}
+            text={`${data?.balance} NFTs on collection ${data?.collection?.name}`}
           />
         </div>
       {/if}
