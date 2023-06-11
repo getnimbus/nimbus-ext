@@ -162,13 +162,16 @@
         </div>
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={"Average Cost"}>
-            <div class={`text-3xl flex`}>
+            <div class="text-3xl flex items-end gap-1">
               <CountUpNumber
                 id="AverageCostBTC"
                 number={data?.overview?.avgCostBTC || 0}
-              /><span class="ml-1">BTC</span>
+                format={8}
+                type="amount"
+              />
+              <span class="text-xl text-gray-500">BTC</span>
             </div>
-            <div class={`text-lg flex`}>
+            <div class="text-lg flex">
               {#if (data?.overview?.avgCost)
                 .toString()
                 .toLowerCase()
@@ -178,20 +181,21 @@
                 $<CountUpNumber
                   id="AverageCost"
                   number={data?.overview?.avgCost}
-                  format={8}
-                  type="amount"
                 />
               {/if}
             </div>
           </OverviewCard>
-          <OverviewCard title={"Floor price"}>
-            <div class={`text-3xl flex`}>
+          <OverviewCard title={"Floor Price"}>
+            <div class="text-3xl flex items-end gap-1">
               <CountUpNumber
                 id="24-hourReturn"
                 number={data?.floorPriceBTC || 0}
-              /><span class="ml-1">BTC</span>
+                format={8}
+                type="amount"
+              />
+              <span class="text-xl text-gray-500">BTC</span>
             </div>
-            <div class={`text-lg flex`}>
+            <div class="text-lg flex">
               $<CountUpNumber
                 id="24-hourReturnPercent"
                 number={(data?.floorPriceBTC || 0) *
