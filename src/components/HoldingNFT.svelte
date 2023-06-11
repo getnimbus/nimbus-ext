@@ -15,7 +15,8 @@
 
   const navigate = useNavigate();
 
-  let showName = false;
+  let showTooltipName = false;
+  let showTooltipListNFT = false;
 
   $: profitAndLoss = data?.current_value - (data?.totalCost || 0);
   $: profitAndLossPercent =
@@ -38,12 +39,12 @@
     <div class="relative">
       <div
         class="text-black text-sm font-medium flex justify-start"
-        on:mouseenter={() => (showName = true)}
-        on:mouseleave={() => (showName = false)}
+        on:mouseenter={() => (showTooltipName = true)}
+        on:mouseleave={() => (showTooltipName = false)}
       >
         {shorterName(data?.collection?.name, 16)}
       </div>
-      {#if showName && data?.collection?.name.length > 16}
+      {#if showTooltipName && data?.collection?.name.length > 16}
         <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
           <tooltip-detail text={data?.collection?.name} />
         </div>
@@ -52,28 +53,41 @@
   </td>
 
   <td class="py-3">
-    <div class="flex justify-start">
-      {#each data?.tokens.slice(0, 5) as token, index}
-        <img
-          src={token?.image_url}
-          alt=""
-          class={`w-6 h-6 rounded-md border border-gray-300 overflow-hidden ${
-            index > 0 && "-ml-2"
-          }`}
-        />
-      {/each}
-      {#if data?.balance > 5}
-        <div class="relative w-6 h-6">
+    <div class="relative">
+      <div
+        class="flex justify-start"
+        on:mouseenter={() => (showTooltipListNFT = true)}
+        on:mouseleave={() => (showTooltipListNFT = false)}
+      >
+        {#each data?.tokens.slice(0, 5) as token, index}
           <img
-            src={data?.tokens[5].image_url}
+            src={token?.image_url}
             alt=""
-            class="w-6 h-6 rounded-md border border-gray-300 overflow-hidden -ml-2"
+            class={`w-6 h-6 rounded-md border border-gray-300 overflow-hidden ${
+              index > 0 && "-ml-2"
+            }`}
           />
-          <div
-            class="absolute top-0 -left-2 w-full h-full bg-[#00000066] text-white text-center flex justify-center items-center pb-2 rounded-md"
-          >
-            ...
+        {/each}
+        {#if data?.balance > 5}
+          <div class="relative w-6 h-6">
+            <img
+              src={data?.tokens[5].image_url}
+              alt=""
+              class="w-6 h-6 rounded-md border border-gray-300 overflow-hidden -ml-2"
+            />
+            <div
+              class="absolute top-0 -left-2 w-full h-full bg-[#00000066] text-white text-center flex justify-center items-center pb-2 rounded-md"
+            >
+              ...
+            </div>
           </div>
+        {/if}
+      </div>
+      {#if showTooltipListNFT && data?.balance > 5}
+        <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
+          <tooltip-detail
+            text={`${data?.balance} NFT on collection ${data?.collection?.name}`}
+          />
         </div>
       {/if}
     </div>

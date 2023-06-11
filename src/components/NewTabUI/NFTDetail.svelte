@@ -90,6 +90,8 @@
     Math.abs(data?.overview.totalCost || 0) === 0
       ? 0
       : profitAndLoss / Math.abs(data?.overview.totalCost);
+
+  $: console.log("data: ", data);
 </script>
 
 <ErrorBoundary>
