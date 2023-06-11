@@ -126,6 +126,10 @@
                 />
               {/if}
             </div>
+            <div class="text-lg flex">
+              {tokens.length}
+              {tokens.length > 1 ? "NFTs" : "NFT"}
+            </div>
           </OverviewCard>
           <OverviewCard title={"Profit & Loss"}>
             <div
@@ -174,36 +178,19 @@
               {/if}
             </div>
           </OverviewCard>
-          <OverviewCard title={"24-hour Return"}>
-            <div
-              class={`text-3xl flex ${
-                data?.overview?.return24h?.percent >= 0
-                  ? "text-[#00A878]"
-                  : "text-red-500"
-              }`}
-            >
-              $<CountUpNumber
-                id="24-hourReturn"
-                number={Math.abs(data?.overview?.return24h?.value)}
-              />
-            </div>
-            <div
-              class={`text-lg flex ${
-                data?.overview?.return24h?.percent >= 0
-                  ? "text-[#00A878]"
-                  : "text-red-500"
-              }`}
-            >
-              {#if data?.overview?.return24h?.percent < 0}
-                ↓
-              {:else}
-                ↑
-              {/if}
+          <OverviewCard title={"Floor price"}>
+            <div class={`text-3xl flex`}>
               <CountUpNumber
+                id="24-hourReturn"
+                number={data?.floorPriceBTC || 0}
+              /><span class="ml-1">BTC</span>
+            </div>
+            <div class={`text-lg flex`}>
+              $<CountUpNumber
                 id="24-hourReturnPercent"
-                number={Math.abs(data?.overview?.return24h?.percent) * 100}
-                type="percent"
-              />%
+                number={(data?.floorPriceBTC || 0) *
+                  (marketPriceNFT?.market_price || 0)}
+              />
             </div>
           </OverviewCard>
         </div>
@@ -218,7 +205,9 @@
       <div class="border border-[#0000001a] rounded-[20px] p-6">
         <div class="flex flex-col gap-6">
           <div class="text-2xl font-medium text-black">List NFT</div>
-          <div class="grid grid-cols-4 gap-6">
+          <div
+            class="grid gid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-6"
+          >
             {#if isLoadingListNFT}
               <div
                 class="min-h-[320px] flex justify-center items-center col-span-4"
