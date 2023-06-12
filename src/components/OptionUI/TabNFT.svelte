@@ -126,7 +126,7 @@
     <div>
       {#if listNft && listNft.length !== 0}
         <div class="w-[350px]">
-          <NftCard />
+          <NftCard data={{}} marketPrice={0} />
         </div>
       {:else}
         <div class="flex flex-col gap-4">
