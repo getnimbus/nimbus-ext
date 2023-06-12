@@ -61,10 +61,10 @@
             {#if data.name === undefined}
               N/A
             {:else}
-              {shorterName(data.name)}
+              {shorterName(data.name, 26)}
             {/if}
           </div>
-          {#if showTooltipName && data?.name?.length > 10}
+          {#if showTooltipName && data?.name?.length > 26}
             <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
               <tooltip-detail text={data.name} />
             </div>
