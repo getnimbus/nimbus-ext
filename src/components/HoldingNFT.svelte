@@ -1,6 +1,5 @@
 <script>
   import { useNavigate } from "svelte-navigator";
-  import { shorterName } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -85,7 +84,8 @@
 
   <td class="py-3">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
-      <TooltipNumber number={data?.floorPriceBTC} /><span class="mx-1">BTC</span
+      <TooltipNumber number={data?.floorPriceBTC} type="amount" /><span
+        class="mx-1">BTC</span
       >
       | $<TooltipNumber
         number={data?.floorPriceBTC * data?.market_price}
@@ -96,8 +96,10 @@
 
   <td class="py-3">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
-      <TooltipNumber number={data?.totalCostBTC} /><span class="mx-1">BTC</span>
-      | $<TooltipNumber number={data?.totalCost} />
+      <TooltipNumber number={data?.totalCostBTC} type="amount" /><span
+        class="mx-1">BTC</span
+      >
+      | $<TooltipNumber number={data?.totalCost} type="amount" />
     </div>
   </td>
 
