@@ -95,7 +95,9 @@
 
   <td class="py-3">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
-      $<TooltipNumber
+      <TooltipNumber number={data?.floorPriceBTC} /><span class="mx-1">BTC</span
+      >
+      | $<TooltipNumber
         number={data?.floorPriceBTC * data?.market_price}
         type="amount"
       />
