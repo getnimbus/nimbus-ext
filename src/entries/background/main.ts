@@ -10,6 +10,7 @@ import langVI from "../../_locales/vi/messages.json";
 
 interface IAddressInput extends JsonObject {
   address: string;
+  chain: string;
 }
 
 interface ICoinListInput extends JsonObject {
@@ -71,37 +72,37 @@ onMessage("getListTerm", async () => {
   }
 });
 
-onMessage<IAddressInput, any>("getPreview", async ({ data: { address } }) => {
+onMessage<IAddressInput, any>("getPreview", async ({ data: { address, chain } }) => {
   try {
-    return await nimbus.get(`/address/${address}/preview`).then((response) => response.data);
+    return await nimbus.get(`/address/${address}/preview?chain=${chain}`).then((response) => response.data);
   } catch (error) {
     return {};
   }
 });
 
-onMessage<IAddressInput, any>("getSync", async ({ data: { address } }) => {
+onMessage<IAddressInput, any>("getSync", async ({ data: { address, chain } }) => {
   try {
-    return await nimbus.post(`/address/${address}/sync`, {}).then((response) => response);
+    return await nimbus.post(`/address/${address}/sync?chain=${chain}`, {}).then((response) => response);
   } catch (error) {
     return {};
   }
 });
 
-onMessage<IAddressInput, any>("getSyncStatus", async ({ data: { address }, ...rest }) => {
+onMessage<IAddressInput, any>("getSyncStatus", async ({ data: { address, chain }, ...rest }) => {
   try {
-    return await nimbus.get(`/address/${address}/sync-status`).then((response) => response);
+    return await nimbus.get(`/address/${address}/sync-status?chain=${chain}`).then((response) => response);
   } catch (error) {
     return {};
   }
 });
 
-onMessage<IAddressInput, any>("getOverview", async ({ data: { address, reload = false } }) => {
+onMessage<IAddressInput, any>("getOverview", async ({ data: { address, chain, reload = false } }) => {
   try {
-    const key = address + "_overview";
+    const key = address + chain + "_overview";
     const res = await cacheOrAPI(
       key,
       () => {
-        return nimbus.get(`/address/${address}/overview`).then((response) => {
+        return nimbus.get(`/address/${address}/overview?chain=${chain}`).then((response) => {
           return {
             result: response.data,
             address: address
@@ -116,13 +117,13 @@ onMessage<IAddressInput, any>("getOverview", async ({ data: { address, reload = 
   }
 });
 
-onMessage<IAddressInput, any>("getPositions", async ({ data: { address, reload } }) => {
+onMessage<IAddressInput, any>("getPositions", async ({ data: { address, chain, reload } }) => {
   try {
-    const key = address + "_positions";
+    const key = address + chain + "_positions";
     const res = await cacheOrAPI(
       key,
       () => {
-        return nimbus.get(`/address/${address}/positions`).then((response) => {
+        return nimbus.get(`/address/${address}/positions?chain=${chain}`).then((response) => {
           return {
             result: response.data.positions,
             address: address
@@ -137,13 +138,13 @@ onMessage<IAddressInput, any>("getPositions", async ({ data: { address, reload }
   }
 });
 
-onMessage<IAddressInput, any>("getHoldingToken", async ({ data: { address, reload } }) => {
+onMessage<IAddressInput, any>("getHoldingToken", async ({ data: { address, chain, reload } }) => {
   try {
-    const key = address + "_holding_token";
+    const key = address + chain + "_holding_token";
     const res = await cacheOrAPI(
       key,
       () => {
-        return nimbus.get(`/address/${address}/holding`).then((response) => {
+        return nimbus.get(`/address/${address}/holding?chain=${chain}`).then((response) => {
           return {
             result: response.data,
             address: address
@@ -158,13 +159,13 @@ onMessage<IAddressInput, any>("getHoldingToken", async ({ data: { address, reloa
   }
 });
 
-onMessage<IAddressInput, any>("getHoldingNFT", async ({ data: { address, reload } }) => {
+onMessage<IAddressInput, any>("getHoldingNFT", async ({ data: { address, chain, reload } }) => {
   try {
-    const key = address + "_holding_nft";
+    const key = address + chain + "_holding_nft";
     const res = await cacheOrAPI(
       key,
       () => {
-        return nimbus.get(`/address/${address}/nft-holding`).then((response) => {
+        return nimbus.get(`/address/${address}/nft-holding?chain=${chain}`).then((response) => {
           return {
             result: response.data,
             address: address
@@ -179,13 +180,13 @@ onMessage<IAddressInput, any>("getHoldingNFT", async ({ data: { address, reload 
   }
 });
 
-onMessage<IAddressInput, any>("getNews", async ({ data: { address, reload } }) => {
+onMessage<IAddressInput, any>("getNews", async ({ data: { address, chain, reload } }) => {
   try {
-    const key = address + "_news";
+    const key = address + chain + "_news";
     const res = await cacheOrAPI(
       key,
       () => {
-        return nimbus.get(`/news/${address}`).then((response) => {
+        return nimbus.get(`/news/${address}?chain=${chain}`).then((response) => {
           return {
             result: response.data.news,
             address: address
@@ -200,7 +201,7 @@ onMessage<IAddressInput, any>("getNews", async ({ data: { address, reload } }) =
   }
 });
 
-onMessage<IAddressInput, any>("getOpportunities", async ({ data: { address } }) => {
+onMessage<IAddressInput, any>("getOpportunities", async ({ data: { address, chain } }) => {
   try {
     const res = await cacheOrAPI(
       "opportunities", // TODO: Update to address after change

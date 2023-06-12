@@ -345,6 +345,7 @@
       const response: OverviewDataRes = await sendMessage("getOverview", {
         address: selectedWallet.value,
         reload: isReload,
+        chain: selectedChain.value,
       });
 
       if (selectedWallet.value === response.address) {
@@ -530,6 +531,7 @@
       const response: PositionDataRes = await sendMessage("getPositions", {
         address: selectedWallet.value,
         reload: isReload,
+        chain: selectedChain.value,
       });
       if (
         selectedWallet.value === response.address &&
@@ -559,6 +561,7 @@
       const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
         address: selectedWallet.value,
         reload: isReload,
+        chain: selectedChain.value,
       });
 
       if (selectedWallet.value === response.address) {
@@ -591,6 +594,7 @@
       const response: HoldingNFTRes = await sendMessage("getHoldingNFT", {
         address: selectedWallet.value,
         reload: isReload,
+        chain: selectedChain.value,
       });
 
       if (selectedWallet.value === response.address) {
@@ -609,6 +613,7 @@
       const response: NewDataRes = await sendMessage("getNews", {
         address: selectedWallet.value,
         reload: isReload,
+        chain: selectedChain.value,
       });
       if (selectedWallet.value === response.address) {
         newsData = response.result;
@@ -625,6 +630,7 @@
     try {
       const response: any = await sendMessage("getSyncStatus", {
         address: selectedWallet.value,
+        chain: selectedChain.value,
       });
       dataUpdatedTime = response?.data?.lastSync;
       return response;
@@ -669,6 +675,7 @@
         console.log("Going to full sync");
         await sendMessage("getSync", {
           address: selectedWallet.value,
+          chain: selectedChain.value,
         });
       }
 
@@ -690,6 +697,7 @@
         console.log("Going to full sync");
         await sendMessage("getSync", {
           address: selectedWallet.value,
+          chain: selectedChain.value,
         });
       }
 
@@ -951,7 +959,7 @@
     }
   };
 
-  let formatChainList = chainList;
+  let formatChainList = [];
   let selectedChain = chainList[0];
 
   $: {
@@ -1006,27 +1014,23 @@
         case "EVM":
           formatChainList = chainList.filter(
             (item) =>
-              item.value === "all" ||
-              item.value === "eth" ||
-              item.value === "gnosis" ||
-              item.value === "bnb" ||
-              item.value === "polygon" ||
-              item.value === "solana" ||
-              item.value === "arbitrum"
+              item.value === "ALL" ||
+              item.value === "ETH" ||
+              item.value === "GNOSIS" ||
+              item.value === "BNB" ||
+              item.value === "POLYGON" ||
+              item.value === "SOLANA" ||
+              item.value === "ARBITRUM"
           );
           break;
         case "BTC":
-          formatChainList = chainList.filter(
-            (item) => item.value === "all" || item.value === "btc"
-          );
+          formatChainList = chainList.filter((item) => item.value === "BTC");
           break;
         default:
           formatChainList = chainList;
       }
     }
   }
-
-  $: console.log("selectedChain: ", selectedChain);
 </script>
 
 <ErrorBoundary>

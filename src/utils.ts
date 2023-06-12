@@ -72,42 +72,42 @@ export const chainList = [
   {
     logo: logo,
     label: "All chains",
-    value: "all",
+    value: "ALL",
   },
   {
     logo: Ethereum,
     label: "Ethereum",
-    value: "eth",
+    value: "ETH",
   },
   {
     logo: Bitcoin,
     label: "Bitcoin",
-    value: "btc",
+    value: "BTC",
   },
   {
     logo: Gnosis,
     label: "Gnosis",
-    value: "gnosis",
+    value: "GNOSIS",
   },
   {
     logo: Bnb,
     label: "BNB",
-    value: "bnb",
+    value: "BNB",
   },
   {
     logo: Polygon,
     label: "Polygon",
-    value: "polygon",
+    value: "POLYGON",
   },
   {
     logo: Solana,
     label: "Solana",
-    value: "solana",
+    value: "SOLANA",
   },
   {
     logo: Arbitrum,
     label: "Arbitrum",
-    value: "arbitrum",
+    value: "ARBITRUM",
   },
 ];
 
