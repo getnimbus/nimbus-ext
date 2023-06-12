@@ -210,34 +210,20 @@
                     {MultipleLang.value}
                   </div>
                 </th>
-                <th
-                  class={`py-3 ${
-                    filteredHoldingDataToken.filter((item) => item.positionId)
-                      .length === 0 && "pr-3"
-                  }`}
-                >
+                <th class="py-3">
                   <div
                     class="text-right text-xs uppercase font-semibold text-black"
                   >
                     {MultipleLang.profit}
                   </div>
                 </th>
-
-                {#if filteredHoldingDataToken.filter((item) => item.positionId).length !== 0}
-                  <th class="py-3 w-10" />
-                {/if}
+                <th class="py-3 w-10" />
               </tr>
             </thead>
             {#if isLoadingToken}
               <tbody>
                 <tr>
-                  <td
-                    colspan={filteredHoldingDataToken.filter(
-                      (item) => item.positionId
-                    ).length === 0
-                      ? 5
-                      : 6}
-                  >
+                  <td colspan={6}>
                     <div class="flex justify-center items-center py-4 px-3">
                       <loading-icon />
                     </div>
@@ -248,13 +234,7 @@
               <tbody>
                 {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
                   <tr>
-                    <td
-                      colspan={filteredHoldingDataToken.filter(
-                        (item) => item.positionId
-                      ).length === 0
-                        ? 5
-                        : 6}
-                    >
+                    <td colspan={6}>
                       <div
                         class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
                       >
