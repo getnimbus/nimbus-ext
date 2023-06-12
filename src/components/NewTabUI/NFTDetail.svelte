@@ -234,7 +234,7 @@
               {#each tokens as item}
                 <NftCard
                   data={item}
-                  marketPrice={marketPriceNFT.market_price}
+                  marketPrice={marketPriceNFT?.market_price || 0}
                 />
               {/each}
             </div>
