@@ -46,6 +46,10 @@ export const regexList = [
 ]
 
 export const getAddressContext = (address: string) => {
+  if (!address) {
+    return undefined;
+  }
+
   if (address.match(ETHAddressRegex)) {
     return {
       type: 'EVM',
