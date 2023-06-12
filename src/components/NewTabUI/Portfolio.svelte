@@ -812,7 +812,8 @@
 
       if (
         selectedWalletRes &&
-        isEmpty(JSON.parse(selectedWalletRes.selectedWallet))
+        isEmpty(JSON.parse(selectedWalletRes.selectedWallet)) &&
+        listAddress.length
       ) {
         wallet.update((n) => (n = listAddress[0]));
       }
