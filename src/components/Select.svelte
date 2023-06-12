@@ -1,4 +1,5 @@
 <script>
+  import { wallet } from "~/store";
   import UpArrow from "~/assets/up-arrow.svg";
   import All from "~/assets/all.svg";
 
@@ -6,7 +7,6 @@
   export let selected;
   export let isSelectWallet = false;
   export let isOptionsPage = false;
-  export let isWalletSelect = false;
 
   let open = false;
 </script>
@@ -60,18 +60,19 @@
               open = false;
               return;
             }
+            if (isSelectWallet) {
+              wallet.update((n) => (n = item));
+            }
             selected = item;
             open = false;
           }}
         >
-          {#if !isWalletSelect}
-            <img
-              src={item.value === "all" ? All : item.logo}
-              alt="logo"
-              width="18"
-              height="18"
-            />
-          {/if}
+          <img
+            src={item.value === "all" ? All : item.logo}
+            alt="logo"
+            width="18"
+            height="18"
+          />
           <div
             class={`name ${
               item.value !== "all" && item.value !== "eth" && !isOptionsPage

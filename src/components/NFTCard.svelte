@@ -1,30 +1,63 @@
 <script lang="ts">
-  import Nimbus from "~/assets/nimbus-nft.jpg";
+  import TooltipNumber from "./TooltipNumber.svelte";
+
+  export let data;
+  export let marketPrice;
+
+  $: profitAndLoss = data.est_value * marketPrice - (data.totalCost || 0);
+  $: profitAndLossPercent =
+    Math.abs(data.totalCost || 0) === 0
+      ? 0
+      : profitAndLoss / Math.abs(data.totalCost);
 </script>
 
-<div class="card-border flex flex-col rounded-xl overflow-hidden">
-  <div class="h-[350px]">
-    <img src={Nimbus} alt="Nimbus NFT" height="350" />
+<div
+  class="border border-[#0000000d] rounded-[10px] px-1 pt-1 pb-3 flex flex-col gap-2"
+>
+  <div class="rounded-[10px] overflow-hidden h-[270px]">
+    <img src={data.image_url} alt="" class="w-full h-full object-cover" />
   </div>
-  <div class="px-4 py-3 flex justify-between gap-5">
-    <div class="flex-1 flex flex-col py-1">
-      <div class="text-sm text-gray-500 font-regular">Price</div>
-      <div class="text-black font-medium">$100</div>
+  <div class="flex flex-col gap-1">
+    <div class="text-sm font-semibold">#{data.item_id}</div>
+    <div class="flex gap-1 items-center">
+      <div class="text-sm font-semibold">Inscription</div>
+      <div class="text-sm font-semibold">#{data.inscription_number}</div>
     </div>
-    <div class="border" />
-    <div class="flex-1 flex flex-col py-1">
-      <div class="text-sm text-gray-500 font-regular">Chain</div>
-      <div class="text-black font-medium">Solana</div>
+    <div class="text-xs font-normal text-[#616b84] flex gap-1">
+      <div>Est. value</div>
+      <div>
+        <TooltipNumber number={data.est_value} type="amount" /> BTC | $<TooltipNumber
+          number={data.est_value * marketPrice}
+          type="amount"
+        />
+      </div>
+    </div>
+    <div class="text-xs font-normal text-[#616b84] flex gap-1">
+      <div>Profit & Loss</div>
+      <div class="flex gap-1">
+        <div
+          class={`flex ${
+            profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+          }`}
+        >
+          $<TooltipNumber number={Math.abs(profitAndLoss)} />
+        </div>
+        <div
+          class={`flex ${
+            profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+          }`}
+        >
+          {#if profitAndLossPercent < 0}
+            ↓
+          {:else}
+            ↑
+          {/if}
+          <TooltipNumber number={Math.abs(profitAndLossPercent) * 100} />%
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <style>
-  .card-border {
-    border: 1px solid rgb(229, 231, 235);
-  }
-
-  .border {
-    border-left: 1px solid rgb(229, 231, 235);
-  }
 </style>

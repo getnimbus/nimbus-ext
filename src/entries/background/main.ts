@@ -137,13 +137,34 @@ onMessage<IAddressInput, any>("getPositions", async ({ data: { address, reload }
   }
 });
 
-onMessage<IAddressInput, any>("getHolding", async ({ data: { address, reload } }) => {
+onMessage<IAddressInput, any>("getHoldingToken", async ({ data: { address, reload } }) => {
   try {
-    const key = address + "_holding";
+    const key = address + "_holding_token";
     const res = await cacheOrAPI(
       key,
       () => {
         return nimbus.get(`/address/${address}/holding`).then((response) => {
+          return {
+            result: response.data,
+            address: address
+          }
+        });
+      },
+      { defaultValue: null, ttl: 60, disabled: reload }
+    );
+    return res
+  } catch (error) {
+    return {};
+  }
+});
+
+onMessage<IAddressInput, any>("getHoldingNFT", async ({ data: { address, reload } }) => {
+  try {
+    const key = address + "_holding_nft";
+    const res = await cacheOrAPI(
+      key,
+      () => {
+        return nimbus.get(`/address/${address}/nft-holding`).then((response) => {
           return {
             result: response.data,
             address: address

@@ -7,6 +7,7 @@
   import { getAddressContext } from "~/utils";
   import { Toast } from "flowbite-svelte";
   import { fly } from "svelte/transition";
+  import { wallet } from "~/store";
 
   import type { AddressData } from "~/types/AddressData";
 
@@ -358,7 +359,7 @@
 
   $: {
     if (listAddress.length === 0) {
-      browser.storage.sync.set({ selectedWallet: {} });
+      wallet.update((n) => (n = {}));
     }
   }
 </script>

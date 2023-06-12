@@ -1,5 +1,3 @@
-<svelte:options tag="app-overlay" />
-
 <script>
   import { createEventDispatcher } from "svelte";
   import { Motion } from "svelte-motion";
@@ -50,3 +48,5 @@
     </Motion>
   </div>
 {/if}
+
+<style></style>

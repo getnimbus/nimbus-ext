@@ -2,6 +2,7 @@
   import { i18n } from "~/lib/i18n";
 
   import CountUpNumber from "../CountUpNumber.svelte";
+  import OverviewCard from "../OverviewCard.svelte";
 
   export let data;
   export let totalPositions;
@@ -19,11 +20,8 @@
 
 <div class="flex xl:flex-row flex-col justify-between gap-6">
   <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-    <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
-      <div class="text-[#00000099] text-base font-medium">
-        {MultipleLang.networth}
-      </div>
-      <div class="text-3xl text-black">
+    <OverviewCard title={MultipleLang.networth}>
+      <div class="text-3xl text-black flex">
         $<CountUpNumber
           id="networth"
           number={isLoading ? 0 : totalAssets + totalPositions}
@@ -31,7 +29,7 @@
       </div>
       <div class="flex items-center gap-3 opacity-50">
         <div
-          class={`text-lg font-medium ${
+          class={`flex text-lg font-medium ${
             data?.overview.networthChange < 0
               ? "text-red-500"
               : "text-[#00A878]"
@@ -49,12 +47,9 @@
         </div>
         <div class="text-[#00000066] text-base font-medium">24h</div>
       </div>
-    </div>
-    <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
-      <div class="text-[#00000099] text-base font-medium">
-        {MultipleLang.claimable}
-      </div>
-      <div class="text-3xl text-black">
+    </OverviewCard>
+    <OverviewCard title={MultipleLang.claimable}>
+      <div class="text-3xl text-black flex">
         $<CountUpNumber
           id="claimable"
           number={isLoading ? 0 : totalClaimable}
@@ -62,7 +57,7 @@
       </div>
       <div class="flex items-center gap-3 opacity-50">
         <div
-          class={`text-lg font-medium ${
+          class={`flex text-lg font-medium ${
             data?.overview.claimableChange < 0
               ? "text-red-500"
               : "text-[#00A878]"
@@ -80,14 +75,12 @@
         </div>
         <div class="text-[#00000066] text-base font-medium">24h</div>
       </div>
-    </div>
+    </OverviewCard>
   </div>
+
   <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-    <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
-      <div class="text-[#00000099] text-base font-medium">
-        {MultipleLang.total_assets}
-      </div>
-      <div class="text-3xl text-black">
+    <OverviewCard title={MultipleLang.total_assets}>
+      <div class="text-3xl text-black flex">
         $<CountUpNumber
           id="total_assets"
           number={isLoading ? 0 : totalAssets}
@@ -95,7 +88,7 @@
       </div>
       <div class="flex items-center gap-3 opacity-50">
         <div
-          class={`text-lg font-medium ${
+          class={`flex text-lg font-medium ${
             data?.overview.assetsChange < 0 ? "text-red-500" : "text-[#00A878]"
           }`}
         >
@@ -111,12 +104,9 @@
         </div>
         <div class="text-[#00000066] text-base font-medium">24h</div>
       </div>
-    </div>
-    <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-3 bg-white">
-      <div class="text-[#00000099] text-base font-medium">
-        {MultipleLang.total_positions}
-      </div>
-      <div class="text-3xl text-black">
+    </OverviewCard>
+    <OverviewCard title={MultipleLang.total_positions}>
+      <div class="text-3xl text-black flex">
         $<CountUpNumber
           id="total_positions"
           number={isLoading ? 0 : totalPositions}
@@ -124,7 +114,7 @@
       </div>
       <div class="flex items-center gap-3 opacity-50">
         <div
-          class={`text-lg font-medium ${
+          class={`flex text-lg font-medium ${
             data?.overview.postionNetworthChange < 0
               ? "text-red-500"
               : "text-[#00A878]"
@@ -142,7 +132,7 @@
         </div>
         <div class="text-[#00000066] text-base font-medium">24h</div>
       </div>
-    </div>
+    </OverviewCard>
   </div>
 </div>
 

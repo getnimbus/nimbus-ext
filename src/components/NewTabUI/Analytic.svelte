@@ -20,6 +20,7 @@
     },
     tooltip: {
       trigger: "axis",
+      extraCssText: "z-index: 9997",
     },
     legend: {
       data: ["BTC", "Ethereum", "Solana", "SUI", "Other"],
@@ -77,6 +78,7 @@
     },
     tooltip: {
       trigger: "item",
+      extraCssText: "z-index: 9997",
     },
     legend: {
       top: "5%",

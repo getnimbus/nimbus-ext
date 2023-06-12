@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as browser from "webextension-polyfill";
-  import { getLocalImg } from "~/utils";
+  import { getLocalImg, getAddressContext } from "~/utils";
 
   export let skip = () => {};
 
@@ -8,7 +8,6 @@
 
   import PerformanceOneFeat from "../../assets/performance_one_feat.svg";
   import PerformanceTwoFeat from "../../assets/performance_two_feat.svg";
-  import Wallet from "../../assets/wallet.svg";
 
   let address = "";
   let label = "";
@@ -27,7 +26,16 @@
         msg: "Address is required",
       };
     } else {
-      errors["address"] = { ...errors["address"], required: false };
+      if (data.address && !getAddressContext(data.address)) {
+        errors["address"] = {
+          ...errors["address"],
+          required: true,
+          msg: "Please enter your wallet address again!",
+        };
+        return;
+      } else {
+        errors["address"] = { ...errors["address"], required: false };
+      }
     }
 
     if (!isRequiredFieldValid(data.label)) {
@@ -43,7 +51,6 @@
 
   const onSubmit = (e) => {
     const formData = new FormData(e.target);
-    const regexETHAddress = /0x[a-fA-F0-9]{40}$/i;
 
     const data: any = {};
     for (let field of formData) {
@@ -56,28 +63,6 @@
     if (
       !Object.keys(errors).some((inputName) => errors[inputName]["required"])
     ) {
-      if (data.address && !regexETHAddress.test(data.address)) {
-        errors["address"] = {
-          ...errors["address"],
-          required: true,
-          msg: "Please enter your wallet address again!",
-        };
-        return;
-      }
-
-      const isDuplicatedAddress = listAddress.some((item) => {
-        return item.value === data.address;
-      });
-
-      if (isDuplicatedAddress) {
-        errors["address"] = {
-          ...errors["address"],
-          required: true,
-          msg: "This wallet address is duplicated!",
-        };
-        return;
-      }
-
       Object.assign(data, { id: data.address });
 
       listAddress = [...listAddress, data];
@@ -90,12 +75,12 @@
 
       browser.storage.sync
         .set({
-          selectedWallet: {
-            logo: Wallet,
+          selectedWallet: JSON.stringify({
+            logo: "",
             id: data.id,
             label: data.label,
             value: data.address,
-          },
+          }),
         })
         .then(() => {
           console.log("save selected address to sync storage");

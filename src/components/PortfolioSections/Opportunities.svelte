@@ -15,7 +15,7 @@
 
 <ErrorBoundary>
   <div
-    class="xl:w-[35%] w-full flex flex-col border border-[#0000001a] rounded-[20px] p-6 relative"
+    class="xl:w-[30%] w-full flex flex-col border border-[#0000001a] rounded-[20px] p-6 relative"
   >
     <div
       class="absolute top-0 left-0 w-full h-full bg-[#ffffffb3] flex flex-col justify-center items-center gap-4 rounded-[20px]"

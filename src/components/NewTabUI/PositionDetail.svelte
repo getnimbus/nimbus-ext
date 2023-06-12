@@ -12,6 +12,7 @@
   import TooltipNumber from "../TooltipNumber.svelte";
   import CopyToClipboard from "~/components/CopyToClipboard.svelte";
   import CountUpNumber from "../CountUpNumber.svelte";
+  import OverviewCard from "../OverviewCard.svelte";
 
   import TwitterLogo from "~/assets/twitter.svg";
   import LeftArrow from "~/assets/left-arrow.svg";
@@ -30,6 +31,7 @@
     },
     tooltip: {
       trigger: "axis",
+      extraCssText: "z-index: 9997",
     },
     legend: {
       lineStyle: {
@@ -375,11 +377,8 @@
       </div>
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              Position value
-            </div>
-            <div class="text-3xl text-black">
+          <OverviewCard title={"Position Value"}>
+            <div class="text-3xl text-black flex items-end gap-1">
               {#if (positionDetail?.overview?.holding)
                 .toString()
                 .toLowerCase()
@@ -398,19 +397,16 @@
                 >
               {/if}
             </div>
-            <div class="text-lg">
+            <div class="text-lg flex">
               $<CountUpNumber
                 id="PositionValue"
                 number={positionDetail?.overview?.currentValue}
               />
             </div>
-          </div>
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              Profit & Loss
-            </div>
+          </OverviewCard>
+          <OverviewCard title={"Profit & Loss"}>
             <div
-              class={`text-3xl  ${
+              class={`text-3xl flex ${
                 positionDetail?.overview?.profitAndLoss?.percent >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -424,7 +420,7 @@
               />
             </div>
             <div
-              class={`text-lg ${
+              class={`text-lg flex ${
                 positionDetail?.overview?.profitAndLoss?.percent >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -443,14 +439,11 @@
                 type="percent"
               />%
             </div>
-          </div>
+          </OverviewCard>
         </div>
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              Average Cost
-            </div>
-            <div class="text-3xl text-black">
+          <OverviewCard title={"Average Cost"}>
+            <div class="text-3xl text-black flex">
               {#if (positionDetail?.overview?.averageCost)
                 .toString()
                 .toLowerCase()
@@ -467,13 +460,10 @@
                 />
               {/if}
             </div>
-          </div>
-          <div class="flex-1 py-4 px-6 rounded-lg flex flex-col gap-1 bg-white">
-            <div class="text-[#00000099] text-base font-medium">
-              24-hour Return
-            </div>
+          </OverviewCard>
+          <OverviewCard title={"24-hour Return"}>
             <div
-              class={`text-3xl ${
+              class={`text-3xl flex ${
                 positionDetail?.overview?.return24h?.percent >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -485,7 +475,7 @@
               />
             </div>
             <div
-              class={`text-lg ${
+              class={`text-lg flex ${
                 positionDetail?.overview?.return24h?.percent >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -503,7 +493,7 @@
                 type="percent"
               />%
             </div>
-          </div>
+          </OverviewCard>
         </div>
       </div>
     </div>

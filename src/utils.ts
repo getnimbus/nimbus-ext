@@ -5,6 +5,7 @@ import { nimbus } from "./lib/network";
 import logo from "~/assets/bitcoin.png";
 import Bnb from "~/assets/bnb.png";
 import Ethereum from "~/assets/ethereum.png";
+import Bitcoin from "~/assets/bitcoin.png";
 import Polygon from "~/assets/polygon.png";
 import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
@@ -22,11 +23,11 @@ export const regexList = [
     regex_address: ETHAddressRegex,
     regex_trx: ETHTrxRegex
   },
-  // {
-  //   name: "BTC",
-  //   regex_address: BTCAddressRegex,
-  //   regex_trx: BTCTrxRegex
-  // },
+  {
+    name: "BTC",
+    regex_address: BTCAddressRegex,
+    // regex_trx: BTCTrxRegex
+  },
   // {
   //   name: "Solana",
   //   regex_address: SOLAddressRegex,
@@ -72,6 +73,11 @@ export const chainList = [
     logo: Ethereum,
     label: "Ethereum",
     value: "eth",
+  },
+  {
+    logo: Bitcoin,
+    label: "Bitcoin",
+    value: "btc",
   },
   {
     logo: Bnb,
@@ -213,9 +219,9 @@ export const shorterAddress = (string: string) => {
   return string ? string.slice(0, 6) + "..." + string.substr(-4) : string;
 };
 
-export const shorterName = (string: string) => {
-  if (string?.length > 10) {
-    return string.slice(0, 10) + "...";
+export const shorterName = (string: string, length: number = 10) => {
+  if (string?.length > length) {
+    return string.slice(0, length) + "...";
   } else {
     return string
   }

@@ -23,17 +23,16 @@
 
   import type { AddressData } from "~/types/AddressData";
   import type { NewData, NewDataRes } from "~/types/NewData";
-  import type { OpportunityData } from "~/types/OpportunityData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
   import type { PositionData, PositionDataRes } from "~/types/PositionData";
-  import type { WalletData, WalletDataRes } from "~/types/WalletData";
+  import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
+  import type { NFTData, HoldingNFTRes } from "~/types/HoldingNFTData";
 
   import Button from "~/components/Button.svelte";
   import CopyToClipboard from "~/components/CopyToClipboard.svelte";
   import Charts from "~/components/PortfolioSections/Charts.svelte";
   import Holding from "~/components/PortfolioSections/Holding.svelte";
   import News from "~/components/PortfolioSections/News.svelte";
-  import Opportunities from "~/components/PortfolioSections/Opportunities.svelte";
   import Overview from "~/components/PortfolioSections/Overview.svelte";
   import Positions from "~/components/PortfolioSections/Positions.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -120,7 +119,7 @@
     },
   };
 
-  let selectedWallet;
+  let selectedWallet: any = {};
   wallet.subscribe((value) => {
     selectedWallet = value;
   });
@@ -142,9 +141,9 @@
     performance: [],
     updatedAt: "",
   };
-  let opportunitiesData: OpportunityData = [];
   let newsData: NewData = [];
-  let walletData: WalletData = [];
+  let holdingTokenData: TokenData = [];
+  let holdingNFTData: NFTData = [];
   let positionsData: PositionData = [];
   let dataUpdatedTime;
   let listAddress = [];
@@ -168,16 +167,17 @@
   let isEmptyDataPie = false;
   let syncMsg = "";
   let loadingOverview = false;
-  let loadingHolding = false;
+  let loadingHoldingToken = false;
+  let loadingHoldingNFT = false;
   let loadingPositions = false;
   let loadingNews = false;
-  let loadingOpportunities = false;
   let optionPie = {
     title: {
       text: "",
     },
     tooltip: {
       trigger: "item",
+      extraCssText: "z-index: 9997",
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 190px;">
@@ -255,6 +255,7 @@
     },
     tooltip: {
       trigger: "axis",
+      extraCssText: "z-index: 9997",
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
@@ -553,9 +554,9 @@
     }
   };
 
-  const getHolding = async (isReload: boolean = false) => {
+  const getHoldingToken = async (isReload: boolean = false) => {
     try {
-      const response: WalletDataRes = await sendMessage("getHolding", {
+      const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
         address: selectedWallet.value,
         reload: isReload,
       });
@@ -567,7 +568,7 @@
             value: item.amount * item.rate,
           };
         });
-        walletData = formatData.sort((a, b) => {
+        holdingTokenData = formatData.sort((a, b) => {
           if (a.value < b.value) {
             return 1;
           }
@@ -576,6 +577,24 @@
           }
           return 0;
         });
+        return response;
+      } else {
+        // console.log("response: ", response)
+      }
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const getHoldingNFT = async (isReload: boolean = false) => {
+    try {
+      const response: HoldingNFTRes = await sendMessage("getHoldingNFT", {
+        address: selectedWallet.value,
+        reload: isReload,
+      });
+
+      if (selectedWallet.value === response.address) {
+        holdingNFTData = response.result;
         return response;
       } else {
         // console.log("response: ", response)
@@ -597,19 +616,6 @@
       } else {
         // console.log("response: ", response)
       }
-    } catch (e) {
-      console.log("error: ", e);
-    }
-  };
-
-  const getOpportunities = async (isReload: boolean = false) => {
-    try {
-      const response: OpportunityData = await sendMessage("getOpportunities", {
-        address: selectedWallet.value,
-        reload: isReload,
-      });
-      opportunitiesData = response;
-      return response;
     } catch (e) {
       console.log("error: ", e);
     }
@@ -648,12 +654,13 @@
     };
     positionsData = [];
     newsData = [];
-    opportunitiesData = [];
+    holdingNFTData = [];
+    holdingTokenData = [];
     loadingOverview = true;
-    loadingHolding = true;
+    loadingHoldingToken = true;
+    loadingHoldingNFT = true;
     loadingPositions = true;
     loadingNews = true;
-    loadingOpportunities = true;
 
     isLoading = true;
     isLoadingSync = false;
@@ -700,17 +707,21 @@
             console.log("start load data");
             const [
               resOverview,
-              resHolding,
+              resHoldingToken,
+              resHoldingNFT,
               resPositions,
               // resNews,
-              resOpportunities,
             ] = await Promise.all([
               getOverview(type === "reload").then((res) => {
                 loadingOverview = false;
                 return res;
               }),
-              getHolding(type === "reload").then((res) => {
-                loadingHolding = false;
+              getHoldingToken(type === "reload").then((res) => {
+                loadingHoldingToken = false;
+                return res;
+              }),
+              getHoldingNFT(type === "reload").then((res) => {
+                loadingHoldingNFT = false;
                 return res;
               }),
               getPositions(type === "reload").then((res) => {
@@ -721,17 +732,13 @@
               //   loadingNews = false;
               //   return res;
               // }),
-              getOpportunities(type === "reload").then((res) => {
-                loadingOpportunities = false;
-                return res;
-              }),
             ]);
 
             if (
               resOverview &&
-              resHolding &&
-              (resPositions === undefined || resPositions) &&
-              resOpportunities
+              resHoldingToken &&
+              resHoldingNFT &&
+              (resPositions === undefined || resPositions)
             ) {
               syncMsg = "";
               isLoading = false;
@@ -749,10 +756,11 @@
           syncMsg = "";
           isLoading = false;
           loadingOverview = false;
-          loadingHolding = false;
+          loadingHoldingToken = false;
+          loadingHoldingNFT = false;
           loadingPositions = false;
           loadingNews = false;
-          loadingOpportunities = false;
+
           break;
         }
       }
@@ -772,11 +780,8 @@
       );
 
       const structWalletData = (response || []).map((item) => {
-        const addressContext = getAddressContext(item.address);
-
         return {
           id: item.id,
-          logo: addressContext.type === "EVM" ? EthereumLogo : BitcoinLogo,
           label: item.label,
           value: item.address,
         };
@@ -788,11 +793,19 @@
         "selectedWallet"
       );
 
-      if (selectedWalletRes && !isEmpty(selectedWalletRes.selectedWallet)) {
-        wallet.update((n) => (n = selectedWalletRes.selectedWallet));
+      if (
+        selectedWalletRes &&
+        !isEmpty(JSON.parse(selectedWalletRes.selectedWallet))
+      ) {
+        wallet.update(
+          (n) => (n = JSON.parse(selectedWalletRes.selectedWallet))
+        );
       }
 
-      if (selectedWalletRes && isEmpty(selectedWalletRes.selectedWallet)) {
+      if (
+        selectedWalletRes &&
+        isEmpty(JSON.parse(selectedWalletRes.selectedWallet))
+      ) {
         wallet.update((n) => (n = listAddress[0]));
       }
 
@@ -810,7 +823,7 @@
         );
       }
       if (!addressParams && selectedWallet && listAddress.length === 0) {
-        wallet.update((n) => (n = undefined));
+        wallet.update((n) => (n = {}));
       }
 
       isLoadingFullPage = false;
@@ -900,10 +913,8 @@
     if (
       !Object.keys(errors).some((inputName) => errors[inputName]["required"])
     ) {
-      const addressContext = getAddressContext(data.address);
       const dataFormat = {
         id: data.address,
-        logo: addressContext.type === "EVM" ? EthereumLogo : BitcoinLogo,
         label: data.label,
         value: data.address,
       };
@@ -964,9 +975,11 @@
       selectedWallet !== undefined &&
       Object.keys(selectedWallet).length !== 0
     ) {
-      browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
-        console.log("save selected address to sync storage");
-      });
+      browser.storage.sync
+        .set({ selectedWallet: JSON.stringify(selectedWallet) })
+        .then(() => {
+          console.log("save selected address to sync storage");
+        });
       window.history.replaceState(
         null,
         "",
@@ -975,6 +988,16 @@
       handleGetAllData("sync");
     }
   }
+
+  $: formatListAddress = listAddress.map((item) => {
+    return {
+      ...item,
+      logo:
+        getAddressContext(item.value).type === "EVM"
+          ? EthereumLogo
+          : BitcoinLogo,
+    };
+  });
 </script>
 
 <ErrorBoundary>
@@ -984,7 +1007,7 @@
     </div>
   {:else}
     <div>
-      {#if listAddress.length === 0 && selectedWallet === undefined}
+      {#if formatListAddress.length === 0 && Object.keys(selectedWallet).length === 0}
         <div class="flex justify-center items-center h-screen">
           <div
             class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
@@ -1009,10 +1032,10 @@
           <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
             <div class="flex flex-col gap-14 mb-5">
               <div class="flex justify-between items-center">
-                {#if listAddress.length !== 0}
+                {#if formatListAddress.length !== 0}
                   <div class="flex items-center gap-5">
-                    {#if listAddress.length > 4}
-                      {#each listAddress.slice(0, 4) as item}
+                    {#if formatListAddress.length > 4}
+                      {#each formatListAddress.slice(0, 4) as item}
                         <div
                           id={item.value}
                           class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
@@ -1035,14 +1058,16 @@
                         </div>
                       {/each}
                       <Select
-                        isWalletSelect={true}
                         isOptionsPage={true}
                         isSelectWallet={true}
-                        listSelect={listAddress.slice(4, listAddress.length)}
+                        listSelect={formatListAddress.slice(
+                          4,
+                          formatListAddress.length
+                        )}
                         bind:selected={selectedWallet}
                       />
                     {:else}
-                      {#each listAddress as item}
+                      {#each formatListAddress as item}
                         <div
                           id={item.value}
                           class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
@@ -1074,23 +1099,33 @@
                 <div
                   class="relative"
                   on:mouseenter={() => {
-                    if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
+                    if (
+                      APP_TYPE.TYPE !== "EXT" &&
+                      formatListAddress.length === 3
+                    ) {
                       showDisableAddWallet = true;
                     }
                   }}
                   on:mouseleave={() => {
-                    if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
+                    if (
+                      APP_TYPE.TYPE !== "EXT" &&
+                      formatListAddress.length === 3
+                    ) {
                       showDisableAddWallet = false;
                     }
                   }}
                 >
                   <Button
-                    variant={APP_TYPE.TYPE !== "EXT" && listAddress.length === 3
+                    variant={APP_TYPE.TYPE !== "EXT" &&
+                    formatListAddress.length === 3
                       ? "disabled"
                       : "tertiary"}
                     width={136}
                     on:click={() => {
-                      if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
+                      if (
+                        APP_TYPE.TYPE !== "EXT" &&
+                        formatListAddress.length === 3
+                      ) {
                         window.open("https://getnimbus.io", "_blank");
                       } else {
                         isOpenAddModal = true;
@@ -1181,7 +1216,6 @@
                     </div>
                   </div>
                   <Select
-                    isWalletSelect={false}
                     isOptionsPage={false}
                     isSelectWallet={false}
                     listSelect={chainList}
@@ -1198,7 +1232,8 @@
                 {totalAssets}
                 isLoading={loadingOverview &&
                   loadingPositions &&
-                  loadingHolding}
+                  loadingHoldingToken &&
+                  loadingHoldingNFT}
               />
             {/if}
           </div>
@@ -1224,18 +1259,15 @@
                 {optionLine}
                 {isEmptyDataPie}
               />
-              <div class="flex xl:flex-row flex-col justify-between gap-6">
-                <Holding
-                  {selectedWallet}
-                  isLoading={loadingHolding}
-                  data={walletData}
-                  bind:totalAssets
-                />
-                <Opportunities
-                  isLoading={loadingOpportunities}
-                  data={opportunitiesData}
-                />
-              </div>
+
+              <Holding
+                {selectedWallet}
+                isLoadingNFT={loadingHoldingNFT}
+                isLoadingToken={loadingHoldingToken}
+                {holdingTokenData}
+                {holdingNFTData}
+                bind:totalAssets
+              />
               <div
                 class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
               >
