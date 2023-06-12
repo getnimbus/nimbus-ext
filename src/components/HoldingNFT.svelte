@@ -15,7 +15,6 @@
 
   const navigate = useNavigate();
 
-  let showTooltipName = false;
   let showTooltipListNFT = false;
 
   $: profitAndLoss = data?.current_value - (data?.totalCost || 0);
@@ -37,18 +36,9 @@
 >
   <td class="pl-3 py-3">
     <div class="relative">
-      <div
-        class="text-black text-sm font-medium flex justify-start"
-        on:mouseenter={() => (showTooltipName = true)}
-        on:mouseleave={() => (showTooltipName = false)}
-      >
-        {shorterName(data?.collection?.name, 16)}
+      <div class="text-black text-sm font-medium flex justify-start">
+        {data?.collection?.name}
       </div>
-      {#if showTooltipName && data?.collection?.name.length > 16}
-        <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
-          <tooltip-detail text={data?.collection?.name} />
-        </div>
-      {/if}
     </div>
   </td>
 
