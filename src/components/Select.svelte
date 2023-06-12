@@ -55,6 +55,7 @@
             if (
               item.value !== "all" &&
               item.value !== "eth" &&
+              item.value !== "btc" &&
               !isOptionsPage
             ) {
               open = false;
@@ -75,13 +76,16 @@
           />
           <div
             class={`name ${
-              item.value !== "all" && item.value !== "eth" && !isOptionsPage
+              item.value !== "all" &&
+              item.value !== "eth" &&
+              item.value !== "btc" &&
+              !isOptionsPage
                 ? "text-[#00000066]"
                 : "text-[#000000b3]"
             }`}
           >
             {item.label}
-            {#if item.value !== "all" && item.value !== "eth" && !isOptionsPage}
+            {#if item.value !== "all" && item.value !== "eth" && item.value !== "btc" && !isOptionsPage}
               (Soon)
             {/if}
           </div>

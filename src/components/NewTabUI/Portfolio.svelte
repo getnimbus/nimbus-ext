@@ -951,6 +951,7 @@
     }
   };
 
+  let formatChainList = chainList;
   let selectedChain = chainList[0];
 
   $: {
@@ -998,6 +999,34 @@
           : BitcoinLogo,
     };
   });
+
+  $: {
+    if (selectedWallet) {
+      switch (getAddressContext(selectedWallet.value)?.type) {
+        case "EVM":
+          formatChainList = chainList.filter(
+            (item) =>
+              item.value === "all" ||
+              item.value === "eth" ||
+              item.value === "gnosis" ||
+              item.value === "bnb" ||
+              item.value === "polygon" ||
+              item.value === "solana" ||
+              item.value === "arbitrum"
+          );
+          break;
+        case "BTC":
+          formatChainList = chainList.filter(
+            (item) => item.value === "all" || item.value === "btc"
+          );
+          break;
+        default:
+          formatChainList = chainList;
+      }
+    }
+  }
+
+  $: console.log("selectedChain: ", selectedChain);
 </script>
 
 <ErrorBoundary>
@@ -1218,7 +1247,7 @@
                   <Select
                     isOptionsPage={false}
                     isSelectWallet={false}
-                    listSelect={chainList}
+                    listSelect={formatChainList}
                     bind:selected={selectedChain}
                   />
                 </div>

@@ -29,7 +29,6 @@
   import SmartContractIcon from "../assets/smart-contract.png";
   // import MetaMaskIcon from "../assets/metamask-icon.png";
   // import CoinMarketCapIcon from "../assets/CoinMarketCap_logo.png";
-  // import CoinGekoIcon from "../assets/coingecko-logo.png";
   import CoinDefaultIcon from "../assets/coin-default.svg";
   import Edit from "../../../assets/edit.svg";
 

@@ -9,6 +9,7 @@ import Bitcoin from "~/assets/bitcoin.png";
 import Polygon from "~/assets/polygon.png";
 import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
+import Gnosis from "~/assets/gnosis.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
@@ -82,6 +83,11 @@ export const chainList = [
     logo: Bitcoin,
     label: "Bitcoin",
     value: "btc",
+  },
+  {
+    logo: Gnosis,
+    label: "Gnosis",
+    value: "gnosis",
   },
   {
     logo: Bnb,
