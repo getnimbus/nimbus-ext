@@ -125,7 +125,9 @@
   {:else}
     <div>
       {#if listNft && listNft.length !== 0}
-        <div class="w-[350px]">hello</div>
+        <div class="w-[350px]">
+          <NftCard data={{}} marketPrice={0} />
+        </div>
       {:else}
         <div class="flex flex-col gap-4">
           <div class="title-5">You need Nimbus NFT to unlock this feature</div>
