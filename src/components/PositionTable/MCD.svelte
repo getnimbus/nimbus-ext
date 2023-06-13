@@ -38,28 +38,28 @@
       <thead>
         <tr class="bg-[#f4f5f880]">
           <th class="pl-3 py-3">
-            <div class="text-sm font-semibold text-black uppercase text-left">
+            <div class="text-xs font-semibold text-black uppercase text-left">
               Supply
             </div>
           </th>
           <th class="py-3">
-            <div class="text-left text-sm font-semibold text-black uppercase">
+            <div class="text-left text-xs font-semibold text-black uppercase">
               Supply Balance ($)
             </div>
           </th>
           <th class="py-3">
-            <div class="text-sm font-semibold text-black uppercase text-left">
+            <div class="text-xs font-semibold text-black uppercase text-left">
               Borrow
             </div>
           </th>
           <th class="py-3">
-            <div class="text-left text-sm font-semibold text-black uppercase">
+            <div class="text-left text-xs font-semibold text-black uppercase">
               Borrow Balance ($)
             </div>
           </th>
           <th class="py-3">
             <div
-              class="text-left flex items-center gap-1 text-sm font-semibold text-black uppercase"
+              class="text-left flex items-center gap-1 text-xs font-semibold text-black uppercase"
             >
               Health
               <span
@@ -105,7 +105,7 @@
             </div>
           </th>
           <th class="pr-3 py-3">
-            <div class="text-sm font-semibold text-black uppercase text-right">
+            <div class="text-xs font-semibold text-black uppercase text-right">
               Value ($)
             </div>
           </th>

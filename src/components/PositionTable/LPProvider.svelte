@@ -3,6 +3,7 @@
 
   import LpProviderItem from "./TableItem/LPProviderItem.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import TooltipTitle from "../TooltipTitle.svelte";
 
   export let positions;
   export let position;
@@ -34,33 +35,36 @@
       <thead>
         <tr class="bg-[#f4f5f880]">
           <th class="pl-3 py-3">
-            <div class="text-sm font-semibold text-black uppercase text-left">
+            <div class="text-xs font-semibold text-black uppercase text-left">
               Pool
             </div>
           </th>
           <th class="py-3">
-            <div class="text-right text-sm font-semibold text-black uppercase">
+            <div class="text-right text-xs font-semibold text-black uppercase">
               Liquidity Range
             </div>
           </th>
           <th class="py-3">
-            <div class="text-right text-sm font-semibold text-black uppercase">
+            <div class="text-right text-xs font-semibold text-black uppercase">
               Balance ($)
             </div>
           </th>
           <th class="py-3">
-            <div class="text-right text-sm font-semibold text-black uppercase">
+            <div class="text-right text-xs font-semibold text-black uppercase">
               Claimable ($)
             </div>
           </th>
           <th class="py-3">
-            <div class="text-sm font-semibold text-black uppercase text-right">
+            <div class="text-xs font-semibold text-black uppercase text-right">
               Value ($)
             </div>
           </th>
           <th class="pr-3 py-3">
-            <div class="text-sm font-semibold text-black uppercase text-right">
-              Profit & Loss
+            <div class="text-xs font-semibold text-black uppercase text-right">
+              <TooltipTitle
+                tooltipText="Profit and loss is calculated by buying & hold on every time you
+            add/remove liquidity">Profit & Loss</TooltipTitle
+              >
             </div>
           </th>
         </tr>

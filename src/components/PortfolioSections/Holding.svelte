@@ -22,6 +22,7 @@
   import HoldingNFT from "../HoldingNFT.svelte";
   import "~/components/Loading.custom.svelte";
   import ErrorBoundary from "../ErrorBoundary.svelte";
+  import TooltipTitle from "../TooltipTitle.svelte";
 
   const MultipleLang = {
     holding: i18n("newtabPage.holding", "Holding"),
@@ -31,8 +32,14 @@
     price: i18n("newtabPage.price", "Price"),
     amount: i18n("newtabPage.amount", "Amount"),
     value: i18n("newtabPage.value", "Value"),
-    profit: i18n("newtabPage.profit", "Profit"),
+    profit: i18n("newtabPage.profit", "Profit & Loss"),
+    total_spent: i18n("newtabPage.total_spent", "Total Spent"),
+    collection: i18n("newtabPage.collection", "Collection"),
+    floor_price: i18n("newtabPage.floor_price", "Floor Price"),
+    current_value: i18n("newtabPage.current_value", "Current Value"),
+    Balance: i18n("newtabPage.Balance", "Balance"),
     hide: i18n("newtabPage.hide-less-than-1", "Hide tokens less than $1"),
+    empty: i18n("newtabPage.empty", "Empty"),
   };
 
   $: {
@@ -211,10 +218,12 @@
                   </div>
                 </th>
                 <th class="py-3">
-                  <div
-                    class="text-right text-xs uppercase font-semibold text-black"
-                  >
-                    {MultipleLang.profit}
+                  <div class="text-xs uppercase font-semibold text-black">
+                    <TooltipTitle
+                      tooltipText="Profit and loss is calculated by transactions that swap the tokens"
+                    >
+                      {MultipleLang.profit}
+                    </TooltipTitle>
                   </div>
                 </th>
                 <th class="py-3 w-10" />
@@ -238,7 +247,7 @@
                       <div
                         class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
                       >
-                        Empty
+                        {MultipleLang.empty}
                       </div>
                     </td>
                   </tr>
@@ -251,9 +260,6 @@
             {/if}
           </table>
         </div>
-      </div>
-      <div class="text-xs text-gray-400 text-right mt-2">
-        Profit and loss is calculated by transactions that swap the tokens
       </div>
     </div>
 
@@ -270,42 +276,46 @@
                   <div
                     class="text-left text-xs uppercase font-semibold text-black"
                   >
-                    Collection
+                    {MultipleLang.collection}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
                     class="text-left text-xs uppercase font-semibold text-black"
                   >
-                    Balance
+                    {MultipleLang.Balance}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
                     class="text-right text-xs uppercase font-semibold text-black"
                   >
-                    Floor price
+                    {MultipleLang.floor_price}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
                     class="text-right text-xs uppercase font-semibold text-black"
                   >
-                    Total spent
+                    {MultipleLang.total_spent}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
                     class="text-right text-xs uppercase font-semibold text-black"
                   >
-                    Current value
+                    {MultipleLang.current_value}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
                     class="text-right text-xs uppercase font-semibold text-black"
                   >
-                    Profit & Loss
+                    <TooltipTitle
+                      tooltipText="Price NFTs now - Price NFTs at time you spent"
+                    >
+                      {MultipleLang.profit}
+                    </TooltipTitle>
                   </div>
                 </th>
                 <th class="py-3 w-10" />
@@ -329,7 +339,7 @@
                       <div
                         class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
                       >
-                        Empty
+                        {MultipleLang.empty}
                       </div>
                     </td>
                   </tr>
