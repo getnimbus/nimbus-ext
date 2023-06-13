@@ -1302,26 +1302,30 @@
                 {holdingNFTData}
                 bind:totalAssets
               />
-              <div
-                class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
-              >
-                <Positions
-                  isLoading={loadingPositions}
-                  data={positionsData}
-                  bind:totalPositions
-                  bind:totalClaimable
-                />
+
+              {#if getAddressContext(selectedWallet.value).type !== "BTC"}
                 <div
-                  on:click={() => {
-                    isOpenReport.update((n) => (n = true));
-                  }}
-                  class="mx-auto"
+                  class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
                 >
-                  <Button variant="secondary"
-                    >{MultipleLang.missed_protocol}</Button
+                  <Positions
+                    isLoading={loadingPositions}
+                    data={positionsData}
+                    bind:totalPositions
+                    bind:totalClaimable
+                  />
+                  <div
+                    on:click={() => {
+                      isOpenReport.update((n) => (n = true));
+                    }}
+                    class="mx-auto"
                   >
+                    <Button variant="secondary"
+                      >{MultipleLang.missed_protocol}</Button
+                    >
+                  </div>
                 </div>
-              </div>
+              {/if}
+
               <!-- <News isLoading={loadingNews} data={newsData} /> -->
             </div>
           {/if}
