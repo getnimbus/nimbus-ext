@@ -3,7 +3,7 @@
   import { nimbus } from "~/lib/network";
   import { Link } from "svelte-navigator";
   import dayjs from "dayjs";
-  import { shorterAddress } from "~/utils";
+  import { shorterAddress, formatCurrencyV2 } from "~/utils";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import "~/components/Loading.custom.svelte";
@@ -32,6 +32,36 @@
     tooltip: {
       trigger: "axis",
       extraCssText: "z-index: 9997",
+      formatter: function (params) {
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                ${params[0].axisValue}
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between;">
+                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
+                  <div style="background: ${
+                    params[0].color
+                  }; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
+                  ${params[0].seriesName}
+                </div>
+                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                  $${formatCurrencyV2(Math.abs(params[0].value))}
+                </div>
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between;">
+                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
+                  <div style="background: ${
+                    params[1].color
+                  }; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
+                  ${params[1].seriesName}
+                </div>
+                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                  ${formatCurrencyV2(Math.abs(params[1].value))}
+                </div>
+              </div>
+            </div>`;
+      },
     },
     legend: {
       lineStyle: {
@@ -73,7 +103,32 @@
     ],
     series: [],
   };
-  let option2 = option;
+  let option2 = {
+    ...option,
+    tooltip: {
+      trigger: "axis",
+      extraCssText: "z-index: 9997",
+      formatter: function (params) {
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                ${params[0].axisValue}
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between;">
+                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
+                  <div style="background: ${
+                    params[0].color
+                  }; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
+                  ${params[0].seriesName}
+                </div>
+                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                  ${formatCurrencyV2(Math.abs(params[0].value))}
+                </div>
+              </div>
+            </div>`;
+      },
+    },
+  };
 
   const getPositionDetailPrice = async (positionId, address) => {
     try {
