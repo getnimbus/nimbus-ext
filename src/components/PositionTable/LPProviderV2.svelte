@@ -38,6 +38,12 @@
             </div>
           </th>
 
+          <th class="py-3">
+            <div class="text-xs font-semibold text-black uppercase text-right">
+              Impermannet Loss
+            </div>
+          </th>
+
           <th class="pr-3 py-3">
             <div class="text-xs font-semibold text-black uppercase text-right">
               <TooltipTitle
