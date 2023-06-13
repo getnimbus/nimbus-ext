@@ -4,7 +4,7 @@
   export let data;
   export let marketPrice;
 
-  $: profitAndLoss = data.est_value * marketPrice - (data.totalCost || 0);
+  $: profitAndLoss = data.est_valueBTC * marketPrice - (data.totalCost || 0);
   $: profitAndLossPercent =
     Math.abs(data.totalCost || 0) === 0
       ? 0
@@ -26,8 +26,8 @@
     <div class="text-xs font-normal text-[#616b84] flex gap-1">
       <div>Est. value</div>
       <div>
-        <TooltipNumber number={data.est_value} type="amount" /> BTC | $<TooltipNumber
-          number={data.est_value * marketPrice}
+        <TooltipNumber number={data.est_valueBTC} type="amount" /> BTC | $<TooltipNumber
+          number={data.est_valueBTC * marketPrice}
           type="amount"
         />
       </div>
