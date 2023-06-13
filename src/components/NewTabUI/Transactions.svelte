@@ -4,6 +4,7 @@
 
   import Button from "~/components/Button.svelte";
   import "~/components/Loading.custom.svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   let userInfo = {};
   user.subscribe((value) => {
@@ -55,45 +56,49 @@
   }
 </script>
 
-{#if Object.keys(userInfo).length === 0}
-  <div class="flex justify-center items-center h-screen">
-    <div class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center">
-      <div class="text-lg">Please login to use this feature</div>
+<ErrorBoundary>
+  {#if Object.keys(userInfo).length === 0}
+    <div class="flex justify-center items-center h-screen">
+      <div class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center">
+        <div class="text-lg">Please login to use this feature</div>
+      </div>
     </div>
-  </div>
-{:else}
-  <div>
-    {#if isLoading}
-      <div class="flex justify-center items-center h-screen">
-        <div class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center">
-          <loading-icon />
-        </div>
-      </div>
-    {:else}
-      <div>
-        {#if listNft && listNft.length !== 0}
+  {:else}
+    <div>
+      {#if isLoading}
+        <div class="flex justify-center items-center h-screen">
           <div
-            class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]"
+            class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
           >
-            Already have NFT
+            <loading-icon />
           </div>
-        {:else}
-          <div class="flex justify-center items-center h-screen">
+        </div>
+      {:else}
+        <div>
+          {#if listNft && listNft.length !== 0}
             <div
-              class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
+              class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]"
             >
-              <div class="text-lg">
-                You need Nimbus NFT to unlock this feature
-              </div>
-              <Button variant="secondary" on:click={() => handleBuy()}
-                >Buy</Button
-              >
+              Already have NFT
             </div>
-          </div>
-        {/if}
-      </div>
-    {/if}
-  </div>
-{/if}
+          {:else}
+            <div class="flex justify-center items-center h-screen">
+              <div
+                class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
+              >
+                <div class="text-lg">
+                  You need Nimbus NFT to unlock this feature
+                </div>
+                <Button variant="secondary" on:click={() => handleBuy()}
+                  >Buy</Button
+                >
+              </div>
+            </div>
+          {/if}
+        </div>
+      {/if}
+    </div>
+  {/if}
+</ErrorBoundary>
 
 <style></style>

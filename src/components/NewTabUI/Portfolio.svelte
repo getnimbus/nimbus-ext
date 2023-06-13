@@ -845,16 +845,6 @@
   onMount(() => {
     getListAddress();
     initWS();
-
-    const lastScrollY = window.pageYOffset;
-    const handleCheckIsSticky = () => {
-      const scrollY = window.pageYOffset;
-      headerScrollY = scrollY > lastScrollY;
-    };
-    window.addEventListener("scroll", handleCheckIsSticky);
-    return () => {
-      window.removeEventListener("scroll", handleCheckIsSticky);
-    };
   });
 
   onDestroy(() => {
@@ -1353,7 +1343,6 @@
                 style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
                 use:motion
               >
-                <!-- src="https://embed-609567819.sleekplan.app/?style=intercom#" -->
                 <iframe
                   id="feedback-board"
                   src="https://nimbus.featurebase.app"
