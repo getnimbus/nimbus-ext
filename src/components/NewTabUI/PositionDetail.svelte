@@ -17,6 +17,7 @@
   import TwitterLogo from "~/assets/twitter.svg";
   import LeftArrow from "~/assets/left-arrow.svg";
 
+  let type = "";
   let positionDetail;
   let positionDetailPrice;
   let isLoadingPositionDetail = false;
@@ -379,6 +380,7 @@
       getPositionDetailPrice(positionIDParams, addressParams);
       getPositionDetail(positionIDParams, positionTypeParams, addressParams);
       address = addressParams;
+      type = positionTypeParams;
       tweet = `Check it out on Nimbus 🚀 @get_nimbus https://app.getnimbus.io/position-detail?positionId=${positionIDParams}&positionType=${positionTypeParams}&address=${addressParams}`;
     }
   });
@@ -397,7 +399,7 @@
           >
             <div class="text-white flex items-center gap-1">
               <img src={LeftArrow} alt="" />
-              <div>Back to Portfolio</div>
+              <div class="text-sm font-semibold">Back to Portfolio</div>
             </div>
           </Link>
         </div>
@@ -438,7 +440,10 @@
                 .toString()
                 .toLowerCase()
                 .includes("e-")}
-                <TooltipNumber number={positionDetail?.overview?.holding} />
+                <TooltipNumber
+                  number={positionDetail?.overview?.holding}
+                  type="balance"
+                />
                 <span class="text-xl text-gray-500"
                   >{positionDetail?.price?.symbol || ""}</span
                 >
@@ -446,6 +451,7 @@
                 <CountUpNumber
                   id="PositionValueHolding"
                   number={positionDetail?.overview?.holding}
+                  type="balance"
                 />
                 <span class="text-xl text-gray-500"
                   >{positionDetail?.price?.symbol || ""}</span
@@ -456,6 +462,7 @@
               $<CountUpNumber
                 id="PositionValue"
                 number={positionDetail?.overview?.currentValue}
+                type="balance"
               />
             </div>
           </OverviewCard>
@@ -472,6 +479,7 @@
                 number={Math.abs(
                   positionDetail?.overview?.profitAndLoss?.value
                 )}
+                type="balance"
               />
             </div>
             <div
@@ -505,13 +513,14 @@
                 .includes("e-")}
                 $<TooltipNumber
                   number={positionDetail?.overview?.averageCost}
+                  type="balance"
                 />
               {:else}
                 $<CountUpNumber
                   id="AverageCost"
                   number={positionDetail?.overview?.averageCost}
                   format={8}
-                  type="amount"
+                  type="balance"
                 />
               {/if}
             </div>
@@ -527,6 +536,7 @@
               $<CountUpNumber
                 id="24-hourReturn"
                 number={Math.abs(positionDetail?.overview?.return24h?.value)}
+                type="balance"
               />
             </div>
             <div
@@ -613,181 +623,185 @@
           {/if}
         </div>
       </div>
-      <div class="border border-[#0000001a] rounded-[20px] p-6">
-        <div class="flex flex-col gap-6">
-          <div class="text-2xl font-medium text-black">History</div>
-          <div class="border border-[#0000000d] rounded-[10px]">
-            <table class="table-fixed w-full">
-              <thead>
-                <tr class="bg-[#f4f5f880]">
-                  <th class="pl-3 py-3">
-                    <div
-                      class="text-left text-xs uppercase font-semibold text-black"
-                    >
-                      Transaction
-                    </div>
-                  </th>
-                  <th class="py-3">
-                    <div
-                      class="text-left text-xs uppercase font-semibold text-black"
-                    >
-                      Type
-                    </div>
-                  </th>
-                  <th class="pr-3 py-3">
-                    <div
-                      class="text-left text-xs uppercase font-semibold text-black"
-                    >
-                      Token Change
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              {#if isLoadingPositionDetail}
-                <tbody>
-                  <tr>
-                    <td colspan="3">
-                      <div class="flex justify-center items-center py-4 px-3">
-                        <loading-icon />
+      {#if type !== "ERC_20"}
+        <div class="border border-[#0000001a] rounded-[20px] p-6">
+          <div class="flex flex-col gap-6">
+            <div class="text-2xl font-medium text-black">History</div>
+            <div class="border border-[#0000000d] rounded-[10px]">
+              <table class="table-fixed w-full">
+                <thead>
+                  <tr class="bg-[#f4f5f880]">
+                    <th class="pl-3 py-3">
+                      <div
+                        class="text-left text-xs uppercase font-semibold text-black"
+                      >
+                        Transaction
                       </div>
-                    </td>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-left text-xs uppercase font-semibold text-black"
+                      >
+                        Type
+                      </div>
+                    </th>
+                    <th class="pr-3 py-3">
+                      <div
+                        class="text-left text-xs uppercase font-semibold text-black"
+                      >
+                        Token Change
+                      </div>
+                    </th>
                   </tr>
-                </tbody>
-              {:else}
-                <tbody>
-                  {#if positionDetail?.changes && positionDetail?.changes.length === 0}
+                </thead>
+                {#if isLoadingPositionDetail}
+                  <tbody>
                     <tr>
                       <td colspan="3">
-                        <div
-                          class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
-                        >
-                          Empty
+                        <div class="flex justify-center items-center py-4 px-3">
+                          <loading-icon />
                         </div>
                       </td>
                     </tr>
-                  {:else}
-                    {#each positionDetail?.changes || [] as change}
-                      <tr class="hover:bg-gray-100 transition-all">
-                        <td class="pl-3 py-4">
-                          <a
-                            href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
-                            class="hover:text-blue-500"
-                            target="_blank"
+                  </tbody>
+                {:else}
+                  <tbody>
+                    {#if positionDetail?.changes && positionDetail?.changes.length === 0}
+                      <tr>
+                        <td colspan="3">
+                          <div
+                            class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
                           >
-                            <div class="text-left flex items-start gap-2">
-                              <div class="flex flex-col">
-                                <div
-                                  class="text-sm"
-                                  use:tooltip={{
-                                    content: `<tooltip-detail text="${change?.transactionHash}" />`,
-                                    allowHTML: true,
-                                    placement: "top",
-                                  }}
-                                >
-                                  {shorterAddress(change?.transactionHash)}
-                                </div>
-                                <div class="text-gray-400 text-xs">
-                                  {dayjs(new Date(change.timestamp)).format(
-                                    "DD MMM YYYY, hh:mm A"
-                                  )}
+                            Empty
+                          </div>
+                        </td>
+                      </tr>
+                    {:else}
+                      {#each positionDetail?.changes || [] as change}
+                        <tr class="hover:bg-gray-100 transition-all">
+                          <td class="pl-3 py-4">
+                            <a
+                              href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
+                              class="hover:text-blue-500"
+                              target="_blank"
+                            >
+                              <div class="text-left flex items-start gap-2">
+                                <div class="flex flex-col">
+                                  <div
+                                    class="text-sm"
+                                    use:tooltip={{
+                                      content: `<tooltip-detail text="${change?.transactionHash}" />`,
+                                      allowHTML: true,
+                                      placement: "top",
+                                    }}
+                                  >
+                                    {shorterAddress(change?.transactionHash)}
+                                  </div>
+                                  <div class="text-gray-400 text-xs">
+                                    {dayjs(new Date(change.timestamp)).format(
+                                      "DD MMM YYYY, hh:mm A"
+                                    )}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </a>
-                        </td>
-                        <td class="py-4">
-                          {#if change?.metadata?.action}
-                            <div>
-                              <span
-                                class="px-2 py-1 text-[#27326F] text-[12px] font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
-                              >
-                                {change?.metadata?.action}
-                              </span>
-                            </div>
-                          {/if}
-                        </td>
-                        <td class="pr-3 py-4">
-                          <a
-                            href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
-                            target="_blank"
-                          >
-                            <div
-                              class="flex flex-col gap-1 justify-start items-start text-sm"
+                            </a>
+                          </td>
+                          <td class="py-4">
+                            {#if change?.metadata?.action}
+                              <div>
+                                <span
+                                  class="px-2 py-1 text-[#27326F] text-[12px] font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
+                                >
+                                  {change?.metadata?.action}
+                                </span>
+                              </div>
+                            {/if}
+                          </td>
+                          <td class="pr-3 py-4">
+                            <a
+                              href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
+                              target="_blank"
                             >
-                              {#if change?.metadata?.hasOwnProperty("btcChange")}
+                              <div
+                                class="flex flex-col gap-1 justify-start items-start text-sm"
+                              >
+                                {#if change?.metadata?.hasOwnProperty("btcChange")}
+                                  <div class="flex items-center gap-1">
+                                    <div
+                                      class={`flex items-center gap-1 ${
+                                        change?.metadata?.btcChange
+                                          ?.final_result >= 0
+                                          ? "text-[#00A878]"
+                                          : "text-red-500"
+                                      }`}
+                                    >
+                                      <TooltipNumber
+                                        number={Math.abs(
+                                          change?.metadata?.btcChange
+                                            ?.final_result
+                                        )}
+                                        type="amount"
+                                      />
+                                      <div>
+                                        {change?.metadata?.btcPrice?.symbol}
+                                      </div>
+                                    </div>
+                                    <div class="text-gray-500">
+                                      | $<TooltipNumber
+                                        number={Math.abs(
+                                          change?.metadata?.btcChange
+                                            ?.final_result *
+                                            Number(
+                                              change?.metadata?.btcPrice?.price
+                                            )
+                                        )}
+                                        type="balance"
+                                      />
+                                    </div>
+                                  </div>
+                                {/if}
+
                                 <div class="flex items-center gap-1">
                                   <div
                                     class={`flex items-center gap-1 ${
-                                      change?.metadata?.btcChange
-                                        ?.final_result >= 0
+                                      change.event === "deposit"
                                         ? "text-[#00A878]"
                                         : "text-red-500"
                                     }`}
                                   >
                                     <TooltipNumber
                                       number={Math.abs(
-                                        change?.metadata?.btcChange
-                                          ?.final_result
+                                        change?.metadata?.info?.total
                                       )}
                                       type="amount"
                                     />
                                     <div>
-                                      {change?.metadata?.btcPrice?.symbol}
+                                      {change?.metadata?.info?.tokenName}
                                     </div>
                                   </div>
                                   <div class="text-gray-500">
-                                    $<TooltipNumber
+                                    | $<TooltipNumber
                                       number={Math.abs(
-                                        change?.metadata?.btcChange
-                                          ?.final_result *
-                                          Number(
-                                            change?.metadata?.btcPrice?.price
-                                          )
+                                        change?.metadata?.info?.total *
+                                          Number(change?.metadata?.price?.price)
                                       )}
-                                      type="amount"
+                                      type="balance"
                                     />
                                   </div>
                                 </div>
-                              {/if}
-
-                              <div class="flex items-center gap-1">
-                                <div
-                                  class={`flex items-center gap-1 ${
-                                    change.event === "deposit"
-                                      ? "text-[#00A878]"
-                                      : "text-red-500"
-                                  }`}
-                                >
-                                  <TooltipNumber
-                                    number={Math.abs(
-                                      change?.metadata?.info?.total
-                                    )}
-                                    type="amount"
-                                  />
-                                  <div>{change?.metadata?.info?.tokenName}</div>
-                                </div>
-                                <div class="text-gray-500">
-                                  $<TooltipNumber
-                                    number={Math.abs(
-                                      change?.metadata?.info?.total *
-                                        Number(change?.metadata?.price?.price)
-                                    )}
-                                    type="amount"
-                                  />
-                                </div>
                               </div>
-                            </div>
-                          </a>
-                        </td>
-                      </tr>
-                    {/each}
-                  {/if}
-                </tbody>
-              {/if}
-            </table>
+                            </a>
+                          </td>
+                        </tr>
+                      {/each}
+                    {/if}
+                  </tbody>
+                {/if}
+              </table>
+            </div>
           </div>
         </div>
-      </div>
+      {/if}
     </div>
   </div>
 </ErrorBoundary>

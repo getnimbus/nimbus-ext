@@ -20,12 +20,12 @@
     <div class="text-xl font-semibold">{position}</div>
     <div class="flex flex-col gap-1">
       <div class="text-3xl font-semibold flex justify-end">
-        $<TooltipNumber number={sum} />
+        $<TooltipNumber number={sum} type="balance" />
       </div>
       <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
         {MultipleLang.claimable}:
         <span>
-          $<TooltipNumber number={sum_claimable} />
+          $<TooltipNumber number={sum_claimable} type="balance" />
         </span>
       </div>
     </div>
@@ -39,26 +39,31 @@
               Pool
             </div>
           </th>
+
           <th class="py-3">
             <div class="text-right text-xs font-semibold text-black uppercase">
               Liquidity Range
             </div>
           </th>
+
           <th class="py-3">
             <div class="text-right text-xs font-semibold text-black uppercase">
-              Balance ($)
+              Balance
             </div>
           </th>
+
           <th class="py-3">
             <div class="text-right text-xs font-semibold text-black uppercase">
-              Claimable ($)
+              Claimable
             </div>
           </th>
+
           <th class="py-3">
             <div class="text-xs font-semibold text-black uppercase text-right">
-              Value ($)
+              Value
             </div>
           </th>
+
           <th class="pr-3 py-3">
             <div class="text-xs font-semibold text-black uppercase text-right">
               <TooltipTitle

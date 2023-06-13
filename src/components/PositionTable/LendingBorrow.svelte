@@ -19,7 +19,7 @@
     <div class="text-xl font-semibold">{position}</div>
     <div class="flex flex-col gap-1">
       <div class="text-3xl font-semibold flex justify-end">
-        $<TooltipNumber number={Math.abs(sum)} />
+        $<TooltipNumber number={Math.abs(sum)} type="balance" />
       </div>
       <!-- <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
         {MultipleLang.claimable}:
@@ -38,31 +38,37 @@
               Pool
             </div>
           </th>
+
           <th class="py-3">
             <div class="text-right text-xs font-semibold text-black uppercase">
               Amount
             </div>
           </th>
+
           <th class="py-3">
             <div class="text-right text-xs font-semibold text-black uppercase">
-              Entry ($)
+              Entry
             </div>
           </th>
+
           <!-- <th class="py-3">
             <div class="text-right text-xs font-semibold text-black uppercase">
               Entry Time
             </div>
           </th>
+
           <th class="py-3">
             <div class="text-right text-xs font-semibold text-black uppercase">
               APY (%)
             </div>
           </th> -->
+
           <th class="py-3">
             <div class="text-xs font-semibold text-black uppercase text-right">
-              Value ($)
+              Value
             </div>
           </th>
+
           <th class="pr-3 py-3">
             <div class="text-xs font-semibold text-black uppercase text-right">
               Profit & Loss

@@ -89,7 +89,7 @@
       >
       | $<TooltipNumber
         number={data?.floorPriceBTC * data?.market_price}
-        type="amount"
+        type="balance"
       />
     </div>
   </td>
@@ -99,13 +99,13 @@
       <TooltipNumber number={data?.totalCostBTC} type="amount" /><span
         class="mx-1">BTC</span
       >
-      | $<TooltipNumber number={data?.totalCost} type="amount" />
+      | $<TooltipNumber number={data?.totalCost} type="balance" />
     </div>
   </td>
 
   <td class="py-3">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
-      $<TooltipNumber number={data?.current_value} type="amount" />
+      $<TooltipNumber number={data?.current_value} type="balance" />
     </div>
   </td>
 
@@ -117,7 +117,7 @@
             profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          $<TooltipNumber number={Math.abs(profitAndLoss)} />
+          $<TooltipNumber number={Math.abs(profitAndLoss)} type="balance" />
         </div>
         <div class="flex items-center justify-end gap-1">
           <div

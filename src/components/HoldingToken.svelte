@@ -82,11 +82,7 @@
 
   <td class="py-3">
     <div class="text-sm text-[#00000099] font-medium flex justify-start">
-      {#if formatCurrency(data.market_price).toString().length > 9}
-        $<TooltipNumber number={data.market_price} type="amount" />
-      {:else}
-        ${formatCurrency(data.market_price)}
-      {/if}
+      $<TooltipNumber number={data.market_price} type="balance" />
     </div>
   </td>
 
@@ -98,7 +94,7 @@
 
   <td class="py-3">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
-      $<TooltipNumber number={price} />
+      $<TooltipNumber number={price} type="balance" />
     </div>
   </td>
 
@@ -110,7 +106,7 @@
             profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          $<TooltipNumber number={Math.abs(profitAndLoss)} />
+          $<TooltipNumber number={Math.abs(profitAndLoss)} type="balance" />
         </div>
         <div class="flex items-center justify-end gap-1">
           <div

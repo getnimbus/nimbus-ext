@@ -60,17 +60,21 @@
       <div class="flex flex-col items-end">
         <div class="flex items-center gap-1">
           <div class="flex items-center gap-1">
-            <TooltipNumber number={Number(data.amount0out)} />
+            <TooltipNumber number={Number(data.amount0out)} type="amount" />
             {data.amount0Price?.symbol ? data.amount0Price?.symbol : ""} |
           </div>
-          <TooltipNumber number={balance0} />
+          <div class="flex">
+            $<TooltipNumber number={balance0} type="balance" />
+          </div>
         </div>
         <div class="flex items-center gap-1">
           <div class="flex items-center gap-1">
-            <TooltipNumber number={Number(data.amount1out)} />
+            <TooltipNumber number={Number(data.amount1out)} type="amount" />
             {data.amount1Price?.symbol ? data.amount1Price?.symbol : ""} |
           </div>
-          <TooltipNumber number={balance1} />
+          <div class="flex">
+            $<TooltipNumber number={balance1} type="balance" />
+          </div>
         </div>
       </div>
     </div>
@@ -81,10 +85,15 @@
       <div class="flex flex-col items-end">
         <div class="flex items-center gap-1">
           <div class="flex items-center gap-1">
-            <TooltipNumber number={Number(data?.rewardTokens[0]?.rewardOut)} />
+            <TooltipNumber
+              number={Number(data?.rewardTokens[0]?.rewardOut)}
+              type="amount"
+            />
             {data.rewardTokens[0]?.symbol ? data.rewardTokens[0]?.symbol : ""} |
           </div>
-          <TooltipNumber number={rewardToken0} />
+          <div class="flex">
+            $<TooltipNumber number={rewardToken0} type="balance" />
+          </div>
         </div>
       </div>
     </div>
@@ -92,7 +101,7 @@
 
   <td class="pr-3 py-4">
     <div class="flex justify-end text-sm text-[#000000] font-medium">
-      <TooltipNumber number={value} />
+      $<TooltipNumber number={value} type="balance" />
     </div>
   </td>
 
@@ -104,7 +113,7 @@
             profit >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          <TooltipNumber number={Math.abs(profit)} />
+          $<TooltipNumber number={Math.abs(profit)} />
         </div>
         <div class="flex items-center justify-end gap-1">
           <div

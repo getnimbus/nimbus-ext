@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import {
     formatBigBalance,
     checkFormatBalance,
@@ -8,7 +8,7 @@
   import numeral from "numeral";
 
   export let number;
-  export let type = "balance";
+  export let type: "amount" | "balance" | "percent" = "balance";
 
   let numberFormat = 0;
   let numberSize = "";
@@ -57,4 +57,5 @@
   </span>
 {/if}
 
-<style></style>
+<style>
+</style>

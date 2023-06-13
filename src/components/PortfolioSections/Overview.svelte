@@ -25,6 +25,7 @@
         $<CountUpNumber
           id="networth"
           number={isLoading ? 0 : totalAssets + totalPositions}
+          type="balance"
         />
       </div>
       <div class="flex items-center gap-3 opacity-50">
@@ -43,6 +44,7 @@
           <CountUpNumber
             id="networth_grouth"
             number={Math.abs(data?.overview.networthChange)}
+            type="percent"
           />%
         </div>
         <div class="text-[#00000066] text-base font-medium">24h</div>
@@ -53,6 +55,7 @@
         $<CountUpNumber
           id="claimable"
           number={isLoading ? 0 : totalClaimable}
+          type="balance"
         />
       </div>
       <div class="flex items-center gap-3 opacity-50">
@@ -71,6 +74,7 @@
           <CountUpNumber
             id="claimable_grouth"
             number={Math.abs(data?.overview.claimableChange)}
+            type="percent"
           />%
         </div>
         <div class="text-[#00000066] text-base font-medium">24h</div>
@@ -84,6 +88,7 @@
         $<CountUpNumber
           id="total_assets"
           number={isLoading ? 0 : totalAssets}
+          type="balance"
         />
       </div>
       <div class="flex items-center gap-3 opacity-50">
@@ -100,6 +105,7 @@
           <CountUpNumber
             id="total_assets_grouth"
             number={Math.abs(data?.overview.assetsChange)}
+            type="percent"
           />%
         </div>
         <div class="text-[#00000066] text-base font-medium">24h</div>
@@ -110,6 +116,7 @@
         $<CountUpNumber
           id="total_positions"
           number={isLoading ? 0 : totalPositions}
+          type="balance"
         />
       </div>
       <div class="flex items-center gap-3 opacity-50">
@@ -128,6 +135,7 @@
           <CountUpNumber
             id="total_positions_grouth"
             number={Math.abs(data?.overview.postionNetworthChange)}
+            type="percent"
           />%
         </div>
         <div class="text-[#00000066] text-base font-medium">24h</div>

@@ -21,13 +21,13 @@
     <div class="text-xl font-semibold">{position}</div>
     <div class="flex flex-col gap-1">
       <div class="text-3xl font-semibold flex justify-end">
-        $<TooltipNumber number={sum} />
+        $<TooltipNumber number={sum} type="balance" />
       </div>
       {#if sum_claimable !== 0}
         <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
           {MultipleLang.claimable}:
           <span>
-            $<TooltipNumber number={sum_claimable} />
+            $<TooltipNumber number={sum_claimable} type="balance" />
           </span>
         </div>
       {/if}
@@ -42,21 +42,25 @@
               Supply
             </div>
           </th>
+
           <th class="py-3">
             <div class="text-left text-xs font-semibold text-black uppercase">
-              Supply Balance ($)
+              Supply Balance
             </div>
           </th>
+
           <th class="py-3">
             <div class="text-xs font-semibold text-black uppercase text-left">
               Borrow
             </div>
           </th>
+
           <th class="py-3">
             <div class="text-left text-xs font-semibold text-black uppercase">
-              Borrow Balance ($)
+              Borrow Balance
             </div>
           </th>
+
           <th class="py-3">
             <div
               class="text-left flex items-center gap-1 text-xs font-semibold text-black uppercase"
@@ -104,9 +108,10 @@
               </span>
             </div>
           </th>
+
           <th class="pr-3 py-3">
             <div class="text-xs font-semibold text-black uppercase text-right">
-              Value ($)
+              Value
             </div>
           </th>
         </tr>

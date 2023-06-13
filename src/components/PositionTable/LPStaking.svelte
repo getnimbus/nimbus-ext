@@ -12,7 +12,7 @@
   <div class="flex justify-between items-end">
     <div class="text-xl font-semibold">{position}</div>
     <div class="text-3xl font-semibold flex justify-end">
-      $<TooltipNumber number={sum} />
+      $<TooltipNumber number={sum} type="balance" />
     </div>
   </div>
   <div class="border border-[#0000000d] rounded-[10px]">
@@ -24,21 +24,25 @@
               Pool
             </div>
           </th>
+
           <th class="py-3">
             <div class="text-right text-xs font-semibold text-black uppercase">
-              Balance ($)
+              Balance
             </div>
           </th>
+
           <th class="py-3">
             <div class="text-right text-xs font-semibold text-black uppercase">
-              Rewards ($)
+              Rewards
             </div>
           </th>
+
           <th class="pr-3 py-3">
             <div class="text-xs font-semibold text-black uppercase text-right">
-              Value ($)
+              Value
             </div>
           </th>
+
           <!-- <th class="pr-3 py-3">
             <div class="text-xs font-semibold text-black uppercase text-right">
               Profit & Loss

@@ -28,7 +28,7 @@
       <div>
         <TooltipNumber number={data?.est_value} type="amount" /> BTC | $<TooltipNumber
           number={data?.est_value * marketPrice}
-          type="amount"
+          type="balance"
         />
       </div>
     </div>
@@ -40,7 +40,7 @@
             profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          $<TooltipNumber number={Math.abs(profitAndLoss)} />
+          $<TooltipNumber number={Math.abs(profitAndLoss)} type="balance" />
         </div>
         <div
           class={`flex ${
@@ -52,7 +52,10 @@
           {:else}
             ↑
           {/if}
-          <TooltipNumber number={Math.abs(profitAndLossPercent) * 100} />%
+          <TooltipNumber
+            number={Math.abs(profitAndLossPercent) * 100}
+            type="percent"
+          />%
         </div>
       </div>
     </div>
