@@ -931,20 +931,4 @@
   .input-border-error {
     border: 1px solid red;
   }
-
-  .loading {
-    animation-name: loading;
-    animation-duration: 1.4s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-  }
-
-  @keyframes loading {
-    0% {
-      transform: rotate(0);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
 </style>
