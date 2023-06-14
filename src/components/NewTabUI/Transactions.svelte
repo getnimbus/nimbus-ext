@@ -1,63 +1,64 @@
 <script lang="ts">
-  import { nimbus } from "~/lib/network";
-  import { user } from "~/store";
+  // import { nimbus } from "~/lib/network";
+  // import { user } from "~/store";
 
-  import Button from "~/components/Button.svelte";
-  import "~/components/Loading.custom.svelte";
+  // import Button from "~/components/Button.svelte";
+  // import "~/components/Loading.custom.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Transactions from "../TransactionSections/Transactions.svelte";
 
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
+  // let userInfo = {};
+  // user.subscribe((value) => {
+  //   userInfo = value;
+  // });
 
-  let listNft = [];
-  let isLoading = false;
+  // let listNft = [];
+  // let isLoading = false;
 
-  const handleBuy = async () => {
-    const res = await nimbus
-      .get("/payments/create-session")
-      .then((response) => response);
-    if (res) {
-      window.location.replace(res.data.payment_url);
-    }
-  };
+  // const handleBuy = async () => {
+  //   const res = await nimbus
+  //     .get("/payments/create-session")
+  //     .then((response) => response);
+  //   if (res) {
+  //     window.location.replace(res.data.payment_url);
+  //   }
+  // };
 
-  const handleGetNft = async () => {
-    try {
-      isLoading = true;
-      const solanaAddress = localStorage.getItem("solana_address");
-      const solanaToken = localStorage.getItem("solana_token");
-      if (solanaAddress && solanaToken) {
-        const res = await nimbus
-          .get(`/nft/${solanaAddress}`, {
-            headers: {
-              Authorization: `${solanaToken}`,
-            },
-          })
-          .then((response) => response);
-        if (res) {
-          listNft = res?.data?.result;
-        }
-      }
-    } catch (e) {
-      console.log("error: ", e);
-    } finally {
-      isLoading = false;
-    }
-  };
+  // const handleGetNft = async () => {
+  //   try {
+  //     isLoading = true;
+  //     const solanaAddress = localStorage.getItem("solana_address");
+  //     const solanaToken = localStorage.getItem("solana_token");
+  //     if (solanaAddress && solanaToken) {
+  //       const res = await nimbus
+  //         .get(`/nft/${solanaAddress}`, {
+  //           headers: {
+  //             Authorization: `${solanaToken}`,
+  //           },
+  //         })
+  //         .then((response) => response);
+  //       if (res) {
+  //         listNft = res?.data?.result;
+  //       }
+  //     }
+  //   } catch (e) {
+  //     console.log("error: ", e);
+  //   } finally {
+  //     isLoading = false;
+  //   }
+  // };
 
-  $: {
-    if (Object.keys(userInfo).length !== 0) {
-      handleGetNft();
-    } else {
-      listNft = [];
-    }
-  }
+  // $: {
+  //   if (Object.keys(userInfo).length !== 0) {
+  //     handleGetNft();
+  //   } else {
+  //     listNft = [];
+  //   }
+  // }
 </script>
 
 <ErrorBoundary>
-  {#if Object.keys(userInfo).length === 0}
+  <!-- {#if Object.keys(userInfo).length === 0}
     <div class="flex justify-center items-center h-screen">
       <div class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center">
         <div class="text-lg">Please login to use this feature</div>
@@ -98,7 +99,8 @@
         </div>
       {/if}
     </div>
-  {/if}
+  {/if} -->
+  <Transactions />
 </ErrorBoundary>
 
 <style></style>

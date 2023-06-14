@@ -138,14 +138,22 @@
     } else {
       filteredHoldingDataToken = formatData;
     }
-    sumTokens = (formatData || []).reduce(
-      (prev, item) => prev + item?.amount * item.market_price,
-      0
-    );
-    totalAssets = (formatData || []).reduce(
-      (prev, item) => prev + item?.amount * item.market_price,
-      0
-    );
+  }
+
+  $: {
+    if (formatData.length === 0) {
+      totalAssets = 0;
+      sumTokens;
+    } else {
+      sumTokens = (formatData || []).reduce(
+        (prev, item) => prev + item?.amount * item.market_price,
+        0
+      );
+      totalAssets = (formatData || []).reduce(
+        (prev, item) => prev + item?.amount * item.market_price,
+        0
+      );
+    }
   }
 </script>
 

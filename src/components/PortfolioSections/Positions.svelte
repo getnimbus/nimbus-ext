@@ -847,7 +847,10 @@
   }
 
   $: {
-    if (flattenPositionsDataTable) {
+    if (flattenPositionsDataTable.length === 0) {
+      totalPositions = 0;
+      totalClaimable = 0;
+    } else {
       totalPositions = flattenPositionsDataTable.reduce(
         (prev, item) => prev + item.sum,
         0

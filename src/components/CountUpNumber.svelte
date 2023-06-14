@@ -56,13 +56,8 @@
     };
 
     if (countUp) {
-      countUp.update(Number(numberToCount));
-    }
-  }
-
-  $: {
-    if (number === 0 && countUp) {
       countUp.reset();
+      countUp.update(Number(numberToCount));
     }
   }
 </script>
