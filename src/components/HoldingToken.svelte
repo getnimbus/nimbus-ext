@@ -1,6 +1,5 @@
 <script>
   import { useNavigate } from "svelte-navigator";
-  import { formatCurrency } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";

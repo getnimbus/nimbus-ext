@@ -149,7 +149,6 @@
   let listAddress = [];
   let isOpenAddModal = false;
   let errors: any = {};
-  let headerScrollY = false;
   let address = "";
   let label = "";
   let isLoading = false;

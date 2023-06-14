@@ -291,7 +291,7 @@
         }`}
       >
         <div
-          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
           class:bg-[#525B8C]={navActive === "portfolio"}
           on:click={() => (navActive = "portfolio")}
         >
@@ -304,7 +304,7 @@
 
       <Link to="market">
         <div
-          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
           class:bg-[#525B8C]={navActive === "market"}
           on:click={() => (navActive = "market")}
         >
@@ -317,7 +317,7 @@
 
       <!-- <Link to="news">
         <div
-          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
           class:bg-[#525B8C]={navActive === "news"}
           on:click={() => (navActive = "news")}
         >
@@ -330,7 +330,7 @@
 
       <div class="relative">
         <div
-          class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-pointer"
+          class="flex items-center gap-2 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-pointer"
           class:bg-[#525B8C]={navActive === "analytic"}
           on:click={() => {
             // navActive = "analytic";
@@ -355,7 +355,7 @@
 
       <Link to="transactions">
         <div
-          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
           class:bg-[#525B8C]={navActive === "transactions"}
           on:click={() => (navActive = "transactions")}
         >
@@ -368,7 +368,7 @@
 
       {#if APP_TYPE.TYPE === "EXT"}
         <div
-          class={`flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
           on:click={() => {
             browser.tabs.create({
               url: "src/entries/options/index.html?tab=wallets",
@@ -382,7 +382,7 @@
         </div>
       {:else}
         <a
-          class={`flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
           href="entries/options/index.html?tab=wallets"
           target="_blank"
         >

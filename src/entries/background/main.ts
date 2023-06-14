@@ -201,6 +201,27 @@ onMessage<IAddressInput, any>("getNews", async ({ data: { address, chain, reload
   }
 });
 
+onMessage<IAddressInput, any>("getTrxHistory", async ({ data: { address, chain, reload } }) => {
+  try {
+    const key = address + chain + "_trxHistory";
+    const res = await cacheOrAPI(
+      key,
+      () => {
+        return nimbus.get(`/address/${address}/history?chain=${chain}`).then((response) => {
+          return {
+            result: response.data,
+            address: address
+          }
+        });
+      },
+      { defaultValue: null, ttl: 5 * 60, disabled: reload }
+    );
+    return res
+  } catch (error) {
+    return {};
+  }
+});
+
 onMessage<IAddressInput, any>("getOpportunities", async ({ data: { address, chain } }) => {
   try {
     const res = await cacheOrAPI(

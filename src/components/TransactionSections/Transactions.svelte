@@ -10,10 +10,16 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { chainList, getAddressContext } from "~/utils";
+  import {
+    chainList,
+    getAddressContext,
+    shorterAddress,
+    formatCurrencyV2,
+  } from "~/utils";
 
-  import type { AddressData } from "~/types/AddressData";
+  import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
 
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
   import Select from "~/components/Select.svelte";
@@ -24,6 +30,7 @@
   import Reload from "~/assets/reload.svg";
   import EthereumLogo from "~/assets/ethereum.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
+  import TooltipNumber from "../TooltipNumber.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -108,9 +115,9 @@
   let label = "";
   let errors: any = {};
   let isOpenAddModal = false;
-  let isLoading;
+  let isLoading = false;
   let selectedChain = chainList[0];
-  let data = [];
+  let data;
 
   const getListAddress = async () => {
     isLoadingFullPage = true;
@@ -176,8 +183,26 @@
     }
   };
 
-  const getListTransactions = async () => {
-    console.log("HELLO WORLD");
+  const getListTransactions = async (isReload: boolean = false) => {
+    isLoading = true;
+    try {
+      const response: TrxHistoryDataRes = await sendMessage("getTrxHistory", {
+        address: selectedWallet.value,
+        reload: isReload,
+        chain: selectedChain.value,
+      });
+
+      if (selectedWallet.value === response.address) {
+        data = response.result;
+        return response;
+      } else {
+        // console.log("response: ", response)
+      }
+    } catch (e) {
+      console.log("error: ", e);
+    } finally {
+      isLoading = false;
+    }
   };
 
   onMount(() => {
@@ -579,85 +604,216 @@
             </div>
           </div>
         </div>
-        <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
+        <div class="max-w-[2000px] m-auto w-[90%] -mt-32">
           <div
             class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
             style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
           >
-            <div
-              class="flex flex-col gap-6 border border-[#0000001a] rounded-[20px] p-6"
-            >
-              <div class="text-2xl font-medium text-black">Transactions</div>
-              <div class="border border-[#0000000d] rounded-[10px]">
-                <table class="table-auto w-full">
-                  <thead>
-                    <tr class="bg-[#f4f5f880]">
-                      <th class="pl-3 py-3">
-                        <div
-                          class="text-left text-xs uppercase font-semibold text-black"
-                        >
-                          Transaction
+            <div class="border border-[#0000000d] rounded-[10px]">
+              <table class="table-auto w-full">
+                <thead>
+                  <tr class="bg-[#f4f5f880]">
+                    <th class="pl-3 py-3">
+                      <div
+                        class="text-left text-xs uppercase font-semibold text-black"
+                      >
+                        Transaction
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-left text-xs uppercase font-semibold text-black"
+                      >
+                        From
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-left text-xs uppercase font-semibold text-black"
+                      >
+                        To
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-left text-xs uppercase font-semibold text-black min-w-[100px]"
+                      >
+                        Type
+                      </div>
+                    </th>
+                    <th class="pr-3 py-3">
+                      <div
+                        class="text-left text-xs uppercase font-semibold text-black"
+                      >
+                        Token change
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                {#if isLoading}
+                  <tbody>
+                    <tr>
+                      <td colspan={5}>
+                        <div class="flex justify-center items-center py-4 px-3">
+                          <loading-icon />
                         </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-left text-xs uppercase font-semibold text-black"
-                        >
-                          From
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right text-xs uppercase font-semibold text-black"
-                        >
-                          To
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right text-xs uppercase font-semibold text-black"
-                        >
-                          Type
-                        </div>
-                      </th>
-                      <th class="pr-3 py-3">
-                        <div class="text-xs uppercase font-semibold text-black">
-                          Token change
-                        </div>
-                      </th>
+                      </td>
                     </tr>
-                  </thead>
-                  {#if isLoading}
-                    <tbody>
+                  </tbody>
+                {:else}
+                  <tbody>
+                    {#if data && data?.data.length === 0}
                       <tr>
-                        <td colspan={6}>
+                        <td colspan={5}>
                           <div
-                            class="flex justify-center items-center py-4 px-3"
+                            class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
                           >
-                            <loading-icon />
+                            Empty
                           </div>
                         </td>
                       </tr>
-                    </tbody>
-                  {:else}
-                    <tbody>
-                      {#if data && data.length === 0}
-                        <tr>
-                          <td colspan={6}>
+                    {:else}
+                      {#each data?.data || [] as item}
+                        <tr class="hover:bg-gray-100 transition-all">
+                          <td class="pl-3 py-4">
+                            <div class="w-max">
+                              <a
+                                href={`${
+                                  item?.chain === "ETH"
+                                    ? `https://etherscan.io/tx/${item?.transaction_hash}`
+                                    : `https://www.oklink.com/btc/tx/${item?.transaction_hash}`
+                                }`}
+                                class="hover:text-blue-500"
+                                target="_blank"
+                              >
+                                <div class="text-left flex items-start gap-2">
+                                  <div class="flex flex-col">
+                                    <div
+                                      class="text-sm"
+                                      use:tooltip={{
+                                        content: `<tooltip-detail text="${item?.transaction_hash}" />`,
+                                        allowHTML: true,
+                                        placement: "top-start",
+                                      }}
+                                    >
+                                      {shorterAddress(item?.transaction_hash)}
+                                    </div>
+                                    <div class="text-gray-400 text-xs">
+                                      {dayjs(
+                                        new Date(item?.detail.timestamp)
+                                      ).format("DD MMM YYYY, hh:mm A")}
+                                    </div>
+                                  </div>
+                                </div>
+                              </a>
+                            </div>
+                          </td>
+
+                          <td class="py-4">
                             <div
-                              class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
+                              class="text-sm w-max"
+                              use:tooltip={{
+                                content: `<tooltip-detail text="${item?.detail?.from}" />`,
+                                allowHTML: true,
+                                placement: "top-start",
+                              }}
                             >
-                              Empty
+                              <a
+                                href={`${
+                                  item?.chain === "ETH"
+                                    ? `https://etherscan.io/address/${item?.detail?.from}`
+                                    : `https://www.oklink.com/btc/address/${item?.detail?.from}`
+                                }`}
+                                class="hover:text-blue-500"
+                                target="_blank"
+                              >
+                                {shorterAddress(item?.detail?.from)}
+                              </a>
+                            </div>
+                          </td>
+
+                          <td class="py-4">
+                            <div
+                              class="text-sm w-max"
+                              use:tooltip={{
+                                content: `<tooltip-detail text="${item?.detail?.to}" />`,
+                                allowHTML: true,
+                                placement: "top-start",
+                              }}
+                            >
+                              <a
+                                href={`${
+                                  item?.chain === "ETH"
+                                    ? `https://etherscan.io/address/${item?.detail?.to}`
+                                    : `https://www.oklink.com/btc/address/${item?.detail?.to}`
+                                }`}
+                                class="hover:text-blue-500"
+                                target="_blank"
+                              >
+                                {shorterAddress(item?.detail?.to)}
+                              </a>
+                            </div>
+                          </td>
+
+                          <td class="py-4 min-w-[100px]">
+                            <div
+                              class="text-sm text-[#00000099] font-medium flex justify-end"
+                            >
+                              {#if item?.type}
+                                <div
+                                  class="px-2 py-1 text-[#27326F] text-[12px] font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
+                                >
+                                  {item?.type}
+                                </div>
+                              {/if}
+                            </div>
+                          </td>
+
+                          <td class="py-4 pr-3">
+                            <div
+                              class="text-sm font-medium flex flex-col items-start gap-2"
+                            >
+                              {#each item.changes as change}
+                                <div class="flex items-center gap-2">
+                                  <img
+                                    src={change?.logo}
+                                    alt=""
+                                    class="w-5 h-5 overflow-hidden rounded-full object-contain"
+                                  />
+                                  <div
+                                    class={`flex gap-1 ${
+                                      change?.total < 0
+                                        ? "text-[#00000099]"
+                                        : "text-[#00A878]"
+                                    }`}
+                                  >
+                                    <span
+                                      >{change?.total < 0
+                                        ? "-"
+                                        : "+"}<TooltipNumber
+                                        number={change?.total}
+                                        type="amount"
+                                      />
+                                      {change?.symbol ? change?.symbol : "⎯"}
+                                    </span>
+                                    <span class="flex">
+                                      ($<TooltipNumber
+                                        number={change?.total *
+                                          change?.price?.price}
+                                        type="balance"
+                                      />)
+                                    </span>
+                                  </div>
+                                </div>
+                              {/each}
                             </div>
                           </td>
                         </tr>
-                      {:else}
-                        hello
-                      {/if}
-                    </tbody>
-                  {/if}
-                </table>
-              </div>
+                      {/each}
+                    {/if}
+                  </tbody>
+                {/if}
+              </table>
             </div>
           </div>
         </div>
