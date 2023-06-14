@@ -1,8 +1,11 @@
-export type TrxHistoryData = Data[]
+export type TrxHistoryData = {
+  data: Data[],
+  pageToken: string
+}
 
 export type TrxHistoryDataRes = {
   result: TrxHistoryData
-  address: string
+  address: string,
 }
 
 export type Data = {

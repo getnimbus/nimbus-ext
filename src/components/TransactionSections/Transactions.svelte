@@ -10,12 +10,7 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import {
-    chainList,
-    getAddressContext,
-    shorterAddress,
-    formatCurrencyV2,
-  } from "~/utils";
+  import { chainList, getAddressContext, shorterAddress } from "~/utils";
 
   import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
 
@@ -27,10 +22,10 @@
   import AppOverlay from "~/components/Overlay.svelte";
 
   import Plus from "~/assets/plus.svg";
-  import Reload from "~/assets/reload.svg";
   import EthereumLogo from "~/assets/ethereum.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import TooltipNumber from "../TooltipNumber.svelte";
+  import type { AddressData } from "~/types/AddressData";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -104,8 +99,10 @@
   };
 
   let selectedWallet: any = {};
+  let selectedWalletId: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
+    selectedWalletId = value?.id || "";
   });
   let showFollowTooltip = false;
   let showDisableAddWallet = false;
@@ -117,7 +114,8 @@
   let isOpenAddModal = false;
   let isLoading = false;
   let selectedChain = chainList[0];
-  let data;
+  let data = [];
+  let pageToken = "";
 
   const getListAddress = async () => {
     isLoadingFullPage = true;
@@ -183,20 +181,24 @@
     }
   };
 
-  const getListTransactions = async (isReload: boolean = false) => {
+  const getListTransactions = async (page: string) => {
     isLoading = true;
     try {
       const response: TrxHistoryDataRes = await sendMessage("getTrxHistory", {
         address: selectedWallet.value,
-        reload: isReload,
         chain: selectedChain.value,
+        pageToken: page,
       });
-
       if (selectedWallet.value === response.address) {
-        data = response.result;
-        return response;
+        data = [...data, ...response.result.data];
+        if (
+          response.result.pageToken &&
+          response.result.pageToken.length !== 0
+        ) {
+          pageToken = response.result.pageToken;
+        }
       } else {
-        // console.log("response: ", response)
+        console.log("response: ", response);
       }
     } catch (e) {
       console.log("error: ", e);
@@ -327,22 +329,26 @@
     }
   }
 
+  const handleSaveSelectedWallet = () => {
+    browser.storage.sync
+      .set({ selectedWallet: JSON.stringify(selectedWallet) })
+      .then(() => {
+        console.log("save selected address to sync storage");
+      });
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + `?address=${selectedWallet.value}`
+    );
+  };
+
   $: {
-    if (
-      selectedWallet !== undefined &&
-      Object.keys(selectedWallet).length !== 0
-    ) {
-      browser.storage.sync
-        .set({ selectedWallet: JSON.stringify(selectedWallet) })
-        .then(() => {
-          console.log("save selected address to sync storage");
-        });
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname + `?address=${selectedWallet.value}`
-      );
-      getListTransactions();
+    if (selectedWalletId) {
+      console.log("selectedWallet: ", selectedWalletId);
+      data = [];
+      pageToken = "";
+      getListTransactions("");
+      handleSaveSelectedWallet();
     }
   }
 
@@ -537,22 +543,6 @@
                     <div class="text-5xl text-white font-semibold">
                       Transactions
                     </div>
-                    <div class="flex items-center gap-2 mb-1">
-                      <div
-                        class="cursor-pointer"
-                        class:loading={isLoading}
-                        on:click={getListTransactions}
-                      >
-                        <img src={Reload} alt="" />
-                      </div>
-                      <div class="text-xs text-white font-medium">
-                        {#if isLoading}
-                          Updating data
-                        {:else}
-                          Reload
-                        {/if}
-                      </div>
-                    </div>
                   </div>
                   <div class="flex items-center gap-4">
                     <div class="text-base">
@@ -650,7 +640,7 @@
                     </th>
                   </tr>
                 </thead>
-                {#if isLoading}
+                {#if isLoading && pageToken.length === 0}
                   <tbody>
                     <tr>
                       <td colspan={5}>
@@ -662,7 +652,7 @@
                   </tbody>
                 {:else}
                   <tbody>
-                    {#if data && data?.data.length === 0}
+                    {#if data && data?.length === 0}
                       <tr>
                         <td colspan={5}>
                           <div
@@ -673,7 +663,7 @@
                         </td>
                       </tr>
                     {:else}
-                      {#each data?.data || [] as item}
+                      {#each data || [] as item}
                         <tr class="hover:bg-gray-100 transition-all">
                           <td class="pl-3 py-4">
                             <div class="w-max">
@@ -683,7 +673,7 @@
                                     ? `https://etherscan.io/tx/${item?.transaction_hash}`
                                     : `https://www.oklink.com/btc/tx/${item?.transaction_hash}`
                                 }`}
-                                class="hover:text-blue-500"
+                                class="hover:text-blue-500 cursor-pointer"
                                 target="_blank"
                               >
                                 <div class="text-left flex items-start gap-2">
@@ -710,54 +700,58 @@
                           </td>
 
                           <td class="py-4">
-                            <div
-                              class="text-sm w-max"
-                              use:tooltip={{
-                                content: `<tooltip-detail text="${item?.detail?.from}" />`,
-                                allowHTML: true,
-                                placement: "top-start",
-                              }}
-                            >
-                              <a
-                                href={`${
-                                  item?.chain === "ETH"
-                                    ? `https://etherscan.io/address/${item?.detail?.from}`
-                                    : `https://www.oklink.com/btc/address/${item?.detail?.from}`
-                                }`}
-                                class="hover:text-blue-500"
-                                target="_blank"
+                            {#if item?.detail?.from}
+                              <div
+                                class="text-sm w-max"
+                                use:tooltip={{
+                                  content: `<tooltip-detail text="${item?.detail?.from}" />`,
+                                  allowHTML: true,
+                                  placement: "top-start",
+                                }}
                               >
-                                {shorterAddress(item?.detail?.from)}
-                              </a>
-                            </div>
+                                <a
+                                  href={`${
+                                    item?.chain === "ETH"
+                                      ? `https://etherscan.io/address/${item?.detail?.from}`
+                                      : `https://www.oklink.com/btc/address/${item?.detail?.from}`
+                                  }`}
+                                  class="hover:text-blue-500 cursor-pointer"
+                                  target="_blank"
+                                >
+                                  {shorterAddress(item?.detail?.from)}
+                                </a>
+                              </div>
+                            {/if}
                           </td>
 
                           <td class="py-4">
-                            <div
-                              class="text-sm w-max"
-                              use:tooltip={{
-                                content: `<tooltip-detail text="${item?.detail?.to}" />`,
-                                allowHTML: true,
-                                placement: "top-start",
-                              }}
-                            >
-                              <a
-                                href={`${
-                                  item?.chain === "ETH"
-                                    ? `https://etherscan.io/address/${item?.detail?.to}`
-                                    : `https://www.oklink.com/btc/address/${item?.detail?.to}`
-                                }`}
-                                class="hover:text-blue-500"
-                                target="_blank"
+                            {#if item?.detail?.to}
+                              <div
+                                class="text-sm w-max"
+                                use:tooltip={{
+                                  content: `<tooltip-detail text="${item?.detail?.to}" />`,
+                                  allowHTML: true,
+                                  placement: "top-start",
+                                }}
                               >
-                                {shorterAddress(item?.detail?.to)}
-                              </a>
-                            </div>
+                                <a
+                                  href={`${
+                                    item?.chain === "ETH"
+                                      ? `https://etherscan.io/address/${item?.detail?.to}`
+                                      : `https://www.oklink.com/btc/address/${item?.detail?.to}`
+                                  }`}
+                                  class="hover:text-blue-500 cursor-pointer"
+                                  target="_blank"
+                                >
+                                  {shorterAddress(item?.detail?.to)}
+                                </a>
+                              </div>
+                            {/if}
                           </td>
 
                           <td class="py-4 min-w-[100px]">
                             <div
-                              class="text-sm text-[#00000099] font-medium flex justify-end"
+                              class="text-sm text-[#00000099] font-medium flex justify-start"
                             >
                               {#if item?.type}
                                 <div
@@ -791,15 +785,18 @@
                                       >{change?.total < 0
                                         ? "-"
                                         : "+"}<TooltipNumber
-                                        number={change?.total}
+                                        number={Math.abs(change?.total)}
                                         type="amount"
                                       />
-                                      {change?.symbol ? change?.symbol : "⎯"}
+                                      {change?.price?.symbol
+                                        ? change?.price?.symbol
+                                        : "⎯"}
                                     </span>
                                     <span class="flex">
                                       ($<TooltipNumber
-                                        number={change?.total *
-                                          change?.price?.price}
+                                        number={Math.abs(
+                                          change?.total * change?.price?.price
+                                        )}
                                         type="balance"
                                       />)
                                     </span>
@@ -815,6 +812,16 @@
                 {/if}
               </table>
             </div>
+            {#if pageToken.length !== 0}
+              <div class="mx-auto">
+                <Button
+                  variant="secondary"
+                  on:click={() => getListTransactions(pageToken)}
+                  disabled={isLoading}
+                  {isLoading}>Load more</Button
+                >
+              </div>
+            {/if}
           </div>
         </div>
       {/if}

@@ -56,7 +56,6 @@
     };
 
     if (countUp) {
-      countUp.reset();
       countUp.update(Number(numberToCount));
     }
   }

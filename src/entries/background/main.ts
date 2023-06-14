@@ -159,13 +159,13 @@ onMessage<IAddressInput, any>("getHoldingToken", async ({ data: { address, chain
   }
 });
 
-onMessage<IAddressInput, any>("getHoldingNFT", async ({ data: { address, chain, reload } }) => {
+onMessage<IAddressInput, any>("getHoldingNFT", async ({ data: { address, chain, reload, pageToken } }) => {
   try {
     const key = address + chain + "_holding_nft";
     const res = await cacheOrAPI(
       key,
       () => {
-        return nimbus.get(`/address/${address}/nft-holding?chain=${chain}`).then((response) => {
+        return nimbus.get(`/address/${address}/nft-holding?chain=${chain}&token=${pageToken}`).then((response) => {
           return {
             result: response.data,
             address: address
@@ -201,21 +201,14 @@ onMessage<IAddressInput, any>("getNews", async ({ data: { address, chain, reload
   }
 });
 
-onMessage<IAddressInput, any>("getTrxHistory", async ({ data: { address, chain, reload } }) => {
+onMessage<IAddressInput, any>("getTrxHistory", async ({ data: { address, chain, pageToken } }) => {
   try {
-    const key = address + chain + "_trxHistory";
-    const res = await cacheOrAPI(
-      key,
-      () => {
-        return nimbus.get(`/address/${address}/history?chain=${chain}`).then((response) => {
-          return {
-            result: response.data,
-            address: address
-          }
-        });
-      },
-      { defaultValue: null, ttl: 5 * 60, disabled: reload }
-    );
+    const res = await nimbus.get(`/address/${address}/history?chain=${chain}&pageToken=${pageToken}`).then((response) => {
+      return {
+        result: response.data,
+        address: address
+      }
+    });
     return res
   } catch (error) {
     return {};

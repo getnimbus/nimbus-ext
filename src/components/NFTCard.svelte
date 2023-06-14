@@ -1,8 +1,11 @@
 <script lang="ts">
+  import { shorterName } from "~/utils";
   import TooltipNumber from "./TooltipNumber.svelte";
 
   export let data;
   export let marketPrice;
+
+  let showTooltipName = false;
 
   $: profitAndLoss = data?.est_valueBTC * marketPrice - (data.totalCost || 0);
   $: profitAndLossPercent =
@@ -18,7 +21,18 @@
     <img src={data?.image_url} alt="" class="w-full h-full object-cover" />
   </div>
   <div class="flex flex-col gap-1">
-    <div class="text-sm font-semibold">#{data?.item_id}</div>
+    <div
+      class="text-sm font-semibold relative"
+      on:mouseenter={() => (showTooltipName = true)}
+      on:mouseleave={() => (showTooltipName = false)}
+    >
+      {shorterName(data?.item_id, 30)}
+      {#if showTooltipName && data?.item_id.length > 30}
+        <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
+          <tooltip-detail text={data?.item_id} />
+        </span>
+      {/if}
+    </div>
     <div class="flex gap-1 items-center">
       <div class="text-sm font-semibold">Inscription</div>
       <div class="text-sm font-semibold">#{data?.inscription_number}</div>

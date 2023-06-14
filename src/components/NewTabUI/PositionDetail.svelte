@@ -683,7 +683,7 @@
                             <div class="w-max">
                               <a
                                 href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
-                                class="hover:text-blue-500"
+                                class="hover:text-blue-500 cursor-pointer"
                                 target="_blank"
                               >
                                 <div class="text-left flex items-start gap-2">
@@ -722,6 +722,7 @@
                               <a
                                 href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
                                 target="_blank"
+                                class="cursor-pointer"
                               >
                                 <div
                                   class="flex flex-col gap-1 justify-start items-start text-sm"

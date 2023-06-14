@@ -120,8 +120,10 @@
   };
 
   let selectedWallet: any = {};
+  let selectedWalletId: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
+    selectedWalletId = value?.id || "";
   });
   let overviewData: OverviewData = {
     breakdownToken: [],
@@ -969,21 +971,22 @@
     }
   }
 
+  const handleSaveSelectedWallet = () => {
+    browser.storage.sync
+      .set({ selectedWallet: JSON.stringify(selectedWallet) })
+      .then(() => {
+        console.log("save selected address to sync storage");
+      });
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + `?address=${selectedWallet.value}`
+    );
+  };
+
   $: {
-    if (
-      selectedWallet !== undefined &&
-      Object.keys(selectedWallet).length !== 0
-    ) {
-      browser.storage.sync
-        .set({ selectedWallet: JSON.stringify(selectedWallet) })
-        .then(() => {
-          console.log("save selected address to sync storage");
-        });
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname + `?address=${selectedWallet.value}`
-      );
+    if (selectedWalletId) {
+      handleSaveSelectedWallet();
       handleGetAllData("sync");
     }
   }
