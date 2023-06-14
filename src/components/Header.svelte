@@ -410,13 +410,7 @@
                 "",
                 window.location.pathname + `?address=${search}`
               );
-              wallet.update(
-                (n) =>
-                  (n = {
-                    ...selectedWallet,
-                    value: search,
-                  })
-              );
+              wallet.update((n) => (n = search));
             }
           }}
           value={search}

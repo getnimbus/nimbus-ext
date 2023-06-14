@@ -711,7 +711,7 @@
                           <td class="py-4">
                             {#if change?.metadata?.action}
                               <div
-                                class="px-2 py-1 text-[#27326F] text-[12px] font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
+                                class="w-max px-2 py-1 text-[#27326F] text-[12px] font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
                               >
                                 {change?.metadata?.action}
                               </div>

@@ -29,7 +29,7 @@
     navigate(
       `nft-detail?id=${encodeURIComponent(
         data.collectionId
-      )}&address=${encodeURIComponent(selectedWallet.value)}`
+      )}&address=${encodeURIComponent(selectedWallet)}`
     );
   }}
 >

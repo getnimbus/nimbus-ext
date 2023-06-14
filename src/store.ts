@@ -3,7 +3,8 @@ import { writable } from "svelte/store";
 export const isSaveAddressLabel = writable(false);
 export const isOpenReport = writable(false);
 export const user = writable({});
-export const wallet = writable({});
+export const wallet = writable("");
+export const chain = writable("");
 
 let isFirstTime = true;
 isOpenReport.subscribe((value) => {

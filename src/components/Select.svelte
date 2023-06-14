@@ -68,7 +68,7 @@
               return;
             }
             if (isSelectWallet) {
-              wallet.update((n) => (n = item));
+              wallet.update((n) => (n = item.value));
             }
             selected = item;
             open = false;

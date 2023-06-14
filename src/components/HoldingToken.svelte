@@ -33,7 +33,7 @@
           data.positionId
         )}&type=${encodeURIComponent(
           data.positionType
-        )}&address=${encodeURIComponent(selectedWallet.value)}`
+        )}&address=${encodeURIComponent(selectedWallet)}`
       );
     }
   }}

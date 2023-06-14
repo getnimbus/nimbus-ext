@@ -75,12 +75,7 @@
 
       browser.storage.sync
         .set({
-          selectedWallet: JSON.stringify({
-            logo: "",
-            id: data.id,
-            label: data.label,
-            value: data.address,
-          }),
+          selectedWallet: data.address,
         })
         .then(() => {
           console.log("save selected address to sync storage");

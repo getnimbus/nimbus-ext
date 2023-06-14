@@ -271,7 +271,7 @@
       </div>
     </div>
 
-    {#if getAddressContext(selectedWallet.value).type !== "EVM"}
+    {#if getAddressContext(selectedWallet).type !== "EVM"}
       <div class="flex flex-col gap-2">
         <div class="text-xl font-medium text-black">
           {MultipleLang.nft}
