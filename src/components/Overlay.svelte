@@ -4,7 +4,7 @@
   import { showOverlayAnimationVariants } from "~/utils";
   const dispatch = createEventDispatcher();
 
-  export let isOpen = false;
+  export let isOpen;
   export let clickOutSideToClose = false;
 
   const handleClose = () => {
