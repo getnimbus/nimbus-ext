@@ -27,7 +27,7 @@
       !isEmpty(JSON.parse(selectedWalletRes.selectedWallet))
     ) {
       const selectedWalletObject = JSON.parse(selectedWalletRes.selectedWallet);
-      wallet.update((n) => (n = selectedWalletObject.value));
+      wallet.update((n) => (n = selectedWalletObject?.value || ""));
     }
   };
 
