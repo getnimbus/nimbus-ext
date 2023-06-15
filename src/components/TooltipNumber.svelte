@@ -19,6 +19,12 @@
     numberFormat = number_format;
     numberSize = number_size;
   }
+
+  $: console.log({
+    number,
+    type,
+    numberFormat,
+  });
 </script>
 
 {#if type === "percent"}
@@ -37,12 +43,16 @@
       <span>
         {#if type === "amount" && number < 100000}
           <span
-            >{numeral(number).format("0,0.00[000000]") === "NaN"
+            >{numeral(number).format("0,0.000000") === "NaN"
               ? number
-              : numeral(number).format("0,0.00[000000]")}</span
+              : numeral(number).format("0,0.000000")}</span
           >
         {:else}
-          <span>{numberFormat}</span><span>{numberSize}</span>
+          <span
+            >{numeral(numberFormat).format("0,0.00") === "NaN"
+              ? numberFormat
+              : numeral(numberFormat).format("0,0.00")}</span
+          ><span>{numberSize}</span>
         {/if}
       </span>
     {/if}
