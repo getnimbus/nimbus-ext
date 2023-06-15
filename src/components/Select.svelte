@@ -55,7 +55,9 @@
       {#each listSelect as item}
         <div
           class="content_item"
-          class:active={item.value === selected.value}
+          class:active={isSelectWallet
+            ? item.value === selected
+            : item.value === selected.value}
           id={item.value}
           on:click={() => {
             if (
@@ -69,6 +71,9 @@
             }
             if (isSelectWallet) {
               wallet.update((n) => (n = item.value));
+              selected = item.value;
+              open = false;
+              return;
             }
             selected = item;
             open = false;
