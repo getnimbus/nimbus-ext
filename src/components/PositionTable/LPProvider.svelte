@@ -41,7 +41,7 @@
           </th>
 
           <th class="py-3">
-            <div class="text-right text-xs font-semibold text-black uppercase">
+            <div class="text-left text-xs font-semibold text-black uppercase">
               Liquidity Range
             </div>
           </th>

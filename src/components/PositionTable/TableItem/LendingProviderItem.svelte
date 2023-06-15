@@ -80,33 +80,27 @@
   </td>
 
   <td class="pr-3 py-4">
-    <div class="text-sm font-medium min-w-[125px]">
-      <div class="flex flex-col">
+    <div class="text-sm font-medium flex flex-col">
+      <div
+        class={`flex justify-end ${
+          profit >= 0 ? "text-[#00A878]" : "text-red-500"
+        }`}
+      >
+        $<TooltipNumber number={Math.abs(profit)} type="balance" />
+      </div>
+      <div class="flex items-center justify-end gap-1">
         <div
-          class={`flex justify-end ${
+          class={`flex items-center ${
             profit >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          $<TooltipNumber number={Math.abs(profit)} type="balance" />
-        </div>
-        <div class="flex items-center justify-end gap-1">
-          <div
-            class={`flex items-center ${
-              profit >= 0 ? "text-[#00A878]" : "text-red-500"
-            }`}
-          >
-            <TooltipNumber
-              number={Math.abs(profitPercent) * 100}
-              type="percent"
-            />
-            <span>%</span>
-          </div>
-          <img
-            src={profit >= 0 ? TrendUp : TrendDown}
-            alt="trend"
-            class="mb-1"
+          <TooltipNumber
+            number={Math.abs(profitPercent) * 100}
+            type="percent"
           />
+          <span>%</span>
         </div>
+        <img src={profit >= 0 ? TrendUp : TrendDown} alt="trend" class="mb-1" />
       </div>
     </div>
   </td>

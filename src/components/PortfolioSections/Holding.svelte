@@ -206,7 +206,7 @@
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-left text-xs uppercase font-semibold text-black"
+                    class="text-right text-xs uppercase font-semibold text-black"
                   >
                     {MultipleLang.price}
                   </div>

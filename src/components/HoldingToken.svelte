@@ -80,7 +80,7 @@
   </td>
 
   <td class="py-3">
-    <div class="text-sm text-[#00000099] font-medium flex justify-start">
+    <div class="text-sm text-[#00000099] font-medium flex justify-end">
       $<TooltipNumber number={data.market_price} type="balance" />
     </div>
   </td>

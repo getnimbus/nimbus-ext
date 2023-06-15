@@ -56,7 +56,7 @@
   </td>
 
   <td class="py-4">
-    <div class="text-right text-sm text-[#00000099] font-medium">
+    <div class="text-left text-sm text-[#00000099] font-medium">
       {data.isActive ? "In range" : "No"}
     </div>
   </td>
@@ -135,71 +135,64 @@
   </td>
 
   <td class="py-4">
-    <div class="text-sm font-medium">
-      <div class="flex flex-col">
+    <div class="text-sm font-medium flex flex-col">
+      <div
+        class={`flex justify-end ${
+          data?.ipLoss?.loss >= 0 ? "text-red-500" : "text-[#00A878]"
+        }`}
+      >
+        $<TooltipNumber number={Math.abs(data?.ipLoss?.loss)} type="balance" />
+      </div>
+      <div class="flex items-center justify-end gap-1">
         <div
-          class={`flex justify-end ${
+          class={`flex items-center ${
             data?.ipLoss?.loss >= 0 ? "text-red-500" : "text-[#00A878]"
-          }`}
+          } text-right`}
         >
-          $<TooltipNumber
-            number={Math.abs(data?.ipLoss?.loss)}
-            type="balance"
+          <TooltipNumber
+            number={Math.abs(data?.ipLoss?.lossPercent)}
+            type="percent"
           />
+          <span>%</span>
         </div>
-        <div class="flex items-center justify-end gap-1">
-          <div
-            class={`flex items-center ${
-              data?.ipLoss?.loss >= 0 ? "text-red-500" : "text-[#00A878]"
-            } text-right`}
-          >
-            <TooltipNumber
-              number={Math.abs(data?.ipLoss?.lossPercent)}
-              type="percent"
-            />
-            <span>%</span>
-          </div>
-          <img
-            src={data?.ipLoss?.loss >= 0 ? TrendDown : TrendUp}
-            alt="trend"
-            class="mb-1"
-          />
-        </div>
+        <img
+          src={data?.ipLoss?.loss >= 0 ? TrendDown : TrendUp}
+          alt="trend"
+          class="mb-1"
+        />
       </div>
     </div>
   </td>
 
   <td class="pr-3 py-4">
-    <div class="text-sm font-medium">
-      <div class="flex flex-col">
-        <div
-          class={`flex justify-end ${
-            profit >= 0 ? "text-[#00A878]" : "text-red-500"
-          }`}
-        >
-          $<TooltipNumber number={Math.abs(profit)} type="balance" />
-        </div>
-        {#if value > 0}
-          <div class="flex items-center justify-end gap-1">
-            <div
-              class={`flex items-center ${
-                profit >= 0 ? "text-[#00A878]" : "text-red-500"
-              } text-right`}
-            >
-              <TooltipNumber
-                number={Math.abs(profitPercent) * 100}
-                type="percent"
-              />
-              <span>%</span>
-            </div>
-            <img
-              src={profit >= 0 ? TrendUp : TrendDown}
-              alt="trend"
-              class="mb-1"
-            />
-          </div>
-        {/if}
+    <div class="text-sm font-medium flex flex-col">
+      <div
+        class={`flex justify-end ${
+          profit >= 0 ? "text-[#00A878]" : "text-red-500"
+        }`}
+      >
+        $<TooltipNumber number={Math.abs(profit)} type="balance" />
       </div>
+      {#if value > 0}
+        <div class="flex items-center justify-end gap-1">
+          <div
+            class={`flex items-center ${
+              profit >= 0 ? "text-[#00A878]" : "text-red-500"
+            } text-right`}
+          >
+            <TooltipNumber
+              number={Math.abs(profitPercent) * 100}
+              type="percent"
+            />
+            <span>%</span>
+          </div>
+          <img
+            src={profit >= 0 ? TrendUp : TrendDown}
+            alt="trend"
+            class="mb-1"
+          />
+        </div>
+      {/if}
     </div>
   </td>
 </tr>
