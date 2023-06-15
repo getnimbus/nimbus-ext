@@ -678,7 +678,9 @@
                       </tr>
                     {:else}
                       {#each positionDetail?.changes || [] as change}
-                        <tr class="hover:bg-gray-100 transition-all">
+                        <tr
+                          class="hover:bg-gray-100 transition-all border-b-[0.5px] last:border-none"
+                        >
                           <td class="pl-3 py-4">
                             <div class="w-max">
                               <a

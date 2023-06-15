@@ -14,6 +14,7 @@
   import Button from "~/components/Button.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import AddressManagement from "~/components/AddressManagement.svelte";
+  import CopyToClipboard from "../CopyToClipboard.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -136,87 +137,67 @@
                   </tr>
                 {:else}
                   {#each data || [] as item}
-                    <tr class="hover:bg-gray-100 transition-all">
+                    <tr
+                      class="hover:bg-gray-100 transition-all border-b-[0.5px] last:border-none"
+                    >
                       <td class="pl-3 py-4">
-                        <div class="w-max">
-                          <a
-                            href={`${
-                              item?.chain === "ETH"
-                                ? `https://etherscan.io/tx/${item?.transaction_hash}`
-                                : `https://www.oklink.com/btc/tx/${item?.transaction_hash}`
-                            }`}
-                            class="hover:text-blue-500 cursor-pointer"
-                            target="_blank"
-                          >
-                            <div class="text-left flex items-start gap-2">
-                              <div class="flex flex-col">
-                                <div
-                                  class="text-sm"
-                                  use:tooltip={{
-                                    content: `<tooltip-detail text="${item?.transaction_hash}" />`,
-                                    allowHTML: true,
-                                    placement: "top-start",
-                                  }}
-                                >
-                                  {shorterAddress(item?.transaction_hash)}
-                                </div>
-                                <div class="text-gray-400 text-xs">
-                                  {dayjs(
-                                    new Date(item?.detail.timestamp)
-                                  ).format("DD MMM YYYY, hh:mm A")}
-                                </div>
-                              </div>
+                        <div class="text-left flex items-start gap-2 w-max">
+                          <div class="flex flex-col">
+                            <div class="text-sm">
+                              <CopyToClipboard
+                                address={item?.transaction_hash}
+                                textTooltip="Copy transaction to clipboard"
+                                iconColor="#000"
+                                isShorten={true}
+                                isLink={true}
+                                link={`${
+                                  item?.chain === "ETH"
+                                    ? `https://etherscan.io/tx/${item?.transaction_hash}`
+                                    : `https://www.oklink.com/btc/tx/${item?.transaction_hash}`
+                                }`}
+                              />
                             </div>
-                          </a>
+                            <div class="text-gray-400 text-xs">
+                              {dayjs(new Date(item?.detail.timestamp)).format(
+                                "DD MMM YYYY, hh:mm A"
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </td>
 
                       <td class="py-4">
                         {#if item?.detail?.from}
-                          <div
-                            class="text-sm w-max"
-                            use:tooltip={{
-                              content: `<tooltip-detail text="${item?.detail?.from}" />`,
-                              allowHTML: true,
-                              placement: "top-start",
-                            }}
-                          >
-                            <a
-                              href={`${
+                          <div class="w-max text-sm">
+                            <CopyToClipboard
+                              address={item?.detail?.from}
+                              iconColor="#000"
+                              isShorten={true}
+                              isLink={true}
+                              link={`${
                                 item?.chain === "ETH"
                                   ? `https://etherscan.io/address/${item?.detail?.from}`
                                   : `https://www.oklink.com/btc/address/${item?.detail?.from}`
                               }`}
-                              class="hover:text-blue-500 cursor-pointer"
-                              target="_blank"
-                            >
-                              {shorterAddress(item?.detail?.from)}
-                            </a>
+                            />
                           </div>
                         {/if}
                       </td>
 
                       <td class="py-4">
                         {#if item?.detail?.to}
-                          <div
-                            class="text-sm w-max"
-                            use:tooltip={{
-                              content: `<tooltip-detail text="${item?.detail?.to}" />`,
-                              allowHTML: true,
-                              placement: "top-start",
-                            }}
-                          >
-                            <a
-                              href={`${
+                          <div class="w-max text-sm">
+                            <CopyToClipboard
+                              address={item?.detail?.to}
+                              iconColor="#000"
+                              isShorten={true}
+                              isLink={true}
+                              link={`${
                                 item?.chain === "ETH"
                                   ? `https://etherscan.io/address/${item?.detail?.to}`
                                   : `https://www.oklink.com/btc/address/${item?.detail?.to}`
                               }`}
-                              class="hover:text-blue-500 cursor-pointer"
-                              target="_blank"
-                            >
-                              {shorterAddress(item?.detail?.to)}
-                            </a>
+                            />
                           </div>
                         {/if}
                       </td>

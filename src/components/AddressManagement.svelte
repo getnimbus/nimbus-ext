@@ -10,7 +10,6 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { chainList, getAddressContext } from "~/utils";
-  import { isEmpty } from "lodash";
 
   export let type: "portfolio" | "transactions" = "portfolio";
   export let title;
