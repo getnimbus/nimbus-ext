@@ -702,7 +702,7 @@
                                     </div>
                                     <div class="text-gray-400 text-xs">
                                       {dayjs(new Date(change.timestamp)).format(
-                                        "DD MMM YYYY, hh:mm A"
+                                        "DD/MM/YYYY, hh:mm A"
                                       )}
                                     </div>
                                   </div>
