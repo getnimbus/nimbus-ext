@@ -49,13 +49,13 @@
     <div class="flex flex-col pb-10">
       <Header />
 
+      <Route path="news">
+        <News />
+      </Route>
+
       <Route path="market">
         <Market />
       </Route>
-
-      <!-- <Route path="news">
-        <News />
-      </Route> -->
 
       <Route path="position-detail">
         <PositionDetail />

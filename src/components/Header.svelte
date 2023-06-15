@@ -315,7 +315,7 @@
         </div>
       </Link>
 
-      <!-- <Link to="news">
+      <Link to="news">
         <div
           class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
           class:bg-[#525B8C]={navActive === "news"}
@@ -326,7 +326,7 @@
             {MultipleLang.news}
           </span>
         </div>
-      </Link> -->
+      </Link>
 
       <div class="relative">
         <div
