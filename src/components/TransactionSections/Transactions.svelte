@@ -258,9 +258,7 @@
                                     number={Math.abs(change?.total)}
                                     type="amount"
                                   />
-                                  {change?.price?.symbol
-                                    ? change?.price?.symbol
-                                    : "⎯"}
+                                  {change?.symbol ? change?.symbol : "⎯"}
                                 </span>
                                 <span class="flex">
                                   ($<TooltipNumber
