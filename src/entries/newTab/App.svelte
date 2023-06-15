@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { wallet } from "~/store";
+  import { isEmpty } from "lodash";
   import { Router, Route, createHistory } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
   import createHashSource from "./hashHistory";
@@ -15,6 +18,22 @@
   // TODO: Add Lazyload for each routes
 
   const hash = createHistory(createHashSource());
+
+  const formatSelectedWallet = async () => {
+    const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
+
+    if (
+      selectedWalletRes.selectedWallet !== 0 &&
+      !isEmpty(JSON.parse(selectedWalletRes.selectedWallet))
+    ) {
+      const selectedWalletObject = JSON.parse(selectedWalletRes.selectedWallet);
+      wallet.update((n) => (n = selectedWalletObject.value));
+    }
+  };
+
+  onMount(() => {
+    formatSelectedWallet();
+  });
 
   $: {
     browser.storage.onChanged.addListener((changes) => {

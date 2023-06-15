@@ -119,25 +119,17 @@
         "selectedWallet"
       );
 
-      if (
-        selectedWalletRes &&
-        !isEmpty(JSON.parse(selectedWalletRes.selectedWallet))
-      ) {
-        wallet.update(
-          (n) => (n = JSON.parse(selectedWalletRes.selectedWallet.value))
-        );
-      }
+      if (selectedWalletRes) {
+        if (selectedWalletRes.selectedWallet.length !== 0) {
+          wallet.update((n) => (n = selectedWalletRes.selectedWallet));
+        }
 
-      if (selectedWalletRes && selectedWalletRes.selectedWallet.length !== 0) {
-        wallet.update((n) => (n = selectedWalletRes.selectedWallet));
-      }
-
-      if (
-        selectedWalletRes &&
-        selectedWalletRes.selectedWallet.length === 0 &&
-        listAddress.length
-      ) {
-        wallet.update((n) => (n = listAddress[0].value));
+        if (
+          selectedWalletRes.selectedWallet.length === 0 &&
+          listAddress.length !== 0
+        ) {
+          wallet.update((n) => (n = listAddress[0].value));
+        }
       }
 
       const urlParams = new URLSearchParams(window.location.search);
