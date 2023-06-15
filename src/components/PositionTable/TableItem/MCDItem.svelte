@@ -38,10 +38,18 @@
     <div class="text-sm text-[#00000099] font-medium flex flex-col items-start">
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
-          <TooltipNumber number={Number(data?.collateralAmount)} />
+          <TooltipNumber
+            number={Number(data?.collateralAmount)}
+            type="amount"
+          />
           {data.token?.symbol ? data.token?.symbol : ""} |
         </div>
-        <TooltipNumber number={data?.collateralAmount * data.market_price} />
+        <div class="flex">
+          $<TooltipNumber
+            number={data?.collateralAmount * data.market_price}
+            type="balance"
+          />
+        </div>
       </div>
     </div>
   </td>
@@ -66,10 +74,12 @@
     <div class="text-sm text-[#00000099] font-medium flex flex-col items-start">
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
-          <TooltipNumber number={Number(data?.debtAmount)} />
+          <TooltipNumber number={Number(data?.debtAmount)} type="amount" />
           DAI |
         </div>
-        <TooltipNumber number={data?.debtAmount * 1} />
+        <div class="flex">
+          $<TooltipNumber number={data?.debtAmount * 1} type="balance" />
+        </div>
       </div>
     </div>
   </td>
@@ -90,10 +100,11 @@
 
   <td class="py-4 pr-3">
     <div class="flex justify-end text-sm text-[#000000] font-medium">
-      <TooltipNumber
+      $<TooltipNumber
         number={Number(
           data?.collateralAmount * data?.market_price - data?.debtAmount * 1
         )}
+        type="balance"
       />
     </div>
   </td>

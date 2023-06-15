@@ -10,9 +10,11 @@
   export let iconColor;
   export let isShorten = false;
   export let color = "#000";
+  export let isLink = false;
+  export let link = "";
+  export let textTooltip = "Copy address to clipboard";
 
   let isCopied = false;
-  let showTooltipCopyAddress = false;
 </script>
 
 <CopyToClipboard
@@ -32,10 +34,34 @@
             content: `<tooltip-detail text="${address}" />`,
             allowHTML: true,
             placement: "top",
-          }}>{shorterAddress(address)}</span
+          }}
         >
+          {#if isLink}
+            <a
+              href={link}
+              target="_blank"
+              class="hover:text-blue-500 cursor-pointer"
+            >
+              {shorterAddress(address)}
+            </a>
+          {:else}
+            <span>{shorterAddress(address)}</span>
+          {/if}
+        </span>
       {:else}
-        {address}
+        <span>
+          {#if isLink}
+            <a
+              href={link}
+              target="_blank"
+              class="hover:text-blue-500 cursor-pointer"
+            >
+              {address}
+            </a>
+          {:else}
+            {address}
+          {/if}
+        </span>
       {/if}
     </div>
     <div class="cursor-pointer" on:click={copy}>
@@ -56,8 +82,11 @@
       {:else}
         <div
           class="relative"
-          on:mouseenter={() => (showTooltipCopyAddress = true)}
-          on:mouseleave={() => (showTooltipCopyAddress = false)}
+          use:tooltip={{
+            content: `<tooltip-detail text="${textTooltip}" />`,
+            allowHTML: true,
+            placement: "top",
+          }}
         >
           <svg
             width={iconSize}
@@ -79,14 +108,6 @@
               stroke-linejoin="round"
             />
           </svg>
-          {#if showTooltipCopyAddress}
-            <div
-              class="absolute -top-7 left-1/2 transform -translate-x-1/2"
-              style="z-index: 2147483648;"
-            >
-              <tooltip-detail text={"Copy address to clipboard"} />
-            </div>
-          {/if}
         </div>
       {/if}
     </div>

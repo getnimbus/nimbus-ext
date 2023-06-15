@@ -19,12 +19,12 @@
     <div class="text-xl font-semibold">{position}</div>
     <div class="flex flex-col gap-1">
       <div class="text-3xl font-semibold flex justify-end">
-        $<TooltipNumber number={sum} />
+        $<TooltipNumber number={sum} type="balance" />
       </div>
       <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
         {MultipleLang.claimable}:
         <span>
-          $<TooltipNumber number={sum_claimable} />
+          $<TooltipNumber number={sum_claimable} type="balance" />
         </span>
       </div>
     </div>
@@ -34,32 +34,37 @@
       <thead>
         <tr class="bg-[#f4f5f880]">
           <th class="pl-3 py-3">
-            <div class="text-sm font-semibold text-black uppercase text-left">
+            <div class="text-xs font-semibold text-black uppercase text-left">
               Pool
             </div>
           </th>
+
           <th class="py-3">
-            <div class="text-right text-sm font-semibold text-black uppercase">
-              Entry ($)
+            <div class="text-right text-xs font-semibold text-black uppercase">
+              Entry
             </div>
           </th>
+
           <!-- <th class="py-3">
-            <div class="text-right text-sm font-semibold text-black uppercase">
+            <div class="text-right text-xs font-semibold text-black uppercase">
               Entry Time
             </div>
           </th> -->
+
           <th class="py-3">
-            <div class="text-right text-sm font-semibold text-black uppercase">
+            <div class="text-right text-xs font-semibold text-black uppercase">
               Claimable (ETH)
             </div>
           </th>
+
           <th class="py-3">
-            <div class="text-sm font-semibold text-black uppercase text-right">
-              Value ($)
+            <div class="text-xs font-semibold text-black uppercase text-right">
+              Value
             </div>
           </th>
+
           <th class="pr-3 py-3">
-            <div class="text-sm font-semibold text-black uppercase text-right">
+            <div class="text-xs font-semibold text-black uppercase text-right">
               Profit & Loss
             </div>
           </th>

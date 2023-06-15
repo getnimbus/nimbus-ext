@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import {
     formatBigBalance,
     checkFormatBalance,
@@ -8,7 +8,7 @@
   import numeral from "numeral";
 
   export let number;
-  export let type = "balance";
+  export let type: "amount" | "balance" | "percent" = "balance";
 
   let numberFormat = 0;
   let numberSize = "";
@@ -37,9 +37,9 @@
       <span>
         {#if type === "amount" && number < 100000}
           <span
-            >{numeral(number).format("0,0.0[000000]") === "NaN"
+            >{numeral(number).format("0,0.00[000000]") === "NaN"
               ? number
-              : numeral(number).format("0,0.0[000000]")}</span
+              : numeral(number).format("0,0.00[000000]")}</span
           >
         {:else}
           <span>{numberFormat}</span><span>{numberSize}</span>
@@ -57,4 +57,5 @@
   </span>
 {/if}
 
-<style></style>
+<style>
+</style>

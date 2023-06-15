@@ -112,7 +112,6 @@
 
   let headerScrollY = false;
   let showTooltipAnalytic = false;
-  let showTooltipTransactions = false;
   let timerDebounce;
   let search = "";
   let isOpenAuthModal = false;
@@ -292,7 +291,7 @@
         }`}
       >
         <div
-          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
           class:bg-[#525B8C]={navActive === "portfolio"}
           on:click={() => (navActive = "portfolio")}
         >
@@ -305,7 +304,7 @@
 
       <Link to="market">
         <div
-          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
           class:bg-[#525B8C]={navActive === "market"}
           on:click={() => (navActive = "market")}
         >
@@ -318,7 +317,7 @@
 
       <!-- <Link to="news">
         <div
-          class="flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
           class:bg-[#525B8C]={navActive === "news"}
           on:click={() => (navActive = "news")}
         >
@@ -331,7 +330,7 @@
 
       <div class="relative">
         <div
-          class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-pointer"
+          class="flex items-center gap-2 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-pointer"
           class:bg-[#525B8C]={navActive === "analytic"}
           on:click={() => {
             // navActive = "analytic";
@@ -354,34 +353,22 @@
         {/if}
       </div>
 
-      <div class="relative">
+      <Link to="transactions">
         <div
-          class="flex items-center xl:gap-3 gap-1 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-pointer"
+          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
           class:bg-[#525B8C]={navActive === "transactions"}
-          on:click={() => {
-            // navActive = "transactions";
-          }}
-          on:mouseenter={() => (showTooltipTransactions = true)}
-          on:mouseleave={() => (showTooltipTransactions = false)}
+          on:click={() => (navActive = "transactions")}
         >
           <img src={TransactionsIcon} alt="" />
-          <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
+          <span class="text-white font-semibold xl:text-base text-sm">
             {MultipleLang.transactions}
           </span>
         </div>
-        {#if showTooltipTransactions}
-          <div
-            class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
-            style="z-index: 2147483648;"
-          >
-            <tooltip-detail text={"Soon"} />
-          </div>
-        {/if}
-      </div>
+      </Link>
 
       {#if APP_TYPE.TYPE === "EXT"}
         <div
-          class={`flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
           on:click={() => {
             browser.tabs.create({
               url: "src/entries/options/index.html?tab=wallets",
@@ -395,7 +382,7 @@
         </div>
       {:else}
         <a
-          class={`flex items-center xl:gap-3 gap-1 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
           href="entries/options/index.html?tab=wallets"
           target="_blank"
         >
@@ -423,13 +410,7 @@
                 "",
                 window.location.pathname + `?address=${search}`
               );
-              wallet.update(
-                (n) =>
-                  (n = {
-                    ...selectedWallet,
-                    value: search,
-                  })
-              );
+              wallet.update((n) => (n = search));
             }
           }}
           value={search}

@@ -34,7 +34,7 @@
 
   <td class="py-4">
     <div class="flex justify-end text-sm text-[#00000099] font-medium">
-      <TooltipNumber number={Math.abs(data.avgCost)} />
+      $<TooltipNumber number={Math.abs(data.avgCost)} type="balance" />
     </div>
   </td>
 
@@ -46,13 +46,13 @@
 
   <td class="py-4">
     <div class="flex justify-end text-sm text-[#00000099] font-medium">
-      <TooltipNumber number={data.claimable} />
+      <TooltipNumber number={data.claimable} type="amount" />
     </div>
   </td>
 
   <td class="py-4">
     <div class="flex justify-end text-sm text-[#00000099] font-medium">
-      <TooltipNumber number={value} />
+      $<TooltipNumber number={value} type="balance" />
     </div>
   </td>
 
@@ -64,7 +64,7 @@
             profit >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          <TooltipNumber number={Math.abs(profit)} />
+          $<TooltipNumber number={Math.abs(profit)} type="balance" />
         </div>
         <div class="flex items-center justify-end gap-1">
           <div

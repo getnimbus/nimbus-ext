@@ -59,12 +59,6 @@
       countUp.update(Number(numberToCount));
     }
   }
-
-  $: {
-    if (number === 0 && countUp) {
-      countUp.reset();
-    }
-  }
 </script>
 
 <span class="relative">

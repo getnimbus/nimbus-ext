@@ -21,13 +21,13 @@
     <div class="text-xl font-semibold">{position}</div>
     <div class="flex flex-col gap-1">
       <div class="text-3xl font-semibold flex justify-end">
-        $<TooltipNumber number={sum} />
+        $<TooltipNumber number={sum} type="balance" />
       </div>
       {#if sum_claimable !== 0}
         <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
           {MultipleLang.claimable}:
           <span>
-            $<TooltipNumber number={sum_claimable} />
+            $<TooltipNumber number={sum_claimable} type="balance" />
           </span>
         </div>
       {/if}
@@ -38,28 +38,32 @@
       <thead>
         <tr class="bg-[#f4f5f880]">
           <th class="pl-3 py-3">
-            <div class="text-sm font-semibold text-black uppercase text-left">
+            <div class="text-xs font-semibold text-black uppercase text-left">
               Supply
             </div>
           </th>
+
           <th class="py-3">
-            <div class="text-left text-sm font-semibold text-black uppercase">
-              Supply Balance ($)
+            <div class="text-left text-xs font-semibold text-black uppercase">
+              Supply Balance
             </div>
           </th>
+
           <th class="py-3">
-            <div class="text-sm font-semibold text-black uppercase text-left">
+            <div class="text-xs font-semibold text-black uppercase text-left">
               Borrow
             </div>
           </th>
+
           <th class="py-3">
-            <div class="text-left text-sm font-semibold text-black uppercase">
-              Borrow Balance ($)
+            <div class="text-left text-xs font-semibold text-black uppercase">
+              Borrow Balance
             </div>
           </th>
+
           <th class="py-3">
             <div
-              class="text-left flex items-center gap-1 text-sm font-semibold text-black uppercase"
+              class="text-left flex items-center gap-1 text-xs font-semibold text-black uppercase"
             >
               Health
               <span
@@ -104,9 +108,10 @@
               </span>
             </div>
           </th>
+
           <th class="pr-3 py-3">
-            <div class="text-sm font-semibold text-black uppercase text-right">
-              Value ($)
+            <div class="text-xs font-semibold text-black uppercase text-right">
+              Value
             </div>
           </th>
         </tr>

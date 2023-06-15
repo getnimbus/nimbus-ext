@@ -359,7 +359,7 @@
 
   $: {
     if (listAddress.length === 0) {
-      wallet.update((n) => (n = {}));
+      wallet.update((n) => (n = ""));
     }
   }
 </script>

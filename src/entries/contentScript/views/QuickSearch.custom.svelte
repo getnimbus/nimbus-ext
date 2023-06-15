@@ -3,7 +3,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { fly } from "svelte/transition";
-  import { escapeRegex, getLocalImg, add3Dots, flattenArray } from "~/utils";
+  import { escapeRegex, getLocalImg, flattenArray } from "~/utils";
   import UrlPattern from "url-pattern";
   import { sendMessage } from "webext-bridge";
   import * as browser from "webextension-polyfill";
@@ -13,7 +13,7 @@
   import System from "svelte-system-info";
   import { i18n } from "~/lib/i18n";
   import { track } from "~/lib/data-tracking";
-  import { shorterAddress, ETHAddressRegex, ETHTrxRegex } from "~/utils";
+  import { shorterAddress } from "~/utils";
 
   import "./AddressInfo.custom.svelte";
   import "./TrxInfo.custom.svelte";
@@ -203,14 +203,14 @@
         type: "address",
         keyword,
         regex: {
-          eth: ETHAddressRegex,
+          eth: /^0x([a-fA-F0-9]{40})$/,
         },
       },
       {
         type: "tx",
         keyword,
         regex: {
-          eth: ETHTrxRegex,
+          eth: /^0x([A-Fa-f0-9]{64})$/,
         },
       },
     ];

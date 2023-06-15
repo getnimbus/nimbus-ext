@@ -105,7 +105,7 @@
           >
             <div class="text-white flex items-center gap-1">
               <img src={LeftArrow} alt="" />
-              <div>Back to Portfolio</div>
+              <div class="text-sm font-semibold">Back to Portfolio</div>
             </div>
           </Link>
         </div>
@@ -118,11 +118,12 @@
           <OverviewCard title={"Position Value"}>
             <div class="text-3xl text-black flex">
               {#if data?.current_value.toString().toLowerCase().includes("e-")}
-                $<TooltipNumber number={data?.current_value} />
+                $<TooltipNumber number={data?.current_value} type="balance" />
               {:else}
                 $<CountUpNumber
                   id="PositionValueHolding"
                   number={data?.current_value}
+                  type="balance"
                 />
               {/if}
             </div>
@@ -140,6 +141,7 @@
               $<CountUpNumber
                 id="Profit&Loss"
                 number={Math.abs(profitAndLoss)}
+                type="balance"
               />
             </div>
             <div
@@ -176,11 +178,15 @@
                 .toString()
                 .toLowerCase()
                 .includes("e-")}
-                $<TooltipNumber number={data?.overview?.avgCost} />
+                $<TooltipNumber
+                  number={data?.overview?.avgCost}
+                  type="balance"
+                />
               {:else}
                 $<CountUpNumber
                   id="AverageCost"
                   number={data?.overview?.avgCost}
+                  type="balance"
                 />
               {/if}
             </div>
@@ -200,6 +206,7 @@
                 id="24-hourReturnPercent"
                 number={(data?.floorPriceBTC || 0) *
                   (marketPriceNFT?.market_price || 0)}
+                type="balance"
               />
             </div>
           </OverviewCard>
@@ -234,7 +241,7 @@
               {#each tokens as item}
                 <NftCard
                   data={item}
-                  marketPrice={marketPriceNFT.market_price}
+                  marketPrice={marketPriceNFT?.market_price || 0}
                 />
               {/each}
             </div>

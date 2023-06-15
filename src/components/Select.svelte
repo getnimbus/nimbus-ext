@@ -9,6 +9,12 @@
   export let isOptionsPage = false;
 
   let open = false;
+
+  $: {
+    if (listSelect && !isSelectWallet) {
+      selected = listSelect[0];
+    }
+  }
 </script>
 
 <div class="wrapper">
@@ -26,7 +32,7 @@
     <div class="label_container">
       {#if !isSelectWallet}
         <img
-          src={selected.value === "all" ? All : selected.logo}
+          src={selected.value === "ALL" ? All : selected.logo}
           alt="logo"
           width="18"
           height="18"
@@ -53,35 +59,39 @@
           id={item.value}
           on:click={() => {
             if (
-              item.value !== "all" &&
-              item.value !== "eth" &&
+              item.value !== "ALL" &&
+              item.value !== "ETH" &&
+              item.value !== "BTC" &&
               !isOptionsPage
             ) {
               open = false;
               return;
             }
             if (isSelectWallet) {
-              wallet.update((n) => (n = item));
+              wallet.update((n) => (n = item.value));
             }
             selected = item;
             open = false;
           }}
         >
           <img
-            src={item.value === "all" ? All : item.logo}
+            src={item.value === "ALL" ? All : item.logo}
             alt="logo"
             width="18"
             height="18"
           />
           <div
             class={`name ${
-              item.value !== "all" && item.value !== "eth" && !isOptionsPage
+              item.value !== "ALL" &&
+              item.value !== "ETH" &&
+              item.value !== "BTC" &&
+              !isOptionsPage
                 ? "text-[#00000066]"
                 : "text-[#000000b3]"
             }`}
           >
             {item.label}
-            {#if item.value !== "all" && item.value !== "eth" && !isOptionsPage}
+            {#if item.value !== "ALL" && item.value !== "ETH" && item.value !== "BTC" && !isOptionsPage}
               (Soon)
             {/if}
           </div>

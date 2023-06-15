@@ -9,6 +9,7 @@ import Bitcoin from "~/assets/bitcoin.png";
 import Polygon from "~/assets/polygon.png";
 import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
+import Gnosis from "~/assets/gnosis.png";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
@@ -71,37 +72,42 @@ export const chainList = [
   {
     logo: logo,
     label: "All chains",
-    value: "all",
+    value: "ALL",
   },
   {
     logo: Ethereum,
     label: "Ethereum",
-    value: "eth",
+    value: "ETH",
   },
   {
     logo: Bitcoin,
     label: "Bitcoin",
-    value: "btc",
+    value: "BTC",
+  },
+  {
+    logo: Gnosis,
+    label: "Gnosis",
+    value: "GNOSIS",
   },
   {
     logo: Bnb,
     label: "BNB",
-    value: "bnb",
+    value: "BNB",
   },
   {
     logo: Polygon,
     label: "Polygon",
-    value: "polygon",
+    value: "POLYGON",
   },
   {
     logo: Solana,
     label: "Solana",
-    value: "solana",
+    value: "SOLANA",
   },
   {
     logo: Arbitrum,
     label: "Arbitrum",
-    value: "arbitrum",
+    value: "ARBITRUM",
   },
 ];
 
@@ -181,7 +187,7 @@ export const formatCurrency = (input: number) => {
 export const formatCurrencyV2 = (input: number) => {
   return numeral(input).format("0,0.00") === "NaN"
     ? formatLongNumber(input)
-    : numeral(input).format("0,0.0[00]");
+    : numeral(input).format("0,0.00");
 };
 
 export const formatBalance = (input: number) => {
