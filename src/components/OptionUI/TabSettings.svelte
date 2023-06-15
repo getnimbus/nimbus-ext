@@ -1,6 +1,7 @@
 <svelte:options tag="tab-settings" />
 
 <script lang="ts">
+  import { onMount } from "svelte";
   import { setLang, currentLang, i18n } from "~/lib/i18n";
 
   import Select from "~/components/Select.svelte";
@@ -21,7 +22,11 @@
     ),
   };
 
-  let selectedLang: any = langs.filter((item) => item.value === currentLang)[0];
+  let selectedLang;
+
+  onMount(() => {
+    selectedLang = langs.filter((item) => item.value === currentLang)[0];
+  });
 
   $: {
     if (selectedLang && selectedLang.value !== currentLang) {
