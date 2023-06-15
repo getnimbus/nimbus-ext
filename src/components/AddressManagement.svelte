@@ -149,6 +149,11 @@
 
   onMount(() => {
     getListAddress();
+    const urlParams = new URLSearchParams(window.location.search);
+    const addressParams = urlParams.get("address");
+    if (addressParams) {
+      wallet.update((n) => (n = addressParams));
+    }
   });
 
   const isRequiredFieldValid = (value) => {
