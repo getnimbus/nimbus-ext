@@ -40,7 +40,6 @@
     transactions: i18n("newtabPage.transactions", "Transactions"),
     news: i18n("newtabPage.news", "News"),
     market: i18n("newtabPage.market", "Market"),
-    settings: i18n("newtabPage.settings", "Settings"),
     overview: i18n("newtabPage.overview", "Overview"),
     empty_wallet: i18n("newtabPage.empty-wallet", "No wallet added yet."),
     Balance: i18n("newtabPage.Balance", "Balance"),
@@ -365,33 +364,6 @@
           </span>
         </div>
       </Link>
-
-      {#if APP_TYPE.TYPE === "EXT"}
-        <div
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
-          on:click={() => {
-            browser.tabs.create({
-              url: "src/entries/options/index.html?tab=wallets",
-            });
-          }}
-        >
-          <img src={SettingsIcon} alt="" />
-          <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.settings}
-          </span>
-        </div>
-      {:else}
-        <a
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
-          href="entries/options/index.html?tab=wallets"
-          target="_blank"
-        >
-          <img src={SettingsIcon} alt="" />
-          <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.settings}
-          </span>
-        </a>
-      {/if}
     </div>
     <div class="flex justify-between items-center xl:gap-3 gap-2">
       <div
@@ -419,8 +391,28 @@
           class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
         />
       </div>
+      {#if APP_TYPE.TYPE === "EXT"}
+        <div
+          on:click={() => {
+            browser.tabs.create({
+              url: "src/entries/options/index.html?tab=wallets",
+            });
+          }}
+          class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
+        >
+          <img src={SettingsIcon} alt="" />
+        </div>
+      {:else}
+        <a
+          href="entries/options/index.html?tab=wallets"
+          target="_blank"
+          class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
+        >
+          <img src={SettingsIcon} alt="" />
+        </a>
+      {/if}
       <!-- <div
-        class="bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
+        class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
       >
         <img src={Bell} alt="" />
       </div> -->
