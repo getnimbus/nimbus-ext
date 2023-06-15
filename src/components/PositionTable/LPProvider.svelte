@@ -66,7 +66,11 @@
 
           <th class="py-3">
             <div class="text-xs font-semibold text-black uppercase text-right">
-              Impermannet Loss
+              <TooltipTitle
+                tooltipText="More info"
+                link="https://academy.binance.com/articles/impermanent-loss-explained"
+                >Impermannet Loss</TooltipTitle
+              >
             </div>
           </th>
 

@@ -19,12 +19,6 @@
     numberFormat = number_format;
     numberSize = number_size;
   }
-
-  $: console.log({
-    number,
-    type,
-    numberFormat,
-  });
 </script>
 
 {#if type === "percent"}

@@ -4,6 +4,7 @@
   import information from "~/assets/information.png";
 
   export let tooltipText;
+  export let link = "";
 </script>
 
 <span class="flex justify-end items-center gap-1">
@@ -13,9 +14,10 @@
     alt=""
     class="w-3 h-3 cursor-pointer"
     use:tooltip={{
-      content: `<tooltip-detail text="${tooltipText}" />`,
+      content: `<tooltip-detail text="${tooltipText}"  link="${link}"/>`,
       allowHTML: true,
       placement: "top",
+      interactive: true,
     }}
   />
 </span>
