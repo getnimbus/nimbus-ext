@@ -2,8 +2,6 @@
 import App from "./App.svelte";
 // import * as bg from "../background/main";
 import * as browser from "webextension-polyfill";
-import { isEmpty } from 'lodash';
-import { wallet } from "~/store";
 
 browser.storage.sync.get("options").then(async (res) => {
   const defaultnewtab = await browser.storage.sync.get('defaultnewtab');
@@ -17,18 +15,6 @@ browser.storage.sync.get("options").then(async (res) => {
   }
 
   window.document.title = 'Your personalize Web3 portfolio'
-
-  const selectedWalletRes = await browser.storage.sync.get(
-    "selectedWallet"
-  );
-  if (
-    selectedWalletRes &&
-    !isEmpty(JSON.parse(selectedWalletRes.selectedWallet))
-  ) {
-    wallet.update(
-      (n) => (n = JSON.parse(selectedWalletRes.selectedWallet.value))
-    );
-  }
 
   new App({
     target: document.getElementById("app"),

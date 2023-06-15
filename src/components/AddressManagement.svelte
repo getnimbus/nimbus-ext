@@ -10,6 +10,7 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { chainList, getAddressContext } from "~/utils";
+  import { isEmpty } from "lodash";
 
   export let type: "portfolio" | "transactions" = "portfolio";
   export let title;
@@ -117,6 +118,15 @@
       const selectedWalletRes = await browser.storage.sync.get(
         "selectedWallet"
       );
+
+      if (
+        selectedWalletRes &&
+        !isEmpty(JSON.parse(selectedWalletRes.selectedWallet))
+      ) {
+        wallet.update(
+          (n) => (n = JSON.parse(selectedWalletRes.selectedWallet.value))
+        );
+      }
 
       if (selectedWalletRes && selectedWalletRes.selectedWallet.length !== 0) {
         wallet.update((n) => (n = selectedWalletRes.selectedWallet));
