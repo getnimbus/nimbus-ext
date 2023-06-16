@@ -3,11 +3,6 @@
 <script>
   export let text;
   export let link = "";
-
-  $: console.log({
-    link,
-    text,
-  });
 </script>
 
 <div
