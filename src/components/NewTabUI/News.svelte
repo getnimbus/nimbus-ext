@@ -6,9 +6,7 @@
   import ErrorBoundary from "../ErrorBoundary.svelte";
   import { nimbus } from "~/lib/network";
   import { onMount } from "svelte";
-  import ResetStyle from "../ResetStyle.custom.svelte";
   import Button from "~/components/Button.svelte";
-  import { prevent_default } from "svelte/internal";
 
   const MultipleLang = {
     news: i18n("newtabPage.news", "News"),
@@ -29,18 +27,18 @@
         .get(`/news?page=${pageValue}`)
         .then((response) => response.data);
       newsData = [...newsData, ...res.news];
-      console.log(newsData);
     } catch (e) {
       console.log("error: ", e);
     } finally {
       isLoading = false;
     }
   };
-
   onMount(() => {
     getNews();
   });
-  const handleLoadMore = () => {
+
+  const handleLoadMore = (e) => {
+    e.preventDefault();
     pageValue = pageValue + 1;
     getNews();
   };
@@ -56,24 +54,24 @@
       <hr class="m-5 pt-5" />
       <div>
         {#if isLoading}
-          <tr>
-            <td colspan="6">
-              <div class="flex justify-center items-center py-4 px-3">
-                <loading-icon />
-              </div>
-            </td>
-          </tr>
-        {:else if newsData.length == 0}
+          {#if (newsData.length === 0)}
+            <div class="flex justify-center items-center py-4 px-3">
+              <loading-icon />
+            </div>
+          {:else}
+            <NewsCard data={newsData} />
+            <div class="flex justify-center items-center py-4 px-3">
+              <loading-icon />
+            </div>
+          {/if}
+        {:else if newsData.length === 0}
           Empty
         {:else}
           <NewsCard data={newsData} />
           <div class="lmbtnlayout m-10">
             <Button
               variant="secondary"
-              on:click={(e) => {
-                e.preventDefault;
-                return handleLoadMore();
-              }}
+              on:click={(e) => handleLoadMore(e)}
               disabled={isLoading}
               {isLoading}>Load more</Button
             >

@@ -1,14 +1,20 @@
 <script>
   import { add3Dots } from "~/utils";
   export let data;
+  import imgDefault from "../assets/img.png";
+  const handleImgError = (e) => {
+    e.target.src = imgDefault;
+    e.onerror = null;
+  };
 </script>
 
 <div class="flex flex-row w-full flex-wrap">
   {#each data as data}
-    <div class="flex gap-6 pt-6 w-4/9">
-      <div class="w-[250px] h-[160px] overflow-hidden rounded-[10px] flex-wrap">
+    <div class="flex gap-6 pt-6 w-1/3">
+      <div class="img w-[250px] h-[160px] overflow-hidden rounded-[10px] flex-wrap">
         <img
-          class="w-full h-full object-cover"
+          on:error={(e) => handleImgError(e)}
+          class=" w-full h-full object-cover"
           src={data.imgURL}
           alt={data.title}
         />
@@ -56,4 +62,8 @@
 </div>
 
 <style>
+  .img{
+    width: 250px !important;
+    height: 160px !important;
+  }
 </style>
