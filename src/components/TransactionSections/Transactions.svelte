@@ -6,11 +6,9 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { shorterAddress } from "~/utils";
 
   import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
 
-  import tooltip from "~/entries/contentScript/views/tooltip";
   import Button from "~/components/Button.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import AddressManagement from "~/components/AddressManagement.svelte";
