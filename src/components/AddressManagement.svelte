@@ -307,36 +307,6 @@
   });
 
   $: {
-    if (selectedWallet) {
-      switch (getAddressContext(selectedWallet)?.type) {
-        case "EVM":
-          formatChainList = chainList.filter(
-            (item) =>
-              item.value === "ALL" ||
-              item.value === "ETH" ||
-              item.value === "GNOSIS" ||
-              item.value === "BNB" ||
-              item.value === "POLYGON" ||
-              item.value === "SOLANA" ||
-              item.value === "ARBITRUM"
-          );
-          if (selectedChain === "BTC") {
-            chain.update((n) => (n = "ALL"));
-          }
-          break;
-        case "BTC":
-          formatChainList = chainList.filter((item) => item.value === "BTC");
-          if (selectedChain !== "BTC") {
-            chain.update((n) => (n = "BTC"));
-          }
-          break;
-        default:
-          formatChainList = chainList;
-      }
-    }
-  }
-
-  $: {
     if (selectedWallet || selectedChain) {
       browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
         console.log("save selected address to sync storage");
@@ -350,6 +320,26 @@
         window.location.pathname +
           `?chain=${selectedChain}&address=${selectedWallet}`
       );
+    }
+  }
+
+  $: {
+    if (selectedWallet) {
+      if (getAddressContext(selectedWallet)?.type === "EVM") {
+        formatChainList = chainList.filter(
+          (item) =>
+            item.value === "ALL" ||
+            item.value === "ETH" ||
+            item.value === "GNOSIS" ||
+            item.value === "BNB" ||
+            item.value === "POLYGON" ||
+            item.value === "SOLANA" ||
+            item.value === "ARBITRUM"
+        );
+      }
+      if (getAddressContext(selectedWallet)?.type === " BTC") {
+        formatChainList = chainList.filter((item) => item.value === "BTC");
+      }
     }
   }
 </script>
