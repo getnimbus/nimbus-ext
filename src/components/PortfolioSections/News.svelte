@@ -5,7 +5,7 @@
   export let data;
   export let isLoading;
 
-  import NewCard from "../NewCard.svelte";
+  import NewsCard from "../NewsCard.svelte";
   import ErrorBoundary from "../ErrorBoundary.svelte";
 
   const MultipleLang = {
@@ -35,7 +35,7 @@
         {#if data && data.length !== 0}
           <div class="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-10">
             {#each data as news}
-              <NewCard data={news} />
+              <NewsCard data={news} />
             {/each}
           </div>
         {:else}
