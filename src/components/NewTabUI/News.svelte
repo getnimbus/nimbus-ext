@@ -1,11 +1,11 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
+  import { nimbus } from "~/lib/network";
 
   import NewsCard from "~/components/NewsCard.svelte";
   import "~/components/Loading.custom.svelte";
-  import ErrorBoundary from "../ErrorBoundary.svelte";
-  import { nimbus } from "~/lib/network";
-  import { onMount } from "svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
 
   const MultipleLang = {
@@ -33,15 +33,10 @@
       isLoading = false;
     }
   };
+
   onMount(() => {
     getNews();
   });
-
-  const handleLoadMore = (e) => {
-    e.preventDefault();
-    pageValue = pageValue + 1;
-    getNews();
-  };
 </script>
 
 <ErrorBoundary>
@@ -51,41 +46,47 @@
       <div class="text-lg text-black font-medium">
         {MultipleLang.news_page_title}
       </div>
-      <hr class="m-5 pt-5" />
-      <div>
-        {#if isLoading}
-          {#if (newsData.length === 0)}
-            <div class="flex justify-center items-center py-4 px-3">
-              <loading-icon />
-            </div>
+    </div>
+    <div class="flex flex-col gap-4">
+      {#if isLoading && pageValue === 1}
+        <div class="w-full h-[120px] flex justify-center items-center">
+          <loading-icon />
+        </div>
+      {:else}
+        <div
+          class={`grid ${
+            newsData && newsData.length === 0
+              ? "grid-cols-1"
+              : "2xl:grid-cols-4 xl:grid-cols-3 grid-cols-2"
+          } gap-10`}
+        >
+          {#if newsData.length === 0}
+            <div class="text-lg text-gray-400">Empty</div>
           {:else}
-            <NewsCard data={newsData} />
-            <div class="flex justify-center items-center py-4 px-3">
-              <loading-icon />
-            </div>
+            {#each newsData as data}
+              <NewsCard {data} />
+            {/each}
           {/if}
-        {:else if newsData.length === 0}
-          Empty
-        {:else}
-          <NewsCard data={newsData} />
-          <div class="lmbtnlayout m-10">
-            <Button
-              variant="secondary"
-              on:click={(e) => handleLoadMore(e)}
-              disabled={isLoading}
-              {isLoading}>Load more</Button
-            >
-          </div>
-        {/if}
-      </div>
+        </div>
+      {/if}
+      {#if newsData.length !== 0}
+        <div class="mx-auto mt-6">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              pageValue = pageValue + 1;
+              getNews();
+            }}
+            disabled={isLoading}
+            {isLoading}
+          >
+            Load more
+          </Button>
+        </div>
+      {/if}
     </div>
   </div>
 </ErrorBoundary>
 
 <style>
-  .lmbtnlayout {
-    justify-content: center;
-    align-items: center;
-    display: flex;
-  }
 </style>
