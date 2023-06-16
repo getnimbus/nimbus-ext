@@ -223,6 +223,17 @@
 
       listAddress = [...listAddress, data];
 
+      if (listAddress.length === 1) {
+        browser.storage.sync.set({ selectedWallet: data.address }).then(() => {
+          console.log("save selected address to sync storage");
+        });
+        if (getAddressContext(data.address)?.type === "EVM") {
+          browser.storage.sync.set({ selectedChain: "ALL" }).then(() => {
+            console.log("save selected address to sync storage");
+          });
+        }
+      }
+
       browser.storage.sync.set({ listAddress: JSON.stringify(listAddress) });
 
       e.target.reset();
@@ -361,8 +372,6 @@
     if (listAddress.length === 0) {
       wallet.update((n) => (n = ""));
       chain.update((n) => (n = ""));
-      browser.storage.sync.set({ selectedWallet: "" });
-      browser.storage.sync.set({ selectedChain: "" });
     }
   }
 </script>

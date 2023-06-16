@@ -16,10 +16,11 @@
   }
 
   $: selectedChain =
-    type === "chain" &&
-    listSelect &&
-    selected &&
-    listSelect.filter((item) => item.value === selected);
+    (type === "chain" &&
+      listSelect &&
+      selected &&
+      listSelect.filter((item) => item.value === selected)) ||
+    [];
 </script>
 
 <div class="wrapper">
@@ -31,14 +32,14 @@
     <div class="label_container">
       {#if type === "chain" || type === "lang"}
         <img
-          src={selected.value === "ALL" || selectedChain[0]?.value === "ALL"
+          src={selected?.value === "ALL" || selectedChain[0]?.value === "ALL"
             ? All
-            : selected.logo || selectedChain[0]?.logo}
+            : selected?.logo || selectedChain[0]?.logo}
           alt="logo"
           width="18"
           height="18"
         />
-        <div class="label">{selected.label || selectedChain[0]?.label}</div>
+        <div class="label">{selected?.label || selectedChain[0]?.label}</div>
       {:else}
         <div class="label">Other ({listSelect.length})</div>
       {/if}
@@ -58,7 +59,7 @@
           class="content_item"
           class:active={type !== "lang"
             ? item.value === selected
-            : item.value === selected.value}
+            : item.value === selected?.value}
           id={item.value}
           on:click={() => {
             if (type === "wallet") {

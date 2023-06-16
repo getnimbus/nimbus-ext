@@ -98,7 +98,6 @@
   let label = "";
   let errors: any = {};
   let isOpenAddModal = false;
-  let formatChainList = [];
 
   const getListAddress = async () => {
     isLoadingFullPage = true;
@@ -119,24 +118,21 @@
       listAddress = listAddress.concat(structWalletData);
 
       const selectedChainRes = await browser.storage.sync.get("selectedChain");
-      if (selectedChainRes) {
-        if (selectedChainRes.selectedChain.length !== 0) {
-          chain.update((n) => (n = selectedChainRes.selectedChain));
-        } else {
-          chain.update((n) => (n = formatChainList[0]?.value));
-        }
+      if (selectedChainRes && selectedChainRes?.selectedChain?.length !== 0) {
+        chain.update((n) => (n = selectedChainRes.selectedChain));
       }
 
       const selectedWalletRes = await browser.storage.sync.get(
         "selectedWallet"
       );
       if (selectedWalletRes) {
-        if (selectedWalletRes.selectedWallet.length !== 0) {
+        if (selectedWalletRes?.selectedWallet?.length !== 0) {
           wallet.update((n) => (n = selectedWalletRes.selectedWallet));
         }
         if (
-          selectedWalletRes.selectedWallet.length === 0 &&
-          listAddress.length !== 0
+          selectedWalletRes?.selectedWallet?.length === 0 &&
+          listAddress.length !== 0 &&
+          listAddress.length === 1
         ) {
           wallet.update((n) => (n = listAddress[0].value));
         }
@@ -158,13 +154,13 @@
     if (chainParams) {
       chain.update((n) => (n = chainParams));
     }
-    if (!chainParams && selectedChain && listAddress.length === 0) {
+    if (!chainParams && listAddress.length === 0) {
       chain.update((n) => (n = ""));
     }
     if (addressParams) {
       wallet.update((n) => (n = addressParams));
     }
-    if (!addressParams && selectedWallet && listAddress.length === 0) {
+    if (!addressParams && listAddress.length === 0) {
       wallet.update((n) => (n = ""));
     }
   };
@@ -245,11 +241,8 @@
 
       if (addWallet.length === 1) {
         wallet.update((n) => (n = listAddress[0].value));
-        if (getAddressContext(selectedWallet)?.type === "EVM") {
+        if (getAddressContext(dataFormat.value)?.type === "EVM") {
           chain.update((n) => (n = "ALL"));
-        }
-        if (getAddressContext(selectedWallet)?.type === "BTC") {
-          chain.update((n) => (n = "BTC"));
         }
       }
 
@@ -307,38 +300,37 @@
   });
 
   $: {
-    if (selectedWallet || selectedChain) {
+    if (selectedWallet) {
+      // console.log({
+      //   listAddress,
+      //   selectedChain,
+      //   selectedWallet,
+      // });
       browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
         console.log("save selected address to sync storage");
       });
       browser.storage.sync.set({ selectedChain: selectedChain }).then(() => {
         console.log("save selected chain to sync storage");
       });
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname +
-          `?chain=${selectedChain}&address=${selectedWallet}`
-      );
-    }
-  }
-
-  $: {
-    if (selectedWallet) {
       if (getAddressContext(selectedWallet)?.type === "EVM") {
-        formatChainList = chainList.filter(
-          (item) =>
-            item.value === "ALL" ||
-            item.value === "ETH" ||
-            item.value === "GNOSIS" ||
-            item.value === "BNB" ||
-            item.value === "POLYGON" ||
-            item.value === "SOLANA" ||
-            item.value === "ARBITRUM"
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?chain=${selectedChain}&address=${selectedWallet}`
         );
       }
-      if (getAddressContext(selectedWallet)?.type === " BTC") {
-        formatChainList = chainList.filter((item) => item.value === "BTC");
+      if (getAddressContext(selectedWallet)?.type === "BTC") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?address=${selectedWallet}`
+        );
+        if (selectedChain) {
+          chain.update((n) => (n = selectedChain));
+        } else {
+          chain.update((n) => (n = "ALL"));
+        }
       }
     }
   }
@@ -541,11 +533,13 @@
                     </div>
                   </div>
                 </div>
-                <Select
-                  type="chain"
-                  listSelect={formatChainList}
-                  bind:selected={selectedChain}
-                />
+                {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+                  <Select
+                    type="chain"
+                    listSelect={chainList}
+                    bind:selected={selectedChain}
+                  />
+                {/if}
               </div>
 
               {#if type === "portfolio"}

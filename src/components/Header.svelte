@@ -4,7 +4,7 @@
   import * as browser from "webextension-polyfill";
   import jwt_decode from "jwt-decode";
   import bs58 from "bs58";
-  import { handleGetAccessToken } from "~/utils";
+  import { getAddressContext, handleGetAccessToken } from "~/utils";
   import { i18n } from "~/lib/i18n";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
@@ -12,7 +12,7 @@
     PhantomWalletAdapter,
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
-  import { user, wallet } from "~/store";
+  import { chain, user, wallet } from "~/store";
 
   import GoogleAuth from "~/components/GoogleAuth.svelte";
   import SolanaAuth from "./SolanaAuth.svelte";
@@ -377,12 +377,24 @@
               search.length !== 0 &&
               (event.which == 13 || event.keyCode == 13)
             ) {
-              window.history.replaceState(
-                null,
-                "",
-                window.location.pathname + `?address=${search}`
-              );
-              wallet.update((n) => (n = search));
+              if (getAddressContext(search)?.type === "EVM") {
+                window.history.replaceState(
+                  null,
+                  "",
+                  window.location.pathname + `?chain=${"ALL"}&address=${search}`
+                );
+                chain.update((n) => (n = "ALL"));
+                wallet.update((n) => (n = search));
+              }
+              if (getAddressContext(selectedWallet)?.type === "BTC") {
+                window.history.replaceState(
+                  null,
+                  "",
+                  window.location.pathname + `?address=${selectedWallet}`
+                );
+                chain.update((n) => (n = "ALL"));
+                wallet.update((n) => (n = search));
+              }
             }
           }}
           value={search}

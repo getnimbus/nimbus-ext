@@ -79,11 +79,11 @@ export const chainList = [
     label: "Ethereum",
     value: "ETH",
   },
-  {
-    logo: Bitcoin,
-    label: "Bitcoin",
-    value: "BTC",
-  },
+  // {
+  //   logo: Bitcoin,
+  //   label: "Bitcoin",
+  //   value: "BTC",
+  // },
   {
     logo: Gnosis,
     label: "Gnosis",
