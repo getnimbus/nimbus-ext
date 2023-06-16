@@ -724,7 +724,7 @@
   });
 
   $: {
-    if (selectedWallet) {
+    if (selectedWallet || selectedChain) {
       handleGetAllData("sync");
     }
   }
