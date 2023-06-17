@@ -1,6 +1,4 @@
-# Nimbus - A personalized Web3 portfolio tool
-
-![Nimbus](./doc/intro.png)
+# Nimbus - A personalized Web3 portfolio tool for DEFI users
 
 ## Project Setup
 
