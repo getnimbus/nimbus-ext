@@ -616,7 +616,7 @@
 
       let syncStatus = await getSyncStatus();
       if (isEmpty(syncStatus)) {
-        syncMsg = "Invalid address";
+        // syncMsg = "Invalid address";
         isLoadingSync = true;
         return;
       }
