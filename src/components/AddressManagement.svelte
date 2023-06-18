@@ -11,7 +11,7 @@
   dayjs.extend(relativeTime);
   import { chainList, getAddressContext } from "~/utils";
 
-  export let type: "portfolio" | "transactions" = "portfolio";
+  export let type: "portfolio" | "order" = "portfolio";
   export let title;
 
   import type { AddressData } from "~/types/AddressData";
