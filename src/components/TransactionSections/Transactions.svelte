@@ -118,7 +118,7 @@
   };
 
   $: {
-    if (selectedWallet) {
+    if (selectedWallet || selectedChain) {
       data = [];
       pageToken = "";
       getListTransactions("");
