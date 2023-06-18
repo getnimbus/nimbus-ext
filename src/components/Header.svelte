@@ -367,14 +367,14 @@
               search.length !== 0 &&
               (event.which == 13 || event.keyCode == 13)
             ) {
+              chain.update((n) => (n = "ALL"));
+              wallet.update((n) => (n = search));
               if (getAddressContext(search)?.type === "EVM") {
                 window.history.replaceState(
                   null,
                   "",
                   window.location.pathname + `?chain=${"ALL"}&address=${search}`
                 );
-                chain.update((n) => (n = "ALL"));
-                wallet.update((n) => (n = search));
               }
               if (getAddressContext(selectedWallet)?.type === "BTC") {
                 window.history.replaceState(
@@ -382,8 +382,6 @@
                   "",
                   window.location.pathname + `?address=${selectedWallet}`
                 );
-                chain.update((n) => (n = "ALL"));
-                wallet.update((n) => (n = search));
               }
             }
           }}

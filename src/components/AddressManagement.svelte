@@ -151,7 +151,6 @@
     const urlParams = new URLSearchParams(window.location.search);
     const addressParams = urlParams.get("address");
     const chainParams = urlParams.get("chain");
-    console.log("chainParams: ", chainParams);
     if (chainParams) {
       chain.update((n) => (n = chainParams));
     }
