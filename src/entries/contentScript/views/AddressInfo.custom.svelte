@@ -25,6 +25,7 @@
   import "~/components/CheckSafetyAddress.custom.svelte";
   import "~/components/Tooltip.custom.svelte";
   import CopyToClipboard from "~/components/CopyToClipboard.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   import SmartContractIcon from "../assets/smart-contract.png";
   // import MetaMaskIcon from "../assets/metamask-icon.png";
@@ -569,12 +570,15 @@
               <div class="text-[#00000099] text-sm">Networth</div>
               <div class="flex items-end gap-4">
                 <div class="text-2xl font-medium text-black">
-                  ${numeral(addressInfo.networth).format("0,0.00")}
+                  $<TooltipNumber
+                    number={addressInfo.networth}
+                    type="balance"
+                  />
                 </div>
                 <div class="flex items-center gap-2">
                   {#if addressInfo.priceChange}
                     <div
-                      class={`text-lg font-medium ${
+                      class={`text-lg font-medium flex ${
                         addressInfo.priceChange < 0
                           ? "text-[#EF4444]"
                           : "text-[#00A878]"
@@ -585,9 +589,10 @@
                       {:else}
                         ↑
                       {/if}
-                      {numeral(Math.abs(addressInfo.priceChange)).format(
-                        "0,0.00"
-                      )}%
+                      <TooltipNumber
+                        number={Math.abs(addressInfo.priceChange)}
+                        type="percent"
+                      />%
                     </div>
                   {:else}
                     <div class="text-lg font-medium text-black">--</div>

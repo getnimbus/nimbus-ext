@@ -6,13 +6,13 @@
     formatCurrencyV2,
   } from "~/utils";
   import numeral from "numeral";
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   export let number;
   export let type: "amount" | "balance" | "percent" = "balance";
 
   let numberFormat = 0;
   let numberSize = "";
-  let showTooltip = false;
 
   $: {
     const { number_format, number_size } = formatBigBalance(number);
@@ -26,15 +26,15 @@
     {checkFormatBalance(number) === "NaN" ? 0 : checkFormatBalance(number)}
   </span>
 {:else}
-  <span
-    class="relative w-max"
-    on:mouseenter={() => (showTooltip = true)}
-    on:mouseleave={() => (showTooltip = false)}
-  >
-    {#if numberSize === "K"}
-      <span>{formatCurrencyV2(number)}</span>
-    {:else}
-      <span>
+  <span class="w-max">
+    {#if (numberSize && numberSize !== "K") || checkFormatBalance(number) === "NaN"}
+      <span
+        use:tooltip={{
+          content: `<tooltip-detail text="${formatCurrency(number)}" />`,
+          allowHTML: true,
+          placement: "top",
+        }}
+      >
         {#if type === "amount" && number < 100000}
           <span
             >{numeral(number).format("0,0.000000") === "NaN"
@@ -49,14 +49,8 @@
           ><span>{numberSize}</span>
         {/if}
       </span>
-    {/if}
-    {#if showTooltip && ((numberSize && numberSize !== "K") || checkFormatBalance(number) === "NaN")}
-      <span
-        class="absolute -top-7 left-1/2 transform -translate-x-1/2"
-        style="z-index: 2147483648;"
-      >
-        <tooltip-detail text={formatCurrency(number)} />
-      </span>
+    {:else}
+      <span>{formatCurrencyV2(number)}</span>
     {/if}
   </span>
 {/if}
