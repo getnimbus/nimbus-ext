@@ -27,23 +27,23 @@
           {MultipleLang.token_allocation}
         </div>
         <!-- <div class="flex items-center gap-2">
-        <div
-          class={`cursor-pointer text-base font-medium py-[6px] px-4 rounded-[100px] transition-all ${
-            selectedTokenAllocation === "token" && "bg-[#1E96FC] text-white"
-          }`}
-          on:click={() => (selectedTokenAllocation = "token")}
-        >
-          Token
-        </div>
-        <div
-          class={`cursor-pointer text-base font-medium py-[6px] px-4 rounded-[100px] transition-all ${
-            selectedTokenAllocation === "chain" && "bg-[#1E96FC] text-white"
-          }`}
-          on:click={() => (selectedTokenAllocation = "chain")}
-        >
-          Chain
-        </div>
-      </div> -->
+          <div
+            class={`cursor-pointer text-base font-medium py-[6px] px-4 rounded-[100px] transition-all ${
+              selectedTokenAllocation === "token" && "bg-[#1E96FC] text-white"
+            }`}
+            on:click={() => (selectedTokenAllocation = "token")}
+          >
+            Token
+          </div>
+          <div
+            class={`cursor-pointer text-base font-medium py-[6px] px-4 rounded-[100px] transition-all ${
+              selectedTokenAllocation === "chain" && "bg-[#1E96FC] text-white"
+            }`}
+            on:click={() => (selectedTokenAllocation = "chain")}
+          >
+            Chain
+          </div>
+        </div> -->
       </div>
       {#if isLoading}
         <div class="flex items-center justify-center h-[465px]">

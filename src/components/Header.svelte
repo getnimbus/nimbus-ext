@@ -13,6 +13,7 @@
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
   import { chain, user, wallet } from "~/store";
+  import { nimbus } from "~/lib/network";
 
   import GoogleAuth from "~/components/GoogleAuth.svelte";
   import SolanaAuth from "./SolanaAuth.svelte";
@@ -28,7 +29,6 @@
   import Search from "~/assets/search.svg";
   import Bell from "~/assets/bell.svg";
   import User from "~/assets/user.png";
-  import { nimbus } from "~/lib/network";
 
   const localStorageKey = "walletAdapter";
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
@@ -110,7 +110,6 @@
   });
 
   let headerScrollY = false;
-  let showTooltipAnalytic = false;
   let timerDebounce;
   let search = "";
   let isOpenAuthModal = false;
@@ -327,30 +326,20 @@
         </div>
       </Link>
 
-      <div class="relative">
-        <div
-          class="flex items-center gap-2 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-pointer"
-          class:bg-[#525B8C]={navActive === "analytic"}
-          on:click={() => {
-            // navActive = "analytic";
-          }}
-          on:mouseenter={() => (showTooltipAnalytic = true)}
-          on:mouseleave={() => (showTooltipAnalytic = false)}
-        >
-          <img src={AnalyticIcon} alt="" />
-          <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
-            {MultipleLang.analytic}
-          </span>
-        </div>
-        {#if showTooltipAnalytic}
+      <Link to="analytic">
+        <div class="relative">
           <div
-            class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
-            style="z-index: 2147483648;"
+            class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+            class:bg-[#525B8C]={navActive === "analytic"}
+            on:click={() => (navActive = "analytic")}
           >
-            <tooltip-detail text={"Soon"} />
+            <img src={AnalyticIcon} alt="" />
+            <span class="text-white font-semibold xl:text-base text-sm">
+              {MultipleLang.analytic}
+            </span>
           </div>
-        {/if}
-      </div>
+        </div>
+      </Link>
 
       <Link to="transactions">
         <div
@@ -365,6 +354,7 @@
         </div>
       </Link>
     </div>
+
     <div class="flex justify-between items-center xl:gap-3 gap-2">
       <div
         class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center gap-1 rounded-[1000px]"
