@@ -6,9 +6,9 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import * as echarts from "echarts";
 
   import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
+  import type { AnalyticHistoricalRes } from "~/types/AnalyticHistoricalData";
 
   import Button from "~/components/Button.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -31,27 +31,11 @@
   let pageToken = "";
   let isLoadingChart = false;
   let isEmptyDataChart = false;
-
-  const getVirtualData = (year) => {
-    const date = +echarts.time.parse(year + "-01-01");
-    const end = +echarts.time.parse(+year + 1 + "-01-01");
-    const dayTime = 3600 * 24 * 1000;
-    const data = [];
-    for (let time = date; time < end; time += dayTime) {
-      data.push([
-        echarts.time.format(time, "{yyyy}-{MM}-{dd}", false),
-        Math.floor(Math.random() * 10000),
-      ]);
-    }
-    console.log("data: ", data);
-    return data;
-  };
-
   let option = {
     tooltip: {},
     visualMap: {
       min: 0,
-      max: 10000,
+      max: 1,
       calculable: true,
       orient: "horizontal",
       top: 0,
@@ -60,7 +44,6 @@
         color: ["#00A878"],
         opacity: [0, 1],
       },
-
       controller: {
         inRange: {
           opacity: [0, 1],
@@ -75,7 +58,7 @@
       left: 60,
       right: 60,
       cellSize: ["auto", "auto"],
-      range: "2016",
+      range: dayjs(new Date()).format("YYYY"),
       itemStyle: {
         borderWidth: 0.5,
       },
@@ -87,8 +70,51 @@
     series: {
       type: "heatmap",
       coordinateSystem: "calendar",
-      data: getVirtualData("2016"),
+      data: [dayjs(new Date()).format("YYYY-MM-DD"), 1],
     },
+  };
+
+  const getAnalyticHistorical = async () => {
+    isLoadingChart = true;
+    try {
+      const response: AnalyticHistoricalRes = await sendMessage("getAnalytic", {
+        address: selectedWallet,
+        chain: selectedChain,
+      });
+      if (response && response.length !== 0) {
+        const maxHistorical = response.reduce((prev, current) =>
+          prev.count > current.count ? prev : current
+        );
+
+        const formatData: any[] = response.map((item) => {
+          return [dayjs(item.date).format("YYYY-MM-DD"), item.count];
+        });
+
+        option = {
+          ...option,
+          visualMap: {
+            ...option.visualMap,
+            max: maxHistorical.count,
+          },
+          calendar: {
+            ...option.calendar,
+            range: dayjs(maxHistorical.date).format("YYYY"),
+          },
+          series: {
+            ...option.series,
+            data: formatData,
+          },
+        };
+        isLoadingChart = false;
+      } else {
+        isLoadingChart = false;
+        isEmptyDataChart = true;
+      }
+    } catch (e) {
+      console.log("error: ", e);
+      isLoadingChart = false;
+      isEmptyDataChart = true;
+    }
   };
 
   const getListTransactions = async (page: string) => {
@@ -122,6 +148,10 @@
       data = [];
       pageToken = "";
       getListTransactions("");
+      getAnalyticHistorical();
+      isLoading = false;
+      isLoadingChart = false;
+      isEmptyDataChart = false;
     }
   }
 </script>
@@ -139,7 +169,7 @@
           <div class="text-2xl font-medium text-black pl-6">
             Historical Activities
           </div>
-          {#if isLoading}
+          {#if isLoadingChart}
             <div class="flex items-center justify-center h-[165px]">
               <loading-icon />
             </div>
