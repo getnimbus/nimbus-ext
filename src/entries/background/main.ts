@@ -168,13 +168,13 @@ onMessage<IAddressInput, any>("getHoldingToken", async ({ data: { address, chain
   }
 });
 
-onMessage<IAddressInput, any>("getHoldingNFT", async ({ data: { address, chain, reload, pageToken } }) => {
+onMessage<IAddressInput, any>("getHoldingNFT", async ({ data: { address, chain, reload } }) => {
   try {
     const key = address + chain + "_holding_nft";
     const res = await cacheOrAPI(
       key,
       () => {
-        return nimbus.get(`/address/${address}/nft-holding?chain=${chain}&token=${pageToken}`).then((response) => {
+        return nimbus.get(`/address/${address}/nft-holding?chain=${chain}`).then((response) => {
           return {
             result: response.data,
             address: address

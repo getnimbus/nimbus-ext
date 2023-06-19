@@ -33,7 +33,6 @@ import { regexList } from "../../utils";
     return span1.textContent.trim() + span2.textContent.trim();
   }
 
-
   function runMarkElement() {
     console.time("Nimbus marking");
 
