@@ -559,9 +559,6 @@
   };
 
   const getSyncStatus = async () => {
-    if (!selectedWallet) {
-      return;
-    }
     try {
       const response: any = await sendMessage("getSyncStatus", {
         address: selectedWallet,
@@ -728,7 +725,9 @@
 
   $: {
     if (selectedWallet || selectedChain) {
-      handleGetAllData("sync");
+      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+        handleGetAllData("sync");
+      }
     }
   }
 </script>

@@ -99,9 +99,6 @@ onMessage<IAddressInput, any>("getSync", async ({ data: { address, chain } }) =>
 
 onMessage<IAddressInput, any>("getSyncStatus", async ({ data: { address, chain }, ...rest }) => {
   try {
-    if (!address) {
-      return {}
-    }
     return await nimbus.get(`/address/${address}/sync-status?chain=${chain}`).then((response) => response);
   } catch (error) {
     return {};
