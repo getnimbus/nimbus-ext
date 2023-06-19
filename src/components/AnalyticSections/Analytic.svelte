@@ -10,7 +10,7 @@
   import type { AnalyticHistoricalRes } from "~/types/AnalyticHistoricalData";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
-  import EChart from "~/components/EChart.svelte";
+  import HistoricalActivities from "~/components/HistoricalActivities.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -132,10 +132,10 @@
 
   $: {
     if (selectedWallet || selectedChain) {
+      isLoadingChart = false;
+      isEmptyDataChart = false;
       if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
         getAnalyticHistorical();
-        isLoadingChart = false;
-        isEmptyDataChart = false;
       }
     }
   }
@@ -148,32 +148,7 @@
         class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
         style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
       >
-        <div
-          class="border border-[#0000001a] rounded-[20px] pt-6 pb-9 flex flex-col gap-4"
-        >
-          <div class="text-2xl font-medium text-black pl-6">
-            Historical Activities
-          </div>
-          {#if isLoadingChart}
-            <div class="flex items-center justify-center h-[152px]">
-              <loading-icon />
-            </div>
-          {:else}
-            <div class="h-full">
-              {#if isEmptyDataChart}
-                <div
-                  class="flex justify-center items-center h-full text-lg text-gray-400 h-[152px]"
-                >
-                  Empty
-                </div>
-              {:else}
-                <div class="-mt-12">
-                  <EChart id="calendar-chart" theme="white" {option} />
-                </div>
-              {/if}
-            </div>
-          {/if}
-        </div>
+        <HistoricalActivities {option} {isEmptyDataChart} {isLoadingChart} />
       </div>
     </div>
   </span>
