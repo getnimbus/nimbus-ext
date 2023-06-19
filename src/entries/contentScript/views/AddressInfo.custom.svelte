@@ -415,8 +415,6 @@
       };
     }
   }
-
-  $: console.log("dataNfts: ", dataNfts);
 </script>
 
 <reset-style>
