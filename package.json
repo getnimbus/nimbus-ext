@@ -57,6 +57,7 @@
     "lightweight-charts": "^3.8.0",
     "lodash": "^4.17.21",
     "mark.js": "^8.11.1",
+    "mixpanel-browser": "^2.47.0",
     "mousetrap": "^1.6.5",
     "nanoid": "^4.0.2",
     "numeral": "^2.0.6",
