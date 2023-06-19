@@ -132,9 +132,11 @@
 
   $: {
     if (selectedWallet || selectedChain) {
-      getAnalyticHistorical();
-      isLoadingChart = false;
-      isEmptyDataChart = false;
+      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+        getAnalyticHistorical();
+        isLoadingChart = false;
+        isEmptyDataChart = false;
+      }
     }
   }
 </script>
@@ -153,14 +155,14 @@
             Historical Activities
           </div>
           {#if isLoadingChart}
-            <div class="flex items-center justify-center h-[165px]">
+            <div class="flex items-center justify-center h-[152px]">
               <loading-icon />
             </div>
           {:else}
             <div class="h-full">
               {#if isEmptyDataChart}
                 <div
-                  class="flex justify-center items-center h-full text-lg text-gray-400"
+                  class="flex justify-center items-center h-full text-lg text-gray-400 h-[152px]"
                 >
                   Empty
                 </div>
