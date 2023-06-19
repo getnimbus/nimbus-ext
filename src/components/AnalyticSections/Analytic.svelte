@@ -26,7 +26,26 @@
   let isEmptyDataChart = false;
 
   let option = {
-    tooltip: {},
+    tooltip: {
+      extraCssText: "z-index: 9997",
+      formatter: function (params) {
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 180px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                ${dayjs(params.data[0]).format("DD MMM YYYY")}
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between;">
+                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
+                  <div style="background: #00b580; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
+                  Activity
+                </div>
+                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: #000;">
+                  ${params.data[1]}
+                </div>
+              </div>
+            </div>`;
+      },
+    },
     visualMap: {
       min: 0,
       max: 1,
