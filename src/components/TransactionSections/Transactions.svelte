@@ -65,7 +65,7 @@
       },
       controller: {
         inRange: {
-          opacity: [0, 1],
+          opacity: [0.2, 1],
         },
         outOfRange: {
           color: "#f4f5f880",
@@ -124,15 +124,14 @@
             data: formatData,
           },
         };
-        isLoadingChart = false;
       } else {
-        isLoadingChart = false;
         isEmptyDataChart = true;
       }
     } catch (e) {
       console.log("error: ", e);
-      isLoadingChart = false;
       isEmptyDataChart = true;
+    } finally {
+      isLoadingChart = false;
     }
   };
 
@@ -164,13 +163,15 @@
 
   $: {
     if (selectedWallet || selectedChain) {
-      data = [];
-      pageToken = "";
-      getListTransactions("");
-      getAnalyticHistorical();
-      isLoading = false;
-      isLoadingChart = false;
-      isEmptyDataChart = false;
+      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+        data = [];
+        pageToken = "";
+        getListTransactions("");
+        getAnalyticHistorical();
+        isLoading = false;
+        isLoadingChart = false;
+        isEmptyDataChart = false;
+      }
     }
   }
 </script>
@@ -188,15 +189,15 @@
           <div class="text-2xl font-medium text-black pl-6">
             Historical Activities
           </div>
-          {#if isLoadingChart && option.visualMap.max === 1}
-            <div class="flex items-center justify-center h-[165px]">
+          {#if isLoadingChart}
+            <div class="flex items-center justify-center h-[152px]">
               <loading-icon />
             </div>
           {:else}
             <div class="h-full">
               {#if isEmptyDataChart}
                 <div
-                  class="flex justify-center items-center h-full text-lg text-gray-400"
+                  class="flex justify-center items-center h-full text-lg text-gray-400 h-[152px]"
                 >
                   Empty
                 </div>
