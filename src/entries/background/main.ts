@@ -72,6 +72,15 @@ onMessage("getListTerm", async () => {
   }
 });
 
+onMessage<IAddressInput, any>("getAnalytic", async ({ data: { address, chain } }) => {
+  try {
+    return await nimbus.get(`/analysis/${address}/historical?chain=${chain}`).then((response) => response.data);
+  } catch (error) {
+    return [];
+  }
+});
+
+
 onMessage<IAddressInput, any>("getPreview", async ({ data: { address, chain } }) => {
   try {
     return await nimbus.get(`/address/${address}/preview?chain=${chain}`).then((response) => response.data);
