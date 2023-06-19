@@ -169,7 +169,7 @@
           <div class="text-2xl font-medium text-black pl-6">
             Historical Activities
           </div>
-          {#if isLoadingChart}
+          {#if isLoadingChart && option.visualMap.max === 1}
             <div class="flex items-center justify-center h-[165px]">
               <loading-icon />
             </div>
