@@ -4,7 +4,7 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { groupBy } from "lodash";
+  import { groupBy, isEmpty } from "lodash";
   import { onDestroy, onMount } from "svelte";
   import { Motion } from "svelte-motion";
   import { sendMessage } from "webext-bridge";
@@ -612,6 +612,11 @@
       }
 
       let syncStatus = await getSyncStatus();
+      if (isEmpty(syncStatus)) {
+        // syncMsg = "Invalid address";
+        isLoadingSync = true;
+        return;
+      }
       if (syncStatus?.data?.error) {
         syncMsg = syncStatus?.data?.error;
         isLoadingSync = true;
@@ -719,8 +724,10 @@
   });
 
   $: {
-    if (selectedWallet) {
-      handleGetAllData("sync");
+    if (selectedWallet || selectedChain) {
+      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+        handleGetAllData("sync");
+      }
     }
   }
 </script>

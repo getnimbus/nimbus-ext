@@ -1,18 +1,16 @@
 <script lang="ts">
+  import { sendMessage } from "webext-bridge";
+  import { wallet, chain } from "~/store";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { sendMessage } from "webext-bridge";
-  import { wallet, chain } from "~/store";
 
-  import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
   import type { AnalyticHistoricalRes } from "~/types/AnalyticHistoricalData";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
   import HistoricalActivities from "~/components/HistoricalActivities.svelte";
-  import HistoricalTransactions from "./HistoricalTransactions.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -24,11 +22,10 @@
     selectedChain = value;
   });
 
-  let isLoading = false;
-  let data = [];
-  let pageToken = "";
   let isLoadingChart = false;
   let isEmptyDataChart = false;
+  let isLoading = false;
+
   let option = {
     tooltip: {
       extraCssText: "z-index: 9997",
@@ -63,7 +60,7 @@
       },
       controller: {
         inRange: {
-          opacity: [0.2, 1],
+          opacity: [0, 1],
         },
         outOfRange: {
           color: "#f4f5f880",
@@ -93,6 +90,7 @@
 
   const getAnalyticHistorical = async () => {
     isLoadingChart = true;
+    isLoading = true;
     try {
       const response: AnalyticHistoricalRes = await sendMessage("getAnalytic", {
         address: selectedWallet,
@@ -122,58 +120,34 @@
             data: formatData,
           },
         };
+        isLoadingChart = false;
+        isLoading = false;
       } else {
+        isLoadingChart = false;
+        isLoading = false;
         isEmptyDataChart = true;
       }
     } catch (e) {
       console.log("error: ", e);
-      isEmptyDataChart = true;
-    } finally {
       isLoadingChart = false;
-    }
-  };
-
-  const getListTransactions = async (page: string) => {
-    isLoading = true;
-    try {
-      const response: TrxHistoryDataRes = await sendMessage("getTrxHistory", {
-        address: selectedWallet,
-        chain: selectedChain,
-        pageToken: page,
-      });
-      if (selectedWallet === response.address) {
-        data = [...data, ...response.result.data];
-        pageToken = response.result.pageToken;
-      } else {
-        console.log("response: ", response);
-      }
-    } catch (e) {
-      console.log("error: ", e);
-    } finally {
       isLoading = false;
+      isEmptyDataChart = true;
     }
-  };
-
-  const handleLoadMore = (paginate: string) => {
-    getListTransactions(paginate);
   };
 
   $: {
     if (selectedWallet || selectedChain) {
-      data = [];
-      pageToken = "";
-      isLoading = false;
       isLoadingChart = false;
       isEmptyDataChart = false;
+      isLoading = false;
       if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
-        getListTransactions("");
         getAnalyticHistorical();
       }
     }
   }
 </script>
 
-<AddressManagement type="order" title="Transactions">
+<AddressManagement type="analytic" title="Analytic">
   <span slot="body">
     <div class="max-w-[2000px] m-auto w-[90%] -mt-32">
       <div
@@ -181,16 +155,25 @@
         style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
       >
         <HistoricalActivities {option} {isEmptyDataChart} {isLoadingChart} />
-        <HistoricalTransactions
-          {isLoading}
-          {pageToken}
-          {data}
-          loadMore={handleLoadMore}
-        />
       </div>
     </div>
   </span>
 </AddressManagement>
 
 <style>
+  .loading {
+    animation-name: loading;
+    animation-duration: 1.4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+
+  @keyframes loading {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 </style>

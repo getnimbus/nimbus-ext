@@ -2,15 +2,8 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import numeral from "numeral";
   import { sendMessage } from "webext-bridge";
-  import {
-    formatCurrency,
-    exponentialToDecimal,
-    getLocalImg,
-    add3Dots,
-    shorterAddress,
-  } from "~/utils";
+  import { add3Dots } from "~/utils";
 
   import type { TokenInfoData } from "~/types/TokenInfoData";
 
@@ -19,8 +12,7 @@
   import "~/components/PriceConvert.custom.svelte";
   import "~/components/Tooltip.custom.svelte";
   import CopyToClipboard from "~/components/CopyToClipboard.svelte";
-
-  import More from "../../../assets/more.svg";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let name;
   export let id;
@@ -33,7 +25,6 @@
   let priceChange = 0;
   let openShowCategoryList = false;
   let showTooltip = false;
-  let numberTooltip = false;
   let showTooltipCoinGecko = false;
   let showTooltipCMC = false;
   let moreElement;
@@ -354,6 +345,7 @@ M59.497826,43.426590
 z"
                       />
                     </svg>
+
                     {#if showTooltipCoinGecko}
                       <div
                         class="absolute -top-6 left-1/2 transform -translate-x-1/2"
@@ -392,13 +384,15 @@ z"
                   {/if}
                 </div>
                 {#if address}
-                  <CopyToClipboard
-                    iconSize={12}
-                    {address}
-                    isShorten
-                    iconColor="#212121"
-                    color="#00000099"
-                  />
+                  <div class="text-xs">
+                    <CopyToClipboard
+                      iconSize={12}
+                      {address}
+                      isShorten
+                      iconColor="#212121"
+                      color="#00000099"
+                    />
+                  </div>
                 {:else}
                   <div
                     class="text-[11px] text-[#00000099] font-normal py-[2px] px-1 rounded bg-[#E9EBF1] w-max"
@@ -411,26 +405,18 @@ z"
             <div class="flex items-start gap-1">
               <div class="flex flex-col items-end gap-1">
                 <div class="relative">
-                  <div
-                    class="text-base font-medium text-black"
-                    on:mouseenter={() => (numberTooltip = true)}
-                    on:mouseleave={() => (numberTooltip = false)}
-                  >
-                    {price ? `$${formatCurrency(price)}` : "--"}
+                  <div class="text-base font-medium text-black">
+                    {#if price}
+                      $<TooltipNumber number={price} type="balance" />
+                    {:else}
+                      --
+                    {/if}
                   </div>
-                  {#if numberTooltip && numeral(price).format("0,0.00") === "NaN"}
-                    <div
-                      class="absolute -top-7 right-0"
-                      style="z-index: 2147483646;"
-                    >
-                      <tooltip-detail text={exponentialToDecimal(price)} />
-                    </div>
-                  {/if}
                 </div>
                 {#if priceChange}
                   <div class="flex items-center gap-1">
                     <div
-                      class={`text-[13px] font-medium ${
+                      class={`text-[13px] font-medium flex ${
                         priceChange < 0 ? "text-[#EF4444]" : "text-[#00A878]"
                       }`}
                     >
@@ -439,14 +425,28 @@ z"
                       {:else}
                         ↑
                       {/if}
-                      {numeral(Math.abs(priceChange)).format("0,0.00")}%
+                      <TooltipNumber
+                        number={Math.abs(priceChange)}
+                        type="percent"
+                      />%
                     </div>
                     <div class="text-[#00000066] text-xs font-medium">24h</div>
                   </div>
                 {/if}
               </div>
               <!-- <div class="cursor-pointer -mt-[2px]">
-                <img src={getLocalImg(More)} alt="more" />
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 28 28"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M14.0007 10.6666C14.9173 10.6666 15.6673 9.91659 15.6673 8.99992C15.6673 8.08325 14.9173 7.33325 14.0007 7.33325C13.084 7.33325 12.334 8.08325 12.334 8.99992C12.334 9.91659 13.084 10.6666 14.0007 10.6666ZM14.0007 12.3333C13.084 12.3333 12.334 13.0833 12.334 13.9999C12.334 14.9166 13.084 15.6666 14.0007 15.6666C14.9173 15.6666 15.6673 14.9166 15.6673 13.9999C15.6673 13.0833 14.9173 12.3333 14.0007 12.3333ZM14.0007 17.3333C13.084 17.3333 12.334 18.0833 12.334 18.9999C12.334 19.9166 13.084 20.6666 14.0007 20.6666C14.9173 20.6666 15.6673 19.9166 15.6673 18.9999C15.6673 18.0833 14.9173 17.3333 14.0007 17.3333Z"
+                    fill="#B3B3B3"
+                  />
+                </svg>
               </div> -->
             </div>
           </div>
@@ -503,9 +503,8 @@ z"
                   </div>
                 {/if}
               </div>
-
               <div class="text-xs text-[#000000B2] font-medium uppercase">
-                ${numeral(currentMarketcap).format("0,0.00 a")}
+                $<TooltipNumber number={currentMarketcap} type="balance" />
               </div>
             </div>
             <div class="flex flex-col gap-1">
@@ -517,10 +516,10 @@ z"
               </div>
               <div class="flex justify-between">
                 <div class="text-[#000000B2] text-xs font-medium uppercase">
-                  ${numeral(min).format("0,0.00 a")}
+                  $<TooltipNumber number={min} type="balance" />
                 </div>
                 <div class="text-[#000000B2] text-xs font-medium uppercase">
-                  ${numeral(max).format("0,0.00 a")}
+                  $<TooltipNumber number={max} type="balance" />
                 </div>
               </div>
             </div>

@@ -4,7 +4,7 @@
   import * as browser from "webextension-polyfill";
   import jwt_decode from "jwt-decode";
   import bs58 from "bs58";
-  import { handleGetAccessToken } from "~/utils";
+  import { getAddressContext, handleGetAccessToken } from "~/utils";
   import { i18n } from "~/lib/i18n";
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
   import { WalletProvider } from "@svelte-on-solana/wallet-adapter-ui";
@@ -12,7 +12,8 @@
     PhantomWalletAdapter,
     SolflareWalletAdapter,
   } from "@solana/wallet-adapter-wallets";
-  import { user, wallet } from "~/store";
+  import { chain, user, wallet } from "~/store";
+  import { nimbus } from "~/lib/network";
 
   import GoogleAuth from "~/components/GoogleAuth.svelte";
   import SolanaAuth from "./SolanaAuth.svelte";
@@ -28,7 +29,6 @@
   import Search from "~/assets/search.svg";
   import Bell from "~/assets/bell.svg";
   import User from "~/assets/user.png";
-  import { nimbus } from "~/lib/network";
 
   const localStorageKey = "walletAdapter";
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
@@ -40,7 +40,6 @@
     transactions: i18n("newtabPage.transactions", "Transactions"),
     news: i18n("newtabPage.news", "News"),
     market: i18n("newtabPage.market", "Market"),
-    settings: i18n("newtabPage.settings", "Settings"),
     overview: i18n("newtabPage.overview", "Overview"),
     empty_wallet: i18n("newtabPage.empty-wallet", "No wallet added yet."),
     Balance: i18n("newtabPage.Balance", "Balance"),
@@ -111,7 +110,6 @@
   });
 
   let headerScrollY = false;
-  let showTooltipAnalytic = false;
   let timerDebounce;
   let search = "";
   let isOpenAuthModal = false;
@@ -302,56 +300,20 @@
         </div>
       </Link>
 
-      <Link to="market">
-        <div
-          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "market"}
-          on:click={() => (navActive = "market")}
-        >
-          <img src={MarketIcon} alt="" />
-          <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.market}
-          </span>
+      <Link to="analytic">
+        <div class="relative">
+          <div
+            class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+            class:bg-[#525B8C]={navActive === "analytic"}
+            on:click={() => (navActive = "analytic")}
+          >
+            <img src={AnalyticIcon} alt="" />
+            <span class="text-white font-semibold xl:text-base text-sm">
+              {MultipleLang.analytic}
+            </span>
+          </div>
         </div>
       </Link>
-
-      <!-- <Link to="news">
-        <div
-          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "news"}
-          on:click={() => (navActive = "news")}
-        >
-          <img src={NewsIcon} alt="" />
-          <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.news}
-          </span>
-        </div>
-      </Link> -->
-
-      <div class="relative">
-        <div
-          class="flex items-center gap-2 py-2 xl:px-4 px-2 rounded-[1000px] transition-all cursor-pointer"
-          class:bg-[#525B8C]={navActive === "analytic"}
-          on:click={() => {
-            // navActive = "analytic";
-          }}
-          on:mouseenter={() => (showTooltipAnalytic = true)}
-          on:mouseleave={() => (showTooltipAnalytic = false)}
-        >
-          <img src={AnalyticIcon} alt="" />
-          <span class="text-[#6B7280] font-semibold xl:text-base text-sm">
-            {MultipleLang.analytic}
-          </span>
-        </div>
-        {#if showTooltipAnalytic}
-          <div
-            class="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
-            style="z-index: 2147483648;"
-          >
-            <tooltip-detail text={"Soon"} />
-          </div>
-        {/if}
-      </div>
 
       <Link to="transactions">
         <div
@@ -366,33 +328,33 @@
         </div>
       </Link>
 
-      {#if APP_TYPE.TYPE === "EXT"}
+      <Link to="market">
         <div
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
-          on:click={() => {
-            browser.tabs.create({
-              url: "src/entries/options/index.html?tab=wallets",
-            });
-          }}
+          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class:bg-[#525B8C]={navActive === "market"}
+          on:click={() => (navActive = "market")}
         >
-          <img src={SettingsIcon} alt="" />
+          <img src={MarketIcon} alt="" />
           <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.settings}
+            {MultipleLang.market}
           </span>
         </div>
-      {:else}
-        <a
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all`}
-          href="entries/options/index.html?tab=wallets"
-          target="_blank"
+      </Link>
+
+      <Link to="news">
+        <div
+          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class:bg-[#525B8C]={navActive === "news"}
+          on:click={() => (navActive = "news")}
         >
-          <img src={SettingsIcon} alt="" />
+          <img src={NewsIcon} alt="" />
           <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.settings}
+            {MultipleLang.news}
           </span>
-        </a>
-      {/if}
+        </div>
+      </Link>
     </div>
+
     <div class="flex justify-between items-center xl:gap-3 gap-2">
       <div
         class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center gap-1 rounded-[1000px]"
@@ -405,12 +367,22 @@
               search.length !== 0 &&
               (event.which == 13 || event.keyCode == 13)
             ) {
-              window.history.replaceState(
-                null,
-                "",
-                window.location.pathname + `?address=${search}`
-              );
+              chain.update((n) => (n = "ALL"));
               wallet.update((n) => (n = search));
+              if (getAddressContext(search)?.type === "EVM") {
+                window.history.replaceState(
+                  null,
+                  "",
+                  window.location.pathname + `?chain=${"ALL"}&address=${search}`
+                );
+              }
+              if (getAddressContext(selectedWallet)?.type === "BTC") {
+                window.history.replaceState(
+                  null,
+                  "",
+                  window.location.pathname + `?address=${selectedWallet}`
+                );
+              }
             }
           }}
           value={search}
@@ -419,8 +391,28 @@
           class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
         />
       </div>
+      {#if APP_TYPE.TYPE === "EXT"}
+        <div
+          on:click={() => {
+            browser.tabs.create({
+              url: "src/entries/options/index.html?tab=wallets",
+            });
+          }}
+          class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
+        >
+          <img src={SettingsIcon} alt="" />
+        </div>
+      {:else}
+        <a
+          href="entries/options/index.html?tab=wallets"
+          target="_blank"
+          class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
+        >
+          <img src={SettingsIcon} alt="" />
+        </a>
+      {/if}
       <!-- <div
-        class="bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
+        class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
       >
         <img src={Bell} alt="" />
       </div> -->

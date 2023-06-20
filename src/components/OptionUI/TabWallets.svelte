@@ -7,7 +7,7 @@
   import { getAddressContext } from "~/utils";
   import { Toast } from "flowbite-svelte";
   import { fly } from "svelte/transition";
-  import { wallet } from "~/store";
+  import { wallet, chain } from "~/store";
 
   import type { AddressData } from "~/types/AddressData";
 
@@ -223,6 +223,17 @@
 
       listAddress = [...listAddress, data];
 
+      if (listAddress.length === 1) {
+        browser.storage.sync.set({ selectedWallet: data.address }).then(() => {
+          console.log("save selected address to sync storage");
+        });
+        if (getAddressContext(data.address)?.type === "EVM") {
+          browser.storage.sync.set({ selectedChain: "ALL" }).then(() => {
+            console.log("save selected address to sync storage");
+          });
+        }
+      }
+
       browser.storage.sync.set({ listAddress: JSON.stringify(listAddress) });
 
       e.target.reset();
@@ -360,6 +371,7 @@
   $: {
     if (listAddress.length === 0) {
       wallet.update((n) => (n = ""));
+      chain.update((n) => (n = ""));
     }
   }
 </script>

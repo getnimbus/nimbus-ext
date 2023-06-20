@@ -50,12 +50,7 @@
       <div class="title-5">
         {MultipleLang.change_lang_label}
       </div>
-      <Select
-        isOptionsPage={true}
-        isSelectWallet={false}
-        listSelect={langs}
-        bind:selected={selectedLang}
-      />
+      <Select type="lang" listSelect={langs} bind:selected={selectedLang} />
     </div>
   {/if}
 </div>

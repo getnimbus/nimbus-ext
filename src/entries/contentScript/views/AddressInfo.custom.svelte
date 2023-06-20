@@ -4,13 +4,14 @@
   import { onMount, onDestroy } from "svelte";
   import * as browser from "webextension-polyfill";
   import { sendMessage } from "webext-bridge";
-  import { isEmpty } from "lodash";
+  import { isEmpty, groupBy } from "lodash";
   import * as echarts from "echarts";
   import numeral from "numeral";
   import { i18n } from "~/lib/i18n";
   import {
     formatBalance,
     formatCurrency,
+    getAddressContext,
     getLocalImg,
     shorterAddress,
     shorterName,
@@ -25,6 +26,8 @@
   import "~/components/CheckSafetyAddress.custom.svelte";
   import "~/components/Tooltip.custom.svelte";
   import CopyToClipboard from "~/components/CopyToClipboard.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   import SmartContractIcon from "../assets/smart-contract.png";
   // import MetaMaskIcon from "../assets/metamask-icon.png";
@@ -40,6 +43,8 @@
     Balance: i18n("newtabPage.Balance", "Balance"),
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
+    empty: i18n("newtabPage.empty", "Empty"),
+    collection: i18n("newtabPage.collection", "Collection"),
   };
 
   // let balance = 0;
@@ -56,10 +61,13 @@
     symbol: "",
     id: "",
   };
+  let dataNfts = [];
   let linkMoreInfo = "";
   let labelBtnMoreInfo = "";
   let openShowCategoryList = false;
-  let selectedTokenAllocation = "token";
+  let selectedTokenAllocation: "token" | "chain" = "token";
+  let selectedType: "token" | "nft" = "token";
+  let showTooltipListNFT = false;
   let chart;
   let chartContainer;
   let option = {
@@ -165,6 +173,23 @@
         type = response?.type;
 
         if (response?.type === "ADDRESS") {
+          const formatListNfts = response?.nfts.map((item) => {
+            return {
+              ...item,
+              collectionName: item?.collectionName
+                ? item?.collectionName
+                : "Orders",
+            };
+          });
+          const listNft = groupBy(formatListNfts, "collectionName");
+          const types = Object.getOwnPropertyNames(listNft);
+          dataNfts = types.map((item) => {
+            return {
+              collectionName: item,
+              tokens: listNft[item],
+            };
+          });
+
           addressInfo.categories = response?.tags;
           addressInfo.networth = response?.networth;
           addressInfo.priceChange = response?.priceChange;
@@ -535,14 +560,14 @@
               </div>
             </div>
             <div class="flex gap-1 flex-wrap">
-              {#each addressInfo.categories.slice(0, 2) as category}
+              {#each addressInfo?.categories.slice(0, 2) as category}
                 <div
                   class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px]"
                 >
                   {category}
                 </div>
               {/each}
-              {#if addressInfo.categories.length > 2}
+              {#if addressInfo?.categories.length > 2}
                 <div class="relative">
                   <div
                     class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px] flex items-center gap-1 cursor-pointer"
@@ -554,7 +579,7 @@
                   </div>
                   {#if openShowCategoryList}
                     <div class="content">
-                      {#each addressInfo.categories.slice(2) as category}
+                      {#each addressInfo?.categories.slice(2) as category}
                         <div class="content_item" id={category}>
                           {category}
                         </div>
@@ -565,67 +590,246 @@
               {/if}
             </div>
             <check-safety-address {address} chainId={"1"} />
-            <div class="flex flex-col gap-2">
-              <div class="text-[#00000099] text-sm">Networth</div>
-              <div class="flex items-end gap-4">
-                <div class="text-2xl font-medium text-black">
-                  ${numeral(addressInfo.networth).format("0,0.00")}
-                </div>
-                <div class="flex items-center gap-2">
-                  {#if addressInfo.priceChange}
-                    <div
-                      class={`text-lg font-medium ${
-                        addressInfo.priceChange < 0
-                          ? "text-[#EF4444]"
-                          : "text-[#00A878]"
-                      }`}
-                    >
-                      {#if addressInfo.priceChange < 0}
-                        ↓
-                      {:else}
-                        ↑
-                      {/if}
-                      {numeral(Math.abs(addressInfo.priceChange)).format(
-                        "0,0.00"
-                      )}%
+            <div class="flex justify-between items-end">
+              <div class="flex flex-col gap-1">
+                <div class="text-[#00000099] text-sm">Networth</div>
+                <div class="flex items-end gap-4">
+                  <div class="text-2xl font-medium text-black">
+                    $<TooltipNumber
+                      number={addressInfo.networth}
+                      type="balance"
+                    />
+                  </div>
+                  <div class="flex items-center gap-2">
+                    {#if addressInfo.priceChange}
+                      <div
+                        class={`text-lg font-medium flex ${
+                          addressInfo.priceChange < 0
+                            ? "text-[#EF4444]"
+                            : "text-[#00A878]"
+                        }`}
+                      >
+                        {#if addressInfo.priceChange < 0}
+                          ↓
+                        {:else}
+                          ↑
+                        {/if}
+                        <TooltipNumber
+                          number={Math.abs(addressInfo.priceChange)}
+                          type="percent"
+                        />%
+                      </div>
+                    {:else}
+                      <div class="text-lg font-medium text-black">--</div>
+                    {/if}
+                    <div class="text-[#00000066] text-base font-medium">
+                      24h
                     </div>
-                  {:else}
-                    <div class="text-lg font-medium text-black">--</div>
-                  {/if}
-                  <div class="text-[#00000066] text-base font-medium">24h</div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-1">
+                <div
+                  class={`cursor-pointer text-sm font-medium py-1 px-2 rounded-[100px] transition-all ${
+                    selectedType === "token" && "bg-[#1E96FC] text-white"
+                  }`}
+                  on:click={() => (selectedType = "token")}
+                >
+                  Token
+                </div>
+                <div
+                  class={`cursor-pointer text-sm font-medium py-1 px-2 rounded-[100px] transition-all ${
+                    selectedType === "nft" && "bg-[#1E96FC] text-white"
+                  }`}
+                  on:click={() => (selectedType = "nft")}
+                >
+                  NFT
                 </div>
               </div>
             </div>
-            <div class="border border-[#0000001a] rounded-[20px] p-4">
-              <div class="flex justify-between">
-                <div class="text-lg font-medium text-black">
-                  Token Allocation
+            <div
+              class="border border-[#0000001a] rounded-[20px] overflow-hidden"
+            >
+              {#if selectedType === "nft"}
+                <div class="flex flex-col">
+                  <div class="text-lg font-medium text-black pt-4 px-4 pb-2">
+                    NFT
+                  </div>
+                  <table class="table-auto w-full">
+                    <thead>
+                      <tr class="bg-[#f4f5f880]">
+                        <th class="pl-4 py-2 w-[200px]">
+                          <div
+                            class="text-left text-xs uppercase font-semibold text-black"
+                          >
+                            {MultipleLang.collection}
+                          </div>
+                        </th>
+                        <th class="pr-4 py-2">
+                          <div
+                            class="text-left text-xs uppercase font-semibold text-black"
+                          >
+                            {MultipleLang.Balance}
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {#if dataNfts && dataNfts.length === 0}
+                        <tr>
+                          <td colspan={2}>
+                            <div
+                              class="flex justify-center items-center py-2 px-4 text-lg text-gray-400"
+                            >
+                              {MultipleLang.empty}
+                            </div>
+                          </td>
+                        </tr>
+                      {:else}
+                        {#each dataNfts.slice(0, 5) as item}
+                          <tr
+                            class="hover:bg-gray-100 transition-all cursor-pointer"
+                            on:click={() => {
+                              if (getAddressContext(address)?.type === "EVM") {
+                                window.open(
+                                  `https://app.getnimbus.io/?chain=ALL&address=${address}`,
+                                  "_blank"
+                                );
+                              } else {
+                                window.open(
+                                  `https://app.getnimbus.io/?address=${address}`,
+                                  "_blank"
+                                );
+                              }
+                            }}
+                          >
+                            <td class="pl-4 py-2 w-[200px]">
+                              <div class="relative">
+                                <div
+                                  class="text-black text-sm font-medium flex justify-start"
+                                >
+                                  {#if item?.collectionName.length > 20}
+                                    <span
+                                      use:tooltip={{
+                                        content: `<tooltip-detail text="${item?.collectionName}" />`,
+                                        allowHTML: true,
+                                        placement: "top",
+                                        interactive: true,
+                                      }}
+                                    >
+                                      {shorterName(item?.collectionName, 20)}
+                                    </span>
+                                  {:else}
+                                    <span>{item?.collectionName}</span>
+                                  {/if}
+                                </div>
+                              </div>
+                            </td>
+                            <td class="pr-4 py-2">
+                              <div class="relative">
+                                <div
+                                  class="flex justify-start"
+                                  on:mouseenter={() =>
+                                    (showTooltipListNFT = true)}
+                                  on:mouseleave={() =>
+                                    (showTooltipListNFT = false)}
+                                >
+                                  {#each item?.tokens.slice(0, 10) as token, index}
+                                    <img
+                                      src={token?.imageUrl}
+                                      alt=""
+                                      class={`w-6 h-6 rounded-md border border-gray-300 overflow-hidden ${
+                                        index > 0 && "-ml-2"
+                                      }`}
+                                    />
+                                  {/each}
+                                  {#if item?.tokens.length > 10}
+                                    <div class="relative w-6 h-6">
+                                      <img
+                                        src={item?.tokens[10].imageUrl}
+                                        alt=""
+                                        class="w-6 h-6 rounded-md border border-gray-300 overflow-hidden -ml-2"
+                                      />
+                                      <div
+                                        class="absolute top-0 -left-2 w-full h-full bg-[#00000066] text-white text-center flex justify-center items-center pb-2 rounded-md"
+                                      >
+                                        ...
+                                      </div>
+                                    </div>
+                                  {/if}
+                                </div>
+                                {#if showTooltipListNFT && item?.tokens?.length > 10}
+                                  <div
+                                    class="absolute -top-7 left-0"
+                                    style="z-index: 2147483648;"
+                                  >
+                                    <tooltip-detail
+                                      text={`${item?.tokens?.length} NFTs on collection ${item?.collectionName}`}
+                                    />
+                                  </div>
+                                {/if}
+                              </div>
+                            </td>
+                          </tr>
+                        {/each}
+                      {/if}
+                    </tbody>
+                  </table>
+                  {#if dataNfts.length !== 0 && dataNfts.length > 5}
+                    <div class="mx-auto mt-3 mb-4">
+                      <button
+                        class="w-max px-3 py-1 rounded-lg cursor-pointer text-xs font-medium border-[1px] border-black bg-white"
+                        on:click={() => {
+                          if (getAddressContext(address)?.type === "EVM") {
+                            window.open(
+                              `https://app.getnimbus.io/?chain=ALL&address=${address}`,
+                              "_blank"
+                            );
+                          } else {
+                            window.open(
+                              `https://app.getnimbus.io/?address=${address}`,
+                              "_blank"
+                            );
+                          }
+                        }}
+                        >Learn more
+                      </button>
+                    </div>
+                  {/if}
                 </div>
-                <!-- <div class="flex items-center gap-2">
-                  <div
-                    class={`cursor-pointer text-base font-medium py-[6px] px-4 rounded-[100px] transition-all ${
-                      selectedTokenAllocation === "token" &&
-                      "bg-[#1E96FC] text-white"
-                    }`}
-                    on:click={() => (selectedTokenAllocation = "token")}
-                  >
-                    Token
-                  </div>
-                  <div
-                    class={`cursor-pointer text-base font-medium py-[6px] px-4 rounded-[100px] transition-all ${
-                      selectedTokenAllocation === "chain" &&
-                      "bg-[#1E96FC] text-white"
-                    }`}
-                    on:click={() => (selectedTokenAllocation = "chain")}
-                  >
-                    Chain
-                  </div>
-                </div> -->
-              </div>
-              {#if isEmptyTokens}
-                Empty
               {:else}
-                <div bind:this={chartContainer} class="h-[300px]" />
+                <div class="p-4">
+                  <div class="flex justify-between">
+                    <div class="text-lg font-medium text-black">
+                      Token Allocation
+                    </div>
+                    <!-- <div class="flex items-center gap-1">
+                      <div
+                        class={`cursor-pointer text-sm font-medium py-1 px-2 rounded-[100px] transition-all ${
+                          selectedTokenAllocation === "token" &&
+                          "bg-[#1E96FC] text-white"
+                        }`}
+                        on:click={() => (selectedTokenAllocation = "token")}
+                      >
+                        Token
+                      </div>
+                      <div
+                        class={`cursor-pointer text-sm font-medium py-1 px-2 rounded-[100px] transition-all ${
+                          selectedTokenAllocation === "chain" &&
+                          "bg-[#1E96FC] text-white"
+                        }`}
+                        on:click={() => (selectedTokenAllocation = "chain")}
+                      >
+                        Chain
+                      </div>
+                    </div> -->
+                  </div>
+                  {#if isEmptyTokens}
+                    Empty
+                  {:else}
+                    <div bind:this={chartContainer} class="h-[300px]" />
+                  {/if}
+                </div>
               {/if}
             </div>
           </div>

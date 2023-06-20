@@ -1,43 +1,45 @@
-<script>
-  import { wallet } from "~/store";
+<script lang="ts">
+  import { wallet, chain } from "~/store";
   import UpArrow from "~/assets/up-arrow.svg";
   import All from "~/assets/all.svg";
 
   export let listSelect;
   export let selected;
-  export let isSelectWallet = false;
-  export let isOptionsPage = false;
+  export let type: "chain" | "wallet" | "lang";
 
   let open = false;
 
   $: {
-    if (listSelect && !isSelectWallet) {
+    if (listSelect && type === "lang") {
       selected = listSelect[0];
     }
   }
+
+  $: selectedChain =
+    (type === "chain" &&
+      listSelect &&
+      selected &&
+      listSelect.filter((item) => item.value === selected)) ||
+    [];
 </script>
 
 <div class="wrapper">
   <div
-    class={`button ${
-      isOptionsPage
-        ? !isSelectWallet
-          ? "bg-[#1E96FC]"
-          : ""
-        : "hover:bg-[#525b8c]"
-    }`}
+    class={`button hover:bg-[#525b8c] ${type === "lang" && "bg-[#1E96FC]"}`}
     class:active={open}
     on:click={() => (open = !open)}
   >
     <div class="label_container">
-      {#if !isSelectWallet}
+      {#if type === "chain" || type === "lang"}
         <img
-          src={selected.value === "ALL" ? All : selected.logo}
+          src={selected?.value === "ALL" || selectedChain[0]?.value === "ALL"
+            ? All
+            : selected?.logo || selectedChain[0]?.logo}
           alt="logo"
           width="18"
           height="18"
         />
-        <div class="label">{selected.label}</div>
+        <div class="label">{selected?.label || selectedChain[0]?.label}</div>
       {:else}
         <div class="label">Other ({listSelect.length})</div>
       {/if}
@@ -51,32 +53,38 @@
   </div>
 
   {#if open}
-    <div class="content" class:right-0={!isOptionsPage}>
+    <div class="content" class:right-0={type !== "lang"}>
       {#each listSelect as item}
         <div
           class="content_item"
-          class:active={isSelectWallet
+          class:active={type !== "lang"
             ? item.value === selected
-            : item.value === selected.value}
+            : item.value === selected?.value}
           id={item.value}
           on:click={() => {
-            if (
-              item.value !== "ALL" &&
-              item.value !== "ETH" &&
-              item.value !== "BTC" &&
-              !isOptionsPage
-            ) {
-              open = false;
-              return;
-            }
-            if (isSelectWallet) {
+            if (type === "wallet") {
               wallet.update((n) => (n = item.value));
               selected = item.value;
               open = false;
-              return;
             }
-            selected = item;
-            open = false;
+            if (type === "chain") {
+              if (
+                item.value !== "ALL" &&
+                item.value !== "ETH" &&
+                item.value !== "BTC" &&
+                item.value !== "GNOSIS"
+              ) {
+                open = false;
+              } else {
+                chain.update((n) => (n = item.value));
+                selected = item.value;
+                open = false;
+              }
+            }
+            if (type === "lang") {
+              selected = item;
+              open = false;
+            }
           }}
         >
           <img
@@ -87,16 +95,17 @@
           />
           <div
             class={`name ${
+              type === "chain" &&
               item.value !== "ALL" &&
               item.value !== "ETH" &&
               item.value !== "BTC" &&
-              !isOptionsPage
+              item.value !== "GNOSIS"
                 ? "text-[#00000066]"
                 : "text-[#000000b3]"
             }`}
           >
             {item.label}
-            {#if item.value !== "ALL" && item.value !== "ETH" && item.value !== "BTC" && !isOptionsPage}
+            {#if type === "chain" && item.value !== "ALL" && item.value !== "ETH" && item.value !== "BTC" && item.value !== "GNOSIS"}
               (Soon)
             {/if}
           </div>

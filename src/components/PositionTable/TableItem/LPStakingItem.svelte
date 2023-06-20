@@ -57,24 +57,22 @@
 
   <td class="py-4">
     <div class="text-sm text-[#00000099] font-medium flex flex-col items-end">
-      <div class="flex flex-col items-end">
+      <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
-          <div class="flex items-center gap-1">
-            <TooltipNumber number={Number(data.amount0out)} type="amount" />
-            {data.amount0Price?.symbol ? data.amount0Price?.symbol : ""} |
-          </div>
-          <div class="flex">
-            $<TooltipNumber number={balance0} type="balance" />
-          </div>
+          <TooltipNumber number={Number(data.amount0out)} type="amount" />
+          {data.amount0Price?.symbol ? data.amount0Price?.symbol : ""} |
         </div>
+        <div class="flex">
+          $<TooltipNumber number={balance0} type="balance" />
+        </div>
+      </div>
+      <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
-          <div class="flex items-center gap-1">
-            <TooltipNumber number={Number(data.amount1out)} type="amount" />
-            {data.amount1Price?.symbol ? data.amount1Price?.symbol : ""} |
-          </div>
-          <div class="flex">
-            $<TooltipNumber number={balance1} type="balance" />
-          </div>
+          <TooltipNumber number={Number(data.amount1out)} type="amount" />
+          {data.amount1Price?.symbol ? data.amount1Price?.symbol : ""} |
+        </div>
+        <div class="flex">
+          $<TooltipNumber number={balance1} type="balance" />
         </div>
       </div>
     </div>
@@ -82,18 +80,16 @@
 
   <td class="py-4">
     <div class="text-sm text-[#00000099] font-medium flex flex-col items-end">
-      <div class="flex flex-col items-end">
+      <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
-          <div class="flex items-center gap-1">
-            <TooltipNumber
-              number={Number(data?.rewardTokens[0]?.rewardOut)}
-              type="amount"
-            />
-            {data.rewardTokens[0]?.symbol ? data.rewardTokens[0]?.symbol : ""} |
-          </div>
-          <div class="flex">
-            $<TooltipNumber number={rewardToken0} type="balance" />
-          </div>
+          <TooltipNumber
+            number={Number(data?.rewardTokens[0]?.rewardOut)}
+            type="amount"
+          />
+          {data.rewardTokens[0]?.symbol ? data.rewardTokens[0]?.symbol : ""} |
+        </div>
+        <div class="flex">
+          $<TooltipNumber number={rewardToken0} type="balance" />
         </div>
       </div>
     </div>

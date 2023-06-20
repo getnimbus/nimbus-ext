@@ -1,13 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import * as browser from "webextension-polyfill";
-  import { nimbus } from "../../lib/network";
   import { i18n } from "~/lib/i18n";
+  import { nimbus } from "~/lib/network";
 
-  import type { NewData } from "~/types/NewData";
-
-  import NewCard from "~/components/NewCard.svelte";
+  import NewsCard from "~/components/NewsCard.svelte";
   import "~/components/Loading.custom.svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Button from "~/components/Button.svelte";
 
   const MultipleLang = {
     news: i18n("newtabPage.news", "News"),
@@ -17,16 +16,17 @@
     ),
   };
 
-  let newsData: NewData = [];
+  let pageValue = 1;
   let isLoading = false;
+  let newsData = [];
 
-  const getNewsData = async () => {
-    isLoading = true;
+  const getNews = async () => {
     try {
-      const response: NewData = await nimbus
-        .get("/news")
-        .then((response) => response.data.news);
-      newsData = response;
+      isLoading = true;
+      const res = await nimbus
+        .get(`/news?page=${pageValue}`)
+        .then((response) => response.data);
+      newsData = [...newsData, ...res.news];
     } catch (e) {
       console.log("error: ", e);
     } finally {
@@ -35,38 +35,58 @@
   };
 
   onMount(() => {
-    getNewsData();
+    getNews();
   });
 </script>
 
-<div class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col gap-10">
-  <div class="flex flex-col">
-    <div class="text-3xl text-black font-semibold">{MultipleLang.news}</div>
-    <div class="text-lg text-black font-medium">
-      {MultipleLang.news_page_title}
+<ErrorBoundary>
+  <div class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col gap-10">
+    <div class="flex flex-col justify-center">
+      <div class="text-3xl text-black font-semibold">{MultipleLang.news}</div>
+      <div class="text-lg text-black font-medium">
+        {MultipleLang.news_page_title}
+      </div>
     </div>
-  </div>
-  {#if isLoading}
-    <div class="w-full h-[120px] flex justify-center items-center">
-      <loading-icon />
-    </div>
-  {:else}
-    <div
-      class={`grid ${
-        newsData && newsData.length
-          ? "2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1"
-          : "grid-cols-1"
-      } gap-10`}
-    >
-      {#if newsData && newsData.length !== 0}
-        {#each newsData as news}
-          <NewCard data={news} />
-        {/each}
+    <div class="flex flex-col gap-4">
+      {#if isLoading && pageValue === 1}
+        <div class="w-full h-[120px] flex justify-center items-center">
+          <loading-icon />
+        </div>
       {:else}
-        <div>Empty</div>
+        <div
+          class={`grid ${
+            newsData && newsData.length === 0
+              ? "grid-cols-1"
+              : "2xl:grid-cols-4 xl:grid-cols-3 grid-cols-2"
+          } gap-10`}
+        >
+          {#if newsData.length === 0}
+            <div class="text-lg text-gray-400">Empty</div>
+          {:else}
+            {#each newsData as data}
+              <NewsCard {data} />
+            {/each}
+          {/if}
+        </div>
+      {/if}
+      {#if newsData.length !== 0}
+        <div class="mx-auto mt-6">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              pageValue = pageValue + 1;
+              getNews();
+            }}
+            disabled={isLoading}
+            {isLoading}
+          >
+            Load more
+          </Button>
+        </div>
       {/if}
     </div>
-  {/if}
-</div>
+  </div>
+</ErrorBoundary>
 
-<style></style>
+<style>
+</style>

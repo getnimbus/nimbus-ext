@@ -206,7 +206,7 @@
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-left text-xs uppercase font-semibold text-black"
+                    class="text-right text-xs uppercase font-semibold text-black"
                   >
                     {MultipleLang.price}
                   </div>
@@ -241,7 +241,7 @@
               <tbody>
                 <tr>
                   <td colspan={6}>
-                    <div class="flex justify-center items-center py-4 px-3">
+                    <div class="flex justify-center items-center py-3 px-3">
                       <loading-icon />
                     </div>
                   </td>
@@ -253,7 +253,7 @@
                   <tr>
                     <td colspan={6}>
                       <div
-                        class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
+                        class="flex justify-center items-center py-3 px-3 text-lg text-gray-400"
                       >
                         {MultipleLang.empty}
                       </div>
@@ -271,7 +271,7 @@
       </div>
     </div>
 
-    {#if getAddressContext(selectedWallet).type !== "EVM"}
+    {#if getAddressContext(selectedWallet)?.type !== "EVM"}
       <div class="flex flex-col gap-2">
         <div class="text-xl font-medium text-black">
           {MultipleLang.nft}
@@ -333,7 +333,7 @@
               <tbody>
                 <tr>
                   <td colspan={8}>
-                    <div class="flex justify-center items-center py-4 px-3">
+                    <div class="flex justify-center items-center py-3 px-3">
                       <loading-icon />
                     </div>
                   </td>
@@ -345,7 +345,7 @@
                   <tr>
                     <td colspan={8}>
                       <div
-                        class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
+                        class="flex justify-center items-center py-3 px-3 text-lg text-gray-400"
                       >
                         {MultipleLang.empty}
                       </div>

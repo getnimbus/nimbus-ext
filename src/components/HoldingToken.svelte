@@ -8,9 +8,12 @@
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import Chart from "~/assets/chart.svg";
+  import { chain } from "~/store";
 
   export let data;
   export let selectedWallet;
+
+  $: selectedChain = $chain;
 
   const navigate = useNavigate();
 
@@ -20,14 +23,17 @@
     Math.abs(data?.avgCost || 0) === 0
       ? 0
       : profitAndLoss / Math.abs(data?.avgCost);
+
+  $: clickable =
+    data.name !== "Bitcoin" &&
+    data.name !== "Ethereum" &&
+    selectedChain !== "GNOSIS";
 </script>
 
 <tr
-  class={`hover:bg-gray-100 transition-all ${
-    data.name !== "Bitcoin" && data.name !== "Ethereum" && "cursor-pointer"
-  }`}
+  class={`hover:bg-gray-100 transition-all ${clickable && "cursor-pointer"}`}
   on:click={() => {
-    if (data.name !== "Bitcoin" && data.name !== "Ethereum") {
+    if (clickable) {
       navigate(
         `position-detail?id=${encodeURIComponent(
           data.positionId
@@ -80,7 +86,7 @@
   </td>
 
   <td class="py-3">
-    <div class="text-sm text-[#00000099] font-medium flex justify-start">
+    <div class="text-sm text-[#00000099] font-medium flex justify-end">
       $<TooltipNumber number={data.market_price} type="balance" />
     </div>
   </td>
@@ -130,7 +136,7 @@
   </td>
 
   <td class="py-3 w-10">
-    {#if data.name !== "Bitcoin" && data.name !== "Ethereum"}
+    {#if clickable}
       <div class="flex justify-center">
         <div
           use:tooltip={{

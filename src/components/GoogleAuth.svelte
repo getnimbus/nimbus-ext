@@ -1,6 +1,6 @@
 <script lang="ts">
   import { user } from "~/store";
-  import { handleGetAccessToken } from "~/utils";
+  import { ExtensionsID, handleGetAccessToken } from "~/utils";
 
   import Google from "~/assets/google.png";
 
@@ -10,7 +10,7 @@
   const oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
   const redirectURL = encodeURIComponent(
     APP_TYPE.TYPE === "EXT"
-      ? "https://hjlilcigcidfaialcihialehachkldfd.chromiumapp.org"
+      ? `https://${ExtensionsID}.chromiumapp.org`
       : "https://app.getnimbus.io"
   );
 

@@ -11,7 +11,7 @@
   dayjs.extend(relativeTime);
   import { chainList, getAddressContext } from "~/utils";
 
-  export let type: "portfolio" | "transactions" = "portfolio";
+  export let type: "portfolio" | "order" | "analytic" = "portfolio";
   export let title;
 
   import type { AddressData } from "~/types/AddressData";
@@ -85,6 +85,11 @@
     selectedWallet = value;
   });
 
+  let selectedChain: string = "";
+  chain.subscribe((value) => {
+    selectedChain = value;
+  });
+
   let showFollowTooltip = false;
   let showDisableAddWallet = false;
   let isLoadingFullPage = false;
@@ -93,8 +98,6 @@
   let label = "";
   let errors: any = {};
   let isOpenAddModal = false;
-  let formatChainList = [];
-  let selectedChain = chainList[0];
 
   const getListAddress = async () => {
     isLoadingFullPage = true;
@@ -114,31 +117,28 @@
 
       listAddress = listAddress.concat(structWalletData);
 
+      const selectedChainRes = await browser.storage.sync.get("selectedChain");
+      if (selectedChainRes && selectedChainRes?.selectedChain?.length !== 0) {
+        chain.update((n) => (n = selectedChainRes.selectedChain));
+      }
+
       const selectedWalletRes = await browser.storage.sync.get(
         "selectedWallet"
       );
-
       if (selectedWalletRes) {
-        if (selectedWalletRes.selectedWallet.length !== 0) {
+        if (selectedWalletRes?.selectedWallet?.length !== 0) {
           wallet.update((n) => (n = selectedWalletRes.selectedWallet));
         }
-
         if (
-          selectedWalletRes.selectedWallet.length === 0 &&
-          listAddress.length !== 0
+          selectedWalletRes?.selectedWallet?.length === 0 &&
+          listAddress.length !== 0 &&
+          listAddress.length === 1
         ) {
           wallet.update((n) => (n = listAddress[0].value));
         }
       }
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const addressParams = urlParams.get("address");
-      if (addressParams) {
-        wallet.update((n) => (n = addressParams));
-      }
-      if (!addressParams && selectedWallet && listAddress.length === 0) {
-        wallet.update((n) => (n = ""));
-      }
+      updateStateFromParams();
 
       isLoadingFullPage = false;
     } catch (error) {
@@ -147,13 +147,39 @@
     }
   };
 
-  onMount(() => {
-    getListAddress();
+  const updateStateFromParams = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const addressParams = urlParams.get("address");
+    const chainParams = urlParams.get("chain");
+    if (chainParams) {
+      chain.update((n) => (n = chainParams));
+    }
+    if (!chainParams && listAddress.length === 0) {
+      chain.update((n) => (n = ""));
+    }
+    if (!chainParams && listAddress.length !== 0) {
+      if (getAddressContext(selectedWallet)?.type === "EVM") {
+        chain.update((n) => (n = "ALL"));
+      }
+      if (getAddressContext(selectedWallet)?.type === "BTC") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?address=${selectedWallet}`
+        );
+      }
+    }
     if (addressParams) {
       wallet.update((n) => (n = addressParams));
     }
+    if (!addressParams && listAddress.length === 0) {
+      wallet.update((n) => (n = ""));
+    }
+  };
+
+  onMount(() => {
+    getListAddress();
+    updateStateFromParams();
   });
 
   const isRequiredFieldValid = (value) => {
@@ -227,6 +253,9 @@
 
       if (addWallet.length === 1) {
         wallet.update((n) => (n = listAddress[0].value));
+        if (getAddressContext(dataFormat.value)?.type === "EVM") {
+          chain.update((n) => (n = "ALL"));
+        }
       }
 
       const filterWalletList = addWallet.filter((item) => item.value !== "all");
@@ -272,19 +301,6 @@
     }
   }
 
-  $: {
-    if (selectedWallet) {
-      browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
-        console.log("save selected address to sync storage");
-      });
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname + `?address=${selectedWallet}`
-      );
-    }
-  }
-
   $: formatListAddress = listAddress.map((item) => {
     return {
       ...item,
@@ -297,31 +313,37 @@
 
   $: {
     if (selectedWallet) {
-      switch (getAddressContext(selectedWallet)?.type) {
-        case "EVM":
-          formatChainList = chainList.filter(
-            (item) =>
-              item.value === "ALL" ||
-              item.value === "ETH" ||
-              item.value === "GNOSIS" ||
-              item.value === "BNB" ||
-              item.value === "POLYGON" ||
-              item.value === "SOLANA" ||
-              item.value === "ARBITRUM"
-          );
-          break;
-        case "BTC":
-          formatChainList = chainList.filter((item) => item.value === "BTC");
-          break;
-        default:
-          formatChainList = chainList;
+      // console.log({
+      //   listAddress,
+      //   selectedChain,
+      //   selectedWallet,
+      // });
+      browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
+        console.log("save selected address to sync storage");
+      });
+      browser.storage.sync.set({ selectedChain: selectedChain }).then(() => {
+        console.log("save selected chain to sync storage");
+      });
+      if (getAddressContext(selectedWallet)?.type === "EVM") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?chain=${selectedChain}&address=${selectedWallet}`
+        );
       }
-    }
-  }
-
-  $: {
-    if (selectedChain) {
-      chain.update((n) => (n = selectedChain.value));
+      if (getAddressContext(selectedWallet)?.type === "BTC") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?address=${selectedWallet}`
+        );
+        if (selectedChain) {
+          chain.update((n) => (n = selectedChain));
+        } else {
+          chain.update((n) => (n = "ALL"));
+        }
+      }
     }
   }
 </script>
@@ -383,8 +405,7 @@
                         </div>
                       {/each}
                       <Select
-                        isOptionsPage={true}
-                        isSelectWallet={true}
+                        type="wallet"
                         listSelect={formatListAddress.slice(
                           4,
                           formatListAddress.length
@@ -480,7 +501,7 @@
                     <div class="text-5xl text-white font-semibold">
                       {title}
                     </div>
-                    {#if type === "portfolio"}
+                    {#if type === "portfolio" || "analytic"}
                       <slot name="reload" />
                     {/if}
                   </div>
@@ -524,12 +545,13 @@
                     </div>
                   </div>
                 </div>
-                <Select
-                  isOptionsPage={false}
-                  isSelectWallet={false}
-                  listSelect={formatChainList}
-                  bind:selected={selectedChain}
-                />
+                {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+                  <Select
+                    type="chain"
+                    listSelect={chainList}
+                    bind:selected={selectedChain}
+                  />
+                {/if}
               </div>
 
               {#if type === "portfolio"}

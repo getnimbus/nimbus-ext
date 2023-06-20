@@ -11,9 +11,11 @@ import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
 
+export const ExtensionsID = "hjlilcigcidfaialcihialehachkldfd";
+
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
-export const BTCAddressRegex = /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}$/g
+export const BTCAddressRegex = /(\b(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}\b)/g
 export const BTCTrxRegex = /(\b(?!0x.*$)[a-fA-F0-9]{64}\b)/g
 export const SOLAddressRegex = /(\b[a-zA-Z0-9]{32,44}\b)/g
 export const SOLTrxRegex = /(\b[a-zA-Z0-9]{87,88}\b)/g
@@ -79,16 +81,11 @@ export const chainList = [
     label: "Ethereum",
     value: "ETH",
   },
-  {
-    logo: Bitcoin,
-    label: "Bitcoin",
-    value: "BTC",
-  },
-  {
-    logo: Gnosis,
-    label: "Gnosis",
-    value: "GNOSIS",
-  },
+  // {
+  //   logo: Gnosis,
+  //   label: "Gnosis",
+  //   value: "GNOSIS",
+  // },
   {
     logo: Bnb,
     label: "BNB",
@@ -264,7 +261,7 @@ export const handleGetAccessToken = async (code: string) => {
     code,
     direct_url:
       APP_TYPE.TYPE === "EXT"
-        ? "https://hjlilcigcidfaialcihialehachkldfd.chromiumapp.org"
+        ? `https://${ExtensionsID}.chromiumapp.org`
         : "https://app.getnimbus.io",
   }).then((response) => response)
   if (res.data) {

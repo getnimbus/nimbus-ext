@@ -57,24 +57,22 @@
 
   <td class="py-4">
     <div class="text-sm text-[#00000099] font-medium flex flex-col items-end">
-      <div class="flex flex-col items-end">
+      <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
-          <div class="flex items-center gap-1">
-            <TooltipNumber number={Number(data.amount0out)} type="amount" />
-            {data.amount0Price?.symbol ? data.amount0Price?.symbol : ""} |
-          </div>
-          <div class="flex">
-            $<TooltipNumber number={balance0} type="balance" />
-          </div>
+          <TooltipNumber number={Number(data.amount0out)} type="amount" />
+          {data.amount0Price?.symbol ? data.amount0Price?.symbol : ""} |
         </div>
+        <div class="flex">
+          $<TooltipNumber number={balance0} type="balance" />
+        </div>
+      </div>
+      <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
-          <div class="flex items-center gap-1">
-            <TooltipNumber number={Number(data.amount1out)} type="amount" />
-            {data.amount1Price?.symbol ? data.amount1Price?.symbol : ""} |
-          </div>
-          <div class="flex">
-            $<TooltipNumber number={balance1} type="balance" />
-          </div>
+          <TooltipNumber number={Number(data.amount1out)} type="amount" />
+          {data.amount1Price?.symbol ? data.amount1Price?.symbol : ""} |
+        </div>
+        <div class="flex">
+          $<TooltipNumber number={balance1} type="balance" />
         </div>
       </div>
     </div>
@@ -87,89 +85,78 @@
   </td>
 
   <td class="py-4">
-    <div class="text-sm font-medium">
-      <div class="flex flex-col">
+    <div class="text-sm font-medium flex flex-col">
+      <div
+        class={`flex justify-end ${
+          data?.ipLoss?.loss >= 0 ? "text-red-500" : "text-[#00A878]"
+        }`}
+      >
+        $<TooltipNumber number={Math.abs(data?.ipLoss?.loss)} type="balance" />
+      </div>
+      <div class="flex items-center justify-end gap-1">
         <div
-          class={`flex justify-end ${
+          class={`flex items-center ${
             data?.ipLoss?.loss >= 0 ? "text-red-500" : "text-[#00A878]"
-          }`}
+          } text-right`}
         >
-          $<TooltipNumber
-            number={Math.abs(data?.ipLoss?.loss)}
-            type="balance"
+          <TooltipNumber
+            number={Math.abs(data?.ipLoss?.lossPercent)}
+            type="percent"
           />
+          <span>%</span>
         </div>
-        <div class="flex items-center justify-end gap-1">
-          <div
-            class={`flex items-center ${
-              data?.ipLoss?.loss >= 0 ? "text-red-500" : "text-[#00A878]"
-            } text-right`}
-          >
-            <TooltipNumber
-              number={Math.abs(data?.ipLoss?.lossPercent)}
-              type="percent"
-            />
-            <span>%</span>
-          </div>
-          <img
-            src={data?.ipLoss?.loss >= 0 ? TrendDown : TrendUp}
-            alt="trend"
-            class="mb-1"
-          />
-        </div>
+        <img
+          src={data?.ipLoss?.loss >= 0 ? TrendDown : TrendUp}
+          alt="trend"
+          class="mb-1"
+        />
       </div>
     </div>
   </td>
 
   <td class="pr-3 py-4">
-    <div class="text-sm font-medium">
-      <div class="flex flex-col">
-        <div
-          class={`flex justify-end items-center gap-1 ${
-            profit >= 0 ? "text-[#00A878]" : "text-red-500"
-          }`}
-        >
-          {#if data?.isStaking}
-            <span
-              class="relative w-max text-yellow-300"
-              on:mouseenter={() => (showTooltip = true)}
-              on:mouseleave={() => (showTooltip = false)}
-            >
-              ⚠️
-              {#if showTooltip}
-                <span
-                  class="absolute -top-7 left-1/2 transform -translate-x-1/2"
-                  style="z-index: 2147483648;"
-                >
-                  <tooltip-detail
-                    text="This position is in staking so the PnL might inaccuracy"
-                  />
-                </span>
-              {/if}
-            </span>
-          {/if}
-          <div class="flex">
-            $<TooltipNumber number={Math.abs(profit)} type="balance" />
-          </div>
-        </div>
-        <div class="flex items-center justify-end gap-1">
-          <div
-            class={`flex items-center ${
-              profit >= 0 ? "text-[#00A878]" : "text-red-500"
-            } text-right`}
+    <div class="text-sm font-medium flex flex-col">
+      <div
+        class={`flex justify-end items-center gap-1 ${
+          profit >= 0 ? "text-[#00A878]" : "text-red-500"
+        }`}
+      >
+        {#if data?.isStaking}
+          <span
+            class="relative w-max text-yellow-300"
+            on:mouseenter={() => (showTooltip = true)}
+            on:mouseleave={() => (showTooltip = false)}
           >
-            <TooltipNumber
-              number={Math.abs(profitPercent) * 100}
-              type="percent"
-            />
-            <span>%</span>
-          </div>
-          <img
-            src={profit >= 0 ? TrendUp : TrendDown}
-            alt="trend"
-            class="mb-1"
-          />
+            ⚠️
+            {#if showTooltip}
+              <span
+                class="absolute -top-7 left-1/2 transform -translate-x-1/2"
+                style="z-index: 2147483648;"
+              >
+                <tooltip-detail
+                  text="This position is in staking so the PnL might inaccuracy"
+                />
+              </span>
+            {/if}
+          </span>
+        {/if}
+        <div class="flex">
+          $<TooltipNumber number={Math.abs(profit)} type="balance" />
         </div>
+      </div>
+      <div class="flex items-center justify-end gap-1">
+        <div
+          class={`flex items-center ${
+            profit >= 0 ? "text-[#00A878]" : "text-red-500"
+          } text-right`}
+        >
+          <TooltipNumber
+            number={Math.abs(profitPercent) * 100}
+            type="percent"
+          />
+          <span>%</span>
+        </div>
+        <img src={profit >= 0 ? TrendUp : TrendDown} alt="trend" class="mb-1" />
       </div>
     </div>
   </td>
