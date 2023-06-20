@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
+  import mixpanel from "mixpanel-browser";
 
   import NewsCard from "~/components/NewsCard.svelte";
   import "~/components/Loading.custom.svelte";
@@ -36,6 +37,7 @@
 
   onMount(() => {
     getNews();
+    mixpanel.track("news_page");
   });
 </script>
 

@@ -17,6 +17,7 @@
   } from "~/utils";
   import { wait } from "../../entries/background/utils";
   import { isOpenReport, wallet, chain } from "~/store";
+  import mixpanel from "mixpanel-browser";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
@@ -717,6 +718,9 @@
 
   onMount(() => {
     initWS();
+    mixpanel.track("portfolio_page", {
+      address: selectedWallet,
+    });
   });
 
   onDestroy(() => {
@@ -738,7 +742,10 @@
       <div
         class="cursor-pointer"
         class:loading={isLoading}
-        on:click={() => handleGetAllData("reload")}
+        on:click={() => {
+          handleGetAllData("reload");
+          mixpanel.track("user_reload");
+        }}
       >
         <img src={Reload} alt="" />
       </div>

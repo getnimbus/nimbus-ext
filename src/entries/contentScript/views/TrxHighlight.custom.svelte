@@ -1,13 +1,22 @@
 <svelte:options tag="trx-highlight" />
 
 <script lang="ts">
+  import { onMount } from "svelte";
   import tooltip from "./tooltip";
   import "./TrxInfo.custom.svelte";
+  import mixpanel from "mixpanel-browser";
 
   export let hash;
   export let name;
 
   let isShow = false;
+
+  onMount(() => {
+    mixpanel.init("d56364b743cd70634fe5bea51e1d7e1c", {
+      debug: true,
+      ignore_dnt: true,
+    });
+  });
 </script>
 
 <span>
@@ -20,6 +29,7 @@
       appendTo: () => document.body,
       onTrigger: () => {
         isShow = true;
+        mixpanel.track("user_interactive_trx_info");
       },
       onUntrigger: () => {
         isShow = false;

@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { nimbus } from "../../lib/network";
   import { i18n } from "~/lib/i18n";
+  import mixpanel from "mixpanel-browser";
 
   import "~/components/Loading.custom.svelte";
   import MarketItem from "~/components/MarketItem.svelte";
@@ -64,6 +65,7 @@
 
   onMount(() => {
     getMarketData();
+    mixpanel.track("market_page");
   });
 
   $: {

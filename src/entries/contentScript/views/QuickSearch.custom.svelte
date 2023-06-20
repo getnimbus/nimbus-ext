@@ -14,6 +14,7 @@
   import { i18n } from "~/lib/i18n";
   import { track } from "~/lib/data-tracking";
   import { shorterAddress } from "~/utils";
+  import mixpanel from "mixpanel-browser";
 
   import "./AddressInfo.custom.svelte";
   import "./TrxInfo.custom.svelte";
@@ -279,6 +280,10 @@
     getSuggestList();
     getTabSelected();
     getDraggableY();
+    mixpanel.init("d56364b743cd70634fe5bea51e1d7e1c", {
+      debug: true,
+      ignore_dnt: true,
+    });
   });
 
   onDestroy(() => {
@@ -415,6 +420,7 @@
       moving = false;
       if (timeHold < 50) {
         isShowSideBar = true;
+        mixpanel.track("user_interactive_sidebar");
       }
       timeHold = 0;
       startTime = null;
@@ -492,6 +498,7 @@
           </svg>
           <input
             on:keyup={(e) => {
+              mixpanel.track("user_search_sidebar");
               debounceSearchInput(e.target?.value || "");
             }}
             on:keydown={(e) => {

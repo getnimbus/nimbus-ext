@@ -5,6 +5,7 @@
   import { Router, Route, createHistory } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
   import createHashSource from "./hashHistory";
+  import mixpanel from "mixpanel-browser";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Header from "~/components/Header.svelte";
@@ -33,6 +34,10 @@
 
   onMount(() => {
     formatSelectedWallet();
+    mixpanel.init("d56364b743cd70634fe5bea51e1d7e1c", {
+      debug: true,
+      ignore_dnt: true,
+    });
   });
 
   $: {

@@ -4,6 +4,7 @@
   import { Link } from "svelte-navigator";
   import dayjs from "dayjs";
   import { shorterAddress, formatCurrencyV2 } from "~/utils";
+  import mixpanel from "mixpanel-browser";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import "~/components/Loading.custom.svelte";
@@ -377,6 +378,10 @@
     }
 
     if (positionIDParams && positionTypeParams && addressParams) {
+      mixpanel.track("position_detail_page", {
+        address: addressParams,
+        position_type: positionTypeParams,
+      });
       getPositionDetailPrice(positionIDParams, addressParams);
       getPositionDetail(positionIDParams, positionTypeParams, addressParams);
       address = addressParams;

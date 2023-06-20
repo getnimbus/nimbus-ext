@@ -5,6 +5,7 @@
   import * as browser from "webextension-polyfill";
   import { isEmpty } from "lodash";
   import { isSaveAddressLabel } from "../../../store";
+  import mixpanel from "mixpanel-browser";
 
   import tooltip from "./tooltip";
   import "./AddressInfo.custom.svelte";
@@ -34,6 +35,10 @@
 
   onMount(() => {
     getAddressLabel();
+    mixpanel.init("d56364b743cd70634fe5bea51e1d7e1c", {
+      debug: true,
+      ignore_dnt: true,
+    });
   });
 
   $: (isUnfocus && getAddressLabel()) || (address && getAddressLabel());
@@ -82,6 +87,7 @@
         e.preventDefault();
         e.stopPropagation();
         isShow = true;
+        mixpanel.track("user_interactive_address_info");
       },
       onUntrigger: (_, e) => {
         e.preventDefault();
