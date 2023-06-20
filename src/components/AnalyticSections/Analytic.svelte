@@ -24,7 +24,6 @@
 
   let isLoadingChart = false;
   let isEmptyDataChart = false;
-  let isLoading = false;
 
   let option = {
     tooltip: {
@@ -90,7 +89,6 @@
 
   const getAnalyticHistorical = async () => {
     isLoadingChart = true;
-    isLoading = true;
     try {
       const response: AnalyticHistoricalRes = await sendMessage("getAnalytic", {
         address: selectedWallet,
@@ -121,16 +119,13 @@
           },
         };
         isLoadingChart = false;
-        isLoading = false;
       } else {
         isLoadingChart = false;
-        isLoading = false;
         isEmptyDataChart = true;
       }
     } catch (e) {
       console.log("error: ", e);
       isLoadingChart = false;
-      isLoading = false;
       isEmptyDataChart = true;
     }
   };
@@ -139,7 +134,6 @@
     if (selectedWallet || selectedChain) {
       isLoadingChart = false;
       isEmptyDataChart = false;
-      isLoading = false;
       if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
         getAnalyticHistorical();
       }
@@ -161,19 +155,4 @@
 </AddressManagement>
 
 <style>
-  .loading {
-    animation-name: loading;
-    animation-duration: 1.4s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-  }
-
-  @keyframes loading {
-    0% {
-      transform: rotate(0);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
 </style>

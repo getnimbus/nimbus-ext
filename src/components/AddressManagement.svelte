@@ -504,7 +504,21 @@
                     <div class="text-5xl text-white font-semibold">
                       {title}
                     </div>
-                    {#if type === "portfolio" || "analytic"}
+                    {#if type === "analytic"}
+                      <a
+                        href="https://forms.gle/kg23ZmgXjsTgtjTN7"
+                        target="_blank"
+                      >
+                        <Button
+                          variant="secondary"
+                          width={140}
+                          size="supper-small"
+                        >
+                          Request analytics
+                        </Button>
+                      </a>
+                    {/if}
+                    {#if type === "portfolio"}
                       <slot name="reload" />
                     {/if}
                   </div>
