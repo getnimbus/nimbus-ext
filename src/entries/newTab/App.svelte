@@ -5,7 +5,6 @@
   import { Router, Route, createHistory } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
   import createHashSource from "./hashHistory";
-  import mixpanel from "mixpanel-browser";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Header from "~/components/Header.svelte";
@@ -16,6 +15,7 @@
   import Transactions from "~/components/NewTabUI/Transactions.svelte";
   import PositionDetail from "~/components/NewTabUI/PositionDetail.svelte";
   import NftDetail from "~/components/NewTabUI/NFTDetail.svelte";
+  import Mixpanel from "~/components/Mixpanel.svelte";
   // TODO: Add Lazyload for each routes
 
   const hash = createHistory(createHashSource());
@@ -34,10 +34,6 @@
 
   onMount(() => {
     formatSelectedWallet();
-    mixpanel.init("d56364b743cd70634fe5bea51e1d7e1c", {
-      debug: true,
-      ignore_dnt: true,
-    });
   });
 
   $: {
@@ -50,39 +46,41 @@
 </script>
 
 <ErrorBoundary>
-  <Router history={APP_TYPE.TYPE === "EXT" ? hash : undefined}>
-    <div class="flex flex-col pb-10">
-      <Header />
+  <Mixpanel>
+    <Router history={APP_TYPE.TYPE === "EXT" ? hash : undefined}>
+      <div class="flex flex-col pb-10">
+        <Header />
 
-      <Route path="news">
-        <News />
-      </Route>
+        <Route path="news">
+          <News />
+        </Route>
 
-      <Route path="market">
-        <Market />
-      </Route>
+        <Route path="market">
+          <Market />
+        </Route>
 
-      <Route path="position-detail">
-        <PositionDetail />
-      </Route>
+        <Route path="position-detail">
+          <PositionDetail />
+        </Route>
 
-      <Route path="nft-detail">
-        <NftDetail />
-      </Route>
+        <Route path="nft-detail">
+          <NftDetail />
+        </Route>
 
-      <Route path="analytic">
-        <Analytic />
-      </Route>
+        <Route path="analytic">
+          <Analytic />
+        </Route>
 
-      <Route path="transactions">
-        <Transactions />
-      </Route>
+        <Route path="transactions">
+          <Transactions />
+        </Route>
 
-      <Route path="*">
-        <Portfolio />
-      </Route>
-    </div>
-  </Router>
+        <Route path="*">
+          <Portfolio />
+        </Route>
+      </div>
+    </Router>
+  </Mixpanel>
 </ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global></style>

@@ -7,6 +7,7 @@
   import { isSaveAddressLabel } from "../../../store";
   import mixpanel from "mixpanel-browser";
 
+  import Mixpanel from "~/components/Mixpanel.svelte";
   import tooltip from "./tooltip";
   import "./AddressInfo.custom.svelte";
 
@@ -35,113 +36,111 @@
 
   onMount(() => {
     getAddressLabel();
-    mixpanel.init("d56364b743cd70634fe5bea51e1d7e1c", {
-      debug: true,
-      ignore_dnt: true,
-    });
   });
 
   $: (isUnfocus && getAddressLabel()) || (address && getAddressLabel());
 </script>
 
-<span>
-  {#if name !== "NEAR1"}
+<Mixpanel>
+  <span>
+    {#if name !== "NEAR1"}
+      <span
+        use:tooltip={{
+          interactive: true,
+          delay: [100, null],
+          appendTo: () => document.body,
+          onTrigger: () => {
+            // hide default tooltip for etherscan page
+            const selectedTooltip = document.getElementsByClassName(
+              "tooltip fade bs-tooltip-top show"
+            );
+            if (selectedTooltip.length > 0) {
+              selectedTooltip[0].parentNode.removeChild(selectedTooltip[0]);
+            }
+          },
+          // content: popperElement,
+          content: `<address-spreadtext address="${address}" />`,
+          allowHTML: true,
+          offset: [0, 5],
+          placement: "top",
+          animation: "shift-away",
+        }}
+      >
+        {#if addressLabel}
+          {addressLabel}
+        {:else}
+          <slot />
+        {/if}
+      </span>
+    {:else}
+      <slot />
+    {/if}
     <span
       use:tooltip={{
         interactive: true,
-        delay: [100, null],
+        delay: [300, null],
+        trigger: "click focusin",
         appendTo: () => document.body,
-        onTrigger: () => {
-          // hide default tooltip for etherscan page
-          const selectedTooltip = document.getElementsByClassName(
-            "tooltip fade bs-tooltip-top show"
-          );
-          if (selectedTooltip.length > 0) {
-            selectedTooltip[0].parentNode.removeChild(selectedTooltip[0]);
-          }
+        onTrigger: (_, e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          isShow = true;
+          mixpanel.track("user_interactive_address_info");
+        },
+        onUntrigger: (_, e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          isShow = false;
         },
         // content: popperElement,
-        content: `<address-spreadtext address="${address}" />`,
+        content: `<address-info address="${address}" isAddressDetail=${true} />`,
         allowHTML: true,
-        offset: [0, 5],
-        placement: "top",
+        placement: "bottom-start",
+        arrow: false,
         animation: "shift-away",
+        maxWidth: "none",
       }}
+      class="rounded-[1000px] py-1 px-2 bg-[#A5D5FE] select-none cursor-pointer whitespace-nowrap"
     >
-      {#if addressLabel}
-        {addressLabel}
+      <span class="text-[#27326F] text-sm font-medium">More info</span>
+      {#if isShow}
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 12 13"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          class="stroke-[#27326F]"
+        >
+          <path
+            d="M10 8.86365L6 4.50001L2 8.86365"
+            stroke="auto"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
       {:else}
-        <slot />
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 12 13"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          class="stroke-[#27326F]"
+        >
+          <path
+            d="M2 5.13635L6 9.49999L10 5.13635"
+            stroke="auto"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
       {/if}
     </span>
-  {:else}
-    <slot />
-  {/if}
-  <span
-    use:tooltip={{
-      interactive: true,
-      delay: [300, null],
-      trigger: "click focusin",
-      appendTo: () => document.body,
-      onTrigger: (_, e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        isShow = true;
-        mixpanel.track("user_interactive_address_info");
-      },
-      onUntrigger: (_, e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        isShow = false;
-      },
-      // content: popperElement,
-      content: `<address-info address="${address}" isAddressDetail=${true} />`,
-      allowHTML: true,
-      placement: "bottom-start",
-      arrow: false,
-      animation: "shift-away",
-      maxWidth: "none",
-    }}
-    class="rounded-[1000px] py-1 px-2 bg-[#A5D5FE] select-none cursor-pointer whitespace-nowrap"
-  >
-    <span class="text-[#27326F] text-sm font-medium">More info</span>
-    {#if isShow}
-      <svg
-        width="12"
-        height="12"
-        viewBox="0 0 12 13"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        class="stroke-[#27326F]"
-      >
-        <path
-          d="M10 8.86365L6 4.50001L2 8.86365"
-          stroke="auto"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    {:else}
-      <svg
-        width="12"
-        height="12"
-        viewBox="0 0 12 13"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        class="stroke-[#27326F]"
-      >
-        <path
-          d="M2 5.13635L6 9.49999L10 5.13635"
-          stroke="auto"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    {/if}
   </span>
-</span>
+</Mixpanel>
 
 <style>
 </style>
