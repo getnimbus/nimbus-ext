@@ -80,7 +80,6 @@ onMessage<IAddressInput, any>("getAnalytic", async ({ data: { address, chain } }
   }
 });
 
-
 onMessage<IAddressInput, any>("getPreview", async ({ data: { address, chain } }) => {
   try {
     return await nimbus.get(`/address/${address}/preview?chain=${chain}`).then((response) => response.data);

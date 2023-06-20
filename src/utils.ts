@@ -11,6 +11,8 @@ import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
 
+export const ExtensionsID = "hjlilcigcidfaialcihialehachkldfd";
+
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
 export const BTCAddressRegex = /(\b(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}\b)/g
@@ -259,7 +261,7 @@ export const handleGetAccessToken = async (code: string) => {
     code,
     direct_url:
       APP_TYPE.TYPE === "EXT"
-        ? "https://hjlilcigcidfaialcihialehachkldfd.chromiumapp.org"
+        ? `https://${ExtensionsID}.chromiumapp.org`
         : "https://app.getnimbus.io",
   }).then((response) => response)
   if (res.data) {
