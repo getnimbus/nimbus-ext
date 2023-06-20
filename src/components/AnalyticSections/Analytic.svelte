@@ -12,8 +12,6 @@
   import AddressManagement from "~/components/AddressManagement.svelte";
   import HistoricalActivities from "~/components/HistoricalActivities.svelte";
 
-  import Reload from "~/assets/reload.svg";
-
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
@@ -150,24 +148,6 @@
 </script>
 
 <AddressManagement type="analytic" title="Analytic">
-  <span slot="reload">
-    <div class="flex items-center gap-2 mb-1">
-      <div
-        class="cursor-pointer"
-        class:loading={isLoading}
-        on:click={() => getAnalyticHistorical()}
-      >
-        <img src={Reload} alt="" />
-      </div>
-      <div class="text-xs text-white font-medium">
-        {#if isLoading}
-          Updating data
-        {:else}
-          Reload
-        {/if}
-      </div>
-    </div>
-  </span>
   <span slot="body">
     <div class="max-w-[2000px] m-auto w-[90%] -mt-32">
       <div
