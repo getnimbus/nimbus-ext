@@ -8,7 +8,7 @@
   export let isBigIcon = false;
 </script>
 
-<span class="flex justify-end items-center gap-1">
+<span class="flex justify-end items-center gap-2">
   <slot />
   <span class="cursor-pointer">
     <img
