@@ -1,7 +1,7 @@
 <script lang="ts">
   import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
-  import { formatBalance, getAddressContext } from "~/utils";
+  import { formatBalance } from "~/utils";
 
   export let holdingTokenData;
   export let holdingNFTData;
@@ -271,97 +271,95 @@
       </div>
     </div>
 
-    {#if getAddressContext(selectedWallet)?.type !== "EVM"}
-      <div class="flex flex-col gap-2">
-        <div class="text-xl font-medium text-black">
-          {MultipleLang.nft}
-        </div>
-        <div class="border border-[#0000000d] rounded-[10px]">
-          <table class="table-auto w-full">
-            <thead>
-              <tr class="bg-[#f4f5f880]">
-                <th class="pl-3 py-3">
-                  <div
-                    class="text-left text-xs uppercase font-semibold text-black"
+    <div class="flex flex-col gap-2">
+      <div class="text-xl font-medium text-black">
+        {MultipleLang.nft}
+      </div>
+      <div class="border border-[#0000000d] rounded-[10px]">
+        <table class="table-auto w-full">
+          <thead>
+            <tr class="bg-[#f4f5f880]">
+              <th class="pl-3 py-3">
+                <div
+                  class="text-left text-xs uppercase font-semibold text-black"
+                >
+                  {MultipleLang.collection}
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-left text-xs uppercase font-semibold text-black"
+                >
+                  {MultipleLang.Balance}
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right text-xs uppercase font-semibold text-black"
+                >
+                  {MultipleLang.floor_price}
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right text-xs uppercase font-semibold text-black"
+                >
+                  {MultipleLang.total_spent}
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right text-xs uppercase font-semibold text-black"
+                >
+                  {MultipleLang.current_value}
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right text-xs uppercase font-semibold text-black"
+                >
+                  <TooltipTitle
+                    tooltipText="Price NFTs now - Price NFTs at time you spent"
                   >
-                    {MultipleLang.collection}
+                    {MultipleLang.profit}
+                  </TooltipTitle>
+                </div>
+              </th>
+              <th class="py-3 w-10" />
+            </tr>
+          </thead>
+          {#if isLoadingNFT}
+            <tbody>
+              <tr>
+                <td colspan={8}>
+                  <div class="flex justify-center items-center py-3 px-3">
+                    <loading-icon />
                   </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-left text-xs uppercase font-semibold text-black"
-                  >
-                    {MultipleLang.Balance}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right text-xs uppercase font-semibold text-black"
-                  >
-                    {MultipleLang.floor_price}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right text-xs uppercase font-semibold text-black"
-                  >
-                    {MultipleLang.total_spent}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right text-xs uppercase font-semibold text-black"
-                  >
-                    {MultipleLang.current_value}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right text-xs uppercase font-semibold text-black"
-                  >
-                    <TooltipTitle
-                      tooltipText="Price NFTs now - Price NFTs at time you spent"
-                    >
-                      {MultipleLang.profit}
-                    </TooltipTitle>
-                  </div>
-                </th>
-                <th class="py-3 w-10" />
+                </td>
               </tr>
-            </thead>
-            {#if isLoadingNFT}
-              <tbody>
+            </tbody>
+          {:else}
+            <tbody>
+              {#if formatDataNFT && formatDataNFT.length === 0}
                 <tr>
                   <td colspan={8}>
-                    <div class="flex justify-center items-center py-3 px-3">
-                      <loading-icon />
+                    <div
+                      class="flex justify-center items-center py-3 px-3 text-lg text-gray-400"
+                    >
+                      {MultipleLang.empty}
                     </div>
                   </td>
                 </tr>
-              </tbody>
-            {:else}
-              <tbody>
-                {#if formatDataNFT && formatDataNFT.length === 0}
-                  <tr>
-                    <td colspan={8}>
-                      <div
-                        class="flex justify-center items-center py-3 px-3 text-lg text-gray-400"
-                      >
-                        {MultipleLang.empty}
-                      </div>
-                    </td>
-                  </tr>
-                {:else}
-                  {#each formatDataNFT as holding}
-                    <HoldingNFT data={holding} {selectedWallet} />
-                  {/each}
-                {/if}
-              </tbody>
-            {/if}
-          </table>
-        </div>
+              {:else}
+                {#each formatDataNFT as holding}
+                  <HoldingNFT data={holding} {selectedWallet} />
+                {/each}
+              {/if}
+            </tbody>
+          {/if}
+        </table>
       </div>
-    {/if}
+    </div>
   </ErrorBoundary>
 </div>
 
