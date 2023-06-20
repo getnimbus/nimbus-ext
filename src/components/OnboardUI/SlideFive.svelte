@@ -77,11 +77,9 @@
         browser.storage.sync.set({ selectedWallet: data.address }).then(() => {
           console.log("save selected address to sync storage");
         });
-        if (getAddressContext(data.address)?.type === "EVM") {
-          browser.storage.sync.set({ selectedChain: "ALL" }).then(() => {
-            console.log("save selected address to sync storage");
-          });
-        }
+        browser.storage.sync.set({ selectedChain: "ALL" }).then(() => {
+          console.log("save selected address to sync storage");
+        });
       }
 
       e.target.reset();
