@@ -143,12 +143,7 @@
       });
       if (selectedWallet === response.address) {
         data = [...data, ...response.result.data];
-        if (
-          response.result.pageToken &&
-          response.result.pageToken.length !== 0
-        ) {
-          pageToken = response.result.pageToken;
-        }
+        pageToken = response.result.pageToken;
       } else {
         console.log("response: ", response);
       }
