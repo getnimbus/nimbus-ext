@@ -10,6 +10,7 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { chainList, getAddressContext } from "~/utils";
+  import mixpanel from "mixpanel-browser";
 
   export let type: "portfolio" | "order" | "analytic" = "portfolio";
   export let title;
@@ -279,6 +280,8 @@
       e.target.reset();
       errors = {};
       isOpenAddModal = false;
+
+      mixpanel.track("user_add_address");
     } else {
       console.log("Invalid Form");
     }

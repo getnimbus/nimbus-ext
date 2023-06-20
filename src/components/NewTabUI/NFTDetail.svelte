@@ -3,6 +3,7 @@
   import { nimbus } from "~/lib/network";
   import { Link } from "svelte-navigator";
   import { priceSubscribe } from "~/lib/price-ws";
+  import mixpanel from "mixpanel-browser";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "../TooltipNumber.svelte";
@@ -70,6 +71,10 @@
     }
 
     if (collectionIDParams && addressParams) {
+      mixpanel.track("nft_detail_page", {
+        address: addressParams,
+        collection_type: collectionIDParams,
+      });
       getCollectionDetail(collectionIDParams, addressParams);
     }
   });

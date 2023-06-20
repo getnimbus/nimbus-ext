@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   // import { nimbus } from "~/lib/network";
   // import { user } from "~/store";
+  import mixpanel from "mixpanel-browser";
 
   // import Button from "~/components/Button.svelte";
   // import "~/components/Loading.custom.svelte";
@@ -55,6 +57,10 @@
   //     listNft = [];
   //   }
   // }
+
+  onMount(() => {
+    mixpanel.track("transaction_page");
+  });
 </script>
 
 <ErrorBoundary>

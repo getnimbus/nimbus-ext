@@ -8,6 +8,7 @@
   import { Toast } from "flowbite-svelte";
   import { fly } from "svelte/transition";
   import { wallet, chain } from "~/store";
+  import mixpanel from "mixpanel-browser";
 
   import type { AddressData } from "~/types/AddressData";
 
@@ -241,6 +242,7 @@
       toastMsg = "Successfully add new wallet!";
       isSuccess = true;
       trigger();
+      mixpanel.track("user_add_address");
     } else {
       console.log("Invalid Form");
       toastMsg = "Something wrong when add new wallet. Please try again!";
@@ -282,6 +284,7 @@
         toastMsg = "Successfully edit your wallet!";
         isSuccess = true;
         trigger();
+        mixpanel.track("user_edit_address");
       }
     } else {
       console.log("Invalid Form");

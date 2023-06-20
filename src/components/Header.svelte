@@ -14,6 +14,7 @@
   } from "@solana/wallet-adapter-wallets";
   import { chain, user, wallet } from "~/store";
   import { nimbus } from "~/lib/network";
+  import mixpanel from "mixpanel-browser";
 
   import GoogleAuth from "~/components/GoogleAuth.svelte";
   import SolanaAuth from "./SolanaAuth.svelte";
@@ -367,6 +368,7 @@
               search.length !== 0 &&
               (event.which == 13 || event.keyCode == 13)
             ) {
+              mixpanel.track("user_search");
               chain.update((n) => (n = "ALL"));
               wallet.update((n) => (n = search));
               if (getAddressContext(search)?.type === "EVM") {

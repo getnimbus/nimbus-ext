@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   // import { nimbus } from "~/lib/network";
   // import { user } from "~/store";
+  import mixpanel from "mixpanel-browser";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Analytic from "../AnalyticSections/Analytic.svelte";
@@ -55,6 +57,10 @@
   //     listNft = [];
   //   }
   // }
+
+  onMount(() => {
+    mixpanel.track("analytic_page");
+  });
 </script>
 
 <ErrorBoundary>
