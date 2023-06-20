@@ -11,7 +11,7 @@
   dayjs.extend(relativeTime);
   import { chainList, getAddressContext } from "~/utils";
 
-  export let type: "portfolio" | "order" = "portfolio";
+  export let type: "portfolio" | "order" | "analytic" = "portfolio";
   export let title;
 
   import type { AddressData } from "~/types/AddressData";
@@ -501,7 +501,7 @@
                     <div class="text-5xl text-white font-semibold">
                       {title}
                     </div>
-                    {#if type === "portfolio"}
+                    {#if type === "portfolio" || "analytic"}
                       <slot name="reload" />
                     {/if}
                   </div>
