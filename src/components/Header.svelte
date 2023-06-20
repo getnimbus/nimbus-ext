@@ -300,32 +300,6 @@
         </div>
       </Link>
 
-      <Link to="market">
-        <div
-          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "market"}
-          on:click={() => (navActive = "market")}
-        >
-          <img src={MarketIcon} alt="" />
-          <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.market}
-          </span>
-        </div>
-      </Link>
-
-      <Link to="news">
-        <div
-          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "news"}
-          on:click={() => (navActive = "news")}
-        >
-          <img src={NewsIcon} alt="" />
-          <span class="text-white font-semibold xl:text-base text-sm">
-            {MultipleLang.news}
-          </span>
-        </div>
-      </Link>
-
       <Link to="analytic">
         <div class="relative">
           <div
@@ -350,6 +324,32 @@
           <img src={TransactionsIcon} alt="" />
           <span class="text-white font-semibold xl:text-base text-sm">
             {MultipleLang.transactions}
+          </span>
+        </div>
+      </Link>
+
+      <Link to="market">
+        <div
+          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class:bg-[#525B8C]={navActive === "market"}
+          on:click={() => (navActive = "market")}
+        >
+          <img src={MarketIcon} alt="" />
+          <span class="text-white font-semibold xl:text-base text-sm">
+            {MultipleLang.market}
+          </span>
+        </div>
+      </Link>
+
+      <Link to="news">
+        <div
+          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+          class:bg-[#525B8C]={navActive === "news"}
+          on:click={() => (navActive = "news")}
+        >
+          <img src={NewsIcon} alt="" />
+          <span class="text-white font-semibold xl:text-base text-sm">
+            {MultipleLang.news}
           </span>
         </div>
       </Link>
