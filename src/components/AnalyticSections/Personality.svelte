@@ -1,18 +1,16 @@
 <script lang="ts">
+  import { sendMessage } from "webext-bridge";
+  import { wallet, chain } from "~/store";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { sendMessage } from "webext-bridge";
-  import { wallet, chain } from "~/store";
 
-  import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
   import type { AnalyticHistoricalRes } from "~/types/AnalyticHistoricalData";
 
-  import AddressManagement from "~/components/AddressManagement.svelte";
   import CalendarChart from "~/components/CalendarChart.svelte";
-  import HistoricalTransactions from "./HistoricalTransactions.svelte";
+  import Button from "~/components/Button.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -24,11 +22,9 @@
     selectedChain = value;
   });
 
-  let isLoading = false;
-  let data = [];
-  let pageToken = "";
   let isLoadingChart = false;
   let isEmptyDataChart = false;
+
   let option = {
     tooltip: {
       extraCssText: "z-index: 9997",
@@ -63,7 +59,7 @@
       },
       controller: {
         inRange: {
-          opacity: [0.2, 1],
+          opacity: [0, 1],
         },
         outOfRange: {
           color: "#f4f5f880",
@@ -122,87 +118,87 @@
             data: formatData,
           },
         };
+        isLoadingChart = false;
       } else {
+        isLoadingChart = false;
         isEmptyDataChart = true;
       }
     } catch (e) {
       console.log("error: ", e);
-      isEmptyDataChart = true;
-    } finally {
       isLoadingChart = false;
+      isEmptyDataChart = true;
     }
-  };
-
-  const getListTransactions = async (page: string) => {
-    isLoading = true;
-    try {
-      const response: TrxHistoryDataRes = await sendMessage("getTrxHistory", {
-        address: selectedWallet,
-        chain: selectedChain,
-        pageToken: page,
-      });
-      if (selectedWallet === response.address) {
-        data = [...data, ...response.result.data];
-        pageToken = response.result.pageToken;
-      } else {
-        console.log("response: ", response);
-      }
-    } catch (e) {
-      console.log("error: ", e);
-    } finally {
-      isLoading = false;
-    }
-  };
-
-  const handleLoadMore = (paginate: string) => {
-    getListTransactions(paginate);
   };
 
   $: {
     if (selectedWallet || selectedChain) {
-      data = [];
-      pageToken = "";
-      isLoading = false;
       isLoadingChart = false;
       isEmptyDataChart = false;
       if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
-        getListTransactions("");
         getAnalyticHistorical();
       }
     }
   }
 </script>
 
-<AddressManagement type="order" title="Transactions">
-  <span slot="body">
-    <div class="max-w-[2000px] m-auto w-[90%] -mt-32">
-      <div
-        class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
-        style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
-      >
-        <div
-          class="border border-[#0000001a] rounded-[20px] pt-6 pb-9 flex flex-col gap-4"
-        >
-          <CalendarChart
-            {option}
-            {isEmptyDataChart}
-            {isLoadingChart}
-            isTrxPage
-            title="Historical Activities"
-            tooltipTitle="The chart shows only activities made by this wallet"
-            id="HistoricalActivities"
-          />
-        </div>
-        <HistoricalTransactions
-          {isLoading}
-          {pageToken}
-          {data}
-          loadMore={handleLoadMore}
-        />
-      </div>
+<div class="border border-[#0000001a] rounded-[20px]">
+  <div
+    class="text-2xl font-medium text-black border-b-[1px] mx-6 mb-6 pt-6 pb-4"
+  >
+    Personality
+  </div>
+  <div class="pb-9 flex flex-col gap-4">
+    <CalendarChart
+      {option}
+      {isEmptyDataChart}
+      {isLoadingChart}
+      title="Historical activities"
+      tooltipTitle="The chart shows only activities made by this wallet"
+      id="HistoricalActivities"
+    />
+  </div>
+  <div class="relative">
+    <div class="pb-9 flex flex-col gap-4">
+      <CalendarChart
+        {option}
+        {isEmptyDataChart}
+        {isLoadingChart}
+        title="Transaction per day"
+        tooltipTitle=""
+        id="TrxPerDay"
+      />
     </div>
-  </span>
-</AddressManagement>
+    <div class="pb-9 flex flex-col gap-4">
+      <CalendarChart
+        {option}
+        {isEmptyDataChart}
+        {isLoadingChart}
+        title="Most used protocol"
+        tooltipTitle=""
+        id="MostUsedProtocol"
+      />
+    </div>
+    <div class="pb-9 flex flex-col gap-4">
+      <CalendarChart
+        {option}
+        {isEmptyDataChart}
+        {isLoadingChart}
+        title="Most profit position"
+        tooltipTitle=""
+        id="MostProfitPosition"
+      />
+    </div>
+    <div
+      class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-10 backdrop-blur-md"
+    >
+      <div class="text-lg">Comming soon 🚀</div>
+      <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
+        <Button variant="secondary" width={140} size="supper-small">
+          Request analytics
+        </Button>
+      </a>
+    </div>
+  </div>
+</div>
 
-<style>
-</style>
+<style windi:preflights:global windi:safelist:global></style>
