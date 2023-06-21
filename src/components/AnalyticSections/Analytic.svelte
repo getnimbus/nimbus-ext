@@ -1,6 +1,8 @@
 <script lang="ts">
   import AddressManagement from "~/components/AddressManagement.svelte";
   import Personality from "./Personality.svelte";
+  import CurrentStatus from "./CurrentStatus.svelte";
+  import PastPerformance from "./PastPerformance.svelte";
 </script>
 
 <AddressManagement type="order" title="Analytic">
@@ -11,6 +13,8 @@
         style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
       >
         <Personality />
+        <CurrentStatus />
+        <PastPerformance />
       </div>
     </div>
   </span>

@@ -138,6 +138,7 @@
       const response = await nimbus
         .get(`/address/${address}/token/${positionId}`)
         .then((res) => res.data);
+      console.log("res: ", response);
       if (response) {
         positionDetailPrice = response;
 
@@ -282,9 +283,12 @@
         setTimeout(() => {
           syncChartCursor();
         }, 500);
+      } else {
+        isEmptyChart = true;
       }
     } catch (e) {
       console.log("error: ", e);
+      isEmptyChart = true;
     } finally {
       isLoadingPositionDetailPrice = false;
     }
@@ -581,14 +585,14 @@
             Price & Total Balance
           </div>
           {#if isLoadingPositionDetailPrice}
-            <div class="flex justify-center items-center min-h-[420px]">
+            <div class="flex justify-center items-center h-[504px]">
               <loading-icon />
             </div>
           {:else}
             <div>
               {#if isEmptyChart}
                 <div
-                  class="flex justify-center items-center text-lg text-gray-400"
+                  class="flex justify-center items-center text-lg text-gray-400 h-[504px]"
                 >
                   Empty
                 </div>
@@ -605,14 +609,14 @@
             Position Value
           </div>
           {#if isLoadingPositionDetailPrice}
-            <div class="flex justify-center items-center min-h-[420px]">
+            <div class="flex justify-center items-center h-[504px]">
               <loading-icon />
             </div>
           {:else}
             <div>
               {#if isEmptyChart}
                 <div
-                  class="flex justify-center items-center text-lg text-gray-400"
+                  class="flex justify-center items-center text-lg text-gray-400 h-[504px]"
                 >
                   Empty
                 </div>
