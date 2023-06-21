@@ -32,7 +32,6 @@
   import Overview from "~/components/PortfolioSections/Overview.svelte";
   import Positions from "~/components/PortfolioSections/Positions.svelte";
   import AddressManagement from "~/components/AddressManagement.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
   import Testimonial from "~/components/Testimonial.svelte";
   import "~/components/Tooltip.custom.svelte";
 
@@ -100,7 +99,6 @@
   isOpenReport.subscribe((value) => {
     isShowChat = value;
   });
-  let isShowTestimonial = false;
   let totalPositions = 0;
   let totalClaimable = 0;
   let totalAssets = 0;
@@ -575,24 +573,6 @@
     }
   };
 
-  const getSync = async () => {
-    isShowTestimonial = true;
-    try {
-      const response = await sendMessage("getSync", {
-        address: selectedWallet,
-        chain: selectedChain,
-      });
-      console.log("res: ", response);
-    } catch (e) {
-      console.log("e: ", e);
-      await wait(2000);
-      isShowTestimonial = false;
-    } finally {
-      await wait(2000);
-      isShowTestimonial = false;
-    }
-  };
-
   const handleGetAllData = async (type: string) => {
     overviewData = {
       breakdownToken: [],
@@ -627,7 +607,10 @@
     try {
       if (type === "reload") {
         console.log("Going to full sync");
-        getSync();
+        await sendMessage("getSync", {
+          address: selectedWallet,
+          chain: selectedChain,
+        });
       }
 
       let syncStatus = await getSyncStatus();
@@ -651,7 +634,10 @@
       }
       if (!syncStatus?.data?.lastSync) {
         console.log("Going to full sync");
-        getSync();
+        await sendMessage("getSync", {
+          address: selectedWallet,
+          chain: selectedChain,
+        });
       }
 
       while (true) {
@@ -792,7 +778,7 @@
         >
           {syncMsg}
           {#if syncMsg !== "Invalid address"}
-            <loading-icon />
+            <Testimonial />
           {/if}
         </div>
       {:else}
@@ -880,13 +866,6 @@
         </Motion>
       </div>
     {/if}
-
-    <AppOverlay
-      isOpen={isShowTestimonial}
-      on:close={() => (isShowTestimonial = false)}
-    >
-      <Testimonial />
-    </AppOverlay>
   </span>
 </AddressManagement>
 
