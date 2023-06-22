@@ -200,7 +200,7 @@
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
                 ${params[0].axisValue}
               </div>
-              <div style="display: flex; align-items: centers; justify-content: space-between;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
                   <div style="background: #00b580; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
                   ${params[0].seriesName}

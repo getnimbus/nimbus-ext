@@ -54,6 +54,19 @@ onMessage<ICoinListInput, any>("coinList", async ({ data: { limit } }) => {
   }
 });
 
+onMessage<IAddressInput, any>("getSectorGrowth", async ({ data: { address, chain } }) => {
+  try {
+    return nimbus.get(`/analysis/${address}/sector-growth?chain=${chain}`).then((response) => {
+      return {
+        result: response.data,
+        address: address
+      }
+    });
+  } catch (error) {
+    return {};
+  }
+});
+
 onMessage("configPageList", async () => {
   try {
     return JSON.parse(

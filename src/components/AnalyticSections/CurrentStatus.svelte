@@ -119,6 +119,47 @@
   let isLoadingToken = false;
   let filteredHoldingDataToken = [];
 
+  const handleFormatDataPieChart = (data, type) => {
+    const formatData = data.map((item) => {
+      return {
+        ...item,
+        value: Number(item?.amount) * Number(item?.price?.price),
+      };
+    });
+
+    const groupData = groupBy(formatData, type);
+    const typesData = Object.getOwnPropertyNames(groupData);
+
+    const formatGroupData = typesData.map((item) => {
+      return {
+        name: item,
+        data: groupData[item],
+        name_value: "Value",
+        value_value: groupData[item].reduce(
+          (prev, item) => prev + Number(item.value),
+          0
+        ),
+        name_ratio: "Ratio",
+        value: 0,
+      };
+    });
+
+    const sumData = formatGroupData.reduce(
+      (prev, item) => prev + Number(item.value_value),
+      0
+    );
+
+    return formatGroupData.map((item) => {
+      return {
+        name: item.name,
+        name_value: item.name_value,
+        value_value: item.value_value,
+        name_ratio: item.name_ratio,
+        value: (Number(item.value_value) / sumData) * 100,
+      };
+    });
+  };
+
   const getHoldingToken = async (isReload: boolean = false) => {
     isLoadingDataPie = true;
     try {
@@ -135,107 +176,9 @@
           return;
         }
 
-        const formatData = response.result.map((item) => {
-          return {
-            ...item,
-            value: Number(item?.amount) * Number(item?.price?.price),
-          };
-        });
-
-        const groupBySector = groupBy(formatData, "sector");
-        const groupByCategory = groupBy(formatData, "category");
-        const groupByRank = groupBy(formatData, "rank");
-
-        const typesSector = Object.getOwnPropertyNames(groupBySector);
-        const typesCategory = Object.getOwnPropertyNames(groupByCategory);
-        const typesRank = Object.getOwnPropertyNames(groupByRank);
-
-        const formatDataSector = typesSector.map((item) => {
-          return {
-            name: item,
-            data: groupBySector[item],
-            name_value: "Value",
-            value_value: groupBySector[item].reduce(
-              (prev, item) => prev + Number(item.value),
-              0
-            ),
-            name_ratio: "Ratio",
-            value: 0,
-          };
-        });
-
-        const formatDataCategory = typesCategory.map((item) => {
-          return {
-            name: item,
-            data: groupByCategory[item],
-            name_value: "Value",
-            value_value: groupByCategory[item].reduce(
-              (prev, item) => prev + Number(item.value),
-              0
-            ),
-            name_ratio: "Ratio",
-            value: 0,
-          };
-        });
-
-        const formatDataRank = typesRank.map((item) => {
-          return {
-            name: item,
-            data: groupByRank[item],
-            name_value: "Value",
-            value_value: groupByRank[item].reduce(
-              (prev, item) => prev + Number(item.value),
-              0
-            ),
-            name_ratio: "Ratio",
-            value: 0,
-          };
-        });
-
-        const sumDataRank = formatDataRank.reduce(
-          (prev, item) => prev + Number(item.value_value),
-          0
-        );
-
-        const sumDataCategory = formatDataCategory.reduce(
-          (prev, item) => prev + Number(item.value_value),
-          0
-        );
-
-        const sumDataSector = formatDataSector.reduce(
-          (prev, item) => prev + Number(item.value_value),
-          0
-        );
-
-        dataRank = formatDataRank.map((item) => {
-          return {
-            name: item.name,
-            name_value: item.name_value,
-            value_value: item.value_value,
-            name_ratio: item.name_ratio,
-            value: (Number(item.value_value) / sumDataRank) * 100,
-          };
-        });
-
-        dataCategory = formatDataCategory.map((item) => {
-          return {
-            name: item.name,
-            name_value: item.name_value,
-            value_value: item.value_value,
-            name_ratio: item.name_ratio,
-            value: (Number(item.value_value) / sumDataCategory) * 100,
-          };
-        });
-
-        dataSector = formatDataSector.map((item) => {
-          return {
-            name: item.name,
-            name_value: item.name_value,
-            value_value: item.value_value,
-            name_ratio: item.name_ratio,
-            value: (Number(item.value_value) / sumDataSector) * 100,
-          };
-        });
+        dataRank = handleFormatDataPieChart(response.result, "rank");
+        dataCategory = handleFormatDataPieChart(response.result, "category");
+        dataSector = handleFormatDataPieChart(response.result, "sector");
 
         isLoadingDataPie = false;
       } else {
@@ -251,39 +194,41 @@
 
   $: {
     if (selectedType) {
-      switch (selectedType) {
-        case "sector":
-          optionPie = {
-            ...optionPie,
-            series: [
-              {
-                ...optionPie.series[0],
-                data: dataSector,
-              },
-            ],
-          };
-          break;
-        case "rank":
-          optionPie = {
-            ...optionPie,
-            series: [
-              {
-                ...optionPie.series[0],
-                data: dataRank,
-              },
-            ],
-          };
-          break;
-        default:
-          optionPie = {
-            ...optionPie,
-            series: [
-              {
-                ...optionPie.series[0],
-                data: dataCategory,
-              },
-            ],
-          };
+      if (dataRank && dataCategory && dataSector) {
+        switch (selectedType) {
+          case "sector":
+            optionPie = {
+              ...optionPie,
+              series: [
+                {
+                  ...optionPie.series[0],
+                  data: dataSector,
+                },
+              ],
+            };
+            break;
+          case "rank":
+            optionPie = {
+              ...optionPie,
+              series: [
+                {
+                  ...optionPie.series[0],
+                  data: dataRank,
+                },
+              ],
+            };
+            break;
+          default:
+            optionPie = {
+              ...optionPie,
+              series: [
+                {
+                  ...optionPie.series[0],
+                  data: dataCategory,
+                },
+              ],
+            };
+        }
       }
     }
   }
@@ -337,7 +282,7 @@
         <div class="h-full">
           {#if isEmptyDataPie}
             <div
-              class="flex justify-center items-center h-full text-lg text-gray-400"
+              class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
             >
               Empty
             </div>
