@@ -1,5 +1,6 @@
 <script lang="ts">
   import { i18n } from "~/lib/i18n";
+  import { chain } from "~/store";
 
   export let optionPie;
   export let optionLine;
@@ -9,7 +10,6 @@
   import EChart from "~/components/EChart.svelte";
   import "~/components/Loading.custom.svelte";
   import ErrorBoundary from "../ErrorBoundary.svelte";
-  import { chain } from "~/store";
 
   $: selectedChain = $chain;
 

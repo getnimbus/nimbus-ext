@@ -214,62 +214,70 @@
   }
 </script>
 
-<div class="border border-[#0000001a] rounded-[20px]">
-  <div
-    class="text-2xl font-medium text-black border-b-[1px] mx-6 mb-6 pt-6 pb-4"
-  >
+<div class="border border-[#0000001a] rounded-[20px] p-6">
+  <div class="text-2xl font-medium text-black border-b-[1px] mb-6 pb-4">
     Personality
   </div>
-  <div class="pb-9 flex flex-col gap-4">
-    <CalendarChart
-      {option}
-      {isEmptyDataChart}
-      {isLoadingChart}
-      title="Historical activities"
-      tooltipTitle="The chart shows only activities made by this wallet"
-      id="HistoricalActivities"
-    />
-  </div>
-  <div class="relative">
-    <div class="pb-9 flex flex-col gap-4">
-      <CalendarChart
-        option={optionDemo}
-        {isEmptyDataChart}
-        {isLoadingChart}
-        title="Transaction per day"
-        tooltipTitle=""
-        id="TrxPerDay"
-      />
-    </div>
-    <div class="pb-9 flex flex-col gap-4">
-      <CalendarChart
-        option={optionDemo}
-        {isEmptyDataChart}
-        {isLoadingChart}
-        title="Most used protocol"
-        tooltipTitle=""
-        id="MostUsedProtocol"
-      />
-    </div>
-    <div class="pb-9 flex flex-col gap-4">
-      <CalendarChart
-        option={optionDemo}
-        {isEmptyDataChart}
-        {isLoadingChart}
-        title="Most profit position"
-        tooltipTitle=""
-        id="MostProfitPosition"
-      />
-    </div>
+  <div class="flex flex-col gap-6">
     <div
-      class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-10 backdrop-blur-md"
+      class="pb-9 pt-7 flex flex-col gap-4 border border-[#0000001a] rounded-[20px]"
     >
-      <div class="text-lg">Comming soon 🚀</div>
-      <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
-        <Button variant="secondary" width={140} size="supper-small">
-          Request analytics
-        </Button>
-      </a>
+      <CalendarChart
+        {option}
+        {isEmptyDataChart}
+        {isLoadingChart}
+        title="Historical activities"
+        tooltipTitle="The chart shows only activities made by this wallet"
+        id="HistoricalActivities"
+      />
+    </div>
+    <div class="relative flex flex-col gap-6">
+      <div
+        class="pb-9 pt-7 flex flex-col gap-4 border border-[#0000001a] rounded-[20px]"
+      >
+        <CalendarChart
+          option={optionDemo}
+          isEmptyDataChart={false}
+          {isLoadingChart}
+          title="Transaction per day"
+          tooltipTitle=""
+          id="TrxPerDay"
+        />
+      </div>
+      <div
+        class="pb-9 pt-7 flex flex-col gap-4 border border-[#0000001a] rounded-[20px]"
+      >
+        <CalendarChart
+          option={optionDemo}
+          isEmptyDataChart={false}
+          {isLoadingChart}
+          title="Most used protocol"
+          tooltipTitle=""
+          id="MostUsedProtocol"
+        />
+      </div>
+      <div
+        class="pb-9 pt-7 flex flex-col gap-4 border border-[#0000001a] rounded-[20px]"
+      >
+        <CalendarChart
+          option={optionDemo}
+          isEmptyDataChart={false}
+          {isLoadingChart}
+          title="Most profit position"
+          tooltipTitle=""
+          id="MostProfitPosition"
+        />
+      </div>
+      <div
+        class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-10 backdrop-blur-md"
+      >
+        <div class="text-lg">Comming soon 🚀</div>
+        <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
+          <Button variant="secondary" width={140} size="supper-small">
+            Request analytics
+          </Button>
+        </a>
+      </div>
     </div>
   </div>
 </div>
