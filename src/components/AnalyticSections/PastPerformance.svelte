@@ -39,18 +39,20 @@
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
                 ${params[0].axisValue}
               </div>
-              ${params.map((item) => {
-                return `
+              ${params
+                .map((item) => {
+                  return `
                   <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: black; display: flex; align-items: centers; gap: 6px;">
                       ${item.marker}
                       ${item.seriesName}
                     </div>
                     <div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: #000;">
-                      ${formatCurrencyV2(Math.abs(item.value))}
+                      $${formatCurrencyV2(item.value)}
                     </div>
                   </div>`;
-              })}
+                })
+                .join("")}
             </div>`;
       },
     },
