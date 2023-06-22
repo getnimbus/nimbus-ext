@@ -243,8 +243,11 @@
 </script>
 
 <div class="border border-[#0000001a] rounded-[20px] p-6">
+  <div class="text-2xl font-medium text-black border-b-[1px] mb-6 pb-4">
+    Current Status
+  </div>
   <div class="flex justify-between items-center border-b-[1px] mb-6 pb-4">
-    <div class="text-2xl font-medium text-black">Current Status</div>
+    <div class="font-medium text-black text-xl">Token breakdown</div>
     <div class="flex items-center gap-1">
       <div
         class={`cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all ${

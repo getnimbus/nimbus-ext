@@ -12,9 +12,9 @@
         class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
         style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
       >
-        <Personality />
         <CurrentStatus />
         <PastPerformance />
+        <Personality />
       </div>
     </div>
   </span>
