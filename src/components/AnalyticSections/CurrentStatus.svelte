@@ -8,13 +8,33 @@
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
   import EChart from "~/components/EChart.svelte";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
+  import HoldingToken from "~/components/HoldingToken.svelte";
   import "~/components/Loading.custom.svelte";
 
   const MultipleLang = {
     Balance: i18n("newtabPage.Balance", "Balance"),
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
+    token: i18n("newtabPage.token", "Tokens"),
+    assets: i18n("newtabPage.assets", "Assets"),
+    price: i18n("newtabPage.price", "Price"),
+    amount: i18n("newtabPage.amount", "Amount"),
+    value: i18n("newtabPage.value", "Value"),
+    profit: i18n("newtabPage.profit", "Profit & Loss"),
+    hide: i18n("newtabPage.hide-less-than-1", "Hide tokens less than $1"),
+    empty: i18n("newtabPage.empty", "Empty"),
   };
+
+  let selectedWallet: string = "";
+  wallet.subscribe((value) => {
+    selectedWallet = value;
+  });
+
+  let selectedChain: string = "";
+  chain.subscribe((value) => {
+    selectedChain = value;
+  });
 
   let selectedType: "category" | "sector" | "rank" = "category";
   let isEmptyDataPie = false;
@@ -74,7 +94,7 @@
       {
         type: "pie",
         radius: ["40%", "60%"],
-        left: -170,
+        left: -160,
         avoidLabelOverlap: false,
         label: {
           show: false,
@@ -95,15 +115,9 @@
     ],
   };
 
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
+  let filteredHoldingToken = false;
+  let isLoadingToken = false;
+  let filteredHoldingDataToken = [];
 
   const getHoldingToken = async (isReload: boolean = false) => {
     isLoadingDataPie = true;
@@ -313,8 +327,8 @@
       </div>
     </div>
   </div>
-  <div class="flex gap-6">
-    <div class="flex-[0.75] border border-[#0000001a] rounded-[20px] p-6">
+  <div class="flex xl:flex-row flex-col justify-between gap-6">
+    <div class="w-full xl:w-5/12 border border-[#0000001a] rounded-[20px] p-6">
       {#if isLoadingDataPie}
         <div class="flex items-center justify-center h-[465px]">
           <loading-icon />
@@ -338,7 +352,100 @@
         </div>
       {/if}
     </div>
-    <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">table</div>
+    <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
+      <div class="mb-2 flex justify-between items-center">
+        <div>select</div>
+        <div class="text-3xl font-semibold text-right">$0</div>
+      </div>
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center justify-end gap-2">
+          <label class="text-sm font-regular text-gray-400" for="filter-value"
+            >{MultipleLang.hide}
+          </label>
+          <input
+            type="checkbox"
+            id="filter-value"
+            bind:checked={filteredHoldingToken}
+            class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+          />
+        </div>
+        <div class="border border-[#0000000d] rounded-[10px]">
+          <table class="table-auto w-full">
+            <thead>
+              <tr class="bg-[#f4f5f880]">
+                <th class="pl-3 py-3">
+                  <div
+                    class="text-left text-xs uppercase font-semibold text-black"
+                  >
+                    {MultipleLang.assets}
+                  </div>
+                </th>
+                <th class="py-3">
+                  <div
+                    class="text-right text-xs uppercase font-semibold text-black"
+                  >
+                    {MultipleLang.price}
+                  </div>
+                </th>
+                <th class="py-3">
+                  <div
+                    class="text-right text-xs uppercase font-semibold text-black"
+                  >
+                    {MultipleLang.amount}
+                  </div>
+                </th>
+                <th class="py-3">
+                  <div
+                    class="text-right text-xs uppercase font-semibold text-black"
+                  >
+                    {MultipleLang.value}
+                  </div>
+                </th>
+                <th class="py-3">
+                  <div class="text-xs uppercase font-semibold text-black">
+                    <TooltipTitle
+                      tooltipText="Profit and loss is calculated by transactions that swap the tokens"
+                    >
+                      {MultipleLang.profit}
+                    </TooltipTitle>
+                  </div>
+                </th>
+                <th class="py-3 w-10" />
+              </tr>
+            </thead>
+            {#if isLoadingToken}
+              <tbody>
+                <tr>
+                  <td colspan={6}>
+                    <div class="flex justify-center items-center py-3 px-3">
+                      <loading-icon />
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            {:else}
+              <tbody>
+                {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+                  <tr>
+                    <td colspan={6}>
+                      <div
+                        class="flex justify-center items-center py-3 px-3 text-lg text-gray-400"
+                      >
+                        {MultipleLang.empty}
+                      </div>
+                    </td>
+                  </tr>
+                {:else}
+                  {#each filteredHoldingDataToken as holding}
+                    <HoldingToken data={holding} {selectedWallet} />
+                  {/each}
+                {/if}
+              </tbody>
+            {/if}
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

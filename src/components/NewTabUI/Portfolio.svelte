@@ -167,7 +167,7 @@
       {
         type: "pie",
         radius: ["40%", "60%"],
-        left: -250,
+        left: -220,
         avoidLabelOverlap: false,
         label: {
           show: false,
