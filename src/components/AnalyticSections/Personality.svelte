@@ -6,11 +6,84 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
+  import * as echarts from "echarts";
 
   import type { AnalyticHistoricalRes } from "~/types/AnalyticHistoricalData";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
   import Button from "~/components/Button.svelte";
+
+  function getVirtualData(year) {
+    const date = +echarts.time.parse(year + "-01-01");
+    const end = +echarts.time.parse(+year + 1 + "-01-01");
+    const dayTime = 3600 * 24 * 1000;
+    const data = [];
+    for (let time = date; time < end; time += dayTime) {
+      data.push([
+        echarts.time.format(time, "{yyyy}-{MM}-{dd}", false),
+        Math.floor(Math.random() * 10000),
+      ]);
+    }
+    return data;
+  }
+  let optionDemo = {
+    tooltip: {
+      extraCssText: "z-index: 9997",
+      formatter: function (params) {
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 180px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                ${dayjs(params.data[0]).format("DD MMM YYYY")}
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between;">
+                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
+                  <div style="background: #00b580; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
+                  Activity
+                </div>
+                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: #000;">
+                  ${params.data[1]}
+                </div>
+              </div>
+            </div>`;
+      },
+    },
+    visualMap: {
+      min: 0,
+      max: 10000,
+      calculable: true,
+      orient: "horizontal",
+      top: 0,
+      right: 40,
+      inRange: {
+        color: ["#00A878"],
+        opacity: [0, 1],
+      },
+      controller: {
+        inRange: {
+          opacity: [0, 1],
+        },
+        outOfRange: {
+          color: "#f4f5f880",
+        },
+      },
+    },
+    calendar: {
+      top: 80,
+      left: 60,
+      right: 60,
+      cellSize: ["auto", "auto"],
+      range: "2016",
+      itemStyle: {
+        borderWidth: 0.5,
+      },
+      yearLabel: { show: false },
+    },
+    series: {
+      type: "heatmap",
+      coordinateSystem: "calendar",
+      data: getVirtualData("2016"),
+    },
+  };
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -160,7 +233,7 @@
   <div class="relative">
     <div class="pb-9 flex flex-col gap-4">
       <CalendarChart
-        {option}
+        option={optionDemo}
         {isEmptyDataChart}
         {isLoadingChart}
         title="Transaction per day"
@@ -170,7 +243,7 @@
     </div>
     <div class="pb-9 flex flex-col gap-4">
       <CalendarChart
-        {option}
+        option={optionDemo}
         {isEmptyDataChart}
         {isLoadingChart}
         title="Most used protocol"
@@ -180,7 +253,7 @@
     </div>
     <div class="pb-9 flex flex-col gap-4">
       <CalendarChart
-        {option}
+        option={optionDemo}
         {isEmptyDataChart}
         {isLoadingChart}
         title="Most profit position"

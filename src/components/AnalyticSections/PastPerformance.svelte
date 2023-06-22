@@ -1,8 +1,15 @@
-<script lang="ts"></script>
+<script lang="ts">
+  import DateRangePicker from "~/components/DateRangePicker.svelte";
+
+  const handleGetDateRange = (data) => {
+    console.log(data);
+  };
+</script>
 
 <div class="border border-[#0000001a] rounded-[20px] p-6">
-  <div class="text-2xl font-medium text-black border-b-[1px] mb-6 pb-4">
-    Past Performance
+  <div class="flex justify-between items-center border-b-[1px] mb-6 pb-4">
+    <div class="text-2xl font-medium text-black">Past Performance</div>
+    <DateRangePicker onChange={handleGetDateRange} />
   </div>
   <div>line chart</div>
 </div>
