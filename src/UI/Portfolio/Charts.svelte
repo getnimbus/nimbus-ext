@@ -61,6 +61,7 @@
             <EChart
               id="pie-chart"
               theme="white"
+              notMerge={true}
               option={optionPie}
               height={465}
             />
@@ -89,6 +90,7 @@
         <EChart
           id="line-chart"
           theme="white"
+          notMerge={true}
           option={optionLine}
           height={433}
         />
