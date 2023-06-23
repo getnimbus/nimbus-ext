@@ -100,7 +100,7 @@
   let errors: any = {};
   let isOpenAddModal = false;
 
-  const getListAddress = async () => {
+  const getListAddress = async (type) => {
     isLoadingFullPage = true;
     try {
       const response: AddressData = await sendMessage(
@@ -115,6 +115,12 @@
           value: item.address,
         };
       });
+
+      if (type === "reload") {
+        isLoadingFullPage = false;
+        listAddress = structWalletData;
+        return;
+      }
 
       listAddress = listAddress.concat(structWalletData);
 
@@ -179,7 +185,7 @@
   };
 
   onMount(() => {
-    getListAddress();
+    getListAddress("fetch");
     updateStateFromParams();
   });
 
@@ -259,11 +265,12 @@
         }
       }
 
+      wallet.update((n) => (n = dataFormat.value));
+
       const filterWalletList = addWallet.filter((item) => item.value !== "all");
       const structWalletList = filterWalletList.map((item) => {
         return {
           id: item.value,
-          logo: item.logo,
           label: item.label,
           address: item.value,
         };
@@ -280,6 +287,7 @@
       e.target.reset();
       errors = {};
       isOpenAddModal = false;
+      getListAddress("reload");
 
       mixpanel.track("user_add_address");
     } else {
@@ -316,11 +324,6 @@
 
   $: {
     if (selectedWallet) {
-      // console.log({
-      //   listAddress,
-      //   selectedChain,
-      //   selectedWallet,
-      // });
       browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
         console.log("save selected address to sync storage");
       });
@@ -557,14 +560,18 @@
                 {/if}
               </div>
 
-              {#if type === "portfolio"}
-                <slot name="overview" />
-              {/if}
+              {#key selectedWallet || selectedChain}
+                {#if type === "portfolio"}
+                  <slot name="overview" />
+                {/if}
+              {/key}
             </div>
           </div>
         </div>
 
-        <slot name="body" />
+        {#key selectedWallet || selectedChain}
+          <slot name="body" />
+        {/key}
       {/if}
     </div>
   {/if}

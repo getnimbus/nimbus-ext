@@ -156,7 +156,7 @@
   .content {
     min-width: 190px;
     width: 190px;
-    max-height: 400px;
+    max-height: 300px;
     overflow-y: overlay;
     position: absolute;
     z-index: 2147483646;
