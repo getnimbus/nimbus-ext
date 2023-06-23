@@ -1,7 +1,6 @@
 <script lang="ts">
   import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
-  import { formatBalance } from "~/utils";
 
   export let holdingTokenData;
   export let holdingNFTData;
@@ -17,11 +16,13 @@
   let formatData = [];
   let formatDataNFT = [];
   let sumTokens = 0;
+  let sumNFT = 0;
 
   import HoldingToken from "~/components/HoldingToken.svelte";
   import HoldingNFT from "~/components/HoldingNFT.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
   import "~/components/Loading.custom.svelte";
 
   const MultipleLang = {
@@ -75,10 +76,6 @@
       });
       filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
       sumTokens = holdingTokenData.reduce((prev, item) => prev + item.value, 0);
-      totalAssets = holdingTokenData.reduce(
-        (prev, item) => prev + item.value,
-        0
-      );
     }
     if (holdingNFTData) {
       formatDataNFT = holdingNFTData
@@ -98,6 +95,10 @@
           }
           return 0;
         });
+      sumNFT = formatDataNFT.reduce(
+        (prev, item) => prev + item.current_value,
+        0
+      );
     }
   }
 
@@ -143,18 +144,27 @@
   $: {
     if (formatData.length === 0) {
       totalAssets = 0;
-      sumTokens;
+      sumTokens = 0;
     } else {
       sumTokens = (formatData || []).reduce(
         (prev, item) => prev + item?.amount * item.market_price,
         0
       );
-      totalAssets = (formatData || []).reduce(
-        (prev, item) => prev + item?.amount * item.market_price,
+    }
+  }
+
+  $: {
+    if (formatDataNFT.length === 0) {
+      sumNFT = 0;
+    } else {
+      sumNFT = (formatDataNFT || []).reduce(
+        (prev, item) => prev + item?.current_value,
         0
       );
     }
   }
+
+  $: totalAssets = sumTokens + sumNFT;
 </script>
 
 <div class="flex flex-col gap-6 border border-[#0000001a] rounded-[20px] p-6">
@@ -172,13 +182,13 @@
       </a>
     </div>
 
-    <div>
-      <div class="mb-2 flex justify-between items-center">
+    <div class="flex flex-col gap-2">
+      <div class="flex justify-between items-center">
         <div class="text-xl font-medium text-black">
           {MultipleLang.token}
         </div>
         <div class="text-3xl font-semibold text-right">
-          ${isLoadingToken ? 0 : formatBalance(sumTokens)}
+          $<TooltipNumber number={sumTokens} type="balance" />
         </div>
       </div>
       <div class="flex flex-col gap-2">
@@ -272,8 +282,13 @@
     </div>
 
     <div class="flex flex-col gap-2">
-      <div class="text-xl font-medium text-black">
-        {MultipleLang.nft}
+      <div class="flex justify-between items-center">
+        <div class="text-xl font-medium text-black">
+          {MultipleLang.nft}
+        </div>
+        <div class="text-3xl font-semibold text-right">
+          $<TooltipNumber number={sumNFT} type="balance" />
+        </div>
       </div>
       <div class="border border-[#0000000d] rounded-[10px]">
         <table class="table-auto w-full">
