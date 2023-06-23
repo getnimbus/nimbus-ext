@@ -116,7 +116,7 @@
         <div class="flex items-center justify-end gap-1">
           <div
             class={`flex items-center ${
-              profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+              profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
             }`}
           >
             <TooltipNumber
