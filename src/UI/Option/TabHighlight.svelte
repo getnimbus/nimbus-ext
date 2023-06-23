@@ -159,7 +159,7 @@
     <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto mt-2">
       <table class="table-auto w-full">
         <thead>
-          <tr class="bg-[#f4f5f880]">
+          <tr class="bg-[#f4f5f8]">
             <th class="pl-3 py-3">
               <div class="text-left text-sm uppercase font-semibold text-black">
                 {MultipleLang.content.address_header_table}

@@ -66,7 +66,7 @@
           opacity: [0.2, 1],
         },
         outOfRange: {
-          color: "#f4f5f880",
+          color: "#f4f5f8",
         },
       },
     },

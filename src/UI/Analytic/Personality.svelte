@@ -63,7 +63,7 @@
           opacity: [0, 1],
         },
         outOfRange: {
-          color: "#f4f5f880",
+          color: "#f4f5f8",
         },
       },
     },
@@ -135,7 +135,7 @@
           opacity: [0, 1],
         },
         outOfRange: {
-          color: "#f4f5f880",
+          color: "#f4f5f8",
         },
       },
     },

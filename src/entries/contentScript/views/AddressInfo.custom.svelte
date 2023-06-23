@@ -657,7 +657,7 @@
                   </div>
                   <table class="table-auto w-full">
                     <thead>
-                      <tr class="bg-[#f4f5f880]">
+                      <tr class="bg-[#f4f5f8]">
                         <th class="pl-4 py-2 w-[200px]">
                           <div
                             class="text-left text-xs uppercase font-semibold text-black"

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
 
@@ -17,6 +18,10 @@
   let formatDataNFT = [];
   let sumTokens = 0;
   let sumNFT = 0;
+  let tableTokenHeader;
+  let isStickyTableToken = false;
+  let tableNFTHeader;
+  let isStickyTableNFT = false;
 
   import HoldingToken from "~/components/HoldingToken.svelte";
   import HoldingNFT from "~/components/HoldingNFT.svelte";
@@ -42,6 +47,20 @@
     hide: i18n("newtabPage.hide-less-than-1", "Hide tokens less than $1"),
     empty: i18n("newtabPage.empty", "Empty"),
   };
+
+  onMount(() => {
+    const handleScroll = () => {
+      const clientRectTokenHeader = tableTokenHeader.getBoundingClientRect();
+      isStickyTableToken = clientRectTokenHeader.top <= 0;
+      const clientRectNFTHeader = tableNFTHeader.getBoundingClientRect();
+      isStickyTableNFT = clientRectNFTHeader.top <= 0;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  });
 
   $: {
     if (holdingTokenData) {
@@ -205,8 +224,11 @@
         </div>
         <div class="border border-[#0000000d] rounded-[10px]">
           <table class="table-auto w-full">
-            <thead>
-              <tr class="bg-[#f4f5f880]">
+            <thead
+              class={isStickyTableToken ? "sticky top-0 z-10" : ""}
+              bind:this={tableTokenHeader}
+            >
+              <tr class="bg-[#f4f5f8]">
                 <th class="pl-3 py-3">
                   <div
                     class="text-left text-xs uppercase font-semibold text-black"
@@ -292,8 +314,11 @@
       </div>
       <div class="border border-[#0000000d] rounded-[10px]">
         <table class="table-auto w-full">
-          <thead>
-            <tr class="bg-[#f4f5f880]">
+          <thead
+            class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
+            bind:this={tableNFTHeader}
+          >
+            <tr class="bg-[#f4f5f8]">
               <th class="pl-3 py-3">
                 <div
                   class="text-left text-xs uppercase font-semibold text-black"
