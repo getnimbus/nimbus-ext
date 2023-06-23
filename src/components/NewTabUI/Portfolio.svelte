@@ -32,7 +32,7 @@
   import Overview from "~/components/PortfolioSections/Overview.svelte";
   import Positions from "~/components/PortfolioSections/Positions.svelte";
   import AddressManagement from "~/components/AddressManagement.svelte";
-  import Testimonial from "~/components/Testimonial.svelte";
+  import Testimonial from "~/components/Testimonial/Testimonial.svelte";
   import "~/components/Tooltip.custom.svelte";
 
   import Comment from "~/assets/comment-bubble-icon.svg";

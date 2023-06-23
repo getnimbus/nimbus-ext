@@ -33,9 +33,8 @@
       trigger: "axis",
       extraCssText: "z-index: 9997",
       formatter: function (params) {
-        console.log("params: ", params);
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
                 ${params[0].axisValue}
               </div>
@@ -164,48 +163,47 @@
   $: {
     if (selectedType) {
       if (dataRank && dataCategory && dataSector) {
-        switch (selectedType) {
-          case "sector":
-            optionLine = {
-              ...optionLine,
-              legend: {
-                ...optionLine.legend,
-                data: dataSector.legend,
-              },
-              xAxis: {
-                ...optionLine.xAxis,
-                data: dataSector.formatXAxis,
-              },
-              series: dataSector.series,
-            };
-            break;
-          case "rank":
-            optionLine = {
-              ...optionLine,
-              legend: {
-                ...optionLine.legend,
-                data: dataRank.legend,
-              },
-              xAxis: {
-                ...optionLine.xAxis,
-                data: dataRank.formatXAxis,
-              },
-              series: dataRank.series,
-            };
-            break;
-          default:
-            optionLine = {
-              ...optionLine,
-              legend: {
-                ...optionLine.legend,
-                data: dataCategory.legend,
-              },
-              xAxis: {
-                ...optionLine.xAxis,
-                data: dataCategory.formatXAxis,
-              },
-              series: dataCategory.series,
-            };
+        if (selectedType === "sector") {
+          optionLine = {
+            ...optionLine,
+            legend: {
+              ...optionLine.legend,
+              data: dataSector.legend,
+            },
+            xAxis: {
+              ...optionLine.xAxis,
+              data: dataSector.formatXAxis,
+            },
+            series: dataSector.series,
+          };
+        }
+        if (selectedType === "rank") {
+          optionLine = {
+            ...optionLine,
+            legend: {
+              ...optionLine.legend,
+              data: dataRank.legend,
+            },
+            xAxis: {
+              ...optionLine.xAxis,
+              data: dataRank.formatXAxis,
+            },
+            series: dataRank.series,
+          };
+        }
+        if (selectedType === "category") {
+          optionLine = {
+            ...optionLine,
+            legend: {
+              ...optionLine.legend,
+              data: dataCategory.legend,
+            },
+            xAxis: {
+              ...optionLine.xAxis,
+              data: dataCategory.formatXAxis,
+            },
+            series: dataCategory.series,
+          };
         }
         console.log("optionLine: ", optionLine);
       }
@@ -276,6 +274,7 @@
                 theme="white"
                 option={optionLine}
                 height={465}
+                notMerge={true}
               />
             {/if}
           </div>

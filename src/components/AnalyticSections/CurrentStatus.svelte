@@ -94,7 +94,7 @@
       {
         type: "pie",
         radius: ["40%", "60%"],
-        left: -160,
+        left: -200,
         avoidLabelOverlap: false,
         label: {
           show: false,
@@ -195,39 +195,38 @@
   $: {
     if (selectedType) {
       if (dataRank && dataCategory && dataSector) {
-        switch (selectedType) {
-          case "sector":
-            optionPie = {
-              ...optionPie,
-              series: [
-                {
-                  ...optionPie.series[0],
-                  data: dataSector,
-                },
-              ],
-            };
-            break;
-          case "rank":
-            optionPie = {
-              ...optionPie,
-              series: [
-                {
-                  ...optionPie.series[0],
-                  data: dataRank,
-                },
-              ],
-            };
-            break;
-          default:
-            optionPie = {
-              ...optionPie,
-              series: [
-                {
-                  ...optionPie.series[0],
-                  data: dataCategory,
-                },
-              ],
-            };
+        if (selectedType === "sector") {
+          optionPie = {
+            ...optionPie,
+            series: [
+              {
+                ...optionPie.series[0],
+                data: dataSector,
+              },
+            ],
+          };
+        }
+        if (selectedType === "rank") {
+          optionPie = {
+            ...optionPie,
+            series: [
+              {
+                ...optionPie.series[0],
+                data: dataRank,
+              },
+            ],
+          };
+        }
+        if (selectedType === "category") {
+          optionPie = {
+            ...optionPie,
+            series: [
+              {
+                ...optionPie.series[0],
+                data: dataCategory,
+              },
+            ],
+          };
         }
       }
     }
@@ -276,7 +275,7 @@
     </div>
   </div>
   <div class="flex xl:flex-row flex-col justify-between gap-6">
-    <div class="w-full xl:w-5/12 border border-[#0000001a] rounded-[20px] p-6">
+    <div class="w-full xl:w-[45%] border border-[#0000001a] rounded-[20px] p-6">
       {#if isLoadingDataPie}
         <div class="flex items-center justify-center h-[465px]">
           <loading-icon />
@@ -295,6 +294,7 @@
               theme="white"
               option={optionPie}
               height={465}
+              notMerge={true}
             />
           {/if}
         </div>
