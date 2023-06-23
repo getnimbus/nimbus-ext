@@ -85,8 +85,9 @@
         .map((item) => {
           return {
             ...item,
-            market_price: item?.btcPrice || 0,
-            current_value: item?.floorPriceBTC * item?.btcPrice * item?.balance,
+            market_price: item?.basePrice || 0,
+            current_value:
+              item?.floorPriceBase * item?.basePrice * item?.balance,
           };
         })
         .sort((a, b) => {
@@ -121,7 +122,9 @@
             ...item,
             market_price: marketPriceNFT.market_price,
             current_value:
-              item?.floorPriceBTC * marketPriceNFT.market_price * item?.balance,
+              item?.floorPriceBase *
+              marketPriceNFT.market_price *
+              item?.balance,
           };
         }
         return { ...item };

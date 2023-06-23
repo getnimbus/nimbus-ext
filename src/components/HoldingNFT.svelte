@@ -84,11 +84,11 @@
 
   <td class="py-3">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
-      <TooltipNumber number={data?.floorPriceBTC} type="amount" /><span
+      <TooltipNumber number={data?.floorPriceBase} type="amount" /><span
         class="mx-1">BTC</span
       >
       | $<TooltipNumber
-        number={data?.floorPriceBTC * data?.market_price}
+        number={data?.floorPriceBase * data?.market_price}
         type="balance"
       />
     </div>
@@ -96,7 +96,7 @@
 
   <td class="py-3">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
-      <TooltipNumber number={data?.totalCostBTC} type="amount" /><span
+      <TooltipNumber number={data?.totalCostBase} type="amount" /><span
         class="mx-1">BTC</span
       >
       | $<TooltipNumber number={data?.totalCost} type="balance" />

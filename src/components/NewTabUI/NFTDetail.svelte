@@ -29,13 +29,13 @@
         tokens = response.tokens;
         marketPriceNFT = {
           id: -1,
-          market_price: response?.btcPrice || 0,
+          market_price: response?.basePrice || 0,
         };
         data = {
           ...response,
-          market_price: response?.btcPrice || 0,
+          market_price: response?.basePrice || 0,
           current_value:
-            response?.floorPriceBTC * response?.btcPrice * response?.balance,
+            response?.floorPriceBase * response?.basePrice * response?.balance,
         };
         priceSubscribe([response?.cmc_id], (data) => {
           marketPriceNFT = {
@@ -85,7 +85,7 @@
         ...data,
         market_price: marketPriceNFT.market_price,
         current_value:
-          data?.floorPriceBTC * marketPriceNFT.market_price * data?.balance,
+          data?.floorPriceBase * marketPriceNFT.market_price * data?.balance,
       };
     }
   }
@@ -172,7 +172,7 @@
             <div class="text-3xl flex items-end gap-1">
               <CountUpNumber
                 id="AverageCostBTC"
-                number={data?.overview?.avgCostBTC || 0}
+                number={data?.overview?.avgCostBase || 0}
                 format={8}
                 type="amount"
               />
@@ -200,7 +200,7 @@
             <div class="text-3xl flex items-end gap-1">
               <CountUpNumber
                 id="24-hourReturn"
-                number={data?.floorPriceBTC || 0}
+                number={data?.floorPriceBase || 0}
                 format={8}
                 type="amount"
               />
@@ -209,7 +209,7 @@
             <div class="text-lg flex">
               $<CountUpNumber
                 id="24-hourReturnPercent"
-                number={(data?.floorPriceBTC || 0) *
+                number={(data?.floorPriceBase || 0) *
                   (marketPriceNFT?.market_price || 0)}
                 type="balance"
               />

@@ -7,7 +7,7 @@
 
   let showTooltipName = false;
 
-  $: profitAndLoss = data?.est_valueBTC * marketPrice - (data.totalCost || 0);
+  $: profitAndLoss = data?.est_valueBase * marketPrice - (data.totalCost || 0);
   $: profitAndLossPercent =
     Math.abs(data.totalCost || 0) === 0
       ? 0
@@ -40,8 +40,8 @@
     <div class="text-xs font-normal text-[#616b84] flex gap-1">
       <div>Est. value</div>
       <div>
-        <TooltipNumber number={data?.est_valueBTC} type="amount" /> BTC | $<TooltipNumber
-          number={data?.est_valueBTC * marketPrice}
+        <TooltipNumber number={data?.est_valueBase} type="amount" /> BTC | $<TooltipNumber
+          number={data?.est_valueBase * marketPrice}
           type="balance"
         />
       </div>
