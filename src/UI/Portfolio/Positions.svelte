@@ -8,9 +8,9 @@
   export let totalPositions;
   export let totalClaimable;
 
-  import Table from "../PositionTable/Table.svelte";
+  import Table from "~/UI/PositionTable/Table.svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import "~/components/Loading.custom.svelte";
-  import ErrorBoundary from "../ErrorBoundary.svelte";
 
   const MultipleLang = {
     positions: i18n("newtabPage.positions", "Positions"),

@@ -9,7 +9,7 @@
 
   import EChart from "~/components/EChart.svelte";
   import "~/components/Loading.custom.svelte";
-  import ErrorBoundary from "../ErrorBoundary.svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   $: selectedChain = $chain;
 

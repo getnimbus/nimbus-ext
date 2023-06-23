@@ -5,8 +5,8 @@
   export let data;
   export let isLoading;
 
-  import NewsCard from "../NewsCard.svelte";
-  import ErrorBoundary from "../ErrorBoundary.svelte";
+  import NewsCard from "~/components/NewsCard.svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   const MultipleLang = {
     news: i18n("newtabPage.news", "News"),

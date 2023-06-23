@@ -1,12 +1,11 @@
 <svelte:options tag="user-info" />
 
 <script>
-  import { shorterAddress, getLocalImg, add3Dots } from "../../utils";
-
+  import { shorterAddress, getLocalImg, add3Dots } from "~/utils";
+  import CoinDefaultIcon from "~/entries/contentScript/assets/coin-default.svg";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
-  import Arrow from "../../assets/arrow-right.svg";
-  import CoinDefaultIcon from "../../entries/contentScript/assets/coin-default.svg";
+  import Arrow from "~/assets/arrow-right.svg";
 
   export let name;
   export let address;

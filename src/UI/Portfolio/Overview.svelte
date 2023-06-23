@@ -1,8 +1,8 @@
 <script lang="ts">
   import { i18n } from "~/lib/i18n";
 
-  import CountUpNumber from "../CountUpNumber.svelte";
-  import OverviewCard from "../OverviewCard.svelte";
+  import CountUpNumber from "~/components/CountUpNumber.svelte";
+  import OverviewCard from "~/components/OverviewCard.svelte";
 
   export let data;
   export let totalPositions;

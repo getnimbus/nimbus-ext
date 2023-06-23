@@ -2,7 +2,7 @@
 
 <script>
   import tooltip from "~/entries/contentScript/views/tooltip";
-  import { shorterAddress } from "../../utils";
+  import { shorterAddress } from "~/utils";
 
   export let name;
   export let address;

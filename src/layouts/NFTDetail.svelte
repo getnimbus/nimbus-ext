@@ -6,13 +6,13 @@
   import mixpanel from "mixpanel-browser";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import TooltipNumber from "../TooltipNumber.svelte";
-  import CountUpNumber from "../CountUpNumber.svelte";
-  import NftCard from "../NFTCard.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import CountUpNumber from "~/components/CountUpNumber.svelte";
+  import NftCard from "~/components/NFTCard.svelte";
+  import OverviewCard from "~/components/OverviewCard.svelte";
   import "~/components/Loading.custom.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
-  import OverviewCard from "../OverviewCard.svelte";
 
   let isLoadingListNFT = false;
   let tokens = [];

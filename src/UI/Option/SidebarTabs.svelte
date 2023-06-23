@@ -9,7 +9,7 @@
   } from "flowbite-svelte";
   import { i18n } from "~/lib/i18n";
 
-  import Icon from "~/components/OptionUI/Icon.svelte";
+  import Icon from "~/UI/Option/Icon.svelte";
 
   import logo from "../../assets/logo-1.svg";
 

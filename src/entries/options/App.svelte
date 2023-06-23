@@ -4,13 +4,13 @@
   import "flowbite/dist/flowbite.css";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import SidebarTabs from "~/components/OptionUI/SidebarTabs.svelte";
-  import TabWallets from "~/components/OptionUI/TabWallets.svelte";
-  import TabDashboard from "~/components/OptionUI/TabDashboard.svelte";
-  import TabHighlight from "~/components/OptionUI/TabHighlight.svelte";
-  import TabNotification from "~/components/OptionUI/TabNotification.svelte";
-  import TabSettings from "~/components/OptionUI/TabSettings.svelte";
-  import TabNft from "~/components/OptionUI/TabNFT.svelte";
+  import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
+  import TabWallets from "~/UI/Option/TabWallets.svelte";
+  import TabDashboard from "~/UI/Option/TabDashboard.svelte";
+  import TabHighlight from "~/UI/Option/TabHighlight.svelte";
+  import TabNotification from "~/UI/Option/TabNotification.svelte";
+  import TabSettings from "~/UI/Option/TabSettings.svelte";
+  import TabNft from "~/UI/Option/TabNFT.svelte";
 
   let activeTabValue = "wallets";
 

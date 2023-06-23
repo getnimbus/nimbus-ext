@@ -1,9 +1,11 @@
 <svelte:options tag="change-list" />
 
 <script>
+  import { getLocalImg } from "~/utils";
+
   import "./MoneyMove.custom.svelte";
-  import NoResultsIcon from "../../assets/no-results.png";
-  import { getLocalImg } from "../../utils";
+
+  import NoResultsIcon from "~/assets/no-results.png";
 
   export let data;
   export let id;

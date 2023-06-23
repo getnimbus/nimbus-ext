@@ -5,9 +5,9 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
 
-  import Button from "../Button.svelte";
-  import CopyToClipboard from "../CopyToClipboard.svelte";
-  import TooltipNumber from "../TooltipNumber.svelte";
+  import Button from "~/components/Button.svelte";
+  import CopyToClipboard from "~/components/CopyToClipboard.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let data;
   export let isLoading;

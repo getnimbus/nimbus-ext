@@ -2,10 +2,9 @@
 
 <script>
   import { formatCurrency, formatBalance, formatSmallBalance } from "~/utils";
-
   import tooltip from "~/entries/contentScript/views/tooltip";
 
-  import "../Arrow.custom.svelte";
+  import "~/components/Arrow.custom.svelte";
   import "./Entity.custom.svelte";
   import "./User.custom.svelte";
 

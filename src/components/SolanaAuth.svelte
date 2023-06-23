@@ -1,9 +1,11 @@
 <script lang="ts">
   import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
-  import WalletButton from "~/components/SolanaCustomWalletBtn/WalletButton.svelte";
-  import WalletConnectButton from "~/components/SolanaCustomWalletBtn/WalletConnectButton.svelte";
-  import WalletModal from "~/components/SolanaCustomWalletBtn/WalletModal.svelte";
-  import "~/components/SolanaCustomWalletBtn/style.css";
+
+  import WalletButton from "~/UI/SolanaCustomWalletBtn/WalletButton.svelte";
+  import WalletConnectButton from "~/UI/SolanaCustomWalletBtn/WalletConnectButton.svelte";
+  import WalletModal from "~/UI/SolanaCustomWalletBtn/WalletModal.svelte";
+
+  import "~/UI/SolanaCustomWalletBtn/style.css";
 
   import SolanaIcon from "~/assets/solana.png";
 

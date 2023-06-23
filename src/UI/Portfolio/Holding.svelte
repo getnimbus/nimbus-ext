@@ -18,11 +18,11 @@
   let formatDataNFT = [];
   let sumTokens = 0;
 
-  import HoldingToken from "../HoldingToken.svelte";
-  import HoldingNFT from "../HoldingNFT.svelte";
+  import HoldingToken from "~/components/HoldingToken.svelte";
+  import HoldingNFT from "~/components/HoldingNFT.svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
   import "~/components/Loading.custom.svelte";
-  import ErrorBoundary from "../ErrorBoundary.svelte";
-  import TooltipTitle from "../TooltipTitle.svelte";
 
   const MultipleLang = {
     holding: i18n("newtabPage.holding", "Holding"),

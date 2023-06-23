@@ -4,10 +4,10 @@
   // import { user } from "~/store";
   import mixpanel from "mixpanel-browser";
 
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Analytic from "~/UI/Analytic/Analytic.svelte";
   // import Button from "~/components/Button.svelte";
   // import "~/components/Loading.custom.svelte";
-  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import Transactions from "../TransactionSections/Transactions.svelte";
 
   // let userInfo = {};
   // user.subscribe((value) => {
@@ -59,7 +59,7 @@
   // }
 
   onMount(() => {
-    mixpanel.track("transaction_page");
+    mixpanel.track("analytic_page");
   });
 </script>
 
@@ -83,11 +83,7 @@
       {:else}
         <div>
           {#if listNft && listNft.length !== 0}
-            <div
-              class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]"
-            >
-              Already have NFT
-            </div>
+            <Analytic />
           {:else}
             <div class="flex justify-center items-center h-screen">
               <div
@@ -106,7 +102,7 @@
       {/if}
     </div>
   {/if} -->
-  <Transactions />
+  <Analytic />
 </ErrorBoundary>
 
 <style></style>

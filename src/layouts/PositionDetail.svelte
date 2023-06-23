@@ -10,10 +10,10 @@
   import "~/components/Loading.custom.svelte";
   import EChart from "~/components/EChart.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import TooltipNumber from "../TooltipNumber.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
   import CopyToClipboard from "~/components/CopyToClipboard.svelte";
-  import CountUpNumber from "../CountUpNumber.svelte";
-  import OverviewCard from "../OverviewCard.svelte";
+  import CountUpNumber from "~/components/CountUpNumber.svelte";
+  import OverviewCard from "~/components/OverviewCard.svelte";
 
   import TwitterLogo from "~/assets/twitter.svg";
   import LeftArrow from "~/assets/left-arrow.svg";

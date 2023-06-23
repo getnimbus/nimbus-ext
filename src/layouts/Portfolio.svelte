@@ -15,7 +15,7 @@
     formatCurrency,
     showChatAnimationVariants,
   } from "~/utils";
-  import { wait } from "../../entries/background/utils";
+  import { wait } from "../entries/background/utils";
   import { isOpenReport, wallet, chain } from "~/store";
   import mixpanel from "mixpanel-browser";
 
@@ -26,13 +26,13 @@
   import type { NFTData, HoldingNFTRes } from "~/types/HoldingNFTData";
 
   import Button from "~/components/Button.svelte";
-  import Charts from "~/components/PortfolioSections/Charts.svelte";
-  import Holding from "~/components/PortfolioSections/Holding.svelte";
-  import News from "~/components/PortfolioSections/News.svelte";
-  import Overview from "~/components/PortfolioSections/Overview.svelte";
-  import Positions from "~/components/PortfolioSections/Positions.svelte";
+  import Charts from "~/UI/Portfolio/Charts.svelte";
+  import Holding from "~/UI/Portfolio/Holding.svelte";
+  import News from "~/UI/Portfolio/News.svelte";
+  import Overview from "~/UI/Portfolio/Overview.svelte";
+  import Positions from "~/UI/Portfolio/Positions.svelte";
   import AddressManagement from "~/components/AddressManagement.svelte";
-  import Testimonial from "~/components/Testimonial/Testimonial.svelte";
+  import Testimonial from "~/UI/Testimonial/Testimonial.svelte";
   import "~/components/Tooltip.custom.svelte";
 
   import Comment from "~/assets/comment-bubble-icon.svg";

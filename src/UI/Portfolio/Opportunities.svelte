@@ -4,9 +4,9 @@
   export let data;
   export let isLoading;
 
-  import OpportunityCard from "../OpportunityCard.svelte";
-  import ErrorBoundary from "../ErrorBoundary.svelte";
-  import Button from "../Button.svelte";
+  import OpportunityCard from "~/components/OpportunityCard.svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Button from "~/components/Button.svelte";
 
   const MultipleLang = {
     opportunities: i18n("newtabPage.opportunities", "Opportunities"),
