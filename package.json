@@ -8,7 +8,7 @@
     "build": "vite build",
     "build:components": "vite build -c vite.config.components.ts",
     "build:web": "vite build -c vite.config.web.ts",
-    "build:docs": "retype build",
+    "build:docs": "retype build && vercel deploy",
     "watch": "WATCH=true vite build --watch",
     "dev": "WATCH=true vite build --watch",
     "dev:web": "vite -c vite.config.web.ts",
