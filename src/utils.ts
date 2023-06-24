@@ -48,6 +48,21 @@ export const regexList = [
   // }
 ]
 
+export const typeList = [
+  {
+    label: "Category",
+    value: "category",
+  },
+  {
+    label: "Sector",
+    value: "sector",
+  },
+  {
+    label: "Token Rank",
+    value: "rank",
+  },
+];
+
 export const getAddressContext = (address: string) => {
   if (!address) {
     return undefined;

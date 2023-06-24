@@ -3,7 +3,8 @@
   import { wallet, chain } from "~/store";
   import dayjs from "dayjs";
   import { groupBy, intersection, flatten } from "lodash";
-  import { formatCurrencyV2 } from "~/utils";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { formatCurrencyV2, typeList } from "~/utils";
 
   import EChart from "~/components/EChart.svelte";
   import DateRangePicker from "~/components/DateRangePicker.svelte";
@@ -229,30 +230,34 @@
       <div class="flex justify-between">
         <div class="font-medium text-black text-xl">Sector Growth</div>
         <div class="flex items-center gap-1">
-          <div
-            class={`cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all ${
-              selectedType === "category" && "bg-[#1E96FC] text-white"
-            }`}
-            on:click={() => (selectedType = "category")}
-          >
-            Category
-          </div>
-          <div
-            class={`cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all ${
-              selectedType === "sector" && "bg-[#1E96FC] text-white"
-            }`}
-            on:click={() => (selectedType = "sector")}
-          >
-            Sector
-          </div>
-          <div
-            class={`cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all ${
-              selectedType === "rank" && "bg-[#1E96FC] text-white"
-            }`}
-            on:click={() => (selectedType = "rank")}
-          >
-            Token Rank
-          </div>
+          <AnimateSharedLayout>
+            {#each typeList as type}
+              <div
+                class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
+                on:click={() => (selectedType = type.value)}
+              >
+                <div
+                  class={`relative z-20 ${
+                    selectedType === type.value && "text-white"
+                  }`}
+                >
+                  {type.label}
+                </div>
+                {#if type.value === selectedType}
+                  <Motion
+                    let:motion
+                    layoutId="active-pill"
+                    transition={{ type: "spring", duration: 0.6 }}
+                  >
+                    <div
+                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                      use:motion
+                    />
+                  </Motion>
+                {/if}
+              </div>
+            {/each}
+          </AnimateSharedLayout>
         </div>
       </div>
       <div class="mt-2">
