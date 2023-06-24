@@ -1,0 +1,27 @@
+input: docs
+output: .retype
+url: https://getnimbus.io
+branding:
+  title: Nimbus
+  label: Docs
+  logo: ../src/assets/logo-2.png
+favicon: ../src/assets/logo-icon-1.svg
+links:
+  - text: Homepage
+    link: https://getnimbus.io
+  - text: Getting Started
+    link: /
+  - text: App
+    link: https://app.getnimbus.io
+footer:
+  links:
+    - text: Homepage
+      link: https://getnimbus.io
+    - text: Twitter
+      link: https://twitter.com/get_nimbus
+    - text: Links
+      link: https://bento.me/getnimbus
+  copyright: "&copy; Copyright {{ year }}. All rights reserved."
+integrations:
+  googleAnalytics:
+    id: G-5XFSSTHG49
