@@ -16,7 +16,8 @@
     getLocalImg,
     shorterAddress,
     shorterName,
-  } from "../../../utils";
+    typePieChart,
+  } from "~/utils";
   import { track } from "~/lib/data-tracking";
   import { nimbus } from "../../../lib/network";
   import { isSaveAddressLabel } from "../../../store";
@@ -47,17 +48,6 @@
     empty: i18n("newtabPage.empty", "Empty"),
     collection: i18n("newtabPage.collection", "Collection"),
   };
-
-  const typeList = [
-    {
-      label: "NFT",
-      value: "nft",
-    },
-    {
-      label: "Token",
-      value: "token",
-    },
-  ];
 
   // let balance = 0;
   // let tokenList = [];
@@ -642,7 +632,7 @@
               </div>
               <div class="flex items-center gap-1">
                 <AnimateSharedLayout>
-                  {#each typeList as type}
+                  {#each typePieChart as type}
                     <div
                       class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
                       on:click={() => (selectedType = type.value)}
