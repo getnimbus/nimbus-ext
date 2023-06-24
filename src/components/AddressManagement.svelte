@@ -165,6 +165,16 @@
     if (!chainParams && listAddress.length === 0) {
       chain.update((n) => (n = ""));
     }
+    if (!chainParams && listAddress.length === 0 && addressParams) {
+      chain.update((n) => (n = "ALL"));
+      if (getAddressContext(selectedWallet)?.type === "BTC") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?address=${selectedWallet}`
+        );
+      }
+    }
     if (!chainParams && listAddress.length !== 0) {
       if (getAddressContext(selectedWallet)?.type === "EVM") {
         chain.update((n) => (n = "ALL"));
