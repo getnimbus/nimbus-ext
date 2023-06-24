@@ -8,10 +8,11 @@
     "build": "vite build",
     "build:components": "vite build -c vite.config.components.ts",
     "build:web": "vite build -c vite.config.web.ts",
-    "build:docs": "retype build && vercel deploy",
+    "build:docs": "retype build && vercel deploy --prod .retype",
     "watch": "WATCH=true vite build --watch",
     "dev": "WATCH=true vite build --watch",
     "dev:web": "vite -c vite.config.web.ts",
+    "dev:docs": "retype start",
     "serve:firefox": "web-ext run --start-url \"about:debugging#/runtime/this-firefox\"  --source-dir ./dist/",
     "serve:chrome": "web-ext run -t chromium --start-url \"https://google.com\" --source-dir ./dist/",
     "check": "svelte-check --tsconfig ./tsconfig.json"
