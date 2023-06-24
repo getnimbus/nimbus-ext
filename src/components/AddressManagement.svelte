@@ -11,6 +11,7 @@
   dayjs.extend(relativeTime);
   import { chainList, getAddressContext } from "~/utils";
   import mixpanel from "mixpanel-browser";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
 
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
@@ -389,27 +390,39 @@
                 {#if formatListAddress.length !== 0}
                   <div class="flex items-center gap-5">
                     {#if formatListAddress.length > 4}
-                      {#each formatListAddress.slice(0, 4) as item}
-                        <div
-                          id={item.value}
-                          class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
-                            item.value === selectedWallet && "bg-[#ffffff1c]"
-                          }`}
-                          class:hover:no-underline={item.value ===
-                            selectedWallet}
-                          on:click={() => {
-                            wallet.update((n) => (n = item.value));
-                          }}
-                        >
-                          <img
-                            src={item.logo}
-                            alt="logo"
-                            width="16"
-                            height="16"
-                          />
-                          {item.label}
-                        </div>
-                      {/each}
+                      <AnimateSharedLayout>
+                        {#each formatListAddress.slice(0, 4) as item}
+                          <div
+                            id={item.value}
+                            class="relative text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                            class:hover:no-underline={item.value ===
+                              selectedWallet}
+                            on:click={() => {
+                              wallet.update((n) => (n = item.value));
+                            }}
+                          >
+                            <img
+                              src={item.logo}
+                              alt="logo"
+                              width="16"
+                              height="16"
+                            />
+                            {item.label}
+                            {#if item.value === selectedWallet}
+                              <Motion
+                                let:motion
+                                layoutId="active-pill"
+                                transition={{ type: "spring", duration: 0.6 }}
+                              >
+                                <div
+                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                  use:motion
+                                />
+                              </Motion>
+                            {/if}
+                          </div>
+                        {/each}
+                      </AnimateSharedLayout>
                       <Select
                         type="wallet"
                         listSelect={formatListAddress.slice(
@@ -419,27 +432,39 @@
                         bind:selected={selectedWallet}
                       />
                     {:else}
-                      {#each formatListAddress as item}
-                        <div
-                          id={item.value}
-                          class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
-                            item.value === selectedWallet && "bg-[#ffffff1c]"
-                          }`}
-                          class:hover:no-underline={item.value ===
-                            selectedWallet}
-                          on:click={() => {
-                            wallet.update((n) => (n = item.value));
-                          }}
-                        >
-                          <img
-                            src={item.logo}
-                            alt="logo"
-                            width="16"
-                            height="16"
-                          />
-                          {item.label}
-                        </div>
-                      {/each}
+                      <AnimateSharedLayout>
+                        {#each formatListAddress as item}
+                          <div
+                            id={item.value}
+                            class="relative text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                            class:hover:no-underline={item.value ===
+                              selectedWallet}
+                            on:click={() => {
+                              wallet.update((n) => (n = item.value));
+                            }}
+                          >
+                            <img
+                              src={item.logo}
+                              alt="logo"
+                              width="16"
+                              height="16"
+                            />
+                            {item.label}
+                            {#if item.value === selectedWallet}
+                              <Motion
+                                let:motion
+                                layoutId="active-pill"
+                                transition={{ type: "spring", duration: 0.6 }}
+                              >
+                                <div
+                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                  use:motion
+                                />
+                              </Motion>
+                            {/if}
+                          </div>
+                        {/each}
+                      </AnimateSharedLayout>
                     {/if}
                   </div>
                 {:else}
