@@ -4,8 +4,8 @@ url: https://getnimbus.io
 branding:
   title: Nimbus
   label: Docs
-  logo: ../src/assets/logo-2.png
-favicon: ../src/assets/logo-icon-1.svg
+  logo: ./logo.png
+favicon: ./logo-icon-1.svg
 links:
   - text: Homepage
     link: https://getnimbus.io
