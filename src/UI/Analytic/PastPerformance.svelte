@@ -206,7 +206,6 @@
             series: dataCategory.series,
           };
         }
-        console.log("optionLine: ", optionLine);
       }
     }
   }

@@ -5,12 +5,15 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { formatBalance, formatCurrency, typeList } from "~/utils";
   import { i18n } from "~/lib/i18n";
+  import { priceSubscribe } from "~/lib/price-ws";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
+  import Select from "~/components/Select.svelte";
   import EChart from "~/components/EChart.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import HoldingToken from "~/components/HoldingToken.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
   import "~/components/Loading.custom.svelte";
 
   const MultipleLang = {
@@ -116,9 +119,17 @@
     ],
   };
 
-  let filteredHoldingToken = false;
+  let dataTableRank;
+  let dataTableCategory;
+  let dataTableSector;
+  let dataTable;
+  let selectedDataTable;
+  let marketPrice;
   let isLoadingToken = false;
+  let filteredHoldingToken = true;
   let filteredHoldingDataToken = [];
+  let selectedTypeTable;
+  let sum = 0;
 
   const handleFormatDataPieChart = (data, type) => {
     const formatData = data.map((item) => {
@@ -161,8 +172,39 @@
     });
   };
 
+  const handleFormatDataTable = (data, type) => {
+    let formatData = data.map((item) => {
+      return {
+        ...item,
+        value: Number(item?.amount) * Number(item?.price?.price),
+        market_price: Number(item?.price?.price) || 0,
+      };
+    });
+
+    let groupData = groupBy(formatData, type);
+    let typesData = Object.getOwnPropertyNames(groupData);
+
+    let formatGroupData = typesData.map((item) => {
+      return {
+        name: item,
+        data: groupData[item],
+      };
+    });
+
+    return {
+      select: typesData.map((item) => {
+        return {
+          value: item,
+          label: item,
+        };
+      }),
+      data: formatGroupData,
+    };
+  };
+
   const getHoldingToken = async (isReload: boolean = false) => {
     isLoadingDataPie = true;
+    isLoadingToken = true;
     try {
       const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
         address: selectedWallet,
@@ -170,21 +212,43 @@
         chain: selectedChain,
       });
 
-      if (selectedWallet === response.address) {
+      if (response === null) {
+        isEmptyDataPie = true;
+        isLoadingToken = false;
+        isLoadingDataPie = false;
+      } else if (selectedWallet === response?.address) {
         if (response?.result?.length === 0) {
           isEmptyDataPie = true;
+          isLoadingToken = false;
           isLoadingDataPie = false;
           return;
         }
+
+        const listCMCID = response.result
+          .map((item) => item.cmc_id)
+          .filter((n) => n);
+
+        priceSubscribe(listCMCID, (data) => {
+          marketPrice = {
+            id: data.id,
+            market_price: data.p,
+          };
+        });
+
+        dataTableRank = handleFormatDataTable(response.result, "rank");
+        dataTableCategory = handleFormatDataTable(response.result, "category");
+        dataTableSector = handleFormatDataTable(response.result, "sector");
 
         dataRank = handleFormatDataPieChart(response.result, "rank");
         dataCategory = handleFormatDataPieChart(response.result, "category");
         dataSector = handleFormatDataPieChart(response.result, "sector");
 
         isLoadingDataPie = false;
+        isLoadingToken = false;
       } else {
         isEmptyDataPie = true;
         isLoadingDataPie = false;
+        isLoadingToken = false;
       }
     } catch (e) {
       console.log("error: ", e);
@@ -206,6 +270,7 @@
               },
             ],
           };
+          dataTable = dataTableSector;
         }
         if (selectedType === "rank") {
           optionPie = {
@@ -217,6 +282,7 @@
               },
             ],
           };
+          dataTable = dataTableRank;
         }
         if (selectedType === "category") {
           optionPie = {
@@ -228,6 +294,7 @@
               },
             ],
           };
+          dataTable = dataTableCategory;
         }
       }
     }
@@ -238,6 +305,50 @@
       if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
         getHoldingToken();
       }
+    }
+  }
+
+  $: {
+    if (selectedTypeTable) {
+      selectedDataTable = dataTable.data.filter(
+        (item) => item.name === selectedTypeTable.value
+      )[0]?.data;
+    }
+  }
+
+  $: {
+    if (selectedDataTable) {
+      sum = selectedDataTable.reduce(
+        (prev, item) => prev + Number(item.value),
+        0
+      );
+      if (filteredHoldingToken) {
+        filteredHoldingDataToken = selectedDataTable.filter(
+          (item) => item?.amount * item.market_price > 1
+        );
+      } else {
+        filteredHoldingDataToken = selectedDataTable;
+      }
+    }
+  }
+
+  $: {
+    if (filteredHoldingDataToken && marketPrice !== undefined) {
+      const formatDataWithMarketPrice = filteredHoldingDataToken.map((item) => {
+        if (marketPrice.id === Number(item?.cmc_id)) {
+          return {
+            ...item,
+            value: Number(item?.amount) * marketPrice.market_price,
+            market_price: marketPrice.market_price,
+          };
+        }
+        return { ...item };
+      });
+      filteredHoldingDataToken = formatDataWithMarketPrice;
+      sum = formatDataWithMarketPrice.reduce(
+        (prev, item) => prev + item.value,
+        0
+      );
     }
   }
 </script>
@@ -279,8 +390,10 @@
       </AnimateSharedLayout>
     </div>
   </div>
-  <div class="flex xl:flex-row flex-col justify-between gap-6">
-    <div class="w-full xl:w-[45%] border border-[#0000001a] rounded-[20px] p-6">
+  <div class="flex 2xl:flex-row flex-col justify-between gap-6">
+    <div
+      class="w-full 2xl:w-[45%] border border-[#0000001a] rounded-[20px] p-6"
+    >
       {#if isLoadingDataPie}
         <div class="flex items-center justify-center h-[465px]">
           <loading-icon />
@@ -307,8 +420,18 @@
     </div>
     <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
       <div class="mb-2 flex justify-between items-center">
-        <div>select</div>
-        <div class="text-3xl font-semibold text-right">$0</div>
+        {#if dataTable}
+          <Select
+            type="lang"
+            listSelect={dataTable?.select || []}
+            bind:selected={selectedTypeTable}
+          />
+        {:else}
+          <div />
+        {/if}
+        <div class="text-3xl font-semibold text-right">
+          $<TooltipNumber number={sum} type="balance" />
+        </div>
       </div>
       <div class="flex flex-col gap-2">
         <div class="flex items-center justify-end gap-2">

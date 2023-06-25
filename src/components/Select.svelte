@@ -31,14 +31,16 @@
   >
     <div class="label_container">
       {#if type === "chain" || type === "lang"}
-        <img
-          src={selected?.value === "ALL" || selectedChain[0]?.value === "ALL"
-            ? All
-            : selected?.logo || selectedChain[0]?.logo}
-          alt="logo"
-          width="18"
-          height="18"
-        />
+        {#if selected?.logo || selectedChain[0]?.logo}
+          <img
+            src={selected?.value === "ALL" || selectedChain[0]?.value === "ALL"
+              ? All
+              : selected?.logo || selectedChain[0]?.logo}
+            alt="logo"
+            width="18"
+            height="18"
+          />
+        {/if}
         <div class="label">{selected?.label || selectedChain[0]?.label}</div>
       {:else}
         <div class="label">Other ({listSelect.length})</div>
@@ -87,12 +89,14 @@
             }
           }}
         >
-          <img
-            src={item.value === "ALL" ? All : item.logo}
-            alt="logo"
-            width="18"
-            height="18"
-          />
+          {#if item.logo}
+            <img
+              src={item.value === "ALL" ? All : item.logo}
+              alt="logo"
+              width="18"
+              height="18"
+            />
+          {/if}
           <div
             class={`name ${
               type === "chain" &&
@@ -154,8 +158,8 @@
   }
 
   .content {
-    min-width: 190px;
-    width: 190px;
+    min-width: 200px;
+    width: 200px;
     max-height: 300px;
     overflow-y: overlay;
     position: absolute;
