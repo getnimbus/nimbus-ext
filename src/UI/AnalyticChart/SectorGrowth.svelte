@@ -6,6 +6,8 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { formatCurrencyV2, typeList } from "~/utils";
 
+  import type { AnalyticSectorGrowthRes } from "~/types/AnalyticSectorGrowthData";
+
   import EChart from "~/components/EChart.svelte";
 
   let selectedWallet: string = "";
@@ -75,7 +77,7 @@
     yAxis: {
       type: "value",
       axisLabel: {
-        formatter: "{value}",
+        formatter: "${value}",
       },
     },
     series: [],
@@ -128,12 +130,15 @@
   const getSectorGrowth = async () => {
     isLoadingSectorGrowth = true;
     try {
-      const response = await sendMessage("getSectorGrowth", {
-        address: selectedWallet,
-        chain: selectedChain,
-        // fromDate: "YYYY-MM-DD",
-        // toDate: "YYYY-MM-DD",
-      });
+      const response: AnalyticSectorGrowthRes = await sendMessage(
+        "getSectorGrowth",
+        {
+          address: selectedWallet,
+          chain: selectedChain,
+          // fromDate: "YYYY-MM-DD",
+          // toDate: "YYYY-MM-DD",
+        }
+      );
 
       if (selectedWallet === response.address) {
         if (response?.result?.length === 0) {

@@ -2,6 +2,7 @@
   import DateRangePicker from "~/components/DateRangePicker.svelte";
   import SectorGrowth from "../AnalyticChart/SectorGrowth.svelte";
   import TotalGasFee from "../AnalyticChart/TotalGasFee.svelte";
+  import InflowOutflow from "../AnalyticChart/InflowOutflow.svelte";
 
   const handleGetDateRange = (data) => {
     console.log(data);
@@ -16,6 +17,7 @@
   <div class="flex flex-col gap-6">
     <SectorGrowth />
     <TotalGasFee />
+    <InflowOutflow />
   </div>
 </div>
 

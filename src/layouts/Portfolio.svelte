@@ -286,6 +286,8 @@
         chain: selectedChain,
       });
 
+      console.log("response: ", response);
+
       if (selectedWallet === response.address) {
         overviewData = response.result;
 

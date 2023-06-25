@@ -80,6 +80,19 @@ onMessage<IAddressInput, any>("getTotalGasFee", async ({ data: { address, chain 
   }
 });
 
+onMessage<IAddressInput, any>("getInflowOutflow", async ({ data: { address, chain } }) => {
+  try {
+    return nimbus.get(`/analysis/${address}/inflow-outflow?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
+      return {
+        result: response.data,
+        address: address
+      }
+    });
+  } catch (error) {
+    return {};
+  }
+});
+
 onMessage("configPageList", async () => {
   try {
     return JSON.parse(

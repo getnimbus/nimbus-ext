@@ -420,6 +420,9 @@
     </div>
     <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
       <div class="mb-2 flex justify-between items-center">
+        <div class="text-3xl font-semibold text-right">
+          $<TooltipNumber number={sum} type="balance" />
+        </div>
         {#if dataTable}
           <Select
             type="lang"
@@ -429,9 +432,6 @@
         {:else}
           <div />
         {/if}
-        <div class="text-3xl font-semibold text-right">
-          $<TooltipNumber number={sum} type="balance" />
-        </div>
       </div>
       <div class="flex flex-col gap-2">
         <div class="flex items-center justify-end gap-2">
