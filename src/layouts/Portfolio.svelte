@@ -72,6 +72,7 @@
 
   let overviewData: OverviewData = {
     breakdownToken: [],
+    breakdownNft: [],
     overview: {
       assets: 0,
       assetsChange: 0,
@@ -109,84 +110,6 @@
   let loadingHoldingNFT = false;
   let loadingPositions = false;
   let loadingNews = false;
-  let optionPie = {
-    title: {
-      text: "",
-    },
-    tooltip: {
-      trigger: "item",
-      extraCssText: "z-index: 9997",
-      formatter: function (params) {
-        return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 190px;">
-              <div style="display: flex; align-items: centers; gap: 4px">
-                <img src=${
-                  params.data.logo
-                } alt="" width=20 height=20 style="border-radius: 100%" /> 
-                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                  ${params.name} ${
-          params.data.symbol ? `(${params.data.symbol})` : ""
-        }
-                </div>
-              </div>
-              ${
-                params.data.name_balance
-                  ? `<div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
-                  ${MultipleLang[params.data.name_balance]}
-                </div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatCurrency(params.data.value_balance)}</div>
-              </div>`
-                  : ""
-              }
-              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
-                  ${MultipleLang[params.data.name_value]}
-                </div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  $${formatBalance(params.data.value_value)}</div>
-              </div>
-              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
-                  ${MultipleLang[params.data.name_ratio]}
-                </div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatBalance(params.value)}%
-                </div>
-              </div>
-            </div>`;
-      },
-    },
-    legend: {
-      orient: "vertical",
-      right: "right",
-      bottom: "center",
-    },
-    series: [
-      {
-        type: "pie",
-        radius: ["40%", "60%"],
-        left: -220,
-        avoidLabelOverlap: false,
-        label: {
-          show: false,
-          position: "center",
-        },
-        emphasis: {
-          label: {
-            show: false,
-            fontSize: 40,
-            fontWeight: "bold",
-          },
-        },
-        labelLine: {
-          show: false,
-        },
-        data: [],
-      },
-    ],
-  };
   let optionLine = {
     title: {
       text: "",
@@ -276,6 +199,18 @@
     },
     series: [],
   };
+  let dataPieChart = {
+    token: {
+      sumOrderBreakdownToken: 0,
+      formatDataPieChartTopFourToken: [],
+      dataPieChartOrderBreakdownToken: [],
+    },
+    nft: {
+      sumOrderBreakdownNft: 0,
+      formatDataPieChartTopFourNft: [],
+      dataPieChartOrderBreakdownNft: [],
+    },
+  };
 
   const getOverview = async (isReload: boolean = false) => {
     isEmptyDataPie = false;
@@ -286,21 +221,23 @@
         chain: selectedChain,
       });
 
-      console.log("response: ", response);
-
       if (selectedWallet === response.address) {
         overviewData = response.result;
 
-        if (overviewData?.breakdownToken.length === 0) {
+        if (
+          overviewData?.breakdownToken.length === 0 ||
+          overviewData?.breakdownNft.length === 0
+        ) {
           isEmptyDataPie = true;
         }
 
-        const sum = (overviewData?.breakdownToken || []).reduce(
+        // pie chart format data Token holding
+        const sumToken = (overviewData?.breakdownToken || []).reduce(
           (prev, item) => prev + Number(item.value),
           0
         );
 
-        const sortBreakdown = overviewData?.breakdownToken.sort((a, b) => {
+        const sortBreakdownToken = overviewData?.breakdownToken.sort((a, b) => {
           if (a.value < b.value) {
             return 1;
           }
@@ -310,42 +247,108 @@
           return 0;
         });
 
-        const topFourBreakdown = sortBreakdown.slice(0, 4).map((item) => {
-          return {
-            ...item,
-            id: item.id || "N/A",
-            symbol: item.symbol || "N/A",
-            name: item.name || "N/A",
-          };
-        });
-        const orderBreakdown = sortBreakdown.slice(4, sortBreakdown.length);
+        const topFourBreakdownToken = sortBreakdownToken
+          .slice(0, 4)
+          .map((item) => {
+            return {
+              ...item,
+              id: item.id || "N/A",
+              symbol: item.symbol || "N/A",
+              name: item.name || "N/A",
+            };
+          });
 
-        const sumOrderBreakdown = (orderBreakdown || []).reduce(
+        const orderBreakdownToken = sortBreakdownToken.slice(
+          4,
+          sortBreakdownToken.length
+        );
+
+        const sumOrderBreakdownToken = (orderBreakdownToken || []).reduce(
           (prev, item) => prev + Number(item.value),
           0
         );
 
-        const dataPieChartOrderBreakdown = [
+        const dataPieChartOrderBreakdownToken = [
           {
             logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
             name: "Other tokens",
             symbol: "",
             name_ratio: "Ratio",
-            value: (sumOrderBreakdown / sum) * 100,
+            value: (sumOrderBreakdownToken / sumToken) * 100,
             name_value: "Value",
-            value_value: sumOrderBreakdown,
+            value_value: sumOrderBreakdownToken,
             name_balance: "",
             value_balance: 0,
           },
         ];
 
-        const formatDataPieChartTopFour = topFourBreakdown.map((item) => {
+        const formatDataPieChartTopFourToken = topFourBreakdownToken.map(
+          (item) => {
+            return {
+              logo: item.logo,
+              name: item.name || item.symbol,
+              symbol: item.symbol,
+              name_ratio: "Ratio",
+              value: (Number(item.value) / sumToken) * 100,
+              name_value: "Value",
+              value_value: Number(item.value),
+              name_balance: "Balance",
+              value_balance: Number(item.amount),
+            };
+          }
+        );
+
+        // pie chart format data NFT holding
+        const sumNft = (overviewData?.breakdownNft || []).reduce(
+          (prev, item) => prev + Number(item.value),
+          0
+        );
+
+        const sortBreakdownNft = overviewData?.breakdownNft.sort((a, b) => {
+          if (a.value < b.value) {
+            return 1;
+          }
+          if (a.value > b.value) {
+            return -1;
+          }
+          return 0;
+        });
+
+        const topFourBreakdownNft = sortBreakdownNft.slice(0, 4).map((item) => {
           return {
-            logo: item.logo,
-            name: item.name || item.symbol,
-            symbol: item.symbol,
+            ...item,
+            id: item.id || "N/A",
+            name: item.collection.name || "N/A",
+          };
+        });
+
+        const orderBreakdownNft = sortBreakdownNft.slice(
+          4,
+          sortBreakdownNft.length
+        );
+
+        const sumOrderBreakdownNft = (orderBreakdownNft || []).reduce(
+          (prev, item) => prev + Number(item.value),
+          0
+        );
+
+        const dataPieChartOrderBreakdownNft = [
+          {
+            name: "Other NFT Collection",
             name_ratio: "Ratio",
-            value: (Number(item.value) / sum) * 100,
+            value: (sumOrderBreakdownNft / sumNft) * 100 || 0,
+            name_value: "Value",
+            value_value: sumOrderBreakdownNft,
+            name_balance: "",
+            value_balance: 0,
+          },
+        ];
+
+        const formatDataPieChartTopFourNft = topFourBreakdownNft.map((item) => {
+          return {
+            name: item.collection.name || item.collection.symbol,
+            name_ratio: "Ratio",
+            value: (Number(item.value) / sumNft) * 100 || 0,
             name_value: "Value",
             value_value: Number(item.value),
             name_balance: "Balance",
@@ -353,19 +356,20 @@
           };
         });
 
-        optionPie = {
-          ...optionPie,
-          series: [
-            {
-              ...optionPie.series[0],
-              data:
-                sumOrderBreakdown > 0
-                  ? formatDataPieChartTopFour.concat(dataPieChartOrderBreakdown)
-                  : formatDataPieChartTopFour,
-            },
-          ],
+        dataPieChart = {
+          token: {
+            sumOrderBreakdownToken,
+            formatDataPieChartTopFourToken,
+            dataPieChartOrderBreakdownToken,
+          },
+          nft: {
+            sumOrderBreakdownNft,
+            formatDataPieChartTopFourNft,
+            dataPieChartOrderBreakdownNft,
+          },
         };
 
+        // line chart format data
         const formatXAxis = overviewData?.performance.map((item) => {
           return dayjs(item.date).format("DD MMM YYYY");
         });
@@ -578,6 +582,7 @@
   const handleGetAllData = async (type: string) => {
     overviewData = {
       breakdownToken: [],
+      breakdownNft: [],
       overview: {
         assets: 0,
         assetsChange: 0,
@@ -790,8 +795,8 @@
         >
           <Charts
             isLoading={loadingOverview}
-            {optionPie}
             {optionLine}
+            {dataPieChart}
             {isEmptyDataPie}
           />
 

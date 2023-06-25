@@ -70,9 +70,6 @@
         formatter: "${value}",
       },
     },
-    grid: {
-      bottom: 100,
-    },
     series: [],
   };
 
@@ -262,8 +259,8 @@
   }
 </script>
 
-<div class="border border-[#0000001a] rounded-[20px] pt-6 px-6">
-  <div class="font-medium text-black text-xl">Inflow - Outflow</div>
+<div class="border border-[#0000001a] rounded-[20px] pt-6">
+  <div class="font-medium text-black text-xl px-6">Inflow - Outflow</div>
   {#if isLoadingInflowOutflow}
     <div class="flex items-center justify-center h-[465px]">
       <loading-icon />
