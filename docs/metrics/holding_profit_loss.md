@@ -8,7 +8,7 @@ icon: pulse
 
 For token holding, the profit and loss is only calculated by Swapping even (On DEX - Uniswap, SushiSwap, KyberSwap), so basic sending token will not impact your profit and loss
 
-Let said we some transacation for WBTC
+Let said we have some transacations for WBTC
 
 | Tx  | Event   | Token In         | Token Out          |
 | --- | ------- | ---------------- | ------------------ |
