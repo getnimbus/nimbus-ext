@@ -8,7 +8,10 @@
   dayjs.extend(relativeTime);
   import * as echarts from "echarts";
 
-  import type { AnalyticHistoricalRes } from "~/types/AnalyticHistoricalData";
+  import type {
+    AnalyticHistoricalRes,
+    AnalyticHistoricalFormat,
+  } from "~/types/AnalyticHistoricalData";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
   import Button from "~/components/Button.svelte";
@@ -172,7 +175,7 @@
           prev.count > current.count ? prev : current
         );
 
-        const formatData: any[] = response.map((item) => {
+        const formatData: AnalyticHistoricalFormat = response.map((item) => {
           return [dayjs(item.date).format("YYYY-MM-DD"), item.count];
         });
 
@@ -219,9 +222,7 @@
     Personality
   </div>
   <div class="flex flex-col gap-6">
-    <div
-      class="pb-9 pt-7 flex flex-col gap-4 border border-[#0000001a] rounded-[20px]"
-    >
+    <div class="pb-9 pt-7 border border-[#0000001a] rounded-[20px]">
       <CalendarChart
         {option}
         {isEmptyDataChart}
@@ -232,9 +233,7 @@
       />
     </div>
     <div class="relative flex flex-col gap-6">
-      <div
-        class="pb-9 pt-7 flex flex-col gap-4 border border-[#0000001a] rounded-[20px]"
-      >
+      <div class="pb-9 pt-7 border border-[#0000001a] rounded-[20px]">
         <CalendarChart
           option={optionDemo}
           isEmptyDataChart={false}
@@ -244,9 +243,7 @@
           id="TrxPerDay"
         />
       </div>
-      <div
-        class="pb-9 pt-7 flex flex-col gap-4 border border-[#0000001a] rounded-[20px]"
-      >
+      <div class="pb-9 pt-7 border border-[#0000001a] rounded-[20px]">
         <CalendarChart
           option={optionDemo}
           isEmptyDataChart={false}
@@ -256,9 +253,7 @@
           id="MostUsedProtocol"
         />
       </div>
-      <div
-        class="pb-9 pt-7 flex flex-col gap-4 border border-[#0000001a] rounded-[20px]"
-      >
+      <div class="pb-9 pt-7 border border-[#0000001a] rounded-[20px]">
         <CalendarChart
           option={optionDemo}
           isEmptyDataChart={false}

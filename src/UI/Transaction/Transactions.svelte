@@ -8,7 +8,10 @@
   import { wallet, chain } from "~/store";
 
   import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
-  import type { AnalyticHistoricalRes } from "~/types/AnalyticHistoricalData";
+  import type {
+    AnalyticHistoricalRes,
+    AnalyticHistoricalFormat,
+  } from "~/types/AnalyticHistoricalData";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
   import CalendarChart from "~/components/CalendarChart.svelte";
@@ -103,7 +106,7 @@
           prev.count > current.count ? prev : current
         );
 
-        const formatData: any[] = response.map((item) => {
+        const formatData: AnalyticHistoricalFormat = response.map((item) => {
           return [dayjs(item.date).format("YYYY-MM-DD"), item.count];
         });
 

@@ -318,37 +318,37 @@
 
   $: {
     if (selectedDataTable) {
+      let data = selectedDataTable;
       sum = selectedDataTable.reduce(
         (prev, item) => prev + Number(item.value),
         0
       );
+
+      if (marketPrice !== undefined) {
+        const formatDataWithMarketPrice = selectedDataTable.map((item) => {
+          if (marketPrice.id === Number(item?.cmc_id)) {
+            return {
+              ...item,
+              value: Number(item?.amount) * marketPrice.market_price,
+              market_price: marketPrice.market_price,
+            };
+          }
+          return { ...item };
+        });
+        data = formatDataWithMarketPrice;
+        sum = formatDataWithMarketPrice.reduce(
+          (prev, item) => prev + item.value,
+          0
+        );
+      }
+
       if (filteredHoldingToken) {
-        filteredHoldingDataToken = selectedDataTable.filter(
+        filteredHoldingDataToken = data.filter(
           (item) => item?.amount * item.market_price > 1
         );
       } else {
-        filteredHoldingDataToken = selectedDataTable;
+        filteredHoldingDataToken = data;
       }
-    }
-  }
-
-  $: {
-    if (filteredHoldingDataToken && marketPrice !== undefined) {
-      const formatDataWithMarketPrice = filteredHoldingDataToken.map((item) => {
-        if (marketPrice.id === Number(item?.cmc_id)) {
-          return {
-            ...item,
-            value: Number(item?.amount) * marketPrice.market_price,
-            market_price: marketPrice.market_price,
-          };
-        }
-        return { ...item };
-      });
-      filteredHoldingDataToken = formatDataWithMarketPrice;
-      sum = formatDataWithMarketPrice.reduce(
-        (prev, item) => prev + item.value,
-        0
-      );
     }
   }
 </script>
