@@ -15,6 +15,7 @@
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
+    nft_allocation: i18n("newtabPage.nft-allocation", "NFT Allocation"),
     performance: i18n("newtabPage.performance", "Performance"),
     Balance: i18n("newtabPage.Balance", "Balance"),
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
@@ -151,7 +152,11 @@
     <div class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6">
       <div class="flex justify-between mb-1">
         <div class="pl-4 text-2xl font-medium text-black">
-          {MultipleLang.token_allocation}
+          {#if selectedType === "token"}
+            {MultipleLang.token_allocation}
+          {:else}
+            {MultipleLang.nft_allocation}
+          {/if}
         </div>
         <div class="flex items-center gap-1">
           <AnimateSharedLayout>
