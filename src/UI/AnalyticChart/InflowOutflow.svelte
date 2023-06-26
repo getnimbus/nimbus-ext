@@ -78,7 +78,7 @@
     const sortDataByInOutFlow = listDirection.map((item) => {
       return {
         type: item,
-        data: data.map((data) => {
+        data: data?.map((data) => {
           return data.changes[item] !== undefined
             ? {
                 dataChanges: Object.getOwnPropertyNames(
@@ -146,18 +146,22 @@
         // toDate: "YYYY-MM-DD",
       });
 
-      if (selectedWallet === response.address) {
+      if (response === undefined) {
+        isEmptyInflowOutflow = true;
+        isLoadingInflowOutflow = false;
+        return;
+      } else if (selectedWallet === response.address) {
         if (response?.result?.length === 0) {
           isEmptyInflowOutflow = true;
           isLoadingInflowOutflow = false;
           return;
         }
 
-        const formatXAxis = response?.result.map((item) => {
+        const formatXAxis = response?.result?.map((item) => {
           return dayjs(item.timestamp * 1000).format("DD MMM YYYY");
         });
 
-        const groupByDirectionData = response.result.map((item) => {
+        const groupByDirectionData = response?.result?.map((item) => {
           return {
             ...item,
             changes: groupBy(item.changes, "direction"),
@@ -167,14 +171,14 @@
           };
         });
 
-        const groupByTypeData = response.result.map((item) => {
+        const groupByTypeData = response?.result?.map((item) => {
           return {
             keys: Object.getOwnPropertyNames(groupBy(item.changes, "type")),
           };
         });
 
         const listType = intersection(
-          flatten(groupByTypeData.map((item) => item.keys))
+          flatten(groupByTypeData?.map((item) => item.keys))
         );
 
         const inflowData = formatDataTypeBaseOnInOutFlow(
@@ -201,9 +205,13 @@
           };
         });
 
-        const sumDataInflow = inflowData[0]?.data.map((data, index) => {
-          return inflowData.reduce((prev, item) => prev + item.data[index], 0);
-        });
+        const sumDataInflow =
+          inflowData[0]?.data.map((data, index) => {
+            return inflowData.reduce(
+              (prev, item) => prev + item.data[index],
+              0
+            );
+          }) || [];
 
         const sumDataOutflow = formatOutflowData[0]?.data.map((data, index) => {
           return formatOutflowData.reduce(

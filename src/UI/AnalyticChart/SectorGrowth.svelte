@@ -84,11 +84,11 @@
   };
 
   const handleFormatDataLineChart = (data, type) => {
-    const formatXAxis = data.map((item) => {
+    const formatXAxis = data?.map((item) => {
       return dayjs(item.date * 1000).format("DD MMM YYYY");
     });
 
-    const groupData = data.map((item) => {
+    const groupData = data?.map((item) => {
       return {
         date: item.date,
         data: groupBy(item.holding, type),
@@ -97,7 +97,7 @@
     });
 
     const eachDataKeys = intersection(
-      flatten(groupData.map((item) => item.keys))
+      flatten(groupData?.map((item) => item.keys))
     );
 
     const formatData = eachDataKeys.map((key) => {
@@ -140,7 +140,11 @@
         }
       );
 
-      if (selectedWallet === response.address) {
+      if (response === undefined) {
+        isEmptySectorGrowth = true;
+        isLoadingSectorGrowth = false;
+        return;
+      } else if (selectedWallet === response.address) {
         if (response?.result?.length === 0) {
           isEmptySectorGrowth = true;
           isLoadingSectorGrowth = false;

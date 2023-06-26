@@ -39,15 +39,18 @@
         // toDate: "YYYY-MM-DD",
       });
 
-      if (selectedWallet === response.address) {
+      if (response === undefined) {
+        isEmpty = true;
+        isLoading = false;
+        return;
+      } else if (selectedWallet === response.address) {
         if (response?.result?.length === 0) {
           isEmpty = true;
           isLoading = false;
           return;
         }
-
-        dataTotalValueHistory = response.result.holdingHistory;
-        dataDailyGain = response.result.returnsChange;
+        dataTotalValueHistory = response?.result?.holdingHistory;
+        dataDailyGain = response?.result?.returnsChange;
 
         isLoading = false;
       } else {
