@@ -17,7 +17,7 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
               <div style="display: flex; justify-content: space-between;">
-                <div style="font-weight: 600; font-size: 18px; line-height: 19px; color: black;">
+                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
                   ${params[0].axisValue}
                 </div>
                 <div style="font-weight: 600; font-size: 20px; line-height: 19px; color: black;">

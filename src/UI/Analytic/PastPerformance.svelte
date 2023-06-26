@@ -8,6 +8,7 @@
   import InflowOutflow from "../AnalyticChart/InflowOutflow.svelte";
   import TotalValueHistory from "../AnalyticChart/TotalValueHistory.svelte";
   import DailyGain from "../AnalyticChart/DailyGain.svelte";
+  import ProfitGrows from "../AnalyticChart/ProfitGrows.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -73,6 +74,7 @@
     <DateRangePicker onChange={handleGetDateRange} />
   </div>
   <div class="flex flex-col gap-6">
+    <ProfitGrows {isLoading} {isEmpty} {dataTotalValueHistory} />
     <TotalValueHistory {isLoading} {isEmpty} {dataTotalValueHistory} />
     <DailyGain {isLoading} {isEmpty} {dataDailyGain} />
     <SectorGrowth />
