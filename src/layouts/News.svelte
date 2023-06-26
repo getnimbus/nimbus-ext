@@ -51,7 +51,7 @@
     </div>
     <div class="flex flex-col gap-4">
       {#if isLoading && pageValue === 1}
-        <div class="w-full h-[120px] flex justify-center items-center">
+        <div class="w-full h-screen flex justify-center items-center">
           <loading-icon />
         </div>
       {:else}
