@@ -399,9 +399,9 @@
               <div class="flex justify-between items-center">
                 {#if formatListAddress.length !== 0}
                   <div class="flex items-center gap-5">
-                    {#if formatListAddress.length > 4}
+                    {#if formatListAddress.length > 5}
                       <AnimateSharedLayout>
-                        {#each formatListAddress.slice(0, 4) as item}
+                        {#each formatListAddress.slice(0, 5) as item}
                           <div
                             id={item.value}
                             class="relative text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
@@ -436,7 +436,7 @@
                       <Select
                         type="wallet"
                         listSelect={formatListAddress.slice(
-                          4,
+                          5,
                           formatListAddress.length
                         )}
                         bind:selected={selectedWallet}
