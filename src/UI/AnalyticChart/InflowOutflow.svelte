@@ -26,6 +26,9 @@
     tooltip: {
       trigger: "axis",
       extraCssText: "z-index: 9997",
+      axisPointer: {
+        type: "shadow",
+      },
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 250px;">
@@ -60,9 +63,6 @@
     },
     xAxis: {
       data: [],
-      axisLine: { onZero: true },
-      splitLine: { show: false },
-      splitArea: { show: false },
     },
     yAxis: {
       type: "value",

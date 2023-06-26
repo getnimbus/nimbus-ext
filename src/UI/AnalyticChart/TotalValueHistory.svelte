@@ -1,9 +1,9 @@
 <script lang="ts">
   import dayjs from "dayjs";
   import numeral from "numeral";
+  import { formatBigBalance, formatCurrencyV2 } from "~/utils";
 
   import EChart from "~/components/EChart.svelte";
-  import { formatCurrency, formatBigBalance, formatCurrencyV2 } from "~/utils";
 
   export let isEmpty;
   export let isLoading;
@@ -17,10 +17,10 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
               <div style="display: flex; justify-content: space-between;">
-                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                <div style="font-weight: 600; font-size: 18px; line-height: 19px; color: black;">
                   ${params[0].axisValue}
                 </div>
-                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                <div style="font-weight: 600; font-size: 20px; line-height: 19px; color: black;">
                   $${
                     formatNumber(params[0].value).number_size !== "K"
                       ? numeral(

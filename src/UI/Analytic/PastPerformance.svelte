@@ -7,6 +7,7 @@
   import TotalGasFee from "../AnalyticChart/TotalGasFee.svelte";
   import InflowOutflow from "../AnalyticChart/InflowOutflow.svelte";
   import TotalValueHistory from "../AnalyticChart/TotalValueHistory.svelte";
+  import DailyGain from "../AnalyticChart/DailyGain.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -73,6 +74,7 @@
   </div>
   <div class="flex flex-col gap-6">
     <TotalValueHistory {isLoading} {isEmpty} {dataTotalValueHistory} />
+    <DailyGain {isLoading} {isEmpty} {dataDailyGain} />
     <SectorGrowth />
     <InflowOutflow />
     <TotalGasFee />
