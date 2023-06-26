@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import Mark from "mark.js";
 import "@webcomponents/webcomponentsjs/webcomponents-bundle.js";
+import _ from "lodash";
 
 import "./views/AddressHighlight.custom.svelte";
 import "./views/AddressInfo.custom.svelte";
@@ -70,6 +71,24 @@ import { regexList } from "../../utils";
       const siblingPair = areSiblingsInArray(spansArray);
       if (siblingPair) {
         const [span1, span2] = siblingPair;
+        const parentNode = span1.parentNode
+
+        const parentHref = regexList.map((regex) => {
+          if (regex.regex_address) {
+            const regexMatch = parentNode.href.match(regex.regex_address);
+            if (regexMatch === null) {
+              return null
+            } else {
+              return regexMatch
+            }
+          }
+        })
+
+        const checkParentHref = parentHref.every(_.isNull);
+        if (checkParentHref) {
+          return
+        }
+
         const address = mergeSiblingText(span1, span2);
 
         // combine 2 span detected into 1

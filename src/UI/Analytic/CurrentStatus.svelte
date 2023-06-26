@@ -394,7 +394,7 @@
     <div
       class="w-full 2xl:w-[40%] border border-[#0000001a] rounded-[20px] p-6"
     >
-      <div class="h-full pt-8">
+      <div class="h-full pt-10">
         {#if isLoadingDataPie}
           <div class="flex items-center justify-center h-[465px]">
             <loading-icon />
@@ -435,7 +435,7 @@
           <div />
         {/if}
       </div>
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-2 h-[540px]">
         <div class="flex items-center justify-end gap-2">
           <label class="text-sm font-regular text-gray-400" for="filter-value"
             >{MultipleLang.hide}
@@ -447,9 +447,7 @@
             class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
           />
         </div>
-        <div
-          class="border border-[#0000000d] rounded-[10px] overflow-y-auto max-h-[510px]"
-        >
+        <div class="border border-[#0000000d] rounded-[10px] overflow-y-auto">
           <table class="table-auto w-full table-auto overflow-y-scroll">
             <thead>
               <tr class="bg-[#f4f5f8]">
