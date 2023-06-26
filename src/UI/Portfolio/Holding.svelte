@@ -260,7 +260,8 @@
                 <th class="py-3">
                   <div class="text-xs uppercase font-semibold text-black">
                     <TooltipTitle
-                      tooltipText="Profit and loss is calculated by transactions that swap the tokens"
+                      tooltipText="Learn more"
+                      link="https://docs.getnimbus.io/metrics/holding_profit_loss/"
                     >
                       {MultipleLang.profit}
                     </TooltipTitle>

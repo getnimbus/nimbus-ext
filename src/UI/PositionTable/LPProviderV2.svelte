@@ -42,8 +42,8 @@
             <div class="text-xs font-semibold text-black uppercase text-right">
               <TooltipTitle
                 tooltipText="More info"
-                link="https://academy.binance.com/articles/impermanent-loss-explained"
-                >Impermannet Loss</TooltipTitle
+                link="https://docs.getnimbus.io/metrics/impermanent_loss/"
+                >Impermanent Loss</TooltipTitle
               >
             </div>
           </th>

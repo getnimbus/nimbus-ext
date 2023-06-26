@@ -513,7 +513,11 @@
           </OverviewCard>
         </div>
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-          <OverviewCard title={"Average Cost"}>
+          <OverviewCard
+            title={"Average Cost"}
+            tooltipText="Learn more"
+            link="https://docs.getnimbus.io/metrics/average_cost/"
+          >
             <div class="text-3xl text-black flex">
               {#if (positionDetail?.overview?.averageCost)
                 .toString()
