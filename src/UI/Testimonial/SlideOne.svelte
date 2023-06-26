@@ -6,21 +6,21 @@
     class="text-lg font-normal leading-8 tracking-tight text-gray-900"
   >
     <p>
-      “Qui dolor enim consectetur do et non ex amet culpa sint in ea non dolore.
-      Enim minim magna anim id minim eu cillum sunt dolore aliquip. Amet elit
-      laborum culpa irure incididunt adipisicing culpa amet officia
-      exercitation. Eu non aute velit id velit Lorem elit anim pariatur.”
+      “As the founder of Nimbus, Nimbus is anything I wish for as a portfolio
+      tool in Web3. Tracking with real-time insights, and delivered a delightful
+      user experience. It helps me notice when the market change rapidly in this
+      space, make more effective decisions with data ”
     </p>
   </blockquote>
   <figcaption class="flex items-center gap-x-6">
     <img
       class="h-12 w-12 rounded-full bg-gray-50"
-      src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80"
-      alt=""
+      src="https://assets.devfolio.co/users/fdb9bde4af29435fa55a308030113292/avatar-e2e5466f-548d-479b-b6e5-a653775fd9e3.jpeg"
+      alt="Thanh Le"
     />
     <div class="text-sm leading-6">
-      <div class="font-semibold text-gray-900">Judith Black 1</div>
-      <div class="mt-0.5 text-gray-600">CEO of Workcation 1</div>
+      <div class="font-semibold text-gray-900">Thanh Le</div>
+      <div class="mt-0.5 text-gray-600">Founder @ Nimbus</div>
     </div>
   </figcaption>
 </div>

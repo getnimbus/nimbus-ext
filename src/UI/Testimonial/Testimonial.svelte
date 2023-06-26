@@ -25,10 +25,10 @@
       <SwiperSlide>
         <SlideOne />
       </SwiperSlide>
-
+      <!-- 
       <SwiperSlide>
         <SlideTwo />
-      </SwiperSlide>
+      </SwiperSlide> -->
     </Swiper>
   </div>
 </div>
