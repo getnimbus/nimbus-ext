@@ -270,7 +270,7 @@
           </div>
         {:else}
           <EChart
-            id="line-chart"
+            id="sector-growth"
             theme="white"
             option={optionLine}
             height={465}
