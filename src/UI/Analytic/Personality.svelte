@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getAddressContext } from "~/utils";
   import { sendMessage } from "webext-bridge";
   import { wallet, chain } from "~/store";
   import dayjs from "dayjs";
@@ -87,6 +88,7 @@
       data: getVirtualData("2016"),
     },
   };
+  let isShowSoon = true;
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -212,6 +214,11 @@
       isEmptyDataChart = false;
       if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
         getAnalyticHistorical();
+        if (getAddressContext(selectedWallet)?.type === "BTC") {
+          isShowSoon = false;
+        } else {
+          isShowSoon = true;
+        }
       }
     }
   }
@@ -263,16 +270,18 @@
           id="MostProfitPosition"
         />
       </div>
-      <div
-        class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-10 backdrop-blur-md"
-      >
-        <div class="text-lg">Comming soon 🚀</div>
-        <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
-          <Button variant="secondary" width={140} size="supper-small">
-            Request analytics
-          </Button>
-        </a>
-      </div>
+      {#if isShowSoon}
+        <div
+          class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-10 backdrop-blur-md"
+        >
+          <div class="text-lg">Comming soon 🚀</div>
+          <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
+            <Button variant="secondary" width={140} size="supper-small">
+              Request analytics
+            </Button>
+          </a>
+        </div>
+      {/if}
     </div>
   </div>
 </div>

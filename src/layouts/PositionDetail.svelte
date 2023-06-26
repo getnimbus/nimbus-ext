@@ -474,7 +474,11 @@
               />
             </div>
           </OverviewCard>
-          <OverviewCard title={"Profit & Loss"}>
+          <OverviewCard
+            title={"Profit & Loss"}
+            tooltipText="Learn more"
+            link="https://docs.getnimbus.io/metrics/holding_profit_loss/"
+          >
             <div
               class={`text-3xl flex ${
                 positionDetail?.overview?.profitAndLoss?.percent >= 0

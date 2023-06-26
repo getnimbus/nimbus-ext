@@ -487,7 +487,7 @@
                   on:mouseenter={() => {
                     if (
                       APP_TYPE.TYPE !== "EXT" &&
-                      formatListAddress.length === 3
+                      formatListAddress.length === 5
                     ) {
                       showDisableAddWallet = true;
                     }
@@ -495,7 +495,7 @@
                   on:mouseleave={() => {
                     if (
                       APP_TYPE.TYPE !== "EXT" &&
-                      formatListAddress.length === 3
+                      formatListAddress.length === 5
                     ) {
                       showDisableAddWallet = false;
                     }
@@ -503,14 +503,14 @@
                 >
                   <Button
                     variant={APP_TYPE.TYPE !== "EXT" &&
-                    formatListAddress.length === 3
+                    formatListAddress.length === 5
                       ? "disabled"
                       : "tertiary"}
                     width={136}
                     on:click={() => {
                       if (
                         APP_TYPE.TYPE !== "EXT" &&
-                        formatListAddress.length === 3
+                        formatListAddress.length === 5
                       ) {
                         window.open("https://getnimbus.io", "_blank");
                       } else {

@@ -25,9 +25,9 @@
   let dataTotalValueHistory = [];
   let dataDailyGain = [];
 
-  const handleGetDateRange = (data) => {
-    console.log(data);
-  };
+  // const handleGetDateRange = (data) => {
+  //   console.log(data);
+  // };
 
   const getTotalValueHistoryAndDailyGain = async () => {
     isLoading = true;
@@ -74,7 +74,7 @@
 <div class="border border-[#0000001a] rounded-[20px] p-6">
   <div class="flex justify-between items-center border-b-[1px] mb-6 pb-4">
     <div class="text-2xl font-medium text-black">Past Performance</div>
-    <DateRangePicker onChange={handleGetDateRange} />
+    <!-- <DateRangePicker onChange={handleGetDateRange} /> -->
   </div>
   <div class="flex flex-col gap-6">
     <ProfitGrows {isLoading} {isEmpty} {dataTotalValueHistory} />
