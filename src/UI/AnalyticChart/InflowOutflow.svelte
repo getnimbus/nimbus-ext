@@ -70,6 +70,7 @@
         formatter: "${value}",
       },
     },
+    grid: [{ right: "5%" }],
     series: [],
   };
 
@@ -217,6 +218,15 @@
           dataNetflow.push(sum);
         }
 
+        const formatDataNetflow = dataNetflow.map((item) => {
+          return {
+            value: item,
+            itemStyle: {
+              color: "rgba(0,169,236, 0.8)",
+            },
+          };
+        });
+
         option = {
           ...option,
           legend: {
@@ -233,7 +243,10 @@
             {
               name: "Netflow",
               type: "line",
-              data: dataNetflow,
+              data: formatDataNetflow,
+              lineStyle: {
+                color: "rgba(0,169,236, 0.8)",
+              },
             },
           ],
         };
@@ -266,7 +279,7 @@
       <loading-icon />
     </div>
   {:else}
-    <div class="h-full">
+    <div class="h-full w-full">
       {#if isEmptyInflowOutflow}
         <div
           class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
@@ -278,7 +291,7 @@
           id="brush-chart"
           theme="white"
           {option}
-          height={465}
+          height={565}
           notMerge={true}
         />
       {/if}

@@ -1,5 +1,7 @@
 <script>
   import { useNavigate } from "svelte-navigator";
+  import { chain } from "~/store";
+  import { shorterName } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -8,7 +10,6 @@
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import Chart from "~/assets/chart.svg";
-  import { chain } from "~/store";
 
   export let data;
   export let selectedWallet;
@@ -16,6 +17,9 @@
   $: selectedChain = $chain;
 
   const navigate = useNavigate();
+
+  let isShowTooltipName = false;
+  let isShowTooltipSymbol = false;
 
   $: price = data?.amount * data?.market_price;
   $: profitAndLoss = price + (data?.avgCost || 0);
@@ -35,7 +39,7 @@
   on:click={() => {
     if (clickable) {
       navigate(
-        `position-detail?id=${encodeURIComponent(
+        `/position-detail?id=${encodeURIComponent(
           data.positionId
         )}&type=${encodeURIComponent(
           data.positionType
@@ -54,18 +58,40 @@
         class="rounded-full"
       />
       <div class="flex flex-col gap-1">
-        <div class="text-black text-sm font-medium">
+        <div
+          class="text-black text-sm font-medium relative"
+          on:mouseover={() => {
+            isShowTooltipName = true;
+          }}
+          on:mouseleave={() => (isShowTooltipName = false)}
+        >
           {#if data.name === undefined}
             N/A
           {:else}
-            {data.name}
+            {shorterName(data.name, 20)}
+          {/if}
+          {#if isShowTooltipName && data.name.length > 20}
+            <div class="absolute -top-8 left-0" style="z-index: 2147483648;">
+              <tooltip-detail text={data.name} />
+            </div>
           {/if}
         </div>
-        <div class="text-[#00000080] text-xs font-medium">
+        <div
+          class="text-[#00000080] text-xs font-medium relative"
+          on:mouseover={() => {
+            isShowTooltipSymbol = true;
+          }}
+          on:mouseleave={() => (isShowTooltipSymbol = false)}
+        >
           {#if data.symbol === undefined}
             N/A
           {:else}
-            {data.symbol}
+            {shorterName(data.symbol, 20)}
+          {/if}
+          {#if isShowTooltipSymbol && data.symbol.length > 20}
+            <div class="absolute -top-8 left-0" style="z-index: 2147483648;">
+              <tooltip-detail text={data.name} />
+            </div>
           {/if}
         </div>
       </div>

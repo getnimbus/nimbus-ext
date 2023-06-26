@@ -109,7 +109,6 @@
   $: {
     if (selectedType) {
       if (Object.keys(dataPieChart).length !== 0) {
-        console.log("dataPieChart: ", dataPieChart);
         if (selectedType === "token") {
           optionPie = {
             ...optionPie,

@@ -392,31 +392,33 @@
   </div>
   <div class="flex 2xl:flex-row flex-col justify-between gap-6">
     <div
-      class="w-full 2xl:w-[45%] border border-[#0000001a] rounded-[20px] p-6"
+      class="w-full 2xl:w-[40%] border border-[#0000001a] rounded-[20px] p-6"
     >
-      {#if isLoadingDataPie}
-        <div class="flex items-center justify-center h-[465px]">
-          <loading-icon />
-        </div>
-      {:else}
-        <div class="h-full">
-          {#if isEmptyDataPie}
-            <div
-              class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
-            >
-              Empty
-            </div>
-          {:else}
-            <EChart
-              id="pie-chart"
-              theme="white"
-              option={optionPie}
-              height={465}
-              notMerge={true}
-            />
-          {/if}
-        </div>
-      {/if}
+      <div class="h-full pt-8">
+        {#if isLoadingDataPie}
+          <div class="flex items-center justify-center h-[465px]">
+            <loading-icon />
+          </div>
+        {:else}
+          <div class="h-full">
+            {#if isEmptyDataPie}
+              <div
+                class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
+              >
+                Empty
+              </div>
+            {:else}
+              <EChart
+                id="pie-chart"
+                theme="white"
+                option={optionPie}
+                height={465}
+                notMerge={true}
+              />
+            {/if}
+          </div>
+        {/if}
+      </div>
     </div>
     <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
       <div class="mb-2 flex justify-between items-center">
@@ -445,8 +447,10 @@
             class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
           />
         </div>
-        <div class="border border-[#0000000d] rounded-[10px]">
-          <table class="table-auto w-full">
+        <div
+          class="border border-[#0000000d] rounded-[10px] overflow-y-auto max-h-[510px]"
+        >
+          <table class="table-auto w-full table-auto overflow-y-scroll">
             <thead>
               <tr class="bg-[#f4f5f8]">
                 <th class="pl-3 py-3">
