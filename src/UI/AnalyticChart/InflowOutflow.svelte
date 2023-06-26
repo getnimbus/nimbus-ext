@@ -260,7 +260,7 @@
 </script>
 
 <div class="border border-[#0000001a] rounded-[20px] pt-6">
-  <div class="font-medium text-black text-xl px-6">Inflow - Outflow</div>
+  <div class="font-medium text-black text-xl px-6">Token Inflow - Outflow</div>
   {#if isLoadingInflowOutflow}
     <div class="flex items-center justify-center h-[465px]">
       <loading-icon />

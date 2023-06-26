@@ -16,8 +16,8 @@
   </div>
   <div class="flex flex-col gap-6">
     <SectorGrowth />
-    <TotalGasFee />
     <InflowOutflow />
+    <TotalGasFee />
   </div>
 </div>
 

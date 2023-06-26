@@ -154,7 +154,7 @@
     {option}
     {isEmptyDataChart}
     {isLoadingChart}
-    title="The total gas fee paid"
+    title="Total gas fee paid"
     tooltipTitle=""
     id="TotalGasFeePaid"
     {sum}

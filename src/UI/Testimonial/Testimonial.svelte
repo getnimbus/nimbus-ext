@@ -12,10 +12,10 @@
 
 <div class="flex flex-col items-center gap-5">
   <loading-icon />
-  <div class="flex justify-center text-2xl font-medium">
+  <!-- <div class="flex justify-center text-2xl font-medium">
     It May Take a Few Seconds to Sync your wallet address
-  </div>
-  <div class="mx-auto max-w-2xl">
+  </div> -->
+  <div class="mx-auto max-w-2xl mt-5">
     <Swiper
       cssMode={true}
       slidesPerView={1}
