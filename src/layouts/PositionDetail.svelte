@@ -18,6 +18,7 @@
   import TwitterLogo from "~/assets/twitter.svg";
   import LeftArrow from "~/assets/left-arrow.svg";
 
+  let type = "";
   let positionDetail;
   let positionDetailPrice;
   let isLoadingPositionDetail = false;
@@ -387,6 +388,7 @@
       getPositionDetailPrice(positionIDParams, addressParams);
       getPositionDetail(positionIDParams, positionTypeParams, addressParams);
       address = addressParams;
+      type = positionTypeParams;
       tweet = `Check it out on Nimbus 🚀 @get_nimbus https://app.getnimbus.io/position-detail?positionId=${positionIDParams}&positionType=${positionTypeParams}&address=${addressParams}`;
     }
   });
@@ -687,126 +689,255 @@
                     </tr>
                   {:else}
                     {#each positionDetail?.changes || [] as change}
-                      <tr
-                        class="hover:bg-gray-100 transition-all border-b-[0.5px] last:border-none"
-                      >
-                        <td class="pl-3 py-4">
-                          <div class="w-max">
-                            <a
-                              href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
-                              class="hover:text-blue-500 cursor-pointer"
-                              target="_blank"
-                            >
-                              <div class="text-left flex items-start gap-2">
-                                <div class="flex flex-col">
-                                  <div
-                                    class="text-sm"
-                                    use:tooltip={{
-                                      content: `<tooltip-detail text="${change?.transactionHash}" />`,
-                                      allowHTML: true,
-                                      placement: "top-start",
-                                    }}
-                                  >
-                                    {shorterAddress(change?.transactionHash)}
-                                  </div>
-                                  <div class="text-gray-400 text-xs">
-                                    {dayjs(new Date(change.timestamp)).format(
-                                      "DD/MM/YYYY, hh:mm A"
-                                    )}
+                      {#if type === "ERC_20"}
+                        <tr
+                          class="hover:bg-gray-100 transition-all border-b-[0.5px] last:border-none"
+                        >
+                          <td class="pl-3 py-4">
+                            <div class="w-max">
+                              <a
+                                href={`https://etherscan.io/tx/${change?.transaction_hash}`}
+                                class="hover:text-blue-500 cursor-pointer"
+                                target="_blank"
+                              >
+                                <div class="text-left flex items-start gap-2">
+                                  <div class="flex flex-col">
+                                    <div
+                                      class="text-sm"
+                                      use:tooltip={{
+                                        content: `<tooltip-detail text="${change?.transaction_hash}" />`,
+                                        allowHTML: true,
+                                        placement: "top-start",
+                                      }}
+                                    >
+                                      {shorterAddress(change?.transaction_hash)}
+                                    </div>
+                                    <div class="text-gray-400 text-xs">
+                                      {dayjs(
+                                        new Date(change.detail.timestamp)
+                                      ).format("DD/MM/YYYY, hh:mm A")}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </a>
-                          </div>
-                        </td>
-                        <td class="py-4">
-                          {#if change?.metadata?.action}
-                            <div
-                              class="w-max px-2 py-1 text-[#27326F] text-[12px] font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
-                            >
-                              {change?.metadata?.action}
+                              </a>
                             </div>
-                          {/if}
-                        </td>
-                        <td class="pr-3 py-4">
-                          <div class="w-max">
-                            <a
-                              href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
-                              target="_blank"
-                              class="cursor-pointer"
-                            >
+                          </td>
+                          <td class="py-4">
+                            {#if change?.metadata?.action}
                               <div
-                                class="flex flex-col gap-1 justify-start items-start text-sm"
+                                class="w-max px-2 py-1 text-[#27326F] text-[12px] font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
                               >
-                                {#if change?.metadata?.hasOwnProperty("btcChange")}
+                                {change?.metadata?.action}
+                              </div>
+                            {/if}
+                          </td>
+                          <td class="pr-3 py-4">
+                            <div class="w-max">
+                              <a
+                                href={`https://etherscan.io/tx/${change?.transactionHash}`}
+                                target="_blank"
+                                class="cursor-pointer"
+                              >
+                                <div
+                                  class="flex flex-col gap-1 justify-start items-start text-sm"
+                                >
+                                  {#if change?.metadata?.hasOwnProperty("btcChange")}
+                                    <div class="flex items-center gap-1">
+                                      <div
+                                        class={`flex items-center gap-1 ${
+                                          change?.metadata?.btcChange
+                                            ?.final_result >= 0
+                                            ? "text-[#00A878]"
+                                            : "text-red-500"
+                                        }`}
+                                      >
+                                        <TooltipNumber
+                                          number={Math.abs(
+                                            change?.metadata?.btcChange
+                                              ?.final_result
+                                          )}
+                                          type="amount"
+                                        />
+                                        <div>
+                                          {change?.metadata?.btcPrice?.symbol}
+                                        </div>
+                                      </div>
+                                      <div class="text-gray-500">
+                                        | $<TooltipNumber
+                                          number={Math.abs(
+                                            change?.metadata?.btcChange
+                                              ?.final_result *
+                                              Number(
+                                                change?.metadata?.btcPrice
+                                                  ?.price
+                                              )
+                                          )}
+                                          type="balance"
+                                        />
+                                      </div>
+                                    </div>
+                                  {/if}
+
                                   <div class="flex items-center gap-1">
                                     <div
                                       class={`flex items-center gap-1 ${
-                                        change?.metadata?.btcChange
-                                          ?.final_result >= 0
+                                        change.event === "deposit"
                                           ? "text-[#00A878]"
                                           : "text-red-500"
                                       }`}
                                     >
                                       <TooltipNumber
                                         number={Math.abs(
-                                          change?.metadata?.btcChange
-                                            ?.final_result
+                                          change?.metadata?.info?.total
                                         )}
                                         type="amount"
                                       />
                                       <div>
-                                        {change?.metadata?.btcPrice?.symbol}
+                                        {change?.metadata?.info?.tokenName}
                                       </div>
                                     </div>
                                     <div class="text-gray-500">
                                       | $<TooltipNumber
                                         number={Math.abs(
-                                          change?.metadata?.btcChange
-                                            ?.final_result *
+                                          change?.metadata?.info?.total *
                                             Number(
-                                              change?.metadata?.btcPrice?.price
+                                              change?.metadata?.price?.price
                                             )
                                         )}
                                         type="balance"
                                       />
                                     </div>
                                   </div>
-                                {/if}
-
-                                <div class="flex items-center gap-1">
-                                  <div
-                                    class={`flex items-center gap-1 ${
-                                      change.event === "deposit"
-                                        ? "text-[#00A878]"
-                                        : "text-red-500"
-                                    }`}
-                                  >
-                                    <TooltipNumber
-                                      number={Math.abs(
-                                        change?.metadata?.info?.total
+                                </div>
+                              </a>
+                            </div>
+                          </td>
+                        </tr>
+                      {:else}
+                        <tr
+                          class="hover:bg-gray-100 transition-all border-b-[0.5px] last:border-none"
+                        >
+                          <td class="pl-3 py-4">
+                            <div class="w-max">
+                              <a
+                                href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
+                                class="hover:text-blue-500 cursor-pointer"
+                                target="_blank"
+                              >
+                                <div class="text-left flex items-start gap-2">
+                                  <div class="flex flex-col">
+                                    <div
+                                      class="text-sm"
+                                      use:tooltip={{
+                                        content: `<tooltip-detail text="${change?.transactionHash}" />`,
+                                        allowHTML: true,
+                                        placement: "top-start",
+                                      }}
+                                    >
+                                      {shorterAddress(change?.transactionHash)}
+                                    </div>
+                                    <div class="text-gray-400 text-xs">
+                                      {dayjs(new Date(change.timestamp)).format(
+                                        "DD/MM/YYYY, hh:mm A"
                                       )}
-                                      type="amount"
-                                    />
-                                    <div>
-                                      {change?.metadata?.info?.tokenName}
                                     </div>
                                   </div>
-                                  <div class="text-gray-500">
-                                    | $<TooltipNumber
-                                      number={Math.abs(
-                                        change?.metadata?.info?.total *
-                                          Number(change?.metadata?.price?.price)
-                                      )}
-                                      type="balance"
-                                    />
+                                </div>
+                              </a>
+                            </div>
+                          </td>
+                          <td class="py-4">
+                            {#if change?.metadata?.action}
+                              <div
+                                class="w-max px-2 py-1 text-[#27326F] text-[12px] font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
+                              >
+                                {change?.metadata?.action}
+                              </div>
+                            {/if}
+                          </td>
+                          <td class="pr-3 py-4">
+                            <div class="w-max">
+                              <a
+                                href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
+                                target="_blank"
+                                class="cursor-pointer"
+                              >
+                                <div
+                                  class="flex flex-col gap-1 justify-start items-start text-sm"
+                                >
+                                  {#if change?.metadata?.hasOwnProperty("btcChange")}
+                                    <div class="flex items-center gap-1">
+                                      <div
+                                        class={`flex items-center gap-1 ${
+                                          change?.metadata?.btcChange
+                                            ?.final_result >= 0
+                                            ? "text-[#00A878]"
+                                            : "text-red-500"
+                                        }`}
+                                      >
+                                        <TooltipNumber
+                                          number={Math.abs(
+                                            change?.metadata?.btcChange
+                                              ?.final_result
+                                          )}
+                                          type="amount"
+                                        />
+                                        <div>
+                                          {change?.metadata?.btcPrice?.symbol}
+                                        </div>
+                                      </div>
+                                      <div class="text-gray-500">
+                                        | $<TooltipNumber
+                                          number={Math.abs(
+                                            change?.metadata?.btcChange
+                                              ?.final_result *
+                                              Number(
+                                                change?.metadata?.btcPrice
+                                                  ?.price
+                                              )
+                                          )}
+                                          type="balance"
+                                        />
+                                      </div>
+                                    </div>
+                                  {/if}
+
+                                  <div class="flex items-center gap-1">
+                                    <div
+                                      class={`flex items-center gap-1 ${
+                                        change.event === "deposit"
+                                          ? "text-[#00A878]"
+                                          : "text-red-500"
+                                      }`}
+                                    >
+                                      <TooltipNumber
+                                        number={Math.abs(
+                                          change?.metadata?.info?.total
+                                        )}
+                                        type="amount"
+                                      />
+                                      <div>
+                                        {change?.metadata?.info?.tokenName}
+                                      </div>
+                                    </div>
+                                    <div class="text-gray-500">
+                                      | $<TooltipNumber
+                                        number={Math.abs(
+                                          change?.metadata?.info?.total *
+                                            Number(
+                                              change?.metadata?.price?.price
+                                            )
+                                        )}
+                                        type="balance"
+                                      />
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </a>
-                          </div>
-                        </td>
-                      </tr>
+                              </a>
+                            </div>
+                          </td>
+                        </tr>
+                      {/if}
                     {/each}
                   {/if}
                 </tbody>
