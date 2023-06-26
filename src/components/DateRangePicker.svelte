@@ -4,59 +4,50 @@
   export let defaultValue = [];
   export let onChange = (data) => {};
 
-  const labels = {
-    notSet: "Not set",
-    greaterThan: "Greater than",
-    lessThan: "Less than",
-    range: "Date range",
-    day: "day",
-    days: "days",
-  };
+  const currentDate = dayjs();
+  const previous7Days = currentDate.subtract(7, "day");
+  const previous30Days = currentDate.subtract(30, "day");
+  const previous90Days = currentDate.subtract(90, "day");
+  const previousYear = currentDate.subtract(1, "year");
 
   let startDate = "" || defaultValue[0];
   let endDate = "" || defaultValue[1];
+  let type = "30days";
 
-  let lessThan = false;
-  let greaterThan = false;
-  let daysInDateRange;
-  $: daysInDateRange = numberOfDaysBetweenSelectedDateRange(startDate, endDate);
-
-  const dateOrSliderChange = (item) => {
-    if (item == "endDate" && endDate && endDate < startDate)
+  const dateChange = (item) => {
+    if (item == "endDate" && endDate && endDate < startDate) {
       startDate = endDate;
+    }
 
-    if (item == "startDate" && startDate && startDate > endDate && endDate)
+    if (item == "startDate" && startDate && startDate > endDate && endDate) {
       endDate = startDate;
+    }
 
-    if (!endDate && startDate) {
-      greaterThan = true;
-      lessThan = false;
-    }
-    if (!startDate && endDate) {
-      greaterThan = false;
-      lessThan = true;
-    }
-    if (startDate && endDate) {
-      lessThan = false;
-      greaterThan = false;
-    }
-  };
-
-  const numberOfDaysBetweenSelectedDateRange = (startDate, endDate) => {
-    if (endDate == startDate) {
-      return `1 ${labels.day}`;
-    } else {
-      const differenceInTime =
-        new Date(endDate).getTime() - new Date(startDate).getTime();
-      return (
-        (differenceInTime / (1000 * 3600 * 24)).toString() + ` ${labels.days}`
-      );
-    }
+    type = "custom";
   };
 
   $: {
     if (startDate && endDate) {
       onChange([startDate, endDate]);
+    }
+  }
+
+  $: {
+    if (type === "30days") {
+      startDate = previous30Days.format("YYYY-MM-DD");
+      endDate = currentDate.format("YYYY-MM-DD");
+    }
+    if (type === "7days") {
+      startDate = previous7Days.format("YYYY-MM-DD");
+      endDate = currentDate.format("YYYY-MM-DD");
+    }
+    if (type === "90days") {
+      startDate = previous90Days.format("YYYY-MM-DD");
+      endDate = currentDate.format("YYYY-MM-DD");
+    }
+    if (type === "1year") {
+      startDate = previousYear.format("YYYY-MM-DD");
+      endDate = currentDate.format("YYYY-MM-DD");
     }
   }
 </script>
@@ -72,7 +63,7 @@
       placeholder="Start date"
       bind:value={startDate}
       on:input={() => {
-        dateOrSliderChange("startDate");
+        dateChange("startDate");
       }}
     />
 
@@ -102,20 +93,78 @@
       placeholder="End date"
       bind:value={endDate}
       on:input={() => {
-        dateOrSliderChange("endDate");
+        dateChange("endDate");
       }}
     />
   </div>
-  <div class="text-xs text-gray-400">
-    {#if !startDate && !endDate}
-      {labels.notSet}
-    {:else if lessThan}
-      {labels.lessThan}
-    {:else if greaterThan}
-      {labels.greaterThan}
-    {:else}
-      {labels.range} {daysInDateRange}
-    {/if}
+
+  <div class="flex gap-3">
+    <div class="flex items-center justify-end gap-2">
+      <label class="text-sm font-regular text-gray-400" for="30-days"
+        >7 days
+      </label>
+      <input
+        type="radio"
+        bind:group={type}
+        value={"7days"}
+        name="type"
+        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg-gray-100 border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+      />
+      <span class="radio-mark" />
+    </div>
+
+    <div class="flex items-center justify-end gap-2">
+      <label class="text-sm font-regular text-gray-400" for="30-days"
+        >30 days
+      </label>
+      <input
+        type="radio"
+        bind:group={type}
+        value={"30days"}
+        name="type"
+        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg-gray-100 border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+      />
+      <span class="radio-mark" />
+    </div>
+
+    <div class="flex items-center justify-end gap-2">
+      <label class="text-sm font-regular text-gray-400" for="30-days"
+        >90 days
+      </label>
+      <input
+        type="radio"
+        bind:group={type}
+        value={"90days"}
+        name="type"
+        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg-gray-100 border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+      />
+    </div>
+
+    <div class="flex items-center justify-end gap-2">
+      <label class="text-sm font-regular text-gray-400" for="30-days"
+        >1 year
+      </label>
+      <input
+        type="radio"
+        bind:group={type}
+        value={"1year"}
+        name="type"
+        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg-gray-100 border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+      />
+    </div>
+
+    <div class="flex items-center justify-end gap-2">
+      <label class="text-sm font-regular text-gray-400" for="30-days"
+        >custom
+      </label>
+      <input
+        type="radio"
+        bind:group={type}
+        value={"custom"}
+        name="type"
+        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg-gray-100 border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+      />
+    </div>
   </div>
 </div>
 
