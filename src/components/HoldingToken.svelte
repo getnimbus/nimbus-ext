@@ -34,7 +34,6 @@
     data.name !== "Ethereum" &&
     selectedChain !== "GNOSIS";
 
-  $: console.log("sumTokenHolding: ", sumTokenHolding);
   $: ratio = (price / sumTokenHolding) * 100;
 </script>
 
