@@ -149,7 +149,7 @@
   }
 </script>
 
-<div class="border border-[#0000001a] rounded-[20px] py-10">
+<div class="border border-[#0000001a] rounded-[20px] py-6">
   <CalendarChart
     {option}
     {isEmptyDataChart}

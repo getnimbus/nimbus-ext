@@ -79,7 +79,7 @@
 </script>
 
 <div class="border border-[#0000001a] rounded-[20px] p-6">
-  <div class="font-medium text-black text-xl">Daily Gain</div>
+  <div class="font-medium text-black text-xl">Daily PnL</div>
   <div>
     {#if isLoading}
       <div class="flex items-center justify-center h-[465px]">
