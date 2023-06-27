@@ -137,7 +137,11 @@
               {tokens.length > 1 ? "NFTs" : "NFT"}
             </div>
           </OverviewCard>
-          <OverviewCard title={"Profit & Loss"}>
+          <OverviewCard
+            title={"Profit & Loss"}
+            tooltipText="Price NFTs now - Price NFTs at time you spent"
+            isTooltip
+          >
             <div
               class={`text-3xl flex ${
                 profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"

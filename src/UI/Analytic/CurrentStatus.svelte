@@ -118,6 +118,7 @@
       },
     ],
   };
+  let selectedDataPie = [];
 
   let dataTableRank;
   let dataTableCategory;
@@ -130,6 +131,9 @@
   let filteredHoldingDataToken = [];
   let selectedTypeTable;
   let sum = 0;
+
+  let sumTokenHolding = 0;
+  let formatData = [];
 
   const handleFormatDataPieChart = (data, type) => {
     const formatData = data.map((item) => {
@@ -243,6 +247,18 @@
         dataCategory = handleFormatDataPieChart(response.result, "category");
         dataSector = handleFormatDataPieChart(response.result, "sector");
 
+        formatData = response.result.map((item) => {
+          return {
+            cmc_id: item.cmc_id,
+            amount: Number(item?.amount),
+            market_price: Number(item?.price?.price),
+          };
+        });
+        sumTokenHolding = formatData.reduce(
+          (prev, item) => prev + item.amount * item.market_price,
+          0
+        );
+
         isLoadingDataPie = false;
         isLoadingToken = false;
       } else {
@@ -340,6 +356,20 @@
           (prev, item) => prev + item.value,
           0
         );
+
+        formatData = formatData.map((item) => {
+          if (marketPrice.id === Number(item?.cmc_id)) {
+            return {
+              ...item,
+              market_price: marketPrice.market_price,
+            };
+          }
+          return { ...item };
+        });
+        sumTokenHolding = formatData.reduce(
+          (prev, item) => prev + item.amount * item.market_price,
+          0
+        );
       }
 
       if (filteredHoldingToken) {
@@ -349,6 +379,14 @@
       } else {
         filteredHoldingDataToken = data;
       }
+    }
+  }
+
+  $: {
+    if (selectedTypeTable) {
+      selectedDataPie = optionPie.series[0].data.filter(
+        (item) => item.name === selectedTypeTable?.value
+      );
     }
   }
 </script>
@@ -424,6 +462,9 @@
       <div class="mb-2 flex justify-between items-center">
         <div class="text-3xl font-semibold text-right">
           $<TooltipNumber number={sum} type="balance" />
+          <span class="text-xl font-medium text-gray-400">
+            <TooltipNumber number={selectedDataPie[0]?.value} type="percent" />%
+          </span>
         </div>
         {#if dataTable}
           <Select
@@ -480,9 +521,19 @@
                   </div>
                 </th>
                 <th class="py-3">
+                  <div
+                    class="text-right text-xs uppercase font-semibold text-black"
+                  >
+                    <TooltipTitle tooltipText="Ratio based on token holding">
+                      Ratio
+                    </TooltipTitle>
+                  </div>
+                </th>
+                <th class="py-3">
                   <div class="text-xs uppercase font-semibold text-black">
                     <TooltipTitle
-                      tooltipText="Profit and loss is calculated by transactions that swap the tokens"
+                      tooltipText="Profit and loss is calculated by transactions that swap the tokens. "
+                      link="https://docs.getnimbus.io/metrics/holding_profit_loss/"
                     >
                       {MultipleLang.profit}
                     </TooltipTitle>
@@ -515,7 +566,11 @@
                   </tr>
                 {:else}
                   {#each filteredHoldingDataToken as holding}
-                    <HoldingToken data={holding} {selectedWallet} />
+                    <HoldingToken
+                      data={holding}
+                      {selectedWallet}
+                      {sumTokenHolding}
+                    />
                   {/each}
                 {/if}
               </tbody>

@@ -476,8 +476,9 @@
           </OverviewCard>
           <OverviewCard
             title={"Profit & Loss"}
-            tooltipText="Learn more"
             link="https://docs.getnimbus.io/metrics/holding_profit_loss/"
+            tooltipText="Profit and loss is calculated by transactions that swap the tokens. "
+            isTooltip
           >
             <div
               class={`text-3xl flex ${
@@ -519,8 +520,8 @@
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard
             title={"Average Cost"}
-            tooltipText="Learn more"
             link="https://docs.getnimbus.io/metrics/average_cost/"
+            isTooltip
           >
             <div class="text-3xl text-black flex">
               {#if (positionDetail?.overview?.averageCost)

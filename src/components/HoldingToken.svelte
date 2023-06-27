@@ -13,6 +13,7 @@
 
   export let data;
   export let selectedWallet;
+  export let sumTokenHolding;
 
   $: selectedChain = $chain;
 
@@ -32,6 +33,9 @@
     data.name !== "Bitcoin" &&
     data.name !== "Ethereum" &&
     selectedChain !== "GNOSIS";
+
+  $: console.log("sumTokenHolding: ", sumTokenHolding);
+  $: ratio = (price / sumTokenHolding) * 100;
 </script>
 
 <tr
@@ -126,6 +130,12 @@
   <td class="py-3">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
       $<TooltipNumber number={price} type="balance" />
+    </div>
+  </td>
+
+  <td class="py-3">
+    <div class="text-sm text-[#00000099] font-medium flex justify-end">
+      <TooltipNumber number={ratio} type="percent" />%
     </div>
   </td>
 

@@ -258,9 +258,18 @@
                   </div>
                 </th>
                 <th class="py-3">
+                  <div
+                    class="text-right text-xs uppercase font-semibold text-black"
+                  >
+                    <TooltipTitle tooltipText="Ratio based on token holding">
+                      Ratio
+                    </TooltipTitle>
+                  </div>
+                </th>
+                <th class="py-3">
                   <div class="text-xs uppercase font-semibold text-black">
                     <TooltipTitle
-                      tooltipText="Learn more"
+                      tooltipText="Profit and loss is calculated by transactions that swap the tokens. "
                       link="https://docs.getnimbus.io/metrics/holding_profit_loss/"
                     >
                       {MultipleLang.profit}
@@ -294,7 +303,11 @@
                   </tr>
                 {:else}
                   {#each filteredHoldingDataToken as holding}
-                    <HoldingToken data={holding} {selectedWallet} />
+                    <HoldingToken
+                      data={holding}
+                      {selectedWallet}
+                      sumTokenHolding={sumTokens}
+                    />
                   {/each}
                 {/if}
               </tbody>

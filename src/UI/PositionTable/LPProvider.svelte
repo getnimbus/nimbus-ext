@@ -67,7 +67,6 @@
           <th class="py-3">
             <div class="text-xs font-semibold text-black uppercase text-right">
               <TooltipTitle
-                tooltipText="More info"
                 link="https://docs.getnimbus.io/metrics/impermanent_loss/"
                 >Impermanent Loss</TooltipTitle
               >
