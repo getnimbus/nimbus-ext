@@ -62,6 +62,14 @@
       const formatXAxis = dataDailyPnL.map((item) => {
         return dayjs(new Date(item.timestamp * 1000)).format("DD MMM YYYY");
       });
+      const formatDataDailyPnL = dataDailyPnL.map((item) => {
+        return {
+          value: item.change,
+          itemStyle: {
+            color: item.change >= 0 ? "#05a878" : "#f25f5d",
+          },
+        };
+      });
       option = {
         ...option,
         xAxis: {
@@ -70,7 +78,7 @@
         series: [
           {
             type: "bar",
-            data: dataDailyPnL.map((item) => item.change),
+            data: formatDataDailyPnL,
           },
         ],
       };
