@@ -74,6 +74,8 @@
         borderWidth: 0.5,
       },
       yearLabel: { show: false },
+      dayLabel: { show: true, color: "#6b7280" },
+      monthLabel: { show: true, color: "#6b7280" },
     },
     dayLabel: {
       nameMap: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],

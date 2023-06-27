@@ -372,12 +372,27 @@
         );
       }
 
+      let sortData = data
+        .map((item) => {
+          return {
+            ...item,
+            price: item?.amount * item.market_price,
+          };
+        })
+        .sort((a, b) => {
+          if (a.price < b.price) {
+            return 1;
+          }
+          if (a.price > b.price) {
+            return -1;
+          }
+          return 0;
+        });
+
       if (filteredHoldingToken) {
-        filteredHoldingDataToken = data.filter(
-          (item) => item?.amount * item.market_price > 1
-        );
+        filteredHoldingDataToken = sortData.filter((item) => item.price > 1);
       } else {
-        filteredHoldingDataToken = data;
+        filteredHoldingDataToken = sortData;
       }
     }
   }
