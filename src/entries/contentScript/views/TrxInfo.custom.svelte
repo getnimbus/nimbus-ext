@@ -16,9 +16,9 @@
   import "~/components/Loading.custom.svelte";
   import "~/components/CoinChart.custom.svelte";
   import "~/components/PriceConvert.custom.svelte";
-  import "~/components/TxInfo/User.custom.svelte";
-  import "~/components/TxInfo/MoneyMove.custom.svelte";
-  import "~/components/TxInfo/Changes.custom.svelte";
+  import "~/UI/TransactionInfo/User.custom.svelte";
+  import "~/UI/TransactionInfo/MoneyMove.custom.svelte";
+  import "~/UI/TransactionInfo/Changes.custom.svelte";
 
   import ExplainIcon from "~/assets/explain.png";
 

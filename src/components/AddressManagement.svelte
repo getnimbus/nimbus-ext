@@ -11,8 +11,9 @@
   dayjs.extend(relativeTime);
   import { chainList, getAddressContext } from "~/utils";
   import mixpanel from "mixpanel-browser";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
 
-  export let type: "portfolio" | "order" | "analytic" = "portfolio";
+  export let type: "portfolio" | "order" = "portfolio";
   export let title;
 
   import type { AddressData } from "~/types/AddressData";
@@ -100,7 +101,7 @@
   let errors: any = {};
   let isOpenAddModal = false;
 
-  const getListAddress = async () => {
+  const getListAddress = async (type) => {
     isLoadingFullPage = true;
     try {
       const response: AddressData = await sendMessage(
@@ -115,6 +116,12 @@
           value: item.address,
         };
       });
+
+      if (type === "reload") {
+        isLoadingFullPage = false;
+        listAddress = structWalletData;
+        return;
+      }
 
       listAddress = listAddress.concat(structWalletData);
 
@@ -158,6 +165,16 @@
     if (!chainParams && listAddress.length === 0) {
       chain.update((n) => (n = ""));
     }
+    if (!chainParams && listAddress.length === 0 && addressParams) {
+      chain.update((n) => (n = "ALL"));
+      if (getAddressContext(selectedWallet)?.type === "BTC") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + `?address=${selectedWallet}`
+        );
+      }
+    }
     if (!chainParams && listAddress.length !== 0) {
       if (getAddressContext(selectedWallet)?.type === "EVM") {
         chain.update((n) => (n = "ALL"));
@@ -179,7 +196,7 @@
   };
 
   onMount(() => {
-    getListAddress();
+    getListAddress("fetch");
     updateStateFromParams();
   });
 
@@ -259,11 +276,12 @@
         }
       }
 
+      wallet.update((n) => (n = dataFormat.value));
+
       const filterWalletList = addWallet.filter((item) => item.value !== "all");
       const structWalletList = filterWalletList.map((item) => {
         return {
           id: item.value,
-          logo: item.logo,
           label: item.label,
           address: item.value,
         };
@@ -280,6 +298,7 @@
       e.target.reset();
       errors = {};
       isOpenAddModal = false;
+      getListAddress("reload");
 
       mixpanel.track("user_add_address");
     } else {
@@ -316,11 +335,6 @@
 
   $: {
     if (selectedWallet) {
-      // console.log({
-      //   listAddress,
-      //   selectedChain,
-      //   selectedWallet,
-      // });
       browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
         console.log("save selected address to sync storage");
       });
@@ -385,58 +399,82 @@
               <div class="flex justify-between items-center">
                 {#if formatListAddress.length !== 0}
                   <div class="flex items-center gap-5">
-                    {#if formatListAddress.length > 4}
-                      {#each formatListAddress.slice(0, 4) as item}
-                        <div
-                          id={item.value}
-                          class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
-                            item.value === selectedWallet && "bg-[#ffffff1c]"
-                          }`}
-                          class:hover:no-underline={item.value ===
-                            selectedWallet}
-                          on:click={() => {
-                            wallet.update((n) => (n = item.value));
-                          }}
-                        >
-                          <img
-                            src={item.logo}
-                            alt="logo"
-                            width="16"
-                            height="16"
-                          />
-                          {item.label}
-                        </div>
-                      {/each}
+                    {#if formatListAddress.length > 5}
+                      <AnimateSharedLayout>
+                        {#each formatListAddress.slice(0, 5) as item}
+                          <div
+                            id={item.value}
+                            class="relative text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                            class:hover:no-underline={item.value ===
+                              selectedWallet}
+                            on:click={() => {
+                              wallet.update((n) => (n = item.value));
+                            }}
+                          >
+                            <img
+                              src={item.logo}
+                              alt="logo"
+                              width="16"
+                              height="16"
+                            />
+                            {item.label}
+                            {#if item.value === selectedWallet}
+                              <Motion
+                                let:motion
+                                layoutId="active-pill"
+                                transition={{ type: "spring", duration: 0.6 }}
+                              >
+                                <div
+                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                  use:motion
+                                />
+                              </Motion>
+                            {/if}
+                          </div>
+                        {/each}
+                      </AnimateSharedLayout>
                       <Select
                         type="wallet"
                         listSelect={formatListAddress.slice(
-                          4,
+                          5,
                           formatListAddress.length
                         )}
                         bind:selected={selectedWallet}
                       />
                     {:else}
-                      {#each formatListAddress as item}
-                        <div
-                          id={item.value}
-                          class={`text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline ${
-                            item.value === selectedWallet && "bg-[#ffffff1c]"
-                          }`}
-                          class:hover:no-underline={item.value ===
-                            selectedWallet}
-                          on:click={() => {
-                            wallet.update((n) => (n = item.value));
-                          }}
-                        >
-                          <img
-                            src={item.logo}
-                            alt="logo"
-                            width="16"
-                            height="16"
-                          />
-                          {item.label}
-                        </div>
-                      {/each}
+                      <AnimateSharedLayout>
+                        {#each formatListAddress as item}
+                          <div
+                            id={item.value}
+                            class="relative text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                            class:hover:no-underline={item.value ===
+                              selectedWallet}
+                            on:click={() => {
+                              wallet.update((n) => (n = item.value));
+                            }}
+                          >
+                            <img
+                              src={item.logo}
+                              alt="logo"
+                              width="16"
+                              height="16"
+                            />
+                            {item.label}
+                            {#if item.value === selectedWallet}
+                              <Motion
+                                let:motion
+                                layoutId="active-pill"
+                                transition={{ type: "spring", duration: 0.6 }}
+                              >
+                                <div
+                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                  use:motion
+                                />
+                              </Motion>
+                            {/if}
+                          </div>
+                        {/each}
+                      </AnimateSharedLayout>
                     {/if}
                   </div>
                 {:else}
@@ -449,7 +487,7 @@
                   on:mouseenter={() => {
                     if (
                       APP_TYPE.TYPE !== "EXT" &&
-                      formatListAddress.length === 3
+                      formatListAddress.length === 5
                     ) {
                       showDisableAddWallet = true;
                     }
@@ -457,7 +495,7 @@
                   on:mouseleave={() => {
                     if (
                       APP_TYPE.TYPE !== "EXT" &&
-                      formatListAddress.length === 3
+                      formatListAddress.length === 5
                     ) {
                       showDisableAddWallet = false;
                     }
@@ -465,14 +503,14 @@
                 >
                   <Button
                     variant={APP_TYPE.TYPE !== "EXT" &&
-                    formatListAddress.length === 3
+                    formatListAddress.length === 5
                       ? "disabled"
                       : "tertiary"}
                     width={136}
                     on:click={() => {
                       if (
                         APP_TYPE.TYPE !== "EXT" &&
-                        formatListAddress.length === 3
+                        formatListAddress.length === 5
                       ) {
                         window.open("https://getnimbus.io", "_blank");
                       } else {
@@ -504,20 +542,6 @@
                     <div class="text-5xl text-white font-semibold">
                       {title}
                     </div>
-                    {#if type === "analytic"}
-                      <a
-                        href="https://forms.gle/kg23ZmgXjsTgtjTN7"
-                        target="_blank"
-                      >
-                        <Button
-                          variant="secondary"
-                          width={140}
-                          size="supper-small"
-                        >
-                          Request analytics
-                        </Button>
-                      </a>
-                    {/if}
                     {#if type === "portfolio"}
                       <slot name="reload" />
                     {/if}
@@ -571,14 +595,18 @@
                 {/if}
               </div>
 
-              {#if type === "portfolio"}
-                <slot name="overview" />
-              {/if}
+              {#key selectedWallet || selectedChain}
+                {#if type === "portfolio"}
+                  <slot name="overview" />
+                {/if}
+              {/key}
             </div>
           </div>
         </div>
 
-        <slot name="body" />
+        {#key selectedWallet || selectedChain}
+          <slot name="body" />
+        {/key}
       {/if}
     </div>
   {/if}

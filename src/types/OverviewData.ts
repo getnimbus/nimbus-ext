@@ -1,5 +1,6 @@
 export type OverviewData = {
   breakdownToken: BreakdownTokenDetail[];
+  breakdownNft: any[];
   overview: {
     assets: number;
     assetsChange: number;

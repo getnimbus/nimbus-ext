@@ -6,18 +6,19 @@
   import * as browser from "webextension-polyfill";
   import createHashSource from "./hashHistory";
 
-  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Header from "~/components/Header.svelte";
-  import Market from "~/components/NewTabUI/Market.svelte";
-  import Portfolio from "~/components/NewTabUI/Portfolio.svelte";
-  import News from "~/components/NewTabUI/News.svelte";
-  import Analytic from "~/components/NewTabUI/Analytic.svelte";
-  import Transactions from "~/components/NewTabUI/Transactions.svelte";
-  import PositionDetail from "~/components/NewTabUI/PositionDetail.svelte";
-  import NftDetail from "~/components/NewTabUI/NFTDetail.svelte";
+  import Footer from "~/components/Footer.svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
-  // TODO: Add Lazyload for each routes
+  import Market from "~/layouts/Market.svelte";
+  import Portfolio from "~/layouts/Portfolio.svelte";
+  import News from "~/layouts/News.svelte";
+  import Analytic from "~/layouts/Analytic.svelte";
+  import Transactions from "~/layouts/Transactions.svelte";
+  import PositionDetail from "~/layouts/PositionDetail.svelte";
+  import NftDetail from "~/layouts/NFTDetail.svelte";
 
+  // TODO: Add Lazyload for each routes
   const hash = createHistory(createHashSource());
 
   const formatSelectedWallet = async () => {
@@ -80,6 +81,7 @@
         </Route>
       </div>
     </Router>
+    <Footer />
   </Mixpanel>
 </ErrorBoundary>
 

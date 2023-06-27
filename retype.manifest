@@ -1,6 +1,6 @@
 {
   "version": "3.0.3",
-  "created": "2023-06-24T23:52:12Z",
+  "created": "2023-06-25T00:08:34Z",
   "files": [
     {
       "path": ".nojekyll"
@@ -22,6 +22,9 @@
     },
     {
       "path": "logo.png"
+    },
+    {
+      "path": "metrics/average_cost/index.html"
     },
     {
       "path": "metrics/holding_profit_loss/index.html"

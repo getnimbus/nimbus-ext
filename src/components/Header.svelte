@@ -30,6 +30,7 @@
   import Search from "~/assets/search.svg";
   import Bell from "~/assets/bell.svg";
   import User from "~/assets/user.png";
+  import Crown from "~/assets/crown.svg";
 
   const localStorageKey = "walletAdapter";
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
@@ -110,7 +111,6 @@
     selectedWallet = value;
   });
 
-  let headerScrollY = false;
   let timerDebounce;
   let search = "";
   let isOpenAuthModal = false;
@@ -166,16 +166,6 @@
       signMessageAddress = "";
       $walletStore.disconnect();
     }
-
-    const lastScrollY = window.pageYOffset;
-    const handleCheckIsSticky = () => {
-      const scrollY = window.pageYOffset;
-      headerScrollY = scrollY > lastScrollY;
-    };
-    window.addEventListener("scroll", handleCheckIsSticky);
-    return () => {
-      window.removeEventListener("scroll", handleCheckIsSticky);
-    };
   });
 
   const debounceSearch = (value) => {
@@ -271,12 +261,7 @@
   }
 </script>
 
-<div
-  class="py-1 top-0 bg-[#27326F] sticky"
-  style="z-index: 9998; {headerScrollY
-    ? 'box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);'
-    : ''}"
->
+<div class="py-1 bg-[#27326F]">
   <div class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]">
     <img
       src={Logo}
@@ -304,13 +289,21 @@
       <Link to="analytic">
         <div class="relative">
           <div
-            class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
+            class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all relative"
             class:bg-[#525B8C]={navActive === "analytic"}
             on:click={() => (navActive = "analytic")}
           >
             <img src={AnalyticIcon} alt="" />
-            <span class="text-white font-semibold xl:text-base text-sm">
-              {MultipleLang.analytic}
+            <span class="flex gap-[1px]">
+              <span class="text-white font-semibold xl:text-base text-sm">
+                {MultipleLang.analytic}
+              </span>
+              <span class="flex items-center gap-[1px] -mt-2">
+                <img src={Crown} alt="" />
+                <span class="text-xs font-medium text-[#FFB800] -mt-[1px]"
+                  >Pro</span
+                >
+              </span>
             </span>
           </div>
         </div>

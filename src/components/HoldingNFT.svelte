@@ -1,5 +1,6 @@
 <script>
   import { useNavigate } from "svelte-navigator";
+  import { getAddressContext } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -85,7 +86,10 @@
   <td class="py-3">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
       <TooltipNumber number={data?.floorPriceBTC} type="amount" /><span
-        class="mx-1">BTC</span
+        class="mx-1"
+        >{getAddressContext(selectedWallet)?.type === "EVM"
+          ? "ETH"
+          : "BTC"}</span
       >
       | $<TooltipNumber
         number={data?.floorPriceBTC * data?.market_price}
@@ -97,8 +101,10 @@
   <td class="py-3">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
       <TooltipNumber number={data?.totalCostBTC} type="amount" /><span
-        class="mx-1">BTC</span
+        class="mx-1"
       >
+        {getAddressContext(selectedWallet)?.type === "EVM" ? "ETH" : "BTC"}
+      </span>
       | $<TooltipNumber number={data?.totalCost} type="balance" />
     </div>
   </td>

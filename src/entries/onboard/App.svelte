@@ -3,12 +3,12 @@
   import SwiperCore, { Pagination, Navigation } from "swiper";
   SwiperCore.use([Pagination, Navigation]);
 
-  import SlideOne from "~/components/OnboardUI/SlideOne.svelte";
-  import SlideTwo from "~/components/OnboardUI/SlideTwo.svelte";
-  import SlideThree from "~/components/OnboardUI/SlideThree.svelte";
-  import SlideFour from "~/components/OnboardUI/SlideFour.svelte";
-  import SlideFive from "~/components/OnboardUI/SlideFive.svelte";
-  import SlideSix from "~/components/OnboardUI/SlideSix.svelte";
+  import SlideOne from "~/UI/Onboard/SlideOne.svelte";
+  import SlideTwo from "~/UI/Onboard/SlideTwo.svelte";
+  import SlideThree from "~/UI/Onboard/SlideThree.svelte";
+  import SlideFour from "~/UI/Onboard/SlideFour.svelte";
+  import SlideFive from "~/UI/Onboard/SlideFive.svelte";
+  import SlideSix from "~/UI/Onboard/SlideSix.svelte";
 
   import "swiper/swiper.scss";
   import "swiper/components/pagination/pagination.scss";

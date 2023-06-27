@@ -54,6 +54,58 @@ onMessage<ICoinListInput, any>("coinList", async ({ data: { limit } }) => {
   }
 });
 
+onMessage<IAddressInput, any>("getSectorGrowth", async ({ data: { address, chain } }) => {
+  try {
+    return nimbus.get(`/analysis/${address}/sector-growth?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
+      return {
+        result: response.data,
+        address: address
+      }
+    });
+  } catch (error) {
+    return {};
+  }
+});
+
+onMessage<IAddressInput, any>("getTotalGasFee", async ({ data: { address, chain } }) => {
+  try {
+    return nimbus.get(`/analysis/${address}/gas-used?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
+      return {
+        result: response.data,
+        address: address
+      }
+    });
+  } catch (error) {
+    return {};
+  }
+});
+
+onMessage<IAddressInput, any>("getInflowOutflow", async ({ data: { address, chain } }) => {
+  try {
+    return nimbus.get(`/analysis/${address}/inflow-outflow?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
+      return {
+        result: response.data,
+        address: address
+      }
+    });
+  } catch (error) {
+    return {};
+  }
+});
+
+onMessage<IAddressInput, any>("getTotalValueHistory", async ({ data: { address, chain } }) => {
+  try {
+    return nimbus.get(`/analysis/${address}/holding-history?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
+      return {
+        result: response.data,
+        address: address
+      }
+    });
+  } catch (error) {
+    return {};
+  }
+});
+
 onMessage("configPageList", async () => {
   try {
     return JSON.parse(

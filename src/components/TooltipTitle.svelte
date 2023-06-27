@@ -3,7 +3,7 @@
 
   import information from "~/assets/information.png";
 
-  export let tooltipText;
+  export let tooltipText = "";
   export let link = "";
   export let isBigIcon = false;
 </script>
@@ -16,7 +16,7 @@
       alt=""
       class={`${isBigIcon ? "w-4 h-4" : "w-3 h-3"}`}
       use:tooltip={{
-        content: `<tooltip-detail text="${tooltipText}"  link="${link}"/>`,
+        content: `<tooltip-detail text="${tooltipText}"  link="${link}" />`,
         allowHTML: true,
         placement: "top",
         interactive: true,
