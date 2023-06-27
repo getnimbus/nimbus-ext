@@ -122,7 +122,7 @@ import { regexList } from "../../utils";
                 item.setAttribute("name", regex.name)
               },
               done() {
-                console.timeEnd("Marking address");
+                // console.timeEnd("Marking address");
                 // console.log("Done mark addresses");
               },
             })
