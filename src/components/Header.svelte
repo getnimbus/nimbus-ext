@@ -279,7 +279,7 @@
           class:bg-[#525B8C]={navActive === "portfolio"}
           on:click={() => (navActive = "portfolio")}
         >
-          <img src={PortfolioIcon} alt="" />
+          <img src={PortfolioIcon} alt="" width="20" height="20" />
           <span class="text-white font-semibold xl:text-base text-sm">
             {MultipleLang.portfolio}
           </span>
@@ -293,13 +293,13 @@
             class:bg-[#525B8C]={navActive === "analytic"}
             on:click={() => (navActive = "analytic")}
           >
-            <img src={AnalyticIcon} alt="" />
+            <img src={AnalyticIcon} alt="" width="20" height="20" />
             <span class="flex gap-[1px]">
               <span class="text-white font-semibold xl:text-base text-sm">
                 {MultipleLang.analytic}
               </span>
               <span class="flex items-center gap-[1px] -mt-2">
-                <img src={Crown} alt="" />
+                <img src={Crown} alt="" width="13" height="12" />
                 <span class="text-xs font-medium text-[#FFB800] -mt-[1px]"
                   >Pro</span
                 >
@@ -315,7 +315,7 @@
           class:bg-[#525B8C]={navActive === "transactions"}
           on:click={() => (navActive = "transactions")}
         >
-          <img src={TransactionsIcon} alt="" />
+          <img src={TransactionsIcon} alt="" width="20" height="20" />
           <span class="text-white font-semibold xl:text-base text-sm">
             {MultipleLang.transactions}
           </span>
@@ -328,7 +328,7 @@
           class:bg-[#525B8C]={navActive === "market"}
           on:click={() => (navActive = "market")}
         >
-          <img src={MarketIcon} alt="" />
+          <img src={MarketIcon} alt="" width="20" height="20" />
           <span class="text-white font-semibold xl:text-base text-sm">
             {MultipleLang.market}
           </span>
@@ -341,7 +341,7 @@
           class:bg-[#525B8C]={navActive === "news"}
           on:click={() => (navActive = "news")}
         >
-          <img src={NewsIcon} alt="" />
+          <img src={NewsIcon} alt="" width="20" height="20" />
           <span class="text-white font-semibold xl:text-base text-sm">
             {MultipleLang.news}
           </span>

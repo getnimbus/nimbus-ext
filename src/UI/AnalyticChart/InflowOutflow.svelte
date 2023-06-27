@@ -41,8 +41,10 @@
                     return `
                   <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: #000; display: flex; align-items: centers; gap: 6px;">
-                      ${item.marker}
-                      <span style="color: #9ca3af;">
+                      ${item.marker}  
+                      <span style="color: ${
+                        item.value >= 0 ? "#05a878" : "#f25f5d"
+                      };">
                         ${item.value >= 0 ? "Inflow -" : "Outflow -"}
                       </span>
                       ${item.seriesName}
