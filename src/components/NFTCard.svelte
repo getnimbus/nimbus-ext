@@ -1,11 +1,18 @@
 <script lang="ts">
-  import { shorterName } from "~/utils";
+  import { wallet } from "~/store";
+  import { getAddressContext, shorterName } from "~/utils";
+
   import TooltipNumber from "./TooltipNumber.svelte";
 
   export let data;
   export let marketPrice;
 
   let showTooltipName = false;
+
+  let selectedWallet: string = "";
+  wallet.subscribe((value) => {
+    selectedWallet = value;
+  });
 
   $: profitAndLoss = data?.est_valueBTC * marketPrice - (data.totalCost || 0);
   $: profitAndLossPercent =
@@ -40,7 +47,8 @@
     <div class="text-xs font-normal text-[#616b84] flex gap-1">
       <div>Est. value</div>
       <div>
-        <TooltipNumber number={data?.est_valueBTC} type="amount" /> BTC | $<TooltipNumber
+        <TooltipNumber number={data?.est_valueBTC} type="amount" />
+        {getAddressContext(selectedWallet)?.type === "EVM" ? "ETH" : "BTC"} | $<TooltipNumber
           number={data?.est_valueBTC * marketPrice}
           type="balance"
         />

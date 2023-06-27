@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { getAddressContext } from "~/utils";
   import { wallet } from "~/store";
 

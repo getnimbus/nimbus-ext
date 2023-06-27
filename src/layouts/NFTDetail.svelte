@@ -4,6 +4,7 @@
   import { Link } from "svelte-navigator";
   import { priceSubscribe } from "~/lib/price-ws";
   import mixpanel from "mixpanel-browser";
+  import { getAddressContext } from "~/utils";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -18,6 +19,7 @@
   let tokens = [];
   let data;
   let marketPriceNFT;
+  let addressWallet = "";
 
   const getCollectionDetail = async (collectionId, address) => {
     try {
@@ -75,6 +77,7 @@
         address: addressParams,
         collection_type: collectionIDParams,
       });
+      addressWallet = addressParams;
       getCollectionDetail(collectionIDParams, addressParams);
     }
   });
@@ -184,7 +187,11 @@
                 format={8}
                 type="amount"
               />
-              <span class="text-xl text-gray-500">BTC</span>
+              <span class="text-xl text-gray-500">
+                {getAddressContext(addressWallet)?.type === "EVM"
+                  ? "ETH"
+                  : "BTC"}
+              </span>
             </div>
             <div class="text-lg flex">
               {#if (data?.overview?.avgCost)
@@ -212,7 +219,11 @@
                 format={8}
                 type="amount"
               />
-              <span class="text-xl text-gray-500">BTC</span>
+              <span class="text-xl text-gray-500">
+                {getAddressContext(addressWallet)?.type === "EVM"
+                  ? "ETH"
+                  : "BTC"}
+              </span>
             </div>
             <div class="text-lg flex">
               $<CountUpNumber
