@@ -75,7 +75,7 @@ import { regexList } from "../../utils";
 
         const parentHref = regexList.map((regex) => {
           if (regex.regex_address) {
-            const regexMatch = parentNode.href.match(regex.regex_address);
+            const regexMatch = parentNode.href?.match(regex.regex_address);
             if (regexMatch === null) {
               return null
             } else {
@@ -122,7 +122,7 @@ import { regexList } from "../../utils";
                 item.setAttribute("name", regex.name)
               },
               done() {
-                console.timeEnd("Marking address");
+                // console.timeEnd("Marking address");
                 // console.log("Done mark addresses");
               },
             })
