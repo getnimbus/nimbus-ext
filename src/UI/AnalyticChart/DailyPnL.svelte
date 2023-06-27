@@ -6,7 +6,7 @@
 
   export let isEmpty;
   export let isLoading;
-  export let dataDailyGain;
+  export let dataDailyPnL;
 
   let option = {
     tooltip: {
@@ -58,8 +58,8 @@
   };
 
   $: {
-    if (dataDailyGain && dataDailyGain.length !== 0) {
-      const formatXAxis = dataDailyGain.map((item) => {
+    if (dataDailyPnL && dataDailyPnL.length !== 0) {
+      const formatXAxis = dataDailyPnL.map((item) => {
         return dayjs(new Date(item.timestamp * 1000)).format("DD MMM YYYY");
       });
       option = {
@@ -70,7 +70,7 @@
         series: [
           {
             type: "bar",
-            data: dataDailyGain.map((item) => item.change),
+            data: dataDailyPnL.map((item) => item.change),
           },
         ],
       };
@@ -82,14 +82,14 @@
   <div class="font-medium text-black text-xl">Daily PnL</div>
   <div>
     {#if isLoading}
-      <div class="flex items-center justify-center h-[465px]">
+      <div class="flex items-center justify-center h-[415px]">
         <loading-icon />
       </div>
     {:else}
       <div class="h-full w-full">
         {#if isEmpty}
           <div
-            class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
+            class="flex justify-center items-center h-full text-lg text-gray-400 h-[415px]"
           >
             Empty
           </div>
@@ -98,7 +98,7 @@
             id="DailyGain"
             theme="white"
             {option}
-            height={565}
+            height={415}
             notMerge={true}
           />
         {/if}

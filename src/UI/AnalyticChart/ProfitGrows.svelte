@@ -189,14 +189,14 @@
   <div class="font-medium text-black text-xl">Profit Grows</div>
   <div class="mt-2">
     {#if isLoading}
-      <div class="flex items-center justify-center h-[465px]">
+      <div class="flex items-center justify-center h-[415px]">
         <loading-icon />
       </div>
     {:else}
       <div class="h-full">
         {#if isEmpty}
           <div
-            class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
+            class="flex justify-center items-center h-full text-lg text-gray-400 h-[415px]"
           >
             Empty
           </div>
@@ -206,7 +206,7 @@
             theme="white"
             notMerge={true}
             option={optionLine}
-            height={465}
+            height={415}
           />
         {/if}
       </div>

@@ -40,8 +40,11 @@
                   if (item.value) {
                     return `
                   <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: black; display: flex; align-items: centers; gap: 6px;">
+                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: #000; display: flex; align-items: centers; gap: 6px;">
                       ${item.marker}
+                      <span style="color: #9ca3af;">
+                        ${item.value >= 0 ? "Inflow -" : "Outflow -"}
+                      </span>
                       ${item.seriesName}
                     </div>
                     <div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
@@ -283,14 +286,14 @@
 <div class="border border-[#0000001a] rounded-[20px] pt-6">
   <div class="font-medium text-black text-xl px-6">Token Inflow - Outflow</div>
   {#if isLoadingInflowOutflow}
-    <div class="flex items-center justify-center h-[465px]">
+    <div class="flex items-center justify-center h-[415px]">
       <loading-icon />
     </div>
   {:else}
     <div class="h-full w-full">
       {#if isEmptyInflowOutflow}
         <div
-          class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
+          class="flex justify-center items-center h-full text-lg text-gray-400 h-[415px]"
         >
           Empty
         </div>
@@ -299,7 +302,7 @@
           id="brush-chart"
           theme="white"
           {option}
-          height={565}
+          height={415}
           notMerge={true}
         />
       {/if}

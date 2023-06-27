@@ -7,7 +7,7 @@
   import TotalGasFee from "../AnalyticChart/TotalGasFee.svelte";
   import InflowOutflow from "../AnalyticChart/InflowOutflow.svelte";
   import TotalValueHistory from "../AnalyticChart/TotalValueHistory.svelte";
-  import DailyGain from "../AnalyticChart/DailyGain.svelte";
+  import DailyPnL from "../AnalyticChart/DailyPnL.svelte";
   import ProfitGrows from "../AnalyticChart/ProfitGrows.svelte";
 
   let selectedWallet: string = "";
@@ -23,7 +23,7 @@
   let isLoading = false;
   let isEmpty = false;
   let dataTotalValueHistory = [];
-  let dataDailyGain = [];
+  let dataDailyPnL = [];
 
   // const handleGetDateRange = (data) => {
   //   console.log(data);
@@ -50,7 +50,7 @@
           return;
         }
         dataTotalValueHistory = response?.result?.holdingHistory;
-        dataDailyGain = response?.result?.returnsChange;
+        dataDailyPnL = response?.result?.returnsChange;
 
         isLoading = false;
       } else {
@@ -79,7 +79,7 @@
   <div class="flex flex-col gap-6">
     <ProfitGrows {isLoading} {isEmpty} {dataTotalValueHistory} />
     <TotalValueHistory {isLoading} {isEmpty} {dataTotalValueHistory} />
-    <DailyGain {isLoading} {isEmpty} {dataDailyGain} />
+    <DailyPnL {isLoading} {isEmpty} {dataDailyPnL} />
     <SectorGrowth />
     <InflowOutflow />
     <TotalGasFee />

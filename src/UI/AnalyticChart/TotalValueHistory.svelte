@@ -176,14 +176,14 @@
   <div class="font-medium text-black text-xl">Total Value History</div>
   <div class="mt-2">
     {#if isLoading}
-      <div class="flex items-center justify-center h-[465px]">
+      <div class="flex items-center justify-center h-[415px]">
         <loading-icon />
       </div>
     {:else}
       <div class="h-full">
         {#if isEmpty}
           <div
-            class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
+            class="flex justify-center items-center h-full text-lg text-gray-400 h-[415px]"
           >
             Empty
           </div>
@@ -192,7 +192,7 @@
             id="total-value-history"
             theme="white"
             option={optionLine}
-            height={465}
+            height={415}
             notMerge={true}
           />
         {/if}
