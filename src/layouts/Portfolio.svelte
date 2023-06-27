@@ -123,54 +123,31 @@
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
                 ${params[0].axisValue}
               </div>
-              <div style="display: flex; align-items: center; justify-content: space-between;">
-                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
-                  <div style="background: #00b580; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
-                  ${params[0].seriesName}
+              ${params
+                .map((item) => {
+                  return `
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                    <span>${item?.marker}</span>
+                    ${item?.seriesName}
+                  </div>
+
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                      item.value >= 0 ? "#05a878" : "#f25f5d"
+                    };">
+                      ${formatCurrency(Math.abs(item.value))}%
+                      <img
+                        src=${item.value >= 0 ? TrendUp : TrendDown} 
+                        alt=""
+                        style="margin-bottom: 4px;"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[0].value >= 0 ? "#05a878" : "#f25f5d"
-                };">
-                  ${formatCurrency(Math.abs(params[0].value))}%
-                  <img
-                    src=${params[0].value >= 0 ? TrendUp : TrendDown} 
-                    alt=""
-                    style="margin-bottom: 4px;"
-                  />
-                </div>
-              </div>
-              <div style="display: flex; align-items: centers; justify-content: space-between;">
-                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
-                  <div style="background: #f7931a; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
-                  ${params[1].seriesName}
-                </div>
-                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[1].value >= 0 ? "#05a878" : "#f25f5d"
-                };">
-                  ${formatCurrency(Math.abs(params[1].value))}%
-                  <img
-                    src=${params[1].value >= 0 ? TrendUp : TrendDown} 
-                    alt=""
-                    style="margin-bottom: 4px;"
-                  />
-                </div>
-              </div>
-              <div style="display: flex; align-items: centers; justify-content: space-between;">
-                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
-                  <div style="background: #547fef; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
-                  ${params[2].seriesName}
-                </div>
-                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[2].value >= 0 ? "#05a878" : "#f25f5d"
-                };">
-                  ${formatCurrency(Math.abs(params[2].value))}%
-                  <img
-                    src=${params[2].value >= 0 ? TrendUp : TrendDown} 
-                    alt=""
-                    style="margin-bottom: 4px;"
-                  />
-                </div>
-              </div>
+                `;
+                })
+                .join("")}
             </div>`;
       },
     },

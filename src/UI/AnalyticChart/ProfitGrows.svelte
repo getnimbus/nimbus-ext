@@ -22,64 +22,36 @@
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
                 ${params[0].axisValue}
               </div>
-              <div style="display: flex; align-items: center; justify-content: space-between;">
-                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
-                  <div style="background: #00b580; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
-                  ${params[0].seriesName}
-                </div>
-                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[0].value >= 0 ? "#05a878" : "#f25f5d"
-                };">
+              ${params
+                .map((item) => {
+                  return `
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                    <span>${item?.marker}</span>
+                    ${item?.seriesName}
+                  </div>
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                    <span style="font-weight: 500; font-size: 14px; line-height: 17px; text-align: right; color: ${
+                      item?.seriesIndex === 2
+                        ? item?.value >= 0
+                          ? "#05a878"
+                          : "#f25f5d"
+                        : "#000"
+                    };">
                     $${
-                      formatNumber(Math.abs(params[0].value)).number_size !==
-                      "K"
+                      formatNumber(Math.abs(item?.value)).number_size !== "K"
                         ? numeral(
-                            formatNumber(Math.abs(params[0].value))
-                              .number_format
+                            formatNumber(Math.abs(item?.value)).number_format
                           ).format("0,0.00") +
-                          formatNumber(Math.abs(params[0].value)).number_size
-                        : formatCurrencyV2(Math.abs(params[0].value))
+                          formatNumber(Math.abs(item?.value)).number_size
+                        : formatCurrencyV2(Math.abs(item?.value))
                     }
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div style="display: flex; align-items: centers; justify-content: space-between;">
-                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
-                  <div style="background: #f7931a; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
-                  ${params[1].seriesName}
-                </div>
-                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[1].value >= 0 ? "#05a878" : "#f25f5d"
-                };">
-                   $${
-                     formatNumber(Math.abs(params[1].value)).number_size !== "K"
-                       ? numeral(
-                           formatNumber(Math.abs(params[1].value)).number_format
-                         ).format("0,0.00") +
-                         formatNumber(Math.abs(params[1].value)).number_size
-                       : formatCurrencyV2(Math.abs(params[1].value))
-                   }
-                </div>
-              </div>
-              <div style="display: flex; align-items: centers; justify-content: space-between;">
-                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
-                  <div style="background: #547fef; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
-                  ${params[2].seriesName}
-                </div>
-                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[2].value >= 0 ? "#05a878" : "#f25f5d"
-                };">
-                    $${
-                      formatNumber(Math.abs(params[2].value)).number_size !==
-                      "K"
-                        ? numeral(
-                            formatNumber(Math.abs(params[2].value))
-                              .number_format
-                          ).format("0,0.00") +
-                          formatNumber(Math.abs(params[2].value)).number_size
-                        : formatCurrencyV2(Math.abs(params[2].value))
-                    }
-                </div>
-              </div>
+                `;
+                })
+                .join("")}
             </div>`;
       },
     },
@@ -127,7 +99,7 @@
         return {
           value: item.cost,
           itemStyle: {
-            color: "#00b580",
+            color: "rgba(0,169,236, 0.8)",
           },
         };
       });
@@ -158,7 +130,7 @@
             {
               name: "Cost",
               itemStyle: {
-                color: "#00b580",
+                color: "rgba(0,169,236, 0.8)",
               },
             },
             {
@@ -185,7 +157,7 @@
             type: "line",
             lineStyle: {
               type: "solid",
-              color: "#00b580",
+              color: "rgba(0,169,236, 0.8)",
             },
             data: formatDataCost,
           },
