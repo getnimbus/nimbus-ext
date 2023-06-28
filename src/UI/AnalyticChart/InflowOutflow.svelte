@@ -58,6 +58,7 @@
                     `
                         : `
                     <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: #000; display: flex; align-items: centers; gap: 6px;">
+                      ${item.marker}  
                       ${item.seriesName} 
                     </div>
                     `
