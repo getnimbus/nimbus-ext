@@ -7,6 +7,7 @@
     "not-audited": "This page is not support.",
     "audited": "The page has been audited.",
     "not-audited-address": "This address is marked as unsafe.",
+    "warning-audited-address": "This address is marked as warning.",
     "audited-address": "This address is marked as safe.",
     "scan-with-go-plus": "Scan by Go+",
     "second-title": "On this page",

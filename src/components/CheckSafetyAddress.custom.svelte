@@ -1,7 +1,6 @@
 <svelte:options tag="check-safety-address" />
 
 <script lang="ts">
-  import { onMount } from "svelte";
   import { sendMessage } from "webext-bridge";
   import { getLocalImg } from "~/utils";
   import { i18n } from "~/lib/i18n";
@@ -84,9 +83,11 @@
     }
   };
 
-  onMount(() => {
-    checkSafetyAddress();
-  });
+  $: {
+    if (address) {
+      checkSafetyAddress();
+    }
+  }
 
   $: {
     if (data) {

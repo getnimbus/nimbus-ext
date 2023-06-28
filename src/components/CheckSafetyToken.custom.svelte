@@ -1,7 +1,6 @@
 <svelte:options tag="check-safety-token" />
 
 <script lang="ts">
-  import { onMount } from "svelte";
   import { sendMessage } from "webext-bridge";
   import { getLocalImg } from "~/utils";
   import { i18n } from "~/lib/i18n";
@@ -12,6 +11,10 @@
   import Fail from "~/assets/shield-fail-address.svg";
 
   const MultipleLang = {
+    warning_audited_address: i18n(
+      "quickSearchLang.warning-audited-address",
+      "This address is marked as warning."
+    ),
     not_audited_address: i18n(
       "quickSearchLang.not-audited-address",
       "This address is marked as unsafe."
@@ -28,90 +31,236 @@
   export let id;
 
   let isAudited = false;
+  let isWarning = false;
+  let data;
+  let dataRisk;
+  let dataWarning;
+  let infoList = [];
 
   const checkSafetyToken = async () => {
     const response: any = await sendMessage("checkSafetyToken", {
       address,
       id,
     });
-    console.log("response token: ", response);
+
+    infoList = [
+      {
+        title: "The token can be bought",
+        content:
+          "Generally, these unbuyable tokens would be found in Reward Tokens. Such Tokens are issued as rewards for some on-chain applications and cannot be bought directly by users.",
+      },
+      {
+        title: "Holders can sell all of the token",
+        content:
+          "Holders can sell all of the token. Some token contracts will have a maximum sell ratio.",
+      },
+      {
+        title: "This does not appear to be a honeypot.",
+        content: "We are not aware of any malicious code.",
+      },
+      {
+        title: "No trading cooldown function",
+        content:
+          "The token contract has no trading cooldown function. If there is a trading cooldown function, the user will not be able to sell the token within a certain time or block after buying.",
+      },
+      {
+        title: "Anti whale is modifiable",
+        content:
+          "The maximum token trading amount or maximum position can be modified, which may lead to suspension of trading. (honeypot risk).",
+      },
+      {
+        title: "Blacklist function",
+        content:
+          "The blacklist function is included. Some addresses may not be able to trade normally (honeypot risk).",
+      },
+      {
+        title: "Holders can sell all of the token",
+        content:
+          "Holders can sell all of the token. Some token contracts will have a maximum sell ratio.",
+      },
+      {
+        title: "Anti_whale(Limited number of transactions)",
+        content:
+          "The number of token transactions is limited. The number of scam token transactions may be limited (honeypot risk).",
+      },
+      {
+        title: "Tax cannot be modified",
+        content:
+          "The contract owner may not contain the authority to modify the transaction tax. If the transaction tax is increased to more than 49%, the tokens will not be able to be traded (honeypot risk).",
+      },
+    ];
 
     if (response.result) {
-      const vals = Object.keys(response.result).map(
-        (key) => response.result[key]
-      );
-      isAudited = vals.every((currentValue) => {
-        return currentValue === "0" || currentValue === "";
-      });
+      data = response.result;
     } else {
       isAudited = false;
     }
   };
 
-  onMount(() => {
-    checkSafetyToken();
-  });
+  $: {
+    if (address) {
+      checkSafetyToken();
+    }
+  }
+
+  $: {
+    if (data && Object.keys(data).length !== 0) {
+      const address = Object.getOwnPropertyNames(data);
+      const formatData = data[address[0]];
+
+      dataRisk = {
+        cannot_buy: formatData.cannot_buy,
+        cannot_sell_all: formatData.cannot_sell_all,
+        is_honeypot: formatData.is_honeypot,
+        transfer_pausable: formatData.transfer_pausable,
+      };
+
+      dataWarning = {
+        anti_whale_modifiable: formatData.anti_whale_modifiable,
+        is_blacklisted: formatData.is_blacklisted,
+        sell_tax: formatData.sell_tax,
+        buy_tax: formatData.buy_tax,
+        slippage_modifiable: formatData.slippage_modifiable,
+      };
+    }
+  }
+
+  $: {
+    if (dataRisk && dataWarning) {
+      const valueRisk = Object.keys(dataRisk).map((key) => dataRisk[key]);
+      const valueWarning = Object.keys(dataWarning).map(
+        (key) => dataWarning[key]
+      );
+
+      isAudited =
+        valueRisk.every((currentValue) => {
+          return currentValue === "0";
+        }) &&
+        valueWarning.every((currentValue) => {
+          return currentValue === "0";
+        });
+
+      isWarning = valueWarning.every((currentValue) => {
+        return currentValue === "0";
+      });
+    }
+  }
+
+  $: {
+    console.log({
+      isAudited,
+      isWarning,
+    });
+  }
 </script>
 
 <reset-style>
   <div
     class={`flex flex-col gap-2 pl-2 pr-3 py-[6px] rounded-lg ${
-      isAudited ? "bg-green-100" : "bg-[#f25f5c4d]"
+      isAudited
+        ? "bg-green-100"
+        : !isWarning
+        ? "bg-orange-100"
+        : "bg-[#f25f5c4d]"
     }`}
   >
     <collapsible-custom content={true}>
       <div slot="title">
         <div
           class={`flex flex-col ${
-            isAudited ? "text-green-700" : "text-[#F25F5C]"
+            isAudited
+              ? "text-green-700"
+              : !isWarning
+              ? "text-[#ffb743]"
+              : "text-[#F25F5C]"
           }`}
         >
           <div class="flex items-center gap-1">
             {#if isAudited}
-              <img src={getLocalImg(Success)} alt="Success" />
+              <img src={getLocalImg(Success)} alt="" />
               <div class="text-sm">
                 <div>{MultipleLang.audited_address}</div>
               </div>
+            {:else if !isWarning}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke="#fdba8c"
+                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                />
+              </svg>
+              <div class="text-sm">
+                <div>{MultipleLang.warning_audited_address}</div>
+              </div>
             {:else}
-              <img src={getLocalImg(Fail)} alt="fail" />
+              <img src={getLocalImg(Fail)} alt="" />
               <div class="text-sm">
                 <div>{MultipleLang.not_audited_address}</div>
               </div>
             {/if}
           </div>
-          <div class="text-[11px] text-[#00000066] pl-7">
-            {MultipleLang.scan_by_go_plus}
+          <div class="flex items-center gap-2 text-[11px] pl-7">
+            <div class="text-[#00000066]">
+              {MultipleLang.scan_by_go_plus}
+            </div>
+            <a
+              href={`https://gopluslabs.io/token-security/${id}/${address}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="-mt-[2px]"
+            >
+              {MultipleLang.learn_more}
+            </a>
           </div>
         </div>
       </div>
 
       <div slot="content">
-        {#if isAudited}
-          <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1 mt-1">
+          {#each infoList as info}
             <collapsible-custom content={true}>
               <div slot="title">
                 <div class="flex items-center gap-1">
-                  <img src={getLocalImg(Success)} alt="Success" />
-                  <div>No fake KYC involved</div>
+                  {#if isAudited}
+                    <img src={getLocalImg(Success)} alt="" class="w-6 h-6" />
+                  {:else if !isWarning}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke="#fdba8c"
+                        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                      />
+                    </svg>
+                  {:else}
+                    <img src={getLocalImg(Fail)} alt="" class="w-6 h-6" />
+                  {/if}
+                  <div>{info.title}</div>
                 </div>
               </div>
-              <div slot="content">
-                This address was not found to be involved in fake KYC.
+              <div slot="content" class="pl-7 leading-4">
+                {info.content}
               </div>
             </collapsible-custom>
-
-            <collapsible-custom>
-              <div slot="title">
-                <div class="flex items-center gap-1">
-                  <img src={getLocalImg(Success)} alt="Success" />
-                  <div>Collapse or Expand me 2</div>
-                </div>
-              </div>
-            </collapsible-custom>
-          </div>
-        {:else}
-          <div>hello world</div>
-        {/if}
+          {/each}
+        </div>
       </div>
     </collapsible-custom>
   </div>
