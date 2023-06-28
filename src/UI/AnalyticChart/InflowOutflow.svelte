@@ -31,7 +31,7 @@
       },
       formatter: function (params) {
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 250px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
                 ${params[0].axisValue}
               </div>
@@ -39,7 +39,13 @@
                 .map((item) => {
                   if (item.value) {
                     return `
-                  <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; ${
+                    item.seriesName.toLowerCase() === "netflow" &&
+                    "border-top: 0.8px solid #d1d5db; padding-top: 10px;"
+                  }">
+                    ${
+                      item.seriesName.toLowerCase() !== "netflow"
+                        ? `
                     <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: #000; display: flex; align-items: centers; gap: 6px;">
                       ${item.marker}  
                       <span style="color: ${
@@ -49,6 +55,13 @@
                       </span>
                       ${item.seriesName}
                     </div>
+                    `
+                        : `
+                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: #000; display: flex; align-items: centers; gap: 6px;">
+                      ${item.seriesName} 
+                    </div>
+                    `
+                    }
                     <div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.value >= 0 ? "#05a878" : "#f25f5d"
                     };">
