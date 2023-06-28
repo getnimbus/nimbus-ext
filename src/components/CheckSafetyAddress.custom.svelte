@@ -6,6 +6,8 @@
   import { getLocalImg } from "~/utils";
   import { i18n } from "~/lib/i18n";
 
+  import "~/components/Collapsible.custom.svelte";
+
   import Success from "~/assets/shield-done.svg";
   import Fail from "~/assets/shield-fail-address.svg";
 
@@ -23,24 +25,60 @@
   };
 
   export let address;
-  export let chainId;
+  export let id;
 
   let isAudited = false;
+  let data;
+  let infoList = [];
 
   const checkSafetyAddress = async () => {
-    const response: {
-      code: number;
-      message: string;
-      result: any;
-    } = await sendMessage("checkSafetyAddress", { address, chainId });
+    const response: any = await sendMessage("checkSafetyAddress", {
+      address,
+      id,
+    });
+
+    infoList = [
+      {
+        title: "Non-honeypot related address",
+        content:
+          "This address has not been found to be related to honeypot tokens or has created scam tokens.",
+      },
+      {
+        title: "No money laundering involved",
+        content:
+          "This address was not found to be involved in money laundering.",
+      },
+      {
+        title: "No suspected malicious behavior found",
+        content:
+          "This address was not found to be suspected of malicious behavior.",
+      },
+      {
+        title: "No phishing activities involved",
+        content:
+          "This address was not found to be involved in phishing activities.",
+      },
+    ];
 
     if (response.result) {
-      const vals = Object.keys(response.result).map(
-        (key) => response.result[key]
-      );
-      isAudited = vals.every((currentValue) => {
-        return currentValue === "0" || currentValue === "";
-      });
+      data = {
+        blacklist_doubt: response.result.blacklist_doubt,
+        stealing_attack: response.result.stealing_attack,
+        blackmail_activities: response.result.blackmail_activities,
+        cybercrime: response.result.cybercrime,
+        darkweb_transactions: response.result.darkweb_transactions,
+        fake_kyc: response.result.fake_kyc,
+        financial_crime: response.result.financial_crime,
+        honeypot_related_address: response.result.honeypot_related_address,
+        malicious_mining_activities:
+          response.result.malicious_mining_activities,
+        mixer: response.result.mixer,
+        money_laundering: response.result.money_laundering,
+        number_of_malicious_contracts_created:
+          response.result.number_of_malicious_contracts_created,
+        phishing_activities: response.result.phishing_activities,
+        sanctioned: response.result.sanctioned,
+      };
     } else {
       isAudited = false;
     }
@@ -49,48 +87,76 @@
   onMount(() => {
     checkSafetyAddress();
   });
+
+  $: {
+    if (data) {
+      const value = Object.keys(data).map((key) => data[key]);
+      isAudited = value.every((currentValue) => {
+        return currentValue === "0";
+      });
+    }
+  }
 </script>
 
 <reset-style>
   <div
-    class={`pl-2 pr-3 py-[6px] rounded-lg ${
-      isAudited
-        ? "text-green-700 bg-green-100"
-        : "text-[#F25F5C] bg-[#f25f5c4d]"
+    class={`pl-2 pr-3 pt-[6px] pb-2 rounded-lg ${
+      isAudited ? "bg-green-100" : "bg-[#f25f5c4d]"
     }`}
   >
-    <div class="flex justify-between items-center">
-      <div class="flex items-center gap-2">
-        {#if isAudited}
-          <img src={getLocalImg(Success)} alt="Success" />
-          <div class="text-xs">
-            <div>{MultipleLang.audited_address}</div>
+    <collapsible-custom content={true}>
+      <div slot="title">
+        <div
+          class={`flex flex-col ${
+            isAudited ? "text-green-700" : "text-[#F25F5C]"
+          }`}
+        >
+          <div class="flex items-center gap-1">
+            {#if isAudited}
+              <img src={getLocalImg(Success)} alt="Success" />
+              <div class="text-sm">
+                <div>{MultipleLang.audited_address}</div>
+              </div>
+            {:else}
+              <img src={getLocalImg(Fail)} alt="fail" />
+              <div class="text-sm">
+                <div>{MultipleLang.not_audited_address}</div>
+              </div>
+            {/if}
+          </div>
+          <div class="flex items-center gap-2 text-[11px] pl-7">
+            <div class="text-[#00000066]">
+              {MultipleLang.scan_by_go_plus}
+            </div>
             <a
               href={`https://gopluslabs.io/malicious-address-detection/${address}`}
               target="_blank"
               rel="noopener noreferrer"
+              class="-mt-[2px]"
             >
               {MultipleLang.learn_more}
             </a>
           </div>
-        {:else}
-          <img src={getLocalImg(Fail)} alt="fail" />
-          <div class="text-xs">
-            <div>{MultipleLang.not_audited_address}</div>
-            <a
-              href={`https://gopluslabs.io/malicious-address-detection/${address}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {MultipleLang.learn_more}
-            </a>
-          </div>
-        {/if}
+        </div>
       </div>
-      <div class="text-[10px] text-[#00000066]">
-        {MultipleLang.scan_by_go_plus}
+      <div slot="content">
+        <div class="flex flex-col gap-1 mt-1">
+          {#each infoList as info}
+            <collapsible-custom content={true}>
+              <div slot="title">
+                <div class="flex items-center gap-1">
+                  <img src={getLocalImg(isAudited ? Success : Fail)} alt="" />
+                  <div>{info.title}</div>
+                </div>
+              </div>
+              <div slot="content" class="pl-7 leading-4">
+                {info.content}
+              </div>
+            </collapsible-custom>
+          {/each}
+        </div>
       </div>
-    </div>
+    </collapsible-custom>
   </div>
 </reset-style>
 

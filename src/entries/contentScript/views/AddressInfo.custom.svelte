@@ -435,11 +435,11 @@
         {#if type === "ERC20" && unknownSmartContract === false}
           <div class="m-[-16px]">
             <native-token-info
-              id={addressInfo.id}
               name={addressInfo.symbol}
+              id={addressInfo.id}
               loaded={true}
+              search={false}
               {address}
-              isSidebarSearch={false}
             />
           </div>
         {/if}
@@ -562,14 +562,14 @@
               </div>
             </div>
             <div class="flex gap-1 flex-wrap">
-              {#each addressInfo?.categories.slice(0, 2) as category}
+              {#each addressInfo?.categories.slice(0, 6) as category}
                 <div
                   class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px]"
                 >
                   {category}
                 </div>
               {/each}
-              {#if addressInfo?.categories.length > 2}
+              {#if addressInfo?.categories.length > 6}
                 <div class="relative">
                   <div
                     class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px] flex items-center gap-1 cursor-pointer"
@@ -581,7 +581,7 @@
                   </div>
                   {#if openShowCategoryList}
                     <div class="content">
-                      {#each addressInfo?.categories.slice(2) as category}
+                      {#each addressInfo?.categories.slice(6) as category}
                         <div class="content_item" id={category}>
                           {category}
                         </div>
@@ -591,7 +591,7 @@
                 </div>
               {/if}
             </div>
-            <check-safety-address {address} chainId={"1"} />
+            <check-safety-address {address} id={"1"} />
             <div class="flex justify-between items-end">
               <div class="flex flex-col gap-1">
                 <div class="text-[#00000099] text-sm">Networth</div>

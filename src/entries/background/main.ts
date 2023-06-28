@@ -33,10 +33,6 @@ interface IIdInput extends JsonObject {
   id: string;
 }
 
-interface IUrl extends JsonObject {
-  currentUrl: string;
-}
-
 interface II18nMsg extends JsonObject {
   key: string;
   lang?: "vi" | "en";
@@ -442,7 +438,7 @@ onMessage<any, any>("trackEvent", async ({ data: { type, payload } }) => {
   }
 });
 
-onMessage<IUrl, any>("checkSafety", async ({ data: { currentUrl } }) => {
+onMessage<any, any>("checkSafety", async ({ data: { currentUrl } }) => {
   const key = currentUrl + "_info";
   return await cacheOrAPI(
     key,
@@ -453,12 +449,23 @@ onMessage<IUrl, any>("checkSafety", async ({ data: { currentUrl } }) => {
   );
 });
 
-onMessage<any, any>("checkSafetyAddress", async ({ data: { address, chainId } }) => {
+onMessage<any, any>("checkSafetyAddress", async ({ data: { address, id } }) => {
   const key = address + "_info";
   return await cacheOrAPI(
     key,
     () => {
-      return goplus.get(`/address_security/${address}?chain_id=${chainId}`);
+      return goplus.get(`/address_security/${address}?chain_id=${id}`);
+    },
+    { defaultValue: null }
+  );
+});
+
+onMessage<any, any>("checkSafetyToken", async ({ data: { address, id } }) => {
+  const key = address + "_token_info";
+  return await cacheOrAPI(
+    key,
+    () => {
+      return goplus.get(`/token_security/${id}?contract_addresses=${address}`);
     },
     { defaultValue: null }
   );

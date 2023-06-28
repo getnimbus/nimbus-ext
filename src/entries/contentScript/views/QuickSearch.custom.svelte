@@ -670,9 +670,11 @@
                       <div class="flex flex-col gap-y-3">
                         {#each dataTokenSearchResult as item}
                           <native-token-info
-                            id={item.id}
                             name={item.symbol}
+                            id={item.id}
                             {loaded}
+                            search={true}
+                            address={""}
                           />
                         {/each}
                       </div>
@@ -697,9 +699,11 @@
                     <div class="flex flex-col gap-y-3">
                       {#each dataTokenDetectResult as item}
                         <native-token-info
-                          id={item.id}
                           name={item.symbol}
+                          id={item.id}
                           loaded={true}
+                          search={true}
+                          address={""}
                         />
                       {/each}
                     </div>
@@ -821,9 +825,11 @@
                       <div class="flex flex-col gap-y-3">
                         {#each dataTokenSearchResult as item}
                           <native-token-info
-                            id={item.id}
                             name={item.symbol}
+                            id={item.id}
                             {loaded}
+                            search={true}
+                            address={""}
                           />
                         {/each}
                       </div>
@@ -846,9 +852,11 @@
                     <div class="flex flex-col gap-y-3">
                       {#each dataTokenDetectResult as item}
                         <native-token-info
-                          id={item.id}
                           name={item.symbol}
+                          id={item.id}
                           loaded={true}
+                          search={true}
+                          address={""}
                         />
                       {/each}
                     </div>
