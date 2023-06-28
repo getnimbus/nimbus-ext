@@ -1,4 +1,4 @@
-<svelte:options tag="check-safety" />
+<svelte:options tag="check-safety-dapp" />
 
 <script lang="ts">
   import { onMount } from "svelte";
@@ -21,7 +21,6 @@
   };
 
   let data: any = {};
-  const IS_AUDITED_CODE = 1;
 
   const checkSafetyCurrentUrl = async () => {
     let currentUrl = window.location.href;
@@ -30,6 +29,7 @@
       message: string;
       result: any;
     } = await sendMessage("checkSafety", { currentUrl });
+
     if (response.result) {
       data = response.result;
     }
@@ -43,14 +43,14 @@
 <reset-style>
   <div
     class={`pl-2 pr-3 py-[6px] rounded-lg ${
-      !isEmpty(data) && data.is_audit === IS_AUDITED_CODE
+      !isEmpty(data) && data.is_audit === 1
         ? "text-green-700 bg-green-100"
         : "text-black bg-[#FFCB5999]"
     }`}
   >
     <div class="flex justify-between items-center">
       <div class="flex items-center gap-2">
-        {#if !isEmpty(data) && data.is_audit === IS_AUDITED_CODE}
+        {#if !isEmpty(data) && data.is_audit === 1}
           <img src={getLocalImg(Success)} alt="Success" />
           <div class="text-xs">
             <div>{MultipleLang.audited}</div>
@@ -62,7 +62,7 @@
               {MultipleLang.audit_report}
             </a>
           </div>
-        {:else if data.is_audit !== IS_AUDITED_CODE}
+        {:else if data.is_audit !== 1}
           <img src={getLocalImg(Fail)} alt="fail" />
           <div class="text-xs">{MultipleLang.not_audited}</div>
         {/if}

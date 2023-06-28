@@ -20,7 +20,7 @@
   import "./TrxInfo.custom.svelte";
   import "./NativeTokenInfo.custom.svelte";
   import "~/components/ResetStyle.custom.svelte";
-  import "~/components/CheckSafety.custom.svelte";
+  import "~/components/CheckSafetyDApp.custom.svelte";
   import "~/components/TermInfo.custom.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
 
@@ -515,7 +515,7 @@
         </div>
 
         <div class="px-3 pb-3 pt-2">
-          <check-safety />
+          <check-safety-dapp />
 
           {#if data.length === 1}
             <div>
