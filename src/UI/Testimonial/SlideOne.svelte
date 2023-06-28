@@ -6,9 +6,9 @@
     class="text-lg font-normal leading-8 tracking-tight text-gray-900"
   >
     <p>
-      “As the founder of Nimbus, Nimbus is anything I wish for as a portfolio
-      tool in Web3. Tracking with real-time insights, and delivered a delightful
-      user experience. It helps me notice when the market change rapidly in this
+      “As the founder of Nimbus, It is anything I wish for as a portfolio tool
+      in Web3. Tracking with real-time insights, and delivered a delightful user
+      experience. It helps me notice when the market change rapidly in this
       space, make more effective decisions with data ”
     </p>
   </blockquote>
