@@ -14,6 +14,7 @@
   import CopyToClipboard from "~/components/CopyToClipboard.svelte";
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
+  import Button from "~/components/Button.svelte";
 
   import TwitterLogo from "~/assets/twitter.svg";
   import LeftArrow from "~/assets/left-arrow.svg";
@@ -642,7 +643,18 @@
       </div>
       <div class="border border-[#0000001a] rounded-[20px] p-6">
         <div class="flex flex-col gap-6">
-          <div class="text-2xl font-medium text-black">History</div>
+          <div class="flex justify-between items-center">
+            <div class="text-2xl font-medium text-black">History</div>
+            <div
+              use:tooltip={{
+                content: `<tooltip-detail text="Comming soon" />`,
+                allowHTML: true,
+                placement: "top",
+              }}
+            >
+              <Button variant="premium">Export Data</Button>
+            </div>
+          </div>
 
           {#if type === "ERC_20"}
             <div class="border border-[#0000000d] rounded-[10px]">
