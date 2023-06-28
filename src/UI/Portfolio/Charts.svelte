@@ -2,7 +2,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { i18n } from "~/lib/i18n";
   import { chain } from "~/store";
-  import { formatBalance, formatCurrency, typePieChart } from "~/utils";
+  import { formatCurrencyV2, typePieChart } from "~/utils";
 
   export let optionLine;
   export let dataPieChart;
@@ -34,7 +34,7 @@
       extraCssText: "z-index: 9997",
       formatter: function (params) {
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 200px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="display: flex; align-items: centers; gap: 4px">
                 ${
                   params?.data?.logo
@@ -47,30 +47,37 @@
         }
                 </div>
               </div>
+
               ${
                 params?.data?.name_balance
-                  ? `<div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
-                  ${MultipleLang[params?.data?.name_balance]}
+                  ? `
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                    ${MultipleLang[params?.data?.name_balance]}
+                  </div>
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                    ${formatCurrencyV2(params?.data?.value_balance)}
+                  </div>
                 </div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatCurrency(params?.data?.value_balance)}</div>
-              </div>`
+              `
                   : ""
               }
-              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
                   ${MultipleLang[params?.data?.name_value]}
                 </div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  $${formatBalance(params?.data?.value_value)}</div>
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                  $${formatCurrencyV2(params?.data?.value_value)}
+                </div>
               </div>
-              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+              
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
                   ${MultipleLang[params?.data?.name_ratio]}
                 </div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatBalance(params?.value)}%
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                  ${formatCurrencyV2(params?.value)}%
                 </div>
               </div>
             </div>`;

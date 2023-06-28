@@ -1,7 +1,6 @@
 <script lang="ts">
   import dayjs from "dayjs";
-  import numeral from "numeral";
-  import { formatBigBalance, formatCurrencyV2 } from "~/utils";
+  import { formatCurrencyV2 } from "~/utils";
 
   import EChart from "~/components/EChart.svelte";
 
@@ -18,7 +17,7 @@
       extraCssText: "z-index: 9997",
       formatter: function (params) {
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
                 ${params[0].axisValue}
               </div>
@@ -38,14 +37,7 @@
                           : "#f25f5d"
                         : "#000"
                     };">
-                    $${
-                      formatNumber(Math.abs(item?.value)).number_size !== "K"
-                        ? numeral(
-                            formatNumber(Math.abs(item?.value)).number_format
-                          ).format("0,0.00") +
-                          formatNumber(Math.abs(item?.value)).number_size
-                        : formatCurrencyV2(Math.abs(item?.value))
-                    }
+                    $${formatCurrencyV2(Math.abs(item?.value))}
                     </span>
                   </div>
                 </div>
@@ -79,14 +71,6 @@
       },
     },
     series: [],
-  };
-
-  const formatNumber = (number) => {
-    const { number_format, number_size } = formatBigBalance(number);
-    return {
-      number_format,
-      number_size,
-    };
   };
 
   $: {
