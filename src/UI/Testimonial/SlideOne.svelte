@@ -7,9 +7,9 @@
   >
     <p>
       “As the founder of Nimbus, It is anything I wish for as a portfolio tool
-      in Web3. Tracking with real-time insights, and delivered a delightful user
-      experience. It helps me notice when the market change rapidly in this
-      space, make more effective decisions with data ”
+      in Web3. Tracking with real-time performance, and delivered a delightful
+      user experience. <br />It helps me notice when the market change rapidly,
+      then make more effective decisions with data”
     </p>
   </blockquote>
   <figcaption class="flex items-center gap-x-6">
