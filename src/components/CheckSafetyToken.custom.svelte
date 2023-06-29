@@ -35,60 +35,14 @@
   let data;
   let dataRisk;
   let dataWarning;
-  let infoList = [];
+  let infoRiskList = [];
+  let infoWarningList = [];
 
   const checkSafetyToken = async () => {
     const response: any = await sendMessage("checkSafetyToken", {
       address,
       id,
     });
-
-    infoList = [
-      {
-        title: "The token can be bought",
-        content:
-          "Generally, these unbuyable tokens would be found in Reward Tokens. Such Tokens are issued as rewards for some on-chain applications and cannot be bought directly by users.",
-      },
-      {
-        title: "Holders can sell all of the token",
-        content:
-          "Holders can sell all of the token. Some token contracts will have a maximum sell ratio.",
-      },
-      {
-        title: "This does not appear to be a honeypot.",
-        content: "We are not aware of any malicious code.",
-      },
-      {
-        title: "No trading cooldown function",
-        content:
-          "The token contract has no trading cooldown function. If there is a trading cooldown function, the user will not be able to sell the token within a certain time or block after buying.",
-      },
-      {
-        title: "Anti whale is modifiable",
-        content:
-          "The maximum token trading amount or maximum position can be modified, which may lead to suspension of trading. (honeypot risk).",
-      },
-      {
-        title: "Blacklist function",
-        content:
-          "The blacklist function is included. Some addresses may not be able to trade normally (honeypot risk).",
-      },
-      {
-        title: "Holders can sell all of the token",
-        content:
-          "Holders can sell all of the token. Some token contracts will have a maximum sell ratio.",
-      },
-      {
-        title: "Anti_whale(Limited number of transactions)",
-        content:
-          "The number of token transactions is limited. The number of scam token transactions may be limited (honeypot risk).",
-      },
-      {
-        title: "Tax cannot be modified",
-        content:
-          "The contract owner may not contain the authority to modify the transaction tax. If the transaction tax is increased to more than 49%, the tokens will not be able to be traded (honeypot risk).",
-      },
-    ];
 
     if (response.result) {
       data = response.result;
@@ -132,6 +86,65 @@
         (key) => dataWarning[key]
       );
 
+      infoRiskList = [
+        {
+          value: dataRisk.cannot_buy,
+          title: "The token can be bought",
+          content:
+            "Generally, these unbuyable tokens would be found in Reward Tokens. Such Tokens are issued as rewards for some on-chain applications and cannot be bought directly by users.",
+        },
+        {
+          value: dataRisk.cannot_sell_all,
+          title: "Holders can sell all of the token",
+          content:
+            "Holders can sell all of the token. Some token contracts will have a maximum sell ratio.",
+        },
+        {
+          value: dataRisk.is_honeypot,
+          title: "This does not appear to be a honeypot.",
+          content: "We are not aware of any malicious code.",
+        },
+        {
+          value: dataRisk.transfer_pausable,
+          title: "No trading cooldown function",
+          content:
+            "The token contract has no trading cooldown function. If there is a trading cooldown function, the user will not be able to sell the token within a certain time or block after buying.",
+        },
+      ];
+
+      infoWarningList = [
+        {
+          value: dataWarning.anti_whale_modifiable,
+          title: "Anti whale is modifiable",
+          content:
+            "The maximum token trading amount or maximum position can be modified, which may lead to suspension of trading. (honeypot risk).",
+        },
+        {
+          value: dataWarning.buy_tax,
+          title: "Blacklist function",
+          content:
+            "The blacklist function is included. Some addresses may not be able to trade normally (honeypot risk).",
+        },
+        {
+          value: dataWarning.is_blacklisted,
+          title: "Holders can sell all of the token",
+          content:
+            "Holders can sell all of the token. Some token contracts will have a maximum sell ratio.",
+        },
+        {
+          value: dataWarning.sell_tax,
+          title: "Anti_whale(Limited number of transactions)",
+          content:
+            "The number of token transactions is limited. The number of scam token transactions may be limited (honeypot risk).",
+        },
+        {
+          value: dataWarning.slippage_modifiable,
+          title: "Tax cannot be modified",
+          content:
+            "The contract owner may not contain the authority to modify the transaction tax. If the transaction tax is increased to more than 49%, the tokens will not be able to be traded (honeypot risk).",
+        },
+      ];
+
       isAudited =
         valueRisk.every((currentValue) => {
           return currentValue === "0";
@@ -144,13 +157,6 @@
         return currentValue === "0";
       });
     }
-  }
-
-  $: {
-    console.log({
-      isAudited,
-      isWarning,
-    });
   }
 </script>
 
@@ -171,7 +177,7 @@
             isAudited
               ? "text-green-700"
               : !isWarning
-              ? "text-[#ffb743]"
+              ? "text-orange-700"
               : "text-[#F25F5C]"
           }`}
         >
@@ -185,8 +191,8 @@
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                width="24"
-                height="24"
+                width="22"
+                height="22"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
@@ -194,7 +200,7 @@
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  stroke="#fdba8c"
+                  stroke="#ff5a1f"
                   d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
                 />
               </svg>
@@ -226,18 +232,42 @@
 
       <div slot="content">
         <div class="flex flex-col gap-1 mt-1">
-          {#each infoList as info}
+          {#each infoRiskList as info}
             <collapsible-custom content={true}>
               <div slot="title">
                 <div class="flex items-center gap-1">
-                  {#if isAudited}
+                  {#if info.value === "0"}
                     <img src={getLocalImg(Success)} alt="" class="w-6 h-6" />
-                  {:else if !isWarning}
+                  {:else}
+                    <img src={getLocalImg(Fail)} alt="" class="w-6 h-6" />
+                  {/if}
+                  <div
+                    class={`font-medium ${
+                      info.value === "0" ? "text-green-700" : "text-[#F25F5C]"
+                    }`}
+                  >
+                    {info.title}
+                  </div>
+                </div>
+              </div>
+              <div slot="content" class="pl-7 leading-4">
+                {info.content}
+              </div>
+            </collapsible-custom>
+          {/each}
+
+          {#each infoWarningList as info}
+            <collapsible-custom content={true}>
+              <div slot="title">
+                <div class="flex items-center gap-1">
+                  {#if info.value === "0"}
+                    <img src={getLocalImg(Success)} alt="" class="w-6 h-6" />
+                  {:else}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
-                      width="24"
-                      height="24"
+                      width="22"
+                      height="22"
                       viewBox="0 0 24 24"
                       stroke-width="1.5"
                       stroke="currentColor"
@@ -245,14 +275,18 @@
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
-                        stroke="#fdba8c"
+                        stroke="#ff5a1f"
                         d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
                       />
                     </svg>
-                  {:else}
-                    <img src={getLocalImg(Fail)} alt="" class="w-6 h-6" />
                   {/if}
-                  <div>{info.title}</div>
+                  <div
+                    class={`font-medium ${
+                      info.value === "0" ? "text-green-700" : "text-orange-700"
+                    }`}
+                  >
+                    {info.title}
+                  </div>
                 </div>
               </div>
               <div slot="content" class="pl-7 leading-4">

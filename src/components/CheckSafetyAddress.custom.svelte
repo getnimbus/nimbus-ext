@@ -36,29 +36,6 @@
       id,
     });
 
-    infoList = [
-      {
-        title: "Non-honeypot related address",
-        content:
-          "This address has not been found to be related to honeypot tokens or has created scam tokens.",
-      },
-      {
-        title: "No money laundering involved",
-        content:
-          "This address was not found to be involved in money laundering.",
-      },
-      {
-        title: "No suspected malicious behavior found",
-        content:
-          "This address was not found to be suspected of malicious behavior.",
-      },
-      {
-        title: "No phishing activities involved",
-        content:
-          "This address was not found to be involved in phishing activities.",
-      },
-    ];
-
     if (response.result) {
       data = {
         blacklist_doubt: response.result.blacklist_doubt,
@@ -92,6 +69,34 @@
   $: {
     if (data) {
       const value = Object.keys(data).map((key) => data[key]);
+
+      infoList = [
+        {
+          value: data.honeypot_related_address,
+          title: "Non-honeypot related address",
+          content:
+            "This address has not been found to be related to honeypot tokens or has created scam tokens.",
+        },
+        {
+          value: data.money_laundering,
+          title: "No money laundering involved",
+          content:
+            "This address was not found to be involved in money laundering.",
+        },
+        {
+          value: data.malicious_mining_activities,
+          title: "No suspected malicious behavior found",
+          content:
+            "This address was not found to be suspected of malicious behavior.",
+        },
+        {
+          value: data.phishing_activities,
+          title: "No phishing activities involved",
+          content:
+            "This address was not found to be involved in phishing activities.",
+        },
+      ];
+
       isAudited = value.every((currentValue) => {
         return currentValue === "0";
       });
@@ -146,8 +151,18 @@
             <collapsible-custom content={true}>
               <div slot="title">
                 <div class="flex items-center gap-1">
-                  <img src={getLocalImg(isAudited ? Success : Fail)} alt="" />
-                  <div>{info.title}</div>
+                  {#if info.value === "0"}
+                    <img src={getLocalImg(Success)} alt="" class="w-6 h-6" />
+                  {:else}
+                    <img src={getLocalImg(Fail)} alt="" class="w-6 h-6" />
+                  {/if}
+                  <div
+                    class={`font-medium ${
+                      info.value === "0" ? "text-green-700" : "text-[#F25F5C]"
+                    }`}
+                  >
+                    {info.title}
+                  </div>
                 </div>
               </div>
               <div slot="content" class="pl-7 leading-4">
