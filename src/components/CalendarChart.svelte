@@ -11,6 +11,8 @@
   export let tooltipTitle;
   export let sum = 0;
   export let id;
+
+  import Logo from "~/assets/logo-1.svg";
 </script>
 
 <div class="flex flex-col gap-4">
@@ -47,8 +49,11 @@
           Empty
         </div>
       {:else}
-        <div class="-mt-12">
+        <div class="-mt-12 relative">
           <EChart {id} theme="white" {option} />
+          <div class="absolute -bottom-6 right-6 opacity-10">
+            <img src={Logo} alt="" width="140" height="140" />
+          </div>
         </div>
       {/if}
     </div>

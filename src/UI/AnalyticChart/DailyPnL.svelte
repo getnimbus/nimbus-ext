@@ -4,6 +4,8 @@
 
   import EChart from "~/components/EChart.svelte";
 
+  import Logo from "~/assets/logo-1.svg";
+
   export let isEmpty;
   export let isLoading;
   export let dataDailyPnL;
@@ -102,13 +104,18 @@
             Empty
           </div>
         {:else}
-          <EChart
-            id="DailyGain"
-            theme="white"
-            {option}
-            height={415}
-            notMerge={true}
-          />
+          <div class="relative">
+            <EChart
+              id="DailyGain"
+              theme="white"
+              {option}
+              height={415}
+              notMerge={true}
+            />
+            <div class="absolute -top-6 right-6 opacity-10">
+              <img src={Logo} alt="" width="140" height="140" />
+            </div>
+          </div>
         {/if}
       </div>
     {/if}

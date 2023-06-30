@@ -6,6 +6,8 @@
   import dayjs from "dayjs";
   import isBetween from "dayjs/plugin/isBetween";
   dayjs.extend(isBetween);
+  import axios from "axios";
+  import { wallet } from "~/store";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -25,6 +27,10 @@
   // let isLoading = false;
   let isOpenModal = false;
   let email = "";
+  let selectedWallet: string = "";
+  wallet.subscribe((value) => {
+    selectedWallet = value;
+  });
 
   // const handleBuy = async () => {
   //   const res = await nimbus
@@ -67,7 +73,7 @@
   //   }
   // }
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     const formData = new FormData(e.target);
 
     const data: any = {};
@@ -76,10 +82,20 @@
       data[key] = value;
     }
 
-    console.log("data: ", data);
+    const res = await axios.post(
+      "https://n8n.getnimbus.io/webhook-test/email-premium-crawl",
+      {
+        email: data.email,
+        address: selectedWallet,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    console.log("res: ", res);
 
-    localStorage.setItem("isShowFormAnalytic", "true");
-    isOpenModal = false;
+    // localStorage.setItem("isShowFormAnalytic", "true");
+    // isOpenModal = false;
   };
 
   onMount(() => {
