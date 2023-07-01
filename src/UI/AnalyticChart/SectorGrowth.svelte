@@ -283,7 +283,9 @@
               height={465}
               notMerge={true}
             />
-            <div class="absolute -top-3 right-6 opacity-10">
+            <div
+              class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-10"
+            >
               <img src={Logo} alt="" width="140" height="140" />
             </div>
           </div>

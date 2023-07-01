@@ -16,8 +16,6 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import "~/components/Loading.custom.svelte";
 
-  import Logo from "~/assets/logo-1.svg";
-
   const MultipleLang = {
     Balance: i18n("newtabPage.Balance", "Balance"),
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
@@ -463,18 +461,13 @@
                 Empty
               </div>
             {:else}
-              <div class="relative h-full">
-                <EChart
-                  id="pie-chart"
-                  theme="white"
-                  option={optionPie}
-                  height={465}
-                  notMerge={true}
-                />
-                <div class="absolute bottom-0 right-6 opacity-10">
-                  <img src={Logo} alt="" width="140" height="140" />
-                </div>
-              </div>
+              <EChart
+                id="pie-chart"
+                theme="white"
+                option={optionPie}
+                height={465}
+                notMerge={true}
+              />
             {/if}
           </div>
         {/if}
