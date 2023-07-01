@@ -13,6 +13,7 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Analytic from "~/UI/Analytic/Analytic.svelte";
   import Button from "~/components/Button.svelte";
+  import { nimbus } from "~/lib/network";
   // import "~/components/Loading.custom.svelte";
 
   const currentDate = dayjs();
@@ -82,8 +83,8 @@
       data[key] = value;
     }
 
-    const res = await axios.post(
-      "https://n8n.getnimbus.io/webhook-test/email-premium-crawl",
+    const res = await nimbus.post(
+      "/subscription/analysis",
       {
         email: data.email,
         address: selectedWallet,
