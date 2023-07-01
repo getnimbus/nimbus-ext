@@ -1,20 +1,19 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  // import { nimbus } from "~/lib/network";
-  // import { user } from "~/store";
   import mixpanel from "mixpanel-browser";
   import dayjs from "dayjs";
   import isBetween from "dayjs/plugin/isBetween";
   dayjs.extend(isBetween);
-  import axios from "axios";
-  import { wallet } from "~/store";
+  import { nimbus } from "~/lib/network";
+  import { wallet, user } from "~/store";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Analytic from "~/UI/Analytic/Analytic.svelte";
   import Button from "~/components/Button.svelte";
-  import { nimbus } from "~/lib/network";
-  // import "~/components/Loading.custom.svelte";
+  import "~/components/Loading.custom.svelte";
+
+  import Crown from "~/assets/crown.svg";
 
   const currentDate = dayjs();
   const next7Days = currentDate.add(7, "day");
@@ -26,7 +25,9 @@
 
   // let listNft = [];
   // let isLoading = false;
+
   let isOpenModal = false;
+  let isLoadingSendMail = false;
   let email = "";
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -75,6 +76,7 @@
   // }
 
   const onSubmit = async (e) => {
+    isLoadingSendMail = true;
     const formData = new FormData(e.target);
 
     const data: any = {};
@@ -83,20 +85,24 @@
       data[key] = value;
     }
 
-    const res = await nimbus.post(
-      "/subscription/analysis",
-      {
-        email: data.email,
-        address: selectedWallet,
-      },
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    console.log("res: ", res);
-
-    // localStorage.setItem("isShowFormAnalytic", "true");
-    // isOpenModal = false;
+    try {
+      const res = await nimbus.post(
+        "/subscription/analysis",
+        {
+          email: data.email,
+          address: selectedWallet,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      isLoadingSendMail = false;
+    } catch (e) {
+      isLoadingSendMail = false;
+    } finally {
+      localStorage.setItem("isShowFormAnalytic", "true");
+      isOpenModal = false;
+    }
   };
 
   onMount(() => {
@@ -174,13 +180,16 @@
     isOpenModal = false;
   }}
 >
-  <div class="title-3 text-center text-gray-600 font-semibold max-w-[530px]">
+  <div class="title-3 text-center text-gray-600 font-semibold">
     Let's us analytic your portfolio
   </div>
-  <div class="mt-2 w-[520px]">
+  <div class="mt-2 w-[620px]">
     <div class="text-base text-gray-500 text-center">
-      Our investment analysis is free. Add your email to get updates from us and
-      receive exclusive benefits soon
+      Our analysis is
+      <span class="font-bold">Premium</span>
+      <img src={Crown} alt="" width="13" height="12" class="inline-block" /> feature
+      is under beta which you can access for free now. Add your email to get updates
+      from us and receive exclusive benefits soon.
     </div>
     <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
       <div class="flex flex-col gap-1">
@@ -207,7 +216,12 @@
         </div>
       </div>
       <div class="flex justify-end gap-2">
-        <Button width={90} type="submit">Submit</Button>
+        <Button
+          width={90}
+          type="submit"
+          isLoading={isLoadingSendMail}
+          disabled={isLoadingSendMail}>Submit</Button
+        >
       </div>
     </form>
   </div>
