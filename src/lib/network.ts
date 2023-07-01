@@ -66,3 +66,7 @@ export const goplus = createAxiosInterface({
 export const nimbusApi = createAxiosInterface({
   baseURL: "https://nimbus-api-production.up.railway.app/api",
 });
+
+export const aptos = createAxiosInterface({
+  baseURL: "https://aptos-celebtron-api.getnimbus.io/api/v1",
+});

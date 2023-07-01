@@ -2,7 +2,7 @@ import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
 import dayjs from "dayjs";
 import _, { isEmpty } from "lodash";
-import { coinGeko, mixpanel, nimbus, goplus, nimbusApi } from "../../lib/network";
+import { coinGeko, mixpanel, nimbus, goplus, nimbusApi, aptos } from "../../lib/network";
 import { cacheOrAPI } from "./utils";
 import type { JsonValue, JsonObject } from "type-fest";
 import langEN from "../../_locales/en/messages.json";
@@ -327,6 +327,19 @@ onMessage<ITrxHashInput, any>("TrxHashExplain", async ({ data: { hash } }) => {
       return nimbus
         .get(`/tx/explain/${hash}`)
         .then((response) => response.data);
+    },
+    { defaultValue: null }
+  );
+})
+
+onMessage<IIdInput, any>("VersionExplain", async ({ data: { id } }) => {
+  const key = id + "_version_explain";
+  return await cacheOrAPI(
+    key,
+    () => {
+      return aptos
+        .get(`/tx_explain/${id}`)
+        .then((response) => response);
     },
     { defaultValue: null }
   );
