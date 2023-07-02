@@ -1,10 +1,10 @@
-<svelte:options tag="version-highlight" />
+<svelte:options tag="aptos-trx-highlight" />
 
 <script lang="ts">
   import mixpanel from "mixpanel-browser";
 
   import tooltip from "./tooltip";
-  import "./VersionInfo.custom.svelte";
+  import "./AptosTrxInfo.custom.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
 
   export let id;

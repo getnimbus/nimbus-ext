@@ -8,8 +8,8 @@ import "./views/AddressInfo.custom.svelte";
 import "./views/AddressSpreadText.custom.svelte";
 import "./views/TrxHighlight.custom.svelte";
 import "./views/TrxInfo.custom.svelte";
-import "./views/VersionHighlight.custom.svelte";
-import "./views/VersionInfo.custom.svelte";
+import "./views/AptosTrxHighlight.custom.sveltee";
+import "./views/AptosTrxInfo.custom.sveltee";
 import "./views/QuickSearch.custom.svelte";
 import { sendMessage } from "webext-bridge";
 import { track } from "~/lib/data-tracking";
@@ -51,7 +51,7 @@ import { regexList } from "../../utils";
       const versionRegex = /^\d{9}$/g
 
       instance.markRegExp(versionRegex, {
-        element: "version-highlight",
+        element: "aptos-trx-highlight",
         className: "nimbus-ext",
         exclude: ["[data-markjs]", ".nimbus-ext"],
         // acrossElements: true,

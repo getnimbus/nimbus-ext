@@ -1,4 +1,4 @@
-<svelte:options tag="version-info" />
+<svelte:options tag="aptos-trx-info" />
 
 <script lang="ts">
   import { onMount } from "svelte";
