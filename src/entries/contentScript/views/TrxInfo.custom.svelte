@@ -31,6 +31,7 @@
   let enabledFilter = false;
   let info;
   let trxExplain = "";
+  let isAptosInfo = false;
 
   const loadTrxInfo = async (hash) => {
     // TODO: Verify trx hash before calling api
@@ -69,8 +70,11 @@
         }
       );
       console.log("responseExplainAptos: ", responseExplainAptos);
+      if (responseExplainAptos?.data) {
+        isAptosInfo = true;
+      }
       if (responseExplain || responseExplainAptos) {
-        trxExplain = responseExplain?.content || responseExplainAptos?.detail;
+        trxExplain = responseExplain?.content || responseExplainAptos?.data;
       }
     } catch (e) {
       console.log(e);
@@ -78,8 +82,14 @@
   };
 
   onMount(() => {
+    if (
+      location.origin !== "https://explorer.aptoslabs.com" &&
+      location.origin !== "https://aptoscan.com"
+    ) {
+      loadTrxInfo(hash);
+      return;
+    }
     loadTrxExplain(hash);
-    loadTrxInfo(hash);
     track("Trx Info", {
       url: window.location.href,
       hash,
@@ -97,6 +107,20 @@
     {#if isLoading}
       <div class="w-full h-[120px] flex justify-center items-center">
         <loading-icon />
+      </div>
+    {:else if isAptosInfo}
+      <div class="p-4">
+        <div class="flex items-start gap-2">
+          <img src={ExplainIcon} alt="" width="18" height="18" class="spin" />
+          {#if trxExplain}
+            <div
+              use:concurrent={{ interval: 15 }}
+              class="text-[#5E656B] font-normal -mt-4"
+            >
+              {trxExplain}
+            </div>
+          {/if}
+        </div>
       </div>
     {:else}
       <div class="p-4">

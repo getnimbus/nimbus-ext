@@ -200,8 +200,8 @@ import { regexList } from "../../utils";
 
   if (window.location.origin !== "https://app.getnimbus.io") {
     runMarkElement();
-    setInterval(() => {
-      runMarkElement()
+    setTimeout(() => {
+      runMarkElement();
     }, 1000);
   }
 

@@ -36,7 +36,7 @@
 
 <reset-style>
   <div
-    class={`bg-white font-sans text-sm text-gray-600 transition-all w-[800px] rounded-[20px] pt-6 px-6 pb-4 ${
+    class={`bg-white font-sans text-sm text-gray-600 transition-all w-[600px] rounded-[20px] pt-6 px-6 pb-4 ${
       isLoading && popup && "max-h-[120px]"
     } ${popup ? "max-h-[680px]" : ""}`}
     class:shadow={popup}
