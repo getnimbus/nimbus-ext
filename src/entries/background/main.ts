@@ -332,13 +332,26 @@ onMessage<ITrxHashInput, any>("TrxHashExplain", async ({ data: { hash } }) => {
   );
 })
 
+onMessage<ITrxHashInput, any>("AptosTrxHashExplain", async ({ data: { hash } }) => {
+  const key = hash + "_aptos_trx_hash_explain";
+  return await cacheOrAPI(
+    key,
+    () => {
+      return aptos
+        .get(`/tx_explain/by_hash/${hash}`)
+        .then((response) => response);
+    },
+    { defaultValue: null }
+  );
+})
+
 onMessage<IIdInput, any>("AptosTrxExplain", async ({ data: { id } }) => {
   const key = id + "_aptos_trx_explain";
   return await cacheOrAPI(
     key,
     () => {
       return aptos
-        .get(`/tx_explain/${id}`)
+        .get(`/tx_explain/by_version/${id}`)
         .then((response) => response);
     },
     { defaultValue: null }

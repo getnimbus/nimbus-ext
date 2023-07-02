@@ -20,7 +20,6 @@
         id,
       });
       if (response) {
-        console.log(response);
         explain = response.data;
       }
       isLoading = false;
@@ -47,12 +46,12 @@
       {#if explain}
         <div
           use:concurrent={{ interval: 15 }}
-          class="text-[#5E656B] font-normal -mt-3"
+          class="text-[#5E656B] font-normal -mt-4"
         >
           {explain}
         </div>
       {:else}
-        <div class="text-[#5E656B] font-normal">Loading...</div>
+        <div class="text-[#5E656B] font-normal -mt-[2px]">Loading...</div>
       {/if}
     </div>
   </div>

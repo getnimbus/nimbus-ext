@@ -594,7 +594,7 @@
             <check-safety-address {address} id={"1"} />
             <div class="flex justify-between items-end">
               <div class="flex flex-col gap-1">
-                <div class="text-[#00000099] text-sm">Networth</div>
+                <div class="text-[#00000099] text-sm">Net Worth</div>
                 <div class="flex items-end gap-4">
                   <div class="text-2xl font-medium text-black">
                     $<TooltipNumber

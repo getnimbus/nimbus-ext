@@ -41,14 +41,14 @@ import { regexList } from "../../utils";
     console.time("Nimbus marking");
 
     (() => {
-      if (location.origin !== "https://explorer.aptoslabs.com") {
+      if (location.origin !== "https://explorer.aptoslabs.com" && location.origin !== "https://aptoscan.com") {
         return;
       }
       console.time("Marking version");
       const context = document;
       const instance = new Mark(context);
 
-      const versionRegex = /^\d{9}$/g
+      const versionRegex = /^\s*\d{9}\s*$/g
 
       instance.markRegExp(versionRegex, {
         element: "aptos-trx-highlight",

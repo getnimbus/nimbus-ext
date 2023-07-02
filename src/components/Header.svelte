@@ -38,7 +38,7 @@
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
-    analytic: i18n("newtabPage.analytic", "Analytic"),
+    analytics: i18n("newtabPage.analytics", "Analytics"),
     transactions: i18n("newtabPage.transactions", "Transactions"),
     news: i18n("newtabPage.news", "News"),
     market: i18n("newtabPage.market", "Market"),
@@ -296,7 +296,7 @@
             <img src={AnalyticIcon} alt="" width="20" height="20" />
             <span class="flex gap-[1px]">
               <span class="text-white font-semibold xl:text-base text-sm">
-                {MultipleLang.analytic}
+                {MultipleLang.analytics}
               </span>
               <span class="flex items-center gap-[1px] -mt-2">
                 <img src={Crown} alt="" width="13" height="12" />

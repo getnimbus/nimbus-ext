@@ -120,7 +120,7 @@
               },
             },
             {
-              name: "Networth",
+              name: "Net Worth",
               itemStyle: {
                 color: "#f7931a",
               },
@@ -148,7 +148,7 @@
             data: formatDataCost,
           },
           {
-            name: "Networth",
+            name: "Net Worth",
             type: "line",
             lineStyle: {
               type: "solid",
