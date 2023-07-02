@@ -332,8 +332,8 @@ onMessage<ITrxHashInput, any>("TrxHashExplain", async ({ data: { hash } }) => {
   );
 })
 
-onMessage<IIdInput, any>("VersionExplain", async ({ data: { id } }) => {
-  const key = id + "_version_explain";
+onMessage<IIdInput, any>("AptosTrxExplain", async ({ data: { id } }) => {
+  const key = id + "_aptos_trx_explain";
   return await cacheOrAPI(
     key,
     () => {

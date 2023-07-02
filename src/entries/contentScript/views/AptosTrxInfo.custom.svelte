@@ -13,10 +13,10 @@
   let isLoading = false;
   let explain = "";
 
-  const loadVersionExplain = async () => {
+  const loadAptosTrxExplain = async () => {
     isLoading = true;
     try {
-      const response: any = await sendMessage("VersionExplain", {
+      const response: any = await sendMessage("AptosTrxExplain", {
         id,
       });
       if (response) {
@@ -31,7 +31,7 @@
   };
 
   onMount(() => {
-    loadVersionExplain();
+    loadAptosTrxExplain();
   });
 </script>
 
