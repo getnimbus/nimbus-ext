@@ -200,6 +200,9 @@ import { regexList } from "../../utils";
 
   if (window.location.origin !== "https://app.getnimbus.io") {
     runMarkElement();
+    setInterval(() => {
+      runMarkElement()
+    }, 1000);
   }
 
   console.timeEnd("Nimbus marking");
