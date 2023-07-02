@@ -29,7 +29,7 @@
           isShow = false;
         },
         // content: popperElement,
-        content: `<version-info id="${id}" />`,
+        content: `<aptos-trx-info id="${id}" />`,
         allowHTML: true,
         placement: "bottom-start",
         arrow: false,
