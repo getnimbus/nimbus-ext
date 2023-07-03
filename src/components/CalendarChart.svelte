@@ -49,10 +49,10 @@
           Empty
         </div>
       {:else}
-        <div class="-mt-12 relative">
+        <div class="relative -mt-12">
           <EChart {id} theme="white" {option} />
           <div
-            class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-10"
+            class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-2/3 left-1/2"
           >
             <img src={Logo} alt="" width="140" height="140" />
           </div>

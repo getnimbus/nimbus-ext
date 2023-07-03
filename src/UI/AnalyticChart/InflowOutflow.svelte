@@ -302,13 +302,13 @@
 </script>
 
 <div class="border border-[#0000001a] rounded-[20px] pt-6">
-  <div class="font-medium text-black text-xl px-6">Token Inflow - Outflow</div>
+  <div class="px-6 text-xl font-medium text-black">Token Inflow - Outflow</div>
   {#if isLoadingInflowOutflow}
     <div class="flex items-center justify-center h-[415px]">
       <loading-icon />
     </div>
   {:else}
-    <div class="h-full w-full">
+    <div class="w-full h-full">
       {#if isEmptyInflowOutflow}
         <div
           class="flex justify-center items-center h-full text-lg text-gray-400 h-[415px]"
@@ -325,7 +325,7 @@
             notMerge={true}
           />
           <div
-            class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-10"
+            class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"
           >
             <img src={Logo} alt="" width="140" height="140" />
           </div>
