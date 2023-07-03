@@ -272,7 +272,7 @@
       <img src={Logo} alt="logo" class="-ml-8 w-[177px] h-[60px]" />
     </Link>
 
-    <div class="items-center gap-1 xl:flex hidden">
+    <div class="items-center hidden gap-1 xl:flex">
       <Link
         to={`${
           APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
@@ -284,7 +284,7 @@
           on:click={() => (navActive = "portfolio")}
         >
           <img src={PortfolioIcon} alt="" width="20" height="20" />
-          <span class="text-white font-semibold xl:text-base text-sm">
+          <span class="text-sm font-semibold text-white xl:text-base">
             {MultipleLang.portfolio}
           </span>
         </div>
@@ -298,7 +298,7 @@
         >
           <img src={AnalyticIcon} alt="" width="20" height="20" />
           <span class="flex gap-[1px]">
-            <span class="text-white font-semibold xl:text-base text-sm">
+            <span class="text-sm font-semibold text-white xl:text-base">
               {MultipleLang.analytics}
             </span>
             <span class="flex items-center gap-[1px] -mt-2">
@@ -318,7 +318,7 @@
           on:click={() => (navActive = "transactions")}
         >
           <img src={TransactionsIcon} alt="" width="20" height="20" />
-          <span class="text-white font-semibold xl:text-base text-sm">
+          <span class="text-sm font-semibold text-white xl:text-base">
             {MultipleLang.transactions}
           </span>
         </div>
@@ -331,7 +331,7 @@
           on:click={() => (navActive = "market")}
         >
           <img src={MarketIcon} alt="" width="20" height="20" />
-          <span class="text-white font-semibold xl:text-base text-sm">
+          <span class="text-sm font-semibold text-white xl:text-base">
             {MultipleLang.market}
           </span>
         </div>
@@ -344,14 +344,14 @@
           on:click={() => (navActive = "news")}
         >
           <img src={NewsIcon} alt="" width="20" height="20" />
-          <span class="text-white font-semibold xl:text-base text-sm">
+          <span class="text-sm font-semibold text-white xl:text-base">
             {MultipleLang.news}
           </span>
         </div>
       </Link>
     </div>
 
-    <div class="flex justify-between items-center xl:gap-3 gap-6">
+    <div class="flex items-center justify-between gap-6 xl:gap-3">
       <div
         class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center gap-1 rounded-[1000px]"
       >
@@ -425,7 +425,7 @@
             <img
               src={userInfo.picture}
               alt=""
-              class="w-full h-full object-cover"
+              class="object-cover w-full h-full"
             />
           </div>
           {#if showPopover}
@@ -435,7 +435,7 @@
             >
               {#if APP_TYPE.TYPE === "EXT"}
                 <div
-                  class="cursor-pointer text-black"
+                  class="text-black cursor-pointer"
                   on:click={() => {
                     browser.tabs.create({
                       url: "src/entries/options/index.html?tab=nft",
@@ -447,7 +447,7 @@
                 </div>
               {:else}
                 <a
-                  class="cursor-pointer text-black"
+                  class="text-black cursor-pointer"
                   href="/entries/options/index.html?tab=nft"
                   target="_blank"
                   on:click={() => {
@@ -458,7 +458,7 @@
                 </a>
               {/if}
               <div
-                class="cursor-pointer text-red-500 font-medium"
+                class="font-medium text-red-500 cursor-pointer"
                 on:click={() => handleSignOut()}
               >
                 Log out
@@ -471,14 +471,14 @@
           on:click={() => {
             isOpenAuthModal = true;
           }}
-          class="text-white font-semibold xl:text-base text-sm cursor-pointer"
+          class="text-sm font-semibold text-white cursor-pointer xl:text-base"
         >
           Login
         </div>
       {/if} -->
 
       <div
-        class="xl:hidden block text-white"
+        class="block text-white xl:hidden"
         on:click={() => (isShowHeaderMobile = true)}
       >
         <img src={MenuBar} alt="" />
@@ -493,11 +493,11 @@
   class={`fixed inset-0 h-screen w-full mobile ${
     isShowHeaderMobile
       ? "opacity-100 transform translate-x-[0px]"
-      : "opacity-0 transform translate-x-[-2000px]"
+      : "opacity-0 transform translate-x-[-100vw]"
   }`}
 >
-  <div class="max-w-[2000px] m-auto w-[90%] h-full flex flex-col gap-10">
-    <div class="flex justify-between items-center py-3">
+  <div class="max-w-[100vw] m-auto w-[90%] h-full flex flex-col gap-10">
+    <div class="flex items-center justify-between py-3">
       <img src={Logo} alt="" class="-ml-8 w-[177px] h-[60px]" />
       <div on:click={() => (isShowHeaderMobile = false)}>
         <img src={Close} alt="" />
@@ -517,7 +517,7 @@
             }}
           >
             <img src={PortfolioIcon} alt="" width="25" height="25" />
-            <span class="font-semibold text-xl">
+            <span class="text-xl font-semibold">
               {MultipleLang.portfolio}
             </span>
           </div>
@@ -527,14 +527,14 @@
       <div class="border-b-[0.5px] border-white pb-6">
         <Link to="analytic">
           <div
-            class="flex items-center gap-3 relative text-white"
+            class="relative flex items-center gap-3 text-white"
             on:click={() => {
               isShowHeaderMobile = false;
             }}
           >
             <img src={AnalyticIcon} alt="" width="25" height="25" />
             <span class="flex gap-[1px]">
-              <span class="font-semibold text-xl">
+              <span class="text-xl font-semibold">
                 {MultipleLang.analytics}
               </span>
               <span class="flex items-center gap-[1px] -mt-2">
@@ -551,13 +551,13 @@
       <div class="border-b-[0.5px] border-white pb-6">
         <Link to="transactions">
           <div
-            class="flex items-center gap-3 relative text-white"
+            class="relative flex items-center gap-3 text-white"
             on:click={() => {
               isShowHeaderMobile = false;
             }}
           >
             <img src={TransactionsIcon} alt="" width="25" height="25" />
-            <span class="font-semibold text-xl">
+            <span class="text-xl font-semibold">
               {MultipleLang.transactions}
             </span>
           </div>
@@ -567,13 +567,13 @@
       <div class="border-b-[0.5px] border-white pb-6">
         <Link to="market">
           <div
-            class="flex items-center gap-3 relative text-white"
+            class="relative flex items-center gap-3 text-white"
             on:click={() => {
               isShowHeaderMobile = false;
             }}
           >
             <img src={MarketIcon} alt="" width="25" height="25" />
-            <span class="font-semibold text-xl">
+            <span class="text-xl font-semibold">
               {MultipleLang.market}
             </span>
           </div>
@@ -582,13 +582,13 @@
 
       <Link to="news">
         <div
-          class="flex items-center gap-3 relative text-white"
+          class="relative flex items-center gap-3 text-white"
           on:click={() => {
             isShowHeaderMobile = false;
           }}
         >
           <img src={NewsIcon} alt="" width="25" height="25" />
-          <span class="font-semibold text-xl">
+          <span class="text-xl font-semibold">
             {MultipleLang.news}
           </span>
         </div>
@@ -601,7 +601,7 @@
   <div class="title-3 text-gray-600 font-semibold max-w-[530px] mb-5">
     {MultipleLang.modal_login_title}
   </div>
-  <div class="flex flex-col justify-center items-center gap-2">
+  <div class="flex flex-col items-center justify-center gap-2">
     <SolanaAuth />
     <GoogleAuth />
   </div>
