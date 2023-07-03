@@ -3,7 +3,9 @@
 </script>
 
 <div class="py-2 bg-white" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 40px;">
-  <div class="flex justify-between items-center max-w-[2000px] m-auto w-[88%]">
+  <div
+    class="flex justify-between items-center max-w-[2000px] m-auto xl:w-[88%] w-[80%]"
+  >
     <img src={Logo} alt="logo" class="-ml-10 w-[167px] h-[50px]" />
     <div class="flex items-center gap-4">
       <a
