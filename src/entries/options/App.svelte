@@ -33,8 +33,12 @@
 </script>
 
 <ErrorBoundary>
-  <div class="max-w-[2000px] m-auto w-[100%] h-screen flex gap-1">
-    <SidebarTabs bind:activeTabValue />
+  <div
+    class="max-w-[2000px] m-auto w-[100%] h-screen flex gap-1 xl:flex-row flex-col"
+  >
+    <div class="bg-gray-50 xl:w-64 w-full">
+      <SidebarTabs bind:activeTabValue />
+    </div>
     <div class="flex-1 px-6 py-4">
       {#if activeTabValue === "wallets"}
         <TabWallets />

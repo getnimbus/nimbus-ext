@@ -76,10 +76,12 @@
 </script>
 
 <ErrorBoundary>
-  <div class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col gap-10">
+  <div class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col xl:gap-10 gap-6">
     <div class="flex flex-col">
       <div class="text-3xl text-black font-semibold">{MultipleLang.market}</div>
-      <div class="flex justify-between items-center gap-11">
+      <div
+        class="flex justify-between xl:items-center xl:gap-11 xl:flex-row flex-col gap-6"
+      >
         <div class="text-lg text-black font-medium w-max">
           {MultipleLang.market_page_title}
         </div>
@@ -111,8 +113,8 @@
         </div>
       </div>
     </div>
-    <div class="border border-[#0000000d] rounded-[10px]">
-      <table class="table-fixed w-full">
+    <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
+      <table class="table-auto xl:w-full w-[1200px]">
         <thead>
           <tr class="bg-[#f4f5f8]">
             <th class="pl-3 py-3 w-[250px]">

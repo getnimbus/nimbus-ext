@@ -212,7 +212,7 @@
         <div
           class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
         >
-          <div class="flex justify-between">
+          <div class="flex justify-between xl:flex-row flex-col gap-4">
             <div class="text-2xl font-medium text-black">
               Historical Transactions
             </div>
@@ -257,7 +257,7 @@
                 value={searchValue}
                 placeholder={"Filter by hash/token"}
                 type="text"
-                class="w-[250px] text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
+                class="xl:w-[250px] w-full text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
               />
             </div>
           </div>

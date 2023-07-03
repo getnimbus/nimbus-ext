@@ -31,6 +31,8 @@
   import Bell from "~/assets/bell.svg";
   import User from "~/assets/user.png";
   import Crown from "~/assets/crown.svg";
+  import MenuBar from "~/assets/menu-bar.svg";
+  import Close from "~/assets/close-menu-bar.svg";
 
   const localStorageKey = "walletAdapter";
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
@@ -121,6 +123,7 @@
   let showPopover = false;
   let addressWallet = "";
   let signMessageAddress = "";
+  let isShowHeaderMobile = false;
 
   onMount(() => {
     const token = localStorage.getItem("token");
@@ -261,14 +264,15 @@
   }
 </script>
 
-<div class="py-1 bg-[#27326F]">
+<div class="py-3 bg-[#27326F]">
   <div class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]">
-    <img
-      src={Logo}
-      alt="logo"
-      class="-ml-8 xl:w-[177px] xl:h-[60px] w-[167px] h-[50px]"
-    />
-    <div class="flex items-center gap-1">
+    <Link
+      to={`${APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"}`}
+    >
+      <img src={Logo} alt="logo" class="-ml-8 w-[177px] h-[60px]" />
+    </Link>
+
+    <div class="items-center gap-1 xl:flex hidden">
       <Link
         to={`${
           APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
@@ -287,25 +291,23 @@
       </Link>
 
       <Link to="analytic">
-        <div class="relative">
-          <div
-            class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all relative"
-            class:bg-[#525B8C]={navActive === "analytic"}
-            on:click={() => (navActive = "analytic")}
-          >
-            <img src={AnalyticIcon} alt="" width="20" height="20" />
-            <span class="flex gap-[1px]">
-              <span class="text-white font-semibold xl:text-base text-sm">
-                {MultipleLang.analytics}
-              </span>
-              <span class="flex items-center gap-[1px] -mt-2">
-                <img src={Crown} alt="" width="13" height="12" />
-                <span class="text-xs font-medium text-[#FFB800] -mt-[1px]"
-                  >Pro</span
-                >
-              </span>
+        <div
+          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all relative"
+          class:bg-[#525B8C]={navActive === "analytic"}
+          on:click={() => (navActive = "analytic")}
+        >
+          <img src={AnalyticIcon} alt="" width="20" height="20" />
+          <span class="flex gap-[1px]">
+            <span class="text-white font-semibold xl:text-base text-sm">
+              {MultipleLang.analytics}
             </span>
-          </div>
+            <span class="flex items-center gap-[1px] -mt-2">
+              <img src={Crown} alt="" width="13" height="12" />
+              <span class="text-xs font-medium text-[#FFB800] -mt-[1px]"
+                >Pro</span
+              >
+            </span>
+          </span>
         </div>
       </Link>
 
@@ -349,7 +351,7 @@
       </Link>
     </div>
 
-    <div class="flex justify-between items-center xl:gap-3 gap-2">
+    <div class="flex justify-between items-center xl:gap-3 gap-6">
       <div
         class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center gap-1 rounded-[1000px]"
       >
@@ -386,6 +388,7 @@
           class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
         />
       </div>
+
       {#if APP_TYPE.TYPE === "EXT"}
         <div
           on:click={() => {
@@ -406,11 +409,13 @@
           <img src={SettingsIcon} alt="" />
         </a>
       {/if}
+
       <!-- <div
         class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
       >
         <img src={Bell} alt="" />
       </div> -->
+
       <!-- {#if Object.keys(userInfo).length !== 0}
         <div class="relative">
           <div
@@ -471,10 +476,127 @@
           Login
         </div>
       {/if} -->
+
+      <div
+        class="xl:hidden block text-white"
+        on:click={() => (isShowHeaderMobile = true)}
+      >
+        <img src={MenuBar} alt="" />
+      </div>
     </div>
+
     <!-- <WalletProvider {localStorageKey} {wallets} autoConnect /> -->
   </div>
 </div>
+
+<div
+  class={`fixed inset-0 h-screen w-full mobile ${
+    isShowHeaderMobile
+      ? "opacity-100 transform translate-x-[0px]"
+      : "opacity-0 transform translate-x-[-2000px]"
+  }`}
+>
+  <div class="max-w-[2000px] m-auto w-[90%] h-full flex flex-col gap-10">
+    <div class="flex justify-between items-center py-3">
+      <img src={Logo} alt="" class="-ml-8 w-[177px] h-[60px]" />
+      <div on:click={() => (isShowHeaderMobile = false)}>
+        <img src={Close} alt="" />
+      </div>
+    </div>
+    <div class="flex flex-col justify-between gap-6">
+      <div class="border-b-[0.5px] border-white pb-6">
+        <Link
+          to={`${
+            APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
+          }`}
+        >
+          <div
+            class="flex items-center gap-3 text-white"
+            on:click={() => {
+              isShowHeaderMobile = false;
+            }}
+          >
+            <img src={PortfolioIcon} alt="" width="25" height="25" />
+            <span class="font-semibold text-xl">
+              {MultipleLang.portfolio}
+            </span>
+          </div>
+        </Link>
+      </div>
+
+      <div class="border-b-[0.5px] border-white pb-6">
+        <Link to="analytic">
+          <div
+            class="flex items-center gap-3 relative text-white"
+            on:click={() => {
+              isShowHeaderMobile = false;
+            }}
+          >
+            <img src={AnalyticIcon} alt="" width="25" height="25" />
+            <span class="flex gap-[1px]">
+              <span class="font-semibold text-xl">
+                {MultipleLang.analytics}
+              </span>
+              <span class="flex items-center gap-[1px] -mt-2">
+                <img src={Crown} alt="" width="13" height="13" />
+                <span class="text-sm font-medium text-[#FFB800] -mt-[1px]"
+                  >Pro</span
+                >
+              </span>
+            </span>
+          </div>
+        </Link>
+      </div>
+
+      <div class="border-b-[0.5px] border-white pb-6">
+        <Link to="transactions">
+          <div
+            class="flex items-center gap-3 relative text-white"
+            on:click={() => {
+              isShowHeaderMobile = false;
+            }}
+          >
+            <img src={TransactionsIcon} alt="" width="25" height="25" />
+            <span class="font-semibold text-xl">
+              {MultipleLang.transactions}
+            </span>
+          </div>
+        </Link>
+      </div>
+
+      <div class="border-b-[0.5px] border-white pb-6">
+        <Link to="market">
+          <div
+            class="flex items-center gap-3 relative text-white"
+            on:click={() => {
+              isShowHeaderMobile = false;
+            }}
+          >
+            <img src={MarketIcon} alt="" width="25" height="25" />
+            <span class="font-semibold text-xl">
+              {MultipleLang.market}
+            </span>
+          </div>
+        </Link>
+      </div>
+
+      <Link to="news">
+        <div
+          class="flex items-center gap-3 relative text-white"
+          on:click={() => {
+            isShowHeaderMobile = false;
+          }}
+        >
+          <img src={NewsIcon} alt="" width="25" height="25" />
+          <span class="font-semibold text-xl">
+            {MultipleLang.news}
+          </span>
+        </div>
+      </Link>
+    </div>
+  </div>
+</div>
+
 <AppOverlay isOpen={isOpenAuthModal} on:close={() => (isOpenAuthModal = false)}>
   <div class="title-3 text-gray-600 font-semibold max-w-[530px] mb-5">
     {MultipleLang.modal_login_title}
@@ -486,4 +608,21 @@
 </AppOverlay>
 
 <style>
+  .mobile {
+    z-index: 2147483649;
+    background-color: rgba(39, 50, 111, 0.84);
+    backdrop-filter: blur(12px);
+
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 250ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+    --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+      0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color),
+      0 8px 10px -6px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+      var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
 </style>
