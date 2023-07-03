@@ -6,6 +6,8 @@
   dayjs.extend(relativeTime);
   import { sendMessage } from "webext-bridge";
   import { wallet, chain } from "~/store";
+  import { typeTrx } from "~/utils";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
 
   import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
   import type {
@@ -92,6 +94,17 @@
       coordinateSystem: "calendar",
       data: [dayjs(new Date()).format("YYYY-MM-DD"), 1],
     },
+  };
+
+  let selectedType = "all";
+  let searchValue = "";
+  let timerSearchDebounce;
+
+  const debounceSearch = (value) => {
+    clearTimeout(timerSearchDebounce);
+    timerSearchDebounce = setTimeout(() => {
+      searchValue = value;
+    }, 300);
   };
 
   const getAnalyticHistorical = async () => {
@@ -196,12 +209,65 @@
             id="HistoricalActivities"
           />
         </div>
-        <HistoricalTransactions
-          {isLoading}
-          {pageToken}
-          {data}
-          loadMore={handleLoadMore}
-        />
+        <div
+          class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
+        >
+          <div class="flex justify-between">
+            <div class="text-2xl font-medium text-black">
+              Historical Transactions
+            </div>
+            <div class="flex items-center gap-2 justify-end">
+              <div class="flex items-center gap-1">
+                <AnimateSharedLayout>
+                  {#each typeTrx as type}
+                    <div
+                      class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
+                      on:click={() => (selectedType = type.value)}
+                    >
+                      <div
+                        class={`relative z-20 ${
+                          selectedType === type.value && "text-white"
+                        }`}
+                      >
+                        {type.label}
+                      </div>
+                      {#if type.value === selectedType}
+                        <Motion
+                          let:motion
+                          layoutId="active-pill"
+                          transition={{ type: "spring", duration: 0.6 }}
+                        >
+                          <div
+                            class="absolute inset-0 rounded-[100px] bg-[#1E96FC] z-10"
+                            use:motion
+                          />
+                        </Motion>
+                      {/if}
+                    </div>
+                  {/each}
+                </AnimateSharedLayout>
+              </div>
+              <input
+                on:keyup={({ target: { value } }) => debounceSearch(value)}
+                on:keydown={(event) => {
+                  if (event.which == 13 || event.keyCode == 13) {
+                    console.log("HELLO");
+                  }
+                }}
+                value={searchValue}
+                placeholder={"Filter by hash/token"}
+                type="text"
+                class="w-[250px] text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
+              />
+            </div>
+          </div>
+          <HistoricalTransactions
+            {isLoading}
+            {pageToken}
+            {data}
+            loadMore={handleLoadMore}
+          />
+        </div>
       </div>
     </div>
   </span>
