@@ -1,13 +1,22 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  // import { nimbus } from "~/lib/network";
-  // import { user } from "~/store";
   import mixpanel from "mixpanel-browser";
+  import dayjs from "dayjs";
+  import isBetween from "dayjs/plugin/isBetween";
+  dayjs.extend(isBetween);
+  import { nimbus } from "~/lib/network";
+  import { wallet, user } from "~/store";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
   import Analytic from "~/UI/Analytic/Analytic.svelte";
-  // import Button from "~/components/Button.svelte";
-  // import "~/components/Loading.custom.svelte";
+  import Button from "~/components/Button.svelte";
+  import "~/components/Loading.custom.svelte";
+
+  import Crown from "~/assets/crown.svg";
+
+  const currentDate = dayjs();
+  const next7Days = currentDate.add(7, "day");
 
   // let userInfo = {};
   // user.subscribe((value) => {
@@ -16,6 +25,14 @@
 
   // let listNft = [];
   // let isLoading = false;
+
+  let isOpenModal = false;
+  let isLoadingSendMail = false;
+  let email = "";
+  let selectedWallet: string = "";
+  wallet.subscribe((value) => {
+    selectedWallet = value;
+  });
 
   // const handleBuy = async () => {
   //   const res = await nimbus
@@ -58,8 +75,59 @@
   //   }
   // }
 
+  const onSubmit = async (e) => {
+    isLoadingSendMail = true;
+    const formData = new FormData(e.target);
+
+    const data: any = {};
+    for (let field of formData) {
+      const [key, value] = field;
+      data[key] = value;
+    }
+
+    try {
+      const res = await nimbus.post(
+        "/subscription/analysis",
+        {
+          email: data.email,
+          address: selectedWallet,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      isLoadingSendMail = false;
+    } catch (e) {
+      isLoadingSendMail = false;
+    } finally {
+      localStorage.setItem("isShowFormAnalytic", "true");
+      isOpenModal = false;
+    }
+  };
+
   onMount(() => {
     mixpanel.track("analytic_page");
+
+    const currentDayStorage = localStorage.getItem("currentDay");
+    const next7DaysStorage = localStorage.getItem("next7Days");
+    const isSubmitStorage = localStorage.getItem("isShowFormAnalytic");
+
+    if (currentDayStorage && next7DaysStorage) {
+      const isTodayBetween = currentDate.isBetween(
+        currentDayStorage,
+        next7DaysStorage,
+        "day",
+        "[]"
+      );
+      if (!isTodayBetween && isSubmitStorage === null) {
+        isOpenModal = true;
+      } else {
+      }
+    } else {
+      if (isSubmitStorage === null) {
+        isOpenModal = true;
+      }
+    }
   });
 </script>
 
@@ -104,5 +172,63 @@
   {/if} -->
   <Analytic />
 </ErrorBoundary>
+<AppOverlay
+  isOpen={isOpenModal}
+  on:close={() => {
+    localStorage.setItem("currentDay", currentDate.format("YYYY-MM-DD"));
+    localStorage.setItem("next7Days", next7Days.format("YYYY-MM-DD"));
+    isOpenModal = false;
+  }}
+>
+  <div class="title-3 text-center text-gray-600 font-semibold">
+    Let's us analytic your portfolio
+  </div>
+  <div class="mt-2 w-[620px]">
+    <div class="text-base text-gray-500 text-center">
+      Our analysis is
+      <span class="font-bold">Premium</span>
+      <img src={Crown} alt="" width="13" height="12" class="inline-block" /> feature
+      is under beta which you can access for free now. Add your email to get updates
+      from us and receive exclusive benefits soon.
+    </div>
+    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
+      <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1">
+          <div
+            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+              email ? "bg-[#F0F2F7]" : ""
+            }`}
+          >
+            <div class="text-xs text-[#666666] font-medium">Email</div>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Your email"
+              value=""
+              class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                email ? "bg-[#F0F2F7]" : ""
+              }
+              `}
+              on:keyup={({ target: { value } }) => (email = value)}
+            />
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2">
+        <Button
+          width={90}
+          type="submit"
+          isLoading={isLoadingSendMail}
+          disabled={isLoadingSendMail}>Submit</Button
+        >
+      </div>
+    </form>
+  </div>
+</AppOverlay>
 
-<style></style>
+<style>
+  .input-border {
+    border: 1px solid rgb(229, 231, 235);
+  }
+</style>

@@ -20,7 +20,7 @@
   import "./TrxInfo.custom.svelte";
   import "./NativeTokenInfo.custom.svelte";
   import "~/components/ResetStyle.custom.svelte";
-  import "~/components/CheckSafety.custom.svelte";
+  import "~/components/CheckSafetyDApp.custom.svelte";
   import "~/components/TermInfo.custom.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
 
@@ -515,7 +515,7 @@
         </div>
 
         <div class="px-3 pb-3 pt-2">
-          <check-safety />
+          <check-safety-dapp />
 
           {#if data.length === 1}
             <div>
@@ -670,9 +670,11 @@
                       <div class="flex flex-col gap-y-3">
                         {#each dataTokenSearchResult as item}
                           <native-token-info
-                            id={item.id}
                             name={item.symbol}
+                            id={item.id}
                             {loaded}
+                            search={true}
+                            address={""}
                           />
                         {/each}
                       </div>
@@ -697,9 +699,11 @@
                     <div class="flex flex-col gap-y-3">
                       {#each dataTokenDetectResult as item}
                         <native-token-info
-                          id={item.id}
                           name={item.symbol}
+                          id={item.id}
                           loaded={true}
+                          search={true}
+                          address={""}
                         />
                       {/each}
                     </div>
@@ -821,9 +825,11 @@
                       <div class="flex flex-col gap-y-3">
                         {#each dataTokenSearchResult as item}
                           <native-token-info
-                            id={item.id}
                             name={item.symbol}
+                            id={item.id}
                             {loaded}
+                            search={true}
+                            address={""}
                           />
                         {/each}
                       </div>
@@ -846,9 +852,11 @@
                     <div class="flex flex-col gap-y-3">
                       {#each dataTokenDetectResult as item}
                         <native-token-info
-                          id={item.id}
                           name={item.symbol}
+                          id={item.id}
                           loaded={true}
+                          search={true}
+                          address={""}
                         />
                       {/each}
                     </div>

@@ -243,7 +243,18 @@
         id="HistoricalActivities"
       />
     </div>
-    <div class="relative flex flex-col gap-6">
+    <div class="text-center">
+      <a
+        href="https://forms.gle/kg23ZmgXjsTgtjTN7"
+        class="inline-block"
+        target="_blank"
+      >
+        <Button variant="secondary" width={140} size="supper-small">
+          Request analytics
+        </Button>
+      </a>
+    </div>
+    <!-- <div class="relative flex flex-col gap-6">
       <div class="pb-9 pt-7 border border-[#0000001a] rounded-[20px]">
         <CalendarChart
           option={optionDemo}
@@ -286,7 +297,7 @@
           </a>
         </div>
       {/if}
-    </div>
+    </div> -->
   </div>
 </div>
 

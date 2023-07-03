@@ -7,6 +7,9 @@ import "./views/AddressHighlight.custom.svelte";
 import "./views/AddressInfo.custom.svelte";
 import "./views/AddressSpreadText.custom.svelte";
 import "./views/TrxHighlight.custom.svelte";
+import "./views/TrxInfo.custom.svelte";
+import "./views/AptosTrxHighlight.custom.svelte";
+import "./views/AptosTrxInfo.custom.svelte";
 import "./views/QuickSearch.custom.svelte";
 import { sendMessage } from "webext-bridge";
 import { track } from "~/lib/data-tracking";
@@ -36,6 +39,34 @@ import { regexList } from "../../utils";
 
   function runMarkElement() {
     console.time("Nimbus marking");
+
+    (() => {
+      if (location.origin !== "https://explorer.aptoslabs.com" && location.origin !== "https://aptoscan.com") {
+        return;
+      }
+      console.time("Marking version");
+      const context = document;
+      const instance = new Mark(context);
+
+      const versionRegex = /^\s*\d{9}\s*$/g
+
+      instance.markRegExp(versionRegex, {
+        element: "aptos-trx-highlight",
+        className: "nimbus-ext",
+        exclude: ["[data-markjs]", ".nimbus-ext"],
+        // acrossElements: true,
+        debug: false,
+        accuracy: "exactly",
+        diacritics: false,
+        each(item: any) {
+          // Inject address as props
+          item.setAttribute("id", item.innerText);
+        },
+        done() {
+          console.timeEnd("Marking version");
+        },
+      });
+    })();
 
     (() => {
       console.time("Marking tx");
@@ -169,6 +200,9 @@ import { regexList } from "../../utils";
 
   if (window.location.origin !== "https://app.getnimbus.io") {
     runMarkElement();
+    setTimeout(() => {
+      runMarkElement();
+    }, 1000);
   }
 
   console.timeEnd("Nimbus marking");

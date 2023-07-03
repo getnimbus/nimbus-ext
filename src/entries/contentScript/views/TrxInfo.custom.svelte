@@ -31,6 +31,7 @@
   let enabledFilter = false;
   let info;
   let trxExplain = "";
+  let isAptosInfo = false;
 
   const loadTrxInfo = async (hash) => {
     // TODO: Verify trx hash before calling api
@@ -62,8 +63,18 @@
       const responseExplain: any = await sendMessage("TrxHashExplain", {
         hash,
       });
-      if (responseExplain) {
-        trxExplain = responseExplain?.content;
+      const responseExplainAptos: any = await sendMessage(
+        "AptosTrxHashExplain",
+        {
+          hash,
+        }
+      );
+      console.log("responseExplainAptos: ", responseExplainAptos);
+      if (responseExplainAptos?.data) {
+        isAptosInfo = true;
+      }
+      if (responseExplain || responseExplainAptos) {
+        trxExplain = responseExplain?.content || responseExplainAptos?.data;
       }
     } catch (e) {
       console.log(e);
@@ -71,8 +82,14 @@
   };
 
   onMount(() => {
+    if (
+      location.origin !== "https://explorer.aptoslabs.com" &&
+      location.origin !== "https://aptoscan.com"
+    ) {
+      loadTrxInfo(hash);
+      return;
+    }
     loadTrxExplain(hash);
-    loadTrxInfo(hash);
     track("Trx Info", {
       url: window.location.href,
       hash,
@@ -91,11 +108,42 @@
       <div class="w-full h-[120px] flex justify-center items-center">
         <loading-icon />
       </div>
+    {:else if isAptosInfo}
+      <div class="p-4">
+        <div class="flex items-start gap-2">
+          <img src={ExplainIcon} alt="" width="18" height="18" class="spin" />
+          {#if trxExplain}
+            <div
+              use:concurrent={{ interval: 15 }}
+              class="text-[#5E656B] font-normal -mt-4"
+            >
+              {trxExplain}
+            </div>
+          {/if}
+        </div>
+      </div>
     {:else}
       <div class="p-4">
         {#if unknownTRX}
           <div class="py-2 title-5 text-center font-semibold">
             We're decoding this transaction and will get back to you soon!
+            {#if trxExplain && trxExplain !== "Transaction not found"}
+              <div class="flex items-start gap-1 mt-3">
+                <img
+                  src={ExplainIcon}
+                  alt=""
+                  width="18"
+                  height="18"
+                  class="spin"
+                />
+                <div
+                  use:concurrent={{ interval: 15 }}
+                  class="-mt-4 text-sm text-[#5E656B] font-normal"
+                >
+                  {trxExplain}
+                </div>
+              </div>
+            {/if}
           </div>
         {:else}
           <div class="flex flex-col">

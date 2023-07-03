@@ -2,7 +2,7 @@ import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
 import dayjs from "dayjs";
 import _, { isEmpty } from "lodash";
-import { coinGeko, mixpanel, nimbus, goplus, nimbusApi } from "../../lib/network";
+import { coinGeko, mixpanel, nimbus, goplus, nimbusApi, aptos } from "../../lib/network";
 import { cacheOrAPI } from "./utils";
 import type { JsonValue, JsonObject } from "type-fest";
 import langEN from "../../_locales/en/messages.json";
@@ -31,10 +31,6 @@ interface ISymbolInput extends JsonObject {
 
 interface IIdInput extends JsonObject {
   id: string;
-}
-
-interface IUrl extends JsonObject {
-  currentUrl: string;
 }
 
 interface II18nMsg extends JsonObject {
@@ -336,6 +332,32 @@ onMessage<ITrxHashInput, any>("TrxHashExplain", async ({ data: { hash } }) => {
   );
 })
 
+onMessage<ITrxHashInput, any>("AptosTrxHashExplain", async ({ data: { hash } }) => {
+  const key = hash + "_aptos_trx_hash_explain";
+  return await cacheOrAPI(
+    key,
+    () => {
+      return aptos
+        .get(`/tx_explain/by_hash/${hash}`)
+        .then((response) => response);
+    },
+    { defaultValue: null }
+  );
+})
+
+onMessage<IIdInput, any>("AptosTrxExplain", async ({ data: { id } }) => {
+  const key = id + "_aptos_trx_explain";
+  return await cacheOrAPI(
+    key,
+    () => {
+      return aptos
+        .get(`/tx_explain/by_version/${id}`)
+        .then((response) => response);
+    },
+    { defaultValue: null }
+  );
+})
+
 onMessage<ISymbolInput, any>("chartDataLocal", async ({ data: { symbol } }) => {
   try {
     const dataLocal = await browser.storage.local.get(symbol);
@@ -442,7 +464,7 @@ onMessage<any, any>("trackEvent", async ({ data: { type, payload } }) => {
   }
 });
 
-onMessage<IUrl, any>("checkSafety", async ({ data: { currentUrl } }) => {
+onMessage<any, any>("checkSafety", async ({ data: { currentUrl } }) => {
   const key = currentUrl + "_info";
   return await cacheOrAPI(
     key,
@@ -453,12 +475,23 @@ onMessage<IUrl, any>("checkSafety", async ({ data: { currentUrl } }) => {
   );
 });
 
-onMessage<any, any>("checkSafetyAddress", async ({ data: { address, chainId } }) => {
+onMessage<any, any>("checkSafetyAddress", async ({ data: { address, id } }) => {
   const key = address + "_info";
   return await cacheOrAPI(
     key,
     () => {
-      return goplus.get(`/address_security/${address}?chain_id=${chainId}`);
+      return goplus.get(`/address_security/${address}?chain_id=${id}`);
+    },
+    { defaultValue: null }
+  );
+});
+
+onMessage<any, any>("checkSafetyToken", async ({ data: { address, id } }) => {
+  const key = address + "_token_info";
+  return await cacheOrAPI(
+    key,
+    () => {
+      return goplus.get(`/token_security/${id}?contract_addresses=${address}`);
     },
     { defaultValue: null }
   );

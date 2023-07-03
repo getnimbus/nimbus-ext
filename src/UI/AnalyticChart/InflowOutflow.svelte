@@ -3,9 +3,11 @@
   import { wallet, chain } from "~/store";
   import { groupBy, intersection, flatten } from "lodash";
   import dayjs from "dayjs";
+  import { formatCurrencyV2 } from "~/utils";
 
   import EChart from "~/components/EChart.svelte";
-  import { formatCurrencyV2 } from "~/utils";
+
+  import Logo from "~/assets/logo-1.svg";
 
   const listDirection = ["inflow", "outflow"];
 
@@ -300,13 +302,13 @@
 </script>
 
 <div class="border border-[#0000001a] rounded-[20px] pt-6">
-  <div class="font-medium text-black text-xl px-6">Token Inflow - Outflow</div>
+  <div class="px-6 text-xl font-medium text-black">Token Inflow - Outflow</div>
   {#if isLoadingInflowOutflow}
     <div class="flex items-center justify-center h-[415px]">
       <loading-icon />
     </div>
   {:else}
-    <div class="h-full w-full">
+    <div class="w-full h-full">
       {#if isEmptyInflowOutflow}
         <div
           class="flex justify-center items-center h-full text-lg text-gray-400 h-[415px]"
@@ -314,13 +316,20 @@
           Empty
         </div>
       {:else}
-        <EChart
-          id="brush-chart"
-          theme="white"
-          {option}
-          height={415}
-          notMerge={true}
-        />
+        <div class="relative">
+          <EChart
+            id="brush-chart"
+            theme="white"
+            {option}
+            height={415}
+            notMerge={true}
+          />
+          <div
+            class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"
+          >
+            <img src={Logo} alt="" width="140" height="140" />
+          </div>
+        </div>
       {/if}
     </div>
   {/if}

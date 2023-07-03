@@ -5,6 +5,8 @@
 
   import EChart from "~/components/EChart.svelte";
 
+  import Logo from "~/assets/logo-1.svg";
+
   export let isEmpty;
   export let isLoading;
   export let dataTotalValueHistory;
@@ -159,7 +161,7 @@
 </script>
 
 <div class="border border-[#0000001a] rounded-[20px] p-6">
-  <div class="font-medium text-black text-xl">Total Value History</div>
+  <div class="text-xl font-medium text-black">Total Value History</div>
   <div class="mt-2">
     {#if isLoading}
       <div class="flex items-center justify-center h-[415px]">
@@ -174,13 +176,20 @@
             Empty
           </div>
         {:else}
-          <EChart
-            id="total-value-history"
-            theme="white"
-            option={optionLine}
-            height={415}
-            notMerge={true}
-          />
+          <div class="relative">
+            <EChart
+              id="total-value-history"
+              theme="white"
+              option={optionLine}
+              height={415}
+              notMerge={true}
+            />
+            <div
+              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"
+            >
+              <img src={Logo} alt="" width="140" height="140" />
+            </div>
+          </div>
         {/if}
       </div>
     {/if}

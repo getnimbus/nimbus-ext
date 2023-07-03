@@ -10,6 +10,8 @@
 
   import EChart from "~/components/EChart.svelte";
 
+  import Logo from "~/assets/logo-1.svg";
+
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
@@ -227,7 +229,7 @@
 
 <div class="border border-[#0000001a] rounded-[20px] p-6">
   <div class="flex justify-between">
-    <div class="font-medium text-black text-xl">Sector Growth</div>
+    <div class="text-xl font-medium text-black">Sector Growth</div>
     <div class="flex items-center gap-1">
       <AnimateSharedLayout>
         {#each typeList as type}
@@ -273,13 +275,20 @@
             Empty
           </div>
         {:else}
-          <EChart
-            id="sector-growth"
-            theme="white"
-            option={optionLine}
-            height={465}
-            notMerge={true}
-          />
+          <div class="relative">
+            <EChart
+              id="sector-growth"
+              theme="white"
+              option={optionLine}
+              height={465}
+              notMerge={true}
+            />
+            <div
+              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"
+            >
+              <img src={Logo} alt="" width="140" height="140" />
+            </div>
+          </div>
         {/if}
       </div>
     {/if}

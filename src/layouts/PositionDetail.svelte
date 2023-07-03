@@ -657,8 +657,10 @@
           </div>
 
           {#if type === "ERC_20"}
-            <div class="border border-[#0000000d] rounded-[10px]">
-              <table class="table-fixed w-full">
+            <div
+              class="border border-[#0000000d] rounded-[10px] overflow-x-auto"
+            >
+              <table class="table-auto xl:w-full w-[1200px]">
                 <thead>
                   <tr class="bg-[#f4f5f8]">
                     <th class="pl-3 py-3">
@@ -837,8 +839,10 @@
               </table>
             </div>
           {:else}
-            <div class="border border-[#0000000d] rounded-[10px]">
-              <table class="table-fixed w-full">
+            <div
+              class="border border-[#0000000d] rounded-[10px] overflow-x-auto"
+            >
+              <table class="table-auto xl:w-full w-[1200px]">
                 <thead>
                   <tr class="bg-[#f4f5f8]">
                     <th class="pl-3 py-3">

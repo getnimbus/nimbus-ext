@@ -503,8 +503,10 @@
             class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
           />
         </div>
-        <div class="border border-[#0000000d] rounded-[10px] overflow-y-auto">
-          <table class="table-auto w-full table-auto overflow-y-scroll">
+        <div
+          class="border border-[#0000000d] rounded-[10px] overflow-y-auto overflow-x-auto"
+        >
+          <table class="table-auto xl:w-full w-[1200px] overflow-y-scroll">
             <thead>
               <tr class="bg-[#f4f5f8]">
                 <th class="pl-3 py-3">

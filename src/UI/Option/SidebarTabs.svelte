@@ -59,7 +59,7 @@
   };
 </script>
 
-<Sidebar asideClass="bg-gray-50 w-64">
+<Sidebar asideClass="bg-gray-50">
   <SidebarWrapper>
     <img src={logo} alt="logo" class="mb-4 mx-auto" width={150} />
     <SidebarGroup>

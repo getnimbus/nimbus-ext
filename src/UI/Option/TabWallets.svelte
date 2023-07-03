@@ -379,7 +379,7 @@
   }
 </script>
 
-<div class="flex flex-col gap-2">
+<div class="flex flex-col gap-4">
   <div class="flex justify-between items-center">
     <div class="title-3 text-gray-500">{MultipleLang.title}</div>
     <Button
@@ -401,8 +401,8 @@
       </div>
     </Button>
   </div>
-  <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto mt-2">
-    <table class="table-auto w-full">
+  <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
+    <table class="table-auto xl:w-full w-[1200px]">
       <thead>
         <tr class="bg-[#f4f5f8]">
           <th class="pl-3 py-3">

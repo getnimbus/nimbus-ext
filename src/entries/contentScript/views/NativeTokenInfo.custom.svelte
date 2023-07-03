@@ -11,14 +11,15 @@
   import "~/components/CoinChart.custom.svelte";
   import "~/components/PriceConvert.custom.svelte";
   import "~/components/Tooltip.custom.svelte";
+  import "~/components/CheckSafetyToken.custom.svelte";
   import CopyToClipboard from "~/components/CopyToClipboard.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let name;
   export let id;
   export let loaded;
-  export let isSidebarSearch = true;
-  export let address = "";
+  export let search;
+  export let address;
 
   let isLoading = false;
   let price = 0;
@@ -113,12 +114,12 @@
                       on:mouseleave={() => (showTooltip = false)}
                     >
                       {coinInfo?.name
-                        ? isSidebarSearch
+                        ? search
                           ? coinInfo?.name
                           : add3Dots(coinInfo?.name, 10)
                         : "-"}
                     </div>
-                    {#if showTooltip && coinInfo?.name.length >= 10 && !isSidebarSearch}
+                    {#if showTooltip && coinInfo?.name.length >= 10 && !search}
                       <div
                         class="absolute -top-7 -left-1"
                         style="z-index: 2147483646;"
@@ -452,14 +453,14 @@ z"
           </div>
 
           <div class="flex gap-1 flex-wrap mt-3 mx-auto">
-            {#each coinInfo.categories.slice(0, 3) as category}
+            {#each coinInfo.categories.slice(0, 6) as category}
               <div
                 class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px]"
               >
                 {category}
               </div>
             {/each}
-            {#if coinInfo.categories.length > 3}
+            {#if coinInfo.categories.length > 6}
               <div class="relative">
                 <div
                   class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px] flex items-center gap-1 cursor-pointer"
@@ -478,7 +479,7 @@ z"
                         : "left-0"
                     }`}
                   >
-                    {#each coinInfo.categories.slice(3) as category}
+                    {#each coinInfo.categories.slice(6) as category}
                       <div class="content_item" id={category.value}>
                         {category}
                       </div>
@@ -489,7 +490,13 @@ z"
             {/if}
           </div>
 
-          <div class="mt-4">
+          {#if !search}
+            <div class="mt-3">
+              <check-safety-token {address} id={"1"} />
+            </div>
+          {/if}
+
+          <div class="mt-3">
             <div class="flex justify-between mb-[6px]">
               <div class="flex items-center gap-2">
                 <div class="text-xs text-[#000000B2] font-normal">

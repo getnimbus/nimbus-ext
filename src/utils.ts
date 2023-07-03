@@ -63,6 +63,25 @@ export const typeList = [
   },
 ];
 
+export const typeTrx = [
+  {
+    label: "All",
+    value: "all",
+  },
+  {
+    label: "Send",
+    value: "send",
+  },
+  {
+    label: "Receive",
+    value: "receive",
+  },
+  {
+    label: "Exchange",
+    value: "exchange",
+  },
+];
+
 export const typePieChart = [
   {
     label: "Token",

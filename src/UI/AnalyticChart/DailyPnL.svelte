@@ -4,6 +4,8 @@
 
   import EChart from "~/components/EChart.svelte";
 
+  import Logo from "~/assets/logo-1.svg";
+
   export let isEmpty;
   export let isLoading;
   export let dataDailyPnL;
@@ -87,14 +89,14 @@
 </script>
 
 <div class="border border-[#0000001a] rounded-[20px] p-6">
-  <div class="font-medium text-black text-xl">Daily PnL</div>
+  <div class="text-xl font-medium text-black">Daily PnL</div>
   <div>
     {#if isLoading}
       <div class="flex items-center justify-center h-[415px]">
         <loading-icon />
       </div>
     {:else}
-      <div class="h-full w-full">
+      <div class="w-full h-full">
         {#if isEmpty}
           <div
             class="flex justify-center items-center h-full text-lg text-gray-400 h-[415px]"
@@ -102,13 +104,20 @@
             Empty
           </div>
         {:else}
-          <EChart
-            id="DailyGain"
-            theme="white"
-            {option}
-            height={415}
-            notMerge={true}
-          />
+          <div class="relative">
+            <EChart
+              id="DailyGain"
+              theme="white"
+              {option}
+              height={415}
+              notMerge={true}
+            />
+            <div
+              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"
+            >
+              <img src={Logo} alt="" width="140" height="140" />
+            </div>
+          </div>
         {/if}
       </div>
     {/if}
