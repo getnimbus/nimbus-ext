@@ -399,7 +399,7 @@
   }
 
   $: {
-    if (data.length > 1) {
+    if (data.length && (data[0].type !== "address" || data[0].type !== "tx")) {
       termSearchResult = data.filter((item) => item.type === "term");
       dataTokenSearchResult = data.filter((item) => item.type === "token");
     }
@@ -517,7 +517,7 @@
         <div class="px-3 pb-3 pt-2">
           <check-safety-dapp />
 
-          {#if data.length === 1}
+          {#if data.length === 1 && (data[0].type === "address" || data[0].type === "tx")}
             <div>
               {#if data[0].type === "address"}
                 {#if search}
