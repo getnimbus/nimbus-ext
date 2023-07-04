@@ -9,6 +9,10 @@
   import type { AddressData } from "~/types/AddressData";
 
   import Copy from "~/components/Copy.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+  import Button from "~/components/Button.svelte";
+
+  import FollowWhale from "~/assets/whale-tracking.gif";
 
   const MultipleLang = {
     title: i18n("optionsPage.notification-page-title", "Notification"),
@@ -30,6 +34,9 @@
 
   let isLoading = false;
   let listAddress = [];
+  let isOpenFollowWhaleModal = false;
+  let showCommandTooltip = false;
+  let selectedWallet;
 
   const getListAddress = async () => {
     isLoading = true;
@@ -100,19 +107,7 @@
             {#each listAddress as item (item.id)}
               <tr class="hover:bg-gray-100 transition-all">
                 <td class="pl-3 py-4">
-                  <div class="text-left flex items-center gap-3">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M21 7.75H3C2.59 7.75 2.25 7.41 2.25 7C2.25 6.59 2.59 6.25 3 6.25H21C21.41 6.25 21.75 6.59 21.75 7C21.75 7.41 21.41 7.75 21 7.75ZM21 12.75H3C2.59 12.75 2.25 12.41 2.25 12C2.25 11.59 2.59 11.25 3 11.25H21C21.41 11.25 21.75 11.59 21.75 12C21.75 12.41 21.41 12.75 21 12.75ZM21 17.75H3C2.59 17.75 2.25 17.41 2.25 17C2.25 16.59 2.59 16.25 3 16.25H21C21.41 16.25 21.75 16.59 21.75 17C21.75 17.41 21.41 17.75 21 17.75Z"
-                        fill="#9ca3af"
-                      />
-                    </svg>
+                  <div class="text-left">
                     <Copy address={item.address} iconColor="#000" />
                   </div>
                 </td>
@@ -127,13 +122,12 @@
                   <div class="flex justify-end gap-6">
                     <div
                       class="text-blue-600 hover:underline transition-all cursor-pointer font-semibold"
+                      on:click={() => {
+                        selectedWallet = item.address;
+                        isOpenFollowWhaleModal = true;
+                      }}
                     >
-                      <CopyToClipboard
-                        text={`/start ${item.address} ${item.label}`}
-                        let:copy
-                      >
-                        <div on:click={copy}>Copy command</div>
-                      </CopyToClipboard>
+                      Turn on
                     </div>
                   </div>
                 </td>
@@ -145,6 +139,67 @@
     </table>
   </div>
 </div>
+<AppOverlay
+  isOpen={isOpenFollowWhaleModal}
+  on:close={() => (isOpenFollowWhaleModal = false)}
+>
+  <div class="flex flex-col gap-4 max-w-[530px]">
+    <div class="flex flex-col gap-1">
+      <div class="text-base">
+        Go to <a
+          href="https://t.me/GetNimbusBot"
+          target="_blank"
+          class="text-blue-500">https://t.me/GetNimbusBot</a
+        >
+      </div>
+      <div class="text-base">Use the command as follow video</div>
+    </div>
+    <div class="h-[350px] w-[500px]">
+      <img src={FollowWhale} alt="" class="h-full w-full" />
+    </div>
+    <div class="flex justify-end">
+      <div
+        class="relative"
+        on:mouseenter={() => {
+          showCommandTooltip = true;
+        }}
+        on:mouseleave={() => {
+          showCommandTooltip = false;
+        }}
+      >
+        <CopyToClipboard
+          text={`/portfolio ${selectedWallet} ${
+            listAddress.filter((item) => item.address === selectedWallet)[0]
+              .label
+          }`}
+          let:copy
+        >
+          <Button
+            width={150}
+            on:click={() => {
+              copy();
+              isOpenFollowWhaleModal = false;
+              showCommandTooltip = false;
+            }}>Copy command</Button
+          >
+        </CopyToClipboard>
+        {#if showCommandTooltip}
+          <div
+            class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+            style="z-index: 2147483648;"
+          >
+            <tooltip-detail
+              text={`/portfolio ${selectedWallet} ${
+                listAddress.filter((item) => item.address === selectedWallet)[0]
+                  .label
+              }`}
+            />
+          </div>
+        {/if}
+      </div>
+    </div>
+  </div>
+</AppOverlay>
 
 <style>
 </style>
