@@ -69,7 +69,6 @@
           hash,
         }
       );
-      console.log("responseExplainAptos: ", responseExplainAptos);
       if (responseExplainAptos?.data) {
         isAptosInfo = true;
       }
@@ -82,18 +81,19 @@
   };
 
   onMount(() => {
+    track("Trx Info", {
+      url: window.location.href,
+      hash,
+    });
     if (
       location.origin !== "https://explorer.aptoslabs.com" &&
       location.origin !== "https://aptoscan.com"
     ) {
       loadTrxInfo(hash);
-      return;
+      loadTrxExplain(hash);
+    } else {
+      loadTrxExplain(hash);
     }
-    loadTrxExplain(hash);
-    track("Trx Info", {
-      url: window.location.href,
-      hash,
-    });
   });
 </script>
 
