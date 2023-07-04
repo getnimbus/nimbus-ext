@@ -27,6 +27,7 @@
   import Plus from "~/assets/plus.svg";
   import EthereumLogo from "~/assets/ethereum.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
+  import FollowWhale from "~/assets/whale-tracking.gif";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No wallet added yet."),
@@ -100,6 +101,7 @@
   let label = "";
   let errors: any = {};
   let isOpenAddModal = false;
+  let isOpenFollowWhaleModal = false;
 
   const getListAddress = async (type) => {
     isLoadingFullPage = true;
@@ -563,16 +565,14 @@
                         showFollowTooltip = false;
                       }}
                     >
-                      <a
-                        href="https://forms.gle/UdUbaEevMYLp4SFK8"
-                        target="_blank"
+                      <Button
+                        variant="secondary"
+                        width={140}
+                        size="supper-small"
+                        on:click={() => (isOpenFollowWhaleModal = true)}
                       >
-                        <Button
-                          variant="secondary"
-                          width={140}
-                          size="supper-small">Follow this whale 🐳</Button
-                        >
-                      </a>
+                        Follow this whale 🐳
+                      </Button>
                       {#if showFollowTooltip}
                         <div
                           class="absolute -top-8 left-1/2 transform -translate-x-1/2"
@@ -694,6 +694,29 @@
       >
     </div>
   </form>
+</AppOverlay>
+<AppOverlay
+  isOpen={isOpenFollowWhaleModal}
+  on:close={() => (isOpenFollowWhaleModal = false)}
+>
+  <div class="flex flex-col gap-4 max-w-[530px]">
+    <div class="flex flex-col gap-1">
+      <div class="text-base">
+        Go to <a
+          href="https://t.me/GetNimbusBot"
+          target="_blank"
+          class="text-blue-500">https://t.me/GetNimbusBot</a
+        >
+      </div>
+      <div class="text-base">Use the command as follow video</div>
+    </div>
+    <img src={FollowWhale} alt="" width="500" height="200" />
+    <div class="flex justify-end">
+      <Button width={90} on:click={() => (isOpenFollowWhaleModal = false)}
+        >Done</Button
+      >
+    </div>
+  </div>
 </AppOverlay>
 
 <style>
