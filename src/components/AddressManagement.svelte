@@ -751,7 +751,7 @@
               text={`/start ${selectedWallet} ${
                 formatListAddress.filter(
                   (item) => item.value === selectedWallet
-                )[0].label
+                )?.[0]?.label || ""
               }`}
             />
           </div>
