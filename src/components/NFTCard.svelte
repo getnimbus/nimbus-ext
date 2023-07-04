@@ -41,7 +41,11 @@
       {/if}
     </div>
     <div class="flex gap-1 items-center">
-      <div class="text-sm font-semibold">Inscription</div>
+      <div class="text-sm font-semibold">
+        {getAddressContext(selectedWallet)?.type === "EVM"
+          ? "Token ID"
+          : "Inscription"}
+      </div>
       <div class="text-sm font-semibold">#{data?.inscription_number}</div>
     </div>
     <div class="text-xs font-normal text-[#616b84] flex gap-1">
