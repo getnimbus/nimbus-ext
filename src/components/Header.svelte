@@ -503,17 +503,22 @@
         <img src={Close} alt="" />
       </div>
     </div>
-    <div class="flex flex-col justify-between gap-6">
-      <div class="border-b-[0.5px] border-white pb-6">
+    <div class="flex flex-col justify-between gap-5">
+      <div class="border-b-[0.5px] border-white pb-5">
         <Link
           to={`${
             APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
           }`}
         >
           <div
-            class="flex items-center gap-3 text-white"
+            class={`flex items-center gap-3 text-white px-4 ${
+              navActive === "portfolio"
+                ? "bg-[#525B8C] py-2 rounded-[1000px]"
+                : ""
+            }`}
             on:click={() => {
               isShowHeaderMobile = false;
+              navActive = "portfolio";
             }}
           >
             <img src={PortfolioIcon} alt="" width="25" height="25" />
@@ -524,12 +529,17 @@
         </Link>
       </div>
 
-      <div class="border-b-[0.5px] border-white pb-6">
+      <div class="border-b-[0.5px] border-white pb-5">
         <Link to="analytic">
           <div
-            class="relative flex items-center gap-3 text-white"
+            class={`flex items-center gap-3 text-white px-4 ${
+              navActive === "analytic"
+                ? "bg-[#525B8C] py-2 rounded-[1000px]"
+                : ""
+            }`}
             on:click={() => {
               isShowHeaderMobile = false;
+              navActive = "analytic";
             }}
           >
             <img src={AnalyticIcon} alt="" width="25" height="25" />
@@ -548,12 +558,17 @@
         </Link>
       </div>
 
-      <div class="border-b-[0.5px] border-white pb-6">
+      <div class="border-b-[0.5px] border-white pb-5">
         <Link to="transactions">
           <div
-            class="relative flex items-center gap-3 text-white"
+            class={`flex items-center gap-3 text-white px-4 ${
+              navActive === "transactions"
+                ? "bg-[#525B8C] py-2 rounded-[1000px]"
+                : ""
+            }`}
             on:click={() => {
               isShowHeaderMobile = false;
+              navActive = "transactions";
             }}
           >
             <img src={TransactionsIcon} alt="" width="25" height="25" />
@@ -564,12 +579,15 @@
         </Link>
       </div>
 
-      <div class="border-b-[0.5px] border-white pb-6">
+      <div class="border-b-[0.5px] border-white pb-5">
         <Link to="market">
           <div
-            class="relative flex items-center gap-3 text-white"
+            class={`flex items-center gap-3 text-white px-4 ${
+              navActive === "market" ? "bg-[#525B8C] py-2 rounded-[1000px]" : ""
+            }`}
             on:click={() => {
               isShowHeaderMobile = false;
+              navActive = "market";
             }}
           >
             <img src={MarketIcon} alt="" width="25" height="25" />
@@ -582,9 +600,12 @@
 
       <Link to="news">
         <div
-          class="relative flex items-center gap-3 text-white"
+          class={`flex items-center gap-3 text-white px-4 ${
+            navActive === "news" ? "bg-[#525B8C] py-2 rounded-[1000px]" : ""
+          }`}
           on:click={() => {
             isShowHeaderMobile = false;
+            navActive = "news";
           }}
         >
           <img src={NewsIcon} alt="" width="25" height="25" />
