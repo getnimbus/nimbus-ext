@@ -377,9 +377,9 @@
   {:else}
     <div>
       {#if formatListAddress.length === 0 && selectedWallet.length === 0}
-        <div class="flex justify-center items-center h-screen">
+        <div class="flex items-center justify-center h-screen">
           <div
-            class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
+            class="flex flex-col items-center justify-center w-2/3 gap-4 p-6"
           >
             <div class="text-lg">
               {MultipleLang.addwallet}
@@ -399,8 +399,8 @@
       {:else}
         <div class="header-container">
           <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
-            <div class="flex flex-col gap-14 mb-5">
-              <div class="flex justify-between items-center">
+            <div class="flex flex-col mb-5 gap-14">
+              <div class="flex items-center justify-between">
                 {#if formatListAddress.length !== 0}
                   <div class="flex items-center gap-5">
                     {#if formatListAddress.length > 5}
@@ -482,7 +482,7 @@
                     {/if}
                   </div>
                 {:else}
-                  <div class="text-white text-base font-semibold">
+                  <div class="text-base font-semibold text-white">
                     {MultipleLang.empty_wallet}
                   </div>
                 {/if}
@@ -529,7 +529,7 @@
                   </Button>
                   {#if showDisableAddWallet}
                     <div
-                      class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                      class="absolute transform -translate-x-1/2 -top-8 left-1/2"
                       style="z-index: 2147483648;"
                     >
                       <tooltip-detail
@@ -540,10 +540,10 @@
                 </div>
               </div>
 
-              <div class="flex justify-between items-end">
+              <div class="flex items-end justify-between">
                 <div class="flex flex-col gap-3">
                   <div class="flex items-end gap-6">
-                    <div class="text-5xl text-white font-semibold">
+                    <div class="text-5xl font-semibold text-white">
                       {title}
                     </div>
                     {#if type === "portfolio"}
@@ -577,7 +577,7 @@
                       </Button>
                       {#if showFollowTooltip}
                         <div
-                          class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                          class="absolute transform -translate-x-1/2 -top-8 left-1/2"
                           style="z-index: 2147483648;"
                         >
                           <tooltip-detail
@@ -713,7 +713,7 @@
       <div class="text-base">Use the command as follow video</div>
     </div>
     <div class="h-[350px] w-[500px]">
-      <img src={FollowWhale} alt="" class="h-full w-full" />
+      <img src={FollowWhale} alt="" class="w-full h-full" />
     </div>
     <div class="flex justify-end">
       <div
@@ -727,8 +727,9 @@
       >
         <CopyToClipboard
           text={`/start ${selectedWallet} ${
-            formatListAddress.filter((item) => item.value === selectedWallet)[0]
-              .label
+            formatListAddress.filter(
+              (item) => item.value === selectedWallet
+            )?.[0]?.label || ""
           }`}
           let:copy
         >
@@ -743,7 +744,7 @@
         </CopyToClipboard>
         {#if showCommandTooltip}
           <div
-            class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+            class="absolute transform -translate-x-1/2 -top-8 left-1/2"
             style="z-index: 2147483648;"
           >
             <tooltip-detail
