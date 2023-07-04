@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getAddressContext } from "~/utils";
   import { sendMessage } from "webext-bridge";
-  import { wallet, chain } from "~/store";
+  import { wallet, chain, isOpenReport } from "~/store";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";
@@ -244,15 +244,16 @@
       />
     </div>
     <div class="text-center">
-      <a
-        href="https://forms.gle/kg23ZmgXjsTgtjTN7"
-        class="inline-block"
-        target="_blank"
+      <Button
+        variant="secondary"
+        width={140}
+        on:click={() => {
+          isOpenReport.update((n) => (n = true));
+        }}
+        size="supper-small"
       >
-        <Button variant="secondary" width={140} size="supper-small">
-          Request analytics
-        </Button>
-      </a>
+        Request analytics
+      </Button>
     </div>
     <!-- <div class="relative flex flex-col gap-6">
       <div class="pb-9 pt-7 border border-[#0000001a] rounded-[20px]">
