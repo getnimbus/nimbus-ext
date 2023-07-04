@@ -10,16 +10,16 @@ For token holding, the profit and loss is only calculated by Swapping event (On 
 
 Let said we have some transacations for WBTC
 
-| Tx  | Event   | Token In         | Token Out          |
-| --- | ------- | ---------------- | ------------------ |
-| 1   | Deposit | +1 BTC (10 000$) |
-| 2   | Swap    | -0.5BTC          | +4000 USDT (4000$) |
-| 3   | Swap    | -0.2BTC          | +0.5 ETH (3000$)   |
-| 4   | Swap    | +0.4BTC          | -2000 USDT (2000$) |
+| Tx  | Event   | Token In          | Token Out          |
+| --- | ------- | ----------------  | ------------------ |
+| 1   | Deposit | +1 BTC (10 000$)  |                    |
+| 2   | Swap    | -0.5BTC           | +4000 USDT (4000$) |
+| 3   | Swap    | -0.2BTC           | +0.5 ETH (3000$)   |
+| 4   | Swap    | -2000 USDT (2000$)| +0.4 BTC           |
 
 ---
 
-Current state: 0.6 BTC, 0.5 ETH, 2 000 USDT
+Current state: 0.7 BTC, 0.5 ETH, 2 000 USDT
 
 _The Tx 1 will be ignore for calculate since it is Deposit event_
 
@@ -27,6 +27,6 @@ Total cost: (4000 + 3000 - 2000) = 5000$ (All converted to USD)
 
 Let said current BTC Price is 12 000$/BTC
 
-So total holding is: 0.6 BTC (0.6\*12000 = 7 200$)
+So total holding is: 0.7 BTC (0.7 * 12000 = 8400$)
 
-=> Profit and loss = Current Value - Total cost = 7 200 - 5 000 = 2 200$
+=> Profit and loss = Current Value - Total cost = 8400 - 5000 = 3400$
