@@ -212,12 +212,12 @@
         <div
           class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
         >
-          <div class="flex justify-between xl:flex-row flex-col gap-4">
+          <div class="flex flex-col justify-between gap-4 xl:flex-row">
             <div class="text-2xl font-medium text-black">
               Historical Transactions
             </div>
-            <div class="flex items-center gap-2 justify-end">
-              <div class="flex items-center gap-1">
+            <div class="flex items-center justify-end gap-2">
+              <!-- <div class="flex items-center gap-1">
                 <AnimateSharedLayout>
                   {#each typeTrx as type}
                     <div
@@ -258,7 +258,7 @@
                 placeholder={"Filter by hash/token"}
                 type="text"
                 class="xl:w-[250px] w-full text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
-              />
+              /> -->
             </div>
           </div>
           <HistoricalTransactions
