@@ -12,6 +12,7 @@
   import { chainList, getAddressContext } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import CopyToClipboard from "svelte-copy-to-clipboard";
 
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
@@ -22,7 +23,7 @@
   import Button from "~/components/Button.svelte";
   import Select from "~/components/Select.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
-  import CopyToClipboard from "~/components/CopyToClipboard.svelte";
+  import Copy from "~/components/Copy.svelte";
 
   import Plus from "~/assets/plus.svg";
   import EthereumLogo from "~/assets/ethereum.png";
@@ -94,6 +95,7 @@
   });
 
   let showFollowTooltip = false;
+  let showCommandTooltip = false;
   let showDisableAddWallet = false;
   let isLoadingFullPage = false;
   let listAddress = [];
@@ -550,7 +552,7 @@
                   </div>
                   <div class="flex items-center gap-4">
                     <div class="text-base">
-                      <CopyToClipboard
+                      <Copy
                         address={selectedWallet}
                         iconColor="#fff"
                         color="#fff"
@@ -710,11 +712,50 @@
       </div>
       <div class="text-base">Use the command as follow video</div>
     </div>
-    <img src={FollowWhale} alt="" width="500" height="200" />
+    <div class="h-[350px] w-[500px]">
+      <img src={FollowWhale} alt="" class="h-full w-full" />
+    </div>
     <div class="flex justify-end">
-      <Button width={90} on:click={() => (isOpenFollowWhaleModal = false)}
-        >Done</Button
+      <div
+        class="relative"
+        on:mouseenter={() => {
+          showCommandTooltip = true;
+        }}
+        on:mouseleave={() => {
+          showCommandTooltip = false;
+        }}
       >
+        <CopyToClipboard
+          text={`/start ${selectedWallet} ${
+            formatListAddress.filter((item) => item.value === selectedWallet)[0]
+              .label
+          }`}
+          let:copy
+        >
+          <Button
+            width={150}
+            on:click={() => {
+              copy();
+              isOpenFollowWhaleModal = false;
+              showCommandTooltip = false;
+            }}>Copy command</Button
+          >
+        </CopyToClipboard>
+        {#if showCommandTooltip}
+          <div
+            class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+            style="z-index: 2147483648;"
+          >
+            <tooltip-detail
+              text={`/start ${selectedWallet} ${
+                formatListAddress.filter(
+                  (item) => item.value === selectedWallet
+                )[0].label
+              }`}
+            />
+          </div>
+        {/if}
+      </div>
     </div>
   </div>
 </AppOverlay>

@@ -7,7 +7,7 @@
 
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
-  import CopyToClipboard from "~/components/CopyToClipboard.svelte";
+  import Copy from "~/components/Copy.svelte";
   import "~/components/Loading.custom.svelte";
 
   const MultipleLang = {
@@ -204,10 +204,7 @@
                 <tr class="hover:bg-gray-100 transition-all">
                   <td class="pl-3 py-4">
                     <div class="text-left flex items-start gap-2">
-                      <CopyToClipboard
-                        address={item.address}
-                        iconColor="#000"
-                      />
+                      <Copy address={item.address} iconColor="#000" />
                     </div>
                   </td>
                   <td class="py-4">

@@ -11,7 +11,7 @@
   import EChart from "~/components/EChart.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import CopyToClipboard from "~/components/CopyToClipboard.svelte";
+  import Copy from "~/components/Copy.svelte";
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
   import Button from "~/components/Button.svelte";
@@ -426,7 +426,7 @@
             </div>
             {#if address}
               <div class="text-base">
-                <CopyToClipboard {address} iconColor="#fff" color="#fff" />
+                <Copy {address} iconColor="#fff" color="#fff" />
               </div>
             {/if}
           </div>
@@ -731,7 +731,7 @@
                             <div class="text-left flex items-start gap-2 w-max">
                               <div class="flex flex-col">
                                 <div class="text-sm">
-                                  <CopyToClipboard
+                                  <Copy
                                     address={change?.transaction_hash}
                                     textTooltip="Copy transaction to clipboard"
                                     iconColor="#000"
@@ -752,7 +752,7 @@
                           <td class="py-4">
                             {#if change?.detail?.from}
                               <div class="w-max text-sm">
-                                <CopyToClipboard
+                                <Copy
                                   address={change?.detail?.from}
                                   iconColor="#000"
                                   isShorten={true}
@@ -766,7 +766,7 @@
                           <td class="py-4">
                             {#if change?.detail?.to}
                               <div class="w-max text-sm">
-                                <CopyToClipboard
+                                <Copy
                                   address={change?.detail?.to}
                                   iconColor="#000"
                                   isShorten={true}

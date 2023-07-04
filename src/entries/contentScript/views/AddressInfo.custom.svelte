@@ -27,7 +27,7 @@
   import "~/components/PriceConvert.custom.svelte";
   import "~/components/CheckSafetyAddress.custom.svelte";
   import "~/components/Tooltip.custom.svelte";
-  import CopyToClipboard from "~/components/CopyToClipboard.svelte";
+  import Copy from "~/components/Copy.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
@@ -521,7 +521,7 @@
                       {/if}
                     </a>
                   </div>
-                  <CopyToClipboard
+                  <Copy
                     iconSize={12}
                     {address}
                     isShorten

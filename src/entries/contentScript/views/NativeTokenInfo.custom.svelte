@@ -12,7 +12,7 @@
   import "~/components/PriceConvert.custom.svelte";
   import "~/components/Tooltip.custom.svelte";
   import "~/components/CheckSafetyToken.custom.svelte";
-  import CopyToClipboard from "~/components/CopyToClipboard.svelte";
+  import Copy from "~/components/Copy.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let name;
@@ -386,7 +386,7 @@ z"
                 </div>
                 {#if address}
                   <div class="text-xs">
-                    <CopyToClipboard
+                    <Copy
                       iconSize={12}
                       {address}
                       isShorten

@@ -6,7 +6,7 @@
   dayjs.extend(relativeTime);
 
   import Button from "~/components/Button.svelte";
-  import CopyToClipboard from "~/components/CopyToClipboard.svelte";
+  import Copy from "~/components/Copy.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let data;
@@ -79,7 +79,7 @@
                 <div class="text-left flex items-start gap-2 w-max">
                   <div class="flex flex-col">
                     <div class="text-sm">
-                      <CopyToClipboard
+                      <Copy
                         address={item?.transaction_hash}
                         textTooltip="Copy transaction to clipboard"
                         iconColor="#000"
@@ -104,7 +104,7 @@
               <td class="py-4">
                 {#if item?.detail?.from}
                   <div class="w-max text-sm">
-                    <CopyToClipboard
+                    <Copy
                       address={item?.detail?.from}
                       iconColor="#000"
                       isShorten={true}
@@ -122,7 +122,7 @@
               <td class="py-4">
                 {#if item?.detail?.to}
                   <div class="w-max text-sm">
-                    <CopyToClipboard
+                    <Copy
                       address={item?.detail?.to}
                       iconColor="#000"
                       isShorten={true}
