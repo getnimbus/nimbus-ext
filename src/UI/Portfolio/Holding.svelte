@@ -222,7 +222,9 @@
             class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
           />
         </div>
-        <div class="border border-[#0000000d] rounded-[10px] overflow-x-scroll">
+        <div
+          class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
+        >
           <table class="table-auto xl:w-full w-[1200px]">
             <thead
               class={isStickyTableToken ? "sticky top-0 z-10" : ""}
@@ -326,7 +328,9 @@
           $<TooltipNumber number={sumNFT} type="balance" />
         </div>
       </div>
-      <div class="border border-[#0000000d] rounded-[10px] overflow-x-scroll">
+      <div
+        class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
+      >
         <table class="table-auto xl:w-full w-[1200px]">
           <thead
             class={isStickyTableNFT ? "sticky top-0 z-10" : ""}

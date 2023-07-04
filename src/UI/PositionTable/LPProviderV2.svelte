@@ -16,7 +16,7 @@
       $<TooltipNumber number={sum} type="balance" />
     </div>
   </div>
-  <div class="border border-[#0000000d] rounded-[10px] overflow-x-scroll">
+  <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
     <table class="table-auto xl:w-full w-[1200px]">
       <thead>
         <tr class="bg-[#f4f5f8]">

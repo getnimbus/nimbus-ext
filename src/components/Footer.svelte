@@ -15,21 +15,21 @@
       >
         GetNimbus.io
       </a>
-      <div class="w-[0.05em] h-[16px] bg-gray-500" />
+      <div class="w-[1px] h-[16px] bg-gray-500" />
       <a
         href="https://nimbus.featurebase.app/"
         target="_blank"
         class="text-sm text-gray-500 hover:text-[#27326F] transition-all"
         >Feedback</a
       >
-      <div class="w-[0.05em] h-[16px] bg-gray-500" />
+      <div class="w-[1px] h-[16px] bg-gray-500" />
       <a
         href="https://nimbus.featurebase.app/roadmap"
         target="_blank"
         class="text-sm text-gray-500 hover:text-[#27326F] transition-all"
         >Roadmap</a
       >
-      <div class="w-[0.05em] h-[16px] bg-gray-500" />
+      <div class="w-[1px] h-[16px] bg-gray-500" />
       <div class="flex items-center gap-4">
         <div class="text-sm text-gray-500">Find us on</div>
         <div class="flex items-center gap-4">
