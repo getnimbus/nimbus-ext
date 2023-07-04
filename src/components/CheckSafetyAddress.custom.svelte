@@ -13,11 +13,11 @@
   const MultipleLang = {
     not_audited_address: i18n(
       "quickSearchLang.not-audited-address",
-      "This address is marked as unsafe."
+      "This address is unsafe."
     ),
     audited_address: i18n(
       "quickSearchLang.audited-address",
-      "This address is marked as safe."
+      "This address is safe."
     ),
     scan_by_go_plus: i18n("quickSearchLang.scan-with-go-plus", "Scan by Go+"),
     learn_more: i18n("quickSearchLang.learn-more", "Learn more"),

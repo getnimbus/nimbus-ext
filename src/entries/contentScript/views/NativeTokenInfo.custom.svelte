@@ -96,7 +96,7 @@
         <loading-icon />
       </div>
     {:else}
-      <div class="max-h-[600px] w-full">
+      <div class="h-full w-full">
         {#if coinInfo}
           <div class="flex items-center justify-between">
             <div class="flex gap-2">

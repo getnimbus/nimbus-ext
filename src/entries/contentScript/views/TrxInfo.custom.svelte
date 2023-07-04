@@ -101,7 +101,7 @@
   <div
     class={`bg-white font-sans text-sm text-gray-600 transition-all ${
       isTrxDetail ? "w-[600px] rounded-[20px]" : "w-full rounded-[10px]"
-    } ${isLoading && popup && "max-h-[120px]"} ${popup ? "max-h-[680px]" : ""}`}
+    } ${isLoading && popup && "h-[120px]"} ${popup ? "h-full" : ""}`}
     class:shadow={popup && isTrxDetail}
   >
     {#if isLoading}
