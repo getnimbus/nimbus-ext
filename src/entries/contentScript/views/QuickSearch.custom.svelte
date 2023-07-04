@@ -444,7 +444,7 @@
           d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
         />
       </svg>
-      <div class="font-bold flex justify-center items-center">
+      <div class="flex items-center justify-center font-bold">
         {System.OSName === "macOS" ? "⌘" : "Ctrl"}
         <span class="text-sm"> + Shift + K</span>
       </div>
@@ -472,7 +472,7 @@
           <div class="text-center">
             <img
               src={getLocalImg(Logo)}
-              class="w-auto h-14 object-contain"
+              class="object-contain w-auto h-14"
               alt="Nimbus"
             />
           </div>
@@ -483,7 +483,7 @@
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 text-white"
+              class="w-6 h-6 text-white"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -514,7 +514,7 @@
           </div>
         </div>
 
-        <div class="px-3 pb-3 pt-2">
+        <div class="px-3 pt-2 pb-3">
           <check-safety-dapp />
 
           {#if data.length === 1 && (data[0].type === "address" || data[0].type === "tx")}
@@ -540,7 +540,7 @@
                       {MultipleLang.title}
                     </div>
                     <div
-                      class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
+                      class="flex items-center justify-center w-full gap-2 mt-8 text-xs font-medium"
                     >
                       <div class="text-black">
                         {JSON.stringify(suggestList) ===
@@ -583,7 +583,7 @@
                       {MultipleLang.title}
                     </div>
                     <div
-                      class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
+                      class="flex items-center justify-center w-full gap-2 mt-8 text-xs font-medium"
                     >
                       <div class="text-black">
                         {JSON.stringify(suggestList) ===
@@ -662,13 +662,13 @@
 
                 {#if search !== ""}
                   {#if isLoading}
-                    <div class="text-4 leading-6 font-medium mt-10 text-center">
+                    <div class="mt-10 font-medium leading-6 text-center text-4">
                       {MultipleLang.status}
                     </div>
                   {:else if !isLoading}
                     {#if dataTokenSearchResult.length !== 0}
                       <div class="flex flex-col gap-y-3">
-                        {#each dataTokenSearchResult as item}
+                        {#each dataTokenSearchResult as item (item.id)}
                           <native-token-info
                             name={item.symbol}
                             id={item.id}
@@ -678,12 +678,12 @@
                           />
                         {/each}
                       </div>
-                      <div class="text-xs leading-4 italic text-gray-700 mt-3">
+                      <div class="mt-3 text-xs italic leading-4 text-gray-700">
                         {MultipleLang.sources}
                       </div>
                     {:else}
                       <div
-                        class="text-4 leading-6 font-medium mt-10 text-center text-black"
+                        class="mt-10 font-medium leading-6 text-center text-black text-4"
                       >
                         {MultipleLang.empty}
                       </div>
@@ -692,12 +692,12 @@
                 {:else if search === ""}
                   {#if dataTokenDetectResult.length !== 0}
                     <div class="mb-2">
-                      <div class="title-2 text-black">
+                      <div class="text-black title-2">
                         {MultipleLang.second_title}
                       </div>
                     </div>
                     <div class="flex flex-col gap-y-3">
-                      {#each dataTokenDetectResult as item}
+                      {#each dataTokenDetectResult as item (item.id)}
                         <native-token-info
                           name={item.symbol}
                           id={item.id}
@@ -707,7 +707,7 @@
                         />
                       {/each}
                     </div>
-                    <div class="text-xs leading-4 italic text-gray-700 mt-3">
+                    <div class="mt-3 text-xs italic leading-4 text-gray-700">
                       {MultipleLang.sources}
                     </div>
                   {:else}
@@ -726,7 +726,7 @@
                         {MultipleLang.title}
                       </div>
                       <div
-                        class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
+                        class="flex items-center justify-center w-full gap-2 mt-8 text-xs font-medium"
                       >
                         <div class="text-black">
                           {JSON.stringify(suggestList) ===
@@ -776,7 +776,7 @@
                             {MultipleLang.title}
                           </div>
                           <div
-                            class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
+                            class="flex items-center justify-center w-full gap-2 mt-8 text-xs font-medium"
                           >
                             <div class="text-black">
                               {JSON.stringify(suggestList) ===
@@ -798,7 +798,7 @@
                         </div>
                       {:else}
                         <div
-                          class="text-4 leading-6 font-medium mt-10 text-center text-black"
+                          class="mt-10 font-medium leading-6 text-center text-black text-4"
                         >
                           No terms
                         </div>
@@ -817,13 +817,13 @@
               {#if tabSelected === "token"}
                 {#if search !== ""}
                   {#if isLoading}
-                    <div class="text-4 leading-6 font-medium mt-10 text-center">
+                    <div class="mt-10 font-medium leading-6 text-center text-4">
                       {MultipleLang.status}
                     </div>
                   {:else if !isLoading}
                     {#if dataTokenSearchResult.length !== 0}
                       <div class="flex flex-col gap-y-3">
-                        {#each dataTokenSearchResult as item}
+                        {#each dataTokenSearchResult as item (item.id)}
                           <native-token-info
                             name={item.symbol}
                             id={item.id}
@@ -833,12 +833,12 @@
                           />
                         {/each}
                       </div>
-                      <div class="text-xs leading-4 italic text-gray-700 mt-3">
+                      <div class="mt-3 text-xs italic leading-4 text-gray-700">
                         {MultipleLang.sources}
                       </div>
                     {:else}
                       <div
-                        class="text-4 leading-6 font-medium mt-10 text-center text-black"
+                        class="mt-10 font-medium leading-6 text-center text-black text-4"
                       >
                         No tokens
                       </div>
@@ -850,7 +850,7 @@
                       <div class="title-2">{MultipleLang.second_title}</div>
                     </div>
                     <div class="flex flex-col gap-y-3">
-                      {#each dataTokenDetectResult as item}
+                      {#each dataTokenDetectResult as item (item.id)}
                         <native-token-info
                           name={item.symbol}
                           id={item.id}
@@ -860,7 +860,7 @@
                         />
                       {/each}
                     </div>
-                    <div class="text-xs leading-4 italic text-gray-700 mt-3">
+                    <div class="mt-3 text-xs italic leading-4 text-gray-700">
                       {MultipleLang.sources}
                     </div>
                   {:else}
@@ -879,7 +879,7 @@
                         {MultipleLang.title}
                       </div>
                       <div
-                        class="flex justify-center items-center gap-2 text-xs font-medium mt-8 w-full"
+                        class="flex items-center justify-center w-full gap-2 mt-8 text-xs font-medium"
                       >
                         <div class="text-black">
                           {JSON.stringify(suggestList) ===

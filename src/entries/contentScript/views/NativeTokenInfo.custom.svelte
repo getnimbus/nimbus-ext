@@ -44,7 +44,7 @@
     cmc_rank: -1,
   };
 
-  const getTokeInfo = async () => {
+  const getTokenInfo = async () => {
     isLoading = true;
     try {
       const data: TokenInfoData = await sendMessage("tokenInfoData", {
@@ -75,7 +75,7 @@
   };
 
   onMount(() => {
-    getTokeInfo();
+    getTokenInfo();
   });
 
   $: {
@@ -98,7 +98,7 @@
     {:else}
       <div class="max-h-[600px] w-full">
         {#if coinInfo}
-          <div class="flex justify-between items-center">
+          <div class="flex items-center justify-between">
             <div class="flex gap-2">
               <img
                 class="w-[40px] h-[40px] rounded-full"
@@ -109,7 +109,7 @@
                 <div class="flex items-center gap-2">
                   <div class="relative">
                     <div
-                      class="text-sm font-medium text-black flex-1"
+                      class="flex-1 text-sm font-medium text-black"
                       on:mouseenter={() => (showTooltip = true)}
                       on:mouseleave={() => (showTooltip = false)}
                     >
@@ -131,7 +131,7 @@
                   <a
                     href={`https://www.coingecko.com/en/coins/${id}`}
                     target="_blank"
-                    class="h-4 w-4 -mt-2 relative"
+                    class="relative w-4 h-4 -mt-2"
                     on:mouseenter={() => (showTooltipCoinGecko = true)}
                     on:mouseleave={() => (showTooltipCoinGecko = false)}
                   >
@@ -349,7 +349,7 @@ z"
 
                     {#if showTooltipCoinGecko}
                       <div
-                        class="absolute -top-6 left-1/2 transform -translate-x-1/2"
+                        class="absolute transform -translate-x-1/2 -top-6 left-1/2"
                         style="z-index: 2147483648;"
                       >
                         <tooltip-detail text={"Go to CoinGecko detail"} />
@@ -360,7 +360,7 @@ z"
                     <a
                       href={`https://coinmarketcap.com/currencies/${coinInfo.cmc_slug}`}
                       target="_blank"
-                      class="h-4 w-4 -mt-2 relative"
+                      class="relative w-4 h-4 -mt-2"
                       on:mouseenter={() => (showTooltipCMC = true)}
                       on:mouseleave={() => (showTooltipCMC = false)}
                     >
@@ -375,7 +375,7 @@ z"
                       >
                       {#if showTooltipCMC}
                         <div
-                          class="absolute -top-6 left-1/2 transform -translate-x-1/2"
+                          class="absolute transform -translate-x-1/2 -top-6 left-1/2"
                           style="z-index: 2147483648;"
                         >
                           <tooltip-detail text={"Go to CoinMarketCap detail"} />
@@ -452,7 +452,7 @@ z"
             </div>
           </div>
 
-          <div class="flex gap-1 flex-wrap mt-3 mx-auto">
+          <div class="flex flex-wrap gap-1 mx-auto mt-3">
             {#each coinInfo.categories.slice(0, 6) as category}
               <div
                 class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px]"
