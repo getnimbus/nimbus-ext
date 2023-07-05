@@ -220,6 +220,12 @@ export const formatLongNumber = (number: number) => {
   return formatNumber;
 };
 
+export const formatCurrencyV2 = (input: number) => {
+  return numeral(input).format("0,0.00") === "NaN"
+    ? formatLongNumber(input)
+    : numeral(input).format("0,0.00");
+};
+
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.000000") === "NaN"
     ? formatLongNumber(input)
