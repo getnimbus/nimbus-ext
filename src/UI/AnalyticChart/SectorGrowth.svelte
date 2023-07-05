@@ -4,7 +4,7 @@
   import dayjs from "dayjs";
   import { groupBy, intersection, flatten } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { formatCurrencyV2, typeList } from "~/utils";
+  import { formatCurrency, typeList } from "~/utils";
 
   import type { AnalyticSectorGrowthRes } from "~/types/AnalyticSectorGrowthData";
 
@@ -51,7 +51,7 @@
                       ${item.seriesName}
                     </div>
                     <div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: #000;">
-                      $${formatCurrencyV2(item.value)}
+                      $${formatCurrency(item.value)}
                     </div>
                   </div>`;
                 })

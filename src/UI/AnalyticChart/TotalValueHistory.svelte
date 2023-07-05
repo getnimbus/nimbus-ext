@@ -1,7 +1,7 @@
 <script lang="ts">
   import dayjs from "dayjs";
   import numeral from "numeral";
-  import { formatBigBalance, formatCurrencyV2 } from "~/utils";
+  import { formatBigBalance, formatCurrency } from "~/utils";
 
   import EChart from "~/components/EChart.svelte";
 
@@ -29,7 +29,7 @@
                           formatNumber(params[0].value).number_format
                         ).format("0,0.00") +
                         formatNumber(params[0].value).number_size
-                      : formatCurrencyV2(params[0].value)
+                      : formatCurrency(params[0].value)
                   }
                 </div>
               </div>
@@ -48,13 +48,13 @@
                       </div>
                       <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                         <span style="font-weight: 500; color: #000">
-                          ${formatCurrencyV2(item?.balance)}
+                          ${formatCurrency(item?.balance)}
                         </span>
                         <span>${item?.symbol}</span>
                       </div>
 
                       <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; font-weight: 500; font-size: 14px; color: #000;">
-                           $${formatCurrencyV2(item?.value)}
+                           $${formatCurrency(item?.value)}
                       </div>
                     </div>`;
                   })

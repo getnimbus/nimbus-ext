@@ -1,6 +1,6 @@
 <script lang="ts">
   import dayjs from "dayjs";
-  import { formatCurrencyV2 } from "~/utils";
+  import { formatCurrency } from "~/utils";
 
   import EChart from "~/components/EChart.svelte";
 
@@ -39,7 +39,7 @@
                           : "#f25f5d"
                         : "#000"
                     };">
-                    $${formatCurrencyV2(Math.abs(item?.value))}
+                    $${formatCurrency(Math.abs(item?.value))}
                     </span>
                   </div>
                 </div>

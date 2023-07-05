@@ -3,7 +3,7 @@
   import { wallet, chain } from "~/store";
   import { groupBy, intersection, flatten } from "lodash";
   import dayjs from "dayjs";
-  import { formatCurrencyV2 } from "~/utils";
+  import { formatCurrency } from "~/utils";
 
   import EChart from "~/components/EChart.svelte";
 
@@ -68,7 +68,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.value >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      $${formatCurrencyV2(Math.abs(item.value))}
+                      $${formatCurrency(Math.abs(item.value))}
                     </div>
                   </div>`;
                   }

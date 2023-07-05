@@ -2,7 +2,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { i18n } from "~/lib/i18n";
   import { chain } from "~/store";
-  import { formatCurrencyV2, typePieChart } from "~/utils";
+  import { formatCurrency, typePieChart } from "~/utils";
 
   export let optionLine;
   export let dataPieChart;
@@ -56,7 +56,7 @@
                     ${MultipleLang[params?.data?.name_balance]}
                   </div>
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                    ${formatCurrencyV2(params?.data?.value_balance)}
+                    ${formatCurrency(params?.data?.value_balance)}
                   </div>
                 </div>
               `
@@ -68,7 +68,7 @@
                   ${MultipleLang[params?.data?.name_value]}
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  $${formatCurrencyV2(params?.data?.value_value)}
+                  $${formatCurrency(params?.data?.value_value)}
                 </div>
               </div>
               
@@ -77,7 +77,7 @@
                   ${MultipleLang[params?.data?.name_ratio]}
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatCurrencyV2(params?.value)}%
+                  ${formatCurrency(params?.value)}%
                 </div>
               </div>
             </div>`;

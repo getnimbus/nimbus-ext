@@ -2,7 +2,7 @@
   import { sendMessage } from "webext-bridge";
   import { wallet, chain } from "~/store";
   import dayjs from "dayjs";
-  import { formatCurrencyV2 } from "~/utils";
+  import { formatCurrency } from "~/utils";
   import type {
     AnalyticTotalGasFeeRes,
     AnalyticTotalGasFeeFormat,
@@ -38,7 +38,7 @@
                   Gas fee paid
                 </div>
                 <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: #000;">
-                  $${formatCurrencyV2(params.data[1])}
+                  $${formatCurrency(params.data[1])}
                 </div>
               </div>
             </div>`;

@@ -1,6 +1,6 @@
 <script lang="ts">
   import dayjs from "dayjs";
-  import { formatCurrencyV2 } from "~/utils";
+  import { formatCurrency } from "~/utils";
 
   import EChart from "~/components/EChart.svelte";
 
@@ -30,7 +30,7 @@
                 <div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                   params[0].value >= 0 ? "#05a878" : "#f25f5d"
                 };">
-                  $${formatCurrencyV2(Math.abs(params[0].value))}
+                  $${formatCurrency(Math.abs(params[0].value))}
                 </div>
               </div>
             </div>`;

@@ -35,6 +35,8 @@
     selectedChain !== "GNOSIS";
 
   $: ratio = (price / sumTokenHolding) * 100;
+
+  $: console.log("data: ", data);
 </script>
 
 <tr

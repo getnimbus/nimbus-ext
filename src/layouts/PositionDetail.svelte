@@ -3,7 +3,7 @@
   import { nimbus } from "~/lib/network";
   import { Link } from "svelte-navigator";
   import dayjs from "dayjs";
-  import { shorterAddress, formatCurrencyV2, formatBalance } from "~/utils";
+  import { shorterAddress, formatCurrency, formatBalance } from "~/utils";
   import mixpanel from "mixpanel-browser";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -49,7 +49,7 @@
                   ${params[0]?.seriesName}
                 </div>
                 <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
-                  ${formatCurrencyV2(Math.abs(params[0]?.value))}
+                  ${formatCurrency(Math.abs(params[0]?.value))}
                 </div>
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between;">
@@ -60,7 +60,7 @@
                   ${params[1]?.seriesName}
                 </div>
                 <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
-                  ${formatCurrencyV2(Math.abs(params[1]?.value))}
+                  ${formatCurrency(Math.abs(params[1]?.value))}
                 </div>
               </div>
             </div>`;
@@ -125,7 +125,7 @@
                   ${params[0].seriesName}
                 </div>
                 <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
-                  ${formatCurrencyV2(Math.abs(params[0].value))}
+                  ${formatCurrency(Math.abs(params[0].value))}
                 </div>
               </div>
             </div>`;

@@ -6,7 +6,6 @@
     formatBigBalance,
     checkFormatBalance,
     formatCurrency,
-    formatCurrencyV2,
   } from "~/utils";
 
   export let id;
@@ -71,7 +70,7 @@
       {#if type === "balance" || type === "percent"}
         <span>
           {#if numberSize === "K"}
-            <span {id}>{formatCurrencyV2(number)}</span>
+            <span {id}>{formatCurrency(number)}</span>
           {:else}
             <span {id}>{numberFormat}</span>
           {/if}
@@ -81,7 +80,7 @@
       {#if type === "amount"}
         <span>
           {#if numberSize === "K"}
-            <span>{formatCurrencyV2(number)}</span>
+            <span>{formatCurrency(number)}</span>
           {:else}
             <span>
               {#if number < 100000}
