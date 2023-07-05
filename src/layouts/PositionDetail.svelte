@@ -148,7 +148,7 @@
 
         const formatXAxis = response?.balances.map((item) => {
           return dayjs(new Date(item.timestamp * 1000)).format(
-            "DD/MM/YY hh:mm"
+            "DD/MM/YY hh:mm A"
           );
         });
 
@@ -398,27 +398,27 @@
 <ErrorBoundary>
   <div class="header-container">
     <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
-      <div class="flex flex-col gap-14 mb-5">
-        <div class="flex justify-between items-center">
+      <div class="flex flex-col mb-5 gap-14">
+        <div class="flex items-center justify-between">
           <Link
             to={`${
               APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
             }`}
             class="cusor-pointer"
           >
-            <div class="text-white flex items-center gap-1">
+            <div class="flex items-center gap-1 text-white">
               <img src={LeftArrow} alt="" />
               <div class="text-sm font-semibold">Back to Portfolio</div>
             </div>
           </Link>
         </div>
-        <div class="flex justify-between items-center">
+        <div class="flex items-center justify-between">
           <div class="flex flex-col gap-3">
             <div class="flex items-center gap-2 text-white">
               <img
                 src={positionDetail?.logo}
                 alt=""
-                class="rounded-full w-8 h-8"
+                class="w-8 h-8 rounded-full"
               />
               <div class="text-3xl font-semibold">
                 {positionDetail?.price?.symbol || "--"}
@@ -441,10 +441,10 @@
           </a>
         </div>
       </div>
-      <div class="flex xl:flex-row flex-col justify-between gap-6">
-        <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
+      <div class="flex flex-col justify-between gap-6 xl:flex-row">
+        <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
           <OverviewCard title={"Position Value"}>
-            <div class="text-3xl text-black flex items-end gap-1">
+            <div class="flex items-end gap-1 text-3xl text-black">
               {#if (positionDetail?.overview?.holding)
                 .toString()
                 .toLowerCase()
@@ -467,7 +467,7 @@
                 >
               {/if}
             </div>
-            <div class="text-lg flex">
+            <div class="flex text-lg">
               $<CountUpNumber
                 id="PositionValue"
                 number={positionDetail?.overview?.currentValue}
@@ -518,13 +518,13 @@
             </div>
           </OverviewCard>
         </div>
-        <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
+        <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
           <OverviewCard
             title={"Average Cost"}
             link="https://docs.getnimbus.io/metrics/average_cost/"
             isTooltip
           >
-            <div class="text-3xl text-black flex">
+            <div class="flex text-3xl text-black">
               {#if (positionDetail?.overview?.averageCost)
                 .toString()
                 .toLowerCase()
@@ -586,11 +586,11 @@
       class="flex flex-col gap-7 bg-white rounded-[20px] p-8 mt-6"
       style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
     >
-      <div class="flex xl:flex-row flex-col justify-between gap-6">
+      <div class="flex flex-col justify-between gap-6 xl:flex-row">
         <div
           class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6"
         >
-          <div class="pl-4 text-2xl font-medium text-black mb-3">
+          <div class="pl-4 mb-3 text-2xl font-medium text-black">
             Price & Total Balance
           </div>
           {#if isLoadingPositionDetailPrice}
@@ -614,7 +614,7 @@
         <div
           class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6"
         >
-          <div class="pl-4 text-2xl font-medium text-black mb-3">
+          <div class="pl-4 mb-3 text-2xl font-medium text-black">
             Position Value
           </div>
           {#if isLoadingPositionDetailPrice}
@@ -643,7 +643,7 @@
       </div>
       <div class="border border-[#0000001a] rounded-[20px] p-6">
         <div class="flex flex-col gap-6">
-          <div class="flex justify-between items-center">
+          <div class="flex items-center justify-between">
             <div class="text-2xl font-medium text-black">History</div>
             <div
               use:tooltip={{
@@ -663,37 +663,37 @@
               <table class="table-auto xl:w-full w-[1200px]">
                 <thead>
                   <tr class="bg-[#f4f5f8]">
-                    <th class="pl-3 py-3">
+                    <th class="py-3 pl-3">
                       <div
-                        class="text-left text-xs uppercase font-semibold text-black"
+                        class="text-xs font-semibold text-left text-black uppercase"
                       >
                         Transaction
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-left text-xs uppercase font-semibold text-black"
+                        class="text-xs font-semibold text-left text-black uppercase"
                       >
                         From
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-left text-xs uppercase font-semibold text-black"
+                        class="text-xs font-semibold text-left text-black uppercase"
                       >
                         To
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-left text-xs uppercase font-semibold text-black"
+                        class="text-xs font-semibold text-left text-black uppercase"
                       >
                         Type
                       </div>
                     </th>
-                    <th class="pr-3 py-3">
+                    <th class="py-3 pr-3">
                       <div
-                        class="text-left text-xs uppercase font-semibold text-black"
+                        class="text-xs font-semibold text-left text-black uppercase"
                       >
                         Token change
                       </div>
@@ -704,7 +704,7 @@
                   <tbody>
                     <tr>
                       <td colspan={5}>
-                        <div class="flex justify-center items-center py-4 px-3">
+                        <div class="flex items-center justify-center px-3 py-4">
                           <loading-icon />
                         </div>
                       </td>
@@ -716,7 +716,7 @@
                       <tr>
                         <td colspan={5}>
                           <div
-                            class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
+                            class="flex items-center justify-center px-3 py-4 text-lg text-gray-400"
                           >
                             Empty
                           </div>
@@ -727,8 +727,8 @@
                         <tr
                           class="hover:bg-gray-100 transition-all border-b-[0.5px] last:border-none"
                         >
-                          <td class="pl-3 py-4">
-                            <div class="text-left flex items-start gap-2 w-max">
+                          <td class="py-4 pl-3">
+                            <div class="flex items-start gap-2 text-left w-max">
                               <div class="flex flex-col">
                                 <div class="text-sm">
                                   <Copy
@@ -740,7 +740,7 @@
                                     link={`https://etherscan.io/tx/${change?.transaction_hash}`}
                                   />
                                 </div>
-                                <div class="text-gray-400 text-xs">
+                                <div class="text-xs text-gray-400">
                                   {dayjs(
                                     new Date(change?.detail.timestamp)
                                   ).format("DD/MM/YYYY, hh:mm A")}
@@ -751,7 +751,7 @@
 
                           <td class="py-4">
                             {#if change?.detail?.from}
-                              <div class="w-max text-sm">
+                              <div class="text-sm w-max">
                                 <Copy
                                   address={change?.detail?.from}
                                   iconColor="#000"
@@ -765,7 +765,7 @@
 
                           <td class="py-4">
                             {#if change?.detail?.to}
-                              <div class="w-max text-sm">
+                              <div class="text-sm w-max">
                                 <Copy
                                   address={change?.detail?.to}
                                   iconColor="#000"
@@ -793,14 +793,14 @@
 
                           <td class="py-4 pr-3">
                             <div
-                              class="text-sm font-medium flex flex-col items-start gap-2"
+                              class="flex flex-col items-start gap-2 text-sm font-medium"
                             >
                               {#each change.changes as item}
                                 <div class="flex items-center gap-2">
                                   <img
                                     src={item?.logo}
                                     alt=""
-                                    class="w-5 h-5 overflow-hidden rounded-full object-contain"
+                                    class="object-contain w-5 h-5 overflow-hidden rounded-full"
                                   />
                                   <div
                                     class={`flex gap-1 ${
@@ -845,23 +845,23 @@
               <table class="table-auto xl:w-full w-[1200px]">
                 <thead>
                   <tr class="bg-[#f4f5f8]">
-                    <th class="pl-3 py-3">
+                    <th class="py-3 pl-3">
                       <div
-                        class="text-left text-xs uppercase font-semibold text-black"
+                        class="text-xs font-semibold text-left text-black uppercase"
                       >
                         Transaction
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-left text-xs uppercase font-semibold text-black"
+                        class="text-xs font-semibold text-left text-black uppercase"
                       >
                         Type
                       </div>
                     </th>
-                    <th class="pr-3 py-3">
+                    <th class="py-3 pr-3">
                       <div
-                        class="text-left text-xs uppercase font-semibold text-black"
+                        class="text-xs font-semibold text-left text-black uppercase"
                       >
                         Token Change
                       </div>
@@ -872,7 +872,7 @@
                   <tbody>
                     <tr>
                       <td colspan="3">
-                        <div class="flex justify-center items-center py-4 px-3">
+                        <div class="flex items-center justify-center px-3 py-4">
                           <loading-icon />
                         </div>
                       </td>
@@ -884,7 +884,7 @@
                       <tr>
                         <td colspan="3">
                           <div
-                            class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
+                            class="flex items-center justify-center px-3 py-4 text-lg text-gray-400"
                           >
                             Empty
                           </div>
@@ -895,14 +895,14 @@
                         <tr
                           class="hover:bg-gray-100 transition-all border-b-[0.5px] last:border-none"
                         >
-                          <td class="pl-3 py-4">
+                          <td class="py-4 pl-3">
                             <div class="w-max">
                               <a
                                 href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
-                                class="hover:text-blue-500 cursor-pointer"
+                                class="cursor-pointer hover:text-blue-500"
                                 target="_blank"
                               >
-                                <div class="text-left flex items-start gap-2">
+                                <div class="flex items-start gap-2 text-left">
                                   <div class="flex flex-col">
                                     <div
                                       class="text-sm"
@@ -914,7 +914,7 @@
                                     >
                                       {shorterAddress(change?.transactionHash)}
                                     </div>
-                                    <div class="text-gray-400 text-xs">
+                                    <div class="text-xs text-gray-400">
                                       {dayjs(new Date(change.timestamp)).format(
                                         "DD/MM/YYYY, hh:mm A"
                                       )}
@@ -933,7 +933,7 @@
                               </div>
                             {/if}
                           </td>
-                          <td class="pr-3 py-4">
+                          <td class="py-4 pr-3">
                             <div class="w-max">
                               <a
                                 href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
@@ -941,7 +941,7 @@
                                 class="cursor-pointer"
                               >
                                 <div
-                                  class="flex flex-col gap-1 justify-start items-start text-sm"
+                                  class="flex flex-col items-start justify-start gap-1 text-sm"
                                 >
                                   {#if change?.metadata?.hasOwnProperty("btcChange")}
                                     <div class="flex items-center gap-1">
