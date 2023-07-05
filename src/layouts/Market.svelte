@@ -30,6 +30,8 @@
   let timerSearchDebounce;
   let timerAmountDebounce;
   let isLoading = false;
+  let tableHeader;
+  let isSticky = false;
 
   const getMarketData = async () => {
     try {
@@ -66,6 +68,16 @@
   onMount(() => {
     getMarketData();
     mixpanel.track("market_page");
+
+    const handleScroll = () => {
+      const clientRectTokenHeader = tableHeader.getBoundingClientRect();
+      isSticky = clientRectTokenHeader.top <= 0;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   });
 
   $: {
@@ -113,11 +125,16 @@
         </div>
       </div>
     </div>
-    <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
+    <div
+      class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
+    >
       <table class="table-auto xl:w-full w-[1200px]">
-        <thead>
+        <thead
+          class={isSticky ? "sticky top-0 z-10" : ""}
+          bind:this={tableHeader}
+        >
           <tr class="bg-[#f4f5f8]">
-            <th class="pl-3 py-3 w-[250px]">
+            <th class="pl-3 py-3 w-[250px] rounded-tl-[10px]">
               <div class="text-left text-xs uppercase font-semibold text-black">
                 Pair
               </div>
@@ -144,7 +161,7 @@
                 Maker
               </div>
             </th>
-            <th class="pr-3 py-3 w-[190px]">
+            <th class="pr-3 py-3 w-[190px] rounded-tr-[10px]">
               <div
                 class="text-right text-xs uppercase font-semibold text-black"
               >

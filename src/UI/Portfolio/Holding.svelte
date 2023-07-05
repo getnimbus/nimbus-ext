@@ -231,7 +231,7 @@
               bind:this={tableTokenHeader}
             >
               <tr class="bg-[#f4f5f8]">
-                <th class="pl-3 py-3">
+                <th class="pl-3 py-3 rounded-tl-[10px]">
                   <div
                     class="text-left text-xs uppercase font-semibold text-black"
                   >
@@ -278,7 +278,7 @@
                     </TooltipTitle>
                   </div>
                 </th>
-                <th class="py-3 w-10" />
+                <th class="py-3 w-10 rounded-tr-[10px]" />
               </tr>
             </thead>
             {#if isLoadingToken}
@@ -337,7 +337,7 @@
             bind:this={tableNFTHeader}
           >
             <tr class="bg-[#f4f5f8]">
-              <th class="pl-3 py-3">
+              <th class="pl-3 py-3 rounded-tl-[10px]">
                 <div
                   class="text-left text-xs uppercase font-semibold text-black"
                 >
@@ -383,7 +383,7 @@
                   </TooltipTitle>
                 </div>
               </th>
-              <th class="py-3 w-10" />
+              <th class="py-3 w-10 rounded-tr-[10px]" />
             </tr>
           </thead>
           {#if isLoadingNFT}

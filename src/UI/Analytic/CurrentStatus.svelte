@@ -507,7 +507,7 @@
           class="border border-[#0000000d] rounded-[10px] overflow-y-auto overflow-x-auto"
         >
           <table class="table-auto xl:w-full w-[1200px] overflow-y-scroll">
-            <thead>
+            <thead class="sticky top-0 z-10">
               <tr class="bg-[#f4f5f8]">
                 <th class="pl-3 py-3">
                   <div

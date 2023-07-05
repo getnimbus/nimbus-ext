@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";
@@ -13,13 +14,30 @@
   export let isLoading;
   export let pageToken;
   export let loadMore = (pageToken) => {};
+
+  let tableHeader;
+  let isSticky = false;
+
+  onMount(() => {
+    const handleScroll = () => {
+      const clientRectTokenHeader = tableHeader.getBoundingClientRect();
+      isSticky = clientRectTokenHeader.top <= 0;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  });
 </script>
 
-<div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
+<div
+  class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
+>
   <table class="table-auto xl:w-full w-[1200px]">
-    <thead>
+    <thead class={isSticky ? "sticky top-0 z-10" : ""} bind:this={tableHeader}>
       <tr class="bg-[#f4f5f8]">
-        <th class="pl-3 py-3">
+        <th class="pl-3 py-3 rounded-tl-[10px]">
           <div class="text-left text-xs uppercase font-semibold text-black">
             Transaction
           </div>
@@ -41,7 +59,7 @@
             Type
           </div>
         </th>
-        <th class="pr-3 py-3">
+        <th class="pr-3 py-3 rounded-tr-[10px]">
           <div class="text-left text-xs uppercase font-semibold text-black">
             Token change
           </div>
