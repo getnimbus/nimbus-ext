@@ -647,7 +647,7 @@
             <div class="text-2xl font-medium text-black">History</div>
             <div
               use:tooltip={{
-                content: `<tooltip-detail text="Comming soon" />`,
+                content: `<tooltip-detail text="Premium feature. Comming soon" />`,
                 allowHTML: true,
                 placement: "top",
               }}
