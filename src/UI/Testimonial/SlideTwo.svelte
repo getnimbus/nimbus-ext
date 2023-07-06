@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Avatar from "~/assets/stacy_muur.jpeg";
 </script>
 
 <div class="flex flex-col gap-5 h-[35vh]">
@@ -6,21 +7,22 @@
     class="text-lg font-normal leading-8 tracking-tight text-gray-900"
   >
     <p>
-      “Qui dolor enim consectetur do et non ex amet culpa sint in ea non dolore.
-      Enim minim magna anim id minim eu cillum sunt dolore aliquip. Amet elit
-      laborum culpa irure incididunt adipisicing culpa amet officia
-      exercitation. Eu non aute velit id velit Lorem elit anim pariatur.”
+      These guys are truly building some hidden gem tools that absolutely
+      deserve your attention, Champ! <br /> ヾ(´▽｀;)ゝ
     </p>
   </blockquote>
   <figcaption class="flex items-center gap-x-6">
-    <img
-      class="h-12 w-12 rounded-full bg-gray-50"
-      src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80"
-      alt=""
-    />
-    <div class="text-sm leading-6">
-      <div class="font-semibold text-gray-900">Judith Black 2</div>
-      <div class="mt-0.5 text-gray-600">CEO of Workcation 2</div>
+    <img class="h-12 w-12 rounded-full bg-gray-50" src={Avatar} alt="" />
+    <div class="text-sm">
+      <div class="font-semibold text-gray-900">Stacy Muur</div>
+      <div class="text-gray-600">
+        <a
+          href="https://twitter.com/spin_fi"
+          target="_blank"
+          class="text-blue-500">@spin_fi</a
+        > CMO, the Mother of Degenpedia, the Threadographic originator, the DeFi
+        Mapmaker.
+      </div>
     </div>
   </figcaption>
 </div>
