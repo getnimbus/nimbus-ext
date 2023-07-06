@@ -119,7 +119,11 @@
             }}
             value={amountValue}
             placeholder={MultipleLang.market_search_amount}
-            type="text"
+            inputmode="decimal"
+            pattern="[0-9]*(.[0-9]+)?"
+            type="number"
+            autocorrect="off"
+            autocomplete="off"
             class="flex-[0.6] text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
           />
         </div>

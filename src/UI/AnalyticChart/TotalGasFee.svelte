@@ -2,7 +2,7 @@
   import { sendMessage } from "webext-bridge";
   import { wallet, chain } from "~/store";
   import dayjs from "dayjs";
-  import { formatCurrency } from "~/utils";
+  import { formatCurrency, getAddressContext } from "~/utils";
   import type {
     AnalyticTotalGasFeeRes,
     AnalyticTotalGasFeeFormat,
@@ -88,55 +88,57 @@
   };
 
   const getTotalGasFee = async () => {
-    isLoadingChart = true;
-    try {
-      const response: AnalyticTotalGasFeeRes = await sendMessage(
-        "getTotalGasFee",
-        {
-          address: selectedWallet,
-          chain: selectedChain,
-          // fromDate: "YYYY-MM-DD",
-          // toDate: "YYYY-MM-DD",
-        }
-      );
-
-      if (response?.result && response?.result.length !== 0) {
-        const maxHistorical = response?.result.reduce((prev, current) =>
-          prev.value > current.value ? prev : current
-        );
-
-        sum = response?.result.reduce((prev, item) => prev + item.value, 0);
-
-        const formatData: AnalyticTotalGasFeeFormat = response?.result.map(
-          (item) => {
-            return [dayjs(item.date * 1000).format("YYYY-MM-DD"), item.value];
+    if (getAddressContext(selectedWallet).type === "EVM") {
+      isLoadingChart = true;
+      try {
+        const response: AnalyticTotalGasFeeRes = await sendMessage(
+          "getTotalGasFee",
+          {
+            address: selectedWallet,
+            chain: selectedChain,
+            // fromDate: "YYYY-MM-DD",
+            // toDate: "YYYY-MM-DD",
           }
         );
 
-        option = {
-          ...option,
-          visualMap: {
-            ...option.visualMap,
-            max: maxHistorical.value,
-          },
-          calendar: {
-            ...option.calendar,
-            range: dayjs(maxHistorical.date * 1000).format("YYYY"),
-          },
-          series: {
-            ...option.series,
-            data: formatData,
-          },
-        };
-        isLoadingChart = false;
-      } else {
+        if (response?.result && response?.result.length !== 0) {
+          const maxHistorical = response?.result.reduce((prev, current) =>
+            prev.value > current.value ? prev : current
+          );
+
+          sum = response?.result.reduce((prev, item) => prev + item.value, 0);
+
+          const formatData: AnalyticTotalGasFeeFormat = response?.result.map(
+            (item) => {
+              return [dayjs(item.date * 1000).format("YYYY-MM-DD"), item.value];
+            }
+          );
+
+          option = {
+            ...option,
+            visualMap: {
+              ...option.visualMap,
+              max: maxHistorical.value,
+            },
+            calendar: {
+              ...option.calendar,
+              range: dayjs(maxHistorical.date * 1000).format("YYYY"),
+            },
+            series: {
+              ...option.series,
+              data: formatData,
+            },
+          };
+          isLoadingChart = false;
+        } else {
+          isLoadingChart = false;
+          isEmptyDataChart = true;
+        }
+      } catch (e) {
+        console.log("error: ", e);
         isLoadingChart = false;
         isEmptyDataChart = true;
       }
-    } catch (e) {
-      console.log("error: ", e);
-      isLoadingChart = false;
-      isEmptyDataChart = true;
     }
   };
 

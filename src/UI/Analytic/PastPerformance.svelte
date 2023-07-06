@@ -9,6 +9,7 @@
   import TotalValueHistory from "../AnalyticChart/TotalValueHistory.svelte";
   import DailyPnL from "../AnalyticChart/DailyPnL.svelte";
   import ProfitGrows from "../AnalyticChart/ProfitGrows.svelte";
+  import { getAddressContext } from "~/utils";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -30,35 +31,37 @@
   // };
 
   const getTotalValueHistoryAndDailyGain = async () => {
-    isLoading = true;
-    try {
-      const response: any = await sendMessage("getTotalValueHistory", {
-        address: selectedWallet,
-        chain: selectedChain,
-        // fromDate: "YYYY-MM-DD",
-        // toDate: "YYYY-MM-DD",
-      });
+    if (getAddressContext(selectedWallet).type === "EVM") {
+      isLoading = true;
+      try {
+        const response: any = await sendMessage("getTotalValueHistory", {
+          address: selectedWallet,
+          chain: selectedChain,
+          // fromDate: "YYYY-MM-DD",
+          // toDate: "YYYY-MM-DD",
+        });
 
-      if (response === undefined) {
-        isEmpty = true;
-        isLoading = false;
-        return;
-      } else if (selectedWallet === response.address) {
-        if (response?.result?.length === 0) {
+        if (response === undefined) {
           isEmpty = true;
           isLoading = false;
           return;
-        }
-        dataTotalValueHistory = response?.result?.holdingHistory;
-        dataDailyPnL = response?.result?.returnsChange;
+        } else if (selectedWallet === response.address) {
+          if (response?.result?.length === 0) {
+            isEmpty = true;
+            isLoading = false;
+            return;
+          }
+          dataTotalValueHistory = response?.result?.holdingHistory;
+          dataDailyPnL = response?.result?.returnsChange;
 
-        isLoading = false;
-      } else {
-        isEmpty = true;
-        isLoading = false;
+          isLoading = false;
+        } else {
+          isEmpty = true;
+          isLoading = false;
+        }
+      } catch (e) {
+        console.log("error: ", e);
       }
-    } catch (e) {
-      console.log("error: ", e);
     }
   };
 

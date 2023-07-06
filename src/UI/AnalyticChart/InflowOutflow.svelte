@@ -3,7 +3,7 @@
   import { wallet, chain } from "~/store";
   import { groupBy, intersection, flatten } from "lodash";
   import dayjs from "dayjs";
-  import { formatCurrency } from "~/utils";
+  import { formatCurrency, getAddressContext } from "~/utils";
 
   import EChart from "~/components/EChart.svelte";
 
@@ -158,137 +158,141 @@
   };
 
   const getInflowOutflow = async () => {
-    isLoadingInflowOutflow = true;
-    try {
-      const response: any = await sendMessage("getInflowOutflow", {
-        address: selectedWallet,
-        chain: selectedChain,
-        // fromDate: "YYYY-MM-DD",
-        // toDate: "YYYY-MM-DD",
-      });
+    if (getAddressContext(selectedWallet).type === "EVM") {
+      isLoadingInflowOutflow = true;
+      try {
+        const response: any = await sendMessage("getInflowOutflow", {
+          address: selectedWallet,
+          chain: selectedChain,
+          // fromDate: "YYYY-MM-DD",
+          // toDate: "YYYY-MM-DD",
+        });
 
-      if (response === undefined) {
-        isEmptyInflowOutflow = true;
-        isLoadingInflowOutflow = false;
-        return;
-      } else if (selectedWallet === response.address) {
-        if (response?.result?.length === 0) {
+        if (response === undefined) {
           isEmptyInflowOutflow = true;
           isLoadingInflowOutflow = false;
           return;
-        }
+        } else if (selectedWallet === response.address) {
+          if (response?.result?.length === 0) {
+            isEmptyInflowOutflow = true;
+            isLoadingInflowOutflow = false;
+            return;
+          }
 
-        const formatXAxis = response?.result?.map((item) => {
-          return dayjs(item.timestamp * 1000).format("DD MMM YYYY");
-        });
+          const formatXAxis = response?.result?.map((item) => {
+            return dayjs(item.timestamp * 1000).format("DD MMM YYYY");
+          });
 
-        const groupByDirectionData = response?.result?.map((item) => {
-          return {
-            ...item,
-            changes: groupBy(item.changes, "direction"),
-            keys: Object.getOwnPropertyNames(
-              groupBy(item.changes, "direction")
-            ),
-          };
-        });
+          const groupByDirectionData = response?.result?.map((item) => {
+            return {
+              ...item,
+              changes: groupBy(item.changes, "direction"),
+              keys: Object.getOwnPropertyNames(
+                groupBy(item.changes, "direction")
+              ),
+            };
+          });
 
-        const groupByTypeData = response?.result?.map((item) => {
-          return {
-            keys: Object.getOwnPropertyNames(groupBy(item.changes, "type")),
-          };
-        });
+          const groupByTypeData = response?.result?.map((item) => {
+            return {
+              keys: Object.getOwnPropertyNames(groupBy(item.changes, "type")),
+            };
+          });
 
-        const listType = intersection(
-          flatten(groupByTypeData?.map((item) => item.keys))
-        );
-
-        const inflowData = formatDataTypeBaseOnInOutFlow(
-          groupByDirectionData,
-          listDirection[0],
-          listType
-        );
-
-        const outflowData = formatDataTypeBaseOnInOutFlow(
-          groupByDirectionData,
-          listDirection[1],
-          listType
-        );
-
-        const formatOutflowData = outflowData.map((item) => {
-          return {
-            ...item,
-            data: item.data.map((data) => {
-              if (data !== 0) {
-                return data * -1;
-              }
-              return 0;
-            }),
-          };
-        });
-
-        const sumDataInflow =
-          inflowData[0]?.data.map((data, index) => {
-            return inflowData.reduce(
-              (prev, item) => prev + item.data[index],
-              0
-            );
-          }) || [];
-
-        const sumDataOutflow = formatOutflowData[0]?.data.map((data, index) => {
-          return formatOutflowData.reduce(
-            (prev, item) => prev + item.data[index],
-            0
+          const listType = intersection(
+            flatten(groupByTypeData?.map((item) => item.keys))
           );
-        });
 
-        const dataNetflow = [];
-        for (let i = 0; i < sumDataInflow.length; i++) {
-          const sum = sumDataInflow[i] + sumDataOutflow[i];
-          dataNetflow.push(sum);
-        }
+          const inflowData = formatDataTypeBaseOnInOutFlow(
+            groupByDirectionData,
+            listDirection[0],
+            listType
+          );
 
-        const formatDataNetflow = dataNetflow.map((item) => {
-          return {
-            value: item,
-            itemStyle: {
-              color: "rgba(0,169,236, 0.8)",
-            },
-          };
-        });
+          const outflowData = formatDataTypeBaseOnInOutFlow(
+            groupByDirectionData,
+            listDirection[1],
+            listType
+          );
 
-        option = {
-          ...option,
-          legend: {
-            ...option.legend,
-            data: listType,
-          },
-          xAxis: {
-            ...option.xAxis,
-            data: formatXAxis,
-          },
-          series: [
-            ...inflowData,
-            ...formatOutflowData,
-            {
-              name: "Netflow",
-              type: "line",
-              data: formatDataNetflow,
-              lineStyle: {
+          const formatOutflowData = outflowData.map((item) => {
+            return {
+              ...item,
+              data: item.data.map((data) => {
+                if (data !== 0) {
+                  return data * -1;
+                }
+                return 0;
+              }),
+            };
+          });
+
+          const sumDataInflow =
+            inflowData[0]?.data.map((data, index) => {
+              return inflowData.reduce(
+                (prev, item) => prev + item.data[index],
+                0
+              );
+            }) || [];
+
+          const sumDataOutflow = formatOutflowData[0]?.data.map(
+            (data, index) => {
+              return formatOutflowData.reduce(
+                (prev, item) => prev + item.data[index],
+                0
+              );
+            }
+          );
+
+          const dataNetflow = [];
+          for (let i = 0; i < sumDataInflow.length; i++) {
+            const sum = sumDataInflow[i] + sumDataOutflow[i];
+            dataNetflow.push(sum);
+          }
+
+          const formatDataNetflow = dataNetflow.map((item) => {
+            return {
+              value: item,
+              itemStyle: {
                 color: "rgba(0,169,236, 0.8)",
               },
-            },
-          ],
-        };
+            };
+          });
 
+          option = {
+            ...option,
+            legend: {
+              ...option.legend,
+              data: listType,
+            },
+            xAxis: {
+              ...option.xAxis,
+              data: formatXAxis,
+            },
+            series: [
+              ...inflowData,
+              ...formatOutflowData,
+              {
+                name: "Netflow",
+                type: "line",
+                data: formatDataNetflow,
+                lineStyle: {
+                  color: "rgba(0,169,236, 0.8)",
+                },
+              },
+            ],
+          };
+
+          isLoadingInflowOutflow = false;
+        } else {
+          isEmptyInflowOutflow = true;
+          isLoadingInflowOutflow = false;
+        }
+      } catch (e) {
+        console.log("error: ", e);
         isLoadingInflowOutflow = false;
-      } else {
         isEmptyInflowOutflow = true;
-        isLoadingInflowOutflow = false;
       }
-    } catch (e) {
-      console.log("error: ", e);
-      isLoadingInflowOutflow = false;
-      isEmptyInflowOutflow = true;
     }
   };
 
