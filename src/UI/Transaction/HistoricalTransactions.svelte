@@ -214,7 +214,7 @@
     {/if}
   </table>
 </div>
-{#if pageToken.length !== 0}
+{#if pageToken && pageToken.length !== 0}
   <div class="mx-auto">
     <Button
       variant="secondary"
