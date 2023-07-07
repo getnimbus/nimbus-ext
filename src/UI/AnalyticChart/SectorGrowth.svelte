@@ -4,7 +4,7 @@
   import dayjs from "dayjs";
   import { groupBy, intersection, flatten } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { formatCurrency, typeList } from "~/utils";
+  import { formatCurrency, getAddressContext, typeList } from "~/utils";
 
   import type { AnalyticSectorGrowthRes } from "~/types/AnalyticSectorGrowthData";
 
@@ -130,42 +130,44 @@
   };
 
   const getSectorGrowth = async () => {
-    isLoadingSectorGrowth = true;
-    try {
-      const response: AnalyticSectorGrowthRes = await sendMessage(
-        "getSectorGrowth",
-        {
-          address: selectedWallet,
-          chain: selectedChain,
-          // fromDate: "YYYY-MM-DD",
-          // toDate: "YYYY-MM-DD",
-        }
-      );
+    if (getAddressContext(selectedWallet).type === "EVM") {
+      isLoadingSectorGrowth = true;
+      try {
+        const response: AnalyticSectorGrowthRes = await sendMessage(
+          "getSectorGrowth",
+          {
+            address: selectedWallet,
+            chain: selectedChain,
+            // fromDate: "YYYY-MM-DD",
+            // toDate: "YYYY-MM-DD",
+          }
+        );
 
-      if (response === undefined) {
-        isEmptySectorGrowth = true;
-        isLoadingSectorGrowth = false;
-        return;
-      } else if (selectedWallet === response.address) {
-        if (response?.result?.length === 0) {
+        if (response === undefined) {
           isEmptySectorGrowth = true;
           isLoadingSectorGrowth = false;
           return;
+        } else if (selectedWallet === response.address) {
+          if (response?.result?.length === 0) {
+            isEmptySectorGrowth = true;
+            isLoadingSectorGrowth = false;
+            return;
+          }
+
+          dataSector = handleFormatDataLineChart(response.result, "sector");
+          dataCategory = handleFormatDataLineChart(response.result, "category");
+          dataRank = handleFormatDataLineChart(response.result, "rank");
+
+          isLoadingSectorGrowth = false;
+        } else {
+          isEmptySectorGrowth = true;
+          isLoadingSectorGrowth = false;
         }
-
-        dataSector = handleFormatDataLineChart(response.result, "sector");
-        dataCategory = handleFormatDataLineChart(response.result, "category");
-        dataRank = handleFormatDataLineChart(response.result, "rank");
-
+      } catch (e) {
+        console.log("error: ", e);
         isLoadingSectorGrowth = false;
-      } else {
         isEmptySectorGrowth = true;
-        isLoadingSectorGrowth = false;
       }
-    } catch (e) {
-      console.log("error: ", e);
-      isLoadingSectorGrowth = false;
-      isEmptySectorGrowth = true;
     }
   };
 

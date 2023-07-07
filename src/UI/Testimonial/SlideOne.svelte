@@ -18,9 +18,9 @@
       src="https://assets.devfolio.co/users/fdb9bde4af29435fa55a308030113292/avatar-e2e5466f-548d-479b-b6e5-a653775fd9e3.jpeg"
       alt="Thanh Le"
     />
-    <div class="text-sm leading-6">
+    <div class="text-sm">
       <div class="font-semibold text-gray-900">Thanh Le</div>
-      <div class="mt-0.5 text-gray-600">Founder @ Nimbus</div>
+      <div class="text-gray-600">Founder @ Nimbus</div>
     </div>
   </figcaption>
 </div>

@@ -94,45 +94,50 @@
   };
 
   const getAnalyticHistorical = async () => {
-    isLoadingChart = true;
-    try {
-      const response: AnalyticHistoricalRes = await sendMessage("getAnalytic", {
-        address: selectedWallet,
-        chain: selectedChain,
-      });
-      if (response && response.length !== 0) {
-        const maxHistorical = response.reduce((prev, current) =>
-          prev.count > current.count ? prev : current
+    if (getAddressContext(selectedWallet).type === "EVM") {
+      isLoadingChart = true;
+      try {
+        const response: AnalyticHistoricalRes = await sendMessage(
+          "getAnalytic",
+          {
+            address: selectedWallet,
+            chain: selectedChain,
+          }
         );
+        if (response && response.length !== 0) {
+          const maxHistorical = response.reduce((prev, current) =>
+            prev.count > current.count ? prev : current
+          );
 
-        const formatData: AnalyticHistoricalFormat = response.map((item) => {
-          return [dayjs(item.date).format("YYYY-MM-DD"), item.count];
-        });
+          const formatData: AnalyticHistoricalFormat = response.map((item) => {
+            return [dayjs(item.date).format("YYYY-MM-DD"), item.count];
+          });
 
-        option = {
-          ...option,
-          visualMap: {
-            ...option.visualMap,
-            max: maxHistorical.count,
-          },
-          calendar: {
-            ...option.calendar,
-            range: dayjs(maxHistorical.date).format("YYYY"),
-          },
-          series: {
-            ...option.series,
-            data: formatData,
-          },
-        };
-        isLoadingChart = false;
-      } else {
+          option = {
+            ...option,
+            visualMap: {
+              ...option.visualMap,
+              max: maxHistorical.count,
+            },
+            calendar: {
+              ...option.calendar,
+              range: dayjs(maxHistorical.date).format("YYYY"),
+            },
+            series: {
+              ...option.series,
+              data: formatData,
+            },
+          };
+          isLoadingChart = false;
+        } else {
+          isLoadingChart = false;
+          isEmptyDataChart = true;
+        }
+      } catch (e) {
+        console.log("error: ", e);
         isLoadingChart = false;
         isEmptyDataChart = true;
       }
-    } catch (e) {
-      console.log("error: ", e);
-      isLoadingChart = false;
-      isEmptyDataChart = true;
     }
   };
 

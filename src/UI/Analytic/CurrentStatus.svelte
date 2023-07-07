@@ -3,7 +3,12 @@
   import { wallet, chain } from "~/store";
   import { groupBy } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { formatBalance, formatCurrency, typeList } from "~/utils";
+  import {
+    formatBalance,
+    formatCurrency,
+    getAddressContext,
+    typeList,
+  } from "~/utils";
   import { i18n } from "~/lib/i18n";
   import { priceSubscribe } from "~/lib/price-ws";
 
@@ -207,69 +212,74 @@
   };
 
   const getHoldingToken = async (isReload: boolean = false) => {
-    isLoadingDataPie = true;
-    isLoadingToken = true;
-    try {
-      const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
-        address: selectedWallet,
-        reload: isReload,
-        chain: selectedChain,
-      });
+    if (getAddressContext(selectedWallet).type === "EVM") {
+      isLoadingDataPie = true;
+      isLoadingToken = true;
+      try {
+        const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
+          address: selectedWallet,
+          reload: isReload,
+          chain: selectedChain,
+        });
 
-      if (response === null) {
-        isEmptyDataPie = true;
-        isLoadingToken = false;
-        isLoadingDataPie = false;
-      } else if (selectedWallet === response?.address) {
-        if (response?.result?.length === 0) {
+        if (response === null) {
           isEmptyDataPie = true;
           isLoadingToken = false;
           isLoadingDataPie = false;
-          return;
+        } else if (selectedWallet === response?.address) {
+          if (response?.result?.length === 0) {
+            isEmptyDataPie = true;
+            isLoadingToken = false;
+            isLoadingDataPie = false;
+            return;
+          }
+
+          const listCMCID = response.result
+            .map((item) => item.cmc_id)
+            .filter((n) => n);
+
+          priceSubscribe(listCMCID, (data) => {
+            marketPrice = {
+              id: data.id,
+              market_price: data.p,
+            };
+          });
+
+          dataTableRank = handleFormatDataTable(response.result, "rank");
+          dataTableCategory = handleFormatDataTable(
+            response.result,
+            "category"
+          );
+          dataTableSector = handleFormatDataTable(response.result, "sector");
+
+          dataRank = handleFormatDataPieChart(response.result, "rank");
+          dataCategory = handleFormatDataPieChart(response.result, "category");
+          dataSector = handleFormatDataPieChart(response.result, "sector");
+
+          formatData = response.result.map((item) => {
+            return {
+              cmc_id: item.cmc_id,
+              amount: Number(item?.amount),
+              market_price: Number(item?.price?.price),
+            };
+          });
+          sumTokenHolding = formatData.reduce(
+            (prev, item) => prev + item.amount * item.market_price,
+            0
+          );
+
+          isLoadingDataPie = false;
+          isLoadingToken = false;
+        } else {
+          isEmptyDataPie = true;
+          isLoadingDataPie = false;
+          isLoadingToken = false;
         }
-
-        const listCMCID = response.result
-          .map((item) => item.cmc_id)
-          .filter((n) => n);
-
-        priceSubscribe(listCMCID, (data) => {
-          marketPrice = {
-            id: data.id,
-            market_price: data.p,
-          };
-        });
-
-        dataTableRank = handleFormatDataTable(response.result, "rank");
-        dataTableCategory = handleFormatDataTable(response.result, "category");
-        dataTableSector = handleFormatDataTable(response.result, "sector");
-
-        dataRank = handleFormatDataPieChart(response.result, "rank");
-        dataCategory = handleFormatDataPieChart(response.result, "category");
-        dataSector = handleFormatDataPieChart(response.result, "sector");
-
-        formatData = response.result.map((item) => {
-          return {
-            cmc_id: item.cmc_id,
-            amount: Number(item?.amount),
-            market_price: Number(item?.price?.price),
-          };
-        });
-        sumTokenHolding = formatData.reduce(
-          (prev, item) => prev + item.amount * item.market_price,
-          0
-        );
-
+      } catch (e) {
+        console.log("error: ", e);
         isLoadingDataPie = false;
-        isLoadingToken = false;
-      } else {
         isEmptyDataPie = true;
-        isLoadingDataPie = false;
-        isLoadingToken = false;
       }
-    } catch (e) {
-      console.log("error: ", e);
-      isLoadingDataPie = false;
-      isEmptyDataPie = true;
     }
   };
 
