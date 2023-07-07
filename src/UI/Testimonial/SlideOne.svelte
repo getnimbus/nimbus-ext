@@ -20,7 +20,14 @@
     />
     <div class="text-sm">
       <div class="font-semibold text-gray-900">Thanh Le</div>
-      <div class="text-gray-600">Founder @ Nimbus</div>
+      <div class="text-gray-600">
+        Founder
+        <a
+          href="https://twitter.com/get_nimbus"
+          target="_blank"
+          class="text-blue-500">@Nimbus</a
+        >
+      </div>
     </div>
   </figcaption>
 </div>
