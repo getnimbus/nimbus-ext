@@ -21,16 +21,18 @@
   //     : profit / Math.abs(data.inputValue);
 </script>
 
-<tr class="hover:bg-gray-100 transition-all">
-  <td class="pl-3 py-4">
-    <div class="text-left flex items-start gap-2">
-      <div class="flex space-x-1">
+<tr class="group transition-all">
+  <td
+    class="pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 bg-white group-hover:bg-gray-100"
+  >
+    <div class="text-left flex items-center gap-2">
+      <div class="flex space-x-3">
         {#each data.tokens as token, index}
           <img
             src={token.logo}
             alt="token"
-            width="20"
-            height="20"
+            width="30"
+            height="30"
             class="rounded-full"
           />
         {/each}
@@ -55,7 +57,7 @@
     </div>
   </td>
 
-  <td class="py-4">
+  <td class="py-4 group-hover:bg-gray-100">
     <div class="text-sm text-[#00000099] font-medium flex flex-col items-end">
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
@@ -78,7 +80,7 @@
     </div>
   </td>
 
-  <td class="py-4">
+  <td class="py-4 group-hover:bg-gray-100">
     <div class="text-sm text-[#00000099] font-medium flex flex-col items-end">
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
@@ -95,13 +97,13 @@
     </div>
   </td>
 
-  <td class="pr-3 py-4">
+  <td class="pr-3 py-4 group-hover:bg-gray-100">
     <div class="flex justify-end text-sm text-[#000000] font-medium">
       $<TooltipNumber number={value} type="balance" />
     </div>
   </td>
 
-  <!-- <td class="pr-3 py-4">
+  <!-- <td class="pr-3 py-4 group-hover:bg-gray-100">
     <div class="text-sm font-medium">
       <div class="flex flex-col">
         <div

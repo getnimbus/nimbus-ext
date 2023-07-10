@@ -33,7 +33,9 @@
     <table class="table-auto xl:w-full w-[1200px]">
       <thead>
         <tr class="bg-[#f4f5f8]">
-          <th class="pl-3 py-3">
+          <th
+            class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
+          >
             <div class="text-xs font-semibold text-black uppercase text-left">
               Pool
             </div>

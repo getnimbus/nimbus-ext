@@ -15,14 +15,16 @@
   $: value = balance0 + balance1 + claim0 + claim1;
 </script>
 
-<tr class="hover:bg-gray-100 transition-all">
-  <td class="pl-3 py-4">
-    <div class="text-left flex items-start gap-2">
+<tr class="group transition-all">
+  <td
+    class="pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 bg-white group-hover:bg-gray-100"
+  >
+    <div class="text-left flex items-center gap-2">
       <img
         src={data.logo0}
         alt="token"
-        width="20"
-        height="20"
+        width="30"
+        height="30"
         class="rounded-full"
       />
       <div class="flex flex-col gap-1">
@@ -34,7 +36,7 @@
     </div>
   </td>
 
-  <td class="py-4">
+  <td class="py-4 group-hover:bg-gray-100">
     <div class="text-sm text-[#00000099] font-medium flex flex-col items-start">
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
@@ -54,7 +56,7 @@
     </div>
   </td>
 
-  <td class="py-4">
+  <td class="py-4 group-hover:bg-gray-100">
     <div class="text-left flex items-start gap-2">
       <img
         src={data.logo1}
@@ -70,7 +72,7 @@
     </div>
   </td>
 
-  <td class="py-4">
+  <td class="py-4 group-hover:bg-gray-100">
     <div class="text-sm text-[#00000099] font-medium flex flex-col items-start">
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
@@ -84,7 +86,7 @@
     </div>
   </td>
 
-  <th class="py-3">
+  <th class="py-4 group-hover:bg-gray-100">
     <div
       class="flex justify-start items-center gap-1 text-sm text-[#000000] font-medium"
     >
@@ -98,7 +100,7 @@
     </div>
   </th>
 
-  <td class="py-4 pr-3">
+  <td class="py-4 pr-3 group-hover:bg-gray-100">
     <div class="flex justify-end text-sm text-[#000000] font-medium">
       $<TooltipNumber
         number={Number(
