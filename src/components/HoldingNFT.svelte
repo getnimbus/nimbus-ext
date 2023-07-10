@@ -26,7 +26,7 @@
 </script>
 
 <tr
-  class="hover:bg-gray-100 transition-all cursor-pointer"
+  class="group transition-all cursor-pointer"
   on:click={() => {
     navigate(
       `nft-detail?id=${encodeURIComponent(
@@ -36,7 +36,7 @@
   }}
 >
   <td
-    class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-white w-[220px]"
+    class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-white w-[220px] group-hover:bg-gray-100"
   >
     <div class="relative">
       <div
@@ -59,7 +59,7 @@
   </td>
 
   <td
-    class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg-white w-[200px]"
+    class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg-white w-[200px] group-hover:bg-gray-100"
   >
     <div class="relative">
       <div
@@ -71,7 +71,7 @@
           <img
             src={token?.image_url}
             alt=""
-            class={`w-9 h-9 rounded-md border border-gray-300 overflow-hidden ${
+            class={`w-9 h-9 rounded-md border border-gray-300 overflow-hidden bg-white ${
               index > 0 && "-ml-2"
             }`}
           />
@@ -81,7 +81,7 @@
             <img
               src={data?.tokens[5].image_url}
               alt=""
-              class="w-9 h-9 rounded-md border border-gray-300 overflow-hidden -ml-2"
+              class="w-9 h-9 rounded-md border border-gray-300 overflow-hidden -ml-2 bg-white"
             />
             <div
               class="absolute top-0 -left-2 w-full h-full bg-[#00000066] text-white text-center flex justify-center items-center pb-2 rounded-md"
@@ -101,7 +101,7 @@
     </div>
   </td>
 
-  <td class="py-3">
+  <td class="py-3 group-hover:bg-gray-100">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
       <TooltipNumber number={data?.floorPriceBTC} type="amount" /><span
         class="mx-1"
@@ -116,7 +116,7 @@
     </div>
   </td>
 
-  <td class="py-3">
+  <td class="py-3 group-hover:bg-gray-100">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
       <TooltipNumber number={data?.totalCostBTC} type="amount" /><span
         class="mx-1"
@@ -127,13 +127,13 @@
     </div>
   </td>
 
-  <td class="py-3">
+  <td class="py-3 group-hover:bg-gray-100">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
       $<TooltipNumber number={data?.current_value} type="balance" />
     </div>
   </td>
 
-  <td class="py-3">
+  <td class="py-3 group-hover:bg-gray-100">
     <div class="flex items-center justify-end gap-1 text-sm font-medium">
       <div class="flex flex-col">
         <div
@@ -165,7 +165,7 @@
     </div>
   </td>
 
-  <td class="py-3 w-10">
+  <td class="py-3 w-10 group-hover:bg-gray-100">
     <div class="flex justify-center">
       <div
         use:tooltip={{

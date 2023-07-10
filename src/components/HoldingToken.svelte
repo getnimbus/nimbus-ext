@@ -38,7 +38,7 @@
 </script>
 
 <tr
-  class={`hover:bg-gray-100 transition-all ${clickable && "cursor-pointer"}`}
+  class={`group transition-all ${clickable && "cursor-pointer"}`}
   on:click={() => {
     if (clickable) {
       navigate(
@@ -52,7 +52,7 @@
   }}
 >
   <td
-    class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white w-[230px]"
+    class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white w-[230px] group-hover:bg-gray-100"
   >
     <div class="text-left flex items-center gap-3">
       <img
@@ -116,31 +116,31 @@
     </div>
   </td>
 
-  <td class="py-3">
+  <td class="py-3 group-hover:bg-gray-100">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
       $<TooltipNumber number={data.market_price} type="balance" />
     </div>
   </td>
 
-  <td class="py-3">
+  <td class="py-3 group-hover:bg-gray-100">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
       <TooltipNumber number={data.amount} type="amount" />
     </div>
   </td>
 
-  <td class="py-3">
+  <td class="py-3 group-hover:bg-gray-100">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
       $<TooltipNumber number={price} type="balance" />
     </div>
   </td>
 
-  <td class="py-3">
+  <td class="py-3 group-hover:bg-gray-100">
     <div class="text-sm text-[#00000099] font-medium flex justify-end">
       <TooltipNumber number={ratio} type="percent" />%
     </div>
   </td>
 
-  <td class="py-3">
+  <td class="py-3 group-hover:bg-gray-100">
     <div class="flex items-center justify-end gap-1 text-sm font-medium">
       <div class="flex flex-col">
         <div
@@ -172,7 +172,7 @@
     </div>
   </td>
 
-  <td class="py-3 w-10">
+  <td class="py-3 w-10 group-hover:bg-gray-100">
     {#if clickable}
       <div class="flex justify-center">
         <div

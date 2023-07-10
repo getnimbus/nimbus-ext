@@ -3,6 +3,7 @@
 
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let data;
   export let totalPositions;
@@ -50,8 +51,16 @@
       </div>
     </OverviewCard>
     <OverviewCard title={MultipleLang.claimable}>
-      <div class="text-3xl text-black flex">
-        $<CountUpNumber id="claimable" number={totalClaimable} type="balance" />
+      <div class="flex text-3xl text-black">
+        {#if totalClaimable.toString().toLowerCase().includes("e-")}
+          $<TooltipNumber number={totalClaimable} type="balance" />
+        {:else}
+          $<CountUpNumber
+            id="claimable"
+            number={totalClaimable}
+            type="balance"
+          />
+        {/if}
       </div>
       <div class="flex items-center gap-3 opacity-50">
         <div
@@ -103,12 +112,16 @@
       </div>
     </OverviewCard>
     <OverviewCard title={MultipleLang.total_positions}>
-      <div class="text-3xl text-black flex">
-        $<CountUpNumber
-          id="total_positions"
-          number={totalPositions}
-          type="balance"
-        />
+      <div class="flex text-3xl text-black">
+        {#if totalPositions.toString().toLowerCase().includes("e-")}
+          $<TooltipNumber number={totalPositions} type="balance" />
+        {:else}
+          $<CountUpNumber
+            id="total_positions"
+            number={totalPositions}
+            type="balance"
+          />
+        {/if}
       </div>
       <div class="flex items-center gap-3 opacity-50">
         <div

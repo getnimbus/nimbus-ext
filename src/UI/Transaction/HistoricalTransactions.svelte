@@ -92,11 +92,9 @@
           </tr>
         {:else}
           {#each data || [] as item}
-            <tr
-              class="hover:bg-gray-100 transition-all border-b-[0.5px] last:border-none"
-            >
+            <tr class="group transition-all border-b-[0.5px] last:border-none">
               <td
-                class="pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 bg-white"
+                class="pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 bg-white group-hover:bg-gray-100"
               >
                 <div class="text-left flex items-start gap-2 w-max">
                   <div class="flex flex-col">
@@ -123,7 +121,7 @@
                 </div>
               </td>
 
-              <td class="py-4">
+              <td class="py-4 group-hover:bg-gray-100">
                 {#if item?.detail?.from}
                   <div class="w-max text-sm">
                     <Copy
@@ -141,7 +139,7 @@
                 {/if}
               </td>
 
-              <td class="py-4">
+              <td class="py-4 group-hover:bg-gray-100">
                 {#if item?.detail?.to}
                   <div class="w-max text-sm">
                     <Copy
@@ -159,7 +157,7 @@
                 {/if}
               </td>
 
-              <td class="py-4 min-w-[100px]">
+              <td class="py-4 min-w-[100px] group-hover:bg-gray-100">
                 <div
                   class="text-sm text-[#00000099] font-medium flex justify-start"
                 >
@@ -173,7 +171,7 @@
                 </div>
               </td>
 
-              <td class="py-4 pr-3">
+              <td class="py-4 pr-3 group-hover:bg-gray-100">
                 <div
                   class="text-sm font-medium flex flex-col items-start gap-2"
                 >
@@ -182,7 +180,7 @@
                       <img
                         src={change?.logo}
                         alt=""
-                        class="w-5 h-5 overflow-hidden rounded-full object-contain"
+                        class="w-7 h-7 overflow-hidden rounded-full object-contain"
                       />
                       <div
                         class={`flex gap-1 ${

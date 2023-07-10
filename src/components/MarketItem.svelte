@@ -25,9 +25,9 @@ Tx: https://etherscan.io/tx/${data?.transaction_hash} \n
 via @get_nimbus`;
 </script>
 
-<tr class="hover:bg-gray-100 transition-all">
+<tr class="group transition-all">
   <td
-    class="pl-3 py-4 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-9 bg-white"
+    class="pl-3 py-4 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-9 bg-white group-hover:bg-gray-100"
   >
     <div class="text-left text-black text-sm font-medium">
       <div class="flex space-x-3">
@@ -50,7 +50,7 @@ via @get_nimbus`;
     </div>
   </td>
 
-  <td class="py-4">
+  <td class="py-4 group-hover:bg-gray-100">
     <div class="text-left text-black text-sm font-medium">
       {dayjs(data?.timestamp).format("YYYY-MM-DD HH:mm:ss")}
       <br />
@@ -60,7 +60,7 @@ via @get_nimbus`;
     </div>
   </td>
 
-  <td class="py-4">
+  <td class="py-4 group-hover:bg-gray-100">
     <div
       class="text-sm text-red-500 font-medium flex flex-col justify-start gap-1"
     >
@@ -74,7 +74,7 @@ via @get_nimbus`;
     </div>
   </td>
 
-  <td class="py-4">
+  <td class="py-4 group-hover:bg-gray-100">
     <div
       class="text-sm text-[#00A878] font-medium flex flex-col justify-start gap-1"
     >
@@ -88,7 +88,7 @@ via @get_nimbus`;
     </div>
   </td>
 
-  <td class="py-4">
+  <td class="py-4 group-hover:bg-gray-100">
     <div
       class="text-sm text-blue-500 hover:text-[#0d6efd] cursor-pointer font-medium flex justify-center"
     >
@@ -113,19 +113,19 @@ via @get_nimbus`;
     </div>
   </td>
 
-  <td class="pr-3 py-4 w-[190px]">
+  <td class="pr-3 py-4 w-[190px] group-hover:bg-gray-100">
     <div class="flex items-center justify-end gap-3">
       <a
         href={`https://twitter.com/intent/tweet?text=${encodeURI(tweet)}`}
         target="_blank"
       >
-        <img src={TwitterLogo} alt="" class="w-8 h-8 rounded-full" />
+        <img src={TwitterLogo} alt="" class="w-7 h-7 rounded-full" />
       </a>
       <a
         href={`https://etherscan.io/tx/${data?.transaction_hash}`}
         target="_blank"
       >
-        <img src={Etherscan} alt="" class="w-8 h-8 rounded-full" />
+        <img src={Etherscan} alt="" class="w-7 h-7 rounded-full" />
       </a>
     </div>
   </td>

@@ -418,10 +418,10 @@
               <img
                 src={positionDetail?.logo}
                 alt=""
-                class="w-8 h-8 rounded-full"
+                class="w-10 h-10 rounded-full"
               />
               <div class="text-3xl font-semibold">
-                {positionDetail?.price?.symbol || "--"}
+                {positionDetail?.price?.symbol || "-"}
               </div>
             </div>
             {#if address}
@@ -437,7 +437,7 @@
             target="_blank"
             class="flex justify-end"
           >
-            <img src={TwitterLogo} alt="" class="w-8 h-8 rounded-full" />
+            <img src={TwitterLogo} alt="" class="w-9 h-9 rounded-full" />
           </a>
         </div>
       </div>
@@ -663,7 +663,9 @@
               <table class="table-auto xl:w-full w-[1200px]">
                 <thead>
                   <tr class="bg-[#f4f5f8]">
-                    <th class="py-3 pl-3">
+                    <th
+                      class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-[#f4f5f8]"
+                    >
                       <div
                         class="text-xs font-semibold text-left text-black uppercase"
                       >
@@ -684,7 +686,7 @@
                         To
                       </div>
                     </th>
-                    <th class="py-3">
+                    <th class="py-3 min-w-[100px]">
                       <div
                         class="text-xs font-semibold text-left text-black uppercase"
                       >
@@ -725,9 +727,11 @@
                     {:else}
                       {#each positionDetail?.changes || [] as change}
                         <tr
-                          class="hover:bg-gray-100 transition-all border-b-[0.5px] last:border-none"
+                          class="group transition-all border-b-[0.5px] last:border-none"
                         >
-                          <td class="py-4 pl-3">
+                          <td
+                            class="py-4 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white group-hover:bg-gray-100"
+                          >
                             <div class="flex items-start gap-2 text-left w-max">
                               <div class="flex flex-col">
                                 <div class="text-sm">
@@ -749,7 +753,7 @@
                             </div>
                           </td>
 
-                          <td class="py-4">
+                          <td class="py-4 group-hover:bg-gray-100">
                             {#if change?.detail?.from}
                               <div class="text-sm w-max">
                                 <Copy
@@ -763,7 +767,7 @@
                             {/if}
                           </td>
 
-                          <td class="py-4">
+                          <td class="py-4 group-hover:bg-gray-100">
                             {#if change?.detail?.to}
                               <div class="text-sm w-max">
                                 <Copy
@@ -777,7 +781,9 @@
                             {/if}
                           </td>
 
-                          <td class="py-4">
+                          <td
+                            class="py-4 min-w-[100px] group-hover:bg-gray-100"
+                          >
                             <div
                               class="text-sm text-[#00000099] font-medium flex justify-start"
                             >
@@ -791,7 +797,7 @@
                             </div>
                           </td>
 
-                          <td class="py-4 pr-3">
+                          <td class="py-4 pr-3 group-hover:bg-gray-100">
                             <div
                               class="flex flex-col items-start gap-2 text-sm font-medium"
                             >
@@ -800,7 +806,7 @@
                                   <img
                                     src={item?.logo}
                                     alt=""
-                                    class="object-contain w-5 h-5 overflow-hidden rounded-full"
+                                    class="object-contain w-7 h-7 overflow-hidden rounded-full"
                                   />
                                   <div
                                     class={`flex gap-1 ${
@@ -839,10 +845,8 @@
               </table>
             </div>
           {:else}
-            <div
-              class="border border-[#0000000d] rounded-[10px] overflow-x-auto"
-            >
-              <table class="table-auto xl:w-full w-[1200px]">
+            <div class="border border-[#0000000d] rounded-[10px]">
+              <table class="table-auto w-full">
                 <thead>
                   <tr class="bg-[#f4f5f8]">
                     <th class="py-3 pl-3">
