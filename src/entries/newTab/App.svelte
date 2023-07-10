@@ -15,7 +15,7 @@
   import News from "~/layouts/News.svelte";
   import Analytic from "~/layouts/Analytic.svelte";
   import Transactions from "~/layouts/Transactions.svelte";
-  import PositionDetail from "~/layouts/PositionDetail.svelte";
+  import TokenDetail from "~/layouts/TokenDetail.svelte";
   import NftDetail from "~/layouts/NFTDetail.svelte";
 
   // TODO: Add Lazyload for each routes
@@ -61,7 +61,7 @@
         </Route>
 
         <Route path="position-detail">
-          <PositionDetail />
+          <TokenDetail />
         </Route>
 
         <Route path="nft-detail">
