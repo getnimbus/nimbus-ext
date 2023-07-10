@@ -519,7 +519,9 @@
           <table class="table-auto xl:w-full w-[1200px] overflow-y-scroll">
             <thead class="sticky top-0 z-10">
               <tr class="bg-[#f4f5f8]">
-                <th class="pl-3 py-3">
+                <th
+                  class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[220px]"
+                >
                   <div
                     class="text-left text-xs uppercase font-semibold text-black"
                   >

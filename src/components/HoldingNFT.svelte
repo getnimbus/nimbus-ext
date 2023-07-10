@@ -1,6 +1,6 @@
 <script>
   import { useNavigate } from "svelte-navigator";
-  import { getAddressContext } from "~/utils";
+  import { getAddressContext, shorterName } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -16,6 +16,7 @@
   const navigate = useNavigate();
 
   let showTooltipListNFT = false;
+  let isShowTooltipName = false;
 
   $: profitAndLoss = data?.current_value - (data?.totalCost || 0);
   $: profitAndLossPercent =
@@ -34,15 +35,32 @@
     );
   }}
 >
-  <td class="pl-3 py-3">
+  <td
+    class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-white w-[220px]"
+  >
     <div class="relative">
-      <div class="text-black text-sm font-medium flex justify-start">
-        {data?.collection?.name}
+      <div
+        class="text-black text-sm font-medium flex justify-start relative"
+        on:mouseover={() => {
+          isShowTooltipName = true;
+        }}
+        on:mouseleave={() => (isShowTooltipName = false)}
+      >
+        {data?.collection?.name.length > 24
+          ? shorterName(data?.collection?.name, 20)
+          : data?.collection?.name}
+        {#if isShowTooltipName && data?.collection?.name.length > 24}
+          <div class="absolute -top-8 left-0" style="z-index: 2147483648;">
+            <tooltip-detail text={data?.collection?.name} />
+          </div>
+        {/if}
       </div>
     </div>
   </td>
 
-  <td class="py-3">
+  <td
+    class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg-white w-[200px]"
+  >
     <div class="relative">
       <div
         class="flex justify-start"
@@ -53,17 +71,17 @@
           <img
             src={token?.image_url}
             alt=""
-            class={`w-6 h-6 rounded-md border border-gray-300 overflow-hidden ${
+            class={`w-9 h-9 rounded-md border border-gray-300 overflow-hidden ${
               index > 0 && "-ml-2"
             }`}
           />
         {/each}
         {#if data?.balance > 5}
-          <div class="relative w-6 h-6">
+          <div class="relative w-9 h-9">
             <img
               src={data?.tokens[5].image_url}
               alt=""
-              class="w-6 h-6 rounded-md border border-gray-300 overflow-hidden -ml-2"
+              class="w-9 h-9 rounded-md border border-gray-300 overflow-hidden -ml-2"
             />
             <div
               class="absolute top-0 -left-2 w-full h-full bg-[#00000066] text-white text-center flex justify-center items-center pb-2 rounded-md"

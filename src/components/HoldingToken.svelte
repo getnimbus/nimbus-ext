@@ -51,13 +51,15 @@
     }
   }}
 >
-  <td class="pl-3 py-3">
-    <div class="text-left flex items-start gap-2">
+  <td
+    class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white w-[230px]"
+  >
+    <div class="text-left flex items-center gap-3">
       <img
         src={data.logo}
         alt="token"
-        width="20"
-        height="20"
+        width="30"
+        height="30"
         class="rounded-full"
       />
       <div class="flex flex-col gap-1">
@@ -71,7 +73,7 @@
           {#if data.name === undefined}
             N/A
           {:else}
-            {shorterName(data.name, 20)}
+            {data.name.length > 20 ? shorterName(data.name, 20) : data.name}
           {/if}
           {#if isShowTooltipName && data.name.length > 20}
             <div class="absolute -top-8 left-0" style="z-index: 2147483648;">

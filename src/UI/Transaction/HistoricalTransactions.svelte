@@ -37,7 +37,9 @@
   <table class="table-auto xl:w-full w-[1200px]">
     <thead class={isSticky ? "sticky top-0 z-10" : ""} bind:this={tableHeader}>
       <tr class="bg-[#f4f5f8]">
-        <th class="pl-3 py-3 rounded-tl-[10px]">
+        <th
+          class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-9 bg-[#f4f5f8]"
+        >
           <div class="text-left text-xs uppercase font-semibold text-black">
             Transaction
           </div>
@@ -93,7 +95,9 @@
             <tr
               class="hover:bg-gray-100 transition-all border-b-[0.5px] last:border-none"
             >
-              <td class="pl-3 py-4">
+              <td
+                class="pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 bg-white"
+              >
                 <div class="text-left flex items-start gap-2 w-max">
                   <div class="flex flex-col">
                     <div class="text-sm">

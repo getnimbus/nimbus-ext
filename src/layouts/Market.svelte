@@ -138,7 +138,9 @@
           bind:this={tableHeader}
         >
           <tr class="bg-[#f4f5f8]">
-            <th class="pl-3 py-3 w-[250px] rounded-tl-[10px]">
+            <th
+              class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
+            >
               <div class="text-left text-xs uppercase font-semibold text-black">
                 Pair
               </div>

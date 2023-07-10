@@ -231,7 +231,9 @@
               bind:this={tableTokenHeader}
             >
               <tr class="bg-[#f4f5f8]">
-                <th class="pl-3 py-3 rounded-tl-[10px]">
+                <th
+                  class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[230px]"
+                >
                   <div
                     class="text-left text-xs uppercase font-semibold text-black"
                   >
@@ -337,14 +339,18 @@
             bind:this={tableNFTHeader}
           >
             <tr class="bg-[#f4f5f8]">
-              <th class="pl-3 py-3 rounded-tl-[10px]">
+              <th
+                class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[220px]"
+              >
                 <div
                   class="text-left text-xs uppercase font-semibold text-black"
                 >
                   {MultipleLang.collection}
                 </div>
               </th>
-              <th class="py-3">
+              <th
+                class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg-[#f4f5f8] w-[200px]"
+              >
                 <div
                   class="text-left text-xs uppercase font-semibold text-black"
                 >

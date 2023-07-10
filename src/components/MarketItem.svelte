@@ -26,20 +26,22 @@ via @get_nimbus`;
 </script>
 
 <tr class="hover:bg-gray-100 transition-all">
-  <td class="pl-3 py-4 w-[250px]">
+  <td
+    class="pl-3 py-4 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-9 bg-white"
+  >
     <div class="text-left text-black text-sm font-medium">
-      <div class="flex space-x-2">
+      <div class="flex space-x-3">
         <img
           src={data?.from_token_logo}
           class="rounded-full"
-          width="20"
-          height="20"
+          width="30"
+          height="30"
         />
         <img
           src={data?.to_token_logo}
           class="rounded-full"
-          width="20"
-          height="20"
+          width="30"
+          height="30"
         />
       </div>
       <div class="text-[#00000080] text-xs mt-1">
@@ -112,18 +114,18 @@ via @get_nimbus`;
   </td>
 
   <td class="pr-3 py-4 w-[190px]">
-    <div class="flex items-center justify-end gap-2">
+    <div class="flex items-center justify-end gap-3">
       <a
         href={`https://twitter.com/intent/tweet?text=${encodeURI(tweet)}`}
         target="_blank"
       >
-        <img src={TwitterLogo} alt="" class="w-5 h-5 rounded-full" />
+        <img src={TwitterLogo} alt="" class="w-8 h-8 rounded-full" />
       </a>
       <a
         href={`https://etherscan.io/tx/${data?.transaction_hash}`}
         target="_blank"
       >
-        <img src={Etherscan} alt="" class="w-5 h-5 rounded-full" />
+        <img src={Etherscan} alt="" class="w-8 h-8 rounded-full" />
       </a>
     </div>
   </td>
