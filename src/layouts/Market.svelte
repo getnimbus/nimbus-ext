@@ -88,7 +88,9 @@
 </script>
 
 <ErrorBoundary>
-  <div class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col xl:gap-10 gap-6">
+  <div
+    class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 flex flex-col xl:gap-10 gap-6"
+  >
     <div class="flex flex-col">
       <div class="text-3xl text-black font-semibold">{MultipleLang.market}</div>
       <div

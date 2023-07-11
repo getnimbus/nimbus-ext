@@ -398,7 +398,7 @@
         </div>
       {:else}
         <div class="header-container">
-          <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
+          <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
             <div class="flex flex-col mb-5 gap-14">
               <div class="flex items-center justify-between">
                 {#if formatListAddress.length !== 0}
@@ -450,7 +450,7 @@
                         {#each formatListAddress as item}
                           <div
                             id={item.value}
-                            class="relative text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                            class="relative xl:text-base text-xl text-white py-1 xl:px-2 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
                             class:hover:no-underline={item.value ===
                               selectedWallet}
                             on:click={() => {

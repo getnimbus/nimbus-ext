@@ -82,7 +82,7 @@
 
 <ErrorBoundary>
   <div class="header-container">
-    <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
+    <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
       <div class="flex flex-col mb-5 gap-14">
         <div class="flex items-center justify-between">
           <Link
@@ -92,8 +92,10 @@
             class="cusor-pointer"
           >
             <div class="flex items-center gap-1 text-white">
-              <img src={LeftArrow} alt="" />
-              <div class="text-sm font-semibold">Back to Portfolio</div>
+              <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+              <div class="xl:text-sm text-xl font-semibold">
+                Back to Portfolio
+              </div>
             </div>
           </Link>
         </div>
@@ -191,10 +193,9 @@
       </div>
     </div>
   </div>
-  <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
+  <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
     <div
-      class="flex flex-col gap-7 bg-white rounded-[20px] p-8 mt-6"
-      style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+      class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md mt-6"
     >
       <div class="flex flex-col gap-6">
         <div class="flex xl:flex-row flex-col gap-6">
