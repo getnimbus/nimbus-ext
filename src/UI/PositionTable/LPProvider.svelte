@@ -75,7 +75,7 @@
             </div>
           </th>
 
-          <th class="pr-3 py-3">
+          <th class="py-3">
             <div class="text-xs font-semibold text-black uppercase text-right">
               <TooltipTitle
                 tooltipText="Profit and loss is calculated by buying & hold on every time you
@@ -83,6 +83,8 @@
               >
             </div>
           </th>
+
+          <th class="py-3 w-10 rounded-tr-[10px]" />
         </tr>
       </thead>
       <tbody>

@@ -768,7 +768,7 @@
     background-repeat: no-repeat;
     background-size: auto;
     background-position: top right;
-    padding-bottom: 164px;
+    padding-bottom: 144px;
     padding-top: 24px;
   }
 

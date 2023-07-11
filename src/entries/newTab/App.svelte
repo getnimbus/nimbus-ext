@@ -17,6 +17,7 @@
   import Transactions from "~/layouts/Transactions.svelte";
   import TokenDetail from "~/layouts/TokenDetail.svelte";
   import NftDetail from "~/layouts/NFTDetail.svelte";
+  import PositionDetail from "~/layouts/PositionDetail.svelte";
 
   // TODO: Add Lazyload for each routes
   const hash = createHistory(createHashSource());
@@ -66,6 +67,10 @@
 
         <Route path="nft-detail">
           <NftDetail />
+        </Route>
+
+        <Route path="test-detail">
+          <PositionDetail />
         </Route>
 
         <Route path="analytic">

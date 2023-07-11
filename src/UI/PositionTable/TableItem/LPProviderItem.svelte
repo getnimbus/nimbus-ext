@@ -1,11 +1,17 @@
 <script lang="ts">
+  import { useNavigate } from "svelte-navigator";
+
   import "~/components/Tooltip.custom.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
+  import Chart from "~/assets/chart.svg";
 
   export let data;
+
+  const navigate = useNavigate();
 
   $: balance0 = Number(data.amount0out) * data.market_price0;
   $: balance1 = Number(data.amount1out) * data.market_price1;
@@ -21,7 +27,12 @@
       : profit / Math.abs(data.inputValue);
 </script>
 
-<tr class="group transition-all">
+<tr
+  class="group transition-all cursor-pointer"
+  on:click={() => {
+    navigate(`/test-detail`);
+  }}
+>
   <td
     class="pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 bg-white group-hover:bg-gray-100"
   >
@@ -166,7 +177,7 @@
     </div>
   </td>
 
-  <td class="pr-3 py-4 group-hover:bg-gray-100">
+  <td class="py-4 group-hover:bg-gray-100">
     <div class="text-sm font-medium flex flex-col">
       <div
         class={`flex justify-end ${
@@ -195,6 +206,20 @@
           />
         </div>
       {/if}
+    </div>
+  </td>
+
+  <td class="py-3 w-10 group-hover:bg-gray-100">
+    <div class="flex justify-center">
+      <div
+        use:tooltip={{
+          content: `<tooltip-detail text="Show detail" />`,
+          allowHTML: true,
+          placement: "top",
+        }}
+      >
+        <img src={Chart} alt="" width={14} height={14} />
+      </div>
     </div>
   </td>
 </tr>
