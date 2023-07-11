@@ -69,7 +69,8 @@
       >
         {#each data?.tokens.slice(0, 5) as token, index}
           <img
-            src={token?.image_url}
+            src={token?.image_url ||
+              "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
             alt=""
             class={`w-9 h-9 rounded-md border border-gray-300 overflow-hidden bg-white ${
               index > 0 && "-ml-2"
@@ -79,7 +80,8 @@
         {#if data?.balance > 5}
           <div class="relative w-9 h-9">
             <img
-              src={data?.tokens[5].image_url}
+              src={data?.tokens[5].image_url ||
+                "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
               alt=""
               class="w-9 h-9 rounded-md border border-gray-300 overflow-hidden -ml-2 bg-white"
             />
