@@ -197,7 +197,7 @@
       style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
     >
       <div class="flex flex-col gap-6">
-        <div class="flex gap-6">
+        <div class="flex xl:flex-row flex-col gap-6">
           <div class="border border-[#0000001a] rounded-[20px] p-6 flex-1">
             <div class="text-2xl font-medium text-black">Fees</div>
             <div class="mt-2 flex flex-col gap-4">
