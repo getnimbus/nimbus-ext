@@ -20,10 +20,12 @@
   let data;
   let marketPriceNFT;
   let addressWallet = "";
+  let collectionName = "";
 
   const getCollectionDetail = async (collectionId, address) => {
     try {
       isLoadingListNFT = true;
+      collectionName = collectionId;
       const response = await nimbus
         .get(`/address/${address}/nft-holding/${collectionId}`)
         .then((res) => res.data);
@@ -211,7 +213,16 @@
               {/if}
             </div>
           </OverviewCard>
-          <OverviewCard title={"Floor Price"}>
+          <OverviewCard
+            title={"Floor Price"}
+            tooltipText={getAddressContext(addressWallet)?.type === "EVM"
+              ? "The Floor price of last 24h, if there is no volume, the floor price is 0"
+              : "The Floor price from Magic Eden marketplace. "}
+            isTooltip
+            link={getAddressContext(addressWallet)?.type === "EVM"
+              ? ""
+              : `https://magiceden.io/ordinals/marketplace/${collectionName}`}
+          >
             <div class="text-3xl flex items-end gap-1">
               <CountUpNumber
                 id="24-hourReturn"

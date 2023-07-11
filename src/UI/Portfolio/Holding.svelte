@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
+  import { getAddressContext } from "~/utils";
 
   export let holdingTokenData;
   export let holdingNFTData;
@@ -361,7 +362,17 @@
                 <div
                   class="text-right text-xs uppercase font-semibold text-black"
                 >
-                  {MultipleLang.floor_price}
+                  <TooltipTitle
+                    tooltipText={getAddressContext(selectedWallet)?.type ===
+                    "EVM"
+                      ? "The Floor price of last 24h, if there is no volume, the floor price is 0"
+                      : "The Floor price from Magic Eden marketplace. "}
+                    link={getAddressContext(selectedWallet)?.type === "EVM"
+                      ? ""
+                      : "https://magiceden.io/ordinals"}
+                  >
+                    {MultipleLang.floor_price}
+                  </TooltipTitle>
                 </div>
               </th>
               <th class="py-3">
