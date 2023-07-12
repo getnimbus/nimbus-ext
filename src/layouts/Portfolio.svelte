@@ -25,13 +25,13 @@
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
   import type { NFTData, HoldingNFTRes } from "~/types/HoldingNFTData";
 
+  import AddressManagement from "~/components/AddressManagement.svelte";
   import Button from "~/components/Button.svelte";
   import Charts from "~/UI/Portfolio/Charts.svelte";
   import Holding from "~/UI/Portfolio/Holding.svelte";
   import News from "~/UI/Portfolio/News.svelte";
   import Overview from "~/UI/Portfolio/Overview.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
-  import AddressManagement from "~/components/AddressManagement.svelte";
   import Testimonial from "~/UI/Testimonial/Testimonial.svelte";
   import "~/components/Tooltip.custom.svelte";
 
@@ -198,7 +198,7 @@
         chain: selectedChain,
       });
 
-      if (selectedWallet === response.address) {
+      if (selectedWallet === response?.address) {
         overviewData = response.result;
 
         if (
@@ -458,7 +458,7 @@
         reload: isReload,
         chain: selectedChain,
       });
-      if (selectedWallet === response.address && response && response.result) {
+      if (selectedWallet === response?.address && response && response.result) {
         const formatData = response.result.map((item) => {
           const groupPosition = groupBy(item.positions, "type");
           return {
@@ -485,7 +485,7 @@
         chain: selectedChain,
       });
 
-      if (selectedWallet === response.address) {
+      if (selectedWallet === response?.address) {
         const formatData = response.result.map((item) => {
           return {
             ...item,
@@ -518,7 +518,7 @@
         chain: selectedChain,
       });
 
-      if (selectedWallet === response.address) {
+      if (selectedWallet === response?.address) {
         holdingNFTData = response.result;
         return response;
       } else {
@@ -536,7 +536,7 @@
         reload: isReload,
         chain: selectedChain,
       });
-      if (selectedWallet === response.address) {
+      if (selectedWallet === response?.address) {
         newsData = response.result;
         return response;
       } else {
@@ -736,9 +736,9 @@
           mixpanel.track("user_reload");
         }}
       >
-        <img src={Reload} alt="" />
+        <img src={Reload} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
       </div>
-      <div class="text-xs text-white font-medium">
+      <div class="xl:text-xs text-lg text-white font-medium">
         {#if isLoading}
           {MultipleLang.updating_data}
         {:else}

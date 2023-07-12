@@ -119,6 +119,13 @@
     gap: 10px;
   }
 
+  .large {
+    height: fit-content;
+    min-width: 130px;
+    font-size: 18px;
+    padding: 14px 22px;
+  }
+
   .small {
     height: fit-content;
     font-size: 14px;
@@ -129,13 +136,6 @@
     height: fit-content;
     font-size: 12px;
     padding: 4px 7px;
-  }
-
-  .large {
-    height: fit-content;
-    min-width: 130px;
-    font-size: 18px;
-    padding: 14px 22px;
   }
 
   .secondary {

@@ -52,7 +52,7 @@
   }}
 >
   <td
-    class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white w-[230px] group-hover:bg-gray-100"
+    class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white xl:w-[230px] w-[280px] group-hover:bg-gray-100"
   >
     <div class="text-left flex items-center gap-3">
       <img
@@ -64,7 +64,7 @@
       />
       <div class="flex flex-col gap-1">
         <div
-          class="text-black text-sm font-medium relative"
+          class="text-black xl:text-sm text-xl font-medium relative"
           on:mouseover={() => {
             isShowTooltipName = true;
           }}
@@ -117,31 +117,41 @@
   </td>
 
   <td class="py-3 group-hover:bg-gray-100">
-    <div class="text-sm text-[#00000099] font-medium flex justify-end">
+    <div
+      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+    >
       $<TooltipNumber number={data.market_price} type="balance" />
     </div>
   </td>
 
   <td class="py-3 group-hover:bg-gray-100">
-    <div class="text-sm text-[#00000099] font-medium flex justify-end">
+    <div
+      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+    >
       <TooltipNumber number={data.amount} type="amount" />
     </div>
   </td>
 
   <td class="py-3 group-hover:bg-gray-100">
-    <div class="text-sm text-[#00000099] font-medium flex justify-end">
+    <div
+      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+    >
       $<TooltipNumber number={price} type="balance" />
     </div>
   </td>
 
   <td class="py-3 group-hover:bg-gray-100">
-    <div class="text-sm text-[#00000099] font-medium flex justify-end">
+    <div
+      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+    >
       <TooltipNumber number={ratio} type="percent" />%
     </div>
   </td>
 
   <td class="py-3 group-hover:bg-gray-100">
-    <div class="flex items-center justify-end gap-1 text-sm font-medium">
+    <div
+      class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
+    >
       <div class="flex flex-col">
         <div
           class={`flex justify-end ${

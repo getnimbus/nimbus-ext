@@ -19,7 +19,7 @@
   <div class="flex flex-col gap-1 pl-6">
     <div
       class={`font-medium text-black flex justify-start z-10 w-max ${
-        isTrxPage ? "text-2xl" : "text-xl"
+        isTrxPage ? "xl:text-2xl text-4xl" : "text-xl"
       }`}
     >
       {#if tooltipTitle}

@@ -147,7 +147,7 @@
           isEmptySectorGrowth = true;
           isLoadingSectorGrowth = false;
           return;
-        } else if (selectedWallet === response.address) {
+        } else if (selectedWallet === response?.address) {
           if (response?.result?.length === 0) {
             isEmptySectorGrowth = true;
             isLoadingSectorGrowth = false;

@@ -16,7 +16,11 @@
 <div class="flex flex-col gap-2 border border-[#00000014] rounded-[10px] p-4">
   <div class="flex items-center gap-3 border-b border-[#00000014] pb-3 mb-3">
     <img src={data.logo} alt="logo" width={50} height={50} />
-    <a href={data.url} target="_blank" class="text-lg font-semibold uppercase">
+    <a
+      href={data.url}
+      target="_blank"
+      class="xl:text-lg text-2xl font-semibold uppercase"
+    >
       {data.protocol}
     </a>
   </div>

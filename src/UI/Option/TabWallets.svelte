@@ -406,17 +406,23 @@
       <thead>
         <tr class="bg-[#f4f5f8]">
           <th class="pl-3 py-3">
-            <div class="text-left text-sm uppercase font-semibold text-black">
+            <div
+              class="text-left xl:text-sm text-base uppercase font-semibold text-black"
+            >
               {MultipleLang.content.address_header_table}
             </div>
           </th>
           <th class="py-3">
-            <div class="text-left text-sm uppercase font-semibold text-black">
+            <div
+              class="text-left xl:text-sm text-base uppercase font-semibold text-black"
+            >
               {MultipleLang.content.label_header_table}
             </div>
           </th>
           <th class="pr-3 py-3">
-            <div class="text-right text-sm uppercase font-semibold text-black">
+            <div
+              class="text-right xl:text-sm text-base uppercase font-semibold text-black"
+            >
               {MultipleLang.content.action_header_table}
             </div>
           </th>
@@ -464,7 +470,9 @@
             {#each listAddress as item (item.id)}
               <tr class="hover:bg-gray-100 transition-all">
                 <td class="pl-3 py-4">
-                  <div class="text-left flex items-center gap-3">
+                  <div
+                    class="text-left flex items-center gap-3 xl:text-base text-xl"
+                  >
                     <svg
                       width="18"
                       height="18"
@@ -482,7 +490,7 @@
                 </td>
                 <td class="py-4">
                   <div
-                    class="bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
+                    class="bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px] xl:text-base text-xl"
                   >
                     {item.label}
                   </div>
@@ -490,7 +498,7 @@
                 <td class="pr-3 py-4">
                   <div class="flex justify-end gap-6">
                     <div
-                      class="text-red-600 hover:underline dark:text-red-500 transition-all cursor-pointer font-semibold"
+                      class="text-red-600 hover:underline dark:text-red-500 xl:text-base text-xl transition-all cursor-pointer font-semibold"
                       on:click={() => {
                         isOpenConfirmDelete = true;
                         selectedWallet = item;
@@ -499,7 +507,7 @@
                       {MultipleLang.content.modal_delete}
                     </div>
                     <div
-                      class="text-blue-600 hover:underline dark:text-blue-500 transition-all cursor-pointer font-semibold"
+                      class="text-blue-600 hover:underline dark:text-blue-500 xl:text-base text-xl transition-all cursor-pointer font-semibold"
                       on:click={() => handleEdit(item)}
                     >
                       {MultipleLang.content.modal_edit}
@@ -557,14 +565,14 @@
 </Toast>
 
 <AppOverlay isOpen={isOpenEditModal} on:close={() => (isOpenEditModal = false)}>
-  <div class="title-3 text-gray-600 font-semibold max-w-[530px]">
+  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
     {MultipleLang.content.modal_edit_title}
   </div>
   <form
     on:submit|preventDefault={onSubmitEdit}
     class="flex flex-col gap-3 mt-4"
   >
-    <div class="flex flex-col gap-1 w-[530px]">
+    <div class="flex flex-col gap-1">
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
           address ? "bg-[#F0F2F7]" : ""
@@ -572,7 +580,7 @@
         class:input-border-error={errorsEdit.address &&
           errorsEdit.address.required}
       >
-        <div class="text-base font-semibold text-gray-700">
+        <div class="xl:text-base text-xl font-semibold text-gray-700">
           {MultipleLang.content.modal_address_label}
         </div>
         <input
@@ -581,7 +589,7 @@
           name="address"
           placeholder={MultipleLang.content.modal_address_label}
           bind:value={selectedItemEdit.address}
-          class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
             address ? "bg-[#F0F2F7]" : ""
           }`}
           on:keyup={({ target: { value } }) => (address = value)}
@@ -593,14 +601,14 @@
         </div>
       {/if}
     </div>
-    <div class="flex flex-col gap-1 w-[530px]">
+    <div class="flex flex-col gap-1">
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
           label ? "bg-[#F0F2F7]" : ""
         }`}
         class:input-border-error={errorsEdit.label && errorsEdit.label.required}
       >
-        <div class="text-base font-semibold text-gray-700">
+        <div class="xl:text-base text-xl font-semibold text-gray-700">
           {MultipleLang.content.modal_label_label}
         </div>
         <input
@@ -609,7 +617,7 @@
           name="label"
           placeholder={MultipleLang.content.modal_label_label}
           bind:value={selectedItemEdit.label}
-          class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
             label ? "bg-[#F0F2F7]" : ""
           }`}
           on:keyup={({ target: { value } }) => (label = value)}
@@ -640,11 +648,11 @@
 </AppOverlay>
 
 <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
-  <div class="title-3 text-gray-600 font-semibold max-w-[530px]">
+  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
     {MultipleLang.content.modal_add_title}
   </div>
   <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
-    <div class="flex flex-col gap-1 w-[530px]">
+    <div class="flex flex-col gap-1">
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -652,7 +660,7 @@
           }`}
           class:input-border-error={errors.address && errors.address.required}
         >
-          <div class="text-xs text-[#666666] font-medium">
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
             {MultipleLang.content.modal_address_label}
           </div>
           <input
@@ -661,7 +669,7 @@
             name="address"
             placeholder={MultipleLang.content.modal_address_label}
             value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
               address ? "bg-[#F0F2F7]" : ""
             }
               `}
@@ -675,7 +683,7 @@
         {/if}
       </div>
     </div>
-    <div class="flex flex-col gap-1 w-[530px]">
+    <div class="flex flex-col gap-1">
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -683,7 +691,7 @@
           }`}
           class:input-border-error={errors.label && errors.label.required}
         >
-          <div class="text-xs text-[#666666] font-medium">
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
             {MultipleLang.content.modal_label_label}
           </div>
           <input
@@ -692,7 +700,7 @@
             name="label"
             placeholder={MultipleLang.content.modal_label_label}
             value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
               label ? "bg-[#F0F2F7]" : ""
             }
               `}
@@ -728,11 +736,11 @@
   isOpen={isOpenConfirmDelete}
   on:close={() => (isOpenConfirmDelete = false)}
 >
-  <div class="flex flex-col gap-1 items-start max-w-[530px]">
-    <div class="title-3 text-gray-600 font-semibold">
+  <div class="flex flex-col gap-1 items-start">
+    <div class="xl:title-3 title-1 text-gray-600 font-semibold">
       {MultipleLang.content.modal_delete_title}
     </div>
-    <div class="text-sm text-gray-500">
+    <div class="xl:text-sm text-lg text-gray-500">
       {MultipleLang.content.modal_delete_sub_title}
     </div>
   </div>

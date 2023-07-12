@@ -25,37 +25,45 @@
 
 <div class="wrapper">
   <div
-    class={`button hover:bg-[#525b8c] ${type === "lang" && "bg-[#1E96FC]"}`}
+    class={`button xl:text-sm text-2xl hover:bg-[#525b8c] ${
+      type === "lang" && "bg-[#1E96FC]"
+    }`}
     class:active={open}
     on:click={() => (open = !open)}
   >
-    <div class="label_container">
+    <div class="flex items-center gap-2">
       {#if type === "chain" || type === "lang"}
         {#if selected?.logo || selectedChain[0]?.logo}
           <img
             src={selected?.value === "ALL" || selectedChain[0]?.value === "ALL"
               ? All
               : selected?.logo || selectedChain[0]?.logo}
-            alt="logo"
-            width="18"
-            height="18"
+            alt=""
+            class="xl:w-5 xl:h-5 w-7 h-7"
           />
         {/if}
-        <div class="label">{selected?.label || selectedChain[0]?.label}</div>
+        <div class="text-white xl:text-sm text-2xl">
+          {selected?.label || selectedChain[0]?.label}
+        </div>
       {:else}
-        <div class="label">Other ({listSelect.length})</div>
+        <div class="text-white xl:text-sm text-2xl">
+          Other ({listSelect.length})
+        </div>
       {/if}
     </div>
     <img
       src={UpArrow}
       alt=""
-      class="transform rotate-180"
+      class="transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
       class:rotate-0={open}
     />
   </div>
 
   {#if open}
-    <div class="content" class:right-0={type !== "lang"}>
+    <div
+      class="content xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] max-h-[380px] w-[300px] min-w-[300px] mt-2"
+      class:right-0={type !== "lang"}
+    >
       {#each listSelect as item}
         <div
           class="content_item"
@@ -92,13 +100,12 @@
           {#if item.logo}
             <img
               src={item.value === "ALL" ? All : item.logo}
-              alt="logo"
-              width="18"
-              height="18"
+              alt=""
+              class="xl:w-5 xl:h-5 w-7 h-7"
             />
           {/if}
           <div
-            class={`name ${
+            class={`xl:text-sm text-2xl name ${
               type === "chain" &&
               item.value !== "ALL" &&
               item.value !== "ETH" &&
@@ -129,9 +136,6 @@
     border-radius: 1000px;
     padding: 8px 12px;
     color: white;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 17px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -144,27 +148,10 @@
     background: #20295b;
   }
 
-  .button .label_container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .button .label_container .label {
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 17px;
-    color: white;
-  }
-
   .content {
-    min-width: 200px;
-    width: 200px;
-    max-height: 300px;
     overflow-y: overlay;
     position: absolute;
     z-index: 2147483646;
-    margin-top: 5.5px;
     background: #ffffff;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
@@ -202,8 +189,6 @@
 
   .content_item .name {
     font-weight: 500;
-    font-size: 14px;
-    line-height: 17px;
     transition: all 0.3s ease;
   }
 </style>

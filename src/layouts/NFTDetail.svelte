@@ -128,7 +128,7 @@
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={"Position Value"}>
-            <div class="text-3xl text-black flex">
+            <div class="xl:text-3xl text-5xl text-black flex">
               {#if data?.current_value.toString().toLowerCase().includes("e-")}
                 $<TooltipNumber number={data?.current_value} type="balance" />
               {:else}
@@ -139,7 +139,7 @@
                 />
               {/if}
             </div>
-            <div class="text-lg flex">
+            <div class="xl:text-lg text-3xl flex">
               {tokens.length}
               {tokens.length > 1 ? "NFTs" : "NFT"}
             </div>
@@ -150,7 +150,7 @@
             isTooltip
           >
             <div
-              class={`text-3xl flex ${
+              class={`xl:text-3xl text-5xl flex ${
                 profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
             >
@@ -161,7 +161,7 @@
               />
             </div>
             <div
-              class={`text-lg flex ${
+              class={`xl:text-lg text-3xl flex ${
                 profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
             >
@@ -184,7 +184,7 @@
             tooltipText="Learn more"
             link="https://docs.getnimbus.io/metrics/average_cost/"
           >
-            <div class="text-3xl flex items-end gap-1">
+            <div class="xl:text-3xl text-5xl flex items-end gap-1">
               <CountUpNumber
                 id="AverageCostBTC"
                 number={data?.overview?.avgCostBTC || 0}
@@ -197,7 +197,7 @@
                   : "BTC"}
               </span>
             </div>
-            <div class="text-lg flex">
+            <div class="xl:text-lg text-3xl flex">
               {#if (data?.overview?.avgCost)
                 .toString()
                 .toLowerCase()
@@ -225,7 +225,7 @@
               ? ""
               : `https://magiceden.io/ordinals/marketplace/${collectionName}`}
           >
-            <div class="text-3xl flex items-end gap-1">
+            <div class="xl:text-3xl text-5xl flex items-end gap-1">
               <CountUpNumber
                 id="24-hourReturn"
                 number={data?.floorPriceBTC || 0}
@@ -238,7 +238,7 @@
                   : "BTC"}
               </span>
             </div>
-            <div class="text-lg flex">
+            <div class="xl:text-lg text-3xl flex">
               $<CountUpNumber
                 id="24-hourReturnPercent"
                 number={(data?.floorPriceBTC || 0) *
@@ -257,7 +257,9 @@
     >
       <div class="border border-[#0000001a] rounded-[20px] p-6">
         <div class="flex flex-col gap-6">
-          <div class="text-2xl font-medium text-black">List NFT</div>
+          <div class="xl:text-2xl text-4xl font-medium text-black">
+            List NFT
+          </div>
           {#if isLoadingListNFT}
             <div
               class="min-h-[320px] flex justify-center items-center col-span-4"

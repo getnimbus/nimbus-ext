@@ -264,7 +264,7 @@
   }
 </script>
 
-<div class="py-3 bg-[#27326F]">
+<div class="py-1 bg-[#27326F]">
   <div class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]">
     <Link
       to={`${APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"}`}
@@ -283,12 +283,15 @@
         }`}
       >
         <div
-          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "portfolio"}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
+            navActive === "portfolio"
+              ? "bg-[#525B8C] opacity-100"
+              : "opacity-70"
+          }`}
           on:click={() => (navActive = "portfolio")}
         >
           <img src={PortfolioIcon} alt="" width="20" height="20" />
-          <span class="text-sm font-semibold text-white xl:text-base">
+          <span class="text-sm font-medium text-white xl:text-base">
             {MultipleLang.portfolio}
           </span>
         </div>
@@ -296,13 +299,14 @@
 
       <Link to="analytic">
         <div
-          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all relative"
-          class:bg-[#525B8C]={navActive === "analytic"}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
+            navActive === "analytic" ? "bg-[#525B8C] opacity-100" : "opacity-70"
+          }`}
           on:click={() => (navActive = "analytic")}
         >
           <img src={AnalyticIcon} alt="" width="20" height="20" />
           <span class="flex gap-[1px]">
-            <span class="text-sm font-semibold text-white xl:text-base">
+            <span class="text-sm font-medium text-white xl:text-base">
               {MultipleLang.analytics}
             </span>
             <span class="flex items-center gap-[1px] -mt-2">
@@ -317,12 +321,15 @@
 
       <Link to="transactions">
         <div
-          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "transactions"}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
+            navActive === "transactions"
+              ? "bg-[#525B8C] opacity-100"
+              : "opacity-70"
+          }`}
           on:click={() => (navActive = "transactions")}
         >
           <img src={TransactionsIcon} alt="" width="20" height="20" />
-          <span class="text-sm font-semibold text-white xl:text-base">
+          <span class="text-sm font-medium text-white xl:text-base">
             {MultipleLang.transactions}
           </span>
         </div>
@@ -330,12 +337,13 @@
 
       <Link to="market">
         <div
-          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "market"}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
+            navActive === "market" ? "bg-[#525B8C] opacity-100" : "opacity-70"
+          }`}
           on:click={() => (navActive = "market")}
         >
           <img src={MarketIcon} alt="" width="20" height="20" />
-          <span class="text-sm font-semibold text-white xl:text-base">
+          <span class="text-sm font-medium text-white xl:text-base">
             {MultipleLang.market}
           </span>
         </div>
@@ -343,12 +351,13 @@
 
       <Link to="news">
         <div
-          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "news"}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
+            navActive === "news" ? "bg-[#525B8C] opacity-100" : "opacity-70"
+          }`}
           on:click={() => (navActive = "news")}
         >
           <img src={NewsIcon} alt="" width="20" height="20" />
-          <span class="text-sm font-semibold text-white xl:text-base">
+          <span class="text-sm font-medium text-white xl:text-base">
             {MultipleLang.news}
           </span>
         </div>
@@ -356,9 +365,7 @@
     </div>
 
     <div class="flex items-center justify-between gap-6 xl:gap-3">
-      <div
-        class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center gap-1 rounded-[1000px]"
-      >
+      <div class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center rounded-[1000px]">
         <img src={Search} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
         <input
           on:keyup={({ target: { value } }) => debounceSearch(value)}
@@ -389,7 +396,7 @@
           value={search}
           placeholder={MultipleLang.search_placeholder}
           type="text"
-          class="bg-[#525B8C] w-full xl:py-2 py-3 xl:pr-4 pr-10 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-xl placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
+          class="bg-[#525B8C] w-full xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-xl placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
         />
       </div>
 
@@ -521,8 +528,8 @@
           <div
             class={`flex items-center gap-3 text-white px-4 ${
               navActive === "portfolio"
-                ? "bg-[#525B8C] py-3 rounded-[1000px]"
-                : ""
+                ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
+                : "opacity-70"
             }`}
             on:click={() => {
               isShowHeaderMobile = false;
@@ -542,8 +549,8 @@
           <div
             class={`flex items-center gap-3 text-white px-4 ${
               navActive === "analytic"
-                ? "bg-[#525B8C] py-3 rounded-[1000px]"
-                : ""
+                ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
+                : "opacity-70"
             }`}
             on:click={() => {
               isShowHeaderMobile = false;
@@ -571,8 +578,8 @@
           <div
             class={`flex items-center gap-3 text-white px-4 ${
               navActive === "transactions"
-                ? "bg-[#525B8C] py-3 rounded-[1000px]"
-                : ""
+                ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
+                : "opacity-70"
             }`}
             on:click={() => {
               isShowHeaderMobile = false;
@@ -591,7 +598,9 @@
         <Link to="market">
           <div
             class={`flex items-center gap-3 text-white px-4 ${
-              navActive === "market" ? "bg-[#525B8C] py-3 rounded-[1000px]" : ""
+              navActive === "market"
+                ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
+                : "opacity-70"
             }`}
             on:click={() => {
               isShowHeaderMobile = false;
@@ -609,7 +618,9 @@
       <Link to="news">
         <div
           class={`flex items-center gap-3 text-white px-4 ${
-            navActive === "news" ? "bg-[#525B8C] py-3 rounded-[1000px]" : ""
+            navActive === "news"
+              ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
+              : "opacity-70"
           }`}
           on:click={() => {
             isShowHeaderMobile = false;

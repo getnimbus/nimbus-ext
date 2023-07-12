@@ -18,13 +18,15 @@
 
 <div class="flex flex-col gap-5">
   <div class="flex justify-between items-end">
-    <div class="text-xl font-semibold">{position}</div>
+    <div class="xl:text-xl text-3xl font-semibold">{position}</div>
     <div class="flex flex-col gap-1">
-      <div class="text-3xl font-semibold flex justify-end">
+      <div class="xl:text-3xl text-4xl font-semibold flex justify-end">
         $<TooltipNumber number={sum} type="balance" />
       </div>
       {#if sum_claimable !== 0}
-        <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
+        <div
+          class="xl:text-lg text-2xl font-medium text-gray-600 flex justify-end gap-1"
+        >
           {MultipleLang.claimable}:
           <span>
             $<TooltipNumber number={sum_claimable} type="balance" />
@@ -33,39 +35,48 @@
       {/if}
     </div>
   </div>
+
   <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
-    <table class="table-auto xl:w-full w-[1200px]">
+    <table class="table-auto xl:w-full w-[1400px]">
       <thead>
         <tr class="bg-[#f4f5f8]">
           <th
             class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
           >
-            <div class="text-xs font-semibold text-black uppercase text-left">
+            <div
+              class="xl:text-xs text-base font-semibold text-black uppercase text-left"
+            >
               Supply
             </div>
           </th>
 
           <th class="py-3">
-            <div class="text-left text-xs font-semibold text-black uppercase">
+            <div
+              class="text-left xl:text-xs text-base font-semibold text-black uppercase"
+            >
               Supply Balance
             </div>
           </th>
 
           <th class="py-3">
-            <div class="text-xs font-semibold text-black uppercase text-left">
+            <div
+              class="xl:text-xs text-base font-semibold text-black uppercase text-left"
+            >
               Borrow
             </div>
           </th>
 
           <th class="py-3">
-            <div class="text-left text-xs font-semibold text-black uppercase">
+            <div
+              class="text-left xl:text-xs text-base font-semibold text-black uppercase"
+            >
               Borrow Balance
             </div>
           </th>
 
           <th class="py-3">
             <div
-              class="text-left flex items-center gap-1 text-xs font-semibold text-black uppercase"
+              class="text-left flex items-center gap-1 xl:text-xs text-base font-semibold text-black uppercase"
             >
               Health
               <span
@@ -112,7 +123,9 @@
           </th>
 
           <th class="pr-3 py-3">
-            <div class="text-xs font-semibold text-black uppercase text-right">
+            <div
+              class="xl:text-xs text-base font-semibold text-black uppercase text-right"
+            >
               Value
             </div>
           </th>

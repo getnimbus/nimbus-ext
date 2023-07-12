@@ -157,7 +157,7 @@
   <div class="flex xl:flex-row flex-col justify-between gap-6">
     <div class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6">
       <div class="flex justify-between mb-1">
-        <div class="pl-4 text-2xl font-medium text-black">
+        <div class="pl-4 xl:text-2xl text-4xl font-medium text-black">
           {#if selectedType === "token"}
             {MultipleLang.token_allocation}
           {:else}
@@ -168,7 +168,7 @@
           <AnimateSharedLayout>
             {#each typePieChart as type}
               <div
-                class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
+                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
                 on:click={() => (selectedType = type.value)}
               >
                 <div
@@ -203,7 +203,7 @@
         <div class="h-full">
           {#if isEmptyDataPie}
             <div
-              class="flex justify-center items-center h-full text-lg text-gray-400"
+              class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400"
             >
               Empty
             </div>
@@ -222,14 +222,14 @@
     <div
       class="xl:w-1/2 w-full relative border border-[#0000001a] rounded-[20px] p-6"
     >
-      <div class="pl-4 text-2xl font-medium text-black mb-3">
+      <div class="pl-4 xl:text-2xl text-4xl font-medium text-black mb-3">
         {MultipleLang.performance}
       </div>
       {#if selectedChain === "GNOSIS"}
         <div
           class="absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center bg-white/85 z-10 backdrop-blur-md"
         >
-          <div class="text-lg">Comming soon 🚀</div>
+          <div class="xl:text-lg text-xl">Comming soon 🚀</div>
         </div>
       {/if}
       {#if isLoading}

@@ -446,7 +446,7 @@
       <div class="flex flex-col justify-between gap-6 xl:flex-row">
         <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
           <OverviewCard title={"Position Value"}>
-            <div class="flex items-end gap-1 text-3xl text-black">
+            <div class="flex items-end gap-1 xl:text-3xl text-5xl text-black">
               {#if (positionDetail?.overview?.holding)
                 .toString()
                 .toLowerCase()
@@ -469,7 +469,7 @@
                 >
               {/if}
             </div>
-            <div class="flex text-lg">
+            <div class="flex xl:text-lg text-3xl">
               $<CountUpNumber
                 id="PositionValue"
                 number={positionDetail?.overview?.currentValue}
@@ -484,7 +484,7 @@
             isTooltip
           >
             <div
-              class={`text-3xl flex ${
+              class={`xl:text-3xl text-5xl flex ${
                 positionDetail?.overview?.profitAndLoss?.percent >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -499,7 +499,7 @@
               />
             </div>
             <div
-              class={`text-lg flex ${
+              class={`xl:text-lg text-3xl flex ${
                 positionDetail?.overview?.profitAndLoss?.percent >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -526,7 +526,7 @@
             link="https://docs.getnimbus.io/metrics/average_cost/"
             isTooltip
           >
-            <div class="flex text-3xl text-black">
+            <div class="flex xl:text-3xl text-5xl text-black">
               {#if (positionDetail?.overview?.averageCost)
                 .toString()
                 .toLowerCase()
@@ -547,7 +547,7 @@
           </OverviewCard>
           <OverviewCard title={"24-hour Return"}>
             <div
-              class={`text-3xl flex ${
+              class={`xl:text-3xl text-5xl flex ${
                 positionDetail?.overview?.return24h?.percent >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -560,7 +560,7 @@
               />
             </div>
             <div
-              class={`text-lg flex ${
+              class={`xl:text-lg text-3xl flex ${
                 positionDetail?.overview?.return24h?.percent >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -591,7 +591,7 @@
         <div
           class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6"
         >
-          <div class="pl-4 mb-3 text-2xl font-medium text-black">
+          <div class="pl-4 mb-3 xl:text-2xl text-4xl font-medium text-black">
             Price & Total Balance
           </div>
           {#if isLoadingPositionDetailPrice}
@@ -615,7 +615,7 @@
         <div
           class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6"
         >
-          <div class="pl-4 mb-3 text-2xl font-medium text-black">
+          <div class="pl-4 mb-3 xl:text-2xl text-4xl font-medium text-black">
             Position Value
           </div>
           {#if isLoadingPositionDetailPrice}
@@ -645,7 +645,9 @@
       <div class="border border-[#0000001a] rounded-[20px] p-6">
         <div class="flex flex-col gap-6">
           <div class="flex items-center justify-between">
-            <div class="text-2xl font-medium text-black">History</div>
+            <div class="xl:text-2xl text-4xl font-medium text-black">
+              History
+            </div>
             <div
               use:tooltip={{
                 content: `<tooltip-detail text="Premium feature. Comming soon" />`,
@@ -668,35 +670,35 @@
                       class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-[#f4f5f8]"
                     >
                       <div
-                        class="text-xs font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
                       >
                         Transaction
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-xs font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
                       >
                         From
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-xs font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
                       >
                         To
                       </div>
                     </th>
                     <th class="py-3 min-w-[100px]">
                       <div
-                        class="text-xs font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
                       >
                         Type
                       </div>
                     </th>
                     <th class="py-3 pr-3">
                       <div
-                        class="text-xs font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
                       >
                         Token change
                       </div>
@@ -735,7 +737,7 @@
                           >
                             <div class="flex items-start gap-2 text-left w-max">
                               <div class="flex flex-col">
-                                <div class="text-sm">
+                                <div class="xl:text-sm text-xl">
                                   <Copy
                                     address={change?.transaction_hash}
                                     textTooltip="Copy transaction to clipboard"
@@ -745,7 +747,7 @@
                                     link={`https://etherscan.io/tx/${change?.transaction_hash}`}
                                   />
                                 </div>
-                                <div class="text-xs text-gray-400">
+                                <div class="xl:text-xs text-lg text-gray-400">
                                   {dayjs(
                                     new Date(change?.detail.timestamp)
                                   ).format("DD/MM/YYYY, hh:mm A")}
@@ -756,7 +758,7 @@
 
                           <td class="py-4 group-hover:bg-gray-100">
                             {#if change?.detail?.from}
-                              <div class="text-sm w-max">
+                              <div class="xl:text-sm text-xl w-max">
                                 <Copy
                                   address={change?.detail?.from}
                                   iconColor="#000"
@@ -770,7 +772,7 @@
 
                           <td class="py-4 group-hover:bg-gray-100">
                             {#if change?.detail?.to}
-                              <div class="text-sm w-max">
+                              <div class="xl:text-sm text-xl w-max">
                                 <Copy
                                   address={change?.detail?.to}
                                   iconColor="#000"
@@ -786,11 +788,11 @@
                             class="py-4 min-w-[100px] group-hover:bg-gray-100"
                           >
                             <div
-                              class="text-sm text-[#00000099] font-medium flex justify-start"
+                              class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-start"
                             >
                               {#if change?.type}
                                 <div
-                                  class="w-max px-2 py-1 text-[#27326F] text-[12px] font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
+                                  class="w-max px-2 py-1 text-[#27326F] xl:text-[12px] text-lg font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
                                 >
                                   {change?.type}
                                 </div>
@@ -800,7 +802,7 @@
 
                           <td class="py-4 pr-3 group-hover:bg-gray-100">
                             <div
-                              class="flex flex-col items-start gap-2 text-sm font-medium"
+                              class="flex flex-col items-start gap-2 xl:text-sm text-xl font-medium"
                             >
                               {#each change.changes as item}
                                 <div class="flex items-center gap-2">
@@ -852,21 +854,21 @@
                   <tr class="bg-[#f4f5f8]">
                     <th class="py-3 pl-3">
                       <div
-                        class="text-xs font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
                       >
                         Transaction
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-xs font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
                       >
                         Type
                       </div>
                     </th>
                     <th class="py-3 pr-3">
                       <div
-                        class="text-xs font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
                       >
                         Token Change
                       </div>
@@ -910,7 +912,7 @@
                                 <div class="flex items-start gap-2 text-left">
                                   <div class="flex flex-col">
                                     <div
-                                      class="text-sm"
+                                      class="xl:text-sm text-xl"
                                       use:tooltip={{
                                         content: `<tooltip-detail text="${change?.transactionHash}" />`,
                                         allowHTML: true,
@@ -919,7 +921,9 @@
                                     >
                                       {shorterAddress(change?.transactionHash)}
                                     </div>
-                                    <div class="text-xs text-gray-400">
+                                    <div
+                                      class="xl:text-xs text-lg text-gray-400"
+                                    >
                                       {dayjs(new Date(change.timestamp)).format(
                                         "DD/MM/YYYY, hh:mm A"
                                       )}
@@ -932,7 +936,7 @@
                           <td class="py-4">
                             {#if change?.metadata?.action}
                               <div
-                                class="w-max px-2 py-1 text-[#27326F] text-[12px] font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
+                                class="w-max px-2 py-1 text-[#27326F] xl:text-[12px] text-lg font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
                               >
                                 {change?.metadata?.action}
                               </div>
@@ -946,7 +950,7 @@
                                 class="cursor-pointer"
                               >
                                 <div
-                                  class="flex flex-col items-start justify-start gap-1 text-sm"
+                                  class="flex flex-col items-start justify-start gap-1 xl:text-sm text-xl"
                                 >
                                   {#if change?.metadata?.hasOwnProperty("btcChange")}
                                     <div class="flex items-center gap-1">

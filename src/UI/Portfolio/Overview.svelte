@@ -21,7 +21,7 @@
 <div class="flex xl:flex-row flex-col justify-between gap-6">
   <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
     <OverviewCard title={MultipleLang.networth}>
-      <div class="text-3xl text-black flex">
+      <div class="xl:text-3xl text-5xl text-black flex">
         $<CountUpNumber
           id="networth"
           number={totalAssets + totalPositions}
@@ -30,7 +30,7 @@
       </div>
       <div class="flex items-center gap-3 opacity-50">
         <div
-          class={`flex text-lg font-medium ${
+          class={`flex xl:text-lg text-3xl font-medium ${
             data?.overview.networthChange < 0
               ? "text-red-500"
               : "text-[#00A878]"
@@ -47,11 +47,14 @@
             type="percent"
           />%
         </div>
-        <div class="text-[#00000066] text-base font-medium">24h</div>
+        <div class="text-[#00000066] xl:text-base text-2xl font-medium">
+          24h
+        </div>
       </div>
     </OverviewCard>
+
     <OverviewCard title={MultipleLang.claimable}>
-      <div class="flex text-3xl text-black">
+      <div class="flex xl:text-3xl text-5xl text-black">
         {#if totalClaimable.toString().toLowerCase().includes("e-")}
           $<TooltipNumber number={totalClaimable} type="balance" />
         {:else}
@@ -64,7 +67,7 @@
       </div>
       <div class="flex items-center gap-3 opacity-50">
         <div
-          class={`flex text-lg font-medium ${
+          class={`flex xl:text-lg text-3xl font-medium ${
             data?.overview.claimableChange < 0
               ? "text-red-500"
               : "text-[#00A878]"
@@ -81,19 +84,21 @@
             type="percent"
           />%
         </div>
-        <div class="text-[#00000066] text-base font-medium">24h</div>
+        <div class="text-[#00000066] xl:text-base text-2xl font-medium">
+          24h
+        </div>
       </div>
     </OverviewCard>
   </div>
 
   <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
     <OverviewCard title={MultipleLang.total_assets}>
-      <div class="text-3xl text-black flex">
+      <div class="xl:text-3xl text-5xl text-black flex">
         $<CountUpNumber id="total_assets" number={totalAssets} type="balance" />
       </div>
       <div class="flex items-center gap-3 opacity-50">
         <div
-          class={`flex text-lg font-medium ${
+          class={`flex xl:text-lg text-3xl font-medium ${
             data?.overview.assetsChange < 0 ? "text-red-500" : "text-[#00A878]"
           }`}
         >
@@ -108,11 +113,14 @@
             type="percent"
           />%
         </div>
-        <div class="text-[#00000066] text-base font-medium">24h</div>
+        <div class="text-[#00000066] xl:text-base text-2xl font-medium">
+          24h
+        </div>
       </div>
     </OverviewCard>
+
     <OverviewCard title={MultipleLang.total_positions}>
-      <div class="flex text-3xl text-black">
+      <div class="flex xl:text-3xl text-5xl text-black">
         {#if totalPositions.toString().toLowerCase().includes("e-")}
           $<TooltipNumber number={totalPositions} type="balance" />
         {:else}
@@ -125,7 +133,7 @@
       </div>
       <div class="flex items-center gap-3 opacity-50">
         <div
-          class={`flex text-lg font-medium ${
+          class={`flex xl:text-lg text-3xl font-medium ${
             data?.overview.postionNetworthChange < 0
               ? "text-red-500"
               : "text-[#00A878]"
@@ -142,7 +150,9 @@
             type="percent"
           />%
         </div>
-        <div class="text-[#00000066] text-base font-medium">24h</div>
+        <div class="text-[#00000066] xl:text-base text-2xl font-medium">
+          24h
+        </div>
       </div>
     </OverviewCard>
   </div>

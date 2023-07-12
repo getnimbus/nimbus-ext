@@ -398,7 +398,7 @@
         </div>
       {:else}
         <div class="header-container">
-          <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
+          <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[96%]">
             <div class="flex flex-col mb-5 gap-14">
               <div class="flex items-center justify-between">
                 {#if formatListAddress.length !== 0}
@@ -408,7 +408,7 @@
                         {#each formatListAddress.slice(0, 5) as item}
                           <div
                             id={item.value}
-                            class="relative text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                            class="relative xl:text-base text-2xl text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
                             class:hover:no-underline={item.value ===
                               selectedWallet}
                             on:click={() => {
@@ -417,9 +417,8 @@
                           >
                             <img
                               src={item.logo}
-                              alt="logo"
-                              width="16"
-                              height="16"
+                              alt=""
+                              class="xl:w-4 xl:h-4 w-5 h-5"
                             />
                             {item.label}
                             {#if item.value === selectedWallet}
@@ -450,7 +449,7 @@
                         {#each formatListAddress as item}
                           <div
                             id={item.value}
-                            class="relative xl:text-base text-xl text-white py-1 xl:px-2 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                            class="relative xl:text-base text-2xl text-white py-1 xl:px-2 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
                             class:hover:no-underline={item.value ===
                               selectedWallet}
                             on:click={() => {
@@ -459,9 +458,8 @@
                           >
                             <img
                               src={item.logo}
-                              alt="logo"
-                              width="16"
-                              height="16"
+                              alt=""
+                              class="xl:w-4 xl:h-4 w-5 h-5"
                             />
                             {item.label}
                             {#if item.value === selectedWallet}
@@ -482,7 +480,7 @@
                     {/if}
                   </div>
                 {:else}
-                  <div class="text-base font-semibold text-white">
+                  <div class="xl:text-base text-2xl font-semibold text-white">
                     {MultipleLang.empty_wallet}
                   </div>
                 {/if}
@@ -529,7 +527,7 @@
                   </Button>
                   {#if showDisableAddWallet}
                     <div
-                      class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                      class="xl:absolute hidden transform -translate-x-1/2 -top-8 left-1/2"
                       style="z-index: 2147483648;"
                     >
                       <tooltip-detail
@@ -543,7 +541,7 @@
               <div class="flex items-end justify-between">
                 <div class="flex flex-col gap-3">
                   <div class="flex items-end gap-6">
-                    <div class="text-5xl font-semibold text-white">
+                    <div class="xl:text-5xl text-7xl font-semibold text-white">
                       {title}
                     </div>
                     {#if type === "portfolio"}
@@ -551,7 +549,7 @@
                     {/if}
                   </div>
                   <div class="flex items-center gap-4">
-                    <div class="text-base">
+                    <div class="xl:text-base text-lg">
                       <Copy
                         address={selectedWallet}
                         iconColor="#fff"
@@ -613,12 +611,13 @@
     </div>
   {/if}
 </ErrorBoundary>
+
 <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
-  <div class="title-3 text-gray-600 font-semibold max-w-[530px]">
+  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
     {MultipleLang.content.modal_add_title}
   </div>
   <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
-    <div class="flex flex-col gap-1 w-[530px]">
+    <div class="flex flex-col gap-1">
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -626,7 +625,7 @@
           }`}
           class:input-border-error={errors.address && errors.address.required}
         >
-          <div class="text-xs text-[#666666] font-medium">
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
             {MultipleLang.content.modal_address_label}
           </div>
           <input
@@ -635,7 +634,7 @@
             name="address"
             placeholder={MultipleLang.content.modal_address_label}
             value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
               address ? "bg-[#F0F2F7]" : ""
             }
               `}
@@ -649,7 +648,7 @@
         {/if}
       </div>
     </div>
-    <div class="flex flex-col gap-1 w-[530px]">
+    <div class="flex flex-col gap-1">
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -657,7 +656,7 @@
           }`}
           class:input-border-error={errors.label && errors.label.required}
         >
-          <div class="text-xs text-[#666666] font-medium">
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
             {MultipleLang.content.modal_label_label}
           </div>
           <input
@@ -666,7 +665,7 @@
             name="label"
             placeholder={MultipleLang.content.modal_label_label}
             value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
               label ? "bg-[#F0F2F7]" : ""
             }
               `}
@@ -697,22 +696,23 @@
     </div>
   </form>
 </AppOverlay>
+
 <AppOverlay
   isOpen={isOpenFollowWhaleModal}
   on:close={() => (isOpenFollowWhaleModal = false)}
 >
-  <div class="flex flex-col gap-4 max-w-[530px]">
+  <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1">
-      <div class="text-base">
+      <div class="xl:text-base text-2xl">
         Go to <a
           href="https://t.me/GetNimbusBot"
           target="_blank"
           class="text-blue-500">https://t.me/GetNimbusBot</a
         >
       </div>
-      <div class="text-base">Use the command as follow video</div>
+      <div class="xl:text-base text-2xl">Use the command as follow video</div>
     </div>
-    <div class="h-[350px] w-[500px]">
+    <div class="xl:h-[350px] h-[650px]">
       <img src={FollowWhale} alt="" class="w-full h-full" />
     </div>
     <div class="flex justify-end">

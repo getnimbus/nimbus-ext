@@ -865,7 +865,7 @@
 
 <ErrorBoundary>
   <div class="flex flex-col gap-4">
-    <div class="text-2xl font-medium text-black">
+    <div class="xl:text-2xl text-4xl font-medium text-black">
       {MultipleLang.positions}
     </div>
 
@@ -880,7 +880,9 @@
             <Table data={position} />
           {/each}
         {:else}
-          <div class="flex justify-center items-center text-lg text-gray-400">
+          <div
+            class="flex justify-center items-center xl:text-lg text-xl text-gray-400"
+          >
             Empty
           </div>
         {/if}

@@ -45,7 +45,7 @@
           isEmpty = true;
           isLoading = false;
           return;
-        } else if (selectedWallet === response.address) {
+        } else if (selectedWallet === response?.address) {
           if (response?.result?.length === 0) {
             isEmpty = true;
             isLoading = false;

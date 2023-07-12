@@ -29,7 +29,7 @@ via @get_nimbus`;
   <td
     class="pl-3 py-4 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-9 bg-white group-hover:bg-gray-100"
   >
-    <div class="text-left text-black text-sm font-medium">
+    <div class="text-left text-black xl:text-sm text-xl font-medium">
       <div class="flex space-x-3">
         <img
           src={data?.from_token_logo}
@@ -44,14 +44,14 @@ via @get_nimbus`;
           height="30"
         />
       </div>
-      <div class="text-[#00000080] text-xs mt-1">
+      <div class="text-[#00000080] xl:text-xs text-base mt-1">
         {data?.price_from?.symbol} - {data?.price_to?.symbol}
       </div>
     </div>
   </td>
 
   <td class="py-4 group-hover:bg-gray-100">
-    <div class="text-left text-black text-sm font-medium">
+    <div class="text-left text-black xl:text-sm text-xl font-medium">
       {dayjs(data?.timestamp).format("YYYY-MM-DD HH:mm:ss")}
       <br />
       <span class="text-[#00000080]">
@@ -62,7 +62,7 @@ via @get_nimbus`;
 
   <td class="py-4 group-hover:bg-gray-100">
     <div
-      class="text-sm text-red-500 font-medium flex flex-col justify-start gap-1"
+      class="xl:text-sm text-xl text-red-500 font-medium flex flex-col justify-start gap-1"
     >
       <div>
         <TooltipNumber number={data?.amountIn} type="amount" />
@@ -76,7 +76,7 @@ via @get_nimbus`;
 
   <td class="py-4 group-hover:bg-gray-100">
     <div
-      class="text-sm text-[#00A878] font-medium flex flex-col justify-start gap-1"
+      class="xl:text-sm text-xl text-[#00A878] font-medium flex flex-col justify-start gap-1"
     >
       <div>
         <TooltipNumber number={data?.amountOut} type="amount" />
@@ -90,7 +90,7 @@ via @get_nimbus`;
 
   <td class="py-4 group-hover:bg-gray-100">
     <div
-      class="text-sm text-blue-500 hover:text-[#0d6efd] cursor-pointer font-medium flex justify-center"
+      class="xl:text-sm text-xl text-blue-500 hover:text-[#0d6efd] cursor-pointer font-medium flex justify-center"
     >
       {#if APP_TYPE.TYPE === "EXT"}
         <div

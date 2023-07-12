@@ -16,12 +16,14 @@
 
 <div class="flex flex-col gap-5">
   <div class="flex justify-between items-end">
-    <div class="text-xl font-semibold">{position}</div>
+    <div class="xl:text-xl text-3xl font-semibold">{position}</div>
     <div class="flex flex-col gap-1">
-      <div class="text-3xl font-semibold flex justify-end">
+      <div class="xl:text-3xl text-4xl font-semibold flex justify-end">
         $<TooltipNumber number={sum} type="balance" />
       </div>
-      <div class="text-lg font-medium text-gray-600 flex justify-end gap-1">
+      <div
+        class="xl:text-lg text-2xl font-medium text-gray-600 flex justify-end gap-1"
+      >
         {MultipleLang.claimable}:
         <span>
           $<TooltipNumber number={sum_claimable} type="balance" />
@@ -36,43 +38,53 @@
           <th
             class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
           >
-            <div class="text-xs font-semibold text-black uppercase text-left">
+            <div
+              class="xl:text-xs text-base font-semibold text-black uppercase text-left"
+            >
               Pool
             </div>
           </th>
 
           <th class="py-3">
-            <div class="text-right text-xs font-semibold text-black uppercase">
+            <div
+              class="text-right xl:text-xs text-base font-semibold text-black uppercase"
+            >
               Amount
             </div>
           </th>
 
           <th class="py-3">
-            <div class="text-right text-xs font-semibold text-black uppercase">
+            <div
+              class="text-right xl:text-xs text-base font-semibold text-black uppercase"
+            >
               Entry
             </div>
           </th>
 
           <!-- <th class="py-3">
-            <div class="text-right text-xs font-semibold text-black uppercase">
+            <div class="text-right xl:text-xs text-base font-semibold text-black uppercase">
               Entry Time
             </div>
           </th>
 
           <th class="py-3">
-            <div class="text-right text-xs font-semibold text-black uppercase">
+            <div class="text-right xl:text-xs text-base font-semibold text-black uppercase">
               APY
             </div>
           </th> -->
 
           <th class="py-3">
-            <div class="text-xs font-semibold text-black uppercase text-right">
+            <div
+              class="xl:text-xs text-base font-semibold text-black uppercase text-right"
+            >
               Value
             </div>
           </th>
 
           <th class="pr-3 py-3">
-            <div class="text-xs font-semibold text-black uppercase text-right">
+            <div
+              class="xl:text-xs text-base font-semibold text-black uppercase text-right"
+            >
               Profit & Loss
             </div>
           </th>

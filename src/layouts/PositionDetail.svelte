@@ -110,10 +110,10 @@
       <div class="flex flex-col justify-between gap-6 xl:flex-row">
         <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
           <OverviewCard title={"Current Liquidity"}>
-            <div class="flex items-end gap-1 text-3xl text-black">
+            <div class="flex items-end gap-1 xl:text-3xl text-5xl text-black">
               <CountUpNumber id="current_liquidity" number={0} type="balance" />
             </div>
-            <div class="flex text-lg">
+            <div class="flex xl:text-lg text-3xl">
               $<CountUpNumber id="test2" number={0} type="balance" />
             </div>
           </OverviewCard>
@@ -124,7 +124,7 @@
             isTooltip
           >
             <div
-              class={`text-3xl flex ${
+              class={`xl:text-3xl text-5xl flex ${
                 0 >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
             >
@@ -135,7 +135,7 @@
               />
             </div>
             <div
-              class={`text-lg flex ${
+              class={`xl:text-lg text-3xl flex ${
                 0 >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
             >
@@ -155,14 +155,14 @@
 
         <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
           <OverviewCard title={"Unclaimed Fees"}>
-            <div class="flex text-3xl text-black">
+            <div class="flex xl:text-3xl text-5xl text-black">
               $<CountUpNumber id="unclaimed_fees" number={0} type="balance" />
             </div>
           </OverviewCard>
 
           <OverviewCard title={"Yesterday Earning"}>
             <div
-              class={`text-3xl flex ${
+              class={`xl:text-3xl text-5xl flex ${
                 0 >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
             >
@@ -173,7 +173,7 @@
               />
             </div>
             <div
-              class={`text-lg flex ${
+              class={`xl:text-lg text-3xl flex ${
                 0 >= 0 ? "text-[#00A878]" : "text-red-500"
               }`}
             >

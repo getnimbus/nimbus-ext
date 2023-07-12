@@ -157,7 +157,7 @@
         chain: selectedChain,
         pageToken: page,
       });
-      if (selectedWallet === response.address) {
+      if (selectedWallet === response?.address) {
         data = [...data, ...response.result.data];
         pageToken = response.result.pageToken;
       } else {
@@ -212,7 +212,7 @@
           class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
         >
           <div class="flex flex-col justify-between gap-4 xl:flex-row">
-            <div class="text-2xl font-medium text-black">
+            <div class="xl:text-2xl text-4xl font-medium text-black">
               Historical Transactions
             </div>
             <div class="flex items-center justify-end gap-2">

@@ -38,15 +38,17 @@
         {/each}
       </div>
       <div class="flex flex-col gap-1">
-        <div class="text-black text-sm font-medium">{data.name}</div>
+        <div class="text-black xl:text-sm text-xl font-medium">{data.name}</div>
         {#if data.tokens && data.tokens.length}
           <div class="flex items-center gap-1">
             {#each data.tokens as token, index}
-              <div class="text-[#00000080] text-xs font-medium">
+              <div class="text-[#00000080] xl:text-xs text-sm font-medium">
                 {token.symbol}
               </div>
               {#if index < data.tokens.length - 1}
-                <div class="text-[#00000080] text-xs font-medium">-</div>
+                <div class="text-[#00000080] xl:text-xs text-sm font-medium">
+                  -
+                </div>
               {/if}
             {/each}
           </div>
@@ -58,7 +60,9 @@
   </td>
 
   <td class="py-4 group-hover:bg-gray-100">
-    <div class="text-sm text-[#00000099] font-medium flex flex-col items-end">
+    <div
+      class="xl:text-sm text-xl text-[#00000099] font-medium flex flex-col items-end"
+    >
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
           <TooltipNumber number={Number(data.amount0out)} type="amount" />
@@ -81,7 +85,9 @@
   </td>
 
   <td class="py-4 group-hover:bg-gray-100">
-    <div class="text-sm text-[#00000099] font-medium flex flex-col items-end">
+    <div
+      class="xl:text-sm text-xl text-[#00000099] font-medium flex flex-col items-end"
+    >
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
           <TooltipNumber
@@ -98,13 +104,13 @@
   </td>
 
   <td class="pr-3 py-4 group-hover:bg-gray-100">
-    <div class="flex justify-end text-sm text-[#000000] font-medium">
+    <div class="flex justify-end xl:text-sm text-xl text-[#000000] font-medium">
       $<TooltipNumber number={value} type="balance" />
     </div>
   </td>
 
   <!-- <td class="pr-3 py-4 group-hover:bg-gray-100">
-    <div class="text-sm font-medium">
+    <div class="xl:text-sm text-xl font-medium">
       <div class="flex flex-col">
         <div
           class={`flex justify-end ${
