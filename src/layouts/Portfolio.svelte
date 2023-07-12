@@ -202,8 +202,8 @@
         overviewData = response.result;
 
         if (
-          overviewData?.breakdownToken.length === 0 ||
-          overviewData?.breakdownNft.length === 0
+          overviewData?.breakdownToken?.length === 0 ||
+          overviewData?.breakdownNft?.length === 0
         ) {
           isEmptyDataPie = true;
         }
@@ -281,7 +281,7 @@
           0
         );
 
-        const sortBreakdownNft = overviewData?.breakdownNft.sort((a, b) => {
+        const sortBreakdownNft = overviewData?.breakdownNft?.sort((a, b) => {
           if (a.value < b.value) {
             return 1;
           }
@@ -291,15 +291,17 @@
           return 0;
         });
 
-        const topFourBreakdownNft = sortBreakdownNft.slice(0, 4).map((item) => {
-          return {
-            ...item,
-            id: item.id || "N/A",
-            name: item.collection.name || "N/A",
-          };
-        });
+        const topFourBreakdownNft = sortBreakdownNft
+          ?.slice(0, 4)
+          .map((item) => {
+            return {
+              ...item,
+              id: item.id || "N/A",
+              name: item.collection.name || "N/A",
+            };
+          });
 
-        const orderBreakdownNft = sortBreakdownNft.slice(
+        const orderBreakdownNft = sortBreakdownNft?.slice(
           4,
           sortBreakdownNft.length
         );
@@ -321,17 +323,19 @@
           },
         ];
 
-        const formatDataPieChartTopFourNft = topFourBreakdownNft.map((item) => {
-          return {
-            name: item.collection.name || item.collection.symbol,
-            name_ratio: "Ratio",
-            value: (Number(item.value) / sumNft) * 100 || 0,
-            name_value: "Value",
-            value_value: Number(item.value),
-            name_balance: "Balance",
-            value_balance: Number(item.amount),
-          };
-        });
+        const formatDataPieChartTopFourNft = topFourBreakdownNft?.map(
+          (item) => {
+            return {
+              name: item.collection.name || item.collection.symbol,
+              name_ratio: "Ratio",
+              value: (Number(item.value) / sumNft) * 100 || 0,
+              name_value: "Value",
+              value_value: Number(item.value),
+              name_balance: "Balance",
+              value_balance: Number(item.amount),
+            };
+          }
+        );
 
         dataPieChart = {
           token: {
