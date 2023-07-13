@@ -32,7 +32,7 @@
       let:motion
     >
       <div
-        class="bg-white rounded-xl px-6 pt-9 pb-7 relative xl:min-w-lg min-w-4xl"
+        class="bg-white rounded-xl px-6 pt-9 pb-7 mx-6 relative xl:min-w-xl min-w-4xl"
         style="box-shadow: 0px 4px 20px 0px #00000026;"
         on:click|stopPropagation
         use:motion

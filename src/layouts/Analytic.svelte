@@ -172,6 +172,7 @@
   {/if} -->
   <Analytic />
 </ErrorBoundary>
+
 <AppOverlay
   isOpen={isOpenModal}
   on:close={() => {
@@ -180,11 +181,11 @@
     isOpenModal = false;
   }}
 >
-  <div class="title-3 text-center text-gray-600 font-semibold">
+  <div class="xl:title-3 title-1 text-center text-gray-600 font-semibold">
     Let's us analytic your portfolio
   </div>
-  <div class="mt-2 w-[620px]">
-    <div class="text-base text-gray-500 text-center">
+  <div class="mt-2">
+    <div class="xl:text-base text-lg text-gray-500 text-center">
       Our analysis is
       <span class="font-bold">Premium</span>
       <img src={Crown} alt="" width="13" height="12" class="inline-block" /> feature
@@ -199,14 +200,16 @@
               email ? "bg-[#F0F2F7]" : ""
             }`}
           >
-            <div class="text-xs text-[#666666] font-medium">Email</div>
+            <div class="xl:text-base text-xl text-[#666666] font-medium">
+              Email
+            </div>
             <input
               type="email"
               id="email"
               name="email"
               placeholder="Your email"
               value=""
-              class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
                 email ? "bg-[#F0F2F7]" : ""
               }
               `}
