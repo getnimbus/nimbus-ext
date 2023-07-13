@@ -41,9 +41,7 @@
         >
           <div class="text-lg">Comming soon 🚀</div>
           <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
-            <Button variant="secondary" size="supper-small">
-              Request analytics
-            </Button>
+            <Button variant="secondary">Request analytics</Button>
           </a>
         </div>
       {/if}

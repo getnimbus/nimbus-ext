@@ -166,7 +166,7 @@
         {isLoadingChart}
         title="Historical activities"
         tooltipTitle="The chart shows only activities made by this wallet"
-        id="HistoricalActivities"
+        id="historical-activities-personality"
       />
     </div>
     {#if getAddressContext(selectedWallet)?.type !== "BTC"}
@@ -176,7 +176,6 @@
           on:click={() => {
             isOpenReport.update((n) => (n = true));
           }}
-          size="supper-small"
         >
           Request analytics
         </Button>

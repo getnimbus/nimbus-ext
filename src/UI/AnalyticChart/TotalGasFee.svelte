@@ -160,7 +160,7 @@
     {isLoadingChart}
     title="Total gas fee paid"
     tooltipTitle=""
-    id="TotalGasFeePaid"
+    id="total-gasfee-paid"
     {sum}
   />
 </div>

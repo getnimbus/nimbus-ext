@@ -189,11 +189,12 @@
         {:else}
           <div class="relative">
             <EChart
-              id="ProfitGrows"
+              id="profit-grows"
               theme="white"
               notMerge={true}
               option={optionLine}
               height={415}
+              type="full-width"
             />
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"

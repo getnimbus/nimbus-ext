@@ -317,7 +317,13 @@
         <div class="border border-[#0000001a] rounded-[20px] p-6">
           <div class="text-2xl font-medium text-black">Price Range</div>
 
-          <EChart id="chartPriceRange" theme="white" {option} height={420} />
+          <EChart
+            id="chartPriceRange"
+            theme="white"
+            {option}
+            height={420}
+            type="full-width"
+          />
 
           <div class="flex flex-col gap-4">
             <div class="flex justify-between items-center gap-6">

@@ -85,6 +85,8 @@
         borderWidth: 0.5,
       },
       yearLabel: { show: false },
+      dayLabel: { show: true, color: "#6b7280" },
+      monthLabel: { show: true, color: "#6b7280" },
     },
     dayLabel: {
       nameMap: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -205,7 +207,7 @@
             isTrxPage
             title="Historical Activities"
             tooltipTitle="The chart shows only activities made by this wallet"
-            id="HistoricalActivities"
+            id="historical-activities"
           />
         </div>
         <div

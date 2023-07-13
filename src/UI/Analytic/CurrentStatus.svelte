@@ -476,11 +476,12 @@
               </div>
             {:else}
               <EChart
-                id="pie-chart"
+                id="current-status-analytics"
                 theme="white"
                 option={optionPie}
                 height={465}
                 notMerge={true}
+                type="full-width"
               />
             {/if}
           </div>

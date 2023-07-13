@@ -106,11 +106,12 @@
         {:else}
           <div class="relative">
             <EChart
-              id="DailyGain"
+              id="daily-gain"
               theme="white"
               {option}
               height={415}
               notMerge={true}
+              type="full-width"
             />
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"

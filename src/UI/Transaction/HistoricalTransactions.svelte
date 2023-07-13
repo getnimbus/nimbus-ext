@@ -34,7 +34,7 @@
 <div
   class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
 >
-  <table class="table-auto xl:w-full w-[1200px]">
+  <table class="table-auto xl:w-full w-[1400px]">
     <thead class={isSticky ? "sticky top-0 z-10" : ""} bind:this={tableHeader}>
       <tr class="bg-[#f4f5f8]">
         <th
