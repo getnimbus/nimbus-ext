@@ -264,7 +264,7 @@
   }
 </script>
 
-<div class="py-1 bg-[#27326F]">
+<div class="py-1 bg-[#27326F] border-b-[1px] border-[#ffffff1a]">
   <div class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]">
     <Link
       to={`${APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"}`}
@@ -396,7 +396,7 @@
           value={search}
           placeholder={MultipleLang.search_placeholder}
           type="text"
-          class="bg-[#525B8C] w-full xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-xl placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
+          class="bg-[#525B8C] xl:w-full w-[400px] xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-xl placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
         />
       </div>
 
@@ -422,9 +422,9 @@
       {/if}
 
       <!-- <div
-        class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
+        class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12"
       >
-        <img src={Bell} alt="" />
+        <img src={Bell} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
       </div> -->
 
       <!-- {#if Object.keys(userInfo).length !== 0}

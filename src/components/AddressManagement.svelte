@@ -349,12 +349,8 @@
 
   const handleScroll = () => {
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
-
-    // Check if the scroll is at the start
     isScrollStart = scrollLeft === 0;
-
-    // Check if the scroll is at the end
-    isScrollEnd = scrollLeft + clientWidth >= scrollWidth;
+    isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
   };
 
   $: {
@@ -540,10 +536,10 @@
                   class="xl:hidden relative overflow-x-hidden w-full flex flex-row gap-3 justify-between items-center"
                 >
                   <div
-                    class={`text-white absolute -left-2 p-1 ${
+                    class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
                       isScrollStart ? "hidden" : "block"
                     }`}
-                    style="background-image: linear-gradient( to right, #9ca3af 0%, rgba(255,255,255,0) 100% );"
+                    style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -563,7 +559,7 @@
                     >
                   </div>
                   <div
-                    class="flex gap-2 overflow-x-auto flex-1 scroll-container whitespace-nowrap flex-nowrap"
+                    class="flex-1 flex gap-3 overflow-x-scroll whitespace-nowrap"
                     bind:this={scrollContainer}
                     on:scroll={handleScroll}
                   >
@@ -594,10 +590,10 @@
                     {/each}
                   </div>
                   <div
-                    class={`text-white absolute -right-2 p-1 ${
+                    class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
                       isScrollEnd ? "hidden" : "block"
                     }`}
-                    style="background-image: linear-gradient( to left, #9ca3af 0%, rgba(255,255,255,0) 100% );"
+                    style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
