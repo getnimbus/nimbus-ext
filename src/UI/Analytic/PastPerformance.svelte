@@ -1,6 +1,7 @@
 <script lang="ts">
   import { sendMessage } from "webext-bridge";
   import { wallet, chain } from "~/store";
+  import { getAddressContext } from "~/utils";
 
   import DateRangePicker from "~/components/DateRangePicker.svelte";
   import SectorGrowth from "../AnalyticChart/SectorGrowth.svelte";
@@ -9,7 +10,6 @@
   import TotalValueHistory from "../AnalyticChart/TotalValueHistory.svelte";
   import DailyPnL from "../AnalyticChart/DailyPnL.svelte";
   import ProfitGrows from "../AnalyticChart/ProfitGrows.svelte";
-  import { getAddressContext } from "~/utils";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -76,7 +76,9 @@
 
 <div class="border border-[#0000001a] rounded-[20px] p-6">
   <div class="flex justify-between items-center border-b-[1px] mb-6 pb-4">
-    <div class="text-2xl font-medium text-black">Past Performance</div>
+    <div class="xl:text-2xl text-4xl font-medium text-black">
+      Past Performance
+    </div>
     <!-- <DateRangePicker onChange={handleGetDateRange} /> -->
   </div>
   <div class="flex flex-col gap-6">

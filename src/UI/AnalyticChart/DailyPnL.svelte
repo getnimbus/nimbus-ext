@@ -89,7 +89,7 @@
 </script>
 
 <div class="border border-[#0000001a] rounded-[20px] p-6">
-  <div class="text-xl font-medium text-black">Daily PnL</div>
+  <div class="xl:text-xl text-3xl font-medium text-black">Daily PnL</div>
   <div>
     {#if isLoading}
       <div class="flex items-center justify-center h-[415px]">
@@ -99,7 +99,7 @@
       <div class="w-full h-full">
         {#if isEmpty}
           <div
-            class="flex justify-center items-center h-full text-lg text-gray-400 h-[415px]"
+            class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[415px]"
           >
             Empty
           </div>

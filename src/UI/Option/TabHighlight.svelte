@@ -300,7 +300,6 @@
     <div class="flex justify-end gap-2">
       <Button
         variant="secondary"
-        width={90}
         on:click={() => {
           errorsEdit = {};
           isOpenEditModal = false;
@@ -308,7 +307,7 @@
       >
         {MultipleLang.content.modal_cancel}</Button
       >
-      <Button width={90} type="submit">
+      <Button type="submit">
         {MultipleLang.content.modal_edit}</Button
       >
     </div>
@@ -330,7 +329,6 @@
   <div class="flex justify-end gap-2 mt-4">
     <Button
       variant="secondary"
-      width={90}
       on:click={() => {
         isOpenConfirmDelete = false;
         selectedHighlight = {};
@@ -340,7 +338,6 @@
     </Button>
     <Button
       variant="delete"
-      width={90}
       on:click={() => {
         handleDelete(selectedHighlight);
       }}

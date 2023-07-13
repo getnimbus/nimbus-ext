@@ -25,7 +25,7 @@
   }
 </script>
 
-<AddressManagement type="order" title="Analytic">
+<AddressManagement type="order" title="Analytics">
   <span slot="body">
     <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[96%] relative">
       <div
@@ -41,7 +41,7 @@
         >
           <div class="text-lg">Comming soon 🚀</div>
           <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
-            <Button variant="secondary" width={140} size="supper-small">
+            <Button variant="secondary" size="supper-small">
               Request analytics
             </Button>
           </a>

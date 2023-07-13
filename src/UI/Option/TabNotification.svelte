@@ -175,7 +175,6 @@
           let:copy
         >
           <Button
-            width={150}
             on:click={() => {
               copy();
               isOpenFollowWhaleModal = false;

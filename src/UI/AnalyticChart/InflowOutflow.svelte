@@ -306,7 +306,9 @@
 </script>
 
 <div class="border border-[#0000001a] rounded-[20px] pt-6">
-  <div class="px-6 text-xl font-medium text-black">Token Inflow - Outflow</div>
+  <div class="px-6 xl:text-xl text-3xl font-medium text-black">
+    Token Inflow - Outflow
+  </div>
   {#if isLoadingInflowOutflow}
     <div class="flex items-center justify-center h-[415px]">
       <loading-icon />
@@ -315,7 +317,7 @@
     <div class="w-full h-full">
       {#if isEmptyInflowOutflow}
         <div
-          class="flex justify-center items-center h-full text-lg text-gray-400 h-[415px]"
+          class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[415px]"
         >
           Empty
         </div>

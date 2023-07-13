@@ -437,11 +437,7 @@
             <div class="text-lg">
               {MultipleLang.addwallet}
             </div>
-            <Button
-              variant="tertiary"
-              width={136}
-              on:click={() => (isOpenAddModal = true)}
-            >
+            <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
               <img src={Plus} alt="" width="12" height="12" />
               <div class="text-base font-medium text-white">
                 {MultipleLang.content.btn_text}
@@ -544,9 +540,10 @@
                   class="xl:hidden relative overflow-x-hidden w-full flex flex-row gap-3 justify-between items-center"
                 >
                   <div
-                    class={`text-gray-300 absolute -left-2 ${
+                    class={`text-white absolute -left-2 p-1 ${
                       isScrollStart ? "hidden" : "block"
                     }`}
+                    style="background-image: linear-gradient( to right, #9ca3af 0%, rgba(255,255,255,0) 100% );"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -566,24 +563,20 @@
                     >
                   </div>
                   <div
-                    class="flex gap-6 overflow-x-auto flex-1 scroll-container whitespace-nowrap flex-nowrap"
+                    class="flex gap-2 overflow-x-auto flex-1 scroll-container whitespace-nowrap flex-nowrap"
                     bind:this={scrollContainer}
                     on:scroll={handleScroll}
                   >
                     {#each formatListAddress as item}
                       <div
                         id={item.value}
-                        class="w-max relative text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
+                        class="w-max flex-shrink-0 relative text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
                         class:hover:no-underline={item.value === selectedWallet}
                         on:click={() => {
                           wallet.update((n) => (n = item.value));
                         }}
                       >
-                        <img
-                          src={item.logo}
-                          alt=""
-                          class="xl:w-4 xl:h-4 w-5 h-5"
-                        />
+                        <img src={item.logo} alt="" class="w-5 h-5" />
                         {item.label}
                         {#if item.value === selectedWallet}
                           <Motion
@@ -601,9 +594,10 @@
                     {/each}
                   </div>
                   <div
-                    class={`text-gray-300 absolute -right-2 ${
+                    class={`text-white absolute -right-2 p-1 ${
                       isScrollEnd ? "hidden" : "block"
                     }`}
+                    style="background-image: linear-gradient( to left, #9ca3af 0%, rgba(255,255,255,0) 100% );"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -639,7 +633,6 @@
                 >
                   <Button
                     variant={isDisabledBtn ? "disabled" : "tertiary"}
-                    width={136}
                     on:click={() => {
                       const showDisableAddWalletStorage = localStorage.getItem(
                         "showDisableAddWallet"
@@ -659,8 +652,8 @@
                       }
                     }}
                   >
-                    <img src={Plus} alt="" width="12" height="12" />
-                    <div class="text-base font-medium text-white">
+                    <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+                    <div class="font-medium text-white">
                       {MultipleLang.content.btn_text}
                     </div>
                   </Button>
@@ -688,7 +681,7 @@
                     {/if}
                   </div>
                   <div class="flex items-center gap-4">
-                    <div class="xl:text-base text-lg">
+                    <div class="xl:text-base text-xl">
                       <Copy
                         address={selectedWallet}
                         iconColor="#fff"
@@ -706,7 +699,6 @@
                     >
                       <Button
                         variant="secondary"
-                        width={140}
                         size="supper-small"
                         on:click={() => (isOpenFollowWhaleModal = true)}
                       >
@@ -821,7 +813,6 @@
     <div class="flex justify-end gap-2">
       <Button
         variant="secondary"
-        width={90}
         on:click={() => {
           errors = {};
           isOpenAddModal = false;
@@ -829,7 +820,7 @@
       >
         {MultipleLang.content.modal_cancel}</Button
       >
-      <Button width={90} type="submit">
+      <Button type="submit">
         {MultipleLang.content.modal_add}</Button
       >
     </div>
@@ -873,7 +864,6 @@
           let:copy
         >
           <Button
-            width={150}
             on:click={() => {
               copy();
               isOpenFollowWhaleModal = false;
@@ -944,7 +934,6 @@
       </div>
       <div class="flex justify-end gap-2">
         <Button
-          width={90}
           type="submit"
           isLoading={isLoadingSendMail}
           disabled={isLoadingSendMail}>Submit</Button

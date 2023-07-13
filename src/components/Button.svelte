@@ -11,7 +11,6 @@
     | "delete"
     | "disabled"
     | "" = "primary";
-  export let width: number = 200;
   export let className: string = "";
   export let disabled: boolean = false;
   export let isLoading: boolean = false;
@@ -40,7 +39,6 @@
   on:mouseleave
   {type}
   class={buttonClassName}
-  style="width: {width}px;"
   disabled={disabled || isLoading}
 >
   {#if isLoading}
@@ -93,12 +91,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 44px;
-    width: 100%;
     color: #ffffff;
     font-weight: 500;
     font-size: 16px;
-    line-height: 24px;
     border-radius: 12px;
     padding: 10px 16px;
     gap: 6px;
@@ -111,8 +106,6 @@
   }
 
   .button .container {
-    height: 44px;
-    min-width: max-content;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -120,22 +113,40 @@
   }
 
   .large {
-    height: fit-content;
-    min-width: 130px;
     font-size: 18px;
     padding: 14px 22px;
   }
 
   .small {
-    height: fit-content;
     font-size: 14px;
     padding: 6px 9px;
   }
 
   .supper-small {
-    height: fit-content;
     font-size: 12px;
     padding: 4px 7px;
+  }
+
+  @media screen and (max-width: 1280px) {
+    .button {
+      width: 100%;
+      font-size: 24px;
+    }
+
+    .large {
+      font-size: 26px;
+      padding: 18px 26px;
+    }
+
+    .small {
+      font-size: 22px;
+      padding: 10px 13px;
+    }
+
+    .supper-small {
+      font-size: 20px;
+      padding: 8px 11px;
+    }
   }
 
   .secondary {

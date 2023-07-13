@@ -220,7 +220,6 @@
       </div>
       <div class="flex justify-end gap-2">
         <Button
-          width={90}
           type="submit"
           isLoading={isLoadingSendMail}
           disabled={isLoadingSendMail}>Submit</Button
