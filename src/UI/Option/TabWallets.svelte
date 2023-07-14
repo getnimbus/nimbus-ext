@@ -629,18 +629,22 @@
       {/if}
     </div>
     <div class="flex justify-end gap-2">
-      <Button
-        variant="secondary"
-        on:click={() => {
-          errorsEdit = {};
-          isOpenEditModal = false;
-        }}
-      >
-        {MultipleLang.content.modal_cancel}</Button
-      >
-      <Button type="submit">
-        {MultipleLang.content.modal_edit}</Button
-      >
+      <div class="lg:w-[100px] w-full">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            errorsEdit = {};
+            isOpenEditModal = false;
+          }}
+        >
+          {MultipleLang.content.modal_cancel}</Button
+        >
+      </div>
+      <div class="lg:w-[100px] w-full">
+        <Button type="submit">
+          {MultipleLang.content.modal_edit}</Button
+        >
+      </div>
     </div>
   </form>
 </AppOverlay>
@@ -713,18 +717,22 @@
       </div>
     </div>
     <div class="flex justify-end gap-2">
-      <Button
-        variant="secondary"
-        on:click={() => {
-          errors = {};
-          isOpenAddModal = false;
-        }}
-      >
-        {MultipleLang.content.modal_cancel}</Button
-      >
-      <Button type="submit">
-        {MultipleLang.content.modal_add}</Button
-      >
+      <div class="lg:w-[100px] w-full">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            errors = {};
+            isOpenAddModal = false;
+          }}
+        >
+          {MultipleLang.content.modal_cancel}</Button
+        >
+      </div>
+      <div class="lg:w-[100px] w-full">
+        <Button type="submit">
+          {MultipleLang.content.modal_add}</Button
+        >
+      </div>
     </div>
   </form>
 </AppOverlay>
@@ -742,23 +750,27 @@
     </div>
   </div>
   <div class="flex justify-end gap-2 mt-4">
-    <Button
-      variant="secondary"
-      on:click={() => {
-        isOpenConfirmDelete = false;
-        selectedWallet = {};
-      }}
-    >
-      {MultipleLang.content.modal_cancel}
-    </Button>
-    <Button
-      variant="delete"
-      on:click={() => {
-        handleDelete(selectedWallet);
-      }}
-    >
-      {MultipleLang.content.modal_delete}
-    </Button>
+    <div class="lg:w-[100px] w-full">
+      <Button
+        variant="secondary"
+        on:click={() => {
+          isOpenConfirmDelete = false;
+          selectedWallet = {};
+        }}
+      >
+        {MultipleLang.content.modal_cancel}
+      </Button>
+    </div>
+    <div class="lg:w-[100px] w-full">
+      <Button
+        variant="delete"
+        on:click={() => {
+          handleDelete(selectedWallet);
+        }}
+      >
+        {MultipleLang.content.modal_delete}
+      </Button>
+    </div>
   </div>
 </AppOverlay>
 

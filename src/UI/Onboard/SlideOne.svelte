@@ -22,7 +22,9 @@
         </div>
       </div>
     </div>
-    <Button className="next">Get Started</Button>
+    <div class="w-[140px]">
+      <Button className="next">Get Started</Button>
+    </div>
   </div>
 </div>
 

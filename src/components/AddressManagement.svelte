@@ -807,18 +807,22 @@
       </div>
     </div>
     <div class="flex justify-end gap-2">
-      <Button
-        variant="secondary"
-        on:click={() => {
-          errors = {};
-          isOpenAddModal = false;
-        }}
-      >
-        {MultipleLang.content.modal_cancel}</Button
-      >
-      <Button type="submit">
-        {MultipleLang.content.modal_add}</Button
-      >
+      <div class="lg:w-[100px] w-full">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            errors = {};
+            isOpenAddModal = false;
+          }}
+        >
+          {MultipleLang.content.modal_cancel}</Button
+        >
+      </div>
+      <div class="lg:w-[100px] w-full">
+        <Button type="submit">
+          {MultipleLang.content.modal_add}</Button
+        >
+      </div>
     </div>
   </form>
 </AppOverlay>
@@ -841,24 +845,23 @@
     <div class="xl:h-[350px] h-[650px]">
       <img src={FollowWhale} alt="" class="w-full h-full" />
     </div>
-    <div class="flex justify-end">
-      <div
-        class="relative"
-        on:mouseenter={() => {
-          showCommandTooltip = true;
-        }}
-        on:mouseleave={() => {
-          showCommandTooltip = false;
-        }}
+    <div
+      class="relative w-full flex justify-end"
+      on:mouseenter={() => {
+        showCommandTooltip = true;
+      }}
+      on:mouseleave={() => {
+        showCommandTooltip = false;
+      }}
+    >
+      <CopyToClipboard
+        text={`/start ${selectedWallet} ${
+          formatListAddress.filter((item) => item.value === selectedWallet)?.[0]
+            ?.label || ""
+        }`}
+        let:copy
       >
-        <CopyToClipboard
-          text={`/start ${selectedWallet} ${
-            formatListAddress.filter(
-              (item) => item.value === selectedWallet
-            )?.[0]?.label || ""
-          }`}
-          let:copy
-        >
+        <div class="lg:w-max w-full">
           <Button
             on:click={() => {
               copy();
@@ -866,22 +869,22 @@
               showCommandTooltip = false;
             }}>Copy command</Button
           >
-        </CopyToClipboard>
-        {#if showCommandTooltip}
-          <div
-            class="absolute transform -translate-x-1/2 -top-8 left-1/2"
-            style="z-index: 2147483648;"
-          >
-            <tooltip-detail
-              text={`/start ${selectedWallet} ${
-                formatListAddress.filter(
-                  (item) => item.value === selectedWallet
-                )?.[0]?.label || ""
-              }`}
-            />
-          </div>
-        {/if}
-      </div>
+        </div>
+      </CopyToClipboard>
+      {#if showCommandTooltip}
+        <div
+          class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+          style="z-index: 2147483648;"
+        >
+          <tooltip-detail
+            text={`/start ${selectedWallet} ${
+              formatListAddress.filter(
+                (item) => item.value === selectedWallet
+              )?.[0]?.label || ""
+            }`}
+          />
+        </div>
+      {/if}
     </div>
   </div>
 </AppOverlay>
@@ -929,11 +932,23 @@
         </div>
       </div>
       <div class="flex justify-end gap-2">
-        <Button
-          type="submit"
-          isLoading={isLoadingSendMail}
-          disabled={isLoadingSendMail}>Submit</Button
-        >
+        <div class="lg:w-[100px] flex-1">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              isOpenModal = false;
+            }}
+          >
+            {MultipleLang.content.modal_cancel}</Button
+          >
+        </div>
+        <div class="lg:w-[100px] flex-1">
+          <Button
+            type="submit"
+            isLoading={isLoadingSendMail}
+            disabled={isLoadingSendMail}>Submit</Button
+          >
+        </div>
       </div>
     </form>
   </div>
