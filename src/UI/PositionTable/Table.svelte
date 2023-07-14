@@ -1,4 +1,6 @@
 <script>
+  import { detectedChain } from "~/utils";
+
   import LpProvider from "./LPProvider.svelte";
   import LpProviderV2 from "./LPProviderV2.svelte";
   import LpStaking from "./LPStaking.svelte";
@@ -15,7 +17,18 @@
 
 <div class="flex flex-col gap-2 border border-[#00000014] rounded-[10px] p-4">
   <div class="flex items-center gap-3 border-b border-[#00000014] pb-3 mb-3">
-    <img src={data.logo} alt="logo" width={50} height={50} />
+    <div class="relative">
+      <img src={data.logo} alt="" width={50} height={50} />
+      <div class="absolute -top-2 -right-1">
+        <img
+          src={detectedChain(data?.chain)}
+          alt=""
+          width="20"
+          height="20"
+          class="rounded-full"
+        />
+      </div>
+    </div>
     <a
       href={data.url}
       target="_blank"

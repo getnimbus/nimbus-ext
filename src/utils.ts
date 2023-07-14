@@ -115,6 +115,21 @@ export const getAddressContext = (address: string) => {
   return undefined;
 }
 
+export const detectedChain = (type) => {
+  let chain
+  switch (type) {
+    case "ETH":
+      chain = Ethereum
+      break;
+    case "GNOSIS":
+      chain = Gnosis
+      break;
+    default:
+      chain = logo
+  }
+  return chain
+}
+
 export const chainList = [
   {
     logo: logo,

@@ -1,7 +1,7 @@
 <script>
   import { useNavigate } from "svelte-navigator";
   import { chain } from "~/store";
-  import { shorterName } from "~/utils";
+  import { detectedChain, getAddressContext, shorterName } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -55,13 +55,26 @@
     class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white xl:w-[230px] w-[280px] group-hover:bg-gray-100"
   >
     <div class="text-left flex items-center gap-3">
-      <img
-        src={data.logo}
-        alt="token"
-        width="30"
-        height="30"
-        class="rounded-full"
-      />
+      <div class="relative">
+        <img
+          src={data.logo}
+          alt=""
+          width="30"
+          height="30"
+          class="rounded-full"
+        />
+        {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+          <div class="absolute -top-2 -right-1">
+            <img
+              src={detectedChain(data.chain)}
+              alt=""
+              width="15"
+              height="15"
+              class="rounded-full"
+            />
+          </div>
+        {/if}
+      </div>
       <div class="flex flex-col gap-1">
         <div
           class="text-black xl:text-sm text-xl font-medium relative"
