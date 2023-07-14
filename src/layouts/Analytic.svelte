@@ -221,11 +221,28 @@
         </div>
       </div>
       <div class="flex justify-end gap-2">
-        <Button
-          type="submit"
-          isLoading={isLoadingSendMail}
-          disabled={isLoadingSendMail}>Submit</Button
-        >
+        <div class="lg:w-[100px] w-full">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              localStorage.setItem(
+                "currentDay",
+                currentDate.format("YYYY-MM-DD")
+              );
+              localStorage.setItem("next7Days", next7Days.format("YYYY-MM-DD"));
+              isOpenModal = false;
+            }}
+          >
+            Cancel
+          </Button>
+        </div>
+        <div class="lg:w-[100px] w-full">
+          <Button
+            type="submit"
+            isLoading={isLoadingSendMail}
+            disabled={isLoadingSendMail}>Submit</Button
+          >
+        </div>
       </div>
     </form>
   </div>
