@@ -77,17 +77,19 @@
       {/if}
       {#if newsData.length !== 0}
         <div class="mx-auto mt-6">
-          <Button
-            variant="secondary"
-            on:click={() => {
-              pageValue = pageValue + 1;
-              getNews();
-            }}
-            disabled={isLoading}
-            {isLoading}
-          >
-            Load more
-          </Button>
+          <div class="w-[100px]">
+            <Button
+              variant="secondary"
+              on:click={() => {
+                pageValue = pageValue + 1;
+                getNews();
+              }}
+              disabled={isLoading}
+              {isLoading}
+            >
+              Load more
+            </Button>
+          </div>
         </div>
       {/if}
     </div>
