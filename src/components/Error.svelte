@@ -13,7 +13,6 @@
     Something when wrong! Please reload your browser to try again
     <Button
       variant="secondary"
-      width={80}
       on:click={() => {
         isOpenReport.update((n) => (n = true));
       }}>Report</Button

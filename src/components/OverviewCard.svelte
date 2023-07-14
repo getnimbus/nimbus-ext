@@ -8,16 +8,16 @@
 </script>
 
 <div
-  class="flex-1 py-4 px-6 rounded-lg flex flex-col items-start gap-1 bg-white"
+  class="flex-1 py-4 px-6 rounded-lg flex flex-col items-start xl:gap-1 gap-3 bg-white"
 >
   {#if isTooltip}
     <TooltipTitle {tooltipText} {link}>
-      <div class="text-[#00000099] text-base font-medium">
+      <div class="text-[#00000099] xl:text-base text-3xl font-medium">
         {title}
       </div>
     </TooltipTitle>
   {:else}
-    <div class="text-[#00000099] text-base font-medium">
+    <div class="text-[#00000099] xl:text-base text-3xl font-medium">
       {title}
     </div>
   {/if}

@@ -34,33 +34,43 @@
 <div
   class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
 >
-  <table class="table-auto xl:w-full w-[1200px]">
+  <table class="table-auto xl:w-full w-[1400px]">
     <thead class={isSticky ? "sticky top-0 z-10" : ""} bind:this={tableHeader}>
       <tr class="bg-[#f4f5f8]">
-        <th class="pl-3 py-3 rounded-tl-[10px]">
-          <div class="text-left text-xs uppercase font-semibold text-black">
+        <th
+          class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-9 bg-[#f4f5f8]"
+        >
+          <div
+            class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+          >
             Transaction
           </div>
         </th>
         <th class="py-3">
-          <div class="text-left text-xs uppercase font-semibold text-black">
+          <div
+            class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+          >
             From
           </div>
         </th>
         <th class="py-3">
-          <div class="text-left text-xs uppercase font-semibold text-black">
+          <div
+            class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+          >
             To
           </div>
         </th>
         <th class="py-3">
           <div
-            class="text-left text-xs uppercase font-semibold text-black min-w-[100px]"
+            class="text-left xl:text-xs text-base uppercase font-semibold text-black min-w-[100px]"
           >
             Type
           </div>
         </th>
         <th class="pr-3 py-3 rounded-tr-[10px]">
-          <div class="text-left text-xs uppercase font-semibold text-black">
+          <div
+            class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+          >
             Token change
           </div>
         </th>
@@ -90,13 +100,13 @@
           </tr>
         {:else}
           {#each data || [] as item}
-            <tr
-              class="hover:bg-gray-100 transition-all border-b-[0.5px] last:border-none"
-            >
-              <td class="pl-3 py-4">
+            <tr class="group transition-all border-b-[0.5px] last:border-none">
+              <td
+                class="pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 bg-white group-hover:bg-gray-100"
+              >
                 <div class="text-left flex items-start gap-2 w-max">
                   <div class="flex flex-col">
-                    <div class="text-sm">
+                    <div class="xl:text-sm text-xl">
                       <Copy
                         address={item?.transaction_hash}
                         textTooltip="Copy transaction to clipboard"
@@ -110,7 +120,7 @@
                         }`}
                       />
                     </div>
-                    <div class="text-gray-400 text-xs">
+                    <div class="text-gray-400 xl:text-xs text-lg">
                       {dayjs(new Date(item?.detail.timestamp)).format(
                         "DD/MM/YYYY, hh:mm A"
                       )}
@@ -119,9 +129,9 @@
                 </div>
               </td>
 
-              <td class="py-4">
+              <td class="py-4 group-hover:bg-gray-100">
                 {#if item?.detail?.from}
-                  <div class="w-max text-sm">
+                  <div class="w-max xl:text-sm text-xl">
                     <Copy
                       address={item?.detail?.from}
                       iconColor="#000"
@@ -137,9 +147,9 @@
                 {/if}
               </td>
 
-              <td class="py-4">
+              <td class="py-4 group-hover:bg-gray-100">
                 {#if item?.detail?.to}
-                  <div class="w-max text-sm">
+                  <div class="w-max xl:text-sm text-xl">
                     <Copy
                       address={item?.detail?.to}
                       iconColor="#000"
@@ -155,9 +165,9 @@
                 {/if}
               </td>
 
-              <td class="py-4 min-w-[100px]">
+              <td class="py-4 min-w-[100px] group-hover:bg-gray-100">
                 <div
-                  class="text-sm text-[#00000099] font-medium flex justify-start"
+                  class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-start"
                 >
                   {#if item?.type}
                     <div
@@ -169,16 +179,16 @@
                 </div>
               </td>
 
-              <td class="py-4 pr-3">
+              <td class="py-4 pr-3 group-hover:bg-gray-100">
                 <div
-                  class="text-sm font-medium flex flex-col items-start gap-2"
+                  class="xl:text-sm text-xl font-medium flex flex-col items-start gap-2"
                 >
                   {#each item.changes as change}
                     <div class="flex items-center gap-2">
                       <img
                         src={change?.logo}
                         alt=""
-                        class="w-5 h-5 overflow-hidden rounded-full object-contain"
+                        class="w-7 h-7 overflow-hidden rounded-full object-contain"
                       />
                       <div
                         class={`flex gap-1 ${

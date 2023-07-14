@@ -172,7 +172,7 @@
           isEmptyInflowOutflow = true;
           isLoadingInflowOutflow = false;
           return;
-        } else if (selectedWallet === response.address) {
+        } else if (selectedWallet === response?.address) {
           if (response?.result?.length === 0) {
             isEmptyInflowOutflow = true;
             isLoadingInflowOutflow = false;
@@ -306,7 +306,9 @@
 </script>
 
 <div class="border border-[#0000001a] rounded-[20px] pt-6">
-  <div class="px-6 text-xl font-medium text-black">Token Inflow - Outflow</div>
+  <div class="px-6 xl:text-xl text-3xl font-medium text-black">
+    Token Inflow - Outflow
+  </div>
   {#if isLoadingInflowOutflow}
     <div class="flex items-center justify-center h-[415px]">
       <loading-icon />
@@ -315,18 +317,19 @@
     <div class="w-full h-full">
       {#if isEmptyInflowOutflow}
         <div
-          class="flex justify-center items-center h-full text-lg text-gray-400 h-[415px]"
+          class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[415px]"
         >
           Empty
         </div>
       {:else}
         <div class="relative">
           <EChart
-            id="brush-chart"
+            id="inflow-outflow"
             theme="white"
             {option}
             height={415}
             notMerge={true}
+            type="full-width"
           />
           <div
             class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"

@@ -153,7 +153,9 @@
 </script>
 
 <div class="border border-[#0000001a] rounded-[20px] p-6">
-  <div class="text-2xl font-medium text-black border-b-[1px] mb-6 pb-4">
+  <div
+    class="xl:text-2xl text-4xl font-medium text-black border-b-[1px] mb-6 pb-4"
+  >
     Personality
   </div>
   <div class="flex flex-col gap-6">
@@ -164,18 +166,16 @@
         {isLoadingChart}
         title="Historical activities"
         tooltipTitle="The chart shows only activities made by this wallet"
-        id="HistoricalActivities"
+        id="historical-activities-personality"
       />
     </div>
     {#if getAddressContext(selectedWallet)?.type !== "BTC"}
-      <div class="flex justify-center">
+      <div class="flex justify-center mx-auto">
         <Button
           variant="secondary"
-          width={140}
           on:click={() => {
             isOpenReport.update((n) => (n = true));
           }}
-          size="supper-small"
         >
           Request analytics
         </Button>

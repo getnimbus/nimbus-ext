@@ -107,13 +107,13 @@
             {#each listAddress as item (item.id)}
               <tr class="hover:bg-gray-100 transition-all">
                 <td class="pl-3 py-4">
-                  <div class="text-left">
+                  <div class="text-left xl:text-base text-xl">
                     <Copy address={item.address} iconColor="#000" />
                   </div>
                 </td>
                 <td class="py-4">
                   <div
-                    class="bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
+                    class="bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px] xl:text-base text-xl"
                   >
                     {item.label}
                   </div>
@@ -121,7 +121,7 @@
                 <td class="pr-3 py-4">
                   <div class="flex justify-end gap-6">
                     <div
-                      class="text-blue-600 hover:underline transition-all cursor-pointer font-semibold"
+                      class="text-blue-600 hover:underline xl:text-base text-xl transition-all cursor-pointer font-semibold"
                       on:click={() => {
                         selectedWallet = item.address;
                         isOpenFollowWhaleModal = true;
@@ -175,7 +175,6 @@
           let:copy
         >
           <Button
-            width={150}
             on:click={() => {
               copy();
               isOpenFollowWhaleModal = false;

@@ -1,11 +1,17 @@
 <script lang="ts">
+  import { useNavigate } from "svelte-navigator";
+
   import "~/components/Tooltip.custom.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
+  import Chart from "~/assets/chart.svg";
 
   export let data;
+
+  const navigate = useNavigate();
 
   $: balance0 = Number(data.amount0out) * data.market_price0;
   $: balance1 = Number(data.amount1out) * data.market_price1;
@@ -21,30 +27,41 @@
       : profit / Math.abs(data.inputValue);
 </script>
 
-<tr class="hover:bg-gray-100 transition-all">
-  <td class="pl-3 py-4">
-    <div class="text-left flex items-start gap-2">
-      <div class="flex space-x-1">
+<tr
+  class="group transition-all"
+  on:click={() => {
+    // navigate(`/test-detail`);
+  }}
+>
+  <td
+    class="pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 bg-white group-hover:bg-gray-100"
+  >
+    <div class="text-left flex flex-col items-start gap-2">
+      <div class="flex space-x-3">
         {#each data.tokens as token, index}
           <img
             src={token.logo}
             alt="token"
-            width="20"
-            height="20"
+            width="30"
+            height="30"
             class="rounded-full"
           />
         {/each}
       </div>
       <div class="flex flex-col gap-1">
-        <div class="text-black text-sm font-medium">{data.name}</div>
+        <div class="text-black xl:text-sm text-xl font-medium">
+          {data.name}
+        </div>
         {#if data.tokens && data.tokens.length}
           <div class="flex items-center gap-1">
             {#each data.tokens as token, index}
-              <div class="text-[#00000080] text-xs font-medium">
+              <div class="text-[#00000080] xl:text-xs text-sm font-medium">
                 {token.symbol}
               </div>
               {#if index < data.tokens.length - 1}
-                <div class="text-[#00000080] text-xs font-medium">-</div>
+                <div class="text-[#00000080] xl:text-xs text-sm font-medium">
+                  -
+                </div>
               {/if}
             {/each}
           </div>
@@ -55,14 +72,16 @@
     </div>
   </td>
 
-  <td class="py-4">
-    <div class="text-left text-sm text-[#00000099] font-medium">
+  <td class="py-4 w-[150px] group-hover:bg-gray-100">
+    <div class="text-left xl:text-sm text-xl text-[#00000099] font-medium">
       {data.isActive ? "In range" : "No"}
     </div>
   </td>
 
-  <td class="py-4">
-    <div class="text-sm text-[#00000099] font-medium flex flex-col items-end">
+  <td class="py-4 group-hover:bg-gray-100">
+    <div
+      class="xl:text-sm text-xl text-[#00000099] font-medium flex flex-col items-end"
+    >
       <div class="flex flex-col items-end">
         <div class="flex items-center gap-1">
           <div class="flex items-center gap-1">
@@ -91,8 +110,10 @@
     </div>
   </td>
 
-  <td class="py-4">
-    <div class="text-sm text-[#00000099] font-medium flex flex-col items-end">
+  <td class="py-4 group-hover:bg-gray-100">
+    <div
+      class="xl:text-sm text-xl text-[#00000099] font-medium flex flex-col items-end"
+    >
       <div class="flex flex-col items-end">
         <div class="flex items-center gap-1">
           <div class="flex items-center gap-1">
@@ -128,14 +149,14 @@
     </div>
   </td>
 
-  <td class="py-4">
-    <div class="flex justify-end text-sm text-[#000000] font-medium">
+  <td class="py-4 group-hover:bg-gray-100">
+    <div class="flex justify-end xl:text-sm text-xl text-[#000000] font-medium">
       $<TooltipNumber number={value} type="balance" />
     </div>
   </td>
 
-  <td class="py-4">
-    <div class="text-sm font-medium flex flex-col">
+  <td class="py-4 group-hover:bg-gray-100">
+    <div class="xl:text-sm text-xl font-medium flex flex-col">
       <div
         class={`flex justify-end ${
           data?.ipLoss?.loss >= 0 ? "text-red-500" : "text-[#00A878]"
@@ -164,8 +185,8 @@
     </div>
   </td>
 
-  <td class="pr-3 py-4">
-    <div class="text-sm font-medium flex flex-col">
+  <td class="pr-3 py-4 group-hover:bg-gray-100">
+    <div class="xl:text-sm text-xl font-medium flex flex-col">
       <div
         class={`flex justify-end ${
           profit >= 0 ? "text-[#00A878]" : "text-red-500"
@@ -195,6 +216,20 @@
       {/if}
     </div>
   </td>
+
+  <!-- <td class="py-3 w-10 group-hover:bg-gray-100">
+    <div class="flex justify-center">
+      <div
+        use:tooltip={{
+          content: `<tooltip-detail text="Show detail" />`,
+          allowHTML: true,
+          placement: "top",
+        }}
+      >
+        <img src={Chart} alt="" width={14} height={14} />
+      </div>
+    </div>
+  </td> -->
 </tr>
 
 <style>

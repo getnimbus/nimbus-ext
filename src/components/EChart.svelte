@@ -2,6 +2,7 @@
   import { onMount, onDestroy } from "svelte";
   import * as echarts from "echarts";
 
+  export let type = "default";
   export let id;
   export let theme;
   export let width = 200;
@@ -14,9 +15,31 @@
 
   let chart; // our chart instance
 
+  const autoFontSize = () => {
+    let element = document.getElementById(id);
+    if (element) {
+      let newFontSize = Math.round(element.offsetWidth / 48);
+      return type === "default"
+        ? newFontSize
+        : element.offsetWidth > 1024
+        ? 12
+        : newFontSize;
+    }
+  };
+
   const setOption = () => {
     if (chart && !chart.isDisposed()) {
-      chart.setOption(option, notMerge, replaceMerge, lazyUpdate);
+      chart.setOption(
+        {
+          ...option,
+          textStyle: {
+            fontSize: autoFontSize(),
+          },
+        },
+        notMerge,
+        replaceMerge,
+        lazyUpdate
+      );
     }
   };
 
@@ -56,6 +79,12 @@
       timeoutId = setTimeout(() => {
         if (chart && !chart.isDisposed()) {
           chart.resize();
+          chart.setOption({
+            ...option,
+            textStyle: {
+              fontSize: autoFontSize(),
+            },
+          });
         }
         timeoutId = undefined;
       }, 500);

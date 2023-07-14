@@ -25,12 +25,11 @@
   }
 </script>
 
-<AddressManagement type="order" title="Analytic">
+<AddressManagement type="order" title="Analytics">
   <span slot="body">
-    <div class="max-w-[2000px] m-auto w-[90%] -mt-32 relative">
+    <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[96%] relative">
       <div
-        class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
-        style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+        class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md"
       >
         <CurrentStatus />
         <PastPerformance />
@@ -42,9 +41,7 @@
         >
           <div class="text-lg">Comming soon 🚀</div>
           <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
-            <Button variant="secondary" width={140} size="supper-small">
-              Request analytics
-            </Button>
+            <Button variant="secondary">Request analytics</Button>
           </a>
         </div>
       {/if}

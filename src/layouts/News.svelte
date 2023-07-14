@@ -42,10 +42,14 @@
 </script>
 
 <ErrorBoundary>
-  <div class="max-w-[2000px] m-auto w-[90%] py-8 flex flex-col gap-10">
-    <div class="flex flex-col justify-center">
-      <div class="text-3xl text-black font-semibold">{MultipleLang.news}</div>
-      <div class="text-lg text-black font-medium">
+  <div
+    class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 flex flex-col gap-10"
+  >
+    <div class="flex flex-col gap-1 justify-center">
+      <div class="xl:text-5xl text-7xl text-black font-semibold">
+        {MultipleLang.news}
+      </div>
+      <div class="xl:text-xl text-3xl text-black font-medium">
         {MultipleLang.news_page_title}
       </div>
     </div>

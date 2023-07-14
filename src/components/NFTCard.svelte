@@ -24,12 +24,17 @@
 <div
   class="border border-[#0000000d] rounded-[10px] px-1 pt-1 pb-3 flex flex-col gap-2"
 >
-  <div class="rounded-[10px] overflow-hidden h-[270px]">
-    <img src={data?.image_url} alt="" class="w-full h-full object-cover" />
+  <div class="rounded-[10px] overflow-hidden xl:h-[270px] h-[470px]">
+    <img
+      src={data?.image_url ||
+        "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
+      alt=""
+      class="w-full h-full object-cover"
+    />
   </div>
   <div class="flex flex-col gap-1">
     <div
-      class="text-sm font-semibold relative"
+      class="xl:text-sm text-xl font-semibold relative"
       on:mouseenter={() => (showTooltipName = true)}
       on:mouseleave={() => (showTooltipName = false)}
     >
@@ -41,14 +46,16 @@
       {/if}
     </div>
     <div class="flex gap-1 items-center">
-      <div class="text-sm font-semibold">
+      <div class="xl:text-sm text-xl font-semibold">
         {getAddressContext(selectedWallet)?.type === "EVM"
           ? "Token ID"
           : "Inscription"}
       </div>
-      <div class="text-sm font-semibold">#{data?.inscription_number}</div>
+      <div class="xl:text-sm text-xl font-semibold">
+        #{data?.inscription_number}
+      </div>
     </div>
-    <div class="text-xs font-normal text-[#616b84] flex gap-1">
+    <div class="xl:text-xs text-lg font-normal text-[#616b84] flex gap-1">
       <div>Est. value</div>
       <div>
         <TooltipNumber number={data?.est_valueBTC} type="amount" />
@@ -58,7 +65,7 @@
         />
       </div>
     </div>
-    <div class="text-xs font-normal text-[#616b84] flex gap-1">
+    <div class="xl:text-xs text-lg font-normal text-[#616b84] flex gap-1">
       <div>Profit & Loss</div>
       <div class="flex gap-1">
         <div

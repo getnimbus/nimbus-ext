@@ -417,16 +417,20 @@
 </script>
 
 <div class="border border-[#0000001a] rounded-[20px] p-6">
-  <div class="text-2xl font-medium text-black border-b-[1px] mb-6 pb-4">
+  <div
+    class="xl:text-2xl text-4xl font-medium text-black border-b-[1px] mb-6 pb-4"
+  >
     Current Status
   </div>
   <div class="flex justify-between items-center border-b-[1px] mb-6 pb-4">
-    <div class="font-medium text-black text-xl">Token breakdown</div>
+    <div class="font-medium text-black xl:text-xl text-3xl">
+      Token breakdown
+    </div>
     <div class="flex items-center gap-1">
       <AnimateSharedLayout>
         {#each typeList as type}
           <div
-            class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
+            class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
             on:click={() => (selectedType = type.value)}
           >
             <div
@@ -472,11 +476,12 @@
               </div>
             {:else}
               <EChart
-                id="pie-chart"
+                id="current-status-analytics"
                 theme="white"
                 option={optionPie}
                 height={465}
                 notMerge={true}
+                type="full-width"
               />
             {/if}
           </div>
@@ -485,9 +490,9 @@
     </div>
     <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
       <div class="mb-2 flex justify-between items-center">
-        <div class="text-3xl font-semibold text-right">
+        <div class="xl:text-3xl text-4xl font-semibold text-right">
           $<TooltipNumber number={sum} type="balance" />
-          <span class="text-xl font-medium text-gray-400">
+          <span class="xl:text-xl text-2xl font-medium text-gray-400">
             <TooltipNumber number={selectedDataPie[0]?.value} type="percent" />%
           </span>
         </div>
@@ -503,14 +508,16 @@
       </div>
       <div class="flex flex-col gap-2 h-[540px]">
         <div class="flex items-center justify-end gap-2">
-          <label class="text-sm font-regular text-gray-400" for="filter-value"
+          <label
+            class="xl:text-sm text-lg font-regular text-gray-400"
+            for="filter-value"
             >{MultipleLang.hide}
           </label>
           <input
             type="checkbox"
             id="filter-value"
             bind:checked={filteredHoldingToken}
-            class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+            class="cursor-pointer xl:w-4 xl:h-4 w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 rounded focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
           />
         </div>
         <div
@@ -519,37 +526,39 @@
           <table class="table-auto xl:w-full w-[1200px] overflow-y-scroll">
             <thead class="sticky top-0 z-10">
               <tr class="bg-[#f4f5f8]">
-                <th class="pl-3 py-3">
+                <th
+                  class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[220px]"
+                >
                   <div
-                    class="text-left text-xs uppercase font-semibold text-black"
+                    class="text-left xl:text-xs text-base uppercase font-semibold text-black"
                   >
                     {MultipleLang.assets}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right text-xs uppercase font-semibold text-black"
+                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
                   >
                     {MultipleLang.price}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right text-xs uppercase font-semibold text-black"
+                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
                   >
                     {MultipleLang.amount}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right text-xs uppercase font-semibold text-black"
+                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
                   >
                     {MultipleLang.value}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right text-xs uppercase font-semibold text-black"
+                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
                   >
                     <TooltipTitle tooltipText="Ratio based on token holding">
                       Ratio
@@ -557,7 +566,9 @@
                   </div>
                 </th>
                 <th class="py-3">
-                  <div class="text-xs uppercase font-semibold text-black">
+                  <div
+                    class="xl:text-xs text-base uppercase font-semibold text-black"
+                  >
                     <TooltipTitle
                       tooltipText="Profit and loss is calculated by transactions that swap the tokens. "
                       link="https://docs.getnimbus.io/metrics/holding_profit_loss/"
@@ -585,7 +596,7 @@
                   <tr>
                     <td colspan={6}>
                       <div
-                        class="flex justify-center items-center py-3 px-3 text-lg text-gray-400"
+                        class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
                       >
                         {MultipleLang.empty}
                       </div>

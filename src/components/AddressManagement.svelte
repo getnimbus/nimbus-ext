@@ -13,6 +13,7 @@
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import CopyToClipboard from "svelte-copy-to-clipboard";
+  import { nimbus } from "~/lib/network";
 
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
@@ -104,6 +105,12 @@
   let errors: any = {};
   let isOpenAddModal = false;
   let isOpenFollowWhaleModal = false;
+  let isOpenModal = false;
+  let isLoadingSendMail = false;
+  let email = "";
+  let scrollContainer;
+  let isScrollStart = true;
+  let isScrollEnd = false;
 
   const getListAddress = async (type) => {
     isLoadingFullPage = true;
@@ -310,6 +317,42 @@
     }
   };
 
+  const onSubmitGetEmail = async (e) => {
+    isLoadingSendMail = true;
+    const formData = new FormData(e.target);
+
+    const data: any = {};
+    for (let field of formData) {
+      const [key, value] = field;
+      data[key] = value;
+    }
+
+    try {
+      const res = await nimbus.post(
+        "/subscription/analysis",
+        {
+          email: data.email,
+          address: selectedWallet,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      isLoadingSendMail = false;
+      localStorage.setItem("showDisableAddWallet", "false");
+    } catch (e) {
+      isLoadingSendMail = false;
+    } finally {
+      isOpenModal = false;
+    }
+  };
+
+  const handleScroll = () => {
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
+    isScrollStart = scrollLeft === 0;
+    isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+  };
+
   $: {
     if (
       address &&
@@ -367,6 +410,12 @@
       }
     }
   }
+
+  $: isDisabled = APP_TYPE.TYPE !== "EXT" && formatListAddress.length === 5;
+  $: isDisabledBtn =
+    isDisabled &&
+    (localStorage.getItem("showDisableAddWallet") === null ||
+      localStorage.getItem("showDisableAddWallet") === "true");
 </script>
 
 <ErrorBoundary>
@@ -384,11 +433,7 @@
             <div class="text-lg">
               {MultipleLang.addwallet}
             </div>
-            <Button
-              variant="tertiary"
-              width={136}
-              on:click={() => (isOpenAddModal = true)}
-            >
+            <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
               <img src={Plus} alt="" width="12" height="12" />
               <div class="text-base font-medium text-white">
                 {MultipleLang.content.btn_text}
@@ -398,138 +443,219 @@
         </div>
       {:else}
         <div class="header-container">
-          <div class="flex flex-col max-w-[2000px] m-auto w-[82%]">
+          <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[96%]">
             <div class="flex flex-col mb-5 gap-14">
-              <div class="flex items-center justify-between">
-                {#if formatListAddress.length !== 0}
-                  <div class="flex items-center gap-5">
-                    {#if formatListAddress.length > 5}
-                      <AnimateSharedLayout>
-                        {#each formatListAddress.slice(0, 5) as item}
-                          <div
-                            id={item.value}
-                            class="relative text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
-                            class:hover:no-underline={item.value ===
-                              selectedWallet}
-                            on:click={() => {
-                              wallet.update((n) => (n = item.value));
-                            }}
-                          >
-                            <img
-                              src={item.logo}
-                              alt="logo"
-                              width="16"
-                              height="16"
-                            />
-                            {item.label}
-                            {#if item.value === selectedWallet}
-                              <Motion
-                                let:motion
-                                layoutId="active-pill"
-                                transition={{ type: "spring", duration: 0.6 }}
-                              >
-                                <div
-                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
-                                  use:motion
-                                />
-                              </Motion>
-                            {/if}
-                          </div>
-                        {/each}
-                      </AnimateSharedLayout>
-                      <Select
-                        type="wallet"
-                        listSelect={formatListAddress.slice(
-                          5,
-                          formatListAddress.length
-                        )}
-                        bind:selected={selectedWallet}
-                      />
-                    {:else}
-                      <AnimateSharedLayout>
-                        {#each formatListAddress as item}
-                          <div
-                            id={item.value}
-                            class="relative text-base text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
-                            class:hover:no-underline={item.value ===
-                              selectedWallet}
-                            on:click={() => {
-                              wallet.update((n) => (n = item.value));
-                            }}
-                          >
-                            <img
-                              src={item.logo}
-                              alt="logo"
-                              width="16"
-                              height="16"
-                            />
-                            {item.label}
-                            {#if item.value === selectedWallet}
-                              <Motion
-                                let:motion
-                                layoutId="active-pill"
-                                transition={{ type: "spring", duration: 0.6 }}
-                              >
-                                <div
-                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
-                                  use:motion
-                                />
-                              </Motion>
-                            {/if}
-                          </div>
-                        {/each}
-                      </AnimateSharedLayout>
-                    {/if}
+              <div class="flex items-center justify-between gap-6">
+                <div class="xl:block hidden">
+                  {#if formatListAddress.length !== 0}
+                    <div class="flex items-center gap-5">
+                      {#if formatListAddress.length > 5}
+                        <AnimateSharedLayout>
+                          {#each formatListAddress.slice(0, 5) as item}
+                            <div
+                              id={item.value}
+                              class="relative xl:text-base text-2xl text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                              class:hover:no-underline={item.value ===
+                                selectedWallet}
+                              on:click={() => {
+                                wallet.update((n) => (n = item.value));
+                              }}
+                            >
+                              <img
+                                src={item.logo}
+                                alt=""
+                                class="xl:w-4 xl:h-4 w-5 h-5"
+                              />
+                              {item.label}
+                              {#if item.value === selectedWallet}
+                                <Motion
+                                  let:motion
+                                  layoutId="active-pill"
+                                  transition={{ type: "spring", duration: 0.6 }}
+                                >
+                                  <div
+                                    class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                    use:motion
+                                  />
+                                </Motion>
+                              {/if}
+                            </div>
+                          {/each}
+                        </AnimateSharedLayout>
+                        <Select
+                          type="wallet"
+                          listSelect={formatListAddress.slice(
+                            5,
+                            formatListAddress.length
+                          )}
+                          bind:selected={selectedWallet}
+                        />
+                      {:else}
+                        <AnimateSharedLayout>
+                          {#each formatListAddress as item}
+                            <div
+                              id={item.value}
+                              class="relative xl:text-base text-2xl text-white py-1 xl:px-2 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                              class:hover:no-underline={item.value ===
+                                selectedWallet}
+                              on:click={() => {
+                                wallet.update((n) => (n = item.value));
+                              }}
+                            >
+                              <img
+                                src={item.logo}
+                                alt=""
+                                class="xl:w-4 xl:h-4 w-5 h-5"
+                              />
+                              {item.label}
+                              {#if item.value === selectedWallet}
+                                <Motion
+                                  let:motion
+                                  layoutId="active-pill"
+                                  transition={{ type: "spring", duration: 0.6 }}
+                                >
+                                  <div
+                                    class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                    use:motion
+                                  />
+                                </Motion>
+                              {/if}
+                            </div>
+                          {/each}
+                        </AnimateSharedLayout>
+                      {/if}
+                    </div>
+                  {:else}
+                    <div class="xl:text-base text-2xl font-semibold text-white">
+                      {MultipleLang.empty_wallet}
+                    </div>
+                  {/if}
+                </div>
+
+                <div
+                  class="xl:hidden relative overflow-x-hidden w-full flex flex-row gap-3 justify-between items-center"
+                >
+                  <div
+                    class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
+                      isScrollStart ? "hidden" : "block"
+                    }`}
+                    style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      height="24px"
+                      width="24px"
+                      viewBox="0 0 24 24"
+                      class="sc-aef7b723-0 fKbUaI"
+                      ><path
+                        d="M15 6L9 12L15 18"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-miterlimit="10"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      /></svg
+                    >
                   </div>
-                {:else}
-                  <div class="text-base font-semibold text-white">
-                    {MultipleLang.empty_wallet}
+                  <div
+                    class="flex-1 flex gap-3 overflow-x-scroll whitespace-nowrap"
+                    bind:this={scrollContainer}
+                    on:scroll={handleScroll}
+                  >
+                    {#each formatListAddress as item}
+                      <div
+                        id={item.value}
+                        class="w-max flex-shrink-0 relative text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
+                        class:hover:no-underline={item.value === selectedWallet}
+                        on:click={() => {
+                          wallet.update((n) => (n = item.value));
+                        }}
+                      >
+                        <img src={item.logo} alt="" class="w-5 h-5" />
+                        {item.label}
+                        {#if item.value === selectedWallet}
+                          <Motion
+                            let:motion
+                            layoutId="active-pill"
+                            transition={{ type: "spring", duration: 0.6 }}
+                          >
+                            <div
+                              class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                              use:motion
+                            />
+                          </Motion>
+                        {/if}
+                      </div>
+                    {/each}
                   </div>
-                {/if}
+                  <div
+                    class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
+                      isScrollEnd ? "hidden" : "block"
+                    }`}
+                    style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      height="24px"
+                      width="24px"
+                      viewBox="0 0 24 24"
+                      class="sc-aef7b723-0 fKbUaI"
+                      ><path
+                        d="M9 6L15 12L9 18"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-miterlimit="10"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      /></svg
+                    >
+                  </div>
+                </div>
+
                 <div
                   class="relative"
                   on:mouseenter={() => {
-                    if (
-                      APP_TYPE.TYPE !== "EXT" &&
-                      formatListAddress.length === 5
-                    ) {
+                    if (isDisabled) {
                       showDisableAddWallet = true;
                     }
                   }}
                   on:mouseleave={() => {
-                    if (
-                      APP_TYPE.TYPE !== "EXT" &&
-                      formatListAddress.length === 5
-                    ) {
+                    if (isDisabled) {
                       showDisableAddWallet = false;
                     }
                   }}
                 >
                   <Button
-                    variant={APP_TYPE.TYPE !== "EXT" &&
-                    formatListAddress.length === 5
-                      ? "disabled"
-                      : "tertiary"}
-                    width={136}
+                    variant={isDisabledBtn ? "disabled" : "tertiary"}
                     on:click={() => {
-                      if (
-                        APP_TYPE.TYPE !== "EXT" &&
-                        formatListAddress.length === 5
-                      ) {
-                        window.open("https://getnimbus.io", "_blank");
+                      const showDisableAddWalletStorage = localStorage.getItem(
+                        "showDisableAddWallet"
+                      );
+                      if (isDisabled) {
+                        if (
+                          showDisableAddWalletStorage !== null &&
+                          showDisableAddWalletStorage === "false"
+                        ) {
+                          isOpenAddModal = true;
+                          return;
+                        }
+                        localStorage.setItem("showDisableAddWallet", "true");
+                        isOpenModal = true;
                       } else {
                         isOpenAddModal = true;
                       }
                     }}
                   >
-                    <img src={Plus} alt="" width="12" height="12" />
-                    <div class="text-base font-medium text-white">
+                    <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+                    <div class="font-medium text-white">
                       {MultipleLang.content.btn_text}
                     </div>
                   </Button>
                   {#if showDisableAddWallet}
                     <div
-                      class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                      class="xl:absolute hidden transform -translate-x-1/2 -top-8 left-1/2"
                       style="z-index: 2147483648;"
                     >
                       <tooltip-detail
@@ -543,7 +669,7 @@
               <div class="flex items-end justify-between">
                 <div class="flex flex-col gap-3">
                   <div class="flex items-end gap-6">
-                    <div class="text-5xl font-semibold text-white">
+                    <div class="xl:text-5xl text-7xl font-semibold text-white">
                       {title}
                     </div>
                     {#if type === "portfolio"}
@@ -551,7 +677,7 @@
                     {/if}
                   </div>
                   <div class="flex items-center gap-4">
-                    <div class="text-base">
+                    <div class="xl:text-base text-xl">
                       <Copy
                         address={selectedWallet}
                         iconColor="#fff"
@@ -569,7 +695,6 @@
                     >
                       <Button
                         variant="secondary"
-                        width={140}
                         size="supper-small"
                         on:click={() => (isOpenFollowWhaleModal = true)}
                       >
@@ -613,12 +738,13 @@
     </div>
   {/if}
 </ErrorBoundary>
+
 <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
-  <div class="title-3 text-gray-600 font-semibold max-w-[530px]">
+  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
     {MultipleLang.content.modal_add_title}
   </div>
   <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
-    <div class="flex flex-col gap-1 w-[530px]">
+    <div class="flex flex-col gap-1">
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -626,7 +752,7 @@
           }`}
           class:input-border-error={errors.address && errors.address.required}
         >
-          <div class="text-xs text-[#666666] font-medium">
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
             {MultipleLang.content.modal_address_label}
           </div>
           <input
@@ -635,7 +761,7 @@
             name="address"
             placeholder={MultipleLang.content.modal_address_label}
             value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
               address ? "bg-[#F0F2F7]" : ""
             }
               `}
@@ -649,7 +775,7 @@
         {/if}
       </div>
     </div>
-    <div class="flex flex-col gap-1 w-[530px]">
+    <div class="flex flex-col gap-1">
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -657,7 +783,7 @@
           }`}
           class:input-border-error={errors.label && errors.label.required}
         >
-          <div class="text-xs text-[#666666] font-medium">
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
             {MultipleLang.content.modal_label_label}
           </div>
           <input
@@ -666,7 +792,7 @@
             name="label"
             placeholder={MultipleLang.content.modal_label_label}
             value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
               label ? "bg-[#F0F2F7]" : ""
             }
               `}
@@ -681,83 +807,150 @@
       </div>
     </div>
     <div class="flex justify-end gap-2">
-      <Button
-        variant="secondary"
-        width={90}
-        on:click={() => {
-          errors = {};
-          isOpenAddModal = false;
-        }}
-      >
-        {MultipleLang.content.modal_cancel}</Button
-      >
-      <Button width={90} type="submit">
-        {MultipleLang.content.modal_add}</Button
-      >
+      <div class="lg:w-[100px] w-full">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            errors = {};
+            isOpenAddModal = false;
+          }}
+        >
+          {MultipleLang.content.modal_cancel}</Button
+        >
+      </div>
+      <div class="lg:w-[100px] w-full">
+        <Button type="submit">
+          {MultipleLang.content.modal_add}</Button
+        >
+      </div>
     </div>
   </form>
 </AppOverlay>
+
 <AppOverlay
   isOpen={isOpenFollowWhaleModal}
   on:close={() => (isOpenFollowWhaleModal = false)}
 >
-  <div class="flex flex-col gap-4 max-w-[530px]">
+  <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1">
-      <div class="text-base">
+      <div class="xl:text-base text-2xl">
         Go to <a
           href="https://t.me/GetNimbusBot"
           target="_blank"
           class="text-blue-500">https://t.me/GetNimbusBot</a
         >
       </div>
-      <div class="text-base">Use the command as follow video</div>
+      <div class="xl:text-base text-2xl">Use the command as follow video</div>
     </div>
-    <div class="h-[350px] w-[500px]">
+    <div class="xl:h-[350px] h-[650px]">
       <img src={FollowWhale} alt="" class="w-full h-full" />
     </div>
-    <div class="flex justify-end">
-      <div
-        class="relative"
-        on:mouseenter={() => {
-          showCommandTooltip = true;
-        }}
-        on:mouseleave={() => {
-          showCommandTooltip = false;
-        }}
+    <div
+      class="relative w-full flex justify-end"
+      on:mouseenter={() => {
+        showCommandTooltip = true;
+      }}
+      on:mouseleave={() => {
+        showCommandTooltip = false;
+      }}
+    >
+      <CopyToClipboard
+        text={`/start ${selectedWallet} ${
+          formatListAddress.filter((item) => item.value === selectedWallet)?.[0]
+            ?.label || ""
+        }`}
+        let:copy
       >
-        <CopyToClipboard
-          text={`/start ${selectedWallet} ${
-            formatListAddress.filter(
-              (item) => item.value === selectedWallet
-            )?.[0]?.label || ""
-          }`}
-          let:copy
-        >
+        <div class="lg:w-max w-full">
           <Button
-            width={150}
             on:click={() => {
               copy();
               isOpenFollowWhaleModal = false;
               showCommandTooltip = false;
             }}>Copy command</Button
           >
-        </CopyToClipboard>
-        {#if showCommandTooltip}
+        </div>
+      </CopyToClipboard>
+      {#if showCommandTooltip}
+        <div
+          class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+          style="z-index: 2147483648;"
+        >
+          <tooltip-detail
+            text={`/start ${selectedWallet} ${
+              formatListAddress.filter(
+                (item) => item.value === selectedWallet
+              )?.[0]?.label || ""
+            }`}
+          />
+        </div>
+      {/if}
+    </div>
+  </div>
+</AppOverlay>
+
+<AppOverlay
+  isOpen={isOpenModal}
+  on:close={() => {
+    isOpenModal = false;
+  }}
+>
+  <div class="xl:title-3 title-1 text-center text-gray-600 font-semibold">
+    Let's us know your email
+  </div>
+  <div class="mt-2">
+    <div class="xl:text-base text-lg text-gray-500 text-center">
+      Add your email to get updates from us and receive exclusive benefits soon.
+    </div>
+    <form
+      on:submit|preventDefault={onSubmitGetEmail}
+      class="flex flex-col gap-3 mt-4"
+    >
+      <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1">
           <div
-            class="absolute transform -translate-x-1/2 -top-8 left-1/2"
-            style="z-index: 2147483648;"
+            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+              email ? "bg-[#F0F2F7]" : ""
+            }`}
           >
-            <tooltip-detail
-              text={`/start ${selectedWallet} ${
-                formatListAddress.filter(
-                  (item) => item.value === selectedWallet
-                )?.[0]?.label || ""
-              }`}
+            <div class="xl:text-base text-xl text-[#666666] font-medium">
+              Email
+            </div>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Your email"
+              value=""
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                email ? "bg-[#F0F2F7]" : ""
+              }
+              `}
+              on:keyup={({ target: { value } }) => (email = value)}
             />
           </div>
-        {/if}
+        </div>
       </div>
-    </div>
+      <div class="flex justify-end gap-2">
+        <div class="lg:w-[100px] flex-1">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              isOpenModal = false;
+            }}
+          >
+            {MultipleLang.content.modal_cancel}</Button
+          >
+        </div>
+        <div class="lg:w-[100px] flex-1">
+          <Button
+            type="submit"
+            isLoading={isLoadingSendMail}
+            disabled={isLoadingSendMail}>Submit</Button
+          >
+        </div>
+      </div>
+    </form>
   </div>
 </AppOverlay>
 
@@ -768,7 +961,7 @@
     background-repeat: no-repeat;
     background-size: auto;
     background-position: top right;
-    padding-bottom: 164px;
+    padding-bottom: 144px;
     padding-top: 24px;
   }
 

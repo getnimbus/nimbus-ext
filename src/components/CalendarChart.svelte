@@ -19,7 +19,7 @@
   <div class="flex flex-col gap-1 pl-6">
     <div
       class={`font-medium text-black flex justify-start z-10 w-max ${
-        isTrxPage ? "text-2xl" : "text-xl"
+        isTrxPage ? "xl:text-2xl text-4xl" : "xl:text-xl text-3xl"
       }`}
     >
       {#if tooltipTitle}
@@ -31,7 +31,7 @@
       {/if}
     </div>
     {#if sum !== 0}
-      <div class="text-lg font-medium">
+      <div class="xl:text-lg text-2xl font-medium">
         $<TooltipNumber number={sum} type="balance" />
       </div>
     {/if}
@@ -44,13 +44,13 @@
     <div class="h-full">
       {#if isEmptyDataChart}
         <div
-          class="flex justify-center items-center h-full text-lg text-gray-400 h-[152px]"
+          class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[152px]"
         >
           Empty
         </div>
       {:else}
         <div class="relative -mt-12">
-          <EChart {id} theme="white" {option} />
+          <EChart {id} theme="white" {option} type="full-width" />
           <div
             class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-2/3 left-1/2"
           >

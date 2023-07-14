@@ -85,6 +85,8 @@
         borderWidth: 0.5,
       },
       yearLabel: { show: false },
+      dayLabel: { show: true, color: "#6b7280" },
+      monthLabel: { show: true, color: "#6b7280" },
     },
     dayLabel: {
       nameMap: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -157,7 +159,7 @@
         chain: selectedChain,
         pageToken: page,
       });
-      if (selectedWallet === response.address) {
+      if (selectedWallet === response?.address) {
         data = [...data, ...response.result.data];
         pageToken = response.result.pageToken;
       } else {
@@ -191,10 +193,9 @@
 
 <AddressManagement type="order" title="Transactions">
   <span slot="body">
-    <div class="max-w-[2000px] m-auto w-[90%] -mt-32">
+    <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-32">
       <div
-        class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
-        style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+        class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md"
       >
         <div
           class="border border-[#0000001a] rounded-[20px] pt-6 pb-9 flex flex-col gap-4"
@@ -206,14 +207,14 @@
             isTrxPage
             title="Historical Activities"
             tooltipTitle="The chart shows only activities made by this wallet"
-            id="HistoricalActivities"
+            id="historical-activities"
           />
         </div>
         <div
           class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
         >
           <div class="flex flex-col justify-between gap-4 xl:flex-row">
-            <div class="text-2xl font-medium text-black">
+            <div class="xl:text-2xl text-4xl font-medium text-black">
               Historical Transactions
             </div>
             <div class="flex items-center justify-end gap-2">

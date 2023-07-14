@@ -147,7 +147,7 @@
           isEmptySectorGrowth = true;
           isLoadingSectorGrowth = false;
           return;
-        } else if (selectedWallet === response.address) {
+        } else if (selectedWallet === response?.address) {
           if (response?.result?.length === 0) {
             isEmptySectorGrowth = true;
             isLoadingSectorGrowth = false;
@@ -231,12 +231,12 @@
 
 <div class="border border-[#0000001a] rounded-[20px] p-6">
   <div class="flex justify-between">
-    <div class="text-xl font-medium text-black">Sector Growth</div>
+    <div class="xl:text-xl text-3xl font-medium text-black">Sector Growth</div>
     <div class="flex items-center gap-1">
       <AnimateSharedLayout>
         {#each typeList as type}
           <div
-            class="relative cursor-pointer text-base font-medium py-1 px-3 rounded-[100px] transition-all"
+            class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
             on:click={() => (selectedType = type.value)}
           >
             <div
@@ -263,7 +263,7 @@
       </AnimateSharedLayout>
     </div>
   </div>
-  <div class="mt-2">
+  <div class="mt-4">
     {#if isLoadingSectorGrowth}
       <div class="flex items-center justify-center h-[465px]">
         <loading-icon />
@@ -272,7 +272,7 @@
       <div class="h-full">
         {#if isEmptySectorGrowth}
           <div
-            class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
+            class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
           >
             Empty
           </div>
@@ -284,6 +284,7 @@
               option={optionLine}
               height={465}
               notMerge={true}
+              type="full-width"
             />
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"

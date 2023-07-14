@@ -1,6 +1,6 @@
 <script>
   import { useNavigate } from "svelte-navigator";
-  import { getAddressContext } from "~/utils";
+  import { getAddressContext, shorterName } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -16,6 +16,7 @@
   const navigate = useNavigate();
 
   let showTooltipListNFT = false;
+  let isShowTooltipName = false;
 
   $: profitAndLoss = data?.current_value - (data?.totalCost || 0);
   $: profitAndLossPercent =
@@ -25,7 +26,7 @@
 </script>
 
 <tr
-  class="hover:bg-gray-100 transition-all cursor-pointer"
+  class="group transition-all cursor-pointer"
   on:click={() => {
     navigate(
       `nft-detail?id=${encodeURIComponent(
@@ -34,36 +35,55 @@
     );
   }}
 >
-  <td class="pl-3 py-3">
+  <td
+    class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-white w-[220px] group-hover:bg-gray-100"
+  >
     <div class="relative">
-      <div class="text-black text-sm font-medium flex justify-start">
-        {data?.collection?.name}
+      <div
+        class="text-black xl:text-sm text-xl font-medium flex justify-start relative"
+        on:mouseover={() => {
+          isShowTooltipName = true;
+        }}
+        on:mouseleave={() => (isShowTooltipName = false)}
+      >
+        {data?.collection?.name.length > 24
+          ? shorterName(data?.collection?.name, 20)
+          : data?.collection?.name}
+        {#if isShowTooltipName && data?.collection?.name.length > 24}
+          <div class="absolute -top-8 left-0" style="z-index: 2147483648;">
+            <tooltip-detail text={data?.collection?.name} />
+          </div>
+        {/if}
       </div>
     </div>
   </td>
 
-  <td class="py-3">
+  <td
+    class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg-white w-[200px] group-hover:bg-gray-100"
+  >
     <div class="relative">
       <div
         class="flex justify-start"
         on:mouseenter={() => (showTooltipListNFT = true)}
         on:mouseleave={() => (showTooltipListNFT = false)}
       >
-        {#each data?.tokens.slice(0, 5) as token, index}
+        {#each data?.tokens.slice(0, 4) as token, index}
           <img
-            src={token?.image_url}
+            src={token?.image_url ||
+              "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
             alt=""
-            class={`w-6 h-6 rounded-md border border-gray-300 overflow-hidden ${
+            class={`w-9 h-9 rounded-md border border-gray-300 overflow-hidden bg-white ${
               index > 0 && "-ml-2"
             }`}
           />
         {/each}
-        {#if data?.balance > 5}
-          <div class="relative w-6 h-6">
+        {#if data?.balance > 4}
+          <div class="relative w-9 h-9">
             <img
-              src={data?.tokens[5].image_url}
+              src={data?.tokens[4].image_url ||
+                "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
               alt=""
-              class="w-6 h-6 rounded-md border border-gray-300 overflow-hidden -ml-2"
+              class="w-9 h-9 rounded-md border border-gray-300 overflow-hidden -ml-2 bg-white"
             />
             <div
               class="absolute top-0 -left-2 w-full h-full bg-[#00000066] text-white text-center flex justify-center items-center pb-2 rounded-md"
@@ -73,7 +93,7 @@
           </div>
         {/if}
       </div>
-      {#if showTooltipListNFT && data?.balance > 5}
+      {#if showTooltipListNFT && data?.balance > 4}
         <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
           <tooltip-detail
             text={`${data?.balance} NFTs on collection ${data?.collection?.name}`}
@@ -83,8 +103,10 @@
     </div>
   </td>
 
-  <td class="py-3">
-    <div class="text-sm text-[#00000099] font-medium flex justify-end">
+  <td class="py-3 group-hover:bg-gray-100">
+    <div
+      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+    >
       <TooltipNumber number={data?.floorPriceBTC} type="amount" /><span
         class="mx-1"
         >{getAddressContext(selectedWallet)?.type === "EVM"
@@ -98,8 +120,10 @@
     </div>
   </td>
 
-  <td class="py-3">
-    <div class="text-sm text-[#00000099] font-medium flex justify-end">
+  <td class="py-3 group-hover:bg-gray-100">
+    <div
+      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+    >
       <TooltipNumber number={data?.totalCostBTC} type="amount" /><span
         class="mx-1"
       >
@@ -109,14 +133,18 @@
     </div>
   </td>
 
-  <td class="py-3">
-    <div class="text-sm text-[#00000099] font-medium flex justify-end">
+  <td class="py-3 group-hover:bg-gray-100">
+    <div
+      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+    >
       $<TooltipNumber number={data?.current_value} type="balance" />
     </div>
   </td>
 
-  <td class="py-3">
-    <div class="flex items-center justify-end gap-1 text-sm font-medium">
+  <td class="py-3 group-hover:bg-gray-100">
+    <div
+      class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
+    >
       <div class="flex flex-col">
         <div
           class={`flex justify-end ${
@@ -147,7 +175,7 @@
     </div>
   </td>
 
-  <td class="py-3 w-10">
+  <td class="py-3 w-10 group-hover:bg-gray-100">
     <div class="flex justify-center">
       <div
         use:tooltip={{

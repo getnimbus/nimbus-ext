@@ -14,12 +14,14 @@
         </div>
       </div>
     </div>
-    <Button
-      on:click={() => {
-        window.open(`https://discord.gg/u5b9dTrSTr`, "_blank");
-        window.close();
-      }}>Join Discord</Button
-    >
+    <div class="w-[140px]">
+      <Button
+        on:click={() => {
+          window.open(`https://discord.gg/u5b9dTrSTr`, "_blank");
+          window.close();
+        }}>Join Discord</Button
+      >
+    </div>
   </div>
 </div>
 

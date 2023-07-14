@@ -264,12 +264,16 @@
   }
 </script>
 
-<div class="py-3 bg-[#27326F]">
+<div class="py-1 bg-[#27326F] border-b-[1px] border-[#ffffff1a]">
   <div class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]">
     <Link
       to={`${APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"}`}
     >
-      <img src={Logo} alt="logo" class="-ml-8 w-[177px] h-[60px]" />
+      <img
+        src={Logo}
+        alt="logo"
+        class="-ml-8 xl:w-[177px] w-[197px] xl:h-[60px] h-[80px]"
+      />
     </Link>
 
     <div class="items-center hidden gap-1 xl:flex">
@@ -279,12 +283,15 @@
         }`}
       >
         <div
-          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "portfolio"}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
+            navActive === "portfolio"
+              ? "bg-[#525B8C] opacity-100"
+              : "opacity-70"
+          }`}
           on:click={() => (navActive = "portfolio")}
         >
           <img src={PortfolioIcon} alt="" width="20" height="20" />
-          <span class="text-sm font-semibold text-white xl:text-base">
+          <span class="text-sm font-medium text-white xl:text-base">
             {MultipleLang.portfolio}
           </span>
         </div>
@@ -292,13 +299,14 @@
 
       <Link to="analytic">
         <div
-          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all relative"
-          class:bg-[#525B8C]={navActive === "analytic"}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
+            navActive === "analytic" ? "bg-[#525B8C] opacity-100" : "opacity-70"
+          }`}
           on:click={() => (navActive = "analytic")}
         >
           <img src={AnalyticIcon} alt="" width="20" height="20" />
           <span class="flex gap-[1px]">
-            <span class="text-sm font-semibold text-white xl:text-base">
+            <span class="text-sm font-medium text-white xl:text-base">
               {MultipleLang.analytics}
             </span>
             <span class="flex items-center gap-[1px] -mt-2">
@@ -313,12 +321,15 @@
 
       <Link to="transactions">
         <div
-          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "transactions"}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
+            navActive === "transactions"
+              ? "bg-[#525B8C] opacity-100"
+              : "opacity-70"
+          }`}
           on:click={() => (navActive = "transactions")}
         >
           <img src={TransactionsIcon} alt="" width="20" height="20" />
-          <span class="text-sm font-semibold text-white xl:text-base">
+          <span class="text-sm font-medium text-white xl:text-base">
             {MultipleLang.transactions}
           </span>
         </div>
@@ -326,12 +337,13 @@
 
       <Link to="market">
         <div
-          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "market"}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
+            navActive === "market" ? "bg-[#525B8C] opacity-100" : "opacity-70"
+          }`}
           on:click={() => (navActive = "market")}
         >
           <img src={MarketIcon} alt="" width="20" height="20" />
-          <span class="text-sm font-semibold text-white xl:text-base">
+          <span class="text-sm font-medium text-white xl:text-base">
             {MultipleLang.market}
           </span>
         </div>
@@ -339,12 +351,13 @@
 
       <Link to="news">
         <div
-          class="flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] transition-all"
-          class:bg-[#525B8C]={navActive === "news"}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
+            navActive === "news" ? "bg-[#525B8C] opacity-100" : "opacity-70"
+          }`}
           on:click={() => (navActive = "news")}
         >
           <img src={NewsIcon} alt="" width="20" height="20" />
-          <span class="text-sm font-semibold text-white xl:text-base">
+          <span class="text-sm font-medium text-white xl:text-base">
             {MultipleLang.news}
           </span>
         </div>
@@ -352,10 +365,8 @@
     </div>
 
     <div class="flex items-center justify-between gap-6 xl:gap-3">
-      <div
-        class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center gap-1 rounded-[1000px]"
-      >
-        <img src={Search} alt="" />
+      <div class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center rounded-[1000px]">
+        <img src={Search} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
         <input
           on:keyup={({ target: { value } }) => debounceSearch(value)}
           on:keydown={(event) => {
@@ -385,7 +396,7 @@
           value={search}
           placeholder={MultipleLang.search_placeholder}
           type="text"
-          class="bg-[#525B8C] w-full py-2 xl:pr-4 pr-2 rounded-r-[1000px] text-[#ffffff80] placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
+          class="bg-[#525B8C] xl:w-full w-[400px] xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-xl placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
         />
       </div>
 
@@ -404,16 +415,16 @@
         <a
           href="entries/options/index.html?tab=wallets"
           target="_blank"
-          class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
+          class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12"
         >
-          <img src={SettingsIcon} alt="" />
+          <img src={SettingsIcon} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
         </a>
       {/if}
 
       <!-- <div
-        class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
+        class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12"
       >
-        <img src={Bell} alt="" />
+        <img src={Bell} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
       </div> -->
 
       <!-- {#if Object.keys(userInfo).length !== 0}
@@ -481,7 +492,7 @@
         class="block text-white xl:hidden"
         on:click={() => (isShowHeaderMobile = true)}
       >
-        <img src={MenuBar} alt="" />
+        <img src={MenuBar} alt="" class="w-10 h-10" />
       </div>
     </div>
 
@@ -498,9 +509,13 @@
 >
   <div class="max-w-[100vw] m-auto w-[90%] h-full flex flex-col gap-10">
     <div class="flex items-center justify-between py-3">
-      <img src={Logo} alt="" class="-ml-8 w-[177px] h-[60px]" />
+      <img
+        src={Logo}
+        alt=""
+        class="-ml-8 xl:w-[177px] w-[197px] xl:h-[60px] h-[80px]"
+      />
       <div on:click={() => (isShowHeaderMobile = false)}>
-        <img src={Close} alt="" />
+        <img src={Close} alt="" class="w-10 h-10" />
       </div>
     </div>
     <div class="flex flex-col justify-between gap-5">
@@ -513,16 +528,16 @@
           <div
             class={`flex items-center gap-3 text-white px-4 ${
               navActive === "portfolio"
-                ? "bg-[#525B8C] py-2 rounded-[1000px]"
-                : ""
+                ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
+                : "opacity-70"
             }`}
             on:click={() => {
               isShowHeaderMobile = false;
               navActive = "portfolio";
             }}
           >
-            <img src={PortfolioIcon} alt="" width="25" height="25" />
-            <span class="text-xl font-semibold">
+            <img src={PortfolioIcon} alt="" width="28" height="28" />
+            <span class="text-2xl font-semibold">
               {MultipleLang.portfolio}
             </span>
           </div>
@@ -534,17 +549,17 @@
           <div
             class={`flex items-center gap-3 text-white px-4 ${
               navActive === "analytic"
-                ? "bg-[#525B8C] py-2 rounded-[1000px]"
-                : ""
+                ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
+                : "opacity-70"
             }`}
             on:click={() => {
               isShowHeaderMobile = false;
               navActive = "analytic";
             }}
           >
-            <img src={AnalyticIcon} alt="" width="25" height="25" />
+            <img src={AnalyticIcon} alt="" width="28" height="28" />
             <span class="flex gap-[1px]">
-              <span class="text-xl font-semibold">
+              <span class="text-2xl font-semibold">
                 {MultipleLang.analytics}
               </span>
               <span class="flex items-center gap-[1px] -mt-2">
@@ -563,16 +578,16 @@
           <div
             class={`flex items-center gap-3 text-white px-4 ${
               navActive === "transactions"
-                ? "bg-[#525B8C] py-2 rounded-[1000px]"
-                : ""
+                ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
+                : "opacity-70"
             }`}
             on:click={() => {
               isShowHeaderMobile = false;
               navActive = "transactions";
             }}
           >
-            <img src={TransactionsIcon} alt="" width="25" height="25" />
-            <span class="text-xl font-semibold">
+            <img src={TransactionsIcon} alt="" width="28" height="28" />
+            <span class="text-2xl font-semibold">
               {MultipleLang.transactions}
             </span>
           </div>
@@ -583,15 +598,17 @@
         <Link to="market">
           <div
             class={`flex items-center gap-3 text-white px-4 ${
-              navActive === "market" ? "bg-[#525B8C] py-2 rounded-[1000px]" : ""
+              navActive === "market"
+                ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
+                : "opacity-70"
             }`}
             on:click={() => {
               isShowHeaderMobile = false;
               navActive = "market";
             }}
           >
-            <img src={MarketIcon} alt="" width="25" height="25" />
-            <span class="text-xl font-semibold">
+            <img src={MarketIcon} alt="" width="28" height="28" />
+            <span class="text-2xl font-semibold">
               {MultipleLang.market}
             </span>
           </div>
@@ -601,15 +618,17 @@
       <Link to="news">
         <div
           class={`flex items-center gap-3 text-white px-4 ${
-            navActive === "news" ? "bg-[#525B8C] py-2 rounded-[1000px]" : ""
+            navActive === "news"
+              ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
+              : "opacity-70"
           }`}
           on:click={() => {
             isShowHeaderMobile = false;
             navActive = "news";
           }}
         >
-          <img src={NewsIcon} alt="" width="25" height="25" />
-          <span class="text-xl font-semibold">
+          <img src={NewsIcon} alt="" width="28" height="28" />
+          <span class="text-2xl font-semibold">
             {MultipleLang.news}
           </span>
         </div>

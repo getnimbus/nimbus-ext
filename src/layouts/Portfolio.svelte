@@ -25,13 +25,13 @@
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
   import type { NFTData, HoldingNFTRes } from "~/types/HoldingNFTData";
 
+  import AddressManagement from "~/components/AddressManagement.svelte";
   import Button from "~/components/Button.svelte";
   import Charts from "~/UI/Portfolio/Charts.svelte";
   import Holding from "~/UI/Portfolio/Holding.svelte";
   import News from "~/UI/Portfolio/News.svelte";
   import Overview from "~/UI/Portfolio/Overview.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
-  import AddressManagement from "~/components/AddressManagement.svelte";
   import Testimonial from "~/UI/Testimonial/Testimonial.svelte";
   import "~/components/Tooltip.custom.svelte";
 
@@ -198,12 +198,12 @@
         chain: selectedChain,
       });
 
-      if (selectedWallet === response.address) {
+      if (selectedWallet === response?.address) {
         overviewData = response.result;
 
         if (
-          overviewData?.breakdownToken.length === 0 ||
-          overviewData?.breakdownNft.length === 0
+          overviewData?.breakdownToken?.length === 0 ||
+          overviewData?.breakdownNft?.length === 0
         ) {
           isEmptyDataPie = true;
         }
@@ -281,7 +281,7 @@
           0
         );
 
-        const sortBreakdownNft = overviewData?.breakdownNft.sort((a, b) => {
+        const sortBreakdownNft = overviewData?.breakdownNft?.sort((a, b) => {
           if (a.value < b.value) {
             return 1;
           }
@@ -291,15 +291,17 @@
           return 0;
         });
 
-        const topFourBreakdownNft = sortBreakdownNft.slice(0, 4).map((item) => {
-          return {
-            ...item,
-            id: item.id || "N/A",
-            name: item.collection.name || "N/A",
-          };
-        });
+        const topFourBreakdownNft = sortBreakdownNft
+          ?.slice(0, 4)
+          .map((item) => {
+            return {
+              ...item,
+              id: item.id || "N/A",
+              name: item.collection.name || "N/A",
+            };
+          });
 
-        const orderBreakdownNft = sortBreakdownNft.slice(
+        const orderBreakdownNft = sortBreakdownNft?.slice(
           4,
           sortBreakdownNft.length
         );
@@ -321,17 +323,19 @@
           },
         ];
 
-        const formatDataPieChartTopFourNft = topFourBreakdownNft.map((item) => {
-          return {
-            name: item.collection.name || item.collection.symbol,
-            name_ratio: "Ratio",
-            value: (Number(item.value) / sumNft) * 100 || 0,
-            name_value: "Value",
-            value_value: Number(item.value),
-            name_balance: "Balance",
-            value_balance: Number(item.amount),
-          };
-        });
+        const formatDataPieChartTopFourNft = topFourBreakdownNft?.map(
+          (item) => {
+            return {
+              name: item.collection.name || item.collection.symbol,
+              name_ratio: "Ratio",
+              value: (Number(item.value) / sumNft) * 100 || 0,
+              name_value: "Value",
+              value_value: Number(item.value),
+              name_balance: "Balance",
+              value_balance: Number(item.amount),
+            };
+          }
+        );
 
         dataPieChart = {
           token: {
@@ -454,7 +458,7 @@
         reload: isReload,
         chain: selectedChain,
       });
-      if (selectedWallet === response.address && response && response.result) {
+      if (selectedWallet === response?.address && response && response.result) {
         const formatData = response.result.map((item) => {
           const groupPosition = groupBy(item.positions, "type");
           return {
@@ -481,7 +485,7 @@
         chain: selectedChain,
       });
 
-      if (selectedWallet === response.address) {
+      if (selectedWallet === response?.address) {
         const formatData = response.result.map((item) => {
           return {
             ...item,
@@ -514,7 +518,7 @@
         chain: selectedChain,
       });
 
-      if (selectedWallet === response.address) {
+      if (selectedWallet === response?.address) {
         holdingNFTData = response.result;
         return response;
       } else {
@@ -532,7 +536,7 @@
         reload: isReload,
         chain: selectedChain,
       });
-      if (selectedWallet === response.address) {
+      if (selectedWallet === response?.address) {
         newsData = response.result;
         return response;
       } else {
@@ -732,9 +736,9 @@
           mixpanel.track("user_reload");
         }}
       >
-        <img src={Reload} alt="" />
+        <img src={Reload} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
       </div>
-      <div class="text-xs text-white font-medium">
+      <div class="xl:text-xs text-lg text-white font-medium">
         {#if isLoading}
           {MultipleLang.updating_data}
         {:else}
@@ -755,7 +759,7 @@
     {/if}
   </span>
   <span slot="body">
-    <div class="max-w-[2000px] m-auto w-[90%] -mt-26">
+    <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
       {#if isLoadingSync}
         <div
           class="bg-white text-xl font-medium flex flex-col gap-5 justify-center items-center border border-[#0000001a] rounded-[20px] p-6 h-screen"
@@ -767,8 +771,7 @@
         </div>
       {:else}
         <div
-          class="flex flex-col gap-7 bg-white rounded-[20px] p-8"
-          style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+          class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md"
         >
           <Charts
             isLoading={loadingOverview}

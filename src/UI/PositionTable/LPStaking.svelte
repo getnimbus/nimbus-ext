@@ -10,41 +10,52 @@
 
 <div class="flex flex-col gap-5">
   <div class="flex justify-between items-end">
-    <div class="text-xl font-semibold">{position}</div>
-    <div class="text-3xl font-semibold flex justify-end">
+    <div class="xl:text-xl text-3xl font-semibold">{position}</div>
+    <div class="xl:text-3xl text-4xl font-semibold flex justify-end">
       $<TooltipNumber number={sum} type="balance" />
     </div>
   </div>
+
   <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
     <table class="table-auto xl:w-full w-[1200px]">
       <thead>
         <tr class="bg-[#f4f5f8]">
-          <th class="pl-3 py-3">
-            <div class="text-xs font-semibold text-black uppercase text-left">
+          <th
+            class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
+          >
+            <div
+              class="xl:text-xs text-base font-semibold text-black uppercase text-left"
+            >
               Pool
             </div>
           </th>
 
           <th class="py-3">
-            <div class="text-right text-xs font-semibold text-black uppercase">
+            <div
+              class="text-right xl:text-xs text-base font-semibold text-black uppercase"
+            >
               Balance
             </div>
           </th>
 
           <th class="py-3">
-            <div class="text-right text-xs font-semibold text-black uppercase">
+            <div
+              class="text-right xl:text-xs text-base font-semibold text-black uppercase"
+            >
               Rewards
             </div>
           </th>
 
           <th class="pr-3 py-3">
-            <div class="text-xs font-semibold text-black uppercase text-right">
+            <div
+              class="xl:text-xs text-base font-semibold text-black uppercase text-right"
+            >
               Value
             </div>
           </th>
 
           <!-- <th class="pr-3 py-3">
-            <div class="text-xs font-semibold text-black uppercase text-right">
+            <div class="xl:text-xs text-base font-semibold text-black uppercase text-right">
               Profit & Loss
             </div>
           </th> -->
