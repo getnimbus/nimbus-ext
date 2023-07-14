@@ -50,7 +50,13 @@
     ),
     read_more: i18n("quickSearchLang.read-more", "Read more"),
   };
-
+  const placeholderTexts = [
+    "Search token...",
+    "Search term...",
+    "Search address...",
+    "Search transaction...",
+    "Search everything you want...",
+  ];
   const defaultSuggestList = ["bitcoin", "ethereum", "bnb"];
 
   let listPageConfig = [];
@@ -275,6 +281,43 @@
   });
   observer.observe(document, { subtree: true, childList: true });
 
+  let inputText = "";
+  let currentIndex = 0;
+
+  const handlePlaceholderTextAnimation = () => {
+    const placeholder = document.querySelector(".typing-placeholder");
+    let currentText = placeholderTexts[currentIndex];
+    let i = 0;
+
+    function type() {
+      if (i < currentText.length) {
+        inputText += currentText.charAt(i);
+        i++;
+        setTimeout(type, 100);
+      } else {
+        setTimeout(erase, 1000);
+      }
+    }
+
+    function erase() {
+      if (i >= 0) {
+        inputText = inputText.slice(0, -1);
+        i--;
+        setTimeout(erase, 50);
+      } else {
+        currentIndex = (currentIndex + 1) % placeholderTexts.length;
+        currentText = placeholderTexts[currentIndex];
+        i = 0;
+        type();
+      }
+    }
+
+    type();
+
+    placeholder.addEventListener("mouseenter", erase);
+    placeholder.addEventListener("mouseleave", type);
+  };
+
   onMount(() => {
     getConfigPages();
     getCoinList();
@@ -282,6 +325,7 @@
     getSuggestList();
     getTabSelected();
     getDraggableY();
+    handlePlaceholderTextAnimation();
   });
 
   onDestroy(() => {
@@ -507,7 +551,7 @@
               on:blur={() => (isFocused = false)}
               autofocus
               value={search}
-              placeholder={MultipleLang.input_placeholder}
+              placeholder={inputText}
               type="text"
               class="input-1 text-white bg-[#38427B] placeholder-white"
             />
@@ -939,5 +983,20 @@
 
   .input-border-unfocus {
     border: 0.5px solid transparent;
+  }
+
+  .typing-placeholder {
+    font-size: 16px;
+    animation: blink-caret 0.75s step-end infinite;
+  }
+
+  @keyframes blink-caret {
+    from,
+    to {
+      border-color: transparent;
+    }
+    50% {
+      border-color: #999;
+    }
   }
 </style>
