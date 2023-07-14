@@ -139,41 +139,41 @@
     </table>
   </div>
 </div>
+
 <AppOverlay
   isOpen={isOpenFollowWhaleModal}
   on:close={() => (isOpenFollowWhaleModal = false)}
 >
-  <div class="flex flex-col gap-4 max-w-[530px]">
+  <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1">
-      <div class="text-base">
+      <div class="xl:text-base text-2xl">
         Go to <a
           href="https://t.me/GetNimbusBot"
           target="_blank"
           class="text-blue-500">https://t.me/GetNimbusBot</a
         >
       </div>
-      <div class="text-base">Use the command as follow video</div>
+      <div class="xl:text-base text-2xl">Use the command as follow video</div>
     </div>
-    <div class="h-[350px] w-[500px]">
-      <img src={FollowWhale} alt="" class="h-full w-full" />
+    <div class="xl:h-[350px] h-[650px]">
+      <img src={FollowWhale} alt="" class="w-full h-full" />
     </div>
-    <div class="flex justify-end">
-      <div
-        class="relative"
-        on:mouseenter={() => {
-          showCommandTooltip = true;
-        }}
-        on:mouseleave={() => {
-          showCommandTooltip = false;
-        }}
+    <div
+      class="relative w-full flex justify-end"
+      on:mouseenter={() => {
+        showCommandTooltip = true;
+      }}
+      on:mouseleave={() => {
+        showCommandTooltip = false;
+      }}
+    >
+      <CopyToClipboard
+        text={`/portfolio ${selectedWallet} ${
+          listAddress.filter((item) => item.address === selectedWallet)[0].label
+        }`}
+        let:copy
       >
-        <CopyToClipboard
-          text={`/portfolio ${selectedWallet} ${
-            listAddress.filter((item) => item.address === selectedWallet)[0]
-              .label
-          }`}
-          let:copy
-        >
+        <div class="lg:w-max w-full">
           <Button
             on:click={() => {
               copy();
@@ -181,21 +181,21 @@
               showCommandTooltip = false;
             }}>Copy command</Button
           >
-        </CopyToClipboard>
-        {#if showCommandTooltip}
-          <div
-            class="absolute -top-8 left-1/2 transform -translate-x-1/2"
-            style="z-index: 2147483648;"
-          >
-            <tooltip-detail
-              text={`/portfolio ${selectedWallet} ${
-                listAddress.filter((item) => item.address === selectedWallet)[0]
-                  .label
-              }`}
-            />
-          </div>
-        {/if}
-      </div>
+        </div>
+      </CopyToClipboard>
+      {#if showCommandTooltip}
+        <div
+          class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+          style="z-index: 2147483648;"
+        >
+          <tooltip-detail
+            text={`/portfolio ${selectedWallet} ${
+              listAddress.filter((item) => item.address === selectedWallet)[0]
+                .label
+            }`}
+          />
+        </div>
+      {/if}
     </div>
   </div>
 </AppOverlay>

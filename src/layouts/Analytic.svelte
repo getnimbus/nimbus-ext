@@ -186,7 +186,7 @@
   </div>
   <div class="mt-2">
     <div
-      class="xl:text-base text-lg text-gray-500 text-center xl:w-[600px] w-full"
+      class="xl:text-base text-lg text-gray-500 text-center xl:w-[600px] w-[700px]"
     >
       Our analysis is
       <span class="font-bold">Premium</span>
