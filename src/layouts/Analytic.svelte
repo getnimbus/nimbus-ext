@@ -185,7 +185,9 @@
     Let's us analytic your portfolio
   </div>
   <div class="mt-2">
-    <div class="xl:text-base text-lg text-gray-500 text-center">
+    <div
+      class="xl:text-base text-lg text-gray-500 text-center xl:w-[600px] w-full"
+    >
       Our analysis is
       <span class="font-bold">Premium</span>
       <img src={Crown} alt="" width="13" height="12" class="inline-block" /> feature
