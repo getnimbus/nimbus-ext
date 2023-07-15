@@ -226,7 +226,7 @@
 </div>
 {#if pageToken && pageToken.length !== 0}
   <div class="mx-auto">
-    <div class="w-[100px]">
+    <div class="w-[140px]">
       <Button
         variant="secondary"
         on:click={() => loadMore(pageToken)}

@@ -77,7 +77,7 @@
       {/if}
       {#if newsData.length !== 0}
         <div class="mx-auto mt-6">
-          <div class="w-[100px]">
+          <div class="w-[140px]">
             <Button
               variant="secondary"
               on:click={() => {
