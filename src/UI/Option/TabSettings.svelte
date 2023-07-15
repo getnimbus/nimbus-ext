@@ -36,9 +36,9 @@
 </script>
 
 <div class="flex flex-col gap-2">
-  <div class="title-3 text-gray-500 mb-2">{MultipleLang.title}</div>
+  <div class="xl:title-3 title-1 text-gray-500 mb-2">{MultipleLang.title}</div>
   {#if APP_TYPE.TYPE === "WEB"}
-    <div class="title-5">
+    <div class="xl:title-5 title-3">
       Install <a
         href="https://getnimbus.io/"
         class="text-blue-500"
@@ -47,7 +47,7 @@
     </div>
   {:else}
     <div class="flex items-center gap-2">
-      <div class="title-5">
+      <div class="xl:title-5 title-3">
         {MultipleLang.change_lang_label}
       </div>
       <Select type="lang" listSelect={langs} bind:selected={selectedLang} />

@@ -61,23 +61,29 @@
 </script>
 
 <div class="flex flex-col gap-2">
-  <div class="title-3 text-gray-500 mb-2">{MultipleLang.title}</div>
+  <div class="xl:title-3 title-1 text-gray-500 mb-2">{MultipleLang.title}</div>
   <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
     <table class="table-auto xl:w-full w-[1200px]">
       <thead>
         <tr class="bg-[#f4f5f8]">
           <th class="pl-3 py-3">
-            <div class="text-left text-sm uppercase font-semibold text-black">
+            <div
+              class="text-left xl:text-sm text-lg uppercase font-semibold text-black"
+            >
               {MultipleLang.content.address_header_table}
             </div>
           </th>
           <th class="py-3">
-            <div class="text-left text-sm uppercase font-semibold text-black">
+            <div
+              class="text-left xl:text-sm text-lg uppercase font-semibold text-black"
+            >
               {MultipleLang.content.label_header_table}
             </div>
           </th>
           <th class="pr-3 py-3">
-            <div class="text-right text-sm uppercase font-semibold text-black">
+            <div
+              class="text-right xl:text-sm text-lg uppercase font-semibold text-black"
+            >
               {MultipleLang.content.action_header_table}
             </div>
           </th>
@@ -121,7 +127,7 @@
                 <td class="pr-3 py-4">
                   <div class="flex justify-end gap-6">
                     <div
-                      class="text-blue-600 hover:underline xl:text-base text-xl transition-all cursor-pointer font-semibold"
+                      class="text-blue-600 hover:underline xl:text-base text-2xl transition-all cursor-pointer font-semibold"
                       on:click={() => {
                         selectedWallet = item.address;
                         isOpenFollowWhaleModal = true;
@@ -173,7 +179,7 @@
         }`}
         let:copy
       >
-        <div class="lg:w-max w-full">
+        <div class="w-max">
           <Button
             on:click={() => {
               copy();

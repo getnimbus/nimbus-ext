@@ -861,7 +861,7 @@
         }`}
         let:copy
       >
-        <div class="lg:w-max w-full">
+        <div class="w-max">
           <Button
             on:click={() => {
               copy();

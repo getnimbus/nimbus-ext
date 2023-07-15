@@ -100,11 +100,13 @@
 
 <div class="flex flex-col gap-2">
   <div class="flex justify-between items-center mb-2">
-    <div class="title-3 text-gray-500 flex flex-col">{MultipleLang.title}</div>
+    <div class="xl:title-3 title-1 text-gray-500 flex flex-col">
+      {MultipleLang.title}
+    </div>
   </div>
 
   {#if Object.keys(userInfo).length === 0}
-    <div class="title-5">
+    <div class="xl:title-5 title-3">
       Please {#if APP_TYPE.TYPE === "EXT"}
         <span
           class="text-blue-500 cursor-pointer"
@@ -130,7 +132,9 @@
         </div>
       {:else}
         <div class="flex flex-col gap-4">
-          <div class="title-5">You need Nimbus NFT to unlock this feature</div>
+          <div class="xl:title-5 title-3">
+            You need Nimbus NFT to unlock this feature
+          </div>
           <Button variant="secondary" on:click={() => handleBuy()}>Buy</Button>
         </div>
       {/if}
