@@ -111,6 +111,7 @@
   let scrollContainer;
   let isScrollStart = true;
   let isScrollEnd = false;
+  let container;
 
   const getListAddress = async (type) => {
     isLoadingFullPage = true;
@@ -534,6 +535,7 @@
 
                 <div
                   class="xl:hidden relative overflow-x-hidden w-full flex flex-row gap-3 justify-between items-center"
+                  bind:this={container}
                 >
                   <div
                     class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
@@ -559,7 +561,7 @@
                     >
                   </div>
                   <div
-                    class="flex-1 flex gap-3 overflow-x-scroll whitespace-nowrap"
+                    class="w-max flex gap-3 overflow-x-scroll whitespace-nowrap"
                     bind:this={scrollContainer}
                     on:scroll={handleScroll}
                   >
@@ -589,29 +591,31 @@
                       </div>
                     {/each}
                   </div>
-                  <div
-                    class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
-                      isScrollEnd ? "hidden" : "block"
-                    }`}
-                    style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      height="24px"
-                      width="24px"
-                      viewBox="0 0 24 24"
-                      class="sc-aef7b723-0 fKbUaI"
-                      ><path
-                        d="M9 6L15 12L9 18"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-miterlimit="10"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      /></svg
+                  {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
+                    <div
+                      class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
+                        isScrollEnd ? "hidden" : "block"
+                      }`}
+                      style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
                     >
-                  </div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        height="24px"
+                        width="24px"
+                        viewBox="0 0 24 24"
+                        class="sc-aef7b723-0 fKbUaI"
+                        ><path
+                          d="M9 6L15 12L9 18"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-miterlimit="10"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        /></svg
+                      >
+                    </div>
+                  {/if}
                 </div>
 
                 <div
