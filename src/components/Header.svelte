@@ -650,7 +650,7 @@
 <style>
   .mobile {
     z-index: 2147483649;
-    background-color: rgba(39, 50, 111, 0.95);
+    background-color: rgba(39, 50, 111, 0.98);
     backdrop-filter: blur(12px);
 
     transition-property: all;
