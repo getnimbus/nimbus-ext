@@ -381,7 +381,7 @@
 
 <div class="flex flex-col gap-4">
   <div class="flex justify-between items-center">
-    <div class="title-3 text-gray-500">{MultipleLang.title}</div>
+    <div class="xl:title-3 title-1 text-gray-500">{MultipleLang.title}</div>
     <Button
       variant={APP_TYPE.TYPE !== "EXT" && listAddress.length === 3
         ? "disabled"
@@ -394,8 +394,8 @@
         }
       }}
     >
-      <img src={Plus} alt="" width="12" height="12" />
-      <div class="text-base font-medium text-white">
+      <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+      <div class="font-medium text-white">
         {MultipleLang.content.btn_text}
       </div>
     </Button>
@@ -497,7 +497,7 @@
                 <td class="pr-3 py-4">
                   <div class="flex justify-end gap-6">
                     <div
-                      class="text-red-600 hover:underline dark:text-red-500 xl:text-base text-xl transition-all cursor-pointer font-semibold"
+                      class="text-red-600 hover:underline dark:text-red-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
                       on:click={() => {
                         isOpenConfirmDelete = true;
                         selectedWallet = item;
@@ -506,7 +506,7 @@
                       {MultipleLang.content.modal_delete}
                     </div>
                     <div
-                      class="text-blue-600 hover:underline dark:text-blue-500 xl:text-base text-xl transition-all cursor-pointer font-semibold"
+                      class="text-blue-600 hover:underline dark:text-blue-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
                       on:click={() => handleEdit(item)}
                     >
                       {MultipleLang.content.modal_edit}

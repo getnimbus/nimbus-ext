@@ -226,13 +226,15 @@
 </div>
 {#if pageToken && pageToken.length !== 0}
   <div class="mx-auto">
-    <Button
-      variant="secondary"
-      on:click={() => loadMore(pageToken)}
-      disabled={isLoading}
-      {isLoading}
-      >Load more
-    </Button>
+    <div class="w-[140px]">
+      <Button
+        variant="secondary"
+        on:click={() => loadMore(pageToken)}
+        disabled={isLoading}
+        {isLoading}
+        >Load more
+      </Button>
+    </div>
   </div>
 {/if}
 

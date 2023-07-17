@@ -38,7 +38,7 @@
 </script>
 
 <div class="flex flex-col gap-2">
-  <div class="title-3 text-gray-500 mb-2">{MultipleLang.title}</div>
+  <div class="xl:title-3 title-1 text-gray-500 mb-2">{MultipleLang.title}</div>
   <Toast
     transition={fly}
     params={{ x: 200 }}
@@ -65,7 +65,7 @@
   </Toast>
 
   {#if APP_TYPE.TYPE === "WEB"}
-    <div class="title-5">
+    <div class="xl:title-5 title-3">
       Install <a
         href="https://getnimbus.io/"
         target="_blank"
@@ -87,7 +87,7 @@
         <span class="slider" />
       </label>
     </div> -->
-    <div class="title-5">Comming soon...</div>
+    <div class="xl:title-5 title-3">Comming soon...</div>
   {/if}
 </div>
 

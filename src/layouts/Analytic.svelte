@@ -185,7 +185,9 @@
     Let's us analytic your portfolio
   </div>
   <div class="mt-2">
-    <div class="xl:text-base text-lg text-gray-500 text-center">
+    <div
+      class="xl:text-base text-lg text-gray-500 text-center xl:w-[600px] w-[700px]"
+    >
       Our analysis is
       <span class="font-bold">Premium</span>
       <img src={Crown} alt="" width="13" height="12" class="inline-block" /> feature
@@ -219,11 +221,28 @@
         </div>
       </div>
       <div class="flex justify-end gap-2">
-        <Button
-          type="submit"
-          isLoading={isLoadingSendMail}
-          disabled={isLoadingSendMail}>Submit</Button
-        >
+        <div class="lg:w-[100px] w-full">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              localStorage.setItem(
+                "currentDay",
+                currentDate.format("YYYY-MM-DD")
+              );
+              localStorage.setItem("next7Days", next7Days.format("YYYY-MM-DD"));
+              isOpenModal = false;
+            }}
+          >
+            Cancel
+          </Button>
+        </div>
+        <div class="lg:w-[100px] w-full">
+          <Button
+            type="submit"
+            isLoading={isLoadingSendMail}
+            disabled={isLoadingSendMail}>Submit</Button
+          >
+        </div>
       </div>
     </form>
   </div>

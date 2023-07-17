@@ -146,9 +146,9 @@
 </script>
 
 <div class="flex flex-col gap-2">
-  <div class="title-3 text-gray-500 mb-2">{MultipleLang.title}</div>
+  <div class="xl:title-3 title-1 text-gray-500 mb-2">{MultipleLang.title}</div>
   {#if APP_TYPE.TYPE === "WEB"}
-    <div class="title-5">
+    <div class="xl:title-5 title-3">
       Install <a
         href="https://getnimbus.io/"
         class="text-blue-500"
@@ -161,18 +161,22 @@
         <thead>
           <tr class="bg-[#f4f5f8]">
             <th class="pl-3 py-3">
-              <div class="text-left text-sm uppercase font-semibold text-black">
+              <div
+                class="text-left xl:text-sm text-lg uppercase font-semibold text-black"
+              >
                 {MultipleLang.content.address_header_table}
               </div>
             </th>
             <th class="py-3">
-              <div class="text-left text-sm uppercase font-semibold text-black">
+              <div
+                class="text-left xl:text-sm text-lg uppercase font-semibold text-black"
+              >
                 {MultipleLang.content.label_header_table}
               </div>
             </th>
             <th class="pr-3 py-3">
               <div
-                class="text-right text-sm uppercase font-semibold text-black"
+                class="text-right xl:text-sm text-lg uppercase font-semibold text-black"
               >
                 {MultipleLang.content.action_header_table}
               </div>
@@ -203,13 +207,15 @@
               {#each listAddressLabel as item}
                 <tr class="hover:bg-gray-100 transition-all">
                   <td class="pl-3 py-4">
-                    <div class="text-left flex items-start gap-2">
+                    <div
+                      class="text-left xl:text-base text-xl flex items-start gap-2"
+                    >
                       <Copy address={item.address} iconColor="#000" />
                     </div>
                   </td>
                   <td class="py-4">
                     <div
-                      class="bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
+                      class="bg-[#6AC7F533] text-[#27326F] xl:text-base text-xl w-max px-3 py-1 rounded-[5px]"
                     >
                       {item.label}
                     </div>
@@ -217,7 +223,7 @@
                   <td class="pr-3 py-4">
                     <div class="flex justify-end gap-6">
                       <div
-                        class="text-red-600 hover:underline dark:text-red-500 transition-all cursor-pointer font-semibold"
+                        class="text-red-600 xl:text-base text-2xl hover:underline dark:text-red-500 transition-all cursor-pointer font-semibold"
                         on:click={() => {
                           isOpenConfirmDelete = true;
                           selectedHighlight = item;
@@ -226,7 +232,7 @@
                         {MultipleLang.content.modal_delete}
                       </div>
                       <div
-                        class="text-blue-600 hover:underline dark:text-blue-500 transition-all cursor-pointer font-semibold"
+                        class="text-blue-600 xl:text-base text-2xl hover:underline dark:text-blue-500 transition-all cursor-pointer font-semibold"
                         on:click={() => handleEdit(item)}
                       >
                         {MultipleLang.content.modal_edit}
@@ -244,7 +250,7 @@
 </div>
 
 <AppOverlay isOpen={isOpenEditModal} on:close={() => (isOpenEditModal = false)}>
-  <div class="title-3 text-gray-600 font-semibold max-w-[530px]">
+  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
     {MultipleLang.content.modal_edit_title}
   </div>
   <form
@@ -255,7 +261,7 @@
       <div
         class="flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 bg-[#F0F2F7]"
       >
-        <div class="text-base font-semibold text-gray-700">
+        <div class="xl:text-base text-xl font-semibold text-gray-700">
           {MultipleLang.content.modal_address_label}
         </div>
         <input
@@ -265,7 +271,7 @@
           placeholder={MultipleLang.content.modal_address_label}
           value={selectedHighlight.address}
           disabled
-          class="p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] bg-[#F0F2F7]"
+          class="p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] bg-[#F0F2F7]"
         />
       </div>
     </div>
@@ -276,7 +282,7 @@
         }`}
         class:input-border-error={errorsEdit.label && errorsEdit.label.required}
       >
-        <div class="text-base font-semibold text-gray-700">
+        <div class="xl:text-base text-xl font-semibold text-gray-700">
           {MultipleLang.content.label_header_table}
         </div>
         <input
@@ -285,7 +291,7 @@
           name="label"
           placeholder={MultipleLang.content.label_header_table}
           bind:value={selectedHighlight.label}
-          class={`p-0 border-none focus:outline-none focus:ring-0 text-sm font-normal text-[#5E656B] placeholder-[#5E656B] ${
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
             label ? "bg-[#F0F2F7]" : ""
           }`}
           on:keyup={({ target: { value } }) => (label = value)}
@@ -323,10 +329,10 @@
   on:close={() => (isOpenConfirmDelete = false)}
 >
   <div class="flex flex-col gap-1 items-start max-w-[530px]">
-    <div class="title-3 text-gray-600 font-semibold">
+    <div class="xl:title-3 title-1 text-gray-600 font-semibold">
       {MultipleLang.content.modal_delete_title}
     </div>
-    <div class="text-sm text-gray-500">
+    <div class="xl:text-sm text-lg text-gray-500">
       {MultipleLang.content.modal_delete_sub_title}
     </div>
   </div>

@@ -638,10 +638,10 @@
 </div>
 
 <AppOverlay isOpen={isOpenAuthModal} on:close={() => (isOpenAuthModal = false)}>
-  <div class="title-3 text-gray-600 font-semibold max-w-[530px] mb-5">
+  <div class="xl:title-3 title-1 text-gray-600 font-semibold mb-5">
     {MultipleLang.modal_login_title}
   </div>
-  <div class="flex flex-col items-center justify-center gap-2">
+  <div class="flex flex-col items-center justify-center xl:gap-2 gap-4">
     <SolanaAuth />
     <GoogleAuth />
   </div>
@@ -650,7 +650,7 @@
 <style>
   .mobile {
     z-index: 2147483649;
-    background-color: rgba(39, 50, 111, 0.84);
+    background-color: rgba(39, 50, 111, 0.98);
     backdrop-filter: blur(12px);
 
     transition-property: all;
