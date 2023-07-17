@@ -293,7 +293,7 @@
       if (i < currentText.length) {
         inputText += currentText.charAt(i);
         i++;
-        setTimeout(type, 100);
+        setTimeout(type, 80);
       } else {
         setTimeout(erase, 1000);
       }
