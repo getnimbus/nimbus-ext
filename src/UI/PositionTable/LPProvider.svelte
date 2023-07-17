@@ -101,7 +101,7 @@
             </div>
           </th>
 
-          <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
+          <th class="py-3 w-10 rounded-tr-[10px]" />
         </tr>
       </thead>
       <tbody>

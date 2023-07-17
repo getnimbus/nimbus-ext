@@ -109,7 +109,7 @@
       </div>
       <div class="flex flex-col justify-between gap-6 xl:flex-row">
         <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
-          <OverviewCard title={"Current Liquidity"}>
+          <OverviewCard title={"Current Value"}>
             <div class="flex items-end gap-1 xl:text-3xl text-5xl text-black">
               <CountUpNumber id="current_liquidity" number={0} type="balance" />
             </div>
@@ -160,7 +160,7 @@
             </div>
           </OverviewCard>
 
-          <OverviewCard title={"Yesterday Earning"}>
+          <OverviewCard title={"Impermanent Loss"}>
             <div
               class={`xl:text-3xl text-5xl flex ${
                 0 >= 0 ? "text-[#00A878]" : "text-red-500"
@@ -204,7 +204,7 @@
             <div class="mt-2 flex flex-col gap-4">
               <div class="grid grid-cols-3">
                 <div class="col-span-1" />
-                <div class="col-span-1 font-medium">Unclaimed</div>
+                <div class="col-span-1 font-medium">Claimable</div>
                 <div class="col-span-1 font-medium">Claimed</div>
               </div>
               <div class="grid grid-cols-3 items-start">
