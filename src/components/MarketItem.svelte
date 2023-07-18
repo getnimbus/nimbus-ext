@@ -52,7 +52,7 @@ via @get_nimbus`;
 
   <td class="py-4 group-hover:bg-gray-100">
     <div class="text-left text-black xl:text-sm text-xl font-medium">
-      {dayjs(data?.timestamp).format("YYYY-MM-DD HH:mm:ss")}
+      {dayjs(data?.timestamp).format("YYYY-MM-DD, hh:mm A")}
       <br />
       <span class="text-[#00000080]">
         {dayjs(data?.timestamp).fromNow()}

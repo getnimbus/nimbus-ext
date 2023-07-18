@@ -105,7 +105,7 @@
           <input
             on:keyup={({ target: { value } }) => debounceSearch(value)}
             on:keydown={(event) => {
-              if (event.which == 13 || event.keyCode == 13) {
+              if ((event.which == 13 || event.keyCode == 13) && searchValue) {
                 getMarketData();
               }
             }}
@@ -115,9 +115,16 @@
             class="flex-1 xl:text-sm text-xl py-2 px-3 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
           />
           <input
-            on:keyup={({ target: { value } }) => debounceAmount(value)}
+            on:keyup={({ target: { value } }) => {
+              const parsedValue = parseFloat(value);
+              if (!isNaN(parsedValue) && parsedValue > 0) {
+                debounceAmount(value);
+              } else {
+                amountValue = "";
+              }
+            }}
             on:keydown={(event) => {
-              if (event.which == 13 || event.keyCode == 13) {
+              if ((event.which == 13 || event.keyCode == 13) && amountValue) {
                 getMarketData();
               }
             }}
@@ -126,6 +133,8 @@
             inputmode="decimal"
             pattern="[0-9]*(.[0-9]+)?"
             type="number"
+            min="0.01"
+            step="0.01"
             autocorrect="off"
             autocomplete="off"
             class="xl:flex-[0.6] flex-[0.7] xl:text-sm text-xl py-2 px-3 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"

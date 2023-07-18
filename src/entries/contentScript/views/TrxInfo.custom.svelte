@@ -192,7 +192,7 @@
                 <div class="text-xs text-[#5E656B] font-normal">
                   {dayjs(info?.timestamp).fromNow()} - {dayjs(
                     info?.timestamp
-                  ).format("DD/MM/YYYY HH:mm A")}
+                  ).format("YYYY-MM-DD, hh:mm A")}
                 </div>
               </div>
               <div class="flex justify-between items-center gap-4">

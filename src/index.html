@@ -67,5 +67,38 @@
       src="https://analytics.umami.is/script.js"
       data-website-id="2ecfa1ca-7bea-46ba-87a3-8f4f9bf12eae"
     ></script>
+    <script>
+      !(function (e, t) {
+        const a = "featurebase-sdk";
+        function n() {
+          if (!t.getElementById(a)) {
+            var e = t.createElement("script");
+            (e.id = a),
+              (e.src = "https://do.featurebase.app/js/sdk.js"),
+              t
+                .getElementsByTagName("script")[0]
+                .parentNode.insertBefore(
+                  e,
+                  t.getElementsByTagName("script")[0]
+                );
+          }
+        }
+        "function" != typeof e.Featurebase &&
+          (e.Featurebase = function () {
+            (e.Featurebase.q = e.Featurebase.q || []).push(arguments);
+          }),
+          "complete" === t.readyState || "interactive" === t.readyState
+            ? n()
+            : t.addEventListener("DOMContentLoaded", n);
+      })(window, document);
+
+      Featurebase("initialize_changelog_widget", {
+        organization: "nimbus",
+        placement: "bottom",
+        theme: "light",
+        initialPage: "MainView",
+        fullScreen: false,
+      });
+    </script>
   </body>
 </html>

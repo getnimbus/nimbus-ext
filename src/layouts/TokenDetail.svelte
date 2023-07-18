@@ -750,7 +750,7 @@
                                 <div class="xl:text-xs text-lg text-gray-400">
                                   {dayjs(
                                     new Date(change?.detail.timestamp)
-                                  ).format("DD/MM/YYYY, hh:mm A")}
+                                  ).format("YYYY-MM-DD, hh:mm A")}
                                 </div>
                               </div>
                             </div>
@@ -925,7 +925,7 @@
                                       class="xl:text-xs text-lg text-gray-400"
                                     >
                                       {dayjs(new Date(change.timestamp)).format(
-                                        "DD/MM/YYYY, hh:mm A"
+                                        "YYYY-MM-DD, hh:mm A"
                                       )}
                                     </div>
                                   </div>

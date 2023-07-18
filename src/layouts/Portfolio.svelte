@@ -6,15 +6,10 @@
   dayjs.extend(relativeTime);
   import { groupBy, isEmpty } from "lodash";
   import { onDestroy, onMount } from "svelte";
-  import { Motion } from "svelte-motion";
   import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
   import { disconnectWs, initWS } from "~/lib/price-ws";
-  import {
-    formatBalance,
-    formatCurrency,
-    showChatAnimationVariants,
-  } from "~/utils";
+  import { formatCurrency } from "~/utils";
   import { wait } from "../entries/background/utils";
   import { isOpenReport, wallet, chain } from "~/store";
   import mixpanel from "mixpanel-browser";
@@ -35,7 +30,6 @@
   import Testimonial from "~/UI/Testimonial/Testimonial.svelte";
   import "~/components/Tooltip.custom.svelte";
 
-  import Comment from "~/assets/comment-bubble-icon.svg";
   import Reload from "~/assets/reload.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
@@ -53,7 +47,7 @@
     Value: i18n("newtabPage.Value", "Value"),
     data_updated: i18n("newtabPage.data-updated", "Data updated"),
     updating_data: i18n("newtabPage.updating-data", "Updating data"),
-    search_placeholder: i18n("newtabPage.search-placeholder", "Search"),
+    search_placeholder: i18n("newtabPage.search-placeholder", "Search address"),
     missed_protocol: i18n(
       "newtabPage.missed-protocol",
       "Missing your protocol?"
@@ -96,10 +90,6 @@
   let dataUpdatedTime;
   let isLoading = false;
   let isLoadingSync = false;
-  let isShowChat = false;
-  isOpenReport.subscribe((value) => {
-    isShowChat = value;
-  });
   let totalPositions = 0;
   let totalClaimable = 0;
   let totalAssets = 0;
@@ -813,46 +803,6 @@
         </div>
       {/if}
     </div>
-
-    {#if APP_TYPE.TYPE === "EXT"}
-      <div class="sticky bottom-4 flex justify-end pr-4">
-        <div
-          class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F] cursor-pointer"
-          style="box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);"
-          on:click={() => {
-            isOpenReport.update((n) => (n = !n));
-          }}
-        >
-          <img src={Comment} alt="cmt" width="20" height="20" />
-        </div>
-        <Motion
-          initial="hidden"
-          animate={isShowChat ? "visible" : "hidden"}
-          variants={showChatAnimationVariants}
-          let:motion
-        >
-          <div
-            class="h-[630px] w-[430px] absolute right-4 bottom-15 p-4 bg-white rounded-[20px] items-end"
-            style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
-            use:motion
-          >
-            <iframe
-              id="feedback-board"
-              src="https://nimbus.featurebase.app"
-              class="h-[580px] w-full"
-            />
-            <div
-              class="absolute top-3 right-5 cursor-pointer font-medium"
-              on:click={() => {
-                isOpenReport.update((n) => (n = false));
-              }}
-            >
-              Close
-            </div>
-          </div>
-        </Motion>
-      </div>
-    {/if}
   </span>
 </AddressManagement>
 

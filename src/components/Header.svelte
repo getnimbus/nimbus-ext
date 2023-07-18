@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Link, useMatch } from "svelte-navigator";
+  import { Link, useMatch, useNavigate } from "svelte-navigator";
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import jwt_decode from "jwt-decode";
@@ -15,6 +15,8 @@
   import { chain, user, wallet } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
+  import { Motion } from "svelte-motion";
+  import { showChangeLogAnimationVariants } from "~/utils";
 
   import GoogleAuth from "~/components/GoogleAuth.svelte";
   import SolanaAuth from "./SolanaAuth.svelte";
@@ -27,6 +29,7 @@
   import AnalyticIcon from "~/assets/analytic.svg";
   import TransactionsIcon from "~/assets/transactions.svg";
   import SettingsIcon from "~/assets/settings.svg";
+  import ChangeLogIcon from "~/assets/change-log.svg";
   import Search from "~/assets/search.svg";
   import Bell from "~/assets/bell.svg";
   import User from "~/assets/user.png";
@@ -51,7 +54,7 @@
     Value: i18n("newtabPage.Value", "Value"),
     data_updated: i18n("newtabPage.data-updated", "Data updated"),
     updating_data: i18n("newtabPage.updating-data", "Updating data"),
-    search_placeholder: i18n("newtabPage.search-placeholder", "Search"),
+    search_placeholder: i18n("newtabPage.search-placeholder", "Search address"),
     missed_protocol: i18n(
       "newtabPage.missed-protocol",
       "Missing your protocol?"
@@ -108,6 +111,8 @@
     ),
   };
 
+  const navigate = useNavigate();
+
   let selectedWallet;
   wallet.subscribe((value) => {
     selectedWallet = value;
@@ -124,6 +129,7 @@
   let addressWallet = "";
   let signMessageAddress = "";
   let isShowHeaderMobile = false;
+  let isShowChangeLog = false;
 
   onMount(() => {
     const token = localStorage.getItem("token");
@@ -378,18 +384,10 @@
               chain.update((n) => (n = "ALL"));
               wallet.update((n) => (n = search));
               if (getAddressContext(search)?.type === "EVM") {
-                window.history.replaceState(
-                  null,
-                  "",
-                  window.location.pathname + `?chain=${"ALL"}&address=${search}`
-                );
+                navigate(`/?chain=ALL&address=${search}`);
               }
               if (getAddressContext(selectedWallet)?.type === "BTC") {
-                window.history.replaceState(
-                  null,
-                  "",
-                  window.location.pathname + `?address=${selectedWallet}`
-                );
+                navigate(`/?address=${selectedWallet}`);
               }
             }
           }}
@@ -411,6 +409,40 @@
         >
           <img src={SettingsIcon} alt="" />
         </div>
+        <div class="relative">
+          <div
+            class="bg-[#525B8C] rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 cursor-pointer"
+            on:click={() => (isShowChangeLog = !isShowChangeLog)}
+          >
+            <img src={ChangeLogIcon} alt="" class="w-[26px] h-[26px]" />
+          </div>
+          <Motion
+            initial="hidden"
+            animate={isShowChangeLog ? "visible" : "hidden"}
+            variants={showChangeLogAnimationVariants}
+            let:motion
+          >
+            <div
+              class="h-[630px] w-[430px] absolute right-1 top-14 p-4 bg-white rounded-[20px] items-end z-10"
+              style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+              use:motion
+            >
+              <iframe
+                id="change-log"
+                src="https://nimbus.featurebase.app/changelog"
+                class="h-[580px] w-full"
+              />
+              <div
+                class="absolute top-3 right-5 cursor-pointer font-medium"
+                on:click={() => {
+                  isShowChangeLog = false;
+                }}
+              >
+                Close
+              </div>
+            </div>
+          </Motion>
+        </div>
       {:else}
         <a
           href="entries/options/index.html?tab=wallets"
@@ -419,6 +451,17 @@
         >
           <img src={SettingsIcon} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
         </a>
+        <div class="xl:w-10 xl:h-10 w-12 h-12 relative">
+          <div
+            class="bg-[#525B8C] rounded-full flex justify-center items-center w-full h-full"
+          >
+            <img src={ChangeLogIcon} alt="" class="w-[26px] h-[26px]" />
+          </div>
+          <button
+            data-featurebase-changelog
+            class="w-full h-full absolute inset-0 z-10"
+          />
+        </div>
       {/if}
 
       <!-- <div
