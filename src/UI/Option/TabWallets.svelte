@@ -395,7 +395,7 @@
       }}
     >
       <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-      <div class="font-medium text-white">
+      <div class="xl:text-base text-2xl font-medium text-white">
         {MultipleLang.content.btn_text}
       </div>
     </Button>

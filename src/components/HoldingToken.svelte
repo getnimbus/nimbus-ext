@@ -108,7 +108,7 @@
           {/if}
           {#if isShowTooltipSymbol && data.symbol.length > 20}
             <div class="absolute -top-8 left-0" style="z-index: 2147483648;">
-              <tooltip-detail text={data.name} />
+              <tooltip-detail text={data.symbol} />
             </div>
           {/if}
         </div>

@@ -423,7 +423,7 @@
             let:motion
           >
             <div
-              class="h-[630px] w-[430px] absolute right-1 top-14 p-4 bg-white rounded-[20px] items-end z-10"
+              class="h-[630px] w-[430px] absolute right-1 top-14 p-4 bg-white rounded-[20px] items-end z-50"
               style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
               use:motion
             >

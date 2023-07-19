@@ -302,7 +302,7 @@
               <tbody>
                 {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
                   <tr>
-                    <td colspan={6}>
+                    <td colspan={7}>
                       <div
                         class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
                       >

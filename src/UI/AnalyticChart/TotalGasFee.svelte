@@ -48,19 +48,18 @@
       min: 0,
       max: 1,
       calculable: true,
+      type: "piecewise",
       orient: "horizontal",
       top: 0,
       right: 40,
       inRange: {
         color: ["#00A878"],
-        opacity: [0, 1],
+        opacity: [0.1, 1],
       },
       controller: {
         inRange: {
-          opacity: [0, 1],
-        },
-        outOfRange: {
-          color: "#f4f5f8",
+          color: ["#f4f5f8", "#00A878"],
+          opacity: [0.1, 1],
         },
       },
     },

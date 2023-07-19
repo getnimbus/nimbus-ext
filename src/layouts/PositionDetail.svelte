@@ -9,9 +9,9 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
   import CountUpNumber from "~/components/CountUpNumber.svelte";
+  import Button from "~/components/Button.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
-  import Button from "~/components/Button.svelte";
 
   let option = {
     title: {

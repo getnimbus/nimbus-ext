@@ -64,11 +64,11 @@
       right: 40,
       inRange: {
         color: ["#00A878"],
-        opacity: [0, 1],
+        opacity: [0.1, 1],
       },
       controller: {
         inRange: {
-          opacity: [0.2, 1],
+          opacity: [0.1, 1],
         },
         outOfRange: {
           color: "#f4f5f8",

@@ -11,6 +11,7 @@
   } from "~/utils";
   import { i18n } from "~/lib/i18n";
   import { priceSubscribe } from "~/lib/price-ws";
+  import { useNavigate } from "svelte-navigator";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -20,6 +21,7 @@
   import HoldingToken from "~/components/HoldingToken.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import "~/components/Loading.custom.svelte";
+  import Button from "~/components/Button.svelte";
 
   const MultipleLang = {
     Balance: i18n("newtabPage.Balance", "Balance"),
@@ -34,6 +36,8 @@
     hide: i18n("newtabPage.hide-less-than-1", "Hide tokens less than $1"),
     empty: i18n("newtabPage.empty", "Empty"),
   };
+
+  const navigate = useNavigate();
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -455,6 +459,20 @@
           </div>
         {/each}
       </AnimateSharedLayout>
+      <div class="ml-4">
+        <Button
+          variant="tertiary"
+          on:click={() => {
+            navigate(
+              `/personal-token-breakdown?chain=${encodeURIComponent(
+                selectedChain
+              )}&address=${encodeURIComponent(selectedWallet)}`
+            );
+          }}
+        >
+          <div class="xl:text-base text-2xl font-medium text-white">Custom</div>
+        </Button>
+      </div>
     </div>
   </div>
   <div class="flex 2xl:flex-row flex-col justify-between gap-6">

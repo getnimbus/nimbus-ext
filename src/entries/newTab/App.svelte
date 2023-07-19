@@ -20,6 +20,7 @@
   import TokenDetail from "~/layouts/TokenDetail.svelte";
   import NftDetail from "~/layouts/NFTDetail.svelte";
   import PositionDetail from "~/layouts/PositionDetail.svelte";
+  import PersonalTokenBreakdown from "~/layouts/PersonalTokenBreakdown.svelte";
 
   import Comment from "~/assets/comment-bubble-icon.svg";
 
@@ -63,6 +64,10 @@
         class={`"flex flex-col ${APP_TYPE.TYPE === "EXT" ? "pb-2" : "pb-14"}`}
       >
         <Header />
+
+        <Route path="personal-token-breakdown">
+          <PersonalTokenBreakdown />
+        </Route>
 
         <Route path="news">
           <News />
