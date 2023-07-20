@@ -583,7 +583,7 @@
                     </TooltipTitle>
                   </div>
                 </th>
-                <th class="py-3">
+                <th class="py-3 pr-3">
                   <div
                     class="xl:text-xs text-base uppercase font-semibold text-black"
                   >
@@ -595,7 +595,7 @@
                     </TooltipTitle>
                   </div>
                 </th>
-                <th class="py-3 w-10" />
+                <!-- <th class="py-3 w-10" /> -->
               </tr>
             </thead>
             {#if isLoadingToken}

@@ -529,11 +529,8 @@
                         </td>
                       </tr>
                     {:else}
-                      {#each formatDataTokenHolding as data (data?.contractAddress)}
-                        <tr
-                          id={data.contractAddress}
-                          class="group transition-all"
-                        >
+                      {#each formatDataTokenHolding as data}
+                        <tr class="group transition-all">
                           <td
                             class="py-3 w-10 group-hover:bg-gray-100 xl:static xl:bg-transparent sticky left-0 z-10 bg-white"
                           >
