@@ -6,7 +6,9 @@ import logo from "~/assets/bitcoin.png";
 import Bnb from "~/assets/bnb.png";
 import Ethereum from "~/assets/ethereum.png";
 import Bitcoin from "~/assets/bitcoin.png";
-import Polygon from "~/assets/polygon.png";
+import Matic from "~/assets/matic.png";
+import Optimism from "~/assets/optimism.png";
+import Avax from "~/assets/avax.png";
 import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
@@ -121,8 +123,20 @@ export const detectedChain = (type) => {
     case "ETH":
       chain = Ethereum
       break;
-    case "GNOSIS":
+    case "XDAI":
       chain = Gnosis
+      break;
+    case "BNB":
+      chain = Bnb
+      break;
+    case "MATIC":
+      chain = Matic
+      break;
+    case "OP":
+      chain = Optimism
+      break;
+    case "AVAX":
+      chain = Avax
       break;
     default:
       chain = logo
@@ -142,19 +156,29 @@ export const chainList = [
     value: "ETH",
   },
   {
-    logo: Gnosis,
-    label: "Gnosis",
-    value: "GNOSIS",
-  },
-  {
     logo: Bnb,
     label: "BNB",
     value: "BNB",
   },
   {
-    logo: Polygon,
-    label: "Polygon",
-    value: "POLYGON",
+    logo: Gnosis,
+    label: "Gnosis",
+    value: "XDAI",
+  },
+  {
+    logo: Matic,
+    label: "Matic",
+    value: "MATIC",
+  },
+  {
+    logo: Optimism,
+    label: "Optimism",
+    value: "OP",
+  },
+  {
+    logo: Avax,
+    label: "Avax",
+    value: "AVAX",
   },
   {
     logo: Solana,

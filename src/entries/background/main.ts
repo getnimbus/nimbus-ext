@@ -200,7 +200,7 @@ onMessage<IAddressInput, any>("getHoldingToken", async ({ data: { address, chain
     const res = await cacheOrAPI(
       key,
       () => {
-        return nimbus.get(`/address/${address}/holding?chain=${chain}`).then((response) => {
+        return nimbus.get(`/v2/address/${address}/holding?chain=${chain}`).then((response) => {
           return {
             result: response.data,
             address: address

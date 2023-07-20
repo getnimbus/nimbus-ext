@@ -32,23 +32,23 @@
   $: clickable =
     data.name !== "Bitcoin" &&
     data.name !== "Ethereum" &&
-    selectedChain !== "GNOSIS";
+    selectedChain !== "XDAI";
 
   $: ratio = (price / sumTokenHolding) * 100;
 </script>
 
 <tr
-  class={`group transition-all ${clickable && "cursor-pointer"}`}
+  class={`group transition-all`}
   on:click={() => {
-    if (clickable) {
-      navigate(
-        `/position-detail?id=${encodeURIComponent(
-          data.positionId
-        )}&type=${encodeURIComponent(
-          data.positionType
-        )}&address=${encodeURIComponent(selectedWallet)}`
-      );
-    }
+    // if (clickable) {
+    //   navigate(
+    //     `/position-detail?id=${encodeURIComponent(
+    //       data.positionId
+    //     )}&type=${encodeURIComponent(
+    //       data.positionType
+    //     )}&address=${encodeURIComponent(selectedWallet)}`
+    //   );
+    // }
   }}
 >
   <td
@@ -86,9 +86,9 @@
           {#if data.name === undefined}
             N/A
           {:else}
-            {data.name.length > 20 ? shorterName(data.name, 20) : data.name}
+            {data?.name?.length > 20 ? shorterName(data.name, 20) : data.name}
           {/if}
-          {#if isShowTooltipName && data.name.length > 20}
+          {#if isShowTooltipName && data?.name?.length > 20}
             <div class="absolute -top-8 left-0" style="z-index: 2147483648;">
               <tooltip-detail text={data.name} />
             </div>
@@ -161,7 +161,7 @@
     </div>
   </td>
 
-  <td class="py-3 group-hover:bg-gray-100">
+  <td class="py-3 pr-3 group-hover:bg-gray-100">
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
@@ -195,7 +195,7 @@
     </div>
   </td>
 
-  <td class="py-3 w-10 group-hover:bg-gray-100">
+  <!-- <td class="py-3 w-10 group-hover:bg-gray-100">
     {#if clickable}
       <div class="flex justify-center">
         <div
@@ -209,7 +209,7 @@
         </div>
       </div>
     {/if}
-  </td>
+  </td> -->
 </tr>
 
 <style>

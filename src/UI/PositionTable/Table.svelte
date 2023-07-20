@@ -19,7 +19,7 @@
   <div class="flex items-center gap-3 border-b border-[#00000014] pb-3 mb-3">
     <div class="relative">
       <img src={data.logo} alt="" width={50} height={50} />
-      <div class="absolute -top-2 -right-1">
+      <!-- <div class="absolute -top-2 -right-1">
         <img
           src={detectedChain(data?.chain)}
           alt=""
@@ -27,7 +27,7 @@
           height="20"
           class="rounded-full"
         />
-      </div>
+      </div> -->
     </div>
     <a
       href={data.url}

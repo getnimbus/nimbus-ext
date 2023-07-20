@@ -165,7 +165,7 @@
           {/if}
         </div>
         <div class="flex items-center gap-1">
-          <AnimateSharedLayout>
+          <!-- <AnimateSharedLayout>
             {#each typePieChart as type}
               <div
                 class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
@@ -192,7 +192,7 @@
                 {/if}
               </div>
             {/each}
-          </AnimateSharedLayout>
+          </AnimateSharedLayout> -->
         </div>
       </div>
       {#if isLoading}
@@ -225,7 +225,7 @@
       <div class="pl-4 xl:text-2xl text-4xl font-medium text-black mb-3">
         {MultipleLang.performance}
       </div>
-      {#if selectedChain === "GNOSIS"}
+      {#if selectedChain === "XDAI"}
         <div
           class="absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center bg-white/85 z-10 backdrop-blur-md"
         >

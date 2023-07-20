@@ -633,8 +633,8 @@
             const [
               resOverview,
               resHoldingToken,
-              resHoldingNFT,
-              resPositions,
+              // resHoldingNFT,
+              // resPositions,
               // resNews,
             ] = await Promise.all([
               getOverview(type === "reload").then((res) => {
@@ -645,14 +645,14 @@
                 loadingHoldingToken = false;
                 return res;
               }),
-              getHoldingNFT(type === "reload").then((res) => {
-                loadingHoldingNFT = false;
-                return res;
-              }),
-              getPositions(type === "reload").then((res) => {
-                loadingPositions = false;
-                return res;
-              }),
+              // getHoldingNFT(type === "reload").then((res) => {
+              //   loadingHoldingNFT = false;
+              //   return res;
+              // }),
+              // getPositions(type === "reload").then((res) => {
+              //   loadingPositions = false;
+              //   return res;
+              // }),
               // getNews(type === "reload").then((res) => {
               //   loadingNews = false;
               //   return res;
@@ -661,9 +661,10 @@
 
             if (
               resOverview &&
-              resHoldingToken &&
-              resHoldingNFT &&
-              (resPositions === undefined || resPositions)
+              resHoldingToken
+              // &&
+              // resHoldingNFT &&
+              // (resPositions === undefined || resPositions)
             ) {
               syncMsg = "";
               isLoading = false;
@@ -779,7 +780,7 @@
             bind:totalAssets
           />
 
-          <div
+          <!-- <div
             class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
           >
             <Positions
@@ -797,7 +798,7 @@
               <Button variant="secondary">{MultipleLang.missed_protocol}</Button
               >
             </div>
-          </div>
+          </div> -->
 
           <!-- <News isLoading={loadingNews} data={newsData} /> -->
         </div>
