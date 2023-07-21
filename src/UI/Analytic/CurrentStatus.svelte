@@ -1,7 +1,7 @@
 <script lang="ts">
   import { sendMessage } from "webext-bridge";
   import { wallet, chain } from "~/store";
-  import { groupBy } from "lodash";
+  import { groupBy, flatten } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import {
     formatBalance,
@@ -12,6 +12,7 @@
   import { i18n } from "~/lib/i18n";
   import { priceSubscribe } from "~/lib/price-ws";
   import { useNavigate } from "svelte-navigator";
+  import { nimbus } from "~/lib/network";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -144,6 +145,11 @@
   let sumTokenHolding = 0;
   let formatData = [];
 
+  let typeListCategory = [...typeList];
+  let dataPersonalizeTag = [];
+  let dataTokenHolding = [];
+  let personalizeCategoryData = [];
+
   const handleFormatDataPieChart = (data, type) => {
     const formatData = data.map((item) => {
       return {
@@ -238,6 +244,8 @@
             return;
           }
 
+          dataTokenHolding = response.result;
+
           const listCMCID = response.result
             .map((item) => item.cmc_id)
             .filter((n) => n);
@@ -287,9 +295,93 @@
     }
   };
 
+  const getPersonalizeTag = async () => {
+    try {
+      const response = await nimbus.get(
+        `/address/${selectedWallet}/personalize/tag`
+      );
+      if (response && response.data) {
+        const categoriesData = Object.getOwnPropertyNames(response.data);
+        const categoriesDataList = categoriesData.map((item) => {
+          return {
+            category: item,
+            dataTag: groupBy(response.data[item], "tag"),
+          };
+        });
+        const formatDataCategory = categoriesDataList.map((item) => {
+          return {
+            category: item.category,
+            dataTag: Object.getOwnPropertyNames(item.dataTag).map((tag) => {
+              return {
+                name: tag,
+                tokens: item.dataTag[tag],
+              };
+            }),
+          };
+        });
+
+        dataPersonalizeTag = formatDataCategory;
+
+        const listCategory = formatDataCategory.map((item) => {
+          return {
+            label: item.category,
+            value: item.category,
+          };
+        });
+
+        typeListCategory = [...typeListCategory, ...listCategory];
+      }
+    } catch (e) {
+      console.log("e: ", e);
+    }
+  };
+
+  $: {
+    if (dataPersonalizeTag && dataTokenHolding) {
+      const tokenDataEachCategory = dataPersonalizeTag.map((item) => {
+        return {
+          category: item.category,
+          dataTokens: flatten(item.dataTag.map((item) => item.tokens)),
+        };
+      });
+
+      const formatTokenDataEachCategory = tokenDataEachCategory.map((item) => {
+        const formatDataTokens = dataTokenHolding.map((tokenHolding) => {
+          const isSelected = item.dataTokens.some(
+            (selectedToken) =>
+              selectedToken.contractAddress === tokenHolding.contractAddress
+          );
+
+          const selected = item.dataTokens.filter(
+            (selectedToken) =>
+              selectedToken.contractAddress === tokenHolding.contractAddress
+          );
+
+          return {
+            ...tokenHolding,
+            [item.category]: isSelected ? selected[0].tag : "Other",
+          };
+        });
+
+        return {
+          category: item.category,
+          dataTokens: formatDataTokens,
+        };
+      });
+
+      personalizeCategoryData = formatTokenDataEachCategory.map((item) => {
+        return {
+          category: item.category,
+          dataPie: handleFormatDataPieChart(item.dataTokens, item.category),
+          dataTable: handleFormatDataTable(item.dataTokens, item.category),
+        };
+      });
+    }
+  }
+
   $: {
     if (selectedType) {
-      if (dataRank && dataCategory && dataSector) {
+      if (dataRank && dataCategory && dataSector && personalizeCategoryData) {
         if (selectedType === "sector") {
           optionPie = {
             ...optionPie,
@@ -326,6 +418,30 @@
           };
           dataTable = dataTableCategory;
         }
+
+        const indexOfType = personalizeCategoryData
+          .map((item) => item.category)
+          .indexOf(selectedType);
+        const selectedPersonalizeCategoryData =
+          personalizeCategoryData[indexOfType];
+
+        if (
+          selectedType !== "sector" &&
+          selectedType !== "rank" &&
+          selectedType !== "category" &&
+          selectedPersonalizeCategoryData !== undefined
+        ) {
+          optionPie = {
+            ...optionPie,
+            series: [
+              {
+                ...optionPie.series[0],
+                data: selectedPersonalizeCategoryData.dataPie,
+              },
+            ],
+          };
+          dataTable = selectedPersonalizeCategoryData.dataTable;
+        }
       }
     }
   }
@@ -334,6 +450,7 @@
     if (selectedWallet || selectedChain) {
       if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
         getHoldingToken();
+        getPersonalizeTag();
       }
     }
   }
@@ -432,7 +549,7 @@
     </div>
     <div class="flex items-center gap-1">
       <AnimateSharedLayout>
-        {#each typeList as type}
+        {#each typeListCategory as type}
           <div
             class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
             on:click={() => (selectedType = type.value)}

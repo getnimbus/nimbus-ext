@@ -5,6 +5,9 @@
   import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
   import { detectedChain, getAddressContext, shorterName } from "~/utils";
+  import { nimbus } from "~/lib/network";
+  import { groupBy, flatten } from "lodash";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
 
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -18,6 +21,7 @@
 
   import LeftArrow from "~/assets/left-arrow.svg";
   import Edit from "~/assets/edit.svg";
+  import Plus from "~/assets/plus.svg";
 
   const MultipleLang = {
     assets: i18n("newtabPage.assets", "Assets"),
@@ -52,9 +56,13 @@
   };
   let selectedTokenList = [];
   let formatDataTokenHolding = [];
-  let listTag = ["others", "hello", "hi"];
+  let listTag = ["Other"];
   let query = "";
   let showSuggestListTag = false;
+
+  let listCustom = [];
+  let selectedCustom = {};
+  let isAddCustom = false;
 
   const onSubmit = async (e) => {
     const formatSelectedTokenList = selectedTokenList.map((item) => {
@@ -81,13 +89,140 @@
       },
     };
 
-    e.target.reset();
-    query = "";
-    showSetTag = false;
-    showSuggestListTag = false;
-    selectedTokenList = [];
+    try {
+      const response = await nimbus.post(
+        `/address/${selectedWallet}/personalize/tag`,
+        {
+          category: formData.category,
+          tagName: formData.tag.name,
+          data: formData.tag.tokens,
+        }
+      );
+      if (response) {
+        e.target.reset();
+        query = "";
+        showSetTag = false;
+        showSuggestListTag = false;
+        selectedTokenList = [];
+        getPersonalizeTag(selectedWallet);
+      }
+    } catch (e) {
+      console.log("e: ", e);
+    }
+  };
 
-    console.log("formData: ", formData);
+  const getPersonalizeTag = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/address/${address}/personalize/tag`);
+      if (response && response.data) {
+        const categoriesData = Object.getOwnPropertyNames(response.data);
+        const categoriesDataList = categoriesData.map((item) => {
+          return {
+            category: item,
+            dataTag: groupBy(response.data[item], "tag"),
+          };
+        });
+        const formatDataCategory = categoriesDataList.map((item) => {
+          return {
+            category: item.category,
+            dataTag: Object.getOwnPropertyNames(item.dataTag).map((tag) => {
+              return {
+                name: tag,
+                tokens: item.dataTag[tag],
+              };
+            }),
+          };
+        });
+
+        if (formatDataCategory.length !== 0) {
+          listCustom = formatDataCategory;
+
+          if (formatDataCategory.length === 1) {
+            selectedCustom = formatDataCategory[0];
+
+            formData = {
+              ...formData,
+              category: formatDataCategory[0]?.category,
+            };
+
+            listTag = [
+              "Other",
+              ...formatDataCategory[0]?.dataTag?.map((item) => item.name),
+            ];
+
+            formatDataTokenHolding = formatDataTokenHolding.map((item) => {
+              const isSelected = flatten(
+                formatDataCategory[0]?.dataTag?.map((item) => item.tokens)
+              ).some(
+                (selectedToken) =>
+                  selectedToken.contractAddress === item.contractAddress &&
+                  selectedToken.chain === item.chain
+              );
+
+              return {
+                ...item,
+                tag: isSelected
+                  ? flatten(
+                      formatDataCategory[0]?.dataTag?.map((item) => item.tokens)
+                    ).filter(
+                      (selectedToken) =>
+                        selectedToken.contractAddress ===
+                          item.contractAddress &&
+                        selectedToken.chain === item.chain
+                    )[0].tag
+                  : item.tag,
+              };
+            });
+          }
+          if (
+            formatDataCategory.length > 1 &&
+            Object.keys(selectedCustom).length !== 0
+          ) {
+            const selected = formatDataCategory.filter(
+              (item) => item.category === selectedCustom.category
+            );
+
+            selectedCustom = selected[0];
+
+            formData = {
+              ...formData,
+              category: selected[0]?.category,
+            };
+
+            listTag = [
+              "Other",
+              ...selected[0]?.dataTag?.map((item) => item.name),
+            ];
+
+            formatDataTokenHolding = formatDataTokenHolding.map((item) => {
+              const isSelected = flatten(
+                selected[0]?.dataTag?.map((item) => item.tokens)
+              ).some(
+                (selectedToken) =>
+                  selectedToken.contractAddress === item.contractAddress &&
+                  selectedToken.chain === item.chain
+              );
+
+              return {
+                ...item,
+                tag: isSelected
+                  ? flatten(
+                      selected[0]?.dataTag?.map((item) => item.tokens)
+                    ).filter(
+                      (selectedToken) =>
+                        selectedToken.contractAddress ===
+                          item.contractAddress &&
+                        selectedToken.chain === item.chain
+                    )[0].tag
+                  : item.tag,
+              };
+            });
+          }
+        }
+      }
+    } catch (e) {
+      console.log("e: ", e);
+    }
   };
 
   const getHoldingToken = async (isReload: boolean = false) => {
@@ -147,6 +282,7 @@
     if (chainParams && addressParams) {
       selectedWallet = addressParams;
       selectedChain = chainParams;
+      getPersonalizeTag(addressParams);
     }
 
     const handleScroll = () => {
@@ -195,12 +331,56 @@
     }
   }
 
+  $: {
+    if (marketPriceToken) {
+      formatData = formatData.map((item) => {
+        if (marketPriceToken.id === item.cmc_id) {
+          return {
+            ...item,
+            market_price: marketPriceToken.market_price,
+          };
+        }
+        return { ...item };
+      });
+    }
+  }
+
   $: formatDataTokenHolding = formatData.map((item) => {
     return {
       ...item,
-      tag: "others",
+      tag: "Other",
     };
   });
+
+  const handleSelectCategory = (data) => {
+    formData = {
+      ...formData,
+      category: data?.category,
+    };
+
+    listTag = ["Other", ...data?.dataTag?.map((item) => item.name)];
+
+    formatDataTokenHolding = formatData.map((item) => {
+      const isSelected = flatten(
+        data?.dataTag?.map((item) => item.tokens)
+      ).some(
+        (selectedToken) =>
+          selectedToken.contractAddress === item.contractAddress &&
+          selectedToken.chain === item.chain
+      );
+
+      return {
+        ...item,
+        tag: isSelected
+          ? flatten(data?.dataTag?.map((item) => item.tokens)).filter(
+              (selectedToken) =>
+                selectedToken.contractAddress === item.contractAddress &&
+                selectedToken.chain === item.chain
+            )[0].tag
+          : "Other",
+      };
+    });
+  };
 
   $: filteredListTag = listTag;
 
@@ -259,190 +439,551 @@
           Custom Token Breakdown
         </div>
 
-        <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-4">
-          <div
-            class={`flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
-              formData.category ? "bg-[#F0F2F7]" : ""
-            }`}
-          >
-            <div class="xl:text-base text-xl text-[#666666] font-medium">
-              Category
+        {#if listCustom.length === 0}
+          <div class="flex justify-between">
+            <div class="text-lg">
+              Add your custom token breakdown to keep track of investments by
+              your way.
             </div>
-            <input
-              type="text"
-              placeholder="Your category name"
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                formData.category ? "bg-[#F0F2F7]" : ""
-              }`}
-              on:keyup={({ target: { value } }) => (formData.category = value)}
-            />
+            <Button variant="tertiary" on:click={() => (isAddCustom = true)}>
+              <img src={Plus} alt="" width="12" height="12" />
+              <div class="xl:text-base text-2xl font-medium text-white">
+                Add Category
+              </div>
+            </Button>
           </div>
-
-          <div class="flex flex-col gap-2">
-            <div class="flex justify-between items-center">
-              {#if selectedTokenList?.length !== 0}
-                {#if showSetTag}
-                  <div class="w-[600px]">
+        {:else}
+          <div class="flex justify-between">
+            <div class="flex items-center gap-5">
+              <AnimateSharedLayout>
+                {#each listCustom as item (item.category)}
+                  <div
+                    id={item.category}
+                    class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                    on:click={() => {
+                      selectedCustom = item;
+                      handleSelectCategory(item);
+                    }}
+                  >
                     <div
-                      class={`flex justify-between gap-1 border bg-white focus:outline-none w-full py-[6px] px-3 rounded-t-lg ${
-                        formData.category ? "bg-[#F0F2F7]" : ""
-                      } ${
-                        showSuggestListTag ? "rounded-none" : "rounded-b-lg"
+                      class={`relative z-20 ${
+                        selectedCustom === item && "text-white"
                       }`}
                     >
-                      <input
-                        type="text"
-                        placeholder="Your tag name"
-                        class={`flex-1 p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                          formData.category ? "bg-[#F0F2F7]" : ""
-                        }`}
-                        on:focus={() => {
-                          showSuggestListTag = true;
-                        }}
-                        on:keyup={({ target: { value } }) => {
-                          filteredListTag = listTag.filter((tag) =>
-                            tag.toLowerCase().includes(value.toLowerCase())
-                          );
-                        }}
-                        bind:value={query}
-                      />
-
-                      {#if query && !showSuggestListTag}
-                        <button
-                          type="submit"
-                          class="xl:text-sm text-lg font-medium w-max text-[#1e96fc] cursor-pointer"
-                        >
-                          Add Tag
-                        </button>
-                      {/if}
-
-                      {#if showSuggestListTag}
-                        <button
-                          class="xl:text-sm text-lg font-medium w-max text-red-500 cursor-pointer"
-                          on:click={() => {
-                            showSuggestListTag = false;
-                            query = "";
-                            selectedTokenList = [];
-                            filteredListTag = listTag;
-                          }}
-                        >
-                          Cancel
-                        </button>
-                      {/if}
+                      {item.category}
                     </div>
-
-                    {#if showSuggestListTag}
-                      <div class="relative w-full">
+                    {#if item === selectedCustom}
+                      <Motion
+                        let:motion
+                        layoutId="active-pill"
+                        transition={{ type: "spring", duration: 0.6 }}
+                      >
                         <div
-                          class="absolute top-0 left-0 flex flex-col gap-1 border-b border-x-[1px] w-full bg-white text-[#5E656B] rounded-b-lg py-2 px-3 z-50"
-                        >
-                          <div class="xl:text-xs text-base">
-                            Select an option or create one
-                          </div>
-                          <div class="flex flex-col gap-2">
-                            {#each filteredListTag as item}
-                              <div
-                                class="xl:text-sm text-lg px-2 py-1 rounded-lg hover:bg-[#F0F2F7] cursor-pointer flex justify-between"
-                                class:bg-[#F0F2F7]={editTag && editTag === item}
-                              >
-                                {#if editTag && editTag === item}
-                                  <div class="flex justify-between w-full">
-                                    <div class="flex-1">
-                                      <input
-                                        type="text"
-                                        placeholder="Your category name"
-                                        class={`bg-[#F0F2F7] p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] w-full`}
-                                        bind:value={tag}
-                                        on:keyup={({ target: { value } }) =>
-                                          (tag = value)}
-                                      />
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                      <div
-                                        class="xl:text-sm text-base font-medium w-max text-[#1e96fc] cursor-pointer"
-                                        on:click={handleEditTag}
-                                      >
-                                        Save
-                                      </div>
-                                      <div
-                                        class="xl:text-sm text-base font-medium w-max text-red-500 cursor-pointer"
-                                        on:click={() => {
-                                          editTag = "";
-                                          tag = "";
-                                        }}
-                                      >
-                                        Cancel
-                                      </div>
-                                    </div>
-                                  </div>
-                                {:else}
-                                  <div
-                                    class="w-full"
-                                    on:click={() => {
-                                      showSuggestListTag = false;
-                                      query = item;
-                                    }}
-                                  >
-                                    {item}
-                                  </div>
-                                  <div
-                                    class="flex justify-center items-center px-2 hover:bg-gray-200 rounded"
-                                    on:click={() => {
-                                      editTag = item;
-                                      tag = item;
-                                    }}
-                                  >
-                                    <img src={Edit} alt="" />
-                                  </div>
-                                {/if}
-                              </div>
-                            {/each}
-
-                            {#if filteredListTag.length === 0}
-                              <div
-                                class="flex items-center gap-2 xl:text-sm text-lg"
-                              >
-                                <div
-                                  class="cursor-pointer text-[#1e96fc]"
-                                  on:click={() => {
-                                    listTag = [...listTag, query];
-                                    showSuggestListTag = false;
-                                  }}
-                                >
-                                  Create
-                                </div>
-                                <div
-                                  class="py-1 px-2 rounded-lg hover:bg-[#F0F2F7] flex-1"
-                                >
-                                  {query}
-                                </div>
-                              </div>
-                            {/if}
-                          </div>
-                        </div>
-                      </div>
+                          class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                          use:motion
+                        />
+                      </Motion>
                     {/if}
                   </div>
-                {:else}
-                  <div class="w-max">
-                    <Button
-                      variant="tertiary"
-                      on:click={() => {
-                        showSetTag = true;
-                      }}
-                    >
-                      <div class="xl:text-base text-2xl font-medium text-white">
-                        Set Tag
-                      </div>
-                    </Button>
-                  </div>
-                {/if}
-              {:else}
-                <div class="w-10 h-10" />
-              {/if}
-              <div class="xl:text-3xl text-4xl font-semibold text-right">
-                $<TooltipNumber number={sumTokens} type="balance" />
+                {/each}
+              </AnimateSharedLayout>
+            </div>
+
+            {#if listCustom.length < 3}
+              <Button
+                variant="tertiary"
+                on:click={() => {
+                  isAddCustom = true;
+                  selectedCustom = {};
+                  formData = {
+                    category: "",
+                    tag: {
+                      name: "",
+                      tokens: [],
+                    },
+                  };
+                  listTag = ["Other"];
+                  formatDataTokenHolding = formatData.map((item) => {
+                    return {
+                      ...item,
+                      tag: "Other",
+                    };
+                  });
+                }}
+              >
+                <img src={Plus} alt="" width="12" height="12" />
+                <div class="xl:text-base text-2xl font-medium text-white">
+                  Add Category
+                </div>
+              </Button>
+            {/if}
+          </div>
+        {/if}
+
+        {#if isAddCustom || Object.keys(selectedCustom).length !== 0}
+          <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-6">
+            <div
+              class={`flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
+                formData.category ? "bg-[#F0F2F7]" : ""
+              }`}
+            >
+              <div class="xl:text-base text-xl text-[#666666] font-medium">
+                Category
               </div>
+              <input
+                type="text"
+                placeholder="Your category name"
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                  formData.category ? "bg-[#F0F2F7]" : ""
+                }`}
+                bind:value={formData.category}
+              />
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <div class="flex justify-between items-center">
+                {#if selectedTokenList?.length !== 0}
+                  {#if showSetTag}
+                    <div class="w-[600px] h-10">
+                      <div
+                        class={`flex justify-between gap-1 border bg-white focus:outline-none w-full py-[6px] px-3 rounded-t-lg ${
+                          query ? "bg-[#F0F2F7]" : ""
+                        } ${
+                          showSuggestListTag ? "rounded-none" : "rounded-b-lg"
+                        }`}
+                      >
+                        <input
+                          type="text"
+                          placeholder="Your tag name"
+                          class={`flex-1 p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                            query ? "bg-[#F0F2F7]" : ""
+                          }`}
+                          on:focus={() => {
+                            showSuggestListTag = true;
+                          }}
+                          on:keyup={({ target: { value } }) => {
+                            filteredListTag = listTag.filter((tag) =>
+                              tag.toLowerCase().includes(value.toLowerCase())
+                            );
+                          }}
+                          bind:value={query}
+                        />
+
+                        {#if query && !showSuggestListTag}
+                          <button
+                            type="submit"
+                            class="xl:text-sm text-lg font-medium w-max text-[#1e96fc] cursor-pointer"
+                          >
+                            Add Tag
+                          </button>
+                        {/if}
+
+                        {#if showSuggestListTag}
+                          <button
+                            class="xl:text-sm text-lg font-medium w-max text-red-500 cursor-pointer"
+                            on:click={() => {
+                              showSuggestListTag = false;
+                              query = "";
+                              selectedTokenList = [];
+                              filteredListTag = listTag;
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        {/if}
+                      </div>
+
+                      {#if showSuggestListTag}
+                        <div class="relative w-full">
+                          <div
+                            class="absolute top-0 left-0 flex flex-col gap-1 border-b border-x-[1px] w-full bg-white text-[#5E656B] rounded-b-lg py-2 px-3 z-50"
+                          >
+                            <div class="xl:text-xs text-base">
+                              Select an option or create one
+                            </div>
+                            <div class="flex flex-col gap-2">
+                              {#each filteredListTag as item}
+                                <div
+                                  class="xl:text-sm text-lg px-2 py-1 rounded-lg hover:bg-[#F0F2F7] cursor-pointer flex justify-between"
+                                  class:bg-[#F0F2F7]={editTag &&
+                                    editTag === item}
+                                >
+                                  {#if editTag && editTag === item}
+                                    <div class="flex justify-between w-full">
+                                      <div class="flex-1">
+                                        <input
+                                          type="text"
+                                          placeholder="Your category name"
+                                          class={`bg-[#F0F2F7] p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] w-full`}
+                                          bind:value={tag}
+                                          on:keyup={({ target: { value } }) =>
+                                            (tag = value)}
+                                        />
+                                      </div>
+                                      <div class="flex items-center gap-2">
+                                        <div
+                                          class="xl:text-sm text-base font-medium w-max text-[#1e96fc] cursor-pointer"
+                                          on:click={handleEditTag}
+                                        >
+                                          Save
+                                        </div>
+                                        <div
+                                          class="xl:text-sm text-base font-medium w-max text-red-500 cursor-pointer"
+                                          on:click={() => {
+                                            editTag = "";
+                                            tag = "";
+                                          }}
+                                        >
+                                          Cancel
+                                        </div>
+                                      </div>
+                                    </div>
+                                  {:else}
+                                    <div
+                                      class="w-full"
+                                      on:click={() => {
+                                        showSuggestListTag = false;
+                                        query = item;
+                                      }}
+                                    >
+                                      {item}
+                                    </div>
+                                    <div
+                                      class="flex justify-center items-center px-2 hover:bg-gray-200 rounded"
+                                      on:click={() => {
+                                        editTag = item;
+                                        tag = item;
+                                      }}
+                                    >
+                                      <img src={Edit} alt="" />
+                                    </div>
+                                  {/if}
+                                </div>
+                              {/each}
+
+                              {#if filteredListTag.length === 0}
+                                <div
+                                  class="flex items-center gap-2 xl:text-sm text-lg"
+                                >
+                                  <div
+                                    class="cursor-pointer text-[#1e96fc]"
+                                    on:click={() => {
+                                      listTag = [...listTag, query];
+                                      showSuggestListTag = false;
+                                    }}
+                                  >
+                                    Create
+                                  </div>
+                                  <div
+                                    class="py-1 px-2 rounded-lg hover:bg-[#F0F2F7] flex-1"
+                                  >
+                                    {query}
+                                  </div>
+                                </div>
+                              {/if}
+                            </div>
+                          </div>
+                        </div>
+                      {/if}
+                    </div>
+                  {:else}
+                    <div class="w-max">
+                      <Button
+                        variant="tertiary"
+                        on:click={() => {
+                          showSetTag = true;
+                        }}
+                      >
+                        <div
+                          class="xl:text-base text-2xl font-medium text-white"
+                        >
+                          Set Tag
+                        </div>
+                      </Button>
+                    </div>
+                  {/if}
+                {:else}
+                  <div class="w-10 h-10" />
+                {/if}
+                <div class="xl:text-3xl text-4xl font-semibold text-right">
+                  $<TooltipNumber number={sumTokens} type="balance" />
+                </div>
+              </div>
+
+              <div
+                class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
+              >
+                <table class="table-auto xl:w-full w-[1400px]">
+                  <thead
+                    class={isStickyTableToken ? "sticky top-0 z-10" : ""}
+                    bind:this={tableTokenHeader}
+                  >
+                    <tr class="bg-[#f4f5f8]">
+                      <th
+                        class="py-3 w-10 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
+                      />
+                      <th
+                        class="py-3 xl:static xl:bg-transparent sticky left-10 z-10 bg-[#f4f5f8] xl:w-[230px] w-[280px]"
+                      >
+                        <div
+                          class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                        >
+                          {MultipleLang.assets}
+                        </div>
+                      </th>
+                      <th class="py-3">
+                        <div
+                          class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                        >
+                          {MultipleLang.price}
+                        </div>
+                      </th>
+                      <th class="py-3">
+                        <div
+                          class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                        >
+                          {MultipleLang.amount}
+                        </div>
+                      </th>
+                      <th class="py-3">
+                        <div
+                          class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                        >
+                          {MultipleLang.value}
+                        </div>
+                      </th>
+                      <th class="py-3">
+                        <div
+                          class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                        >
+                          <TooltipTitle
+                            tooltipText="Ratio based on token holding"
+                          >
+                            Ratio
+                          </TooltipTitle>
+                        </div>
+                      </th>
+                      <th class="py-3 pr-3">
+                        <div
+                          class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                        >
+                          Tag
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  {#if isLoadingToken}
+                    <tbody>
+                      <tr>
+                        <td colspan={7}>
+                          <div
+                            class="flex justify-center items-center py-3 px-3"
+                          >
+                            <loading-icon />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  {:else}
+                    <tbody>
+                      {#if formatDataTokenHolding && formatDataTokenHolding.length === 0}
+                        <tr>
+                          <td colspan={7}>
+                            <div
+                              class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
+                            >
+                              {MultipleLang.empty}
+                            </div>
+                          </td>
+                        </tr>
+                      {:else}
+                        {#each formatDataTokenHolding as data}
+                          <tr class="group transition-all">
+                            <td
+                              class="py-3 w-10 group-hover:bg-gray-100 xl:static xl:bg-transparent sticky left-0 z-10 bg-white"
+                            >
+                              <div class="flex justify-center">
+                                <input
+                                  type="checkbox"
+                                  value={data.chain +
+                                    "-" +
+                                    data.contractAddress}
+                                  bind:group={selectedTokenList}
+                                  class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                                />
+                              </div>
+                            </td>
+
+                            <td
+                              class="py-3 xl:static xl:bg-transparent sticky left-10 z-9 bg-white xl:w-[230px] w-[280px] group-hover:bg-gray-100"
+                            >
+                              <div class="text-left flex items-center gap-3">
+                                <div class="relative">
+                                  <img
+                                    src={data.logo}
+                                    alt=""
+                                    width="30"
+                                    height="30"
+                                    class="rounded-full"
+                                  />
+                                  {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+                                    <div class="absolute -top-2 -right-1">
+                                      <img
+                                        src={detectedChain(data.chain)}
+                                        alt=""
+                                        width="15"
+                                        height="15"
+                                        class="rounded-full"
+                                      />
+                                    </div>
+                                  {/if}
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                  <div
+                                    class="text-black xl:text-sm text-xl font-medium relative"
+                                    on:mouseover={() => {
+                                      if (data?.name?.length > 20) {
+                                        selectedHover = data.name;
+                                        isShowTooltipName = true;
+                                      }
+                                    }}
+                                    on:mouseleave={() => {
+                                      if (data?.name?.length > 20) {
+                                        selectedHover = "";
+                                        isShowTooltipName = false;
+                                      }
+                                    }}
+                                  >
+                                    {#if data.name === undefined}
+                                      N/A
+                                    {:else}
+                                      {data?.name?.length > 20
+                                        ? shorterName(data.name, 20)
+                                        : data.name}
+                                    {/if}
+                                    {#if isShowTooltipName && selectedHover === data?.name && data?.name?.length > 20}
+                                      <div
+                                        class="absolute -top-8 left-0"
+                                        style="z-index: 2147483648;"
+                                      >
+                                        <tooltip-detail text={data.name} />
+                                      </div>
+                                    {/if}
+                                  </div>
+                                  <div
+                                    class="text-[#00000080] text-xs font-medium relative"
+                                    on:mouseover={() => {
+                                      if (data?.symbol?.length > 20) {
+                                        selectedHover = data.symbol;
+                                        isShowTooltipSymbol = true;
+                                      }
+                                    }}
+                                    on:mouseleave={() => {
+                                      if (data?.symbol?.length > 20) {
+                                        selectedHover = "";
+                                        isShowTooltipSymbol = false;
+                                      }
+                                    }}
+                                  >
+                                    {#if data.symbol === undefined}
+                                      N/A
+                                    {:else}
+                                      {shorterName(data.symbol, 20)}
+                                    {/if}
+                                    {#if isShowTooltipSymbol && selectedHover === data?.symbol && data?.symbol?.length > 20}
+                                      <div
+                                        class="absolute -top-8 left-0"
+                                        style="z-index: 2147483648;"
+                                      >
+                                        <tooltip-detail text={data.symbol} />
+                                      </div>
+                                    {/if}
+                                  </div>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                  {#if data.suggest && data.suggest.length}
+                                    {#each data.suggest as item}
+                                      <a
+                                        href={item.url}
+                                        target="_blank"
+                                        class="flex items-center justyfy-center px-2 py-1 text-[#27326F] text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px]"
+                                      >
+                                        {item.tile}
+                                      </a>
+                                    {/each}
+                                  {/if}
+                                </div>
+                              </div>
+                            </td>
+
+                            <td class="py-3 group-hover:bg-gray-100">
+                              <div
+                                class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                              >
+                                $<TooltipNumber
+                                  number={data.market_price}
+                                  type="balance"
+                                />
+                              </div>
+                            </td>
+
+                            <td class="py-3 group-hover:bg-gray-100">
+                              <div
+                                class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                              >
+                                <TooltipNumber
+                                  number={data.amount}
+                                  type="amount"
+                                />
+                              </div>
+                            </td>
+
+                            <td class="py-3 group-hover:bg-gray-100">
+                              <div
+                                class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                              >
+                                $<TooltipNumber
+                                  number={data?.amount * data?.market_price}
+                                  type="balance"
+                                />
+                              </div>
+                            </td>
+
+                            <td class="py-3 group-hover:bg-gray-100">
+                              <div
+                                class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                              >
+                                <TooltipNumber
+                                  number={((data?.amount * data?.market_price) /
+                                    sumTokens) *
+                                    100}
+                                  type="percent"
+                                />%
+                              </div>
+                            </td>
+
+                            <td class="py-3 pr-3 group-hover:bg-gray-100">
+                              <div class="flex justify-end">
+                                <div
+                                  class="bg-[#6AC7F533] text-[#27326F] xl:text-sm text-xl w-max px-3 py-1 rounded-[5px]"
+                                >
+                                  {data.tag}
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        {/each}
+                      {/if}
+                    </tbody>
+                  {/if}
+                </table>
+              </div>
+            </div>
+          </form>
+        {:else}
+          <div class="flex flex-col gap-2">
+            <div class="xl:text-3xl text-4xl font-semibold text-right">
+              $<TooltipNumber number={sumTokens} type="balance" />
             </div>
             <div
               class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
@@ -454,10 +995,7 @@
                 >
                   <tr class="bg-[#f4f5f8]">
                     <th
-                      class="py-3 w-10 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
-                    />
-                    <th
-                      class="py-3 xl:static xl:bg-transparent sticky left-10 z-10 bg-[#f4f5f8] xl:w-[230px] w-[280px]"
+                      class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] xl:w-[230px] w-[280px]"
                     >
                       <div
                         class="text-left xl:text-xs text-base uppercase font-semibold text-black"
@@ -509,7 +1047,7 @@
                 {#if isLoadingToken}
                   <tbody>
                     <tr>
-                      <td colspan={7}>
+                      <td colspan={6}>
                         <div class="flex justify-center items-center py-3 px-3">
                           <loading-icon />
                         </div>
@@ -520,7 +1058,7 @@
                   <tbody>
                     {#if formatDataTokenHolding && formatDataTokenHolding.length === 0}
                       <tr>
-                        <td colspan={7}>
+                        <td colspan={6}>
                           <div
                             class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
                           >
@@ -532,20 +1070,7 @@
                       {#each formatDataTokenHolding as data}
                         <tr class="group transition-all">
                           <td
-                            class="py-3 w-10 group-hover:bg-gray-100 xl:static xl:bg-transparent sticky left-0 z-10 bg-white"
-                          >
-                            <div class="flex justify-center">
-                              <input
-                                type="checkbox"
-                                value={data.chain + "-" + data.contractAddress}
-                                bind:group={selectedTokenList}
-                                class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                              />
-                            </div>
-                          </td>
-
-                          <td
-                            class="py-3 xl:static xl:bg-transparent sticky left-10 z-9 bg-white xl:w-[230px] w-[280px] group-hover:bg-gray-100"
+                            class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white xl:w-[230px] w-[280px] group-hover:bg-gray-100"
                           >
                             <div class="text-left flex items-center gap-3">
                               <div class="relative">
@@ -709,7 +1234,7 @@
               </table>
             </div>
           </div>
-        </form>
+        {/if}
       </div>
     </div>
   </div>
