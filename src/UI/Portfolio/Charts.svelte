@@ -124,10 +124,10 @@
                 ...optionPie.series[0],
                 data:
                   dataPieChart.token.sumOrderBreakdownToken > 0
-                    ? dataPieChart.token.formatDataPieChartTopFourToken.concat(
+                    ? dataPieChart.token.formatDataPieChartTopFiveToken.concat(
                         dataPieChart.token.dataPieChartOrderBreakdownToken
                       )
-                    : dataPieChart.token.formatDataPieChartTopFourToken,
+                    : dataPieChart.token.formatDataPieChartTopFiveToken,
               },
             ],
           };
@@ -140,10 +140,10 @@
                 ...optionPie.series[0],
                 data:
                   dataPieChart.nft.sumOrderBreakdownNft > 0
-                    ? dataPieChart.nft.formatDataPieChartTopFourNft.concat(
+                    ? dataPieChart.nft.formatDataPieChartTopFiveNft.concat(
                         dataPieChart.nft.dataPieChartOrderBreakdownNft
                       )
-                    : dataPieChart.nft.formatDataPieChartTopFourNft,
+                    : dataPieChart.nft.formatDataPieChartTopFiveNft,
               },
             ],
           };

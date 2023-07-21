@@ -169,12 +169,12 @@
   let dataPieChart = {
     token: {
       sumOrderBreakdownToken: 0,
-      formatDataPieChartTopFourToken: [],
+      formatDataPieChartTopFiveToken: [],
       dataPieChartOrderBreakdownToken: [],
     },
     nft: {
       sumOrderBreakdownNft: 0,
-      formatDataPieChartTopFourNft: [],
+      formatDataPieChartTopFiveNft: [],
       dataPieChartOrderBreakdownNft: [],
     },
   };
@@ -192,8 +192,8 @@
         overviewData = response.result;
 
         if (
-          overviewData?.breakdownToken?.length === 0 ||
-          overviewData?.breakdownNft?.length === 0
+          overviewData?.breakdownToken?.length === 0
+          // || overviewData?.breakdownNft?.length === 0
         ) {
           isEmptyDataPie = true;
         }
@@ -214,8 +214,8 @@
           return 0;
         });
 
-        const topFourBreakdownToken = sortBreakdownToken
-          .slice(0, 4)
+        const topFiveBreakdownToken = sortBreakdownToken
+          .slice(0, 5)
           .map((item) => {
             return {
               ...item,
@@ -226,7 +226,7 @@
           });
 
         const orderBreakdownToken = sortBreakdownToken.slice(
-          4,
+          5,
           sortBreakdownToken.length
         );
 
@@ -249,7 +249,7 @@
           },
         ];
 
-        const formatDataPieChartTopFourToken = topFourBreakdownToken.map(
+        const formatDataPieChartTopFiveToken = topFiveBreakdownToken.map(
           (item) => {
             return {
               logo: item.logo,
@@ -281,8 +281,8 @@
           return 0;
         });
 
-        const topFourBreakdownNft = sortBreakdownNft
-          ?.slice(0, 4)
+        const topFiveBreakdownNft = sortBreakdownNft
+          ?.slice(0, 5)
           .map((item) => {
             return {
               ...item,
@@ -292,7 +292,7 @@
           });
 
         const orderBreakdownNft = sortBreakdownNft?.slice(
-          4,
+          5,
           sortBreakdownNft.length
         );
 
@@ -313,7 +313,7 @@
           },
         ];
 
-        const formatDataPieChartTopFourNft = topFourBreakdownNft?.map(
+        const formatDataPieChartTopFiveNft = topFiveBreakdownNft?.map(
           (item) => {
             return {
               name: item.collection.name || item.collection.symbol,
@@ -330,12 +330,12 @@
         dataPieChart = {
           token: {
             sumOrderBreakdownToken,
-            formatDataPieChartTopFourToken,
+            formatDataPieChartTopFiveToken,
             dataPieChartOrderBreakdownToken,
           },
           nft: {
             sumOrderBreakdownNft,
-            formatDataPieChartTopFourNft,
+            formatDataPieChartTopFiveNft,
             dataPieChartOrderBreakdownNft,
           },
         };

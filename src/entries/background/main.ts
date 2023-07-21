@@ -158,7 +158,7 @@ onMessage<IAddressInput, any>("getOverview", async ({ data: { address, chain, re
     const res = await cacheOrAPI(
       key,
       () => {
-        return nimbus.get(`/address/${address}/overview?chain=${chain}`).then((response) => {
+        return nimbus.get(`/v2/address/${address}/overview?chain=${chain}`).then((response) => {
           return {
             result: response.data,
             address: address

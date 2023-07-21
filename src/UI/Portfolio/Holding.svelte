@@ -51,10 +51,10 @@
 
   onMount(() => {
     const handleScroll = () => {
-      const clientRectTokenHeader = tableTokenHeader.getBoundingClientRect();
-      isStickyTableToken = clientRectTokenHeader.top <= 0;
-      const clientRectNFTHeader = tableNFTHeader.getBoundingClientRect();
-      isStickyTableNFT = clientRectNFTHeader.top <= 0;
+      const clientRectTokenHeader = tableTokenHeader?.getBoundingClientRect();
+      isStickyTableToken = clientRectTokenHeader?.top <= 0;
+      const clientRectNFTHeader = tableNFTHeader?.getBoundingClientRect();
+      isStickyTableNFT = clientRectNFTHeader?.top <= 0;
     };
 
     window.addEventListener("scroll", handleScroll);
