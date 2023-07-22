@@ -53,6 +53,7 @@
             >
               <TooltipTitle
                 link="https://docs.getnimbus.io/metrics/impermanent_loss/"
+                tooltipText="Total Value If Holding - Current Position Value"
                 >Impermanent Loss</TooltipTitle
               >
             </div>
