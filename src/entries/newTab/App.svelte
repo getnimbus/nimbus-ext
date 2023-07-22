@@ -7,6 +7,7 @@
   import createHashSource from "./hashHistory";
   import { Motion } from "svelte-motion";
   import { showChatAnimationVariants } from "~/utils";
+  import "flowbite/dist/flowbite.css";
 
   import Header from "~/components/Header.svelte";
   import Footer from "~/components/Footer.svelte";

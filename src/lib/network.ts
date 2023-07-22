@@ -36,6 +36,38 @@ const createAxiosInterface = ({ baseURL }: IOption) => {
         body: JSON.stringify(body),
       }).then((response) => response.json());
     },
+    put(url: string, body: any, config?: any) {
+      const apiUrl = new URL(`${baseURL}${url}`);
+      if (config?.params) {
+        Object.keys(config.params).forEach((key) =>
+          apiUrl.searchParams.append(key, config.params[key])
+        );
+      }
+      return fetch(apiUrl, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }).then((response) => response.json());
+    },
+    delete(url: string, body: any, config?: any) {
+      const apiUrl = new URL(`${baseURL}${url}`);
+      if (config?.params) {
+        Object.keys(config.params).forEach((key) =>
+          apiUrl.searchParams.append(key, config.params[key])
+        );
+      }
+      return fetch(apiUrl, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }).then((response) => response.json());
+    },
   };
 };
 

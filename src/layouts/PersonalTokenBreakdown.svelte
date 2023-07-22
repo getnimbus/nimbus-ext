@@ -6,8 +6,10 @@
   import { i18n } from "~/lib/i18n";
   import { detectedChain, getAddressContext, shorterName } from "~/utils";
   import { nimbus } from "~/lib/network";
-  import { groupBy, flatten } from "lodash";
+  import { groupBy, flatten, omit } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
 
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -46,6 +48,23 @@
   let isShowTooltipSymbol = false;
   let selectedHover = "";
   let showSetTag = false;
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 3;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
 
   let formData = {
     category: "",
@@ -55,7 +74,6 @@
     },
   };
   let selectedTokenList = [];
-  let formatDataTokenHolding = [];
   let listTag = ["Other"];
   let query = "";
   let showSuggestListTag = false;
@@ -64,23 +82,11 @@
   let selectedCustom = {};
   let isAddCustom = false;
 
+  let editTag = "";
+  let tag = "";
+  let showDisableAddBtn = false;
+
   const onSubmit = async (e) => {
-    const formatSelectedTokenList = selectedTokenList.map((item) => {
-      const indexOfDash = item.indexOf("-");
-      return indexOfDash >= 0 ? item.slice(indexOfDash + 1) : item;
-    });
-
-    formatDataTokenHolding = formatDataTokenHolding.map((item) => {
-      const isSelected = formatSelectedTokenList.some(
-        (selectedToken) => selectedToken === item.contractAddress
-      );
-
-      return {
-        ...item,
-        tag: isSelected ? query : item.tag,
-      };
-    });
-
     formData = {
       ...formData,
       tag: {
@@ -99,15 +105,25 @@
         }
       );
       if (response) {
+        handleUpdateTable();
         e.target.reset();
         query = "";
         showSetTag = false;
         showSuggestListTag = false;
         selectedTokenList = [];
+        isAddCustom = false;
         getPersonalizeTag(selectedWallet);
+
+        toastMsg = "Successfully add tag to your custom category!";
+        isSuccessToast = true;
+        trigger();
       }
     } catch (e) {
       console.log("e: ", e);
+      toastMsg =
+        "Something wrong when add tag to your custom category. Please try again!";
+      isSuccessToast = false;
+      trigger();
     }
   };
 
@@ -137,91 +153,137 @@
         if (formatDataCategory.length !== 0) {
           listCustom = formatDataCategory;
 
-          if (formatDataCategory.length === 1) {
-            selectedCustom = formatDataCategory[0];
-
-            formData = {
-              ...formData,
-              category: formatDataCategory[0]?.category,
-            };
-
-            listTag = [
-              "Other",
-              ...formatDataCategory[0]?.dataTag?.map((item) => item.name),
-            ];
-
-            formatDataTokenHolding = formatDataTokenHolding.map((item) => {
-              const isSelected = flatten(
-                formatDataCategory[0]?.dataTag?.map((item) => item.tokens)
-              ).some(
-                (selectedToken) =>
-                  selectedToken.contractAddress === item.contractAddress &&
-                  selectedToken.chain === item.chain
-              );
-
-              return {
-                ...item,
-                tag: isSelected
-                  ? flatten(
-                      formatDataCategory[0]?.dataTag?.map((item) => item.tokens)
-                    ).filter(
-                      (selectedToken) =>
-                        selectedToken.contractAddress ===
-                          item.contractAddress &&
-                        selectedToken.chain === item.chain
-                    )[0].tag
-                  : item.tag,
-              };
-            });
+          if (listCustom.length === 1) {
+            selectedCustom = listCustom[0];
+            handleSelectCategory(listCustom[0]);
           }
-          if (
-            formatDataCategory.length > 1 &&
-            Object.keys(selectedCustom).length !== 0
-          ) {
-            const selected = formatDataCategory.filter(
-              (item) => item.category === selectedCustom.category
-            );
-
-            selectedCustom = selected[0];
-
-            formData = {
-              ...formData,
-              category: selected[0]?.category,
-            };
-
-            listTag = [
-              "Other",
-              ...selected[0]?.dataTag?.map((item) => item.name),
-            ];
-
-            formatDataTokenHolding = formatDataTokenHolding.map((item) => {
-              const isSelected = flatten(
-                selected[0]?.dataTag?.map((item) => item.tokens)
-              ).some(
-                (selectedToken) =>
-                  selectedToken.contractAddress === item.contractAddress &&
-                  selectedToken.chain === item.chain
+          if (listCustom.length > 1) {
+            if (
+              selectedCustom &&
+              selectedCustom !== null &&
+              Object.keys(selectedCustom).length !== 0
+            ) {
+              const selected = listCustom.filter(
+                (item) => item.category === selectedCustom.category
               );
-
-              return {
-                ...item,
-                tag: isSelected
-                  ? flatten(
-                      selected[0]?.dataTag?.map((item) => item.tokens)
-                    ).filter(
-                      (selectedToken) =>
-                        selectedToken.contractAddress ===
-                          item.contractAddress &&
-                        selectedToken.chain === item.chain
-                    )[0].tag
-                  : item.tag,
-              };
-            });
+              selectedCustom = selected[0];
+              handleSelectCategory(selected[0]);
+            } else {
+              selectedCustom = listCustom[listCustom.length - 1];
+              handleSelectCategory(listCustom[listCustom.length - 1]);
+            }
           }
         }
       }
     } catch (e) {
       console.log("e: ", e);
+    }
+  };
+
+  const updatePersonalizeTag = async (
+    address: string,
+    category: string,
+    tagName: string,
+    oldTag: string
+  ) => {
+    try {
+      let body = {
+        category: category,
+        oldTag: oldTag,
+        tagName: tagName,
+      };
+
+      if (oldTag.length === 0 && tagName.length === 0) {
+        body = omit(body, ["oldTag", "tagName"]);
+      }
+
+      const response = await nimbus.put(
+        `/address/${address}/personalize/tag?category=${selectedCustom.category}`,
+        body
+      );
+
+      editTag = "";
+      getPersonalizeTag(address);
+
+      if (!body.hasOwnProperty("tagName")) {
+        selectedCustom = {
+          ...selectedCustom,
+          category: body.category,
+        };
+      }
+
+      toastMsg = `Successfully edit your ${
+        body.hasOwnProperty("tagName") ? "tag name" : "category name"
+      }!`;
+      isSuccessToast = true;
+      trigger();
+    } catch (e) {
+      console.log("e: ", e);
+      toastMsg =
+        "Something wrong when edit your custom category. Please try again!";
+      isSuccessToast = false;
+      trigger();
+    }
+  };
+
+  const handleResetState = () => {
+    selectedCustom = {};
+    listTag = ["Other"];
+    formData = {
+      category: "",
+      tag: {
+        name: "",
+        tokens: [],
+      },
+    };
+    formatData = formatData.map((item) => {
+      return {
+        ...item,
+        tag: "Other",
+      };
+    });
+  };
+
+  const handleUpdateTable = () => {
+    const formatSelectedTokenList = selectedTokenList.map((item) => {
+      const indexOfDash = item.indexOf("-");
+      return indexOfDash >= 0 ? item.slice(indexOfDash + 1) : item;
+    });
+
+    formatData = formatData.map((item) => {
+      const isSelected = formatSelectedTokenList.some(
+        (selectedToken) => selectedToken === item.contractAddress
+      );
+
+      return {
+        ...item,
+        tag: isSelected ? query : item.tag,
+      };
+    });
+  };
+
+  const deleteCustomCategory = async () => {
+    try {
+      const response = await nimbus.delete(
+        `/address/${selectedWallet}/personalize/tag?category=${selectedCustom.category}`,
+        {}
+      );
+
+      isAddCustom = false;
+      listCustom = [];
+      selectedTokenList = [];
+      handleResetState();
+      getPersonalizeTag(selectedWallet);
+
+      toastMsg = "Successfully delete your custom category!";
+      isSuccessToast = true;
+      trigger();
+    } catch (e) {
+      console.log("e:", e);
+      toastMsg =
+        "Something wrong when delete your custom category. Please try again!";
+      isSuccessToast = false;
+      trigger();
     }
   };
 
@@ -238,6 +300,7 @@
         const formatData = response.result.map((item) => {
           return {
             ...item,
+            tag: "Other",
             value: item.amount * item.rate,
           };
         });
@@ -342,15 +405,9 @@
         }
         return { ...item };
       });
+      sumTokens = formatData.reduce((prev, item: any) => prev + item.value, 0);
     }
   }
-
-  $: formatDataTokenHolding = formatData.map((item) => {
-    return {
-      ...item,
-      tag: "Other",
-    };
-  });
 
   const handleSelectCategory = (data) => {
     formData = {
@@ -358,16 +415,21 @@
       category: data?.category,
     };
 
-    listTag = ["Other", ...data?.dataTag?.map((item) => item.name)];
+    listTag = [
+      "Other",
+      ...data?.dataTag
+        ?.filter((item) => item.name !== "Other")
+        .map((item) => item.name),
+    ];
 
-    formatDataTokenHolding = formatData.map((item) => {
-      const isSelected = flatten(
-        data?.dataTag?.map((item) => item.tokens)
-      ).some(
-        (selectedToken) =>
-          selectedToken.contractAddress === item.contractAddress &&
-          selectedToken.chain === item.chain
-      );
+    formatData = formatData.map((item) => {
+      const isSelected = flatten(data?.dataTag?.map((item) => item.tokens))
+        .filter((item) => item.name !== "Other")
+        .some(
+          (selectedToken) =>
+            selectedToken.contractAddress === item.contractAddress &&
+            selectedToken.chain === item.chain
+        );
 
       return {
         ...item,
@@ -389,14 +451,6 @@
       showSetTag = false;
     }
   }
-
-  let editTag = "";
-  let tag = "";
-
-  const handleEditTag = () => {
-    console.log("tag: ", tag);
-    editTag = "";
-  };
 </script>
 
 <ErrorBoundary>
@@ -420,7 +474,7 @@
                 Personal Token Breakdown
               </div>
             </div>
-            {#if selectedWallet}
+            {#if selectedWallet && selectedWallet.length !== 0}
               <div class="text-base">
                 <Copy address={selectedWallet} iconColor="#fff" color="#fff" />
               </div>
@@ -430,6 +484,7 @@
       </div>
     </div>
   </div>
+
   <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
     <div class="bg-white rounded-[20px] xl:p-8 xl:shadow-md">
       <div
@@ -445,7 +500,13 @@
               Add your custom token breakdown to keep track of investments by
               your way.
             </div>
-            <Button variant="tertiary" on:click={() => (isAddCustom = true)}>
+            <Button
+              variant="tertiary"
+              on:click={() => {
+                isAddCustom = true;
+                handleResetState();
+              }}
+            >
               <img src={Plus} alt="" width="12" height="12" />
               <div class="xl:text-base text-2xl font-medium text-white">
                 Add Category
@@ -461,6 +522,10 @@
                     id={item.category}
                     class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
                     on:click={() => {
+                      showSuggestListTag = false;
+                      query = "";
+                      selectedTokenList = [];
+                      filteredListTag = listTag;
                       selectedCustom = item;
                       handleSelectCategory(item);
                     }}
@@ -489,38 +554,57 @@
               </AnimateSharedLayout>
             </div>
 
-            {#if listCustom.length < 3}
-              <Button
-                variant="tertiary"
-                on:click={() => {
-                  isAddCustom = true;
-                  selectedCustom = {};
-                  formData = {
-                    category: "",
-                    tag: {
-                      name: "",
-                      tokens: [],
-                    },
-                  };
-                  listTag = ["Other"];
-                  formatDataTokenHolding = formatData.map((item) => {
-                    return {
-                      ...item,
-                      tag: "Other",
-                    };
-                  });
+            <div class="flex items-center gap-4">
+              {#if selectedCustom && selectedCustom !== null && Object.keys(selectedCustom).length !== 0}
+                <div
+                  class="text-red-500 font-medium cursor-pointer xl:text-lg text-2xl"
+                  on:click={deleteCustomCategory}
+                >
+                  Delete
+                </div>
+              {/if}
+              <div
+                class="relative"
+                on:mouseenter={() => {
+                  if (listCustom.length > 2) {
+                    showDisableAddBtn = true;
+                  }
+                }}
+                on:mouseleave={() => {
+                  if (listCustom.length > 2) {
+                    showDisableAddBtn = false;
+                  }
                 }}
               >
-                <img src={Plus} alt="" width="12" height="12" />
-                <div class="xl:text-base text-2xl font-medium text-white">
-                  Add Category
-                </div>
-              </Button>
-            {/if}
+                <Button
+                  variant={listCustom.length > 2 ? "disabled" : "tertiary"}
+                  on:click={() => {
+                    if (listCustom.length > 2) {
+                      return;
+                    }
+                    isAddCustom = true;
+                    handleResetState();
+                  }}
+                >
+                  <img src={Plus} alt="" width="12" height="12" />
+                  <div class="xl:text-base text-2xl font-medium text-white">
+                    Add Category
+                  </div>
+                </Button>
+                {#if showDisableAddBtn}
+                  <div
+                    class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                    style="z-index: 2147483648;"
+                  >
+                    <tooltip-detail text={"Maximum 3 custom categories"} />
+                  </div>
+                {/if}
+              </div>
+            </div>
           </div>
         {/if}
 
-        {#if isAddCustom || Object.keys(selectedCustom).length !== 0}
+        {#if isAddCustom || (selectedCustom && selectedCustom !== null && Object.keys(selectedCustom).length !== 0)}
           <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-6">
             <div
               class={`flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
@@ -537,6 +621,17 @@
                   formData.category ? "bg-[#F0F2F7]" : ""
                 }`}
                 bind:value={formData.category}
+                on:blur={() => {
+                  if (isAddCustom) {
+                    return;
+                  }
+                  updatePersonalizeTag(
+                    selectedWallet,
+                    formData.category,
+                    "",
+                    ""
+                  );
+                }}
               />
             </div>
 
@@ -623,7 +718,14 @@
                                       <div class="flex items-center gap-2">
                                         <div
                                           class="xl:text-sm text-base font-medium w-max text-[#1e96fc] cursor-pointer"
-                                          on:click={handleEditTag}
+                                          on:click={() => {
+                                            updatePersonalizeTag(
+                                              selectedWallet,
+                                              formData.category,
+                                              tag,
+                                              editTag
+                                            );
+                                          }}
                                         >
                                           Save
                                         </div>
@@ -706,7 +808,7 @@
                   <div class="w-10 h-10" />
                 {/if}
                 <div class="xl:text-3xl text-4xl font-semibold text-right">
-                  $<TooltipNumber number={sumTokens} type="balance" />
+                  hello
                 </div>
               </div>
 
@@ -786,7 +888,7 @@
                     </tbody>
                   {:else}
                     <tbody>
-                      {#if formatDataTokenHolding && formatDataTokenHolding.length === 0}
+                      {#if formatData && formatData.length === 0}
                         <tr>
                           <td colspan={7}>
                             <div
@@ -797,7 +899,7 @@
                           </td>
                         </tr>
                       {:else}
-                        {#each formatDataTokenHolding as data}
+                        {#each formatData as data}
                           <tr class="group transition-all">
                             <td
                               class="py-3 w-10 group-hover:bg-gray-100 xl:static xl:bg-transparent sticky left-0 z-10 bg-white"
@@ -981,258 +1083,248 @@
             </div>
           </form>
         {:else}
-          <div class="flex flex-col gap-2">
-            <div class="xl:text-3xl text-4xl font-semibold text-right">
-              $<TooltipNumber number={sumTokens} type="balance" />
-            </div>
-            <div
-              class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
-            >
-              <table class="table-auto xl:w-full w-[1400px]">
-                <thead
-                  class={isStickyTableToken ? "sticky top-0 z-10" : ""}
-                  bind:this={tableTokenHeader}
-                >
-                  <tr class="bg-[#f4f5f8]">
-                    <th
-                      class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] xl:w-[230px] w-[280px]"
+          <div
+            class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
+          >
+            <table class="table-auto xl:w-full w-[1400px]">
+              <thead
+                class={isStickyTableToken ? "sticky top-0 z-10" : ""}
+                bind:this={tableTokenHeader}
+              >
+                <tr class="bg-[#f4f5f8]">
+                  <th
+                    class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] xl:w-[230px] w-[280px]"
+                  >
+                    <div
+                      class="text-left xl:text-xs text-base uppercase font-semibold text-black"
                     >
-                      <div
-                        class="text-left xl:text-xs text-base uppercase font-semibold text-black"
-                      >
-                        {MultipleLang.assets}
+                      {MultipleLang.assets}
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                    >
+                      {MultipleLang.price}
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                    >
+                      {MultipleLang.amount}
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                    >
+                      {MultipleLang.value}
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                    >
+                      <TooltipTitle tooltipText="Ratio based on token holding">
+                        Ratio
+                      </TooltipTitle>
+                    </div>
+                  </th>
+                  <th class="py-3 pr-3">
+                    <div
+                      class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                    >
+                      Tag
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              {#if isLoadingToken}
+                <tbody>
+                  <tr>
+                    <td colspan={6}>
+                      <div class="flex justify-center items-center py-3 px-3">
+                        <loading-icon />
                       </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-base uppercase font-semibold text-black"
-                      >
-                        {MultipleLang.price}
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-base uppercase font-semibold text-black"
-                      >
-                        {MultipleLang.amount}
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-base uppercase font-semibold text-black"
-                      >
-                        {MultipleLang.value}
-                      </div>
-                    </th>
-                    <th class="py-3">
-                      <div
-                        class="text-right xl:text-xs text-base uppercase font-semibold text-black"
-                      >
-                        <TooltipTitle
-                          tooltipText="Ratio based on token holding"
-                        >
-                          Ratio
-                        </TooltipTitle>
-                      </div>
-                    </th>
-                    <th class="py-3 pr-3">
-                      <div
-                        class="text-right xl:text-xs text-base uppercase font-semibold text-black"
-                      >
-                        Tag
-                      </div>
-                    </th>
+                    </td>
                   </tr>
-                </thead>
-                {#if isLoadingToken}
-                  <tbody>
+                </tbody>
+              {:else}
+                <tbody>
+                  {#if formatData && formatData.length === 0}
                     <tr>
                       <td colspan={6}>
-                        <div class="flex justify-center items-center py-3 px-3">
-                          <loading-icon />
+                        <div
+                          class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
+                        >
+                          {MultipleLang.empty}
                         </div>
                       </td>
                     </tr>
-                  </tbody>
-                {:else}
-                  <tbody>
-                    {#if formatDataTokenHolding && formatDataTokenHolding.length === 0}
-                      <tr>
-                        <td colspan={6}>
-                          <div
-                            class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
-                          >
-                            {MultipleLang.empty}
-                          </div>
-                        </td>
-                      </tr>
-                    {:else}
-                      {#each formatDataTokenHolding as data}
-                        <tr class="group transition-all">
-                          <td
-                            class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white xl:w-[230px] w-[280px] group-hover:bg-gray-100"
-                          >
-                            <div class="text-left flex items-center gap-3">
-                              <div class="relative">
-                                <img
-                                  src={data.logo}
-                                  alt=""
-                                  width="30"
-                                  height="30"
-                                  class="rounded-full"
-                                />
-                                {#if getAddressContext(selectedWallet)?.type !== "BTC"}
-                                  <div class="absolute -top-2 -right-1">
-                                    <img
-                                      src={detectedChain(data.chain)}
-                                      alt=""
-                                      width="15"
-                                      height="15"
-                                      class="rounded-full"
-                                    />
+                  {:else}
+                    {#each formatData as data}
+                      <tr class="group transition-all">
+                        <td
+                          class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white xl:w-[230px] w-[280px] group-hover:bg-gray-100"
+                        >
+                          <div class="text-left flex items-center gap-3">
+                            <div class="relative">
+                              <img
+                                src={data.logo}
+                                alt=""
+                                width="30"
+                                height="30"
+                                class="rounded-full"
+                              />
+                              {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+                                <div class="absolute -top-2 -right-1">
+                                  <img
+                                    src={detectedChain(data.chain)}
+                                    alt=""
+                                    width="15"
+                                    height="15"
+                                    class="rounded-full"
+                                  />
+                                </div>
+                              {/if}
+                            </div>
+                            <div class="flex flex-col gap-1">
+                              <div
+                                class="text-black xl:text-sm text-xl font-medium relative"
+                                on:mouseover={() => {
+                                  if (data?.name?.length > 20) {
+                                    selectedHover = data.name;
+                                    isShowTooltipName = true;
+                                  }
+                                }}
+                                on:mouseleave={() => {
+                                  if (data?.name?.length > 20) {
+                                    selectedHover = "";
+                                    isShowTooltipName = false;
+                                  }
+                                }}
+                              >
+                                {#if data.name === undefined}
+                                  N/A
+                                {:else}
+                                  {data?.name?.length > 20
+                                    ? shorterName(data.name, 20)
+                                    : data.name}
+                                {/if}
+                                {#if isShowTooltipName && selectedHover === data?.name && data?.name?.length > 20}
+                                  <div
+                                    class="absolute -top-8 left-0"
+                                    style="z-index: 2147483648;"
+                                  >
+                                    <tooltip-detail text={data.name} />
                                   </div>
                                 {/if}
                               </div>
-                              <div class="flex flex-col gap-1">
-                                <div
-                                  class="text-black xl:text-sm text-xl font-medium relative"
-                                  on:mouseover={() => {
-                                    if (data?.name?.length > 20) {
-                                      selectedHover = data.name;
-                                      isShowTooltipName = true;
-                                    }
-                                  }}
-                                  on:mouseleave={() => {
-                                    if (data?.name?.length > 20) {
-                                      selectedHover = "";
-                                      isShowTooltipName = false;
-                                    }
-                                  }}
-                                >
-                                  {#if data.name === undefined}
-                                    N/A
-                                  {:else}
-                                    {data?.name?.length > 20
-                                      ? shorterName(data.name, 20)
-                                      : data.name}
-                                  {/if}
-                                  {#if isShowTooltipName && selectedHover === data?.name && data?.name?.length > 20}
-                                    <div
-                                      class="absolute -top-8 left-0"
-                                      style="z-index: 2147483648;"
-                                    >
-                                      <tooltip-detail text={data.name} />
-                                    </div>
-                                  {/if}
-                                </div>
-                                <div
-                                  class="text-[#00000080] text-xs font-medium relative"
-                                  on:mouseover={() => {
-                                    if (data?.symbol?.length > 20) {
-                                      selectedHover = data.symbol;
-                                      isShowTooltipSymbol = true;
-                                    }
-                                  }}
-                                  on:mouseleave={() => {
-                                    if (data?.symbol?.length > 20) {
-                                      selectedHover = "";
-                                      isShowTooltipSymbol = false;
-                                    }
-                                  }}
-                                >
-                                  {#if data.symbol === undefined}
-                                    N/A
-                                  {:else}
-                                    {shorterName(data.symbol, 20)}
-                                  {/if}
-                                  {#if isShowTooltipSymbol && selectedHover === data?.symbol && data?.symbol?.length > 20}
-                                    <div
-                                      class="absolute -top-8 left-0"
-                                      style="z-index: 2147483648;"
-                                    >
-                                      <tooltip-detail text={data.symbol} />
-                                    </div>
-                                  {/if}
-                                </div>
-                              </div>
-                              <div class="flex flex-wrap gap-2">
-                                {#if data.suggest && data.suggest.length}
-                                  {#each data.suggest as item}
-                                    <a
-                                      href={item.url}
-                                      target="_blank"
-                                      class="flex items-center justyfy-center px-2 py-1 text-[#27326F] text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px]"
-                                    >
-                                      {item.tile}
-                                    </a>
-                                  {/each}
+                              <div
+                                class="text-[#00000080] text-xs font-medium relative"
+                                on:mouseover={() => {
+                                  if (data?.symbol?.length > 20) {
+                                    selectedHover = data.symbol;
+                                    isShowTooltipSymbol = true;
+                                  }
+                                }}
+                                on:mouseleave={() => {
+                                  if (data?.symbol?.length > 20) {
+                                    selectedHover = "";
+                                    isShowTooltipSymbol = false;
+                                  }
+                                }}
+                              >
+                                {#if data.symbol === undefined}
+                                  N/A
+                                {:else}
+                                  {shorterName(data.symbol, 20)}
+                                {/if}
+                                {#if isShowTooltipSymbol && selectedHover === data?.symbol && data?.symbol?.length > 20}
+                                  <div
+                                    class="absolute -top-8 left-0"
+                                    style="z-index: 2147483648;"
+                                  >
+                                    <tooltip-detail text={data.symbol} />
+                                  </div>
                                 {/if}
                               </div>
                             </div>
-                          </td>
+                            <div class="flex flex-wrap gap-2">
+                              {#if data.suggest && data.suggest.length}
+                                {#each data.suggest as item}
+                                  <a
+                                    href={item.url}
+                                    target="_blank"
+                                    class="flex items-center justyfy-center px-2 py-1 text-[#27326F] text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px]"
+                                  >
+                                    {item.tile}
+                                  </a>
+                                {/each}
+                              {/if}
+                            </div>
+                          </div>
+                        </td>
 
-                          <td class="py-3 group-hover:bg-gray-100">
+                        <td class="py-3 group-hover:bg-gray-100">
+                          <div
+                            class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                          >
+                            $<TooltipNumber
+                              number={data.market_price}
+                              type="balance"
+                            />
+                          </div>
+                        </td>
+
+                        <td class="py-3 group-hover:bg-gray-100">
+                          <div
+                            class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                          >
+                            <TooltipNumber number={data.amount} type="amount" />
+                          </div>
+                        </td>
+
+                        <td class="py-3 group-hover:bg-gray-100">
+                          <div
+                            class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                          >
+                            $<TooltipNumber
+                              number={data?.amount * data?.market_price}
+                              type="balance"
+                            />
+                          </div>
+                        </td>
+
+                        <td class="py-3 group-hover:bg-gray-100">
+                          <div
+                            class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                          >
+                            <TooltipNumber
+                              number={((data?.amount * data?.market_price) /
+                                sumTokens) *
+                                100}
+                              type="percent"
+                            />%
+                          </div>
+                        </td>
+
+                        <td class="py-3 pr-3 group-hover:bg-gray-100">
+                          <div class="flex justify-end">
                             <div
-                              class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                              class="bg-[#6AC7F533] text-[#27326F] xl:text-sm text-xl w-max px-3 py-1 rounded-[5px]"
                             >
-                              $<TooltipNumber
-                                number={data.market_price}
-                                type="balance"
-                              />
+                              {data.tag}
                             </div>
-                          </td>
-
-                          <td class="py-3 group-hover:bg-gray-100">
-                            <div
-                              class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
-                            >
-                              <TooltipNumber
-                                number={data.amount}
-                                type="amount"
-                              />
-                            </div>
-                          </td>
-
-                          <td class="py-3 group-hover:bg-gray-100">
-                            <div
-                              class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
-                            >
-                              $<TooltipNumber
-                                number={data?.amount * data?.market_price}
-                                type="balance"
-                              />
-                            </div>
-                          </td>
-
-                          <td class="py-3 group-hover:bg-gray-100">
-                            <div
-                              class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
-                            >
-                              <TooltipNumber
-                                number={((data?.amount * data?.market_price) /
-                                  sumTokens) *
-                                  100}
-                                type="percent"
-                              />%
-                            </div>
-                          </td>
-
-                          <td class="py-3 pr-3 group-hover:bg-gray-100">
-                            <div class="flex justify-end">
-                              <div
-                                class="bg-[#6AC7F533] text-[#27326F] xl:text-sm text-xl w-max px-3 py-1 rounded-[5px]"
-                              >
-                                {data.tag}
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      {/each}
-                    {/if}
-                  </tbody>
-                {/if}
-              </table>
-            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    {/each}
+                  {/if}
+                </tbody>
+              {/if}
+            </table>
           </div>
         {/if}
       </div>
@@ -1240,7 +1332,48 @@
   </div>
 </ErrorBoundary>
 
-<style>
+<Toast
+  transition={blur}
+  params={{ amount: 10 }}
+  position="top-right"
+  color={isSuccessToast ? "green" : "red"}
+  bind:open={showToast}
+>
+  <svelte:fragment slot="icon">
+    {#if isSuccessToast}
+      <svg
+        aria-hidden="true"
+        class="w-5 h-5"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        ><path
+          fill-rule="evenodd"
+          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+          clip-rule="evenodd"
+        /></svg
+      >
+      <span class="sr-only">Check icon</span>
+    {:else}
+      <svg
+        aria-hidden="true"
+        class="w-5 h-5"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        ><path
+          fill-rule="evenodd"
+          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+          clip-rule="evenodd"
+        /></svg
+      >
+      <span class="sr-only">Error icon</span>
+    {/if}
+  </svelte:fragment>
+  {toastMsg}
+</Toast>
+
+<style windi:preflights:global windi:safelist:global>
   .header-container {
     background-image: url("~/assets/capa.svg");
     background-color: #27326f;

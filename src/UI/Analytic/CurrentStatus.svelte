@@ -341,7 +341,11 @@
       const tokenDataEachCategory = dataPersonalizeTag.map((item) => {
         return {
           category: item.category,
-          dataTokens: flatten(item.dataTag.map((item) => item.tokens)),
+          dataTokens: flatten(
+            item.dataTag
+              .filter((item) => item.name !== "Other")
+              .map((item) => item.tokens)
+          ),
         };
       });
 
