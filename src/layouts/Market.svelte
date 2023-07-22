@@ -102,43 +102,59 @@
           {MultipleLang.market_page_title}
         </div>
         <div class="flex flex-1 gap-3">
-          <input
-            on:keyup={({ target: { value } }) => debounceSearch(value)}
-            on:keydown={(event) => {
-              if ((event.which == 13 || event.keyCode == 13) && searchValue) {
-                getMarketData();
-              }
-            }}
-            value={searchValue}
-            placeholder={MultipleLang.market_search_symbol}
-            type="text"
-            class="flex-1 xl:text-sm text-xl py-2 px-3 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
-          />
-          <input
-            on:keyup={({ target: { value } }) => {
-              const parsedValue = parseFloat(value);
-              if (!isNaN(parsedValue) && parsedValue > 0) {
-                debounceAmount(value);
-              } else {
-                amountValue = "";
-              }
-            }}
-            on:keydown={(event) => {
-              if ((event.which == 13 || event.keyCode == 13) && amountValue) {
-                getMarketData();
-              }
-            }}
-            value={amountValue}
-            placeholder={MultipleLang.market_search_amount}
-            inputmode="decimal"
-            pattern="[0-9]*(.[0-9]+)?"
-            type="number"
-            min="0.01"
-            step="0.01"
-            autocorrect="off"
-            autocomplete="off"
-            class="xl:flex-[0.6] flex-[0.7] xl:text-sm text-xl py-2 px-3 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
-          />
+          <div
+            class={`flex-1 border bg-white focus:outline-none w-full py-[6px] px-3 rounded-lg ${
+              searchValue ? "bg-[#F0F2F7]" : ""
+            }`}
+          >
+            <input
+              on:keyup={({ target: { value } }) => debounceSearch(value)}
+              on:keydown={(event) => {
+                if ((event.which == 13 || event.keyCode == 13) && searchValue) {
+                  getMarketData();
+                }
+              }}
+              value={searchValue}
+              placeholder={MultipleLang.market_search_symbol}
+              type="text"
+              class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                searchValue ? "bg-[#F0F2F7]" : ""
+              }`}
+            />
+          </div>
+          <div
+            class={`xl:flex-[0.6] flex-[0.7] border bg-white focus:outline-none w-full py-[6px] px-3 rounded-lg ${
+              amountValue ? "bg-[#F0F2F7]" : ""
+            }`}
+          >
+            <input
+              on:keyup={({ target: { value } }) => {
+                const parsedValue = parseFloat(value);
+                if (!isNaN(parsedValue) && parsedValue > 0) {
+                  debounceAmount(value);
+                } else {
+                  amountValue = "";
+                }
+              }}
+              on:keydown={(event) => {
+                if ((event.which == 13 || event.keyCode == 13) && amountValue) {
+                  getMarketData();
+                }
+              }}
+              value={amountValue}
+              placeholder={MultipleLang.market_search_amount}
+              inputmode="decimal"
+              pattern="[0-9]*(.[0-9]+)?"
+              type="number"
+              min="0.01"
+              step="0.01"
+              autocorrect="off"
+              autocomplete="off"
+              class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                amountValue ? "bg-[#F0F2F7]" : ""
+              }`}
+            />
+          </div>
         </div>
       </div>
     </div>

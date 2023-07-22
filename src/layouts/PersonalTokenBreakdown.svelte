@@ -86,6 +86,8 @@
   let tag = "";
   let showDisableAddBtn = false;
 
+  let searchValue = "";
+
   const onSubmit = async (e) => {
     formData = {
       ...formData,
@@ -451,6 +453,14 @@
       showSetTag = false;
     }
   }
+
+  $: searchDataResult = searchValue
+    ? formatData.filter(
+        (item) =>
+          item.name.toLowerCase() === searchValue.toLowerCase() ||
+          item.name.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    : formatData;
 </script>
 
 <ErrorBoundary>
@@ -807,8 +817,21 @@
                 {:else}
                   <div class="w-10 h-10" />
                 {/if}
-                <div class="xl:text-3xl text-4xl font-semibold text-right">
-                  hello
+                <div class="text-right">
+                  <div
+                    class={`border bg-white focus:outline-none w-full py-[6px] px-3 rounded-lg ${
+                      searchValue ? "bg-[#F0F2F7]" : ""
+                    }`}
+                  >
+                    <input
+                      bind:value={searchValue}
+                      placeholder={"Find by token name"}
+                      type="text"
+                      class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                        searchValue ? "bg-[#F0F2F7]" : ""
+                      }`}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -888,7 +911,7 @@
                     </tbody>
                   {:else}
                     <tbody>
-                      {#if formatData && formatData.length === 0}
+                      {#if searchDataResult && searchDataResult.length === 0}
                         <tr>
                           <td colspan={7}>
                             <div
@@ -899,7 +922,7 @@
                           </td>
                         </tr>
                       {:else}
-                        {#each formatData as data}
+                        {#each searchDataResult as data}
                           <tr class="group transition-all">
                             <td
                               class="py-3 w-10 group-hover:bg-gray-100 xl:static xl:bg-transparent sticky left-0 z-10 bg-white"
@@ -1152,7 +1175,7 @@
                 </tbody>
               {:else}
                 <tbody>
-                  {#if formatData && formatData.length === 0}
+                  {#if searchDataResult && searchDataResult.length === 0}
                     <tr>
                       <td colspan={6}>
                         <div
@@ -1163,7 +1186,7 @@
                       </td>
                     </tr>
                   {:else}
-                    {#each formatData as data}
+                    {#each searchDataResult as data}
                       <tr class="group transition-all">
                         <td
                           class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white xl:w-[230px] w-[280px] group-hover:bg-gray-100"
