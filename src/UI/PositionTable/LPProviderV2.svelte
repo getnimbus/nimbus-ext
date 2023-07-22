@@ -64,8 +64,7 @@
               class="xl:text-xs text-base font-semibold text-black uppercase text-right"
             >
               <TooltipTitle
-                tooltipText="Profit and loss is calculated by buying & hold on every time you
-            add/remove liquidity"
+                tooltipText="Current Position Value - (Total value each time Add Liquidation - Total value each time Remove Liquidation)"
               >
                 Profit & Loss
               </TooltipTitle>
