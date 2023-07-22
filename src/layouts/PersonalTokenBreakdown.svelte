@@ -87,8 +87,9 @@
   let showDisableAddBtn = false;
 
   let searchValue = "";
+  let sortTag = "default";
 
-  const onSubmit = async (e) => {
+  const onSubmit = async () => {
     formData = {
       ...formData,
       tag: {
@@ -108,7 +109,6 @@
       );
       if (response) {
         handleUpdateTable();
-        e.target.reset();
         query = "";
         showSetTag = false;
         showSuggestListTag = false;
@@ -461,6 +461,44 @@
           item.name.toLowerCase().includes(searchValue.toLowerCase())
       )
     : formatData;
+
+  const toggleSortOrderTag = () => {
+    switch (sortTag) {
+      case "default":
+        sortTag = "ascend";
+        break;
+      case "ascend":
+        sortTag = "descend";
+        break;
+      case "descend":
+        sortTag = "default";
+        break;
+      default:
+        sortTag = "default";
+    }
+
+    if (sortTag === "ascend") {
+      searchDataResult = searchDataResult.sort((a, b) =>
+        a.tag.localeCompare(b.tag)
+      );
+    }
+    if (sortTag === "descend") {
+      searchDataResult = searchDataResult.sort((a, b) =>
+        b.tag.localeCompare(a.tag)
+      );
+    }
+    if (sortTag === "default") {
+      searchDataResult = searchDataResult.sort((a, b) => {
+        if (a.value < b.value) {
+          return 1;
+        }
+        if (a.value > b.value) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+  };
 </script>
 
 <ErrorBoundary>
@@ -890,9 +928,22 @@
                       </th>
                       <th class="py-3 pr-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                          class="text-right xl:text-xs text-base uppercase font-semibold text-black flex items-center justify-end gap-2"
                         >
                           Tag
+                          <div
+                            on:click={toggleSortOrderTag}
+                            class="cursor-pointer"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              height="1.2em"
+                              viewBox="0 0 320 512"
+                              ><path
+                                d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
+                              /></svg
+                            >
+                          </div>
                         </div>
                       </th>
                     </tr>
@@ -1156,9 +1207,19 @@
                   </th>
                   <th class="py-3 pr-3">
                     <div
-                      class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                      class="text-right xl:text-xs text-base uppercase font-semibold text-black flex items-center justify-end gap-2"
                     >
                       Tag
+                      <div on:click={toggleSortOrderTag} class="cursor-pointer">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="1.2em"
+                          viewBox="0 0 320 512"
+                          ><path
+                            d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
+                          /></svg
+                        >
+                      </div>
                     </div>
                   </th>
                 </tr>
