@@ -150,6 +150,8 @@
   let dataTokenHolding = [];
   let personalizeCategoryData = [];
 
+  let showTooltipCustomBtn = false;
+
   const handleFormatDataPieChart = (data, type) => {
     const formatData = data.map((item) => {
       return {
@@ -580,7 +582,15 @@
           </div>
         {/each}
       </AnimateSharedLayout>
-      <div class="ml-4">
+      <div
+        class="ml-4 relative"
+        on:mouseenter={() => {
+          showTooltipCustomBtn = true;
+        }}
+        on:mouseleave={() => {
+          showTooltipCustomBtn = false;
+        }}
+      >
         <Button
           variant="tertiary"
           on:click={() => {
@@ -593,6 +603,14 @@
         >
           <div class="xl:text-base text-2xl font-medium text-white">Custom</div>
         </Button>
+        {#if showTooltipCustomBtn}
+          <div
+            class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+            style="z-index: 2147483648;"
+          >
+            <tooltip-detail text={"Custom your token breakdown"} />
+          </div>
+        {/if}
       </div>
     </div>
   </div>

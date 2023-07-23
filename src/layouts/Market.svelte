@@ -123,7 +123,7 @@
             />
           </div>
           <div
-            class={`xl:flex-[0.6] flex-[0.7] border bg-white focus:outline-none w-full py-[6px] px-3 rounded-lg ${
+            class={`flex-[0.7] border bg-white focus:outline-none w-full py-[6px] px-3 rounded-lg ${
               amountValue ? "bg-[#F0F2F7]" : ""
             }`}
           >
