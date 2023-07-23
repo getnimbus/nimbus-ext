@@ -133,13 +133,13 @@
   let dataTableRank;
   let dataTableCategory;
   let dataTableSector;
-  let dataTable;
-  let selectedDataTable;
+  let dataTable = {};
+  let selectedDataTable = [];
   let marketPrice;
   let isLoadingToken = false;
   let filteredHoldingToken = true;
   let filteredHoldingDataToken = [];
-  let selectedTypeTable;
+  let selectedTypeTable = {};
   let sum = 0;
 
   let sumTokenHolding = 0;
@@ -465,6 +465,17 @@
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+        typeListCategory = [...typeList];
+        selectedTypeTable = {};
+        isEmptyDataPie = false;
+        dataTable = {};
+        selectedDataTable = [];
+        filteredHoldingDataToken = [];
+        sum = 0;
+        selectedDataPie = [];
+        dataTableSector = [];
+        dataTableRank = [];
+        dataTableCategory = [];
         getHoldingToken();
         getPersonalizeTag();
       }
@@ -472,15 +483,19 @@
   }
 
   $: {
-    if (selectedTypeTable) {
-      selectedDataTable = dataTable.data.filter(
+    if (selectedTypeTable && Object.keys(selectedTypeTable).length !== 0) {
+      selectedDataTable = dataTable?.data?.filter(
         (item) => item.name === selectedTypeTable.value
       )[0]?.data;
+
+      selectedDataPie = optionPie.series[0].data.filter(
+        (item) => item.name === selectedTypeTable?.value
+      );
     }
   }
 
   $: {
-    if (selectedDataTable) {
+    if (selectedDataTable && selectedDataTable.length !== 0) {
       let data = selectedDataTable;
       sum = selectedDataTable.reduce(
         (prev, item) => prev + Number(item.value),
@@ -519,7 +534,7 @@
         );
       }
 
-      let sortData = data
+      const sortData = data
         .map((item) => {
           return {
             ...item,
@@ -541,14 +556,6 @@
       } else {
         filteredHoldingDataToken = sortData;
       }
-    }
-  }
-
-  $: {
-    if (selectedTypeTable) {
-      selectedDataPie = optionPie.series[0].data.filter(
-        (item) => item.name === selectedTypeTable?.value
-      );
     }
   }
 </script>
@@ -722,7 +729,7 @@
             <TooltipNumber number={selectedDataPie[0]?.value} type="percent" />%
           </span>
         </div>
-        {#if dataTable}
+        {#if dataTable && Object.keys(dataTable).length !== 0}
           <Select
             type="lang"
             listSelect={dataTable?.select || []}

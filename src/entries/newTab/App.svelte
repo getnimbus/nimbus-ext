@@ -22,6 +22,7 @@
   import NftDetail from "~/layouts/NFTDetail.svelte";
   import PositionDetail from "~/layouts/PositionDetail.svelte";
   import PersonalTokenBreakdown from "~/layouts/PersonalTokenBreakdown.svelte";
+  import VirtualPortfolio from "~/layouts/VirtualPortfolio.svelte";
 
   import Comment from "~/assets/comment-bubble-icon.svg";
 
@@ -68,6 +69,10 @@
 
         <Route path="personal-token-breakdown">
           <PersonalTokenBreakdown />
+        </Route>
+
+        <Route path="virtual-portfolio">
+          <VirtualPortfolio />
         </Route>
 
         <Route path="news">

@@ -39,7 +39,7 @@
               ? All
               : selected?.logo || selectedChain[0]?.logo}
             alt=""
-            class="xl:w-5 xl:h-5 w-7 h-7"
+            class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
           />
         {/if}
         <div class="text-white xl:text-sm text-2xl">
@@ -104,7 +104,7 @@
             <img
               src={item.value === "ALL" ? All : item.logo}
               alt=""
-              class="xl:w-5 xl:h-5 w-7 h-7"
+              class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
             />
           {/if}
           <div
