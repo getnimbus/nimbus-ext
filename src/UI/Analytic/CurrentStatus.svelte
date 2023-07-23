@@ -133,7 +133,7 @@
   let dataTableRank;
   let dataTableCategory;
   let dataTableSector;
-  let dataTable = {};
+  let dataTable = [];
   let selectedDataTable = [];
   let marketPrice;
   let isLoadingToken = false;
@@ -409,8 +409,7 @@
             ],
           };
           dataTable = dataTableSector;
-        }
-        if (selectedType === "rank") {
+        } else if (selectedType === "rank") {
           optionPie = {
             ...optionPie,
             series: [
@@ -421,8 +420,7 @@
             ],
           };
           dataTable = dataTableRank;
-        }
-        if (selectedType === "category") {
+        } else if (selectedType === "category") {
           optionPie = {
             ...optionPie,
             series: [
@@ -433,30 +431,28 @@
             ],
           };
           dataTable = dataTableCategory;
-        }
+        } else {
+          const indexOfType = personalizeCategoryData
+            .map((item) => item.category)
+            .indexOf(selectedType);
+          const selectedPersonalizeCategoryData =
+            personalizeCategoryData[indexOfType];
 
-        const indexOfType = personalizeCategoryData
-          .map((item) => item.category)
-          .indexOf(selectedType);
-        const selectedPersonalizeCategoryData =
-          personalizeCategoryData[indexOfType];
-
-        if (
-          selectedType !== "sector" &&
-          selectedType !== "rank" &&
-          selectedType !== "category" &&
-          selectedPersonalizeCategoryData !== undefined
-        ) {
-          optionPie = {
-            ...optionPie,
-            series: [
-              {
-                ...optionPie.series[0],
-                data: selectedPersonalizeCategoryData.dataPie,
-              },
-            ],
-          };
-          dataTable = selectedPersonalizeCategoryData.dataTable;
+          if (
+            selectedPersonalizeCategoryData !== undefined &&
+            isEmptyDataPie === false
+          ) {
+            optionPie = {
+              ...optionPie,
+              series: [
+                {
+                  ...optionPie.series[0],
+                  data: selectedPersonalizeCategoryData.dataPie,
+                },
+              ],
+            };
+            dataTable = selectedPersonalizeCategoryData.dataTable;
+          }
         }
       }
     }
@@ -466,9 +462,10 @@
     if (selectedWallet || selectedChain) {
       if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
         typeListCategory = [...typeList];
+        personalizeCategoryData = [];
         selectedTypeTable = {};
         isEmptyDataPie = false;
-        dataTable = {};
+        dataTable = [];
         selectedDataTable = [];
         filteredHoldingDataToken = [];
         sum = 0;
