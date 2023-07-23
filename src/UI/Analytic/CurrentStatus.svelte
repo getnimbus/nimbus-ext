@@ -602,9 +602,10 @@
               on:click={() => (selectedType = type.value)}
             >
               <div
-                class={`relative z-20 ${
+                class={`relative ${
                   selectedType === type.value && "text-white"
                 }`}
+                style="z-index: 2"
               >
                 {type.label}
               </div>
@@ -615,7 +616,8 @@
                   transition={{ type: "spring", duration: 0.6 }}
                 >
                   <div
-                    class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                    class="absolute inset-0 rounded-full bg-[#1E96FC]"
+                    style="z-index: 1"
                     use:motion
                   />
                 </Motion>
@@ -651,7 +653,7 @@
       {/if}
     </div>
     <div
-      class="ml-4 relative"
+      class="xl:ml-0 ml-4 relative"
       on:mouseenter={() => {
         showTooltipCustomBtn = true;
       }}

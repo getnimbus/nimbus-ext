@@ -49,7 +49,7 @@
           Empty
         </div>
       {:else}
-        <div class="relative -mt-12">
+        <div class="relative xl:-mt-12">
           <EChart {id} theme="white" {option} type="full-width" />
           <div
             class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-2/3 left-1/2"

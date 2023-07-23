@@ -621,9 +621,10 @@
                       }}
                     >
                       <div
-                        class={`relative z-20 ${
+                        class={`relative ${
                           selectedCustom === item && "text-white"
                         }`}
+                        style="z-index: 2"
                       >
                         {item.category}
                       </div>
@@ -634,7 +635,8 @@
                           transition={{ type: "spring", duration: 0.6 }}
                         >
                           <div
-                            class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                            class="absolute inset-0 rounded-full bg-[#1E96FC]"
+                            style="z-index: 1"
                             use:motion
                           />
                         </Motion>
