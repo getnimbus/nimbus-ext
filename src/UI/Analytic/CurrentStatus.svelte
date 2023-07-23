@@ -653,7 +653,7 @@
       {/if}
     </div>
     <div
-      class="xl:ml-0 ml-4 relative"
+      class="ml-4 relative"
       on:mouseenter={() => {
         showTooltipCustomBtn = true;
       }}
