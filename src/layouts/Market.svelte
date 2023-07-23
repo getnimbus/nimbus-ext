@@ -71,7 +71,7 @@
 
     const handleScroll = () => {
       const clientRectTokenHeader = tableHeader.getBoundingClientRect();
-      isSticky = clientRectTokenHeader.top <= 0;
+      isSticky = clientRectTokenHeader?.top <= 0;
     };
 
     window.addEventListener("scroll", handleScroll);
