@@ -151,6 +151,16 @@
   let personalizeCategoryData = [];
 
   let showTooltipCustomBtn = false;
+  let scrollContainer;
+  let isScrollStart = true;
+  let isScrollEnd = false;
+  let container;
+
+  const handleScroll = () => {
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
+    isScrollStart = scrollLeft === 0;
+    isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+  };
 
   const handleFormatDataPieChart = (data, type) => {
     const formatData = data.map((item) => {
@@ -550,68 +560,125 @@
     Current Status
   </div>
   <div class="flex justify-between items-center border-b-[1px] mb-6 pb-4">
-    <div class="font-medium text-black xl:text-xl text-3xl">
+    <div class="font-medium text-black xl:text-xl text-3xl w-full">
       Token breakdown
     </div>
-    <div class="flex items-center gap-1">
-      <AnimateSharedLayout>
-        {#each typeListCategory as type}
-          <div
-            class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-            on:click={() => (selectedType = type.value)}
-          >
-            <div
-              class={`relative z-20 ${
-                selectedType === type.value && "text-white"
-              }`}
-            >
-              {type.label}
-            </div>
-            {#if type.value === selectedType}
-              <Motion
-                let:motion
-                layoutId="active-pill"
-                transition={{ type: "spring", duration: 0.6 }}
-              >
-                <div
-                  class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                  use:motion
-                />
-              </Motion>
-            {/if}
-          </div>
-        {/each}
-      </AnimateSharedLayout>
+    <div
+      class="relative overflow-x-hidden w-full flex gap-3 justify-between items-center"
+      bind:this={container}
+    >
       <div
-        class="ml-4 relative"
-        on:mouseenter={() => {
-          showTooltipCustomBtn = true;
-        }}
-        on:mouseleave={() => {
-          showTooltipCustomBtn = false;
+        class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
+          isScrollStart ? "hidden" : "block"
+        }`}
+        style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          height="24px"
+          width="24px"
+          viewBox="0 0 24 24"
+          class="sc-aef7b723-0 fKbUaI"
+          ><path
+            d="M15 6L9 12L15 18"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-miterlimit="10"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          /></svg
+        >
+      </div>
+      <div
+        class="w-max flex gap-3 overflow-x-scroll whitespace-nowrap"
+        bind:this={scrollContainer}
+        on:scroll={handleScroll}
+      >
+        <AnimateSharedLayout>
+          {#each typeListCategory as type}
+            <div
+              class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+              on:click={() => (selectedType = type.value)}
+            >
+              <div
+                class={`relative z-20 ${
+                  selectedType === type.value && "text-white"
+                }`}
+              >
+                {type.label}
+              </div>
+              {#if type.value === selectedType}
+                <Motion
+                  let:motion
+                  layoutId="active-pill"
+                  transition={{ type: "spring", duration: 0.6 }}
+                >
+                  <div
+                    class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                    use:motion
+                  />
+                </Motion>
+              {/if}
+            </div>
+          {/each}
+        </AnimateSharedLayout>
+      </div>
+      {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
+        <div
+          class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
+            isScrollEnd ? "hidden" : "block"
+          }`}
+          style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            height="24px"
+            width="24px"
+            viewBox="0 0 24 24"
+            class="sc-aef7b723-0 fKbUaI"
+            ><path
+              d="M9 6L15 12L9 18"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-miterlimit="10"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            /></svg
+          >
+        </div>
+      {/if}
+    </div>
+    <div
+      class="ml-4 relative"
+      on:mouseenter={() => {
+        showTooltipCustomBtn = true;
+      }}
+      on:mouseleave={() => {
+        showTooltipCustomBtn = false;
+      }}
+    >
+      <Button
+        variant="tertiary"
+        on:click={() => {
+          navigate(
+            `/personal-token-breakdown?chain=${encodeURIComponent(
+              selectedChain
+            )}&address=${encodeURIComponent(selectedWallet)}`
+          );
         }}
       >
-        <Button
-          variant="tertiary"
-          on:click={() => {
-            navigate(
-              `/personal-token-breakdown?chain=${encodeURIComponent(
-                selectedChain
-              )}&address=${encodeURIComponent(selectedWallet)}`
-            );
-          }}
+        <div class="xl:text-base text-2xl font-medium text-white">Custom</div>
+      </Button>
+      {#if showTooltipCustomBtn}
+        <div
+          class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+          style="z-index: 2147483648;"
         >
-          <div class="xl:text-base text-2xl font-medium text-white">Custom</div>
-        </Button>
-        {#if showTooltipCustomBtn}
-          <div
-            class="absolute transform -translate-x-1/2 -top-8 left-1/2"
-            style="z-index: 2147483648;"
-          >
-            <tooltip-detail text={"Custom your token breakdown"} />
-          </div>
-        {/if}
-      </div>
+          <tooltip-detail text={"Custom your token breakdown"} />
+        </div>
+      {/if}
     </div>
   </div>
   <div class="flex 2xl:flex-row flex-col justify-between gap-6">

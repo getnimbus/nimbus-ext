@@ -53,6 +53,17 @@
   let counter = 3;
   let showToast = false;
 
+  let scrollContainer;
+  let isScrollStart = true;
+  let isScrollEnd = false;
+  let container;
+
+  const handleScroll = () => {
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
+    isScrollStart = scrollLeft === 0;
+    isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+  };
+
   const trigger = () => {
     showToast = true;
     counter = 3;
@@ -562,47 +573,103 @@
             </Button>
           </div>
         {:else}
-          <div class="flex justify-between">
-            <div class="flex items-center gap-5">
-              <AnimateSharedLayout>
-                {#each listCustom as item (item.category)}
-                  <div
-                    id={item.category}
-                    class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                    on:click={() => {
-                      showSuggestListTag = false;
-                      query = "";
-                      selectedTokenList = [];
-                      filteredListTag = listTag;
-                      selectedCustom = item;
-                      handleSelectCategory(item);
-                    }}
-                  >
+          <div class="flex justify-between gap-6">
+            <div
+              class="relative overflow-x-hidden w-full flex gap-3 justify-between items-center"
+              bind:this={container}
+            >
+              <div
+                class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
+                  isScrollStart ? "hidden" : "block"
+                }`}
+                style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  height="24px"
+                  width="24px"
+                  viewBox="0 0 24 24"
+                  class="sc-aef7b723-0 fKbUaI"
+                  ><path
+                    d="M15 6L9 12L15 18"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  /></svg
+                >
+              </div>
+              <div
+                class="w-max flex gap-3 overflow-x-scroll whitespace-nowrap"
+                bind:this={scrollContainer}
+                on:scroll={handleScroll}
+              >
+                <AnimateSharedLayout>
+                  {#each listCustom as item (item.category)}
                     <div
-                      class={`relative z-20 ${
-                        selectedCustom === item && "text-white"
-                      }`}
+                      id={item.category}
+                      class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                      on:click={() => {
+                        showSuggestListTag = false;
+                        query = "";
+                        selectedTokenList = [];
+                        filteredListTag = listTag;
+                        selectedCustom = item;
+                        handleSelectCategory(item);
+                      }}
                     >
-                      {item.category}
-                    </div>
-                    {#if item === selectedCustom}
-                      <Motion
-                        let:motion
-                        layoutId="active-pill"
-                        transition={{ type: "spring", duration: 0.6 }}
+                      <div
+                        class={`relative z-20 ${
+                          selectedCustom === item && "text-white"
+                        }`}
                       >
-                        <div
-                          class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                          use:motion
-                        />
-                      </Motion>
-                    {/if}
-                  </div>
-                {/each}
-              </AnimateSharedLayout>
+                        {item.category}
+                      </div>
+                      {#if item === selectedCustom}
+                        <Motion
+                          let:motion
+                          layoutId="active-pill"
+                          transition={{ type: "spring", duration: 0.6 }}
+                        >
+                          <div
+                            class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                            use:motion
+                          />
+                        </Motion>
+                      {/if}
+                    </div>
+                  {/each}
+                </AnimateSharedLayout>
+              </div>
+              {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
+                <div
+                  class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
+                    isScrollEnd ? "hidden" : "block"
+                  }`}
+                  style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    height="24px"
+                    width="24px"
+                    viewBox="0 0 24 24"
+                    class="sc-aef7b723-0 fKbUaI"
+                    ><path
+                      d="M9 6L15 12L9 18"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-miterlimit="10"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    /></svg
+                  >
+                </div>
+              {/if}
             </div>
-
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-4 w-max">
               {#if selectedCustom && selectedCustom !== null && Object.keys(selectedCustom).length !== 0}
                 <div
                   class="text-red-500 font-medium cursor-pointer xl:text-lg text-2xl"
@@ -612,7 +679,7 @@
                 </div>
               {/if}
               <div
-                class="relative"
+                class="relative w-max"
                 on:mouseenter={() => {
                   if (listCustom.length > 2) {
                     showDisableAddBtn = true;
