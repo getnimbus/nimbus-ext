@@ -1,8 +1,9 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { i18n } from "~/lib/i18n";
-  import { chain } from "~/store";
+  import { chain, wallet } from "~/store";
   import { formatCurrency, typePieChart } from "~/utils";
+  import { useNavigate } from "svelte-navigator";
 
   export let optionLine;
   export let dataPieChart;
@@ -12,6 +13,7 @@
   import EChart from "~/components/EChart.svelte";
   import "~/components/Loading.custom.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Button from "~/components/Button.svelte";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -22,9 +24,13 @@
     Value: i18n("newtabPage.Value", "Value"),
   };
 
+  const navigate = useNavigate();
+
   $: selectedChain = $chain;
+  $: selectedWallet = $wallet;
 
   let selectedType: "token" | "nft" = "token";
+  let showTooltipCustomBtn = false;
   let optionPie = {
     title: {
       text: "",
@@ -159,7 +165,43 @@
       <div class="flex justify-between mb-1">
         <div class="pl-4 xl:text-2xl text-4xl font-medium text-black">
           {#if selectedType === "token"}
-            {MultipleLang.token_allocation}
+            <div class="flex items-center gap-3">
+              {MultipleLang.token_allocation}
+              <div
+                class="relative"
+                on:mouseenter={() => {
+                  showTooltipCustomBtn = true;
+                }}
+                on:mouseleave={() => {
+                  showTooltipCustomBtn = false;
+                }}
+              >
+                <Button
+                  variant="tertiary"
+                  on:click={() => {
+                    navigate(
+                      `/virtual-portfolio?chain=${encodeURIComponent(
+                        selectedChain
+                      )}&address=${encodeURIComponent(selectedWallet)}`
+                    );
+                  }}
+                >
+                  <div class="xl:text-base text-2xl font-medium text-white">
+                    Custom
+                  </div>
+                </Button>
+                {#if showTooltipCustomBtn}
+                  <div
+                    class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                    style="z-index: 2147483648;"
+                  >
+                    <tooltip-detail
+                      text={"Create your virtual portfolio by your way"}
+                    />
+                  </div>
+                {/if}
+              </div>
+            </div>
           {:else}
             {MultipleLang.nft_allocation}
           {/if}
