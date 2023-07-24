@@ -5,28 +5,23 @@
 
   import Button from "~/components/Button.svelte";
 
-  import Plus from "~/assets/plus.svg";
-
   export let handleSubmit = (data) => {};
   export let selectedWallet;
   export let selectedChain;
+  export let defaultData = {};
 
   const MultipleLang = {
     assets: i18n("newtabPage.assets", "Assets"),
     empty: i18n("newtabPage.empty", "Empty"),
   };
 
-  let step: "step 1" | "step 2" = "step 1";
   let searchValue = "";
   let timerDebounce;
   let virtualPortfolioName = "";
   let time = dayjs().format("YYYY-MM-DD");
   let listToken = [];
   let isLoadingListToken = false;
-
   let selectedTokenList = [];
-  let percent = 0;
-  let listTokenCustom = [];
 
   const debounceSearch = (value) => {
     clearTimeout(timerDebounce);
@@ -55,6 +50,7 @@
             symbol: item[2],
             logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${item[0]}.png`,
             checked: false,
+            percent: 0,
           };
         });
         isLoadingListToken = false;
@@ -75,16 +71,8 @@
 
   $: {
     if (selectedTokenList) {
-      console.log("selectedTokenList: ", selectedTokenList);
-
-      listTokenCustom = listToken.filter((item) => {
-        return selectedTokenList.some(
-          (selectedToken) => Number(selectedToken) === Number(item.id)
-        );
-      });
-
       searchDataResult = searchDataResult.map((item) => {
-        const isSelected = listTokenCustom.some(
+        const isSelected = selectedTokenList.some(
           (selectedToken) => selectedToken.id === item.id
         );
         return {
@@ -95,8 +83,10 @@
     }
   }
 
-  $: console.log("selectedTokenList: ", selectedTokenList);
-  $: console.log("listTokenCustom: ", listTokenCustom);
+  $: remaining = selectedTokenList.reduce(
+    (prev, item) => prev + Number(item.percent),
+    0
+  );
 </script>
 
 <div class="flex flex-col gap-5">
@@ -118,9 +108,6 @@
           virtualPortfolioName ? "bg-[#F0F2F7]" : ""
         }`}
         bind:value={virtualPortfolioName}
-        on:blur={() => {
-          console.log("virtualPortfolioName: ", virtualPortfolioName);
-        }}
       />
     </div>
 
@@ -142,9 +129,9 @@
     </div>
   </div>
 
-  <div class="flex xl:flex-row flex-col justify-between gap-6">
+  <div class="flex xl:flex-row flex-col justify-between gap-4">
     <div
-      class="flex-1 border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-2 relative"
+      class="flex-1 border border-[#0000001a] rounded-[20px] p-4 flex flex-col gap-2 relative"
     >
       <div class="flex md:flex-row flex-col justify-between md:items-end gap-4">
         <div class="flex flex-col">
@@ -210,15 +197,19 @@
                       <div class="flex justify-center">
                         <input
                           type="checkbox"
-                          value={data.id}
                           checked={data.checked}
                           on:change={(e) => {
-                            const { value, checked } = e.target;
+                            const { checked } = e.target;
                             if (checked) {
-                              selectedTokenList = [...selectedTokenList, value];
+                              selectedTokenList = [
+                                ...selectedTokenList,
+                                listToken.filter(
+                                  (item) => item.id === data.id
+                                )[0],
+                              ];
                             } else {
                               selectedTokenList = selectedTokenList.filter(
-                                (item) => item !== value
+                                (item) => item.id !== data.id
                               );
                             }
                           }}
@@ -226,7 +217,6 @@
                         />
                       </div>
                     </td>
-
                     <td class="py-3 pr-3 group-hover:bg-gray-100">
                       <div class="text-left flex items-center gap-3">
                         <img
@@ -294,48 +284,190 @@
     </div>
 
     <div
-      class="flex-1 border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-2 relative"
+      class="flex-1 border border-[#0000001a] rounded-[20px] p-4 flex flex-col gap-2 relative"
     >
       <div class="flex justify-between items-end">
         <div class="flex flex-col">
           <div class="xl:text-xl text-2xl font-medium">2. Coin Allocation</div>
           <div class="xl:text-base text-lg font-normal text-gray-500">
             Remaining: <span
-              class={`${percent === 100 ? "text-gray-500" : "text-red-500"}`}
-              >{percent}%</span
+              class={`${remaining === 100 ? "text-gray-500" : "text-red-500"}`}
+              >{remaining}%</span
             >/100%
           </div>
         </div>
-        <div class="flex items-center gap-4">
-          <div class="xl:text-base text-lg text-red-500 cursor-pointer">
+        {#if selectedTokenList && selectedTokenList.length !== 0}
+          <div
+            class="xl:text-base text-lg text-red-500 cursor-pointer"
+            on:click={() => {
+              selectedTokenList = [];
+              remaining = 0;
+            }}
+          >
             Clear All
           </div>
-          <Button variant={false ? "disabled" : "tertiary"} on:click={() => {}}>
-            <img src={Plus} alt="" width="12" height="12" />
-            <div class="xl:text-base text-2xl font-medium text-white">
-              Add Coins
-            </div>
-          </Button>
-        </div>
+        {/if}
       </div>
 
       <div
         class="border border-[#0000000d] rounded-[10px] overflow-y-auto h-[540px]"
       >
-        table
+        {#each selectedTokenList as data (data.id)}
+          <div id={data.id} class="grid grid-cols-2 gap-2 my-2 mx-2">
+            <div
+              class="py-2 pl-2 col-span-1 border border-[#0000000d] rounded-[10px]"
+            >
+              <div class="text-left flex items-center gap-3">
+                <img
+                  src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${data.id}.png`}
+                  alt=""
+                  width="30"
+                  height="30"
+                  class="rounded-full"
+                />
+                <div class="flex flex-col gap-1">
+                  <div
+                    class="text-black xl:text-sm text-xl font-medium relative"
+                  >
+                    {#if data.name === undefined}
+                      N/A
+                    {:else}
+                      {data.name}
+                    {/if}
+                  </div>
+                  <div class="text-[#00000080] text-xs font-medium relative">
+                    {#if data.symbol === undefined}
+                      N/A
+                    {:else}
+                      {data.symbol}
+                    {/if}
+                  </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  {#if data.suggest && data.suggest.length}
+                    {#each data.suggest as item}
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        class="flex items-center justyfy-center px-2 py-1 text-[#27326F] text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px]"
+                      >
+                        {item.tile}
+                      </a>
+                    {/each}
+                  {/if}
+                </div>
+              </div>
+            </div>
+            <div class="col-span-1 flex items-center gap-6">
+              <div
+                class="flex-1 border border-[#0000000d] rounded-[10px] h-full flex justify-between items-center px-2"
+              >
+                <div
+                  class="flex-1 flex justify-center items-center xl:text-3xl text-5xl text-gray-500"
+                >
+                  <div
+                    class="cursor-pointer"
+                    on:click={() => {
+                      if (data.percent > 0) {
+                        data.percent -= 1;
+                        selectedTokenList = selectedTokenList.map((item) => {
+                          if (item.id === data.id) {
+                            return data;
+                          }
+                          return item;
+                        });
+                      }
+                    }}
+                  >
+                    -
+                  </div>
+                </div>
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={data.percent}
+                  on:keyup={(e) => {
+                    if (e.target.value) {
+                      let number = 0;
+                      if (parseInt(e.target.value) < parseInt(e.target.min)) {
+                        e.target.value = e.target.min;
+                        number = e.target.min;
+                      } else if (
+                        parseInt(e.target.value) > parseInt(e.target.max)
+                      ) {
+                        e.target.value = e.target.max;
+                        number = e.target.max;
+                      } else {
+                        number = e.target.value;
+                      }
+                      selectedTokenList = selectedTokenList.map((item) => {
+                        if (item.id === data.id) {
+                          return {
+                            ...data,
+                            percent: Number(number),
+                          };
+                        }
+                        return item;
+                      });
+                    }
+                  }}
+                  class="w-max border-none focus:outline-none focus:ring-0 xl:text-xl text-3xl font-normal text-[#5E656B] placeholder-[#5E656B] text-center"
+                />
+                <div
+                  class="flex-1 flex justify-center items-center xl:text-3xl text-5xl text-gray-500"
+                >
+                  <div
+                    class="cursor-pointer"
+                    on:click={() => {
+                      if (data.percent < 100) {
+                        data.percent += 1;
+                        selectedTokenList = selectedTokenList.map((item) => {
+                          if (item.id === data.id) {
+                            return data;
+                          }
+                          return item;
+                        });
+                      }
+                    }}
+                  >
+                    +
+                  </div>
+                </div>
+              </div>
+              <div
+                class="xl:text-3xl text-5xl text-gray-500 cursor-pointer text-center"
+                on:click={() => {
+                  selectedTokenList = selectedTokenList.filter(
+                    (item) => item.id !== data.id
+                  );
+                }}
+              >
+                &times;
+              </div>
+            </div>
+          </div>
+        {/each}
       </div>
 
       <div class="flex justify-end mt-3">
         <div class="md:w-[120px] w-full">
-          <Button
-            on:click={() =>
-              handleSubmit({
-                virtualPortfolioName,
-                time,
-              })}
-          >
-            <div class="xl:text-base text-2xl font-medium">Create</div>
-          </Button>
+          {#if remaining !== 100 || virtualPortfolioName.length === 0}
+            <Button variant="disabled" disabled>
+              <div class="xl:text-base text-2xl font-medium">Create</div>
+            </Button>
+          {:else}
+            <Button
+              on:click={() =>
+                handleSubmit({
+                  initialTime: time,
+                  portfolioName: virtualPortfolioName,
+                  coins: selectedTokenList,
+                })}
+            >
+              <div class="xl:text-base text-2xl font-medium">Create</div>
+            </Button>
+          {/if}
         </div>
       </div>
     </div>

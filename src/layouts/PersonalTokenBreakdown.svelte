@@ -694,21 +694,27 @@
                   }
                 }}
               >
-                <Button
-                  variant={listCustom.length > 2 ? "disabled" : "tertiary"}
-                  on:click={() => {
-                    if (listCustom.length > 2) {
-                      return;
-                    }
-                    isAddCustom = true;
-                    handleResetState();
-                  }}
-                >
-                  <img src={Plus} alt="" width="12" height="12" />
-                  <div class="xl:text-base text-2xl font-medium text-white">
-                    Add Category
-                  </div>
-                </Button>
+                {#if listCustom.length > 2}
+                  <Button variant="disabled" disabled>
+                    <img src={Plus} alt="" width="12" height="12" />
+                    <div class="xl:text-base text-2xl font-medium text-white">
+                      Add Category
+                    </div>
+                  </Button>
+                {:else}
+                  <Button
+                    variant="tertiary"
+                    on:click={() => {
+                      isAddCustom = true;
+                      handleResetState();
+                    }}
+                  >
+                    <img src={Plus} alt="" width="12" height="12" />
+                    <div class="xl:text-base text-2xl font-medium text-white">
+                      Add Category
+                    </div>
+                  </Button>
+                {/if}
                 {#if showDisableAddBtn}
                   <div
                     class="absolute transform -translate-x-1/2 -top-8 left-1/2"

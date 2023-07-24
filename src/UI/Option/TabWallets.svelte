@@ -382,23 +382,32 @@
 <div class="flex flex-col gap-4">
   <div class="flex justify-between items-center">
     <div class="xl:title-3 title-1 text-gray-500">{MultipleLang.title}</div>
-    <Button
-      variant={APP_TYPE.TYPE !== "EXT" && listAddress.length === 3
-        ? "disabled"
-        : "tertiary"}
-      on:click={() => {
-        if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
+
+    {#if APP_TYPE.TYPE !== "EXT" && listAddress.length === 3}
+      <Button
+        variant="disabled"
+        on:click={() => {
           window.open("https://getnimbus.io", "_blank");
-        } else {
+        }}
+      >
+        <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+        <div class="xl:text-base text-2xl font-medium text-white">
+          {MultipleLang.content.btn_text}
+        </div>
+      </Button>
+    {:else}
+      <Button
+        variant="tertiary"
+        on:click={() => {
           isOpenAddModal = true;
-        }
-      }}
-    >
-      <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-      <div class="xl:text-base text-2xl font-medium text-white">
-        {MultipleLang.content.btn_text}
-      </div>
-    </Button>
+        }}
+      >
+        <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+        <div class="xl:text-base text-2xl font-medium text-white">
+          {MultipleLang.content.btn_text}
+        </div>
+      </Button>
+    {/if}
   </div>
   <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
     <table class="table-auto xl:w-full w-[1200px]">

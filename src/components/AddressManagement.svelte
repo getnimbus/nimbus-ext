@@ -659,32 +659,40 @@
                     }
                   }}
                 >
-                  <Button
-                    variant={isDisabledBtn ? "disabled" : "tertiary"}
-                    on:click={() => {
-                      const showDisableAddWalletStorage = localStorage.getItem(
-                        "showDisableAddWallet"
-                      );
-                      if (isDisabled) {
-                        if (
-                          showDisableAddWalletStorage !== null &&
-                          showDisableAddWalletStorage === "false"
-                        ) {
+                  {#if isDisabledBtn}
+                    <Button variant="disabled" disabled>
+                      <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+                      <div class="xl:text-base text-2xl font-medium text-white">
+                        {MultipleLang.content.btn_text}
+                      </div>
+                    </Button>
+                  {:else}
+                    <Button
+                      variant="tertiary"
+                      on:click={() => {
+                        const showDisableAddWalletStorage =
+                          localStorage.getItem("showDisableAddWallet");
+                        if (isDisabled) {
+                          if (
+                            showDisableAddWalletStorage !== null &&
+                            showDisableAddWalletStorage === "false"
+                          ) {
+                            isOpenAddModal = true;
+                            return;
+                          }
+                          localStorage.setItem("showDisableAddWallet", "true");
+                          isOpenModal = true;
+                        } else {
                           isOpenAddModal = true;
-                          return;
                         }
-                        localStorage.setItem("showDisableAddWallet", "true");
-                        isOpenModal = true;
-                      } else {
-                        isOpenAddModal = true;
-                      }
-                    }}
-                  >
-                    <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-                    <div class="xl:text-base text-2xl font-medium text-white">
-                      {MultipleLang.content.btn_text}
-                    </div>
-                  </Button>
+                      }}
+                    >
+                      <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+                      <div class="xl:text-base text-2xl font-medium text-white">
+                        {MultipleLang.content.btn_text}
+                      </div>
+                    </Button>
+                  {/if}
                   {#if showDisableAddWallet}
                     <div
                       class="xl:absolute hidden transform -translate-x-1/2 -top-8 left-1/2"
