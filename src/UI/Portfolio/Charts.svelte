@@ -30,7 +30,6 @@
   $: selectedWallet = $wallet;
 
   let selectedType: "token" | "nft" = "token";
-  let showTooltipCustomBtn = false;
   let optionPie = {
     title: {
       text: "",
@@ -162,20 +161,15 @@
 <ErrorBoundary>
   <div class="flex xl:flex-row flex-col justify-between gap-6">
     <div class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6">
-      <div class="flex justify-between mb-1">
-        <div class="pl-4 xl:text-2xl text-4xl font-medium text-black">
+      <div class="relative mb-1 w-full">
+        <div class="xl:text-2xl text-4xl font-medium text-black w-full">
           {#if selectedType === "token"}
-            <div class="flex items-center gap-3">
+            <div class="flex flex-col gap-5 w-full">
               {MultipleLang.token_allocation}
-              <div
-                class="relative"
-                on:mouseenter={() => {
-                  showTooltipCustomBtn = true;
-                }}
-                on:mouseleave={() => {
-                  showTooltipCustomBtn = false;
-                }}
-              >
+              <div class="flex justify-between items-center w-full">
+                <div class="xl:text-lg text-2xl">
+                  Create your virtual portfolio by your way
+                </div>
                 <Button
                   variant="tertiary"
                   on:click={() => {
@@ -190,23 +184,13 @@
                     Custom
                   </div>
                 </Button>
-                {#if showTooltipCustomBtn}
-                  <div
-                    class="absolute transform -translate-x-1/2 -top-8 left-1/2"
-                    style="z-index: 2147483648;"
-                  >
-                    <tooltip-detail
-                      text={"Create your virtual portfolio by your way"}
-                    />
-                  </div>
-                {/if}
               </div>
             </div>
           {:else}
             {MultipleLang.nft_allocation}
           {/if}
         </div>
-        <div class="flex items-center gap-1">
+        <div class="absolute top-0 right-0 flex items-center gap-1">
           <!-- <AnimateSharedLayout>
             {#each typePieChart as type}
               <div

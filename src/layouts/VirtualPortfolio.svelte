@@ -5,12 +5,18 @@
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Copy from "~/components/Copy.svelte";
+  import Button from "~/components/Button.svelte";
   import FormVirtualPortfolio from "~/UI/VirtualPortfolio/FormVirtualPortfolio.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
+  import Plus from "~/assets/plus.svg";
 
   let selectedWallet: string = "";
   let selectedChain: string = "";
+
+  let showDisableAddBtn = false;
+  let listVirtualPortfolio = [];
+  let selectedVirtualPortfolio = {};
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -34,11 +40,37 @@
     if (chainParams && addressParams) {
       selectedWallet = addressParams;
       selectedChain = chainParams;
+      virtualPortfolioList();
     }
   });
 
-  const handleSubmit = (data) => {
+  const virtualPortfolioList = async () => {
+    try {
+      const response = await nimbus.get(
+        `/address/${selectedWallet}/personalize/virtual-portflio`
+      );
+      if (response) {
+        console.log("response: ", response);
+      }
+    } catch (e) {
+      console.log("e: ", e);
+    }
+  };
+
+  const handleSubmit = async (data) => {
     console.log("data: ", data);
+    try {
+      const response = await nimbus.post(
+        `/address/${selectedWallet}/personalize/virtual-portflio`,
+        data
+      );
+      console.log("response: ", response);
+      if (response) {
+        virtualPortfolioList();
+      }
+    } catch (e) {
+      console.log("e: ", e);
+    }
   };
 </script>
 
@@ -86,6 +118,56 @@
       >
         <div class="xl:text-2xl text-4xl font-medium text-black">
           Create Virtual Portfolio
+        </div>
+        <div class="flex justify-between">
+          list virtual portfolio
+
+          <div class="flex items-center gap-4 w-max">
+            {#if selectedVirtualPortfolio && selectedVirtualPortfolio !== null && Object.keys(selectedVirtualPortfolio).length !== 0}
+              <div
+                class="text-red-500 font-medium cursor-pointer xl:text-lg text-2xl"
+              >
+                Delete
+              </div>
+            {/if}
+            <div
+              class="relative w-max"
+              on:mouseenter={() => {
+                if (listVirtualPortfolio.length > 2) {
+                  showDisableAddBtn = true;
+                }
+              }}
+              on:mouseleave={() => {
+                if (listVirtualPortfolio.length > 2) {
+                  showDisableAddBtn = false;
+                }
+              }}
+            >
+              {#if listVirtualPortfolio.length > 2}
+                <Button variant="disabled" disabled>
+                  <img src={Plus} alt="" width="12" height="12" />
+                  <div class="xl:text-base text-2xl font-medium text-white">
+                    Add Category
+                  </div>
+                </Button>
+              {:else}
+                <Button variant="tertiary">
+                  <img src={Plus} alt="" width="12" height="12" />
+                  <div class="xl:text-base text-2xl font-medium text-white">
+                    Add virtual portfolio
+                  </div>
+                </Button>
+              {/if}
+              {#if showDisableAddBtn}
+                <div
+                  class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                  style="z-index: 2147483648;"
+                >
+                  <tooltip-detail text={"Maximum 3 virtual portfolio"} />
+                </div>
+              {/if}
+            </div>
+          </div>
         </div>
         <FormVirtualPortfolio {selectedWallet} {selectedChain} {handleSubmit} />
       </div>

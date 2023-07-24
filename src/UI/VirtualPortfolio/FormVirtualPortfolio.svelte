@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { coinmarketcap, nimbus } from "~/lib/network";
+  import { coinmarketcap } from "~/lib/network";
   import dayjs from "dayjs";
   import { i18n } from "~/lib/i18n";
 
@@ -462,7 +462,12 @@
                 handleSubmit({
                   initialTime: time,
                   portfolioName: virtualPortfolioName,
-                  coins: selectedTokenList,
+                  coins: selectedTokenList.map((item) => {
+                    return {
+                      coin: item.id.toString(),
+                      percent: item.percent,
+                    };
+                  }),
                 })}
             >
               <div class="xl:text-base text-2xl font-medium">Create</div>
