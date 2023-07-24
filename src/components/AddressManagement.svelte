@@ -880,7 +880,7 @@
       </div>
     </div>
     <div class="flex justify-end gap-2">
-      <div class="lg:w-[100px] w-full">
+      <div class="lg:w-[120px] w-full">
         <Button
           variant="secondary"
           on:click={() => {
@@ -891,7 +891,7 @@
           {MultipleLang.content.modal_cancel}</Button
         >
       </div>
-      <div class="lg:w-[100px] w-full">
+      <div class="lg:w-[120px] w-full">
         <Button type="submit">
           {MultipleLang.content.modal_add}</Button
         >
@@ -1005,7 +1005,7 @@
         </div>
       </div>
       <div class="flex justify-end gap-2">
-        <div class="lg:w-[100px] flex-1">
+        <div class="lg:w-[120px] flex-1">
           <Button
             variant="secondary"
             on:click={() => {
@@ -1015,7 +1015,7 @@
             {MultipleLang.content.modal_cancel}</Button
           >
         </div>
-        <div class="lg:w-[100px] flex-1">
+        <div class="lg:w-[120px] flex-1">
           <Button
             type="submit"
             isLoading={isLoadingSendMail}

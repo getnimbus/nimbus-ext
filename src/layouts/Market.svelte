@@ -103,8 +103,8 @@
         </div>
         <div class="flex flex-1 gap-3">
           <div
-            class={`flex-1 border bg-white focus:outline-none w-full py-[6px] px-3 rounded-lg ${
-              searchValue ? "bg-[#F0F2F7]" : ""
+            class={`flex-1 border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
+              searchValue ? "bg-[#F0F2F7]" : "bg-white"
             }`}
           >
             <input
@@ -123,8 +123,8 @@
             />
           </div>
           <div
-            class={`flex-[0.7] border bg-white focus:outline-none w-full py-[6px] px-3 rounded-lg ${
-              amountValue ? "bg-[#F0F2F7]" : ""
+            class={`flex-[0.7] border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
+              amountValue ? "bg-[#F0F2F7]" : "bg-white"
             }`}
           >
             <input

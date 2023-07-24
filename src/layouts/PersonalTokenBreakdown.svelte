@@ -927,8 +927,8 @@
                 {/if}
                 <div class="text-right">
                   <div
-                    class={`border bg-white focus:outline-none w-full py-[6px] px-3 rounded-lg ${
-                      searchValue ? "bg-[#F0F2F7]" : ""
+                    class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
+                      searchValue ? "bg-[#F0F2F7]" : "bg-white"
                     }`}
                   >
                     <input
@@ -944,7 +944,7 @@
               </div>
 
               <div
-                class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
+                class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto min-h-[600px]"
               >
                 <table class="table-auto xl:w-full w-[1400px]">
                   <thead

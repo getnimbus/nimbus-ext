@@ -5,15 +5,12 @@
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Copy from "~/components/Copy.svelte";
+  import FormVirtualPortfolio from "~/UI/VirtualPortfolio/FormVirtualPortfolio.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
 
   let selectedWallet: string = "";
   let selectedChain: string = "";
-
-  let searchValue = "";
-  let virtualPortfolioName = "";
-  let listToken = [];
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -37,21 +34,11 @@
     if (chainParams && addressParams) {
       selectedWallet = addressParams;
       selectedChain = chainParams;
-      getListToken();
     }
   });
 
-  const getListToken = async () => {
-    try {
-      const response = await nimbus.get(
-        `/address/${selectedWallet}/personalize/virtual-portflio`
-      );
-      if (response) {
-        console.log("response: ", response);
-      }
-    } catch (e) {
-      console.log("e: ", e);
-    }
+  const handleSubmit = (data) => {
+    console.log("data: ", data);
   };
 </script>
 
@@ -100,59 +87,7 @@
         <div class="xl:text-2xl text-4xl font-medium text-black">
           Create Virtual Portfolio
         </div>
-
-        <div
-          class={`flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
-            virtualPortfolioName ? "bg-[#F0F2F7]" : ""
-          }`}
-        >
-          <div class="xl:text-base text-xl text-[#666666] font-medium">
-            Virtual portfolio name
-          </div>
-          <input
-            type="text"
-            placeholder="Your virtual portfolio name"
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              virtualPortfolioName ? "bg-[#F0F2F7]" : ""
-            }`}
-            bind:value={virtualPortfolioName}
-            on:blur={() => {
-              console.log("virtualPortfolioName: ", virtualPortfolioName);
-            }}
-          />
-        </div>
-
-        <div
-          class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-2"
-        >
-          <div class="flex justify-between items-end">
-            <div class="flex flex-col">
-              <div class="xl:text-xl text-2xl font-medium">1. Choose coins</div>
-              <div class="xl:text-base text-lg font-normal text-gray-600">
-                Choose one or more to start
-              </div>
-            </div>
-            <div class="text-right">
-              <div
-                class={`border bg-white focus:outline-none w-full py-[6px] px-3 rounded-lg ${
-                  searchValue ? "bg-[#F0F2F7]" : ""
-                }`}
-              >
-                <input
-                  bind:value={searchValue}
-                  placeholder={"Find by token name"}
-                  type="text"
-                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                    searchValue ? "bg-[#F0F2F7]" : ""
-                  }`}
-                />
-              </div>
-            </div>
-          </div>
-          <div>table</div>
-        </div>
-
-        <div class="border border-[#0000001a] rounded-[20px] p-6">Step 2</div>
+        <FormVirtualPortfolio {selectedWallet} {selectedChain} {handleSubmit} />
       </div>
     </div>
   </div>

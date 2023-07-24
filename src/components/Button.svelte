@@ -17,7 +17,7 @@
   export let size: "supper-small" | "small" | "medium" | "large" = "small";
   export let type: "button" | "submit" | "reset" = "button";
 
-  const buttonClassName = classNames(className, "button", "container", {
+  const buttonClassName = classNames(className, "button", "btn-container", {
     ["disabled"]: disabled || variant === "disabled",
     ["underlined"]: variant === "underlined",
     ["secondary"]: variant === "secondary",
@@ -106,7 +106,7 @@
     background: #27326f;
   }
 
-  .button .container {
+  .button .btn-container {
     display: flex;
     align-items: center;
     justify-content: center;

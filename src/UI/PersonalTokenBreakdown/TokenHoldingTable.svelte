@@ -41,7 +41,7 @@
 </script>
 
 <div
-  class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
+  class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto min-h-[600px]"
 >
   <table class="table-auto xl:w-full w-[1400px]">
     <thead

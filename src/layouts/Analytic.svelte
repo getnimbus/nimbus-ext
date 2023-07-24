@@ -221,7 +221,7 @@
         </div>
       </div>
       <div class="flex justify-end gap-2">
-        <div class="lg:w-[100px] w-full">
+        <div class="lg:w-[120px] w-full">
           <Button
             variant="secondary"
             on:click={() => {
@@ -236,7 +236,7 @@
             Cancel
           </Button>
         </div>
-        <div class="lg:w-[100px] w-full">
+        <div class="lg:w-[120px] w-full">
           <Button
             type="submit"
             isLoading={isLoadingSendMail}
