@@ -97,7 +97,7 @@
           <div class="flex flex-col gap-3">
             <div class="flex items-center gap-2 text-white">
               <div class="xl:text-5xl text-7xl font-semibold">
-                Virtual Portfolio
+                Personal Virtual Portfolio
               </div>
             </div>
             {#if selectedWallet && selectedWallet.length !== 0}
@@ -117,7 +117,7 @@
         class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
       >
         <div class="xl:text-2xl text-4xl font-medium text-black">
-          Create Virtual Portfolio
+          Custom Virtual Portfolio
         </div>
         <div class="flex justify-between">
           list virtual portfolio

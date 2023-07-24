@@ -90,9 +90,7 @@
 </script>
 
 <div class="flex flex-col gap-5">
-  <div
-    class="flex lg:flex-row flex-col justify-between gap-4 border-b-[1px] pb-5"
-  >
+  <div class="flex lg:flex-row flex-col justify-between gap-4">
     <div
       class={`flex-1 flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
         virtualPortfolioName ? "bg-[#F0F2F7]" : ""
