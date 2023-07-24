@@ -91,7 +91,7 @@ onMessage<IAddressInput, any>("getInflowOutflow", async ({ data: { address, chai
 
 onMessage<IAddressInput, any>("getTotalValueHistory", async ({ data: { address, chain } }) => {
   try {
-    return nimbus.get(`/analysis/${address}/holding-history?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
+    return nimbus.get(`/v2/analysis/${address}/holding-history?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
       return {
         result: response.data,
         address: address

@@ -18,12 +18,21 @@
 
   let step: "step 1" | "step 2" = "step 1";
   let searchValue = "";
+  let timerDebounce;
   let virtualPortfolioName = "";
   let time = dayjs().format("YYYY-MM-DD");
   let listToken = [];
   let isLoadingListToken = false;
 
   let selectedTokenList = [];
+  let percent = 0;
+
+  const debounceSearch = (value) => {
+    clearTimeout(timerDebounce);
+    timerDebounce = setTimeout(() => {
+      searchValue = value;
+    }, 300);
+  };
 
   $: {
     if (selectedWallet && selectedChain) {
@@ -43,6 +52,7 @@
             id: item[0],
             name: item[1],
             symbol: item[2],
+            logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${item[0]}.png`,
           };
         });
         isLoadingListToken = false;
@@ -59,7 +69,9 @@
           item.name.toLowerCase() === searchValue.toLowerCase() ||
           item.name.toLowerCase().includes(searchValue.toLowerCase())
       )
-    : listToken;
+    : listToken.slice(0, 500);
+
+  $: console.log("selectedTokenList: ", selectedTokenList);
 </script>
 
 <div class="flex flex-col gap-5">
@@ -122,7 +134,8 @@
           }`}
         >
           <input
-            bind:value={searchValue}
+            on:keyup={({ target: { value } }) => debounceSearch(value)}
+            value={searchValue}
             placeholder={"Find by token name"}
             type="text"
             class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
@@ -135,7 +148,14 @@
       <div
         class="border border-[#0000000d] rounded-[10px] overflow-y-auto h-[540px]"
       >
-        <table class="table-auto w-full h-full">
+        <table
+          class={`table-auto w-full ${
+            isLoadingListToken ||
+            (searchDataResult && searchDataResult.length === 0)
+              ? "h-full"
+              : ""
+          }`}
+        >
           {#if isLoadingListToken}
             <tbody>
               <tr>
@@ -226,13 +246,13 @@
 
       <div class="flex justify-end gap-2 mt-3">
         <div class="md:w-[120px] w-full">
-          <Button variant="secondary" on:click={() => {}}>
+          <Button
+            variant="secondary"
+            on:click={() => {
+              selectedTokenList = [];
+            }}
+          >
             <div class="xl:text-base text-2xl font-medium">Reset</div>
-          </Button>
-        </div>
-        <div class="md:w-[120px] w-full">
-          <Button on:click={() => {}}>
-            <div class="xl:text-base text-2xl font-medium">Confirm</div>
           </Button>
         </div>
       </div>
@@ -245,20 +265,31 @@
         <div class="flex flex-col">
           <div class="xl:text-xl text-2xl font-medium">2. Coin Allocation</div>
           <div class="xl:text-base text-lg font-normal text-gray-500">
-            Remaining: <span class="text-red-500">92%</span>/100%
+            Remaining: <span
+              class={`${percent === 100 ? "text-gray-500" : "text-red-500"}`}
+              >{percent}%</span
+            >/100%
           </div>
         </div>
-        <div class="xl:text-base text-lg text-red-500 cursor-pointer">
-          Clear All
+        <div class="flex items-center gap-4">
+          <div class="xl:text-base text-lg text-red-500 cursor-pointer">
+            Clear All
+          </div>
+          <Button variant={false ? "disabled" : "tertiary"} on:click={() => {}}>
+            <img src={Plus} alt="" width="12" height="12" />
+            <div class="xl:text-base text-2xl font-medium text-white">
+              Add Coins
+            </div>
+          </Button>
         </div>
       </div>
-      <Button variant={false ? "disabled" : "tertiary"} on:click={() => {}}>
-        <img src={Plus} alt="" width="12" height="12" />
-        <div class="xl:text-base text-2xl font-medium text-white">
-          Add Coins
-        </div>
-      </Button>
-      <div class="border border-red-500">table</div>
+
+      <div
+        class="border border-[#0000000d] rounded-[10px] overflow-y-auto h-[540px]"
+      >
+        table
+      </div>
+
       <div class="flex justify-end mt-3">
         <div class="md:w-[120px] w-full">
           <Button

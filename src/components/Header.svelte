@@ -49,7 +49,7 @@
     clearTimeout(timerDebounce);
     timerDebounce = setTimeout(() => {
       search = value;
-    }, 500);
+    }, 300);
   };
 
   const absoluteMatch = useMatch("/:page");
