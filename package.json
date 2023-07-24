@@ -64,6 +64,7 @@
     "jwt-decode": "^3.1.2",
     "lightweight-charts": "^3.8.0",
     "lodash": "^4.17.21",
+    "lottie-web": "^5.12.2",
     "mark.js": "^8.11.1",
     "mixpanel-browser": "^2.47.0",
     "mousetrap": "^1.6.5",

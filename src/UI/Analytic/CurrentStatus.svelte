@@ -23,6 +23,7 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import "~/components/Loading.custom.svelte";
   import Button from "~/components/Button.svelte";
+  import LoadingPremium from "~/components/LoadingPremium.svelte";
 
   const MultipleLang = {
     Balance: i18n("newtabPage.Balance", "Balance"),
@@ -681,7 +682,7 @@
       <div class="h-full pt-10">
         {#if isLoadingDataPie}
           <div class="flex items-center justify-center h-[465px]">
-            <loading-icon />
+            <LoadingPremium />
           </div>
         {:else}
           <div class="h-full">
@@ -802,7 +803,7 @@
                 <tr>
                   <td colspan={6}>
                     <div class="flex justify-center items-center py-3 px-3">
-                      <loading-icon />
+                      <LoadingPremium />
                     </div>
                   </td>
                 </tr>

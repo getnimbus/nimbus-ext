@@ -13,6 +13,7 @@
   export let id;
 
   import Logo from "~/assets/logo-1.svg";
+  import LoadingPremium from "./LoadingPremium.svelte";
 </script>
 
 <div class="flex flex-col gap-4">
@@ -38,7 +39,7 @@
   </div>
   {#if isLoadingChart}
     <div class="flex items-center justify-center h-[152px]">
-      <loading-icon />
+      <LoadingPremium />
     </div>
   {:else}
     <div class="h-full">

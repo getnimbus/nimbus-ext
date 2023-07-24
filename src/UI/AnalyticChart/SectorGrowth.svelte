@@ -11,6 +11,7 @@
   import EChart from "~/components/EChart.svelte";
 
   import Logo from "~/assets/logo-1.svg";
+  import LoadingPremium from "~/components/LoadingPremium.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -266,7 +267,7 @@
   <div class="mt-4">
     {#if isLoadingSectorGrowth}
       <div class="flex items-center justify-center h-[465px]">
-        <loading-icon />
+        <LoadingPremium />
       </div>
     {:else}
       <div class="h-full">

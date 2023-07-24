@@ -31,6 +31,10 @@ export default defineConfig(({ mode }) => {
             src: "src/_locales",
             dest: "",
           },
+          {
+            src: "public",
+            dest: "",
+          },
         ],
       }),
     ],
