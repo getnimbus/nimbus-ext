@@ -101,15 +101,14 @@
       },
     },
     legend: {
-      orient: "vertical",
-      right: "right",
-      bottom: "center",
+      top: "0%",
+      left: "center",
     },
     series: [
       {
         type: "pie",
         radius: ["40%", "60%"],
-        left: -200,
+        left: 0,
         avoidLabelOverlap: false,
         label: {
           show: false,
