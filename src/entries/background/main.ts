@@ -52,7 +52,7 @@ onMessage<ICoinListInput, any>("coinList", async ({ data: { limit } }) => {
 
 onMessage<IAddressInput, any>("getSectorGrowth", async ({ data: { address, chain } }) => {
   try {
-    return nimbus.get(`/analysis/${address}/sector-growth?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
+    return nimbus.get(`/v2/analysis/${address}/sector-growth?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
       return {
         result: response.data,
         address: address
@@ -78,7 +78,7 @@ onMessage<IAddressInput, any>("getTotalGasFee", async ({ data: { address, chain 
 
 onMessage<IAddressInput, any>("getInflowOutflow", async ({ data: { address, chain } }) => {
   try {
-    return nimbus.get(`/analysis/${address}/inflow-outflow?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
+    return nimbus.get(`/v2/analysis/${address}/inflow-outflow?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
       return {
         result: response.data,
         address: address
@@ -146,7 +146,7 @@ onMessage("getListTerm", async () => {
 
 onMessage<IAddressInput, any>("getAnalytic", async ({ data: { address, chain } }) => {
   try {
-    return await nimbus.get(`/analysis/${address}/historical?chain=${chain}`).then((response) => response.data);
+    return await nimbus.get(`/v2/analysis/${address}/historical?chain=${chain}`).then((response) => response.data);
   } catch (error) {
     return [];
   }
@@ -162,7 +162,7 @@ onMessage<IAddressInput, any>("getPreview", async ({ data: { address, chain } })
 
 onMessage<IAddressInput, any>("getSync", async ({ data: { address, chain } }) => {
   try {
-    return await nimbus.post(`/address/${address}/sync?chain=${chain}`, {}).then((response) => response);
+    return await nimbus.post(`/v2/address/${address}/sync?chain=${chain}`, {}).then((response) => response);
   } catch (error) {
     return {};
   }

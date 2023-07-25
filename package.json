@@ -54,6 +54,7 @@
     "bs58": "^5.0.0",
     "classnames": "^2.3.2",
     "countup.js": "^2.5.0",
+    "date-picker-svelte": "^2.6.0",
     "dayjs": "^1.11.4",
     "echarts": "^5.4.1",
     "ethers": "^6.6.4",

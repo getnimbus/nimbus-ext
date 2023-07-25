@@ -2,6 +2,8 @@
   import { coinmarketcap } from "~/lib/network";
   import dayjs from "dayjs";
   import { i18n } from "~/lib/i18n";
+  import { DateInput } from "date-picker-svelte";
+  let date = new Date();
 
   import Button from "~/components/Button.svelte";
 
@@ -196,6 +198,7 @@
         }}
         max={time}
       />
+      <!-- <DateInput bind:value={date} max={date} /> -->
     </div>
   </div>
 
@@ -228,7 +231,7 @@
       </div>
 
       <div
-        class="border border-[#0000000d] rounded-[10px] overflow-y-auto h-[590px]"
+        class="border border-[#0000000d] rounded-[10px] overflow-y-auto h-[550px]"
       >
         <table
           class={`table-auto w-full ${
@@ -368,7 +371,7 @@
       </div>
 
       <div
-        class="border border-[#0000000d] rounded-[10px] overflow-y-auto h-[590px]"
+        class="border border-[#0000000d] rounded-[10px] overflow-y-auto h-[550px]"
       >
         {#each selectedTokenList as data (data.id)}
           <div id={data.id} class="grid grid-cols-2 gap-2 my-2 mx-2">

@@ -138,6 +138,9 @@ export const detectedChain = (type) => {
     case "AVAX":
       chain = Avax
       break;
+    case "ARB":
+      chain = Arbitrum
+      break;
     default:
       chain = logo
   }
@@ -181,14 +184,14 @@ export const chainList = [
     value: "AVAX",
   },
   {
+    logo: Arbitrum,
+    label: "Arbitrum",
+    value: "ARB",
+  },
+  {
     logo: Solana,
     label: "Solana",
     value: "SOLANA",
-  },
-  {
-    logo: Arbitrum,
-    label: "Arbitrum",
-    value: "ARBITRUM",
   },
 ];
 

@@ -85,7 +85,8 @@
                 item.value !== "BNB" &&
                 item.value !== "MATIC" &&
                 item.value !== "OP" &&
-                item.value !== "AVAX"
+                item.value !== "AVAX" &&
+                item.value !== "ARB"
               ) {
                 open = false;
               } else {
@@ -117,13 +118,14 @@
               item.value !== "BNB" &&
               item.value !== "MATIC" &&
               item.value !== "OP" &&
-              item.value !== "AVAX"
+              item.value !== "AVAX" &&
+              item.value !== "ARB"
                 ? "text-[#00000066]"
                 : "text-[#000000b3]"
             }`}
           >
             {item.label}
-            {#if type === "chain" && item.value !== "ALL" && item.value !== "ETH" && item.value !== "BTC" && item.value !== "XDAI" && item.value !== "BNB" && item.value !== "MATIC" && item.value !== "OP" && item.value !== "AVAX"}
+            {#if type === "chain" && item.value !== "ALL" && item.value !== "ETH" && item.value !== "BTC" && item.value !== "XDAI" && item.value !== "BNB" && item.value !== "MATIC" && item.value !== "OP" && item.value !== "AVAX" && item.value !== "ARB"}
               (Soon)
             {/if}
           </div>

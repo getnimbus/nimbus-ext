@@ -46,7 +46,7 @@
         }}
         on:mouseleave={() => (isShowTooltipName = false)}
       >
-        {data?.collection?.name.length > 24
+        {data?.collection?.name && data?.collection?.name.length > 24
           ? shorterName(data?.collection?.name, 20)
           : data?.collection?.name}
         {#if isShowTooltipName && data?.collection?.name.length > 24}
