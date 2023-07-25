@@ -50,7 +50,7 @@
         if (defaultData && Object.keys(defaultData).length !== 0) {
           virtualPortfolioName = defaultData.portfolioName;
 
-          time = new Date();
+          time = defaultData.updatedTime;
 
           listToken = response?.values.map((item) => {
             const selectedToken = defaultData.coins.filter(
@@ -70,6 +70,7 @@
             return defaultData.coins.some((data) => data.coin === item.id);
           });
         } else {
+          time = new Date();
           virtualPortfolioName = "";
           searchValue = "";
           selectedTokenList = [];
@@ -181,13 +182,13 @@
       </div>
       {#if defaultData && Object.keys(defaultData).length !== 0}
         <DateInput
-          bind:value={time}
+          value={time}
           format="yyyy-MM-dd"
           min={defaultData.updatedTime}
-          max={time}
+          max={new Date()}
         />
       {:else}
-        <DateInput bind:value={time} format="yyyy-MM-dd" max={time} />
+        <DateInput value={time} format="yyyy-MM-dd" max={new Date()} />
       {/if}
     </div>
   </div>
