@@ -18,6 +18,7 @@
   let showDisableAddBtn = false;
   let listVirtualPortfolio = [];
   let selectedVirtualPortfolio = {};
+  let isLoadingSubmit = false;
 
   let scrollContainer;
   let isScrollStart = true;
@@ -66,8 +67,6 @@
           response.data
         );
 
-        console.log("response: ", response);
-
         listVirtualPortfolio = virtualPortfolioNameList.map((item) => {
           return {
             portfolioName: item,
@@ -93,17 +92,27 @@
   };
 
   const handleSubmit = async (data, type) => {
-    console.log({ data, type });
+    isLoadingSubmit = true;
     try {
-      const response = await nimbus.post(
-        `/address/${selectedWallet}/personalize/virtual-portflio`,
-        data
-      );
+      let response;
+      if (type === "edit") {
+        response = await nimbus.put(
+          `/address/${selectedWallet}/personalize/virtual-portflio?portfolioName=${selectedVirtualPortfolio.portfolioName}`,
+          data
+        );
+      } else {
+        response = await nimbus.post(
+          `/address/${selectedWallet}/personalize/virtual-portflio`,
+          data
+        );
+      }
       if (response) {
         virtualPortfolioList();
+        isLoadingSubmit = false;
       }
     } catch (e) {
       console.log("e: ", e);
+      isLoadingSubmit = false;
     }
   };
 
@@ -120,8 +129,6 @@
       console.log("e: ", e);
     }
   };
-
-  $: console.log("selectedVirtualPortfolio: ", selectedVirtualPortfolio);
 </script>
 
 <ErrorBoundary>
@@ -314,21 +321,14 @@
             </div>
           </div>
         </div>
-        {#if selectedVirtualPortfolio && Object.keys(selectedVirtualPortfolio).length !== 0}
-          <FormVirtualPortfolio
-            defaultData={selectedVirtualPortfolio}
-            {selectedWallet}
-            {selectedChain}
-            {handleSubmit}
-          />
-        {:else}
-          <FormVirtualPortfolio
-            defaultData={{}}
-            {selectedWallet}
-            {selectedChain}
-            {handleSubmit}
-          />
-        {/if}
+        <FormVirtualPortfolio
+          {listVirtualPortfolio}
+          defaultData={selectedVirtualPortfolio}
+          {selectedWallet}
+          {selectedChain}
+          {handleSubmit}
+          {isLoadingSubmit}
+        />
       </div>
     </div>
   </div>

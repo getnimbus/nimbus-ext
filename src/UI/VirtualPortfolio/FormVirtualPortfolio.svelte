@@ -6,6 +6,8 @@
   import Button from "~/components/Button.svelte";
 
   export let handleSubmit = (data, type) => {};
+  export let isLoadingSubmit;
+  export let listVirtualPortfolio;
   export let selectedWallet;
   export let selectedChain;
   export let defaultData;
@@ -22,6 +24,7 @@
   let listToken = [];
   let isLoadingListToken = false;
   let selectedTokenList = [];
+  let selectedTokenRemove = {};
 
   const debounceSearch = (value) => {
     clearTimeout(timerDebounce);
@@ -31,7 +34,7 @@
   };
 
   $: {
-    if (selectedWallet && selectedChain) {
+    if (selectedWallet && selectedChain && defaultData) {
       getListToken();
     }
   }
@@ -43,16 +46,43 @@
         `/generated/core/crypto/cryptos.json`
       );
       if (response) {
-        listToken = response?.values.map((item) => {
-          return {
-            id: item[0],
-            name: item[1],
-            symbol: item[2],
-            logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${item[0]}.png`,
-            checked: false,
-            percent: 0,
-          };
-        });
+        if (defaultData && Object.keys(defaultData).length !== 0) {
+          virtualPortfolioName = defaultData.portfolioName;
+
+          listToken = response?.values.map((item) => {
+            const selectedToken = defaultData.coins.filter(
+              (data) => data.coin === item[0]
+            );
+
+            return {
+              id: item[0],
+              name: item[1],
+              symbol: item[2],
+              logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${item[0]}.png`,
+              percent: selectedToken[0] ? selectedToken[0]?.percent : 0,
+            };
+          });
+
+          selectedTokenList = listToken.filter((item) => {
+            return defaultData.coins.some((data) => data.coin === item.id);
+          });
+        } else {
+          virtualPortfolioName = "";
+          searchValue = "";
+          selectedTokenList = [];
+          remaining = 0;
+          selectedTokenRemove = {};
+          listToken = response?.values.map((item) => {
+            return {
+              id: item[0],
+              name: item[1],
+              symbol: item[2],
+              logo: `https://s2.coinmarketcap.com/static/img/coins/64x64/${item[0]}.png`,
+              percent: 0,
+            };
+          });
+        }
+
         isLoadingListToken = false;
       }
     } catch (e) {
@@ -71,15 +101,33 @@
 
   $: {
     if (selectedTokenList) {
-      searchDataResult = searchDataResult.map((item) => {
-        const isSelected = selectedTokenList.some(
-          (selectedToken) => selectedToken.id === item.id
-        );
+      searchDataResult = searchDataResult?.map((item) => {
         return {
           ...item,
-          checked: isSelected,
+          percent:
+            selectedTokenRemove &&
+            Object.keys(selectedTokenRemove).length !== 0 &&
+            selectedTokenRemove.id === item.id
+              ? 0
+              : item.percent,
         };
       });
+
+      listToken = listToken?.map((item) => {
+        return {
+          ...item,
+          percent:
+            selectedTokenRemove &&
+            Object.keys(selectedTokenRemove).length !== 0 &&
+            selectedTokenRemove.id === item.id
+              ? 0
+              : item.percent,
+        };
+      });
+
+      if (selectedTokenList.length === 0) {
+        selectedTokenRemove = {};
+      }
     }
   }
 
@@ -87,6 +135,21 @@
     (prev, item) => prev + Number(item.percent),
     0
   );
+
+  $: {
+    if (listVirtualPortfolio.length === 0) {
+      virtualPortfolioName = "";
+      searchValue = "";
+      selectedTokenList = [];
+      remaining = 0;
+      listToken = listToken.map((item) => {
+        return {
+          ...item,
+          percent: 0,
+        };
+      });
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-5">
@@ -105,7 +168,8 @@
         class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
           virtualPortfolioName ? "bg-[#F0F2F7]" : ""
         }`}
-        bind:value={virtualPortfolioName}
+        value={virtualPortfolioName}
+        on:keyup={(e) => (virtualPortfolioName = e.target.value)}
       />
     </div>
 
@@ -164,7 +228,7 @@
       </div>
 
       <div
-        class="border border-[#0000000d] rounded-[10px] overflow-y-auto h-[540px]"
+        class="border border-[#0000000d] rounded-[10px] overflow-y-auto h-[590px]"
       >
         <table
           class={`table-auto w-full ${
@@ -198,32 +262,21 @@
                 </tr>
               {:else}
                 {#each searchDataResult as data}
-                  <tr class="group transition-all">
-                    <td class="py-3 w-10 group-hover:bg-gray-100">
-                      <div class="flex justify-center">
-                        <input
-                          type="checkbox"
-                          checked={data.checked}
-                          on:change={(e) => {
-                            const { checked } = e.target;
-                            if (checked) {
-                              selectedTokenList = [
-                                ...selectedTokenList,
-                                listToken.filter(
-                                  (item) => item.id === data.id
-                                )[0],
-                              ];
-                            } else {
-                              selectedTokenList = selectedTokenList.filter(
-                                (item) => item.id !== data.id
-                              );
-                            }
-                          }}
-                          class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                        />
-                      </div>
-                    </td>
-                    <td class="py-3 pr-3 group-hover:bg-gray-100">
+                  <tr
+                    class="group transition-all cursor-pointer"
+                    on:click={() => {
+                      const isIncludes = selectedTokenList.find(
+                        (item) => item.id === data.id
+                      );
+                      if (!isIncludes) {
+                        selectedTokenList = [
+                          ...selectedTokenList,
+                          listToken.filter((item) => item.id === data.id)[0],
+                        ];
+                      }
+                    }}
+                  >
+                    <td class="py-3 pl-3 group-hover:bg-gray-100">
                       <div class="text-left flex items-center gap-3">
                         <img
                           src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${data.id}.png`}
@@ -236,25 +289,25 @@
                           <div
                             class="text-black xl:text-sm text-xl font-medium relative"
                           >
-                            {#if data.name === undefined}
+                            {#if data?.name === undefined}
                               N/A
                             {:else}
-                              {data.name}
+                              {data?.name}
                             {/if}
                           </div>
                           <div
                             class="text-[#00000080] text-xs font-medium relative"
                           >
-                            {#if data.symbol === undefined}
+                            {#if data?.symbol === undefined}
                               N/A
                             {:else}
-                              {data.symbol}
+                              {data?.symbol}
                             {/if}
                           </div>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                          {#if data.suggest && data.suggest.length}
-                            {#each data.suggest as item}
+                          {#if data?.suggest && data.suggest.length}
+                            {#each data?.suggest as item}
                               <a
                                 href={item.url}
                                 target="_blank"
@@ -267,25 +320,17 @@
                         </div>
                       </div>
                     </td>
+                    <td class="py-3 w-10 group-hover:bg-gray-100">
+                      <div class="flex justify-center">
+                        <div class="text-3xl text-[#00000080]">&rsaquo;</div>
+                      </div>
+                    </td>
                   </tr>
                 {/each}
               {/if}
             </tbody>
           {/if}
         </table>
-      </div>
-
-      <div class="flex justify-end gap-2 mt-3">
-        <div class="md:w-[120px] w-full">
-          <Button
-            variant="secondary"
-            on:click={() => {
-              selectedTokenList = [];
-            }}
-          >
-            <div class="xl:text-base text-2xl font-medium">Reset</div>
-          </Button>
-        </div>
       </div>
     </div>
 
@@ -308,6 +353,13 @@
             on:click={() => {
               selectedTokenList = [];
               remaining = 0;
+              selectedTokenRemove = {};
+              listToken = listToken.map((item) => {
+                return {
+                  ...item,
+                  percent: 0,
+                };
+              });
             }}
           >
             Clear All
@@ -316,7 +368,7 @@
       </div>
 
       <div
-        class="border border-[#0000000d] rounded-[10px] overflow-y-auto h-[540px]"
+        class="border border-[#0000000d] rounded-[10px] overflow-y-auto h-[590px]"
       >
         {#each selectedTokenList as data (data.id)}
           <div id={data.id} class="grid grid-cols-2 gap-2 my-2 mx-2">
@@ -447,6 +499,7 @@
                   selectedTokenList = selectedTokenList.filter(
                     (item) => item.id !== data.id
                   );
+                  selectedTokenRemove = data;
                 }}
               >
                 &times;
@@ -455,37 +508,46 @@
           </div>
         {/each}
       </div>
+    </div>
+  </div>
 
-      <div class="flex justify-end mt-3">
-        <div class="md:w-[120px] w-full">
-          {#if remaining !== 100 || virtualPortfolioName.length === 0}
-            <Button variant="disabled" disabled>
-              <div class="xl:text-base text-2xl font-medium">Create</div>
-            </Button>
-          {:else}
-            <Button
-              on:click={() =>
-                handleSubmit(
-                  {
-                    initialTime: time,
-                    portfolioName: virtualPortfolioName,
-                    coins: selectedTokenList.map((item) => {
-                      return {
-                        coin: item.id.toString(),
-                        percent: item.percent,
-                      };
-                    }),
-                  },
-                  defaultData && Object.keys(defaultData).length !== 0
-                    ? "edit"
-                    : "add"
-                )}
-            >
-              <div class="xl:text-base text-2xl font-medium">Create</div>
-            </Button>
-          {/if}
-        </div>
-      </div>
+  <div class="flex justify-end">
+    <div class="md:w-[120px] w-full">
+      {#if remaining !== 100 || virtualPortfolioName.length === 0}
+        <Button variant="disabled" disabled>
+          <div class="xl:text-base text-2xl font-medium">
+            {defaultData && Object.keys(defaultData).length !== 0
+              ? "Edit"
+              : "Create"}
+          </div>
+        </Button>
+      {:else}
+        <Button
+          isLoading={isLoadingSubmit}
+          on:click={() =>
+            handleSubmit(
+              {
+                initialTime: time,
+                portfolioName: virtualPortfolioName,
+                coins: selectedTokenList.map((item) => {
+                  return {
+                    coin: item.id.toString(),
+                    percent: item.percent,
+                  };
+                }),
+              },
+              defaultData && Object.keys(defaultData).length !== 0
+                ? "edit"
+                : "add"
+            )}
+        >
+          <div class="xl:text-base text-2xl font-medium">
+            {defaultData && Object.keys(defaultData).length !== 0
+              ? "Edit"
+              : "Create"}
+          </div>
+        </Button>
+      {/if}
     </div>
   </div>
 </div>
