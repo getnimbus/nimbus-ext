@@ -2,7 +2,7 @@ import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
 import dayjs from "dayjs";
 import _, { isEmpty } from "lodash";
-import { coinGeko, mixpanel, nimbus, goplus, nimbusApi, aptos } from "../../lib/network";
+import { coinGeko, mixpanel, nimbus, goplus, nimbusApi, aptos, defillama } from "../../lib/network";
 import { cacheOrAPI } from "./utils";
 import type { JsonValue, JsonObject } from "type-fest";
 import langEN from "../../_locales/en/messages.json";
@@ -83,6 +83,30 @@ onMessage<IAddressInput, any>("getInflowOutflow", async ({ data: { address, chai
         result: response.data,
         address: address
       }
+    });
+  } catch (error) {
+    return {};
+  }
+});
+
+onMessage<IAddressInput, any>("getNetworthAnalysis", async ({ data: { address, chain } }) => {
+  try {
+    return nimbus.get(`/v2/analysis/${address}/networth?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
+      return {
+        result: response.data,
+        address: address
+      }
+    });
+  } catch (error) {
+    return {};
+  }
+});
+
+onMessage<IAddressInput, any>("getDefillamaTokenChart", async ({ data: { addresses, start, span } }) => {
+  try {
+
+    return defillama.get(`/chart/${addresses.join(',')}?start=${start}&span=${span}`).then((response) => {
+      return response;
     });
   } catch (error) {
     return {};

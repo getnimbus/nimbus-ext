@@ -87,6 +87,10 @@ export const nimbus = createAxiosInterface({
   // baseURL: "https://nimbus-api-asia.wonderfulwave-5f958dca.southeastasia.azurecontainerapps.io"
 });
 
+export const defillama = createAxiosInterface({
+  baseURL: "https://coins.llama.fi",
+});
+
 export const coinmarketcap = createAxiosInterface({
   baseURL: "https://s3.coinmarketcap.com",
 })
