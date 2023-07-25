@@ -16,6 +16,7 @@
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { useNavigate } from "svelte-navigator";
 
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
@@ -87,6 +88,8 @@
     },
   };
 
+  const navigate = useNavigate();
+
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
@@ -132,6 +135,20 @@
   let isScrollStart = true;
   let isScrollEnd = false;
   let container;
+
+  let listVirtualPortfolio = [];
+  let selectedVirtualPortfolio = {};
+
+  let scrollContainerVirtual;
+  let isScrollStartVirtual = true;
+  let isScrollEndVirtual = false;
+  let containerVirtual;
+
+  const handleScrollVirtual = () => {
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerVirtual;
+    isScrollStartVirtual = scrollLeft === 0;
+    isScrollEndVirtual = scrollLeft + clientWidth >= scrollWidth - 1;
+  };
 
   const getListAddress = async (type) => {
     isLoadingFullPage = true;
@@ -230,6 +247,7 @@
   onMount(() => {
     getListAddress("fetch");
     updateStateFromParams();
+    virtualPortfolioList();
   });
 
   const isRequiredFieldValid = (value) => {
@@ -380,6 +398,32 @@
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
     isScrollStart = scrollLeft === 0;
     isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+  };
+
+  const virtualPortfolioList = async () => {
+    try {
+      const response = await nimbus.get(
+        `/address/${selectedWallet}/personalize/virtual-portflio`
+      );
+      if (response) {
+        const virtualPortfolioNameList = Object.getOwnPropertyNames(
+          response.data
+        );
+        listVirtualPortfolio = virtualPortfolioNameList.map((item) => {
+          return {
+            portfolioName: item,
+            coins: response.data[item].map((coin) => {
+              return {
+                coin: Number(coin?.coinId),
+                percent: Number(coin?.percent),
+              };
+            }),
+          };
+        });
+      }
+    } catch (e) {
+      console.log("e: ", e);
+    }
   };
 
   $: {
@@ -703,6 +747,118 @@
                       />
                     </div>
                   {/if}
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center w-full -mt-10">
+                {#if listVirtualPortfolio && listVirtualPortfolio.length !== 0}
+                  <div
+                    class="relative overflow-x-hidden w-full flex flex-row gap-3 justify-between items-center"
+                    bind:this={containerVirtual}
+                  >
+                    <div
+                      class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
+                        isScrollStartVirtual ? "hidden" : "block"
+                      }`}
+                      style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        height="24px"
+                        width="24px"
+                        viewBox="0 0 24 24"
+                        class="sc-aef7b723-0 fKbUaI"
+                        ><path
+                          d="M15 6L9 12L15 18"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-miterlimit="10"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        /></svg
+                      >
+                    </div>
+                    <div
+                      class="w-max flex gap-3 overflow-x-auto whitespace-nowrap"
+                      bind:this={scrollContainerVirtual}
+                      on:scroll={handleScrollVirtual}
+                    >
+                      <AnimateSharedLayout>
+                        {#each listVirtualPortfolio as item (item.portfolioName)}
+                          <div
+                            id={item.portfolioName}
+                            class="w-max flex-shrink-0 relative xl:text-lg text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px] cursor-pointer hover:underline"
+                            class:hover:no-underline={item ===
+                              selectedVirtualPortfolio}
+                            on:click={() => {
+                              selectedVirtualPortfolio = item;
+                            }}
+                          >
+                            {item.portfolioName}
+                            {#if item === selectedVirtualPortfolio}
+                              <Motion
+                                let:motion
+                                layoutId="active-pill"
+                                transition={{ type: "spring", duration: 0.6 }}
+                              >
+                                <div
+                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                  style="z-index: 1"
+                                  use:motion
+                                />
+                              </Motion>
+                            {/if}
+                          </div>
+                        {/each}
+                      </AnimateSharedLayout>
+                    </div>
+                    {#if scrollContainerVirtual?.scrollWidth >= containerVirtual?.offsetWidth}
+                      <div
+                        class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
+                          isScrollEndVirtual ? "hidden" : "block"
+                        }`}
+                        style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          height="24px"
+                          width="24px"
+                          viewBox="0 0 24 24"
+                          class="sc-aef7b723-0 fKbUaI"
+                          ><path
+                            d="M9 6L15 12L9 18"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-miterlimit="10"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          /></svg
+                        >
+                      </div>
+                    {/if}
+                  </div>
+                {:else}
+                  <div class="xl:text-lg text-2xl">
+                    Create your virtual portfolio by your way
+                  </div>
+                {/if}
+                <div class="w-max">
+                  <Button
+                    variant="tertiary"
+                    on:click={() => {
+                      navigate(
+                        `/virtual-portfolio?chain=${encodeURIComponent(
+                          selectedChain
+                        )}&address=${encodeURIComponent(selectedWallet)}`
+                      );
+                    }}
+                  >
+                    <div class="xl:text-base text-2xl font-medium text-white">
+                      Custom virtual portfolio
+                    </div>
+                  </Button>
                 </div>
               </div>
 

@@ -5,10 +5,10 @@
 
   import Button from "~/components/Button.svelte";
 
-  export let handleSubmit = (data) => {};
+  export let handleSubmit = (data, type) => {};
   export let selectedWallet;
   export let selectedChain;
-  export let defaultData = {};
+  export let defaultData;
 
   const MultipleLang = {
     assets: i18n("newtabPage.assets", "Assets"),
@@ -115,7 +115,11 @@
       }`}
     >
       <div class="xl:text-base text-xl text-[#666666] font-medium">
-        Time create virtual portfolio
+        {#if defaultData && Object.keys(defaultData).length !== 0}
+          Initial Time
+        {:else}
+          Update Time
+        {/if}
       </div>
       <input
         type="date"
@@ -457,16 +461,21 @@
           {:else}
             <Button
               on:click={() =>
-                handleSubmit({
-                  initialTime: time,
-                  portfolioName: virtualPortfolioName,
-                  coins: selectedTokenList.map((item) => {
-                    return {
-                      coin: item.id.toString(),
-                      percent: item.percent,
-                    };
-                  }),
-                })}
+                handleSubmit(
+                  {
+                    initialTime: time,
+                    portfolioName: virtualPortfolioName,
+                    coins: selectedTokenList.map((item) => {
+                      return {
+                        coin: item.id.toString(),
+                        percent: item.percent,
+                      };
+                    }),
+                  },
+                  defaultData && Object.keys(defaultData).length !== 0
+                    ? "edit"
+                    : "add"
+                )}
             >
               <div class="xl:text-base text-2xl font-medium">Create</div>
             </Button>

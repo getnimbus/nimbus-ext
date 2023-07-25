@@ -3,7 +3,6 @@
   import { i18n } from "~/lib/i18n";
   import { chain, wallet } from "~/store";
   import { formatCurrency, typePieChart } from "~/utils";
-  import { useNavigate } from "svelte-navigator";
 
   export let optionLine;
   export let dataPieChart;
@@ -13,7 +12,6 @@
   import EChart from "~/components/EChart.svelte";
   import "~/components/Loading.custom.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import Button from "~/components/Button.svelte";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -23,8 +21,6 @@
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
   };
-
-  const navigate = useNavigate();
 
   $: selectedChain = $chain;
   $: selectedWallet = $wallet;
@@ -164,28 +160,7 @@
       <div class="relative mb-1 w-full">
         <div class="xl:text-2xl text-4xl font-medium text-black w-full">
           {#if selectedType === "token"}
-            <div class="flex flex-col gap-5 w-full">
-              {MultipleLang.token_allocation}
-              <div class="flex justify-between items-center w-full">
-                <div class="xl:text-lg text-2xl">
-                  Create your virtual portfolio by your way
-                </div>
-                <Button
-                  variant="tertiary"
-                  on:click={() => {
-                    navigate(
-                      `/virtual-portfolio?chain=${encodeURIComponent(
-                        selectedChain
-                      )}&address=${encodeURIComponent(selectedWallet)}`
-                    );
-                  }}
-                >
-                  <div class="xl:text-base text-2xl font-medium text-white">
-                    Custom
-                  </div>
-                </Button>
-              </div>
-            </div>
+            {MultipleLang.token_allocation}
           {:else}
             {MultipleLang.nft_allocation}
           {/if}
