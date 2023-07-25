@@ -840,7 +840,7 @@
                     {/if}
                   </div>
                 {:else}
-                  <div class="xl:text-lg text-2xl">
+                  <div class="xl:text-lg text-2xl text-white">
                     Create your virtual portfolio by your way
                   </div>
                 {/if}
