@@ -1,6 +1,7 @@
 <script lang="ts">
   import { getAddressContext } from "~/utils";
-  import { wallet } from "~/store";
+  import { wallet, chain } from "~/store";
+  import { useNavigate } from "svelte-navigator";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
   import Personality from "./Personality.svelte";
@@ -8,9 +9,16 @@
   import PastPerformance from "./PastPerformance.svelte";
   import Button from "~/components/Button.svelte";
 
+  const navigate = useNavigate();
+
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
+  });
+
+  let selectedChain: string = "";
+  chain.subscribe((value) => {
+    selectedChain = value;
   });
 
   let isShowSoon = false;
@@ -31,6 +39,29 @@
       <div
         class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md"
       >
+        <div
+          class="flex justify-between items-center border border-[#0000001a] rounded-[20px] p-6"
+        >
+          <div class="font-medium text-black xl:text-xl text-3xl">
+            Create your virtual portfolio by your way
+          </div>
+          <div class="w-max">
+            <Button
+              variant="tertiary"
+              on:click={() => {
+                navigate(
+                  `/virtual-portfolio?chain=${encodeURIComponent(
+                    selectedChain
+                  )}&address=${encodeURIComponent(selectedWallet)}`
+                );
+              }}
+            >
+              <div class="xl:text-base text-2xl font-medium text-white">
+                Virtual Portfolio
+              </div>
+            </Button>
+          </div>
+        </div>
         <CurrentStatus />
         <PastPerformance />
         <Personality />
