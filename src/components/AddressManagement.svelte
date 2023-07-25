@@ -412,7 +412,7 @@
         listVirtualPortfolio = virtualPortfolioNameList.map((item) => {
           return {
             portfolioName: item,
-            coins: response.data[item].map((coin) => {
+            coins: response.data[item].tokens.map((coin) => {
               return {
                 coin: Number(coin?.coinId),
                 percent: Number(coin?.percent),
@@ -855,8 +855,9 @@
                       );
                     }}
                   >
+                    <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
                     <div class="xl:text-base text-2xl font-medium text-white">
-                      Custom virtual portfolio
+                      Add virtual portfolio
                     </div>
                   </Button>
                 </div>

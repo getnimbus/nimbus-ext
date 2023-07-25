@@ -66,10 +66,12 @@
           response.data
         );
 
+        console.log("response: ", response);
+
         listVirtualPortfolio = virtualPortfolioNameList.map((item) => {
           return {
             portfolioName: item,
-            coins: response.data[item].map((coin) => {
+            coins: response.data[item].tokens.map((coin) => {
               return {
                 coin: Number(coin?.coinId),
                 percent: Number(coin?.percent),

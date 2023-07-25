@@ -127,6 +127,10 @@
         class="p-0 border-none outline-none bg-transparent focus:outline-none focus:ring-0 border-2 border-red-500"
         placeholder="Select date"
         bind:value={time}
+        on:change={(e) => {
+          console.log("e: ", e);
+        }}
+        max={time}
       />
     </div>
   </div>
