@@ -5,6 +5,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import dayjs from "dayjs";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Copy from "~/components/Copy.svelte";
@@ -89,6 +90,7 @@
 
         listVirtualPortfolio = virtualPortfolioNameList.map((item) => {
           return {
+            updatedTime: dayjs(response.data[item].updatedTime).toDate(),
             portfolioName: item,
             coins: response.data[item].tokens.map((coin) => {
               return {

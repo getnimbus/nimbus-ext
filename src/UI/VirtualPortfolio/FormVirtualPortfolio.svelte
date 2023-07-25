@@ -3,7 +3,6 @@
   import dayjs from "dayjs";
   import { i18n } from "~/lib/i18n";
   import { DateInput } from "date-picker-svelte";
-  let date = new Date();
 
   import Button from "~/components/Button.svelte";
 
@@ -22,7 +21,7 @@
   let searchValue = "";
   let timerDebounce;
   let virtualPortfolioName = "";
-  let time = dayjs().format("YYYY-MM-DD");
+  let time = new Date();
   let listToken = [];
   let isLoadingListToken = false;
   let selectedTokenList = [];
@@ -50,6 +49,8 @@
       if (response) {
         if (defaultData && Object.keys(defaultData).length !== 0) {
           virtualPortfolioName = defaultData.portfolioName;
+
+          time = new Date();
 
           listToken = response?.values.map((item) => {
             const selectedToken = defaultData.coins.filter(
@@ -156,30 +157,21 @@
 
 <div class="flex flex-col gap-5">
   <div class="flex lg:flex-row flex-col justify-between gap-4">
-    <div
-      class={`flex-1 flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
-        virtualPortfolioName ? "bg-[#F0F2F7]" : ""
-      }`}
-    >
+    <div class="flex-1 flex flex-col gap-1 input-2 w-full p-4">
       <div class="xl:text-base text-xl text-[#666666] font-medium">
         Virtual portfolio name
       </div>
       <input
         type="text"
         placeholder="Your virtual portfolio name"
-        class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-          virtualPortfolioName ? "bg-[#F0F2F7]" : ""
-        }`}
+        class="py-1 px-[6px] rounded-[3px] focus:outline-none focus:ring-0 xl:text-base text-lg font-normal text-[#5E656B] placeholder-[#5E656B]"
+        style="border: 1px solid rgba(103, 113, 137, 0.3)"
         value={virtualPortfolioName}
         on:keyup={(e) => (virtualPortfolioName = e.target.value)}
       />
     </div>
 
-    <div
-      class={`flex-1 flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
-        time ? "bg-[#F0F2F7]" : ""
-      }`}
-    >
+    <div class="flex-1 flex flex-col gap-1 input-2 w-full p-4">
       <div class="xl:text-base text-xl text-[#666666] font-medium">
         {#if defaultData && Object.keys(defaultData).length !== 0}
           Initial Time
@@ -187,18 +179,16 @@
           Update Time
         {/if}
       </div>
-      <input
-        type="date"
-        id="date"
-        class="p-0 border-none outline-none bg-transparent focus:outline-none focus:ring-0 border-2 border-red-500"
-        placeholder="Select date"
-        bind:value={time}
-        on:change={(e) => {
-          console.log("e: ", e);
-        }}
-        max={time}
-      />
-      <!-- <DateInput bind:value={date} max={date} /> -->
+      {#if defaultData && Object.keys(defaultData).length !== 0}
+        <DateInput
+          bind:value={time}
+          format="yyyy-MM-dd"
+          min={defaultData.updatedTime}
+          max={time}
+        />
+      {:else}
+        <DateInput bind:value={time} format="yyyy-MM-dd" max={time} />
+      {/if}
     </div>
   </div>
 
@@ -530,7 +520,7 @@
           on:click={() =>
             handleSubmit(
               {
-                initialTime: time,
+                initialTime: dayjs(time).format("YYYY-MM-DD"),
                 portfolioName: virtualPortfolioName,
                 coins: selectedTokenList.map((item) => {
                   return {
@@ -556,4 +546,11 @@
 </div>
 
 <style>
+  :root {
+    --date-input-width: 100%;
+    --date-picker-background: white;
+    --date-picker-foreground: #5e656b;
+    --date-picker-selected-color: black;
+    --date-picker-highlight-border: transparent;
+  }
 </style>
