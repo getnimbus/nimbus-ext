@@ -320,121 +320,119 @@
       </div>
     </div>
 
-    {#if getAddressContext(selectedWallet)?.type !== "EVM"}
-      <div class="flex flex-col gap-2">
-        <div class="flex justify-between items-center">
-          <div class="xl:text-xl text-3xl font-medium text-black">
-            {MultipleLang.nft}
-          </div>
-          <div class="xl:text-3xl text-4xl font-semibold text-right">
-            $<TooltipNumber number={sumNFT} type="balance" />
-          </div>
+    <div class="flex flex-col gap-2">
+      <div class="flex justify-between items-center">
+        <div class="xl:text-xl text-3xl font-medium text-black">
+          {MultipleLang.nft}
         </div>
-        <div
-          class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
-        >
-          <table class="table-auto xl:w-full w-[1400px]">
-            <thead
-              class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
-              bind:this={tableNFTHeader}
-            >
-              <tr class="bg-[#f4f5f8]">
-                <th
-                  class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[220px]"
+        <div class="xl:text-3xl text-4xl font-semibold text-right">
+          $<TooltipNumber number={sumNFT} type="balance" />
+        </div>
+      </div>
+      <div
+        class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
+      >
+        <table class="table-auto xl:w-full w-[1400px]">
+          <thead
+            class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
+            bind:this={tableNFTHeader}
+          >
+            <tr class="bg-[#f4f5f8]">
+              <th
+                class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[220px]"
+              >
+                <div
+                  class="text-left xl:text-xs text-base uppercase font-semibold text-black"
                 >
-                  <div
-                    class="text-left xl:text-xs text-base uppercase font-semibold text-black"
-                  >
-                    {MultipleLang.collection}
-                  </div>
-                </th>
-                <th
-                  class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg-[#f4f5f8] w-[160px]"
+                  {MultipleLang.collection}
+                </div>
+              </th>
+              <th
+                class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg-[#f4f5f8] w-[160px]"
+              >
+                <div
+                  class="text-left xl:text-xs text-base uppercase font-semibold text-black"
                 >
-                  <div
-                    class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                  {MultipleLang.Balance}
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                >
+                  <TooltipTitle
+                    tooltipText={getAddressContext(selectedWallet)?.type ===
+                    "EVM"
+                      ? "The Floor price of last 24h, if there is no volume, the floor price is 0"
+                      : "The Floor price from Magic Eden marketplace. "}
+                    link={getAddressContext(selectedWallet)?.type === "EVM"
+                      ? ""
+                      : "https://magiceden.io/ordinals"}
                   >
-                    {MultipleLang.Balance}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                    {MultipleLang.floor_price}
+                  </TooltipTitle>
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                >
+                  {MultipleLang.total_spent}
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                >
+                  {MultipleLang.current_value}
+                </div>
+              </th>
+              <th class="py-3 pr-3">
+                <div
+                  class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                >
+                  <TooltipTitle
+                    tooltipText="Price NFTs now - Price NFTs at time you spent"
                   >
-                    <TooltipTitle
-                      tooltipText={getAddressContext(selectedWallet)?.type ===
-                      "EVM"
-                        ? "The Floor price of last 24h, if there is no volume, the floor price is 0"
-                        : "The Floor price from Magic Eden marketplace. "}
-                      link={getAddressContext(selectedWallet)?.type === "EVM"
-                        ? ""
-                        : "https://magiceden.io/ordinals"}
-                    >
-                      {MultipleLang.floor_price}
-                    </TooltipTitle>
+                    {MultipleLang.profit}
+                  </TooltipTitle>
+                </div>
+              </th>
+              <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
+            </tr>
+          </thead>
+          {#if isLoadingNFT}
+            <tbody>
+              <tr>
+                <td colspan={7}>
+                  <div class="flex justify-center items-center py-3 px-3">
+                    <loading-icon />
                   </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
-                  >
-                    {MultipleLang.total_spent}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
-                  >
-                    {MultipleLang.current_value}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
-                  >
-                    <TooltipTitle
-                      tooltipText="Price NFTs now - Price NFTs at time you spent"
-                    >
-                      {MultipleLang.profit}
-                    </TooltipTitle>
-                  </div>
-                </th>
-                <th class="py-3 w-10 rounded-tr-[10px]" />
+                </td>
               </tr>
-            </thead>
-            {#if isLoadingNFT}
-              <tbody>
+            </tbody>
+          {:else}
+            <tbody>
+              {#if formatDataNFT && formatDataNFT.length === 0}
                 <tr>
-                  <td colspan={8}>
-                    <div class="flex justify-center items-center py-3 px-3">
-                      <loading-icon />
+                  <td colspan={7}>
+                    <div
+                      class="flex justify-center items-center py-3 px-3 text-lg text-gray-400"
+                    >
+                      {MultipleLang.empty}
                     </div>
                   </td>
                 </tr>
-              </tbody>
-            {:else}
-              <tbody>
-                {#if formatDataNFT && formatDataNFT.length === 0}
-                  <tr>
-                    <td colspan={8}>
-                      <div
-                        class="flex justify-center items-center py-3 px-3 text-lg text-gray-400"
-                      >
-                        {MultipleLang.empty}
-                      </div>
-                    </td>
-                  </tr>
-                {:else}
-                  {#each formatDataNFT as holding}
-                    <HoldingNFT data={holding} {selectedWallet} />
-                  {/each}
-                {/if}
-              </tbody>
-            {/if}
-          </table>
-        </div>
+              {:else}
+                {#each formatDataNFT as holding}
+                  <HoldingNFT data={holding} {selectedWallet} />
+                {/each}
+              {/if}
+            </tbody>
+          {/if}
+        </table>
       </div>
-    {/if}
+    </div>
   </ErrorBoundary>
 </div>
 

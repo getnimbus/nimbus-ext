@@ -221,7 +221,7 @@ onMessage<IAddressInput, any>("getHoldingNFT", async ({ data: { address, chain, 
     const res = await cacheOrAPI(
       key,
       () => {
-        return nimbus.get(`/address/${address}/nft-holding?chain=${chain}`).then((response) => {
+        return nimbus.get(`/v2/address/${address}/nft-holding?chain=${chain}`).then((response) => {
           return {
             result: response.data,
             address: address

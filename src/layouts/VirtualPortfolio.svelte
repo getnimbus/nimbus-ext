@@ -64,7 +64,6 @@
         `/address/${selectedWallet}/personalize/virtual-portflio`,
         data
       );
-      console.log("response: ", response);
       if (response) {
         virtualPortfolioList();
       }

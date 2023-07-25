@@ -141,7 +141,7 @@
     </div>
   </td>
 
-  <td class="py-3 group-hover:bg-gray-100">
+  <td class="py-3 pr-3 group-hover:bg-gray-100">
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
@@ -175,7 +175,7 @@
     </div>
   </td>
 
-  <td class="py-3 w-10 group-hover:bg-gray-100">
+  <!-- <td class="py-3 w-10 group-hover:bg-gray-100">
     <div class="flex justify-center">
       <div
         use:tooltip={{
@@ -187,7 +187,7 @@
         <img src={Chart} alt="" width={14} height={14} />
       </div>
     </div>
-  </td>
+  </td> -->
 </tr>
 
 <style>

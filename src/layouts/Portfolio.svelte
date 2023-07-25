@@ -633,7 +633,7 @@
             const [
               resOverview,
               resHoldingToken,
-              // resHoldingNFT,
+              resHoldingNFT,
               // resPositions,
               // resNews,
             ] = await Promise.all([
@@ -645,10 +645,10 @@
                 loadingHoldingToken = false;
                 return res;
               }),
-              // getHoldingNFT(type === "reload").then((res) => {
-              //   loadingHoldingNFT = false;
-              //   return res;
-              // }),
+              getHoldingNFT(type === "reload").then((res) => {
+                loadingHoldingNFT = false;
+                return res;
+              }),
               // getPositions(type === "reload").then((res) => {
               //   loadingPositions = false;
               //   return res;
@@ -661,10 +661,9 @@
 
             if (
               resOverview &&
-              resHoldingToken
-              // &&
-              // resHoldingNFT &&
-              // (resPositions === undefined || resPositions)
+              resHoldingToken &&
+              resHoldingNFT
+              //  && (resPositions === undefined || resPositions)
             ) {
               syncMsg = "";
               isLoading = false;
