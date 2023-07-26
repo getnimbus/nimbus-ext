@@ -108,10 +108,11 @@
         name: key,
         type: "line",
         data: groupData.map((item) => {
-          const sumValue = item.data[key].reduce(
-            (prev, item) => prev + Number(item.value),
-            0
-          );
+          const sumValue =
+            item?.data[key]?.reduce(
+              (prev, item) => prev + Number(item.value),
+              0
+            ) || 0;
           return {
             value: sumValue,
           };
