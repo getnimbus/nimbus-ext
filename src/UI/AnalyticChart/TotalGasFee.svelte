@@ -149,6 +149,7 @@
     tooltipTitle=""
     id="total-gasfee-paid"
     {sum}
+    type="permium"
   />
 </div>
 

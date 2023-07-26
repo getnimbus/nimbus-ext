@@ -6,6 +6,7 @@
   import { i18n } from "~/lib/i18n";
 
   import "~/components/Tooltip.custom.svelte";
+  import "~/components/Loading.custom.svelte";
 
   export let toggleSortOrderTag = () => {};
   export let isLoadingToken;

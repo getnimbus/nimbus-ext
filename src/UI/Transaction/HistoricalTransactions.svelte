@@ -9,6 +9,7 @@
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import "~/components/Loading.custom.svelte";
 
   export let data;
   export let isLoading;

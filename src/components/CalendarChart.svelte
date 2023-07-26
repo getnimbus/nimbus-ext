@@ -11,9 +11,12 @@
   export let tooltipTitle;
   export let sum = 0;
   export let id;
+  export let type;
+
+  import LoadingPremium from "./LoadingPremium.svelte";
+  import "~/components/Loading.custom.svelte";
 
   import Logo from "~/assets/logo-1.svg";
-  import LoadingPremium from "./LoadingPremium.svelte";
 </script>
 
 <div class="flex flex-col gap-4">
@@ -39,7 +42,11 @@
   </div>
   {#if isLoadingChart}
     <div class="flex items-center justify-center h-[152px]">
-      <LoadingPremium />
+      {#if type === "premium"}
+        <LoadingPremium />
+      {:else}
+        <loading-icon />
+      {/if}
     </div>
   {:else}
     <div class="h-full">

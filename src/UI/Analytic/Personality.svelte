@@ -167,6 +167,7 @@
         title="Historical activities"
         tooltipTitle="The chart shows only activities made by this wallet"
         id="historical-activities-personality"
+        type="permium"
       />
     </div>
     {#if getAddressContext(selectedWallet)?.type !== "BTC"}

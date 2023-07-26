@@ -22,6 +22,7 @@
 
   import type { AddressData } from "~/types/AddressData";
 
+  import "~/components/Loading.custom.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
   import Select from "~/components/Select.svelte";

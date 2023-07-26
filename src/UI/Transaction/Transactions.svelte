@@ -208,6 +208,7 @@
             title="Historical Activities"
             tooltipTitle="The chart shows only activities made by this wallet"
             id="historical-activities"
+            type="normal"
           />
         </div>
         <div

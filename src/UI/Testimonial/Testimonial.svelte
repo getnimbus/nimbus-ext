@@ -5,6 +5,7 @@
 
   import SlideOne from "./SlideOne.svelte";
   import SlideTwo from "./SlideTwo.svelte";
+  import "~/components/Loading.custom.svelte";
 
   import "swiper/swiper.scss";
   import "swiper/components/pagination/pagination.scss";

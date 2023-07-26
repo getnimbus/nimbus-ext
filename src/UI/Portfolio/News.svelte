@@ -5,6 +5,7 @@
   export let data;
   export let isLoading;
 
+  import "~/components/Loading.custom.svelte";
   import NewsCard from "~/components/NewsCard.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 

@@ -5,6 +5,7 @@
   import { DateInput } from "date-picker-svelte";
 
   import Button from "~/components/Button.svelte";
+  import "~/components/Loading.custom.svelte";
 
   export let handleSubmit = (data, type) => {};
   export let isLoadingSubmit;

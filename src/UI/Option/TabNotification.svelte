@@ -8,6 +8,7 @@
 
   import type { AddressData } from "~/types/AddressData";
 
+  import "~/components/Loading.custom.svelte";
   import Copy from "~/components/Copy.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
