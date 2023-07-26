@@ -256,6 +256,7 @@
           }
 
           dataTokenHolding = response.result;
+          getPersonalizeTag();
 
           const listCMCID = response.result
             .map((item) => item.cmc_id)
@@ -473,7 +474,6 @@
         dataTableRank = [];
         dataTableCategory = [];
         getHoldingToken();
-        getPersonalizeTag();
       }
     }
   }
@@ -595,7 +595,7 @@
           >
         </div>
         <div
-          class="w-max flex gap-3 overflow-x-auto whitespace-nowrap"
+          class="w-max flex gap-3 overflow-x-auto whitespace-nowrap container"
           bind:this={scrollContainer}
           on:scroll={handleScroll}
         >
@@ -837,4 +837,14 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global></style>
+<style windi:preflights:global windi:safelist:global>
+  .container::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .container {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+</style>

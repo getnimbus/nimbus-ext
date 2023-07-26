@@ -589,7 +589,7 @@
                     >
                   </div>
                   <div
-                    class="w-max flex gap-3 overflow-x-auto whitespace-nowrap"
+                    class="w-max flex gap-3 overflow-x-auto whitespace-nowrap container"
                     bind:this={scrollContainer}
                     on:scroll={handleScroll}
                   >
@@ -1052,5 +1052,15 @@
 
   .input-border-error {
     border: 1px solid red;
+  }
+
+  .container::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .container {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 </style>
