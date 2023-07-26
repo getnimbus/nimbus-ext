@@ -3,10 +3,6 @@
   import { wallet, chain } from "~/store";
   import dayjs from "dayjs";
   import { formatCurrency, getAddressContext } from "~/utils";
-  import type {
-    AnalyticTotalGasFeeRes,
-    AnalyticTotalGasFeeFormat,
-  } from "~/types/AnalyticTotalGasFeeData";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
 
@@ -86,32 +82,24 @@
     },
   };
 
-  const getTotalGasFee = async () => {
+  const getAnalyticHistorical = async () => {
     if (getAddressContext(selectedWallet).type === "EVM") {
       isLoadingChart = true;
       try {
-        const response: AnalyticTotalGasFeeRes = await sendMessage(
-          "getTotalGasFee",
-          {
-            address: selectedWallet,
-            chain: selectedChain,
-            // fromDate: "YYYY-MM-DD",
-            // toDate: "YYYY-MM-DD",
-          }
-        );
-
-        if (response?.result && response?.result.length !== 0) {
-          const maxHistorical = response?.result.reduce((prev, current) =>
+        const response: any[] = await sendMessage("getAnalytic", {
+          address: selectedWallet,
+          chain: selectedChain,
+        });
+        if (response && response.length !== 0) {
+          const maxHistorical = response.reduce((prev, current) =>
             prev.value > current.value ? prev : current
           );
 
-          sum = response?.result.reduce((prev, item) => prev + item.value, 0);
+          sum = response.reduce((prev, item) => prev + item.value, 0);
 
-          const formatData: AnalyticTotalGasFeeFormat = response?.result.map(
-            (item) => {
-              return [dayjs(item.date * 1000).format("YYYY-MM-DD"), item.value];
-            }
-          );
+          const formatData = response.map((item) => {
+            return [dayjs(item.date * 1000).format("YYYY-MM-DD"), item.value];
+          });
 
           option = {
             ...option,
@@ -146,7 +134,7 @@
       isLoadingChart = false;
       isEmptyDataChart = false;
       if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
-        getTotalGasFee();
+        getAnalyticHistorical();
       }
     }
   }
