@@ -807,7 +807,7 @@
             <div
               class="flex flex-col gap-4 border border-[#0000001a] rounded-[20px] p-6"
             >
-              <div class="flex justify-between">
+              <div class="flex justify-between items-center">
                 <div class="xl:text-2xl text-4xl font-medium text-black">
                   Compare
                 </div>

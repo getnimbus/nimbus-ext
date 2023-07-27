@@ -1,4 +1,5 @@
 <script lang="ts">
+  import dayjs from "dayjs";
   import { formatCurrency } from "~/utils";
 
   export let data;
@@ -63,13 +64,74 @@
     series: [],
   };
 
+  let optionLine = {
+    title: {
+      text: "",
+    },
+    tooltip: {
+      trigger: "axis",
+      extraCssText: "z-index: 9997",
+      formatter: function (params) {
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                ${params[0].axisValue}
+              </div>
+              ${params
+                .map((item) => {
+                  return `
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                    <span>${item?.marker}</span>
+                    ${item?.seriesName}
+                  </div>
+
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                      item.value >= 0 ? "#05a878" : "#f25f5d"
+                    };">
+                      $${formatCurrency(Math.abs(item.value))}
+                    </div>
+                  </div>
+                </div>
+                `;
+                })
+                .join("")}
+            </div>`;
+      },
+    },
+    legend: {
+      lineStyle: {
+        type: "solid",
+      },
+      data: [],
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "3%",
+      containLabel: true,
+    },
+    xAxis: {
+      type: "category",
+      boundaryGap: false,
+      data: [],
+    },
+    yAxis: {
+      type: "value",
+      axisLabel: {
+        formatter: "${value}",
+      },
+    },
+    series: [],
+  };
+
   $: {
     if (data && Object.keys(data).length !== 0) {
-      console.log("data: ", data);
+      const listKey = Object.getOwnPropertyNames(data);
 
-      const legendBarChart = Object.getOwnPropertyNames(data);
-
-      const formatLegendBarChart = legendBarChart.map((item) => {
+      // bar chart format
+      const legendDataBarChart = listKey.map((item) => {
         let data = {
           name: "",
           itemStyle: {
@@ -113,7 +175,7 @@
         return data;
       });
 
-      const dataBarChart = legendBarChart.map((item) => {
+      const dataBarChart = listKey.map((item) => {
         let custom = {
           name: "",
           color: "",
@@ -181,9 +243,138 @@
       optionBar = {
         ...optionBar,
         legend: {
-          data: formatLegendBarChart,
+          data: legendDataBarChart,
         },
         series: dataBarChart,
+      };
+
+      // line chart format
+      const formatDataLineChart = listKey.map((item) => {
+        let formatData = {
+          name: "",
+          color: "",
+          type: "",
+          dataChart: [],
+        };
+
+        switch (item) {
+          case "btc":
+            formatData = {
+              name: "Bitcoin",
+              color: "#f7931a",
+              type: "dashed",
+              dataChart: data[item]?.holdingHistory
+                .map((holdingData) => {
+                  return {
+                    value: holdingData.price,
+                    timestamp: dayjs(
+                      new Date(holdingData.timestamp * 1000)
+                    ).format("DD/MM/YY"),
+                  };
+                })
+                .slice(1, -1),
+            };
+            break;
+          case "eth":
+            formatData = {
+              name: "Ethereum",
+              color: "#547fef",
+              type: "dashed",
+              dataChart: data[item]?.holdingHistory
+                .map((holdingData) => {
+                  return {
+                    value: holdingData.price,
+                    timestamp: dayjs(
+                      new Date(holdingData.timestamp * 1000)
+                    ).format("DD/MM/YY"),
+                  };
+                })
+                .slice(1, -1),
+            };
+            break;
+          case "base":
+            formatData = {
+              name: "This wallet",
+              color: "#00b580",
+              type: "solid",
+              dataChart: data[item]?.holdingHistory
+                .map((holdingData) => {
+                  return {
+                    value: holdingData.networth,
+                    timestamp: dayjs(
+                      new Date(holdingData.timestamp * 1000)
+                    ).format("DD/MM/YY"),
+                  };
+                })
+                .slice(0, -2),
+            };
+            break;
+          case "compare":
+            formatData = {
+              name: "Compare wallet",
+              color: "rgba(178,184,255,1)",
+              type: "solid",
+              dataChart: data[item]?.holdingHistory
+                .map((holdingData) => {
+                  return {
+                    value: holdingData.networth,
+                    timestamp: dayjs(
+                      new Date(holdingData.timestamp * 1000)
+                    ).format("DD/MM/YY"),
+                  };
+                })
+                .slice(0, -2),
+            };
+            break;
+        }
+        return formatData;
+      });
+
+      const XAxisDataLineChart = formatDataLineChart[0].dataChart.map(
+        (item) => {
+          return item.timestamp;
+        }
+      );
+
+      const legendDataLineChart = formatDataLineChart.map((item) => {
+        return {
+          name: item.name,
+          itemStyle: {
+            color: item.color,
+          },
+        };
+      });
+
+      const dataLineChart = formatDataLineChart.map((item) => {
+        return {
+          name: item.name,
+          type: "line",
+          lineStyle: {
+            type: item.type,
+            color: item.color,
+          },
+          data: item.dataChart.map((eachDataCustom) => {
+            return {
+              value: eachDataCustom.value,
+              itemStyle: {
+                color: item.color,
+              },
+            };
+          }),
+        };
+      });
+
+      optionLine = {
+        ...optionLine,
+        legend: {
+          ...optionLine.legend,
+          data: legendDataLineChart,
+        },
+        xAxis: {
+          ...optionLine.xAxis,
+          data: XAxisDataLineChart,
+        },
+        series: dataLineChart,
       };
     }
   }
@@ -248,7 +439,7 @@
               id="line-chart-compare"
               theme="white"
               notMerge={true}
-              option={{}}
+              option={optionLine}
               height={433}
             />
           {/if}
