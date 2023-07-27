@@ -12,13 +12,13 @@
     <img
       src={Logo}
       alt="logo"
-      class="xl:-ml-10 -ml-8 xl:w-[167px] w-[187px] xl:h-[50px] h-[70px]"
+      class="xl:-ml-10 -ml-8 xl:w-[167px] w-[197px] xl:h-[50px] h-[80px]"
     />
     <div class="flex items-center xl:gap-4 gap-6">
       <a
         href="https://getnimbus.io/"
         target="_blank"
-        class="xl:text-sm text-xl text-gray-500 hover:text-[#27326F] transition-all"
+        class="xl:text-sm text-2xl text-gray-500 hover:text-[#27326F] transition-all"
       >
         GetNimbus.io
       </a>
@@ -26,24 +26,24 @@
       <a
         href="https://nimbus.featurebase.app/"
         target="_blank"
-        class="xl:text-sm text-xl text-gray-500 hover:text-[#27326F] transition-all"
+        class="xl:text-sm text-2xl text-gray-500 hover:text-[#27326F] transition-all"
         >Feedback</a
       >
       <div class="w-[1px] h-[16px] bg-gray-500" />
       <a
         href="https://nimbus.featurebase.app/roadmap"
         target="_blank"
-        class="xl:text-sm text-xl text-gray-500 hover:text-[#27326F] transition-all"
+        class="xl:text-sm text-2xl text-gray-500 hover:text-[#27326F] transition-all"
         >Roadmap</a
       >
       <div class="w-[1px] h-[16px] bg-gray-500" />
       <div class="flex items-center gap-4">
-        <div class="xl:text-sm text-xl text-gray-500">Find us on</div>
+        <div class="xl:text-sm text-2xl text-gray-500">Find us on</div>
         <div class="flex items-center xl:gap-4 gap-6">
           <a
             href="https://github.com/getnimbus"
             target="_blank"
-            class="text-gray-500 hover:text-[#27326F] transition-all xl:w-6 xl:h-6 w-11 h-11"
+            class="text-gray-500 hover:text-[#27326F] transition-all xl:w-6 xl:h-6 w-12 h-12"
           >
             <svg viewBox="0 0 24 24"
               ><title>icon/github</title><desc>Created with Sketch.</desc><g
@@ -63,7 +63,7 @@
           <a
             href="https://twitter.com/get_nimbus"
             target="_blank"
-            class="text-gray-500 hover:text-[#27326F] transition-all xl:w-6 xl:h-6 w-11 h-11"
+            class="text-gray-500 hover:text-[#27326F] transition-all xl:w-6 xl:h-6 w-12 h-12"
           >
             <svg viewBox="0 0 24 24"
               ><title>icon/twitter</title><desc>Created with Sketch.</desc><g
@@ -83,7 +83,7 @@
           <a
             href="https://discord.gg/u5b9dTrSTr"
             target="_blank"
-            class="text-gray-500 hover:text-[#27326F] transition-all xl:w-6 xl:h-6 w-11 h-11"
+            class="text-gray-500 hover:text-[#27326F] transition-all xl:w-6 xl:h-6 w-12 h-12"
           >
             <svg viewBox="0 0 24 24"
               ><title>media/discord</title><desc>Created with Sketch.</desc><g

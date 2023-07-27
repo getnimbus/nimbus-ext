@@ -192,10 +192,11 @@
               url: "src/entries/options/index.html?tab=wallets",
             });
           }}
-          class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center w-10 h-10"
+          class="cursor-pointer bg-[#525B8C] rounded-full justify-center items-center w-10 h-10 hidden xl:flex"
         >
           <img src={SettingsIcon} alt="" />
         </div>
+
         <div class="relative">
           <div
             class="bg-[#525B8C] rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 cursor-pointer"
@@ -234,10 +235,11 @@
         <a
           href="entries/options/index.html?tab=wallets"
           target="_blank"
-          class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12"
+          class="cursor-pointer bg-[#525B8C] rounded-full justify-center items-center xl:w-10 xl:h-10 w-12 h-12 hidden xl:flex"
         >
           <img src={SettingsIcon} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
         </a>
+
         <div class="xl:w-10 xl:h-10 w-12 h-12 relative">
           <div
             class="bg-[#525B8C] rounded-full flex justify-center items-center w-full h-full"
@@ -288,108 +290,102 @@
         <img src={Close} alt="" class="w-10 h-10" />
       </div>
     </div>
-    <div class="flex flex-col justify-between gap-5">
-      <div class="border-b-[0.5px] border-white pb-5">
-        <Link
-          to={`${
-            APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
+    <div
+      class="flex flex-col justify-between gap-6 border-b-[0.5px] border-white pb-6"
+    >
+      <Link
+        to={`${
+          APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
+        }`}
+      >
+        <div
+          class={`flex items-center gap-3 text-white px-4 py-3 ${
+            navActive === "portfolio"
+              ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+              : "opacity-70"
           }`}
+          on:click={() => {
+            isShowHeaderMobile = false;
+            navActive = "portfolio";
+          }}
         >
-          <div
-            class={`flex items-center gap-3 text-white px-4 ${
-              navActive === "portfolio"
-                ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
-                : "opacity-70"
-            }`}
-            on:click={() => {
-              isShowHeaderMobile = false;
-              navActive = "portfolio";
-            }}
-          >
-            <img src={PortfolioIcon} alt="" width="28" height="28" />
-            <span class="text-2xl font-semibold">
-              {MultipleLang.portfolio}
-            </span>
-          </div>
-        </Link>
-      </div>
+          <img src={PortfolioIcon} alt="" width="32" height="32" />
+          <span class="text-4xl font-semibold">
+            {MultipleLang.portfolio}
+          </span>
+        </div>
+      </Link>
 
-      <div class="border-b-[0.5px] border-white pb-5">
-        <Link to="analytic">
-          <div
-            class={`flex items-center gap-3 text-white px-4 ${
-              navActive === "analytic"
-                ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
-                : "opacity-70"
-            }`}
-            on:click={() => {
-              isShowHeaderMobile = false;
-              navActive = "analytic";
-            }}
-          >
-            <img src={AnalyticIcon} alt="" width="28" height="28" />
-            <span class="flex gap-[1px]">
-              <span class="text-2xl font-semibold">
-                {MultipleLang.analytics}
-              </span>
-              <span class="flex items-center gap-[1px] -mt-2">
-                <img src={Crown} alt="" width="13" height="13" />
-                <span class="text-sm font-medium text-[#FFB800] -mt-[1px]"
-                  >Pro</span
-                >
-              </span>
+      <Link to="analytic">
+        <div
+          class={`flex items-center gap-3 text-white px-4 py-3 ${
+            navActive === "analytic"
+              ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+              : "opacity-70"
+          }`}
+          on:click={() => {
+            isShowHeaderMobile = false;
+            navActive = "analytic";
+          }}
+        >
+          <img src={AnalyticIcon} alt="" width="32" height="32" />
+          <span class="flex gap-[2px]">
+            <span class="text-4xl font-semibold">
+              {MultipleLang.analytics}
             </span>
-          </div>
-        </Link>
-      </div>
+            <span class="flex items-center gap-[1px] -mt-2">
+              <img src={Crown} alt="" width="16" height="16" />
+              <span class="text-base font-medium text-[#FFB800] -mt-[1px]"
+                >Pro</span
+              >
+            </span>
+          </span>
+        </div>
+      </Link>
 
-      <div class="border-b-[0.5px] border-white pb-5">
-        <Link to="transactions">
-          <div
-            class={`flex items-center gap-3 text-white px-4 ${
-              navActive === "transactions"
-                ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
-                : "opacity-70"
-            }`}
-            on:click={() => {
-              isShowHeaderMobile = false;
-              navActive = "transactions";
-            }}
-          >
-            <img src={TransactionsIcon} alt="" width="28" height="28" />
-            <span class="text-2xl font-semibold">
-              {MultipleLang.transactions}
-            </span>
-          </div>
-        </Link>
-      </div>
+      <Link to="transactions">
+        <div
+          class={`flex items-center gap-3 text-white px-4 py-3 ${
+            navActive === "transactions"
+              ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+              : "opacity-70"
+          }`}
+          on:click={() => {
+            isShowHeaderMobile = false;
+            navActive = "transactions";
+          }}
+        >
+          <img src={TransactionsIcon} alt="" width="32" height="32" />
+          <span class="text-4xl font-semibold">
+            {MultipleLang.transactions}
+          </span>
+        </div>
+      </Link>
 
-      <div class="border-b-[0.5px] border-white pb-5">
-        <Link to="market">
-          <div
-            class={`flex items-center gap-3 text-white px-4 ${
-              navActive === "market"
-                ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
-                : "opacity-70"
-            }`}
-            on:click={() => {
-              isShowHeaderMobile = false;
-              navActive = "market";
-            }}
-          >
-            <img src={MarketIcon} alt="" width="28" height="28" />
-            <span class="text-2xl font-semibold">
-              {MultipleLang.market}
-            </span>
-          </div>
-        </Link>
-      </div>
+      <Link to="market">
+        <div
+          class={`flex items-center gap-3 text-white px-4 py-3 ${
+            navActive === "market"
+              ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+              : "opacity-70"
+          }`}
+          on:click={() => {
+            isShowHeaderMobile = false;
+            navActive = "market";
+          }}
+        >
+          <img src={MarketIcon} alt="" width="32" height="32" />
+          <span class="text-4xl font-semibold">
+            {MultipleLang.market}
+          </span>
+        </div>
+      </Link>
 
       <Link to="news">
         <div
-          class={`flex items-center gap-3 text-white px-4 ${
+          class={`flex items-center gap-3 text-white px-4 py-3 ${
             navActive === "news"
-              ? "bg-[#525B8C] py-3 rounded-[1000px] opacity-100"
+              ? "bg-[#525B8C] rounded-[1000px] opacity-100"
               : "opacity-70"
           }`}
           on:click={() => {
@@ -397,12 +393,40 @@
             navActive = "news";
           }}
         >
-          <img src={NewsIcon} alt="" width="28" height="28" />
-          <span class="text-2xl font-semibold">
+          <img src={NewsIcon} alt="" width="32" height="32" />
+          <span class="text-4xl font-semibold">
             {MultipleLang.news}
           </span>
         </div>
       </Link>
+    </div>
+    <div>
+      {#if APP_TYPE.TYPE === "EXT"}
+        <div
+          on:click={() => {
+            browser.tabs.create({
+              url: "src/entries/options/index.html?tab=wallets",
+            });
+            isShowHeaderMobile = false;
+          }}
+          class="flex items-center gap-3 text-white px-4"
+        >
+          <img src={SettingsIcon} alt="" />
+          <span class="text-4xl font-semibold">Settings</span>
+        </div>
+      {:else}
+        <a
+          href="entries/options/index.html?tab=wallets"
+          target="_blank"
+          class="flex items-center gap-3 text-white px-4"
+          on:click={() => {
+            isShowHeaderMobile = false;
+          }}
+        >
+          <img src={SettingsIcon} alt="" width="32" height="32" />
+          <span class="text-4xl font-semibold">Settings</span>
+        </a>
+      {/if}
     </div>
   </div>
 </div>
