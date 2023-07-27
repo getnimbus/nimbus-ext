@@ -185,73 +185,75 @@
         />
       </div>
 
-      {#if APP_TYPE.TYPE === "EXT"}
-        <div
-          on:click={() => {
-            browser.tabs.create({
-              url: "src/entries/options/index.html?tab=wallets",
-            });
-          }}
-          class="cursor-pointer bg-[#525B8C] rounded-full justify-center items-center w-10 h-10 hidden xl:flex"
-        >
-          <img src={SettingsIcon} alt="" />
-        </div>
-
-        <div class="relative">
+      <div class="xl:block hidden">
+        {#if APP_TYPE.TYPE === "EXT"}
           <div
-            class="bg-[#525B8C] rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 cursor-pointer"
-            on:click={() => (isShowChangeLog = !isShowChangeLog)}
+            on:click={() => {
+              browser.tabs.create({
+                url: "src/entries/options/index.html?tab=wallets",
+              });
+            }}
+            class="cursor-pointer bg-[#525B8C] rounded-full justify-center items-center w-10 h-10 hidden flex"
           >
-            <img src={ChangeLogIcon} alt="" class="w-[26px] h-[26px]" />
+            <img src={SettingsIcon} alt="" />
           </div>
-          <Motion
-            initial="hidden"
-            animate={isShowChangeLog ? "visible" : "hidden"}
-            variants={showChangeLogAnimationVariants}
-            let:motion
-          >
+
+          <div class="relative">
             <div
-              class="h-[630px] w-[430px] absolute right-1 top-14 p-4 bg-white rounded-[20px] items-end z-50"
-              style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
-              use:motion
+              class="bg-[#525B8C] rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 cursor-pointer"
+              on:click={() => (isShowChangeLog = !isShowChangeLog)}
             >
-              <iframe
-                id="change-log"
-                src="https://nimbus.featurebase.app/changelog"
-                class="h-[580px] w-full"
-              />
-              <div
-                class="absolute top-3 right-5 cursor-pointer font-medium"
-                on:click={() => {
-                  isShowChangeLog = false;
-                }}
-              >
-                Close
-              </div>
+              <img src={ChangeLogIcon} alt="" class="w-[26px] h-[26px]" />
             </div>
-          </Motion>
-        </div>
-      {:else}
-        <a
-          href="entries/options/index.html?tab=wallets"
-          target="_blank"
-          class="cursor-pointer bg-[#525B8C] rounded-full justify-center items-center xl:w-10 xl:h-10 w-12 h-12 hidden xl:flex"
-        >
-          <img src={SettingsIcon} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-        </a>
-
-        <div class="xl:w-10 xl:h-10 w-12 h-12 relative">
-          <div
-            class="bg-[#525B8C] rounded-full flex justify-center items-center w-full h-full"
-          >
-            <img src={ChangeLogIcon} alt="" class="w-[26px] h-[26px]" />
+            <Motion
+              initial="hidden"
+              animate={isShowChangeLog ? "visible" : "hidden"}
+              variants={showChangeLogAnimationVariants}
+              let:motion
+            >
+              <div
+                class="h-[630px] w-[430px] absolute right-1 top-14 p-4 bg-white rounded-[20px] items-end z-50"
+                style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
+                use:motion
+              >
+                <iframe
+                  id="change-log"
+                  src="https://nimbus.featurebase.app/changelog"
+                  class="h-[580px] w-full"
+                />
+                <div
+                  class="absolute top-3 right-5 cursor-pointer font-medium"
+                  on:click={() => {
+                    isShowChangeLog = false;
+                  }}
+                >
+                  Close
+                </div>
+              </div>
+            </Motion>
           </div>
-          <button
-            data-featurebase-changelog
-            class="w-full h-full absolute inset-0 z-10"
-          />
-        </div>
-      {/if}
+        {:else}
+          <a
+            href="entries/options/index.html?tab=wallets"
+            target="_blank"
+            class="cursor-pointer bg-[#525B8C] rounded-full justify-center items-center xl:w-10 xl:h-10 w-12 h-12 hidden flex"
+          >
+            <img src={SettingsIcon} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+          </a>
+
+          <div class="xl:w-10 xl:h-10 w-12 h-12 relative">
+            <div
+              class="bg-[#525B8C] rounded-full flex justify-center items-center w-full h-full"
+            >
+              <img src={ChangeLogIcon} alt="" class="w-[26px] h-[26px]" />
+            </div>
+            <button
+              data-featurebase-changelog
+              class="w-full h-full absolute inset-0 z-10"
+            />
+          </div>
+        {/if}
+      </div>
 
       <!-- <div
         class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12"
