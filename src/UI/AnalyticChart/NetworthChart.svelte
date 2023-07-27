@@ -1,16 +1,16 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import dayjs from "dayjs";
   import { formatCurrency } from "~/utils";
-
-  import EChart from "~/components/EChart.svelte";
-
-  import Logo from "~/assets/logo-1.svg";
-  import LoadingPremium from "~/components/LoadingPremium.svelte";
-  import { onMount } from "svelte";
   import { sendMessage } from "webext-bridge";
   import { chain, wallet } from "~/store";
   import type { EChartsOption } from "echarts";
   import { uniqBy } from "lodash";
+
+  import EChart from "~/components/EChart.svelte";
+  import LoadingPremium from "~/components/LoadingPremium.svelte";
+
+  import Logo from "~/assets/logo-1.svg";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -22,53 +22,61 @@
     selectedChain = value;
   });
 
-  export let isEmpty;
-  export let isLoading;
+  let isEmpty = false;
+  let isLoading = false;
   let chartData = [];
   let portfolioData = [];
   let chartOption: EChartsOption = {};
 
   const getHoldingData = async () => {
     isLoading = true;
-    const [holdingData, networthChart] = await Promise.all([
-      sendMessage("getHoldingToken", {
-        address: selectedWallet,
-        chain: selectedChain,
-      }),
-      sendMessage("getNetworthAnalysis", {
-        address: selectedWallet,
-        chain: selectedChain,
-      }),
-    ]);
+    try {
+      const [holdingData, networthChart] = await Promise.all([
+        sendMessage("getHoldingToken", {
+          address: selectedWallet,
+          chain: selectedChain,
+        }),
+        sendMessage("getNetworthAnalysis", {
+          address: selectedWallet,
+          chain: selectedChain,
+        }),
+      ]);
 
-    const addresses = (holdingData?.result || []).map((item) =>
-      item.cg_id
-        ? `coingecko:${item.cg_id}`
-        : `ethereum:${item.contractAddress}`
-    );
+      console.log("networthChart: ", networthChart);
 
-    const chartDataResponse = await sendMessage("getDefillamaTokenChart", {
-      addresses,
-      start: dayjs().startOf("d").subtract(30, "d").unix(),
-      span: 30,
-    });
+      const addresses = (holdingData?.result || []).map((item) =>
+        item.cg_id
+          ? `coingecko:${item.cg_id}`
+          : `ethereum:${item.contractAddress}`
+      );
 
-    chartData = chartDataResponse?.coins || {};
-    portfolioData = networthChart?.result || [];
-    isEmpty = false;
-    isLoading = false;
+      const chartDataResponse = await sendMessage("getDefillamaTokenChart", {
+        addresses,
+        start: dayjs().startOf("d").subtract(30, "d").unix(),
+        span: 30,
+      });
+
+      chartData = chartDataResponse?.coins || {};
+      portfolioData = networthChart?.result || [];
+      isEmpty = false;
+      isLoading = false;
+    } catch (e) {
+      console.error("e: ", e);
+      isEmpty = true;
+      isLoading = false;
+    }
   };
 
   $: {
     if (selectedWallet && selectedChain) {
-      getHoldingData();
+      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+        getHoldingData();
+      }
     }
   }
 
-  let optionLine = {};
-
   $: {
-    console.log(portfolioData);
+    console.log("portfolioData: ", portfolioData);
     if (chartData && portfolioData.length) {
       const seriesList = Object.keys(chartData).map((token) => {
         const basePoint = chartData[token]?.prices[0];
@@ -100,7 +108,7 @@
       });
 
       const basePortfolioPoint = portfolioData[0];
-      const portfolioSerie = {
+      const portfolioSeries = {
         type: "line",
         showSymbol: false,
         name: "Portfolio",
@@ -119,7 +127,7 @@
         ]),
       };
 
-      console.log(portfolioSerie);
+      console.log("portfolioSeries: ", portfolioSeries);
 
       chartOption = {
         animationDuration: 5000,
@@ -137,7 +145,7 @@
             formatter: "{value}%",
           },
         },
-        series: [portfolioSerie, ...seriesList],
+        series: [portfolioSeries, ...seriesList],
       };
     }
   }

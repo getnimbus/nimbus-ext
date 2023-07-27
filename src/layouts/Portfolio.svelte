@@ -9,10 +9,11 @@
   import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
   import { disconnectWs, initWS } from "~/lib/price-ws";
-  import { formatCurrency } from "~/utils";
+  import { formatCurrency, getAddressContext } from "~/utils";
   import { wait } from "../entries/background/utils";
   import { isOpenReport, wallet, chain } from "~/store";
   import mixpanel from "mixpanel-browser";
+  import { nimbus } from "~/lib/network";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
@@ -28,6 +29,7 @@
   import Overview from "~/UI/Portfolio/Overview.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
   import Testimonial from "~/UI/Testimonial/Testimonial.svelte";
+  import Compare from "~/UI/Portfolio/Compare.svelte";
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";
@@ -177,6 +179,18 @@
       formatDataPieChartTopFiveNft: [],
       dataPieChartOrderBreakdownNft: [],
     },
+  };
+
+  let compareData = {};
+  let isLoadingDataCompare = false;
+  let searchCompare = "";
+  let timerSearchDebounce;
+
+  const debounceSearchCompare = (value) => {
+    clearTimeout(timerSearchDebounce);
+    timerSearchDebounce = setTimeout(() => {
+      searchCompare = value;
+    }, 300);
   };
 
   const getOverview = async (isReload: boolean = false) => {
@@ -550,6 +564,22 @@
     }
   };
 
+  const getAnalyticCompare = async () => {
+    isLoadingDataCompare = true;
+    try {
+      const response: any = await nimbus.get(
+        `/v2/analysis/${selectedWallet}/compare?compareAddress=${searchCompare}`
+      );
+      if (response && response.data) {
+        compareData = response.data;
+        isLoadingDataCompare = false;
+      }
+    } catch (e) {
+      console.log("e: ", e);
+      isLoadingDataCompare = false;
+    }
+  };
+
   const handleGetAllData = async (type: string) => {
     overviewData = {
       breakdownToken: [],
@@ -710,6 +740,9 @@
     if (selectedWallet || selectedChain) {
       if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
         handleGetAllData("sync");
+        if (getAddressContext(selectedWallet)?.type === "EVM") {
+          getAnalyticCompare();
+        }
       }
     }
   }
@@ -769,6 +802,57 @@
             {dataPieChart}
             {isEmptyDataPie}
           />
+
+          {#if getAddressContext(selectedWallet)?.type === "EVM"}
+            <div
+              class="flex flex-col gap-4 border border-[#0000001a] rounded-[20px] p-6"
+            >
+              <div class="flex justify-between">
+                <div class="xl:text-2xl text-4xl font-medium text-black">
+                  Compare
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="xl:text-sm text-lg">Comparing with</div>
+                  <div
+                    class={`w-[400px] border focus:outline-none w-full py-2 px-3 rounded-lg flex justify-between items-center ${
+                      searchCompare ? "bg-[#F0F2F7]" : "bg-white"
+                    }`}
+                  >
+                    <input
+                      on:keyup={({ target: { value } }) =>
+                        debounceSearchCompare(value)}
+                      on:keydown={(event) => {
+                        if (
+                          (event.which == 13 || event.keyCode == 13) &&
+                          searchCompare
+                        ) {
+                          getAnalyticCompare();
+                        }
+                      }}
+                      value={searchCompare}
+                      placeholder={"Search address to compare"}
+                      type="text"
+                      class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] h-7 ${
+                        searchCompare ? "bg-[#F0F2F7]" : ""
+                      }`}
+                    />
+                    {#if searchCompare}
+                      <div
+                        class="cursor-pointer text-xl text-[#5E656B]"
+                        on:click={() => {
+                          searchCompare = "";
+                          getAnalyticCompare();
+                        }}
+                      >
+                        &otimes;
+                      </div>
+                    {/if}
+                  </div>
+                </div>
+              </div>
+              <Compare data={compareData} {isLoadingDataCompare} />
+            </div>
+          {/if}
 
           <Holding
             {selectedWallet}
