@@ -26,8 +26,13 @@
 </script>
 
 <tr
-  class="group transition-all cursor-pointer"
+  class={`group transition-all ${
+    getAddressContext(selectedWallet).type !== "EVM" ? "cursor-pointer" : ""
+  }`}
   on:click={() => {
+    if (getAddressContext(selectedWallet).type === "EVM") {
+      return;
+    }
     navigate(
       `nft-detail?id=${encodeURIComponent(
         data.collectionId
@@ -175,19 +180,21 @@
     </div>
   </td>
 
-  <!-- <td class="py-3 w-10 group-hover:bg-gray-100">
-    <div class="flex justify-center">
-      <div
-        use:tooltip={{
-          content: `<tooltip-detail text="Show detail" />`,
-          allowHTML: true,
-          placement: "top",
-        }}
-      >
-        <img src={Chart} alt="" width={14} height={14} />
+  {#if getAddressContext(selectedWallet).type !== "EVM"}
+    <td class="py-3 w-10 group-hover:bg-gray-100">
+      <div class="flex justify-center">
+        <div
+          use:tooltip={{
+            content: `<tooltip-detail text="Show detail" />`,
+            allowHTML: true,
+            placement: "top",
+          }}
+        >
+          <img src={Chart} alt="" width={14} height={14} />
+        </div>
       </div>
-    </div>
-  </td> -->
+    </td>
+  {/if}
 </tr>
 
 <style>

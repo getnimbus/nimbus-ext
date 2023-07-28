@@ -179,6 +179,7 @@
   }
 
   $: totalAssets = sumTokens + sumNFT;
+  $: colspan = getAddressContext(selectedWallet).type !== "EVM" ? 8 : 7;
 </script>
 
 <div class="flex flex-col gap-6 border border-[#0000001a] rounded-[20px] p-6">
@@ -267,7 +268,7 @@
                     </TooltipTitle>
                   </div>
                 </th>
-                <th class="py-3 pr-3">
+                <th class="py-3 pr-3 rounded-tr-[10px]">
                   <div
                     class="xl:text-xs text-base uppercase font-semibold text-black"
                   >
@@ -285,7 +286,7 @@
             {#if isLoadingToken}
               <tbody>
                 <tr>
-                  <td colspan={7}>
+                  <td {colspan}>
                     <div class="flex justify-center items-center py-3 px-3">
                       <loading-icon />
                     </div>
@@ -296,7 +297,7 @@
               <tbody>
                 {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
                   <tr>
-                    <td colspan={7}>
+                    <td {colspan}>
                       <div
                         class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
                       >
@@ -387,7 +388,13 @@
                   {MultipleLang.current_value}
                 </div>
               </th>
-              <th class="py-3 pr-3">
+              <th
+                class={`py-3 pr-3 ${
+                  getAddressContext(selectedWallet).type === "EVM"
+                    ? "rounded-tr-[10px]"
+                    : ""
+                }`}
+              >
                 <div
                   class="text-right xl:text-xs text-base uppercase font-semibold text-black"
                 >
@@ -398,13 +405,15 @@
                   </TooltipTitle>
                 </div>
               </th>
-              <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
+              {#if getAddressContext(selectedWallet).type !== "EVM"}
+                <th class="py-3 w-10 rounded-tr-[10px]" />
+              {/if}
             </tr>
           </thead>
           {#if isLoadingNFT}
             <tbody>
               <tr>
-                <td colspan={7}>
+                <td {colspan}>
                   <div class="flex justify-center items-center py-3 px-3">
                     <loading-icon />
                   </div>
@@ -415,7 +424,7 @@
             <tbody>
               {#if formatDataNFT && formatDataNFT.length === 0}
                 <tr>
-                  <td colspan={7}>
+                  <td {colspan}>
                     <div
                       class="flex justify-center items-center py-3 px-3 text-lg text-gray-400"
                     >
