@@ -185,7 +185,7 @@
         />
       </div>
 
-      <div class="xl:block hidden">
+      <div class="xl:flex gap-3 hidden">
         {#if APP_TYPE.TYPE === "EXT"}
           <div
             on:click={() => {
@@ -236,7 +236,7 @@
           <a
             href="entries/options/index.html?tab=wallets"
             target="_blank"
-            class="cursor-pointer bg-[#525B8C] rounded-full justify-center items-center xl:w-10 xl:h-10 w-12 h-12 hidden flex"
+            class="cursor-pointer bg-[#525B8C] rounded-full justify-center items-center xl:w-10 xl:h-10 w-12 h-12 flex"
           >
             <img src={SettingsIcon} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
           </a>

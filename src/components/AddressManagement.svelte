@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { sendMessage } from "webext-bridge";
   import * as browser from "webextension-polyfill";
-  import { wallet, chain } from "~/store";
+  import { wallet, chain, user } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
@@ -16,6 +16,7 @@
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
 
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
@@ -98,6 +99,11 @@
     selectedChain = value;
   });
 
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
+
   let toastMsg = "";
   let isSuccessToast = false;
   let counter = 3;
@@ -133,6 +139,32 @@
   let isScrollStart = true;
   let isScrollEnd = false;
   let container;
+
+  const handleAddCEX = () => {
+    const evmToken = localStorage.getItem("evm_token");
+    if (evmToken) {
+      const vezgo: any = Vezgo.init({
+        clientId: "6st9c6s816su37qe8ld1d5iiq2",
+        authEndpoint: "https://api.getnimbus.io/auth/vezgo",
+        auth: {
+          headers: { Authorization: `${evmToken}` },
+        },
+      });
+      const userVezgo = vezgo.login();
+      if (userVezgo) {
+        userVezgo
+          .connect()
+          .onConnection(async function (account) {
+            console.log("connection vezgo success", account);
+            const response = await nimbus.get("/cex/sync");
+            console.log("response sync CEX: ", response);
+          })
+          .onError(function (error) {
+            console.log("connection vezgo error", error);
+          });
+      }
+    }
+  };
 
   const getListAddress = async (type) => {
     isLoadingFullPage = true;
@@ -463,12 +495,46 @@
             <div class="text-lg">
               {MultipleLang.addwallet}
             </div>
-            <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
-              <img src={Plus} alt="" width="12" height="12" />
-              <div class="xl:text-base text-2xl font-medium text-white">
-                {MultipleLang.content.btn_text}
+            {#if Object.keys(userInfo).length !== 0}
+              <Button
+                variant="tertiary"
+                on:click={() => (isOpenAddModal = true)}
+              >
+                <img src={Plus} alt="" width="12" height="12" />
+                <div class="xl:text-base text-2xl font-medium text-white">
+                  {MultipleLang.content.btn_text}
+                </div>
+              </Button>
+            {:else}
+              <div
+                class="relative"
+                on:mouseenter={() => {
+                  if (Object.keys(userInfo).length === 0) {
+                    showDisableAddWallet = true;
+                  }
+                }}
+                on:mouseleave={() => {
+                  if (Object.keys(userInfo).length === 0) {
+                    showDisableAddWallet = false;
+                  }
+                }}
+              >
+                <Button variant="disabled">
+                  <img src={Plus} alt="" width="12" height="12" />
+                  <div class="xl:text-base text-2xl font-medium text-white">
+                    {MultipleLang.content.btn_text}
+                  </div>
+                </Button>
+                {#if showDisableAddWallet}
+                  <div
+                    class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                    style="z-index: 2147483648;"
+                  >
+                    <tooltip-detail text={"Login to add account"} />
+                  </div>
+                {/if}
               </div>
-            </Button>
+            {/if}
           </div>
         </div>
       {:else}
@@ -476,6 +542,7 @@
           <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[96%]">
             <div class="flex flex-col mb-5 gap-14">
               <div class="flex items-center justify-between gap-6">
+                <!-- desktop list address wallet -->
                 <div class="xl:block hidden">
                   {#if formatListAddress.length !== 0}
                     <div class="flex items-center gap-5">
@@ -501,7 +568,10 @@
                                 <Motion
                                   let:motion
                                   layoutId="active-pill"
-                                  transition={{ type: "spring", duration: 0.6 }}
+                                  transition={{
+                                    type: "spring",
+                                    duration: 0.6,
+                                  }}
                                 >
                                   <div
                                     class="absolute inset-0 rounded-full bg-[#ffffff1c]"
@@ -542,7 +612,10 @@
                                 <Motion
                                   let:motion
                                   layoutId="active-pill"
-                                  transition={{ type: "spring", duration: 0.6 }}
+                                  transition={{
+                                    type: "spring",
+                                    duration: 0.6,
+                                  }}
                                 >
                                   <div
                                     class="absolute inset-0 rounded-full bg-[#ffffff1c]"
@@ -562,6 +635,7 @@
                   {/if}
                 </div>
 
+                <!-- mobile list address wallet -->
                 <div
                   class="xl:hidden relative overflow-x-hidden w-full flex flex-row gap-3 justify-between items-center"
                   bind:this={container}
@@ -647,8 +721,9 @@
                   {/if}
                 </div>
 
+                <!-- btn add address wallet -->
                 <div
-                  class="relative"
+                  class="relative xl:w-max w-[260px]"
                   on:mouseenter={() => {
                     if (isDisabled) {
                       showDisableAddWallet = true;
@@ -660,11 +735,11 @@
                     }
                   }}
                 >
-                  {#if isDisabledBtn}
+                  {#if isDisabledBtn || Object.keys(userInfo).length === 0}
                     <Button variant="disabled" disabled>
                       <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
                       <div class="xl:text-base text-2xl font-medium text-white">
-                        {MultipleLang.content.btn_text}
+                        Add account
                       </div>
                     </Button>
                   {:else}
@@ -690,7 +765,7 @@
                     >
                       <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
                       <div class="xl:text-base text-2xl font-medium text-white">
-                        {MultipleLang.content.btn_text}
+                        Add account
                       </div>
                     </Button>
                   {/if}
@@ -823,90 +898,106 @@
 
 <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
   <div class="xl:title-3 title-1 text-gray-600 font-semibold">
-    {MultipleLang.content.modal_add_title}
+    Add your account
   </div>
-  <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
-    <div class="flex flex-col gap-1">
+  <div class="flex flex-col mt-4 gap-7">
+    <div class="flex justify-center">
+      <Button variant="tertiary" on:click={handleAddCEX}>
+        <div class="xl:text-base text-2xl font-medium text-white">
+          Connect CEX
+        </div>
+      </Button>
+    </div>
+    <div class="border-t-[1px] relative">
+      <div
+        class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 bg-white text-sm px-2"
+      >
+        Or
+      </div>
+    </div>
+    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3">
       <div class="flex flex-col gap-1">
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            address ? "bg-[#F0F2F7]" : ""
-          }`}
-          class:input-border-error={errors.address && errors.address.required}
-        >
-          <div class="xl:text-base text-xl text-[#666666] font-medium">
-            {MultipleLang.content.modal_address_label}
-          </div>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            placeholder={MultipleLang.content.modal_address_label}
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+        <div class="flex flex-col gap-1">
+          <div
+            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
               address ? "bg-[#F0F2F7]" : ""
-            }
+            }`}
+            class:input-border-error={errors.address && errors.address.required}
+          >
+            <div class="xl:text-base text-xl text-[#666666] font-medium">
+              {MultipleLang.content.modal_address_label}
+            </div>
+            <input
+              type="text"
+              id="address"
+              name="address"
+              placeholder={MultipleLang.content.modal_address_label}
+              value=""
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                address ? "bg-[#F0F2F7]" : ""
+              }
               `}
-            on:keyup={({ target: { value } }) => (address = value)}
-          />
-        </div>
-        {#if errors.address && errors.address.required}
-          <div class="text-red-500">
-            {errors.address.msg}
+              on:keyup={({ target: { value } }) => (address = value)}
+            />
           </div>
-        {/if}
+          {#if errors.address && errors.address.required}
+            <div class="text-red-500">
+              {errors.address.msg}
+            </div>
+          {/if}
+        </div>
       </div>
-    </div>
-    <div class="flex flex-col gap-1">
       <div class="flex flex-col gap-1">
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            label ? "bg-[#F0F2F7]" : ""
-          }`}
-          class:input-border-error={errors.label && errors.label.required}
-        >
-          <div class="xl:text-base text-xl text-[#666666] font-medium">
-            {MultipleLang.content.modal_label_label}
-          </div>
-          <input
-            type="text"
-            id="label"
-            name="label"
-            placeholder={MultipleLang.content.modal_label_label}
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+        <div class="flex flex-col gap-1">
+          <div
+            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
               label ? "bg-[#F0F2F7]" : ""
-            }
+            }`}
+            class:input-border-error={errors.label && errors.label.required}
+          >
+            <div class="xl:text-base text-xl text-[#666666] font-medium">
+              {MultipleLang.content.modal_label_label}
+            </div>
+            <input
+              type="text"
+              id="label"
+              name="label"
+              placeholder={MultipleLang.content.modal_label_label}
+              value=""
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                label ? "bg-[#F0F2F7]" : ""
+              }
               `}
-            on:keyup={({ target: { value } }) => (label = value)}
-          />
-        </div>
-        {#if errors.label && errors.label.required}
-          <div class="text-red-500">
-            {errors.label.msg}
+              on:keyup={({ target: { value } }) => (label = value)}
+            />
           </div>
-        {/if}
+          {#if errors.label && errors.label.required}
+            <div class="text-red-500">
+              {errors.label.msg}
+            </div>
+          {/if}
+        </div>
       </div>
-    </div>
-    <div class="flex justify-end gap-2">
-      <div class="lg:w-[120px] w-full">
-        <Button
-          variant="secondary"
-          on:click={() => {
-            errors = {};
-            isOpenAddModal = false;
-          }}
-        >
-          {MultipleLang.content.modal_cancel}</Button
-        >
+      <div class="flex justify-end gap-2">
+        <div class="lg:w-[120px] w-full">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              errors = {};
+              isOpenAddModal = false;
+            }}
+          >
+            {MultipleLang.content.modal_cancel}</Button
+          >
+        </div>
+        <div class="lg:w-[120px] w-full">
+          <Button type="submit">
+            {MultipleLang.content.modal_add}</Button
+          >
+        </div>
       </div>
-      <div class="lg:w-[120px] w-full">
-        <Button type="submit">
-          {MultipleLang.content.modal_add}</Button
-        >
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </AppOverlay>
 
 <AppOverlay

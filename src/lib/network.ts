@@ -103,7 +103,7 @@ export const nimbus = createAxiosInterface({
     const evmToken = localStorage.getItem("evm_token");
     if (evmToken) {
       return {
-        Authorization: `Bearer ${evmToken}`,
+        Authorization: `${evmToken}`,
       }
     }
   }

@@ -84,6 +84,7 @@
     "tailwindcss": "^3.1.8",
     "tippy.js": "^6.3.7",
     "url-pattern": "^1.0.3",
+    "vezgo-sdk-js": "^1.0.9",
     "vite-imagetools": "^4.0.4",
     "webext-bridge": "https://github.com/getnimbus/webext-bridge.git",
     "webextension-polyfill": "^0.9.0",
