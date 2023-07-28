@@ -323,6 +323,7 @@
             {option}
             height={420}
             type="full-width"
+            notMerge={true}
           />
 
           <div class="flex flex-col gap-4">

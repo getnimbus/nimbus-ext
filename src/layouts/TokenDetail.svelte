@@ -607,7 +607,13 @@
                   Empty
                 </div>
               {:else}
-                <EChart id="chartBalance" theme="white" {option} height={420} />
+                <EChart
+                  id="chartBalance"
+                  theme="white"
+                  {option}
+                  height={420}
+                  notMerge={true}
+                />
               {/if}
             </div>
           {/if}
@@ -636,6 +642,7 @@
                   theme="white"
                   option={option2}
                   height={420}
+                  notMerge={true}
                 />
               {/if}
             </div>
