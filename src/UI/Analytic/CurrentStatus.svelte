@@ -8,6 +8,8 @@
     formatCurrency,
     getAddressContext,
     typeList,
+    handleFormatDataPieChart,
+    handleFormatDataTable,
   } from "~/utils";
   import { i18n } from "~/lib/i18n";
   import { priceSubscribe } from "~/lib/price-ws";
@@ -66,35 +68,50 @@
       extraCssText: "z-index: 9997",
       formatter: function (params) {
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 190px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                ${params.name}
-              </div>
-              ${
-                params.data.name_balance
-                  ? `<div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
-                  ${MultipleLang[params.data.name_balance]}
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+              <div style="display: flex; align-items: centers; gap: 4px">
+                ${
+                  params?.data?.logo
+                    ? `<img src=${params?.data?.logo} alt="" width=20 height=20 style="border-radius: 100%" />`
+                    : ""
+                }
+                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                  ${params?.name} ${
+          params?.data?.symbol ? `(${params?.data?.symbol})` : ""
+        }
                 </div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatCurrency(params.data.value_balance)}</div>
-              </div>`
-                  : ""
-              }
-              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
-                  ${MultipleLang[params.data.name_value]}
-                </div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  $${formatBalance(params.data.value_value)}</div>
               </div>
 
-              <div style="display: flex; align-items: centers; justify-content: space-between; gap: 4px">
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
-                  ${MultipleLang[params.data.name_ratio]}
+              ${
+                params?.data?.name_balance
+                  ? `
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                    ${MultipleLang[params?.data?.name_balance]}
+                  </div>
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                    ${formatCurrency(params?.data?.value_balance)}
+                  </div>
                 </div>
-                <div style="flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatBalance(params.value)}%
+              `
+                  : ""
+              }
+
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                  ${MultipleLang[params?.data?.name_value]}
+                </div>
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                  $${formatCurrency(params?.data?.value_value)}
+                </div>
+              </div>
+              
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                  ${MultipleLang[params?.data?.name_ratio]}
+                </div>
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                  ${formatCurrency(params?.value)}%
                 </div>
               </div>
             </div>`;
@@ -159,77 +176,6 @@
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
     isScrollStart = scrollLeft === 0;
     isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
-  };
-
-  const handleFormatDataPieChart = (data, type) => {
-    const formatData = data.map((item) => {
-      return {
-        ...item,
-        value: Number(item?.amount) * Number(item?.price?.price),
-      };
-    });
-
-    const groupData = groupBy(formatData, type);
-    const typesData = Object.getOwnPropertyNames(groupData);
-
-    const formatGroupData = typesData.map((item) => {
-      return {
-        name: item,
-        data: groupData[item],
-        name_value: "Value",
-        value_value: groupData[item].reduce(
-          (prev, item) => prev + Number(item.value),
-          0
-        ),
-        name_ratio: "Ratio",
-        value: 0,
-      };
-    });
-
-    const sumData = formatGroupData.reduce(
-      (prev, item) => prev + Number(item.value_value),
-      0
-    );
-
-    return formatGroupData.map((item) => {
-      return {
-        name: item.name,
-        name_value: item.name_value,
-        value_value: item.value_value,
-        name_ratio: item.name_ratio,
-        value: (Number(item.value_value) / sumData) * 100,
-      };
-    });
-  };
-
-  const handleFormatDataTable = (data, type) => {
-    let formatData = data.map((item) => {
-      return {
-        ...item,
-        value: Number(item?.amount) * Number(item?.price?.price),
-        market_price: Number(item?.price?.price) || 0,
-      };
-    });
-
-    let groupData = groupBy(formatData, type);
-    let typesData = Object.getOwnPropertyNames(groupData);
-
-    let formatGroupData = typesData.map((item) => {
-      return {
-        name: item,
-        data: groupData[item],
-      };
-    });
-
-    return {
-      select: typesData.map((item) => {
-        return {
-          value: item,
-          label: item,
-        };
-      }),
-      data: formatGroupData,
-    };
   };
 
   const getHoldingToken = async (isReload: boolean = false) => {
@@ -333,15 +279,6 @@
         });
 
         dataPersonalizeTag = formatDataCategory;
-
-        const listCategory = formatDataCategory.map((item) => {
-          return {
-            label: item.category,
-            value: item.category,
-          };
-        });
-
-        typeListCategory = [...typeListCategory, ...listCategory];
       }
     } catch (e) {
       console.log("e: ", e);
@@ -384,6 +321,15 @@
           dataTokens: formatDataTokens,
         };
       });
+
+      const listCategory = dataPersonalizeTag.map((item) => {
+        return {
+          label: item.category,
+          value: item.category,
+        };
+      });
+
+      typeListCategory = [...typeListCategory, ...listCategory];
 
       personalizeCategoryData = formatTokenDataEachCategory.map((item) => {
         return {

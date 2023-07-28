@@ -1,6 +1,7 @@
 import numeral from "numeral";
 import jwt_decode from "jwt-decode";
 import { nimbus } from "./lib/network";
+import { groupBy } from "lodash";
 
 import logo from "~/assets/bitcoin.png";
 import Bnb from "~/assets/bnb.png";
@@ -363,4 +364,85 @@ export const handleGetAccessToken = async (code: string) => {
     }
     return jwt_decode(res.data.id_token);
   }
+};
+
+export const handleFormatDataPieChart = (data, type) => {
+  const formatData = data.map((item) => {
+    return {
+      ...item,
+      value: Number(item?.amount) * Number(item?.price?.price),
+    };
+  });
+
+  const groupData = groupBy(formatData, type);
+  const typesData = Object.getOwnPropertyNames(groupData);
+
+  const formatGroupData = typesData.map((item) => {
+    return {
+      logo: undefined,
+      name: item,
+      symbol: "",
+      name_ratio: "Ratio",
+      value: 0,
+      name_value: "Value",
+      value_value: groupData[item].reduce(
+        (prev, item) => prev + Number(item.value),
+        0
+      ),
+      name_balance: "Balance",
+      value_balance: groupData[item].reduce(
+        (prev, item) => prev + Number(item.amount),
+        0
+      ),
+    };
+  });
+
+  const sumData = formatGroupData.reduce(
+    (prev, item) => prev + Number(item.value_value),
+    0
+  );
+
+  return formatGroupData.map((item) => {
+    return {
+      logo: item.logo,
+      name: item.name,
+      symbol: "",
+      name_ratio: item.name_ratio,
+      value: (Number(item.value_value) / sumData) * 100,
+      name_value: item.name_value,
+      value_value: item.value_value,
+      name_balance: item.name_balance,
+      value_balance: item.value_balance,
+    };
+  });
+};
+
+export const handleFormatDataTable = (data, type) => {
+  let formatData = data.map((item) => {
+    return {
+      ...item,
+      value: Number(item?.amount) * Number(item?.price?.price),
+      market_price: Number(item?.price?.price) || 0,
+    };
+  });
+
+  let groupData = groupBy(formatData, type);
+  let typesData = Object.getOwnPropertyNames(groupData);
+
+  let formatGroupData = typesData.map((item) => {
+    return {
+      name: item,
+      data: groupData[item],
+    };
+  });
+
+  return {
+    select: typesData.map((item) => {
+      return {
+        value: item,
+        label: item,
+      };
+    }),
+    data: formatGroupData,
+  };
 };

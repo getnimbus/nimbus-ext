@@ -31,6 +31,7 @@
   import Testimonial from "~/UI/Testimonial/Testimonial.svelte";
   import Compare from "~/UI/Portfolio/Compare.svelte";
   import "~/components/Tooltip.custom.svelte";
+  import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
 
   import Reload from "~/assets/reload.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -185,6 +186,11 @@
   let isLoadingDataCompare = false;
   let searchCompare = "";
   let timerSearchDebounce;
+
+  let selectedTokenHolding = {
+    data: [],
+    select: [],
+  };
 
   const debounceSearchCompare = (value) => {
     clearTimeout(timerSearchDebounce);
@@ -725,6 +731,12 @@
     }
   };
 
+  const handleSelectedTableTokenHolding = (data) => {
+    if (data.data && data.data.length !== 0) {
+      selectedTokenHolding = data;
+    }
+  };
+
   onMount(() => {
     initWS();
     mixpanel.track("portfolio_page", {
@@ -797,13 +809,15 @@
           class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md"
         >
           <Charts
+            {handleSelectedTableTokenHolding}
             isLoading={loadingOverview}
+            {holdingTokenData}
             {optionLine}
             {dataPieChart}
             {isEmptyDataPie}
           />
 
-          {#if getAddressContext(selectedWallet)?.type === "EVM"}
+          <!-- {#if getAddressContext(selectedWallet)?.type === "EVM"}
             <div
               class="flex flex-col gap-4 border border-[#0000001a] rounded-[20px] p-6"
             >
@@ -852,13 +866,16 @@
               </div>
               <Compare data={compareData} {isLoadingDataCompare} />
             </div>
-          {/if}
+          {/if} -->
+
+          <RiskReturn data={compareData} {isLoadingDataCompare} />
 
           <Holding
             {selectedWallet}
             isLoadingNFT={loadingHoldingNFT}
             isLoadingToken={loadingHoldingToken}
             {holdingTokenData}
+            {selectedTokenHolding}
             {holdingNFTData}
             bind:totalAssets
           />

@@ -61,7 +61,9 @@
 
   {#if open}
     <div
-      class="content xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] xl:max-h-[310px] max-h-[380px] w-[300px] min-w-[300px] mt-2"
+      class={`content xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] xl:max-h-[310px] max-h-[380px] w-[300px] min-w-[300px] mt-2 ${
+        type === "lang" ? "left-0" : "right-0"
+      }`}
     >
       {#each listSelect as item}
         <div
@@ -138,6 +140,7 @@
 <style>
   .wrapper {
     position: relative;
+    width: max-content;
   }
 
   .button {
@@ -160,7 +163,6 @@
   .content {
     overflow-y: overlay;
     position: absolute;
-    right: 0;
     z-index: 2147483646;
     background: #ffffff;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);

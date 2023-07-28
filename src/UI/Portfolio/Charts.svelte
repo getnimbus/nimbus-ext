@@ -4,6 +4,8 @@
   import { chain, wallet } from "~/store";
   import { formatCurrency, typePieChart } from "~/utils";
 
+  export let handleSelectedTableTokenHolding = (data) => {};
+  export let holdingTokenData;
   export let optionLine;
   export let dataPieChart;
   export let isLoading;
@@ -12,6 +14,7 @@
   import EChart from "~/components/EChart.svelte";
   import "~/components/Loading.custom.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import TokenAllocation from "~/components/TokenAllocation.svelte";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -85,15 +88,14 @@
       },
     },
     legend: {
-      orient: "vertical",
-      right: "right",
-      bottom: "center",
+      top: "0%",
+      left: "center",
     },
     series: [
       {
         type: "pie",
         radius: ["40%", "60%"],
-        left: -220,
+        left: 0,
         avoidLabelOverlap: false,
         label: {
           show: false,
@@ -157,7 +159,7 @@
 <ErrorBoundary>
   <div class="flex xl:flex-row flex-col justify-between gap-6">
     <div class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6">
-      <div class="relative mb-1 w-full">
+      <div class="relative mb-6 w-full">
         <div class="xl:text-2xl text-4xl font-medium text-black w-full">
           {#if selectedType === "token"}
             {MultipleLang.token_allocation}
@@ -204,26 +206,27 @@
         <div class="h-full">
           {#if isEmptyDataPie}
             <div
-              class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400"
+              class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[633px]"
             >
               Empty
             </div>
           {:else}
-            <EChart
-              id="pie-chart"
-              theme="white"
-              notMerge={true}
-              option={optionPie}
-              height={465}
-            />
+            <div class="-mt-2">
+              <TokenAllocation
+                {dataPieChart}
+                {holdingTokenData}
+                {handleSelectedTableTokenHolding}
+              />
+            </div>
           {/if}
         </div>
       {/if}
     </div>
+
     <div
       class="xl:w-1/2 w-full relative border border-[#0000001a] rounded-[20px] p-6"
     >
-      <div class="pl-4 xl:text-2xl text-4xl font-medium text-black mb-3">
+      <div class="pl-4 xl:text-2xl text-4xl font-medium text-black mb-6">
         {MultipleLang.performance}
       </div>
       {#if selectedChain === "XDAI"}
@@ -234,7 +237,7 @@
         </div>
       {/if}
       {#if isLoading}
-        <div class="flex items-center justify-center h-[433px]">
+        <div class="flex items-center justify-center h-[633px]">
           <loading-icon />
         </div>
       {:else}
@@ -243,7 +246,7 @@
           theme="white"
           notMerge={true}
           option={optionLine}
-          height={433}
+          height={633}
         />
       {/if}
     </div>

@@ -827,15 +827,25 @@
                         </div>
                       {/if}
                     </div>
+
+                    <div class="xl:block hidden">
+                      <Button variant="secondary">Compare with</Button>
+                    </div>
                   </div>
                 </div>
-                {#if getAddressContext(selectedWallet)?.type !== "BTC"}
-                  <Select
-                    type="chain"
-                    listSelect={chainList}
-                    bind:selected={selectedChain}
-                  />
-                {/if}
+
+                <div class="flex flex-col gap-6">
+                  <div class="xl:hidden block">
+                    <Button variant="secondary">Compare with</Button>
+                  </div>
+                  {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+                    <Select
+                      type="chain"
+                      listSelect={chainList}
+                      bind:selected={selectedChain}
+                    />
+                  {/if}
+                </div>
               </div>
 
               {#key selectedWallet || selectedChain}
