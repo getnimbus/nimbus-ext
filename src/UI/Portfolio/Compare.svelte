@@ -383,7 +383,7 @@
 <ErrorBoundary>
   <div class="flex xl:flex-row flex-col justify-between gap-6">
     <div class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6">
-      <div class="relative mb-1 w-full">
+      <div class="mb-1 w-full">
         <div
           class="xl:text-xl text-3xl font-medium text-black flex justify-start"
         >
