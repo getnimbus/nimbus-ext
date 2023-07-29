@@ -392,13 +392,11 @@
                       class="rounded-[20px] bg-[#FAFAFBFF] px-4 py-3 flex flex-col gap-2"
                       style="z-index: 2"
                     >
-                      <div
-                        class="xl:text-base text-xl text-gray-500 font-medium"
-                      >
+                      <div class="xl:text-base text-xl text-gray-500">
                         {dayjs(item.date).format("DD MMM YYYY")}
                       </div>
                       <div
-                        class={`xl:text-2xl text-3xl font-semibold ${
+                        class={`xl:text-2xl text-3xl ${
                           item.percentChange < 0
                             ? "text-red-500"
                             : "text-[#00A878]"
