@@ -1,6 +1,6 @@
 <script lang="ts">
   import { sendMessage } from "webext-bridge";
-  import { wallet, chain } from "~/store";
+  import { wallet, chain, isOpenReport } from "~/store";
   import { getAddressContext } from "~/utils";
 
   import DateRangePicker from "~/components/DateRangePicker.svelte";
@@ -10,6 +10,7 @@
   import TotalValueHistory from "../AnalyticChart/TotalValueHistory.svelte";
   import DailyPnL from "../AnalyticChart/DailyPnL.svelte";
   import ProfitGrows from "../AnalyticChart/ProfitGrows.svelte";
+  import Button from "~/components/Button.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -88,6 +89,18 @@
     <SectorGrowth />
     <InflowOutflow />
     <TotalGasFee />
+    {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+      <div class="flex justify-center mx-auto">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            isOpenReport.update((n) => (n = true));
+          }}
+        >
+          Request analytics
+        </Button>
+      </div>
+    {/if}
   </div>
 </div>
 

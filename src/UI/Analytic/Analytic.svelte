@@ -8,6 +8,8 @@
   import CurrentStatus from "./CurrentStatus.svelte";
   import PastPerformance from "./PastPerformance.svelte";
   import Button from "~/components/Button.svelte";
+  import Risk from "../AnalyticChart/Risk.svelte";
+  import Compare from "../Portfolio/Compare.svelte";
 
   const navigate = useNavigate();
 
@@ -65,8 +67,11 @@
           </div>
         </div>
 
+        <Risk />
+
         <PastPerformance />
-        <Personality />
+
+        <!-- <Personality /> -->
       </div>
       {#if isShowSoon}
         <div

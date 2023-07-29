@@ -701,9 +701,7 @@
   }
 </script>
 
-<div
-  class="border border-[#0000001a] rounded-[20px] p-6 flex xl:flex-row flex-col justify-between gap-6"
->
+<div class="flex xl:flex-row flex-col justify-between gap-6">
   <div
     class="xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 border border-[#0000001a] rounded-[20px] p-6"
   >
