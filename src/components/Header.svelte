@@ -14,6 +14,7 @@
   import Logo from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
   import MarketIcon from "~/assets/market.svg";
+  import WhaleIcon from "~/assets/whale.svg";
   import NewsIcon from "~/assets/news.svg";
   import AnalyticIcon from "~/assets/analytic.svg";
   import TransactionsIcon from "~/assets/transactions.svg";
@@ -135,7 +136,7 @@
           }`}
           on:click={() => (navActive = "market")}
         >
-          <img src={MarketIcon} alt="" width="20" height="20" />
+          <img src={WhaleIcon} alt="" width="20" height="20" />
           <span class="text-sm font-medium text-white xl:text-base">
             {MultipleLang.whales}
           </span>
