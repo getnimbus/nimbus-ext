@@ -774,7 +774,7 @@
                   {/if}
                   {#if showDisableAddWallet}
                     <div
-                      class="xl:absolute hidden transform -translate-x-1/2 -top-8 left-1/2"
+                      class="absolute transform -translate-x-1/2 -top-8 left-1/2"
                       style="z-index: 2147483648;"
                     >
                       <tooltip-detail

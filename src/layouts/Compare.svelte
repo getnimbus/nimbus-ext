@@ -3,6 +3,7 @@
   import { wallet, chain } from "~/store";
   import { i18n } from "~/lib/i18n";
   import { sendMessage } from "webext-bridge";
+  import { nimbus } from "~/lib/network";
 
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
   import type { OverviewDataRes } from "~/types/OverviewData";
@@ -11,6 +12,7 @@
   import Copy from "~/components/Copy.svelte";
   import TokenAllocation from "~/components/TokenAllocation.svelte";
   import "~/components/Loading.custom.svelte";
+  import Button from "~/components/Button.svelte";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -61,6 +63,34 @@
   };
   let isEmptyDataPie = false;
   let isLoading = false;
+
+  let compareData = {};
+  let isLoadingDataCompare = false;
+  let searchCompare = "";
+  let timerSearchDebounce;
+
+  const debounceSearchCompare = (value) => {
+    clearTimeout(timerSearchDebounce);
+    timerSearchDebounce = setTimeout(() => {
+      searchCompare = value;
+    }, 300);
+  };
+
+  const getAnalyticCompare = async () => {
+    isLoadingDataCompare = true;
+    try {
+      const response: any = await nimbus.get(
+        `/v2/analysis/${selectedWallet}/compare?compareAddress=${searchCompare}`
+      );
+      if (response && response.data) {
+        compareData = response.data;
+        isLoadingDataCompare = false;
+      }
+    } catch (e) {
+      console.log("e: ", e);
+      isLoadingDataCompare = false;
+    }
+  };
 
   const getOverview = async (isReload: boolean = false) => {
     isEmptyDataPie = false;
@@ -231,9 +261,12 @@
     if (selectedWallet || selectedChain) {
       if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
         handleGetAllData();
+        getAnalyticCompare();
       }
     }
   }
+
+  $: console.log("compareData: ", compareData);
 </script>
 
 <ErrorBoundary>
@@ -248,10 +281,8 @@
     </div>
     <div class="flex gap-6">
       <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
-        <div class="relative mb-6 w-full">
-          <div class="xl:text-2xl text-4xl font-medium text-black w-full">
-            {MultipleLang.token_allocation}
-          </div>
+        <div class="xl:text-2xl text-4xl font-medium text-black w-full mb-6">
+          {MultipleLang.token_allocation}
         </div>
         {#if isLoading}
           <div class="flex items-center justify-center h-[633px]">
@@ -278,7 +309,75 @@
         {/if}
       </div>
       <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
-        compare form
+        {#if searchCompare}
+          <div>compare chart</div>
+        {:else}
+          <div class="xl:text-2xl text-4xl font-medium text-black w-full">
+            Compare with
+          </div>
+          <div class="h-full flex flex-col justify-center gap-6">
+            <div class="flex items-center gap-4">
+              <div class="flex-1">
+                <Button>High risk</Button>
+              </div>
+              <div class="flex-1">
+                <Button>Medium risk</Button>
+              </div>
+              <div class="flex-1">
+                <Button>Low risk</Button>
+              </div>
+            </div>
+            <div class="border-t-[1px] relative">
+              <div
+                class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 bg-white text-sm px-2"
+              >
+                Or
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <div
+                class={`border focus:outline-none w-full py-2 px-3 rounded-lg flex justify-between items-center ${
+                  searchCompare ? "bg-[#F0F2F7]" : "bg-white"
+                }`}
+              >
+                <input
+                  on:keyup={({ target: { value } }) =>
+                    debounceSearchCompare(value)}
+                  on:keydown={(event) => {
+                    if (
+                      (event.which == 13 || event.keyCode == 13) &&
+                      searchCompare
+                    ) {
+                      getAnalyticCompare();
+                    }
+                  }}
+                  value={searchCompare}
+                  placeholder={"Search address to compare"}
+                  type="text"
+                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] h-7 ${
+                    searchCompare ? "bg-[#F0F2F7]" : ""
+                  }`}
+                />
+                {#if searchCompare}
+                  <div
+                    class="cursor-pointer text-xl text-[#5E656B]"
+                    on:click={() => {
+                      searchCompare = "";
+                      getAnalyticCompare();
+                    }}
+                  >
+                    &otimes;
+                  </div>
+                {/if}
+              </div>
+              <div class="xl:text-sm text-lg">
+                Or <span class="text-blue-500 cursor-pointer"
+                  >get inspired from the whale list</span
+                >
+              </div>
+            </div>
+          </div>
+        {/if}
       </div>
     </div>
   </div>
