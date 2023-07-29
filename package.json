@@ -10,7 +10,7 @@
     "build:web": "vite build -c vite.config.web.ts",
     "build:docs": "retype build && vercel deploy --prod .retype",
     "watch": "WATCH=true vite build --watch",
-    "dev": "WATCH=true vite build --watch",
+    "dev": "NODE_OPTIONS=--max_old_space_size=8024 WATCH=true vite build --watch",
     "dev:web": "vite -c vite.config.web.ts",
     "dev:docs": "retype start",
     "serve:firefox": "web-ext run --start-url \"about:debugging#/runtime/this-firefox\"  --source-dir ./dist/",
