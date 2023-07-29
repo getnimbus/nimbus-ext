@@ -107,6 +107,17 @@ export const performanceTypeChart = [
   },
 ]
 
+export const returnType = [
+  {
+    label: "Overview",
+    value: "overview",
+  },
+  {
+    label: "Avg. by month",
+    value: "month",
+  },
+]
+
 export const getAddressContext = (address: string) => {
   if (!address) {
     return undefined;
