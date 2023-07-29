@@ -42,7 +42,7 @@
   </div>
   {#if isLoadingChart}
     <div class="flex items-center justify-center h-[152px]">
-      {#if type === "premium"}
+      {#if type === "primary"}
         <LoadingPremium />
       {:else}
         <loading-icon />

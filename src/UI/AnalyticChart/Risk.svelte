@@ -209,8 +209,6 @@
     }
   };
 
-  $: console.log("compareData: ", compareData);
-
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
@@ -232,7 +230,11 @@
   </span>
 
   <span slot="overview">
-    <div class="xl:text-xl text-3xl font-medium text-black mb-4">Overview</div>
+    {#if !isLoadingDataCompare}
+      <div class="xl:text-xl text-3xl font-medium text-black mb-4">
+        Overview
+      </div>
+    {/if}
     {#if isLoadingDataCompare}
       <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />

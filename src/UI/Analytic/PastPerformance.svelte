@@ -6,7 +6,6 @@
   import DateRangePicker from "~/components/DateRangePicker.svelte";
   import SectorGrowth from "../AnalyticChart/SectorGrowth.svelte";
   import TotalGasFee from "../AnalyticChart/TotalGasFee.svelte";
-  import InflowOutflow from "../AnalyticChart/InflowOutflow.svelte";
   import TotalValueHistory from "../AnalyticChart/TotalValueHistory.svelte";
   import DailyPnL from "../AnalyticChart/DailyPnL.svelte";
   import ProfitGrows from "../AnalyticChart/ProfitGrows.svelte";
@@ -75,19 +74,18 @@
   }
 </script>
 
-<div class="border border-[#0000001a] rounded-[20px] p-6">
-  <div class="flex justify-between items-center border-b-[1px] mb-6 pb-4">
+<div class="flex flex-col gap-5">
+  <div class="flex justify-between items-center">
     <div class="xl:text-2xl text-4xl font-medium text-black">
       Past Performance
     </div>
     <!-- <DateRangePicker onChange={handleGetDateRange} /> -->
   </div>
   <div class="flex flex-col gap-6">
-    <ProfitGrows {isLoading} {isEmpty} {dataTotalValueHistory} />
+    <!-- <ProfitGrows {isLoading} {isEmpty} {dataTotalValueHistory} />
     <TotalValueHistory {isLoading} {isEmpty} {dataTotalValueHistory} />
     <DailyPnL {isLoading} {isEmpty} {dataDailyPnL} />
-    <SectorGrowth />
-    <InflowOutflow />
+    <SectorGrowth /> -->
     <TotalGasFee />
     {#if getAddressContext(selectedWallet)?.type !== "BTC"}
       <div class="flex justify-center mx-auto">

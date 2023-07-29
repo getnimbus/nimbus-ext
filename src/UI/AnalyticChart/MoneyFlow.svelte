@@ -1,12 +1,14 @@
 <script lang="ts">
   import { sendMessage } from "webext-bridge";
-  import { wallet, chain } from "~/store";
   import { groupBy, intersection, flatten } from "lodash";
-  import dayjs from "dayjs";
+  import { wallet, chain } from "~/store";
   import { formatCurrency, getAddressContext } from "~/utils";
+  import dayjs from "dayjs";
 
-  import EChart from "~/components/EChart.svelte";
+  import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import EChart from "~/components/EChart.svelte";
 
   import Logo from "~/assets/logo-1.svg";
 
@@ -24,6 +26,10 @@
 
   let isLoadingInflowOutflow = false;
   let isEmptyInflowOutflow = false;
+  let sumData = {
+    inflow: 0,
+    outflow: 0,
+  };
 
   let option = {
     tooltip: {
@@ -245,6 +251,15 @@
             }
           );
 
+          sumData.inflow = (sumDataInflow || []).reduce(
+            (prev, item) => prev + Number(item),
+            0
+          );
+          sumData.outflow = (sumDataOutflow || []).reduce(
+            (prev, item) => prev + Number(item),
+            0
+          );
+
           const dataNetflow = [];
           for (let i = 0; i < sumDataInflow.length; i++) {
             const sum = sumDataInflow[i] + sumDataOutflow[i];
@@ -300,47 +315,144 @@
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
-        getInflowOutflow();
+        if (getAddressContext(selectedWallet)?.type === "EVM") {
+          getInflowOutflow();
+        }
       }
     }
   }
 </script>
 
-<div class="border border-[#0000001a] rounded-[20px] pt-6">
-  <div class="px-6 xl:text-xl text-3xl font-medium text-black">
-    Token Inflow - Outflow
-  </div>
-  {#if isLoadingInflowOutflow}
-    <div class="flex items-center justify-center h-[415px]">
-      <LoadingPremium />
+<AnalyticSection>
+  <span slot="title">
+    <div class="xl:text-2xl text-4xl font-medium text-black flex justify-start">
+      Money flow
     </div>
-  {:else}
-    <div class="w-full h-full">
-      {#if isEmptyInflowOutflow}
-        <div
-          class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[415px]"
-        >
-          Empty
-        </div>
-      {:else}
-        <div class="relative">
-          <EChart
-            id="inflow-outflow"
-            theme="white"
-            {option}
-            height={415}
-            notMerge={true}
-            type="full-width"
-          />
-          <div
-            class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"
-          >
-            <img src={Logo} alt="" width="140" height="140" />
+  </span>
+
+  <span slot="overview">
+    {#if !isLoadingInflowOutflow}
+      <div class="xl:text-xl text-3xl font-medium text-black mb-4">
+        Overview
+      </div>
+    {/if}
+    {#if isLoadingInflowOutflow}
+      <div class="flex items-center justify-center h-[465px]">
+        <LoadingPremium />
+      </div>
+    {:else}
+      <div class="flex flex-col gap-5">
+        <div class="grid grid-cols-2">
+          <div class="col-span-1">
+            <div class="xl:text-lg text-xl text-black flex justify-start">
+              Total money in
+            </div>
+          </div>
+          <div class="col-span-1 flex items-center gap-1">
+            <div
+              class={`xl:text-lg text-xl ${
+                sumData.inflow < 0 ? "text-red-500" : "text-[#00A878]"
+              }`}
+            >
+              <TooltipNumber number={Math.abs(sumData.inflow)} type="balance" />
+            </div>
+            {#if sumData.inflow < 0}
+              <div class="xl:text-lg text-xl text-red-500">⚠️</div>
+            {:else}
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill="none"
+                  stroke="#00A878"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
+                />
+              </svg>
+            {/if}
           </div>
         </div>
-      {/if}
-    </div>
-  {/if}
-</div>
+        <div class="grid grid-cols-2">
+          <div class="col-span-1">
+            <div class="xl:text-lg text-xl text-black flex justify-start">
+              Total money out
+            </div>
+          </div>
+          <div class="col-span-1 flex items-center gap-1">
+            <div
+              class={`xl:text-lg text-xl ${
+                sumData.outflow < 0 ? "text-red-500" : "text-[#00A878]"
+              }`}
+            >
+              <TooltipNumber
+                number={Math.abs(sumData.outflow)}
+                type="balance"
+              />
+            </div>
+            {#if sumData.outflow < 0}
+              <div class="xl:text-lg text-xl text-red-500">⚠️</div>
+            {:else}
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill="none"
+                  stroke="#00A878"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
+                />
+              </svg>
+            {/if}
+          </div>
+        </div>
+      </div>
+    {/if}
+  </span>
 
-<style windi:preflights:global windi:safelist:global></style>
+  <span slot="chart">
+    {#if isLoadingInflowOutflow}
+      <div class="flex items-center justify-center h-[465px]">
+        <LoadingPremium />
+      </div>
+    {:else}
+      <div class="w-full h-full">
+        {#if isEmptyInflowOutflow}
+          <div
+            class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+          >
+            Empty
+          </div>
+        {:else}
+          <div class="relative">
+            <EChart
+              id="inflow-outflow"
+              theme="white"
+              {option}
+              height={465}
+              notMerge={true}
+              type="full-width"
+            />
+            <div
+              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"
+            >
+              <img src={Logo} alt="" width="140" height="140" />
+            </div>
+          </div>
+        {/if}
+      </div>
+    {/if}</span
+  >
+</AnalyticSection>
+
+<style windi:preflights:global windi:safelist:global>
+</style>

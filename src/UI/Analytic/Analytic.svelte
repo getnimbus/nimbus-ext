@@ -10,6 +10,7 @@
   import Button from "~/components/Button.svelte";
   import Risk from "../AnalyticChart/Risk.svelte";
   import Compare from "../Portfolio/Compare.svelte";
+  import MoneyFlow from "../AnalyticChart/MoneyFlow.svelte";
 
   const navigate = useNavigate();
 
@@ -68,6 +69,8 @@
         </div>
 
         <Risk />
+
+        <MoneyFlow />
 
         <PastPerformance />
 
