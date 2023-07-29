@@ -1,9 +1,20 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { wallet, chain } from "~/store";
+  import { i18n } from "~/lib/i18n";
+  import { sendMessage } from "webext-bridge";
+
+  import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
+  import type { OverviewDataRes } from "~/types/OverviewData";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Copy from "~/components/Copy.svelte";
+  import TokenAllocation from "~/components/TokenAllocation.svelte";
+  import "~/components/Loading.custom.svelte";
+
+  const MultipleLang = {
+    token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
+  };
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -39,6 +50,190 @@
       selectedChain = chainParams;
     }
   });
+
+  let holdingTokenData: TokenData = [];
+  let dataPieChart = {
+    token: {
+      sumOrderBreakdownToken: 0,
+      formatDataPieChartTopFiveToken: [],
+      dataPieChartOrderBreakdownToken: [],
+    },
+  };
+  let isEmptyDataPie = false;
+  let isLoading = false;
+
+  const getOverview = async (isReload: boolean = false) => {
+    isEmptyDataPie = false;
+    try {
+      const response: OverviewDataRes = await sendMessage("getOverview", {
+        address: selectedWallet,
+        reload: isReload,
+        chain: selectedChain,
+      });
+
+      if (selectedWallet === response?.address) {
+        if (response.result?.breakdownToken?.length === 0) {
+          isEmptyDataPie = true;
+          isLoading = false;
+        }
+
+        // pie chart format data Token holding
+        const sumToken = (response.result?.breakdownToken || []).reduce(
+          (prev, item) => prev + Number(item.value),
+          0
+        );
+
+        const sortBreakdownToken = response.result?.breakdownToken.sort(
+          (a, b) => {
+            if (a.value < b.value) {
+              return 1;
+            }
+            if (a.value > b.value) {
+              return -1;
+            }
+            return 0;
+          }
+        );
+
+        const topFiveBreakdownToken = sortBreakdownToken
+          .slice(0, 5)
+          .map((item) => {
+            return {
+              ...item,
+              id: item.id || "N/A",
+              symbol: item.symbol || "N/A",
+              name: item.name || "N/A",
+            };
+          });
+
+        const orderBreakdownToken = sortBreakdownToken.slice(
+          5,
+          sortBreakdownToken.length
+        );
+
+        const sumOrderBreakdownToken = (orderBreakdownToken || []).reduce(
+          (prev, item) => prev + Number(item.value),
+          0
+        );
+
+        const dataPieChartOrderBreakdownToken = [
+          {
+            logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
+            name: "Other tokens",
+            symbol: "",
+            name_ratio: "Ratio",
+            value: (sumOrderBreakdownToken / sumToken) * 100,
+            name_value: "Value",
+            value_value: sumOrderBreakdownToken,
+            name_balance: "",
+            value_balance: 0,
+          },
+        ];
+
+        const formatDataPieChartTopFiveToken = topFiveBreakdownToken.map(
+          (item) => {
+            return {
+              logo: item.logo,
+              name: item.name || item.symbol,
+              symbol: item.symbol,
+              name_ratio: "Ratio",
+              value: (Number(item.value) / sumToken) * 100,
+              name_value: "Value",
+              value_value: Number(item.value),
+              name_balance: "Balance",
+              value_balance: Number(item.amount),
+            };
+          }
+        );
+
+        const formatDataPie = {
+          token: {
+            sumOrderBreakdownToken,
+            formatDataPieChartTopFiveToken,
+            dataPieChartOrderBreakdownToken,
+          },
+        };
+        dataPieChart = formatDataPie;
+
+        return formatDataPie;
+      } else {
+        // console.log("response: ", response)
+      }
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const getHoldingToken = async (isReload: boolean = false) => {
+    try {
+      const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
+        address: selectedWallet,
+        reload: isReload,
+        chain: selectedChain,
+      });
+
+      if (selectedWallet === response?.address) {
+        const formatData = response.result.map((item) => {
+          return {
+            ...item,
+            value: item.amount * item.rate,
+          };
+        });
+        holdingTokenData = formatData.sort((a, b) => {
+          if (a.value < b.value) {
+            return 1;
+          }
+          if (a.value > b.value) {
+            return -1;
+          }
+          return 0;
+        });
+        return response;
+      } else {
+        // console.log("response: ", response)
+      }
+    } catch (e) {
+      console.log("error: ", e);
+    }
+  };
+
+  const handleGetAllData = async () => {
+    isLoading = true;
+    try {
+      const [resOverview, resTokenHolding] = await Promise.all([
+        getOverview().then((res) => {
+          return res;
+        }),
+        getHoldingToken().then((res) => {
+          return res;
+        }),
+      ]);
+
+      if (resOverview && resTokenHolding) {
+        isLoading = false;
+      }
+    } catch (e) {
+      console.log("e: ", e);
+      isLoading = false;
+    }
+  };
+
+  const handleSelectedTableTokenHolding = (data, selectDatPieChart) => {
+    if (data.data && data.data.length !== 0) {
+      console.log({
+        data,
+        selectDatPieChart,
+      });
+    }
+  };
+
+  $: {
+    if (selectedWallet || selectedChain) {
+      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+        handleGetAllData();
+      }
+    }
+  }
 </script>
 
 <ErrorBoundary>
@@ -51,9 +246,40 @@
         <Copy address={selectedWallet} iconColor="#000" color="#000" />
       </div>
     </div>
-    <div class="border border-red-500 flex items-center gap-6">
-      <div class="flex-1">token allocation</div>
-      <div class="flex-1">compare form</div>
+    <div class="flex gap-6">
+      <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
+        <div class="relative mb-6 w-full">
+          <div class="xl:text-2xl text-4xl font-medium text-black w-full">
+            {MultipleLang.token_allocation}
+          </div>
+        </div>
+        {#if isLoading}
+          <div class="flex items-center justify-center h-[633px]">
+            <loading-icon />
+          </div>
+        {:else}
+          <div class="h-full">
+            {#if isEmptyDataPie}
+              <div
+                class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[633px]"
+              >
+                Empty
+              </div>
+            {:else}
+              <div class="-mt-2">
+                <TokenAllocation
+                  {dataPieChart}
+                  {holdingTokenData}
+                  {handleSelectedTableTokenHolding}
+                />
+              </div>
+            {/if}
+          </div>
+        {/if}
+      </div>
+      <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
+        compare form
+      </div>
     </div>
   </div>
 </ErrorBoundary>
