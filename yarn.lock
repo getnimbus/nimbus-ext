@@ -8443,6 +8443,11 @@ svelte-preprocess@^4.0.0, svelte-preprocess@^4.9.8:
     sorcery "^0.10.0"
     strip-indent "^3.0.0"
 
+svelte-spark@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/svelte-spark/-/svelte-spark-1.0.4.tgz#11cbf720941ca8645fd13e7f02467341926e29cb"
+  integrity sha512-zLkRwNYzxrLIi7iTLJGCdOP00uuCvrY1jrycHKquR53JQNx/Mq9PhO6l19FzCJLFDXNQwI5CXU5elb1dbmipMg==
+
 svelte-system-info@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/svelte-system-info/-/svelte-system-info-1.0.0.tgz#be641e99e18ebd04042a4fb6510d6bf91cb3174b"

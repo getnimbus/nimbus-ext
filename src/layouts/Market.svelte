@@ -7,12 +7,13 @@
   import "~/components/Loading.custom.svelte";
   import MarketItem from "~/components/MarketItem.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import PublicPortfolioItem from "~/components/PublicPortfolioItem.svelte";
 
   const MultipleLang = {
-    market: i18n("newtabPage.market", "Market"),
-    market_page_title: i18n(
-      "newtabPage.market-page-title",
-      "Latest big swaps with useful information we've put together"
+    whale: i18n("newtabPage.whale", "Whale 🐳"),
+    whales_page_title: i18n(
+      "newtabPage.whale-page-title",
+      "Start earning by copying from Experienced"
     ),
     market_search_symbol: i18n(
       "newtabPage.market-search-symbol",
@@ -24,26 +25,18 @@
     ),
   };
 
-  let marketData = [];
-  let searchValue = "";
-  let amountValue = "";
-  let timerSearchDebounce;
-  let timerAmountDebounce;
+  let whalesData = [];
   let isLoading = false;
   let tableHeader;
   let isSticky = false;
 
-  const getMarketData = async () => {
+  const getPublicPortfolio = async () => {
     try {
       isLoading = true;
       const res = await nimbus
-        .get(
-          `/trades?minValue=${amountValue || "10000"}&token=${
-            searchValue || ""
-          }`
-        )
+        .get(`/market/portfolio`)
         .then((response) => response.data);
-      marketData = res;
+      whalesData = res;
     } catch (e) {
       console.log("error: ", e);
     } finally {
@@ -51,22 +44,8 @@
     }
   };
 
-  const debounceSearch = (value) => {
-    clearTimeout(timerSearchDebounce);
-    timerSearchDebounce = setTimeout(() => {
-      searchValue = value;
-    }, 300);
-  };
-
-  const debounceAmount = (value) => {
-    clearTimeout(timerAmountDebounce);
-    timerAmountDebounce = setTimeout(() => {
-      amountValue = value;
-    }, 300);
-  };
-
   onMount(() => {
-    getMarketData();
+    getPublicPortfolio();
     mixpanel.track("market_page");
 
     const handleScroll = () => {
@@ -79,12 +58,6 @@
       window.removeEventListener("scroll", handleScroll);
     };
   });
-
-  $: {
-    setInterval(() => {
-      getMarketData();
-    }, 120000); // 2 mins
-  }
 </script>
 
 <ErrorBoundary>
@@ -93,68 +66,13 @@
   >
     <div class="flex flex-col gap-1">
       <div class="xl:text-5xl text-7xl text-black font-semibold">
-        {MultipleLang.market}
+        {MultipleLang.whale}
       </div>
       <div
         class="flex justify-between xl:items-center xl:gap-11 xl:flex-row flex-col gap-6"
       >
         <div class="xl:text-xl text-3xl text-black font-medium w-max">
-          {MultipleLang.market_page_title}
-        </div>
-        <div class="flex flex-1 gap-3">
-          <div
-            class={`flex-1 border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
-              searchValue ? "bg-[#F0F2F7]" : "bg-white"
-            }`}
-          >
-            <input
-              on:keyup={({ target: { value } }) => debounceSearch(value)}
-              on:keydown={(event) => {
-                if ((event.which == 13 || event.keyCode == 13) && searchValue) {
-                  getMarketData();
-                }
-              }}
-              value={searchValue}
-              placeholder={MultipleLang.market_search_symbol}
-              type="text"
-              class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                searchValue ? "bg-[#F0F2F7]" : ""
-              }`}
-            />
-          </div>
-          <div
-            class={`flex-[0.7] border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
-              amountValue ? "bg-[#F0F2F7]" : "bg-white"
-            }`}
-          >
-            <input
-              on:keyup={({ target: { value } }) => {
-                const parsedValue = parseFloat(value);
-                if (!isNaN(parsedValue) && parsedValue > 0) {
-                  debounceAmount(value);
-                } else {
-                  amountValue = "";
-                }
-              }}
-              on:keydown={(event) => {
-                if ((event.which == 13 || event.keyCode == 13) && amountValue) {
-                  getMarketData();
-                }
-              }}
-              value={amountValue}
-              placeholder={MultipleLang.market_search_amount}
-              inputmode="decimal"
-              pattern="[0-9]*(.[0-9]+)?"
-              type="number"
-              min="0.01"
-              step="0.01"
-              autocorrect="off"
-              autocomplete="off"
-              class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                amountValue ? "bg-[#F0F2F7]" : ""
-              }`}
-            />
-          </div>
+          {MultipleLang.whales_page_title}
         </div>
       </div>
     </div>
@@ -173,56 +91,80 @@
               <div
                 class="text-left xl:text-xs text-base uppercase font-semibold text-black"
               >
-                Pair
+                Address
               </div>
             </th>
             <th class="py-3">
               <div
                 class="text-left xl:text-xs text-base uppercase font-semibold text-black"
               >
-                Execution time
+                Tokens
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                Amount Out
+                Net Worth
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                Amount In
+                1D
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-center xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                Maker
+                7D
+              </div>
+            </th>
+            <th class="py-3">
+              <div
+                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+              >
+                1M
+              </div>
+            </th>
+            <th class="pr-3 py-3 w-[190px]">
+              <div
+                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+              >
+                Volality
+              </div>
+            </th>
+            <th class="pr-3 py-3 w-[190px]">
+              <div
+                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+              >
+                Max drawdown
+              </div>
+            </th>
+            <th class="pr-3 py-3 w-[190px]">
+              <div
+                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+              >
+                Shapre ratio
               </div>
             </th>
             <th class="pr-3 py-3 w-[190px] rounded-tr-[10px]">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                Action
+                Last 30D
               </div>
             </th>
           </tr>
         </thead>
         <tbody>
           {#if isLoading}
-            <tr>
-              <td colspan="6">
-                <div class="flex justify-center items-center py-4 px-3">
-                  <loading-icon />
-                </div>
-              </td>
-            </tr>
-          {:else if marketData.length === 0}
+            <div class="flex justify-center items-center py-4 px-3 w-full">
+              <loading-icon />
+            </div>
+          {:else if whalesData.length === 0}
             <tr>
               <td colspan="6">
                 <div
@@ -233,8 +175,8 @@
               </td>
             </tr>
           {:else}
-            {#each marketData as data}
-              <MarketItem {data} />
+            {#each whalesData as data}
+              <PublicPortfolioItem {data} />
             {/each}
           {/if}
         </tbody>

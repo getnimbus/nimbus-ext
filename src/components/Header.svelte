@@ -30,7 +30,7 @@
     analytics: i18n("newtabPage.analytics", "Analytics"),
     transactions: i18n("newtabPage.transactions", "Transactions"),
     news: i18n("newtabPage.news", "News"),
-    market: i18n("newtabPage.market", "Market"),
+    whales: i18n("newtabPage.whales", "Whales"),
     search_placeholder: i18n("newtabPage.search-placeholder", "Search address"),
   };
 
@@ -137,7 +137,7 @@
         >
           <img src={MarketIcon} alt="" width="20" height="20" />
           <span class="text-sm font-medium text-white xl:text-base">
-            {MultipleLang.market}
+            {MultipleLang.whales}
           </span>
         </div>
       </Link>

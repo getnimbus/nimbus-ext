@@ -11,7 +11,7 @@ interface IOption {
 const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
   const authorization: any = getHeaderAuthorize();
   return {
-    get(url: string, config?: any) {
+    get<T>(url: string, config?: any): Promise<T> {
       const apiUrl = new URL(`${baseURL}${url}`);
       if (config?.params) {
         Object.keys(config.params).forEach((key) =>
@@ -29,7 +29,7 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
         response.json()
       );
     },
-    post(url: string, body: any, config?: any) {
+    post<T>(url: string, body: any, config?: any): Promise<T> {
       const apiUrl = new URL(`${baseURL}${url}`);
       if (config?.params) {
         Object.keys(config.params).forEach((key) =>
