@@ -125,6 +125,26 @@
     <div
       class="xl:text-sm text-right text-xl text-[#00A878] font-medium flex flex-col items-end gap-1"
     >
+      <div
+        class={`flex items-center ${
+          data?.change1Y >= 0 ? "text-[#00A878]" : "text-red-500"
+        }`}
+      >
+        <TooltipNumber number={Number(data?.change1Y)} type="percent" />
+        <span>%</span>
+        <img
+          src={data?.change1Y >= 0 ? TrendUp : TrendDown}
+          alt="trend"
+          class="ml-1 mb-1 w-4 h-4"
+        />
+      </div>
+    </div>
+  </td>
+
+  <td class="py-4 group-hover:bg-gray-100">
+    <div
+      class="xl:text-sm text-right text-xl text-[#00A878] font-medium flex flex-col items-end gap-1"
+    >
       {Number(data?.volatility).toFixed(2)}
     </div>
   </td>

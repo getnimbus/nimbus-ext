@@ -112,21 +112,28 @@
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                1D
+                1D return
               </div>
             </th>
             <th class="py-3">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                7D
+                7D return
               </div>
             </th>
             <th class="py-3">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                1M
+                1M return
+              </div>
+            </th>
+            <th class="py-3">
+              <div
+                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+              >
+                1Y return
               </div>
             </th>
             <th class="pr-3 py-3 w-[190px]">
