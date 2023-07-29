@@ -237,7 +237,7 @@
       selectedTokenHolding &&
       Object.keys(selectedTokenHolding).length !== 0 &&
       selectedTokenHolding.data.length !== 0 &&
-      selectedTokenHolding?.data?.data.length === 0
+      selectedTokenHolding?.data?.data?.length === 0
     ) {
       filteredHoldingDataToken = [];
       sumTokens = 0;
