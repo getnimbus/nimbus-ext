@@ -24,6 +24,7 @@
   import PersonalTokenBreakdown from "~/layouts/PersonalTokenBreakdown.svelte";
   import CustomVirtualPortfolio from "~/layouts/CustomVirtualPortfolio.svelte";
   import VirtualPortfolio from "~/layouts/VirtualPortfolio.svelte";
+  import Compare from "~/layouts/Compare.svelte";
 
   import Comment from "~/assets/comment-bubble-icon.svg";
 
@@ -78,6 +79,10 @@
 
         <Route path="virtual-portfolio">
           <VirtualPortfolio />
+        </Route>
+
+        <Route path="compare">
+          <Compare />
         </Route>
 
         <Route path="news">

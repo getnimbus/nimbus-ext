@@ -17,6 +17,7 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
+  import { useNavigate } from "svelte-navigator";
 
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
@@ -88,6 +89,8 @@
       ),
     },
   };
+
+  const navigate = useNavigate();
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -829,14 +832,32 @@
                     </div>
 
                     <div class="xl:block hidden">
-                      <Button variant="secondary">Compare with</Button>
+                      <Button
+                        variant="secondary"
+                        on:click={() => {
+                          navigate(
+                            `/compare?chain=${encodeURIComponent(
+                              selectedChain
+                            )}&address=${encodeURIComponent(selectedWallet)}`
+                          );
+                        }}>Compare with</Button
+                      >
                     </div>
                   </div>
                 </div>
 
                 <div class="flex flex-col gap-6">
                   <div class="xl:hidden block">
-                    <Button variant="secondary">Compare with</Button>
+                    <Button
+                      variant="secondary"
+                      on:click={() => {
+                        navigate(
+                          `/compare?chain=${encodeURIComponent(
+                            selectedChain
+                          )}&address=${encodeURIComponent(selectedWallet)}`
+                        );
+                      }}>Compare with</Button
+                    >
                   </div>
                   {#if getAddressContext(selectedWallet)?.type !== "BTC"}
                     <Select
