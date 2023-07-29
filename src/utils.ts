@@ -96,6 +96,17 @@ export const typePieChart = [
   },
 ]
 
+export const performanceTypeChart = [
+  {
+    label: "Line",
+    value: "line",
+  },
+  {
+    label: "Bar",
+    value: "bar",
+  },
+]
+
 export const getAddressContext = (address: string) => {
   if (!address) {
     return undefined;
