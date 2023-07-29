@@ -354,7 +354,10 @@
                 sumData.inflow < 0 ? "text-red-500" : "text-[#00A878]"
               }`}
             >
-              <TooltipNumber number={Math.abs(sumData.inflow)} type="balance" />
+              $<TooltipNumber
+                number={Math.abs(sumData.inflow)}
+                type="balance"
+              />
             </div>
             {#if sumData.inflow < 0}
               <div class="xl:text-lg text-xl text-red-500">⚠️</div>
@@ -389,7 +392,7 @@
                 sumData.outflow < 0 ? "text-red-500" : "text-[#00A878]"
               }`}
             >
-              <TooltipNumber
+              $<TooltipNumber
                 number={Math.abs(sumData.outflow)}
                 type="balance"
               />

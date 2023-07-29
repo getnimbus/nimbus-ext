@@ -22,8 +22,6 @@
     isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
   };
 
-  $: console.log("data: ", data);
-
   let selectedTypeReturn: "overview" | "month" = "overview";
 </script>
 
@@ -56,7 +54,7 @@
                 >
                   <TooltipNumber
                     number={Math.abs(data?.base?.sharpeRatio)}
-                    type="balance"
+                    type="percent"
                   />
                 </div>
                 {#if data?.base?.sharpeRatio < 0}
@@ -98,7 +96,7 @@
                 >
                   <TooltipNumber
                     number={Math.abs(data?.base?.volatility)}
-                    type="balance"
+                    type="percent"
                   />
                 </div>
                 {#if data?.base?.volatility < 0}
@@ -138,7 +136,7 @@
                 >
                   <TooltipNumber
                     number={Math.abs(data?.base?.drawDown)}
-                    type="balance"
+                    type="percent"
                   />
                 </div>
                 {#if data?.base?.drawDown < 0}
@@ -222,7 +220,7 @@
                   >
                     <TooltipNumber
                       number={Math.abs(data?.base?.netWorthChange?.networth1D)}
-                      type="balance"
+                      type="percent"
                     />%
                   </div>
                   {#if data?.base?.netWorthChange?.networth1D < 0}
@@ -258,7 +256,7 @@
                   >
                     <TooltipNumber
                       number={Math.abs(data?.base?.netWorthChange?.networth7D)}
-                      type="balance"
+                      type="percent"
                     />%
                   </div>
                   {#if data?.base?.netWorthChange?.networth7D < 0}
@@ -294,7 +292,7 @@
                   >
                     <TooltipNumber
                       number={Math.abs(data?.base?.netWorthChange?.networth30D)}
-                      type="balance"
+                      type="percent"
                     />%
                   </div>
                   {#if data?.base?.netWorthChange?.networth30D < 0}
@@ -330,7 +328,7 @@
                   >
                     <TooltipNumber
                       number={Math.abs(data?.base?.netWorthChange?.networth1Y)}
-                      type="balance"
+                      type="percent"
                     />%
                   </div>
                   {#if data?.base?.netWorthChange?.networth1Y < 0}

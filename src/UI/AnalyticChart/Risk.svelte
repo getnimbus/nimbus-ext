@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { wallet, chain } from "~/store";
-  import { formatCurrency, getAddressContext } from "~/utils";
+  import { formatCurrencyV2, getAddressContext } from "~/utils";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
@@ -47,7 +47,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.value >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${formatCurrency(Math.abs(item.value))}
+                      ${formatCurrencyV2(Math.abs(item.value))}
                     </div>
                   </div>
                 </div>
@@ -259,7 +259,7 @@
             >
               <TooltipNumber
                 number={Math.abs(compareData?.base?.sharpeRatio)}
-                type="balance"
+                type="percent"
               />
             </div>
             {#if compareData?.base?.sharpeRatio < 0}
@@ -301,7 +301,7 @@
             >
               <TooltipNumber
                 number={Math.abs(compareData?.base?.volatility)}
-                type="balance"
+                type="percent"
               />
             </div>
             {#if compareData?.base?.volatility < 0}
@@ -343,7 +343,7 @@
             >
               <TooltipNumber
                 number={Math.abs(compareData?.base?.drawDown)}
-                type="balance"
+                type="percent"
               />
             </div>
             {#if compareData?.base?.drawDown < 0}
