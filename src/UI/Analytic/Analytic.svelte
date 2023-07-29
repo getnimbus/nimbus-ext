@@ -39,11 +39,13 @@
       <div
         class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md"
       >
+        <CurrentStatus />
+
         <div
           class="flex justify-between items-center border border-[#0000001a] rounded-[20px] p-6"
         >
           <div class="font-medium text-black xl:text-xl text-3xl">
-            Create your virtual portfolio by your way
+            Minimize risk & maximize return by allocation your portfolio
           </div>
           <div class="w-max">
             <Button
@@ -57,12 +59,12 @@
               }}
             >
               <div class="xl:text-base text-2xl font-medium text-white">
-                Virtual Portfolio
+                Get suggestion
               </div>
             </Button>
           </div>
         </div>
-        <CurrentStatus />
+
         <PastPerformance />
         <Personality />
       </div>

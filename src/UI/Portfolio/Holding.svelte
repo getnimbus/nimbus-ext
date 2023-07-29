@@ -3,8 +3,10 @@
   import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
   import { getAddressContext } from "~/utils";
+  import { chain } from "~/store";
 
   export let selectedTokenHolding;
+  export let selectedDataPieChart;
   export let holdingTokenData;
   export let holdingNFTData;
   export let isLoadingToken;
@@ -26,6 +28,11 @@
   let isStickyTableToken = false;
   let tableNFTHeader;
   let isStickyTableNFT = false;
+
+  let selectedChain: string = "";
+  chain.subscribe((value) => {
+    selectedChain = value;
+  });
 
   let selectedTypeTable = {
     label: "",
@@ -159,6 +166,11 @@
         return { ...item };
       });
       formatData = formatDataWithMarketPrice;
+      filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
+      sumTokens = formatDataWithMarketPrice.reduce(
+        (prev, item) => prev + item.value,
+        0
+      );
     }
     if (marketPriceNFT) {
       const formatDataWithMarketPrice = formatDataNFT.map((item) => {
@@ -205,6 +217,32 @@
 
   $: totalAssets = sumTokens + sumNFT;
   $: colspan = getAddressContext(selectedWallet).type !== "EVM" ? 8 : 7;
+
+  $: {
+    if (selectedWallet || selectedChain) {
+      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+        sumTokens = 0;
+        sumNFT = 0;
+        formatData = [];
+        formatDataNFT = [];
+        filteredHoldingDataToken = [];
+        marketPriceToken = undefined;
+        marketPriceNFT = undefined;
+      }
+    }
+  }
+
+  $: {
+    if (
+      selectedTokenHolding &&
+      Object.keys(selectedTokenHolding).length !== 0 &&
+      selectedTokenHolding.data.length !== 0 &&
+      selectedTokenHolding?.data?.data.length === 0
+    ) {
+      filteredHoldingDataToken = [];
+      sumTokens = 0;
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-6 border border-[#0000001a] rounded-[20px] p-6">
@@ -238,6 +276,16 @@
         </div>
         <div class="xl:text-3xl text-4xl font-semibold text-right">
           $<TooltipNumber number={sumTokens} type="balance" />
+          {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
+            <span class="xl:text-xl text-2xl font-medium text-gray-400">
+              <TooltipNumber
+                number={selectedDataPieChart.series[0].data.filter(
+                  (item) => item.name === selectedTypeTable?.value
+                )[0]?.value}
+                type="percent"
+              />%
+            </span>
+          {/if}
         </div>
       </div>
 

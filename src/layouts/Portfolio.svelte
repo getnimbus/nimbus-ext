@@ -191,6 +191,7 @@
     data: [],
     select: [],
   };
+  let selectedDataPieChart = {};
 
   const debounceSearchCompare = (value) => {
     clearTimeout(timerSearchDebounce);
@@ -731,9 +732,10 @@
     }
   };
 
-  const handleSelectedTableTokenHolding = (data) => {
+  const handleSelectedTableTokenHolding = (data, selectDatPieChart) => {
     if (data.data && data.data.length !== 0) {
       selectedTokenHolding = data;
+      selectedDataPieChart = selectDatPieChart;
     }
   };
 
@@ -876,6 +878,7 @@
             isLoadingToken={loadingHoldingToken}
             {holdingTokenData}
             {selectedTokenHolding}
+            {selectedDataPieChart}
             {holdingNFTData}
             bind:totalAssets
           />

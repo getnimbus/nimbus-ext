@@ -4,7 +4,7 @@
   import { chain, wallet } from "~/store";
   import { formatCurrency, typePieChart } from "~/utils";
 
-  export let handleSelectedTableTokenHolding = (data) => {};
+  export let handleSelectedTableTokenHolding = (data, selectDataPieChart) => {};
   export let holdingTokenData;
   export let optionLine;
   export let dataPieChart;
@@ -199,7 +199,7 @@
         </div>
       </div>
       {#if isLoading}
-        <div class="flex items-center justify-center h-[465px]">
+        <div class="flex items-center justify-center h-[633px]">
           <loading-icon />
         </div>
       {:else}

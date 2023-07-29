@@ -10,7 +10,7 @@
   import { flatten, groupBy } from "lodash";
   import { wallet, chain } from "~/store";
 
-  export let handleSelectedTableTokenHolding = (data) => {};
+  export let handleSelectedTableTokenHolding = (data, selectDataPieChart) => {};
   export let holdingTokenData;
   export let dataPieChart;
 
@@ -171,6 +171,19 @@
       data: [],
       select: [],
     },
+  };
+
+  const formatDataPie = (data) => {
+    return data.map((item) => {
+      if (isNaN(item.value)) {
+        return {
+          ...item,
+          value: 0,
+        };
+      } else {
+        return item;
+      }
+    });
   };
 
   const getPersonalizeTag = async () => {
@@ -469,44 +482,44 @@
           series: [
             {
               ...optionPie.series[0],
-              data: tokenDataSector.dataPie,
+              data: formatDataPie(tokenDataSector.dataPie),
             },
           ],
         };
-        handleSelectedTableTokenHolding(tokenDataSector.dataTable);
+        handleSelectedTableTokenHolding(tokenDataSector.dataTable, optionPie);
       } else if (selectedType.value === "rank") {
         optionPie = {
           ...optionPie,
           series: [
             {
               ...optionPie.series[0],
-              data: tokenDataRank.dataPie,
+              data: formatDataPie(tokenDataRank.dataPie),
             },
           ],
         };
-        handleSelectedTableTokenHolding(tokenDataRank.dataTable);
+        handleSelectedTableTokenHolding(tokenDataRank.dataTable, optionPie);
       } else if (selectedType.value === "category") {
         optionPie = {
           ...optionPie,
           series: [
             {
               ...optionPie.series[0],
-              data: tokenDataCategory.dataPie,
+              data: formatDataPie(tokenDataCategory.dataPie),
             },
           ],
         };
-        handleSelectedTableTokenHolding(tokenDataCategory.dataTable);
+        handleSelectedTableTokenHolding(tokenDataCategory.dataTable, optionPie);
       } else if (selectedType.value === "All") {
         optionPie = {
           ...optionPie,
           series: [
             {
               ...optionPie.series[0],
-              data: tokenDataHolding.dataPie,
+              data: formatDataPie(tokenDataHolding.dataPie),
             },
           ],
         };
-        handleSelectedTableTokenHolding(tokenDataHolding.dataTable);
+        handleSelectedTableTokenHolding(tokenDataHolding.dataTable, optionPie);
       } else {
         const indexOfType = listData
           .map((item) => item.value)
@@ -520,11 +533,11 @@
             series: [
               {
                 ...optionPie.series[0],
-                data: selectedData.dataPie,
+                data: formatDataPie(selectedData.dataPie),
               },
             ],
           };
-          handleSelectedTableTokenHolding(selectedData.dataTable);
+          handleSelectedTableTokenHolding(selectedData.dataTable, optionPie);
         }
       }
     }
