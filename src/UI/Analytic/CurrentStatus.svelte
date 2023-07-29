@@ -242,7 +242,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.value >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${formatCurrency(Math.abs(item.value))}
+                      ${formatCurrency(Math.abs(item.value))}%
                     </div>
                   </div>
                 </div>
@@ -274,18 +274,17 @@
         },
       ],
     },
-    xAxis: [
-      {
-        type: "category",
-        axisTick: { show: false },
-        data: ["Your Portfolio", "Bitcoin", "Ethereum"],
+    xAxis: {
+      type: "category",
+      axisTick: { show: false },
+      data: ["Your Portfolio", "Bitcoin", "Ethereum"],
+    },
+    yAxis: {
+      type: "value",
+      axisLabel: {
+        formatter: "{value}%",
       },
-    ],
-    yAxis: [
-      {
-        type: "value",
-      },
-    ],
+    },
     series: [],
   };
 
@@ -484,78 +483,47 @@
           const formatDataBarChart = ["portfolio", "btc", "eth"].map((item) => {
             return {
               name: item,
-              values: response.result.performance.map((data) => data[item]),
-            };
-          });
-
-          const dataBarChart = ["portfolio", "btc", "eth"].map((item) => {
-            let custom = {
-              name: "",
-              color: "",
-            };
-            switch (item) {
-              case "btc":
-                custom = {
-                  name: "Bitcoin",
-                  color: "#f7931a",
-                };
-                break;
-              case "eth":
-                custom = {
-                  name: "Ethereum",
-                  color: "#547fef",
-                };
-                break;
-              case "portfolio":
-                custom = {
-                  name: "Your Portfolio",
-                  color: "#00b580",
-                };
-                break;
-            }
-
-            return {
-              name: custom.name,
-              type: "bar",
-              barStyle: {
-                type: "solid",
-                color: custom.color,
-              },
-              emphasis: {
-                focus: "series",
-              },
-              data: [
-                {
-                  value: formatDataBarChart
-                    .find((data) => data.name === item)
-                    .values.reduce((prev, item) => prev + item, 0),
-                  itemStyle: {
-                    color: custom.color,
-                  },
-                },
-                {
-                  value: formatDataBarChart
-                    .find((data) => data.name === item)
-                    .values.reduce((prev, item) => prev + item, 0),
-                  itemStyle: {
-                    color: custom.color,
-                  },
-                },
-                {
-                  value: formatDataBarChart
-                    .find((data) => data.name === item)
-                    .values.reduce((prev, item) => prev + item, 0),
-                  itemStyle: {
-                    color: custom.color,
-                  },
-                },
-              ],
+              values: response.result?.performance.map((data) => data[item]),
             };
           });
 
           optionBar = {
             ...optionBar,
-            series: dataBarChart,
+            series: [
+              {
+                name: "Value",
+                type: "bar",
+                emphasis: {
+                  focus: "series",
+                },
+                data: [
+                  {
+                    value: formatDataBarChart
+                      .find((data) => data.name === "portfolio")
+                      .values.reduce((prev, item) => prev + item, 0),
+                    itemStyle: {
+                      color: "#00b580",
+                    },
+                  },
+                  {
+                    value: formatDataBarChart
+                      .find((data) => data.name === "eth")
+                      .values.reduce((prev, item) => prev + item, 0),
+                    itemStyle: {
+                      color: "#547fef",
+                    },
+                  },
+                  {
+                    value: formatDataBarChart
+                      .find((data) => data.name === "btc")
+                      .values.reduce((prev, item) => prev + item, 0),
+                    itemStyle: {
+                      color: "#f7931a",
+                    },
+                  },
+                ],
+              },
+            ],
           };
 
           isLoadingPerformanceChart = false;
