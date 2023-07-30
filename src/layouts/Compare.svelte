@@ -866,7 +866,7 @@
     </div>
 
     <div class="border border-[#0000001a] rounded-[20px] p-6">
-      <div class="pl-4 xl:text-5xl text-7xl font-medium text-black mb-3">
+      <div class="pl-4 xl:text-2xl text-4xl font-medium text-black mb-3">
         Performance
       </div>
       {#if isLoadingDataCompare}
@@ -897,7 +897,7 @@
     <div class="border border-[#0000001a] rounded-[20px] p-6">
       <div class="mb-1 w-full">
         <div
-          class="xl:text-5xl text-7xl font-medium text-black flex justify-start"
+          class="xl:text-2xl text-4xl font-medium text-black flex justify-start"
         >
           <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
             Risks
