@@ -26,39 +26,41 @@
   let isLoadingDataCompare = false;
   let optionBar = {
     tooltip: {
-      trigger: "axis",
+      trigger: "item",
       extraCssText: "z-index: 9997",
-      // axisPointer: {
-      //   type: "shadow",
-      // },
-      // formatter: function (params) {
-      //   return `
-      //       <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
-      //         <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-      //           ${params[0].axisValue}
-      //         </div>
-      //         ${params
-      //           .map((item) => {
-      //             return `
-      //           <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-      //             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
-      //               <span>${item?.marker}</span>
-      //               ${item?.seriesName}
-      //             </div>
+      // valueFormatter: (value) => `${value}%`,
+      formatter: function (params) {
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                <span>${params?.marker}</span> ${params.seriesName}
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                  Return 
+                </div>
 
-      //             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-      //               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-      //                 item.value >= 0 ? "#05a878" : "#f25f5d"
-      //               };">
-      //                 ${formatCurrencyV2(Math.abs(item.value))}
-      //               </div>
-      //             </div>
-      //           </div>
-      //           `;
-      //           })
-      //           .join("")}
-      //       </div>`;
-      // },
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                    params.value[1] >= 0 ? "#05a878" : "#f25f5d"
+                  };">
+                    ${params.value[1]}%
+                  </div>
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                  Risk 
+                </div>
+
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
+                    ${Number(params.value[0]).toFixed(2)}
+                  </div>
+                </div>
+              </div>
+            </div>`;
+      },
     },
     legend: {
       data: [],
