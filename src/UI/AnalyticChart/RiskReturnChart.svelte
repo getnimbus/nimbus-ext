@@ -274,10 +274,10 @@
         <LoadingPremium />
       </div>
     {:else}
-      <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-4">
         <div class="grid grid-cols-2">
           <div class="col-span-1">
-            <div class="xl:text-lg text-xl text-black flex justify-start">
+            <div class=" text-black flex justify-start">
               <TooltipTitle
                 tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
                 isBigIcon
@@ -287,7 +287,7 @@
             </div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
-            <div class={`xl:text-lg text-xl`}>
+            <div>
               <TooltipNumber
                 number={Math.abs(compareData?.base?.sharpeRatio)}
                 type="percent"
@@ -297,7 +297,7 @@
         </div>
         <div class="grid grid-cols-2">
           <div class="col-span-1">
-            <div class="xl:text-lg text-xl text-black flex justify-start">
+            <div class=" text-black flex justify-start">
               <TooltipTitle
                 tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
                 isBigIcon
@@ -307,7 +307,7 @@
             </div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
-            <div class={`xl:text-lg text-xl`}>
+            <div>
               <TooltipNumber
                 number={Math.abs(compareData?.base?.volatility)}
                 type="percent"
@@ -317,7 +317,7 @@
         </div>
         <div class="grid grid-cols-2">
           <div class="col-span-1">
-            <div class="xl:text-lg text-xl text-black flex justify-start">
+            <div class=" text-black flex justify-start">
               <TooltipTitle
                 tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
                 isBigIcon
@@ -327,7 +327,7 @@
             </div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
-            <div class={`xl:text-lg text-xl`}>
+            <div>
               <TooltipNumber
                 number={Math.abs(compareData?.base?.drawDown)}
                 type="percent"

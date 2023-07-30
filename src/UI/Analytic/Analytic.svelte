@@ -46,29 +46,50 @@
       >
         <CurrentStatus />
 
-        <div
-          class="flex justify-between items-center border border-[#0000001a] rounded-[20px] p-6"
-        >
-          <div class="font-medium text-black xl:text-xl text-3xl">
-            Minimize risk & maximize return by rebalance your portfolio
-          </div>
-          <div class="w-max">
-            <Button
-              variant="tertiary"
-              on:click={() => {
-                navigate(
-                  `/virtual-portfolio?chain=${encodeURIComponent(
-                    selectedChain
-                  )}&address=${encodeURIComponent(selectedWallet)}`
-                );
-              }}
+        <section class="overflow-hidden">
+          <div
+            class="mx-auto max-w-c-1390 px-4 py-4 rounded-lg bg-gradient-to-t from-[#F8F9FF] to-[#DEE7FF] dark:bg-gradient-to-t dark:from-transparent dark:to-transparent dark:bg-blacksection dark:stroke-strokedark"
+          >
+            <div
+              class="flex flex-wrap gap-8 md:flex-nowrap md:items-center md:justify-between md:gap-0"
             >
-              <div class="xl:text-base text-2xl font-medium text-white">
-                Get suggestion
+              <div
+                class="animate_left"
+                data-sr-id="39"
+                style="visibility: visible; opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: opacity 2.8s cubic-bezier(0.5, 0, 0, 1) 0s, transform 2.8s cubic-bezier(0.5, 0, 0, 1) 0s;"
+              >
+                <h2
+                  class="px-2 py-3 text-xl font-medium text-black dark:text-white xl:text-sectiontitle4"
+                >
+                  Minimize risk & maximize return by rebalance your portfolio 🚀
+                </h2>
               </div>
-            </Button>
+              <div
+                class="animate_right lg:w-[45%]"
+                data-sr-id="43"
+                style="visibility: visible; opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: opacity 2.8s cubic-bezier(0.5, 0, 0, 1) 0s, transform 2.8s cubic-bezier(0.5, 0, 0, 1) 0s;"
+              >
+                <div class="flex items-center justify-end">
+                  <a
+                    class="inline-flex items-center gap-2.5 font-medium text-white dark:text-black bg-black dark:bg-white rounded-full py-3 px-6"
+                    href={`/virtual-portfolio?chain=${encodeURIComponent(
+                      selectedChain
+                    )}&address=${encodeURIComponent(selectedWallet)}`}
+                    on:click|preventDefault={() => {
+                      navigate(
+                        `/virtual-portfolio?chain=${encodeURIComponent(
+                          selectedChain
+                        )}&address=${encodeURIComponent(selectedWallet)}`
+                      );
+                    }}
+                  >
+                    Get suggestion
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
 
         <Risk />
 

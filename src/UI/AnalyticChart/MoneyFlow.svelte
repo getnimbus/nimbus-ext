@@ -341,16 +341,14 @@
         <LoadingPremium />
       </div>
     {:else}
-      <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-4">
         <div class="grid grid-cols-2">
           <div class="col-span-1">
-            <div class="xl:text-lg text-xl text-black flex justify-start">
-              Total money in
-            </div>
+            <div class="text-black flex justify-start">Total money in</div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
             <div
-              class={`xl:text-lg text-xl ${
+              class={`${
                 sumData.inflow < 0 ? "text-red-500" : "text-[#00A878]"
               }`}
             >
@@ -360,7 +358,7 @@
               />
             </div>
             {#if sumData.inflow < 0}
-              <div class="xl:text-lg text-xl text-red-500">⚠️</div>
+              <div class="text-red-500">⚠️</div>
             {:else}
               <svg
                 width="20"
@@ -382,13 +380,11 @@
         </div>
         <div class="grid grid-cols-2">
           <div class="col-span-1">
-            <div class="xl:text-lg text-xl text-black flex justify-start">
-              Total money out
-            </div>
+            <div class="text-black flex justify-start">Total money out</div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
             <div
-              class={`xl:text-lg text-xl ${
+              class={`${
                 sumData.outflow < 0 ? "text-red-500" : "text-[#00A878]"
               }`}
             >
@@ -398,7 +394,7 @@
               />
             </div>
             {#if sumData.outflow < 0}
-              <div class="xl:text-lg text-xl text-red-500">⚠️</div>
+              <div class="text-red-500">⚠️</div>
             {:else}
               <svg
                 width="20"
