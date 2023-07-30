@@ -12,6 +12,9 @@
   import dayjs from "dayjs";
   import { calculateVolatility, getChangePercent } from "~/chart-utils";
 
+  import TrendUp from "~/assets/trend-up.svg";
+  import TrendDown from "~/assets/trend-down.svg";
+
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
@@ -114,41 +117,41 @@
         const legendDataBarChart = listKey.map((item) => {
           let data = {
             name: "",
-            itemStyle: {
-              color: "",
-            },
+            // itemStyle: {
+            //   color: "",
+            // },
           };
           switch (item) {
             case "btc":
               data = {
                 name: "Bitcoin",
-                itemStyle: {
-                  color: "#f7931a",
-                },
+                // itemStyle: {
+                //   color: "#f7931a",
+                // },
               };
               break;
             case "eth":
               data = {
                 name: "Ethereum",
-                itemStyle: {
-                  color: "#547fef",
-                },
+                // itemStyle: {
+                //   color: "#547fef",
+                // },
               };
               break;
             case "base":
               data = {
                 name: "This wallet",
-                itemStyle: {
-                  color: "#00b580",
-                },
+                // itemStyle: {
+                //   color: "#00b580",
+                // },
               };
               break;
             case "compare":
               data = {
                 name: "Compare wallet",
-                itemStyle: {
-                  color: "rgba(178,184,255,1)",
-                },
+                // itemStyle: {
+                //   color: "rgba(178,184,255,1)",
+                // },
               };
               break;
           }
@@ -190,7 +193,10 @@
           return {
             name: custom.name,
             type: "scatter",
-            symbolSize: 20,
+            symbolSize: 30,
+            itemStyle: {
+              color: custom.color,
+            },
             data: [
               [
                 Number(response.data[item].volatility),
@@ -272,127 +278,89 @@
         <div class="grid grid-cols-2">
           <div class="col-span-1">
             <div class="xl:text-lg text-xl text-black flex justify-start">
-              <TooltipTitle tooltipText={"Hello World"} isBigIcon>
+              <TooltipTitle
+                tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
+                isBigIcon
+              >
                 Sharpe ratio
               </TooltipTitle>
             </div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
-            <div
-              class={`xl:text-lg text-xl ${
-                compareData?.base?.sharpeRatio < 0
-                  ? "text-red-500"
-                  : "text-[#00A878]"
-              }`}
-            >
+            <div class={`xl:text-lg text-xl`}>
               <TooltipNumber
                 number={Math.abs(compareData?.base?.sharpeRatio)}
                 type="percent"
               />
             </div>
-            {#if compareData?.base?.sharpeRatio < 0}
-              <div class="xl:text-lg text-xl text-red-500">⚠️</div>
-            {:else}
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill="none"
-                  stroke="#00A878"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
-                />
-              </svg>
-            {/if}
           </div>
         </div>
         <div class="grid grid-cols-2">
           <div class="col-span-1">
             <div class="xl:text-lg text-xl text-black flex justify-start">
-              <TooltipTitle tooltipText={"Hello World"} isBigIcon>
+              <TooltipTitle
+                tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
+                isBigIcon
+              >
                 Volatility
               </TooltipTitle>
             </div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
-            <div
-              class={`xl:text-lg text-xl ${
-                compareData?.base?.volatility < 0
-                  ? "text-red-500"
-                  : "text-[#00A878]"
-              }`}
-            >
+            <div class={`xl:text-lg text-xl`}>
               <TooltipNumber
                 number={Math.abs(compareData?.base?.volatility)}
                 type="percent"
               />
             </div>
-            {#if compareData?.base?.volatility < 0}
-              <div class="xl:text-lg text-xl text-red-500">⚠️</div>
-            {:else}
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill="none"
-                  stroke="#00A878"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
-                />
-              </svg>
-            {/if}
           </div>
         </div>
         <div class="grid grid-cols-2">
           <div class="col-span-1">
             <div class="xl:text-lg text-xl text-black flex justify-start">
-              <TooltipTitle tooltipText={"Hello World"} isBigIcon>
+              <TooltipTitle
+                tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
+                isBigIcon
+              >
                 Max draw down
               </TooltipTitle>
             </div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
-            <div
-              class={`xl:text-lg text-xl ${
-                compareData?.base?.drawDown < 0
-                  ? "text-red-500"
-                  : "text-[#00A878]"
-              }`}
-            >
+            <div class={`xl:text-lg text-xl`}>
               <TooltipNumber
                 number={Math.abs(compareData?.base?.drawDown)}
                 type="percent"
               />
             </div>
-            {#if compareData?.base?.drawDown < 0}
-              <div class="xl:text-lg text-xl text-red-500">⚠️</div>
-            {:else}
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill="none"
-                  stroke="#00A878"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
-                />
-              </svg>
-            {/if}
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 mt-8">
+        <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
+          <div class="text-base text-[#6E7787FF] relative">
+            <div
+              class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
+            />
+            Best token
+          </div>
+          <div class="text-2xl">PEPE</div>
+          <div class="text-lg flex items-center gap-1">
+            <img src={TrendUp} alt="trend" class="mb-1" />
+            <div class="text-[#00A878]">16%</div>
+          </div>
+        </div>
+        <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
+          <div class="text-base text-[#6E7787FF] relative">
+            <div
+              class="border border-red-500 absolute -top-1 left-0 w-[40px]"
+            />
+            Worse token
+          </div>
+          <div class="text-2xl">BTC</div>
+          <div class="text-lg flex items-center gap-1">
+            <img src={TrendDown} alt="trend" class="mb-1" />
+            <div class="text-red-500">8%</div>
           </div>
         </div>
       </div>

@@ -39,7 +39,10 @@
             <div class="grid grid-cols-5">
               <div class="col-span-2">
                 <div class="xl:text-lg text-2xl text-black flex justify-start">
-                  <TooltipTitle tooltipText={"Hello World"} isBigIcon>
+                  <TooltipTitle
+                    tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
+                    isBigIcon
+                  >
                     Sharpe ratio
                   </TooltipTitle>
                 </div>
@@ -81,7 +84,10 @@
             <div class="grid grid-cols-5">
               <div class="col-span-2">
                 <div class="xl:text-lg text-2xl text-black flex justify-start">
-                  <TooltipTitle tooltipText={"Hello World"} isBigIcon>
+                  <TooltipTitle
+                    tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
+                    isBigIcon
+                  >
                     Volatility
                   </TooltipTitle>
                 </div>
@@ -123,7 +129,10 @@
             <div class="grid grid-cols-5">
               <div class="col-span-2">
                 <div class="xl:text-lg text-2xl text-black flex justify-start">
-                  <TooltipTitle tooltipText={"Hello World"} isBigIcon>
+                  <TooltipTitle
+                    tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
+                    isBigIcon
+                  >
                     Max draw down
                   </TooltipTitle>
                 </div>

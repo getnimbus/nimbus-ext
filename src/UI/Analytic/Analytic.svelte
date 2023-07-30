@@ -11,7 +11,8 @@
   import Risk from "../AnalyticChart/Risk.svelte";
   import Compare from "../Portfolio/Compare.svelte";
   import MoneyFlow from "../AnalyticChart/MoneyFlow.svelte";
-  import RiskReturn from "../AnalyticChart/RiskReturn.svelte";
+  import RiskReturnChart from "../AnalyticChart/RiskReturnChart.svelte";
+  import ReturnChart from "../AnalyticChart/ReturnChart.svelte";
 
   const navigate = useNavigate();
 
@@ -71,7 +72,9 @@
 
         <Risk />
 
-        <RiskReturn />
+        <ReturnChart />
+
+        <RiskReturnChart />
 
         <MoneyFlow />
 

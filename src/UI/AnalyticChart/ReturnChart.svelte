@@ -8,6 +8,12 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import EChart from "~/components/EChart.svelte";
+  import { sendMessage } from "webext-bridge";
+  import dayjs from "dayjs";
+  import { calculateVolatility, getChangePercent } from "~/chart-utils";
+
+  import TrendUp from "~/assets/trend-up.svg";
+  import TrendDown from "~/assets/trend-down.svg";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -23,37 +29,39 @@
   let isLoadingDataCompare = false;
   let optionBar = {
     tooltip: {
-      trigger: "axis",
+      trigger: "item",
       extraCssText: "z-index: 9997",
-      axisPointer: {
-        type: "shadow",
-      },
+      // valueFormatter: (value) => `${value}%`,
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                ${params[0].axisValue}
+                <span>${params?.marker}</span> ${params.seriesName}
               </div>
-              ${params
-                .map((item) => {
-                  return `
-                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
-                    <span>${item?.marker}</span>
-                    ${item?.seriesName}
-                  </div>
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                  Return 
+                </div>
 
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
-                    };">
-                      ${formatCurrencyV2(Math.abs(item.value))}
-                    </div>
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                    params.value[1] >= 0 ? "#05a878" : "#f25f5d"
+                  };">
+                    ${params.value[1]}%
                   </div>
                 </div>
-                `;
-                })
-                .join("")}
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                  Risk 
+                </div>
+
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
+                    ${Number(params.value[0]).toFixed(2)}
+                  </div>
+                </div>
+              </div>
             </div>`;
       },
     },
@@ -62,14 +70,18 @@
     },
     xAxis: [
       {
-        type: "category",
+        type: "value",
         axisTick: { show: false },
-        data: ["Sharpe Ratio", "Volatility", "Drawdown"],
+        name: "Risk",
       },
     ],
     yAxis: [
       {
         type: "value",
+        name: "Return",
+        axisLabel: {
+          formatter: "{value}%",
+        },
       },
     ],
     series: [],
@@ -84,52 +96,69 @@
       if (response && response.data) {
         compareData = response.data;
 
+        const tokenHolding = (response.data?.base?.currentHolding || []).map(
+          (item) =>
+            item.cg_id
+              ? `coingecko:${item.cg_id}`
+              : `ethereum:${item.contractAddress}`
+        );
+
+        // console.log({ tokenHolding });
+
+        const chartDataResponse = await sendMessage("getDefillamaTokenChart", {
+          addresses: tokenHolding,
+          start: dayjs().startOf("d").subtract(30, "d").unix(),
+          span: 30,
+        }).then((res) => res?.coins || {});
+
+        // console.log({ chartDataResponse });
+
         const listKey = Object.getOwnPropertyNames(response.data);
         const legendDataBarChart = listKey.map((item) => {
           let data = {
             name: "",
-            itemStyle: {
-              color: "",
-            },
+            // itemStyle: {
+            //   color: "",
+            // },
           };
           switch (item) {
             case "btc":
               data = {
                 name: "Bitcoin",
-                itemStyle: {
-                  color: "#f7931a",
-                },
+                // itemStyle: {
+                //   color: "#f7931a",
+                // },
               };
               break;
             case "eth":
               data = {
                 name: "Ethereum",
-                itemStyle: {
-                  color: "#547fef",
-                },
+                // itemStyle: {
+                //   color: "#547fef",
+                // },
               };
               break;
             case "base":
               data = {
                 name: "This wallet",
-                itemStyle: {
-                  color: "#00b580",
-                },
+                // itemStyle: {
+                //   color: "#00b580",
+                // },
               };
               break;
             case "compare":
               data = {
                 name: "Compare wallet",
-                itemStyle: {
-                  color: "rgba(178,184,255,1)",
-                },
+                // itemStyle: {
+                //   color: "rgba(178,184,255,1)",
+                // },
               };
               break;
           }
           return data;
         });
 
-        const dataBarChart = listKey.map((item) => {
+        const scatterData = listKey.map((item) => {
           let custom = {
             name: "",
             color: "",
@@ -163,43 +192,47 @@
 
           return {
             name: custom.name,
-            type: "bar",
-            barStyle: {
-              type: "solid",
+            type: "scatter",
+            symbolSize: 30,
+            itemStyle: {
               color: custom.color,
             },
-            emphasis: {
-              focus: "series",
-            },
             data: [
-              {
-                value: response.data[item].sharpeRatio,
-                itemStyle: {
-                  color: custom.color,
-                },
-              },
-              {
-                value: response.data[item].volatility,
-                itemStyle: {
-                  color: custom.color,
-                },
-              },
-              {
-                value: response.data[item].drawDown,
-                itemStyle: {
-                  color: custom.color,
-                },
-              },
+              [
+                Number(response.data[item].volatility),
+                Number(response.data[item].netWorthChange?.networth30D),
+              ],
             ],
           };
         });
+
+        const tokenScatterData = Object.keys(chartDataResponse).map((token) => {
+          const tokenData = chartDataResponse[token];
+          const prices = (tokenData?.prices || []).map((item) => item.price);
+          const return30D = getChangePercent(
+            prices[prices.length - 1],
+            prices[0]
+          );
+
+          return {
+            name: tokenData.symbol,
+            type: "scatter",
+            symbolSize: 10,
+            // label: {
+            //   show: true,
+            // },
+            data: [[calculateVolatility(prices), return30D]],
+          };
+        });
+
+        console.log({ tokenScatterData });
 
         optionBar = {
           ...optionBar,
           legend: {
             data: legendDataBarChart,
           },
-          series: dataBarChart,
+          series: [...scatterData, ...tokenScatterData],
         };
         isLoadingDataCompare = false;
       }
@@ -223,8 +256,9 @@
 <AnalyticSection>
   <span slot="title">
     <div class="xl:text-2xl text-4xl font-medium text-black flex justify-start">
-      Risks
+      Return
       <!-- <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
+        Risk & Return
       </TooltipTitle> -->
     </div>
   </span>
@@ -354,7 +388,7 @@
           </div>
         {:else}
           <EChart
-            id="bar-chart-compare-analytic"
+            id="return-chart-analytic"
             theme="white"
             notMerge={true}
             option={optionBar}
