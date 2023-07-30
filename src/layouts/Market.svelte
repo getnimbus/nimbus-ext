@@ -154,7 +154,7 @@
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                Shapre ratio
+                Sharpe ratio
               </div>
             </th>
             <th class="pr-3 py-3 w-[190px] rounded-tr-[10px]">

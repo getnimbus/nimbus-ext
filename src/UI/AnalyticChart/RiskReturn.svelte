@@ -279,7 +279,7 @@
               </TooltipTitle>
             </div>
           </div>
-          <div class="col-span-1 flex items-center gap-1">
+          <div class="col-span-1 flex items-center gap-1 justify-end">
             <div
               class={`xl:text-lg text-xl ${
                 compareData?.base?.sharpeRatio < 0
@@ -321,7 +321,7 @@
               </TooltipTitle>
             </div>
           </div>
-          <div class="col-span-1 flex items-center gap-1">
+          <div class="col-span-1 flex items-center gap-1 justify-end">
             <div
               class={`xl:text-lg text-xl ${
                 compareData?.base?.volatility < 0
@@ -363,7 +363,7 @@
               </TooltipTitle>
             </div>
           </div>
-          <div class="col-span-1 flex items-center gap-1">
+          <div class="col-span-1 flex items-center gap-1 justify-end">
             <div
               class={`xl:text-lg text-xl ${
                 compareData?.base?.drawDown < 0

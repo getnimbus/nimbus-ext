@@ -348,7 +348,7 @@
               Total money in
             </div>
           </div>
-          <div class="col-span-1 flex items-center gap-1">
+          <div class="col-span-1 flex items-center gap-1 justify-end">
             <div
               class={`xl:text-lg text-xl ${
                 sumData.inflow < 0 ? "text-red-500" : "text-[#00A878]"
@@ -386,7 +386,7 @@
               Total money out
             </div>
           </div>
-          <div class="col-span-1 flex items-center gap-1">
+          <div class="col-span-1 flex items-center gap-1 justify-end">
             <div
               class={`xl:text-lg text-xl ${
                 sumData.outflow < 0 ? "text-red-500" : "text-[#00A878]"

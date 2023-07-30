@@ -44,7 +44,7 @@
                   </TooltipTitle>
                 </div>
               </div>
-              <div class="col-span-3 flex items-center gap-1">
+              <div class="col-span-3 flex items-center gap-1 justify-end">
                 <div
                   class={`xl:text-lg text-2xl ${
                     data?.base?.sharpeRatio < 0
@@ -86,7 +86,7 @@
                   </TooltipTitle>
                 </div>
               </div>
-              <div class="col-span-3 flex items-center gap-1">
+              <div class="col-span-3 flex items-center gap-1 justify-end">
                 <div
                   class={`xl:text-lg text-2xl ${
                     data?.base?.volatility < 0
@@ -128,7 +128,7 @@
                   </TooltipTitle>
                 </div>
               </div>
-              <div class="col-span-3 flex items-center gap-1">
+              <div class="col-span-3 flex items-center gap-1 justify-end">
                 <div
                   class={`xl:text-lg text-2xl ${
                     data?.base?.drawDown < 0 ? "text-red-500" : "text-[#00A878]"
