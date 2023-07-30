@@ -216,6 +216,10 @@
                 {dataPieChart}
                 {holdingTokenData}
                 {handleSelectedTableTokenHolding}
+                listOptionTypeCategory={[]}
+                selectedOption={{}}
+                isCompareChart={false}
+                id="pie-chart-token-allocation"
               />
             </div>
           {/if}

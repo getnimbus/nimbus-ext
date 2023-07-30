@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import {
@@ -13,6 +14,10 @@
   export let handleSelectedTableTokenHolding = (data, selectDataPieChart) => {};
   export let holdingTokenData;
   export let dataPieChart;
+  export let listOptionTypeCategory;
+  export let selectedOption;
+  export let isCompareChart;
+  export let id;
 
   import Select from "~/components/Select.svelte";
   import EChart from "~/components/EChart.svelte";
@@ -135,8 +140,8 @@
   ];
   let dataPersonalizeTag = [];
   let selectedType = {
-    label: "",
-    value: "",
+    label: "All",
+    value: "All",
   };
 
   let tokenDataCustomCategory = [];
@@ -228,6 +233,23 @@
       console.log("e: ", e);
     }
   };
+
+  onMount(() => {
+    if (selectedOption) {
+      selectedType = selectedOption;
+    } else {
+      selectedType = {
+        label: "All",
+        value: "All",
+      };
+    }
+  });
+
+  $: {
+    if (selectedOption && Object.keys(selectedOption).length !== 0) {
+      selectedType = selectedOption;
+    }
+  }
 
   $: {
     if (dataPersonalizeTag && holdingTokenData && dataPieChart) {
@@ -479,44 +501,47 @@
 </script>
 
 <div class="w-full">
-  <div class="flex justify-start mb-5">
-    <Select
-      type="lang"
-      listSelect={typeListCategory || []}
-      bind:selected={selectedType}
-    />
-  </div>
-  <EChart
-    id="pie-chart-token-allocation"
-    theme="white"
-    notMerge={true}
-    option={optionPie}
-    height={465}
-  />
-  <div class="flex items-center gap-3">
-    <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
-      <div class="text-base text-[#6E7787FF] relative">
-        <div class="border border-[#00A878] absolute -top-1 left-0 w-[40px]" />
-        Last week
+  {#if listOptionTypeCategory && listOptionTypeCategory.length === 0}
+    <div class="flex justify-start mb-5">
+      <Select
+        type="lang"
+        listSelect={listOptionTypeCategory &&
+        listOptionTypeCategory.length !== 0
+          ? listOptionTypeCategory
+          : typeListCategory}
+        bind:selected={selectedType}
+      />
+    </div>
+  {/if}
+  <EChart {id} theme="white" notMerge={true} option={optionPie} height={465} />
+  {#if !isCompareChart}
+    <div class="flex items-center gap-3">
+      <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
+        <div class="text-base text-[#6E7787FF] relative">
+          <div
+            class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
+          />
+          Last week
+        </div>
+        <div class="text-2xl">$1890.6</div>
+        <div class="text-lg flex items-center gap-1">
+          <img src={TrendUp} alt="trend" class="mb-1" />
+          <div class="text-[#00A878]">16%</div>
+        </div>
       </div>
-      <div class="text-2xl">$1890.6</div>
-      <div class="text-lg flex items-center gap-1">
-        <img src={TrendUp} alt="trend" class="mb-1" />
-        <div class="text-[#00A878]">16%</div>
+      <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
+        <div class="text-base text-[#6E7787FF] relative">
+          <div class="border border-red-500 absolute -top-1 left-0 w-[40px]" />
+          This week
+        </div>
+        <div class="text-2xl">$890.6</div>
+        <div class="text-lg flex items-center gap-1">
+          <img src={TrendDown} alt="trend" class="mb-1" />
+          <div class="text-red-500">8%</div>
+        </div>
       </div>
     </div>
-    <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
-      <div class="text-base text-[#6E7787FF] relative">
-        <div class="border border-red-500 absolute -top-1 left-0 w-[40px]" />
-        This week
-      </div>
-      <div class="text-2xl">$890.6</div>
-      <div class="text-lg flex items-center gap-1">
-        <img src={TrendDown} alt="trend" class="mb-1" />
-        <div class="text-red-500">8%</div>
-      </div>
-    </div>
-  </div>
+  {/if}
 </div>
 
 <style windi:preflights:global windi:safelist:global></style>
