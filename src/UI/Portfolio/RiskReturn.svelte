@@ -396,7 +396,7 @@
                   bind:this={scrollContainer}
                   on:scroll={handleScroll}
                 >
-                  {#each data?.base?.monthlyPerformance || [] as item}
+                  {#each data?.base?.monthlyPerformance.sort((a, b) => a.timestamp - b.timestamp) || [] as item}
                     <div
                       class="rounded-[20px] bg-[#FAFAFBFF] px-4 py-3 flex flex-col gap-2"
                       style="z-index: 2"
