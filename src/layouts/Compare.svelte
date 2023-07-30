@@ -181,6 +181,93 @@
     series: [],
   };
 
+  let optionPie = {
+    title: {
+      text: "",
+    },
+    tooltip: {
+      trigger: "item",
+      extraCssText: "z-index: 9997",
+      formatter: function (params) {
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+              <div style="display: flex; align-items: centers; gap: 4px">
+                ${
+                  params?.data?.logo
+                    ? `<img src=${params?.data?.logo} alt="" width=20 height=20 style="border-radius: 100%" />`
+                    : ""
+                }
+                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                  ${params?.name} ${
+          params?.data?.symbol ? `(${params?.data?.symbol})` : ""
+        }
+                </div>
+              </div>
+
+              ${
+                params?.data?.name_balance
+                  ? `
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                    ${MultipleLang[params?.data?.name_balance]}
+                  </div>
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                    ${formatCurrency(params?.data?.value_balance)}
+                  </div>
+                </div>
+              `
+                  : ""
+              }
+
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                  ${MultipleLang[params?.data?.name_value]}
+                </div>
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                  $${formatCurrency(params?.data?.value_value)}
+                </div>
+              </div>
+              
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                  ${MultipleLang[params?.data?.name_ratio]}
+                </div>
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                  ${formatCurrency(params?.value)}%
+                </div>
+              </div>
+            </div>`;
+      },
+    },
+    legend: {
+      top: "0%",
+      left: "center",
+    },
+    series: [
+      {
+        type: "pie",
+        radius: ["40%", "60%"],
+        left: 0,
+        avoidLabelOverlap: false,
+        label: {
+          show: false,
+          position: "center",
+        },
+        emphasis: {
+          label: {
+            show: false,
+            fontSize: 40,
+            fontWeight: "bold",
+          },
+        },
+        labelLine: {
+          show: false,
+        },
+        data: [],
+      },
+    ],
+  };
+
   const debounceSearchCompare = (value) => {
     clearTimeout(timerSearchDebounce);
     timerSearchDebounce = setTimeout(() => {
@@ -366,6 +453,7 @@
         data,
         selectDatPieChart,
       });
+      optionPie = selectDatPieChart;
     }
   };
 
@@ -636,6 +724,13 @@
       };
     }
   }
+
+  $: {
+    console.log({
+      dataPieChart,
+      holdingTokenData,
+    });
+  }
 </script>
 
 <ErrorBoundary>
@@ -648,8 +743,9 @@
         <Copy address={selectedWallet} iconColor="#000" color="#000" />
       </div>
     </div>
-    <div class="flex gap-6">
-      <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
+
+    <div class="grid xl:grid-cols-2 grid-cols-1 gap-6">
+      <div class="border border-[#0000001a] rounded-[20px] p-6 min-h-[735px]">
         <div class="xl:text-2xl text-4xl font-medium text-black w-full mb-6">
           {MultipleLang.token_allocation}
         </div>
@@ -677,72 +773,91 @@
           </div>
         {/if}
       </div>
-      <div class="flex-1 border border-[#0000001a] rounded-[20px] p-6">
+
+      <div class="border border-[#0000001a] rounded-[20px] p-6 min-h-[735px]">
         {#if searchCompare}
-          <div>compare chart</div>
-        {:else}
-          <div class="xl:text-2xl text-4xl font-medium text-black w-full">
-            Compare with
-          </div>
-          <div class="h-full flex flex-col justify-center gap-6">
-            <div class="flex items-center gap-4">
-              <div class="flex-1">
-                <Button>High risk</Button>
+          <div class="flex flex-col">
+            <div class="flex justify-between items-center">
+              <div class="xl:text-2xl text-4xl font-medium text-black">
+                Compare with
               </div>
-              <div class="flex-1">
-                <Button>Medium risk</Button>
-              </div>
-              <div class="flex-1">
-                <Button>Low risk</Button>
-              </div>
-            </div>
-            <div class="border-t-[1px] relative">
-              <div
-                class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 bg-white text-sm px-2"
-              >
-                Or
-              </div>
-            </div>
-            <div class="flex flex-col gap-2">
-              <div
-                class={`border focus:outline-none w-full py-2 px-3 rounded-lg flex justify-between items-center ${
-                  searchCompare ? "bg-[#F0F2F7]" : "bg-white"
-                }`}
-              >
-                <input
-                  on:keyup={({ target: { value } }) =>
-                    debounceSearchCompare(value)}
-                  on:keydown={(event) => {
-                    if (
-                      (event.which == 13 || event.keyCode == 13) &&
-                      searchCompare
-                    ) {
-                      getAnalyticCompare();
-                    }
-                  }}
-                  value={searchCompare}
-                  placeholder={"Search address to compare"}
-                  type="text"
-                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] h-7 ${
-                    searchCompare ? "bg-[#F0F2F7]" : ""
-                  }`}
-                />
-                {#if searchCompare}
-                  <div
-                    class="cursor-pointer text-xl text-[#5E656B]"
-                    on:click={() => {
-                      searchCompare = "";
-                      getAnalyticCompare();
-                    }}
-                  >
-                    &otimes;
-                  </div>
-                {/if}
-              </div>
-              <div class="xl:text-sm text-lg">
-                Or <span class="text-blue-500 cursor-pointer"
-                  >get inspired from the whale list</span
+              <div class="w-max">
+                <Button
+                  variant="secondary"
+                  on:click={() => {
+                    searchCompare = "";
+                    getAnalyticCompare();
+                  }}>Remove</Button
                 >
+              </div>
+            </div>
+            <div class="h-full flex flex-col gap-5 mt-6">
+              <div class="xl:text-base text-xl text-black font-medium">
+                <Copy address={searchCompare} iconColor="#000" color="#000" />
+              </div>
+              <EChart
+                id="pie-chart-token-allocation-compare"
+                theme="white"
+                notMerge={true}
+                option={{}}
+                height={465}
+              />
+            </div>
+          </div>
+        {:else}
+          <div class="grid grid-rows-11 h-full">
+            <div class="xl:text-2xl text-4xl font-medium text-black w-full">
+              Compare with
+            </div>
+            <div class="flex flex-col justify-center gap-6 row-span-10">
+              <div class="flex items-center gap-4">
+                <div class="flex-1">
+                  <Button>High risk</Button>
+                </div>
+                <div class="flex-1">
+                  <Button>Medium risk</Button>
+                </div>
+                <div class="flex-1">
+                  <Button>Low risk</Button>
+                </div>
+              </div>
+              <div class="border-t-[1px] relative">
+                <div
+                  class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 bg-white text-sm px-2"
+                >
+                  Or
+                </div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <div
+                  class={`border focus:outline-none w-full py-2 px-3 rounded-lg ${
+                    searchCompare ? "bg-[#F0F2F7]" : "bg-white"
+                  }`}
+                >
+                  <input
+                    on:keyup={({ target: { value } }) =>
+                      debounceSearchCompare(value)}
+                    on:keydown={(event) => {
+                      if (
+                        (event.which == 13 || event.keyCode == 13) &&
+                        searchCompare
+                      ) {
+                        getAnalyticCompare();
+                      }
+                    }}
+                    value={searchCompare}
+                    placeholder={"Search address to compare"}
+                    type="text"
+                    class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] h-7 ${
+                      searchCompare ? "bg-[#F0F2F7]" : ""
+                    }`}
+                  />
+                </div>
+                <div class="xl:text-sm text-lg">
+                  Or <span class="text-blue-500 cursor-pointer"
+                    >get inspired from the whale list</span
+                  >
+                </div>
               </div>
             </div>
           </div>
@@ -751,7 +866,7 @@
     </div>
 
     <div class="border border-[#0000001a] rounded-[20px] p-6">
-      <div class="pl-4 xl:text-xl text-3xl font-medium text-black mb-3">
+      <div class="pl-4 xl:text-5xl text-7xl font-medium text-black mb-3">
         Performance
       </div>
       {#if isLoadingDataCompare}
@@ -782,7 +897,7 @@
     <div class="border border-[#0000001a] rounded-[20px] p-6">
       <div class="mb-1 w-full">
         <div
-          class="xl:text-xl text-3xl font-medium text-black flex justify-start"
+          class="xl:text-5xl text-7xl font-medium text-black flex justify-start"
         >
           <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
             Risks
