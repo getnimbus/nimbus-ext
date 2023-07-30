@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { wallet, chain } from "~/store";
+  import { wallet } from "~/store";
   import { i18n } from "~/lib/i18n";
   import { sendMessage } from "webext-bridge";
   import { nimbus } from "~/lib/network";
@@ -27,14 +27,8 @@
     selectedWallet = value;
   });
 
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    let chainParams = urlParams.get("chain");
     let addressParams = urlParams.get("address");
 
     if (APP_TYPE.TYPE === "EXT") {
@@ -47,13 +41,11 @@
           return result;
         }, {});
 
-      chainParams = params.chain;
       addressParams = params.address;
     }
 
-    if (chainParams && addressParams) {
+    if (addressParams) {
       selectedWallet = addressParams;
-      selectedChain = chainParams;
     }
   });
 
@@ -218,7 +210,7 @@
       const response: OverviewDataRes = await sendMessage("getOverview", {
         address: selectedWallet,
         reload: isReload,
-        chain: selectedChain,
+        chain: "ALL",
       });
 
       if (selectedWallet === response?.address) {
@@ -319,7 +311,7 @@
       const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
         address: selectedWallet,
         reload: isReload,
-        chain: selectedChain,
+        chain: "ALL",
       });
 
       if (selectedWallet === response?.address) {
@@ -378,9 +370,10 @@
   };
 
   $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+    if (selectedWallet) {
+      if (selectedWallet.length !== 0) {
         handleGetAllData();
+        getAnalyticCompare();
       }
     }
   }
@@ -392,11 +385,7 @@
   }
 
   $: {
-    if (
-      compareData &&
-      Object.keys(compareData).length !== 0 &&
-      searchCompare.length !== 0
-    ) {
+    if (compareData && Object.keys(compareData).length !== 0) {
       const listKey = Object.getOwnPropertyNames(compareData);
 
       // bar chart format
@@ -765,18 +754,12 @@
       <div class="pl-4 xl:text-xl text-3xl font-medium text-black mb-3">
         Performance
       </div>
-      {#if searchCompare.length === 0}
-        <div
-          class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[433px]"
-        >
-          Empty
-        </div>
-      {:else if isLoadingDataCompare}
+      {#if isLoadingDataCompare}
         <div class="flex items-center justify-center h-[433px]">
           <loading-icon />
         </div>
       {:else}
-        <div class="h-full h">
+        <div class="h-full">
           {#if compareData && Object.keys(compareData).length === 0}
             <div
               class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[433px]"
@@ -806,36 +789,26 @@
           </TooltipTitle>
         </div>
       </div>
-      {#if searchCompare.length === 0}
-        <div
-          class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[433px]"
-        >
-          Empty
+      {#if isLoadingDataCompare}
+        <div class="flex items-center justify-center h-[465px]">
+          <loading-icon />
         </div>
       {:else}
-        <div>
-          {#if isLoadingDataCompare}
-            <div class="flex items-center justify-center h-[465px]">
-              <loading-icon />
+        <div class="h-full">
+          {#if compareData && Object.keys(compareData).length === 0}
+            <div
+              class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[433px]"
+            >
+              Empty
             </div>
           {:else}
-            <div class="h-full">
-              {#if compareData && Object.keys(compareData).length === 0}
-                <div
-                  class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[433px]"
-                >
-                  Empty
-                </div>
-              {:else}
-                <EChart
-                  id="bar-chart-compare"
-                  theme="white"
-                  notMerge={true}
-                  option={optionBar}
-                  height={465}
-                />
-              {/if}
-            </div>
+            <EChart
+              id="bar-chart-compare"
+              theme="white"
+              notMerge={true}
+              option={optionBar}
+              height={465}
+            />
           {/if}
         </div>
       {/if}

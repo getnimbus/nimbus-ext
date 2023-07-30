@@ -127,6 +127,10 @@
       label: "All",
       value: "All",
     },
+    {
+      label: "Chain",
+      value: "Chain",
+    },
     ...typeList,
   ];
   let dataPersonalizeTag = [];
@@ -135,7 +139,6 @@
     value: "",
   };
 
-  let tokensHoldingDataByChain = [];
   let tokenDataCustomCategory = [];
   let tokenDataHolding = {
     value: "",
@@ -165,6 +168,14 @@
     },
   };
   let tokenDataSector = {
+    value: "",
+    dataPie: [],
+    dataTable: {
+      data: [],
+      select: [],
+    },
+  };
+  let tokenDataChain = {
     value: "",
     dataPie: [],
     dataTable: {
@@ -227,100 +238,6 @@
         };
       });
 
-      const listChain = [
-        ...new Set(holdingTokenData.map((item) => item.chain)),
-      ].map((item) => {
-        return {
-          label: item,
-          value: item,
-        };
-      });
-
-      const filterTokensHoldingDataByChain = listChain.map((item) => {
-        return {
-          chain: item.value,
-          tokens: holdingTokenData.filter(
-            (token) => token.chain === item.value
-          ),
-        };
-      });
-
-      tokensHoldingDataByChain = filterTokensHoldingDataByChain.map((item) => {
-        const sumToken = (item.tokens || []).reduce(
-          (prev, item) => prev + Number(item.value),
-          0
-        );
-
-        const sortTokens = item.tokens.sort((a, b) => {
-          if (a.value < b.value) {
-            return 1;
-          }
-          if (a.value > b.value) {
-            return -1;
-          }
-          return 0;
-        });
-
-        const topFiveToken = sortTokens.slice(0, 5).map((item) => {
-          return {
-            ...item,
-            id: item.id || "N/A",
-            symbol: item.symbol || "N/A",
-            name: item.name || "N/A",
-          };
-        });
-
-        const orderToken = sortTokens.slice(5, sortTokens.length);
-
-        const sumOrderToken = (orderToken || []).reduce(
-          (prev, item) => prev + Number(item.value),
-          0
-        );
-
-        const dataPieChartOrderToken = [
-          {
-            logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
-            name: "Other tokens",
-            symbol: "",
-            name_ratio: "Ratio",
-            value: (sumOrderToken / sumToken) * 100 || 0,
-            name_value: "Value",
-            value_value: sumOrderToken,
-            name_balance: "",
-            value_balance: 0,
-          },
-        ];
-
-        const formatDataPieChartTopFiveToken = topFiveToken.map((item) => {
-          return {
-            logo: item.logo,
-            name: item.name || item.symbol,
-            symbol: item.symbol,
-            name_ratio: "Ratio",
-            value: (Number(item.value) / sumToken) * 100 || 0,
-            name_value: "Value",
-            value_value: Number(item.value),
-            name_balance: "Balance",
-            value_balance: Number(item.amount),
-          };
-        });
-
-        return {
-          value: item.chain,
-          dataPie:
-            item.tokens.length > 5
-              ? formatDataPieChartTopFiveToken.concat(dataPieChartOrderToken)
-              : formatDataPieChartTopFiveToken,
-          dataTable: {
-            data: {
-              name: item.chain,
-              data: sortTokens,
-            },
-            select: [],
-          },
-        };
-      });
-
       const tokenDataEachCategory = dataPersonalizeTag.map((item) => {
         return {
           category: item.category,
@@ -378,6 +295,12 @@
         },
       };
 
+      tokenDataChain = {
+        value: "Chain",
+        dataPie: handleFormatDataPieChart(holdingTokenData, "chain"),
+        dataTable: handleFormatDataTable(holdingTokenData, "chain"),
+      };
+
       tokenDataRank = {
         value: "rank",
         dataPie: handleFormatDataPieChart(holdingTokenData, "rank"),
@@ -396,21 +319,20 @@
         dataTable: handleFormatDataTable(holdingTokenData, "sector"),
       };
 
-      if (listCategory.length !== 0 && listChain.length !== 0) {
-        typeListCategory = [
-          ...typeListCategory,
-          ...listCategory,
-          ...listChain,
-        ].reduce((unique, o) => {
-          if (
-            !unique.some(
-              (obj) => obj.label === o.label && obj.value === o.value
-            )
-          ) {
-            unique.push(o);
-          }
-          return unique;
-        }, []);
+      if (listCategory.length !== 0) {
+        typeListCategory = [...typeListCategory, ...listCategory].reduce(
+          (unique, o) => {
+            if (
+              !unique.some(
+                (obj) => obj.label === o.label && obj.value === o.value
+              )
+            ) {
+              unique.push(o);
+            }
+            return unique;
+          },
+          []
+        );
       }
     }
   }
@@ -423,6 +345,10 @@
             label: "All",
             value: "All",
           },
+          {
+            label: "Chain",
+            value: "Chain",
+          },
           ...typeList,
         ];
         dataPersonalizeTag = [];
@@ -430,7 +356,6 @@
           label: "",
           value: "",
         };
-        tokensHoldingDataByChain = [];
         tokenDataCustomCategory = [];
         tokenDataHolding = {
           value: "",
@@ -474,8 +399,6 @@
 
   $: {
     if (selectedType) {
-      const listData = tokenDataCustomCategory.concat(tokensHoldingDataByChain);
-
       if (selectedType.value === "sector") {
         optionPie = {
           ...optionPie,
@@ -520,12 +443,23 @@
           ],
         };
         handleSelectedTableTokenHolding(tokenDataHolding.dataTable, optionPie);
+      } else if (selectedType.value === "Chain") {
+        optionPie = {
+          ...optionPie,
+          series: [
+            {
+              ...optionPie.series[0],
+              data: formatDataPie(tokenDataChain.dataPie),
+            },
+          ],
+        };
+        handleSelectedTableTokenHolding(tokenDataChain.dataTable, optionPie);
       } else {
-        const indexOfType = listData
+        const indexOfType = tokenDataCustomCategory
           .map((item) => item.value)
           .indexOf(selectedType.value);
 
-        const selectedData = listData[indexOfType];
+        const selectedData = tokenDataCustomCategory[indexOfType];
 
         if (selectedData !== undefined) {
           optionPie = {

@@ -836,9 +836,9 @@
                         variant="secondary"
                         on:click={() => {
                           navigate(
-                            `/compare?chain=${encodeURIComponent(
-                              selectedChain
-                            )}&address=${encodeURIComponent(selectedWallet)}`
+                            `/compare?address=${encodeURIComponent(
+                              selectedWallet
+                            )}`
                           );
                         }}>Compare with</Button
                       >
@@ -852,9 +852,7 @@
                       variant="secondary"
                       on:click={() => {
                         navigate(
-                          `/compare?chain=${encodeURIComponent(
-                            selectedChain
-                          )}&address=${encodeURIComponent(selectedWallet)}`
+                          `/compare?address=${encodeURIComponent(selectedWallet)}`
                         );
                       }}>Compare with</Button
                     >
