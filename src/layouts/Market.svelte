@@ -112,52 +112,52 @@
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                1D return
+                1D
               </div>
             </th>
             <th class="py-3">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                7D return
+                7D
               </div>
             </th>
             <th class="py-3">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                1M return
+                1M
               </div>
             </th>
             <th class="py-3">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                1Y return
+                1Y
               </div>
             </th>
-            <th class="pr-3 py-3 w-[190px]">
+            <th class="pr-3 py-3">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
                 Volality
               </div>
             </th>
-            <th class="pr-3 py-3 w-[190px]">
+            <th class="pr-3 py-3">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
                 Max drawdown
               </div>
             </th>
-            <th class="pr-3 py-3 w-[190px]">
+            <th class="pr-3 py-3">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
                 Sharpe ratio
               </div>
             </th>
-            <th class="pr-3 py-3 w-[190px] rounded-tr-[10px]">
+            <th class="pr-3 py-3 rounded-tr-[10px]">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >

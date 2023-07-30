@@ -113,7 +113,7 @@ export const returnType = [
     value: "overview",
   },
   {
-    label: "Avg. by month",
+    label: "By month",
     value: "month",
   },
 ]

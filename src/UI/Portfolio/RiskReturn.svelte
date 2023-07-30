@@ -1,7 +1,7 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { formatCurrencyV2, returnType } from "~/utils";
-  import dayjs from "dayjs";
+  import dayjs, { unix } from "dayjs";
 
   export let data;
   export let isLoadingDataCompare;
@@ -393,7 +393,7 @@
                       style="z-index: 2"
                     >
                       <div class="xl:text-base text-xl text-gray-500">
-                        {dayjs(item.date).format("DD MMM YYYY")}
+                        {dayjs.unix(item.timestamp).format("MMM YYYY")}
                       </div>
                       <div
                         class={`xl:text-2xl text-3xl ${
@@ -402,9 +402,7 @@
                             : "text-[#00A878]"
                         }`}
                       >
-                        {item.percentChange < 0 ? "-" : "+"}{formatCurrencyV2(
-                          Math.abs(item.percentChange)
-                        )}%
+                        {formatCurrencyV2(Math.abs(item.percentChange))}%
                       </div>
                     </div>
                   {/each}
