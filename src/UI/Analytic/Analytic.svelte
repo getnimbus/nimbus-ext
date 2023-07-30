@@ -72,14 +72,12 @@
                 <div class="flex items-center justify-end">
                   <a
                     class="inline-flex items-center gap-2.5 font-medium text-white dark:text-black bg-black dark:bg-white rounded-full py-3 px-6"
-                    href={`/virtual-portfolio?chain=${encodeURIComponent(
-                      selectedChain
-                    )}&address=${encodeURIComponent(selectedWallet)}`}
+                    href={`/compare?address=${encodeURIComponent(
+                      selectedWallet
+                    )}`}
                     on:click|preventDefault={() => {
                       navigate(
-                        `/virtual-portfolio?chain=${encodeURIComponent(
-                          selectedChain
-                        )}&address=${encodeURIComponent(selectedWallet)}`
+                        `/compare?address=${encodeURIComponent(selectedWallet)}`
                       );
                     }}
                   >

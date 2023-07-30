@@ -967,8 +967,12 @@
                             />
                           </div>
                           <div class="xl:text-sm text-lg">
-                            Or <span class="text-blue-500 cursor-pointer"
-                              >get inspired from the whale list</span
+                            Or
+                            <a
+                              class="text-blue-500 cursor-pointer"
+                              href="/market"
+                              target="_blank"
+                              >get inspired from the whale list</a
                             >
                           </div>
                         </div>
