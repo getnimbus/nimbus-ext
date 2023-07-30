@@ -91,11 +91,11 @@ onMessage<IAddressInput, any>("getNetworthAnalysis", async ({ data: { address, c
 
 onMessage<IAddressInput, any>("getDefillamaTokenChart", async ({ data: { addresses, start, span } }) => {
   try {
-
     return defillama.get(`/chart/${addresses.join(',')}?start=${start}&span=${span}`).then((response) => {
       return response;
     });
   } catch (error) {
+    console.log(error);
     return {};
   }
 });

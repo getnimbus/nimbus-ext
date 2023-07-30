@@ -11,6 +11,7 @@
   import Risk from "../AnalyticChart/Risk.svelte";
   import Compare from "../Portfolio/Compare.svelte";
   import MoneyFlow from "../AnalyticChart/MoneyFlow.svelte";
+  import RiskReturn from "../AnalyticChart/RiskReturn.svelte";
 
   const navigate = useNavigate();
 
@@ -40,7 +41,7 @@
   <span slot="body">
     <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[96%] relative">
       <div
-        class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md"
+        class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md space-y-4"
       >
         <CurrentStatus />
 
@@ -48,7 +49,7 @@
           class="flex justify-between items-center border border-[#0000001a] rounded-[20px] p-6"
         >
           <div class="font-medium text-black xl:text-xl text-3xl">
-            Minimize risk & maximize return by allocation your portfolio
+            Minimize risk & maximize return by rebalance your portfolio
           </div>
           <div class="w-max">
             <Button
@@ -69,6 +70,8 @@
         </div>
 
         <Risk />
+
+        <RiskReturn />
 
         <MoneyFlow />
 
