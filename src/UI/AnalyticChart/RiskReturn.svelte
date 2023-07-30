@@ -208,8 +208,6 @@
             prices[0]
           );
 
-          console.log({ token, prices });
-
           return {
             name: tokenData.symbol,
             type: "scatter",
