@@ -29,6 +29,9 @@
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
     performance: i18n("newtabPage.performance", "Performance"),
+    Balance: i18n("newtabPage.Balance", "Balance"),
+    Ratio: i18n("newtabPage.Ratio", "Ratio"),
+    Value: i18n("newtabPage.Value", "Value"),
   };
 
   const navigate = useNavigate();
@@ -341,7 +344,7 @@
   const getPersonalizeTag = async () => {
     try {
       const response = await nimbus.get(
-        `/address/${selectedWallet}/personalize/tag`
+        `/address/${selectedWallet}/personalize/tag`,
       );
       if (response && response.data) {
         const categoriesData = Object.getOwnPropertyNames(response.data);
@@ -398,7 +401,7 @@
                   color: "#00b580",
                 },
               };
-            }
+            },
           );
 
           const formatDataETH = response.result?.performance.map((item) => {
@@ -550,7 +553,7 @@
           dataTokens: flatten(
             item.dataTag
               .filter((item) => item.name !== "Other")
-              .map((item) => item.tokens)
+              .map((item) => item.tokens),
           ),
         };
       });
@@ -559,12 +562,12 @@
         const formatDataTokens = dataTokenHolding.map((tokenHolding) => {
           const isSelected = item.dataTokens.some(
             (selectedToken) =>
-              selectedToken.contractAddress === tokenHolding.contractAddress
+              selectedToken.contractAddress === tokenHolding.contractAddress,
           );
 
           const selected = item.dataTokens.filter(
             (selectedToken) =>
-              selectedToken.contractAddress === tokenHolding.contractAddress
+              selectedToken.contractAddress === tokenHolding.contractAddress,
           );
 
           return {
@@ -658,7 +661,7 @@
 
   $: {
     if (selectedWallet || selectedChain) {
-      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
         typeListCategory = [...typeList];
         personalizeCategoryData = [];
         isEmptyDataPie = false;
@@ -773,8 +776,8 @@
           on:click={() => {
             navigate(
               `/personal-token-breakdown?chain=${encodeURIComponent(
-                selectedChain
-              )}&address=${encodeURIComponent(selectedWallet)}`
+                selectedChain,
+              )}&address=${encodeURIComponent(selectedWallet)}`,
             );
           }}
         >

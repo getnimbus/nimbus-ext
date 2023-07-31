@@ -1,16 +1,15 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
-  import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
   import { dndzone } from "svelte-dnd-action";
   import { getAddressContext } from "~/utils";
   import { Toast } from "flowbite-svelte";
-  import { fly } from "svelte/transition";
-  import { wallet, chain } from "~/store";
+  import { blur } from "svelte/transition";
+  import { wallet, chain, typeWallet } from "~/store";
   import mixpanel from "mixpanel-browser";
-
-  import type { AddressData } from "~/types/AddressData";
+  import { nimbus } from "~/lib/network";
+  import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
 
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
@@ -18,89 +17,92 @@
   import "~/components/Loading.custom.svelte";
 
   import Plus from "~/assets/plus.svg";
+  import User from "~/assets/user.png";
 
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "My wallets"),
     content: {
       btn_text: i18n(
         "optionsPage.accounts-page-content.address-btn-text",
-        "Add Wallet"
+        "Add Wallet",
       ),
       address_header_table: i18n(
         "optionsPage.accounts-page-content.address-header-table",
-        "Wallet"
+        "Wallet",
       ),
       label_header_table: i18n(
         "optionsPage.accounts-page-content.label-header-table",
-        "Label"
+        "Label",
       ),
       action_header_table: i18n(
         "optionsPage.accounts-page-content.action-header-table",
-        "Action"
+        "Action",
       ),
       modal_cancel: i18n(
         "optionsPage.accounts-page-content.modal-cancel",
-        "Cancel"
+        "Cancel",
       ),
       modal_add: i18n(
         "optionsPage.accounts-page-content.modal-add-wallet",
-        "Add"
+        "Add",
       ),
       modal_edit: i18n("optionsPage.accounts-page-content.modal-edit", "Edit"),
       modal_delete: i18n(
         "optionsPage.accounts-page-content.modal-delete",
-        "Delete"
+        "Delete",
       ),
       modal_address_label: i18n(
         "optionsPage.accounts-page-content.modal-address-label",
-        "Wallet"
+        "Wallet",
       ),
       modal_label_label: i18n(
         "optionsPage.accounts-page-content.modal-label-label",
-        "Label"
+        "Label",
       ),
       modal_add_title: i18n(
         "optionsPage.accounts-page-content.modal-add-title",
-        "Add your wallet"
+        "Add your wallet",
       ),
       modal_add_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-add-sub-title",
-        "Add your wallet will give you more option to see the information at page new tab"
+        "Add your wallet will give you more option to see the information at page new tab",
       ),
       modal_delete_title: i18n(
         "optionsPage.accounts-page-content.modal-delete-title",
-        "Are you sure?"
+        "Are you sure?",
       ),
       modal_delete_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-delete-sub-title",
-        "Do you really want to delete this wallet? This process cannot revert"
+        "Do you really want to delete this wallet? This process cannot revert",
       ),
       modal_edit_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-title",
-        "Edit your wallet"
+        "Edit your wallet",
       ),
       modal_edit_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-sub-title",
-        "Edit your wallet will make change the information at page new tab"
+        "Edit your wallet will make change the information at page new tab",
       ),
       address_required: i18n(
         "optionsPage.accounts-page-content.address-required",
-        "Address is required"
+        "Address is required",
       ),
       label_required: i18n(
         "optionsPage.accounts-page-content.label-required",
-        "Label is required"
+        "Label is required",
       ),
       re_input_address: i18n(
         "optionsPage.accounts-page-content.re-input-address",
-        "Please enter your wallet address again!"
+        "Please enter your wallet address again!",
       ),
       duplicate_address: i18n(
         "optionsPage.accounts-page-content.duplicate-address",
-        "This wallet address is duplicated!"
+        "This wallet address is duplicated!",
       ),
     },
   };
+
+  let userInfo = {};
 
   let isLoading = false;
   let errors: any = {};
@@ -113,6 +115,10 @@
   let selectedWallet = {};
   let address = "";
   let label = "";
+
+  let isLoadingDelete = false;
+  let showDisableAddWallet = false;
+
   let show = false;
   let counter = 3;
   let toastMsg = "";
@@ -206,79 +212,146 @@
     }
   };
 
-  const onSubmit = (e) => {
-    const formData = new FormData(e.target);
-
-    const data: any = {};
-    for (let field of formData) {
-      const [key, value] = field;
-      data[key] = value;
-    }
-
-    validateForm(data);
-
-    if (
-      !Object.keys(errors).some((inputName) => errors[inputName]["required"])
-    ) {
-      Object.assign(data, { id: data.address });
-
-      listAddress = [...listAddress, data];
-
-      if (listAddress.length === 1) {
-        browser.storage.sync.set({ selectedWallet: data.address }).then(() => {
-          console.log("save selected address to sync storage");
+  const getListAddress = async () => {
+    isLoading = true;
+    try {
+      const response: any = await nimbus.get("/accounts/list");
+      if (response && response?.data) {
+        const structWalletData = response?.data.map((item) => {
+          return {
+            position: item.position,
+            id: item.id,
+            type: item.type,
+            label: item.label,
+            address: item.accountId,
+          };
         });
-        if (getAddressContext(data.address)?.type === "EVM") {
-          browser.storage.sync.set({ selectedChain: "ALL" }).then(() => {
-            console.log("save selected address to sync storage");
-          });
+        listAddress = structWalletData;
+        isLoading = false;
+      } else {
+        isLoading = false;
+      }
+    } catch (e) {
+      console.log("e: ", e);
+      isLoading = false;
+    }
+  };
+
+  $: {
+    if (listAddress && listAddress?.length === 1) {
+      wallet.update((n) => (n = `${listAddress[0].address}`));
+      if (listAddress[0].type === "DEX") {
+        typeWallet.update((n) => (n = "DEX"));
+        if (getAddressContext(listAddress[0].address)?.type === "EVM") {
+          chain.update((n) => (n = "ALL"));
         }
       }
+      if (listAddress[0].type === "CEX") {
+        typeWallet.update((n) => (n = "CEX"));
+        chain.update((n) => (n = "ALL"));
+      }
+    }
+  }
 
-      browser.storage.sync.set({ listAddress: JSON.stringify(listAddress) });
+  // Add DEX address account
+  const onSubmit = async (e) => {
+    try {
+      const formData = new FormData(e.target);
 
-      e.target.reset();
-      isOpenAddModal = false;
-      toastMsg = "Successfully add new wallet!";
-      isSuccess = true;
-      trigger();
-      mixpanel.track("user_add_address");
-    } else {
-      console.log("Invalid Form");
-      toastMsg = "Something wrong when add new wallet. Please try again!";
+      const data: any = {};
+      for (let field of formData) {
+        const [key, value] = field;
+        data[key] = value;
+      }
+
+      validateForm(data);
+
+      if (
+        !Object.keys(errors).some((inputName) => errors[inputName]["required"])
+      ) {
+        Object.assign(data, { id: data.address });
+
+        await nimbus.post("/accounts", {
+          type: "DEX",
+          publicAddress: data.address,
+          accountId: data.address,
+          label: data.label,
+        });
+
+        e.target.reset();
+        isOpenAddModal = false;
+        getListAddress();
+        toastMsg = "Successfully add DEX account!";
+        isSuccess = true;
+        trigger();
+        mixpanel.track("user_add_address");
+
+        errors["address"] = { ...errors["address"], required: false, msg: "" };
+        errors["label"] = { ...errors["label"], required: false, msg: "" };
+      } else {
+        console.log("Invalid Form");
+      }
+    } catch (e) {
+      console.error(e);
+      toastMsg = "Something wrong when add DEX account. Please try again!";
       isSuccess = false;
       trigger();
     }
   };
 
-  const onSubmitEdit = (e) => {
-    const formData = new FormData(e.target);
-
-    const data: any = {};
-    for (let field of formData) {
-      const [key, value] = field;
-      data[key] = value;
+  // Add CEX address account
+  const onSubmitCEX = () => {
+    const evmToken = localStorage.getItem("evm_token");
+    if (evmToken) {
+      const vezgo: any = Vezgo.init({
+        clientId: "6st9c6s816su37qe8ld1d5iiq2",
+        authEndpoint: "https://api.getnimbus.io/auth/vezgo",
+        auth: {
+          headers: { Authorization: `${evmToken}` },
+        },
+      });
+      const userVezgo = vezgo.login();
+      if (userVezgo) {
+        userVezgo
+          .connect()
+          .onConnection(async function (account) {
+            await nimbus.get("/accounts/sync");
+            getListAddress();
+            toastMsg = "Successfully add CEX account!";
+            isSuccess = true;
+            trigger();
+            mixpanel.track("user_add_address");
+          })
+          .onError(function (error) {
+            console.error("connection vezgo error", error);
+            getListAddress();
+            toastMsg =
+              "Something wrong when add CEX account. Please try again!";
+            isSuccess = false;
+            trigger();
+          });
+      }
     }
+  };
 
-    validateFormEdit(data);
+  // Edit account
+  const onSubmitEdit = async (e) => {
+    try {
+      const formData = new FormData(e.target);
 
-    if (
-      !Object.keys(errorsEdit).some(
-        (inputName) => errorsEdit[inputName]["required"]
-      )
-    ) {
-      Object.assign(data, { id: data.address });
+      const data: any = {};
+      for (let field of formData) {
+        const [key, value] = field;
+        data[key] = value;
+      }
 
-      const foundItemEdit = listAddress.find(
-        (element) => element.id === selectedItemEdit.id
-      );
+      if (selectedItemEdit.type === "CEX") {
+        await nimbus.put(`/accounts/${selectedItemEdit.id}`, {
+          accountId: selectedItemEdit.address,
+          label: data.label,
+        });
 
-      const index = listAddress.indexOf(foundItemEdit);
-      if (index > -1) {
-        listAddress[index] = data;
-
-        browser.storage.sync.set({ listAddress: JSON.stringify(listAddress) });
-
+        getListAddress();
         e.target.reset();
         isOpenEditModal = false;
         toastMsg = "Successfully edit your wallet!";
@@ -286,46 +359,77 @@
         trigger();
         mixpanel.track("user_edit_address");
       }
-    } else {
-      console.log("Invalid Form");
+
+      if (selectedItemEdit.type === "DEX") {
+        validateFormEdit(data);
+        if (
+          !Object.keys(errorsEdit).some(
+            (inputName) => errorsEdit[inputName]["required"],
+          )
+        ) {
+          Object.assign(data, { id: data.address });
+
+          await nimbus.put(`/accounts/${selectedItemEdit.id}`, {
+            accountId: data.address,
+            label: data.label,
+          });
+
+          getListAddress();
+          e.target.reset();
+          isOpenEditModal = false;
+          toastMsg = "Successfully edit your wallet!";
+          isSuccess = true;
+          trigger();
+          mixpanel.track("user_edit_address");
+        } else {
+          console.log("Invalid Form");
+        }
+      }
+    } catch (e) {
+      console.error(e);
       toastMsg = "Something wrong when edit your wallet. Please try again!";
       isSuccess = false;
       trigger();
     }
   };
 
-  const getListAddress = async () => {
-    isLoading = true;
+  // Delete account
+  const handleDelete = async (item) => {
+    isLoadingDelete = true;
     try {
-      const response: AddressData = await sendMessage(
-        "getListAddress",
-        undefined
-      );
-      if (response) {
-        listAddress = response;
-      }
-    } catch (e) {
-      console.log("e: ", e);
-    } finally {
-      isLoading = false;
-    }
-  };
-
-  const handleDelete = (item) => {
-    const index = listAddress.indexOf(item);
-    if (index > -1) {
-      listAddress.splice(index, 1);
-      browser.storage.sync.set({ listAddress: JSON.stringify(listAddress) });
-
+      await nimbus.delete(`/accounts/${item.id}`, {});
       getListAddress();
+      isLoadingDelete = false;
       isOpenConfirmDelete = false;
-      toastMsg = "Successfully delete your wallet!";
+      toastMsg = "Successfully delete your account!";
       isSuccess = true;
+      trigger();
+    } catch (e) {
+      console.error("e: ", e);
+      isLoadingDelete = false;
+      isOpenConfirmDelete = false;
+      toastMsg = "Something wrong when delete your account. Please try again!";
+      isSuccess = false;
       trigger();
     }
   };
 
-  const handleEdit = (item) => {
+  // Sort list address
+  const handleSortListAddress = async (listAddress) => {
+    try {
+      const formatListAddress = listAddress.map((item, index) => {
+        return {
+          id: item.id,
+          position: index,
+        };
+      });
+      await nimbus.post(`/accounts/sorting`, formatListAddress);
+    } catch (e) {
+      console.error("e: ", e);
+    }
+  };
+
+  const handleSelectedEdit = (item) => {
     selectedItemEdit = item;
     address = item.address;
     label = item.label;
@@ -333,6 +437,12 @@
   };
 
   onMount(() => {
+    const evmToken = localStorage.getItem("evm_token");
+    if (evmToken) {
+      userInfo = {
+        picture: User,
+      };
+    }
     getListAddress();
   });
 
@@ -375,40 +485,105 @@
     if (listAddress.length === 0) {
       wallet.update((n) => (n = ""));
       chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
     }
   }
+
+  $: isDisabled = APP_TYPE.TYPE !== "EXT" && listAddress.length === 5;
 </script>
 
 <div class="flex flex-col gap-4">
   <div class="flex justify-between items-center">
     <div class="xl:title-3 title-1 text-gray-500">{MultipleLang.title}</div>
 
-    {#if APP_TYPE.TYPE !== "EXT" && listAddress.length === 3}
-      <Button
-        variant="disabled"
-        on:click={() => {
-          window.open("https://getnimbus.io", "_blank");
-        }}
-      >
-        <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-        <div class="xl:text-base text-2xl font-medium text-white">
-          {MultipleLang.content.btn_text}
-        </div>
-      </Button>
+    {#if listAddress && listAddress.length === 0}
+      <div class="relative xl:w-max w-[260px]">
+        {#if Object.keys(userInfo).length !== 0}
+          <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
+            <img src={Plus} alt="" width="12" height="12" />
+            <div class="xl:text-base text-2xl font-medium text-white">
+              {MultipleLang.content.btn_text}
+            </div>
+          </Button>
+        {:else}
+          <div
+            class="relative"
+            on:mouseenter={() => {
+              showDisableAddWallet = true;
+            }}
+            on:mouseleave={() => {
+              showDisableAddWallet = false;
+            }}
+          >
+            <Button variant="disabled">
+              <img src={Plus} alt="" width="12" height="12" />
+              <div class="xl:text-base text-2xl font-medium text-white">
+                {MultipleLang.content.btn_text}
+              </div>
+            </Button>
+            {#if showDisableAddWallet}
+              <div
+                class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                style="z-index: 2147483648;"
+              >
+                <tooltip-detail text={"Login to add account"} />
+              </div>
+            {/if}
+          </div>
+        {/if}
+      </div>
     {:else}
-      <Button
-        variant="tertiary"
-        on:click={() => {
-          isOpenAddModal = true;
+      <div
+        class="relative xl:w-max w-[260px]"
+        on:mouseenter={() => {
+          if (isDisabled || Object.keys(userInfo).length === 0) {
+            showDisableAddWallet = true;
+          }
+        }}
+        on:mouseleave={() => {
+          if (isDisabled || Object.keys(userInfo).length === 0) {
+            showDisableAddWallet = false;
+          }
         }}
       >
-        <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-        <div class="xl:text-base text-2xl font-medium text-white">
-          {MultipleLang.content.btn_text}
-        </div>
-      </Button>
+        {#if isDisabled || Object.keys(userInfo).length === 0}
+          <Button variant="disabled" disabled>
+            <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+            <div class="xl:text-base text-2xl font-medium text-white">
+              Add account
+            </div>
+          </Button>
+        {:else}
+          <Button
+            variant="tertiary"
+            on:click={() => {
+              isOpenAddModal = true;
+            }}
+          >
+            <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+            <div class="xl:text-base text-2xl font-medium text-white">
+              Add account
+            </div>
+          </Button>
+        {/if}
+        {#if showDisableAddWallet}
+          <div
+            class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+            style="z-index: 2147483648;"
+          >
+            <tooltip-detail
+              text={`${
+                isDisabled || Object.keys(userInfo).length !== 0
+                  ? "Install our extension to add more wallet"
+                  : "Login to add account"
+              }`}
+            />
+          </div>
+        {/if}
+      </div>
     {/if}
   </div>
+
   <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
     <table class="table-auto xl:w-full w-[1200px]">
       <thead>
@@ -461,9 +636,7 @@
           }}
           on:finalize={(e) => {
             listAddress = e.detail.items;
-            browser.storage.sync.set({
-              listAddress: JSON.stringify(listAddress),
-            });
+            handleSortListAddress(e.detail.items);
           }}
         >
           {#if listAddress && listAddress.length === 0}
@@ -516,7 +689,7 @@
                     </div>
                     <div
                       class="text-blue-600 hover:underline dark:text-blue-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
-                      on:click={() => handleEdit(item)}
+                      on:click={() => handleSelectedEdit(item)}
                     >
                       {MultipleLang.content.modal_edit}
                     </div>
@@ -531,47 +704,7 @@
   </div>
 </div>
 
-<Toast
-  transition={fly}
-  params={{ x: 200 }}
-  position="top-right"
-  color={isSuccess ? "green" : "red"}
-  bind:open={show}
->
-  <svelte:fragment slot="icon">
-    {#if isSuccess}
-      <svg
-        aria-hidden="true"
-        class="w-5 h-5"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-        xmlns="http://www.w3.org/2000/svg"
-        ><path
-          fill-rule="evenodd"
-          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-          clip-rule="evenodd"
-        /></svg
-      >
-      <span class="sr-only">Check icon</span>
-    {:else}
-      <svg
-        aria-hidden="true"
-        class="w-5 h-5"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-        xmlns="http://www.w3.org/2000/svg"
-        ><path
-          fill-rule="evenodd"
-          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-          clip-rule="evenodd"
-        /></svg
-      >
-      <span class="sr-only">Error icon</span>
-    {/if}
-  </svelte:fragment>
-  {toastMsg}
-</Toast>
-
+<!-- Modal edit account -->
 <AppOverlay isOpen={isOpenEditModal} on:close={() => (isOpenEditModal = false)}>
   <div class="xl:title-3 title-1 text-gray-600 font-semibold">
     {MultipleLang.content.modal_edit_title}
@@ -592,6 +725,7 @@
           {MultipleLang.content.modal_address_label}
         </div>
         <input
+          disabled={selectedItemEdit.type === "CEX"}
           type="text"
           id="address"
           name="address"
@@ -658,12 +792,33 @@
   </form>
 </AppOverlay>
 
+<!-- Modal add DEX account -->
 <AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
   <div class="xl:title-3 title-1 text-gray-600 font-semibold">
     {MultipleLang.content.modal_add_title}
   </div>
-  <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
-    <div class="flex flex-col gap-1">
+  <div class="flex flex-col mt-4 gap-7">
+    <div class="flex justify-center">
+      <Button
+        variant="tertiary"
+        on:click={() => {
+          onSubmitCEX();
+          isOpenAddModal = false;
+        }}
+      >
+        <div class="xl:text-base text-2xl font-medium text-white">
+          Connect CEX
+        </div>
+      </Button>
+    </div>
+    <div class="border-t-[1px] relative">
+      <div
+        class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 bg-white text-sm px-2"
+      >
+        Or
+      </div>
+    </div>
+    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3">
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -688,13 +843,11 @@
           />
         </div>
         {#if errors.address && errors.address.required}
-          <div class="text-red-500 font-medium">
+          <div class="text-red-500">
             {errors.address.msg}
           </div>
         {/if}
       </div>
-    </div>
-    <div class="flex flex-col gap-1">
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -719,33 +872,34 @@
           />
         </div>
         {#if errors.label && errors.label.required}
-          <div class="text-red-500 font-medium">
+          <div class="text-red-500">
             {errors.label.msg}
           </div>
         {/if}
       </div>
-    </div>
-    <div class="flex justify-end gap-2">
-      <div class="lg:w-[100px] w-full">
-        <Button
-          variant="secondary"
-          on:click={() => {
-            errors = {};
-            isOpenAddModal = false;
-          }}
-        >
-          {MultipleLang.content.modal_cancel}</Button
-        >
+      <div class="flex justify-end gap-2">
+        <div class="lg:w-[120px] w-full">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              errors = {};
+              isOpenAddModal = false;
+            }}
+          >
+            {MultipleLang.content.modal_cancel}</Button
+          >
+        </div>
+        <div class="lg:w-[120px] w-full">
+          <Button type="submit">
+            {MultipleLang.content.modal_add}</Button
+          >
+        </div>
       </div>
-      <div class="lg:w-[100px] w-full">
-        <Button type="submit">
-          {MultipleLang.content.modal_add}</Button
-        >
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </AppOverlay>
 
+<!-- Modal confirm delete account -->
 <AppOverlay
   isOpen={isOpenConfirmDelete}
   on:close={() => (isOpenConfirmDelete = false)}
@@ -773,6 +927,7 @@
     <div class="lg:w-[100px] w-full">
       <Button
         variant="delete"
+        isLoading={isLoadingDelete}
         on:click={() => {
           handleDelete(selectedWallet);
         }}
@@ -782,6 +937,47 @@
     </div>
   </div>
 </AppOverlay>
+
+<Toast
+  transition={blur}
+  params={{ amount: 10 }}
+  position="top-right"
+  color={isSuccess ? "green" : "red"}
+  bind:open={show}
+>
+  <svelte:fragment slot="icon">
+    {#if isSuccess}
+      <svg
+        aria-hidden="true"
+        class="w-5 h-5"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        ><path
+          fill-rule="evenodd"
+          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+          clip-rule="evenodd"
+        /></svg
+      >
+      <span class="sr-only">Check icon</span>
+    {:else}
+      <svg
+        aria-hidden="true"
+        class="w-5 h-5"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        ><path
+          fill-rule="evenodd"
+          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+          clip-rule="evenodd"
+        /></svg
+      >
+      <span class="sr-only">Error icon</span>
+    {/if}
+  </svelte:fragment>
+  {toastMsg}
+</Toast>
 
 <style>
   .input-border {

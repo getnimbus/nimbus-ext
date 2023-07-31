@@ -215,7 +215,7 @@
   const getPersonalizeTag = async () => {
     try {
       const response = await nimbus.get(
-        `/address/${selectedWallet}/personalize/tag`
+        `/address/${selectedWallet}/personalize/tag`,
       );
       if (response && response.data) {
         const categoriesData = Object.getOwnPropertyNames(response.data);
@@ -248,14 +248,14 @@
           (unique, o) => {
             if (
               !unique.some(
-                (obj) => obj.label === o.label && obj.value === o.value
+                (obj) => obj.label === o.label && obj.value === o.value,
               )
             ) {
               unique.push(o);
             }
             return unique;
           },
-          []
+          [],
         );
 
         return listCategory;
@@ -269,13 +269,13 @@
     isLoadingDataCompare = true;
     try {
       const response: any = await nimbus.get(
-        `/v2/analysis/${selectedWallet}/compare?compareAddress=${searchCompare}`
+        `/v2/analysis/${selectedWallet}/compare?compareAddress=${searchCompare}`,
       );
       if (response && response.data) {
         compareData = response.data;
 
         const formatListSuggestion = Object.keys(
-          response?.data?.base?.suggestion
+          response?.data?.base?.suggestion,
         ).map((item) => {
           let name = "";
           switch (item) {
@@ -297,7 +297,14 @@
 
         listSuggestion = formatListSuggestion;
 
-        holdingTokenData = response?.data?.base?.currentHolding.sort((a, b) => {
+        const formatData = response?.data?.base?.currentHolding.map((item) => {
+          return {
+            ...item,
+            amount: Number(item.balance),
+          };
+        });
+
+        holdingTokenData = formatData.sort((a, b) => {
           if (a.value < b.value) {
             return 1;
           }
@@ -308,22 +315,20 @@
         });
 
         // pie chart format data Token holding
-        const sumToken = (response?.data?.base?.currentHolding || []).reduce(
+        const sumToken = (formatData || []).reduce(
           (prev, item) => prev + Number(item.value),
-          0
+          0,
         );
 
-        const sortBreakdownToken = response?.data?.base?.currentHolding.sort(
-          (a, b) => {
-            if (a.value < b.value) {
-              return 1;
-            }
-            if (a.value > b.value) {
-              return -1;
-            }
-            return 0;
+        const sortBreakdownToken = formatData.sort((a, b) => {
+          if (a.value < b.value) {
+            return 1;
           }
-        );
+          if (a.value > b.value) {
+            return -1;
+          }
+          return 0;
+        });
 
         const topFiveBreakdownToken = sortBreakdownToken
           .slice(0, 5)
@@ -338,12 +343,12 @@
 
         const orderBreakdownToken = sortBreakdownToken.slice(
           5,
-          sortBreakdownToken.length
+          sortBreakdownToken.length,
         );
 
         const sumOrderBreakdownToken = (orderBreakdownToken || []).reduce(
           (prev, item) => prev + Number(item.value),
-          0
+          0,
         );
 
         const dataPieChartOrderBreakdownToken = [
@@ -373,7 +378,7 @@
               name_balance: "Balance",
               value_balance: Number(item.balance),
             };
-          }
+          },
         );
 
         const formatDataPie = {
@@ -582,7 +587,7 @@
                   return {
                     value: holdingData.price,
                     timestamp: dayjs(
-                      new Date(holdingData.timestamp * 1000)
+                      new Date(holdingData.timestamp * 1000),
                     ).format("DD/MM/YY"),
                   };
                 })
@@ -599,7 +604,7 @@
                   return {
                     value: holdingData.price,
                     timestamp: dayjs(
-                      new Date(holdingData.timestamp * 1000)
+                      new Date(holdingData.timestamp * 1000),
                     ).format("DD/MM/YY"),
                   };
                 })
@@ -616,7 +621,7 @@
                   return {
                     value: holdingData.networth,
                     timestamp: dayjs(
-                      new Date(holdingData.timestamp * 1000)
+                      new Date(holdingData.timestamp * 1000),
                     ).format("DD/MM/YY"),
                   };
                 })
@@ -633,7 +638,7 @@
                   return {
                     value: holdingData.networth,
                     timestamp: dayjs(
-                      new Date(holdingData.timestamp * 1000)
+                      new Date(holdingData.timestamp * 1000),
                     ).format("DD/MM/YY"),
                   };
                 })
@@ -647,7 +652,7 @@
       const XAxisDataLineChart = formatDataLineChart[0].dataChart.map(
         (item) => {
           return item.timestamp;
-        }
+        },
       );
 
       const legendDataLineChart = formatDataLineChart.map((item) => {
@@ -705,7 +710,7 @@
       // pie chart format data Token holding
       const sumToken = (tokenHoldingCompare || []).reduce(
         (prev, item) => prev + Number(item.value),
-        0
+        0,
       );
 
       const sortBreakdownToken = tokenHoldingCompare.sort((a, b) => {
@@ -731,12 +736,12 @@
 
       const orderBreakdownToken = sortBreakdownToken.slice(
         5,
-        sortBreakdownToken.length
+        sortBreakdownToken.length,
       );
 
       const sumOrderBreakdownToken = (orderBreakdownToken || []).reduce(
         (prev, item) => prev + Number(item.value),
-        0
+        0,
       );
 
       const dataPieChartOrderBreakdownToken = [
@@ -766,7 +771,7 @@
             name_balance: "Balance",
             value_balance: Number(item.balance),
           };
-        }
+        },
       );
 
       const formatDataPie = {
@@ -808,14 +813,14 @@
             {MultipleLang.token_allocation}
           </div>
           {#if isLoading}
-            <div class="flex items-center justify-center h-[633px]">
+            <div class="flex items-center justify-center h-[465px]">
               <loading-icon />
             </div>
           {:else}
             <div class="h-full">
               {#if isEmptyDataPie}
                 <div
-                  class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[633px]"
+                  class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
                 >
                   Empty
                 </div>
@@ -827,7 +832,6 @@
                     {handleSelectedTableTokenHolding}
                     listOptionTypeCategory={typeListCategory}
                     selectedOption={selectedType}
-                    isCompareChart={false}
                     id="pie-chart-token-allocation"
                   />
                 </div>
@@ -883,7 +887,6 @@
                         {handleSelectedTableTokenHolding}
                         listOptionTypeCategory={typeListCategory}
                         selectedOption={selectedType}
-                        isCompareChart={true}
                         id="pie-chart-token-allocation-compare"
                       />
                     {/if}

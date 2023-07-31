@@ -104,9 +104,7 @@
 
   const handleGetEVMToken = async (data) => {
     try {
-      const res = await nimbus
-        .post("/auth/evm", data)
-        .then((response) => response);
+      const res = await nimbus.post("/auth/evm", data);
       if (res.data.result) {
         localStorage.setItem("evm_address", data.publicAddress);
         localStorage.setItem("evm_token", res.data.result);

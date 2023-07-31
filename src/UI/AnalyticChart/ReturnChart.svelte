@@ -153,7 +153,7 @@
 
   $: {
     if (selectedWallet || selectedChain) {
-      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
         if (getAddressContext(selectedWallet)?.type === "EVM") {
           getAnalyticCompare();
         }

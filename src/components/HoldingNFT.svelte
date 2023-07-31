@@ -1,6 +1,7 @@
-<script>
+<script lang="ts">
   import { useNavigate } from "svelte-navigator";
   import { getAddressContext, shorterName } from "~/utils";
+  import { typeWallet } from "~/store";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -15,6 +16,11 @@
 
   const navigate = useNavigate();
 
+  let typeWalletAddress = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
+
   let showTooltipListNFT = false;
   let isShowTooltipName = false;
 
@@ -27,17 +33,22 @@
 
 <tr
   class={`group transition-all ${
-    getAddressContext(selectedWallet).type !== "EVM" ? "cursor-pointer" : ""
+    typeWalletAddress === "CEX" &&
+    getAddressContext(selectedWallet)?.type !== "EVM"
+      ? "cursor-pointer"
+      : ""
   }`}
   on:click={() => {
-    if (getAddressContext(selectedWallet).type === "EVM") {
-      return;
+    if (typeWalletAddress === "CEX") {
+      if (getAddressContext(selectedWallet).type === "EVM") {
+        return;
+      }
+      navigate(
+        `nft-detail?id=${encodeURIComponent(
+          data.collectionId
+        )}&address=${encodeURIComponent(selectedWallet)}`
+      );
     }
-    navigate(
-      `nft-detail?id=${encodeURIComponent(
-        data.collectionId
-      )}&address=${encodeURIComponent(selectedWallet)}`
-    );
   }}
 >
   <td
@@ -180,7 +191,7 @@
     </div>
   </td>
 
-  {#if getAddressContext(selectedWallet).type !== "EVM"}
+  {#if typeWalletAddress === "CEX" && getAddressContext(selectedWallet)?.type !== "EVM"}
     <td class="py-3 w-10 group-hover:bg-gray-100">
       <div class="flex justify-center">
         <div

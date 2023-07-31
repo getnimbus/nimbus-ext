@@ -133,7 +133,7 @@
     if (selectedWallet || selectedChain) {
       isLoadingChart = false;
       isEmptyDataChart = false;
-      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
         getAnalyticHistorical();
       }
     }

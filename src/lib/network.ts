@@ -9,7 +9,6 @@ interface IOption {
 }
 
 const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
-  const authorization: any = getHeaderAuthorize();
   return {
     get<T>(url: string, config?: any): Promise<T> {
       const apiUrl = new URL(`${baseURL}${url}`);
@@ -18,6 +17,7 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
           apiUrl.searchParams.append(key, config.params[key])
         );
       }
+      const authorization: any = getHeaderAuthorize();
       return fetch(apiUrl, {
         method: "GET",
         headers: {
@@ -36,6 +36,7 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
           apiUrl.searchParams.append(key, config.params[key])
         );
       }
+      const authorization: any = getHeaderAuthorize();
       return fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -53,6 +54,7 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
           apiUrl.searchParams.append(key, config.params[key])
         );
       }
+      const authorization: any = getHeaderAuthorize();
       return fetch(apiUrl, {
         method: "PUT",
         headers: {
@@ -70,6 +72,7 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
           apiUrl.searchParams.append(key, config.params[key])
         );
       }
+      const authorization: any = getHeaderAuthorize();
       return fetch(apiUrl, {
         method: "DELETE",
         headers: {

@@ -3,7 +3,7 @@
   import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
   import { getAddressContext } from "~/utils";
-  import { chain } from "~/store";
+  import { chain, typeWallet } from "~/store";
 
   export let selectedTokenHolding;
   export let selectedDataPieChart;
@@ -32,6 +32,11 @@
   let selectedChain: string = "";
   chain.subscribe((value) => {
     selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let selectedTypeTable = {
@@ -216,11 +221,15 @@
   }
 
   $: totalAssets = sumTokens + sumNFT;
-  $: colspan = getAddressContext(selectedWallet).type !== "EVM" ? 8 : 7;
+  $: colspan =
+    typeWalletAddress === "CEX" &&
+    getAddressContext(selectedWallet)?.type !== "EVM"
+      ? 8
+      : 7;
 
   $: {
     if (selectedWallet || selectedChain) {
-      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
         sumTokens = 0;
         sumNFT = 0;
         formatData = [];
@@ -406,7 +415,7 @@
     </div>
 
     <!-- nft holding table -->
-    {#if getAddressContext(selectedWallet).type !== "EVM"}
+    {#if typeWalletAddress === "CEX" && getAddressContext(selectedWallet)?.type !== "EVM"}
       <div class="flex flex-col gap-2">
         <div class="flex justify-between items-center">
           <div class="xl:text-xl text-3xl font-medium text-black">
@@ -491,7 +500,7 @@
                     </TooltipTitle>
                   </div>
                 </th>
-                {#if getAddressContext(selectedWallet).type !== "EVM"}
+                {#if typeWalletAddress === "CEX" && getAddressContext(selectedWallet)?.type !== "EVM"}
                   <th class="py-3 w-10 rounded-tr-[10px]" />
                 {/if}
               </tr>

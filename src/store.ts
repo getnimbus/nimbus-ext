@@ -5,6 +5,7 @@ export const isOpenReport = writable(false);
 export const user = writable({});
 export const wallet = writable("");
 export const chain = writable("ALL");
+export const typeWallet = writable("");
 
 let isFirstTime = true;
 isOpenReport.subscribe((value) => {

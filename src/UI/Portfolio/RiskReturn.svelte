@@ -26,19 +26,21 @@
 </script>
 
 <ErrorBoundary>
-  <div class="flex xl:flex-row flex-col justify-between gap-6">
-    <div class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6">
+  <div class="grid xl:grid-cols-2 grid-cols-1 gap-6">
+    <div class="border border-[#0000001a] rounded-[20px] p-6">
       {#if isLoadingDataCompare}
         <div class="flex items-center justify-center h-[200px]">
           <loading-icon />
         </div>
       {:else}
         <div class="flex flex-col gap-4">
-          <div class="xl:text-2xl text-4xl font-medium text-black">Risk</div>
-          <div class="flex flex-col gap-5">
+          <div class="xl:text-2xl text-4xl font-medium text-black">Risks</div>
+          <div class="flex flex-col gap-4">
             <div class="grid grid-cols-5">
               <div class="col-span-2">
-                <div class="xl:text-lg text-2xl text-black flex justify-start">
+                <div
+                  class="xl:text-base text-2xl text-black flex justify-start"
+                >
                   <TooltipTitle
                     tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
                     isBigIcon
@@ -49,7 +51,7 @@
               </div>
               <div class="col-span-3 flex items-center gap-1 justify-end">
                 <div
-                  class={`xl:text-lg text-2xl ${
+                  class={`xl:text-base text-2xl ${
                     data?.base?.sharpeRatio < 0
                       ? "text-red-500"
                       : "text-[#00A878]"
@@ -83,7 +85,9 @@
             </div>
             <div class="grid grid-cols-5">
               <div class="col-span-2">
-                <div class="xl:text-lg text-2xl text-black flex justify-start">
+                <div
+                  class="xl:text-base text-2xl text-black flex justify-start"
+                >
                   <TooltipTitle
                     tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
                     isBigIcon
@@ -94,7 +98,7 @@
               </div>
               <div class="col-span-3 flex items-center gap-1 justify-end">
                 <div
-                  class={`xl:text-lg text-2xl ${
+                  class={`xl:text-base text-2xl ${
                     data?.base?.volatility < 0
                       ? "text-red-500"
                       : "text-[#00A878]"
@@ -128,7 +132,9 @@
             </div>
             <div class="grid grid-cols-5">
               <div class="col-span-2">
-                <div class="xl:text-lg text-2xl text-black flex justify-start">
+                <div
+                  class="xl:text-base text-2xl text-black flex justify-start"
+                >
                   <TooltipTitle
                     tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
                     isBigIcon
@@ -139,7 +145,7 @@
               </div>
               <div class="col-span-3 flex items-center gap-1 justify-end">
                 <div
-                  class={`xl:text-lg text-2xl ${
+                  class={`xl:text-base text-2xl ${
                     data?.base?.drawDown < 0 ? "text-red-500" : "text-[#00A878]"
                   }`}
                 >
@@ -173,7 +179,7 @@
         </div>
       {/if}
     </div>
-    <div class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6">
+    <div class="border border-[#0000001a] rounded-[20px] p-6">
       {#if isLoadingDataCompare}
         <div class="flex items-center justify-center h-[200px]">
           <loading-icon />

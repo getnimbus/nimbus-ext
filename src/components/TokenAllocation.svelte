@@ -16,7 +16,6 @@
   export let dataPieChart;
   export let listOptionTypeCategory;
   export let selectedOption;
-  export let isCompareChart;
   export let id;
 
   import Select from "~/components/Select.svelte";
@@ -205,7 +204,7 @@
   const getPersonalizeTag = async () => {
     try {
       const response = await nimbus.get(
-        `/address/${selectedWallet}/personalize/tag`
+        `/address/${selectedWallet}/personalize/tag`,
       );
       if (response && response.data) {
         const categoriesData = Object.getOwnPropertyNames(response.data);
@@ -266,7 +265,7 @@
           dataTokens: flatten(
             item.dataTag
               .filter((item) => item.name !== "Other")
-              .map((item) => item.tokens)
+              .map((item) => item.tokens),
           ),
         };
       });
@@ -275,12 +274,12 @@
         const formatDataTokens = holdingTokenData.map((tokenHolding) => {
           const isSelected = item.dataTokens.some(
             (selectedToken) =>
-              selectedToken.contractAddress === tokenHolding.contractAddress
+              selectedToken.contractAddress === tokenHolding.contractAddress,
           );
 
           const selected = item.dataTokens.filter(
             (selectedToken) =>
-              selectedToken.contractAddress === tokenHolding.contractAddress
+              selectedToken.contractAddress === tokenHolding.contractAddress,
           );
 
           return {
@@ -306,7 +305,7 @@
       tokenDataHolding = {
         value: "All",
         dataPie: dataPieChart.token.formatDataPieChartTopFiveToken.concat(
-          dataPieChart.token.dataPieChartOrderBreakdownToken
+          dataPieChart.token.dataPieChartOrderBreakdownToken,
         ),
         dataTable: {
           data: {
@@ -346,14 +345,14 @@
           (unique, o) => {
             if (
               !unique.some(
-                (obj) => obj.label === o.label && obj.value === o.value
+                (obj) => obj.label === o.label && obj.value === o.value,
               )
             ) {
               unique.push(o);
             }
             return unique;
           },
-          []
+          [],
         );
       }
     }
@@ -361,7 +360,7 @@
 
   $: {
     if (selectedWallet || selectedChain) {
-      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
         typeListCategory = [
           {
             label: "All",
@@ -502,7 +501,7 @@
 
 <div class="w-full">
   {#if listOptionTypeCategory && listOptionTypeCategory.length === 0}
-    <div class="flex justify-start mb-5">
+    <div class="flex justify-end mb-5">
       <Select
         type="lang"
         listSelect={listOptionTypeCategory &&
@@ -514,34 +513,6 @@
     </div>
   {/if}
   <EChart {id} theme="white" notMerge={true} option={optionPie} height={465} />
-  {#if !isCompareChart}
-    <div class="flex items-center gap-3">
-      <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
-        <div class="text-base text-[#6E7787FF] relative">
-          <div
-            class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
-          />
-          Last week
-        </div>
-        <div class="text-2xl">$1890.6</div>
-        <div class="text-lg flex items-center gap-1">
-          <img src={TrendUp} alt="trend" class="mb-1" />
-          <div class="text-[#00A878]">16%</div>
-        </div>
-      </div>
-      <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
-        <div class="text-base text-[#6E7787FF] relative">
-          <div class="border border-red-500 absolute -top-1 left-0 w-[40px]" />
-          This week
-        </div>
-        <div class="text-2xl">$890.6</div>
-        <div class="text-lg flex items-center gap-1">
-          <img src={TrendDown} alt="trend" class="mb-1" />
-          <div class="text-red-500">8%</div>
-        </div>
-      </div>
-    </div>
-  {/if}
 </div>
 
 <style windi:preflights:global windi:safelist:global></style>

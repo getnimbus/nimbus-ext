@@ -128,7 +128,7 @@
                 data:
                   dataPieChart.token.sumOrderBreakdownToken > 0
                     ? dataPieChart.token.formatDataPieChartTopFiveToken.concat(
-                        dataPieChart.token.dataPieChartOrderBreakdownToken
+                        dataPieChart.token.dataPieChartOrderBreakdownToken,
                       )
                     : dataPieChart.token.formatDataPieChartTopFiveToken,
               },
@@ -144,7 +144,7 @@
                 data:
                   dataPieChart.nft.sumOrderBreakdownNft > 0
                     ? dataPieChart.nft.formatDataPieChartTopFiveNft.concat(
-                        dataPieChart.nft.dataPieChartOrderBreakdownNft
+                        dataPieChart.nft.dataPieChartOrderBreakdownNft,
                       )
                     : dataPieChart.nft.formatDataPieChartTopFiveNft,
               },
@@ -199,26 +199,25 @@
         </div>
       </div>
       {#if isLoading}
-        <div class="flex items-center justify-center h-[633px]">
+        <div class="flex items-center justify-center h-[465px]">
           <loading-icon />
         </div>
       {:else}
         <div class="h-full">
           {#if isEmptyDataPie}
             <div
-              class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[633px]"
+              class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
             >
               Empty
             </div>
           {:else}
-            <div class="-mt-2">
+            <div class="-mt-14">
               <TokenAllocation
                 {dataPieChart}
                 {holdingTokenData}
                 {handleSelectedTableTokenHolding}
                 listOptionTypeCategory={[]}
                 selectedOption={{}}
-                isCompareChart={false}
                 id="pie-chart-token-allocation"
               />
             </div>
@@ -241,7 +240,7 @@
         </div>
       {/if}
       {#if isLoading}
-        <div class="flex items-center justify-center h-[633px]">
+        <div class="flex items-center justify-center h-[465px]">
           <loading-icon />
         </div>
       {:else}
@@ -250,7 +249,7 @@
           theme="white"
           notMerge={true}
           option={optionLine}
-          height={633}
+          height={465}
         />
       {/if}
     </div>
