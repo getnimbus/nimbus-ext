@@ -184,12 +184,18 @@
         </thead>
         <tbody>
           {#if isLoading}
-            <div class="flex justify-center items-center py-4 px-3 w-full">
-              <loading-icon />
-            </div>
+            <tr>
+              <td colspan="11">
+                <div
+                  class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
+                >
+                  <loading-icon />
+                </div>
+              </td>
+            </tr>
           {:else if whalesData.length === 0}
             <tr>
-              <td colspan="6">
+              <td colspan="11">
                 <div
                   class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
                 >
