@@ -24,7 +24,7 @@
         (n) =>
           (n = {
             picture: User,
-          })
+          }),
       );
     } else {
       user.update((n) => (n = {}));
@@ -66,7 +66,7 @@
         const ethersProvider = new ethers.BrowserProvider(provider, "any");
         const signer = await ethersProvider?.getSigner();
         const signature = await signer.signMessage(
-          `I am signing my one-time nonce: ${signatureString}`
+          `I am signing my one-time nonce: ${signatureString}`,
         );
         if (signature) {
           return signature;
@@ -87,7 +87,7 @@
       if (res && res.data) {
         const signatureString = await handleSignAddressMessage(
           provider,
-          res.data.nonce
+          res.data.nonce,
         );
         if (signatureString) {
           const payload = {
@@ -112,7 +112,7 @@
           (n) =>
             (n = {
               picture: User,
-            })
+            }),
         );
       }
     } catch (e) {
@@ -131,7 +131,7 @@
     </div>
     {#if showPopover}
       <div
-        class="bg-white py-2 px-3 text-sm rounded-lg absolute -bottom-17 left-1/2 transform -translate-x-1/2 flex flex-col gap-1 xl:w-[80px] w-max z-50"
+        class="bg-white py-2 px-3 text-sm rounded-lg absolute xl:-bottom-10 -bottom-15 left-1/2 transform -translate-x-1/2 flex flex-col gap-1 xl:w-[80px] w-max z-50"
         style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
       >
         <!-- {#if APP_TYPE.TYPE === "EXT"}
