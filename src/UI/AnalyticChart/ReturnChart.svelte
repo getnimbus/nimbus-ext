@@ -29,56 +29,59 @@
   let isLoadingDataCompare = false;
   let optionBar = {
     tooltip: {
-      trigger: "item",
       extraCssText: "z-index: 9997",
-      // valueFormatter: (value) => `${value}%`,
-      formatter: function (params) {
-        return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                <span>${params?.marker}</span> ${params.seriesName}
-              </div>
-              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
-                  Return 
-                </div>
-
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    params.value[1] >= 0 ? "#05a878" : "#f25f5d"
-                  };">
-                    ${params.value[1]}%
-                  </div>
-                </div>
-              </div>
-              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
-                  Risk 
-                </div>
-
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
-                    ${Number(params.value[0]).toFixed(2)}
-                  </div>
-                </div>
-              </div>
-            </div>`;
+      trigger: "axis",
+      axisPointer: {
+        type: "shadow",
       },
+      valueFormatter: (value) => `${value}%`,
+      // formatter: function (params) {
+      //   return `
+      //       <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+      //         <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+      //           <span>${params?.marker}</span> ${params.seriesName}
+      //         </div>
+      //         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+      //           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+      //             Return
+      //           </div>
+
+      //           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+      //             <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+      //               params.value[1] >= 0 ? "#05a878" : "#f25f5d"
+      //             };">
+      //               ${params.value[1]}%
+      //             </div>
+      //           </div>
+      //         </div>
+      //         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+      //           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+      //             Risk
+      //           </div>
+
+      //           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+      //             <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
+      //               ${Number(params.value[0]).toFixed(2)}
+      //             </div>
+      //           </div>
+      //         </div>
+      //       </div>`;
+      // },
     },
-    legend: {
-      data: [],
-    },
+    // legend: {
+    //   data: [],
+    // },
     xAxis: [
       {
-        type: "value",
+        type: "time",
         axisTick: { show: false },
-        name: "Risk",
+        // name: "Risk",
       },
     ],
     yAxis: [
       {
         type: "value",
-        name: "Return",
+        // name: "Return",
         axisLabel: {
           formatter: "{value}%",
         },
@@ -94,150 +97,56 @@
         `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`
       );
       if (response && response.data) {
-        compareData = response.data;
-
-        const tokenHolding = (response.data?.base?.currentHolding || []).map(
-          (item) =>
-            item.cg_id
-              ? `coingecko:${item.cg_id}`
-              : `ethereum:${item.contractAddress}`
-        );
-
-        // console.log({ tokenHolding });
-
-        const chartDataResponse = await sendMessage("getDefillamaTokenChart", {
-          addresses: tokenHolding,
-          start: dayjs().startOf("d").subtract(30, "d").unix(),
-          span: 30,
-        }).then((res) => res?.coins || {});
-
-        // console.log({ chartDataResponse });
-
-        const listKey = Object.getOwnPropertyNames(response.data);
-        const legendDataBarChart = listKey.map((item) => {
-          let data = {
-            name: "",
-            // itemStyle: {
-            //   color: "",
-            // },
-          };
-          switch (item) {
-            case "btc":
-              data = {
-                name: "Bitcoin",
-                // itemStyle: {
-                //   color: "#f7931a",
-                // },
-              };
-              break;
-            case "eth":
-              data = {
-                name: "Ethereum",
-                // itemStyle: {
-                //   color: "#547fef",
-                // },
-              };
-              break;
-            case "base":
-              data = {
-                name: "This wallet",
-                // itemStyle: {
-                //   color: "#00b580",
-                // },
-              };
-              break;
-            case "compare":
-              data = {
-                name: "Compare wallet",
-                // itemStyle: {
-                //   color: "rgba(178,184,255,1)",
-                // },
-              };
-              break;
-          }
-          return data;
-        });
-
-        const scatterData = listKey.map((item) => {
-          let custom = {
-            name: "",
-            color: "",
-          };
-          switch (item) {
-            case "btc":
-              custom = {
-                name: "Bitcoin",
-                color: "#f7931a",
-              };
-              break;
-            case "eth":
-              custom = {
-                name: "Ethereum",
-                color: "#547fef",
-              };
-              break;
-            case "base":
-              custom = {
-                name: "This wallet",
-                color: "#00b580",
-              };
-              break;
-            case "compare":
-              custom = {
-                name: "Compare wallet",
-                color: "rgba(178,184,255,1)",
-              };
-              break;
-          }
-
+        const nameConfig = {
+          base: {
+            name: "This wallet",
+            color: "#f7931a",
+          },
+          btc: {
+            name: "Bitcoin",
+            color: "#f7931a",
+          },
+          eth: {
+            name: "Ethereum",
+            color: "#547fef",
+          },
+        };
+        const series = Object.keys(response.data).map((key) => {
+          const itemData = response.data[key];
+          const baseData = itemData.sparkline[0];
           return {
-            name: custom.name,
-            type: "scatter",
-            symbolSize: 30,
-            itemStyle: {
-              color: custom.color,
+            name: nameConfig[key].name,
+            type: "bar",
+            barStyle: {
+              type: "solid",
+              color: nameConfig[key].color,
             },
-            data: [
-              [
-                Number(response.data[item].volatility),
-                Number(response.data[item].netWorthChange?.networth30D),
-              ],
-            ],
+            emphasis: {
+              focus: "series",
+            },
+            data: itemData.sparkline.map((item, index) => [
+              dayjs()
+                .startOf("day")
+                .subtract(30 - index)
+                .valueOf(),
+              getChangePercent(item, baseData),
+            ]),
           };
         });
-
-        const tokenScatterData = Object.keys(chartDataResponse).map((token) => {
-          const tokenData = chartDataResponse[token];
-          const prices = (tokenData?.prices || []).map((item) => item.price);
-          const return30D = getChangePercent(
-            prices[prices.length - 1],
-            prices[0]
-          );
-
-          return {
-            name: tokenData.symbol,
-            type: "scatter",
-            symbolSize: 10,
-            // label: {
-            //   show: true,
-            // },
-            data: [[calculateVolatility(prices), return30D]],
-          };
-        });
-
-        console.log({ tokenScatterData });
-
+        console.log({ series });
         optionBar = {
           ...optionBar,
-          legend: {
-            data: legendDataBarChart,
-          },
-          series: [...scatterData, ...tokenScatterData],
+          // legend: {
+          //   data: legendDataBarChart,
+          // },
+          series: series,
         };
-        isLoadingDataCompare = false;
+
+        console.log({ optionBar });
       }
     } catch (e) {
       console.log("e: ", e);
+    } finally {
       isLoadingDataCompare = false;
     }
   };
@@ -380,7 +289,7 @@
       </div>
     {:else}
       <div class="h-full">
-        {#if compareData && Object.keys(compareData).length === 0}
+        {#if !optionBar.series.length}
           <div
             class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
           >
