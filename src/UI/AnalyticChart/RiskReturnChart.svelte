@@ -322,7 +322,7 @@
                 tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
                 isBigIcon
               >
-                Max draw down
+                Max drawdown
               </TooltipTitle>
             </div>
           </div>

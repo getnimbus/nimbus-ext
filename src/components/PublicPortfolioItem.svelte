@@ -26,7 +26,7 @@
         iconColor="#000"
         isShorten={true}
         isLink={true}
-        link={`https://app.getnimbus.io/?chain=ALL&address=${data?.address}`}
+        link={`/?chain=ALL&address=${data?.address}`}
       />
     </div>
   </td>
@@ -153,7 +153,7 @@
     <div
       class="xl:text-sm text-right text-xl text-[#00A878] font-medium flex flex-col items-end gap-1"
     >
-      {Number(data?.drawDown).toFixed(2)}
+      {Number(data?.drawDown).toFixed(2)}%
     </div>
   </td>
 

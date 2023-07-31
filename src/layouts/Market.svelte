@@ -8,6 +8,7 @@
   import MarketItem from "~/components/MarketItem.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import PublicPortfolioItem from "~/components/PublicPortfolioItem.svelte";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   const MultipleLang = {
     whale: i18n("newtabPage.whale", "Whale 🐳"),
@@ -126,7 +127,7 @@
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                1M
+                30D
               </div>
             </th>
             <th class="py-3">
@@ -140,21 +141,36 @@
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                Volality
+                <TooltipTitle
+                  tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
+                  isBigIcon
+                >
+                  Volatility 30D
+                </TooltipTitle>
               </div>
             </th>
             <th class="pr-3 py-3">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                Max drawdown
+                <TooltipTitle
+                  tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
+                  isBigIcon
+                >
+                  Max drawdown 30D
+                </TooltipTitle>
               </div>
             </th>
             <th class="pr-3 py-3">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                Sharpe ratio
+                <TooltipTitle
+                  tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
+                  isBigIcon
+                >
+                  Sharpe ratio 30D
+                </TooltipTitle>
               </div>
             </th>
             <th class="pr-3 py-3 rounded-tr-[10px]">
