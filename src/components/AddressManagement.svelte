@@ -40,52 +40,52 @@
     empty_wallet: i18n("newtabPage.empty-wallet", "No wallet added yet."),
     addwallet: i18n(
       "newtabPage.addwallet",
-      "Add your wallet to keep track of your investments."
+      "Add your wallet to keep track of your investments.",
     ),
     content: {
       btn_text: i18n(
         "optionsPage.accounts-page-content.address-btn-text",
-        "Add Wallet"
+        "Add Wallet",
       ),
       modal_cancel: i18n(
         "optionsPage.accounts-page-content.modal-cancel",
-        "Cancel"
+        "Cancel",
       ),
       modal_add: i18n(
         "optionsPage.accounts-page-content.modal-add-wallet",
-        "Add"
+        "Add",
       ),
       modal_address_label: i18n(
         "optionsPage.accounts-page-content.modal-address-label",
-        "Wallet"
+        "Wallet",
       ),
       modal_label_label: i18n(
         "optionsPage.accounts-page-content.modal-label-label",
-        "Label"
+        "Label",
       ),
       modal_add_title: i18n(
         "optionsPage.accounts-page-content.modal-add-title",
-        "Add Your Wallet"
+        "Add Your Wallet",
       ),
       modal_add_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-add-sub-title",
-        "Add your wallet will give you more option to see the information at page new tab"
+        "Add your wallet will give you more option to see the information at page new tab",
       ),
       address_required: i18n(
         "optionsPage.accounts-page-content.address-required",
-        "Address is required"
+        "Address is required",
       ),
       label_required: i18n(
         "optionsPage.accounts-page-content.label-required",
-        "Label is required"
+        "Label is required",
       ),
       re_input_address: i18n(
         "optionsPage.accounts-page-content.re-input-address",
-        "Please enter your wallet address again!"
+        "Please enter your wallet address again!",
       ),
       duplicate_address: i18n(
         "optionsPage.accounts-page-content.duplicate-address",
-        "This wallet address is duplicated!"
+        "This wallet address is duplicated!",
       ),
     },
   };
@@ -239,7 +239,7 @@
         null,
         "",
         window.location.pathname +
-          `?type=${typeWalletAddress}&address=${selectedWallet}`
+          `?type=${typeWalletAddress}&address=${selectedWallet}`,
       );
     }
 
@@ -252,7 +252,7 @@
             null,
             "",
             window.location.pathname +
-              `?type=${typeWalletAddress}&address=${selectedWallet}`
+              `?type=${typeWalletAddress}&address=${selectedWallet}`,
           );
         }
       }
@@ -267,7 +267,7 @@
             null,
             "",
             window.location.pathname +
-              `?type=${typeWalletAddress}&address=${selectedWallet}`
+              `?type=${typeWalletAddress}&address=${selectedWallet}`,
           );
         }
       }
@@ -296,26 +296,26 @@
         listAddress = structWalletData;
 
         const selectedTypeWalletRes = await browser.storage.sync.get(
-          "typeWalletAddress"
+          "typeWalletAddress",
         );
         if (
           selectedTypeWalletRes &&
           selectedTypeWalletRes?.typeWalletAddress?.length !== 0
         ) {
           typeWallet.update(
-            (n) => (n = selectedTypeWalletRes.typeWalletAddress)
+            (n) => (n = selectedTypeWalletRes.typeWalletAddress),
           );
         }
 
         const selectedChainRes = await browser.storage.sync.get(
-          "selectedChain"
+          "selectedChain",
         );
         if (selectedChainRes && selectedChainRes?.selectedChain?.length !== 0) {
           chain.update((n) => (n = selectedChainRes.selectedChain));
         }
 
         const selectedWalletRes = await browser.storage.sync.get(
-          "selectedWallet"
+          "selectedWallet",
         );
         if (selectedWalletRes) {
           if (selectedWalletRes?.selectedWallet?.length !== 0) {
@@ -508,7 +508,7 @@
           null,
           "",
           window.location.pathname +
-            `?type=${typeWalletAddress}&address=${selectedWallet}`
+            `?type=${typeWalletAddress}&address=${selectedWallet}`,
         );
         if (selectedChain) {
           chain.update((n) => (n = selectedChain));
@@ -531,7 +531,7 @@
             null,
             "",
             window.location.pathname +
-              `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
+              `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`,
           );
         }
 
@@ -540,7 +540,7 @@
             null,
             "",
             window.location.pathname +
-              `?type=${typeWalletAddress}&address=${selectedWallet}`
+              `?type=${typeWalletAddress}&address=${selectedWallet}`,
           );
           if (selectedChain) {
             chain.update((n) => (n = selectedChain));
@@ -687,7 +687,7 @@
                           type="wallet"
                           listSelect={formatListAddress.slice(
                             5,
-                            formatListAddress.length
+                            formatListAddress.length,
                           )}
                           bind:selected={selectedWallet}
                         />
@@ -737,74 +737,16 @@
                 </div>
 
                 <!-- mobile list address wallet -->
-                <div
-                  class="xl:hidden relative overflow-x-hidden w-full flex flex-row gap-3 justify-between items-center"
-                  bind:this={container}
-                >
+                {#if formatListAddress && formatListAddress?.length !== 0}
                   <div
-                    class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
-                      isScrollStart ? "hidden" : "block"
-                    }`}
-                    style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
+                    class="xl:hidden relative overflow-x-hidden w-full flex flex-row gap-3 justify-between items-center"
+                    bind:this={container}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      height="24px"
-                      width="24px"
-                      viewBox="0 0 24 24"
-                      class="sc-aef7b723-0 fKbUaI"
-                      ><path
-                        d="M15 6L9 12L15 18"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-miterlimit="10"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      /></svg
-                    >
-                  </div>
-                  <div
-                    class="w-max flex gap-3 overflow-x-auto whitespace-nowrap container"
-                    bind:this={scrollContainer}
-                    on:scroll={handleScroll}
-                  >
-                    {#each formatListAddress as item}
-                      <div
-                        id={item.value}
-                        class="w-max flex-shrink-0 relative text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
-                        class:hover:no-underline={item.value === selectedWallet}
-                        on:click={() => {
-                          wallet.update((n) => (n = item.value));
-                        }}
-                      >
-                        <img
-                          src={item.logo}
-                          alt=""
-                          class="w-5 h-5 rounded-full"
-                        />
-                        {item.label}
-                        {#if item.value === selectedWallet}
-                          <Motion
-                            let:motion
-                            layoutId="active-pill"
-                            transition={{ type: "spring", duration: 0.6 }}
-                          >
-                            <div
-                              class="absolute inset-0 rounded-full bg-[#ffffff1c]"
-                              use:motion
-                            />
-                          </Motion>
-                        {/if}
-                      </div>
-                    {/each}
-                  </div>
-                  {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
                     <div
-                      class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
-                        isScrollEnd ? "hidden" : "block"
+                      class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
+                        isScrollStart ? "hidden" : "block"
                       }`}
-                      style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
+                      style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -814,7 +756,7 @@
                         viewBox="0 0 24 24"
                         class="sc-aef7b723-0 fKbUaI"
                         ><path
-                          d="M9 6L15 12L9 18"
+                          d="M15 6L9 12L15 18"
                           stroke="currentColor"
                           stroke-width="2"
                           stroke-miterlimit="10"
@@ -823,12 +765,79 @@
                         /></svg
                       >
                     </div>
-                  {/if}
-                </div>
+                    <div
+                      class="w-max flex gap-3 overflow-x-auto whitespace-nowrap container"
+                      bind:this={scrollContainer}
+                      on:scroll={handleScroll}
+                    >
+                      {#each formatListAddress as item}
+                        <div
+                          id={item.value}
+                          class="w-max flex-shrink-0 relative text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
+                          class:hover:no-underline={item.value ===
+                            selectedWallet}
+                          on:click={() => {
+                            wallet.update((n) => (n = item.value));
+                          }}
+                        >
+                          <img
+                            src={item.logo}
+                            alt=""
+                            class="w-5 h-5 rounded-full"
+                          />
+                          {item.label}
+                          {#if item.value === selectedWallet}
+                            <Motion
+                              let:motion
+                              layoutId="active-pill"
+                              transition={{ type: "spring", duration: 0.6 }}
+                            >
+                              <div
+                                class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                use:motion
+                              />
+                            </Motion>
+                          {/if}
+                        </div>
+                      {/each}
+                    </div>
+                    {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
+                      <div
+                        class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
+                          isScrollEnd ? "hidden" : "block"
+                        }`}
+                        style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          height="24px"
+                          width="24px"
+                          viewBox="0 0 24 24"
+                          class="sc-aef7b723-0 fKbUaI"
+                          ><path
+                            d="M9 6L15 12L9 18"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-miterlimit="10"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          /></svg
+                        >
+                      </div>
+                    {/if}
+                  </div>
+                {:else}
+                  <div
+                    class="xl:hidden block xl:text-base text-2xl font-semibold text-white"
+                  >
+                    {MultipleLang.empty_wallet}
+                  </div>
+                {/if}
 
                 <!-- btn add address wallet -->
                 <div
-                  class="relative xl:w-max w-[260px]"
+                  class="relative xl:w-max w-[260px] flex justify-end"
                   on:mouseenter={() => {
                     if (isDisabled || Object.keys(userInfo).length === 0) {
                       showDisableAddWallet = true;
@@ -961,8 +970,8 @@
                         on:click={() => {
                           navigate(
                             `/compare?address=${encodeURIComponent(
-                              selectedWallet
-                            )}`
+                              selectedWallet,
+                            )}`,
                           );
                         }}>Compare with</Button
                       >
@@ -977,8 +986,8 @@
                       on:click={() => {
                         navigate(
                           `/compare?address=${encodeURIComponent(
-                            selectedWallet
-                          )}`
+                            selectedWallet,
+                          )}`,
                         );
                       }}>Compare with</Button
                     >
@@ -1170,7 +1179,7 @@
           <tooltip-detail
             text={`/start ${selectedWallet} ${
               formatListAddress.filter(
-                (item) => item.value === selectedWallet
+                (item) => item.value === selectedWallet,
               )?.[0]?.label || ""
             }`}
           />

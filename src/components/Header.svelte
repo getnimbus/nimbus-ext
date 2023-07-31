@@ -172,10 +172,10 @@
               chain.update((n) => (n = "ALL"));
               wallet.update((n) => (n = search));
               if (getAddressContext(search)?.type === "EVM") {
-                navigate(`/?chain=ALL&address=${search}`);
+                navigate(`/?type=DEX&chain=ALL&address=${search}`);
               }
               if (getAddressContext(selectedWallet)?.type === "BTC") {
-                navigate(`/?address=${selectedWallet}`);
+                navigate(`/?type=DEX&address=${selectedWallet}`);
               }
             }
           }}

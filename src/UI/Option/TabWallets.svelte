@@ -913,7 +913,7 @@
     </div>
   </div>
   <div class="flex justify-end gap-2 mt-4">
-    <div class="lg:w-[100px] w-full">
+    <div class="lg:w-[100px] w-full h-[36px]">
       <Button
         variant="secondary"
         on:click={() => {
@@ -924,7 +924,7 @@
         {MultipleLang.content.modal_cancel}
       </Button>
     </div>
-    <div class="lg:w-[100px] w-full">
+    <div class="lg:w-[100px] w-full h-[36px]">
       <Button
         variant="delete"
         isLoading={isLoadingDelete}
