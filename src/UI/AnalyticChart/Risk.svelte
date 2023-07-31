@@ -79,7 +79,7 @@
     isLoadingDataCompare = true;
     try {
       const response: any = await nimbus.get(
-        `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`
+        `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`,
       );
       if (response && response.data) {
         compareData = response.data;
@@ -243,7 +243,7 @@
       <div class="flex flex-col gap-4">
         <div class="grid grid-cols-2">
           <div class="col-span-1">
-            <div class="text-black flex justify-start">
+            <div class="xl:text-base text-2xl text-black flex justify-start">
               <TooltipTitle
                 tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
                 isBigIcon
@@ -253,17 +253,43 @@
             </div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
-            <div>
+            <div
+              class={`xl:text-base text-2xl ${
+                compareData?.base?.sharpeRatio < 0
+                  ? "text-red-500"
+                  : "text-[#00A878]"
+              }`}
+            >
               <TooltipNumber
                 number={Math.abs(compareData?.base?.sharpeRatio)}
                 type="percent"
               />
             </div>
+            {#if compareData?.base?.sharpeRatio < 0}
+              <div class="xl:text-lg text-2xl text-red-500">⚠️</div>
+            {:else}
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill="none"
+                  stroke="#00A878"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
+                />
+              </svg>
+            {/if}
           </div>
         </div>
+
         <div class="grid grid-cols-2">
           <div class="col-span-1">
-            <div class=" text-black flex justify-start">
+            <div class="xl:text-base text-2xl text-black flex justify-start">
               <TooltipTitle
                 tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
                 isBigIcon
@@ -273,17 +299,43 @@
             </div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
-            <div>
+            <div
+              class={`xl:text-base text-2xl ${
+                compareData?.base?.volatility < 0
+                  ? "text-red-500"
+                  : "text-[#00A878]"
+              }`}
+            >
               <TooltipNumber
                 number={Math.abs(compareData?.base?.volatility)}
                 type="percent"
               />
             </div>
+            {#if compareData?.base?.volatility < 0}
+              <div class="xl:text-lg text-2xl text-red-500">⚠️</div>
+            {:else}
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill="none"
+                  stroke="#00A878"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
+                />
+              </svg>
+            {/if}
           </div>
         </div>
+
         <div class="grid grid-cols-2">
           <div class="col-span-1">
-            <div class=" text-black flex justify-start">
+            <div class="xl:text-base text-2xl text-black flex justify-start">
               <TooltipTitle
                 tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
                 isBigIcon
@@ -293,17 +345,42 @@
             </div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
-            <div>
+            <div
+              class={`xl:text-base text-2xl ${
+                compareData?.base?.drawDown < 0
+                  ? "text-red-500"
+                  : "text-[#00A878]"
+              }`}
+            >
               <TooltipNumber
                 number={Math.abs(compareData?.base?.drawDown)}
                 type="percent"
               />
             </div>
+            {#if compareData?.base?.drawDown < 0}
+              <div class="xl:text-lg text-2xl text-red-500">⚠️</div>
+            {:else}
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill="none"
+                  stroke="#00A878"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
+                />
+              </svg>
+            {/if}
           </div>
         </div>
       </div>
       <div class="mt-8 space-y-3">
-        <div>
+        <div class="xl:text-base text-2xl">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -319,7 +396,7 @@
           Volality is lower than Bitcoin by <strong>15%</strong>
         </div>
 
-        <div>
+        <div class="xl:text-base text-2xl">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -332,7 +409,6 @@
               clip-rule="evenodd"
             />
           </svg>
-
           Max draw down is higher than Bitcoin by <strong>10%</strong>
         </div>
       </div>

@@ -89,7 +89,7 @@
           <News />
         </Route>
 
-        <Route path="market">
+        <Route path="whales">
           <Market />
         </Route>
 

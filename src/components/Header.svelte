@@ -129,12 +129,12 @@
         </div>
       </Link>
 
-      <Link to="market">
+      <Link to="whales">
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
-            navActive === "market" ? "bg-[#525B8C] opacity-100" : "opacity-70"
+            navActive === "whales" ? "bg-[#525B8C] opacity-100" : "opacity-70"
           }`}
-          on:click={() => (navActive = "market")}
+          on:click={() => (navActive = "whales")}
         >
           <img src={WhaleIcon} alt="" width="20" height="20" />
           <span class="text-sm font-medium text-white xl:text-base">
@@ -365,21 +365,21 @@
         </div>
       </Link>
 
-      <Link to="market">
+      <Link to="whales">
         <div
           class={`flex items-center gap-3 text-white px-4 py-3 ${
-            navActive === "market"
+            navActive === "whales"
               ? "bg-[#525B8C] rounded-[1000px] opacity-100"
               : "opacity-70"
           }`}
           on:click={() => {
             isShowHeaderMobile = false;
-            navActive = "market";
+            navActive = "whales";
           }}
         >
-          <img src={MarketIcon} alt="" width="32" height="32" />
+          <img src={WhaleIcon} alt="" width="32" height="32" />
           <span class="text-4xl font-semibold">
-            {MultipleLang.market}
+            {MultipleLang.whales}
           </span>
         </div>
       </Link>

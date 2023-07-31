@@ -222,12 +222,12 @@
             </div>
           </div>
           {#if selectedTypeReturn === "overview"}
-            <div class="grid grid-cols-4">
-              <div class="flex flex-col gap-5">
-                <div class="xl:text-lg text-2xl text-black">1 Day</div>
+            <div class="grid grid-cols-4 gap-4">
+              <div class="flex flex-col gap-2 px-4 py-3">
+                <div class="xl:text-base text-2xl text-black">1 Day</div>
                 <div class="flex items-center gap-1">
                   <div
-                    class={`xl:text-lg text-2xl ${
+                    class={`xl:text-base text-2xl ${
                       data?.base?.netWorthChange?.networth1D < 0
                         ? "text-red-500"
                         : "text-[#00A878]"
@@ -259,11 +259,12 @@
                   {/if}
                 </div>
               </div>
-              <div class="flex flex-col gap-5">
-                <div class="xl:text-lg text-2xl text-black">7 Days</div>
+
+              <div class="flex flex-col gap-2 px-4 py-3">
+                <div class="xl:text-base text-2xl text-black">7 Days</div>
                 <div class="flex items-center gap-1">
                   <div
-                    class={`xl:text-lg text-2xl ${
+                    class={`xl:text-base text-2xl ${
                       data?.base?.netWorthChange?.networth7D < 0
                         ? "text-red-500"
                         : "text-[#00A878]"
@@ -295,11 +296,12 @@
                   {/if}
                 </div>
               </div>
-              <div class="flex flex-col gap-5">
-                <div class="xl:text-lg text-2xl text-black">30 Days</div>
+
+              <div class="flex flex-col gap-2 px-4 py-3">
+                <div class="xl:text-base text-2xl text-black">30 Days</div>
                 <div class="flex items-center gap-1">
                   <div
-                    class={`xl:text-lg text-2xl ${
+                    class={`xl:text-base text-2xl ${
                       data?.base?.netWorthChange?.networth30D < 0
                         ? "text-red-500"
                         : "text-[#00A878]"
@@ -331,11 +333,12 @@
                   {/if}
                 </div>
               </div>
-              <div class="flex flex-col gap-5">
-                <div class="xl:text-lg text-2xl text-black">1 Year</div>
+
+              <div class="flex flex-col gap-2 px-4 py-3">
+                <div class="xl:text-base text-2xl text-black">1 Year</div>
                 <div class="flex items-center gap-1">
                   <div
-                    class={`xl:text-lg text-2xl ${
+                    class={`xl:text-base text-2xl ${
                       data?.base?.netWorthChange?.networth1Y < 0
                         ? "text-red-500"
                         : "text-[#00A878]"
@@ -411,7 +414,7 @@
                         {dayjs.unix(item.timestamp).format("MMM YYYY")}
                       </div>
                       <div
-                        class={`xl:text-2xl text-3xl ${
+                        class={`xl:text-xl text-2xl ${
                           item.percentChange < 0
                             ? "text-red-500"
                             : "text-[#00A878]"

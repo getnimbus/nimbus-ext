@@ -18,6 +18,8 @@
   import EChart from "~/components/EChart.svelte";
   import Select from "~/components/Select.svelte";
 
+  import LeftArrow from "~/assets/left-arrow.svg";
+
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
   };
@@ -76,7 +78,6 @@
   let compareData = {};
   let isLoadingDataCompare = false;
   let searchCompare = "";
-  let timerSearchDebounce;
 
   let holdingTokenDataCompare: TokenData = [];
   let dataPieChartCompare = {
@@ -203,13 +204,6 @@
       },
     },
     series: [],
-  };
-
-  const debounceSearchCompare = (value) => {
-    clearTimeout(timerSearchDebounce);
-    timerSearchDebounce = setTimeout(() => {
-      searchCompare = value;
-    }, 300);
   };
 
   const getPersonalizeTag = async () => {
@@ -807,185 +801,208 @@
         />
       </div>
 
-      <div class="grid xl:grid-cols-2 grid-cols-1 gap-6">
-        <div class="border border-[#0000001a] rounded-[20px] p-6 min-h-[735px]">
-          <div class="xl:text-2xl text-4xl font-medium text-black w-full mb-6">
-            {MultipleLang.token_allocation}
-          </div>
-          {#if isLoading}
-            <div class="flex items-center justify-center h-[465px]">
-              <loading-icon />
+      <div class="flex justify-between items-center gap-6">
+        <div class="flex-1 grid xl:grid-cols-2 grid-cols-1 gap-6">
+          <div
+            class="border border-[#0000001a] rounded-[20px] p-6 min-h-[535px]"
+          >
+            <div
+              class="xl:text-2xl text-4xl font-medium text-black w-full mb-6"
+            >
+              {MultipleLang.token_allocation}
             </div>
-          {:else}
-            <div class="h-full">
-              {#if isEmptyDataPie}
-                <div
-                  class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
-                >
-                  Empty
-                </div>
-              {:else}
-                <div class="-mt-2">
-                  <TokenAllocation
-                    {dataPieChart}
-                    {holdingTokenData}
-                    {handleSelectedTableTokenHolding}
-                    listOptionTypeCategory={typeListCategory}
-                    selectedOption={selectedType}
-                    id="pie-chart-token-allocation"
-                  />
-                </div>
-              {/if}
-            </div>
-          {/if}
-        </div>
-
-        <div class="border border-[#0000001a] rounded-[20px] p-6 min-h-[735px]">
-          {#if searchCompare}
-            <div class="flex flex-col">
-              <div class="flex justify-between items-center">
-                <div class="flex items-end gap-3">
-                  <div class="xl:text-2xl text-4xl font-medium text-black">
-                    Comparing with
+            {#if isLoading}
+              <div class="flex items-center justify-center h-[465px]">
+                <loading-icon />
+              </div>
+            {:else}
+              <div class="h-full">
+                {#if isEmptyDataPie}
+                  <div
+                    class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+                  >
+                    Empty
                   </div>
-                  <div class="xl:text-lg text-xl text-black font-medium">
-                    <Copy
-                      isShorten
-                      address={searchCompare}
-                      iconColor="#000"
-                      color="#000"
+                {:else}
+                  <div class="-mt-2">
+                    <TokenAllocation
+                      {dataPieChart}
+                      {holdingTokenData}
+                      {handleSelectedTableTokenHolding}
+                      listOptionTypeCategory={typeListCategory}
+                      selectedOption={selectedType}
+                      id="pie-chart-token-allocation"
                     />
                   </div>
+                {/if}
+              </div>
+            {/if}
+          </div>
+
+          <div
+            class="border border-[#0000001a] rounded-[20px] p-6 min-h-[535px]"
+          >
+            {#if searchCompare && searchCompare.length !== 0}
+              <div class="flex flex-col">
+                <div class="flex justify-between items-center">
+                  <div class="flex items-end gap-3">
+                    <div class="xl:text-2xl text-4xl font-medium text-black">
+                      Comparing with
+                    </div>
+                    <div class="xl:text-lg text-xl text-black font-medium">
+                      <Copy
+                        isShorten
+                        address={searchCompare}
+                        iconColor="#000"
+                        color="#000"
+                      />
+                    </div>
+                  </div>
+                  <div class="w-max">
+                    <Button
+                      variant="secondary"
+                      on:click={() => {
+                        searchCompare = "";
+                        getAnalyticCompare();
+                      }}>Remove</Button
+                    >
+                  </div>
                 </div>
-                <div class="w-max">
-                  <Button
-                    variant="secondary"
-                    on:click={() => {
-                      searchCompare = "";
-                      getAnalyticCompare();
-                    }}>Remove</Button
-                  >
+                <div class="h-full flex flex-col gap-5 mt-3">
+                  {#if isLoadingDataCompare}
+                    <div class="flex items-center justify-center h-[433px]">
+                      <loading-icon />
+                    </div>
+                  {:else}
+                    <div class="h-full">
+                      {#if compareData && Object.keys(compareData).length === 0}
+                        <div
+                          class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[433px]"
+                        >
+                          Empty
+                        </div>
+                      {:else}
+                        <TokenAllocation
+                          dataPieChart={dataPieChartCompare}
+                          holdingTokenData={holdingTokenDataCompare}
+                          {handleSelectedTableTokenHolding}
+                          listOptionTypeCategory={typeListCategory}
+                          selectedOption={selectedType}
+                          id="pie-chart-token-allocation-compare"
+                        />
+                      {/if}
+                    </div>
+                  {/if}
                 </div>
               </div>
-              <div class="h-full flex flex-col gap-5 mt-3">
+            {:else}
+              <div class="h-full">
                 {#if isLoadingDataCompare}
-                  <div class="flex items-center justify-center h-[433px]">
+                  <div
+                    class="xl:text-2xl text-4xl font-medium text-black w-full"
+                  >
+                    Compare with
+                  </div>
+                  <div class="flex items-center justify-center h-full">
                     <loading-icon />
                   </div>
                 {:else}
                   <div class="h-full">
                     {#if compareData && Object.keys(compareData).length === 0}
                       <div
-                        class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[433px]"
-                      >
-                        Empty
-                      </div>
-                    {:else}
-                      <TokenAllocation
-                        dataPieChart={dataPieChartCompare}
-                        holdingTokenData={holdingTokenDataCompare}
-                        {handleSelectedTableTokenHolding}
-                        listOptionTypeCategory={typeListCategory}
-                        selectedOption={selectedType}
-                        id="pie-chart-token-allocation-compare"
-                      />
-                    {/if}
-                  </div>
-                {/if}
-              </div>
-            </div>
-          {:else}
-            <div class="h-full">
-              {#if isLoadingDataCompare}
-                <div class="xl:text-2xl text-4xl font-medium text-black w-full">
-                  Compare with
-                </div>
-                <div class="flex items-center justify-center h-full">
-                  <loading-icon />
-                </div>
-              {:else}
-                <div class="h-full">
-                  {#if compareData && Object.keys(compareData).length === 0}
-                    <div
-                      class="xl:text-2xl text-4xl font-medium text-black w-full"
-                    >
-                      Compare with
-                    </div>
-                    <div
-                      class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-full"
-                    >
-                      Empty
-                    </div>
-                  {:else}
-                    <div class="grid grid-rows-11 h-full">
-                      <div
                         class="xl:text-2xl text-4xl font-medium text-black w-full"
                       >
                         Compare with
                       </div>
                       <div
-                        class="flex flex-col justify-center gap-6 row-span-10"
+                        class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-full"
                       >
-                        <div class="flex items-center gap-4">
-                          {#each listSuggestion as suggestion (suggestion.name)}
-                            <div class="flex-1" id={suggestion.name}>
-                              <Button
-                                on:click={() =>
-                                  (searchCompare = suggestion.value)}
-                                >{suggestion.name}</Button
+                        Empty
+                      </div>
+                    {:else}
+                      <div class="grid grid-rows-11 h-full">
+                        <div
+                          class="xl:text-2xl text-4xl font-medium text-black w-full"
+                        >
+                          Compare with
+                        </div>
+                        <div
+                          class="flex flex-col justify-center gap-6 row-span-10"
+                        >
+                          <div class="flex items-center gap-4">
+                            {#each listSuggestion as suggestion (suggestion.name)}
+                              <div class="flex-1" id={suggestion.name}>
+                                <Button
+                                  on:click={() =>
+                                    (searchCompare = suggestion.value)}
+                                >
+                                  <div class="xl:text-base text-2xl">
+                                    {suggestion.name}
+                                  </div>
+                                </Button>
+                              </div>
+                            {/each}
+                          </div>
+                          <div class="border-t-[1px] relative">
+                            <div
+                              class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 bg-white text-sm px-2"
+                            >
+                              Or
+                            </div>
+                          </div>
+                          <div class="flex flex-col gap-2">
+                            <div
+                              class={`border focus:outline-none w-full py-2 px-3 rounded-lg ${
+                                searchCompare ? "bg-[#F0F2F7]" : "bg-white"
+                              }`}
+                            >
+                              <input
+                                on:keydown={(e) => {
+                                  if (
+                                    (e.which == 13 || e.keyCode == 13) &&
+                                    searchCompare
+                                  ) {
+                                    getAnalyticCompare();
+                                  }
+                                }}
+                                bind:value={searchCompare}
+                                placeholder={"Search address to compare"}
+                                type="text"
+                                class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] h-7 ${
+                                  searchCompare ? "bg-[#F0F2F7]" : ""
+                                }`}
+                              />
+                            </div>
+                            <div class="xl:text-sm text-lg">
+                              Or
+                              <a
+                                class="text-blue-500 cursor-pointer"
+                                href="/market"
+                                target="_blank"
+                                >get inspired from the whale list</a
                               >
                             </div>
-                          {/each}
-                        </div>
-                        <div class="border-t-[1px] relative">
-                          <div
-                            class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 bg-white text-sm px-2"
-                          >
-                            Or
-                          </div>
-                        </div>
-                        <div class="flex flex-col gap-2">
-                          <div
-                            class={`border focus:outline-none w-full py-2 px-3 rounded-lg ${
-                              searchCompare ? "bg-[#F0F2F7]" : "bg-white"
-                            }`}
-                          >
-                            <input
-                              on:keyup={({ target: { value } }) =>
-                                debounceSearchCompare(value)}
-                              on:keydown={(event) => {
-                                if (
-                                  (event.which == 13 || event.keyCode == 13) &&
-                                  searchCompare
-                                ) {
-                                  getAnalyticCompare();
-                                }
-                              }}
-                              value={searchCompare}
-                              placeholder={"Search address to compare"}
-                              type="text"
-                              class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] h-7 ${
-                                searchCompare ? "bg-[#F0F2F7]" : ""
-                              }`}
-                            />
-                          </div>
-                          <div class="xl:text-sm text-lg">
-                            Or
-                            <a
-                              class="text-blue-500 cursor-pointer"
-                              href="/market"
-                              target="_blank"
-                              >get inspired from the whale list</a
-                            >
                           </div>
                         </div>
                       </div>
-                    </div>
-                  {/if}
-                </div>
-              {/if}
+                    {/if}
+                  </div>
+                {/if}
+              </div>
+            {/if}
+          </div>
+        </div>
+        <div class="w-max">
+          <Button>
+            <div class="flex items-center gap-1">
+              <div class="xl:text-base text-2xl">Get rebalance action</div>
+              <img
+                src={LeftArrow}
+                alt=""
+                class="xl:w-4 xl:h-4 w-6 h-6 transform rotate-180 mt-[2px]"
+              />
             </div>
-          {/if}
+          </Button>
         </div>
       </div>
     </div>
