@@ -352,16 +352,18 @@
                     {MultipleLang.value}
                   </div>
                 </th>
-                <th class="py-3">
+                <th class="py-3 pr-3 rounded-tr-[10px]">
                   <div
                     class="text-right xl:text-xs text-base uppercase font-semibold text-black"
                   >
-                    <TooltipTitle tooltipText="Ratio based on token holding">
+                    <TooltipTitle
+                      tooltipText="Ratio based on total token holding"
+                    >
                       Ratio
                     </TooltipTitle>
                   </div>
                 </th>
-                <th class="py-3 pr-3 rounded-tr-[10px]">
+                <!-- <th class="py-3 pr-3 rounded-tr-[10px]">
                   <div
                     class="xl:text-xs text-base uppercase font-semibold text-black"
                   >
@@ -372,7 +374,7 @@
                       {MultipleLang.profit}
                     </TooltipTitle>
                   </div>
-                </th>
+                </th> -->
                 <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
               </tr>
             </thead>

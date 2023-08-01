@@ -153,7 +153,7 @@
     </div>
   </td>
 
-  <td class="py-3 group-hover:bg-gray-100">
+  <td class="py-3 pr-3 group-hover:bg-gray-100">
     <div
       class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
     >
@@ -161,7 +161,7 @@
     </div>
   </td>
 
-  <td class="py-3 pr-3 group-hover:bg-gray-100">
+  <!-- <td class="py-3 pr-3 group-hover:bg-gray-100">
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
@@ -193,7 +193,7 @@
         </div>
       </div>
     </div>
-  </td>
+  </td> -->
 
   <!-- <td class="py-3 w-10 group-hover:bg-gray-100">
     {#if clickable}
