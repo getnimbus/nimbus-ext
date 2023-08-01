@@ -1,20 +1,20 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { wallet, chain } from "~/store";
-  import { formatCurrencyV2, getAddressContext } from "~/utils";
+  import { chain, wallet } from "~/store";
+  import { getAddressContext } from "~/utils";
 
+  import groupBy from "lodash/groupBy";
+  import sumBy from "lodash/sumBy";
   import AnalyticSection from "~/components/AnalyticSection.svelte";
+  import EChart from "~/components/EChart.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
-  import EChart from "~/components/EChart.svelte";
-  import { sendMessage } from "webext-bridge";
-  import dayjs from "dayjs";
-  import { calculateVolatility, getChangePercent } from "~/chart-utils";
 
-  import TrendUp from "~/assets/trend-up.svg";
-  import TrendDown from "~/assets/trend-down.svg";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
   import Logo from "~/assets/logo-1.svg";
+  import TrendDown from "~/assets/trend-down.svg";
+  import TrendUp from "~/assets/trend-up.svg";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -27,6 +27,8 @@
   });
 
   let compareData = {};
+  let selectedTypeChart = "overview";
+  let riskBreakdownData = [];
   let isLoadingDataCompare = false;
   let optionBar = {
     tooltip: {
@@ -88,6 +90,43 @@
     series: [],
   };
 
+  let riskBreakdownChartOption = {
+    title: {
+      text: "",
+    },
+    tooltip: {
+      trigger: "item",
+      extraCssText: "z-index: 9997",
+    },
+    legend: {
+      top: "0%",
+      left: "center",
+    },
+    series: [
+      {
+        type: "pie",
+        radius: ["40%", "60%"],
+        left: 0,
+        avoidLabelOverlap: false,
+        label: {
+          show: false,
+          position: "center",
+        },
+        emphasis: {
+          label: {
+            show: false,
+            fontSize: 40,
+            fontWeight: "bold",
+          },
+        },
+        labelLine: {
+          show: false,
+        },
+        data: [],
+      },
+    ],
+  };
+
   const getAnalyticCompare = async () => {
     isLoadingDataCompare = true;
     try {
@@ -97,22 +136,11 @@
       if (response && response.data) {
         compareData = response.data;
 
-        const tokenHolding = (response.data?.base?.currentHolding || []).map(
-          (item) =>
-            item.cg_id
-              ? `coingecko:${item.cg_id}`
-              : `ethereum:${item.contractAddress}`
-        );
+        const chartDataResponse = await nimbus
+          .get(`/v2/analysis/${selectedWallet}/risk-breakdown`)
+          .then((res) => res.data);
 
-        // console.log({ tokenHolding });
-
-        const chartDataResponse = await sendMessage("getDefillamaTokenChart", {
-          addresses: tokenHolding,
-          start: dayjs().startOf("d").subtract(30, "d").unix(),
-          span: 30,
-        }).then((res) => res?.coins || {});
-
-        // console.log({ chartDataResponse });
+        riskBreakdownData = chartDataResponse;
 
         const listKey = Object.getOwnPropertyNames(response.data);
         const legendDataBarChart = listKey.map((item) => {
@@ -207,26 +235,37 @@
           };
         });
 
-        const tokenScatterData = Object.keys(chartDataResponse).map((token) => {
-          const tokenData = chartDataResponse[token];
-          const prices = (tokenData?.prices || []).map((item) => item.price);
-          const return30D = getChangePercent(
-            prices[prices.length - 1],
-            prices[0]
-          );
-
+        const tokenScatterData = chartDataResponse.map((token) => {
           return {
-            name: tokenData.symbol,
+            name: token.symbol,
             type: "scatter",
             symbolSize: 10,
-            // label: {
-            //   show: true,
-            // },
-            data: [[calculateVolatility(prices), return30D]],
+            data: [[token.volatility, token.change30DPercent]],
           };
         });
 
-        console.log({ tokenScatterData });
+        const shrapeRatioGroup = groupBy(
+          chartDataResponse,
+          (item) => item.sharpeRatioLabel
+        );
+
+        riskBreakdownChartOption = {
+          ...riskBreakdownChartOption,
+          series: [
+            {
+              ...riskBreakdownChartOption.series[0],
+              data: Object.keys(shrapeRatioGroup).map((riskType) => {
+                return {
+                  name: riskType,
+                  value: sumBy(
+                    shrapeRatioGroup[riskType],
+                    (item) => Number(item.amount) * Number(item.rate)
+                  ),
+                };
+              }),
+            },
+          ],
+        };
 
         optionBar = {
           ...optionBar,
@@ -252,6 +291,17 @@
       }
     }
   }
+
+  const riskTypeChart = [
+    {
+      label: "Overview",
+      value: "overview",
+    },
+    {
+      label: "Shapre Ratio",
+      value: "shrapeRatioBreakdown",
+    },
+  ];
 </script>
 
 <AnalyticSection>
@@ -396,6 +446,36 @@
       </div>
     {:else}
       <div class="h-full">
+        <div class="flex flex-row mb-2">
+          <AnimateSharedLayout>
+            {#each riskTypeChart as type}
+              <div
+                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                on:click={() => (selectedTypeChart = type.value)}
+              >
+                <div
+                  class={`relative z-20 ${
+                    selectedTypeChart === type.value && "text-white"
+                  }`}
+                >
+                  {type.label}
+                </div>
+                {#if type.value === selectedTypeChart}
+                  <Motion
+                    let:motion
+                    layoutId="active-pill"
+                    transition={{ type: "spring", duration: 0.6 }}
+                  >
+                    <div
+                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                      use:motion
+                    />
+                  </Motion>
+                {/if}
+              </div>
+            {/each}
+          </AnimateSharedLayout>
+        </div>
         {#if compareData && Object.keys(compareData).length === 0}
           <div
             class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
@@ -408,7 +488,9 @@
               id="risk-return-chart-analytic"
               theme="white"
               notMerge={true}
-              option={optionBar}
+              option={selectedTypeChart === "overview"
+                ? optionBar
+                : riskBreakdownChartOption}
               height={465}
             />
             <div

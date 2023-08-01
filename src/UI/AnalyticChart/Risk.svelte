@@ -28,7 +28,6 @@
   });
 
   let compareData = {};
-  let breakdownData = {};
   let selectedTypeChart = "overview";
   let isLoadingDataCompare = false;
   let optionBar = {
@@ -131,72 +130,13 @@
       if (response && response.data) {
         compareData = response.data;
 
-        const tokenHolding = (response.data?.base?.currentHolding || []).map(
-          (item) =>
-            item.cg_id
-              ? `coingecko:${item.cg_id}`
-              : `ethereum:${item.contractAddress}`
-        );
+        const chartDataResponse = await nimbus
+          .get(`/v2/analysis/${selectedWallet}/risk-breakdown`)
+          .then((res) => res.data);
 
-        // console.log({ tokenHolding });
-
-        const chartDataResponse = await sendMessage("getDefillamaTokenChart", {
-          addresses: tokenHolding,
-          start: dayjs().startOf("d").subtract(30, "d").unix(),
-          span: 30,
-        }).then((res) => res?.coins || {});
-
-        breakdownData = Object.keys(chartDataResponse).map((token) => {
-          const tokenData = chartDataResponse[token];
-          const prices = (tokenData?.prices || []).map((item) => item.price);
-
-          console.log(
-            (response.data?.base?.currentHolding || []).find(
-              (item) => item.symbol === tokenData.symbol
-            )
-          );
-
-          return {
-            name: token,
-            symbol: tokenData.symbol,
-            volality: calculateVolatility(prices),
-            value: Number(
-              (response.data?.base?.currentHolding || []).find(
-                (item) => item.symbol === tokenData.symbol
-              )?.value || 0
-            ),
-          };
-        });
-
-        const riskGroup = groupBy(breakdownData, (item) => {
-          if (item.value === 0) {
-            return "Unknown";
-          }
-
-          if (item.volality < 0.1) {
-            return "Low";
-          }
-          if (item.volality < 0.3) {
-            return "Medium";
-          }
-
-          if (item.volality < 1) {
-            return "High";
-          }
-
-          return "Unknown";
-        });
-
-        console.log(breakdownData);
-        console.log(riskGroup);
-        console.log(
-          "here",
-          Object.keys((riskType) => {
-            return {
-              name: riskType,
-              value: sumBy(riskGroup[riskType], (item) => item.value),
-            };
-          })
+        const riskGroup = groupBy(
+          chartDataResponse,
+          (item) => item.volatilityLabel
         );
 
         // TODO: Break by high, medium, low risk
@@ -209,7 +149,10 @@
               data: Object.keys(riskGroup).map((riskType) => {
                 return {
                   name: riskType,
-                  value: sumBy(riskGroup[riskType], (item) => item.value),
+                  value: sumBy(
+                    riskGroup[riskType],
+                    (item) => Number(item.amount) * Number(item.rate)
+                  ),
                 };
               }),
             },
