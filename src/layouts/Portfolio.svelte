@@ -227,7 +227,7 @@
         });
 
         const topFiveBreakdownToken = sortBreakdownToken
-          .slice(0, 5)
+          ?.slice(0, 5)
           .map((item) => {
             return {
               ...item,
