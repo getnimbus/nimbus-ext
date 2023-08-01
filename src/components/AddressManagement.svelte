@@ -18,6 +18,7 @@
   import { blur } from "svelte/transition";
   import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
   import { useNavigate } from "svelte-navigator";
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
@@ -40,52 +41,52 @@
     empty_wallet: i18n("newtabPage.empty-wallet", "No wallet added yet."),
     addwallet: i18n(
       "newtabPage.addwallet",
-      "Add your wallet to keep track of your investments.",
+      "Add your wallet to keep track of your investments."
     ),
     content: {
       btn_text: i18n(
         "optionsPage.accounts-page-content.address-btn-text",
-        "Add Wallet",
+        "Add Wallet"
       ),
       modal_cancel: i18n(
         "optionsPage.accounts-page-content.modal-cancel",
-        "Cancel",
+        "Cancel"
       ),
       modal_add: i18n(
         "optionsPage.accounts-page-content.modal-add-wallet",
-        "Add",
+        "Add"
       ),
       modal_address_label: i18n(
         "optionsPage.accounts-page-content.modal-address-label",
-        "Wallet",
+        "Wallet"
       ),
       modal_label_label: i18n(
         "optionsPage.accounts-page-content.modal-label-label",
-        "Label",
+        "Label"
       ),
       modal_add_title: i18n(
         "optionsPage.accounts-page-content.modal-add-title",
-        "Add Your Wallet",
+        "Add Your Wallet"
       ),
       modal_add_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-add-sub-title",
-        "Add your wallet will give you more option to see the information at page new tab",
+        "Add your wallet will give you more option to see the information at page new tab"
       ),
       address_required: i18n(
         "optionsPage.accounts-page-content.address-required",
-        "Address is required",
+        "Address is required"
       ),
       label_required: i18n(
         "optionsPage.accounts-page-content.label-required",
-        "Label is required",
+        "Label is required"
       ),
       re_input_address: i18n(
         "optionsPage.accounts-page-content.re-input-address",
-        "Please enter your wallet address again!",
+        "Please enter your wallet address again!"
       ),
       duplicate_address: i18n(
         "optionsPage.accounts-page-content.duplicate-address",
-        "This wallet address is duplicated!",
+        "This wallet address is duplicated!"
       ),
     },
   };
@@ -239,7 +240,7 @@
         null,
         "",
         window.location.pathname +
-          `?type=${typeWalletAddress}&address=${selectedWallet}`,
+          `?type=${typeWalletAddress}&address=${selectedWallet}`
       );
     }
 
@@ -252,7 +253,7 @@
             null,
             "",
             window.location.pathname +
-              `?type=${typeWalletAddress}&address=${selectedWallet}`,
+              `?type=${typeWalletAddress}&address=${selectedWallet}`
           );
         }
       }
@@ -267,7 +268,7 @@
             null,
             "",
             window.location.pathname +
-              `?type=${typeWalletAddress}&address=${selectedWallet}`,
+              `?type=${typeWalletAddress}&address=${selectedWallet}`
           );
         }
       }
@@ -296,26 +297,26 @@
         listAddress = structWalletData;
 
         const selectedTypeWalletRes = await browser.storage.sync.get(
-          "typeWalletAddress",
+          "typeWalletAddress"
         );
         if (
           selectedTypeWalletRes &&
           selectedTypeWalletRes?.typeWalletAddress?.length !== 0
         ) {
           typeWallet.update(
-            (n) => (n = selectedTypeWalletRes.typeWalletAddress),
+            (n) => (n = selectedTypeWalletRes.typeWalletAddress)
           );
         }
 
         const selectedChainRes = await browser.storage.sync.get(
-          "selectedChain",
+          "selectedChain"
         );
         if (selectedChainRes && selectedChainRes?.selectedChain?.length !== 0) {
           chain.update((n) => (n = selectedChainRes.selectedChain));
         }
 
         const selectedWalletRes = await browser.storage.sync.get(
-          "selectedWallet",
+          "selectedWallet"
         );
         if (selectedWalletRes) {
           if (selectedWalletRes?.selectedWallet?.length !== 0) {
@@ -508,7 +509,7 @@
           null,
           "",
           window.location.pathname +
-            `?type=${typeWalletAddress}&address=${selectedWallet}`,
+            `?type=${typeWalletAddress}&address=${selectedWallet}`
         );
         if (selectedChain) {
           chain.update((n) => (n = selectedChain));
@@ -531,7 +532,7 @@
             null,
             "",
             window.location.pathname +
-              `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`,
+              `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
           );
         }
 
@@ -540,7 +541,7 @@
             null,
             "",
             window.location.pathname +
-              `?type=${typeWalletAddress}&address=${selectedWallet}`,
+              `?type=${typeWalletAddress}&address=${selectedWallet}`
           );
           if (selectedChain) {
             chain.update((n) => (n = selectedChain));
@@ -687,7 +688,7 @@
                           type="wallet"
                           listSelect={formatListAddress.slice(
                             5,
-                            formatListAddress.length,
+                            formatListAddress.length
                           )}
                           bind:selected={selectedWallet}
                         />
@@ -947,7 +948,6 @@
                     >
                       <Button
                         variant="secondary"
-                        size="supper-small"
                         on:click={() => (isOpenFollowWhaleModal = true)}
                       >
                         Follow this whale 🐳
@@ -965,32 +965,50 @@
                     </div>
 
                     <div class="xl:block hidden">
-                      <Button
-                        variant="secondary"
-                        on:click={() => {
-                          navigate(
-                            `/compare?address=${encodeURIComponent(
-                              selectedWallet,
-                            )}`,
-                          );
-                        }}>Compare with</Button
+                      <div
+                        use:tooltip={{
+                          content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
+                          allowHTML: true,
+                          placement: "top",
+                          interactive: true,
+                        }}
                       >
+                        <Button
+                          variant="premium"
+                          on:click={() => {
+                            navigate(
+                              `/compare?address=${encodeURIComponent(
+                                selectedWallet
+                              )}`
+                            );
+                          }}>Optimize return</Button
+                        >
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 <div class="flex flex-col gap-6">
                   <div class="xl:hidden block">
-                    <Button
-                      variant="secondary"
-                      on:click={() => {
-                        navigate(
-                          `/compare?address=${encodeURIComponent(
-                            selectedWallet,
-                          )}`,
-                        );
-                      }}>Compare with</Button
+                    <div
+                      use:tooltip={{
+                        content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
+                        allowHTML: true,
+                        placement: "top",
+                        interactive: true,
+                      }}
                     >
+                      <Button
+                        variant="premium"
+                        on:click={() => {
+                          navigate(
+                            `/compare?address=${encodeURIComponent(
+                              selectedWallet
+                            )}`
+                          );
+                        }}>Optimize return</Button
+                      >
+                    </div>
                   </div>
                   {#if getAddressContext(selectedWallet)?.type !== "BTC"}
                     <Select
@@ -1179,7 +1197,7 @@
           <tooltip-detail
             text={`/start ${selectedWallet} ${
               formatListAddress.filter(
-                (item) => item.value === selectedWallet,
+                (item) => item.value === selectedWallet
               )?.[0]?.label || ""
             }`}
           />

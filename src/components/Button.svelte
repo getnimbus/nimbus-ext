@@ -163,7 +163,7 @@
   .premium[type="button"] {
     background: #ffb800;
     color: #fff;
-    opacity: 0.6; /* TODO: Remove me later */
+    /* opacity: 0.6; TODO: Remove me later */
 
     &:hover {
       background: #f9b506;

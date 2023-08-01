@@ -91,7 +91,7 @@
     isLoadingDataCompare = true;
     try {
       const response: any = await nimbus.get(
-        `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`,
+        `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`
       );
       if (response && response.data) {
         compareData = response.data;
@@ -100,7 +100,7 @@
           (item) =>
             item.cg_id
               ? `coingecko:${item.cg_id}`
-              : `ethereum:${item.contractAddress}`,
+              : `ethereum:${item.contractAddress}`
         );
 
         // console.log({ tokenHolding });
@@ -211,7 +211,7 @@
           const prices = (tokenData?.prices || []).map((item) => item.price);
           const return30D = getChangePercent(
             prices[prices.length - 1],
-            prices[0],
+            prices[0]
           );
 
           return {
@@ -256,9 +256,9 @@
 <AnalyticSection>
   <span slot="title">
     <div class="xl:text-2xl text-4xl font-medium text-black flex justify-start">
-      Risk & Return
+      Risk & Returns
       <!-- <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
-        Risk & Return
+        Risk & Returns
       </TooltipTitle> -->
     </div>
   </span>
@@ -419,7 +419,7 @@
             <div
               class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
             />
-            Best token
+            Best perf
           </div>
           <div class="xl:text-2xl text-3xl">PEPE</div>
           <div class="xl:text-lg text-2xl flex items-center gap-1">
@@ -433,7 +433,7 @@
             <div
               class="border border-red-500 absolute -top-1 left-0 w-[40px]"
             />
-            Worse token
+            Worse perf
           </div>
           <div class="xl:text-2xl text-3xl">BTC</div>
           <div class="xl:text-lg text-2xl flex items-center gap-1">

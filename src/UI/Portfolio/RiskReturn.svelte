@@ -188,7 +188,7 @@
         <div class="flex flex-col gap-4">
           <div class="flex justify-between">
             <div class="xl:text-2xl text-4xl font-medium text-black">
-              Return
+              Returns
             </div>
             <div class="flex items-center gap-2">
               <AnimateSharedLayout>

@@ -94,7 +94,7 @@
     isLoadingDataCompare = true;
     try {
       const response: any = await nimbus.get(
-        `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`,
+        `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`
       );
       if (response && response.data) {
         const nameConfig = {
@@ -165,9 +165,9 @@
 <AnalyticSection>
   <span slot="title">
     <div class="xl:text-2xl text-4xl font-medium text-black flex justify-start">
-      Return
+      Returns
       <!-- <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
-        Risk & Return
+        Risk & Returns
       </TooltipTitle> -->
     </div>
   </span>
