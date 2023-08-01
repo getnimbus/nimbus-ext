@@ -50,15 +50,9 @@
                 </div>
               </div>
               <div class="col-span-3 flex items-center justify-end">
-                <div
-                  class={`xl:text-base text-2xl ${
-                    data?.base?.sharpeRatio < 0
-                      ? "text-red-500"
-                      : "text-[#00A878]"
-                  }`}
-                >
+                <div class="xl:text-base text-2xl">
                   <TooltipNumber
-                    number={Math.abs(data?.base?.sharpeRatio)}
+                    number={data?.base?.sharpeRatio}
                     type="percent"
                   />
                 </div>
@@ -79,15 +73,9 @@
                 </div>
               </div>
               <div class="col-span-3 flex items-center justify-end">
-                <div
-                  class={`xl:text-base text-2xl ${
-                    data?.base?.volatility < 0
-                      ? "text-red-500"
-                      : "text-[#00A878]"
-                  }`}
-                >
+                <div class="xl:text-base text-2xl">
                   <TooltipNumber
-                    number={Math.abs(data?.base?.volatility)}
+                    number={data?.base?.volatility}
                     type="percent"
                   />
                 </div>
@@ -103,20 +91,13 @@
                     tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
                     isBigIcon
                   >
-                    Max draw down
+                    Max drawdown
                   </TooltipTitle>
                 </div>
               </div>
               <div class="col-span-3 flex items-center justify-end">
-                <div
-                  class={`xl:text-base text-2xl ${
-                    data?.base?.drawDown < 0 ? "text-red-500" : "text-[#00A878]"
-                  }`}
-                >
-                  <TooltipNumber
-                    number={Math.abs(data?.base?.drawDown)}
-                    type="percent"
-                  />
+                <div class="xl:text-base text-2xl">
+                  <TooltipNumber number={data?.base?.drawDown} type="percent" />
                 </div>
               </div>
             </div>

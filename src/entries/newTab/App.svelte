@@ -13,7 +13,7 @@
   import Footer from "~/components/Footer.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
-  import Market from "~/layouts/Market.svelte";
+  import WhalesList from "~/layouts/WhalesList.svelte";
   import Portfolio from "~/layouts/Portfolio.svelte";
   import News from "~/layouts/News.svelte";
   import Analytic from "~/layouts/Analytic.svelte";
@@ -90,7 +90,7 @@
         </Route>
 
         <Route path="whales">
-          <Market />
+          <WhalesList />
         </Route>
 
         <Route path="position-detail">

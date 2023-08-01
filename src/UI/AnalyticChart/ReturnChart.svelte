@@ -197,15 +197,9 @@
             </div>
           </div>
           <div class="col-span-1 flex items-center justify-end">
-            <div
-              class={`xl:text-base text-2xl ${
-                compareData?.base?.sharpeRatio < 0
-                  ? "text-red-500"
-                  : "text-[#00A878]"
-              }`}
-            >
+            <div class="xl:text-base text-2xl">
               <TooltipNumber
-                number={Math.abs(compareData?.base?.sharpeRatio)}
+                number={compareData?.base?.sharpeRatio}
                 type="percent"
               />
             </div>
@@ -224,15 +218,9 @@
             </div>
           </div>
           <div class="col-span-1 flex items-center justify-end">
-            <div
-              class={`xl:text-base text-2xl ${
-                compareData?.base?.volatility < 0
-                  ? "text-red-500"
-                  : "text-[#00A878]"
-              }`}
-            >
+            <div class="xl:text-base text-2xl">
               <TooltipNumber
-                number={Math.abs(compareData?.base?.volatility)}
+                number={compareData?.base?.volatility}
                 type="percent"
               />
             </div>
@@ -246,20 +234,14 @@
                 tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
                 isBigIcon
               >
-                Max draw down
+                Max drawdown
               </TooltipTitle>
             </div>
           </div>
           <div class="col-span-1 flex items-center justify-end">
-            <div
-              class={`xl:text-base text-2xl ${
-                compareData?.base?.drawDown < 0
-                  ? "text-red-500"
-                  : "text-[#00A878]"
-              }`}
-            >
+            <div class="xl:text-base text-2xl">
               <TooltipNumber
-                number={Math.abs(compareData?.base?.drawDown)}
+                number={compareData?.base?.drawDown}
                 type="percent"
               />
             </div>

@@ -7,14 +7,12 @@
   import "~/components/Loading.custom.svelte";
   import MarketItem from "~/components/MarketItem.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import PublicPortfolioItem from "~/components/PublicPortfolioItem.svelte";
-  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   const MultipleLang = {
-    whale: i18n("newtabPage.whale", "Whale 🐳"),
-    whales_page_title: i18n(
-      "newtabPage.whale-page-title",
-      "Start earning by copying from Experienced"
+    market: i18n("newtabPage.market", "Market"),
+    market_page_title: i18n(
+      "newtabPage.market-page-title",
+      "Latest big swaps with useful information we've put together"
     ),
     market_search_symbol: i18n(
       "newtabPage.market-search-symbol",
@@ -26,18 +24,26 @@
     ),
   };
 
-  let whalesData = [];
+  let marketData = [];
+  let searchValue = "";
+  let amountValue = "";
+  let timerSearchDebounce;
+  let timerAmountDebounce;
   let isLoading = false;
   let tableHeader;
   let isSticky = false;
 
-  const getPublicPortfolio = async () => {
+  const getMarketData = async () => {
     try {
       isLoading = true;
       const res = await nimbus
-        .get(`/market/portfolio`)
+        .get(
+          `/trades?minValue=${amountValue || "10000"}&token=${
+            searchValue || ""
+          }`
+        )
         .then((response) => response.data);
-      whalesData = res;
+      marketData = res;
     } catch (e) {
       console.log("error: ", e);
     } finally {
@@ -45,8 +51,22 @@
     }
   };
 
+  const debounceSearch = (value) => {
+    clearTimeout(timerSearchDebounce);
+    timerSearchDebounce = setTimeout(() => {
+      searchValue = value;
+    }, 300);
+  };
+
+  const debounceAmount = (value) => {
+    clearTimeout(timerAmountDebounce);
+    timerAmountDebounce = setTimeout(() => {
+      amountValue = value;
+    }, 300);
+  };
+
   onMount(() => {
-    getPublicPortfolio();
+    getMarketData();
     mixpanel.track("market_page");
 
     const handleScroll = () => {
@@ -59,6 +79,12 @@
       window.removeEventListener("scroll", handleScroll);
     };
   });
+
+  $: {
+    setInterval(() => {
+      getMarketData();
+    }, 120000); // 2 mins
+  }
 </script>
 
 <ErrorBoundary>
@@ -67,13 +93,68 @@
   >
     <div class="flex flex-col gap-1">
       <div class="xl:text-5xl text-7xl text-black font-semibold">
-        {MultipleLang.whale}
+        {MultipleLang.market}
       </div>
       <div
         class="flex justify-between xl:items-center xl:gap-11 xl:flex-row flex-col gap-6"
       >
         <div class="xl:text-xl text-3xl text-black font-medium w-max">
-          {MultipleLang.whales_page_title}
+          {MultipleLang.market_page_title}
+        </div>
+        <div class="flex flex-1 gap-3">
+          <div
+            class={`flex-1 border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
+              searchValue ? "bg-[#F0F2F7]" : "bg-white"
+            }`}
+          >
+            <input
+              on:keyup={({ target: { value } }) => debounceSearch(value)}
+              on:keydown={(event) => {
+                if ((event.which == 13 || event.keyCode == 13) && searchValue) {
+                  getMarketData();
+                }
+              }}
+              value={searchValue}
+              placeholder={MultipleLang.market_search_symbol}
+              type="text"
+              class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                searchValue ? "bg-[#F0F2F7]" : ""
+              }`}
+            />
+          </div>
+          <div
+            class={`flex-[0.7] border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
+              amountValue ? "bg-[#F0F2F7]" : "bg-white"
+            }`}
+          >
+            <input
+              on:keyup={({ target: { value } }) => {
+                const parsedValue = parseFloat(value);
+                if (!isNaN(parsedValue) && parsedValue > 0) {
+                  debounceAmount(value);
+                } else {
+                  amountValue = "";
+                }
+              }}
+              on:keydown={(event) => {
+                if ((event.which == 13 || event.keyCode == 13) && amountValue) {
+                  getMarketData();
+                }
+              }}
+              value={amountValue}
+              placeholder={MultipleLang.market_search_amount}
+              inputmode="decimal"
+              pattern="[0-9]*(.[0-9]+)?"
+              type="number"
+              min="0.01"
+              step="0.01"
+              autocorrect="off"
+              autocomplete="off"
+              class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                amountValue ? "bg-[#F0F2F7]" : ""
+              }`}
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -92,92 +173,42 @@
               <div
                 class="text-left xl:text-xs text-base uppercase font-semibold text-black"
               >
-                Address
+                Pair
               </div>
             </th>
             <th class="py-3">
               <div
                 class="text-left xl:text-xs text-base uppercase font-semibold text-black"
               >
-                Tokens
+                Execution time
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-left xl:text-xs text-base uppercase font-semibold text-black"
               >
-                Net Worth
+                Amount Out
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-left xl:text-xs text-base uppercase font-semibold text-black"
               >
-                1D
+                Amount In
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-center xl:text-xs text-base uppercase font-semibold text-black"
               >
-                7D
+                Maker
               </div>
             </th>
-            <th class="py-3">
+            <th class="pr-3 py-3 w-[190px] rounded-tr-[10px]">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
-                30D
-              </div>
-            </th>
-            <th class="py-3">
-              <div
-                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
-              >
-                1Y
-              </div>
-            </th>
-            <th class="py-3">
-              <div
-                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
-              >
-                <TooltipTitle
-                  tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
-                  isBigIcon
-                >
-                  Volatility
-                </TooltipTitle>
-              </div>
-            </th>
-            <th class="py-3">
-              <div
-                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
-              >
-                <TooltipTitle
-                  tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
-                  isBigIcon
-                >
-                  Max drawdown
-                </TooltipTitle>
-              </div>
-            </th>
-            <th class="py-3">
-              <div
-                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
-              >
-                <TooltipTitle
-                  tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
-                  isBigIcon
-                >
-                  Sharpe ratio
-                </TooltipTitle>
-              </div>
-            </th>
-            <th class="pr-3 py-3 rounded-tr-[10px]">
-              <div
-                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
-              >
-                Last 30D
+                Action
               </div>
             </th>
           </tr>
@@ -185,17 +216,15 @@
         <tbody>
           {#if isLoading}
             <tr>
-              <td colspan="11">
-                <div
-                  class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
-                >
+              <td colspan="6">
+                <div class="flex justify-center items-center py-4 px-3">
                   <loading-icon />
                 </div>
               </td>
             </tr>
-          {:else if whalesData.length === 0}
+          {:else if marketData.length === 0}
             <tr>
-              <td colspan="11">
+              <td colspan="6">
                 <div
                   class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
                 >
@@ -204,8 +233,8 @@
               </td>
             </tr>
           {:else}
-            {#each whalesData as data}
-              <PublicPortfolioItem {data} />
+            {#each marketData as data}
+              <MarketItem {data} />
             {/each}
           {/if}
         </tbody>

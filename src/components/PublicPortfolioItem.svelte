@@ -70,7 +70,10 @@
           data?.change24H >= 0 ? "text-[#00A878]" : "text-red-500"
         }`}
       >
-        <TooltipNumber number={Number(data?.change24H)} type="percent" />
+        <TooltipNumber
+          number={Math.abs(Number(data?.change24H))}
+          type="percent"
+        />
         <span>%</span>
         <img
           src={data?.change24H >= 0 ? TrendUp : TrendDown}
@@ -90,7 +93,10 @@
           data?.change7D >= 0 ? "text-[#00A878]" : "text-red-500"
         }`}
       >
-        <TooltipNumber number={Number(data?.change7D)} type="percent" />
+        <TooltipNumber
+          number={Math.abs(Number(data?.change7D))}
+          type="percent"
+        />
         <span>%</span>
         <img
           src={data?.change7D >= 0 ? TrendUp : TrendDown}
@@ -110,7 +116,10 @@
           data?.change30D >= 0 ? "text-[#00A878]" : "text-red-500"
         }`}
       >
-        <TooltipNumber number={Number(data?.change30D)} type="percent" />
+        <TooltipNumber
+          number={Math.abs(Number(data?.change30D))}
+          type="percent"
+        />
         <span>%</span>
         <img
           src={data?.change30D >= 0 ? TrendUp : TrendDown}
@@ -130,7 +139,10 @@
           data?.change1Y >= 0 ? "text-[#00A878]" : "text-red-500"
         }`}
       >
-        <TooltipNumber number={Number(data?.change1Y)} type="percent" />
+        <TooltipNumber
+          number={Math.abs(Number(data?.change1Y))}
+          type="percent"
+        />
         <span>%</span>
         <img
           src={data?.change1Y >= 0 ? TrendUp : TrendDown}
@@ -143,7 +155,7 @@
 
   <td class="py-4 group-hover:bg-gray-100">
     <div
-      class="xl:text-sm text-right text-xl text-[#00A878] font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-right text-xl font-medium flex flex-col items-end gap-1"
     >
       {Number(data?.volatility).toFixed(2)}
     </div>
@@ -151,7 +163,7 @@
 
   <td class="py-4 group-hover:bg-gray-100">
     <div
-      class="xl:text-sm text-right text-xl text-[#00A878] font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-right text-xl font-medium flex flex-col items-end gap-1"
     >
       {Number(data?.drawDown).toFixed(2)}%
     </div>
@@ -159,13 +171,13 @@
 
   <td class="py-4 group-hover:bg-gray-100">
     <div
-      class="xl:text-sm text-right text-xl text-[#00A878] font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-right text-xl font-medium flex flex-col items-end gap-1"
     >
       {Number(data?.sharpeRatio).toFixed(2)}
     </div>
   </td>
 
-  <td class="pr-3 py-4 w-[190px] group-hover:bg-gray-100">
+  <td class="pr-3 py-4 group-hover:bg-gray-100">
     <div class="flex items-center justify-end gap-3">
       <SparkLine data={data?.sparkline || []} />
     </div>
