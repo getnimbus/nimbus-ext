@@ -20,6 +20,7 @@
   import CompareResult from "~/UI/Compare/CompareResult.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
+  import Logo from "~/assets/logo-1.svg";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -1043,13 +1044,20 @@
               Empty
             </div>
           {:else}
-            <EChart
-              id="line-chart-compare"
-              theme="white"
-              notMerge={true}
-              option={optionLine}
-              height={433}
-            />
+            <div class="relative">
+              <EChart
+                id="line-chart-compare"
+                theme="white"
+                notMerge={true}
+                option={optionLine}
+                height={433}
+              />
+              <div
+                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+              >
+                <img src={Logo} alt="" width="140" height="140" />
+              </div>
+            </div>
           {/if}
         </div>
       {/if}
@@ -1078,13 +1086,20 @@
               Empty
             </div>
           {:else}
-            <EChart
-              id="bar-chart-compare"
-              theme="white"
-              notMerge={true}
-              option={optionBar}
-              height={465}
-            />
+            <div class="relative">
+              <EChart
+                id="bar-chart-compare"
+                theme="white"
+                notMerge={true}
+                option={optionBar}
+                height={465}
+              />
+              <div
+                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+              >
+                <img src={Logo} alt="" width="140" height="140" />
+              </div>
+            </div>
           {/if}
         </div>
       {/if}
