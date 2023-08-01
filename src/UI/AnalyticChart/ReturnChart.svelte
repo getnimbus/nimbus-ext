@@ -167,7 +167,7 @@
     <div class="xl:text-2xl text-4xl font-medium text-black flex justify-start">
       Returns
       <!-- <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
-        Risk & Returns
+        Risks & Returns
       </TooltipTitle> -->
     </div>
   </span>
