@@ -412,7 +412,40 @@
       const userVezgo = vezgo.login();
       if (userVezgo) {
         userVezgo
-          .connect()
+          .connect({
+            providers: [
+              "binance",
+              "binanceus",
+              "bitfinex",
+              "bittrex",
+              "bitvavo",
+              "blockchaincom",
+              "coinbasepro",
+              "coindcx",
+              "coinspot",
+              "cointracking",
+              "cryptocom",
+              "gateio",
+              "gemini",
+              "kraken",
+              "kucoin",
+              "ndax",
+              "newton",
+              "poloniex",
+              "wazirx",
+              "bitmart",
+              "bybit",
+              "huobi",
+              "mexc",
+              "okx",
+              "wavesexchange",
+              "bitrue",
+              "ascendex",
+              "bitso",
+              "upbit",
+              "bitstamp",
+            ],
+          })
           .onConnection(async function (account) {
             await nimbus.get("/accounts/sync");
 
