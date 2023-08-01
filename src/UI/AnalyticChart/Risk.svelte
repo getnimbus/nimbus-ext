@@ -4,16 +4,18 @@
   import { formatCurrencyV2, getAddressContext } from "~/utils";
   import groupBy from "lodash/groupBy";
   import sumBy from "lodash/sumBy";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { sendMessage } from "webext-bridge";
+  import dayjs from "dayjs";
+  import { calculateVolatility } from "~/chart-utils";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import EChart from "~/components/EChart.svelte";
-  import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { sendMessage } from "webext-bridge";
-  import dayjs from "dayjs";
-  import { calculateVolatility } from "~/chart-utils";
+
+  import Logo from "~/assets/logo-1.svg";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -395,7 +397,7 @@
               </TooltipTitle>
             </div>
           </div>
-          <div class="col-span-1 flex items-center gap-1 justify-end">
+          <div class="col-span-1 flex items-center justify-end">
             <div
               class={`xl:text-base text-2xl ${
                 compareData?.base?.volatility < 0
@@ -408,25 +410,6 @@
                 type="percent"
               />
             </div>
-            {#if compareData?.base?.volatility < 0}
-              <div class="xl:text-lg text-2xl text-red-500">⚠️</div>
-            {:else}
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill="none"
-                  stroke="#00A878"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
-                />
-              </svg>
-            {/if}
           </div>
         </div>
 
@@ -441,7 +424,7 @@
               </TooltipTitle>
             </div>
           </div>
-          <div class="col-span-1 flex items-center gap-1 justify-end">
+          <div class="col-span-1 flex items-center justify-end">
             <div
               class={`xl:text-base text-2xl ${
                 compareData?.base?.drawDown < 0
@@ -454,25 +437,6 @@
                 type="percent"
               />
             </div>
-            {#if compareData?.base?.drawDown < 0}
-              <div class="xl:text-lg text-2xl text-red-500">⚠️</div>
-            {:else}
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill="none"
-                  stroke="#00A878"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
-                />
-              </svg>
-            {/if}
           </div>
         </div>
       </div>
@@ -556,15 +520,22 @@
             Empty
           </div>
         {:else}
-          <EChart
-            id="bar-chart-compare-analytic"
-            theme="white"
-            notMerge={true}
-            option={selectedTypeChart === "overview"
-              ? optionBar
-              : riskBreakdownChartOption}
-            height={465}
-          />
+          <div class="relative">
+            <EChart
+              id="bar-chart-compare-analytic"
+              theme="white"
+              notMerge={true}
+              option={selectedTypeChart === "overview"
+                ? optionBar
+                : riskBreakdownChartOption}
+              height={465}
+            />
+            <div
+              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+            >
+              <img src={Logo} alt="" width="140" height="140" />
+            </div>
+          </div>
         {/if}
       </div>
     {/if}

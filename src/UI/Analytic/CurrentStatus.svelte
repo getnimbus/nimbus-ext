@@ -25,6 +25,7 @@
 
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
+  import Logo from "~/assets/logo-1.svg";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -344,7 +345,7 @@
   const getPersonalizeTag = async () => {
     try {
       const response = await nimbus.get(
-        `/address/${selectedWallet}/personalize/tag`,
+        `/address/${selectedWallet}/personalize/tag`
       );
       if (response && response.data) {
         const categoriesData = Object.getOwnPropertyNames(response.data);
@@ -401,7 +402,7 @@
                   color: "#00b580",
                 },
               };
-            },
+            }
           );
 
           const formatDataETH = response.result?.performance.map((item) => {
@@ -553,7 +554,7 @@
           dataTokens: flatten(
             item.dataTag
               .filter((item) => item.name !== "Other")
-              .map((item) => item.tokens),
+              .map((item) => item.tokens)
           ),
         };
       });
@@ -562,12 +563,12 @@
         const formatDataTokens = dataTokenHolding.map((tokenHolding) => {
           const isSelected = item.dataTokens.some(
             (selectedToken) =>
-              selectedToken.contractAddress === tokenHolding.contractAddress,
+              selectedToken.contractAddress === tokenHolding.contractAddress
           );
 
           const selected = item.dataTokens.filter(
             (selectedToken) =>
-              selectedToken.contractAddress === tokenHolding.contractAddress,
+              selectedToken.contractAddress === tokenHolding.contractAddress
           );
 
           return {
@@ -776,8 +777,8 @@
           on:click={() => {
             navigate(
               `/personal-token-breakdown?chain=${encodeURIComponent(
-                selectedChain,
-              )}&address=${encodeURIComponent(selectedWallet)}`,
+                selectedChain
+              )}&address=${encodeURIComponent(selectedWallet)}`
             );
           }}
         >
@@ -802,14 +803,21 @@
               Empty
             </div>
           {:else}
-            <EChart
-              id="current-status-analytics"
-              theme="white"
-              option={optionPie}
-              height={465}
-              notMerge={true}
-              type="full-width"
-            />
+            <div class="relative">
+              <EChart
+                id="current-status-analytics"
+                theme="white"
+                option={optionPie}
+                height={465}
+                notMerge={true}
+                type="full-width"
+              />
+              <div
+                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+              >
+                <img src={Logo} alt="" width="140" height="140" />
+              </div>
+            </div>
           {/if}
         </div>
       {/if}
@@ -874,13 +882,20 @@
             Empty
           </div>
         {:else}
-          <EChart
-            id="line-chart-anaylic-performace"
-            theme="white"
-            notMerge={true}
-            option={selectedTypeChart === "line" ? optionLine : optionBar}
-            height={selectedTypeChart === "line" ? 485 : 515}
-          />
+          <div class="relative">
+            <EChart
+              id="line-chart-anaylic-performace"
+              theme="white"
+              notMerge={true}
+              option={selectedTypeChart === "line" ? optionLine : optionBar}
+              height={selectedTypeChart === "line" ? 485 : 515}
+            />
+            <div
+              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+            >
+              <img src={Logo} alt="" width="140" height="140" />
+            </div>
+          </div>
         {/if}
       </div>
     {/if}

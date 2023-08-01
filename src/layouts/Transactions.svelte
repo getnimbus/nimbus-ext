@@ -67,7 +67,7 @@
   <!-- {#if Object.keys(userInfo).length === 0}
     <div class="flex justify-center items-center h-screen">
       <div class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center">
-        <div class="text-lg">Please login to use this feature</div>
+        <div class="text-lg">Please connect wallet to use this feature</div>
       </div>
     </div>
   {:else}

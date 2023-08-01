@@ -66,7 +66,7 @@
             notMerge={true}
           />
           <div
-            class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-2/3 left-1/2"
+            class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-2/3 left-1/2 pointer-events-none"
           >
             <img src={Logo} alt="" width="140" height="140" />
           </div>

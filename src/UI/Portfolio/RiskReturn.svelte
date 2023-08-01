@@ -49,7 +49,7 @@
                   </TooltipTitle>
                 </div>
               </div>
-              <div class="col-span-3 flex items-center gap-1 justify-end">
+              <div class="col-span-3 flex items-center justify-end">
                 <div
                   class={`xl:text-base text-2xl ${
                     data?.base?.sharpeRatio < 0
@@ -62,27 +62,9 @@
                     type="percent"
                   />
                 </div>
-                {#if data?.base?.sharpeRatio < 0}
-                  <div class="xl:text-lg text-2xl text-red-500">⚠️</div>
-                {:else}
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill="none"
-                      stroke="#00A878"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="1.5"
-                      d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
-                    />
-                  </svg>
-                {/if}
               </div>
             </div>
+
             <div class="grid grid-cols-5">
               <div class="col-span-2">
                 <div
@@ -96,7 +78,7 @@
                   </TooltipTitle>
                 </div>
               </div>
-              <div class="col-span-3 flex items-center gap-1 justify-end">
+              <div class="col-span-3 flex items-center justify-end">
                 <div
                   class={`xl:text-base text-2xl ${
                     data?.base?.volatility < 0
@@ -109,27 +91,9 @@
                     type="percent"
                   />
                 </div>
-                {#if data?.base?.volatility < 0}
-                  <div class="xl:text-lg text-2xl text-red-500">⚠️</div>
-                {:else}
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill="none"
-                      stroke="#00A878"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="1.5"
-                      d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
-                    />
-                  </svg>
-                {/if}
               </div>
             </div>
+
             <div class="grid grid-cols-5">
               <div class="col-span-2">
                 <div
@@ -143,7 +107,7 @@
                   </TooltipTitle>
                 </div>
               </div>
-              <div class="col-span-3 flex items-center gap-1 justify-end">
+              <div class="col-span-3 flex items-center justify-end">
                 <div
                   class={`xl:text-base text-2xl ${
                     data?.base?.drawDown < 0 ? "text-red-500" : "text-[#00A878]"
@@ -154,25 +118,6 @@
                     type="percent"
                   />
                 </div>
-                {#if data?.base?.drawDown < 0}
-                  <div class="xl:text-lg text-2xl text-red-500">⚠️</div>
-                {:else}
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill="none"
-                      stroke="#00A878"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="1.5"
-                      d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
-                    />
-                  </svg>
-                {/if}
               </div>
             </div>
           </div>
@@ -225,7 +170,7 @@
             <div class="grid grid-cols-4 gap-4">
               <div class="flex flex-col gap-2 px-4 py-3">
                 <div class="xl:text-base text-2xl text-black">1 Day</div>
-                <div class="flex items-center gap-1">
+                <div class="flex items-center">
                   <div
                     class={`xl:text-base text-2xl ${
                       data?.base?.netWorthChange?.networth1D < 0
@@ -238,31 +183,12 @@
                       type="percent"
                     />%
                   </div>
-                  {#if data?.base?.netWorthChange?.networth1D < 0}
-                    <div class="xl:text-lg text-2xl text-red-500">⚠️</div>
-                  {:else}
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fill="none"
-                        stroke="#00A878"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
-                        d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
-                      />
-                    </svg>
-                  {/if}
                 </div>
               </div>
 
               <div class="flex flex-col gap-2 px-4 py-3">
                 <div class="xl:text-base text-2xl text-black">7 Days</div>
-                <div class="flex items-center gap-1">
+                <div class="flex items-center">
                   <div
                     class={`xl:text-base text-2xl ${
                       data?.base?.netWorthChange?.networth7D < 0
@@ -275,31 +201,12 @@
                       type="percent"
                     />%
                   </div>
-                  {#if data?.base?.netWorthChange?.networth7D < 0}
-                    <div class="xl:text-lg text-2xl text-red-500">⚠️</div>
-                  {:else}
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fill="none"
-                        stroke="#00A878"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
-                        d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
-                      />
-                    </svg>
-                  {/if}
                 </div>
               </div>
 
               <div class="flex flex-col gap-2 px-4 py-3">
                 <div class="xl:text-base text-2xl text-black">30 Days</div>
-                <div class="flex items-center gap-1">
+                <div class="flex items-center">
                   <div
                     class={`xl:text-base text-2xl ${
                       data?.base?.netWorthChange?.networth30D < 0
@@ -312,31 +219,12 @@
                       type="percent"
                     />%
                   </div>
-                  {#if data?.base?.netWorthChange?.networth30D < 0}
-                    <div class="xl:text-lg text-2xl text-red-500">⚠️</div>
-                  {:else}
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fill="none"
-                        stroke="#00A878"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
-                        d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
-                      />
-                    </svg>
-                  {/if}
                 </div>
               </div>
 
               <div class="flex flex-col gap-2 px-4 py-3">
                 <div class="xl:text-base text-2xl text-black">1 Year</div>
-                <div class="flex items-center gap-1">
+                <div class="flex items-center">
                   <div
                     class={`xl:text-base text-2xl ${
                       data?.base?.netWorthChange?.networth1Y < 0
@@ -349,25 +237,6 @@
                       type="percent"
                     />%
                   </div>
-                  {#if data?.base?.netWorthChange?.networth1Y < 0}
-                    <div class="xl:text-lg text-2xl text-red-500">⚠️</div>
-                  {:else}
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fill="none"
-                        stroke="#00A878"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
-                        d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
-                      />
-                    </svg>
-                  {/if}
                 </div>
               </div>
             </div>

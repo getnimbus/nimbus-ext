@@ -225,7 +225,7 @@
 
 <AppOverlay isOpen={isOpenAuthModal} on:close={() => (isOpenAuthModal = false)}>
   <div class="xl:title-3 title-1 text-gray-600 font-semibold mb-5">
-    {MultipleLang.modal_login_title}
+    Connect wallet to enjoy more features
   </div>
   <div class="flex flex-col items-center justify-center xl:gap-2 gap-4">
     <SolanaAuth />

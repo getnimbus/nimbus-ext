@@ -24,80 +24,80 @@
     content: {
       btn_text: i18n(
         "optionsPage.accounts-page-content.address-btn-text",
-        "Add Wallet",
+        "Add Wallet"
       ),
       address_header_table: i18n(
         "optionsPage.accounts-page-content.address-header-table",
-        "Wallet",
+        "Wallet"
       ),
       label_header_table: i18n(
         "optionsPage.accounts-page-content.label-header-table",
-        "Label",
+        "Label"
       ),
       action_header_table: i18n(
         "optionsPage.accounts-page-content.action-header-table",
-        "Action",
+        "Action"
       ),
       modal_cancel: i18n(
         "optionsPage.accounts-page-content.modal-cancel",
-        "Cancel",
+        "Cancel"
       ),
       modal_add: i18n(
         "optionsPage.accounts-page-content.modal-add-wallet",
-        "Add",
+        "Add"
       ),
       modal_edit: i18n("optionsPage.accounts-page-content.modal-edit", "Edit"),
       modal_delete: i18n(
         "optionsPage.accounts-page-content.modal-delete",
-        "Delete",
+        "Delete"
       ),
       modal_address_label: i18n(
         "optionsPage.accounts-page-content.modal-address-label",
-        "Wallet",
+        "Wallet"
       ),
       modal_label_label: i18n(
         "optionsPage.accounts-page-content.modal-label-label",
-        "Label",
+        "Label"
       ),
       modal_add_title: i18n(
         "optionsPage.accounts-page-content.modal-add-title",
-        "Add your wallet",
+        "Add your wallet"
       ),
       modal_add_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-add-sub-title",
-        "Add your wallet will give you more option to see the information at page new tab",
+        "Add your wallet will give you more option to see the information at page new tab"
       ),
       modal_delete_title: i18n(
         "optionsPage.accounts-page-content.modal-delete-title",
-        "Are you sure?",
+        "Are you sure?"
       ),
       modal_delete_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-delete-sub-title",
-        "Do you really want to delete this wallet? This process cannot revert",
+        "Do you really want to delete this wallet? This process cannot revert"
       ),
       modal_edit_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-title",
-        "Edit your wallet",
+        "Edit your wallet"
       ),
       modal_edit_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-sub-title",
-        "Edit your wallet will make change the information at page new tab",
+        "Edit your wallet will make change the information at page new tab"
       ),
       address_required: i18n(
         "optionsPage.accounts-page-content.address-required",
-        "Address is required",
+        "Address is required"
       ),
       label_required: i18n(
         "optionsPage.accounts-page-content.label-required",
-        "Label is required",
+        "Label is required"
       ),
       re_input_address: i18n(
         "optionsPage.accounts-page-content.re-input-address",
-        "Please enter your wallet address again!",
+        "Please enter your wallet address again!"
       ),
       duplicate_address: i18n(
         "optionsPage.accounts-page-content.duplicate-address",
-        "This wallet address is duplicated!",
+        "This wallet address is duplicated!"
       ),
     },
   };
@@ -364,7 +364,7 @@
         validateFormEdit(data);
         if (
           !Object.keys(errorsEdit).some(
-            (inputName) => errorsEdit[inputName]["required"],
+            (inputName) => errorsEdit[inputName]["required"]
           )
         ) {
           Object.assign(data, { id: data.address });
@@ -526,7 +526,7 @@
                 class="absolute transform -translate-x-1/2 -top-8 left-1/2"
                 style="z-index: 2147483648;"
               >
-                <tooltip-detail text={"Login to add account"} />
+                <tooltip-detail text={"Connect wallet to add account"} />
               </div>
             {/if}
           </div>
@@ -575,7 +575,7 @@
               text={`${
                 isDisabled || Object.keys(userInfo).length !== 0
                   ? "Install our extension to add more wallet"
-                  : "Login to add account"
+                  : "Connect wallet to add account"
               }`}
             />
           </div>

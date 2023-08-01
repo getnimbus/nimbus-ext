@@ -13,7 +13,7 @@
 
   export let data;
   export let selectedWallet;
-  export let sumTokenHolding;
+  export let sumAllTokens;
 
   $: selectedChain = $chain;
 
@@ -34,7 +34,7 @@
     data.name !== "Ethereum" &&
     selectedChain !== "XDAI";
 
-  $: ratio = (price / sumTokenHolding) * 100;
+  $: ratio = (price / sumAllTokens) * 100;
 </script>
 
 <tr

@@ -2,12 +2,28 @@
   import { onMount } from "svelte";
   import onboard from "~/lib/web3-onboard";
   import { ethers } from "ethers";
-  import { user } from "~/store";
+  import { wallet, chain, typeWallet, user } from "~/store";
   import { nimbus } from "~/lib/network";
+  import mixpanel from "mixpanel-browser";
 
   import User from "~/assets/user.png";
 
   const wallets$ = onboard.state.select("wallets");
+
+  let selectedWallet: string = "";
+  wallet.subscribe((value) => {
+    selectedWallet = value;
+  });
+
+  let selectedChain: string = "";
+  chain.subscribe((value) => {
+    selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
 
   let userInfo = {};
   user.subscribe((value) => {
@@ -114,9 +130,60 @@
               picture: User,
             })
         );
+        getListAddress(data.publicAddress);
       }
     } catch (e) {
       console.error("error: ", e);
+    }
+  };
+
+  const getListAddress = async (publicAddress) => {
+    try {
+      const response: any = await nimbus.get("/accounts/list");
+      if (response && response?.data) {
+        const structWalletData = response?.data.map((item) => {
+          return {
+            id: item.id,
+            type: item.type,
+            label: item.label,
+            value: item.accountId,
+            logo: item.logo,
+          };
+        });
+
+        if (structWalletData && structWalletData.length === 0) {
+          handleAddAccount(publicAddress);
+        }
+      }
+    } catch (e) {
+      console.error("e: ", e);
+    }
+  };
+
+  // Add DEX address account
+  const handleAddAccount = async (publicAddress) => {
+    try {
+      await nimbus.post("/accounts", {
+        type: "DEX",
+        publicAddress: publicAddress,
+        accountId: publicAddress,
+        label: "My address",
+      });
+
+      chain.update((n) => (n = "ALL"));
+      wallet.update((n) => (n = publicAddress));
+      typeWallet.update((n) => (n = "DEX"));
+
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
+      );
+
+      mixpanel.track("user_add_address");
+    } catch (e) {
+      console.error(e);
     }
   };
 </script>
@@ -131,12 +198,12 @@
     </div>
     {#if showPopover}
       <div
-        class="bg-white py-2 px-3 text-sm rounded-lg absolute xl:-bottom-10 -bottom-15 left-1/2 transform -translate-x-1/2 flex flex-col gap-1 xl:w-[80px] w-max z-50"
+        class="bg-white py-2 px-3 text-sm rounded-lg absolute xl:-bottom-17 -bottom-14 left-1/2 transform -translate-x-1/2 flex flex-col gap-1 xl:w-[80px] w-max z-50"
         style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
       >
-        <!-- {#if APP_TYPE.TYPE === "EXT"}
-          <div
-            class="text-black cursor-pointer"
+        {#if APP_TYPE.TYPE === "EXT"}
+          <!-- <div
+            class="text-gray-500 cursor-pointer"
             on:click={() => {
               browser.tabs.create({
                 url: "src/entries/options/index.html?tab=nft",
@@ -145,9 +212,19 @@
             }}
           >
             Dashboard
+          </div> -->
+          <div
+            class="text-gray-500 cursor-pointer xl:block hidden"
+            on:click={() => {
+              browser.tabs.create({
+                url: "src/entries/options/index.html?tab=wallets",
+              });
+            }}
+          >
+            Settings
           </div>
         {:else}
-          <a
+          <!-- <a
             class="text-gray-500 cursor-pointer"
             href="/entries/options/index.html?tab=nft"
             target="_blank"
@@ -156,8 +233,15 @@
             }}
           >
             My NFT
+          </a> -->
+          <a
+            href="entries/options/index.html?tab=wallets"
+            target="_blank"
+            class="text-gray-500 cursor-pointer xl:block hidden"
+          >
+            Settings
           </a>
-        {/if} -->
+        {/if}
         <div
           class="font-medium text-red-500 cursor-pointer xl:text-sm text-2xl"
           on:click={handleSignOut}
@@ -176,4 +260,5 @@
   </div>
 {/if}
 
-<style></style>
+<style windi:preflights:global windi:safelist:global>
+</style>

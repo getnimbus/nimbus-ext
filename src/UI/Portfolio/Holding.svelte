@@ -15,6 +15,12 @@
   export let selectedWallet;
 
   import Select from "~/components/Select.svelte";
+  import HoldingToken from "~/components/HoldingToken.svelte";
+  import HoldingNFT from "~/components/HoldingNFT.svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import "~/components/Loading.custom.svelte";
 
   let filteredHoldingToken = true;
   let filteredHoldingDataToken = [];
@@ -23,6 +29,7 @@
   let formatData = [];
   let formatDataNFT = [];
   let sumTokens = 0;
+  let sumAllTokens = 0;
   let sumNFT = 0;
   let tableTokenHeader;
   let isStickyTableToken = false;
@@ -43,13 +50,6 @@
     label: "",
     value: "",
   };
-
-  import HoldingToken from "~/components/HoldingToken.svelte";
-  import HoldingNFT from "~/components/HoldingNFT.svelte";
-  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import TooltipTitle from "~/components/TooltipTitle.svelte";
-  import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import "~/components/Loading.custom.svelte";
 
   const MultipleLang = {
     holding: i18n("newtabPage.holding", "Holding"),
@@ -132,6 +132,10 @@
         });
         filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
         sumTokens = data.reduce((prev, item) => prev + item.value, 0);
+        sumAllTokens = holdingTokenData.reduce(
+          (prev, item) => prev + item.value,
+          0
+        );
       }
     }
     if (holdingNFTData) {
@@ -173,6 +177,10 @@
       formatData = formatDataWithMarketPrice;
       filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
       sumTokens = formatDataWithMarketPrice.reduce(
+        (prev, item) => prev + item.value,
+        0
+      );
+      sumAllTokens = formatDataWithMarketPrice.reduce(
         (prev, item) => prev + item.value,
         0
       );
@@ -231,6 +239,7 @@
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
         sumTokens = 0;
+        sumAllTokens = 0;
         sumNFT = 0;
         formatData = [];
         formatDataNFT = [];
@@ -405,7 +414,7 @@
                     <HoldingToken
                       data={holding}
                       {selectedWallet}
-                      sumTokenHolding={sumTokens}
+                      {sumAllTokens}
                     />
                   {/each}
                 {/if}

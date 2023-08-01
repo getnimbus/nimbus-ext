@@ -23,8 +23,6 @@
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
 
-  import type { AddressData } from "~/types/AddressData";
-
   import "~/components/Loading.custom.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
@@ -154,6 +152,7 @@
   let isScrollStart = true;
   let isScrollEnd = false;
   let container;
+  let isLoadingConnectCEX = false;
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -402,6 +401,7 @@
   const onSubmitCEX = () => {
     const evmToken = localStorage.getItem("evm_token");
     if (evmToken) {
+      isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
         clientId: "6st9c6s816su37qe8ld1d5iiq2",
         authEndpoint: "https://api.getnimbus.io/auth/vezgo",
@@ -421,6 +421,8 @@
             typeWallet.update((n) => (n = "CEX"));
 
             getListAddress();
+            isLoadingConnectCEX = false;
+            isOpenAddModal = false;
 
             toastMsg = "Successfully add CEX account!";
             isSuccessToast = true;
@@ -430,6 +432,8 @@
           .onError(function (error) {
             console.error("connection vezgo error", error);
             getListAddress();
+            isLoadingConnectCEX = false;
+            isOpenAddModal = false;
             toastMsg =
               "Something wrong when add CEX account. Please try again!";
             isSuccessToast = false;
@@ -475,7 +479,7 @@
       ...item,
       logo:
         item.type === "DEX"
-          ? getAddressContext(item.value).type === "EVM"
+          ? getAddressContext(item.value)?.type === "EVM"
             ? EthereumLogo
             : BitcoinLogo
           : item.logo,
@@ -570,10 +574,20 @@
     }
   }
 
-  $: isDisabled = APP_TYPE.TYPE !== "EXT" && listAddress.length === 5;
+  $: conditionAdd =
+    localStorage.getItem("isGetUserEmailYet") !== null &&
+    localStorage.getItem("isGetUserEmailYet") === "true"
+      ? 10
+      : 5;
+
+  $: isDisabled =
+    APP_TYPE.TYPE !== "EXT" && listAddress.length === conditionAdd;
+
+  $: isDisabled && localStorage.setItem("isGetUserEmailYet", "false");
 
   $: {
-    if (Object.keys(userInfo).length !== 0) {
+    const evmToken = localStorage.getItem("evm_token");
+    if (Object.keys(userInfo).length !== 0 && evmToken) {
       getListAddress();
     } else {
       formatListAddress = [];
@@ -632,7 +646,7 @@
                     class="absolute transform -translate-x-1/2 -top-8 left-1/2"
                     style="z-index: 2147483648;"
                   >
-                    <tooltip-detail text={"Login to add account"} />
+                    <tooltip-detail text={"Connect wallet to add account"} />
                   </div>
                 {/if}
               </div>
@@ -852,12 +866,15 @@
                 >
                   {#if isDisabled || Object.keys(userInfo).length === 0}
                     <div>
-                      {#if localStorage.getItem("isGetUserEmailYet") === null}
+                      {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
                         <Button
                           variant="tertiary"
                           on:click={() => {
                             if (
-                              localStorage.getItem("isGetUserEmailYet") === null
+                              localStorage.getItem("isGetUserEmailYet") !==
+                                null &&
+                              localStorage.getItem("isGetUserEmailYet") ===
+                                "false"
                             ) {
                               isOpenModal = true;
                             }
@@ -911,7 +928,7 @@
                         text={`${
                           isDisabled || Object.keys(userInfo).length !== 0
                             ? "Install our extension to add more wallet"
-                            : "Login to add account"
+                            : "Connect wallet to add account"
                         }`}
                       />
                     </div>
@@ -1046,10 +1063,8 @@
     <div class="flex justify-center">
       <Button
         variant="tertiary"
-        on:click={() => {
-          onSubmitCEX();
-          isOpenAddModal = false;
-        }}
+        isLoading={isLoadingConnectCEX}
+        on:click={onSubmitCEX}
       >
         <div class="xl:text-base text-2xl font-medium text-white">
           Connect CEX
