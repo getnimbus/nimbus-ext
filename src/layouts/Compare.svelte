@@ -209,7 +209,7 @@
   const getPersonalizeTag = async () => {
     try {
       const response = await nimbus.get(
-        `/address/${selectedWallet}/personalize/tag`,
+        `/address/${selectedWallet}/personalize/tag`
       );
       if (response && response.data) {
         const categoriesData = Object.getOwnPropertyNames(response.data);
@@ -242,14 +242,14 @@
           (unique, o) => {
             if (
               !unique.some(
-                (obj) => obj.label === o.label && obj.value === o.value,
+                (obj) => obj.label === o.label && obj.value === o.value
               )
             ) {
               unique.push(o);
             }
             return unique;
           },
-          [],
+          []
         );
 
         return listCategory;
@@ -263,13 +263,13 @@
     isLoadingDataCompare = true;
     try {
       const response: any = await nimbus.get(
-        `/v2/analysis/${selectedWallet}/compare?compareAddress=${searchCompare}`,
+        `/v2/analysis/${selectedWallet}/compare?compareAddress=${searchCompare}`
       );
       if (response && response.data) {
         compareData = response.data;
 
         const formatListSuggestion = Object.keys(
-          response?.data?.base?.suggestion,
+          response?.data?.base?.suggestion
         ).map((item) => {
           let name = "";
           switch (item) {
@@ -311,7 +311,7 @@
         // pie chart format data Token holding
         const sumToken = (formatData || []).reduce(
           (prev, item) => prev + Number(item.value),
-          0,
+          0
         );
 
         const sortBreakdownToken = formatData.sort((a, b) => {
@@ -337,12 +337,12 @@
 
         const orderBreakdownToken = sortBreakdownToken.slice(
           5,
-          sortBreakdownToken.length,
+          sortBreakdownToken.length
         );
 
         const sumOrderBreakdownToken = (orderBreakdownToken || []).reduce(
           (prev, item) => prev + Number(item.value),
-          0,
+          0
         );
 
         const dataPieChartOrderBreakdownToken = [
@@ -372,7 +372,7 @@
               name_balance: "Balance",
               value_balance: Number(item.balance),
             };
-          },
+          }
         );
 
         const formatDataPie = {
@@ -430,12 +430,6 @@
         handleGetAllData();
         getAnalyticCompare();
       }
-    }
-  }
-
-  $: {
-    if (searchCompare.length !== 0) {
-      getAnalyticCompare();
     }
   }
 
@@ -581,7 +575,7 @@
                   return {
                     value: holdingData.price,
                     timestamp: dayjs(
-                      new Date(holdingData.timestamp * 1000),
+                      new Date(holdingData.timestamp * 1000)
                     ).format("DD/MM/YY"),
                   };
                 })
@@ -598,7 +592,7 @@
                   return {
                     value: holdingData.price,
                     timestamp: dayjs(
-                      new Date(holdingData.timestamp * 1000),
+                      new Date(holdingData.timestamp * 1000)
                     ).format("DD/MM/YY"),
                   };
                 })
@@ -615,7 +609,7 @@
                   return {
                     value: holdingData.networth,
                     timestamp: dayjs(
-                      new Date(holdingData.timestamp * 1000),
+                      new Date(holdingData.timestamp * 1000)
                     ).format("DD/MM/YY"),
                   };
                 })
@@ -632,7 +626,7 @@
                   return {
                     value: holdingData.networth,
                     timestamp: dayjs(
-                      new Date(holdingData.timestamp * 1000),
+                      new Date(holdingData.timestamp * 1000)
                     ).format("DD/MM/YY"),
                   };
                 })
@@ -646,7 +640,7 @@
       const XAxisDataLineChart = formatDataLineChart[0].dataChart.map(
         (item) => {
           return item.timestamp;
-        },
+        }
       );
 
       const legendDataLineChart = formatDataLineChart.map((item) => {
@@ -698,16 +692,22 @@
       Object.keys(compareData).length !== 0 &&
       compareData?.compare
     ) {
-      const tokenHoldingCompare = compareData?.compare?.currentHolding;
-      holdingTokenDataCompare = tokenHoldingCompare;
+      const formatData = compareData?.compare?.currentHolding.map((item) => {
+        return {
+          ...item,
+          amount: Number(item.balance),
+        };
+      });
+
+      holdingTokenDataCompare = formatData;
 
       // pie chart format data Token holding
-      const sumToken = (tokenHoldingCompare || []).reduce(
+      const sumToken = (formatData || []).reduce(
         (prev, item) => prev + Number(item.value),
-        0,
+        0
       );
 
-      const sortBreakdownToken = tokenHoldingCompare.sort((a, b) => {
+      const sortBreakdownToken = formatData.sort((a, b) => {
         if (a.value < b.value) {
           return 1;
         }
@@ -730,12 +730,12 @@
 
       const orderBreakdownToken = sortBreakdownToken.slice(
         5,
-        sortBreakdownToken.length,
+        sortBreakdownToken.length
       );
 
       const sumOrderBreakdownToken = (orderBreakdownToken || []).reduce(
         (prev, item) => prev + Number(item.value),
-        0,
+        0
       );
 
       const dataPieChartOrderBreakdownToken = [
@@ -765,7 +765,7 @@
             name_balance: "Balance",
             value_balance: Number(item.balance),
           };
-        },
+        }
       );
 
       const formatDataPie = {
@@ -842,7 +842,7 @@
           <div
             class="border border-[#0000001a] rounded-[20px] p-6 min-h-[535px]"
           >
-            {#if searchCompare && searchCompare.length !== 0}
+            {#if compareData && Object.keys(compareData).length !== 0 && compareData?.compare}
               <div class="flex flex-col">
                 <div class="flex justify-between items-center">
                   <div class="flex items-end gap-3">

@@ -4,6 +4,7 @@
   import "flowbite/dist/flowbite.css";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Mixpanel from "~/components/Mixpanel.svelte";
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
   import TabWallets from "~/UI/Option/TabWallets.svelte";
   import TabDashboard from "~/UI/Option/TabDashboard.svelte";
@@ -33,28 +34,30 @@
 </script>
 
 <ErrorBoundary>
-  <div
-    class="max-w-[2000px] m-auto w-[100%] h-screen flex gap-1 xl:flex-row flex-col"
-  >
-    <div class="bg-gray-50 xl:w-64 w-full">
-      <SidebarTabs bind:activeTabValue />
-    </div>
-    <div class="flex-1 px-6 py-4">
-      {#if activeTabValue === "wallets"}
-        <TabWallets />
-        <!-- {:else if activeTabValue === "nft"}
+  <Mixpanel>
+    <div
+      class="max-w-[2000px] m-auto w-[100%] h-screen flex gap-1 xl:flex-row flex-col"
+    >
+      <div class="bg-gray-50 xl:w-64 w-full">
+        <SidebarTabs bind:activeTabValue />
+      </div>
+      <div class="flex-1 px-6 py-4">
+        {#if activeTabValue === "wallets"}
+          <TabWallets />
+          <!-- {:else if activeTabValue === "nft"}
         <TabNft /> -->
-      {:else if activeTabValue === "dashboard"}
-        <TabDashboard />
-      {:else if activeTabValue === "highlight"}
-        <TabHighlight />
-      {:else if activeTabValue === "notification"}
-        <TabNotification />
-      {:else if activeTabValue === "settings"}
-        <TabSettings />
-      {/if}
+        {:else if activeTabValue === "dashboard"}
+          <TabDashboard />
+        {:else if activeTabValue === "highlight"}
+          <TabHighlight />
+        {:else if activeTabValue === "notification"}
+          <TabNotification />
+        {:else if activeTabValue === "settings"}
+          <TabSettings />
+        {/if}
+      </div>
     </div>
-  </div>
+  </Mixpanel>
 </ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global>

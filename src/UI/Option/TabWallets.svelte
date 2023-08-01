@@ -115,7 +115,7 @@
   let selectedWallet = {};
   let address = "";
   let label = "";
-
+  let isLoadingEdit = false;
   let isLoadingDelete = false;
   let showDisableAddWallet = false;
 
@@ -336,6 +336,7 @@
 
   // Edit account
   const onSubmitEdit = async (e) => {
+    isLoadingEdit = true;
     try {
       const formData = new FormData(e.target);
 
@@ -354,6 +355,7 @@
         getListAddress();
         e.target.reset();
         isOpenEditModal = false;
+        isLoadingEdit = false;
         toastMsg = "Successfully edit your wallet!";
         isSuccess = true;
         trigger();
@@ -377,18 +379,21 @@
           getListAddress();
           e.target.reset();
           isOpenEditModal = false;
+          isLoadingEdit = false;
           toastMsg = "Successfully edit your wallet!";
           isSuccess = true;
           trigger();
           mixpanel.track("user_edit_address");
         } else {
           console.log("Invalid Form");
+          isLoadingEdit = false;
         }
       }
     } catch (e) {
       console.error(e);
       toastMsg = "Something wrong when edit your wallet. Please try again!";
       isSuccess = false;
+      isLoadingEdit = false;
       trigger();
     }
   };
