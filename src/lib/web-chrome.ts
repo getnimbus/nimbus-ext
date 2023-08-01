@@ -36,7 +36,11 @@ export const storage = {
     },
     async set(input: Record<string, string>) {
       Object.keys(input).forEach(key => {
-        localStorage.setItem(`local_${key}`, JSON.stringify(input[key]));
+        try {
+          localStorage.setItem(`local_${key}`, JSON.stringify(input[key]));
+        } catch (error) {
+
+        }
       })
 
       return true
