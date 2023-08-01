@@ -288,7 +288,7 @@
             id: item.id,
             type: item.type,
             label: item.label,
-            value: item.accountId,
+            value: item.type === "CEX" ? item.id : item.accountId,
             logo: item.logo,
           };
         });
@@ -1060,7 +1060,7 @@
                       >
                     </div>
                   </div>
-                  {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+                  {#if getAddressContext(selectedWallet)?.type !== "BTC" && typeWalletAddress === "DEX"}
                     <Select
                       type="chain"
                       listSelect={chainList}

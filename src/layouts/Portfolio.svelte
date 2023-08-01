@@ -184,21 +184,12 @@
 
   let compareData = {};
   let isLoadingDataCompare = false;
-  let searchCompare = "";
-  let timerSearchDebounce;
 
   let selectedTokenHolding = {
     data: [],
     select: [],
   };
   let selectedDataPieChart = {};
-
-  const debounceSearchCompare = (value) => {
-    clearTimeout(timerSearchDebounce);
-    timerSearchDebounce = setTimeout(() => {
-      searchCompare = value;
-    }, 300);
-  };
 
   const getOverview = async (isReload: boolean = false) => {
     isEmptyDataPie = false;
@@ -575,7 +566,7 @@
     isLoadingDataCompare = true;
     try {
       const response: any = await nimbus.get(
-        `/v2/analysis/${selectedWallet}/compare?compareAddress=${searchCompare}`
+        `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`
       );
       if (response && response.data) {
         compareData = response.data;
@@ -818,57 +809,6 @@
             {dataPieChart}
             {isEmptyDataPie}
           />
-
-          <!-- {#if getAddressContext(selectedWallet)?.type === "EVM"}
-            <div
-              class="flex flex-col gap-4 border border-[#0000001a] rounded-[20px] p-6"
-            >
-              <div class="flex justify-between items-center">
-                <div class="xl:text-2xl text-4xl font-medium text-black">
-                  Compare
-                </div>
-                <div class="flex items-center gap-2">
-                  <div class="xl:text-sm text-lg">Comparing with</div>
-                  <div
-                    class={`w-[400px] border focus:outline-none w-full py-2 px-3 rounded-lg flex justify-between items-center ${
-                      searchCompare ? "bg-[#F0F2F7]" : "bg-white"
-                    }`}
-                  >
-                    <input
-                      on:keyup={({ target: { value } }) =>
-                        debounceSearchCompare(value)}
-                      on:keydown={(event) => {
-                        if (
-                          (event.which == 13 || event.keyCode == 13) &&
-                          searchCompare
-                        ) {
-                          getAnalyticCompare();
-                        }
-                      }}
-                      value={searchCompare}
-                      placeholder={"Search address to compare"}
-                      type="text"
-                      class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] h-7 ${
-                        searchCompare ? "bg-[#F0F2F7]" : ""
-                      }`}
-                    />
-                    {#if searchCompare}
-                      <div
-                        class="cursor-pointer text-xl text-[#5E656B]"
-                        on:click={() => {
-                          searchCompare = "";
-                          getAnalyticCompare();
-                        }}
-                      >
-                        &otimes;
-                      </div>
-                    {/if}
-                  </div>
-                </div>
-              </div>
-              <Compare data={compareData} {isLoadingDataCompare} />
-            </div>
-          {/if} -->
 
           <RiskReturn data={compareData} {isLoadingDataCompare} />
 

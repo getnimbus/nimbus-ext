@@ -261,8 +261,6 @@
       sumTokens = 0;
     }
   }
-
-  $: console.log("typeWalletAddress: ", typeWalletAddress);
 </script>
 
 <div class="flex flex-col gap-6 border border-[#0000001a] rounded-[20px] p-6">

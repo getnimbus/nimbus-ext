@@ -146,7 +146,7 @@
             id: item.id,
             type: item.type,
             label: item.label,
-            value: item.accountId,
+            value: item.type === "CEX" ? item.id : item.accountId,
             logo: item.logo,
           };
         });

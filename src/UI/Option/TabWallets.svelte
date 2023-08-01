@@ -223,7 +223,7 @@
             id: item.id,
             type: item.type,
             label: item.label,
-            address: item.accountId,
+            address: item.type === "CEX" ? item.id : item.accountId,
           };
         });
         listAddress = structWalletData;

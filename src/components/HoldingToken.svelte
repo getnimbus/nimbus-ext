@@ -1,6 +1,6 @@
 <script>
   import { useNavigate } from "svelte-navigator";
-  import { chain } from "~/store";
+  import { chain, typeWallet } from "~/store";
   import { detectedChain, getAddressContext, shorterName } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
@@ -18,6 +18,11 @@
   $: selectedChain = $chain;
 
   const navigate = useNavigate();
+
+  let typeWalletAddress = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
@@ -63,7 +68,7 @@
           height="30"
           class="rounded-full"
         />
-        {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+        {#if getAddressContext(selectedWallet)?.type !== "BTC" && typeWalletAddress === "DEX"}
           <div class="absolute -top-2 -right-1">
             <img
               src={detectedChain(data.chain)}
