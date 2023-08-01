@@ -36,6 +36,7 @@
   import Reload from "~/assets/reload.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
+  import ProgressBar from "~/components/ProgressBar.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -810,6 +811,14 @@
         <div
           class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md"
         >
+          <ProgressBar
+            progress={10}
+            averageText="hello"
+            leftLabel="left"
+            rightLabel="right"
+            tooltipText="hello"
+          />
+
           <Charts
             {handleSelectedTableTokenHolding}
             isLoading={loadingOverview}
