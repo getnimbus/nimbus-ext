@@ -157,7 +157,7 @@
   };
 
   const getSectorGrowth = async (dataPersonalizeTag) => {
-    if (getAddressContext(selectedWallet).type === "EVM") {
+    if (getAddressContext(selectedWallet)?.type === "EVM") {
       isLoadingSectorGrowth = true;
       try {
         const response: AnalyticSectorGrowthRes = await sendMessage(

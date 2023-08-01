@@ -33,14 +33,14 @@
 
 <tr
   class={`group transition-all ${
-    typeWalletAddress === "CEX" &&
+    typeWalletAddress === "DEX" &&
     getAddressContext(selectedWallet)?.type !== "EVM"
       ? "cursor-pointer"
       : ""
   }`}
   on:click={() => {
-    if (typeWalletAddress === "CEX") {
-      if (getAddressContext(selectedWallet).type === "EVM") {
+    if (typeWalletAddress === "DEX") {
+      if (getAddressContext(selectedWallet)?.type === "EVM") {
         return;
       }
       navigate(
@@ -191,7 +191,7 @@
     </div>
   </td>
 
-  {#if typeWalletAddress === "CEX" && getAddressContext(selectedWallet)?.type !== "EVM"}
+  {#if typeWalletAddress === "DEX" && getAddressContext(selectedWallet)?.type !== "EVM"}
     <td class="py-3 w-10 group-hover:bg-gray-100">
       <div class="flex justify-center">
         <div

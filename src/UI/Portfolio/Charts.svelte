@@ -128,7 +128,7 @@
                 data:
                   dataPieChart.token.sumOrderBreakdownToken > 0
                     ? dataPieChart.token.formatDataPieChartTopFiveToken.concat(
-                        dataPieChart.token.dataPieChartOrderBreakdownToken,
+                        dataPieChart.token.dataPieChartOrderBreakdownToken
                       )
                     : dataPieChart.token.formatDataPieChartTopFiveToken,
               },
@@ -144,7 +144,7 @@
                 data:
                   dataPieChart.nft.sumOrderBreakdownNft > 0
                     ? dataPieChart.nft.formatDataPieChartTopFiveNft.concat(
-                        dataPieChart.nft.dataPieChartOrderBreakdownNft,
+                        dataPieChart.nft.dataPieChartOrderBreakdownNft
                       )
                     : dataPieChart.nft.formatDataPieChartTopFiveNft,
               },

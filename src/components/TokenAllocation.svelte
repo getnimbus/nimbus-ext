@@ -204,7 +204,7 @@
   const getPersonalizeTag = async () => {
     try {
       const response = await nimbus.get(
-        `/address/${selectedWallet}/personalize/tag`,
+        `/address/${selectedWallet}/personalize/tag`
       );
       if (response && response.data) {
         const categoriesData = Object.getOwnPropertyNames(response.data);
@@ -234,7 +234,7 @@
   };
 
   onMount(() => {
-    if (selectedOption) {
+    if (selectedOption && Object.keys(selectedOption).length !== 0) {
       selectedType = selectedOption;
     } else {
       selectedType = {
@@ -265,7 +265,7 @@
           dataTokens: flatten(
             item.dataTag
               .filter((item) => item.name !== "Other")
-              .map((item) => item.tokens),
+              .map((item) => item.tokens)
           ),
         };
       });
@@ -274,12 +274,12 @@
         const formatDataTokens = holdingTokenData.map((tokenHolding) => {
           const isSelected = item.dataTokens.some(
             (selectedToken) =>
-              selectedToken.contractAddress === tokenHolding.contractAddress,
+              selectedToken.contractAddress === tokenHolding.contractAddress
           );
 
           const selected = item.dataTokens.filter(
             (selectedToken) =>
-              selectedToken.contractAddress === tokenHolding.contractAddress,
+              selectedToken.contractAddress === tokenHolding.contractAddress
           );
 
           return {
@@ -305,7 +305,7 @@
       tokenDataHolding = {
         value: "All",
         dataPie: dataPieChart.token.formatDataPieChartTopFiveToken.concat(
-          dataPieChart.token.dataPieChartOrderBreakdownToken,
+          dataPieChart.token.dataPieChartOrderBreakdownToken
         ),
         dataTable: {
           data: {
@@ -345,14 +345,14 @@
           (unique, o) => {
             if (
               !unique.some(
-                (obj) => obj.label === o.label && obj.value === o.value,
+                (obj) => obj.label === o.label && obj.value === o.value
               )
             ) {
               unique.push(o);
             }
             return unique;
           },
-          [],
+          []
         );
       }
     }

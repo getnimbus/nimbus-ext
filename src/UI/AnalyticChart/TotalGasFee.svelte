@@ -83,7 +83,7 @@
   };
 
   const getAnalyticHistorical = async () => {
-    if (getAddressContext(selectedWallet).type === "EVM") {
+    if (getAddressContext(selectedWallet)?.type === "EVM") {
       isLoadingChart = true;
       try {
         const response: any[] = await sendMessage("getAnalytic", {

@@ -165,7 +165,7 @@
   };
 
   const getInflowOutflow = async () => {
-    if (getAddressContext(selectedWallet).type === "EVM") {
+    if (getAddressContext(selectedWallet)?.type === "EVM") {
       isLoadingInflowOutflow = true;
       try {
         const response: any = await sendMessage("getInflowOutflow", {

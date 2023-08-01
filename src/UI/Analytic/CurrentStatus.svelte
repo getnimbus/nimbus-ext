@@ -299,7 +299,7 @@
   };
 
   const getHoldingToken = async (isReload: boolean = false) => {
-    if (getAddressContext(selectedWallet).type === "EVM") {
+    if (getAddressContext(selectedWallet)?.type === "EVM") {
       isLoadingDataPie = true;
 
       try {

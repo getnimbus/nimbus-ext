@@ -230,7 +230,7 @@
 
   $: totalAssets = sumTokens + sumNFT;
   $: colspan =
-    typeWalletAddress === "CEX" &&
+    typeWalletAddress === "DEX" &&
     getAddressContext(selectedWallet)?.type !== "EVM"
       ? 8
       : 7;
@@ -261,6 +261,8 @@
       sumTokens = 0;
     }
   }
+
+  $: console.log("typeWalletAddress: ", typeWalletAddress);
 </script>
 
 <div class="flex flex-col gap-6 border border-[#0000001a] rounded-[20px] p-6">
@@ -426,7 +428,7 @@
     </div>
 
     <!-- nft holding table -->
-    {#if typeWalletAddress === "CEX" && getAddressContext(selectedWallet)?.type !== "EVM"}
+    {#if typeWalletAddress === "DEX" && getAddressContext(selectedWallet)?.type !== "EVM"}
       <div class="flex flex-col gap-2">
         <div class="flex justify-between items-center">
           <div class="xl:text-xl text-3xl font-medium text-black">
@@ -511,7 +513,7 @@
                     </TooltipTitle>
                   </div>
                 </th>
-                {#if typeWalletAddress === "CEX" && getAddressContext(selectedWallet)?.type !== "EVM"}
+                {#if typeWalletAddress === "DEX" && getAddressContext(selectedWallet)?.type !== "EVM"}
                   <th class="py-3 w-10 rounded-tr-[10px]" />
                 {/if}
               </tr>
