@@ -980,11 +980,19 @@
                     {/if}
                   </div>
                   <div class="flex items-center gap-4">
-                    <div class="xl:text-base text-xl">
+                    <div class="xl:text-base text-3xl xl:block hidden">
                       <Copy
                         address={selectedWallet}
                         iconColor="#fff"
                         color="#fff"
+                      />
+                    </div>
+                    <div class="xl:text-base text-3xl xl:hidden block">
+                      <Copy
+                        address={selectedWallet}
+                        iconColor="#fff"
+                        color="#fff"
+                        isShorten
                       />
                     </div>
                     <div

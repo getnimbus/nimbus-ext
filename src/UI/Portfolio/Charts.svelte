@@ -2,7 +2,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { i18n } from "~/lib/i18n";
   import { chain, wallet } from "~/store";
-  import { formatCurrency, typePieChart } from "~/utils";
+  import { formatCurrency, getAddressContext, typePieChart } from "~/utils";
 
   export let handleSelectedTableTokenHolding = (data, selectDataPieChart) => {};
   export let holdingTokenData;
@@ -211,7 +211,13 @@
               Empty
             </div>
           {:else}
-            <div class="-mt-14">
+            <div
+              class={`${
+                getAddressContext(selectedWallet)?.type !== "BTC"
+                  ? "-mt-14"
+                  : ""
+              }`}
+            >
               <TokenAllocation
                 {dataPieChart}
                 {holdingTokenData}

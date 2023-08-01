@@ -156,7 +156,7 @@
     try {
       const response: TrxHistoryDataRes = await sendMessage("getTrxHistory", {
         address: selectedWallet,
-        chain: selectedChain,
+        chain: selectedChain === "ALL" ? "ETH" : selectedChain,
         pageToken: page,
       });
       if (selectedWallet === response?.address) {

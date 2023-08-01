@@ -209,18 +209,12 @@
     if (formatData?.length === 0) {
       totalAssets = 0;
       sumTokens = 0;
+      sumNFT = 0;
     } else {
       sumTokens = (formatData || []).reduce(
         (prev, item) => prev + item?.amount * item.market_price,
         0
       );
-    }
-  }
-
-  $: {
-    if (formatDataNFT.length === 0) {
-      sumNFT = 0;
-    } else {
       sumNFT = (formatDataNFT || []).reduce(
         (prev, item) => prev + item?.current_value,
         0
@@ -228,7 +222,8 @@
     }
   }
 
-  $: totalAssets = sumTokens + sumNFT;
+  $: totalAssets = sumNFT + sumTokens;
+
   $: colspan =
     typeWalletAddress === "DEX" &&
     getAddressContext(selectedWallet)?.type !== "EVM"

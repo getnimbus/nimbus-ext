@@ -7,6 +7,7 @@
     typeList,
     handleFormatDataPieChart,
     handleFormatDataTable,
+    getAddressContext,
   } from "~/utils";
   import { flatten, groupBy } from "lodash";
   import { wallet, chain } from "~/store";
@@ -501,16 +502,18 @@
 
 <div class="w-full">
   {#if listOptionTypeCategory && listOptionTypeCategory.length === 0}
-    <div class="flex justify-end mb-5">
-      <Select
-        type="lang"
-        listSelect={listOptionTypeCategory &&
-        listOptionTypeCategory.length !== 0
-          ? listOptionTypeCategory
-          : typeListCategory}
-        bind:selected={selectedType}
-      />
-    </div>
+    {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+      <div class="flex justify-end mb-5">
+        <Select
+          type="lang"
+          listSelect={listOptionTypeCategory &&
+          listOptionTypeCategory.length !== 0
+            ? listOptionTypeCategory
+            : typeListCategory}
+          bind:selected={selectedType}
+        />
+      </div>
+    {/if}
   {/if}
   <EChart {id} theme="white" notMerge={true} option={optionPie} height={465} />
 </div>
