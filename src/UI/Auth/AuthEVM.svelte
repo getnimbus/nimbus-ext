@@ -24,7 +24,7 @@
         (n) =>
           (n = {
             picture: User,
-          }),
+          })
       );
     } else {
       user.update((n) => (n = {}));
@@ -66,7 +66,7 @@
         const ethersProvider = new ethers.BrowserProvider(provider, "any");
         const signer = await ethersProvider?.getSigner();
         const signature = await signer.signMessage(
-          `I am signing my one-time nonce: ${signatureString}`,
+          `I am signing my one-time nonce: ${signatureString}`
         );
         if (signature) {
           return signature;
@@ -87,7 +87,7 @@
       if (res && res.data) {
         const signatureString = await handleSignAddressMessage(
           provider,
-          res.data.nonce,
+          res.data.nonce
         );
         if (signatureString) {
           const payload = {
@@ -112,7 +112,7 @@
           (n) =>
             (n = {
               picture: User,
-            }),
+            })
         );
       }
     } catch (e) {
@@ -124,7 +124,7 @@
 {#if Object.keys(userInfo).length !== 0}
   <div class="relative">
     <div
-      class="xl:w-[50px] xl:h-[50px] w-16 h-16 rounded-full overflow-hidden cursor-pointer"
+      class="xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden cursor-pointer"
       on:click={() => (showPopover = !showPopover)}
     >
       <img src={userInfo.picture} alt="" class="object-cover w-full h-full" />
@@ -172,7 +172,7 @@
     on:click={connect}
     class="font-semibold text-white cursor-pointer xl:text-base text-2xl"
   >
-    Login
+    Connect Wallet
   </div>
 {/if}
 

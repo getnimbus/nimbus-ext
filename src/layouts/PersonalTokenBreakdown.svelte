@@ -531,7 +531,7 @@
           <div class="flex flex-col gap-3">
             <div class="flex items-center gap-2 text-white">
               <div class="xl:text-5xl text-7xl font-semibold">
-                Personal Token Breakdown
+                Custom Token Breakdown
               </div>
             </div>
             {#if selectedWallet && selectedWallet.length !== 0}
@@ -996,7 +996,7 @@
                           class="text-right xl:text-xs text-base uppercase font-semibold text-black"
                         >
                           <TooltipTitle
-                            tooltipText="Ratio based on token holding"
+                            tooltipText="Ratio based on total token holding"
                           >
                             Ratio
                           </TooltipTitle>

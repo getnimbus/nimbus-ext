@@ -217,7 +217,7 @@
     }}
     class="text-sm font-semibold text-white cursor-pointer xl:text-base"
   >
-    Login
+    Connect Wallet
   </div>
 {/if}
 

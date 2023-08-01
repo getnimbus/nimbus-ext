@@ -84,7 +84,7 @@
           <div
             class="text-right xl:text-xs text-base uppercase font-semibold text-black"
           >
-            <TooltipTitle tooltipText="Ratio based on token holding">
+            <TooltipTitle tooltipText="Ratio based on total token holding">
               Ratio
             </TooltipTitle>
           </div>

@@ -77,7 +77,7 @@
 <div class="flex flex-col gap-5">
   <div class="flex justify-between items-center">
     <div class="xl:text-2xl text-4xl font-medium text-black">
-      Past Performance
+      Historical Activities
     </div>
     <!-- <DateRangePicker onChange={handleGetDateRange} /> -->
   </div>
