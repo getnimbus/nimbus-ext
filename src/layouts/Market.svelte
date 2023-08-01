@@ -137,7 +137,7 @@
                 1Y
               </div>
             </th>
-            <th class="pr-3 py-3">
+            <th class="py-3">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
@@ -145,11 +145,11 @@
                   tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
                   isBigIcon
                 >
-                  Volatility 30D
+                  Volatility
                 </TooltipTitle>
               </div>
             </th>
-            <th class="pr-3 py-3">
+            <th class="py-3">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
@@ -157,11 +157,11 @@
                   tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
                   isBigIcon
                 >
-                  Max drawdown 30D
+                  Max drawdown
                 </TooltipTitle>
               </div>
             </th>
-            <th class="pr-3 py-3">
+            <th class="py-3">
               <div
                 class="text-right xl:text-xs text-base uppercase font-semibold text-black"
               >
@@ -169,7 +169,7 @@
                   tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
                   isBigIcon
                 >
-                  Sharpe ratio 30D
+                  Sharpe ratio
                 </TooltipTitle>
               </div>
             </th>
