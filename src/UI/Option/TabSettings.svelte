@@ -53,7 +53,12 @@
     <div class="xl:title-5 title-3">
       {MultipleLang.change_lang_label}
     </div>
-    <Select type="lang" listSelect={langs} bind:selected={selectedLang} />
+    <Select
+      type="lang"
+      positionSelectList="left-0"
+      listSelect={langs}
+      bind:selected={selectedLang}
+    />
   </div>
 </div>
 

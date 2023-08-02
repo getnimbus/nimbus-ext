@@ -6,6 +6,7 @@
   export let listSelect;
   export let selected;
   export let type: "chain" | "wallet" | "lang";
+  export let positionSelectList;
 
   let open = false;
 
@@ -61,9 +62,7 @@
 
   {#if open}
     <div
-      class={`content xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] xl:max-h-[310px] max-h-[380px] w-[300px] min-w-[300px] mt-2 ${
-        type === "lang" ? "left-0" : "right-0"
-      }`}
+      class={`content xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] xl:max-h-[310px] max-h-[380px] w-[300px] min-w-[300px] mt-2 ${positionSelectList}`}
     >
       {#each listSelect as item}
         <div

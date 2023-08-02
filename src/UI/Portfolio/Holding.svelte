@@ -282,6 +282,7 @@
           {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
             <Select
               type="lang"
+              positionSelectList="left-0"
               listSelect={selectedTokenHolding?.select || []}
               bind:selected={selectedTypeTable}
             />

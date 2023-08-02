@@ -506,6 +506,7 @@
       <div class="flex justify-end mb-5">
         <Select
           type="lang"
+          positionSelectList="right-0"
           listSelect={listOptionTypeCategory &&
           listOptionTypeCategory.length !== 0
             ? listOptionTypeCategory

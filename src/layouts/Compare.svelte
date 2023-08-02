@@ -76,11 +76,11 @@
   };
   let isEmptyDataPie = false;
   let isLoading = false;
-  let showCompareTable = true;
+  let showCompareTable = false;
 
   let compareData = {};
   let isLoadingDataCompare = false;
-  let searchCompare = "0x39d787fdf7384597c7208644dbb6fda1cca4ebdf";
+  let searchCompare = "";
 
   let holdingTokenDataCompare: TokenData = [];
   let dataPieChartCompare = {
@@ -799,6 +799,7 @@
       <div class="flex justify-start">
         <Select
           type="lang"
+          positionSelectList="left-0"
           listSelect={typeListCategory}
           bind:selected={selectedType}
         />

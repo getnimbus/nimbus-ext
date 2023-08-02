@@ -733,6 +733,7 @@
                         </AnimateSharedLayout>
                         <Select
                           type="wallet"
+                          positionSelectList="right-0"
                           listSelect={formatListAddress.slice(
                             5,
                             formatListAddress.length
@@ -1071,6 +1072,7 @@
                   {#if getAddressContext(selectedWallet)?.type !== "BTC" && typeWalletAddress === "DEX"}
                     <Select
                       type="chain"
+                      positionSelectList="right-0"
                       listSelect={chainList}
                       bind:selected={selectedChain}
                     />
