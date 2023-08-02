@@ -22,6 +22,7 @@
 
   import LeftArrow from "~/assets/left-arrow.svg";
   import Logo from "~/assets/logo-1.svg";
+  import { getChangePercent } from "~/chart-utils";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -159,7 +160,7 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                ${params[0].axisValue}
+                ${dayjs(params[0].axisValue).format("DD/MM/YYYY")}
               </div>
               ${params
                 .map((item) => {
@@ -172,9 +173,9 @@
 
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
+                      item.data[1] >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      $${formatCurrency(Math.abs(item.value))}
+                      ${item.data[1]}%
                     </div>
                   </div>
                 </div>
@@ -197,14 +198,14 @@
       containLabel: true,
     },
     xAxis: {
-      type: "category",
-      boundaryGap: false,
-      data: [],
+      type: "time",
+      // boundaryGap: false,
+      // data: [],
     },
     yAxis: {
       type: "value",
       axisLabel: {
-        formatter: "${value}",
+        formatter: "${value}%",
       },
     },
     series: [],
@@ -568,22 +569,23 @@
           dataChart: [],
         };
 
+        const basePoint = compareData[item]?.holdingHistory?.[0];
+
         switch (item) {
           case "btc":
             formatData = {
               name: "Bitcoin",
               color: "#f7931a",
               type: "dashed",
-              dataChart: compareData[item]?.holdingHistory
-                .map((holdingData) => {
+              dataChart: compareData[item]?.holdingHistory.map(
+                (holdingData) => {
                   return {
-                    value: holdingData.price,
-                    timestamp: dayjs(
-                      new Date(holdingData.timestamp * 1000)
-                    ).format("DD/MM/YY"),
+                    value: getChangePercent(holdingData.price, basePoint.price),
+                    timestamp: holdingData.timestamp * 1000,
                   };
-                })
-                .slice(1, -1),
+                }
+              ),
+              // .slice(1, -1),
             };
             break;
           case "eth":
@@ -591,16 +593,15 @@
               name: "Ethereum",
               color: "#547fef",
               type: "dashed",
-              dataChart: compareData[item]?.holdingHistory
-                .map((holdingData) => {
+              dataChart: compareData[item]?.holdingHistory.map(
+                (holdingData) => {
                   return {
-                    value: holdingData.price,
-                    timestamp: dayjs(
-                      new Date(holdingData.timestamp * 1000)
-                    ).format("DD/MM/YY"),
+                    value: getChangePercent(holdingData.price, basePoint.price),
+                    timestamp: holdingData.timestamp * 1000,
                   };
-                })
-                .slice(1, -1),
+                }
+              ),
+              // .slice(1, -1),
             };
             break;
           case "base":
@@ -608,16 +609,18 @@
               name: "This wallet",
               color: "#00b580",
               type: "solid",
-              dataChart: compareData[item]?.holdingHistory
-                .map((holdingData) => {
+              dataChart: compareData[item]?.holdingHistory.map(
+                (holdingData) => {
                   return {
-                    value: holdingData.networth,
-                    timestamp: dayjs(
-                      new Date(holdingData.timestamp * 1000)
-                    ).format("DD/MM/YY"),
+                    value: getChangePercent(
+                      holdingData.networth,
+                      basePoint.networth
+                    ),
+                    timestamp: holdingData.timestamp * 1000,
                   };
-                })
-                .slice(0, -2),
+                }
+              ),
+              // .slice(0, -2),
             };
             break;
           case "compare":
@@ -625,16 +628,18 @@
               name: "Compare wallet",
               color: "rgba(178,184,255,1)",
               type: "solid",
-              dataChart: compareData[item]?.holdingHistory
-                .map((holdingData) => {
+              dataChart: compareData[item]?.holdingHistory.map(
+                (holdingData) => {
                   return {
-                    value: holdingData.networth,
-                    timestamp: dayjs(
-                      new Date(holdingData.timestamp * 1000)
-                    ).format("DD/MM/YY"),
+                    value: getChangePercent(
+                      holdingData.networth,
+                      basePoint.networth
+                    ),
+                    timestamp: holdingData.timestamp * 1000,
                   };
-                })
-                .slice(0, -2),
+                }
+              ),
+              // .slice(0, -2),
             };
             break;
         }
@@ -664,16 +669,24 @@
             type: item.type,
             color: item.color,
           },
+          itemStyle: {
+            color: item.color,
+          },
           data: item.dataChart.map((eachDataCustom) => {
-            return {
-              value: eachDataCustom.value,
-              itemStyle: {
-                color: item.color,
-              },
-            };
+            return [eachDataCustom.timestamp, eachDataCustom.value];
           }),
+          // data: item.dataChart.map((eachDataCustom) => {
+          //   return {
+          //     value: eachDataCustom.value,
+          //     itemStyle: {
+          //       color: item.color,
+          //     },
+          //   };
+          // }),
         };
       });
+
+      // console.log(formatDataLineChart);
 
       optionLine = {
         ...optionLine,
@@ -1016,7 +1029,7 @@
     </div>
 
     <div class="border border-[#0000001a] rounded-[20px] p-6">
-      <div class="pl-4 xl:text-2xl text-4xl font-medium text-black mb-3">
+      <div class="xl:text-2xl text-4xl font-medium text-black mb-3">
         Performance
       </div>
       {#if isLoadingDataCompare}
