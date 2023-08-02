@@ -772,20 +772,22 @@
         {/if}
       </div>
       <div class="flex-1">
-        <Button
-          variant="tertiary"
-          on:click={() => {
-            navigate(
-              `/personal-token-breakdown?chain=${encodeURIComponent(
-                selectedChain
-              )}&address=${encodeURIComponent(selectedWallet)}`
-            );
-          }}
-        >
-          <div class="xl:text-base text-2xl font-medium text-white">
-            Custom category
-          </div>
-        </Button>
+        <div class="w-max">
+          <Button
+            variant="tertiary"
+            on:click={() => {
+              navigate(
+                `/personal-token-breakdown?chain=${encodeURIComponent(
+                  selectedChain
+                )}&address=${encodeURIComponent(selectedWallet)}`
+              );
+            }}
+          >
+            <div class="xl:text-base text-2xl font-medium text-white">
+              Custom category
+            </div>
+          </Button>
+        </div>
       </div>
     </div>
 
