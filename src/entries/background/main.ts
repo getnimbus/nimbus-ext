@@ -270,7 +270,7 @@ onMessage<IAddressInput, any>("getNews", async ({ data: { address, chain, reload
 
 onMessage<IAddressInput, any>("getTrxHistory", async ({ data: { address, chain, pageToken } }) => {
   try {
-    const res = await nimbus.get(`/address/${address}/history?chain=${chain}&pageToken=${pageToken}`).then((response) => {
+    const res = await nimbus.get(`/v2/address/${address}/history?chain=${chain}&pageToken=${pageToken}`).then((response) => {
       return {
         result: response.data,
         address: address
