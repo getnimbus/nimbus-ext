@@ -826,7 +826,7 @@
           </Button>
         </div>
       </div>
-      <div class="flex justify-center items-center gap-6">
+      <div class="flex justify-center items-center gap-6 my-3">
         {#each listLogoCEX as logo}
           <div
             class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
@@ -844,7 +844,7 @@
         Or
       </div>
     </div>
-    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3">
+    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-2">
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -853,13 +853,13 @@
           class:input-border-error={errors.address && errors.address.required}
         >
           <div class="xl:text-base text-xl text-[#666666] font-medium">
-            {MultipleLang.content.modal_address_label}
+            Address
           </div>
           <input
             type="text"
             id="address"
             name="address"
-            placeholder={MultipleLang.content.modal_address_label}
+            placeholder="Your wallet address"
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
               address ? "bg-[#F0F2F7]" : ""
@@ -903,7 +903,7 @@
           </div>
         {/if}
       </div>
-      <div class="flex justify-center items-center gap-6">
+      <div class="flex justify-center items-center gap-6 my-3">
         {#each chainList.slice(0, -1) as item}
           <div
             class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
