@@ -2059,6 +2059,18 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
+"@tanstack/query-core@4.32.1":
+  version "4.32.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.32.1.tgz#6e364c33433b61f4dcef003725d4208e42b23860"
+  integrity sha512-VEAGHboOFWN/bvf/7cCoeLQfld0AA8n0V/kfc77W+FvxnnSwJufEh6gfjqpX5bRE/DEYfYDYdNtuL3KM+lIs8Q==
+
+"@tanstack/svelte-query@^4.32.1":
+  version "4.32.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/svelte-query/-/svelte-query-4.32.1.tgz#2c34b394ae914d8a7574c0355ff1e94330eb3f36"
+  integrity sha512-sJQ1irGY4mz5izkzgVHbdqYRRzmZ3it2Yylt6eN65gYvLpZyBjPvC9Bz8G29pcdXfyGTNrW3LLeEvZ9hYmzQ3Q==
+  dependencies:
+    "@tanstack/query-core" "4.32.1"
+
 "@toruslabs/base-controllers@^2.8.0":
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/@toruslabs/base-controllers/-/base-controllers-2.9.0.tgz#e23f4228b5a90bf94ba9b0b27451f3024bd1acc4"
