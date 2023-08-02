@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { sendMessage } from "webext-bridge";
   import * as browser from "webextension-polyfill";
   import { wallet, chain, typeWallet, user } from "~/store";
   import { i18n } from "~/lib/i18n";
@@ -9,7 +8,12 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { chainList, getAddressContext } from "~/utils";
+  import {
+    chainList,
+    getAddressContext,
+    listLogoCEX,
+    listProviderCEX,
+  } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import CopyToClipboard from "svelte-copy-to-clipboard";
@@ -36,10 +40,10 @@
   import FollowWhale from "~/assets/whale-tracking.gif";
 
   const MultipleLang = {
-    empty_wallet: i18n("newtabPage.empty-wallet", "No wallet added yet."),
+    empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
     addwallet: i18n(
       "newtabPage.addwallet",
-      "Add your wallet to keep track of your investments."
+      "Add your account to keep track of your investments."
     ),
     content: {
       btn_text: i18n(
@@ -64,15 +68,15 @@
       ),
       modal_add_title: i18n(
         "optionsPage.accounts-page-content.modal-add-title",
-        "Add Your Wallet"
+        "Add your account"
       ),
       modal_add_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-add-sub-title",
-        "Add your wallet will give you more option to see the information at page new tab"
+        "Add your account will give you more option to see the information at page new tab"
       ),
       address_required: i18n(
         "optionsPage.accounts-page-content.address-required",
-        "Address is required"
+        "Account is required"
       ),
       label_required: i18n(
         "optionsPage.accounts-page-content.label-required",
@@ -80,11 +84,11 @@
       ),
       re_input_address: i18n(
         "optionsPage.accounts-page-content.re-input-address",
-        "Please enter your wallet address again!"
+        "Please enter your account again!"
       ),
       duplicate_address: i18n(
         "optionsPage.accounts-page-content.duplicate-address",
-        "This wallet address is duplicated!"
+        "This account is duplicated!"
       ),
     },
   };
@@ -413,38 +417,7 @@
       if (userVezgo) {
         userVezgo
           .connect({
-            providers: [
-              "binance",
-              "binanceus",
-              "bitfinex",
-              "bittrex",
-              "bitvavo",
-              "blockchaincom",
-              "coinbasepro",
-              "coindcx",
-              "coinspot",
-              "cointracking",
-              "cryptocom",
-              "gateio",
-              "gemini",
-              "kraken",
-              "kucoin",
-              "ndax",
-              "newton",
-              "poloniex",
-              "wazirx",
-              "bitmart",
-              "bybit",
-              "huobi",
-              "mexc",
-              "okx",
-              "wavesexchange",
-              "bitrue",
-              "ascendex",
-              "bitso",
-              "upbit",
-              "bitstamp",
-            ],
+            providers: listProviderCEX,
           })
           .onConnection(async function (account) {
             await nimbus.get("/accounts/sync");
@@ -1103,16 +1076,30 @@
     {MultipleLang.content.modal_add_title}
   </div>
   <div class="flex flex-col mt-4 gap-7">
-    <div class="flex justify-center">
-      <Button
-        variant="tertiary"
-        isLoading={isLoadingConnectCEX}
-        on:click={onSubmitCEX}
-      >
-        <div class="xl:text-base text-2xl font-medium text-white">
-          Connect CEX
+    <div class="flex flex-col gap-3">
+      <div class="flex justify-center">
+        <div class="w-max">
+          <Button
+            variant="tertiary"
+            isLoading={isLoadingConnectCEX}
+            on:click={onSubmitCEX}
+          >
+            <div class="xl:text-base text-2xl font-medium text-white">
+              Connect Exchange
+            </div>
+          </Button>
         </div>
-      </Button>
+      </div>
+      <div class="flex justify-center items-center gap-6">
+        {#each listLogoCEX as logo}
+          <div
+            class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
+          >
+            <img src={logo} alt="" class="w-full h-full object-contain" />
+          </div>
+        {/each}
+        <div class="text-gray-400">+22 More</div>
+      </div>
     </div>
     <div class="border-t-[1px] relative">
       <div
@@ -1180,7 +1167,17 @@
           </div>
         {/if}
       </div>
-      <div class="flex justify-end gap-2">
+      <div class="flex justify-center items-center gap-6">
+        {#each chainList.slice(0, -1) as item}
+          <div
+            class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
+          >
+            <img src={item.logo} alt="" class="w-full h-full object-contain" />
+          </div>
+        {/each}
+        <div class="text-gray-400">More soon</div>
+      </div>
+      <div class="flex justify-end lg:gap-2 gap-6">
         <div class="lg:w-[120px] w-full">
           <Button
             variant="secondary"
@@ -1193,7 +1190,7 @@
           >
         </div>
         <div class="lg:w-[120px] w-full">
-          <Button type="submit">
+          <Button type="submit" variant="tertiary">
             {MultipleLang.content.modal_add}</Button
           >
         </div>

@@ -177,17 +177,11 @@
     }
   }
 
-  .tertiary {
-    color: #fff;
-    border: none;
-    width: max-content;
-    height: max-content;
-    padding: 8px 16px;
-  }
   .tertiary[type="submit"],
   .tertiary[type="button"] {
     color: #fff;
     background: #1e96fc;
+    border: 1px solid #1e96fc;
   }
 
   .delete {

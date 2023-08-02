@@ -3,7 +3,12 @@
   import * as browser from "webextension-polyfill";
   import { i18n } from "~/lib/i18n";
   import { dndzone } from "svelte-dnd-action";
-  import { getAddressContext } from "~/utils";
+  import {
+    getAddressContext,
+    listLogoCEX,
+    listProviderCEX,
+    chainList,
+  } from "~/utils";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { wallet, chain, typeWallet } from "~/store";
@@ -24,11 +29,11 @@
     content: {
       btn_text: i18n(
         "optionsPage.accounts-page-content.address-btn-text",
-        "Add Wallet"
+        "Add Account"
       ),
       address_header_table: i18n(
         "optionsPage.accounts-page-content.address-header-table",
-        "Wallet"
+        "Account"
       ),
       label_header_table: i18n(
         "optionsPage.accounts-page-content.label-header-table",
@@ -53,7 +58,7 @@
       ),
       modal_address_label: i18n(
         "optionsPage.accounts-page-content.modal-address-label",
-        "Wallet"
+        "Account"
       ),
       modal_label_label: i18n(
         "optionsPage.accounts-page-content.modal-label-label",
@@ -61,11 +66,11 @@
       ),
       modal_add_title: i18n(
         "optionsPage.accounts-page-content.modal-add-title",
-        "Add your wallet"
+        "Add your account"
       ),
       modal_add_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-add-sub-title",
-        "Add your wallet will give you more option to see the information at page new tab"
+        "Add your account will give you more option to see the information at page new tab"
       ),
       modal_delete_title: i18n(
         "optionsPage.accounts-page-content.modal-delete-title",
@@ -73,19 +78,19 @@
       ),
       modal_delete_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-delete-sub-title",
-        "Do you really want to delete this wallet? This process cannot revert"
+        "Do you really want to delete this account? This process cannot revert"
       ),
       modal_edit_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-title",
-        "Edit your wallet"
+        "Edit your account"
       ),
       modal_edit_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-sub-title",
-        "Edit your wallet will make change the information at page new tab"
+        "Edit your account will make change the information at page new tab"
       ),
       address_required: i18n(
         "optionsPage.accounts-page-content.address-required",
-        "Address is required"
+        "Account is required"
       ),
       label_required: i18n(
         "optionsPage.accounts-page-content.label-required",
@@ -93,11 +98,11 @@
       ),
       re_input_address: i18n(
         "optionsPage.accounts-page-content.re-input-address",
-        "Please enter your wallet address again!"
+        "Please enter your account again!"
       ),
       duplicate_address: i18n(
         "optionsPage.accounts-page-content.duplicate-address",
-        "This wallet address is duplicated!"
+        "This account is duplicated!"
       ),
     },
   };
@@ -313,7 +318,9 @@
       const userVezgo = vezgo.login();
       if (userVezgo) {
         userVezgo
-          .connect()
+          .connect({
+            providers: listProviderCEX,
+          })
           .onConnection(async function (account) {
             await nimbus.get("/accounts/sync");
             getListAddress();
@@ -776,8 +783,8 @@
         </div>
       {/if}
     </div>
-    <div class="flex justify-end gap-2">
-      <div class="lg:w-[100px] w-full">
+    <div class="flex justify-end lg:gap-2 gap-6">
+      <div class="lg:w-[120px] w-full">
         <Button
           variant="secondary"
           on:click={() => {
@@ -788,8 +795,8 @@
           {MultipleLang.content.modal_cancel}</Button
         >
       </div>
-      <div class="lg:w-[100px] w-full">
-        <Button type="submit">
+      <div class="lg:w-[120px] w-full">
+        <Button type="submit" variant="tertiary">
           {MultipleLang.content.modal_edit}</Button
         >
       </div>
@@ -803,18 +810,32 @@
     {MultipleLang.content.modal_add_title}
   </div>
   <div class="flex flex-col mt-4 gap-7">
-    <div class="flex justify-center">
-      <Button
-        variant="tertiary"
-        on:click={() => {
-          onSubmitCEX();
-          isOpenAddModal = false;
-        }}
-      >
-        <div class="xl:text-base text-2xl font-medium text-white">
-          Connect CEX
+    <div class="flex flex-col gap-3">
+      <div class="flex justify-center">
+        <div class="w-max">
+          <Button
+            variant="tertiary"
+            on:click={() => {
+              onSubmitCEX();
+              isOpenAddModal = false;
+            }}
+          >
+            <div class="xl:text-base text-2xl font-medium text-white">
+              Connect Exchange
+            </div>
+          </Button>
         </div>
-      </Button>
+      </div>
+      <div class="flex justify-center items-center gap-6">
+        {#each listLogoCEX as logo}
+          <div
+            class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
+          >
+            <img src={logo} alt="" class="w-full h-full object-contain" />
+          </div>
+        {/each}
+        <div class="text-gray-400">+22 More</div>
+      </div>
     </div>
     <div class="border-t-[1px] relative">
       <div
@@ -882,7 +903,17 @@
           </div>
         {/if}
       </div>
-      <div class="flex justify-end gap-2">
+      <div class="flex justify-center items-center gap-6">
+        {#each chainList.slice(0, -1) as item}
+          <div
+            class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
+          >
+            <img src={item.logo} alt="" class="w-full h-full object-contain" />
+          </div>
+        {/each}
+        <div class="text-gray-400">More soon</div>
+      </div>
+      <div class="flex justify-end lg:gap-2 gap-6">
         <div class="lg:w-[120px] w-full">
           <Button
             variant="secondary"
@@ -895,7 +926,7 @@
           >
         </div>
         <div class="lg:w-[120px] w-full">
-          <Button type="submit">
+          <Button type="submit" variant="tertiary">
             {MultipleLang.content.modal_add}</Button
           >
         </div>
@@ -917,8 +948,8 @@
       {MultipleLang.content.modal_delete_sub_title}
     </div>
   </div>
-  <div class="flex justify-end gap-2 mt-4">
-    <div class="lg:w-[100px] w-full h-[36px]">
+  <div class="flex justify-end lg:gap-2 gap-6 mt-4">
+    <div class="lg:w-[120px] w-full h-[36px]">
       <Button
         variant="secondary"
         on:click={() => {
@@ -929,7 +960,7 @@
         {MultipleLang.content.modal_cancel}
       </Button>
     </div>
-    <div class="lg:w-[100px] w-full h-[36px]">
+    <div class="lg:w-[120px] w-full h-[36px]">
       <Button
         variant="delete"
         isLoading={isLoadingDelete}

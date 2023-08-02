@@ -170,6 +170,50 @@ export const detectedChain = (type) => {
   return chain
 }
 
+export const listProviderCEX = [
+  "binance",
+  "binanceus",
+  "bitfinex",
+  "bittrex",
+  "bitvavo",
+  "blockchaincom",
+  "coinbasepro",
+  "coindcx",
+  "coinspot",
+  "cointracking",
+  "cryptocom",
+  "gateio",
+  "gemini",
+  "kraken",
+  "kucoin",
+  "ndax",
+  "newton",
+  "poloniex",
+  "wazirx",
+  "bitmart",
+  "bybit",
+  "huobi",
+  "mexc",
+  "okx",
+  "wavesexchange",
+  "bitrue",
+  "ascendex",
+  "bitso",
+  "upbit",
+  "bitstamp",
+]
+
+export const listLogoCEX = [
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/270.png",
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/89.png",
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/24.png",
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/311.png",
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/521.png",
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/294.png",
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/70.png",
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/37.png",
+];
+
 export const chainList = [
   {
     logo: logo,
