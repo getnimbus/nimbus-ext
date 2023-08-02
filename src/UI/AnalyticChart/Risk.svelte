@@ -16,6 +16,7 @@
   import EChart from "~/components/EChart.svelte";
 
   import Logo from "~/assets/logo-1.svg";
+  import ProgressBar from "~/components/ProgressBar.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -403,6 +404,14 @@
           </svg>
           Max draw down is higher than Bitcoin by <strong>10%</strong>
         </div>
+
+        <ProgressBar
+          leftLabel="Low"
+          rightLabel="High"
+          averageText="Avg Market"
+          progress={50}
+          tooltipText="This wallet"
+        />
       </div>
     {/if}
   </span>

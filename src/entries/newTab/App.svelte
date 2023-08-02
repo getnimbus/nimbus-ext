@@ -32,24 +32,19 @@
   const hash = createHistory(createHashSource());
 
   const formatSelectedWallet = async () => {
-    const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
-
-    if (
-      selectedWalletRes.selectedWallet !== 0 &&
-      !isEmpty(JSON.parse(selectedWalletRes.selectedWallet))
-    ) {
-      const selectedWalletObject = JSON.parse(selectedWalletRes.selectedWallet);
-      wallet.update((n) => (n = selectedWalletObject?.value || ""));
-    }
+    // const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
+    // if (
+    //   selectedWalletRes.selectedWallet !== 0 &&
+    //   !isEmpty(JSON.parse(selectedWalletRes.selectedWallet))
+    // ) {
+    //   const selectedWalletObject = JSON.parse(selectedWalletRes.selectedWallet);
+    //   wallet.update((n) => (n = selectedWalletObject?.value || ""));
+    // }
   };
 
   let isShowChat = false;
   isOpenReport.subscribe((value) => {
     isShowChat = value;
-  });
-
-  onMount(() => {
-    formatSelectedWallet();
   });
 
   $: {

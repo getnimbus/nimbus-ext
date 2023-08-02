@@ -15,6 +15,8 @@
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import Logo from "~/assets/logo-1.svg";
+  import CheckIcon from "~/components/CheckIcon.svelte";
+  import DangerIcon from "~/components/DangerIcon.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -112,6 +114,8 @@
             color: "#547fef",
           },
         };
+
+        compareData = response.data;
         const series = Object.keys(response.data).map((key) => {
           const itemData = response.data[key];
           const baseData = itemData.sparkline[0];
@@ -161,6 +165,11 @@
       }
     }
   }
+
+  $: sharpeRatioCompare = getChangePercent(
+    Number(compareData?.base?.sharpeRatio || 0),
+    Number(compareData?.btc?.sharpeRatio || 0)
+  );
 </script>
 
 <AnalyticSection>
@@ -250,19 +259,14 @@
       </div>
       <div class="mt-8 space-y-3">
         <div class="xl:text-base text-2xl">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            class="w-5 h-5 text-[#00A878] inline-block align-text-top"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          Volality is lower than Bitcoin by <strong>15%</strong>
+          {#if sharpeRatioCompare < 0}
+            <CheckIcon />
+          {:else}
+            <DangerIcon />
+          {/if}
+          Sharpe ratio is {sharpeRatioCompare > 0 ? "higher" : "lower"} than Bitcoin
+          by
+          <strong>{Math.abs(sharpeRatioCompare)}%</strong>
         </div>
 
         <div class="xl:text-base text-2xl">

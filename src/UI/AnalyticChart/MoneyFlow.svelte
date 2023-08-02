@@ -347,35 +347,12 @@
             <div class="text-black flex justify-start">Total money in</div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
-            <div
-              class={`${
-                sumData.inflow < 0 ? "text-red-500" : "text-[#00A878]"
-              }`}
-            >
+            <div>
               $<TooltipNumber
                 number={Math.abs(sumData.inflow)}
                 type="balance"
               />
             </div>
-            {#if sumData.inflow < 0}
-              <div class="text-red-500">⚠️</div>
-            {:else}
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill="none"
-                  stroke="#00A878"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
-                />
-              </svg>
-            {/if}
           </div>
         </div>
         <div class="grid grid-cols-2">
@@ -383,35 +360,12 @@
             <div class="text-black flex justify-start">Total money out</div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
-            <div
-              class={`${
-                sumData.outflow < 0 ? "text-red-500" : "text-[#00A878]"
-              }`}
-            >
+            <div>
               $<TooltipNumber
                 number={Math.abs(sumData.outflow)}
                 type="balance"
               />
             </div>
-            {#if sumData.outflow < 0}
-              <div class="text-red-500">⚠️</div>
-            {:else}
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill="none"
-                  stroke="#00A878"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"
-                />
-              </svg>
-            {/if}
           </div>
         </div>
       </div>
