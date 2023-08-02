@@ -810,7 +810,9 @@
             {isEmptyDataPie}
           />
 
-          <RiskReturn data={compareData} {isLoadingDataCompare} />
+          {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+            <RiskReturn data={compareData} {isLoadingDataCompare} />
+          {/if}
 
           <Holding
             {selectedWallet}
