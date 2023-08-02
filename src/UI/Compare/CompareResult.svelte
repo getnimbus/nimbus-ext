@@ -177,9 +177,7 @@
   }
 </script>
 
-<div
-  class="h-[563px] border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
->
+<div class="h-[563px] flex flex-col gap-4">
   <div class="flex justify-between">
     <div class="xl:text-2xl text-4xl font-medium text-black">
       Re-balance Action
