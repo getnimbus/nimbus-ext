@@ -1,6 +1,6 @@
 <script lang="ts">
   import { sendMessage } from "webext-bridge";
-  import { wallet, chain } from "~/store";
+  import { wallet, chain, typeWallet } from "~/store";
   import { groupBy, flatten } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import {
@@ -22,6 +22,7 @@
   import EChart from "~/components/EChart.svelte";
   import Button from "~/components/Button.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
@@ -45,6 +46,11 @@
   let selectedChain: string = "";
   chain.subscribe((value) => {
     selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let selectedType: "category" | "sector" | "rank" = "category";
@@ -830,8 +836,20 @@
     class="xl:w-1/2 w-full relative border border-[#0000001a] rounded-[20px] p-6"
   >
     <div class="flex justify-between mb-6">
-      <div class="pl-4 xl:text-2xl text-4xl font-medium text-black">
-        {MultipleLang.performance}
+      <div class="flex justify-start">
+        {#if typeWalletAddress === "CEX"}
+          <TooltipTitle
+            tooltipText="Due to privacy, the performance data can only get after you connect to Nimbus"
+          >
+            <div class="pl-4 xl:text-2xl text-4xl font-medium text-black">
+              {MultipleLang.performance}
+            </div>
+          </TooltipTitle>
+        {:else}
+          <div class="pl-4 xl:text-2xl text-4xl font-medium text-black">
+            {MultipleLang.performance}
+          </div>
+        {/if}
       </div>
       <div class="flex items-center gap-2">
         <AnimateSharedLayout>

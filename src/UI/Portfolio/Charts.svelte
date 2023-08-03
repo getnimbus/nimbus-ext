@@ -1,7 +1,7 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { i18n } from "~/lib/i18n";
-  import { chain, wallet } from "~/store";
+  import { chain, wallet, typeWallet } from "~/store";
   import { formatCurrency, getAddressContext, typePieChart } from "~/utils";
 
   export let handleSelectedTableTokenHolding = (data, selectDataPieChart) => {};
@@ -15,6 +15,7 @@
   import "~/components/Loading.custom.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TokenAllocation from "~/components/TokenAllocation.svelte";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -25,8 +26,20 @@
     Value: i18n("newtabPage.Value", "Value"),
   };
 
-  $: selectedChain = $chain;
-  $: selectedWallet = $wallet;
+  let selectedWallet: string = "";
+  wallet.subscribe((value) => {
+    selectedWallet = value;
+  });
+
+  let selectedChain: string = "";
+  chain.subscribe((value) => {
+    selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
 
   let selectedType: "token" | "nft" = "token";
   let optionPie = {
@@ -235,8 +248,20 @@
     <div
       class="xl:w-1/2 w-full relative border border-[#0000001a] rounded-[20px] p-6"
     >
-      <div class="pl-4 xl:text-2xl text-4xl font-medium text-black mb-6">
-        {MultipleLang.performance}
+      <div class="flex justify-start mb-6">
+        {#if typeWalletAddress === "CEX"}
+          <TooltipTitle
+            tooltipText="Due to privacy, the performance data can only get after you connect to Nimbus"
+          >
+            <div class="pl-4 xl:text-2xl text-4xl font-medium text-black">
+              {MultipleLang.performance}
+            </div>
+          </TooltipTitle>
+        {:else}
+          <div class="pl-4 xl:text-2xl text-4xl font-medium text-black">
+            {MultipleLang.performance}
+          </div>
+        {/if}
       </div>
       {#if selectedChain === "XDAI"}
         <div
