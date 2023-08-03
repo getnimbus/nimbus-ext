@@ -175,6 +175,11 @@
       filteredData = tokenHoldingDataFormat;
     }
   }
+
+  $: totalNetWorth = (holdingTokenData || []).reduce(
+    (prev, item) => prev + item?.amount * item?.price?.price,
+    0
+  );
 </script>
 
 <div class="h-[563px] flex flex-col gap-4">
@@ -211,6 +216,20 @@
               {MultipleLang.price}
             </div>
           </th>
+          <th class="py-3">
+            <div
+              class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+            >
+              Amount change
+            </div>
+          </th>
+          <th class="py-3">
+            <div
+              class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+            >
+              Value change
+            </div>
+          </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
             <div
               class="text-right xl:text-xs text-base uppercase font-semibold text-black"
@@ -235,7 +254,7 @@
           </tr>
         {:else}
           {#each filteredData as holding}
-            <TokenHoldingCompare data={holding} />
+            <TokenHoldingCompare data={holding} {totalNetWorth} />
           {/each}
         {/if}
       </tbody>

@@ -2,8 +2,10 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import { typeWallet, wallet } from "~/store";
   import { detectedChain, getAddressContext, shorterName } from "~/utils";
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   export let data;
+  export let totalNetWorth;
 
   let typeWalletAddress = "";
   typeWallet.subscribe((value) => {
@@ -17,6 +19,15 @@
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
+
+  $: console.log("data: ", data);
+
+  $: amountChange =
+    data?.price?.price === 0
+      ? 0
+      : (totalNetWorth * data?.ratio) / data?.price?.price;
+
+  $: valueChange = totalNetWorth * data?.ratio;
 </script>
 
 <tr class="group transition-all">
@@ -106,13 +117,84 @@
     </div>
   </td>
 
+  <td class="py-3 group-hover:bg-gray-100">
+    <div class="flex justify-end">
+      <div
+        class={`xl:text-sm text-xl font-medium w-max ${
+          amountChange === 0
+            ? "text-[#00000099]"
+            : amountChange > 0
+            ? "text-[#00A878]"
+            : "text-red-500"
+        } font-medium`}
+        use:tooltip={{
+          content: `<tooltip-detail text="${
+            data?.ratio > 0 ? "+" : ""
+          }${amountChange}" />`,
+          allowHTML: true,
+          placement: "top",
+          interactive: true,
+        }}
+      >
+        {amountChange > 0 ? "+" : ""}<TooltipNumber
+          number={amountChange}
+          type="balance"
+        />
+      </div>
+    </div>
+  </td>
+
+  <td class="py-3 group-hover:bg-gray-100">
+    <div class="flex justify-end">
+      <div
+        class={`xl:text-sm text-xl font-medium  ${
+          valueChange === 0
+            ? "text-[#00000099]"
+            : valueChange > 0
+            ? "text-[#00A878]"
+            : "text-red-500"
+        }`}
+        use:tooltip={{
+          content: `<tooltip-detail text="$${
+            valueChange > 0 ? "+" : ""
+          }${valueChange}" />`,
+          allowHTML: true,
+          placement: "top",
+          interactive: true,
+        }}
+      >
+        {valueChange > 0 ? "+" : ""}$<TooltipNumber
+          number={valueChange}
+          type="balance"
+        />
+      </div>
+    </div>
+  </td>
+
   <td class="py-3 pr-3 group-hover:bg-gray-100">
-    <div
-      class={`xl:text-sm text-xl ${
-        data?.ratio > 0 ? "text-[#00A878]" : "text-red-500"
-      } font-medium flex justify-end`}
-    >
-      <TooltipNumber number={data?.ratio} type="percent" />%
+    <div class="flex justify-end">
+      <div
+        class={`xl:text-sm text-xl w-max ${
+          data?.ratio === 0
+            ? "text-[#00000099]"
+            : data?.ratio > 0
+            ? "text-[#00A878]"
+            : "text-red-500"
+        } font-medium`}
+        use:tooltip={{
+          content: `<tooltip-detail text="${data?.ratio > 0 ? "+" : ""}${
+            data?.ratio
+          }%" />`,
+          allowHTML: true,
+          placement: "top",
+          interactive: true,
+        }}
+      >
+        {data?.ratio > 0 ? "+" : ""}<TooltipNumber
+          number={data?.ratio}
+          type="percent"
+        />%
+      </div>
     </div>
   </td>
 </tr>
