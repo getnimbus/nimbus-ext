@@ -156,7 +156,7 @@
     try {
       const response: TrxHistoryDataRes = await sendMessage("getTrxHistory", {
         address: selectedWallet,
-        chain: selectedChain === "ALL" ? "ETH" : selectedChain,
+        chain: selectedChain,
         pageToken: page,
       });
       if (selectedWallet === response?.address) {
@@ -184,6 +184,7 @@
       isLoadingChart = false;
       isEmptyDataChart = false;
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
+        chain.update((n) => (n = "ETH"));
         getListTransactions("");
         getAnalyticHistorical();
       }

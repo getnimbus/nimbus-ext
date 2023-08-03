@@ -1046,7 +1046,9 @@
                     <Select
                       type="chain"
                       positionSelectList="right-0"
-                      listSelect={chainList}
+                      listSelect={window.location.pathname === "/transactions"
+                        ? chainList.slice(1, -1)
+                        : chainList}
                       bind:selected={selectedChain}
                     />
                   {/if}
