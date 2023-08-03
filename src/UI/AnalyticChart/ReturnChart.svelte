@@ -17,6 +17,7 @@
   import Logo from "~/assets/logo-1.svg";
   import CheckIcon from "~/components/CheckIcon.svelte";
   import DangerIcon from "~/components/DangerIcon.svelte";
+  import CtaIcon from "~/components/CtaIcon.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -170,6 +171,10 @@
     Number(compareData?.base?.sharpeRatio || 0),
     Number(compareData?.btc?.sharpeRatio || 0)
   );
+
+  $: isReturn30Higher =
+    compareData?.base?.netWorthChange?.networth30D >
+    compareData?.btc?.netWorthChange?.networth30D;
 </script>
 
 <AnalyticSection>
@@ -197,51 +202,167 @@
         <div class="grid grid-cols-2">
           <div class="col-span-1">
             <div class="xl:text-base text-2xl text-black flex justify-start">
-              <TooltipTitle
-                tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
-                isBigIcon
-              >
-                Sharpe ratio
-              </TooltipTitle>
+              Return 1D
             </div>
           </div>
           <div class="col-span-1 flex items-center justify-end">
-            <div class="xl:text-base text-2xl">
-              <TooltipNumber
-                number={compareData?.base?.sharpeRatio}
-                type="percent"
-              />
+            <div class={`xl:text-base text-2xl`}>
+              <span
+                class={`${
+                  compareData?.base?.netWorthChange?.networth1D < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(
+                    compareData?.base?.netWorthChange.networth1D
+                  )}
+                  type="percent"
+                />%</span
+              > <span class="text-gray-400">/</span>
+              <span
+                class={`${
+                  compareData?.btc?.netWorthChange?.networth1D < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(compareData?.btc?.netWorthChange.networth1D)}
+                  type="percent"
+                />%</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2">
+          <div class="col-span-1">
+            <div class="xl:text-base text-2xl text-black flex justify-start">
+              Return 7D
+            </div>
+          </div>
+          <div class="col-span-1 flex items-center justify-end">
+            <div class={`xl:text-base text-2xl`}>
+              <span
+                class={`${
+                  compareData?.base?.netWorthChange?.networth7D < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(
+                    compareData?.base?.netWorthChange.networth7D
+                  )}
+                  type="percent"
+                />%</span
+              > <span class="text-gray-400">/</span>
+              <span
+                class={`${
+                  compareData?.btc?.netWorthChange?.networth7D < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(compareData?.btc?.netWorthChange.networth7D)}
+                  type="percent"
+                />%</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2">
+          <div class="col-span-1">
+            <div class="xl:text-base text-2xl text-black flex justify-start">
+              Return 30D
+            </div>
+          </div>
+          <div class="col-span-1 flex items-center justify-end">
+            <div class={`xl:text-base text-2xl`}>
+              <span
+                class={`${
+                  compareData?.base?.netWorthChange?.networth30D < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(
+                    compareData?.base?.netWorthChange.networth30D
+                  )}
+                  type="percent"
+                />%</span
+              > <span class="text-gray-400">/</span>
+              <span
+                class={`${
+                  compareData?.btc?.netWorthChange?.networth30D < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(
+                    compareData?.btc?.netWorthChange.networth30D
+                  )}
+                  type="percent"
+                />%</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2">
+          <div class="col-span-1">
+            <div class="xl:text-base text-2xl text-black flex justify-start">
+              Return 1Y
+            </div>
+          </div>
+          <div class="col-span-1 flex items-center justify-end">
+            <div class={`xl:text-base text-2xl`}>
+              <span
+                class={`${
+                  compareData?.base?.netWorthChange?.networth1Y < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(
+                    compareData?.base?.netWorthChange.networth1Y
+                  )}
+                  type="percent"
+                />%</span
+              > <span class="text-gray-400">/</span>
+              <span
+                class={`${
+                  compareData?.btc?.netWorthChange?.networth1Y < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(compareData?.btc?.netWorthChange.networth1Y)}
+                  type="percent"
+                />%</span
+              >
             </div>
           </div>
         </div>
       </div>
       <div class="mt-8 space-y-3">
         <div class="xl:text-base text-2xl">
-          {#if sharpeRatioCompare < 0}
-            <CheckIcon />
-          {:else}
-            <DangerIcon />
-          {/if}
-          Sharpe ratio is {sharpeRatioCompare > 0 ? "higher" : "lower"} than Bitcoin
-          by
-          <strong>{Math.abs(sharpeRatioCompare)}%</strong>
-        </div>
-
-        <div class="xl:text-base text-2xl">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            class="w-5 h-5 text-red-500 inline-block align-text-top"
+          <CtaIcon isGood={isReturn30Higher} />
+          30D return is {isReturn30Higher ? "higher" : "lower"} than Bitcoin by
+          <strong
+            >{Math.abs(
+              compareData?.base?.netWorthChange?.networth30D -
+                compareData?.btc?.netWorthChange?.networth30D
+            )}%</strong
           >
-            <path
-              fill-rule="evenodd"
-              d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z"
-              clip-rule="evenodd"
-            />
-          </svg>
-
-          Max draw down is higher than Bitcoin by <strong>10%</strong>
         </div>
       </div>
     {/if}

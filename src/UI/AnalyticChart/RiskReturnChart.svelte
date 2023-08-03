@@ -10,6 +10,8 @@
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
+  import maxBy from "lodash/maxBy";
+  import minBy from "lodash/minBy";
 
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import Logo from "~/assets/logo-1.svg";
@@ -303,6 +305,9 @@
       value: "shrapeRatioBreakdown",
     },
   ];
+
+  $: goodPerf = maxBy(riskBreakdownData, (item) => item.change30DPercent);
+  $: badPerf = minBy(riskBreakdownData, (item) => item.change30DPercent);
 </script>
 
 <AnalyticSection>
@@ -326,7 +331,7 @@
         <LoadingPremium />
       </div>
     {:else}
-      <div class="flex flex-col gap-4">
+      <!-- <div class="flex flex-col gap-4">
         <div class="grid grid-cols-2">
           <div class="col-span-1">
             <div class="xl:text-base text-2xl text-black flex justify-start">
@@ -389,19 +394,19 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="flex items-center gap-3 mt-8">
         <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
           <div class="xl:text-base text-lg text-[#6E7787FF] relative">
             <div
               class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
             />
-            Best perf
+            Best return
           </div>
-          <div class="xl:text-2xl text-3xl">PEPE</div>
+          <div class="xl:text-2xl text-3xl">{goodPerf.symbol}</div>
           <div class="xl:text-lg text-2xl flex items-center gap-1">
             <img src={TrendUp} alt="trend" class="mb-1" />
-            <div class="text-[#00A878]">16%</div>
+            <div class="text-[#00A878]">{goodPerf.change30DPercent * 100}%</div>
           </div>
         </div>
 
@@ -410,12 +415,14 @@
             <div
               class="border border-red-500 absolute -top-1 left-0 w-[40px]"
             />
-            Worse perf
+            Worse return
           </div>
-          <div class="xl:text-2xl text-3xl">BTC</div>
+          <div class="xl:text-2xl text-3xl">{badPerf.symbol}</div>
           <div class="xl:text-lg text-2xl flex items-center gap-1">
             <img src={TrendDown} alt="trend" class="mb-1" />
-            <div class="text-red-500">8%</div>
+            <div class="text-red-500">
+              {Math.abs(badPerf.change30DPercent * 100)}%
+            </div>
           </div>
         </div>
       </div>
