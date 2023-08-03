@@ -10,6 +10,7 @@
   import "~/components/Loading.custom.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   let scrollContainer;
   let isScrollStart = true;
@@ -51,10 +52,31 @@
               </div>
               <div class="col-span-3 flex items-center justify-end">
                 <div class="xl:text-base text-2xl">
-                  <TooltipNumber
-                    number={data?.base?.sharpeRatio}
-                    type="percent"
-                  />
+                  <span
+                    class={`${
+                      data?.base?.sharpeRatio < data?.btc?.sharpeRatio
+                        ? "text-red-500"
+                        : "text-[#00A878]"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={data?.base?.sharpeRatio}
+                      type="percent"
+                    />
+                  </span> <span class="text-gray-400">/</span>
+                  <span
+                    use:tooltip={{
+                      content: `<tooltip-detail text="Bitcoin" />`,
+                      allowHTML: true,
+                      placement: "top",
+                      interactive: true,
+                    }}
+                  >
+                    <TooltipNumber
+                      number={data?.btc?.sharpeRatio}
+                      type="percent"
+                    />
+                  </span>
                 </div>
               </div>
             </div>
@@ -74,10 +96,31 @@
               </div>
               <div class="col-span-3 flex items-center justify-end">
                 <div class="xl:text-base text-2xl">
-                  <TooltipNumber
-                    number={data?.base?.volatility}
-                    type="percent"
-                  />
+                  <span
+                    class={`${
+                      data?.base?.volatility > data?.btc?.volatility
+                        ? "text-red-500"
+                        : "text-[#00A878]"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={data?.base?.volatility}
+                      type="percent"
+                    />%</span
+                  > <span class="text-gray-400">/</span>
+                  <span
+                    use:tooltip={{
+                      content: `<tooltip-detail text="Bitcoin" />`,
+                      allowHTML: true,
+                      placement: "top",
+                      interactive: true,
+                    }}
+                  >
+                    <TooltipNumber
+                      number={data?.btc?.volatility}
+                      type="percent"
+                    />%
+                  </span>
                 </div>
               </div>
             </div>
@@ -97,7 +140,32 @@
               </div>
               <div class="col-span-3 flex items-center justify-end">
                 <div class="xl:text-base text-2xl">
-                  <TooltipNumber number={data?.base?.drawDown} type="percent" />
+                  <span
+                    class={`${
+                      data?.base?.drawDown > data?.btc?.drawDown
+                        ? "text-red-500"
+                        : "text-[#00A878]"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={data?.base?.drawDown}
+                      type="percent"
+                    />%
+                  </span>
+                  <span class="text-gray-400">/</span>
+                  <span
+                    use:tooltip={{
+                      content: `<tooltip-detail text="Bitcoin" />`,
+                      allowHTML: true,
+                      placement: "top",
+                      interactive: true,
+                    }}
+                  >
+                    <TooltipNumber
+                      number={data?.btc?.drawDown}
+                      type="percent"
+                    />%
+                  </span>
                 </div>
               </div>
             </div>
@@ -149,8 +217,8 @@
           </div>
           {#if selectedTypeReturn === "overview"}
             <div class="grid grid-cols-4 gap-4">
-              <div class="flex flex-col gap-2 px-4 py-3">
-                <div class="xl:text-base text-2xl text-black">1 Day</div>
+              <div class="flex flex-col gap-2 py-3">
+                <div class="xl:text-base text-2xl text-black">1D</div>
                 <div class="flex items-center">
                   <div
                     class={`xl:text-base text-2xl ${
@@ -167,8 +235,8 @@
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2 px-4 py-3">
-                <div class="xl:text-base text-2xl text-black">7 Days</div>
+              <div class="flex flex-col gap-2 py-3">
+                <div class="xl:text-base text-2xl text-black">7D</div>
                 <div class="flex items-center">
                   <div
                     class={`xl:text-base text-2xl ${
@@ -185,8 +253,8 @@
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2 px-4 py-3">
-                <div class="xl:text-base text-2xl text-black">30 Days</div>
+              <div class="flex flex-col gap-2 py-3">
+                <div class="xl:text-base text-2xl text-black">30M</div>
                 <div class="flex items-center">
                   <div
                     class={`xl:text-base text-2xl ${
@@ -203,8 +271,8 @@
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2 px-4 py-3">
-                <div class="xl:text-base text-2xl text-black">1 Year</div>
+              <div class="flex flex-col gap-2 py-3">
+                <div class="xl:text-base text-2xl text-black">1Y</div>
                 <div class="flex items-center">
                   <div
                     class={`xl:text-base text-2xl ${

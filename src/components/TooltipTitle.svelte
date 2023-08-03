@@ -14,7 +14,7 @@
   });
 </script>
 
-<span class="flex justify-end items-center gap-1">
+<span class="inline-flex justify-end items-center gap-1">
   <slot />
   <span class="cursor-pointer">
     {#if typeWalletAddress === "DEX"}
@@ -28,7 +28,8 @@
           placement: "top",
           interactive: true,
         }}
-      />{:else}
+      />
+    {:else}
       <span
         class={`text-red-500 ${isBigIcon ? "w-4 h-4" : "w-3 h-3"}`}
         use:tooltip={{

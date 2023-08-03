@@ -7,7 +7,11 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { sendMessage } from "webext-bridge";
   import dayjs from "dayjs";
-  import { calculateVolatility } from "~/chart-utils";
+  import {
+    calculateVolatility,
+    getChangePercent,
+    getPostionInRage,
+  } from "~/chart-utils";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
@@ -17,6 +21,9 @@
 
   import Logo from "~/assets/logo-1.svg";
   import ProgressBar from "~/components/ProgressBar.svelte";
+  import CheckIcon from "~/components/CheckIcon.svelte";
+  import DangerIcon from "~/components/DangerIcon.svelte";
+  import CtaIcon from "~/components/CtaIcon.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -307,6 +314,33 @@
       value: "riskBreakdown",
     },
   ];
+
+  $: sharpeRatioCompare = getChangePercent(
+    Number(compareData?.base?.sharpeRatio || 0),
+    Number(compareData?.btc?.sharpeRatio || 0)
+  );
+
+  $: volatilityCompare = getChangePercent(
+    Number(compareData?.base?.volatility || 0),
+    Number(compareData?.btc?.volatility || 0)
+  );
+
+  $: volatilityCompareAvg = getPostionInRage(
+    Number(compareData?.base?.volatility || 0),
+    Number(compareData?.base?.avgMarket?.minVolality || 0),
+    Number(compareData?.base?.avgMarket?.maxVolality || 0)
+  );
+
+  $: drawDownCompare = getChangePercent(
+    Number(compareData?.base?.drawDown || 0),
+    Number(compareData?.btc?.drawDown || 0)
+  );
+
+  $: drawDownCompareAvg = getPostionInRage(
+    Number(compareData?.base?.drawDown || 0),
+    Number(compareData?.base?.avgMarket?.minDrawDown || 0),
+    Number(compareData?.base?.avgMarket?.maxDrawDown || 0)
+  );
 </script>
 
 <AnalyticSection>
@@ -332,6 +366,27 @@
       <div class="flex flex-col gap-4">
         <div class="grid grid-cols-2">
           <div class="col-span-1">
+            <div class="xl:text-base text-2xl text-black flex justify-start">
+              <TooltipTitle
+                tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
+                isBigIcon
+              >
+                Sharpe ratio
+              </TooltipTitle>
+            </div>
+          </div>
+          <div class="col-span-1 flex items-center justify-end">
+            <div class="xl:text-base text-2xl">
+              <TooltipNumber
+                number={compareData?.base?.sharpeRatio}
+                type="percent"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2">
+          <div class="col-span-1">
             <div class=" text-black flex justify-start">
               <TooltipTitle
                 tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
@@ -346,7 +401,7 @@
               <TooltipNumber
                 number={compareData?.base?.volatility}
                 type="percent"
-              />
+              />%
             </div>
           </div>
         </div>
@@ -367,50 +422,61 @@
               <TooltipNumber
                 number={compareData?.base?.drawDown}
                 type="percent"
-              />
+              />%
             </div>
           </div>
         </div>
       </div>
       <div class="mt-8 space-y-3">
         <div class="xl:text-base text-2xl">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            class="w-5 h-5 text-[#00A878] inline-block align-text-top"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          Volality is lower than Bitcoin by <strong>15%</strong>
+          <CtaIcon isGood={sharpeRatioCompare > 0} />
+          Sharpe ratio is {sharpeRatioCompare > 0 ? "higher" : "lower"} than Bitcoin
+          by
+          <strong>{Math.abs(sharpeRatioCompare)}%</strong>
+        </div>
+        <div class="xl:text-base text-2xl">
+          <CtaIcon isGood={volatilityCompare < 0} />
+          Volatility is {volatilityCompare > 0 ? "higher" : "lower"} than Bitcoin
+          by
+          <strong>{Math.abs(volatilityCompare)}%</strong>
         </div>
 
         <div class="xl:text-base text-2xl">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            class="w-5 h-5 text-red-500 inline-block align-text-top"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          Max draw down is higher than Bitcoin by <strong>10%</strong>
+          <CtaIcon isGood={drawDownCompare < 0} />
+          Max Drawdown is {drawDownCompare > 0 ? "higher" : "lower"} than Bitcoin
+          by
+          <strong>{Math.abs(drawDownCompare)}%</strong>
         </div>
 
+        <!-- <div>
+          <div>Meaning</div>
+          <ul>
+            <li />
+          </ul>
+        </div> -->
+      </div>
+      <div class="flex flex-col gap-3 mt-8">
+        <div class="xl:text-lg text-2xl font-medium text-black">
+          <TooltipTitle
+            tooltipText={"Compare with top 100 by CoinMarketCap."}
+            isBigIcon
+          >
+            Compare to Market
+          </TooltipTitle>
+        </div>
         <ProgressBar
           leftLabel="Low"
           rightLabel="High"
           averageText="Avg Market"
-          progress={50}
-          tooltipText="This wallet"
+          progress={volatilityCompareAvg}
+          tooltipText="Volality"
+        />
+        <ProgressBar
+          leftLabel="Low"
+          rightLabel="High"
+          averageText="Avg Market"
+          progress={drawDownCompareAvg}
+          tooltipText="Max Drawdown"
         />
       </div>
     {/if}

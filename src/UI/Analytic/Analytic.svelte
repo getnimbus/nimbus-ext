@@ -8,7 +8,7 @@
   import CurrentStatus from "./CurrentStatus.svelte";
   import PastPerformance from "./PastPerformance.svelte";
   import Button from "~/components/Button.svelte";
-  import Risk from "../AnalyticChart/Risk.svelte";
+  import RiskChart from "../AnalyticChart/RiskChart.svelte";
   import Compare from "../Portfolio/Compare.svelte";
   import MoneyFlow from "../AnalyticChart/MoneyFlow.svelte";
   import RiskReturnChart from "../AnalyticChart/RiskReturnChart.svelte";
@@ -89,7 +89,7 @@
           </div>
         </section>
 
-        <Risk />
+        <RiskChart />
 
         <ReturnChart />
 

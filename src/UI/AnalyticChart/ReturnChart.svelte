@@ -214,48 +214,6 @@
             </div>
           </div>
         </div>
-
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="xl:text-base text-2xl text-black flex justify-start">
-              <TooltipTitle
-                tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
-                isBigIcon
-              >
-                Volatility
-              </TooltipTitle>
-            </div>
-          </div>
-          <div class="col-span-1 flex items-center justify-end">
-            <div class="xl:text-base text-2xl">
-              <TooltipNumber
-                number={compareData?.base?.volatility}
-                type="percent"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="xl:text-base text-2xl text-black flex justify-start">
-              <TooltipTitle
-                tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
-                isBigIcon
-              >
-                Max drawdown
-              </TooltipTitle>
-            </div>
-          </div>
-          <div class="col-span-1 flex items-center justify-end">
-            <div class="xl:text-base text-2xl">
-              <TooltipNumber
-                number={compareData?.base?.drawDown}
-                type="percent"
-              />
-            </div>
-          </div>
-        </div>
       </div>
       <div class="mt-8 space-y-3">
         <div class="xl:text-base text-2xl">

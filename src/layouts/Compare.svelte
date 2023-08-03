@@ -993,13 +993,12 @@
                                 }`}
                               />
                             </div>
-                            <div class="xl:text-sm text-lg">
-                              Or
+                            <div class="xl:text-sm text-lg text-right">
                               <a
                                 class="text-blue-500 cursor-pointer"
                                 href="/whales"
                                 target="_blank"
-                                >get inspired from the whale list</a
+                                >Get inspired from the whale list</a
                               >
                             </div>
                           </div>

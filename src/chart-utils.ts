@@ -18,7 +18,7 @@ export function calculateVolatility(prices: number[]) {
   // Step 5: Calculate Volatility (Standard Deviation)
   const volatility = Math.sqrt(variance);
 
-  return volatility;
+  return volatility * 100;
 }
 
 
@@ -63,7 +63,7 @@ export function calculateMaxDrawdown(prices: number[]) {
     }
   }
 
-  return maxDrawdown;
+  return maxDrawdown * 100;
 }
 
 export function calculateBeta(assetsPrices: number[], marketPrices: number[]) {
@@ -98,3 +98,14 @@ export const getChangePercent = (current: number, previous: number) => {
   if (previous === 0) return 0;
   return Number((((Number(current) - Number(previous)) / Number(previous)) * 100).toFixed(2));
 };
+
+export const getPostionInRage = (current: number, min: number, max: number) => {
+  if (current < min) return 0;
+  if (current > max) return 100;
+
+  if ((max - min) === 0) {
+    return 0;
+  }
+
+  return ((current / (max - min)) * 100) || 0;
+}

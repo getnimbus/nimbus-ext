@@ -82,6 +82,7 @@
       {
         type: "value",
         name: "Return",
+        axisTick: { show: false },
         axisLabel: {
           formatter: "{value}%",
         },
