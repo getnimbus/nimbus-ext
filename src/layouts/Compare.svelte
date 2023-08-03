@@ -19,6 +19,7 @@
   import Select from "~/components/Select.svelte";
   import CompareResult from "~/UI/Compare/CompareResult.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   import LeftArrow from "~/assets/left-arrow.svg";
   import Logo from "~/assets/logo-1.svg";
@@ -949,12 +950,22 @@
                         >
                           <div class="flex items-center gap-4">
                             {#each listSuggestion as suggestion (suggestion.name)}
-                              <div class="flex-1" id={suggestion.name}>
+                              <div
+                                class="flex-1"
+                                id={suggestion.name}
+                                use:tooltip={{
+                                  content: `<tooltip-detail text="Comming soon!" />`,
+                                  allowHTML: true,
+                                  placement: "top",
+                                  interactive: true,
+                                }}
+                              >
                                 <Button
                                   on:click={() => {
-                                    searchCompare = suggestion.value;
-                                    getAnalyticCompare();
+                                    // searchCompare = suggestion.value;
+                                    // getAnalyticCompare();
                                   }}
+                                  variant="disabled"
                                 >
                                   <div class="xl:text-base text-2xl">
                                     {suggestion.name}
@@ -1013,16 +1024,29 @@
         </div>
 
         <div class="w-max">
-          <Button on:click={() => (showCompareTable = true)}>
-            <div class="flex items-center gap-1">
-              <div class="xl:text-base text-2xl">Get re-balance action</div>
-              <img
-                src={LeftArrow}
-                alt=""
-                class="xl:w-4 xl:h-4 w-6 h-6 transform rotate-180 mt-[2px]"
-              />
-            </div>
-          </Button>
+          {#if isLoading}
+            <Button variant="disabled">
+              <div class="flex items-center gap-1">
+                <div class="xl:text-base text-2xl">Get re-balance action</div>
+                <img
+                  src={LeftArrow}
+                  alt=""
+                  class="xl:w-4 xl:h-4 w-6 h-6 transform rotate-180 mt-[2px]"
+                />
+              </div>
+            </Button>
+          {:else}
+            <Button on:click={() => (showCompareTable = true)}>
+              <div class="flex items-center gap-1">
+                <div class="xl:text-base text-2xl">Get re-balance action</div>
+                <img
+                  src={LeftArrow}
+                  alt=""
+                  class="xl:w-4 xl:h-4 w-6 h-6 transform rotate-180 mt-[2px]"
+                />
+              </div>
+            </Button>
+          {/if}
         </div>
       </div>
     </div>
