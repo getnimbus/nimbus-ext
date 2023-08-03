@@ -25,9 +25,9 @@
   $: amountChange =
     data?.price?.price === 0
       ? 0
-      : (totalNetWorth * data?.ratio) / data?.price?.price;
+      : (totalNetWorth * (data?.ratio / 100)) / data?.price?.price;
 
-  $: valueChange = totalNetWorth * data?.ratio;
+  $: valueChange = totalNetWorth * (data?.ratio / 100);
 </script>
 
 <tr class="group transition-all">
