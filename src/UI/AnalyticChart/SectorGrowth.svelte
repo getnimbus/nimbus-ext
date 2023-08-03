@@ -113,7 +113,7 @@
 
   const handleFormatDataLineChart = (data, type) => {
     const formatXAxis = data?.map((item) => {
-      return dayjs(item.date * 1000).format("DD MMM YYYY");
+      return dayjs(item.date * 1000).format("YYYY-MM-DD");
     });
 
     const groupData = data?.map((item) => {

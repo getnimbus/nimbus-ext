@@ -26,7 +26,7 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 180px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                ${dayjs(params.data[0]).format("DD MMM YYYY")}
+                ${dayjs(params.data[0]).format("YYYY-MM-DD")}
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between;">
                 <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">

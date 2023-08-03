@@ -63,7 +63,7 @@
   $: {
     if (dataDailyPnL && dataDailyPnL.length !== 0) {
       const formatXAxis = dataDailyPnL.map((item) => {
-        return dayjs(new Date(item.timestamp * 1000)).format("DD MMM YYYY");
+        return dayjs(new Date(item.timestamp * 1000)).format("YYYY-MM-DD");
       });
       const formatDataDailyPnL = dataDailyPnL.map((item) => {
         return {

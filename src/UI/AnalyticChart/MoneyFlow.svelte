@@ -187,7 +187,7 @@
           }
 
           const formatXAxis = response?.result?.map((item) => {
-            return dayjs(item.timestamp * 1000).format("DD MMM YYYY");
+            return dayjs(item.timestamp * 1000).format("YYYY-MM-DD");
           });
 
           const groupByDirectionData = response?.result?.map((item) => {

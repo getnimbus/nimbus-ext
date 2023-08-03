@@ -396,7 +396,7 @@
           response.result?.performance.length !== 0
         ) {
           const formatXAxis = response.result?.performance.map((item) => {
-            return dayjs(item.date).format("DD MMM YYYY");
+            return dayjs(item.date).format("YYYY-MM-DD");
           });
 
           // line chart format data
@@ -840,6 +840,7 @@
         {#if typeWalletAddress === "CEX"}
           <TooltipTitle
             tooltipText="Due to privacy, the performance data can only get after you connect to Nimbus"
+            type="warning"
           >
             <div class="pl-4 xl:text-2xl text-4xl font-medium text-black">
               {MultipleLang.performance}

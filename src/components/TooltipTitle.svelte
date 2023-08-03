@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { typeWallet } from "~/store";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
   import information from "~/assets/information.png";
@@ -7,17 +6,13 @@
   export let tooltipText = "";
   export let link = "";
   export let isBigIcon = false;
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
+  export let type: "warning" | "default" = "default";
 </script>
 
 <span class="inline-flex justify-end items-center gap-1">
   <slot />
   <span class="cursor-pointer">
-    {#if typeWalletAddress === "DEX"}
+    {#if type === "default"}
       <img
         src={information}
         alt=""

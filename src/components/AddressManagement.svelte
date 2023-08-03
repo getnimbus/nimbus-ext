@@ -997,6 +997,60 @@
                     </div>
 
                     <div class="xl:block hidden">
+                      {#if getAddressContext(selectedWallet)?.type === "BTC"}
+                        <div
+                          use:tooltip={{
+                            content: `<tooltip-detail text="Comming soon!" />`,
+                            allowHTML: true,
+                            placement: "top",
+                            interactive: true,
+                          }}
+                        >
+                          <Button variant="premium" disabled
+                            >Optimize return</Button
+                          >
+                        </div>
+                      {:else}
+                        <div
+                          use:tooltip={{
+                            content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
+                            allowHTML: true,
+                            placement: "top",
+                            interactive: true,
+                          }}
+                        >
+                          <Button
+                            variant="premium"
+                            on:click={() => {
+                              navigate(
+                                `/compare?address=${encodeURIComponent(
+                                  selectedWallet
+                                )}`
+                              );
+                            }}>Optimize return</Button
+                          >
+                        </div>
+                      {/if}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-6">
+                  <div class="xl:hidden block">
+                    {#if getAddressContext(selectedWallet)?.type === "BTC"}
+                      <div
+                        use:tooltip={{
+                          content: `<tooltip-detail text="Comming soon!" />`,
+                          allowHTML: true,
+                          placement: "top",
+                          interactive: true,
+                        }}
+                      >
+                        <Button variant="premium" disabled
+                          >Optimize return</Button
+                        >
+                      </div>
+                    {:else}
                       <div
                         use:tooltip={{
                           content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
@@ -1016,31 +1070,7 @@
                           }}>Optimize return</Button
                         >
                       </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="flex flex-col gap-6">
-                  <div class="xl:hidden block">
-                    <div
-                      use:tooltip={{
-                        content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
-                        allowHTML: true,
-                        placement: "top",
-                        interactive: true,
-                      }}
-                    >
-                      <Button
-                        variant="premium"
-                        on:click={() => {
-                          navigate(
-                            `/compare?address=${encodeURIComponent(
-                              selectedWallet
-                            )}`
-                          );
-                        }}>Optimize return</Button
-                      >
-                    </div>
+                    {/if}
                   </div>
                   {#if getAddressContext(selectedWallet)?.type !== "BTC" && typeWalletAddress === "DEX"}
                     <Select

@@ -354,7 +354,7 @@
 
         // line chart format data
         const formatXAxis = overviewData?.performance.map((item) => {
-          return dayjs(item.date).format("DD MMM YYYY");
+          return dayjs(item.date).format("YYYY-MM-DD");
         });
 
         const formatDataPortfolio = overviewData?.performance.map((item) => {

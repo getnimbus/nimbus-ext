@@ -103,7 +103,7 @@
   $: {
     if (dataTotalValueHistory && dataTotalValueHistory.length !== 0) {
       const formatXAxis = dataTotalValueHistory.map((item) => {
-        return dayjs(new Date(item.timestamp * 1000)).format("DD MMM YYYY");
+        return dayjs(new Date(item.timestamp * 1000)).format("YYYY-MM-DD");
       });
 
       const formatData = dataTotalValueHistory.map((item) => {
