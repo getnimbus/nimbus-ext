@@ -3,10 +3,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import { sendMessage } from "webext-bridge";
+  import { nimbus } from "~/lib/network";
   import CopyToClipboard from "svelte-copy-to-clipboard";
-
-  import type { AddressData } from "~/types/AddressData";
 
   import "~/components/Loading.custom.svelte";
   import Copy from "~/components/Copy.svelte";
@@ -42,16 +40,24 @@
   const getListAddress = async () => {
     isLoading = true;
     try {
-      const response: AddressData = await sendMessage(
-        "getListAddress",
-        undefined
-      );
-      if (response) {
-        listAddress = response;
+      const response: any = await nimbus.get("/accounts/list");
+      if (response && response?.data) {
+        const structWalletData = response?.data.map((item) => {
+          return {
+            position: item.position,
+            id: item.id,
+            type: item.type,
+            label: item.label,
+            address: item.type === "CEX" ? item.id : item.accountId,
+          };
+        });
+        listAddress = structWalletData;
+        isLoading = false;
+      } else {
+        isLoading = false;
       }
     } catch (e) {
       console.log("e: ", e);
-    } finally {
       isLoading = false;
     }
   };
