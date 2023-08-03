@@ -469,7 +469,7 @@
           rightLabel="High"
           averageText="Avg Market"
           progress={volatilityCompareAvg}
-          tooltipText="Volality"
+          tooltipText="Volatility"
         />
         <ProgressBar
           leftLabel="Low"
