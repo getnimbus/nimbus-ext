@@ -11,7 +11,7 @@
     : "linear-gradient(to right, rgb(225, 64, 64), rgb(255, 199, 1), rgb(37, 183, 112))";
 </script>
 
-<div class="relative pt-[60px] pb-[20px]">
+<div class="relative pt-[40px] pb-[20px]">
   <div class="flex items-center gap-2">
     <div class="xl:text-base text-2xl">{leftLabel}</div>
     <div class="w-full h-2 rounded-lg relative" style={`background: ${range};`}>
@@ -19,7 +19,7 @@
         class="w-[1px] h-5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-700"
       />
       <div
-        class="absolute bottom-8 transform -translate-x-1/2"
+        class="absolute bottom-5 transform -translate-x-1/2"
         style={`left: ${progress}%;`}
       >
         <div class="relative text-white bg-black px-2 py-1 rounded-md">

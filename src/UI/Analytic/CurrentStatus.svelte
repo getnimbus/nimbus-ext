@@ -329,7 +329,6 @@
 
           dataTokenHolding = response.result;
           getPersonalizeTag();
-          getOverview();
 
           dataRank = handleFormatDataPieChart(response.result, "rank");
           dataCategory = handleFormatDataPieChart(response.result, "category");
@@ -674,6 +673,7 @@
         isEmptyDataPie = false;
         selectedDataPie = [];
         getHoldingToken();
+        getOverview();
       }
     }
   }
