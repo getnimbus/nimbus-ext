@@ -62,7 +62,8 @@
     <div class="text-left flex items-center gap-3">
       <div class="relative">
         <img
-          src={data.logo}
+          src={data.logo ||
+            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
           alt=""
           width="30"
           height="30"
