@@ -31,37 +31,35 @@
   // };
 
   const getTotalValueHistoryAndDailyGain = async () => {
-    if (getAddressContext(selectedWallet)?.type === "EVM") {
-      isLoading = true;
-      try {
-        const response: any = await sendMessage("getTotalValueHistory", {
-          address: selectedWallet,
-          chain: selectedChain,
-          // fromDate: "YYYY-MM-DD",
-          // toDate: "YYYY-MM-DD",
-        });
+    isLoading = true;
+    try {
+      const response: any = await sendMessage("getTotalValueHistory", {
+        address: selectedWallet,
+        chain: selectedChain,
+        // fromDate: "YYYY-MM-DD",
+        // toDate: "YYYY-MM-DD",
+      });
 
-        if (response === undefined) {
+      if (response === undefined) {
+        isEmpty = true;
+        isLoading = false;
+        return;
+      } else if (selectedWallet === response?.address) {
+        if (response?.result?.length === 0) {
           isEmpty = true;
           isLoading = false;
           return;
-        } else if (selectedWallet === response?.address) {
-          if (response?.result?.length === 0) {
-            isEmpty = true;
-            isLoading = false;
-            return;
-          }
-          dataTotalValueHistory = response?.result?.holdingHistory;
-          dataDailyPnL = response?.result?.returnsChange;
-
-          isLoading = false;
-        } else {
-          isEmpty = true;
-          isLoading = false;
         }
-      } catch (e) {
-        console.log("error: ", e);
+        dataTotalValueHistory = response?.result?.holdingHistory;
+        dataDailyPnL = response?.result?.returnsChange;
+
+        isLoading = false;
+      } else {
+        isEmpty = true;
+        isLoading = false;
       }
+    } catch (e) {
+      console.log("error: ", e);
     }
   };
 

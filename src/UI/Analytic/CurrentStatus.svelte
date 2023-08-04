@@ -305,45 +305,43 @@
   };
 
   const getHoldingToken = async (isReload: boolean = false) => {
-    if (getAddressContext(selectedWallet)?.type === "EVM") {
-      isLoadingDataPie = true;
+    isLoadingDataPie = true;
 
-      try {
-        const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
-          address: selectedWallet,
-          reload: isReload,
-          chain: selectedChain,
-        });
+    try {
+      const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
+        address: selectedWallet,
+        reload: isReload,
+        chain: selectedChain,
+      });
 
-        if (response === null) {
-          isEmptyDataPie = true;
-
-          isLoadingDataPie = false;
-        } else if (selectedWallet === response?.address) {
-          if (response?.result?.length === 0) {
-            isEmptyDataPie = true;
-
-            isLoadingDataPie = false;
-            return;
-          }
-
-          dataTokenHolding = response.result;
-          getPersonalizeTag();
-
-          dataRank = handleFormatDataPieChart(response.result, "rank");
-          dataCategory = handleFormatDataPieChart(response.result, "category");
-          dataSector = handleFormatDataPieChart(response.result, "sector");
-
-          isLoadingDataPie = false;
-        } else {
-          isEmptyDataPie = true;
-          isLoadingDataPie = false;
-        }
-      } catch (e) {
-        console.log("error: ", e);
-        isLoadingDataPie = false;
+      if (response === null) {
         isEmptyDataPie = true;
+
+        isLoadingDataPie = false;
+      } else if (selectedWallet === response?.address) {
+        if (response?.result?.length === 0) {
+          isEmptyDataPie = true;
+
+          isLoadingDataPie = false;
+          return;
+        }
+
+        dataTokenHolding = response.result;
+        getPersonalizeTag();
+
+        dataRank = handleFormatDataPieChart(response.result, "rank");
+        dataCategory = handleFormatDataPieChart(response.result, "category");
+        dataSector = handleFormatDataPieChart(response.result, "sector");
+
+        isLoadingDataPie = false;
+      } else {
+        isEmptyDataPie = true;
+        isLoadingDataPie = false;
       }
+    } catch (e) {
+      console.log("error: ", e);
+      isLoadingDataPie = false;
+      isEmptyDataPie = true;
     }
   };
 
