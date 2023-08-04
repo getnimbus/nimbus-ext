@@ -375,13 +375,13 @@
               > <span class="text-gray-400">/</span>
               <span
                 class={`${
-                  compareData?.btc?.changeLF?.btcChange < 0
+                  compareData?.base?.changeLF?.btcChange < 0
                     ? "text-red-500"
                     : "text-[#00A878]"
                 }`}
               >
                 <TooltipNumber
-                  number={Math.abs(compareData?.btc?.changeLF.btcChange)}
+                  number={Math.abs(compareData?.base?.changeLF.btcChange)}
                   type="percent"
                 />%</span
               >
