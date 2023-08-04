@@ -302,26 +302,27 @@
         const selectedTypeWalletRes = await browser.storage.sync.get(
           "typeWalletAddress"
         );
-        if (
-          selectedTypeWalletRes &&
-          selectedTypeWalletRes?.typeWalletAddress?.length !== 0
-        ) {
+        if (selectedTypeWalletRes?.typeWalletAddress !== null) {
           typeWallet.update(
             (n) => (n = selectedTypeWalletRes.typeWalletAddress)
           );
+        } else {
+          typeWallet.update((n) => (n = listAddress[0]?.type));
         }
 
         const selectedChainRes = await browser.storage.sync.get(
           "selectedChain"
         );
-        if (selectedChainRes && selectedChainRes?.selectedChain?.length !== 0) {
+        if (selectedChainRes?.selectedChain !== null) {
           chain.update((n) => (n = selectedChainRes.selectedChain));
+        } else {
+          chain.update((n) => (n = "ALL"));
         }
 
         const selectedWalletRes = await browser.storage.sync.get(
           "selectedWallet"
         );
-        if (selectedWalletRes) {
+        if (selectedWalletRes?.selectedWallet !== null) {
           if (selectedWalletRes?.selectedWallet?.length !== 0) {
             wallet.update((n) => (n = selectedWalletRes.selectedWallet));
           }
@@ -332,6 +333,8 @@
           ) {
             wallet.update((n) => (n = listAddress[0].value));
           }
+        } else {
+          wallet.update((n) => (n = listAddress[0]?.value));
         }
 
         updateStateFromParams();
