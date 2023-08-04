@@ -48,7 +48,7 @@
 
         <section class="overflow-hidden">
           <div
-            class="mx-auto max-w-c-1390 px-4 py-4 rounded-lg bg-gradient-to-t from-[#F8F9FF] to-[#DEE7FF] dark:bg-gradient-to-t dark:from-transparent dark:to-transparent dark:bg-blacksection dark:stroke-strokedark"
+            class="mx-auto max-w-c-1390 px-4 py-4 rounded-[20px] bg-gradient-to-t from-[#F8F9FF] to-[#DEE7FF] dark:bg-gradient-to-t dark:from-transparent dark:to-transparent dark:bg-blacksection dark:stroke-strokedark"
           >
             <div
               class="flex flex-wrap gap-8 md:flex-nowrap md:items-center md:justify-between md:gap-0"

@@ -98,7 +98,7 @@
         <div class="flex justify-between items-center w-full -mt-10">
           {#if listVirtualPortfolio && listVirtualPortfolio.length !== 0}
             <div
-              class="relative overflow-x-hidden w-full flex flex-row gap-3 justify-between items-center"
+              class="relative overflow-hidden w-full flex flex-row gap-3 justify-between items-center"
               bind:this={containerVirtual}
             >
               <div

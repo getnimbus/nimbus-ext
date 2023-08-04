@@ -689,7 +689,7 @@
 
     <div class="flex justify-end gap-5 w-full">
       <div
-        class="relative overflow-x-hidden w-full flex gap-3 justify-between items-center"
+        class="relative overflow-hidden w-full flex gap-3 justify-between items-center"
         bind:this={container}
       >
         <div

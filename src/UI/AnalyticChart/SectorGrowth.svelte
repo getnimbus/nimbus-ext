@@ -431,7 +431,7 @@
   <div class="flex flex-col gap-4">
     <div class="xl:text-xl text-3xl font-medium text-black">Sector Growth</div>
     <div
-      class="relative overflow-x-hidden w-full flex gap-3 justify-between items-center"
+      class="relative overflow-hidden w-full flex gap-3 justify-between items-center"
       bind:this={container}
     >
       <div

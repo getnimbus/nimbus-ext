@@ -407,8 +407,18 @@
             <div class="xl:text-2xl text-3xl">{goodPerf?.symbol}</div>
             <div class="xl:text-lg text-2xl flex items-center gap-1">
               <img src={TrendUp} alt="trend" class="mb-1" />
-              <div class="text-[#00A878]">
-                {(goodPerf?.change30DPercent || 0) * 100}%
+              <div
+                class={`${
+                  goodPerf?.change30DPercent >= 0
+                    ? "text-[#00A878]"
+                    : "text-red-500"
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(goodPerf?.change30DPercent || 0)}
+                  type="percent"
+                />
+                %
               </div>
             </div>
           </div>
@@ -425,8 +435,18 @@
             <div class="xl:text-2xl text-3xl">{badPerf?.symbol}</div>
             <div class="xl:text-lg text-2xl flex items-center gap-1">
               <img src={TrendDown} alt="trend" class="mb-1" />
-              <div class="text-red-500">
-                {Math.abs((badPerf?.change30DPercent || 0) * 100)}%
+              <div
+                class={`${
+                  badPerf?.change30DPercent >= 0
+                    ? "text-[#00A878]"
+                    : "text-red-500"
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(badPerf?.change30DPercent || 0)}
+                  type="percent"
+                />
+                %
               </div>
             </div>
           </div>

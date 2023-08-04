@@ -761,7 +761,7 @@
                 <!-- mobile list address wallet -->
                 {#if formatListAddress && formatListAddress?.length !== 0}
                   <div
-                    class="xl:hidden relative overflow-x-hidden w-full flex flex-row gap-3 justify-between items-center"
+                    class="xl:hidden relative overflow-hidden w-full flex flex-row gap-3 justify-between items-center"
                     bind:this={container}
                   >
                     <div

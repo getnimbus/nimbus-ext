@@ -216,83 +216,106 @@
             </div>
           </div>
           {#if selectedTypeReturn === "overview"}
-            <div class="grid grid-cols-4 gap-4">
-              <div class="flex flex-col gap-2 py-3">
-                <div class="xl:text-base text-2xl text-black">1D</div>
-                <div class="flex items-center">
-                  <div
-                    class={`xl:text-base text-2xl ${
-                      data?.base?.netWorthChange?.networth1D < 0
-                        ? "text-red-500"
-                        : "text-[#00A878]"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(data?.base?.netWorthChange?.networth1D)}
-                      type="percent"
-                    />%
-                  </div>
+            <div class="flex gap-4">
+              <div
+                class="rounded-[20px] bg-[#FAFAFBFF] px-4 py-3 flex flex-col gap-2"
+                style="z-index: 2"
+              >
+                <div class="xl:text-base text-xl text-gray-500">1D</div>
+                <div
+                  class={`xl:text-base text-xl ${
+                    data?.base?.netWorthChange?.networth1D < 0
+                      ? "text-red-500"
+                      : "text-[#00A878]"
+                  }`}
+                >
+                  <TooltipNumber
+                    number={Math.abs(data?.base?.netWorthChange?.networth1D)}
+                    type="percent"
+                  />%
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2 py-3">
-                <div class="xl:text-base text-2xl text-black">7D</div>
-                <div class="flex items-center">
-                  <div
-                    class={`xl:text-base text-2xl ${
-                      data?.base?.netWorthChange?.networth7D < 0
-                        ? "text-red-500"
-                        : "text-[#00A878]"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(data?.base?.netWorthChange?.networth7D)}
-                      type="percent"
-                    />%
-                  </div>
+              <div
+                class="rounded-[20px] bg-[#FAFAFBFF] px-4 py-3 flex flex-col gap-2"
+                style="z-index: 2"
+              >
+                <div class="xl:text-base text-xl text-gray-500">7D</div>
+                <div
+                  class={`xl:text-base text-xl ${
+                    data?.base?.netWorthChange?.networth7D < 0
+                      ? "text-red-500"
+                      : "text-[#00A878]"
+                  }`}
+                >
+                  <TooltipNumber
+                    number={Math.abs(data?.base?.netWorthChange?.networth7D)}
+                    type="percent"
+                  />%
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2 py-3">
-                <div class="xl:text-base text-2xl text-black">30M</div>
-                <div class="flex items-center">
-                  <div
-                    class={`xl:text-base text-2xl ${
-                      data?.base?.netWorthChange?.networth30D < 0
-                        ? "text-red-500"
-                        : "text-[#00A878]"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(data?.base?.netWorthChange?.networth30D)}
-                      type="percent"
-                    />%
-                  </div>
+              <div
+                class="rounded-[20px] bg-[#FAFAFBFF] px-4 py-3 flex flex-col gap-2"
+                style="z-index: 2"
+              >
+                <div class="xl:text-base text-xl text-gray-500">30D</div>
+                <div
+                  class={`xl:text-base text-xl ${
+                    data?.base?.netWorthChange?.networth30D < 0
+                      ? "text-red-500"
+                      : "text-[#00A878]"
+                  }`}
+                >
+                  <TooltipNumber
+                    number={Math.abs(data?.base?.netWorthChange?.networth30D)}
+                    type="percent"
+                  />%
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2 py-3">
-                <div class="xl:text-base text-2xl text-black">1Y</div>
-                <div class="flex items-center">
-                  <div
-                    class={`xl:text-base text-2xl ${
-                      data?.base?.netWorthChange?.networth1Y < 0
-                        ? "text-red-500"
-                        : "text-[#00A878]"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(data?.base?.netWorthChange?.networth1Y)}
-                      type="percent"
-                    />%
-                  </div>
+              <div
+                class="rounded-[20px] bg-[#FAFAFBFF] px-4 py-3 flex flex-col gap-2"
+                style="z-index: 2"
+              >
+                <div class="xl:text-base text-xl text-gray-500">1Y</div>
+                <div
+                  class={`xl:text-base text-xl ${
+                    data?.base?.netWorthChange?.networth1Y < 0
+                      ? "text-red-500"
+                      : "text-[#00A878]"
+                  }`}
+                >
+                  <TooltipNumber
+                    number={Math.abs(data?.base?.netWorthChange?.networth1Y)}
+                    type="percent"
+                  />%
+                </div>
+              </div>
+
+              <div
+                class="rounded-[20px] bg-[#FAFAFBFF] px-4 py-3 flex flex-col gap-2"
+                style="z-index: 2"
+              >
+                <div class="xl:text-base text-xl text-gray-500">Lifetime</div>
+                <div
+                  class={`xl:text-base text-xl ${
+                    data?.base?.changeLF?.portfolioChange < 0
+                      ? "text-red-500"
+                      : "text-[#00A878]"
+                  }`}
+                >
+                  <TooltipNumber
+                    number={Math.abs(data?.base?.changeLF?.portfolioChange)}
+                    type="percent"
+                  />%
                 </div>
               </div>
             </div>
           {:else}
             <div class="w-full">
               <div
-                class="relative overflow-x-hidden w-full flex gap-3 justify-between items-center"
+                class="relative overflow-hidden w-full flex gap-3 justify-between items-center"
                 bind:this={container}
               >
                 <div
@@ -332,7 +355,7 @@
                         {dayjs.unix(item.timestamp).format("MMM YYYY")}
                       </div>
                       <div
-                        class={`xl:text-xl text-2xl ${
+                        class={`xl:text-base text-xl ${
                           item.percentChange < 0
                             ? "text-red-500"
                             : "text-[#00A878]"

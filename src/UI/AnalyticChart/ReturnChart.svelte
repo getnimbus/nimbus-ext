@@ -352,6 +352,42 @@
             </div>
           </div>
         </div>
+
+        <div class="grid grid-cols-2">
+          <div class="col-span-1">
+            <div class="xl:text-base text-2xl text-black flex justify-start">
+              Return Lifetime
+            </div>
+          </div>
+          <div class="col-span-1 flex items-center justify-end">
+            <div class={`xl:text-base text-2xl`}>
+              <span
+                class={`${
+                  compareData?.base?.changeLF?.portfolioChange < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(compareData?.base?.changeLF.portfolioChange)}
+                  type="percent"
+                />%</span
+              > <span class="text-gray-400">/</span>
+              <span
+                class={`${
+                  compareData?.btc?.changeLF?.btcChange < 0
+                    ? "text-red-500"
+                    : "text-[#00A878]"
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(compareData?.btc?.changeLF.btcChange)}
+                  type="percent"
+                />%</span
+              >
+            </div>
+          </div>
+        </div>
       </div>
       <div class="mt-8 space-y-3">
         <div class="xl:text-base text-2xl">
@@ -361,7 +397,7 @@
             >{Math.abs(
               compareData?.base?.netWorthChange?.networth30D -
                 compareData?.btc?.netWorthChange?.networth30D
-            )}%</strong
+            ).toFixed(2)}%</strong
           >
         </div>
       </div>
