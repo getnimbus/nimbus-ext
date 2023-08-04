@@ -24,12 +24,21 @@
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const tabParams = urlParams.get("tab");
-    activeTabValue = tabParams;
-    window.history.replaceState(
-      null,
-      "",
-      window.location.pathname + `?tab=${tabParams}`
-    );
+    if (tabParams) {
+      activeTabValue = tabParams;
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + `?tab=${tabParams}`
+      );
+    } else {
+      activeTabValue = "settings";
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + `?tab=settings`
+      );
+    }
   });
 </script>
 
@@ -43,7 +52,9 @@
       </div>
       <div class="flex-1 px-6 py-4">
         {#if activeTabValue === "wallets"}
-          <TabWallets />
+          {#if APP_TYPE.TYPE === "WEB"}
+            <TabWallets />
+          {/if}
           <!-- {:else if activeTabValue === "nft"}
         <TabNft /> -->
         {:else if activeTabValue === "dashboard"}
@@ -51,7 +62,9 @@
         {:else if activeTabValue === "highlight"}
           <TabHighlight />
         {:else if activeTabValue === "notification"}
-          <TabNotification />
+          {#if APP_TYPE.TYPE === "WEB"}
+            <TabNotification />
+          {/if}
         {:else if activeTabValue === "settings"}
           <TabSettings />
         {/if}

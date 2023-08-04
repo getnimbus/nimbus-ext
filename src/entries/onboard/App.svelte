@@ -8,7 +8,6 @@
   import SlideThree from "~/UI/Onboard/SlideThree.svelte";
   import SlideFour from "~/UI/Onboard/SlideFour.svelte";
   import SlideFive from "~/UI/Onboard/SlideFive.svelte";
-  import SlideSix from "~/UI/Onboard/SlideSix.svelte";
 
   import "swiper/swiper.scss";
   import "swiper/components/pagination/pagination.scss";
@@ -51,11 +50,7 @@
     </SwiperSlide>
 
     <SwiperSlide>
-      <SlideFive skip={slideToLast} />
-    </SwiperSlide>
-
-    <SwiperSlide>
-      <SlideSix />
+      <SlideFive />
     </SwiperSlide>
   </Swiper>
 </div>

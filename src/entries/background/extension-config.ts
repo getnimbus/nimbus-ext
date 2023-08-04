@@ -43,21 +43,19 @@ browser.commands.onCommand.addListener((command) => {
 });
 
 browser.action.onClicked.addListener(() => {
-  browser.tabs.create({ url: "src/entries/newTab/index.html" }); // auto jump to normal tab
-  return;
-
-  browser.storage.sync.get("defaultnewtab").then(function (storage) {
-    if (storage.defaultnewtab === false) {
-      console.log("Create new tab");
-      browser.tabs.create({ url: "src/entries/newTab/index.html#normal" }); // #normal to open and break the condition new tab default
-    } else {
-      browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-        tabs.forEach(tab => {
-          browser.tabs.sendMessage(tab.id, { action: "toggleSidebar" });
-        })
-      });
-    }
-  })
+  browser.tabs.create({ url: "https://app.getnimbus.io/" }); // auto jump to normal tab
+  // browser.storage.sync.get("defaultnewtab").then(function (storage) {
+  //   if (storage.defaultnewtab === false) {
+  //     console.log("Create new tab");
+  //     browser.tabs.create({ url: "src/entries/newTab/index.html#normal" }); // #normal to open and break the condition new tab default
+  //   } else {
+  //     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+  //       tabs.forEach(tab => {
+  //         browser.tabs.sendMessage(tab.id, { action: "toggleSidebar" });
+  //       })
+  //     });
+  //   }
+  // })
 });
 
 browser.runtime.onInstalled.addListener((details) => {
