@@ -51,11 +51,10 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="display: flex; align-items: centers; gap: 4px">
-                ${
-                  params?.data?.logo
-                    ? `<img src=${params?.data?.logo} alt="" width=20 height=20 style="border-radius: 100%" />`
-                    : ""
-                }
+                <img src=${
+                  params?.data?.logo ||
+                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                } alt="" width=20 height=20 style="border-radius: 100%" />
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
                   ${params?.name} ${
           params?.data?.symbol ? `(${params?.data?.symbol})` : ""
