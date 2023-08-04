@@ -245,7 +245,7 @@
               >
             </div>
             <div
-              class="w-max flex gap-3 overflow-x-auto whitespace-nowrap container"
+              class="w-max flex gap-3 overflow-x-auto whitespace-nowrap"
               bind:this={scrollContainer}
               on:scroll={handleScroll}
             >
@@ -424,15 +424,5 @@
     background-position: top right;
     padding-bottom: 144px;
     padding-top: 24px;
-  }
-
-  .container::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .container {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
   }
 </style>

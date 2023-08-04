@@ -319,7 +319,7 @@
                 bind:this={container}
               >
                 <div
-                  class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
+                  class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg z-10 ${
                     isScrollStart ? "hidden" : "block"
                   }`}
                   style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
@@ -342,7 +342,7 @@
                   >
                 </div>
                 <div
-                  class="w-max flex gap-4 overflow-x-auto whitespace-nowrap container"
+                  class="w-max flex gap-4 overflow-x-auto whitespace-nowrap"
                   bind:this={scrollContainer}
                   on:scroll={handleScroll}
                 >
@@ -368,7 +368,7 @@
                 </div>
                 {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
                   <div
-                    class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
+                    class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg z-10 ${
                       isScrollEnd ? "hidden" : "block"
                     }`}
                     style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
@@ -400,14 +400,5 @@
   </div>
 </ErrorBoundary>
 
-<style windi:preflights:global windi:safelist:global>
-  .container::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .container {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
+<style>
 </style>

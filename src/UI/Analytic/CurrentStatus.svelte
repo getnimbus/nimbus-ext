@@ -716,7 +716,7 @@
           >
         </div>
         <div
-          class="w-max flex gap-3 overflow-x-auto whitespace-nowrap container"
+          class="w-max flex gap-3 overflow-x-auto whitespace-nowrap"
           bind:this={scrollContainer}
           on:scroll={handleScroll}
         >
@@ -923,14 +923,5 @@
   </div>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
-  .container::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .container {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
+<style>
 </style>
