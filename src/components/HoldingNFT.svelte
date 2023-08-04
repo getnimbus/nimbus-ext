@@ -83,17 +83,17 @@
         on:mouseenter={() => (showTooltipListNFT = true)}
         on:mouseleave={() => (showTooltipListNFT = false)}
       >
-        {#each data?.tokens.slice(0, 4) as token, index}
-          <img
-            src={token?.image_url ||
-              "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-            alt=""
-            class={`w-9 h-9 rounded-md border border-gray-300 overflow-hidden bg-white ${
-              index > 0 && "-ml-2"
-            }`}
-          />
-        {/each}
-        {#if data?.balance > 4}
+        {#if data?.balance > 5}
+          {#each data?.tokens.slice(0, 4) as token, index}
+            <img
+              src={token?.image_url ||
+                "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
+              alt=""
+              class={`w-9 h-9 rounded-md border border-gray-300 overflow-hidden bg-white ${
+                index > 0 && "-ml-2"
+              }`}
+            />
+          {/each}
           <div class="relative w-9 h-9">
             <img
               src={data?.tokens[4].image_url ||
@@ -107,15 +107,26 @@
               ...
             </div>
           </div>
+          {#if showTooltipListNFT && data?.balance > 5}
+            <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
+              <tooltip-detail
+                text={`${data?.balance} NFTs on collection ${data?.collection?.name}`}
+              />
+            </div>
+          {/if}
+        {:else}
+          {#each data?.tokens as token, index}
+            <img
+              src={token?.image_url ||
+                "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
+              alt=""
+              class={`w-9 h-9 rounded-md border border-gray-300 overflow-hidden bg-white ${
+                index > 0 && "-ml-2"
+              }`}
+            />
+          {/each}
         {/if}
       </div>
-      {#if showTooltipListNFT && data?.balance > 4}
-        <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
-          <tooltip-detail
-            text={`${data?.balance} NFTs on collection ${data?.collection?.name}`}
-          />
-        </div>
-      {/if}
     </div>
   </td>
 
