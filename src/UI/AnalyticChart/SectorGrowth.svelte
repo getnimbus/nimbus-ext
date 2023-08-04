@@ -157,156 +157,151 @@
   };
 
   const getSectorGrowth = async (dataPersonalizeTag) => {
-    if (getAddressContext(selectedWallet)?.type === "EVM") {
-      isLoadingSectorGrowth = true;
-      try {
-        const response: AnalyticSectorGrowthRes = await sendMessage(
-          "getSectorGrowth",
-          {
-            address: selectedWallet,
-            chain: selectedChain,
-            // fromDate: "YYYY-MM-DD",
-            // toDate: "YYYY-MM-DD",
-          }
-        );
+    isLoadingSectorGrowth = true;
+    try {
+      const response: AnalyticSectorGrowthRes = await sendMessage(
+        "getSectorGrowth",
+        {
+          address: selectedWallet,
+          chain: selectedChain,
+          // fromDate: "YYYY-MM-DD",
+          // toDate: "YYYY-MM-DD",
+        }
+      );
 
-        if (response === undefined) {
+      if (response === undefined) {
+        isEmptySectorGrowth = true;
+        isLoadingSectorGrowth = false;
+        return;
+      } else if (selectedWallet === response?.address) {
+        if (response?.result?.length === 0) {
           isEmptySectorGrowth = true;
           isLoadingSectorGrowth = false;
           return;
-        } else if (selectedWallet === response?.address) {
-          if (response?.result?.length === 0) {
-            isEmptySectorGrowth = true;
-            isLoadingSectorGrowth = false;
-            return;
-          }
+        }
 
-          const listCategory = dataPersonalizeTag.map((item) => {
-            return {
-              label: item.category,
-              value: item.category,
-            };
-          });
-          typeListCategory = [...typeListCategory, ...listCategory];
+        const listCategory = dataPersonalizeTag.map((item) => {
+          return {
+            label: item.category,
+            value: item.category,
+          };
+        });
+        typeListCategory = [...typeListCategory, ...listCategory];
 
-          const customDataPersonalizeTag = dataPersonalizeTag.map((item) => {
-            return {
-              dataTag: item.dataTag.map((data) => {
-                return {
-                  tokens: data.tokens.map((token) => {
-                    return {
-                      ...token,
-                      [token.category]: token.tag,
-                    };
-                  }),
-                };
-              }),
-            };
-          });
+        const customDataPersonalizeTag = dataPersonalizeTag.map((item) => {
+          return {
+            dataTag: item.dataTag.map((data) => {
+              return {
+                tokens: data.tokens.map((token) => {
+                  return {
+                    ...token,
+                    [token.category]: token.tag,
+                  };
+                }),
+              };
+            }),
+          };
+        });
 
-          const listDataCustom = flatten(
-            flatten(customDataPersonalizeTag.map((item) => item.dataTag))?.map(
-              (item) => item.tokens
-            )
-          );
+        const listDataCustom = flatten(
+          flatten(customDataPersonalizeTag.map((item) => item.dataTag))?.map(
+            (item) => item.tokens
+          )
+        );
 
-          const formatDataResult = response.result.map((data) => {
-            const formatDataHolding = data.holding.map((item) => {
-              const selectedListDataCustom = listDataCustom.filter(
-                (customData) => {
-                  return (
-                    customData.contractAddress === item.contractAddress &&
-                    item.chain === customData.chain
-                  );
-                }
-              );
-
-              const findToken = listDataCustom.find((customData) => {
+        const formatDataResult = response.result.map((data) => {
+          const formatDataHolding = data.holding.map((item) => {
+            const selectedListDataCustom = listDataCustom.filter(
+              (customData) => {
                 return (
                   customData.contractAddress === item.contractAddress &&
                   item.chain === customData.chain
                 );
-              });
-
-              if (
-                findToken?.contractAddress === item.contractAddress &&
-                item.chain === findToken?.chain &&
-                selectedListDataCustom.length !== 0
-              ) {
-                const customTokenHolding = {
-                  ...item,
-                  custom: selectedListDataCustom.map((item) => {
-                    return {
-                      [item.category]: item.tag,
-                    };
-                  }),
-                };
-                convertCustomArrayToObject(customTokenHolding, "custom");
-
-                return customTokenHolding;
-              } else {
-                return item;
               }
+            );
+
+            const findToken = listDataCustom.find((customData) => {
+              return (
+                customData.contractAddress === item.contractAddress &&
+                item.chain === customData.chain
+              );
             });
 
-            const dataHolding = formatDataHolding.map((item) => {
-              const customCategory = dataPersonalizeTag
-                .map((category) => {
+            if (
+              findToken?.contractAddress === item.contractAddress &&
+              item.chain === findToken?.chain &&
+              selectedListDataCustom.length !== 0
+            ) {
+              const customTokenHolding = {
+                ...item,
+                custom: selectedListDataCustom.map((item) => {
                   return {
-                    category: category.category,
-                    isInclude: item.hasOwnProperty(category.category),
+                    [item.category]: item.tag,
                   };
-                })
-                .filter((eachCustom) => !eachCustom.isInclude);
+                }),
+              };
+              convertCustomArrayToObject(customTokenHolding, "custom");
 
-              if (customCategory.length !== 0) {
-                const customToken = {
-                  ...item,
-                  customCategory: customCategory.map((custom) => {
-                    return {
-                      [custom.category]: "Other",
-                    };
-                  }),
-                };
-                convertCustomArrayToObject(customToken, "customCategory");
-                return customToken;
-              }
-
+              return customTokenHolding;
+            } else {
               return item;
-            });
+            }
+          });
 
+          const dataHolding = formatDataHolding.map((item) => {
+            const customCategory = dataPersonalizeTag
+              .map((category) => {
+                return {
+                  category: category.category,
+                  isInclude: item.hasOwnProperty(category.category),
+                };
+              })
+              .filter((eachCustom) => !eachCustom.isInclude);
+
+            if (customCategory.length !== 0) {
+              const customToken = {
+                ...item,
+                customCategory: customCategory.map((custom) => {
+                  return {
+                    [custom.category]: "Other",
+                  };
+                }),
+              };
+              convertCustomArrayToObject(customToken, "customCategory");
+              return customToken;
+            }
+
+            return item;
+          });
+
+          return {
+            ...data,
+            holding: dataHolding,
+          };
+        });
+
+        personalizeCategoryData = dataPersonalizeTag
+          .map((item) => item.category)
+          .map((data) => {
             return {
-              ...data,
-              holding: dataHolding,
+              category: data,
+              data: handleFormatDataLineChart(formatDataResult, data),
             };
           });
 
-          personalizeCategoryData = dataPersonalizeTag
-            .map((item) => item.category)
-            .map((data) => {
-              return {
-                category: data,
-                data: handleFormatDataLineChart(formatDataResult, data),
-              };
-            });
+        dataSector = handleFormatDataLineChart(formatDataResult, "sector");
+        dataCategory = handleFormatDataLineChart(formatDataResult, "category");
+        dataRank = handleFormatDataLineChart(formatDataResult, "rank");
 
-          dataSector = handleFormatDataLineChart(formatDataResult, "sector");
-          dataCategory = handleFormatDataLineChart(
-            formatDataResult,
-            "category"
-          );
-          dataRank = handleFormatDataLineChart(formatDataResult, "rank");
-
-          isLoadingSectorGrowth = false;
-        } else {
-          isEmptySectorGrowth = true;
-          isLoadingSectorGrowth = false;
-        }
-      } catch (e) {
-        console.log("error: ", e);
         isLoadingSectorGrowth = false;
+      } else {
         isEmptySectorGrowth = true;
+        isLoadingSectorGrowth = false;
       }
+    } catch (e) {
+      console.log("error: ", e);
+      isLoadingSectorGrowth = false;
+      isEmptySectorGrowth = true;
     }
   };
 

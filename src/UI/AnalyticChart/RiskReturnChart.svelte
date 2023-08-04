@@ -1,19 +1,19 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { chain, wallet } from "~/store";
-  import { getAddressContext } from "~/utils";
-
+  import { formatCurrency, getAddressContext } from "~/utils";
+  import maxBy from "lodash/maxBy";
+  import minBy from "lodash/minBy";
   import groupBy from "lodash/groupBy";
   import sumBy from "lodash/sumBy";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
+
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import EChart from "~/components/EChart.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
-  import maxBy from "lodash/maxBy";
-  import minBy from "lodash/minBy";
 
-  import { AnimateSharedLayout, Motion } from "svelte-motion";
   import Logo from "~/assets/logo-1.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
@@ -32,6 +32,7 @@
   let selectedTypeChart = "overview";
   let riskBreakdownData = [];
   let isLoadingDataCompare = false;
+  let dataShrapeRatioGroup = {};
   let optionBar = {
     tooltip: {
       trigger: "item",
@@ -100,6 +101,49 @@
     tooltip: {
       trigger: "item",
       extraCssText: "z-index: 9997",
+      formatter: function (params) {
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                  <span>${params?.marker}</span> ${params?.data?.name}
+                </div>
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
+                    $${formatCurrency(Number(params?.data?.value))}
+                  </div>
+                </div>
+              </div>
+              <div style="border-top: 0.8px solid #d1d5db; padding-top: 10px; display: flex; flex-direction: column; gap: 12px;">
+                ${dataShrapeRatioGroup[params?.data?.name]
+                  .map((item) => {
+                    return `
+                      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                        <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                            <img src=${
+                              item?.logo ||
+                              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                            } alt="" width=20 height=20 style="border-radius: 100%" />
+                            <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                              ${item?.name} ${
+                      item?.symbol ? `(${item?.symbol})` : ""
+                    }
+                            </div>
+                        </div>
+                        <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                          <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
+                           $${formatCurrency(
+                             Number(item?.amount) * Number(item?.price?.price)
+                           )}
+                          </div>
+                        </div>
+                      </div>
+              `;
+                  })
+                  .join("")}
+              </div>
+            </div>`;
+      },
     },
     legend: {
       top: "0%",
@@ -252,6 +296,8 @@
           (item) => item.sharpeRatioLabel
         );
 
+        dataShrapeRatioGroup = shrapeRatioGroup;
+
         riskBreakdownChartOption = {
           ...riskBreakdownChartOption,
           series: [
@@ -288,9 +334,7 @@
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        if (getAddressContext(selectedWallet)?.type === "EVM") {
-          getAnalyticCompare();
-        }
+        getAnalyticCompare();
       }
     }
   }

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { wallet, chain } from "~/store";
-  import { formatCurrencyV2, getAddressContext } from "~/utils";
+  import { formatCurrency, formatCurrencyV2, getAddressContext } from "~/utils";
   import groupBy from "lodash/groupBy";
   import sumBy from "lodash/sumBy";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -18,12 +18,23 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import EChart from "~/components/EChart.svelte";
-
-  import Logo from "~/assets/logo-1.svg";
+  import CtaIcon from "~/components/CtaIcon.svelte";
   import ProgressBar from "~/components/ProgressBar.svelte";
   import CheckIcon from "~/components/CheckIcon.svelte";
   import DangerIcon from "~/components/DangerIcon.svelte";
-  import CtaIcon from "~/components/CtaIcon.svelte";
+
+  import Logo from "~/assets/logo-1.svg";
+
+  const riskTypeChart = [
+    {
+      label: "Overview",
+      value: "overview",
+    },
+    {
+      label: "Risk breakdown",
+      value: "riskBreakdown",
+    },
+  ];
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -38,6 +49,7 @@
   let compareData = {};
   let selectedTypeChart = "overview";
   let isLoadingDataCompare = false;
+  let dataRiskGroup = {};
   let optionBar = {
     tooltip: {
       trigger: "axis",
@@ -99,6 +111,49 @@
     tooltip: {
       trigger: "item",
       extraCssText: "z-index: 9997",
+      formatter: function (params) {
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                  <span>${params?.marker}</span> ${params?.data?.name}
+                </div>
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
+                    $${formatCurrency(Number(params?.data?.value))}
+                  </div>
+                </div>
+              </div>
+              <div style="border-top: 0.8px solid #d1d5db; padding-top: 10px; display: flex; flex-direction: column; gap: 12px;">
+                ${dataRiskGroup[params?.data?.name]
+                  .map((item) => {
+                    return `
+                      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                        <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                            <img src=${
+                              item?.logo ||
+                              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                            } alt="" width=20 height=20 style="border-radius: 100%" />
+                            <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                              ${item?.name} ${
+                      item?.symbol ? `(${item?.symbol})` : ""
+                    }
+                            </div>
+                        </div>
+                        <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                          <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
+                           $${formatCurrency(
+                             Number(item?.amount) * Number(item?.price?.price)
+                           )}
+                          </div>
+                        </div>
+                      </div>
+              `;
+                  })
+                  .join("")}
+              </div>
+            </div>`;
+      },
     },
     legend: {
       top: "0%",
@@ -149,6 +204,8 @@
 
         // TODO: Break by high, medium, low risk
 
+        dataRiskGroup = riskGroup;
+
         riskBreakdownChartOption = {
           ...riskBreakdownChartOption,
           series: [
@@ -166,8 +223,6 @@
             },
           ],
         };
-
-        console.log(riskBreakdownChartOption);
 
         const listKey = Object.getOwnPropertyNames(response.data);
         const legendDataBarChart = listKey.map((item) => {
@@ -297,23 +352,10 @@
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        if (getAddressContext(selectedWallet)?.type === "EVM") {
-          getAnalyticCompare();
-        }
+        getAnalyticCompare();
       }
     }
   }
-
-  const riskTypeChart = [
-    {
-      label: "Overview",
-      value: "overview",
-    },
-    {
-      label: "Risk breakdown",
-      value: "riskBreakdown",
-    },
-  ];
 
   $: sharpeRatioCompare = getChangePercent(
     Number(compareData?.base?.sharpeRatio || 0),

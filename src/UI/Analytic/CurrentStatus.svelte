@@ -70,11 +70,10 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="display: flex; align-items: centers; gap: 4px">
-                ${
-                  params?.data?.logo
-                    ? `<img src=${params?.data?.logo} alt="" width=20 height=20 style="border-radius: 100%" />`
-                    : ""
-                }
+                <img src=${
+                  params?.data?.logo ||
+                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                } alt="" width=20 height=20 style="border-radius: 100%" />
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
                   ${params?.name} ${
           params?.data?.symbol ? `(${params?.data?.symbol})` : ""
@@ -305,45 +304,43 @@
   };
 
   const getHoldingToken = async (isReload: boolean = false) => {
-    if (getAddressContext(selectedWallet)?.type === "EVM") {
-      isLoadingDataPie = true;
+    isLoadingDataPie = true;
 
-      try {
-        const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
-          address: selectedWallet,
-          reload: isReload,
-          chain: selectedChain,
-        });
+    try {
+      const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
+        address: selectedWallet,
+        reload: isReload,
+        chain: selectedChain,
+      });
 
-        if (response === null) {
-          isEmptyDataPie = true;
-
-          isLoadingDataPie = false;
-        } else if (selectedWallet === response?.address) {
-          if (response?.result?.length === 0) {
-            isEmptyDataPie = true;
-
-            isLoadingDataPie = false;
-            return;
-          }
-
-          dataTokenHolding = response.result;
-          getPersonalizeTag();
-
-          dataRank = handleFormatDataPieChart(response.result, "rank");
-          dataCategory = handleFormatDataPieChart(response.result, "category");
-          dataSector = handleFormatDataPieChart(response.result, "sector");
-
-          isLoadingDataPie = false;
-        } else {
-          isEmptyDataPie = true;
-          isLoadingDataPie = false;
-        }
-      } catch (e) {
-        console.log("error: ", e);
-        isLoadingDataPie = false;
+      if (response === null) {
         isEmptyDataPie = true;
+
+        isLoadingDataPie = false;
+      } else if (selectedWallet === response?.address) {
+        if (response?.result?.length === 0) {
+          isEmptyDataPie = true;
+
+          isLoadingDataPie = false;
+          return;
+        }
+
+        dataTokenHolding = response.result;
+        getPersonalizeTag();
+
+        dataRank = handleFormatDataPieChart(response.result, "rank");
+        dataCategory = handleFormatDataPieChart(response.result, "category");
+        dataSector = handleFormatDataPieChart(response.result, "sector");
+
+        isLoadingDataPie = false;
+      } else {
+        isEmptyDataPie = true;
+        isLoadingDataPie = false;
       }
+    } catch (e) {
+      console.log("error: ", e);
+      isLoadingDataPie = false;
+      isEmptyDataPie = true;
     }
   };
 
