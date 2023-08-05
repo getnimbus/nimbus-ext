@@ -535,6 +535,7 @@
           isLoadingPerformanceChart = false;
         } else {
           isEmptyPerformanceChart = true;
+          isLoadingPerformanceChart = false;
         }
       } else {
         // console.log("response: ", response)

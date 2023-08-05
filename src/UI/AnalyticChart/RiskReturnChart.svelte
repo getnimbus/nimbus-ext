@@ -51,6 +51,7 @@
   let selectedTypeChart = "overview";
   let riskBreakdownData = [];
   let isLoadingDataCompare = false;
+  let isEmptyDataCompare = false;
   let dataShrapeRatioGroup = {};
   let optionBar = {
     tooltip: {
@@ -340,10 +341,14 @@
           series: [...scatterData, ...tokenScatterData],
         };
         isLoadingDataCompare = false;
+      } else {
+        isLoadingDataCompare = false;
+        isEmptyDataCompare = true;
       }
     } catch (e) {
-      console.log("e: ", e);
+      console.error("e: ", e);
       isLoadingDataCompare = false;
+      isEmptyDataCompare = true;
     }
   };
 
@@ -390,112 +395,123 @@
         <LoadingPremium />
       </div>
     {:else}
-      <div class="flex flex-col gap-4">
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="xl:text-base text-2xl text-black flex justify-start">
+      <div class="h-full">
+        {#if isEmptyDataCompare}
+          <div
+            class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
+          >
+            Empty
+          </div>
+        {:else}
+          <div class="flex flex-col gap-4">
+            <div class="grid grid-cols-2">
+              <div class="col-span-1">
+                <div
+                  class="xl:text-base text-2xl text-black flex justify-start"
+                >
+                  <TooltipTitle
+                    tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
+                    isBigIcon
+                  >
+                    Sharpe ratio
+                  </TooltipTitle>
+                </div>
+              </div>
+              <div class="col-span-1 flex items-center justify-end">
+                <div class="xl:text-base text-2xl">
+                  <TooltipNumber
+                    number={compareData?.base?.sharpeRatio}
+                    type="percent"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 mt-2">
+            {#if goodPerf}
+              <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
+                <div class="xl:text-base text-lg text-[#6E7787FF] relative">
+                  <div
+                    class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
+                  />
+                  Best return
+                </div>
+                <div class="xl:text-2xl text-3xl">{goodPerf?.symbol}</div>
+                <div class="xl:text-lg text-2xl flex items-center gap-1">
+                  <img src={TrendUp} alt="trend" class="mb-1" />
+                  <div
+                    class={`${
+                      goodPerf?.change30DPercent >= 0
+                        ? "text-[#00A878]"
+                        : "text-red-500"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(goodPerf?.change30DPercent || 0)}
+                      type="percent"
+                    />
+                    %
+                  </div>
+                </div>
+              </div>
+            {/if}
+
+            {#if badPerf}
+              <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
+                <div class="xl:text-base text-lg text-[#6E7787FF] relative">
+                  <div
+                    class="border border-red-500 absolute -top-1 left-0 w-[40px]"
+                  />
+                  Worse return
+                </div>
+                <div class="xl:text-2xl text-3xl">{badPerf?.symbol}</div>
+                <div class="xl:text-lg text-2xl flex items-center gap-1">
+                  <img src={TrendDown} alt="trend" class="mb-1" />
+                  <div
+                    class={`${
+                      badPerf?.change30DPercent >= 0
+                        ? "text-[#00A878]"
+                        : "text-red-500"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(badPerf?.change30DPercent || 0)}
+                      type="percent"
+                    />
+                    %
+                  </div>
+                </div>
+              </div>
+            {/if}
+          </div>
+          <div class="flex flex-col gap-3 mt-8">
+            <div class="xl:text-lg text-2xl font-medium text-black">
               <TooltipTitle
-                tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
+                tooltipText={"Compare with top 100 by CoinMarketCap."}
                 isBigIcon
               >
-                Sharpe ratio
+                Compare to Market
               </TooltipTitle>
             </div>
-          </div>
-          <div class="col-span-1 flex items-center justify-end">
-            <div class="xl:text-base text-2xl">
-              <TooltipNumber
-                number={compareData?.base?.sharpeRatio}
-                type="percent"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-3 mt-2">
-        {#if goodPerf}
-          <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
-            <div class="xl:text-base text-lg text-[#6E7787FF] relative">
-              <div
-                class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
-              />
-              Best return
-            </div>
-            <div class="xl:text-2xl text-3xl">{goodPerf?.symbol}</div>
-            <div class="xl:text-lg text-2xl flex items-center gap-1">
-              <img src={TrendUp} alt="trend" class="mb-1" />
-              <div
-                class={`${
-                  goodPerf?.change30DPercent >= 0
-                    ? "text-[#00A878]"
-                    : "text-red-500"
-                }`}
-              >
-                <TooltipNumber
-                  number={Math.abs(goodPerf?.change30DPercent || 0)}
-                  type="percent"
-                />
-                %
+            <ProgressBar
+              leftLabel="Low"
+              rightLabel="High"
+              averageText="Avg Market"
+              progress={sharpeRatioCompareAvg}
+              lowerIsBetter={false}
+              tooltipText="Shapre Ratio"
+            />
+            {#if compareData?.base?.sharpeRatio < 1}
+              <div class="mt-5">
+                <CtaIcon isGood={false} />
+                <span class="text-red-500"
+                  >Your portfolio is not "balance" between risk and return:</span
+                >
+                It has expected yield only {compareData?.base?.sharpeRatio?.toFixed(
+                  2
+                )} units of profit per 1 unit of risk.
               </div>
-            </div>
-          </div>
-        {/if}
-
-        {#if badPerf}
-          <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
-            <div class="xl:text-base text-lg text-[#6E7787FF] relative">
-              <div
-                class="border border-red-500 absolute -top-1 left-0 w-[40px]"
-              />
-              Worse return
-            </div>
-            <div class="xl:text-2xl text-3xl">{badPerf?.symbol}</div>
-            <div class="xl:text-lg text-2xl flex items-center gap-1">
-              <img src={TrendDown} alt="trend" class="mb-1" />
-              <div
-                class={`${
-                  badPerf?.change30DPercent >= 0
-                    ? "text-[#00A878]"
-                    : "text-red-500"
-                }`}
-              >
-                <TooltipNumber
-                  number={Math.abs(badPerf?.change30DPercent || 0)}
-                  type="percent"
-                />
-                %
-              </div>
-            </div>
-          </div>
-        {/if}
-      </div>
-      <div class="flex flex-col gap-3 mt-8">
-        <div class="xl:text-lg text-2xl font-medium text-black">
-          <TooltipTitle
-            tooltipText={"Compare with top 100 by CoinMarketCap."}
-            isBigIcon
-          >
-            Compare to Market
-          </TooltipTitle>
-        </div>
-        <ProgressBar
-          leftLabel="Low"
-          rightLabel="High"
-          averageText="Avg Market"
-          progress={sharpeRatioCompareAvg}
-          lowerIsBetter={false}
-          tooltipText="Shapre Ratio"
-        />
-        {#if compareData?.base?.sharpeRatio < 1}
-          <div class="mt-5">
-            <CtaIcon isGood={false} />
-            <span class="text-red-500"
-              >Your portfolio is not "balance" between risk and return:</span
-            >
-            It has expected yield only {compareData?.base?.sharpeRatio?.toFixed(
-              2
-            )} units of profit per 1 unit of risk.
+            {/if}
           </div>
         {/if}
       </div>
@@ -509,43 +525,43 @@
       </div>
     {:else}
       <div class="h-full">
-        <div class="flex flex-row mb-2">
-          <AnimateSharedLayout>
-            {#each riskTypeChart as type}
-              <div
-                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                on:click={() => (selectedTypeChart = type.value)}
-              >
-                <div
-                  class={`relative z-20 ${
-                    selectedTypeChart === type.value && "text-white"
-                  }`}
-                >
-                  {type.label}
-                </div>
-                {#if type.value === selectedTypeChart}
-                  <Motion
-                    let:motion
-                    layoutId="active-pill"
-                    transition={{ type: "spring", duration: 0.6 }}
-                  >
-                    <div
-                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                      use:motion
-                    />
-                  </Motion>
-                {/if}
-              </div>
-            {/each}
-          </AnimateSharedLayout>
-        </div>
-        {#if compareData && Object.keys(compareData).length === 0}
+        {#if isEmptyDataCompare}
           <div
-            class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+            class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
           >
             Empty
           </div>
         {:else}
+          <div class="flex flex-row mb-2">
+            <AnimateSharedLayout>
+              {#each riskTypeChart as type}
+                <div
+                  class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                  on:click={() => (selectedTypeChart = type.value)}
+                >
+                  <div
+                    class={`relative z-20 ${
+                      selectedTypeChart === type.value && "text-white"
+                    }`}
+                  >
+                    {type.label}
+                  </div>
+                  {#if type.value === selectedTypeChart}
+                    <Motion
+                      let:motion
+                      layoutId="active-pill"
+                      transition={{ type: "spring", duration: 0.6 }}
+                    >
+                      <div
+                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                        use:motion
+                      />
+                    </Motion>
+                  {/if}
+                </div>
+              {/each}
+            </AnimateSharedLayout>
+          </div>
           <div class="relative">
             <EChart
               id="risk-return-chart-analytic"

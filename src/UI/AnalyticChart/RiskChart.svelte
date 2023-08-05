@@ -54,6 +54,7 @@
   let compareData = {};
   let selectedTypeChart = "overview";
   let isLoadingDataCompare = false;
+  let isEmptyDataCompare = false;
   let dataRiskGroup = {};
   let optionBar = {
     tooltip: {
@@ -189,6 +190,7 @@
 
   const getAnalyticCompare = async () => {
     isLoadingDataCompare = true;
+    isEmptyDataCompare = false;
     try {
       const response: any = await nimbus.get(
         `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`
@@ -344,10 +346,15 @@
           },
           series: dataBarChart,
         };
+
+        isLoadingDataCompare = false;
+      } else {
+        isEmptyDataCompare = true;
         isLoadingDataCompare = false;
       }
     } catch (e) {
       console.log("e: ", e);
+      isEmptyDataCompare = true;
       isLoadingDataCompare = false;
     }
   };
@@ -413,121 +420,135 @@
         <LoadingPremium />
       </div>
     {:else}
-      <div class="flex flex-col gap-4">
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="xl:text-base text-2xl text-black flex justify-start">
-              <TooltipTitle
-                tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
-                isBigIcon
-              >
-                Sharpe ratio
-              </TooltipTitle>
-            </div>
-          </div>
-          <div class="col-span-1 flex items-center justify-end">
-            <div class="xl:text-base text-2xl">
-              <TooltipNumber
-                number={compareData?.base?.sharpeRatio}
-                type="percent"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class=" text-black flex justify-start">
-              <TooltipTitle
-                tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
-                isBigIcon
-              >
-                Volatility
-              </TooltipTitle>
-            </div>
-          </div>
-          <div class="col-span-1 flex items-center justify-end">
-            <div class="xl:text-base text-2xl">
-              <TooltipNumber
-                number={compareData?.base?.volatility}
-                type="percent"
-              />%
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="xl:text-base text-2xl text-black flex justify-start">
-              <TooltipTitle
-                tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
-                isBigIcon
-              >
-                Max drawdown
-              </TooltipTitle>
-            </div>
-          </div>
-          <div class="col-span-1 flex items-center justify-end">
-            <div class="xl:text-base text-2xl">
-              <TooltipNumber
-                number={compareData?.base?.drawDown}
-                type="percent"
-              />%
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="mt-8 space-y-3">
-        <div class="xl:text-base text-2xl">
-          <CtaIcon isGood={sharpeRatioCompare > 0} />
-          Sharpe ratio is {sharpeRatioCompare > 0 ? "higher" : "lower"} than Bitcoin
-          by
-          <strong>{Math.abs(sharpeRatioCompare)}%</strong>
-        </div>
-        <div class="xl:text-base text-2xl">
-          <CtaIcon isGood={volatilityCompare < 0} />
-          Volatility is {volatilityCompare > 0 ? "higher" : "lower"} than Bitcoin
-          by
-          <strong>{Math.abs(volatilityCompare)}%</strong>
-        </div>
-
-        <div class="xl:text-base text-2xl">
-          <CtaIcon isGood={drawDownCompare < 0} />
-          Max Drawdown is {drawDownCompare > 0 ? "higher" : "lower"} than Bitcoin
-          by
-          <strong>{Math.abs(drawDownCompare)}%</strong>
-        </div>
-
-        <!-- <div>
-          <div>Meaning</div>
-          <ul>
-            <li />
-          </ul>
-        </div> -->
-      </div>
-      <div class="flex flex-col gap-3 mt-8">
-        <div class="xl:text-lg text-2xl font-medium text-black">
-          <TooltipTitle
-            tooltipText={"Compare with top 100 by CoinMarketCap."}
-            isBigIcon
+      <div class="h-full">
+        {#if isEmptyDataCompare}
+          <div
+            class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
           >
-            Compare to Market
-          </TooltipTitle>
-        </div>
-        <ProgressBar
-          leftLabel="Low"
-          rightLabel="High"
-          averageText="Avg Market"
-          progress={volatilityCompareAvg}
-          tooltipText="Volatility"
-        />
-        <ProgressBar
-          leftLabel="Low"
-          rightLabel="High"
-          averageText="Avg Market"
-          progress={drawDownCompareAvg}
-          tooltipText="Max Drawdown"
-        />
+            Empty
+          </div>
+        {:else}
+          <div class="flex flex-col gap-4">
+            <div class="grid grid-cols-2">
+              <div class="col-span-1">
+                <div
+                  class="xl:text-base text-2xl text-black flex justify-start"
+                >
+                  <TooltipTitle
+                    tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
+                    isBigIcon
+                  >
+                    Sharpe ratio
+                  </TooltipTitle>
+                </div>
+              </div>
+              <div class="col-span-1 flex items-center justify-end">
+                <div class="xl:text-base text-2xl">
+                  <TooltipNumber
+                    number={compareData?.base?.sharpeRatio}
+                    type="percent"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2">
+              <div class="col-span-1">
+                <div class=" text-black flex justify-start">
+                  <TooltipTitle
+                    tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
+                    isBigIcon
+                  >
+                    Volatility
+                  </TooltipTitle>
+                </div>
+              </div>
+              <div class="col-span-1 flex items-center justify-end">
+                <div class="xl:text-base text-2xl">
+                  <TooltipNumber
+                    number={compareData?.base?.volatility}
+                    type="percent"
+                  />%
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2">
+              <div class="col-span-1">
+                <div
+                  class="xl:text-base text-2xl text-black flex justify-start"
+                >
+                  <TooltipTitle
+                    tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
+                    isBigIcon
+                  >
+                    Max drawdown
+                  </TooltipTitle>
+                </div>
+              </div>
+              <div class="col-span-1 flex items-center justify-end">
+                <div class="xl:text-base text-2xl">
+                  <TooltipNumber
+                    number={compareData?.base?.drawDown}
+                    type="percent"
+                  />%
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-8 space-y-3">
+            <div class="xl:text-base text-2xl">
+              <CtaIcon isGood={sharpeRatioCompare > 0} />
+              Sharpe ratio is {sharpeRatioCompare > 0 ? "higher" : "lower"} than
+              Bitcoin by
+              <strong>{Math.abs(sharpeRatioCompare)}%</strong>
+            </div>
+            <div class="xl:text-base text-2xl">
+              <CtaIcon isGood={volatilityCompare < 0} />
+              Volatility is {volatilityCompare > 0 ? "higher" : "lower"} than Bitcoin
+              by
+              <strong>{Math.abs(volatilityCompare)}%</strong>
+            </div>
+
+            <div class="xl:text-base text-2xl">
+              <CtaIcon isGood={drawDownCompare < 0} />
+              Max Drawdown is {drawDownCompare > 0 ? "higher" : "lower"} than Bitcoin
+              by
+              <strong>{Math.abs(drawDownCompare)}%</strong>
+            </div>
+
+            <!-- <div>
+              <div>Meaning</div>
+              <ul>
+                <li />
+              </ul>
+            </div> -->
+          </div>
+          <div class="flex flex-col gap-3 mt-8">
+            <div class="xl:text-lg text-2xl font-medium text-black">
+              <TooltipTitle
+                tooltipText={"Compare with top 100 by CoinMarketCap."}
+                isBigIcon
+              >
+                Compare to Market
+              </TooltipTitle>
+            </div>
+            <ProgressBar
+              leftLabel="Low"
+              rightLabel="High"
+              averageText="Avg Market"
+              progress={volatilityCompareAvg}
+              tooltipText="Volatility"
+            />
+            <ProgressBar
+              leftLabel="Low"
+              rightLabel="High"
+              averageText="Avg Market"
+              progress={drawDownCompareAvg}
+              tooltipText="Max Drawdown"
+            />
+          </div>
+        {/if}
       </div>
     {/if}
   </span>
@@ -539,43 +560,43 @@
       </div>
     {:else}
       <div class="h-full">
-        <div class="flex flex-row">
-          <AnimateSharedLayout>
-            {#each riskTypeChart as type}
-              <div
-                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                on:click={() => (selectedTypeChart = type.value)}
-              >
-                <div
-                  class={`relative z-20 ${
-                    selectedTypeChart === type.value && "text-white"
-                  }`}
-                >
-                  {type.label}
-                </div>
-                {#if type.value === selectedTypeChart}
-                  <Motion
-                    let:motion
-                    layoutId="active-pill"
-                    transition={{ type: "spring", duration: 0.6 }}
-                  >
-                    <div
-                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                      use:motion
-                    />
-                  </Motion>
-                {/if}
-              </div>
-            {/each}
-          </AnimateSharedLayout>
-        </div>
-        {#if compareData && Object.keys(compareData).length === 0}
+        {#if isEmptyDataCompare}
           <div
-            class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+            class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
           >
             Empty
           </div>
         {:else}
+          <div class="flex flex-row">
+            <AnimateSharedLayout>
+              {#each riskTypeChart as type}
+                <div
+                  class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                  on:click={() => (selectedTypeChart = type.value)}
+                >
+                  <div
+                    class={`relative z-20 ${
+                      selectedTypeChart === type.value && "text-white"
+                    }`}
+                  >
+                    {type.label}
+                  </div>
+                  {#if type.value === selectedTypeChart}
+                    <Motion
+                      let:motion
+                      layoutId="active-pill"
+                      transition={{ type: "spring", duration: 0.6 }}
+                    >
+                      <div
+                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                        use:motion
+                      />
+                    </Motion>
+                  {/if}
+                </div>
+              {/each}
+            </AnimateSharedLayout>
+          </div>
           <div class="relative">
             <EChart
               id="bar-chart-compare-analytic"

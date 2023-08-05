@@ -8,11 +8,11 @@
   import CurrentStatus from "./CurrentStatus.svelte";
   import PastPerformance from "./PastPerformance.svelte";
   import Button from "~/components/Button.svelte";
-  import RiskChart from "../AnalyticChart/RiskChart.svelte";
   import Compare from "../Portfolio/Compare.svelte";
   import MoneyFlow from "../AnalyticChart/MoneyFlow.svelte";
-  import RiskReturnChart from "../AnalyticChart/RiskReturnChart.svelte";
+  import RiskChart from "../AnalyticChart/RiskChart.svelte";
   import ReturnChart from "../AnalyticChart/ReturnChart.svelte";
+  import RiskReturnChart from "../AnalyticChart/RiskReturnChart.svelte";
 
   const navigate = useNavigate();
 

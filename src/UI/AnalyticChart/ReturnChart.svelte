@@ -36,6 +36,7 @@
 
   let compareData = {};
   let isLoadingDataCompare = false;
+  let isEmptyDataCompare = false;
   let optionBar = {
     tooltip: {
       extraCssText: "z-index: 9997",
@@ -101,6 +102,7 @@
 
   const getAnalyticCompare = async () => {
     isLoadingDataCompare = true;
+    isEmptyDataCompare = false;
     try {
       const response: any = await nimbus.get(
         `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`
@@ -153,12 +155,15 @@
           series: series,
         };
 
-        console.log({ optionBar });
+        isLoadingDataCompare = false;
+      } else {
+        isLoadingDataCompare = false;
+        isEmptyDataCompare = true;
       }
     } catch (e) {
       console.log("e: ", e);
-    } finally {
       isLoadingDataCompare = false;
+      isEmptyDataCompare = true;
     }
   };
 
@@ -206,208 +211,237 @@
         <LoadingPremium />
       </div>
     {:else}
-      <div class="flex flex-col gap-4">
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="xl:text-base text-2xl text-black flex justify-start">
-              Return 1D
-            </div>
-          </div>
-          <div class="col-span-1 flex items-center justify-end">
-            <div class={`xl:text-base text-2xl`}>
-              <span
-                class={`${
-                  compareData?.base?.netWorthChange?.networth1D < 0
-                    ? "text-red-500"
-                    : "text-[#00A878]"
-                }`}
-              >
-                <TooltipNumber
-                  number={Math.abs(
-                    compareData?.base?.netWorthChange.networth1D
-                  )}
-                  type="percent"
-                />%</span
-              > <span class="text-gray-400">/</span>
-              <span
-                class={`${
-                  compareData?.btc?.netWorthChange?.networth1D < 0
-                    ? "text-red-500"
-                    : "text-[#00A878]"
-                }`}
-              >
-                <TooltipNumber
-                  number={Math.abs(compareData?.btc?.netWorthChange.networth1D)}
-                  type="percent"
-                />%</span
-              >
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="xl:text-base text-2xl text-black flex justify-start">
-              Return 7D
-            </div>
-          </div>
-          <div class="col-span-1 flex items-center justify-end">
-            <div class={`xl:text-base text-2xl`}>
-              <span
-                class={`${
-                  compareData?.base?.netWorthChange?.networth7D < 0
-                    ? "text-red-500"
-                    : "text-[#00A878]"
-                }`}
-              >
-                <TooltipNumber
-                  number={Math.abs(
-                    compareData?.base?.netWorthChange.networth7D
-                  )}
-                  type="percent"
-                />%</span
-              > <span class="text-gray-400">/</span>
-              <span
-                class={`${
-                  compareData?.btc?.netWorthChange?.networth7D < 0
-                    ? "text-red-500"
-                    : "text-[#00A878]"
-                }`}
-              >
-                <TooltipNumber
-                  number={Math.abs(compareData?.btc?.netWorthChange.networth7D)}
-                  type="percent"
-                />%</span
-              >
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="xl:text-base text-2xl text-black flex justify-start">
-              Return 30D
-            </div>
-          </div>
-          <div class="col-span-1 flex items-center justify-end">
-            <div class={`xl:text-base text-2xl`}>
-              <span
-                class={`${
-                  compareData?.base?.netWorthChange?.networth30D < 0
-                    ? "text-red-500"
-                    : "text-[#00A878]"
-                }`}
-              >
-                <TooltipNumber
-                  number={Math.abs(
-                    compareData?.base?.netWorthChange.networth30D
-                  )}
-                  type="percent"
-                />%</span
-              > <span class="text-gray-400">/</span>
-              <span
-                class={`${
-                  compareData?.btc?.netWorthChange?.networth30D < 0
-                    ? "text-red-500"
-                    : "text-[#00A878]"
-                }`}
-              >
-                <TooltipNumber
-                  number={Math.abs(
-                    compareData?.btc?.netWorthChange.networth30D
-                  )}
-                  type="percent"
-                />%</span
-              >
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="xl:text-base text-2xl text-black flex justify-start">
-              Return 1Y
-            </div>
-          </div>
-          <div class="col-span-1 flex items-center justify-end">
-            <div class={`xl:text-base text-2xl`}>
-              <span
-                class={`${
-                  compareData?.base?.netWorthChange?.networth1Y < 0
-                    ? "text-red-500"
-                    : "text-[#00A878]"
-                }`}
-              >
-                <TooltipNumber
-                  number={Math.abs(
-                    compareData?.base?.netWorthChange.networth1Y
-                  )}
-                  type="percent"
-                />%</span
-              > <span class="text-gray-400">/</span>
-              <span
-                class={`${
-                  compareData?.btc?.netWorthChange?.networth1Y < 0
-                    ? "text-red-500"
-                    : "text-[#00A878]"
-                }`}
-              >
-                <TooltipNumber
-                  number={Math.abs(compareData?.btc?.netWorthChange.networth1Y)}
-                  type="percent"
-                />%</span
-              >
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="xl:text-base text-2xl text-black flex justify-start">
-              Return Lifetime
-            </div>
-          </div>
-          <div class="col-span-1 flex items-center justify-end">
-            <div class={`xl:text-base text-2xl`}>
-              <span
-                class={`${
-                  compareData?.base?.changeLF?.portfolioChange < 0
-                    ? "text-red-500"
-                    : "text-[#00A878]"
-                }`}
-              >
-                <TooltipNumber
-                  number={Math.abs(compareData?.base?.changeLF.portfolioChange)}
-                  type="percent"
-                />%</span
-              > <span class="text-gray-400">/</span>
-              <span
-                class={`${
-                  compareData?.base?.changeLF?.btcChange < 0
-                    ? "text-red-500"
-                    : "text-[#00A878]"
-                }`}
-              >
-                <TooltipNumber
-                  number={Math.abs(compareData?.base?.changeLF.btcChange)}
-                  type="percent"
-                />%</span
-              >
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="mt-8 space-y-3">
-        <div class="xl:text-base text-2xl">
-          <CtaIcon isGood={isReturn30Higher} />
-          30D return is {isReturn30Higher ? "higher" : "lower"} than Bitcoin by
-          <strong
-            >{Math.abs(
-              compareData?.base?.netWorthChange?.networth30D -
-                compareData?.btc?.netWorthChange?.networth30D
-            ).toFixed(2)}%</strong
+      <div class="h-full">
+        {#if isEmptyDataCompare}
+          <div
+            class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
           >
-        </div>
+            Empty
+          </div>
+        {:else}
+          <div class="flex flex-col gap-4">
+            <div class="grid grid-cols-2">
+              <div class="col-span-1">
+                <div
+                  class="xl:text-base text-2xl text-black flex justify-start"
+                >
+                  Return 1D
+                </div>
+              </div>
+              <div class="col-span-1 flex items-center justify-end">
+                <div class={`xl:text-base text-2xl`}>
+                  <span
+                    class={`${
+                      compareData?.base?.netWorthChange?.networth1D < 0
+                        ? "text-red-500"
+                        : "text-[#00A878]"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(
+                        compareData?.base?.netWorthChange.networth1D
+                      )}
+                      type="percent"
+                    />%</span
+                  > <span class="text-gray-400">/</span>
+                  <span
+                    class={`${
+                      compareData?.btc?.netWorthChange?.networth1D < 0
+                        ? "text-red-500"
+                        : "text-[#00A878]"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(
+                        compareData?.btc?.netWorthChange.networth1D
+                      )}
+                      type="percent"
+                    />%</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2">
+              <div class="col-span-1">
+                <div
+                  class="xl:text-base text-2xl text-black flex justify-start"
+                >
+                  Return 7D
+                </div>
+              </div>
+              <div class="col-span-1 flex items-center justify-end">
+                <div class={`xl:text-base text-2xl`}>
+                  <span
+                    class={`${
+                      compareData?.base?.netWorthChange?.networth7D < 0
+                        ? "text-red-500"
+                        : "text-[#00A878]"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(
+                        compareData?.base?.netWorthChange.networth7D
+                      )}
+                      type="percent"
+                    />%</span
+                  > <span class="text-gray-400">/</span>
+                  <span
+                    class={`${
+                      compareData?.btc?.netWorthChange?.networth7D < 0
+                        ? "text-red-500"
+                        : "text-[#00A878]"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(
+                        compareData?.btc?.netWorthChange.networth7D
+                      )}
+                      type="percent"
+                    />%</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2">
+              <div class="col-span-1">
+                <div
+                  class="xl:text-base text-2xl text-black flex justify-start"
+                >
+                  Return 30D
+                </div>
+              </div>
+              <div class="col-span-1 flex items-center justify-end">
+                <div class={`xl:text-base text-2xl`}>
+                  <span
+                    class={`${
+                      compareData?.base?.netWorthChange?.networth30D < 0
+                        ? "text-red-500"
+                        : "text-[#00A878]"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(
+                        compareData?.base?.netWorthChange.networth30D
+                      )}
+                      type="percent"
+                    />%</span
+                  > <span class="text-gray-400">/</span>
+                  <span
+                    class={`${
+                      compareData?.btc?.netWorthChange?.networth30D < 0
+                        ? "text-red-500"
+                        : "text-[#00A878]"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(
+                        compareData?.btc?.netWorthChange.networth30D
+                      )}
+                      type="percent"
+                    />%</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2">
+              <div class="col-span-1">
+                <div
+                  class="xl:text-base text-2xl text-black flex justify-start"
+                >
+                  Return 1Y
+                </div>
+              </div>
+              <div class="col-span-1 flex items-center justify-end">
+                <div class={`xl:text-base text-2xl`}>
+                  <span
+                    class={`${
+                      compareData?.base?.netWorthChange?.networth1Y < 0
+                        ? "text-red-500"
+                        : "text-[#00A878]"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(
+                        compareData?.base?.netWorthChange.networth1Y
+                      )}
+                      type="percent"
+                    />%</span
+                  > <span class="text-gray-400">/</span>
+                  <span
+                    class={`${
+                      compareData?.btc?.netWorthChange?.networth1Y < 0
+                        ? "text-red-500"
+                        : "text-[#00A878]"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(
+                        compareData?.btc?.netWorthChange.networth1Y
+                      )}
+                      type="percent"
+                    />%</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2">
+              <div class="col-span-1">
+                <div
+                  class="xl:text-base text-2xl text-black flex justify-start"
+                >
+                  Return Lifetime
+                </div>
+              </div>
+              <div class="col-span-1 flex items-center justify-end">
+                <div class={`xl:text-base text-2xl`}>
+                  <span
+                    class={`${
+                      compareData?.base?.changeLF?.portfolioChange < 0
+                        ? "text-red-500"
+                        : "text-[#00A878]"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(
+                        compareData?.base?.changeLF.portfolioChange
+                      )}
+                      type="percent"
+                    />%</span
+                  > <span class="text-gray-400">/</span>
+                  <span
+                    class={`${
+                      compareData?.base?.changeLF?.btcChange < 0
+                        ? "text-red-500"
+                        : "text-[#00A878]"
+                    }`}
+                  >
+                    <TooltipNumber
+                      number={Math.abs(compareData?.base?.changeLF.btcChange)}
+                      type="percent"
+                    />%</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-8 space-y-3">
+            <div class="xl:text-base text-2xl">
+              <CtaIcon isGood={isReturn30Higher} />
+              30D return is {isReturn30Higher ? "higher" : "lower"} than Bitcoin
+              by
+              <strong
+                >{Math.abs(
+                  compareData?.base?.netWorthChange?.networth30D -
+                    compareData?.btc?.netWorthChange?.networth30D
+                ).toFixed(2)}%</strong
+              >
+            </div>
+          </div>
+        {/if}
       </div>
     {/if}
   </span>
@@ -419,9 +453,9 @@
       </div>
     {:else}
       <div class="h-full">
-        {#if !optionBar.series.length}
+        {#if isEmptyDataCompare}
           <div
-            class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+            class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
           >
             Empty
           </div>
