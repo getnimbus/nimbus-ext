@@ -15,7 +15,14 @@
     claimable: i18n("newtabPage.claimable", "Claimable"),
     total_assets: i18n("newtabPage.total-assets", "Total Assets"),
     total_positions: i18n("newtabPage.total-positions", "Total Positions"),
+    net_inflow: i18n("newtabPage.net-inflow", "Net Flow"),
+    total_inflow: i18n("newtabPage.total-inflow", "Total Inflow"),
+    total_outflow: i18n("newtabPage.total-outflow", "Total Outflow"),
   };
+
+  $: netFlow =
+    Number(data?.overview?.cumulativeOutflow || 0) -
+    Number(data?.overview?.cumulativeInflow || 0);
 </script>
 
 <div class="flex xl:flex-row flex-col justify-between gap-6">
@@ -53,16 +60,12 @@
       </div>
     </OverviewCard>
 
-    <OverviewCard title={MultipleLang.claimable}>
+    <OverviewCard title={MultipleLang.net_inflow}>
       <div class="flex xl:text-3xl text-5xl text-black">
-        {#if totalClaimable.toString().toLowerCase().includes("e-")}
-          $<TooltipNumber number={totalClaimable} type="balance" />
+        {#if netFlow.toString().toLowerCase().includes("e-")}
+          $<TooltipNumber number={netFlow} type="balance" />
         {:else}
-          $<CountUpNumber
-            id="claimable"
-            number={totalClaimable}
-            type="balance"
-          />
+          $<CountUpNumber id="claimable" number={netFlow} type="balance" />
         {/if}
       </div>
       <div class="flex items-center gap-3 opacity-50">
@@ -92,24 +95,30 @@
   </div>
 
   <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-    <OverviewCard title={MultipleLang.total_assets}>
+    <OverviewCard title={MultipleLang.total_inflow}>
       <div class="xl:text-3xl text-5xl text-black flex">
-        $<CountUpNumber id="total_assets" number={totalAssets} type="balance" />
+        $<CountUpNumber
+          id="total_assets"
+          number={data?.overview?.cumulativeInflow}
+          type="balance"
+        />
       </div>
-      <div class="flex items-center gap-3 opacity-50">
+      <div class="flex items-center gap-3">
         <div
           class={`flex xl:text-lg text-3xl font-medium ${
-            data?.overview.assetsChange < 0 ? "text-red-500" : "text-[#00A878]"
+            data?.overview?.cumulativeInflow < 0
+              ? "text-red-500"
+              : "text-[#00A878]"
           }`}
         >
-          {#if data?.overview.assetsChange < 0}
+          {#if data?.overview.cumulativeInflowChange < 0}
             ↓
           {:else}
             ↑
           {/if}
           <CountUpNumber
             id="total_assets_grouth"
-            number={Math.abs(data?.overview.assetsChange)}
+            number={Math.abs(data?.overview.cumulativeInflowChange)}
             type="percent"
           />%
         </div>
@@ -119,19 +128,25 @@
       </div>
     </OverviewCard>
 
-    <OverviewCard title={MultipleLang.total_positions}>
+    <OverviewCard title={MultipleLang.total_outflow}>
       <div class="flex xl:text-3xl text-5xl text-black">
-        {#if totalPositions.toString().toLowerCase().includes("e-")}
-          $<TooltipNumber number={totalPositions} type="balance" />
+        {#if data?.overview?.cumulativeOutflow
+          ?.toString()
+          .toLowerCase()
+          .includes("e-")}
+          $<TooltipNumber
+            number={data?.overview?.cumulativeOutflow}
+            type="balance"
+          />
         {:else}
           $<CountUpNumber
             id="total_positions"
-            number={totalPositions}
+            number={data?.overview?.cumulativeOutflow}
             type="balance"
           />
         {/if}
       </div>
-      <div class="flex items-center gap-3 opacity-50">
+      <div class="flex items-center gap-3">
         <div
           class={`flex xl:text-lg text-3xl font-medium ${
             data?.overview.postionNetworthChange < 0
@@ -139,14 +154,14 @@
               : "text-[#00A878]"
           }`}
         >
-          {#if data?.overview.postionNetworthChange < 0}
+          {#if data?.overview.cumulativeOutflowChange < 0}
             ↓
           {:else}
             ↑
           {/if}
           <CountUpNumber
             id="total_positions_grouth"
-            number={Math.abs(data?.overview.postionNetworthChange)}
+            number={Math.abs(data?.overview.cumulativeOutflowChange)}
             type="percent"
           />%
         </div>
