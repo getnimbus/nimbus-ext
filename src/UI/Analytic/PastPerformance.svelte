@@ -1,6 +1,6 @@
 <script lang="ts">
   import { sendMessage } from "webext-bridge";
-  import { wallet, chain, isOpenReport } from "~/store";
+  import { wallet, chain, typeWallet, isOpenReport } from "~/store";
   import { getAddressContext } from "~/utils";
 
   import DateRangePicker from "~/components/DateRangePicker.svelte";
@@ -19,6 +19,11 @@
   let selectedChain: string = "";
   chain.subscribe((value) => {
     selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let isLoading = false;
@@ -66,7 +71,12 @@
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        getTotalValueHistoryAndDailyGain();
+        if (
+          getAddressContext(selectedWallet)?.type === "EVM" ||
+          typeWalletAddress === "CEX"
+        ) {
+          getTotalValueHistoryAndDailyGain();
+        }
       }
     }
   }

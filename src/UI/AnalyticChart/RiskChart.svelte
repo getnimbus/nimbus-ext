@@ -1,6 +1,6 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { wallet, chain } from "~/store";
+  import { wallet, chain, typeWallet } from "~/store";
   import { formatCurrency, formatCurrencyV2, getAddressContext } from "~/utils";
   import groupBy from "lodash/groupBy";
   import sumBy from "lodash/sumBy";
@@ -44,6 +44,11 @@
   let selectedChain: string = "";
   chain.subscribe((value) => {
     selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let compareData = {};
@@ -350,7 +355,12 @@
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        getAnalyticCompare();
+        if (
+          getAddressContext(selectedWallet)?.type === "EVM" ||
+          typeWalletAddress === "CEX"
+        ) {
+          getAnalyticCompare();
+        }
       }
     }
   }

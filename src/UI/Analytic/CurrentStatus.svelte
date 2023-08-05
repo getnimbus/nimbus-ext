@@ -669,8 +669,13 @@
         personalizeCategoryData = [];
         isEmptyDataPie = false;
         selectedDataPie = [];
-        getHoldingToken();
-        getOverview();
+        if (
+          getAddressContext(selectedWallet)?.type === "EVM" ||
+          typeWalletAddress === "CEX"
+        ) {
+          getHoldingToken();
+          getOverview();
+        }
       }
     }
   }

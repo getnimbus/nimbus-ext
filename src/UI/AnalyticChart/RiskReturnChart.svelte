@@ -1,6 +1,6 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { chain, wallet } from "~/store";
+  import { chain, wallet, typeWallet } from "~/store";
   import { formatCurrency, getAddressContext } from "~/utils";
   import maxBy from "lodash/maxBy";
   import minBy from "lodash/minBy";
@@ -18,6 +18,17 @@
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
 
+  const riskTypeChart = [
+    {
+      label: "Overview",
+      value: "overview",
+    },
+    {
+      label: "Shapre Ratio",
+      value: "shrapeRatioBreakdown",
+    },
+  ];
+
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
@@ -26,6 +37,11 @@
   let selectedChain: string = "";
   chain.subscribe((value) => {
     selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let compareData = {};
@@ -331,21 +347,15 @@
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        getAnalyticCompare();
+        if (
+          getAddressContext(selectedWallet)?.type === "EVM" ||
+          typeWalletAddress === "CEX"
+        ) {
+          getAnalyticCompare();
+        }
       }
     }
   }
-
-  const riskTypeChart = [
-    {
-      label: "Overview",
-      value: "overview",
-    },
-    {
-      label: "Shapre Ratio",
-      value: "shrapeRatioBreakdown",
-    },
-  ];
 
   $: goodPerf = maxBy(riskBreakdownData, (item) => item.change30DPercent);
   $: badPerf = minBy(riskBreakdownData, (item) => item.change30DPercent);

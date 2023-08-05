@@ -263,7 +263,7 @@
           </div>
         {/if}
       </div>
-      {#if selectedChain === "XDAI"}
+      {#if selectedChain === "XDAI" || getAddressContext(selectedWallet)?.type === "BTC"}
         <div
           class="absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center bg-white/85 z-10 backdrop-blur-md"
         >
