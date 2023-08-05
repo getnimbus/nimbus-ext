@@ -134,11 +134,9 @@
                               item?.logo ||
                               "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
                             } alt="" width=20 height=20 style="border-radius: 100%" />
-                            <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                              ${item?.name} ${
+                            ${item?.name} ${
                       item?.symbol ? `(${item?.symbol})` : ""
                     }
-                            </div>
                         </div>
                         <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                           <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
