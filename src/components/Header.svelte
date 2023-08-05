@@ -120,7 +120,10 @@
               ? "bg-[#525B8C] opacity-100"
               : "opacity-70"
           }`}
-          on:click={() => (navActive = "transactions")}
+          on:click={() => {
+            navActive = "transactions";
+            chain.update((n) => (n = "ETH"));
+          }}
         >
           <img src={TransactionsIcon} alt="" width="20" height="20" />
           <span class="text-sm font-medium text-white xl:text-base">

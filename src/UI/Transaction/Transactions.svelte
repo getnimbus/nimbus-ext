@@ -5,8 +5,8 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { sendMessage } from "webext-bridge";
-  import { wallet, chain } from "~/store";
-  import { typeTrx } from "~/utils";
+  import { wallet, chain, typeWallet } from "~/store";
+  import { getAddressContext, typeTrx } from "~/utils";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
 
   import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
@@ -18,6 +18,7 @@
   import AddressManagement from "~/components/AddressManagement.svelte";
   import CalendarChart from "~/components/CalendarChart.svelte";
   import HistoricalTransactions from "./HistoricalTransactions.svelte";
+  import { onMount } from "svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -27,6 +28,11 @@
   let selectedChain: string = "";
   chain.subscribe((value) => {
     selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let isLoading = false;
@@ -184,7 +190,6 @@
       isLoadingChart = false;
       isEmptyDataChart = false;
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        chain.update((n) => (n = "ETH"));
         getListTransactions("");
         getAnalyticHistorical();
       }
@@ -198,20 +203,23 @@
       <div
         class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md"
       >
-        <div
-          class="border border-[#0000001a] rounded-[20px] pt-6 pb-9 flex flex-col gap-4"
-        >
-          <CalendarChart
-            {option}
-            {isEmptyDataChart}
-            {isLoadingChart}
-            isTrxPage
-            title="Historical Activities"
-            tooltipTitle="The chart shows only activities made by this wallet"
-            id="historical-activities"
-            type="normal"
-          />
-        </div>
+        {#if getAddressContext(selectedWallet)?.type === "EVM" || typeWalletAddress === "CEX"}
+          <div
+            class="border border-[#0000001a] rounded-[20px] pt-6 pb-9 flex flex-col gap-4"
+          >
+            <CalendarChart
+              {option}
+              {isEmptyDataChart}
+              {isLoadingChart}
+              isTrxPage
+              title="Historical Activities"
+              tooltipTitle="The chart shows only activities made by this wallet"
+              id="historical-activities"
+              type="normal"
+            />
+          </div>
+        {/if}
+
         <div
           class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
         >
