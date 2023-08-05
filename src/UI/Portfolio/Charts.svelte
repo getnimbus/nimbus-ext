@@ -2,20 +2,29 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { i18n } from "~/lib/i18n";
   import { chain, wallet, typeWallet } from "~/store";
-  import { formatCurrency, getAddressContext, typePieChart } from "~/utils";
+  import {
+    formatCurrency,
+    getAddressContext,
+    performanceTypeChartPortfolio,
+    typePieChart,
+  } from "~/utils";
+  import dayjs from "dayjs";
 
   export let handleSelectedTableTokenHolding = (data, selectDataPieChart) => {};
   export let holdingTokenData;
-  export let optionLine;
   export let dataPieChart;
   export let isLoading;
   export let isEmptyDataPie;
+  export let overviewDataPerformance;
 
   import EChart from "~/components/EChart.svelte";
   import "~/components/Loading.custom.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TokenAllocation from "~/components/TokenAllocation.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
+
+  import TrendDown from "~/assets/trend-down.svg";
+  import TrendUp from "~/assets/trend-up.svg";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -42,6 +51,7 @@
   });
 
   let selectedType: "token" | "nft" = "token";
+  let selectedTypePerformance: "percent" | "networth" = "percent";
   let optionPie = {
     title: {
       text: "",
@@ -127,6 +137,323 @@
       },
     ],
   };
+  let optionLine = {
+    title: {
+      text: "",
+    },
+    tooltip: {
+      trigger: "axis",
+      extraCssText: "z-index: 9997",
+      formatter: function (params) {
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                ${params[0].axisValue}
+              </div>
+              ${params
+                .map((item) => {
+                  return `
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                    <span>${item?.marker}</span>
+                    ${item?.seriesName}
+                  </div>
+
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                      item.value >= 0 ? "#05a878" : "#f25f5d"
+                    };">
+                      ${formatCurrency(Math.abs(item.value))}%
+                      <img
+                        src=${item.value >= 0 ? TrendUp : TrendDown} 
+                        alt=""
+                        style="margin-bottom: 4px;"
+                      />
+                    </div>
+                  </div>
+                </div>
+                `;
+                })
+                .join("")}
+            </div>`;
+      },
+    },
+    legend: {
+      lineStyle: {
+        type: "solid",
+      },
+      data: [],
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "3%",
+      containLabel: true,
+    },
+    xAxis: {
+      type: "category",
+      boundaryGap: false,
+      data: [],
+    },
+    yAxis: {
+      type: "value",
+      axisLabel: {
+        formatter: "{value}",
+      },
+    },
+    series: [],
+  };
+
+  let dataLineChartPercent = {
+    formatXAxis: [],
+    formatDataPortfolio: [],
+    formatDataETH: [],
+    formatDataBTC: [],
+  };
+
+  let dataLineChartNetWorth = {
+    formatXAxis: [],
+  };
+
+  $: {
+    if (
+      (overviewDataPerformance?.performance?.length !== 0 ||
+        overviewDataPerformance?.portfolioChart?.length !== 0) &&
+      selectedTypePerformance
+    ) {
+      const formatXAxisPerformance = overviewDataPerformance?.performance.map(
+        (item) => {
+          return dayjs(item.date).format("YYYY-MM-DD");
+        }
+      );
+
+      const formatDataPortfolio = overviewDataPerformance?.performance.map(
+        (item) => {
+          return {
+            value: item.portfolio,
+            itemStyle: {
+              color: "#00b580",
+            },
+          };
+        }
+      );
+
+      const formatDataETH = overviewDataPerformance?.performance.map((item) => {
+        return {
+          value: item.eth,
+          itemStyle: {
+            color: "#547fef",
+          },
+        };
+      });
+
+      const formatDataBTC = overviewDataPerformance?.performance.map((item) => {
+        return {
+          value: item.btc,
+          itemStyle: {
+            color: "#f7931a",
+          },
+        };
+      });
+
+      const formatXAxisPortfolioChart =
+        overviewDataPerformance?.portfolioChart.map((item) => {
+          return dayjs(item.timestamp * 1000).format("YYYY-MM-DD");
+        });
+
+      dataLineChartPercent = {
+        formatXAxis: formatXAxisPerformance,
+        formatDataPortfolio,
+        formatDataETH,
+        formatDataBTC,
+      };
+
+      dataLineChartNetWorth = {
+        formatXAxis: formatXAxisPortfolioChart,
+      };
+    }
+  }
+
+  $: {
+    if (selectedTypePerformance) {
+      if (selectedTypePerformance === "percent") {
+        optionLine = {
+          ...optionLine,
+          tooltip: {
+            trigger: "axis",
+            extraCssText: "z-index: 9997",
+            formatter: function (params) {
+              return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                ${params[0].axisValue}
+              </div>
+              ${params
+                .map((item) => {
+                  return `
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                    <span>${item?.marker}</span>
+                    ${item?.seriesName}
+                  </div>
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                      item.value >= 0 ? "#05a878" : "#f25f5d"
+                    };">
+                      ${formatCurrency(Math.abs(item.value))}%
+                      <img
+                        src=${item.value >= 0 ? TrendUp : TrendDown}
+                        alt=""
+                        style="margin-bottom: 4px;"
+                      />
+                    </div>
+                  </div>
+                </div>
+                `;
+                })
+                .join("")}
+            </div>`;
+            },
+          },
+          legend: {
+            ...optionLine.legend,
+            data: [
+              {
+                name: "Your Portfolio",
+                itemStyle: {
+                  color: "#00b580",
+                },
+              },
+              {
+                name: "Bitcoin",
+                itemStyle: {
+                  color: "#f7931a",
+                },
+              },
+              {
+                name: "Ethereum",
+                itemStyle: {
+                  color: "#547fef",
+                },
+              },
+            ],
+          },
+          xAxis: {
+            ...optionLine.xAxis,
+            data: dataLineChartPercent.formatXAxis,
+          },
+          yAxis: {
+            ...optionLine.yAxis,
+            axisLabel: {
+              formatter: "{value}%",
+            },
+          },
+          series: [
+            {
+              name: "Your Portfolio",
+              type: "line",
+              lineStyle: {
+                type: "solid",
+                color: "#00b580",
+              },
+              data: dataLineChartPercent.formatDataPortfolio,
+            },
+            {
+              name: "Bitcoin",
+              type: "line",
+              lineStyle: {
+                type: "dashed",
+                color: "#f7931a",
+              },
+              data: dataLineChartPercent.formatDataBTC,
+            },
+            {
+              name: "Ethereum",
+              type: "line",
+              lineStyle: {
+                type: "dashed",
+                color: "#547fef",
+              },
+              data: dataLineChartPercent.formatDataETH,
+            },
+          ],
+        };
+      }
+      if (selectedTypePerformance === "networth") {
+        optionLine = {
+          ...optionLine,
+          tooltip: {
+            trigger: "axis",
+            extraCssText: "z-index: 9997",
+            formatter: function (params) {
+              return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                ${params[0].axisValue}
+              </div>
+              ${params
+                .map((item) => {
+                  return `
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                    <span>${item?.marker}</span>
+                    ${item?.seriesName}
+                  </div>
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: #000;">
+                      $${formatCurrency(Math.abs(item.value))}
+                    </div>
+                  </div>
+                </div>
+                `;
+                })
+                .join("")}
+            </div>`;
+            },
+          },
+          legend: {
+            ...optionLine.legend,
+            data: [
+              {
+                name: "Your Portfolio",
+                itemStyle: {
+                  color: "#00b580",
+                },
+              },
+            ],
+          },
+          xAxis: {
+            ...optionLine.xAxis,
+            data: dataLineChartNetWorth.formatXAxis,
+          },
+          yAxis: {
+            ...optionLine.yAxis,
+            axisLabel: {
+              formatter: "${value}",
+            },
+          },
+          series: [
+            {
+              name: "Your Portfolio",
+              type: "line",
+              lineStyle: {
+                type: "solid",
+                color: "#00b580",
+              },
+              data: overviewDataPerformance?.portfolioChart.map((item) => {
+                return {
+                  value: item.value,
+                  itemStyle: {
+                    color: "#00b580",
+                  },
+                };
+              }),
+            },
+          ],
+        };
+      }
+    }
+  }
 
   $: {
     if (selectedType) {
@@ -247,7 +574,7 @@
     <div
       class="xl:w-1/2 w-full relative border border-[#0000001a] rounded-[20px] p-6"
     >
-      <div class="flex justify-start mb-6">
+      <div class="flex justify-between mb-6">
         {#if typeWalletAddress === "CEX"}
           <TooltipTitle
             tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
@@ -262,6 +589,36 @@
             {MultipleLang.performance}
           </div>
         {/if}
+        <div class="flex items-center gap-2">
+          <AnimateSharedLayout>
+            {#each performanceTypeChartPortfolio as type}
+              <div
+                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                on:click={() => (selectedTypePerformance = type.value)}
+              >
+                <div
+                  class={`relative z-20 ${
+                    selectedTypePerformance === type.value && "text-white"
+                  }`}
+                >
+                  {type.label}
+                </div>
+                {#if type.value === selectedTypePerformance}
+                  <Motion
+                    let:motion
+                    layoutId="active-pill"
+                    transition={{ type: "spring", duration: 0.6 }}
+                  >
+                    <div
+                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                      use:motion
+                    />
+                  </Motion>
+                {/if}
+              </div>
+            {/each}
+          </AnimateSharedLayout>
+        </div>
       </div>
       {#if selectedChain === "XDAI" || getAddressContext(selectedWallet)?.type === "BTC"}
         <div

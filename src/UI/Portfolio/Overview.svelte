@@ -28,7 +28,7 @@
           type="balance"
         />
       </div>
-      <div class="flex items-center gap-3 opacity-50">
+      <div class="flex items-center gap-3">
         <div
           class={`flex xl:text-lg text-3xl font-medium ${
             data?.overview.networthChange < 0

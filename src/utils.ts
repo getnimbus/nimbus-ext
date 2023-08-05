@@ -107,6 +107,17 @@ export const performanceTypeChart = [
   },
 ]
 
+export const performanceTypeChartPortfolio = [
+  {
+    label: "Percent Change",
+    value: "percent",
+  },
+  {
+    label: "Net Worth",
+    value: "networth",
+  },
+]
+
 export const returnType = [
   {
     label: "Overview",

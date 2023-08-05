@@ -22,9 +22,6 @@
   import Select from "~/components/Select.svelte";
   import EChart from "~/components/EChart.svelte";
 
-  import TrendUp from "~/assets/trend-up.svg";
-  import TrendDown from "~/assets/trend-down.svg";
-
   const MultipleLang = {
     Balance: i18n("newtabPage.Balance", "Balance"),
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
@@ -35,6 +32,7 @@
   wallet.subscribe((value) => {
     selectedWallet = value;
   });
+
   let selectedChain: string = "";
   chain.subscribe((value) => {
     selectedChain = value;
@@ -63,7 +61,7 @@
               </div>
 
               ${
-                params?.data?.name_balance
+                params?.data?.name_balance.length !== 0
                   ? `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
@@ -426,7 +424,15 @@
           series: [
             {
               ...optionPie.series[0],
-              data: formatDataPie(tokenDataSector.dataPie),
+              data: formatDataPie(
+                tokenDataSector.dataPie.map((item) => {
+                  return {
+                    ...item,
+                    value_balance: 0,
+                    name_balance: "",
+                  };
+                })
+              ),
             },
           ],
         };
@@ -437,7 +443,15 @@
           series: [
             {
               ...optionPie.series[0],
-              data: formatDataPie(tokenDataRank.dataPie),
+              data: formatDataPie(
+                tokenDataRank.dataPie.map((item) => {
+                  return {
+                    ...item,
+                    value_balance: 0,
+                    name_balance: "",
+                  };
+                })
+              ),
             },
           ],
         };
@@ -448,7 +462,15 @@
           series: [
             {
               ...optionPie.series[0],
-              data: formatDataPie(tokenDataCategory.dataPie),
+              data: formatDataPie(
+                tokenDataCategory.dataPie.map((item) => {
+                  return {
+                    ...item,
+                    value_balance: 0,
+                    name_balance: "",
+                  };
+                })
+              ),
             },
           ],
         };
@@ -470,7 +492,15 @@
           series: [
             {
               ...optionPie.series[0],
-              data: formatDataPie(tokenDataChain.dataPie),
+              data: formatDataPie(
+                tokenDataChain.dataPie.map((item) => {
+                  return {
+                    ...item,
+                    value_balance: 0,
+                    name_balance: "",
+                  };
+                })
+              ),
             },
           ],
         };
@@ -488,7 +518,15 @@
             series: [
               {
                 ...optionPie.series[0],
-                data: formatDataPie(selectedData.dataPie),
+                data: formatDataPie(
+                  selectedData.dataPie.map((item) => {
+                    return {
+                      ...item,
+                      value_balance: 0,
+                      name_balance: "",
+                    };
+                  })
+                ),
               },
             ],
           };

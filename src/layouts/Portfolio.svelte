@@ -34,8 +34,6 @@
   import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
 
   import Reload from "~/assets/reload.svg";
-  import TrendDown from "~/assets/trend-down.svg";
-  import TrendUp from "~/assets/trend-up.svg";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -83,6 +81,7 @@
       postionNetworth: 0,
       postionNetworthChange: 0,
     },
+    portfolioChart: [],
     performance: [],
     updatedAt: "",
   };
@@ -90,6 +89,10 @@
   let holdingTokenData: TokenData = [];
   let holdingNFTData: NFTData = [];
   let positionsData: PositionData = [];
+  let overviewDataPerformance = {
+    performance: [],
+    portfolioChart: [],
+  };
   let dataUpdatedTime;
   let isLoading = false;
   let isLoadingSync = false;
@@ -103,72 +106,6 @@
   let loadingHoldingNFT = false;
   let loadingPositions = false;
   let loadingNews = false;
-  let optionLine = {
-    title: {
-      text: "",
-    },
-    tooltip: {
-      trigger: "axis",
-      extraCssText: "z-index: 9997",
-      formatter: function (params) {
-        return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                ${params[0].axisValue}
-              </div>
-              ${params
-                .map((item) => {
-                  return `
-                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
-                    <span>${item?.marker}</span>
-                    ${item?.seriesName}
-                  </div>
-
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
-                    };">
-                      ${formatCurrency(Math.abs(item.value))}%
-                      <img
-                        src=${item.value >= 0 ? TrendUp : TrendDown} 
-                        alt=""
-                        style="margin-bottom: 4px;"
-                      />
-                    </div>
-                  </div>
-                </div>
-                `;
-                })
-                .join("")}
-            </div>`;
-      },
-    },
-    legend: {
-      lineStyle: {
-        type: "solid",
-      },
-      data: [],
-    },
-    grid: {
-      left: "3%",
-      right: "4%",
-      bottom: "3%",
-      containLabel: true,
-    },
-    xAxis: {
-      type: "category",
-      boundaryGap: false,
-      data: [],
-    },
-    yAxis: {
-      type: "value",
-      axisLabel: {
-        formatter: "{value}%",
-      },
-    },
-    series: [],
-  };
   let dataPieChart = {
     token: {
       sumOrderBreakdownToken: 0,
@@ -352,96 +289,9 @@
           },
         };
 
-        // line chart format data
-        const formatXAxis = overviewData?.performance.map((item) => {
-          return dayjs(item.date).format("YYYY-MM-DD");
-        });
-
-        const formatDataPortfolio = overviewData?.performance.map((item) => {
-          return {
-            value: item.portfolio,
-            itemStyle: {
-              color: "#00b580",
-            },
-          };
-        });
-
-        const formatDataETH = overviewData?.performance.map((item) => {
-          return {
-            value: item.eth,
-            itemStyle: {
-              color: "#547fef",
-            },
-          };
-        });
-
-        const formatDataBTC = overviewData?.performance.map((item) => {
-          return {
-            value: item.btc,
-            itemStyle: {
-              color: "#f7931a",
-            },
-          };
-        });
-
-        optionLine = {
-          ...optionLine,
-          legend: {
-            ...optionLine.legend,
-            data: [
-              {
-                name: "Your Portfolio",
-                itemStyle: {
-                  color: "#00b580",
-                },
-              },
-              {
-                name: "Bitcoin",
-                itemStyle: {
-                  color: "#f7931a",
-                },
-              },
-              {
-                name: "Ethereum",
-                itemStyle: {
-                  color: "#547fef",
-                },
-              },
-            ],
-          },
-          xAxis: {
-            ...optionLine.xAxis,
-            data: formatXAxis,
-          },
-          series: [
-            {
-              name: "Your Portfolio",
-              type: "line",
-              lineStyle: {
-                type: "solid",
-                color: "#00b580",
-              },
-              data: formatDataPortfolio,
-            },
-            {
-              name: "Bitcoin",
-              type: "line",
-              lineStyle: {
-                type: "dashed",
-                color: "#f7931a",
-              },
-              data: formatDataBTC,
-            },
-            {
-              name: "Ethereum",
-              type: "line",
-              lineStyle: {
-                type: "dashed",
-                color: "#547fef",
-              },
-              data: formatDataETH,
-            },
-          ],
+        overviewDataPerformance = {
+          performance: overviewData?.performance,
+          portfolioChart: overviewData?.portfolioChart,
         };
 
         return response;
@@ -803,7 +653,7 @@
             {handleSelectedTableTokenHolding}
             isLoading={loadingOverview}
             {holdingTokenData}
-            {optionLine}
+            {overviewDataPerformance}
             {dataPieChart}
             {isEmptyDataPie}
           />
