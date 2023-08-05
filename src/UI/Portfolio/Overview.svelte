@@ -15,12 +15,15 @@
     claimable: i18n("newtabPage.claimable", "Claimable"),
     total_assets: i18n("newtabPage.total-assets", "Total Assets"),
     total_positions: i18n("newtabPage.total-positions", "Total Positions"),
-    net_inflow: i18n("newtabPage.net-inflow", "Net Flow"),
+    total_profit: i18n("newtabPage.total-profit", "Total Profit"),
     total_inflow: i18n("newtabPage.total-inflow", "Total Inflow"),
     total_outflow: i18n("newtabPage.total-outflow", "Total Outflow"),
   };
 
-  $: netFlow =
+  $: networth = totalAssets + totalPositions;
+
+  $: totalProfit =
+    networth +
     Number(data?.overview?.cumulativeOutflow || 0) -
     Number(data?.overview?.cumulativeInflow || 0);
 </script>
@@ -29,11 +32,7 @@
   <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
     <OverviewCard title={MultipleLang.networth}>
       <div class="xl:text-3xl text-5xl text-black flex">
-        $<CountUpNumber
-          id="networth"
-          number={totalAssets + totalPositions}
-          type="balance"
-        />
+        $<CountUpNumber id="networth" number={networth} type="balance" />
       </div>
       <div class="flex items-center gap-3">
         <div
@@ -60,12 +59,12 @@
       </div>
     </OverviewCard>
 
-    <OverviewCard title={MultipleLang.net_inflow}>
+    <OverviewCard title={MultipleLang.total_profit}>
       <div class="flex xl:text-3xl text-5xl text-black">
-        {#if netFlow.toString().toLowerCase().includes("e-")}
-          $<TooltipNumber number={netFlow} type="balance" />
+        {#if totalProfit.toString().toLowerCase().includes("e-")}
+          $<TooltipNumber number={totalProfit} type="balance" />
         {:else}
-          $<CountUpNumber id="claimable" number={netFlow} type="balance" />
+          $<CountUpNumber id="claimable" number={totalProfit} type="balance" />
         {/if}
       </div>
       <div class="flex items-center gap-3 opacity-50">
