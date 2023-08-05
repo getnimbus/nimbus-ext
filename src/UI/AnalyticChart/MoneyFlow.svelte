@@ -1,7 +1,7 @@
 <script lang="ts">
   import { sendMessage } from "webext-bridge";
   import { groupBy, intersection, flatten } from "lodash";
-  import { wallet, chain } from "~/store";
+  import { wallet, chain, typeWallet } from "~/store";
   import { formatCurrency, getAddressContext } from "~/utils";
   import dayjs from "dayjs";
 
@@ -22,6 +22,11 @@
   let selectedChain: string = "";
   chain.subscribe((value) => {
     selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let isLoadingInflowOutflow = false;
@@ -311,7 +316,12 @@
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        getInflowOutflow();
+        if (
+          getAddressContext(selectedWallet)?.type === "EVM" ||
+          typeWalletAddress === "CEX"
+        ) {
+          getInflowOutflow();
+        }
       }
     }
   }

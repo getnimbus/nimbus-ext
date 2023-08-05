@@ -1,6 +1,6 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { chain, wallet } from "~/store";
+  import { chain, wallet, typeWallet } from "~/store";
   import { formatCurrency, getAddressContext } from "~/utils";
   import maxBy from "lodash/maxBy";
   import minBy from "lodash/minBy";
@@ -21,6 +21,17 @@
   import { getPostionInRage } from "~/chart-utils";
   import CtaIcon from "~/components/CtaIcon.svelte";
 
+  const riskTypeChart = [
+    {
+      label: "Overview",
+      value: "overview",
+    },
+    {
+      label: "Shapre Ratio",
+      value: "shrapeRatioBreakdown",
+    },
+  ];
+
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
@@ -29,6 +40,11 @@
   let selectedChain: string = "";
   chain.subscribe((value) => {
     selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let compareData = {};
@@ -96,7 +112,6 @@
     ],
     series: [],
   };
-
   let riskBreakdownChartOption = {
     title: {
       text: "",
@@ -127,11 +142,9 @@
                               item?.logo ||
                               "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
                             } alt="" width=20 height=20 style="border-radius: 100%" />
-                            <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                              ${item?.name} ${
+                            ${item?.name} ${
                       item?.symbol ? `(${item?.symbol})` : ""
                     }
-                            </div>
                         </div>
                         <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                           <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
@@ -337,21 +350,15 @@
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        getAnalyticCompare();
+        if (
+          getAddressContext(selectedWallet)?.type === "EVM" ||
+          typeWalletAddress === "CEX"
+        ) {
+          getAnalyticCompare();
+        }
       }
     }
   }
-
-  const riskTypeChart = [
-    {
-      label: "Overview",
-      value: "overview",
-    },
-    {
-      label: "Shapre Ratio",
-      value: "shrapeRatioBreakdown",
-    },
-  ];
 
   $: goodPerf = maxBy(riskBreakdownData, (item) => item.change30DPercent);
   $: badPerf = minBy(riskBreakdownData, (item) => item.change30DPercent);

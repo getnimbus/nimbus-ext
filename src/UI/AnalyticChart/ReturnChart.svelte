@@ -1,23 +1,23 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { wallet, chain } from "~/store";
+  import { wallet, chain, typeWallet } from "~/store";
   import { formatCurrencyV2, getAddressContext } from "~/utils";
+  import { sendMessage } from "webext-bridge";
+  import dayjs from "dayjs";
+  import { calculateVolatility, getChangePercent } from "~/chart-utils";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import EChart from "~/components/EChart.svelte";
-  import { sendMessage } from "webext-bridge";
-  import dayjs from "dayjs";
-  import { calculateVolatility, getChangePercent } from "~/chart-utils";
+  import CheckIcon from "~/components/CheckIcon.svelte";
+  import DangerIcon from "~/components/DangerIcon.svelte";
+  import CtaIcon from "~/components/CtaIcon.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import Logo from "~/assets/logo-1.svg";
-  import CheckIcon from "~/components/CheckIcon.svelte";
-  import DangerIcon from "~/components/DangerIcon.svelte";
-  import CtaIcon from "~/components/CtaIcon.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -27,6 +27,11 @@
   let selectedChain: string = "";
   chain.subscribe((value) => {
     selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let compareData = {};
@@ -160,7 +165,12 @@
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        getAnalyticCompare();
+        if (
+          getAddressContext(selectedWallet)?.type === "EVM" ||
+          typeWalletAddress === "CEX"
+        ) {
+          getAnalyticCompare();
+        }
       }
     }
   }
