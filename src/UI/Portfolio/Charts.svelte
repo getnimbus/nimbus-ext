@@ -217,9 +217,8 @@
 
   $: {
     if (
-      (overviewDataPerformance?.performance?.length !== 0 ||
-        overviewDataPerformance?.portfolioChart?.length !== 0) &&
-      selectedTypePerformance
+      overviewDataPerformance?.performance?.length !== 0 ||
+      overviewDataPerformance?.portfolioChart?.length !== 0
     ) {
       const formatXAxisPerformance = overviewDataPerformance?.performance.map(
         (item) => {
@@ -270,6 +269,82 @@
 
       dataLineChartNetWorth = {
         formatXAxis: formatXAxisPortfolioChart,
+      };
+    } else {
+      dataLineChartNetWorth = {
+        formatXAxis: [],
+      };
+      dataLineChartPercent = {
+        formatXAxis: [],
+        formatDataPortfolio: [],
+        formatDataETH: [],
+        formatDataBTC: [],
+      };
+      optionLine = {
+        title: {
+          text: "",
+        },
+        tooltip: {
+          trigger: "axis",
+          extraCssText: "z-index: 9997",
+          formatter: function (params) {
+            return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                ${params[0].axisValue}
+              </div>
+              ${params
+                .map((item) => {
+                  return `
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                    <span>${item?.marker}</span>
+                    ${item?.seriesName}
+                  </div>
+
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                      item.value >= 0 ? "#05a878" : "#f25f5d"
+                    };">
+                      ${formatCurrency(Math.abs(item.value))}%
+                      <img
+                        src=${item.value >= 0 ? TrendUp : TrendDown} 
+                        alt=""
+                        style="margin-bottom: 4px;"
+                      />
+                    </div>
+                  </div>
+                </div>
+                `;
+                })
+                .join("")}
+            </div>`;
+          },
+        },
+        legend: {
+          lineStyle: {
+            type: "solid",
+          },
+          data: [],
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: [],
+        },
+        yAxis: {
+          type: "value",
+          axisLabel: {
+            formatter: "{value}",
+          },
+        },
+        series: [],
       };
     }
   }
@@ -490,6 +565,92 @@
             ],
           };
         }
+      } else {
+        optionPie = {
+          title: {
+            text: "",
+          },
+          tooltip: {
+            trigger: "item",
+            extraCssText: "z-index: 9997",
+            formatter: function (params) {
+              return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+              <div style="display: flex; align-items: centers; gap: 4px">
+                <img src=${
+                  params?.data?.logo ||
+                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                } alt="" width=20 height=20 style="border-radius: 100%" />
+                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                  ${params?.name} ${
+                params?.data?.symbol ? `(${params?.data?.symbol})` : ""
+              }
+                </div>
+              </div>
+
+              ${
+                params?.data?.name_balance
+                  ? `
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                    ${MultipleLang[params?.data?.name_balance]}
+                  </div>
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                    ${formatCurrency(params?.data?.value_balance)}
+                  </div>
+                </div>
+              `
+                  : ""
+              }
+
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                  ${MultipleLang[params?.data?.name_value]}
+                </div>
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                  $${formatCurrency(params?.data?.value_value)}
+                </div>
+              </div>
+              
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                  ${MultipleLang[params?.data?.name_ratio]}
+                </div>
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                  ${formatCurrency(params?.value)}%
+                </div>
+              </div>
+            </div>`;
+            },
+          },
+          legend: {
+            top: "0%",
+            left: "center",
+          },
+          series: [
+            {
+              type: "pie",
+              radius: ["40%", "60%"],
+              left: 0,
+              avoidLabelOverlap: false,
+              label: {
+                show: false,
+                position: "center",
+              },
+              emphasis: {
+                label: {
+                  show: false,
+                  fontSize: 40,
+                  fontWeight: "bold",
+                },
+              },
+              labelLine: {
+                show: false,
+              },
+              data: [],
+            },
+          ],
+        };
       }
     }
   }
