@@ -17,6 +17,9 @@
   import Logo from "~/assets/logo-1.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
+  import ProgressBar from "~/components/ProgressBar.svelte";
+  import { getPostionInRage } from "~/chart-utils";
+  import CtaIcon from "~/components/CtaIcon.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -352,6 +355,11 @@
 
   $: goodPerf = maxBy(riskBreakdownData, (item) => item.change30DPercent);
   $: badPerf = minBy(riskBreakdownData, (item) => item.change30DPercent);
+  $: sharpeRatioCompareAvg = getPostionInRage(
+    Number(compareData?.base?.sharpeRatio || 0),
+    Number(compareData?.base?.avgMarket?.minShapreRatio || 0),
+    Number(compareData?.base?.avgMarket?.maxShapreRatio || 0)
+  );
 </script>
 
 <AnalyticSection>
@@ -375,7 +383,7 @@
         <LoadingPremium />
       </div>
     {:else}
-      <!-- <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4">
         <div class="grid grid-cols-2">
           <div class="col-span-1">
             <div class="xl:text-base text-2xl text-black flex justify-start">
@@ -396,50 +404,9 @@
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="xl:text-base text-2xl text-black flex justify-start">
-              <TooltipTitle
-                tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
-                isBigIcon
-              >
-                Volatility
-              </TooltipTitle>
-            </div>
-          </div>
-          <div class="col-span-1 flex items-center justify-end">
-            <div class="xl:text-base text-2xl">
-              <TooltipNumber
-                number={compareData?.base?.volatility}
-                type="percent"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="xl:text-base text-2xl text-black flex justify-start">
-              <TooltipTitle
-                tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
-                isBigIcon
-              >
-                Max drawdown
-              </TooltipTitle>
-            </div>
-          </div>
-          <div class="col-span-1 flex items-center justify-end">
-            <div class="xl:text-base text-2xl">
-              <TooltipNumber
-                number={compareData?.base?.drawDown}
-                type="percent"
-              />
-            </div>
-          </div>
-        </div>
-      </div> -->
-      <div class="flex items-center gap-3 mt-8">
+      <div class="flex items-center gap-3 mt-2">
         {#if goodPerf}
           <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
             <div class="xl:text-base text-lg text-[#6E7787FF] relative">
@@ -493,6 +460,35 @@
                 %
               </div>
             </div>
+          </div>
+        {/if}
+      </div>
+      <div class="flex flex-col gap-3 mt-8">
+        <div class="xl:text-lg text-2xl font-medium text-black">
+          <TooltipTitle
+            tooltipText={"Compare with top 100 by CoinMarketCap."}
+            isBigIcon
+          >
+            Compare to Market
+          </TooltipTitle>
+        </div>
+        <ProgressBar
+          leftLabel="Low"
+          rightLabel="High"
+          averageText="Avg Market"
+          progress={sharpeRatioCompareAvg}
+          lowerIsBetter={false}
+          tooltipText="Shapre Ratio"
+        />
+        {#if compareData?.base?.sharpeRatio < 1}
+          <div class="mt-5">
+            <CtaIcon isGood={false} />
+            <span class="text-red-500"
+              >Your portfolio is not "balance" between risk and return:</span
+            >
+            It has expected yield only {compareData?.base?.sharpeRatio?.toFixed(
+              2
+            )} units of profit per 1 unit of risk.
           </div>
         {/if}
       </div>

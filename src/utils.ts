@@ -61,7 +61,7 @@ export const typeList = [
     value: "sector",
   },
   {
-    label: "Token Rank",
+    label: "Market Cap",
     value: "rank",
   },
 ];
