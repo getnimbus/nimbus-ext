@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getChangeFromPercent, getChangePercent } from "~/chart-utils";
   import { i18n } from "~/lib/i18n";
 
   import CountUpNumber from "~/components/CountUpNumber.svelte";
@@ -26,6 +27,31 @@
     networth +
     Number(data?.overview?.cumulativeOutflow || 0) -
     Number(data?.overview?.cumulativeInflow || 0);
+
+  $: changeLast24hNetWorth = getChangeFromPercent(
+    networth,
+    data?.overview.networthChange
+  );
+
+  $: changeLast24hTotalInflow = getChangeFromPercent(
+    data?.overview?.cumulativeInflow,
+    data?.overview.cumulativeInflowChange
+  );
+
+  $: changeLast24hTotalOutflow = getChangeFromPercent(
+    data?.overview?.cumulativeOutflow,
+    data?.overview.cumulativeOutflowChange
+  );
+
+  $: changeLast24hTotalProfit =
+    changeLast24hTotalInflow -
+    changeLast24hTotalOutflow -
+    changeLast24hNetWorth;
+
+  $: last24hTotalProfitPercent = getChangePercent(
+    totalProfit,
+    changeLast24hTotalProfit
+  );
 </script>
 
 <div class="flex xl:flex-row flex-col justify-between gap-6">
@@ -76,22 +102,20 @@
           />
         {/if}
       </div>
-      <div class="flex items-center gap-3 opacity-50">
+      <div class="flex items-center gap-3">
         <div
           class={`flex xl:text-lg text-3xl font-medium ${
-            data?.overview.claimableChange < 0
-              ? "text-red-500"
-              : "text-[#00A878]"
+            last24hTotalProfitPercent < 0 ? "text-red-500" : "text-[#00A878]"
           }`}
         >
-          {#if data?.overview.claimableChange < 0}
+          {#if last24hTotalProfitPercent < 0}
             ↓
           {:else}
             ↑
           {/if}
           <CountUpNumber
             id="claimable_grouth"
-            number={Math.abs(data?.overview.claimableChange)}
+            number={Math.abs(last24hTotalProfitPercent)}
             type="percent"
           />%
         </div>
