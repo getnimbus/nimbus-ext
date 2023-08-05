@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import onboard from "~/lib/web3-onboard";
   import { ethers } from "ethers";
-  import { wallet, chain, typeWallet, user } from "~/store";
+  import { wallet, chain, typeWallet, user, isShowUpgradeModal } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
 
@@ -32,6 +32,7 @@
 
   let showPopover = false;
   let addressWallet = "";
+  let showUpgradeModal = false;
 
   onMount(() => {
     const evmToken = localStorage.getItem("evm_token");
@@ -198,21 +199,19 @@
     </div>
     {#if showPopover}
       <div
-        class="bg-white py-2 px-3 text-sm rounded-lg absolute xl:-bottom-17 -bottom-14 left-1/2 transform -translate-x-1/2 flex flex-col gap-1 xl:w-[80px] w-max z-50"
+        class="bg-white py-2 px-3 text-sm rounded-lg absolute xl:-bottom-24 -bottom-24 left-1/2 transform -translate-x-1/2 flex flex-col gap-1 xl:w-[80px] w-max z-50"
         style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
       >
         {#if APP_TYPE.TYPE === "EXT"}
-          <!-- <div
-            class="text-gray-500 cursor-pointer"
+          <div
+            class="text-yellow-400 cursor-pointer xl:text-sm text-2xl"
             on:click={() => {
-              browser.tabs.create({
-                url: "src/entries/options/index.html?tab=nft",
-              });
+              isShowUpgradeModal.update((n) => (n = true));
               showPopover = false;
             }}
           >
-            Dashboard
-          </div> -->
+            Upgrade
+          </div>
           <div
             class="text-gray-500 cursor-pointer xl:block hidden"
             on:click={() => {
@@ -224,16 +223,15 @@
             Settings
           </div>
         {:else}
-          <!-- <a
-            class="text-gray-500 cursor-pointer"
-            href="/entries/options/index.html?tab=nft"
-            target="_blank"
+          <a
+            class="text-yellow-400 cursor-pointer xl:text-sm text-2xl"
             on:click={() => {
+              isShowUpgradeModal.update((n) => (n = true));
               showPopover = false;
             }}
           >
-            My NFT
-          </a> -->
+            Upgrade
+          </a>
           <a
             href="entries/options/index.html?tab=wallets"
             target="_blank"

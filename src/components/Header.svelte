@@ -3,13 +3,14 @@
   import * as browser from "webextension-polyfill";
   import { getAddressContext } from "~/utils";
   import { i18n } from "~/lib/i18n";
-  import { chain, wallet } from "~/store";
+  import { chain, wallet, isShowUpgradeModal } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { Motion } from "svelte-motion";
   import { showChangeLogAnimationVariants } from "~/utils";
 
   import Auth from "~/UI/Auth/Auth.svelte";
   import AuthEvm from "~/UI/Auth/AuthEVM.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
 
   import Logo from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
@@ -25,6 +26,7 @@
   import Crown from "~/assets/crown.svg";
   import MenuBar from "~/assets/menu-bar.svg";
   import Close from "~/assets/close-menu-bar.svg";
+  import PricePackage from "~/UI/PricePagake/PricePackage.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -41,6 +43,12 @@
   wallet.subscribe((value) => {
     selectedWallet = value;
   });
+
+  let showUpgradeModal;
+  isShowUpgradeModal.subscribe((value) => {
+    showUpgradeModal = value;
+  });
+
   let timerDebounce;
   let search = "";
   let isShowHeaderMobile = false;
@@ -417,6 +425,20 @@
     </div>
   </div>
 </div>
+
+<AppOverlay
+  isOpen={showUpgradeModal}
+  isTableContent
+  on:close={() => {
+    isShowUpgradeModal.update((n) => (n = false));
+    showUpgradeModal = false;
+  }}
+>
+  <div class="text-3xl text-center text-gray-600 font-semibold">
+    Upgrade Plan
+  </div>
+  <PricePackage />
+</AppOverlay>
 
 <style>
   .mobile {

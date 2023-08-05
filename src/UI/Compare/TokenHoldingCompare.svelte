@@ -20,8 +20,6 @@
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
 
-  $: console.log("data: ", data);
-
   $: amountChange =
     data?.price?.price === 0
       ? 0

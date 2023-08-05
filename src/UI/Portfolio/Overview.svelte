@@ -64,7 +64,16 @@
         {#if totalProfit.toString().toLowerCase().includes("e-")}
           $<TooltipNumber number={totalProfit} type="balance" />
         {:else}
-          $<CountUpNumber id="claimable" number={totalProfit} type="balance" />
+          <span>
+            {#if totalProfit < 0}
+              -
+            {/if}
+          </span>
+          $<CountUpNumber
+            id="claimable"
+            number={Math.abs(totalProfit)}
+            type="balance"
+          />
         {/if}
       </div>
       <div class="flex items-center gap-3 opacity-50">
