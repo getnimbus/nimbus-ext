@@ -191,7 +191,12 @@
       isEmptyDataChart = false;
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
         getListTransactions("");
-        getAnalyticHistorical();
+        if (
+          getAddressContext(selectedWallet)?.type === "EVM" ||
+          typeWalletAddress === "CEX"
+        ) {
+          getAnalyticHistorical();
+        }
       }
     }
   }

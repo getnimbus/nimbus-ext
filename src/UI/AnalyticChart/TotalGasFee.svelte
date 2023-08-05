@@ -1,6 +1,6 @@
 <script lang="ts">
   import { sendMessage } from "webext-bridge";
-  import { wallet, chain } from "~/store";
+  import { wallet, chain, typeWallet } from "~/store";
   import dayjs from "dayjs";
   import { formatCurrency, getAddressContext } from "~/utils";
 
@@ -14,6 +14,11 @@
   let selectedChain: string = "";
   chain.subscribe((value) => {
     selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let isLoadingChart = false;
@@ -132,7 +137,12 @@
       isLoadingChart = false;
       isEmptyDataChart = false;
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        getAnalyticHistorical();
+        if (
+          getAddressContext(selectedWallet)?.type === "EVM" ||
+          typeWalletAddress === "CEX"
+        ) {
+          getAnalyticHistorical();
+        }
       }
     }
   }

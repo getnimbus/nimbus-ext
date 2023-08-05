@@ -82,7 +82,7 @@
               </div>
 
               ${
-                params?.data?.name_balance
+                params?.data?.name_balance.length !== 0
                   ? `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
@@ -612,7 +612,13 @@
             series: [
               {
                 ...optionPie.series[0],
-                data: dataSector,
+                data: dataSector.map((item) => {
+                  return {
+                    ...item,
+                    name_balance: "",
+                    value_balance: 0,
+                  };
+                }),
               },
             ],
           };
@@ -622,7 +628,13 @@
             series: [
               {
                 ...optionPie.series[0],
-                data: dataRank,
+                data: dataRank.map((item) => {
+                  return {
+                    ...item,
+                    name_balance: "",
+                    value_balance: 0,
+                  };
+                }),
               },
             ],
           };
@@ -632,7 +644,13 @@
             series: [
               {
                 ...optionPie.series[0],
-                data: dataCategory,
+                data: dataCategory.map((item) => {
+                  return {
+                    ...item,
+                    name_balance: "",
+                    value_balance: 0,
+                  };
+                }),
               },
             ],
           };
@@ -652,7 +670,13 @@
               series: [
                 {
                   ...optionPie.series[0],
-                  data: selectedPersonalizeCategoryData.dataPie,
+                  data: selectedPersonalizeCategoryData.dataPie.map((item) => {
+                    return {
+                      ...item,
+                      name_balance: "",
+                      value_balance: 0,
+                    };
+                  }),
                 },
               ],
             };

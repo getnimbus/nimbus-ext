@@ -122,6 +122,7 @@
   let label = "";
   let isLoadingEdit = false;
   let isLoadingDelete = false;
+  let isLoadingConnectCEX = false;
   let showDisableAddWallet = false;
 
   let show = false;
@@ -323,7 +324,11 @@
           })
           .onConnection(async function (account) {
             await nimbus.get("/accounts/sync");
+
             getListAddress();
+            isLoadingConnectCEX = false;
+            isOpenAddModal = false;
+
             toastMsg = "Successfully add CEX account!";
             isSuccess = true;
             trigger();
@@ -331,7 +336,11 @@
           })
           .onError(function (error) {
             console.error("connection vezgo error", error);
+
             getListAddress();
+            isLoadingConnectCEX = false;
+            isOpenAddModal = false;
+
             toastMsg =
               "Something wrong when add CEX account. Please try again!";
             isSuccess = false;
@@ -815,10 +824,8 @@
         <div class="w-max">
           <Button
             variant="tertiary"
-            on:click={() => {
-              onSubmitCEX();
-              isOpenAddModal = false;
-            }}
+            isLoading={isLoadingConnectCEX}
+            on:click={onSubmitCEX}
           >
             <div class="xl:text-base text-2xl font-medium text-white">
               Connect Exchange
