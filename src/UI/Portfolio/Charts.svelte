@@ -250,7 +250,7 @@
       <div class="flex justify-start mb-6">
         {#if typeWalletAddress === "CEX"}
           <TooltipTitle
-            tooltipText="Due to privacy, the performance data can only get after you connect to Nimbus"
+            tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
             type="warning"
           >
             <div class="pl-4 xl:text-2xl text-4xl font-medium text-black">
