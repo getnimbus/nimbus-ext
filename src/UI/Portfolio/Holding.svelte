@@ -492,7 +492,7 @@
                 </th>
                 <th
                   class={`py-3 pr-3 ${
-                    getAddressContext(selectedWallet).type === "EVM"
+                    getAddressContext(selectedWallet)?.type === "EVM"
                       ? "rounded-tr-[10px]"
                       : ""
                   }`}
