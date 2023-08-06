@@ -181,9 +181,6 @@
     isOpenModal = false;
   }}
 >
-  <div class="xl:title-3 title-1 text-center text-gray-600 font-semibold">
-    Let's us analytic your portfolio
-  </div>
   <div class="mt-2">
     <div
       class="xl:text-base text-lg text-gray-500 text-center xl:w-[600px] w-[700px]"
@@ -192,7 +189,7 @@
       <span class="font-bold">Premium</span>
       <img src={Crown} alt="" width="13" height="12" class="inline-block" />
       feature is under beta which you can access for free now. <br />Add your
-      email to get updates from us and receive exclusive benefits soon.
+      email to get updates from us and receive exclusive benefits in the future.
     </div>
     <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
       <div class="flex flex-col gap-1">

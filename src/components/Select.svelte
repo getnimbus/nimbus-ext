@@ -22,6 +22,8 @@
       selected &&
       listSelect.filter((item) => item.value === selected)) ||
     [];
+
+  const disabledChains = ["XDAI", "SOL"];
 </script>
 
 <div class="wrapper">
@@ -82,7 +84,6 @@
                 item.value !== "ALL" &&
                 item.value !== "ETH" &&
                 item.value !== "BTC" &&
-                item.value !== "XDAI" &&
                 item.value !== "BNB" &&
                 item.value !== "MATIC" &&
                 item.value !== "OP" &&
@@ -111,22 +112,13 @@
           {/if}
           <div
             class={`xl:text-sm text-2xl name ${
-              type === "chain" &&
-              item.value !== "ALL" &&
-              item.value !== "ETH" &&
-              item.value !== "BTC" &&
-              item.value !== "XDAI" &&
-              item.value !== "BNB" &&
-              item.value !== "MATIC" &&
-              item.value !== "OP" &&
-              item.value !== "AVAX" &&
-              item.value !== "ARB"
+              type === "chain" && disabledChains.includes(item.value)
                 ? "text-[#00000066]"
                 : "text-[#000000b3]"
             }`}
           >
             {item.label}
-            {#if type === "chain" && item.value !== "ALL" && item.value !== "ETH" && item.value !== "BTC" && item.value !== "XDAI" && item.value !== "BNB" && item.value !== "MATIC" && item.value !== "OP" && item.value !== "AVAX" && item.value !== "ARB"}
+            {#if disabledChains.includes(item.value)}
               (Soon)
             {/if}
           </div>

@@ -305,11 +305,6 @@ export const chainList = [
     value: "BNB",
   },
   {
-    logo: Gnosis,
-    label: "Gnosis",
-    value: "XDAI",
-  },
-  {
     logo: Matic,
     label: "Matic",
     value: "MATIC",
@@ -330,9 +325,14 @@ export const chainList = [
     value: "ARB",
   },
   {
+    logo: Gnosis,
+    label: "Gnosis",
+    value: "XDAI",
+  },
+  {
     logo: Solana,
     label: "Solana",
-    value: "SOLANA",
+    value: "SOL",
   },
 ];
 
