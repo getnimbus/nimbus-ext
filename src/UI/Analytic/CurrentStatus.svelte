@@ -879,36 +879,38 @@
           </div>
         {/if}
       </div>
-      <div class="flex items-center gap-2">
-        <AnimateSharedLayout>
-          {#each performanceTypeChart as type}
-            <div
-              class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-              on:click={() => (selectedTypeChart = type.value)}
-            >
+      {#if !isEmptyPerformanceChart}
+        <div class="flex items-center gap-2">
+          <AnimateSharedLayout>
+            {#each performanceTypeChart as type}
               <div
-                class={`relative z-20 ${
-                  selectedTypeChart === type.value && "text-white"
-                }`}
+                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                on:click={() => (selectedTypeChart = type.value)}
               >
-                {type.label}
-              </div>
-              {#if type.value === selectedTypeChart}
-                <Motion
-                  let:motion
-                  layoutId="active-pill"
-                  transition={{ type: "spring", duration: 0.6 }}
+                <div
+                  class={`relative z-20 ${
+                    selectedTypeChart === type.value && "text-white"
+                  }`}
                 >
-                  <div
-                    class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                    use:motion
-                  />
-                </Motion>
-              {/if}
-            </div>
-          {/each}
-        </AnimateSharedLayout>
-      </div>
+                  {type.label}
+                </div>
+                {#if type.value === selectedTypeChart}
+                  <Motion
+                    let:motion
+                    layoutId="active-pill"
+                    transition={{ type: "spring", duration: 0.6 }}
+                  >
+                    <div
+                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                      use:motion
+                    />
+                  </Motion>
+                {/if}
+              </div>
+            {/each}
+          </AnimateSharedLayout>
+        </div>
+      {/if}
     </div>
     {#if selectedChain === "XDAI"}
       <div

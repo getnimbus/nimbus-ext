@@ -10,6 +10,7 @@
   import DailyPnL from "../AnalyticChart/DailyPnL.svelte";
   import ProfitGrows from "../AnalyticChart/ProfitGrows.svelte";
   import Button from "~/components/Button.svelte";
+  import HistoricalActivities from "../AnalyticChart/HistoricalActivities.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -94,7 +95,11 @@
     <TotalValueHistory {isLoading} {isEmpty} {dataTotalValueHistory} />
     <DailyPnL {isLoading} {isEmpty} {dataDailyPnL} />
     <SectorGrowth /> -->
-    <TotalGasFee />
+    {#if typeWalletAddress === "DEX"}
+      <TotalGasFee />
+    {:else}
+      <HistoricalActivities />
+    {/if}
   </div>
 </div>
 

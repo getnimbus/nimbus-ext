@@ -128,7 +128,10 @@
         );
 
         const formatData: AnalyticHistoricalFormat = response.map((item) => {
-          return [dayjs(item.date).format("YYYY-MM-DD"), item.count];
+          return [
+            dayjs(Number(item.date) * 1000).format("YYYY-MM-DD"),
+            item.count,
+          ];
         });
 
         option = {
@@ -139,7 +142,7 @@
           },
           calendar: {
             ...option.calendar,
-            range: dayjs(maxHistorical.date).format("YYYY"),
+            range: dayjs(Number(maxHistorical.date) * 1000).format("YYYY"),
           },
           series: {
             ...option.series,

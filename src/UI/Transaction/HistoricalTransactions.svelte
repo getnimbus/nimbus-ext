@@ -37,8 +37,6 @@
       window.removeEventListener("scroll", handleScroll);
     };
   });
-
-  $: console.log("data: ", data);
 </script>
 
 <div

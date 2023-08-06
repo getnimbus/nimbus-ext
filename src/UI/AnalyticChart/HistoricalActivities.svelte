@@ -4,6 +4,11 @@
   import dayjs from "dayjs";
   import { formatCurrency, getAddressContext } from "~/utils";
 
+  import type {
+    AnalyticHistoricalRes,
+    AnalyticHistoricalFormat,
+  } from "~/types/AnalyticHistoricalData";
+
   import CalendarChart from "~/components/CalendarChart.svelte";
 
   let selectedWallet: string = "";
@@ -23,7 +28,6 @@
 
   let isLoadingChart = false;
   let isEmptyDataChart = false;
-  let sum = 0;
   let option = {
     tooltip: {
       extraCssText: "z-index: 9997",
@@ -36,10 +40,10 @@
               <div style="display: flex; align-items: centers; justify-content: space-between;">
                 <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
                   <div style="background: #00b580; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
-                  Gas fee paid
+                  Activity
                 </div>
                 <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: #000;">
-                  $${formatCurrency(params.data[1])}
+                  ${params.data[1]}
                 </div>
               </div>
             </div>`;
@@ -49,7 +53,6 @@
       min: 0,
       max: 1,
       calculable: true,
-      type: "piecewise",
       orient: "horizontal",
       top: 0,
       right: 40,
@@ -59,8 +62,10 @@
       },
       controller: {
         inRange: {
-          color: ["#f4f5f8", "#00A878"],
           opacity: [0.1, 1],
+        },
+        outOfRange: {
+          color: "#f4f5f8",
         },
       },
     },
@@ -90,21 +95,19 @@
   const getAnalyticHistorical = async () => {
     isLoadingChart = true;
     try {
-      const response: any[] = await sendMessage("getAnalytic", {
+      const response: AnalyticHistoricalRes = await sendMessage("getAnalytic", {
         address: selectedWallet,
         chain: selectedChain,
       });
       if (response && response.length !== 0) {
         const maxHistorical = response.reduce((prev, current) =>
-          prev.value > current.value ? prev : current
+          prev.count > current.count ? prev : current
         );
 
-        sum = response.reduce((prev, item) => prev + item.value, 0);
-
-        const formatData = response.map((item) => {
+        const formatData: AnalyticHistoricalFormat = response.map((item) => {
           return [
             dayjs(Number(item.date) * 1000).format("YYYY-MM-DD"),
-            item.value,
+            item.count,
           ];
         });
 
@@ -112,7 +115,7 @@
           ...option,
           visualMap: {
             ...option.visualMap,
-            max: maxHistorical.value,
+            max: maxHistorical.count,
           },
           calendar: {
             ...option.calendar,
@@ -123,15 +126,14 @@
             data: formatData,
           },
         };
-        isLoadingChart = false;
       } else {
-        isLoadingChart = false;
         isEmptyDataChart = true;
       }
     } catch (e) {
       console.log("error: ", e);
-      isLoadingChart = false;
       isEmptyDataChart = true;
+    } finally {
+      isLoadingChart = false;
     }
   };
 
@@ -156,11 +158,10 @@
     {option}
     {isEmptyDataChart}
     {isLoadingChart}
-    title="Total gas fee paid"
-    tooltipTitle=""
-    id="total-gasfee-paid"
-    {sum}
-    type="primary"
+    title="Activities"
+    tooltipTitle="The chart shows only activities made by this wallet"
+    id="historical-activities-analytic"
+    type="normal"
   />
 </div>
 

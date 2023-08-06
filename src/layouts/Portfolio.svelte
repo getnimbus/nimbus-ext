@@ -124,9 +124,6 @@
     },
   };
 
-  let compareData = {};
-  let isLoadingDataCompare = false;
-
   let selectedTokenHolding = {
     data: [],
     select: [],
@@ -417,22 +414,6 @@
     }
   };
 
-  const getAnalyticCompare = async () => {
-    isLoadingDataCompare = true;
-    try {
-      const response: any = await nimbus.get(
-        `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`
-      );
-      if (response && response.data) {
-        compareData = response.data;
-        isLoadingDataCompare = false;
-      }
-    } catch (e) {
-      console.log("e: ", e);
-      isLoadingDataCompare = false;
-    }
-  };
-
   const handleGetAllData = async (type: string) => {
     loadingOverview = true;
     loadingHoldingToken = true;
@@ -585,7 +566,6 @@
           select: [],
         };
         selectedDataPieChart = {};
-        compareData = {};
         dataPieChart = {
           token: {
             sumOrderBreakdownToken: 0,
@@ -624,12 +604,6 @@
         holdingTokenData = [];
 
         handleGetAllData("sync");
-        if (
-          getAddressContext(selectedWallet)?.type === "EVM" ||
-          typeWalletAddress === "CEX"
-        ) {
-          getAnalyticCompare();
-        }
       }
     }
   }
@@ -693,7 +667,7 @@
           />
 
           {#if getAddressContext(selectedWallet)?.type !== "BTC"}
-            <RiskReturn data={compareData} {isLoadingDataCompare} />
+            <RiskReturn />
           {/if}
 
           <Holding

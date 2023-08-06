@@ -750,36 +750,38 @@
             {MultipleLang.performance}
           </div>
         {/if}
-        <div class="flex items-center gap-2">
-          <AnimateSharedLayout>
-            {#each performanceTypeChartPortfolio as type}
-              <div
-                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                on:click={() => (selectedTypePerformance = type.value)}
-              >
+        {#if overviewDataPerformance?.performance?.length !== 0 || overviewDataPerformance?.portfolioChart?.length !== 0}
+          <div class="flex items-center gap-2">
+            <AnimateSharedLayout>
+              {#each performanceTypeChartPortfolio as type}
                 <div
-                  class={`relative z-20 ${
-                    selectedTypePerformance === type.value && "text-white"
-                  }`}
+                  class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                  on:click={() => (selectedTypePerformance = type.value)}
                 >
-                  {type.label}
-                </div>
-                {#if type.value === selectedTypePerformance}
-                  <Motion
-                    let:motion
-                    layoutId="active-pill"
-                    transition={{ type: "spring", duration: 0.6 }}
+                  <div
+                    class={`relative z-20 ${
+                      selectedTypePerformance === type.value && "text-white"
+                    }`}
                   >
-                    <div
-                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                      use:motion
-                    />
-                  </Motion>
-                {/if}
-              </div>
-            {/each}
-          </AnimateSharedLayout>
-        </div>
+                    {type.label}
+                  </div>
+                  {#if type.value === selectedTypePerformance}
+                    <Motion
+                      let:motion
+                      layoutId="active-pill"
+                      transition={{ type: "spring", duration: 0.6 }}
+                    >
+                      <div
+                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                        use:motion
+                      />
+                    </Motion>
+                  {/if}
+                </div>
+              {/each}
+            </AnimateSharedLayout>
+          </div>
+        {/if}
       </div>
       {#if selectedChain === "XDAI" || getAddressContext(selectedWallet)?.type === "BTC"}
         <div
@@ -793,13 +795,23 @@
           <loading-icon />
         </div>
       {:else}
-        <EChart
-          id="line-chart"
-          theme="white"
-          notMerge={true}
-          option={optionLine}
-          height={465}
-        />
+        <div>
+          {#if overviewDataPerformance?.performance?.length === 0 || overviewDataPerformance?.portfolioChart?.length === 0}
+            <div
+              class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+            >
+              Empty
+            </div>
+          {:else}
+            <EChart
+              id="line-chart"
+              theme="white"
+              notMerge={true}
+              option={optionLine}
+              height={465}
+            />
+          {/if}
+        </div>
       {/if}
     </div>
   </div>

@@ -35,6 +35,7 @@
   });
 
   let compareData = {};
+  let errorMsg = "";
   let isLoadingDataCompare = false;
   let isEmptyDataCompare = false;
   let optionBar = {
@@ -157,6 +158,7 @@
 
         isLoadingDataCompare = false;
       } else {
+        errorMsg = response.error;
         isLoadingDataCompare = false;
         isEmptyDataCompare = true;
       }
@@ -200,7 +202,7 @@
     </div>
   </span>
 
-  <span slot="overview">
+  <span slot="overview" class="relative">
     {#if !isLoadingDataCompare}
       <div class="xl:text-xl text-3xl font-medium text-black mb-4">
         Overview
@@ -214,9 +216,9 @@
       <div class="h-full">
         {#if isEmptyDataCompare}
           <div
-            class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
+            class="absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md text-xs"
           >
-            Empty
+            {errorMsg}
           </div>
         {:else}
           <div class="flex flex-col gap-4">
@@ -455,9 +457,9 @@
       <div class="h-full">
         {#if isEmptyDataCompare}
           <div
-            class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
+            class="flex justify-center items-center h-full text-xs h-[465px]"
           >
-            Empty
+            {errorMsg}
           </div>
         {:else}
           <div class="relative">
