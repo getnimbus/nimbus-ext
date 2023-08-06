@@ -11,7 +11,7 @@
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import { formatCurrency, getAddressContext } from "~/utils";
   import { wait } from "../entries/background/utils";
-  import { isOpenReport, wallet, chain } from "~/store";
+  import { isOpenReport, wallet, chain, typeWallet } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
 
@@ -63,6 +63,11 @@
   let selectedChain: string = "";
   chain.subscribe((value) => {
     selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let overviewData: OverviewData = {
@@ -619,7 +624,12 @@
         holdingTokenData = [];
 
         handleGetAllData("sync");
-        getAnalyticCompare();
+        if (
+          getAddressContext(selectedWallet)?.type === "EVM" ||
+          typeWalletAddress === "CEX"
+        ) {
+          getAnalyticCompare();
+        }
       }
     }
   }
