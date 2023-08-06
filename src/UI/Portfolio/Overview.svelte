@@ -44,8 +44,8 @@
   );
 
   $: changeLast24hTotalProfit =
-    changeLast24hTotalInflow -
     changeLast24hTotalOutflow -
+    changeLast24hTotalInflow +
     changeLast24hNetWorth;
 
   $: last24hTotalProfitPercent = getChangePercent(
