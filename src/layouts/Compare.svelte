@@ -1024,7 +1024,7 @@
         </div>
 
         <div class="w-max">
-          {#if isLoading}
+          {#if isLoading || searchCompare.length === 0}
             <Button variant="disabled">
               <div class="flex items-center gap-1">
                 <div class="xl:text-base text-2xl">Get re-balance action</div>
