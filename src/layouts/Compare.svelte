@@ -6,6 +6,7 @@
   import dayjs from "dayjs";
   import { formatCurrency, typeList } from "~/utils";
   import { groupBy } from "lodash";
+  import { getChangePercent } from "~/chart-utils";
 
   import type { TokenData } from "~/types/HoldingTokenData";
 
@@ -23,7 +24,6 @@
 
   import LeftArrow from "~/assets/left-arrow.svg";
   import Logo from "~/assets/logo-1.svg";
-  import { getChangePercent } from "~/chart-utils";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -82,6 +82,7 @@
   let showCompareTable = false;
 
   let compareData = {};
+  let errorMsg = "";
   let isLoadingDataCompare = false;
   let searchCompare = "";
 
@@ -393,6 +394,9 @@
 
         isLoadingDataCompare = false;
         return response.data;
+      } else {
+        errorMsg = response.error;
+        isLoadingDataCompare = false;
       }
     } catch (e) {
       console.log("e: ", e);
@@ -412,11 +416,13 @@
         }),
       ]);
 
-      if (resCompare && resPersonalizeTag) {
-        isLoading = false;
+      if (resCompare === undefined && resPersonalizeTag.length === 0) {
+        isEmptyDataPie = true;
       }
     } catch (e) {
       console.log("e: ", e);
+      isLoading = false;
+    } finally {
       isLoading = false;
     }
   };
@@ -823,7 +829,7 @@
       <div class="flex justify-between items-center gap-6">
         <div class="grid xl:grid-cols-2 grid-cols-1 gap-6 flex-1 w-full">
           <div
-            class="border border-[#0000001a] rounded-[20px] p-6 min-h-[535px]"
+            class="border border-[#0000001a] rounded-[20px] p-6 min-h-[535px] relative"
           >
             <div
               class="xl:text-2xl text-4xl font-medium text-black w-full mb-6"
@@ -838,9 +844,9 @@
               <div class="h-full">
                 {#if isEmptyDataPie}
                   <div
-                    class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+                    class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
                   >
-                    Empty
+                    {errorMsg}
                   </div>
                 {:else}
                   <div class="-mt-2">
@@ -859,7 +865,7 @@
           </div>
 
           <div
-            class="border border-[#0000001a] rounded-[20px] p-6 min-h-[535px]"
+            class="border border-[#0000001a] rounded-[20px] p-6 min-h-[535px] relative"
           >
             {#if compareData && Object.keys(compareData).length !== 0 && compareData?.compare}
               <div class="flex flex-col">
@@ -896,9 +902,9 @@
                     <div class="h-full">
                       {#if compareData && Object.keys(compareData).length === 0}
                         <div
-                          class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[433px]"
+                          class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg"
                         >
-                          Empty
+                          {errorMsg}
                         </div>
                       {:else}
                         <TokenAllocation
@@ -934,9 +940,9 @@
                         Compare with
                       </div>
                       <div
-                        class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-full"
+                        class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
                       >
-                        Empty
+                        {errorMsg}
                       </div>
                     {:else}
                       <div class="grid grid-rows-11 h-full">
@@ -1023,6 +1029,7 @@
           </div>
         </div>
 
+        <!-- Button Get re-balance action -->
         <div class="w-max">
           {#if isLoading || searchCompare.length === 0}
             <Button variant="disabled">
@@ -1051,7 +1058,8 @@
       </div>
     </div>
 
-    <div class="border border-[#0000001a] rounded-[20px] p-6">
+    <!-- Performance chart -->
+    <div class="border border-[#0000001a] rounded-[20px] p-6 relative">
       <div class="xl:text-2xl text-4xl font-medium text-black mb-3">
         Performance
       </div>
@@ -1062,10 +1070,12 @@
       {:else}
         <div class="h-full">
           {#if compareData && Object.keys(compareData).length === 0}
-            <div
-              class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[433px]"
-            >
-              Empty
+            <div class="h-[433px]">
+              <div
+                class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
+              >
+                {errorMsg}
+              </div>
             </div>
           {:else}
             <div class="relative">
@@ -1087,7 +1097,8 @@
       {/if}
     </div>
 
-    <div class="border border-[#0000001a] rounded-[20px] p-6">
+    <!-- Risks chart -->
+    <div class="border border-[#0000001a] rounded-[20px] p-6 relative">
       <div class="mb-1 w-full">
         <div
           class="xl:text-2xl text-4xl font-medium text-black flex justify-start"
@@ -1104,10 +1115,12 @@
       {:else}
         <div class="h-full">
           {#if compareData && Object.keys(compareData).length === 0}
-            <div
-              class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[433px]"
-            >
-              Empty
+            <div class="h-[465px]">
+              <div
+                class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
+              >
+                {errorMsg}
+              </div>
             </div>
           {:else}
             <div class="relative">

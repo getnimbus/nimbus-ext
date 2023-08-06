@@ -425,7 +425,7 @@
       <div class="h-full">
         {#if isEmptyDataCompare}
           <div
-            class="absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md text-xs"
+            class="absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg"
           >
             {errorMsg}
           </div>
@@ -564,7 +564,7 @@
       <div class="h-full">
         {#if isEmptyDataCompare}
           <div
-            class="flex justify-center items-center h-full text-xs h-[465px]"
+            class="flex justify-center items-center h-full xl:text-xs text-lg h-[465px]"
           >
             {errorMsg}
           </div>

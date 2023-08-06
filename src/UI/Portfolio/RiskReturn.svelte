@@ -93,7 +93,7 @@
           <div class="xl:text-2xl text-4xl font-medium text-black">Risks</div>
           {#if compareData && Object.keys(compareData).length === 0}
             <div
-              class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md text-xs"
+              class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg"
             >
               {errorMsg}
             </div>
@@ -291,7 +291,7 @@
           </div>
           {#if compareData && Object.keys(compareData).length === 0}
             <div
-              class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-30 backdrop-blur-md text-xs"
+              class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg"
             >
               {errorMsg}
             </div>
