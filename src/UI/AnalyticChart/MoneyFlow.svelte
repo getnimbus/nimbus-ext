@@ -348,7 +348,7 @@
       <div class="flex flex-col gap-4">
         <div class="grid grid-cols-2">
           <div class="col-span-1">
-            <div class="text-black flex justify-start">Total money in</div>
+            <div class="text-black flex justify-start">30D Money in</div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
             <div>
@@ -361,7 +361,7 @@
         </div>
         <div class="grid grid-cols-2">
           <div class="col-span-1">
-            <div class="text-black flex justify-start">Total money out</div>
+            <div class="text-black flex justify-start">30D Money out</div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
             <div>
