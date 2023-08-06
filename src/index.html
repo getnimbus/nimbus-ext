@@ -53,15 +53,6 @@
 
   <body>
     <div id="app"></div>
-    <script src="https://do.featurebase.app/js/widget.js"></script>
-    <script>
-      FeaturebaseWidget.init({
-        organization: "nimbus",
-        initialPage: "MainView",
-        placement: "right",
-        fullScreen: false,
-      });
-    </script>
     <script>
       !(function (e, t) {
         const a = "featurebase-sdk";
@@ -93,6 +84,15 @@
         theme: "light",
         initialPage: "MainView",
         fullScreen: false,
+      });
+    </script>
+
+    <script>
+      Featurebase("initialize_feedback_widget", {
+        organization: "nimbus", // required
+        theme: "light", // required
+        placement: "right", // optional
+        email: "youruser@example.com", // optional
       });
     </script>
   </body>

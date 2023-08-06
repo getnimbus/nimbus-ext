@@ -95,18 +95,6 @@
     <DailyPnL {isLoading} {isEmpty} {dataDailyPnL} />
     <SectorGrowth /> -->
     <TotalGasFee />
-    {#if getAddressContext(selectedWallet)?.type !== "BTC"}
-      <div class="flex justify-center mx-auto">
-        <Button
-          variant="secondary"
-          on:click={() => {
-            isOpenReport.update((n) => (n = true));
-          }}
-        >
-          Request analytics
-        </Button>
-      </div>
-    {/if}
   </div>
 </div>
 
