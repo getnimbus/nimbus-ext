@@ -5,6 +5,7 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
+  import { typeWallet } from "~/store";
 
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
@@ -15,6 +16,11 @@
   export let isLoading;
   export let pageToken;
   export let loadMore = (pageToken) => {};
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
 
   let tableHeader;
   let isSticky = false;
@@ -77,7 +83,7 @@
         </th>
       </tr>
     </thead>
-    {#if isLoading && pageToken.length === 0}
+    {#if isLoading && pageToken?.length === 0}
       <tbody>
         <tr>
           <td colspan={5}>
@@ -108,18 +114,27 @@
                 <div class="text-left flex items-start gap-2 w-max">
                   <div class="flex flex-col">
                     <div class="xl:text-sm text-xl">
-                      <Copy
-                        address={item?.transaction_hash}
-                        textTooltip="Copy transaction to clipboard"
-                        iconColor="#000"
-                        isShorten={true}
-                        isLink={true}
-                        link={`${
-                          item?.chain === "ETH"
-                            ? `https://etherscan.io/tx/${item?.transaction_hash}`
-                            : `https://www.oklink.com/btc/tx/${item?.transaction_hash}`
-                        }`}
-                      />
+                      {#if typeWalletAddress === "DEX"}
+                        <Copy
+                          address={item?.transaction_hash}
+                          textTooltip="Copy transaction to clipboard"
+                          iconColor="#000"
+                          isShorten={true}
+                          isLink={true}
+                          link={`${
+                            item?.chain === "ETH"
+                              ? `https://etherscan.io/tx/${item?.transaction_hash}`
+                              : `https://www.oklink.com/btc/tx/${item?.transaction_hash}`
+                          }`}
+                        />
+                      {:else}
+                        <Copy
+                          address={item?.transaction_hash}
+                          textTooltip="Copy transaction to clipboard"
+                          iconColor="#000"
+                          isShorten={true}
+                        />
+                      {/if}
                     </div>
                     <div class="text-gray-400 xl:text-xs text-lg">
                       {dayjs(new Date(item?.detail.timestamp)).format(
@@ -133,17 +148,27 @@
               <td class="py-4 group-hover:bg-gray-100">
                 {#if item?.detail?.from}
                   <div class="w-max xl:text-sm text-xl">
-                    <Copy
-                      address={item?.detail?.from}
-                      iconColor="#000"
-                      isShorten={true}
-                      isLink={true}
-                      link={`${
-                        item?.chain === "ETH"
-                          ? `https://etherscan.io/address/${item?.detail?.from}`
-                          : `https://www.oklink.com/btc/address/${item?.detail?.from}`
-                      }`}
-                    />
+                    {#if typeWalletAddress === "DEX"}
+                      <Copy
+                        address={item?.detail?.from}
+                        iconColor="#000"
+                        textTooltip="Copy address to clipboard"
+                        isShorten={true}
+                        isLink={true}
+                        link={`${
+                          item?.chain === "ETH"
+                            ? `https://etherscan.io/address/${item?.detail?.from}`
+                            : `https://www.oklink.com/btc/address/${item?.detail?.from}`
+                        }`}
+                      />
+                    {:else}
+                      <Copy
+                        address={item?.detail?.from}
+                        textTooltip="Copy address to clipboard"
+                        iconColor="#000"
+                        isShorten={true}
+                      />
+                    {/if}
                   </div>
                 {/if}
               </td>
@@ -151,17 +176,27 @@
               <td class="py-4 group-hover:bg-gray-100">
                 {#if item?.detail?.to}
                   <div class="w-max xl:text-sm text-xl">
-                    <Copy
-                      address={item?.detail?.to}
-                      iconColor="#000"
-                      isShorten={true}
-                      isLink={true}
-                      link={`${
-                        item?.chain === "ETH"
-                          ? `https://etherscan.io/address/${item?.detail?.to}`
-                          : `https://www.oklink.com/btc/address/${item?.detail?.to}`
-                      }`}
-                    />
+                    {#if typeWalletAddress === "DEX"}
+                      <Copy
+                        address={item?.detail?.to}
+                        iconColor="#000"
+                        textTooltip="Copy address to clipboard"
+                        isShorten={true}
+                        isLink={true}
+                        link={`${
+                          item?.chain === "ETH"
+                            ? `https://etherscan.io/address/${item?.detail?.to}`
+                            : `https://www.oklink.com/btc/address/${item?.detail?.to}`
+                        }`}
+                      />
+                    {:else}
+                      <Copy
+                        address={item?.detail?.to}
+                        textTooltip="Copy address to clipboard"
+                        iconColor="#000"
+                        isShorten={true}
+                      />
+                    {/if}
                   </div>
                 {/if}
               </td>
@@ -239,4 +274,5 @@
   </div>
 {/if}
 
-<style></style>
+<style windi:preflights:global windi:safelist:global>
+</style>
