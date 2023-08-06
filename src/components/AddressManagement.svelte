@@ -1406,7 +1406,7 @@
   {toastMsg}
 </Toast>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .header-container {
     background-image: url("~/assets/capa.svg");
     background-color: #27326f;
