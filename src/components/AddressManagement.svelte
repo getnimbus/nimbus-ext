@@ -621,15 +621,17 @@
               {MultipleLang.addwallet}
             </div>
             {#if Object.keys(userInfo).length !== 0}
-              <Button
-                variant="tertiary"
-                on:click={() => (isOpenAddModal = true)}
-              >
-                <img src={Plus} alt="" width="12" height="12" />
-                <div class="xl:text-base text-2xl font-medium text-white">
-                  {MultipleLang.content.btn_text}
-                </div>
-              </Button>
+              <div class="w-max">
+                <Button
+                  variant="tertiary"
+                  on:click={() => (isOpenAddModal = true)}
+                >
+                  <img src={Plus} alt="" width="12" height="12" />
+                  <div class="xl:text-base text-2xl font-medium text-white">
+                    {MultipleLang.content.btn_text}
+                  </div>
+                </Button>
+              </div>
             {:else}
               <div
                 class="relative"
