@@ -181,6 +181,69 @@ export const detectedChain = (type) => {
   return chain
 }
 
+export const linkExplorer = (chain, hash) => {
+  let links = {
+    trx: "",
+    address: ""
+  }
+  switch (chain) {
+    case "BTC":
+      links = {
+        trx: `https://www.oklink.com/btc/tx/${hash}`,
+        address: `https://www.oklink.com/btc/address/${hash}`
+      }
+      break;
+    case "ETH":
+      links = {
+        trx: `https://etherscan.io/tx/${hash}`,
+        address: `https://etherscan.io/address/${hash}`
+      }
+      break;
+    case "XDAI":
+      links = {
+        trx: `https://gnosisscan.io/tx/${hash}`,
+        address: `https://gnosisscan.io/address/${hash}`
+      }
+      break;
+    case "BNB":
+      links = {
+        trx: `https://bscscan.com/tx/${hash}`,
+        address: `https://bscscan.com/address/${hash}`,
+      }
+      break;
+    case "MATIC":
+      links = {
+        trx: `https://polygonscan.com/tx/${hash}`,
+        address: `https://polygonscan.com/address/${hash}`,
+      }
+      break;
+    case "OP":
+      links = {
+        trx: `https://optimistic.etherscan.io/tx/${hash}`,
+        address: `https://optimistic.etherscan.io/address/${hash}`,
+      }
+      break;
+    case "AVAX":
+      links = {
+        trx: `https://snowtrace.io/tx/${hash}`,
+        address: `https://snowtrace.io/address/${hash}`,
+      }
+      break;
+    case "ARB":
+      links = {
+        trx: `https://arbiscan.io/tx/${hash}`,
+        address: `https://arbiscan.io/address/${hash}`,
+      }
+      break;
+    default:
+      links = {
+        trx: "",
+        address: ""
+      }
+  }
+  return links
+}
+
 export const listProviderCEX = [
   "binance",
   "binanceus",

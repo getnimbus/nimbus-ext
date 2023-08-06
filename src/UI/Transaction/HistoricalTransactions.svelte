@@ -11,6 +11,7 @@
   import Copy from "~/components/Copy.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import "~/components/Loading.custom.svelte";
+  import { linkExplorer } from "~/utils";
 
   export let data;
   export let isLoading;
@@ -36,6 +37,8 @@
       window.removeEventListener("scroll", handleScroll);
     };
   });
+
+  $: console.log("data: ", data);
 </script>
 
 <div
@@ -122,9 +125,8 @@
                           isShorten={true}
                           isLink={true}
                           link={`${
-                            item?.chain === "ETH"
-                              ? `https://etherscan.io/tx/${item?.transaction_hash}`
-                              : `https://www.oklink.com/btc/tx/${item?.transaction_hash}`
+                            linkExplorer(item?.chain, item?.transaction_hash)
+                              .trx
                           }`}
                         />
                       {:else}
@@ -156,9 +158,7 @@
                         isShorten={true}
                         isLink={true}
                         link={`${
-                          item?.chain === "ETH"
-                            ? `https://etherscan.io/address/${item?.detail?.from}`
-                            : `https://www.oklink.com/btc/address/${item?.detail?.from}`
+                          linkExplorer(item?.chain, item?.detail?.from).address
                         }`}
                       />
                     {:else}
@@ -184,9 +184,7 @@
                         isShorten={true}
                         isLink={true}
                         link={`${
-                          item?.chain === "ETH"
-                            ? `https://etherscan.io/address/${item?.detail?.to}`
-                            : `https://www.oklink.com/btc/address/${item?.detail?.to}`
+                          linkExplorer(item?.chain, item?.detail?.to).address
                         }`}
                       />
                     {:else}
