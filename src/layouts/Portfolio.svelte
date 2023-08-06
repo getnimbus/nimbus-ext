@@ -429,29 +429,6 @@
   };
 
   const handleGetAllData = async (type: string) => {
-    overviewData = {
-      breakdownToken: [],
-      breakdownNft: [],
-      overview: {
-        assets: 0,
-        assetsChange: 0,
-        change: "",
-        claimable: 0,
-        claimableChange: 0,
-        debts: 0,
-        debtsChange: 0,
-        networth: 0,
-        networthChange: 0,
-        postionNetworth: 0,
-        postionNetworthChange: 0,
-      },
-      performance: [],
-      updatedAt: "",
-    };
-    positionsData = [];
-    newsData = [];
-    holdingNFTData = [];
-    holdingTokenData = [];
     loadingOverview = true;
     loadingHoldingToken = true;
     loadingHoldingNFT = true;
@@ -594,6 +571,53 @@
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
+        overviewDataPerformance = {
+          performance: [],
+          portfolioChart: [],
+        };
+        selectedTokenHolding = {
+          data: [],
+          select: [],
+        };
+        selectedDataPieChart = {};
+        compareData = {};
+        dataPieChart = {
+          token: {
+            sumOrderBreakdownToken: 0,
+            formatDataPieChartTopFiveToken: [],
+            dataPieChartOrderBreakdownToken: [],
+          },
+          nft: {
+            sumOrderBreakdownNft: 0,
+            formatDataPieChartTopFiveNft: [],
+            dataPieChartOrderBreakdownNft: [],
+          },
+        };
+        overviewData = {
+          breakdownToken: [],
+          breakdownNft: [],
+          overview: {
+            assets: 0,
+            assetsChange: 0,
+            change: "",
+            claimable: 0,
+            claimableChange: 0,
+            debts: 0,
+            debtsChange: 0,
+            networth: 0,
+            networthChange: 0,
+            postionNetworth: 0,
+            postionNetworthChange: 0,
+          },
+          performance: [],
+          portfolioChart: [],
+          updatedAt: "",
+        };
+        positionsData = [];
+        newsData = [];
+        holdingNFTData = [];
+        holdingTokenData = [];
+
         handleGetAllData("sync");
         getAnalyticCompare();
       }
