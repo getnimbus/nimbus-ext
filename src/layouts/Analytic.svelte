@@ -188,8 +188,9 @@
       Our analysis is
       <span class="font-bold">Premium</span>
       <img src={Crown} alt="" width="13" height="12" class="inline-block" />
-      feature is under beta which you can access for free now. <br />Add your
-      email to get updates from us and receive exclusive benefits in the future.
+      feature is under beta<br /> which you can access for free now. <br />Add
+      your email to get updates from us and receive exclusive benefits in the
+      future.
     </div>
     <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
       <div class="flex flex-col gap-1">
