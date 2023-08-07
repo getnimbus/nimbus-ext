@@ -85,7 +85,11 @@
       </div>
     </OverviewCard>
 
-    <OverviewCard title={MultipleLang.total_profit}>
+    <OverviewCard
+      title={MultipleLang.total_profit}
+      isTooltip
+      tooltipText="Total profit = Total Outflow - Total Inflow + Net Worth"
+    >
       <div class="flex xl:text-3xl text-5xl text-black">
         {#if totalProfit.toString().toLowerCase().includes("e-")}
           $<TooltipNumber number={totalProfit} type="balance" />

@@ -9,7 +9,7 @@
   export let type: "warning" | "default" = "default";
 </script>
 
-<span class="inline-flex justify-end items-center gap-1">
+<span class="inline-flex justify-end items-center gap-1 relative">
   <slot />
   <span class="cursor-pointer">
     {#if type === "default"}
