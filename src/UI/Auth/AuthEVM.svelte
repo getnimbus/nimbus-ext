@@ -2,7 +2,14 @@
   import { onMount } from "svelte";
   import onboard from "~/lib/web3-onboard";
   import { ethers } from "ethers";
-  import { wallet, chain, typeWallet, user, isShowUpgradeModal } from "~/store";
+  import {
+    wallet,
+    chain,
+    typeWallet,
+    user,
+    isShowUpgradeModal,
+    isFirstTimeLogin,
+  } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
 
@@ -32,7 +39,6 @@
 
   let showPopover = false;
   let addressWallet = "";
-  let showUpgradeModal = false;
 
   onMount(() => {
     const evmToken = localStorage.getItem("evm_token");
@@ -154,6 +160,8 @@
 
         if (structWalletData && structWalletData.length === 0) {
           handleAddAccount(publicAddress);
+        } else {
+          isFirstTimeLogin.update((n) => (n = false));
         }
       }
     } catch (e) {
@@ -181,6 +189,8 @@
         window.location.pathname +
           `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
       );
+
+      isFirstTimeLogin.update((n) => (n = true));
 
       mixpanel.track("user_add_address");
     } catch (e) {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
-  import { wallet, chain, typeWallet, user } from "~/store";
+  import { wallet, chain, typeWallet, user, isFirstTimeLogin } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
@@ -115,6 +115,11 @@
     userInfo = value;
   });
 
+  let checkFirstTimeLogin = false;
+  isFirstTimeLogin.subscribe((value) => {
+    checkFirstTimeLogin = value;
+  });
+
   let toastMsg = "";
   let isSuccessToast = false;
   let counter = 3;
@@ -157,6 +162,10 @@
   let isScrollEnd = false;
   let container;
   let isLoadingConnectCEX = false;
+
+  let isDisabled = false;
+  let conditionAdd = 0;
+  let tooltipDisableAddBtn = "";
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -471,6 +480,8 @@
       toastMsg = "Ready to receive exclusive benefits soon!";
       isSuccessToast = true;
       trigger();
+      isDisabled = false;
+      handleCheckConditionAddWallet();
     } catch (e) {
       isLoadingSendMail = false;
     } finally {
@@ -479,6 +490,7 @@
   };
 
   onMount(() => {
+    localStorage.setItem("isGetUserEmailYet", "false");
     getListAddress();
     updateStateFromParams();
   });
@@ -567,6 +579,12 @@
   }
 
   $: {
+    if (checkFirstTimeLogin) {
+      getListAddress();
+    }
+  }
+
+  $: {
     if (
       address &&
       errors.address &&
@@ -583,16 +601,37 @@
     }
   }
 
-  $: conditionAdd =
-    localStorage.getItem("isGetUserEmailYet") !== null &&
-    localStorage.getItem("isGetUserEmailYet") === "true"
-      ? 10
-      : 5;
+  const handleCheckConditionAddWallet = () => {
+    conditionAdd = 7;
+  };
 
-  $: isDisabled =
-    APP_TYPE.TYPE !== "EXT" && listAddress.length === conditionAdd;
+  $: {
+    if (
+      localStorage.getItem("isGetUserEmailYet") !== null &&
+      localStorage.getItem("isGetUserEmailYet") === "true"
+    ) {
+      handleCheckConditionAddWallet();
+    } else {
+      conditionAdd = 3;
+    }
+  }
 
-  $: isDisabled && localStorage.setItem("isGetUserEmailYet", "false");
+  $: {
+    if (listAddress.length === conditionAdd) {
+      isDisabled = true;
+    } else {
+      isDisabled = false;
+    }
+  }
+
+  $: {
+    if (Object.keys(userInfo).length === 0) {
+      tooltipDisableAddBtn = "Connect wallet to add account";
+    }
+    if (isDisabled) {
+      tooltipDisableAddBtn = "Hello world";
+    }
+  }
 
   $: {
     const evmToken = localStorage.getItem("evm_token");
@@ -936,13 +975,7 @@
                       class="absolute transform -translate-x-1/2 -top-8 left-1/2"
                       style="z-index: 2147483648;"
                     >
-                      <tooltip-detail
-                        text={`${
-                          isDisabled || Object.keys(userInfo).length !== 0
-                            ? "Install our extension to add more wallet"
-                            : "Connect wallet to add account"
-                        }`}
-                      />
+                      <tooltip-detail text={tooltipDisableAddBtn} />
                     </div>
                   {/if}
                 </div>
