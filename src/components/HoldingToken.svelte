@@ -139,7 +139,7 @@
 
       {#if selectedHighestVault !== undefined}
         <div
-          class="flex items-center justyfy-center px-2 py-1 text-[#27326F] text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px]"
+          class="flex items-center justyfy-center px-2 py-1 text-[#27326F] text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
           on:click={() => {
             showTableVaults = true;
             selectedVaults = data.vaults;
@@ -243,9 +243,7 @@
     showTableVaults = false;
   }}
 >
-  <div class="mt-8">
-    <VaultTable data={selectedVaults} />
-  </div>
+  <VaultTable data={selectedVaults} />
 </AppOverlay>
 
 <style>

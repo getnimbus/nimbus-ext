@@ -9,6 +9,8 @@
   import PublicPortfolioItem from "~/components/PublicPortfolioItem.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import Button from "~/components/Button.svelte";
+  import FilterModal from "~/UI/WhalesList/FilterModal.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
 
   const MultipleLang = {
     whale: i18n("newtabPage.whale", "Whale 🐳"),
@@ -31,6 +33,7 @@
   let tableHeader;
   let isSticky = false;
   let pageValue = 0;
+  let isOpenFilterModal = false;
 
   const getPublicPortfolio = async () => {
     try {
@@ -66,16 +69,42 @@
   <div
     class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 flex flex-col xl:gap-10 gap-6"
   >
-    <div class="flex flex-col gap-1">
-      <div class="xl:text-5xl text-7xl text-black font-semibold">
-        {MultipleLang.whale}
-      </div>
-      <div
-        class="flex justify-between xl:items-center xl:gap-11 xl:flex-row flex-col gap-6"
-      >
-        <div class="xl:text-xl text-3xl text-black font-medium w-max">
-          {MultipleLang.whales_page_title}
+    <div class="flex justify-between items-end">
+      <div class="flex flex-col gap-1">
+        <div class="xl:text-5xl text-7xl text-black font-semibold">
+          {MultipleLang.whale}
         </div>
+        <div
+          class="flex justify-between xl:items-center xl:gap-11 xl:flex-row flex-col gap-6"
+        >
+          <div class="xl:text-xl text-3xl text-black font-medium w-max">
+            {MultipleLang.whales_page_title}
+          </div>
+        </div>
+      </div>
+      <div class="w-[140px]">
+        <Button variant="tertiary" on:click={() => (isOpenFilterModal = true)}>
+          <div class="flex items-center gap-2">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill="none"
+                stroke="#fff"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="m16.862 4.487l1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+              />
+            </svg>
+            <div class="xl:text-base text-2xl font-medium text-white">
+              Filter
+            </div>
+          </div>
+        </Button>
       </div>
     </div>
     <div
@@ -353,6 +382,15 @@
       </div>
     </div>
   </div>
+  <AppOverlay
+    isOpen={isOpenFilterModal}
+    isTableContent
+    on:close={() => {
+      isOpenFilterModal = false;
+    }}
+  >
+    <FilterModal />
+  </AppOverlay>
 </ErrorBoundary>
 
 <style></style>
