@@ -172,7 +172,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 16px;
+    padding: 14px;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
