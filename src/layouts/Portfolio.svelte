@@ -339,8 +339,25 @@
         chain: selectedChain,
       });
 
+      const responseVaults = await nimbus.get(
+        `/investment/vaults/${selectedWallet}`
+      );
+
       if (selectedWallet === response?.address) {
-        const formatData = response.result.map((item) => {
+        const formatDataTokenHolding = response.result.map((item) => {
+          const regex = new RegExp(
+            `(^${item.symbol.toLowerCase()}|-${item.symbol.toLowerCase()})`
+          );
+          const filteredVaults = responseVaults.data.filter((data) =>
+            data.name.toLowerCase().match(regex)
+          );
+          return {
+            ...item,
+            vaults: filteredVaults,
+          };
+        });
+
+        const formatData = formatDataTokenHolding.map((item) => {
           return {
             ...item,
             value: item.amount * item.rate,
@@ -355,7 +372,10 @@
           }
           return 0;
         });
-        return response;
+        return {
+          ...response,
+          result: formatDataTokenHolding,
+        };
       } else {
         // console.log("response: ", response)
       }

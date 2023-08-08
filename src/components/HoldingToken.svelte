@@ -2,6 +2,7 @@
   import { useNavigate } from "svelte-navigator";
   import { chain, typeWallet } from "~/store";
   import { detectedChain, getAddressContext, shorterName } from "~/utils";
+  import numeral from "numeral";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -26,6 +27,7 @@
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
+  let selectedHighestVault;
 
   $: price = data?.amount * data?.market_price;
   $: profitAndLoss = price + (data?.avgCost || 0);
@@ -40,6 +42,17 @@
     selectedChain !== "XDAI";
 
   $: ratio = (price / sumAllTokens) * 100;
+
+  $: {
+    if (data.vaults.length !== 0) {
+      selectedHighestVault = data.vaults.reduce(
+        (maxObject, currentObject) => {
+          return currentObject.apy > maxObject.apy ? currentObject : maxObject;
+        },
+        { apy: -Infinity }
+      );
+    }
+  }
 </script>
 
 <tr
@@ -57,9 +70,9 @@
   }}
 >
   <td
-    class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white xl:w-[230px] w-[280px] group-hover:bg-gray-100"
+    class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white w-[420px] group-hover:bg-gray-100"
   >
-    <div class="text-left flex items-center gap-3">
+    <div class="text-left flex items-start gap-3">
       <div class="relative">
         <img
           src={data.logo ||
@@ -119,19 +132,18 @@
           {/if}
         </div>
       </div>
-      <div class="flex flex-wrap gap-2">
-        {#if data.suggest && data.suggest.length}
-          {#each data.suggest as item}
-            <a
-              href={item.url}
-              target="_blank"
-              class="flex items-center justyfy-center px-2 py-1 text-[#27326F] text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px]"
-            >
-              {item.tile}
-            </a>
-          {/each}
-        {/if}
-      </div>
+
+      {#if selectedHighestVault !== undefined}
+        <a
+          href={selectedHighestVault.link}
+          target="_blank"
+          class="flex items-center justyfy-center px-2 py-1 text-[#27326F] text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px]"
+        >
+          {`Farm up to ${numeral(selectedHighestVault.apy * 100).format(
+            "0,0.00"
+          )}% APY`}
+        </a>
+      {/if}
     </div>
   </td>
 
