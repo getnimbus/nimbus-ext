@@ -96,6 +96,17 @@ export const typePieChart = [
   },
 ]
 
+export const typePackage = [
+  {
+    label: "Monthly",
+    value: "month",
+  },
+  {
+    label: "Yearly (Save 17%)",
+    value: "year",
+  },
+]
+
 export const performanceTypeChart = [
   {
     label: "Line",
