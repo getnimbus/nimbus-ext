@@ -219,19 +219,6 @@
                       {/if}
                     </div>
                   </div>
-                  <div class="flex flex-wrap gap-2">
-                    {#if data.suggest && data.suggest.length}
-                      {#each data.suggest as item}
-                        <a
-                          href={item.url}
-                          target="_blank"
-                          class="flex items-center justyfy-center px-2 py-1 text-[#27326F] text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px]"
-                        >
-                          {item.tile}
-                        </a>
-                      {/each}
-                    {/if}
-                  </div>
                 </div>
               </td>
 

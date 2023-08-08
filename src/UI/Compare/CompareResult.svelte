@@ -1,7 +1,5 @@
 <script lang="ts">
   import { i18n } from "~/lib/i18n";
-  import { getAddressContext } from "~/utils";
-  import { typeWallet, wallet } from "~/store";
 
   import Select from "~/components/Select.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
@@ -33,16 +31,6 @@
       value: "sell",
     },
   ];
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let selectedWallet = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
 
   let tokenHoldingDataFormat = [];
   let selectedType;
@@ -158,12 +146,6 @@
     }
   }
 
-  $: colspan =
-    typeWalletAddress === "DEX" &&
-    getAddressContext(selectedWallet)?.type !== "EVM"
-      ? 8
-      : 7;
-
   $: {
     if (selectedType?.value === "buy") {
       filteredData = tokenHoldingDataFormat.filter((item) => item.ratio > 0);
@@ -197,7 +179,7 @@
   <div
     class="border border-[#0000000d] rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative"
   >
-    <table class="table-auto w-full">
+    <table class="table-auto xl:w-full w-[1200px]">
       <thead>
         <tr class="bg-[#f4f5f8]">
           <th
@@ -244,7 +226,7 @@
       <tbody>
         {#if filteredData && filteredData.length === 0}
           <tr>
-            <td {colspan}>
+            <td colspan="5">
               <div
                 class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
               >

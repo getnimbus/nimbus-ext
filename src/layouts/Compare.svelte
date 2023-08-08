@@ -1150,7 +1150,7 @@
       showCompareTable = false;
     }}
   >
-    <div class="mt-8">
+    <div class="xl:mt-9 mt-12">
       <CompareResult {holdingTokenData} {holdingTokenDataCompare} />
     </div>
   </AppOverlay>

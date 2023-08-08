@@ -7,6 +7,8 @@
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+  import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -28,6 +30,8 @@
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
   let selectedHighestVault;
+  let selectedVaults;
+  let showTableVaults = false;
 
   $: price = data?.amount * data?.market_price;
   $: profitAndLoss = price + (data?.avgCost || 0);
@@ -134,15 +138,17 @@
       </div>
 
       {#if selectedHighestVault !== undefined}
-        <a
-          href={selectedHighestVault.link}
-          target="_blank"
+        <div
           class="flex items-center justyfy-center px-2 py-1 text-[#27326F] text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px]"
+          on:click={() => {
+            showTableVaults = true;
+            selectedVaults = data.vaults;
+          }}
         >
           {`Farm up to ${numeral(selectedHighestVault.apy * 100).format(
             "0,0.00"
           )}% APY`}
-        </a>
+        </div>
       {/if}
     </div>
   </td>
@@ -229,6 +235,18 @@
     {/if}
   </td> -->
 </tr>
+
+<AppOverlay
+  isOpen={showTableVaults}
+  isTableContent
+  on:close={() => {
+    showTableVaults = false;
+  }}
+>
+  <div class="mt-8">
+    <VaultTable data={selectedVaults} />
+  </div>
+</AppOverlay>
 
 <style>
 </style>
