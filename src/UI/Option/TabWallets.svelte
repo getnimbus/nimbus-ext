@@ -287,7 +287,7 @@
         e.target.reset();
         isOpenAddModal = false;
         getListAddress();
-        toastMsg = "Successfully add DEX account!";
+        toastMsg = "Successfully add On-chain account!";
         isSuccess = true;
         trigger();
         mixpanel.track("user_add_address");
