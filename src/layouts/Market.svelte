@@ -70,7 +70,7 @@
     mixpanel.track("market_page");
 
     const handleScroll = () => {
-      const clientRectTokenHeader = tableHeader.getBoundingClientRect();
+      const clientRectTokenHeader = tableHeader?.getBoundingClientRect();
       isSticky = clientRectTokenHeader?.top <= 0;
     };
 
