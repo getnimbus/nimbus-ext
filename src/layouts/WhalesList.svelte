@@ -36,7 +36,7 @@
     try {
       isLoading = true;
       const res = await nimbus
-        .get(`/market/portfolio?page=${pageValue}`)
+        .get(`/market/portfolio/search?page=${pageValue}`)
         .then((response) => response.data);
       whalesData = res;
     } catch (e) {
