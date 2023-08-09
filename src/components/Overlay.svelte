@@ -47,7 +47,7 @@
     >
       <div
         class={`bg-white rounded-xl px-6 pt-9 pb-7 mx-6 relative ${
-          isTableContent ? "xl:min-w-7xl min-w-4xl" : "xl:min-w-xl min-w-3xl"
+          isTableContent ? "xl:min-w-7xl min-w-4xl" : "xl:min-w-2xl min-w-4xl"
         }`}
         style="box-shadow: 0px 4px 20px 0px #00000026;"
         on:click|stopPropagation

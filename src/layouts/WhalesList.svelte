@@ -34,12 +34,16 @@
   let isSticky = false;
   let pageValue = 0;
   let isOpenFilterModal = false;
+  let filterParams = "";
+  let search = "";
 
   const getPublicPortfolio = async () => {
     try {
       isLoading = true;
       const res = await nimbus
-        .get(`/market/portfolio/search?q=&page=${pageValue}`)
+        .get(
+          `/market/portfolio/search?q=${filterParams}&token=${search}&page=${pageValue}`
+        )
         .then((response) => response.data);
       whalesData = res;
     } catch (e) {
@@ -50,9 +54,8 @@
   };
 
   onMount(() => {
-    getPublicPortfolio();
     mixpanel.track("market_page");
-
+    getPublicPortfolio();
     const handleScroll = () => {
       const clientRectTokenHeader = tableHeader?.getBoundingClientRect();
       isSticky = clientRectTokenHeader?.top <= 0;
@@ -66,6 +69,44 @@
 
   const closeModal = () => {
     isOpenFilterModal = false;
+  };
+
+  const resetFilter = () => {
+    filterParams = "";
+    search = "";
+    getPublicPortfolio();
+  };
+
+  const handleSubmitFilter = (formValue) => {
+    const filterValue = {
+      selectedNetWorth: formValue.selectedNetWorth,
+      selectedSharpeRatio: formValue.selectedSharpeRatio,
+      selectedVolatility: formValue.selectedVolatility,
+      listSelectedReturn: formValue.listSelectedReturn,
+    };
+
+    search = formValue.searchValue;
+
+    filterParams = encodeURIComponent(
+      `${
+        filterValue.selectedNetWorth.length !== 0
+          ? filterValue.selectedNetWorth + " AND "
+          : ""
+      }${
+        filterValue.selectedSharpeRatio.length !== 0
+          ? filterValue.selectedSharpeRatio + " AND "
+          : ""
+      }${
+        filterValue.selectedVolatility.length !== 0
+          ? filterValue.selectedVolatility + " AND "
+          : ""
+      }${
+        filterValue.listSelectedReturn.length !== 0
+          ? filterValue.listSelectedReturn.join(" AND ")
+          : ""
+      }`
+    );
+    getPublicPortfolio();
   };
 </script>
 
@@ -389,12 +430,11 @@
   <AppOverlay
     clickOutSideToClose
     isOpen={isOpenFilterModal}
-    isTableContent
     on:close={() => {
       isOpenFilterModal = false;
     }}
   >
-    <FilterModal {closeModal} />
+    <FilterModal {closeModal} submit={handleSubmitFilter} {resetFilter} />
   </AppOverlay>
 </ErrorBoundary>
 
