@@ -170,7 +170,7 @@
       <div class="xl:text-base text-2xl">Use the command as follow video</div>
     </div>
     <div class="xl:h-[350px] h-[650px]">
-      <img src={FollowWhale} alt="" class="w-full h-full" />
+      <img src={FollowWhale} alt="" class="w-full h-full object-contain" />
     </div>
     <div class="w-full flex justify-end">
       <CopyToClipboard
