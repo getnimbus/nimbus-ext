@@ -1144,6 +1144,7 @@
   </div>
 
   <AppOverlay
+    clickOutSideToClose
     isOpen={showCompareTable}
     isTableContent
     on:close={() => {

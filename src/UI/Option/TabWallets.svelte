@@ -726,7 +726,11 @@
 </div>
 
 <!-- Modal edit account -->
-<AppOverlay isOpen={isOpenEditModal} on:close={() => (isOpenEditModal = false)}>
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenEditModal}
+  on:close={() => (isOpenEditModal = false)}
+>
   <div class="xl:title-3 title-1 text-gray-600 font-semibold">
     {MultipleLang.content.modal_edit_title}
   </div>
@@ -814,7 +818,11 @@
 </AppOverlay>
 
 <!-- Modal add DEX account -->
-<AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenAddModal}
+  on:close={() => (isOpenAddModal = false)}
+>
   <div class="xl:title-3 title-1 text-gray-600 font-semibold">
     {MultipleLang.content.modal_add_title}
   </div>
@@ -944,6 +952,7 @@
 
 <!-- Modal confirm delete account -->
 <AppOverlay
+  clickOutSideToClose
   isOpen={isOpenConfirmDelete}
   on:close={() => (isOpenConfirmDelete = false)}
 >

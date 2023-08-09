@@ -249,7 +249,11 @@
   {/if}
 </div>
 
-<AppOverlay isOpen={isOpenEditModal} on:close={() => (isOpenEditModal = false)}>
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenEditModal}
+  on:close={() => (isOpenEditModal = false)}
+>
   <div class="xl:title-3 title-1 text-gray-600 font-semibold">
     {MultipleLang.content.modal_edit_title}
   </div>
@@ -325,6 +329,7 @@
 </AppOverlay>
 
 <AppOverlay
+  clickOutSideToClose
   isOpen={isOpenConfirmDelete}
   on:close={() => (isOpenConfirmDelete = false)}
 >

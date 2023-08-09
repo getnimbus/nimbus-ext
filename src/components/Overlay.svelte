@@ -1,5 +1,5 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import { Motion } from "svelte-motion";
   import { showOverlayAnimationVariants } from "~/utils";
   const dispatch = createEventDispatcher();
@@ -18,6 +18,19 @@
   // } else {
   //   document.body.style.overflow = "unset";
   // }
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      handleClose();
+    }
+  };
+
+  onMount(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  });
 </script>
 
 {#if isOpen}

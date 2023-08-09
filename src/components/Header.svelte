@@ -427,6 +427,7 @@
 </div>
 
 <AppOverlay
+  clickOutSideToClose
   isOpen={showUpgradeModal}
   isTableContent
   on:close={() => {

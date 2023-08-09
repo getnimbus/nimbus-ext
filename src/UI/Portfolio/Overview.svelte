@@ -1,6 +1,8 @@
 <script lang="ts">
   import { getChangeFromPercent, getChangePercent } from "~/chart-utils";
   import { i18n } from "~/lib/i18n";
+  import { getAddressContext } from "~/utils";
+  import { wallet, typeWallet } from "~/store";
 
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
@@ -20,6 +22,16 @@
     total_inflow: i18n("newtabPage.total-inflow", "Total Inflow"),
     total_outflow: i18n("newtabPage.total-outflow", "Total Outflow"),
   };
+
+  let selectedWallet: string = "";
+  wallet.subscribe((value) => {
+    selectedWallet = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
 
   $: networth = totalAssets + totalPositions;
 
@@ -60,7 +72,14 @@
       <div class="xl:text-3xl text-5xl text-black flex">
         $<CountUpNumber id="networth" number={networth} type="balance" />
       </div>
-      <div class="flex items-center gap-3">
+      <div
+        class={`flex items-center gap-3 ${
+          typeWalletAddress === "DEX" &&
+          getAddressContext(selectedWallet)?.type === "BTC"
+            ? "opacity-50"
+            : ""
+        }`}
+      >
         <div
           class={`flex xl:text-lg text-3xl font-medium ${
             data?.overview.networthChange < 0
@@ -106,7 +125,14 @@
           />
         {/if}
       </div>
-      <div class="flex items-center gap-3">
+      <div
+        class={`flex items-center gap-3 ${
+          typeWalletAddress === "DEX" &&
+          getAddressContext(selectedWallet)?.type === "BTC"
+            ? "opacity-50"
+            : ""
+        }`}
+      >
         <div
           class={`flex xl:text-lg text-3xl font-medium ${
             last24hTotalProfitPercent < 0 ? "text-red-500" : "text-[#00A878]"
@@ -139,7 +165,14 @@
           type="balance"
         />
       </div>
-      <div class="flex items-center gap-3">
+      <div
+        class={`flex items-center gap-3 ${
+          typeWalletAddress === "DEX" &&
+          getAddressContext(selectedWallet)?.type === "BTC"
+            ? "opacity-50"
+            : ""
+        }`}
+      >
         <div
           class={`flex xl:text-lg text-3xl font-medium ${
             data?.overview?.cumulativeInflow < 0
@@ -182,7 +215,14 @@
           />
         {/if}
       </div>
-      <div class="flex items-center gap-3">
+      <div
+        class={`flex items-center gap-3 ${
+          typeWalletAddress === "DEX" &&
+          getAddressContext(selectedWallet)?.type === "BTC"
+            ? "opacity-50"
+            : ""
+        }`}
+      >
         <div
           class={`flex xl:text-lg text-3xl font-medium ${
             data?.overview.postionNetworthChange < 0

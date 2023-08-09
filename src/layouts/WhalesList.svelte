@@ -39,7 +39,7 @@
     try {
       isLoading = true;
       const res = await nimbus
-        .get(`/market/portfolio/?page=${pageValue}`)
+        .get(`/market/portfolio/search?q=&page=${pageValue}`)
         .then((response) => response.data);
       whalesData = res;
     } catch (e) {
@@ -63,6 +63,10 @@
       window.removeEventListener("scroll", handleScroll);
     };
   });
+
+  const closeModal = () => {
+    isOpenFilterModal = false;
+  };
 </script>
 
 <ErrorBoundary>
@@ -322,7 +326,7 @@
             </tr>
           </thead>
           <tbody>
-            {#if whalesData.length === 0}
+            {#if whalesData && whalesData?.length === 0}
               <tr>
                 <td colspan="11">
                   <div
@@ -383,13 +387,14 @@
     </div>
   </div>
   <AppOverlay
+    clickOutSideToClose
     isOpen={isOpenFilterModal}
     isTableContent
     on:close={() => {
       isOpenFilterModal = false;
     }}
   >
-    <FilterModal />
+    <FilterModal {closeModal} />
   </AppOverlay>
 </ErrorBoundary>
 

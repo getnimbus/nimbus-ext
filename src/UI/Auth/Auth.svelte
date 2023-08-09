@@ -223,7 +223,11 @@
 
 <WalletProvider localStorageKey="walletAdapter" {wallets} autoConnect />
 
-<AppOverlay isOpen={isOpenAuthModal} on:close={() => (isOpenAuthModal = false)}>
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenAuthModal}
+  on:close={() => (isOpenAuthModal = false)}
+>
   <div class="xl:title-3 title-1 text-gray-600 font-semibold mb-5">
     Connect wallet to enjoy more features
   </div>

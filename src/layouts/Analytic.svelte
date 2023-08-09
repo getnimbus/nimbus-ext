@@ -174,6 +174,7 @@
 </ErrorBoundary>
 
 <AppOverlay
+  clickOutSideToClose
   isOpen={isOpenModal}
   on:close={() => {
     localStorage.setItem("currentDay", currentDate.format("YYYY-MM-DD"));

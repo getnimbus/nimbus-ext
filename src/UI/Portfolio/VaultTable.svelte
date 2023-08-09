@@ -4,33 +4,34 @@
 
   export let data;
 
-  let isShowTooltipName = false;
   let isShowTooltipProtocol = false;
-  let sortTag = "default";
+  let sortTVL = "default";
+  let sortAPY = "default";
 
   $: formatData = data.map((item) => {
     return {
       ...item,
       tvl: Number(item.tvl),
+      apy: item.apy * 100,
     };
   });
 
   const toggleSortTVL = () => {
-    switch (sortTag) {
+    switch (sortTVL) {
       case "default":
-        sortTag = "ascend";
+        sortTVL = "ascend";
         break;
       case "ascend":
-        sortTag = "descend";
+        sortTVL = "descend";
         break;
       case "descend":
-        sortTag = "default";
+        sortTVL = "default";
         break;
       default:
-        sortTag = "default";
+        sortTVL = "default";
     }
 
-    if (sortTag === "ascend") {
+    if (sortTVL === "ascend") {
       formatData = formatData.sort((a, b) => {
         if (a.tvl > b.tvl) {
           return 1;
@@ -41,7 +42,7 @@
         return 0;
       });
     }
-    if (sortTag === "descend") {
+    if (sortTVL === "descend") {
       formatData = formatData.sort((a, b) => {
         if (a.tvl < b.tvl) {
           return 1;
@@ -52,11 +53,60 @@
         return 0;
       });
     }
-    if (sortTag === "default") {
+    if (sortTVL === "default") {
       formatData = data.map((item) => {
         return {
           ...item,
           tvl: Number(item.tvl),
+          apy: item.apy * 100,
+        };
+      });
+    }
+  };
+
+  const toggleSortAPY = () => {
+    switch (sortAPY) {
+      case "default":
+        sortAPY = "ascend";
+        break;
+      case "ascend":
+        sortAPY = "descend";
+        break;
+      case "descend":
+        sortAPY = "default";
+        break;
+      default:
+        sortAPY = "default";
+    }
+
+    if (sortAPY === "ascend") {
+      formatData = formatData.sort((a, b) => {
+        if (a.apy > b.apy) {
+          return 1;
+        }
+        if (a.apy < b.apy) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortAPY === "descend") {
+      formatData = formatData.sort((a, b) => {
+        if (a.apy < b.apy) {
+          return 1;
+        }
+        if (a.apy > b.apy) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    if (sortAPY === "default") {
+      formatData = data.map((item) => {
+        return {
+          ...item,
+          tvl: Number(item.tvl),
+          apy: item.apy * 100,
         };
       });
     }
@@ -74,7 +124,7 @@
       <thead>
         <tr class="bg-[#f4f5f8]">
           <th
-            class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] xl:w-[230px] w-[280px]"
+            class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[550px]"
           >
             <div
               class="text-left xl:text-xs text-base uppercase font-semibold text-black"
@@ -91,9 +141,19 @@
           </th>
           <th class="py-3">
             <div
-              class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+              class="text-right xl:text-xs text-base uppercase font-semibold text-black flex items-center justify-end gap-2"
             >
               APY
+              <div on:click={toggleSortAPY} class="cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="1.2em"
+                  viewBox="0 0 320 512"
+                  ><path
+                    d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
+                  /></svg
+                >
+              </div>
             </div>
           </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
@@ -135,32 +195,16 @@
               }}
             >
               <td
-                class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white xl:w-[230px] w-[280px] group-hover:bg-gray-100"
+                class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white w-[550px] group-hover:bg-gray-100"
               >
-                <div class="text-left">
-                  <div
-                    class="text-black xl:text-sm text-xl font-medium relative"
-                    on:mouseover={() => {
-                      isShowTooltipName = true;
-                    }}
-                    on:mouseleave={() => (isShowTooltipName = false)}
-                  >
-                    {#if item.name === undefined}
-                      N/A
-                    {:else}
-                      {item?.name?.length > 20
-                        ? shorterName(item.name, 20)
-                        : item.name}
-                    {/if}
-                    {#if isShowTooltipName && item?.name?.length > 20}
-                      <div
-                        class="absolute -top-8 left-0"
-                        style="z-index: 2147483648;"
-                      >
-                        <tooltip-detail text={item.name} />
-                      </div>
-                    {/if}
-                  </div>
+                <div
+                  class="text-left text-black xl:text-sm text-xl font-medium"
+                >
+                  {#if item.name === undefined}
+                    N/A
+                  {:else}
+                    {item.name}
+                  {/if}
                 </div>
               </td>
 
@@ -200,7 +244,7 @@
                 <div
                   class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
                 >
-                  <TooltipNumber number={item.apy * 100} type="percent" />%
+                  <TooltipNumber number={item.apy} type="percent" />%
                 </div>
               </td>
 

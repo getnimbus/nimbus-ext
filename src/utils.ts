@@ -51,6 +51,74 @@ export const regexList = [
   // }
 ]
 
+export const netWorthFilter = [
+  {
+    label: "1k - 50K",
+    value: "networth > 1000 AND networth < 50000",
+  },
+  {
+    label: "50K - 100K",
+    value: "networth > 50000 AND networth < 100000",
+  },
+  {
+    label: "> 100K",
+    value: "networth > 100000",
+  },
+];
+
+export const sharpeRatioFilter = [
+  {
+    label: "< 1",
+    value: "sharpeRatio < 1",
+  },
+  {
+    label: "> 1",
+    value: "sharpeRatio > 1",
+  },
+  {
+    label: "1 - 2",
+    value: "sharpeRatio > 1 AND sharpeRatio < 2",
+  },
+  {
+    label: "> 2",
+    value: "sharpeRatio > 2",
+  },
+];
+
+export const volatilityFilter = [
+  {
+    label: "0-10%",
+    value: "volatility > 0 AND volatility < 10",
+  },
+  {
+    label: "10% - 50%",
+    value: "volatility > 10 AND volatility < 50",
+  },
+  {
+    label: "> 50%",
+    value: "volatility > 50",
+  },
+];
+
+export const returnsFilter = [
+  {
+    label: "1D > 0",
+    value: "change1D > 0",
+  },
+  {
+    label: "7D > 0",
+    value: "change7D > 0",
+  },
+  {
+    label: "30D > 0",
+    value: "change30D > 0",
+  },
+  {
+    label: "1Y > 0",
+    value: "change1Y > 0",
+  },
+];
+
 export const typeList = [
   {
     label: "Category",

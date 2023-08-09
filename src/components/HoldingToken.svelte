@@ -237,6 +237,7 @@
 </tr>
 
 <AppOverlay
+  clickOutSideToClose
   isOpen={showTableVaults}
   isTableContent
   on:close={() => {

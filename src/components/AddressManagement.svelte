@@ -1141,7 +1141,11 @@
 </ErrorBoundary>
 
 <!-- Modal add DEX account -->
-<AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenAddModal}
+  on:close={() => (isOpenAddModal = false)}
+>
   <div class="xl:title-3 title-1 text-gray-600 font-semibold">
     {MultipleLang.content.modal_add_title}
   </div>
@@ -1271,6 +1275,7 @@
 
 <!-- Modal follow Whales -->
 <AppOverlay
+  clickOutSideToClose
   isOpen={isOpenFollowWhaleModal}
   on:close={() => (isOpenFollowWhaleModal = false)}
 >
@@ -1288,15 +1293,7 @@
     <div class="xl:h-[350px] h-[650px]">
       <img src={FollowWhale} alt="" class="w-full h-full" />
     </div>
-    <div
-      class="relative w-full flex justify-end"
-      on:mouseenter={() => {
-        showCommandTooltip = true;
-      }}
-      on:mouseleave={() => {
-        showCommandTooltip = false;
-      }}
-    >
+    <div class="w-full flex justify-end">
       <CopyToClipboard
         text={`/start ${selectedWallet} ${
           formatListAddress.filter((item) => item.value === selectedWallet)?.[0]
@@ -1304,7 +1301,15 @@
         }`}
         let:copy
       >
-        <div class="w-max">
+        <div
+          class="w-max relative"
+          on:mouseenter={() => {
+            showCommandTooltip = true;
+          }}
+          on:mouseleave={() => {
+            showCommandTooltip = false;
+          }}
+        >
           <Button
             on:click={() => {
               copy();
@@ -1312,28 +1317,29 @@
               showCommandTooltip = false;
             }}>Copy command</Button
           >
+          {#if showCommandTooltip}
+            <div
+              class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+              style="z-index: 2147483648;"
+            >
+              <tooltip-detail
+                text={`/start ${selectedWallet} ${
+                  formatListAddress.filter(
+                    (item) => item.value === selectedWallet
+                  )?.[0]?.label || ""
+                }`}
+              />
+            </div>
+          {/if}
         </div>
       </CopyToClipboard>
-      {#if showCommandTooltip}
-        <div
-          class="absolute transform -translate-x-1/2 -top-8 left-1/2"
-          style="z-index: 2147483648;"
-        >
-          <tooltip-detail
-            text={`/start ${selectedWallet} ${
-              formatListAddress.filter(
-                (item) => item.value === selectedWallet
-              )?.[0]?.label || ""
-            }`}
-          />
-        </div>
-      {/if}
     </div>
   </div>
 </AppOverlay>
 
 <!-- Modal get user email -->
 <AppOverlay
+  clickOutSideToClose
   isOpen={isOpenModal}
   on:close={() => {
     isOpenModal = false;
