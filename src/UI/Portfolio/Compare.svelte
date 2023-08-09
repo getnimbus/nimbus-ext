@@ -387,9 +387,10 @@
         <div
           class="xl:text-xl text-3xl font-medium text-black flex justify-start"
         >
-          <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
+          Risks
+          <!-- <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
             Risks
-          </TooltipTitle>
+          </TooltipTitle> -->
         </div>
       </div>
       {#if isLoadingDataCompare}
