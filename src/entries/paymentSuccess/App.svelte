@@ -10,12 +10,14 @@
         Your card will be added to profile soon
       </div>
     </div>
-    <Button
-      variant="secondary"
-      on:click={() => {
-        window.location.replace("https://app.getnimbus.io");
-      }}>Continue</Button
-    >
+    <div class="w-[120px]">
+      <Button
+        variant="secondary"
+        on:click={() => {
+          window.location.replace("https://app.getnimbus.io");
+        }}>Continue</Button
+      >
+    </div>
   </div>
 </div>
 
