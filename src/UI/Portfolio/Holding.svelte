@@ -264,13 +264,13 @@
       <div class="xl:text-2xl text-4xl font-medium text-black">
         {MultipleLang.holding}
       </div>
-      <a
+      <!-- <a
         href="https://forms.gle/HfmvSTzd5frPPYDz8"
         target="_blank"
         class="xl:text-sm text-xl font-normal text-blue-500 mb-[2px] hover:text-blue-700 transition-all"
       >
         Get investment opportunities notification
-      </a>
+      </a> -->
     </div>
 
     <div class="flex flex-col gap-2">
