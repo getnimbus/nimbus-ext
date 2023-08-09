@@ -340,7 +340,7 @@
       });
 
       const responseVaults = await nimbus.get(
-        `/investment/vaults/${selectedWallet}`
+        `/v2/investment/${selectedWallet}/vaults`
       );
 
       if (selectedWallet === response?.address) {

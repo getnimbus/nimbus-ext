@@ -21,6 +21,7 @@
   import CompareResult from "~/UI/Compare/CompareResult.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
+  import WhalesList from "~/UI/Compare/WhalesList.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
   import Logo from "~/assets/logo-1.svg";
@@ -80,6 +81,7 @@
   let isEmptyDataPie = false;
   let isLoading = false;
   let showCompareTable = false;
+  let showCompareWhalesSuggest = false;
 
   let compareData = {};
   let errorMsg = "";
@@ -803,6 +805,14 @@
       dataPieChartCompare = formatDataPie;
     }
   }
+
+  const handleCopyAddress = (address) => {
+    searchCompare = address;
+  };
+
+  const handleCloseWhalesListModal = () => {
+    showCompareWhalesSuggest = false;
+  };
 </script>
 
 <ErrorBoundary>
@@ -1011,12 +1021,13 @@
                               />
                             </div>
                             <div class="xl:text-sm text-lg text-right">
-                              <a
+                              <div
+                                on:click={() =>
+                                  (showCompareWhalesSuggest = true)}
                                 class="text-blue-500 cursor-pointer"
-                                href="/whales"
-                                target="_blank"
-                                >Get inspired from the whale list</a
                               >
+                                Get inspired from the whale list
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -1153,6 +1164,31 @@
   >
     <div class="xl:mt-9 mt-12">
       <CompareResult {holdingTokenData} {holdingTokenDataCompare} />
+    </div>
+  </AppOverlay>
+
+  <AppOverlay
+    clickOutSideToClose
+    isOpen={showCompareWhalesSuggest}
+    isTableContent
+    on:close={() => {
+      showCompareWhalesSuggest = false;
+    }}
+  >
+    <div class="flex flex-col gap-2 mt-9">
+      <WhalesList
+        data={compareData?.base?.similarPortfolio}
+        copyAddress={handleCopyAddress}
+        closeModal={handleCloseWhalesListModal}
+      />
+      <div class="xl:text-sm text-lg text-right">
+        <a
+          class="text-blue-500 cursor-pointer"
+          href="/whales"
+          target="_blank"
+          on:click={() => (showCompareWhalesSuggest = false)}>More the whales</a
+        >
+      </div>
     </div>
   </AppOverlay>
 </ErrorBoundary>
