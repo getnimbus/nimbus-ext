@@ -24,6 +24,22 @@
     [];
 
   const disabledChains = ["XDAI", "SOL"];
+
+  const clickOutside = (node) => {
+    const handleClick = (event) => {
+      if (node && !node.contains(event.target) && !event.defaultPrevented) {
+        node.dispatchEvent(new CustomEvent("click_outside", node));
+      }
+    };
+
+    document.addEventListener("click", handleClick, true);
+
+    return {
+      destroy() {
+        document.removeEventListener("click", handleClick, true);
+      },
+    };
+  };
 </script>
 
 <div class="wrapper">
@@ -65,6 +81,8 @@
   {#if open}
     <div
       class={`content xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] xl:max-h-[310px] max-h-[380px] w-[300px] min-w-[300px] mt-2 ${positionSelectList}`}
+      use:clickOutside
+      on:click_outside={() => (open = false)}
     >
       {#each listSelect as item}
         <div
