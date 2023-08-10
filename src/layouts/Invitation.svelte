@@ -30,7 +30,7 @@
         link = `https://app.getnimbus.io/?invitation=${response?.data?.id}`;
         qrcode.addData(link);
         qrcode.make();
-        qrImageDataUrl = qrcode.createDataURL(14, 0);
+        qrImageDataUrl = qrcode.createDataURL(10, 0);
       }
     } catch (e) {
       console.error("e: ", e);
@@ -92,9 +92,9 @@
     <div class="xl:min-w-2xl min-w-4xl flex justify-center items-center">
       <div
         style="box-shadow: 0 5px 20px rgba(0, 0, 0, 8%);"
-        class="flex flex-col gap-3 border border-[#0000001a] rounded-[20px] py-5 px-6"
+        class="flex flex-col gap-3 border border-[#0000001a] rounded-[20px] py-4 px-6"
       >
-        <div class="xl:text-lg text-2xl text-center text-gray-500 mb-2">
+        <div class="xl:text-base text-xl text-center text-gray-500 mb-2">
           Your code has been used by <span class="text-black font-medium"
             >{referrals}</span
           > people
