@@ -40,8 +40,15 @@
 
   let showPopover = false;
   let addressWallet = "";
+  let invitation = "";
 
   onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    let invitationParams = urlParams.get("invitation");
+    if (invitationParams) {
+      invitation = invitationParams;
+    }
+
     const evmToken = localStorage.getItem("evm_token");
     if (evmToken) {
       user.update(
@@ -107,6 +114,7 @@
     try {
       const res = await nimbus.post("/users/nonce", {
         publicAddress: address,
+        referrer: invitation.length !== 0 ? invitation : undefined,
       });
       if (res && res.data) {
         const signatureString = await handleSignAddressMessage(

@@ -7,8 +7,21 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   const qrcode = QRCode(0, "L");
+
   let link = "";
   let qrImageDataUrl = "";
+  let referrals = 0;
+
+  const getReferrals = async () => {
+    try {
+      const response = await nimbus.get("/referrals");
+      if (response && response.data) {
+        referrals = response?.data?.count;
+      }
+    } catch (e) {
+      console.error("e: ", e);
+    }
+  };
 
   const getUserInfo = async () => {
     try {
@@ -25,6 +38,7 @@
   };
 
   onMount(() => {
+    getReferrals();
     getUserInfo();
   });
 
@@ -82,7 +96,7 @@
       >
         <div class="xl:text-lg text-2xl text-center text-gray-500 mb-2">
           Your code has been used by <span class="text-black font-medium"
-            >100</span
+            >{referrals}</span
           > people
         </div>
 
