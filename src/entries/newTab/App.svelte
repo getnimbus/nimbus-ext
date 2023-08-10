@@ -25,6 +25,7 @@
   import CustomVirtualPortfolio from "~/layouts/CustomVirtualPortfolio.svelte";
   import VirtualPortfolio from "~/layouts/VirtualPortfolio.svelte";
   import Compare from "~/layouts/Compare.svelte";
+  import Invitation from "~/layouts/Invitation.svelte";
 
   import Comment from "~/assets/comment-bubble-icon.svg";
 
@@ -82,6 +83,10 @@
 
         <Route path="news">
           <News />
+        </Route>
+
+        <Route path="invitation">
+          <Invitation />
         </Route>
 
         <Route path="whales">

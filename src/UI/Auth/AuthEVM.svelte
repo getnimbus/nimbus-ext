@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { Link } from "svelte-navigator";
   import onboard from "~/lib/web3-onboard";
   import { ethers } from "ethers";
   import {
@@ -209,7 +210,7 @@
     </div>
     {#if showPopover}
       <div
-        class="bg-white xl:py-2 py-3 px-4 text-sm rounded-lg absolute -bottom-28 left-1/2 transform -translate-x-1/2 flex flex-col gap-2 w-max z-50"
+        class="bg-white xl:py-2 py-3 px-4 text-sm rounded-lg absolute -bottom-36 left-1/2 transform -translate-x-1/2 flex flex-col gap-2 w-max z-50"
         style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
       >
         {#if APP_TYPE.TYPE === "EXT"}
@@ -233,7 +234,7 @@
             Settings
           </div>
         {:else}
-          <a
+          <div
             class="text-yellow-400 cursor-pointer xl:text-base text-2xl flex items-center gap-1"
             on:click={() => {
               isShowUpgradeModal.update((n) => (n = true));
@@ -255,7 +256,12 @@
                 fill="#ffb800"
               />
             </svg>
-          </a>
+          </div>
+          <Link to="invitation">
+            <div class="text-gray-500 cursor-pointer xl:text-base text-2xl">
+              Invitation
+            </div>
+          </Link>
           <a
             href="entries/options/index.html?tab=wallets"
             target="_blank"
