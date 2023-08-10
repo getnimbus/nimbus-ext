@@ -74,7 +74,7 @@
       </div>
       <div
         class={`flex items-center gap-3 ${
-          typeWalletAddress === "DEX" &&
+          typeWalletAddress === "CEX" ||
           getAddressContext(selectedWallet)?.type === "BTC"
             ? "opacity-50"
             : ""
@@ -127,7 +127,7 @@
       </div>
       <div
         class={`flex items-center gap-3 ${
-          typeWalletAddress === "DEX" &&
+          typeWalletAddress === "CEX" ||
           getAddressContext(selectedWallet)?.type === "BTC"
             ? "opacity-50"
             : ""
@@ -167,7 +167,7 @@
       </div>
       <div
         class={`flex items-center gap-3 ${
-          typeWalletAddress === "DEX" &&
+          typeWalletAddress === "CEX" ||
           getAddressContext(selectedWallet)?.type === "BTC"
             ? "opacity-50"
             : ""
@@ -217,7 +217,7 @@
       </div>
       <div
         class={`flex items-center gap-3 ${
-          typeWalletAddress === "DEX" &&
+          typeWalletAddress === "CEX" ||
           getAddressContext(selectedWallet)?.type === "BTC"
             ? "opacity-50"
             : ""
