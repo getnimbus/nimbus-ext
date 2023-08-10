@@ -105,34 +105,18 @@
             >
               <div
                 class={`px-3 py-1 ${
-                  selectedNetWorth === item.value
-                    ? "pl-3 pr-0 text-[#006CEC]"
-                    : ""
+                  selectedNetWorth === item.value ? "text-[#006CEC]" : ""
                 }`}
                 on:click={() => {
-                  selectedNetWorth = item.value;
+                  if (selectedNetWorth === item.value) {
+                    selectedNetWorth = "";
+                  } else {
+                    selectedNetWorth = item.value;
+                  }
                 }}
               >
                 {item.label}
               </div>
-              {#if selectedNetWorth.length !== 0 && selectedNetWorth === item.value}
-                <div on:click={() => (selectedNetWorth = "")} class="pr-3">
-                  <svg
-                    class="css-1tl8n6g"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    ><path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM5.35355 4.64645C5.15829 4.45118 4.84171 4.45118 4.64645 4.64645C4.45118 4.84171 4.45118 5.15829 4.64645 5.35355L7.29289 8L4.64645 10.6464C4.45118 10.8417 4.45118 11.1583 4.64645 11.3536C4.84171 11.5488 5.15829 11.5488 5.35355 11.3536L8 8.70711L10.6464 11.3536C10.8417 11.5488 11.1583 11.5488 11.3536 11.3536C11.5488 11.1583 11.5488 10.8417 11.3536 10.6464L8.70711 8L11.3536 5.35355C11.5488 5.15829 11.5488 4.84171 11.3536 4.64645C11.1583 4.45118 10.8417 4.45118 10.6464 4.64645L8 7.29289L5.35355 4.64645Z"
-                      fill="#006CEC"
-                    /></svg
-                  >
-                </div>
-              {/if}
             </div>
           {/each}
         </div>
@@ -146,34 +130,18 @@
             >
               <div
                 class={`px-3 py-1 ${
-                  selectedSharpeRatio === item.value
-                    ? "pl-3 pr-0 text-[#006CEC]"
-                    : ""
+                  selectedSharpeRatio === item.value ? "text-[#006CEC]" : ""
                 }`}
                 on:click={() => {
-                  selectedSharpeRatio = item.value;
+                  if (selectedSharpeRatio === item.value) {
+                    selectedSharpeRatio = "";
+                  } else {
+                    selectedSharpeRatio = item.value;
+                  }
                 }}
               >
                 {item.label}
               </div>
-              {#if selectedSharpeRatio.length !== 0 && selectedSharpeRatio === item.value}
-                <div on:click={() => (selectedSharpeRatio = "")} class="pr-3">
-                  <svg
-                    class="css-1tl8n6g"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    ><path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM5.35355 4.64645C5.15829 4.45118 4.84171 4.45118 4.64645 4.64645C4.45118 4.84171 4.45118 5.15829 4.64645 5.35355L7.29289 8L4.64645 10.6464C4.45118 10.8417 4.45118 11.1583 4.64645 11.3536C4.84171 11.5488 5.15829 11.5488 5.35355 11.3536L8 8.70711L10.6464 11.3536C10.8417 11.5488 11.1583 11.5488 11.3536 11.3536C11.5488 11.1583 11.5488 10.8417 11.3536 10.6464L8.70711 8L11.3536 5.35355C11.5488 5.15829 11.5488 4.84171 11.3536 4.64645C11.1583 4.45118 10.8417 4.45118 10.6464 4.64645L8 7.29289L5.35355 4.64645Z"
-                      fill="#006CEC"
-                    /></svg
-                  >
-                </div>
-              {/if}
             </div>
           {/each}
         </div>
@@ -187,34 +155,18 @@
             >
               <div
                 class={`px-3 py-1 ${
-                  selectedVolatility === item.value
-                    ? "pl-3 pr-0 text-[#006CEC]"
-                    : ""
+                  selectedVolatility === item.value ? "text-[#006CEC]" : ""
                 }`}
                 on:click={() => {
-                  selectedVolatility = item.value;
+                  if (selectedVolatility === item.value) {
+                    selectedVolatility = "";
+                  } else {
+                    selectedVolatility = item.value;
+                  }
                 }}
               >
                 {item.label}
               </div>
-              {#if selectedVolatility.length !== 0 && selectedVolatility === item.value}
-                <div on:click={() => (selectedVolatility = "")} class="pr-3">
-                  <svg
-                    class="css-1tl8n6g"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    ><path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM5.35355 4.64645C5.15829 4.45118 4.84171 4.45118 4.64645 4.64645C4.45118 4.84171 4.45118 5.15829 4.64645 5.35355L7.29289 8L4.64645 10.6464C4.45118 10.8417 4.45118 11.1583 4.64645 11.3536C4.84171 11.5488 5.15829 11.5488 5.35355 11.3536L8 8.70711L10.6464 11.3536C10.8417 11.5488 11.1583 11.5488 11.3536 11.3536C11.5488 11.1583 11.5488 10.8417 11.3536 10.6464L8.70711 8L11.3536 5.35355C11.5488 5.15829 11.5488 4.84171 11.3536 4.64645C11.1583 4.45118 10.8417 4.45118 10.6464 4.64645L8 7.29289L5.35355 4.64645Z"
-                      fill="#006CEC"
-                    /></svg
-                  >
-                </div>
-              {/if}
             </div>
           {/each}
         </div>
@@ -231,39 +183,24 @@
                   listSelectedReturn.find(
                     (selected) => selected === item.value
                   ) === item.value
-                    ? "pl-3 pr-0 text-[#006CEC]"
+                    ? "text-[#006CEC]"
                     : ""
                 }`}
                 on:click={() => {
-                  listSelectedReturn = [...listSelectedReturn, item.value];
+                  const selectedItem = listSelectedReturn.find(
+                    (selected) => selected === item.value
+                  );
+                  if (!selectedItem) {
+                    listSelectedReturn = [...listSelectedReturn, item.value];
+                  } else {
+                    listSelectedReturn = listSelectedReturn.filter(
+                      (selected) => selected !== item.value
+                    );
+                  }
                 }}
               >
                 {item.label}
               </div>
-              {#if listSelectedReturn.length !== 0 && listSelectedReturn.find((selected) => selected === item.value) === item.value}
-                <div
-                  on:click={() =>
-                    (listSelectedReturn = listSelectedReturn.filter(
-                      (selected) => selected !== item.value
-                    ))}
-                  class="pr-3"
-                >
-                  <svg
-                    class="css-1tl8n6g"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    ><path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM5.35355 4.64645C5.15829 4.45118 4.84171 4.45118 4.64645 4.64645C4.45118 4.84171 4.45118 5.15829 4.64645 5.35355L7.29289 8L4.64645 10.6464C4.45118 10.8417 4.45118 11.1583 4.64645 11.3536C4.84171 11.5488 5.15829 11.5488 5.35355 11.3536L8 8.70711L10.6464 11.3536C10.8417 11.5488 11.1583 11.5488 11.3536 11.3536C11.5488 11.1583 11.5488 10.8417 11.3536 10.6464L8.70711 8L11.3536 5.35355C11.5488 5.15829 11.5488 4.84171 11.3536 4.64645C11.1583 4.45118 10.8417 4.45118 10.6464 4.64645L8 7.29289L5.35355 4.64645Z"
-                      fill="#006CEC"
-                    /></svg
-                  >
-                </div>
-              {/if}
             </div>
           {/each}
         </div>
