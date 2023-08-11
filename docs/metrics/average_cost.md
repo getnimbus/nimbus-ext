@@ -1,10 +1,10 @@
 ---
-label: Average cost
+label: Risk
 layout: default
 icon: ruby
 ---
 
-# Average cost
+# Risk
 
 Average cost = Total Cost / Current balance
 
