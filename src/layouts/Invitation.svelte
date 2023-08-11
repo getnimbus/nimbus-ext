@@ -47,45 +47,53 @@
   });
 
   const downloadQRCode = async () => {
-    // const a = document.createElement("a");
-    // a.href = qrImageDataUrl;
-    // a.download = "qrcode.png";
-    // document.body.appendChild(a);
-    // a.click();
-    // document.body.removeChild(a);
-    console.log("qrImageDataUrl: ", qrImageDataUrl);
-
-    const targetElement = document.getElementById("target-element"); // Replace with the ID of your target element
+    const targetElement = document.getElementById("target-element");
     if (targetElement) {
       try {
         const canvas = await html2canvas(targetElement);
         const img = canvas.toDataURL("image/png");
-        console.log("img: ", img);
+        // handle download image
+        const a = document.createElement("a");
+        a.href = img;
+        a.download = "qrcode.png";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       } catch (error) {
         console.error("Error capturing screenshot:", error);
       }
     }
   };
 
-  const copyQRCode = () => {
-    // const imgElement = document.createElement("img");
-    // imgElement.src = qrImageDataUrl;
-    // const canvas = document.createElement("canvas");
-    // canvas.width = imgElement.width;
-    // canvas.height = imgElement.height;
-    // const ctx = canvas.getContext("2d");
-    // ctx.drawImage(imgElement, 0, 0);
-    // canvas.toBlob((blob) => {
-    //   const item = new ClipboardItem({ "image/png": blob });
-    //   navigator.clipboard
-    //     .write([item])
-    //     .then(() => {
-    //       console.log("Image copied to clipboard.");
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error copying image:", error);
-    //     });
-    // });
+  const copyQRCode = async () => {
+    const targetElement = document.getElementById("target-element");
+    if (targetElement) {
+      try {
+        const createCanvas = await html2canvas(targetElement);
+        const img = createCanvas.toDataURL("image/png");
+        // handle copy image
+        const imgElement = document.createElement("img");
+        imgElement.src = qrImageDataUrl;
+        const canvas = document.createElement("canvas");
+        canvas.width = imgElement.width;
+        canvas.height = imgElement.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(imgElement, 0, 0);
+        canvas.toBlob((blob) => {
+          const item = new ClipboardItem({ "image/png": blob });
+          navigator.clipboard
+            .write([item])
+            .then(() => {
+              console.log("Image copied to clipboard.");
+            })
+            .catch((error) => {
+              console.error("Error copying image:", error);
+            });
+        });
+      } catch (error) {
+        console.error("Error capturing screenshot:", error);
+      }
+    }
   };
 </script>
 
@@ -113,30 +121,21 @@
           > people
         </div>
 
-        <div
-          id="target-element"
-          class="border-2 border-black rounded-xl overflow-hidden"
-        >
-          <div class="py-3 px-4 bg-gray-100 text-sm">
-            <div
-              class="rounded-xl bg-gray-200 w-max py-[2px] px-2 text-sm font-medium"
-            >
-              Nimbus Users
-            </div>
+        <div id="target-element" class="card">
+          <div class="title_container">
+            <div class="title">Nimbus Users</div>
           </div>
-          <div class="p-4 flex flex-col gap-4">
-            <div class="flex flex-col">
-              <div class="text-2xl font-medium">
+          <div class="body_container">
+            <div class="title_wrapper">
+              <div class="address">
                 {shorterAddress(userAddress)}
               </div>
-              <div class="text-gray-400">Inviter</div>
+              <div class="type">Inviter</div>
             </div>
-            <div class="flex justify-center">
+            <div class="qr_wrapper">
               <img src={qrImageDataUrl} alt="QR Code" />
             </div>
-            <div class="font-medium text-sm text-gray-400 mt-4">
-              Manage your portfolio with Nimbus
-            </div>
+            <div class="footer_wrapper">Manage your portfolio with Nimbus</div>
           </div>
         </div>
 
@@ -225,4 +224,58 @@
 </ErrorBoundary>
 
 <style>
+  .card {
+    border: 2px solid black;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .card .title_container {
+    padding: 12px 16px;
+    background-color: rgba(243, 244, 246, 1);
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .card .title_container .title {
+    border-radius: 12px;
+    background-color: rgba(229, 231, 235, 1);
+    width: max-content;
+    padding: 2px 8px;
+    font-weight: 500;
+  }
+
+  .card .body_container {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card .body_container .title_wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card .body_container .title_wrapper .address {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .card .body_container .title_wrapper .type {
+    color: rgba(156, 163, 175, 1);
+  }
+
+  .card .body_container .qr_wrapper {
+    display: flex;
+    justify-content: center;
+  }
+
+  .card .body_container .footer_wrapper {
+    font-size: 14px;
+    line-height: 20px;
+    color: rgba(156, 163, 175, 1);
+    margin-top: 16px;
+    font-weight: 500;
+  }
 </style>
