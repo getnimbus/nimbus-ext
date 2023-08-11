@@ -2,6 +2,8 @@
   import { typePackage } from "~/utils";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
 
+  export let selectedPackage = (item) => {};
+
   let selectedTypePackage: "month" | "yearn" = "month";
 </script>
 
@@ -60,6 +62,12 @@
 
           <div
             class="flex items-center gap-2 mt-2 text-[#006bff] font-semibold text-lg cursor-pointer"
+            on:click={() => {
+              selectedPackage({
+                name: "FREE",
+                price: 0,
+              });
+            }}
           >
             Try FREE
             <svg
@@ -112,6 +120,12 @@
 
           <div
             class="flex items-center gap-2 mt-2 text-[#006bff] font-semibold text-lg cursor-pointer"
+            on:click={() => {
+              selectedPackage({
+                name: "EXPLORER",
+                price: selectedTypePackage === "month" ? 30 : 25,
+              });
+            }}
           >
             Get the Plan
             <svg
@@ -155,6 +169,12 @@
 
           <div
             class="flex items-center gap-2 mt-2 text-[#006bff] font-semibold text-lg cursor-pointer"
+            on:click={() => {
+              selectedPackage({
+                name: "PROFESSIONAL",
+                price: selectedTypePackage === "month" ? 99 : 82.5,
+              });
+            }}
           >
             Get the Plan
             <svg

@@ -11,6 +11,9 @@
   import Auth from "~/UI/Auth/Auth.svelte";
   import AuthEvm from "~/UI/Auth/AuthEVM.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
+  import PricePackage from "~/UI/PricePagake/PricePackage.svelte";
+  import Select from "./Select.svelte";
+  import Button from "./Button.svelte";
 
   import Logo from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
@@ -26,7 +29,10 @@
   import Crown from "~/assets/crown.svg";
   import MenuBar from "~/assets/menu-bar.svg";
   import Close from "~/assets/close-menu-bar.svg";
-  import PricePackage from "~/UI/PricePagake/PricePackage.svelte";
+  import Bnb from "~/assets/bnb.png";
+  import Ethereum from "~/assets/ethereum.png";
+  import Matic from "~/assets/matic.png";
+  import Solana from "~/assets/solana.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -38,6 +44,29 @@
   };
 
   const navigate = useNavigate();
+
+  const listChain = [
+    {
+      logo: Ethereum,
+      label: "Ethereum",
+      value: "ETH",
+    },
+    {
+      logo: Bnb,
+      label: "Binance",
+      value: "BNB",
+    },
+    {
+      logo: Matic,
+      label: "Matic",
+      value: "MATIC",
+    },
+    {
+      logo: Solana,
+      label: "Solana",
+      value: "SOL",
+    },
+  ];
 
   let selectedWallet;
   wallet.subscribe((value) => {
@@ -54,6 +83,9 @@
   let isShowHeaderMobile = false;
   let isShowChangeLog = false;
 
+  let selectedPackage;
+  let selectedChain;
+
   const debounceSearch = (value) => {
     clearTimeout(timerDebounce);
     timerDebounce = setTimeout(() => {
@@ -64,6 +96,10 @@
   const absoluteMatch = useMatch("/:page");
 
   $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
+
+  const handleSelectedPackage = (item) => {
+    selectedPackage = item;
+  };
 </script>
 
 <div class="py-1 bg-[#27326F] border-b-[1px] border-[#ffffff1a]">
@@ -438,7 +474,59 @@
   <div class="text-3xl text-center text-gray-600 font-semibold">
     Upgrade Plan
   </div>
-  <PricePackage />
+  {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
+    <div class="flex flex-col justify-center mt-5">
+      <div class="flex flex-col items-center gap-1">
+        <div class="flex items-center gap-1 text-2xl">
+          Thank you for get plan <span class="font-semibold"
+            >{selectedPackage.name}</span
+          >
+          with
+          <span class="flex items-end gap-2 font-semibold">
+            <span>${selectedPackage.price}</span><span
+              class="text-xl text-gray-400 mb-[2px]">/month</span
+            >
+          </span>
+        </div>
+        <div class="text-2xl">
+          Please select the channel to make the payment
+        </div>
+      </div>
+      <div class="flex flex-col items-center justify-center gap-5 mt-4">
+        <div class="w-max">
+          <Select
+            type="lang"
+            positionSelectList="right-0"
+            listSelect={listChain}
+            bind:selected={selectedChain}
+          />
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-[140px]">
+            <Button
+              variant="secondary"
+              on:click={() => {
+                selectedPackage = undefined;
+              }}
+            >
+              Back
+            </Button>
+          </div>
+          <div class="w-[140px]">
+            <Button
+              on:click={() => {
+                console.log("selectedChain: ", selectedChain);
+              }}
+            >
+              Buy
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {:else}
+    <PricePackage selectedPackage={handleSelectedPackage} />
+  {/if}
 </AppOverlay>
 
 <style>

@@ -136,7 +136,7 @@
             }`}
           >
             {item.label}
-            {#if disabledChains.includes(item.value)}
+            {#if type === "chain" && disabledChains.includes(item.value)}
               (Soon)
             {/if}
           </div>
