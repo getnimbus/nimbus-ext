@@ -3,6 +3,7 @@
   import { nimbus } from "~/lib/network";
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
+  import html2canvas from "html2canvas";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import { shorterAddress } from "~/utils";
@@ -45,37 +46,46 @@
     getUserInfo();
   });
 
-  const downloadQRCode = () => {
-    const a = document.createElement("a");
-    a.href = qrImageDataUrl;
-    a.download = "qrcode.png";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  const downloadQRCode = async () => {
+    // const a = document.createElement("a");
+    // a.href = qrImageDataUrl;
+    // a.download = "qrcode.png";
+    // document.body.appendChild(a);
+    // a.click();
+    // document.body.removeChild(a);
+    console.log("qrImageDataUrl: ", qrImageDataUrl);
+
+    const targetElement = document.getElementById("target-element"); // Replace with the ID of your target element
+    if (targetElement) {
+      try {
+        const canvas = await html2canvas(targetElement);
+        const img = canvas.toDataURL("image/png");
+        console.log("img: ", img);
+      } catch (error) {
+        console.error("Error capturing screenshot:", error);
+      }
+    }
   };
 
   const copyQRCode = () => {
-    const imgElement = document.createElement("img");
-    imgElement.src = qrImageDataUrl;
-
-    const canvas = document.createElement("canvas");
-    canvas.width = imgElement.width;
-    canvas.height = imgElement.height;
-
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(imgElement, 0, 0);
-
-    canvas.toBlob((blob) => {
-      const item = new ClipboardItem({ "image/png": blob });
-      navigator.clipboard
-        .write([item])
-        .then(() => {
-          console.log("Image copied to clipboard.");
-        })
-        .catch((error) => {
-          console.error("Error copying image:", error);
-        });
-    });
+    // const imgElement = document.createElement("img");
+    // imgElement.src = qrImageDataUrl;
+    // const canvas = document.createElement("canvas");
+    // canvas.width = imgElement.width;
+    // canvas.height = imgElement.height;
+    // const ctx = canvas.getContext("2d");
+    // ctx.drawImage(imgElement, 0, 0);
+    // canvas.toBlob((blob) => {
+    //   const item = new ClipboardItem({ "image/png": blob });
+    //   navigator.clipboard
+    //     .write([item])
+    //     .then(() => {
+    //       console.log("Image copied to clipboard.");
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error copying image:", error);
+    //     });
+    // });
   };
 </script>
 
@@ -103,7 +113,10 @@
           > people
         </div>
 
-        <div class="border-2 border-black rounded-xl overflow-hidden">
+        <div
+          id="target-element"
+          class="border-2 border-black rounded-xl overflow-hidden"
+        >
           <div class="py-3 px-4 bg-gray-100 text-sm">
             <div
               class="rounded-xl bg-gray-200 w-max py-[2px] px-2 text-sm font-medium"
