@@ -49,6 +49,11 @@
 
   const listChain = [
     {
+      logo: Solana,
+      label: "Solana",
+      value: "sol",
+    },
+    {
       logo: Ethereum,
       label: "Ethereum",
       value: "eth",
@@ -62,11 +67,6 @@
       logo: Matic,
       label: "Matic",
       value: "pol",
-    },
-    {
-      logo: Solana,
-      label: "Solana",
-      value: "sol",
     },
   ];
 
@@ -108,8 +108,6 @@
     try {
       const response = await nimbus.get("/v2/payments/subscription");
       if (response && response?.data) {
-        console.log(response?.data?.data?.products);
-
         // listPackageData = [
         //   {
         //     created: "2023-08-11T04:34:50.685Z",
@@ -918,6 +916,7 @@
   on:close={() => {
     isShowUpgradeModal.update((n) => (n = false));
     showUpgradeModal = false;
+    selectedPackage = undefined;
   }}
 >
   <div class="text-3xl text-center text-gray-600 font-semibold">
@@ -945,7 +944,7 @@
       <div class="flex flex-col items-center justify-center gap-5 mt-4">
         <div class="w-max">
           <Select
-            type="lang"
+            type="package"
             positionSelectList="right-0"
             listSelect={listChain}
             bind:selected={selectedChain}

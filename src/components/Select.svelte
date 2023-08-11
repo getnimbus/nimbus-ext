@@ -5,13 +5,13 @@
 
   export let listSelect;
   export let selected;
-  export let type: "chain" | "wallet" | "lang";
+  export let type: "chain" | "wallet" | "lang" | "package";
   export let positionSelectList;
 
   let open = false;
 
   $: {
-    if (listSelect && type === "lang") {
+    if (listSelect && (type === "lang" || type === "package")) {
       selected = listSelect[0];
     }
   }
@@ -24,6 +24,7 @@
     [];
 
   const disabledChains = ["XDAI", "SOL"];
+  const disabledChainsPackage = ["eth", "bsc", "pol"];
 
   const clickOutside = (node) => {
     const handleClick = (event) => {
@@ -45,13 +46,13 @@
 <div class="wrapper">
   <div
     class={`button xl:text-sm text-2xl hover:bg-[#525b8c] ${
-      type === "lang" && "bg-[#1E96FC]"
+      (type === "lang" || type === "package") && "bg-[#1E96FC]"
     }`}
     class:active={open}
     on:click={() => (open = !open)}
   >
     <div class="flex items-center gap-2">
-      {#if type === "chain" || type === "lang"}
+      {#if type === "chain" || type === "lang" || type === "package"}
         {#if selected?.logo || selectedChain[0]?.logo}
           <img
             src={selected?.value === "ALL" || selectedChain[0]?.value === "ALL"
@@ -115,6 +116,14 @@
                 open = false;
               }
             }
+            if (type === "package") {
+              if (item.value !== "sol") {
+                open = false;
+              } else {
+                selected = item.value;
+                open = false;
+              }
+            }
             if (type === "lang") {
               selected = item;
               open = false;
@@ -128,18 +137,34 @@
               class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
             />
           {/if}
-          <div
-            class={`xl:text-sm text-2xl name ${
-              type === "chain" && disabledChains.includes(item.value)
-                ? "text-[#00000066]"
-                : "text-[#000000b3]"
-            }`}
-          >
-            {item.label}
-            {#if type === "chain" && disabledChains.includes(item.value)}
-              (Soon)
-            {/if}
-          </div>
+
+          {#if type === "chain"}
+            <div
+              class={`xl:text-sm text-2xl name ${
+                type === "chain" && disabledChains.includes(item.value)
+                  ? "text-[#00000066]"
+                  : "text-[#000000b3]"
+              }`}
+            >
+              {item.label}
+              {#if type === "chain" && disabledChains.includes(item.value)}
+                (Soon)
+              {/if}
+            </div>
+          {:else}
+            <div
+              class={`xl:text-sm text-2xl name ${
+                type === "package" && disabledChainsPackage.includes(item.value)
+                  ? "text-[#00000066]"
+                  : "text-[#000000b3]"
+              }`}
+            >
+              {item.label}
+              {#if type === "package" && disabledChainsPackage.includes(item.value)}
+                (Soon)
+              {/if}
+            </div>
+          {/if}
         </div>
       {/each}
     </div>

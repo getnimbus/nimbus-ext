@@ -1,12 +1,29 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { typePackage } from "~/utils";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { nimbus } from "~/lib/network";
 
   export let selectedPackage = (item) => {};
   export let selectedExplorer;
   export let selectedProfessional;
 
   let selectedTypePackage: "month" | "yearn" = "month";
+
+  const getUserInfo = async () => {
+    try {
+      const response = await nimbus.get("/users/me");
+      if (response && response.data) {
+        console.log("response: ", response);
+      }
+    } catch (e) {
+      console.error("e: ", e);
+    }
+  };
+
+  onMount(() => {
+    getUserInfo();
+  });
 </script>
 
 <div class="flex flex-col gap-4 mt-5">

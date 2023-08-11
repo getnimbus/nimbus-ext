@@ -37,7 +37,11 @@
         `/v2/payments/status?paymentId=${paymentIdParams}`
       );
 
-      if (response && response.data && response.data.paymentStatus === "ok") {
+      if (
+        response &&
+        response?.data &&
+        response?.data?.paymentStatus === "successful"
+      ) {
         status = true;
         clearInterval(intervalId);
       } else {
@@ -63,7 +67,7 @@
   $: {
     intervalId = setInterval(() => {
       getStatusPayment();
-    }, 15000); // 15s
+    }, 5000); // 5s
   }
 </script>
 
