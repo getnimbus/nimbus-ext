@@ -6,6 +6,7 @@
   import html2canvas from "html2canvas";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Logo from "~/assets/logo-1.svg";
   import { shorterAddress } from "~/utils";
 
   const qrcode = QRCode(0, "L");
@@ -123,7 +124,8 @@
 
         <div id="target-element" class="card">
           <div class="title_container">
-            <div class="title">Nimbus Users</div>
+            <img src={Logo} />
+            <!-- <div class="title">Nimbus Users</div> -->
           </div>
           <div class="body_container">
             <div class="title_wrapper">
@@ -235,6 +237,12 @@
     background-color: rgba(243, 244, 246, 1);
     font-size: 14px;
     line-height: 20px;
+  }
+
+  .card .title_container img {
+    height: 48px;
+    width: auto;
+    margin-left: -12px;
   }
 
   .card .title_container .title {
