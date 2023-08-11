@@ -342,6 +342,8 @@
   .card .body_container .qr_wrapper {
     display: flex;
     justify-content: center;
+    width: 198px;
+    height: 198px;
   }
 
   .card .body_container .footer_wrapper {
