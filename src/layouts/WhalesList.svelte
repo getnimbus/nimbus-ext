@@ -88,23 +88,14 @@
     search = formValue.searchValue;
 
     filterParams = encodeURIComponent(
-      `${
-        filterValue.selectedNetWorth.length !== 0
-          ? filterValue.selectedNetWorth + " AND "
-          : ""
-      }${
-        filterValue.selectedSharpeRatio.length !== 0
-          ? filterValue.selectedSharpeRatio + " AND "
-          : ""
-      }${
-        filterValue.selectedVolatility.length !== 0
-          ? filterValue.selectedVolatility + " AND "
-          : ""
-      }${
-        filterValue.listSelectedReturn.length !== 0
-          ? filterValue.listSelectedReturn.join(" AND ")
-          : ""
-      }`
+      [
+        filterValue.selectedNetWorth,
+        filterValue.selectedSharpeRatio,
+        filterValue.selectedVolatility,
+        ...filterValue.listSelectedReturn,
+      ]
+        .filter((_) => _)
+        .join(" AND ")
     );
     getPublicPortfolio();
   };
