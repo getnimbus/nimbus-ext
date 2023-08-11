@@ -267,7 +267,7 @@
           </div>
           <Link to="invitation">
             <div class="text-gray-500 cursor-pointer xl:text-base text-2xl">
-              Invitation
+              Invite
             </div>
           </Link>
           <a
