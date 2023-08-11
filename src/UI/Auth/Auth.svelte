@@ -177,30 +177,16 @@
         class="bg-white py-2 px-3 text-sm rounded-lg absolute -bottom-17 left-1/2 transform -translate-x-1/2 flex flex-col gap-1 w-[80px] z-50"
         style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
       >
-        {#if APP_TYPE.TYPE === "EXT"}
-          <div
-            class="text-black cursor-pointer"
-            on:click={() => {
-              browser.tabs.create({
-                url: "src/entries/options/index.html?tab=nft",
-              });
-              showPopover = false;
-            }}
-          >
-            Dashboard
-          </div>
-        {:else}
-          <a
-            class="text-gray-500 cursor-pointer"
-            href="/entries/options/index.html?tab=nft"
-            target="_blank"
-            on:click={() => {
-              showPopover = false;
-            }}
-          >
-            My NFT
-          </a>
-        {/if}
+        <a
+          class="text-gray-500 cursor-pointer"
+          href="/entries/options/index.html?tab=nft"
+          target="_blank"
+          on:click={() => {
+            showPopover = false;
+          }}
+        >
+          My NFT
+        </a>
         <div
           class="font-medium text-red-500 cursor-pointer"
           on:click={handleSignOut}

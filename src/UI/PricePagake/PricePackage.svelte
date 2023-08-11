@@ -3,6 +3,8 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
 
   export let selectedPackage = (item) => {};
+  export let selectedExplorer;
+  export let selectedProfessional;
 
   let selectedTypePackage: "month" | "yearn" = "month";
 </script>
@@ -86,6 +88,7 @@
       </div>
     </div>
 
+    <!-- Explorer -->
     <div
       class="border border-[#0000001a] rounded-xl flex flex-col gap-4 p-4 relative"
     >
@@ -95,8 +98,20 @@
         popular
       </div>
       <div class="text-3xl font-semibold flex items-end gap-2">
-        <span>{selectedTypePackage === "month" ? "$30" : "$25"}</span><span
-          class="text-xl text-gray-400 mb-[2px]">/month</span
+        <span
+          >{selectedTypePackage === "month"
+            ? `$${
+                selectedExplorer?.prices.find(
+                  (item) => item.recurring.interval === "month"
+                )?.unitAmountDecimal
+              }`
+            : `$${
+                selectedExplorer?.prices.find(
+                  (item) => item.recurring.interval === "year"
+                )?.unitAmountDecimal / 12
+              }`}</span
+        ><span class="text-xl text-gray-400 mb-[2px]"
+          >/{selectedTypePackage === "month" ? "month" : "year"}</span
         >
       </div>
       <div>
@@ -122,8 +137,20 @@
             class="flex items-center gap-2 mt-2 text-[#006bff] font-semibold text-lg cursor-pointer"
             on:click={() => {
               selectedPackage({
-                name: "EXPLORER",
-                price: selectedTypePackage === "month" ? 30 : 25,
+                name: "Explorer",
+                price:
+                  selectedTypePackage === "month"
+                    ? `$${
+                        selectedExplorer?.prices.find(
+                          (item) => item.recurring.interval === "month"
+                        )?.unitAmountDecimal
+                      }`
+                    : `$${
+                        selectedExplorer?.prices.find(
+                          (item) => item.recurring.interval === "year"
+                        )?.unitAmountDecimal / 12
+                      }`,
+                selectedTypePackage,
               });
             }}
           >
@@ -144,10 +171,23 @@
       </div>
     </div>
 
+    <!-- Professional -->
     <div class="border border-[#0000001a] rounded-xl flex flex-col gap-4 p-4">
       <div class="text-3xl font-semibold flex items-end gap-2">
-        <span>{selectedTypePackage === "month" ? "$99" : "$82.5"}</span><span
-          class="text-xl text-gray-400 mb-[2px]">/month</span
+        <span
+          >{selectedTypePackage === "month"
+            ? `$${
+                selectedProfessional?.prices.find(
+                  (item) => item.recurring.interval === "month"
+                )?.unitAmountDecimal
+              }`
+            : `$${
+                selectedProfessional?.prices.find(
+                  (item) => item.recurring.interval === "year"
+                )?.unitAmountDecimal / 12
+              }`}</span
+        ><span class="text-xl text-gray-400 mb-[2px]"
+          >/{selectedTypePackage === "month" ? "month" : "year"}</span
         >
       </div>
       <div>
@@ -171,8 +211,20 @@
             class="flex items-center gap-2 mt-2 text-[#006bff] font-semibold text-lg cursor-pointer"
             on:click={() => {
               selectedPackage({
-                name: "PROFESSIONAL",
-                price: selectedTypePackage === "month" ? 99 : 82.5,
+                name: "Professional",
+                price:
+                  selectedTypePackage === "month"
+                    ? `$${
+                        selectedProfessional?.prices.find(
+                          (item) => item.recurring.interval === "month"
+                        )?.unitAmountDecimal
+                      }`
+                    : `$${
+                        selectedProfessional?.prices.find(
+                          (item) => item.recurring.interval === "year"
+                        )?.unitAmountDecimal / 12
+                      }`,
+                selectedTypePackage,
               });
             }}
           >

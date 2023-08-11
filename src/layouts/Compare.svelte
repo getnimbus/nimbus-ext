@@ -39,19 +39,6 @@
     const urlParams = new URLSearchParams(window.location.search);
     let addressParams = urlParams.get("address");
 
-    if (APP_TYPE.TYPE === "EXT") {
-      const params = decodeURIComponent(window.location.hash)
-        .split("?")[1]
-        .split("&")
-        .reduce(function (result, param) {
-          var [key, value] = param.split("=");
-          result[key] = value;
-          return result;
-        }, {});
-
-      addressParams = params.address;
-    }
-
     if (addressParams) {
       selectedWallet = addressParams;
     }

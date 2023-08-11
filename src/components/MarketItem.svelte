@@ -92,24 +92,12 @@ via @get_nimbus`;
     <div
       class="xl:text-sm text-xl text-blue-500 hover:text-[#0d6efd] cursor-pointer font-medium flex justify-center"
     >
-      {#if APP_TYPE.TYPE === "EXT"}
-        <div
-          on:click={() => {
-            browser.tabs.create({
-              url: `src/entries/newTab/index.html?address=${data?.sender}`,
-            });
-          }}
-        >
-          {shorterAddress(data?.sender?.toLowerCase())}
-        </div>
-      {:else}
-        <a
-          href={`https://app.getnimbus.io/?address=${data?.sender}`}
-          target="_blank"
-        >
-          {shorterAddress(data?.sender?.toLowerCase())}
-        </a>
-      {/if}
+      <a
+        href={`https://app.getnimbus.io/?address=${data?.sender}`}
+        target="_blank"
+      >
+        {shorterAddress(data?.sender?.toLowerCase())}
+      </a>
     </div>
   </td>
 

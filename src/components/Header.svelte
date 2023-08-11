@@ -7,6 +7,8 @@
   import mixpanel from "mixpanel-browser";
   import { Motion } from "svelte-motion";
   import { showChangeLogAnimationVariants } from "~/utils";
+  import { nimbus } from "~/lib/network";
+  import { onMount } from "svelte";
 
   import Auth from "~/UI/Auth/Auth.svelte";
   import AuthEvm from "~/UI/Auth/AuthEVM.svelte";
@@ -49,22 +51,22 @@
     {
       logo: Ethereum,
       label: "Ethereum",
-      value: "ETH",
+      value: "eth",
     },
     {
       logo: Bnb,
       label: "Binance",
-      value: "BNB",
+      value: "bsc",
     },
     {
       logo: Matic,
       label: "Matic",
-      value: "MATIC",
+      value: "pol",
     },
     {
       logo: Solana,
       label: "Solana",
-      value: "SOL",
+      value: "sol",
     },
   ];
 
@@ -81,10 +83,13 @@
   let timerDebounce;
   let search = "";
   let isShowHeaderMobile = false;
-  let isShowChangeLog = false;
 
+  let isLoadingBuy = false;
   let selectedPackage;
   let selectedChain;
+  let selectedExplorer;
+  let selectedProfessional;
+  let listPackageData = [];
 
   const debounceSearch = (value) => {
     clearTimeout(timerDebounce);
@@ -95,18 +100,524 @@
 
   const absoluteMatch = useMatch("/:page");
 
-  $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
-
   const handleSelectedPackage = (item) => {
     selectedPackage = item;
   };
+
+  const getListPackage = async () => {
+    try {
+      const response = await nimbus.get("/v2/payments/subscription");
+      if (response && response?.data) {
+        console.log(response?.data?.data?.products);
+
+        // listPackageData = [
+        //   {
+        //     created: "2023-08-11T04:34:50.685Z",
+        //     description: "To win the market",
+        //     id: "product_9628d26e3219405dac33381eeed2fa8b",
+        //     images: [],
+        //     meta: {},
+        //     name: "Professional",
+        //     prices: [
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-11T09:56:34.842Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_sol_pro_month",
+        //         meta: {},
+        //         name: null,
+        //         network: "sol",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "month",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "perUnit",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "9900000",
+        //         unitAmountDecimal: 99,
+        //         updated: "2023-08-11T09:56:34.842Z",
+        //       },
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-11T09:56:34.842Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_sol_pro_year",
+        //         meta: {},
+        //         name: null,
+        //         network: "sol",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "year",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "perUnit",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "9900000",
+        //         unitAmountDecimal: 990,
+        //         updated: "2023-08-11T09:56:34.842Z",
+        //       },
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-11T09:56:34.842Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_eth_pro_month",
+        //         meta: {},
+        //         name: null,
+        //         network: "eth",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "month",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "perUnit",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "9900000",
+        //         unitAmountDecimal: 99,
+        //         updated: "2023-08-11T09:56:34.842Z",
+        //       },
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-11T09:56:34.842Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_eth_pro_year",
+        //         meta: {},
+        //         name: null,
+        //         network: "eth",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "year",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "perUnit",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "9900000",
+        //         unitAmountDecimal: 990,
+        //         updated: "2023-08-11T09:56:34.842Z",
+        //       },
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-11T09:56:34.842Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_bsc_pro_month",
+        //         meta: {},
+        //         name: null,
+        //         network: "bsc",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "month",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "perUnit",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "9900000",
+        //         unitAmountDecimal: 99,
+        //         updated: "2023-08-11T09:56:34.842Z",
+        //       },
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-11T09:56:34.842Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_bsc_pro_year",
+        //         meta: {},
+        //         name: null,
+        //         network: "bsc",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "year",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "perUnit",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "9900000",
+        //         unitAmountDecimal: 990,
+        //         updated: "2023-08-11T09:56:34.842Z",
+        //       },
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-11T09:56:34.842Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_pol_pro_month",
+        //         meta: {},
+        //         name: null,
+        //         network: "pol",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "month",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "perUnit",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "9900000",
+        //         unitAmountDecimal: 99,
+        //         updated: "2023-08-11T09:56:34.842Z",
+        //       },
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-11T09:56:34.842Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_pol_pro_year",
+        //         meta: {},
+        //         name: null,
+        //         network: "pol",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "year",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "perUnit",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "9900000",
+        //         unitAmountDecimal: 990,
+        //         updated: "2023-08-11T09:56:34.842Z",
+        //       },
+        //     ],
+        //     tags: [],
+        //     updated: "2023-08-11T04:34:50.685Z",
+        //   },
+        //   {
+        //     created: "2023-08-09T07:47:13.106Z",
+        //     description: "We help optimize your portfolio",
+        //     id: "product_9e87b125b078415eb4859306f753919f",
+        //     images: [],
+        //     meta: {},
+        //     name: "Explorer",
+        //     prices: [
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-09T07:49:55.443Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_sol_exp_month",
+        //         meta: {},
+        //         name: null,
+        //         network: "sol",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "month",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "licensed",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "1000000",
+        //         unitAmountDecimal: 30,
+        //         updated: "2023-08-09T07:49:55.443Z",
+        //       },
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-09T07:49:55.443Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_sol_exp_year",
+        //         meta: {},
+        //         name: null,
+        //         network: "sol",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "year",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "licensed",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "1000000",
+        //         unitAmountDecimal: 300,
+        //         updated: "2023-08-09T07:49:55.443Z",
+        //       },
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-09T07:49:55.443Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_eth_exp_month",
+        //         meta: {},
+        //         name: null,
+        //         network: "eth",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "month",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "licensed",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "1000000",
+        //         unitAmountDecimal: 30,
+        //         updated: "2023-08-09T07:49:55.443Z",
+        //       },
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-09T07:49:55.443Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_eth_exp_year",
+        //         meta: {},
+        //         name: null,
+        //         network: "eth",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "year",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "licensed",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "1000000",
+        //         unitAmountDecimal: 300,
+        //         updated: "2023-08-09T07:49:55.443Z",
+        //       },
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-09T07:49:55.443Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_bsc_exp_month",
+        //         meta: {},
+        //         name: null,
+        //         network: "bsc",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "month",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "licensed",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "1000000",
+        //         unitAmountDecimal: 30,
+        //         updated: "2023-08-09T07:49:55.443Z",
+        //       },
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-09T07:49:55.443Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_bsc_exp_year",
+        //         meta: {},
+        //         name: null,
+        //         network: "bsc",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "year",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "licensed",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "1000000",
+        //         unitAmountDecimal: 300,
+        //         updated: "2023-08-09T07:49:55.443Z",
+        //       },
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-09T07:49:55.443Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_pol_exp_month",
+        //         meta: {},
+        //         name: null,
+        //         network: "pol",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "month",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "licensed",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "1000000",
+        //         unitAmountDecimal: 30,
+        //         updated: "2023-08-09T07:49:55.443Z",
+        //       },
+        //       {
+        //         active: true,
+        //         billingScheme: "perUnit",
+        //         created: "2023-08-09T07:49:55.443Z",
+        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        //         description: null,
+        //         id: "price_pol_exp_year",
+        //         meta: {},
+        //         name: null,
+        //         network: "pol",
+        //         product: null,
+        //         recurring: {
+        //           defaultLength: 1,
+        //           interval: "year",
+        //           intervalCount: 1,
+        //           type: "delegated",
+        //           usageAggregation: "sum",
+        //           usageType: "licensed",
+        //         },
+        //         taxBehavior: "exclusive",
+        //         tierType: null,
+        //         tiers: [],
+        //         type: "recurring",
+        //         unitAmount: "1000000",
+        //         unitAmountDecimal: 300,
+        //         updated: "2023-08-09T07:49:55.443Z",
+        //       },
+        //     ],
+        //     tags: [],
+        //     updated: "2023-08-09T07:47:13.106Z",
+        //   },
+        // ];
+        listPackageData = response?.data?.data?.products;
+
+        selectedExplorer = listPackageData.find(
+          (item) => item.name === "Explorer"
+        );
+        selectedProfessional = listPackageData.find(
+          (item) => item.name === "Professional"
+        );
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  onMount(() => {
+    getListPackage();
+  });
+
+  const handleBuy = async () => {
+    isLoadingBuy = true;
+    try {
+      const selectedPackageData = listPackageData.find(
+        (item) => item.name === selectedPackage.name
+      );
+
+      const selectedPackageDataPrice = selectedPackageData.prices.find(
+        (item) =>
+          item.recurring.interval === selectedPackage.selectedTypePackage &&
+          item.network === selectedChain.value
+      );
+
+      const response = await nimbus.post("/v2/payments/create-session", {
+        priceId: selectedPackageDataPrice.id,
+      });
+      if (response && response?.data) {
+        isLoadingBuy = false;
+        window.location.replace(response?.data?.url);
+      }
+    } catch (e) {
+      console.error(e);
+      isLoadingBuy = false;
+    }
+  };
+
+  $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
 </script>
 
 <div class="py-1 bg-[#27326F] border-b-[1px] border-[#ffffff1a]">
   <div class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]">
-    <Link
-      to={`${APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"}`}
-    >
+    <Link to="/">
       <img
         src={Logo}
         alt="logo"
@@ -115,11 +626,7 @@
     </Link>
 
     <div class="items-center hidden gap-1 xl:flex">
-      <Link
-        to={`${
-          APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
-        }`}
-      >
+      <Link to="/">
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
             navActive === "portfolio"
@@ -233,55 +740,16 @@
         />
       </div>
 
-      <div class="xl:flex gap-3 hidden">
-        {#if APP_TYPE.TYPE === "EXT"}
-          <div class="relative">
-            <div
-              class="bg-[#525B8C] rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 cursor-pointer"
-              on:click={() => (isShowChangeLog = !isShowChangeLog)}
-            >
-              <img src={ChangeLogIcon} alt="" class="w-[26px] h-[26px]" />
-            </div>
-            <Motion
-              initial="hidden"
-              animate={isShowChangeLog ? "visible" : "hidden"}
-              variants={showChangeLogAnimationVariants}
-              let:motion
-            >
-              <div
-                class="h-[630px] w-[430px] absolute right-1 top-14 p-4 bg-white rounded-[20px] items-end z-50"
-                style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
-                use:motion
-              >
-                <iframe
-                  id="change-log"
-                  src="https://nimbus.featurebase.app/changelog"
-                  class="h-[580px] w-full"
-                />
-                <div
-                  class="absolute top-3 right-5 cursor-pointer font-medium"
-                  on:click={() => {
-                    isShowChangeLog = false;
-                  }}
-                >
-                  Close
-                </div>
-              </div>
-            </Motion>
-          </div>
-        {:else}
-          <div class="xl:w-10 xl:h-10 w-12 h-12 relative">
-            <div
-              class="bg-[#525B8C] rounded-full flex justify-center items-center w-full h-full"
-            >
-              <img src={ChangeLogIcon} alt="" class="w-[26px] h-[26px]" />
-            </div>
-            <button
-              data-featurebase-changelog
-              class="w-full h-full absolute inset-0 z-10"
-            />
-          </div>
-        {/if}
+      <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
+        <div
+          class="bg-[#525B8C] rounded-full flex justify-center items-center w-full h-full"
+        >
+          <img src={ChangeLogIcon} alt="" class="w-[26px] h-[26px]" />
+        </div>
+        <button
+          data-featurebase-changelog
+          class="w-full h-full absolute inset-0 z-10"
+        />
       </div>
 
       <!-- <div
@@ -303,6 +771,7 @@
   </div>
 </div>
 
+<!-- Mobile header -->
 <div
   class={`fixed inset-0 h-screen w-full mobile ${
     isShowHeaderMobile
@@ -324,11 +793,7 @@
     <div
       class="flex flex-col justify-between gap-6 border-b-[0.5px] border-white pb-6"
     >
-      <Link
-        to={`${
-          APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
-        }`}
-      >
+      <Link to="/">
         <div
           class={`flex items-center gap-3 text-white px-4 py-3 ${
             navActive === "portfolio"
@@ -431,34 +896,18 @@
         </div>
       </Link>
     </div>
-    <div>
-      {#if APP_TYPE.TYPE === "EXT"}
-        <div
-          on:click={() => {
-            browser.tabs.create({
-              url: "src/entries/options/index.html?tab=wallets",
-            });
-            isShowHeaderMobile = false;
-          }}
-          class="flex items-center gap-3 text-white px-4"
-        >
-          <img src={SettingsIcon} alt="" />
-          <span class="text-4xl font-semibold">Settings</span>
-        </div>
-      {:else}
-        <a
-          href="entries/options/index.html?tab=wallets"
-          target="_blank"
-          class="flex items-center gap-3 text-white px-4"
-          on:click={() => {
-            isShowHeaderMobile = false;
-          }}
-        >
-          <img src={SettingsIcon} alt="" width="32" height="32" />
-          <span class="text-4xl font-semibold">Settings</span>
-        </a>
-      {/if}
-    </div>
+
+    <a
+      href="entries/options/index.html?tab=wallets"
+      target="_blank"
+      class="flex items-center gap-3 text-white px-4"
+      on:click={() => {
+        isShowHeaderMobile = false;
+      }}
+    >
+      <img src={SettingsIcon} alt="" width="32" height="32" />
+      <span class="text-4xl font-semibold">Settings</span>
+    </a>
   </div>
 </div>
 
@@ -477,18 +926,19 @@
   {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
     <div class="flex flex-col justify-center mt-5">
       <div class="flex flex-col items-center gap-1">
-        <div class="flex items-center gap-1 text-2xl">
+        <div class="flex items-center gap-1 xl:text-xl text-2xl">
           Thank you for get plan <span class="font-semibold"
             >{selectedPackage.name}</span
           >
           with
           <span class="flex items-end gap-2 font-semibold">
-            <span>${selectedPackage.price}</span><span
-              class="text-xl text-gray-400 mb-[2px]">/month</span
+            <span>{selectedPackage.price}</span><span
+              class="xl:text-base text-lg text-gray-400 mb-[2px]"
+              >/{selectedPackage.selectedTypePackage}</span
             >
           </span>
         </div>
-        <div class="text-2xl">
+        <div class="xl:text-xl text-2xl">
           Please select the channel to make the payment
         </div>
       </div>
@@ -513,19 +963,17 @@
             </Button>
           </div>
           <div class="w-[140px]">
-            <Button
-              on:click={() => {
-                console.log("selectedChain: ", selectedChain);
-              }}
-            >
-              Buy
-            </Button>
+            <Button on:click={handleBuy} isLoading={isLoadingBuy}>Buy</Button>
           </div>
         </div>
       </div>
     </div>
   {:else}
-    <PricePackage selectedPackage={handleSelectedPackage} />
+    <PricePackage
+      selectedPackage={handleSelectedPackage}
+      {selectedExplorer}
+      {selectedProfessional}
+    />
   {/if}
 </AppOverlay>
 

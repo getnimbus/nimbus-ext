@@ -342,20 +342,6 @@
     let chainParams = urlParams.get("chain");
     let addressParams = urlParams.get("address");
 
-    if (APP_TYPE.TYPE === "EXT") {
-      const params = decodeURIComponent(window.location.hash)
-        .split("?")[1]
-        .split("&")
-        .reduce(function (result, param) {
-          var [key, value] = param.split("=");
-          result[key] = value;
-          return result;
-        }, {});
-
-      chainParams = params.chain;
-      addressParams = params.address;
-    }
-
     if (chainParams && addressParams) {
       selectedWallet = addressParams;
       selectedChain = chainParams;

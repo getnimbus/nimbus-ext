@@ -54,8 +54,8 @@
 <div class="flex justify-center items-center h-screen">
   <div class="p-6 w-2/3 flex flex-col gap-5 justify-center items-center">
     <div class="text-lg text-center">
-      There are some problem while buying Nimbus NFT. <br /> Add your email to get
-      updates from us and receive exclusive benefits!
+      There are some problem while upgrading your plan. <br /> Add your email to
+      get updates from us and receive exclusive benefits!
     </div>
     <form on:submit|preventDefault={onSubmitGetEmail} class="flex gap-2">
       <div class="flex flex-col gap-1 xl:min-w-md min-w-xl">

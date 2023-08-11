@@ -361,25 +361,9 @@
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
-
     let positionIDParams = urlParams.get("id");
     let positionTypeParams = urlParams.get("type");
     let addressParams = urlParams.get("address");
-
-    if (APP_TYPE.TYPE === "EXT") {
-      const params = decodeURIComponent(window.location.hash)
-        .split("?")[1]
-        .split("&")
-        .reduce(function (result, param) {
-          var [key, value] = param.split("=");
-          result[key] = value;
-          return result;
-        }, {});
-
-      positionIDParams = params.id;
-      positionTypeParams = params.type;
-      addressParams = params.address;
-    }
 
     if (positionIDParams && positionTypeParams && addressParams) {
       mixpanel.track("position_detail_page", {
@@ -400,12 +384,7 @@
     <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
       <div class="flex flex-col mb-5 gap-14">
         <div class="flex items-center justify-between">
-          <Link
-            to={`${
-              APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
-            }`}
-            class="cusor-pointer"
-          >
+          <Link to="/" class="cusor-pointer">
             <div class="flex items-center gap-1 text-white">
               <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
               <div class="xl:text-sm text-xl font-semibold">
