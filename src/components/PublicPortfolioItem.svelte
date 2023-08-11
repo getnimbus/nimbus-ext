@@ -37,7 +37,8 @@
     >
       <div class="flex -space-x-4">
         {#each data?.metadata
-          ?.sort((a, b) => a.value - b.value)
+          ?.filter((item) => item.logo)
+          .sort((a, b) => a.value - b.value)
           .slice(0, 5) || [] as token}
           <img
             class="w-[30px] h-[30px] border-2 border-white rounded-full dark:border-gray-800"
