@@ -4,10 +4,13 @@
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import html2canvas from "html2canvas";
+  import { shorterAddress } from "~/utils";
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+
   import Logo from "~/assets/logo-1.svg";
-  import { shorterAddress } from "~/utils";
 
   const qrcode = QRCode(0, "L");
 
@@ -15,6 +18,24 @@
   let qrImageDataUrl = "";
   let referrals = 0;
   let userAddress = "";
+
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 3;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
 
   const getReferrals = async () => {
     try {
@@ -60,8 +81,14 @@
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+        toastMsg = "Successfully downloaded QR!";
+        isSuccessToast = true;
+        trigger();
       } catch (error) {
         console.error("Error capturing screenshot:", error);
+        toastMsg = "Something wrong when download QR. Please try again!";
+        isSuccessToast = false;
+        trigger();
       }
     }
   };
@@ -73,26 +100,19 @@
         const createCanvas = await html2canvas(targetElement);
         const img = createCanvas.toDataURL("image/png");
         // handle copy image
-        const imgElement = document.createElement("img");
-        imgElement.src = img;
-        const canvas = document.createElement("canvas");
-        canvas.width = imgElement.width;
-        canvas.height = imgElement.height;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(imgElement, 0, 0);
-        canvas.toBlob((blob) => {
-          const item = new ClipboardItem({ "image/png": blob });
-          navigator.clipboard
-            .write([item])
-            .then(() => {
-              console.log("Image copied to clipboard.");
-            })
-            .catch((error) => {
-              console.error("Error copying image:", error);
-            });
-        });
+        const response = await fetch(img);
+        const blob = await response.blob();
+        await navigator.clipboard.write([
+          new ClipboardItem({ "image/png": blob }),
+        ]);
+        toastMsg = "Successfully copied QR!";
+        isSuccessToast = true;
+        trigger();
       } catch (error) {
         console.error("Error capturing screenshot:", error);
+        toastMsg = "Something wrong when copy QR. Please try again!";
+        isSuccessToast = false;
+        trigger();
       }
     }
   };
@@ -124,8 +144,7 @@
 
         <div id="target-element" class="card">
           <div class="title_container">
-            <img src={Logo} />
-            <!-- <div class="title">Nimbus Users</div> -->
+            <img src={Logo} alt="" />
           </div>
           <div class="body_container">
             <div class="title_wrapper">
@@ -225,6 +244,47 @@
   </div>
 </ErrorBoundary>
 
+<Toast
+  transition={blur}
+  params={{ amount: 10 }}
+  position="top-right"
+  color={isSuccessToast ? "green" : "red"}
+  bind:open={showToast}
+>
+  <svelte:fragment slot="icon">
+    {#if isSuccessToast}
+      <svg
+        aria-hidden="true"
+        class="w-5 h-5"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        ><path
+          fill-rule="evenodd"
+          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+          clip-rule="evenodd"
+        /></svg
+      >
+      <span class="sr-only">Check icon</span>
+    {:else}
+      <svg
+        aria-hidden="true"
+        class="w-5 h-5"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        ><path
+          fill-rule="evenodd"
+          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+          clip-rule="evenodd"
+        /></svg
+      >
+      <span class="sr-only">Error icon</span>
+    {/if}
+  </svelte:fragment>
+  {toastMsg}
+</Toast>
+
 <style>
   .card {
     border: 2px solid black;
@@ -243,14 +303,6 @@
     height: 48px;
     width: auto;
     margin-left: -12px;
-  }
-
-  .card .title_container .title {
-    border-radius: 12px;
-    background-color: rgba(229, 231, 235, 1);
-    width: max-content;
-    padding: 2px 8px;
-    font-weight: 500;
   }
 
   .card .body_container {
