@@ -5,12 +5,14 @@
   import CopyToClipboard from "svelte-copy-to-clipboard";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import { shorterAddress } from "~/utils";
 
   const qrcode = QRCode(0, "L");
 
   let link = "";
   let qrImageDataUrl = "";
   let referrals = 0;
+  let userAddress = "";
 
   const getReferrals = async () => {
     try {
@@ -27,10 +29,11 @@
     try {
       const response = await nimbus.get("/users/me");
       if (response && response.data) {
+        userAddress = response?.data?.publicAddress;
         link = `https://app.getnimbus.io/?invitation=${response?.data?.id}`;
         qrcode.addData(link);
         qrcode.make();
-        qrImageDataUrl = qrcode.createDataURL(10, 0);
+        qrImageDataUrl = qrcode.createDataURL(6, 0);
       }
     } catch (e) {
       console.error("e: ", e);
@@ -100,12 +103,34 @@
           > people
         </div>
 
-        <img src={qrImageDataUrl} alt="QR Code" />
+        <div class="border-2 border-black rounded-xl overflow-hidden">
+          <div class="py-3 px-4 bg-gray-100 text-sm">
+            <div
+              class="rounded-xl bg-gray-200 w-max py-[2px] px-2 text-sm font-medium"
+            >
+              Nimbus Users
+            </div>
+          </div>
+          <div class="p-4 flex flex-col gap-4">
+            <div class="flex flex-col">
+              <div class="text-2xl font-medium">
+                {shorterAddress(userAddress)}
+              </div>
+              <div class="text-gray-400">Inviter</div>
+            </div>
+            <div class="flex justify-center">
+              <img src={qrImageDataUrl} alt="QR Code" />
+            </div>
+            <div class="font-medium text-sm text-gray-400 mt-4">
+              Manage your portfolio with Nimbus
+            </div>
+          </div>
+        </div>
 
         <div class="flex justify-center gap-6">
           <CopyToClipboard text={link} let:copy>
             <div
-              class="flex flex-col items-center hover:bg-gray-100 transition-all ease-in py-1 px-3 rounded-[10px] cursor-pointer"
+              class="flex items-center gap-1 hover:bg-gray-100 transition-all ease-in py-1 px-3 rounded-[10px] cursor-pointer flex-1"
               on:click={() => {
                 copy();
               }}
@@ -127,12 +152,14 @@
                   d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463"
                 /></svg
               >
-              <div class="text-gray-500 xl:text-sm text-lg">Link</div>
+              <div class="text-gray-500 xl:text-base text-lg">Link</div>
             </div>
           </CopyToClipboard>
 
+          <div class="border-l-[1px] my-1" />
+
           <div
-            class="flex flex-col items-center hover:bg-gray-100 transition-all ease-in py-1 px-3 rounded-[10px] cursor-pointer"
+            class="flex items-center gap-1 hover:bg-gray-100 transition-all ease-in py-1 px-2 rounded-[10px] cursor-pointer flex-1"
             on:click={downloadQRCode}
           >
             <svg
@@ -150,11 +177,13 @@
                 d="M7 11l5 5l5 -5"
               /><path d="M12 4l0 12" /></svg
             >
-            <div class="text-gray-500 xl:text-sm text-lg">Save</div>
+            <div class="text-gray-500 xl:text-base text-lg">Save</div>
           </div>
 
+          <div class="border-l-[1px] my-1" />
+
           <div
-            class="flex flex-col items-center hover:bg-gray-100 transition-all ease-in py-1 px-3 rounded-[10px] cursor-pointer"
+            class="flex items-center gap-1 hover:bg-gray-100 transition-all ease-in py-1 px-2 rounded-[10px] cursor-pointer flex-1"
             on:click={copyQRCode}
           >
             <svg
@@ -174,7 +203,7 @@
                 d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3"
               /></svg
             >
-            <div class="text-gray-500 xl:text-sm text-lg">Copy</div>
+            <div class="text-gray-500 xl:text-base text-lg">Copy</div>
           </div>
         </div>
       </div>
