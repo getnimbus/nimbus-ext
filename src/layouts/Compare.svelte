@@ -821,7 +821,7 @@
   >
     <div class="flex flex-col gap-2 justify-center">
       <div class="xl:text-5xl text-7xl text-black font-semibold">Compare</div>
-      <div class="xl:text-lg text-3xl text-black font-medium">
+      <div class="xl:font-normal xl:text-base text-2xl text-black font-medium">
         <Copy address={selectedWallet} iconColor="#000" color="#000" />
       </div>
     </div>
