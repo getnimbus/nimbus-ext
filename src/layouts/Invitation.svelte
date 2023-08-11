@@ -139,7 +139,12 @@
         <div class="xl:text-base text-xl text-center text-gray-500 mb-2">
           Your code has been used by <span class="text-black font-medium"
             >{referrals}</span
-          > people
+          >
+          {#if referrals > 1}
+            peoples
+          {:else}
+            people
+          {/if}
         </div>
 
         <div id="target-element" class="card">
@@ -161,7 +166,15 @@
         </div>
 
         <div class="flex justify-center gap-6">
-          <CopyToClipboard text={link} let:copy>
+          <CopyToClipboard
+            text={link}
+            let:copy
+            on:copy={() => {
+              toastMsg = "Successfully copied link invitation!";
+              isSuccessToast = true;
+              trigger();
+            }}
+          >
             <div
               class="flex items-center gap-1 hover:bg-gray-100 transition-all ease-in py-1 px-3 rounded-[10px] cursor-pointer flex-1"
               on:click={() => {
