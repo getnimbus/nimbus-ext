@@ -73,7 +73,7 @@
         const img = createCanvas.toDataURL("image/png");
         // handle copy image
         const imgElement = document.createElement("img");
-        imgElement.src = qrImageDataUrl;
+        imgElement.src = img;
         const canvas = document.createElement("canvas");
         canvas.width = imgElement.width;
         canvas.height = imgElement.height;
