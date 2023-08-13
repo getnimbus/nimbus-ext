@@ -111,6 +111,8 @@
       });
     }
   };
+
+  $: console.log("formatData: ", formatData);
 </script>
 
 <div class="h-[563px] flex flex-col gap-4">
@@ -130,6 +132,13 @@
               class="text-left xl:text-xs text-base uppercase font-semibold text-black"
             >
               Name
+            </div>
+          </th>
+          <th class="py-3">
+            <div
+              class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+            >
+              Chain
             </div>
           </th>
           <th class="py-3">
@@ -178,7 +187,7 @@
       <tbody>
         {#if formatData && formatData.length === 0}
           <tr>
-            <td colspan="4">
+            <td colspan="5">
               <div
                 class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
               >
@@ -205,6 +214,12 @@
                   {:else}
                     {item.name}
                   {/if}
+                </div>
+              </td>
+
+              <td class="py-3 group-hover:bg-gray-100">
+                <div class="xl:text-sm text-xl font-medium flex justify-end">
+                  {item.chain}
                 </div>
               </td>
 

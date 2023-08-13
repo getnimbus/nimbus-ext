@@ -38,6 +38,7 @@
   import EthereumLogo from "~/assets/ethereum.png";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import FollowWhale from "~/assets/whale-tracking.gif";
+  import Success from "~/assets/shield-done.svg";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -1166,6 +1167,15 @@
             </div>
           </Button>
         </div>
+      </div>
+      <div class="xl:text-lg text-2xl flex items-center justify-center gap-1">
+        <img src={Success} alt="" />
+        Bank-level security/encryption.
+        <a
+          href="https://vezgo.com/security"
+          class="text-blue-500 cursor-pointer"
+          target="_blank">Learn more</a
+        >
       </div>
       <div class="flex justify-center items-center gap-6 my-3">
         {#each listLogoCEX as logo}

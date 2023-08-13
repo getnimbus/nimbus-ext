@@ -23,6 +23,7 @@
 
   import Plus from "~/assets/plus.svg";
   import User from "~/assets/user.png";
+  import Success from "~/assets/shield-done.svg";
 
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "My wallets"),
@@ -840,6 +841,15 @@
             </div>
           </Button>
         </div>
+      </div>
+      <div class="xl:text-lg text-2xl flex items-center justify-center gap-1">
+        <img src={Success} alt="" />
+        Bank-level security/encryption.
+        <a
+          href="https://vezgo.com/security"
+          class="text-blue-500 cursor-pointer"
+          target="_blank">Learn more</a
+        >
       </div>
       <div class="flex justify-center items-center gap-6 my-3">
         {#each listLogoCEX as logo}

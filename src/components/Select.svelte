@@ -120,7 +120,7 @@
               if (item.value !== "sol") {
                 open = false;
               } else {
-                selected = item.value;
+                selected = item;
                 open = false;
               }
             }

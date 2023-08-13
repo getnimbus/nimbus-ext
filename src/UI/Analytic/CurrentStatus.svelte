@@ -805,21 +805,17 @@
         {/if}
       </div>
       <div class="flex-1">
-        <div class="w-max">
-          <Button
-            variant="tertiary"
-            on:click={() => {
-              navigate(
-                `/personal-token-breakdown?chain=${encodeURIComponent(
-                  selectedChain
-                )}&address=${encodeURIComponent(selectedWallet)}`
-              );
-            }}
-          >
-            <div class="xl:text-base text-2xl font-medium text-white">
-              Custom category
-            </div>
-          </Button>
+        <div
+          on:click={() => {
+            navigate(
+              `/personal-token-breakdown?chain=${encodeURIComponent(
+                selectedChain
+              )}&address=${encodeURIComponent(selectedWallet)}`
+            );
+          }}
+          class="xl:text-base text-2xl font-medium text-blue-500 cursor-pointer w-max mt-1"
+        >
+          Custom category
         </div>
       </div>
     </div>
