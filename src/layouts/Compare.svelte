@@ -792,6 +792,7 @@
 
   const handleCopyAddress = (address) => {
     searchCompare = address;
+    getAnalyticCompare();
   };
 
   const handleCloseWhalesListModal = () => {
@@ -1165,12 +1166,13 @@
         copyAddress={handleCopyAddress}
         closeModal={handleCloseWhalesListModal}
       />
-      <div class="xl:text-sm text-lg text-right">
+      <div class="xl:text-base text-xl text-right mt-3">
         <a
           class="text-blue-500 cursor-pointer"
           href="/whales"
           target="_blank"
-          on:click={() => (showCompareWhalesSuggest = false)}>More the whales</a
+          on:click={() => (showCompareWhalesSuggest = false)}
+          >Get full whales list</a
         >
       </div>
     </div>
