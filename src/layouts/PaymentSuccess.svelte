@@ -43,14 +43,14 @@
       if (
         response &&
         response?.data &&
-        response?.data?.paymentStatus === "successful"
+        response?.data?.paymentStatus === "succeeded"
       ) {
         status = true;
         clearInterval(intervalId);
       } else if (
         response &&
         response?.data &&
-        response?.data?.paymentStatus === "fail"
+        response?.data?.paymentStatus === "failed"
       ) {
         status = true;
         clearInterval(intervalId);
