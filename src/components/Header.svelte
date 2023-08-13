@@ -53,21 +53,21 @@
       label: "Solana",
       value: "sol",
     },
-    {
-      logo: Ethereum,
-      label: "Ethereum",
-      value: "eth",
-    },
-    {
-      logo: Bnb,
-      label: "Binance",
-      value: "bsc",
-    },
-    {
-      logo: Matic,
-      label: "Matic",
-      value: "pol",
-    },
+    // {
+    //   logo: Ethereum,
+    //   label: "Ethereum",
+    //   value: "eth",
+    // },
+    // {
+    //   logo: Bnb,
+    //   label: "Binance",
+    //   value: "bsc",
+    // },
+    // {
+    //   logo: Matic,
+    //   label: "Polygon",
+    //   value: "pol",
+    // },
   ];
 
   let selectedWallet;
@@ -584,7 +584,7 @@
     getListPackage();
   });
 
-  const handleBuy = async () => {
+  const handleBuy = async (chainValue: string) => {
     isLoadingBuy = true;
     try {
       const selectedPackageData = listPackageData.find(
@@ -594,7 +594,7 @@
       const selectedPackageDataPrice = selectedPackageData.prices.find(
         (item) =>
           item.recurring.interval === selectedPackage.selectedTypePackage &&
-          item.network === selectedChain.value
+          item.network === chainValue
       );
 
       const response = await nimbus.post("/v2/payments/create-session", {
@@ -919,14 +919,12 @@
     selectedPackage = undefined;
   }}
 >
-  <div class="text-3xl text-center text-gray-600 font-semibold">
-    Upgrade Plan
-  </div>
+  <div class="text-3xl text-center font-semibold">Upgrade Plan</div>
   {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
     <div class="flex flex-col justify-center mt-5">
       <div class="flex flex-col items-center gap-1">
         <div class="flex items-center gap-1 xl:text-xl text-2xl">
-          Thank you for get plan <span class="font-semibold"
+          You're going to upgrade to plan <span class="font-semibold"
             >{selectedPackage.name}</span
           >
           with
@@ -937,11 +935,18 @@
             >
           </span>
         </div>
-        <div class="xl:text-xl text-2xl">
-          Please select the channel to make the payment
-        </div>
       </div>
-      <div class="flex flex-col items-center justify-center gap-5 mt-4">
+      <div class="flex flex-col gap-3 items-center mt-5">
+        {#each listChain as chain}
+          <div class="w-48">
+            <Button variant="secondary" on:click={() => handleBuy(chain.value)}>
+              <img src={chain.logo} class="w-5 h-5 rounded-full" />
+              {chain.label}</Button
+            >
+          </div>
+        {/each}
+      </div>
+      <!-- <div class="flex flex-col items-center justify-center gap-5 mt-4">
         <div class="w-max">
           <Select
             type="package"
@@ -965,7 +970,7 @@
             <Button on:click={handleBuy} isLoading={isLoadingBuy}>Buy</Button>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   {:else}
     <PricePackage

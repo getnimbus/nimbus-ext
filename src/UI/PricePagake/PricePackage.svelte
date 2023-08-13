@@ -27,6 +27,21 @@
 </script>
 
 <div class="flex flex-col gap-4 mt-5">
+  <div class="text-center text-gray-500 text-lg mt-1">
+    Use Nimbus at its full potential! Lock in your early bird price now!
+  </div>
+
+  <div
+    class="p-4 mb-4 text-green-600 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-500"
+    role="alert"
+  >
+    ⭐️ We're giving 1000 coupon codes <span class="font-bold">OG-INVESTOR</span
+    >
+    which get <span class="font-bold">30%</span> off for for first-time payment
+    and
+    <span class="font-bold">10% off lifetime</span> payments.
+  </div>
+
   <div class="flex items-center justify-center gap-2">
     <AnimateSharedLayout>
       {#each typePackage as type}
@@ -59,10 +74,14 @@
   </div>
   <div class="grid grid-cols-3 gap-7">
     <div class="border border-[#0000001a] rounded-xl flex flex-col gap-4 p-4">
-      <div class="text-3xl font-semibold">Trial</div>
+      <div class="text-3xl font-semibold">
+        0$<span class="text-xl ml-1 text-gray-400 mb-[2px]"
+          >/{selectedTypePackage}</span
+        >
+      </div>
       <div>
         <div class="flex flex-col border-b-[1px] border-[#0000001a] pb-4">
-          <div class="text-xl font-medium">Trial</div>
+          <div class="text-xl font-medium">FREE</div>
           <div class="text-lg text-gray-500">
             For those who starting to invest
           </div>
@@ -70,12 +89,17 @@
         <div class="mt-4 flex flex-col gap-2">
           <div class="text-base text-black">Real-time market update</div>
           <div class="text-base text-black">
-            <span class="font-bold">3</span> Wallets
+            <span class="font-bold">3</span> tracked Wallets
           </div>
           <div class="text-base text-black">
             <span class="font-bold">$2 000</span> total net worth
           </div>
-          <div class="text-base text-gray-400">Advantage metrics</div>
+          <div class="text-base text-black">
+            Yield farming opportunities (Limited)
+          </div>
+          <div class="text-base text-gray-400">Risks analysis</div>
+          <div class="text-base text-gray-400">Returns analysis</div>
+          <div class="text-base text-gray-400">Risks & Returns analysis</div>
           <div class="text-base text-gray-400">Rebalance Strategy</div>
           <div class="text-base text-gray-400">Professional community</div>
 
@@ -128,25 +152,28 @@
                 )?.unitAmountDecimal / 12
               }`}</span
         ><span class="text-xl text-gray-400 mb-[2px]"
-          >/{selectedTypePackage === "month" ? "month" : "year"}</span
+          >/{selectedTypePackage}</span
         >
       </div>
       <div>
         <div class="flex flex-col border-b-[1px] border-[#0000001a] pb-4">
           <div class="text-xl font-medium">EXPLORER</div>
           <div class="text-lg text-gray-500">
-            We help optimize your portfolio
+            Start maximizing your gain and reduce your risk
           </div>
         </div>
         <div class="mt-4 flex flex-col gap-2">
           <div class="text-base text-black">Real-time market update</div>
           <div class="text-base text-black">
-            <span class="font-bold">7</span> Wallets
+            <span class="font-bold">7</span> tracked Wallets
           </div>
           <div class="text-base text-black">
             <span class="font-bold">$50 000</span> total net worth
           </div>
-          <div class="text-base text-black">Advantage metrics</div>
+          <div class="text-base text-black">Yield farming opportunities</div>
+          <div class="text-base text-black">Risks analysis</div>
+          <div class="text-base text-black">Returns analysis</div>
+          <div class="text-base text-black">Risks & Returns analysis</div>
           <div class="text-base text-black">Rebalance Strategy</div>
           <div class="text-base text-gray-400">Professional community</div>
 
@@ -171,7 +198,7 @@
               });
             }}
           >
-            Get the Plan
+            Upgrade
             <svg
               width="14"
               height="14"
@@ -215,14 +242,17 @@
         <div class="mt-4 flex flex-col gap-2">
           <div class="text-base text-black">Real-time market update</div>
           <div class="text-base text-black">
-            <span class="font-bold">Unlimited</span> Wallets
+            <span class="font-bold">Unlimited</span> tracked Wallets
           </div>
           <div class="text-base text-black">
             <span class="font-bold">Unlimited</span> total net worth
           </div>
-          <div class="text-base text-black">Advantage metrics</div>
+          <div class="text-base text-black">Yield farming opportunities</div>
+          <div class="text-base text-black">Risks analysis</div>
+          <div class="text-base text-black">Returns analysis</div>
+          <div class="text-base text-black">Risks & Returns analysis</div>
           <div class="text-base text-black">Rebalance Strategy</div>
-          <div class="text-base text-black">Professional community</div>
+          <div class="text-base text-black">Professional community (Soon)</div>
 
           <div
             class="flex items-center gap-2 mt-2 text-[#006bff] font-semibold text-lg cursor-pointer"
@@ -245,7 +275,7 @@
               });
             }}
           >
-            Get the Plan
+            Upgrade
             <svg
               width="14"
               height="14"
@@ -261,6 +291,12 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="text-center text-sm text-gray-500 my-4 px-4">
+    Price in USDC. Subscription is tied to <strong>one</strong> wallet address.
+    It will be transferable soon
+    <br /> Unsubscribe anytime. No questions asked.
   </div>
 </div>
 

@@ -222,14 +222,14 @@
     </div>
     {#if showPopover}
       <div
-        class="bg-white xl:py-2 py-3 px-4 text-sm rounded-lg absolute xl:-bottom-44 -bottom-48 left-1/2 transform -translate-x-1/2 flex flex-col gap-2 w-max z-50"
+        class="bg-white xl:py-2 py-3 px-4 text-sm rounded-lg absolute xl:-bottom-44 -bottom-48 right-0 transform flex flex-col gap-2 w-max z-50"
         style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
       >
         <div class="text-black xl:text-base text-2xl">
-          GM, {shorterAddress(addressWallet)}
+          GM 👋, {shorterAddress(addressWallet)}
         </div>
         <div
-          class="text-yellow-400 cursor-pointer xl:text-base text-2xl flex items-center gap-1"
+          class="text-yellow-400 font-medium cursor-pointer xl:text-base text-2xl flex items-center gap-1"
           on:click={() => {
             isShowUpgradeModal.update((n) => (n = true));
             showPopover = false;
