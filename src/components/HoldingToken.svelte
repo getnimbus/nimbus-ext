@@ -48,8 +48,8 @@
   $: ratio = (price / sumAllTokens) * 100;
 
   $: {
-    if (data.vaults.length !== 0) {
-      selectedHighestVault = data.vaults.reduce(
+    if (data?.vaults && data?.vaults.length !== 0) {
+      selectedHighestVault = data?.vaults.reduce(
         (maxObject, currentObject) => {
           return currentObject.apy > maxObject.apy ? currentObject : maxObject;
         },

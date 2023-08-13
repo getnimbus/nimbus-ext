@@ -344,11 +344,11 @@
       );
 
       if (selectedWallet === response?.address) {
-        const formatDataTokenHolding = response.result.map((item) => {
+        const formatDataTokenHolding = response?.result.map((item) => {
           const regex = new RegExp(
             `(^${item.symbol.toLowerCase()}|-${item.symbol.toLowerCase()})`
           );
-          const filteredVaults = responseVaults.data.filter((data) =>
+          const filteredVaults = responseVaults?.data?.filter((data) =>
             data.name.toLowerCase().match(regex)
           );
           return {
