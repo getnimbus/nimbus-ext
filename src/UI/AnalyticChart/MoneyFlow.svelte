@@ -1,6 +1,6 @@
 <script lang="ts">
   import { sendMessage } from "webext-bridge";
-  import { groupBy, intersection, flatten } from "lodash";
+  import { groupBy, intersection, flatten, sumBy } from "lodash";
   import { wallet, chain, typeWallet } from "~/store";
   import { formatCurrency, getAddressContext } from "~/utils";
   import dayjs from "dayjs";
@@ -65,9 +65,8 @@
                       <span style="color: ${
                         item.value >= 0 ? "#05a878" : "#f25f5d"
                       };">
-                        ${item.value >= 0 ? "Inflow -" : "Outflow -"}
+                        ${item.value >= 0 ? "Inflow" : "Outflow"}
                       </span>
-                      ${item.seriesName}
                     </div>
                     `
                         : `
@@ -210,21 +209,36 @@
           };
         });
 
-        const listType = intersection(
-          flatten(groupByTypeData?.map((item) => item.keys))
-        );
+        const listType = ["Inflow", "Outflow"];
 
-        const inflowData = formatDataTypeBaseOnInOutFlow(
-          groupByDirectionData,
-          listDirection[0],
-          listType
-        );
+        console.log(groupByDirectionData);
+        const inflowData = [
+          {
+            stack: "inflow",
+            type: "bar",
+            name: "Inflow",
+            data: groupByDirectionData.map((item) =>
+              sumBy(
+                item.changes.inflow,
+                (row) => Number(row.amount) * Number(row.price?.price || 0)
+              )
+            ),
+          },
+        ];
 
-        const outflowData = formatDataTypeBaseOnInOutFlow(
-          groupByDirectionData,
-          listDirection[1],
-          listType
-        );
+        const outflowData = [
+          {
+            stack: "outflow",
+            type: "bar",
+            name: "Outflow",
+            data: groupByDirectionData.map((item) =>
+              sumBy(
+                item.changes.outflow,
+                (row) => Number(row.amount) * Number(row.price?.price || 0)
+              )
+            ),
+          },
+        ];
 
         const formatOutflowData = outflowData.map((item) => {
           return {
