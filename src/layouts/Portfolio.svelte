@@ -211,7 +211,7 @@
               name_value: "Value",
               value_value: Number(item.value),
               name_balance: "Balance",
-              value_balance: Number(item.amount),
+              value_balance: Number(item.amount || item.balance),
             };
           }
         );
@@ -273,7 +273,7 @@
               name_value: "Value",
               value_value: Number(item.value),
               name_balance: "Balance",
-              value_balance: Number(item.amount),
+              value_balance: Number(item.amount || item.balance),
             };
           }
         );
@@ -360,7 +360,8 @@
         const formatData = formatDataTokenHolding.map((item) => {
           return {
             ...item,
-            value: item.amount * item.rate,
+            value:
+              Number(item?.amount) * Number(item?.price?.price || item?.rate),
           };
         });
         holdingTokenData = formatData.sort((a, b) => {

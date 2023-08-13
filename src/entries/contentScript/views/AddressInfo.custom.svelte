@@ -270,7 +270,7 @@
               name_value: "Value",
               value_value: Number(item.value),
               name_balance: "Balance",
-              value_balance: Number(item.amount),
+              value_balance: Number(item.amount || item.balance),
             };
           });
 

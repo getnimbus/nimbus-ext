@@ -589,7 +589,7 @@ export const handleFormatDataPieChart = (data, type) => {
   const formatData = data.map((item) => {
     return {
       ...item,
-      value: Number(item?.amount) * Number(item?.price?.price),
+      value: item?.price?.price ? Number(item?.amount) * Number(item?.price?.price) : 0,
     };
   });
 

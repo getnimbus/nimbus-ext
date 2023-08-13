@@ -679,8 +679,6 @@
         };
       });
 
-      // console.log(formatDataLineChart);
-
       optionLine = {
         ...optionLine,
         legend: {

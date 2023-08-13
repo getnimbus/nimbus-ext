@@ -302,9 +302,12 @@
 
       tokenDataHolding = {
         value: "All",
-        dataPie: dataPieChart.token.formatDataPieChartTopFiveToken.concat(
-          dataPieChart.token.dataPieChartOrderBreakdownToken
-        ),
+        dataPie:
+          dataPieChart.token.sumOrderBreakdownToken > 0
+            ? dataPieChart.token.formatDataPieChartTopFiveToken.concat(
+                dataPieChart.token.dataPieChartOrderBreakdownToken
+              )
+            : dataPieChart.token.formatDataPieChartTopFiveToken,
         dataTable: {
           data: {
             name: "All",

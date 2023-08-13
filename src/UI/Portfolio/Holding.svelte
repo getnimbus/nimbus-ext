@@ -93,6 +93,10 @@
           };
         });
       });
+      sumAllTokens = holdingTokenData.reduce(
+        (prev, item) => prev + item.value,
+        0
+      );
     }
     if (holdingNFTData) {
       holdingNFTData.map((item) => {
@@ -132,10 +136,6 @@
         });
         filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
         sumTokens = data.reduce((prev, item) => prev + item.value, 0);
-        sumAllTokens = holdingTokenData.reduce(
-          (prev, item) => prev + item.value,
-          0
-        );
       }
     }
     if (holdingNFTData) {
@@ -222,7 +222,16 @@
     }
   }
 
-  $: totalAssets = sumNFT + sumTokens;
+  $: {
+    if (
+      selectedTokenHolding &&
+      Object.keys(selectedTokenHolding).length !== 0 &&
+      selectedTokenHolding?.select.length === 0 &&
+      (sumTokens || sumNFT)
+    ) {
+      totalAssets = sumNFT + sumTokens;
+    }
+  }
 
   $: colspan =
     typeWalletAddress === "DEX" &&
@@ -293,7 +302,7 @@
           {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
             <span class="xl:text-xl text-2xl font-medium text-gray-400">
               <TooltipNumber
-                number={selectedDataPieChart.series[0].data.filter(
+                number={selectedDataPieChart?.series[0]?.data.filter(
                   (item) => item.name === selectedTypeTable?.value
                 )[0]?.value}
                 type="percent"
@@ -321,14 +330,14 @@
         <div
           class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
         >
-          <table class="table-auto xl:w-full w-[1400px]">
+          <table class="table-auto xl:w-full w-[1800px]">
             <thead
               class={isStickyTableToken ? "sticky top-0 z-10" : ""}
               bind:this={tableTokenHeader}
             >
               <tr class="bg-[#f4f5f8]">
                 <th
-                  class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] xl:w-[230px] w-[280px]"
+                  class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[420px]"
                 >
                   <div
                     class="text-left xl:text-xs text-base uppercase font-semibold text-black"
