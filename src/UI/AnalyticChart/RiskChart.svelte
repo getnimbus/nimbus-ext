@@ -456,7 +456,9 @@
 
             <div class="grid grid-cols-2">
               <div class="col-span-1">
-                <div class=" text-black flex justify-start">
+                <div
+                  class="xl:text-base text-2xl text-black flex justify-start"
+                >
                   <TooltipTitle
                     tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
                     isBigIcon
