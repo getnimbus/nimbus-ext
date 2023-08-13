@@ -8,7 +8,7 @@
   export let selectedExplorer;
   export let selectedProfessional;
 
-  let selectedTypePackage: "month" | "yearn" = "month";
+  let selectedTypePackage: "month" | "year" = "year";
 
   const getUserInfo = async () => {
     try {

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { shorterName } from "~/utils";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   export let data;
 
@@ -169,7 +170,10 @@
             <div
               class="text-right xl:text-xs text-base uppercase font-semibold text-black flex items-center justify-end gap-2"
             >
-              TVL
+              <TooltipTitle
+                tooltipText={"Total value locked in this protocol"}
+                isBigIcon>TVL</TooltipTitle
+              >
               <div on:click={toggleSortTVL} class="cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
