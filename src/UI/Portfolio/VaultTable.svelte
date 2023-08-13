@@ -112,8 +112,6 @@
       });
     }
   };
-
-  $: console.log("formatData: ", formatData);
 </script>
 
 <div class="h-[563px] flex flex-col gap-4">
