@@ -4,6 +4,7 @@
   import { Link } from "svelte-navigator";
   import "flowbite/dist/flowbite.css";
   import { Toast } from "flowbite-svelte";
+  import { useNavigate } from "svelte-navigator";
 
   import Button from "~/components/Button.svelte";
 
@@ -14,6 +15,8 @@
   let isSuccessToast = false;
   let counter = 3;
   let showToast = false;
+
+  const navigate = useNavigate();
 
   const trigger = () => {
     showToast = true;
@@ -44,6 +47,14 @@
       ) {
         status = true;
         clearInterval(intervalId);
+      } else if (
+        response &&
+        response?.data &&
+        response?.data?.paymentStatus === "fail"
+      ) {
+        status = true;
+        clearInterval(intervalId);
+        navigate("/payments/fail");
       } else {
         status = false;
       }
