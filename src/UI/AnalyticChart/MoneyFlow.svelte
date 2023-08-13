@@ -203,15 +203,8 @@
           };
         });
 
-        const groupByTypeData = response?.result?.map((item) => {
-          return {
-            keys: Object.getOwnPropertyNames(groupBy(item.changes, "type")),
-          };
-        });
-
         const listType = ["Inflow", "Outflow"];
 
-        console.log(groupByDirectionData);
         const inflowData = [
           {
             stack: "inflow",
