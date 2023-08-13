@@ -923,7 +923,7 @@
   {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
     <div class="flex flex-col justify-center mt-5">
       <div class="flex flex-col items-center gap-1">
-        <div class="flex items-center gap-1 xl:text-xl text-2xl">
+        <div class="flex items-center gap-1 xl:text-base text-lg">
           You're going to upgrade to plan <span class="font-semibold"
             >{selectedPackage.name}</span
           >
@@ -937,14 +937,19 @@
         </div>
       </div>
       <div class="flex flex-col gap-3 items-center mt-5">
+        <div class="my-3">Choose your prefer payment method</div>
         {#each listChain as chain}
-          <div class="w-48">
+          <div class="w-62">
             <Button variant="secondary" on:click={() => handleBuy(chain.value)}>
               <img src={chain.logo} class="w-5 h-5 rounded-full" />
               {chain.label}</Button
             >
           </div>
         {/each}
+      </div>
+      <div class="text-center text-gray-500 mt-8">
+        If missing your prefer payment method, please contact Telegram
+        <strong>@thanhle27</strong> for support
       </div>
       <!-- <div class="flex flex-col items-center justify-center gap-5 mt-4">
         <div class="w-max">

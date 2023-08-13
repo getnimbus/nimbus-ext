@@ -26,9 +26,10 @@
   });
 </script>
 
-<div class="flex flex-col gap-4 mt-5">
-  <div class="text-center text-gray-500 text-lg mt-1">
-    Use Nimbus at its full potential! Lock in your early bird price now!
+<div class="flex flex-col gap-4 mt-2">
+  <div class="text-center text-gray-500 text-lg">
+    Use Nimbus at its full potential. Traking your portfolio, reduce risk,
+    maximaze gain.
   </div>
 
   <div
@@ -37,7 +38,7 @@
   >
     ⭐️ We're giving 1000 coupon codes <span class="font-bold">OG-INVESTOR</span
     >
-    which get <span class="font-bold">30%</span> off for for first-time payment
+    which get <span class="font-bold">30%</span> off for the first-time payment
     and
     <span class="font-bold">10% off lifetime</span> payments.
   </div>
@@ -104,7 +105,7 @@
           <div class="text-base text-gray-400">Professional community</div>
 
           <div
-            class="flex items-center gap-2 mt-2 text-[#006bff] font-semibold text-lg cursor-pointer"
+            class="flex items-center gap-2 mt-2 text-[#1E96FC] font-semibold text-lg cursor-pointer"
             on:click={() => {
               selectedPackage({
                 name: "FREE",
@@ -117,7 +118,7 @@
               width="14"
               height="14"
               viewBox="0 0 14 14"
-              fill="#006bff"
+              fill="#1E96FC"
               xmlns="http://www.w3.org/2000/svg"
               ><path
                 d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
@@ -134,7 +135,7 @@
       class="border border-[#0000001a] rounded-xl flex flex-col gap-4 p-4 relative"
     >
       <div
-        class="absolute top-6 right-0 rounded-tl-full rounded-bl-full bg-[#006bff] font-medium text-white text-xs uppercase py-1 px-3"
+        class="absolute top-6 right-0 rounded-tl-full rounded-bl-full bg-[#1E96FC] font-medium text-white text-xs uppercase py-1 px-3"
       >
         popular
       </div>
@@ -178,7 +179,7 @@
           <div class="text-base text-gray-400">Professional community</div>
 
           <div
-            class="flex items-center gap-2 mt-2 text-[#006bff] font-semibold text-lg cursor-pointer"
+            class="flex items-center gap-2 mt-2 text-[#1E96FC] font-semibold text-lg cursor-pointer"
             on:click={() => {
               selectedPackage({
                 name: "Explorer",
@@ -203,7 +204,7 @@
               width="14"
               height="14"
               viewBox="0 0 14 14"
-              fill="#006bff"
+              fill="#1E96FC"
               xmlns="http://www.w3.org/2000/svg"
               ><path
                 d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
@@ -237,7 +238,9 @@
       <div>
         <div class="flex flex-col border-b-[1px] border-[#0000001a] pb-4">
           <div class="text-xl font-medium">PROFESSIONAL</div>
-          <div class="text-lg text-gray-500">To win the market</div>
+          <div class="text-lg text-gray-500">
+            Enjoy maximaze your gain with no limited access
+          </div>
         </div>
         <div class="mt-4 flex flex-col gap-2">
           <div class="text-base text-black">Real-time market update</div>
@@ -255,7 +258,7 @@
           <div class="text-base text-black">Professional community (Soon)</div>
 
           <div
-            class="flex items-center gap-2 mt-2 text-[#006bff] font-semibold text-lg cursor-pointer"
+            class="flex items-center gap-2 mt-2 text-[#1E96FC] font-semibold text-lg cursor-pointer"
             on:click={() => {
               selectedPackage({
                 name: "Professional",
@@ -280,7 +283,7 @@
               width="14"
               height="14"
               viewBox="0 0 14 14"
-              fill="#006bff"
+              fill="#1E96FC"
               xmlns="http://www.w3.org/2000/svg"
               ><path
                 d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
