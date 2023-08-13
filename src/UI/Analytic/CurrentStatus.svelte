@@ -813,7 +813,7 @@
               )}&address=${encodeURIComponent(selectedWallet)}`
             );
           }}
-          class="xl:text-base text-2xl font-medium text-blue-500 cursor-pointer w-max mt-1"
+          class="xl:text-base text-2xl hover:underline font-medium text-blue-500 cursor-pointer w-max mt-1"
         >
           Custom category
         </div>
