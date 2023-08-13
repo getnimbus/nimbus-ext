@@ -608,10 +608,7 @@
               dataChart: compareData[item]?.holdingHistory.map(
                 (holdingData) => {
                   return {
-                    value: getChangePercent(
-                      holdingData.networth,
-                      basePoint.networth
-                    ),
+                    value: holdingData.performance,
                     timestamp: holdingData.timestamp * 1000,
                   };
                 }
