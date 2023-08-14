@@ -1,9 +1,20 @@
 <script lang="ts">
+  import { selectedPackage } from "~/store";
   import { shorterName } from "~/utils";
+  import { useNavigate } from "svelte-navigator";
+
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
+  import Button from "~/components/Button.svelte";
 
   export let data;
+
+  const navigate = useNavigate();
+
+  let packageSelected = "";
+  selectedPackage.subscribe((value) => {
+    packageSelected = value;
+  });
 
   let isShowTooltipProtocol = false;
   let sortTVL = "default";
@@ -186,7 +197,7 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="relative">
         {#if formatData && formatData.length === 0}
           <tr>
             <td colspan="5">
@@ -274,6 +285,22 @@
               </td>
             </tr>
           {/each}
+        {/if}
+        {#if packageSelected === "FREE"}
+          <tr
+            class="absolute z-10 left-0 right-0 bottom-0 top-[220px] flex justify-center pt-10 bg-white/90 backdrop-blur-md bg-gradient-to-t from-white via-white to-transparent"
+          >
+            <td colspan="5" class="flex flex-col items-center gap-1">
+              <div class="text-lg">
+                Upgrade to Premium to access all other opportunities
+              </div>
+              <div class="w-max">
+                <Button variant="premium" on:click={() => navigate("/upgrade")}
+                  >Upgrade</Button
+                >
+              </div>
+            </td>
+          </tr>
         {/if}
       </tbody>
     </table>

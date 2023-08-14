@@ -11,7 +11,7 @@
   } from "~/utils";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { wallet, chain, typeWallet } from "~/store";
+  import { wallet, chain, typeWallet, selectedPackage } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
   import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
@@ -108,6 +108,11 @@
     },
   };
 
+  let packageSelected = "";
+  selectedPackage.subscribe((value) => {
+    packageSelected = value;
+  });
+
   let userInfo = {};
 
   let isLoading = false;
@@ -130,6 +135,13 @@
   let counter = 3;
   let toastMsg = "";
   let isSuccess = false;
+
+  let isOpenModal = false;
+  let isLoadingSendMail = false;
+  let email = "";
+
+  let isDisabled = false;
+  let tooltipDisableAddBtn = "";
 
   const trigger = () => {
     show = true;
@@ -459,6 +471,7 @@
   };
 
   onMount(() => {
+    localStorage.setItem("isGetUserEmailYet", "false");
     const evmToken = localStorage.getItem("evm_token");
     if (evmToken) {
       userInfo = {
@@ -511,7 +524,73 @@
     }
   }
 
-  $: isDisabled = APP_TYPE.TYPE !== "EXT" && listAddress.length === 5;
+  // Handle get user email
+  const onSubmitGetEmail = async (e) => {
+    isLoadingSendMail = true;
+    const formData = new FormData(e.target);
+    const data: any = {};
+    for (let field of formData) {
+      const [key, value] = field;
+      data[key] = value;
+    }
+    try {
+      await nimbus.post("/subscription/analysis", {
+        email: data.email,
+        address: selectedWallet,
+      });
+      isLoadingSendMail = false;
+      localStorage.setItem("isGetUserEmailYet", "true");
+      toastMsg = "Ready to receive exclusive benefits soon!";
+      isSuccess = true;
+      trigger();
+    } catch (e) {
+      isLoadingSendMail = false;
+      toastMsg = "Something wrong when sending email. Please try again!";
+      isSuccess = false;
+      trigger();
+    } finally {
+      isOpenModal = false;
+    }
+  };
+
+  $: {
+    if (listAddress.length === 3 && packageSelected === "FREE") {
+      isDisabled = true;
+    }
+    if (listAddress.length === 7 && packageSelected === "EXPLORER") {
+      if (
+        localStorage.getItem("isGetUserEmailYet") !== null &&
+        localStorage.getItem("isGetUserEmailYet") === "false"
+      ) {
+        localStorage.setItem("isGetUserEmailYet", "true");
+      }
+      isDisabled = true;
+    }
+    if (packageSelected === "PROFESSIONAL") {
+      if (
+        localStorage.getItem("isGetUserEmailYet") !== null &&
+        localStorage.getItem("isGetUserEmailYet") === "false"
+      ) {
+        localStorage.setItem("isGetUserEmailYet", "true");
+      }
+    }
+  }
+
+  $: {
+    if (Object.keys(userInfo).length === 0) {
+      tooltipDisableAddBtn = "Connect wallet to add account";
+    }
+    if (isDisabled) {
+      if (packageSelected === "FREE") {
+        tooltipDisableAddBtn =
+          "Get the EXPLORER Plan to be able to add more accounts and experience our in-depth investment analysis";
+      }
+      if (packageSelected === "EXPLORER") {
+        tooltipDisableAddBtn =
+          "Get the PROFESSIONAL Plan so you can add unlimited accounts and experience all our functions";
+      }
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-4">
@@ -569,12 +648,33 @@
         }}
       >
         {#if isDisabled || Object.keys(userInfo).length === 0}
-          <Button variant="disabled" disabled>
-            <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-            <div class="xl:text-base text-2xl font-medium text-white">
-              Add account
-            </div>
-          </Button>
+          <div>
+            {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
+              <Button
+                variant="tertiary"
+                on:click={() => {
+                  if (
+                    localStorage.getItem("isGetUserEmailYet") !== null &&
+                    localStorage.getItem("isGetUserEmailYet") === "false"
+                  ) {
+                    isOpenModal = true;
+                  }
+                }}
+              >
+                <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+                <div class="xl:text-base text-2xl font-medium text-white">
+                  Add account
+                </div>
+              </Button>
+            {:else}
+              <Button variant="disabled" disabled>
+                <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+                <div class="xl:text-base text-2xl font-medium text-white">
+                  Add account
+                </div>
+              </Button>
+            {/if}
+          </div>
         {:else}
           <Button
             variant="tertiary"
@@ -593,13 +693,7 @@
             class="absolute transform -translate-x-1/2 -top-8 left-1/2"
             style="z-index: 2147483648;"
           >
-            <tooltip-detail
-              text={`${
-                isDisabled || Object.keys(userInfo).length !== 0
-                  ? "Install our extension to add more wallet"
-                  : "Connect wallet to add account"
-              }`}
-            />
+            <tooltip-detail text={tooltipDisableAddBtn} />
           </div>
         {/if}
       </div>
@@ -997,6 +1091,72 @@
         {MultipleLang.content.modal_delete}
       </Button>
     </div>
+  </div>
+</AppOverlay>
+
+<!-- Modal get user email -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenModal}
+  on:close={() => {
+    isOpenModal = false;
+  }}
+>
+  <div class="xl:title-3 title-1 text-center text-gray-600 font-semibold">
+    Let's us know your email
+  </div>
+  <div class="mt-2">
+    <div class="xl:text-base text-lg text-gray-500 text-center">
+      Add your email to get updates from us and receive exclusive benefits soon.
+    </div>
+    <form
+      on:submit|preventDefault={onSubmitGetEmail}
+      class="flex flex-col gap-3 mt-4"
+    >
+      <div class="flex flex-col gap-1">
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            email ? "bg-[#F0F2F7]" : ""
+          }`}
+        >
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
+            Email
+          </div>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            placeholder="Your email"
+            value=""
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              email ? "bg-[#F0F2F7]" : ""
+            }
+              `}
+            on:keyup={({ target: { value } }) => (email = value)}
+          />
+        </div>
+      </div>
+      <div class="flex justify-end gap-2">
+        <div class="xl:w-[120px] w-full">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              isOpenModal = false;
+            }}
+          >
+            {MultipleLang.content.modal_cancel}</Button
+          >
+        </div>
+        <div class="xl:w-[120px] w-full">
+          <Button
+            type="submit"
+            isLoading={isLoadingSendMail}
+            disabled={isLoadingSendMail}>Submit</Button
+          >
+        </div>
+      </div>
+    </form>
   </div>
 </AppOverlay>
 

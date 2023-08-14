@@ -1,7 +1,14 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
-  import { wallet, chain, typeWallet, user, isFirstTimeLogin } from "~/store";
+  import {
+    wallet,
+    chain,
+    typeWallet,
+    user,
+    isFirstTimeLogin,
+    selectedPackage,
+  } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
@@ -121,6 +128,11 @@
     checkFirstTimeLogin = value;
   });
 
+  let packageSelected = "";
+  selectedPackage.subscribe((value) => {
+    packageSelected = value;
+  });
+
   let toastMsg = "";
   let isSuccessToast = false;
   let counter = 3;
@@ -165,7 +177,6 @@
   let isLoadingConnectCEX = false;
 
   let isDisabled = false;
-  let conditionAdd = 0;
   let tooltipDisableAddBtn = "";
 
   const isRequiredFieldValid = (value) => {
@@ -481,8 +492,6 @@
       toastMsg = "Ready to receive exclusive benefits soon!";
       isSuccessToast = true;
       trigger();
-      isDisabled = false;
-      handleCheckConditionAddWallet();
     } catch (e) {
       isLoadingSendMail = false;
       toastMsg = "Something wrong when sending email. Please try again!";
@@ -605,26 +614,26 @@
     }
   }
 
-  const handleCheckConditionAddWallet = () => {
-    conditionAdd = 7;
-  };
-
   $: {
-    if (
-      localStorage.getItem("isGetUserEmailYet") !== null &&
-      localStorage.getItem("isGetUserEmailYet") === "true"
-    ) {
-      handleCheckConditionAddWallet();
-    } else {
-      conditionAdd = 3;
-    }
-  }
-
-  $: {
-    if (listAddress.length === conditionAdd) {
+    if (listAddress.length === 3 && packageSelected === "FREE") {
       isDisabled = true;
-    } else {
-      isDisabled = false;
+    }
+    if (listAddress.length === 7 && packageSelected === "EXPLORER") {
+      if (
+        localStorage.getItem("isGetUserEmailYet") !== null &&
+        localStorage.getItem("isGetUserEmailYet") === "false"
+      ) {
+        localStorage.setItem("isGetUserEmailYet", "true");
+      }
+      isDisabled = true;
+    }
+    if (packageSelected === "PROFESSIONAL") {
+      if (
+        localStorage.getItem("isGetUserEmailYet") !== null &&
+        localStorage.getItem("isGetUserEmailYet") === "false"
+      ) {
+        localStorage.setItem("isGetUserEmailYet", "true");
+      }
     }
   }
 
@@ -633,7 +642,14 @@
       tooltipDisableAddBtn = "Connect wallet to add account";
     }
     if (isDisabled) {
-      tooltipDisableAddBtn = "Hello world";
+      if (packageSelected === "FREE") {
+        tooltipDisableAddBtn =
+          "Get the EXPLORER Plan to be able to add more accounts and experience our in-depth investment analysis";
+      }
+      if (packageSelected === "EXPLORER") {
+        tooltipDisableAddBtn =
+          "Get the PROFESSIONAL Plan so you can add unlimited accounts and experience all our functions";
+      }
     }
   }
 

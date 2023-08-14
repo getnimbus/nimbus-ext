@@ -106,9 +106,11 @@
           class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-30 backdrop-blur-md"
         >
           <div class="text-lg">Comming soon 🚀</div>
-          <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
-            <Button variant="secondary">Request analytics</Button>
-          </a>
+          <div class="w-max">
+            <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
+              <Button variant="secondary">Request analytics</Button>
+            </a>
+          </div>
         </div>
       {/if}
     </div>
