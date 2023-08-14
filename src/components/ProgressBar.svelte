@@ -13,7 +13,7 @@
 
 <div class="relative pt-[40px] pb-[20px]">
   <div class="flex items-center gap-2">
-    <div class="xl:text-base text-2xl">{leftLabel}</div>
+    <div class="text-sm">{leftLabel}</div>
     <div class="w-full h-2 rounded-lg relative" style={`background: ${range};`}>
       <div
         class="w-[1px] h-5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-700"
@@ -27,11 +27,11 @@
           <div class="tooltip-arrow" />
         </div>
       </div>
-      <div class="absolute top-5 left-1/2 transform -translate-x-1/2">
+      <div class="absolute top-5 text-sm left-1/2 transform -translate-x-1/2">
         {averageText}
       </div>
     </div>
-    <div class="xl:text-base text-2xl">{rightLabel}</div>
+    <div class="text-sm">{rightLabel}</div>
   </div>
 </div>
 
