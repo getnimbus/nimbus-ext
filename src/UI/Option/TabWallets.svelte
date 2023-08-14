@@ -471,7 +471,6 @@
   };
 
   onMount(() => {
-    localStorage.setItem("isGetUserEmailYet", "false");
     const evmToken = localStorage.getItem("evm_token");
     if (evmToken) {
       userInfo = {
@@ -479,6 +478,13 @@
       };
     }
     getListAddress();
+    if (
+      localStorage.getItem("isGetUserEmailYet") !== null &&
+      localStorage.getItem("isGetUserEmailYet") === "true"
+    ) {
+      return;
+    }
+    localStorage.setItem("isGetUserEmailYet", "false");
   });
 
   $: {
@@ -690,7 +696,7 @@
         {/if}
         {#if showDisableAddWallet}
           <div
-            class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+            class="absolute transform -top-8 right-0"
             style="z-index: 2147483648;"
           >
             <tooltip-detail text={tooltipDisableAddBtn} />
