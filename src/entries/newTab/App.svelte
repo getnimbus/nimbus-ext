@@ -25,6 +25,7 @@
   import Invitation from "~/layouts/Invitation.svelte";
   import PaymentSuccess from "~/layouts/PaymentSuccess.svelte";
   import PaymentFail from "~/layouts/PaymentFail.svelte";
+  import Upgrade from "~/layouts/Upgrade.svelte";
 
   // TODO: Add Lazyload for each routes
   const hash = createHistory(createHashSource());
@@ -48,6 +49,10 @@
     <Router history={undefined}>
       <div class="flex flex-col pb-14">
         <Header />
+
+        <Route path="upgrade">
+          <Upgrade />
+        </Route>
 
         <Route path="payments/success">
           <PaymentSuccess />

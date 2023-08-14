@@ -3,21 +3,16 @@
   import { Link } from "svelte-navigator";
   import onboard from "~/lib/web3-onboard";
   import { ethers } from "ethers";
-  import {
-    wallet,
-    chain,
-    typeWallet,
-    user,
-    isShowUpgradeModal,
-    isFirstTimeLogin,
-  } from "~/store";
+  import { wallet, chain, typeWallet, user, isFirstTimeLogin } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
   import { shorterAddress } from "~/utils";
+  import { useNavigate } from "svelte-navigator";
 
   import User from "~/assets/user.png";
 
   const wallets$ = onboard.state.select("wallets");
+  const navigate = useNavigate();
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -231,7 +226,7 @@
         <div
           class="text-yellow-400 font-medium cursor-pointer xl:text-base text-2xl flex items-center gap-1"
           on:click={() => {
-            isShowUpgradeModal.update((n) => (n = true));
+            navigate("/upgrade");
             showPopover = false;
           }}
         >
