@@ -842,7 +842,7 @@
           </Button>
         </div>
       </div>
-      <div class="xl:text-lg text-2xl flex items-center justify-center gap-1">
+      <div class="xl:text-base text-xl flex items-center justify-center gap-1">
         <img src={Success} alt="" />
         Bank-level security/encryption.
         <a
