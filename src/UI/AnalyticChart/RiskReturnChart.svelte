@@ -374,6 +374,12 @@
     Number(compareData?.base?.avgMarket?.minShapreRatio || 0),
     Number(compareData?.base?.avgMarket?.maxShapreRatio || 0)
   );
+
+  $: sharpeRatioAvgMarket = (
+    (Number(compareData?.base?.avgMarket?.minShapreRatio || 0) +
+      Number(compareData?.base?.avgMarket?.maxShapreRatio || 0)) /
+    2
+  ).toFixed(2);
 </script>
 
 <AnalyticSection>
@@ -429,7 +435,7 @@
               </div>
             </div>
           </div>
-          <div class="flex items-center gap-3 mt-2">
+          <div class="flex items-center gap-3 mt-3">
             {#if goodPerf}
               <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
                 <div class="xl:text-base text-lg text-[#6E7787FF] relative">
@@ -498,7 +504,7 @@
             <ProgressBar
               leftLabel="Low"
               rightLabel="High"
-              averageText="Avg Market"
+              averageText={`Avg Market (${sharpeRatioAvgMarket})`}
               progress={sharpeRatioCompareAvg}
               lowerIsBetter={false}
               tooltipText="Shapre Ratio"
@@ -509,9 +515,11 @@
                 <span class="text-red-500"
                   >Your portfolio is not "balance" between risk and return:</span
                 >
-                It has expected yield only {compareData?.base?.sharpeRatio?.toFixed(
-                  2
-                )} units of profit per 1 unit of risk.
+                It has expected yield only
+                <span class="font-medium"
+                  >{compareData?.base?.sharpeRatio?.toFixed(2)}</span
+                >
+                units of profit per <span class="font-medium">1</span> unit of risk.
               </div>
             {/if}
           </div>

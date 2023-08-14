@@ -390,6 +390,12 @@
     Number(compareData?.base?.avgMarket?.maxVolality || 0)
   );
 
+  $: volatilityAvgMarket = (
+    (Number(compareData?.base?.avgMarket?.minVolality || 0) +
+      Number(compareData?.base?.avgMarket?.maxVolality || 0)) /
+    2
+  ).toFixed(2);
+
   $: drawDownCompare = getChangePercent(
     Number(compareData?.base?.drawDown || 0),
     Number(compareData?.btc?.drawDown || 0)
@@ -400,6 +406,12 @@
     Number(compareData?.base?.avgMarket?.minDrawDown || 0),
     Number(compareData?.base?.avgMarket?.maxDrawDown || 0)
   );
+
+  $: drawDownAvgMarket = (
+    (Number(compareData?.base?.avgMarket?.minDrawDown || 0) +
+      Number(compareData?.base?.avgMarket?.maxDrawDown || 0)) /
+    2
+  ).toFixed(2);
 </script>
 
 <AnalyticSection>
@@ -540,14 +552,14 @@
             <ProgressBar
               leftLabel="Low"
               rightLabel="High"
-              averageText="Avg Market"
+              averageText={`Avg Market (${volatilityAvgMarket}%)`}
               progress={volatilityCompareAvg}
               tooltipText="Volatility"
             />
             <ProgressBar
               leftLabel="Low"
               rightLabel="High"
-              averageText="Avg Market"
+              averageText={`Avg Market (${drawDownAvgMarket}%)`}
               progress={drawDownCompareAvg}
               tooltipText="Max Drawdown"
             />
