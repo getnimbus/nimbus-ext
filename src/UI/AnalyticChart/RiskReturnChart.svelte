@@ -446,7 +446,11 @@
                 </div>
                 <div class="xl:text-2xl text-3xl">{goodPerf?.symbol}</div>
                 <div class="xl:text-lg text-2xl flex items-center gap-1">
-                  <img src={TrendUp} alt="trend" class="mb-1" />
+                  <img
+                    src={goodPerf?.change30DPercent >= 0 ? TrendUp : TrendDown}
+                    alt="trend"
+                    class="mb-1"
+                  />
                   <div
                     class={`${
                       goodPerf?.change30DPercent >= 0
@@ -474,7 +478,11 @@
                 </div>
                 <div class="xl:text-2xl text-3xl">{badPerf?.symbol}</div>
                 <div class="xl:text-lg text-2xl flex items-center gap-1">
-                  <img src={TrendDown} alt="trend" class="mb-1" />
+                  <img
+                    src={badPerf?.change30DPercent >= 0 ? TrendUp : TrendDown}
+                    alt="trend"
+                    class="mb-1"
+                  />
                   <div
                     class={`${
                       badPerf?.change30DPercent >= 0
