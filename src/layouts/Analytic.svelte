@@ -187,7 +187,7 @@
       class="xl:text-base text-lg text-gray-500 text-center xl:w-[600px] w-[700px]"
     >
       Our analysis is
-      <span class="font-bold">Premium</span>
+      <span class="font-semibold">Premium</span>
       <img src={Crown} alt="" width="13" height="12" class="inline-block" />
       feature is under beta<br /> which you can access for free now. <br />Add
       your email to get updates from us and receive exclusive benefits in the
