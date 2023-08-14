@@ -355,7 +355,7 @@
       <div class="flex flex-col gap-4">
         <div class="grid grid-cols-2">
           <div class="col-span-1">
-            <div class="text-black flex justify-start">30D Money in</div>
+            <div class="text-black flex justify-start">30D Money Inflow</div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
             <div>
@@ -368,12 +368,31 @@
         </div>
         <div class="grid grid-cols-2">
           <div class="col-span-1">
-            <div class="text-black flex justify-start">30D Money out</div>
+            <div class="text-black flex justify-start">30D Money Outflow</div>
           </div>
           <div class="col-span-1 flex items-center gap-1 justify-end">
             <div>
               $<TooltipNumber
                 number={Math.abs(sumData.outflow)}
+                type="balance"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2">
+          <div class="col-span-1">
+            <div class="text-black flex justify-start">30D Money Netflow</div>
+          </div>
+          <div class="col-span-1 flex items-center gap-1 justify-end">
+            <div
+              class={`${
+                sumData.inflow + sumData.outflow >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+              }`}
+            >
+              $<TooltipNumber
+                number={sumData.inflow + sumData.outflow}
                 type="balance"
               />
             </div>
