@@ -42,7 +42,7 @@
   import Copy from "~/components/Copy.svelte";
 
   import Plus from "~/assets/plus.svg";
-  import EthereumLogo from "~/assets/ethereum.png";
+  import All from "~/assets/all.svg";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
@@ -514,7 +514,7 @@
       logo:
         item.type === "DEX"
           ? getAddressContext(item.value)?.type === "EVM"
-            ? EthereumLogo
+            ? All
             : BitcoinLogo
           : item.logo,
     };

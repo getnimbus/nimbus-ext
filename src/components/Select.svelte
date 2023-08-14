@@ -1,5 +1,6 @@
 <script lang="ts">
   import { wallet, chain } from "~/store";
+
   import UpArrow from "~/assets/up-arrow.svg";
   import All from "~/assets/all.svg";
 
