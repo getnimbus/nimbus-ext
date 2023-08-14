@@ -434,11 +434,11 @@
               <CtaIcon isGood={isReturn30Higher} />
               30D return is {isReturn30Higher ? "higher" : "lower"} than Bitcoin
               by
-              <strong
+              <span class="font-medium"
                 >{Math.abs(
                   compareData?.base?.netWorthChange?.networth30D -
                     compareData?.btc?.netWorthChange?.networth30D
-                ).toFixed(2)}%</strong
+                ).toFixed(2)}%</span
               >
             </div>
           </div>

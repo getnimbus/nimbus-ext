@@ -517,20 +517,20 @@
               <CtaIcon isGood={sharpeRatioCompare > 0} />
               Sharpe ratio is {sharpeRatioCompare > 0 ? "higher" : "lower"} than
               Bitcoin by
-              <strong>{Math.abs(sharpeRatioCompare)}%</strong>
+              <span class="font-medium">{Math.abs(sharpeRatioCompare)}%</span>
             </div>
             <div class="xl:text-base text-2xl">
               <CtaIcon isGood={volatilityCompare < 0} />
               Volatility is {volatilityCompare > 0 ? "higher" : "lower"} than Bitcoin
               by
-              <strong>{Math.abs(volatilityCompare)}%</strong>
+              <span class="font-medium">{Math.abs(volatilityCompare)}%</span>
             </div>
 
             <div class="xl:text-base text-2xl">
               <CtaIcon isGood={drawDownCompare < 0} />
               Max Drawdown is {drawDownCompare > 0 ? "higher" : "lower"} than Bitcoin
               by
-              <strong>{Math.abs(drawDownCompare)}%</strong>
+              <span class="font-medium">{Math.abs(drawDownCompare)}%</span>
             </div>
 
             <!-- <div>
