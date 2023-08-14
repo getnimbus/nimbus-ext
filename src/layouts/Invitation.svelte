@@ -127,9 +127,9 @@
       <div class="xl:text-5xl text-7xl text-black font-semibold">
         Invite Friends
       </div>
-      <div class="xl:text-xl text-3xl text-black font-medium">
-        Tell your friends it’s fun and effective for wallet tracker when
-        investment.
+      <div class="">
+        Tell your friends it’s fun and effective for portfolio management. <br
+        /> Easy way to minimize risk while maximazing return.
       </div>
     </div>
     <div class="xl:min-w-2xl min-w-4xl flex justify-center items-center">
@@ -162,7 +162,9 @@
             <div class="qr_wrapper">
               <img src={qrImageDataUrl} alt="QR Code" />
             </div>
-            <div class="footer_wrapper">Manage your portfolio with Nimbus</div>
+            <div class="footer_wrapper">
+              Investment in crypto in easy-mode with Nimbus
+            </div>
           </div>
         </div>
 
