@@ -33,6 +33,7 @@
         {
           ...option,
           textStyle: {
+            fontFamily: "Golos Text",
             fontSize:
               id === "total-gasfee-paid" || "historical-activities-personality"
                 ? 14

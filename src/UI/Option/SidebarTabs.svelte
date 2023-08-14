@@ -64,7 +64,7 @@
           return [0, 3].indexOf(index) == -1;
         })
       : items.filter((item, index) => {
-          return [2].indexOf(index) == -1;
+          return [1, 2].indexOf(index) == -1;
         });
 </script>
 

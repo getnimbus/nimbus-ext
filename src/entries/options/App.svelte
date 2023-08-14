@@ -52,19 +52,15 @@
       </div>
       <div class="flex-1 px-6 py-4">
         {#if activeTabValue === "wallets"}
-          {#if APP_TYPE.TYPE === "WEB"}
-            <TabWallets />
-          {/if}
+          <TabWallets />
           <!-- {:else if activeTabValue === "nft"}
-        <TabNft /> -->
+          <TabNft /> -->
         {:else if activeTabValue === "dashboard"}
           <TabDashboard />
         {:else if activeTabValue === "highlight"}
           <TabHighlight />
         {:else if activeTabValue === "notification"}
-          {#if APP_TYPE.TYPE === "WEB"}
-            <TabNotification />
-          {/if}
+          <TabNotification />
         {:else if activeTabValue === "settings"}
           <TabSettings />
         {/if}
