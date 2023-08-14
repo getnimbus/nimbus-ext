@@ -159,7 +159,8 @@
   }
 
   $: totalNetWorth = (holdingTokenData || []).reduce(
-    (prev, item) => prev + item?.amount * item?.price?.price,
+    (prev, item) =>
+      prev + Number(item?.value) * Number(item?.price?.price || 0),
     0
   );
 </script>
