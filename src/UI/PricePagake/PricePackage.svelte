@@ -3,6 +3,14 @@
   import { typePackage } from "~/utils";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
+  import tooltip from "~/entries/contentScript/views/tooltip";
+  import YieldFarmingVideo from "~/assets/pricing/Yield-Farming.mp4";
+  import RiskVideo from "~/assets/pricing/Risk.mp4";
+  import ReturnVideo from "~/assets/pricing/Return.mp4";
+  import RiskReturnVideo from "~/assets/pricing/Risk-Return.mp4";
+  import RealtimeVideo from "~/assets/pricing/Realtime.mp4";
+  import RebalanceVideo from "~/assets/pricing/Rebalance.mp4";
+  import CustomAllocationVideo from "~/assets/pricing/Custom-Allocation.mp4";
 
   export let selectedPackage = (item) => {};
   export let selectedExplorer;
@@ -24,12 +32,27 @@
   onMount(() => {
     getUserInfo();
   });
+
+  const getTooltipContent = (text: string, videoUrl: string) => {
+    return `
+      <div style="padding: 8px; border-radius: 8px; background: rgba(0, 0, 0, 0.8); width: 560px; height: auto;">
+        ${
+          text
+            ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 16px; color: #fff;">${text}</div>`
+            : ""
+        }
+        <video autoplay muted playsinline control disablepictureinpicture loop style="border-radius: 6px;">
+          <source type="video/mp4" src="${videoUrl}" />
+        </video>
+      </div>
+    `;
+  };
 </script>
 
 <div class="flex flex-col gap-4 mt-2">
   <div class="text-center text-gray-500 text-lg">
     Use Nimbus at its full potential. Traking your portfolio, reduce risk,
-    maximaze gain.
+    maximaze return.
   </div>
 
   <div
@@ -87,17 +110,42 @@
             For those who starting to invest
           </div>
         </div>
-        <div class="mt-4 flex flex-col gap-2">
-          <div class="text-base text-black">Real-time market update</div>
+        <div class="mt-4 flex flex-col items-start gap-2">
+          <div
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+            use:tooltip={{
+              content: getTooltipContent(
+                "Get latest market information and real-time market update",
+                RealtimeVideo
+              ),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+          >
+            Real-time market update
+          </div>
           <div class="text-base text-black">
             <span class="font-bold">3</span> tracked Wallets
           </div>
           <div class="text-base text-black">
             <span class="font-bold">$2 000</span> total net worth
           </div>
-          <div class="text-base text-black">
+          <div
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+            use:tooltip={{
+              content: getTooltipContent(
+                "Get up to 1000+ yield farming opportunities to boost your earning",
+                YieldFarmingVideo
+              ),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+          >
             Yield farming opportunities (Limited)
           </div>
+          <div class="text-base text-gray-400">Custom token category</div>
           <div class="text-base text-gray-400">Risks analysis</div>
           <div class="text-base text-gray-400">Returns analysis</div>
           <div class="text-base text-gray-400">Risks & Returns analysis</div>
@@ -160,22 +208,108 @@
         <div class="flex flex-col border-b-[1px] border-[#0000001a] pb-4">
           <div class="text-xl font-medium">EXPLORER</div>
           <div class="text-lg text-gray-500">
-            Start maximizing your gain and reduce your risk
+            Start maximizing your return and reduce your risk
           </div>
         </div>
-        <div class="mt-4 flex flex-col gap-2">
-          <div class="text-base text-black">Real-time market update</div>
+        <div class="mt-4 flex flex-col items-start gap-2">
+          <div
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+            use:tooltip={{
+              content: getTooltipContent(
+                "Get latest market information and real-time market update",
+                RealtimeVideo
+              ),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+          >
+            Real-time market update
+          </div>
           <div class="text-base text-black">
             <span class="font-bold">7</span> tracked Wallets
           </div>
           <div class="text-base text-black">
             <span class="font-bold">$50 000</span> total net worth
           </div>
-          <div class="text-base text-black">Yield farming opportunities</div>
-          <div class="text-base text-black">Risks analysis</div>
-          <div class="text-base text-black">Returns analysis</div>
-          <div class="text-base text-black">Risks & Returns analysis</div>
-          <div class="text-base text-black">Rebalance Strategy</div>
+          <div
+            use:tooltip={{
+              content: getTooltipContent(
+                "Get up to 1000+ yield farming opportunities to boost your earning",
+                YieldFarmingVideo
+              ),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+          >
+            Yield farming opportunities
+          </div>
+          <div
+            use:tooltip={{
+              content: getTooltipContent(
+                "Custom your token category to diversify your portfolio on your own way",
+                CustomAllocationVideo
+              ),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+          >
+            Custom token category
+          </div>
+          <div
+            use:tooltip={{
+              content: getTooltipContent(
+                "Know what is your portfolio risk, in every single token you hold",
+                RiskVideo
+              ),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+          >
+            Risks analysis
+          </div>
+          <div
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+            use:tooltip={{
+              content: getTooltipContent("", ReturnVideo),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+          >
+            Returns analysis
+          </div>
+          <div
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+            use:tooltip={{
+              content: getTooltipContent("", RiskReturnVideo),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+          >
+            Risks & Returns analysis
+          </div>
+          <div
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+            use:tooltip={{
+              content: getTooltipContent(
+                "We suggest you how to optimize your portfolio to minimize the risk while maximizing the return",
+                RebalanceVideo
+              ),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+          >
+            Rebalance Strategy
+          </div>
           <div class="text-base text-gray-400">Professional community</div>
 
           <div
@@ -239,22 +373,108 @@
         <div class="flex flex-col border-b-[1px] border-[#0000001a] pb-4">
           <div class="text-xl font-medium">PROFESSIONAL</div>
           <div class="text-lg text-gray-500">
-            Enjoy maximaze your gain with no limited access
+            Enjoy maximize your return with no limited access
           </div>
         </div>
-        <div class="mt-4 flex flex-col gap-2">
-          <div class="text-base text-black">Real-time market update</div>
+        <div class="mt-4 flex flex-col items-start gap-2">
+          <div
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+            use:tooltip={{
+              content: getTooltipContent(
+                "Get latest market information and real-time market update",
+                RealtimeVideo
+              ),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+          >
+            Real-time market update
+          </div>
           <div class="text-base text-black">
             <span class="font-bold">Unlimited</span> tracked Wallets
           </div>
           <div class="text-base text-black">
             <span class="font-bold">Unlimited</span> total net worth
           </div>
-          <div class="text-base text-black">Yield farming opportunities</div>
-          <div class="text-base text-black">Risks analysis</div>
-          <div class="text-base text-black">Returns analysis</div>
-          <div class="text-base text-black">Risks & Returns analysis</div>
-          <div class="text-base text-black">Rebalance Strategy</div>
+          <div
+            use:tooltip={{
+              content: getTooltipContent(
+                "Get up to 1000+ yield farming opportunities to boost your earning",
+                YieldFarmingVideo
+              ),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+          >
+            Yield farming opportunities
+          </div>
+          <div
+            use:tooltip={{
+              content: getTooltipContent(
+                "Custom your token category to diversify your portfolio on your own way",
+                CustomAllocationVideo
+              ),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+          >
+            Custom token category
+          </div>
+          <div
+            use:tooltip={{
+              content: getTooltipContent(
+                "Know what is your portfolio risk, in every single token you hold",
+                RiskVideo
+              ),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+          >
+            Risks analysis
+          </div>
+          <div
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+            use:tooltip={{
+              content: getTooltipContent("", ReturnVideo),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+          >
+            Returns analysis
+          </div>
+          <div
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+            use:tooltip={{
+              content: getTooltipContent("", RiskReturnVideo),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+          >
+            Risks & Returns analysis
+          </div>
+          <div
+            class="text-base text-black underline decoration-dotted cursor-pointer"
+            use:tooltip={{
+              content: getTooltipContent(
+                "We suggest you how to optimize your portfolio to minimize the risk while maximizing the return",
+                RebalanceVideo
+              ),
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
+          >
+            Rebalance Strategy
+          </div>
           <div class="text-base text-black">Professional community (Soon)</div>
 
           <div

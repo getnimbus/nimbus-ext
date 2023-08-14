@@ -867,7 +867,7 @@
                     <div class="xl:text-2xl text-4xl font-medium text-black">
                       Comparing with
                     </div>
-                    <div class="xl:text-lg text-xl text-black font-medium">
+                    <div class="text-black font-medium">
                       <Copy
                         isShorten
                         address={searchCompare}
@@ -953,7 +953,7 @@
                                 class="flex-1"
                                 id={suggestion.name}
                                 use:tooltip={{
-                                  content: `<tooltip-detail text="Comming soon!" />`,
+                                  content: `<tooltip-detail text="Coming soon!" />`,
                                   allowHTML: true,
                                   placement: "top",
                                   interactive: true,
@@ -966,7 +966,7 @@
                                   }}
                                   variant="disabled"
                                 >
-                                  <div class="xl:text-base text-2xl">
+                                  <div class="">
                                     {suggestion.name}
                                   </div>
                                 </Button>
@@ -1028,7 +1028,7 @@
           {#if isLoading || searchCompare.length === 0}
             <Button variant="disabled">
               <div class="flex items-center gap-1">
-                <div class="xl:text-base text-2xl">Get re-balance action</div>
+                <div class="">Get re-balance action</div>
                 <img
                   src={LeftArrow}
                   alt=""

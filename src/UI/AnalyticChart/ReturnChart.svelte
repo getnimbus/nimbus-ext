@@ -147,7 +147,6 @@
             ]),
           };
         });
-        console.log({ series });
         optionBar = {
           ...optionBar,
           // legend: {
