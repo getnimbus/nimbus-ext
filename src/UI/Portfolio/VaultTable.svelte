@@ -29,6 +29,9 @@
   });
 
   const toggleSortTVL = () => {
+    if (packageSelected === "FREE") {
+      return;
+    }
     switch (sortTVL) {
       case "default":
         sortTVL = "ascend";
@@ -77,6 +80,10 @@
   };
 
   const toggleSortAPY = () => {
+    if (packageSelected === "FREE") {
+      return;
+    }
+
     switch (sortAPY) {
       case "default":
         sortAPY = "ascend";
@@ -209,7 +216,7 @@
             </td>
           </tr>
         {:else}
-          {#each formatData as item}
+          {#each formatData.slice(0, packageSelected === "FREE" ? 10 : undefined) as item}
             <tr
               class="group transition-all cursor-pointer"
               on:click={() => {
@@ -291,12 +298,17 @@
             class="absolute z-10 left-0 right-0 bottom-0 top-[220px] flex justify-center pt-10 bg-white/90 backdrop-blur-md bg-gradient-to-t from-white via-white to-transparent"
           >
             <td colspan="5" class="flex flex-col items-center gap-1">
-              <div class="text-lg">
-                Upgrade to Premium to access all other opportunities
+              <div class="text-lg font-medium">
+                Use Nimbus at its full potential
               </div>
-              <div class="w-max">
+              <div class="text-gray-500 text-base">
+                Upgrade to Premium to access all other <span class="font-medium"
+                  >{formatData.length - 5}</span
+                > opportunities
+              </div>
+              <div class="w-max mt-2">
                 <Button variant="premium" on:click={() => navigate("/upgrade")}
-                  >Upgrade</Button
+                  >Start 30-day Trial</Button
                 >
               </div>
             </td>
