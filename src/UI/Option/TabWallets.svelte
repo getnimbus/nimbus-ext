@@ -696,7 +696,7 @@
         {/if}
         {#if showDisableAddWallet}
           <div
-            class="absolute transform -top-8 right-0"
+            class="absolute transform -top-12 right-0"
             style="z-index: 2147483648;"
           >
             <tooltip-detail text={tooltipDisableAddBtn} />

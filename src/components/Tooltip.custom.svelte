@@ -6,7 +6,7 @@
 </script>
 
 <div
-  class="text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+  class="text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case max-w-[350px]"
 >
   {#if link.length !== 0}
     {text}
