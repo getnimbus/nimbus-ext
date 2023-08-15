@@ -403,13 +403,13 @@
 
   $: drawDownCompareAvg = getPostionInRage(
     Number(compareData?.base?.drawDown || 0),
-    Number(compareData?.base?.avgMarket?.minDrawDown || 0),
-    Number(compareData?.base?.avgMarket?.maxDrawDown || 0)
+    Number(compareData?.base?.avgMarket?.minDrawdown || 0),
+    Number(compareData?.base?.avgMarket?.maxDrawdown || 0)
   );
 
   $: drawDownAvgMarket = (
-    (Number(compareData?.base?.avgMarket?.minDrawDown || 0) +
-      Number(compareData?.base?.avgMarket?.maxDrawDown || 0)) /
+    (Number(compareData?.base?.avgMarket?.minDrawdown || 0) +
+      Number(compareData?.base?.avgMarket?.maxDrawdown || 0)) /
     2
   ).toFixed(2);
 </script>

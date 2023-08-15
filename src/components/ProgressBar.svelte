@@ -20,14 +20,16 @@
       />
       <div
         class="absolute bottom-5 transform -translate-x-1/2"
-        style={`left: ${progress}%;`}
+        style={`left: ${Math.min(Math.max(progress, 0), 100)}%;`}
       >
         <div class="relative text-white bg-black px-2 py-1 rounded-md">
           <div class="text-xs">{tooltipText}</div>
           <div class="tooltip-arrow" />
         </div>
       </div>
-      <div class="absolute top-5 text-sm left-1/2 transform -translate-x-1/2">
+      <div
+        class="absolute top-5 text-sm left-1/2 transform -translate-x-1/2 whitespace-nowrap"
+      >
         {averageText}
       </div>
     </div>
