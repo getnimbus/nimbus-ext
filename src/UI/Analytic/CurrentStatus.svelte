@@ -504,27 +504,37 @@
                 },
                 data: [
                   {
-                    value: formatDataBarChart
-                      .find((data) => data.name === "portfolio")
-                      .values.reduce((prev, item) => prev + item, 0),
+                    value: formatDataBarChart.find(
+                      (data) => data.name === "portfolio"
+                    ).values[
+                      formatDataBarChart.find(
+                        (data) => data.name === "portfolio"
+                      ).values.length - 1
+                    ],
                     itemStyle: {
                       color: "#00b580",
                     },
                   },
                   {
-                    value: formatDataBarChart
-                      .find((data) => data.name === "eth")
-                      .values.reduce((prev, item) => prev + item, 0),
+                    value: formatDataBarChart.find(
+                      (data) => data.name === "btc"
+                    ).values[
+                      formatDataBarChart.find((data) => data.name === "btc")
+                        .values.length - 1
+                    ],
                     itemStyle: {
-                      color: "#547fef",
+                      color: "#f7931a",
                     },
                   },
                   {
-                    value: formatDataBarChart
-                      .find((data) => data.name === "btc")
-                      .values.reduce((prev, item) => prev + item, 0),
+                    value: formatDataBarChart.find(
+                      (data) => data.name === "eth"
+                    ).values[
+                      formatDataBarChart.find((data) => data.name === "eth")
+                        .values.length - 1
+                    ],
                     itemStyle: {
-                      color: "#f7931a",
+                      color: "#547fef",
                     },
                   },
                 ],
