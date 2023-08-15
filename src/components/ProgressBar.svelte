@@ -23,7 +23,7 @@
         style={`left: ${Math.min(Math.max(progress, 0), 100)}%;`}
       >
         <div class="relative text-white bg-black px-2 py-1 rounded-md">
-          <div class="text-xs">{tooltipText}</div>
+          <div class="text-xs whitespace-nowrap">{tooltipText}</div>
           <div class="tooltip-arrow" />
         </div>
       </div>
