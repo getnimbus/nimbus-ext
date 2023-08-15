@@ -788,7 +788,7 @@
                           {#each formatListAddress as item}
                             <div
                               id={item.value}
-                              class="relative xl:text-base text-2xl text-white py-1 xl:px-2 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                              class="relative xl:text-base text-2xl text-white py-1 xl:pl-2 xl:pr-3 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
                               class:hover:no-underline={item.value ===
                                 selectedWallet}
                               on:click={() => {
