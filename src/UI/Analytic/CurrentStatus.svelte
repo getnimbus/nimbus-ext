@@ -28,6 +28,8 @@
   import TrendUp from "~/assets/trend-up.svg";
   import Logo from "~/assets/logo-1.svg";
 
+  export let packageSelected;
+
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
     performance: i18n("newtabPage.performance", "Performance"),
@@ -304,8 +306,10 @@
   };
 
   const getHoldingToken = async (isReload: boolean = false) => {
+    if (packageSelected === "FREE") {
+      return;
+    }
     isLoadingDataPie = true;
-
     try {
       const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
         address: selectedWallet,
@@ -345,6 +349,9 @@
   };
 
   const getPersonalizeTag = async () => {
+    if (packageSelected === "FREE") {
+      return;
+    }
     try {
       const response = await nimbus.get(
         `/address/${selectedWallet}/personalize/tag`
@@ -377,6 +384,9 @@
   };
 
   const getOverview = async (isReload: boolean = false) => {
+    if (packageSelected === "FREE") {
+      return;
+    }
     isLoadingPerformanceChart = true;
     isEmptyPerformanceChart = false;
     try {

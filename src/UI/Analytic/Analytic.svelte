@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getAddressContext } from "~/utils";
-  import { wallet, chain } from "~/store";
+  import { wallet, chain, selectedPackage } from "~/store";
   import { useNavigate } from "svelte-navigator";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
@@ -26,10 +26,18 @@
     selectedChain = value;
   });
 
+  let packageSelected = "";
+  selectedPackage.subscribe((value) => {
+    packageSelected = value;
+  });
+
   let isShowSoon = false;
   $: {
     if (selectedWallet) {
-      if (getAddressContext(selectedWallet)?.type === "BTC") {
+      if (
+        getAddressContext(selectedWallet)?.type === "BTC" ||
+        packageSelected === "FREE"
+      ) {
         isShowSoon = true;
       } else {
         isShowSoon = false;
@@ -44,7 +52,7 @@
       <div
         class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md space-y-4"
       >
-        <CurrentStatus />
+        <CurrentStatus {packageSelected} />
 
         <section class="overflow-hidden">
           <div
@@ -89,15 +97,15 @@
           </div>
         </section>
 
-        <RiskChart />
+        <RiskChart {packageSelected} />
 
-        <ReturnChart />
+        <ReturnChart {packageSelected} />
 
-        <RiskReturnChart />
+        <RiskReturnChart {packageSelected} />
 
-        <MoneyFlow />
+        <MoneyFlow {packageSelected} />
 
-        <PastPerformance />
+        <PastPerformance {packageSelected} />
 
         <!-- <Personality /> -->
       </div>
@@ -105,12 +113,28 @@
         <div
           class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-30 backdrop-blur-md"
         >
-          <div class="text-lg">Comming soon 🚀</div>
-          <div class="w-max">
-            <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
-              <Button variant="secondary">Request analytics</Button>
-            </a>
-          </div>
+          {#if packageSelected === "FREE"}
+            <div class="flex flex-col items-center gap-1">
+              <div class="text-lg font-medium">
+                Use Nimbus at its full potential
+              </div>
+              <div class="text-gray-500 text-base">
+                Upgrade to Premium to access Analytics feature
+              </div>
+            </div>
+            <div class="w-max mt-2">
+              <Button variant="premium" on:click={() => navigate("/upgrade")}
+                >Start 30-day Trial</Button
+              >
+            </div>
+          {:else}
+            <div class="text-lg">Comming soon 🚀</div>
+            <div class="w-max">
+              <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
+                <Button variant="secondary">Request analytics</Button>
+              </a>
+            </div>
+          {/if}
         </div>
       {/if}
     </div>

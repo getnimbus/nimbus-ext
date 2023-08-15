@@ -25,6 +25,8 @@
 
   import Logo from "~/assets/logo-1.svg";
 
+  export let packageSelected;
+
   const riskTypeChart = [
     {
       label: "Overview",
@@ -190,6 +192,9 @@
   };
 
   const getAnalyticCompare = async () => {
+    if (packageSelected === "FREE") {
+      return;
+    }
     isLoadingDataCompare = true;
     isEmptyDataCompare = false;
     try {

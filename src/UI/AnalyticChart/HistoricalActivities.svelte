@@ -11,6 +11,8 @@
 
   import CalendarChart from "~/components/CalendarChart.svelte";
 
+  export let packageSelected;
+
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
@@ -93,6 +95,9 @@
   };
 
   const getAnalyticHistorical = async () => {
+    if (packageSelected === "FREE") {
+      return;
+    }
     isLoadingChart = true;
     try {
       const response: AnalyticHistoricalRes = await sendMessage("getAnalytic", {

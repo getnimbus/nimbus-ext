@@ -12,6 +12,8 @@
 
   import Logo from "~/assets/logo-1.svg";
 
+  export let packageSelected;
+
   const listDirection = ["inflow", "outflow"];
 
   let selectedWallet: string = "";
@@ -169,6 +171,9 @@
   };
 
   const getInflowOutflow = async () => {
+    if (packageSelected === "FREE") {
+      return;
+    }
     isLoadingInflowOutflow = true;
     try {
       const response: any = await sendMessage("getInflowOutflow", {

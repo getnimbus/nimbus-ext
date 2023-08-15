@@ -12,6 +12,8 @@
   import Button from "~/components/Button.svelte";
   import HistoricalActivities from "../AnalyticChart/HistoricalActivities.svelte";
 
+  export let packageSelected;
+
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
@@ -37,6 +39,9 @@
   // };
 
   const getTotalValueHistoryAndDailyGain = async () => {
+    if (packageSelected === "FREE") {
+      return;
+    }
     isLoading = true;
     try {
       const response: any = await sendMessage("getTotalValueHistory", {
@@ -96,9 +101,9 @@
     <DailyPnL {isLoading} {isEmpty} {dataDailyPnL} />
     <SectorGrowth /> -->
     {#if typeWalletAddress === "DEX"}
-      <TotalGasFee />
+      <TotalGasFee {packageSelected} />
     {:else}
-      <HistoricalActivities />
+      <HistoricalActivities {packageSelected} />
     {/if}
   </div>
 </div>

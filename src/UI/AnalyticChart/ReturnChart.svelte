@@ -19,6 +19,8 @@
   import TrendDown from "~/assets/trend-down.svg";
   import Logo from "~/assets/logo-1.svg";
 
+  export let packageSelected;
+
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
@@ -102,6 +104,9 @@
   };
 
   const getAnalyticCompare = async () => {
+    if (packageSelected === "FREE") {
+      return;
+    }
     isLoadingDataCompare = true;
     isEmptyDataCompare = false;
     try {

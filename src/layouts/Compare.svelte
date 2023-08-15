@@ -1,12 +1,13 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { wallet } from "~/store";
+  import { wallet, selectedPackage } from "~/store";
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
   import { formatCurrency, typeList } from "~/utils";
   import { groupBy } from "lodash";
   import { getChangePercent } from "~/chart-utils";
+  import { useNavigate } from "svelte-navigator";
 
   import type { TokenData } from "~/types/HoldingTokenData";
 
@@ -29,6 +30,13 @@
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
   };
+
+  const navigate = useNavigate();
+
+  let packageSelected = "";
+  selectedPackage.subscribe((value) => {
+    packageSelected = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -203,6 +211,9 @@
   };
 
   const getPersonalizeTag = async () => {
+    if (packageSelected === "FREE") {
+      return;
+    }
     try {
       const response = await nimbus.get(
         `/address/${selectedWallet}/personalize/tag`
@@ -256,6 +267,9 @@
   };
 
   const getAnalyticCompare = async () => {
+    if (packageSelected === "FREE") {
+      return;
+    }
     isLoadingDataCompare = true;
     try {
       const response: any = await nimbus.get(
@@ -394,6 +408,9 @@
   };
 
   const handleGetAllData = async () => {
+    if (packageSelected === "FREE") {
+      return;
+    }
     isLoading = true;
     try {
       const [resCompare, resPersonalizeTag] = await Promise.all([
@@ -800,7 +817,7 @@
 
 <ErrorBoundary>
   <div
-    class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 flex flex-col gap-10"
+    class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 flex flex-col gap-10 relative"
   >
     <div class="flex flex-col gap-2 justify-center">
       <div class="xl:text-5xl text-7xl text-black font-medium">Compare</div>
@@ -1135,6 +1152,26 @@
         </div>
       {/if}
     </div>
+
+    {#if packageSelected === "FREE"}
+      <div
+        class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-30 backdrop-blur-md"
+      >
+        <div class="flex flex-col items-center gap-1">
+          <div class="text-lg font-medium">
+            Use Nimbus at its full potential
+          </div>
+          <div class="text-gray-500 text-base">
+            Upgrade to Premium to access Compare feature
+          </div>
+        </div>
+        <div class="w-max mt-2">
+          <Button variant="premium" on:click={() => navigate("/upgrade")}
+            >Start 30-day Trial</Button
+          >
+        </div>
+      </div>
+    {/if}
   </div>
 
   <AppOverlay

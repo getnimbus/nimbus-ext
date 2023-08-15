@@ -21,6 +21,8 @@
   import { getPostionInRage } from "~/chart-utils";
   import CtaIcon from "~/components/CtaIcon.svelte";
 
+  export let packageSelected;
+
   const riskTypeChart = [
     {
       label: "Overview",
@@ -193,6 +195,9 @@
   };
 
   const getAnalyticCompare = async () => {
+    if (packageSelected === "FREE") {
+      return;
+    }
     isLoadingDataCompare = true;
     try {
       const response: any = await nimbus.get(
