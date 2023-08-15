@@ -303,7 +303,9 @@
               </div>
               <div class="text-gray-500 text-base">
                 Upgrade to Premium to access all other <span class="font-medium"
-                  >{formatData.length - 5}</span
+                  >{formatData.length - 5 > 0
+                    ? formatData.length - 5
+                    : ""}</span
                 > opportunities
               </div>
               <div class="w-max mt-2">
