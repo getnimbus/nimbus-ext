@@ -683,7 +683,8 @@
         </div>
       {:else}
         <div
-          class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md"
+          class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8"
+          style="box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.10);"
         >
           <Charts
             {handleSelectedTableTokenHolding}

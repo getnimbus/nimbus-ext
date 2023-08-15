@@ -50,7 +50,8 @@
   <span slot="body">
     <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[96%] relative">
       <div
-        class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md space-y-4"
+        class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 space-y-4"
+        style="box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.10);"
       >
         <CurrentStatus {packageSelected} />
 
