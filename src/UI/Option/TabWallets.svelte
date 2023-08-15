@@ -801,7 +801,7 @@
                 <td class="pr-3 py-4">
                   <div class="flex justify-end gap-6">
                     <div
-                      class="text-red-600 hover:underline dark:text-red-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
+                      class="text-red-600 hover:underline dark:text-red-500 xl:text-base text-2xl transition-all cursor-pointer"
                       on:click={() => {
                         isOpenConfirmDelete = true;
                         selectedWallet = item;
@@ -810,7 +810,7 @@
                       {MultipleLang.content.modal_delete}
                     </div>
                     <div
-                      class="text-blue-600 hover:underline dark:text-blue-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
+                      class="text-blue-600 hover:underline dark:text-blue-500 xl:text-base text-2xl transition-all cursor-pointer"
                       on:click={() => handleSelectedEdit(item)}
                     >
                       {MultipleLang.content.modal_edit}
