@@ -386,6 +386,13 @@
   };
 
   const getHoldingNFT = async (isReload: boolean = false) => {
+    if (
+      typeWalletAddress === "CEX" ||
+      (typeWalletAddress === "DEX" &&
+        getAddressContext(selectedWallet).type === "EVM")
+    ) {
+      return [];
+    }
     try {
       const response: HoldingNFTRes = await sendMessage("getHoldingNFT", {
         address: selectedWallet,
