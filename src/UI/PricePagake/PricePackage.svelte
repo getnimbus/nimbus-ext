@@ -217,7 +217,7 @@
         <div class="flex flex-col border-b-[1px] border-[#0000001a] pb-4">
           <div class="xl:text-xl text-2xl font-medium">EXPLORER</div>
           <div class="xl:text-lg text-xl text-gray-500">
-            Start maximizing your return and reduce your risk
+            Boost your return and reduce your risk
           </div>
         </div>
         <div class="mt-4 flex flex-col items-start gap-2">
@@ -384,7 +384,7 @@
         <div class="flex flex-col border-b-[1px] border-[#0000001a] pb-4">
           <div class="xl:text-xl text-2xl font-medium">PROFESSIONAL</div>
           <div class="xl:text-lg text-xl text-gray-500">
-            Enjoy maximize your return with no limited access
+            Enjoy all the features without any limited
           </div>
         </div>
         <div class="mt-4 flex flex-col items-start gap-2">
