@@ -591,7 +591,7 @@
             </div>
           {/each}
           <div
-            class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2"
+            class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 xl:text-base text-xl"
             on:click={() => {
               selectedPackage = undefined;
             }}
