@@ -559,7 +559,7 @@
       Upgrade Plan
     </div>
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
-      <div class="flex flex-col justify-center min-h-[700px]">
+      <div class="flex flex-col justify-center min-h-[500px]">
         <div class="flex flex-col items-center gap-1">
           <div class="flex items-center gap-1 xl:text-lg text-xl">
             You're going to upgrade to plan <span class="font-medium"
@@ -591,7 +591,7 @@
             </div>
           {/each}
           <div
-            class="text-[#1E96FC] font-medium xl:text-lg text-xl cursor-pointer flex items-center gap-2 mt-2"
+            class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2"
             on:click={() => {
               selectedPackage = undefined;
             }}
