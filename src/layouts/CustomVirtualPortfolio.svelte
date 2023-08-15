@@ -294,7 +294,7 @@
           <div class="flex items-center gap-4 w-max">
             {#if selectedVirtualPortfolio && selectedVirtualPortfolio !== null && Object.keys(selectedVirtualPortfolio).length !== 0}
               <div
-                class="text-red-500 font-medium cursor-pointer xl:text-lg text-2xl"
+                class="text-red-500 cursor-pointer xl:text-lg text-2xl"
                 on:click={handleDelete}
               >
                 Delete

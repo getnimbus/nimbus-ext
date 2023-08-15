@@ -661,7 +661,7 @@
             <div class="flex items-center gap-4 w-max">
               {#if selectedCustom && selectedCustom !== null && Object.keys(selectedCustom).length !== 0}
                 <div
-                  class="text-red-500 font-medium cursor-pointer xl:text-lg text-2xl"
+                  class="text-red-500 cursor-pointer"
                   on:click={deleteCustomCategory}
                 >
                   Delete
@@ -683,9 +683,7 @@
                 {#if listCustom.length > 2}
                   <Button variant="disabled" disabled>
                     <img src={Plus} alt="" width="12" height="12" />
-                    <div class="xl:text-base text-2xl font-medium text-white">
-                      Add Category
-                    </div>
+                    <div class="font-medium text-white">Add Category</div>
                   </Button>
                 {:else}
                   <Button
@@ -696,9 +694,7 @@
                     }}
                   >
                     <img src={Plus} alt="" width="12" height="12" />
-                    <div class="xl:text-base text-2xl font-medium text-white">
-                      Add Category
-                    </div>
+                    <div class="font-medium text-white">Add Category</div>
                   </Button>
                 {/if}
                 {#if showDisableAddBtn}
@@ -906,11 +902,7 @@
                           showSetTag = true;
                         }}
                       >
-                        <div
-                          class="xl:text-base text-2xl font-medium text-white"
-                        >
-                          Set Tag
-                        </div>
+                        <div class=" text-white">Set Tag</div>
                       </Button>
                     </div>
                   {/if}

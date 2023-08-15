@@ -864,7 +864,7 @@
         />
       </div>
       {#if errorsEdit.address && errorsEdit.address.required}
-        <div class="text-red-500 font-medium">
+        <div class="text-red-500">
           {errorsEdit.address.msg}
         </div>
       {/if}
@@ -892,7 +892,7 @@
         />
       </div>
       {#if errorsEdit.label && errorsEdit.label.required}
-        <div class="text-red-500 font-medium">
+        <div class="text-red-500">
           {errorsEdit.label.msg}
         </div>
       {/if}
