@@ -21,7 +21,10 @@
   import { getPostionInRage } from "~/chart-utils";
   import CtaIcon from "~/components/CtaIcon.svelte";
 
-  export let packageSelected;
+  export let isLoadingDataCompare;
+  export let isEmptyDataCompare;
+  export let data;
+  export let dataRiskBreakdown;
 
   const riskTypeChart = [
     {
@@ -49,12 +52,8 @@
     typeWalletAddress = value;
   });
 
-  let compareData = {};
-  let errorMsg = "";
   let selectedTypeChart = "overview";
   let riskBreakdownData = [];
-  let isLoadingDataCompare = false;
-  let isEmptyDataCompare = false;
   let dataShrapeRatioGroup = {};
   let optionBar = {
     tooltip: {
@@ -194,195 +193,163 @@
     ],
   };
 
-  const getAnalyticCompare = async () => {
-    if (packageSelected === "FREE") {
-      return;
-    }
-    isLoadingDataCompare = true;
-    try {
-      const response: any = await nimbus.get(
-        `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`
-      );
-      if (response && response.data) {
-        compareData = response.data;
+  $: {
+    if (
+      !isEmptyDataCompare &&
+      data !== undefined &&
+      dataRiskBreakdown &&
+      dataRiskBreakdown.length !== 0
+    ) {
+      riskBreakdownData = dataRiskBreakdown;
 
-        const chartDataResponse = await nimbus
-          .get(`/v2/analysis/${selectedWallet}/risk-breakdown`)
-          .then((res) => res.data);
+      const listKey = Object.getOwnPropertyNames(data);
+      const legendDataBarChart = listKey.map((item) => {
+        let data = {
+          name: "",
+          // itemStyle: {
+          //   color: "",
+          // },
+        };
+        switch (item) {
+          case "btc":
+            data = {
+              name: "Bitcoin",
+              // itemStyle: {
+              //   color: "#f7931a",
+              // },
+            };
+            break;
+          case "eth":
+            data = {
+              name: "Ethereum",
+              // itemStyle: {
+              //   color: "#547fef",
+              // },
+            };
+            break;
+          case "base":
+            data = {
+              name: "This wallet",
+              // itemStyle: {
+              //   color: "#00b580",
+              // },
+            };
+            break;
+          case "compare":
+            data = {
+              name: "Compare wallet",
+              // itemStyle: {
+              //   color: "rgba(178,184,255,1)",
+              // },
+            };
+            break;
+        }
+        return data;
+      });
 
-        riskBreakdownData = chartDataResponse;
+      const scatterData = listKey.map((item) => {
+        let custom = {
+          name: "",
+          color: "",
+        };
+        switch (item) {
+          case "btc":
+            custom = {
+              name: "Bitcoin",
+              color: "#f7931a",
+            };
+            break;
+          case "eth":
+            custom = {
+              name: "Ethereum",
+              color: "#547fef",
+            };
+            break;
+          case "base":
+            custom = {
+              name: "This wallet",
+              color: "#00b580",
+            };
+            break;
+          case "compare":
+            custom = {
+              name: "Compare wallet",
+              color: "rgba(178,184,255,1)",
+            };
+            break;
+        }
 
-        const listKey = Object.getOwnPropertyNames(response.data);
-        const legendDataBarChart = listKey.map((item) => {
-          let data = {
-            name: "",
-            // itemStyle: {
-            //   color: "",
-            // },
-          };
-          switch (item) {
-            case "btc":
-              data = {
-                name: "Bitcoin",
-                // itemStyle: {
-                //   color: "#f7931a",
-                // },
-              };
-              break;
-            case "eth":
-              data = {
-                name: "Ethereum",
-                // itemStyle: {
-                //   color: "#547fef",
-                // },
-              };
-              break;
-            case "base":
-              data = {
-                name: "This wallet",
-                // itemStyle: {
-                //   color: "#00b580",
-                // },
-              };
-              break;
-            case "compare":
-              data = {
-                name: "Compare wallet",
-                // itemStyle: {
-                //   color: "rgba(178,184,255,1)",
-                // },
-              };
-              break;
-          }
-          return data;
-        });
-
-        const scatterData = listKey.map((item) => {
-          let custom = {
-            name: "",
-            color: "",
-          };
-          switch (item) {
-            case "btc":
-              custom = {
-                name: "Bitcoin",
-                color: "#f7931a",
-              };
-              break;
-            case "eth":
-              custom = {
-                name: "Ethereum",
-                color: "#547fef",
-              };
-              break;
-            case "base":
-              custom = {
-                name: "This wallet",
-                color: "#00b580",
-              };
-              break;
-            case "compare":
-              custom = {
-                name: "Compare wallet",
-                color: "rgba(178,184,255,1)",
-              };
-              break;
-          }
-
-          return {
-            name: custom.name,
-            type: "scatter",
-            symbolSize: 30,
-            itemStyle: {
-              color: custom.color,
-            },
-            data: [
-              [
-                Number(response.data[item].volatility),
-                Number(response.data[item].netWorthChange?.networth30D),
-              ],
+        return {
+          name: custom.name,
+          type: "scatter",
+          symbolSize: 30,
+          itemStyle: {
+            color: custom.color,
+          },
+          data: [
+            [
+              Number(data[item].volatility),
+              Number(data[item].netWorthChange?.networth30D),
             ],
-          };
-        });
-
-        const tokenScatterData = chartDataResponse.map((token) => {
-          return {
-            name: token.symbol,
-            type: "scatter",
-            symbolSize: 10,
-            data: [[token.volatility, token.change30DPercent]],
-          };
-        });
-
-        const shrapeRatioGroup = groupBy(
-          chartDataResponse,
-          (item) => item.sharpeRatioLabel
-        );
-
-        dataShrapeRatioGroup = shrapeRatioGroup;
-
-        riskBreakdownChartOption = {
-          ...riskBreakdownChartOption,
-          series: [
-            {
-              ...riskBreakdownChartOption.series[0],
-              data: Object.keys(shrapeRatioGroup).map((riskType) => {
-                return {
-                  name: riskType,
-                  value: sumBy(
-                    shrapeRatioGroup[riskType],
-                    (item) => Number(item.amount) * Number(item.rate)
-                  ),
-                };
-              }),
-            },
           ],
         };
+      });
 
-        optionBar = {
-          ...optionBar,
-          legend: {
-            data: legendDataBarChart,
-          },
-          series: [...scatterData, ...tokenScatterData],
+      const tokenScatterData = dataRiskBreakdown.map((token) => {
+        return {
+          name: token.symbol,
+          type: "scatter",
+          symbolSize: 10,
+          data: [[token.volatility, token.change30DPercent]],
         };
-        isLoadingDataCompare = false;
-      } else {
-        errorMsg = response.error;
-        isLoadingDataCompare = false;
-        isEmptyDataCompare = true;
-      }
-    } catch (e) {
-      console.error("e: ", e);
-      isLoadingDataCompare = false;
-      isEmptyDataCompare = true;
-    }
-  };
+      });
 
-  $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        if (
-          getAddressContext(selectedWallet)?.type === "EVM" ||
-          typeWalletAddress === "CEX"
-        ) {
-          getAnalyticCompare();
-        }
-      }
+      const shrapeRatioGroup = groupBy(
+        dataRiskBreakdown,
+        (item) => item.sharpeRatioLabel
+      );
+
+      dataShrapeRatioGroup = shrapeRatioGroup;
+
+      riskBreakdownChartOption = {
+        ...riskBreakdownChartOption,
+        series: [
+          {
+            ...riskBreakdownChartOption.series[0],
+            data: Object.keys(shrapeRatioGroup).map((riskType) => {
+              return {
+                name: riskType,
+                value: sumBy(
+                  shrapeRatioGroup[riskType],
+                  (item) => Number(item.amount) * Number(item.rate)
+                ),
+              };
+            }),
+          },
+        ],
+      };
+
+      optionBar = {
+        ...optionBar,
+        legend: {
+          data: legendDataBarChart,
+        },
+        series: [...scatterData, ...tokenScatterData],
+      };
     }
   }
 
   $: goodPerf = maxBy(riskBreakdownData, (item) => item.change30DPercent);
   $: badPerf = minBy(riskBreakdownData, (item) => item.change30DPercent);
   $: sharpeRatioCompareAvg = getPostionInRage(
-    Number(compareData?.base?.sharpeRatio || 0),
-    Number(compareData?.base?.avgMarket?.minShapreRatio || 0),
-    Number(compareData?.base?.avgMarket?.maxShapreRatio || 0)
+    Number(data?.base?.sharpeRatio || 0),
+    Number(data?.base?.avgMarket?.minShapreRatio || 0),
+    Number(data?.base?.avgMarket?.maxShapreRatio || 0)
   );
 
   $: sharpeRatioAvgMarket = (
-    (Number(compareData?.base?.avgMarket?.minShapreRatio || 0) +
-      Number(compareData?.base?.avgMarket?.maxShapreRatio || 0)) /
+    (Number(data?.base?.avgMarket?.minShapreRatio || 0) +
+      Number(data?.base?.avgMarket?.maxShapreRatio || 0)) /
     2
   ).toFixed(2);
 </script>
@@ -413,7 +380,8 @@
           <div
             class="absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg"
           >
-            {errorMsg}
+            Not enough data. CEX integration can only get data from the day you
+            connect
           </div>
         {:else}
           <div class="flex flex-col gap-4">
@@ -433,7 +401,7 @@
               <div class="col-span-1 flex items-center justify-end">
                 <div class="xl:text-base text-2xl">
                   <TooltipNumber
-                    number={compareData?.base?.sharpeRatio}
+                    number={data?.base?.sharpeRatio}
                     type="percent"
                   />
                 </div>
@@ -522,7 +490,7 @@
               lowerIsBetter={false}
               tooltipText="Shapre Ratio"
             />
-            {#if compareData?.base?.sharpeRatio < 1}
+            {#if data?.base?.sharpeRatio < 1}
               <div class="mt-5">
                 <CtaIcon isGood={false} />
                 <span class="text-red-500"
@@ -530,7 +498,7 @@
                 >
                 It has expected yield only
                 <span class="font-medium"
-                  >{compareData?.base?.sharpeRatio?.toFixed(2)}</span
+                  >{data?.base?.sharpeRatio?.toFixed(2)}</span
                 >
                 units of profit per <span class="font-medium">1</span> unit of risk.
               </div>
@@ -552,7 +520,8 @@
           <div
             class="flex justify-center items-center h-full xl:text-xs text-lg h-[465px]"
           >
-            {errorMsg}
+            Not enough data. CEX integration can only get data from the day you
+            connect
           </div>
         {:else}
           <div class="flex flex-row mb-2">

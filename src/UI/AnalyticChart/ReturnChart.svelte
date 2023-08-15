@@ -19,7 +19,9 @@
   import TrendDown from "~/assets/trend-down.svg";
   import Logo from "~/assets/logo-1.svg";
 
-  export let packageSelected;
+  export let isLoadingDataCompare;
+  export let isEmptyDataCompare;
+  export let data;
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -36,10 +38,6 @@
     typeWalletAddress = value;
   });
 
-  let compareData = {};
-  let errorMsg = "";
-  let isLoadingDataCompare = false;
-  let isEmptyDataCompare = false;
   let optionBar = {
     tooltip: {
       extraCssText: "z-index: 9997",
@@ -103,97 +101,65 @@
     series: [],
   };
 
-  const getAnalyticCompare = async () => {
-    if (packageSelected === "FREE") {
-      return;
-    }
-    isLoadingDataCompare = true;
-    isEmptyDataCompare = false;
-    try {
-      const response: any = await nimbus.get(
-        `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`
-      );
-      if (response && response.data) {
-        const nameConfig = {
-          base: {
-            name: "This wallet",
-            color: "#f7931a",
-          },
-          btc: {
-            name: "Bitcoin",
-            color: "#f7931a",
-          },
-          eth: {
-            name: "Ethereum",
-            color: "#547fef",
-          },
-        };
-
-        compareData = response.data;
-        const series = Object.keys(response.data).map((key) => {
-          const itemData = response.data[key];
-          const baseData = itemData.sparkline[0];
-          return {
-            name: nameConfig[key].name,
-            type: "bar",
-            barStyle: {
-              type: "solid",
-              color: nameConfig[key].color,
-            },
-            emphasis: {
-              focus: "series",
-            },
-            data: itemData.sparkline.map((item, index) => [
-              dayjs()
-                .startOf("day")
-                .subtract(30 - index)
-                .valueOf(),
-              getChangePercent(item, baseData),
-            ]),
-          };
-        });
-        optionBar = {
-          ...optionBar,
-          // legend: {
-          //   data: legendDataBarChart,
-          // },
-          series: series,
-        };
-
-        isLoadingDataCompare = false;
-      } else {
-        errorMsg = response.error;
-        isLoadingDataCompare = false;
-        isEmptyDataCompare = true;
-      }
-    } catch (e) {
-      console.log("e: ", e);
-      isLoadingDataCompare = false;
-      isEmptyDataCompare = true;
-    }
-  };
-
   $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        if (
-          getAddressContext(selectedWallet)?.type === "EVM" ||
-          typeWalletAddress === "CEX"
-        ) {
-          getAnalyticCompare();
-        }
-      }
+    if (!isEmptyDataCompare && data !== undefined) {
+      const nameConfig = {
+        base: {
+          name: "This wallet",
+          color: "#f7931a",
+        },
+        btc: {
+          name: "Bitcoin",
+          color: "#f7931a",
+        },
+        eth: {
+          name: "Ethereum",
+          color: "#547fef",
+        },
+      };
+
+      const listKey = Object.keys(data);
+      const series = listKey?.map((key) => {
+        const itemData = data[key];
+        const baseData = itemData.sparkline[0];
+        return {
+          name: nameConfig[key].name,
+          type: "bar",
+          barStyle: {
+            type: "solid",
+            color: nameConfig[key].color,
+          },
+          emphasis: {
+            focus: "series",
+          },
+          data: itemData.sparkline.map((item, index) => [
+            dayjs()
+              .startOf("day")
+              .subtract(30 - index)
+              .valueOf(),
+            getChangePercent(item, baseData),
+          ]),
+        };
+      });
+
+      optionBar = {
+        ...optionBar,
+        // legend: {
+        //   data: legendDataBarChart,
+        // },
+        series: series,
+      };
     }
   }
 
   $: sharpeRatioCompare = getChangePercent(
-    Number(compareData?.base?.sharpeRatio || 0),
-    Number(compareData?.btc?.sharpeRatio || 0)
+    Number(data?.base?.sharpeRatio || 0),
+    Number(data?.btc?.sharpeRatio || 0)
   );
 
   $: isReturn30Higher =
-    compareData?.base?.netWorthChange?.networth30D >
-    compareData?.btc?.netWorthChange?.networth30D;
+    data?.base?.netWorthChange?.networth30D >
+    data?.btc?.netWorthChange?.networth30D;
 </script>
 
 <AnalyticSection>
@@ -222,7 +188,8 @@
           <div
             class="absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg"
           >
-            {errorMsg}
+            Not enough data. CEX integration can only get data from the day you
+            connect
           </div>
         {:else}
           <div class="flex flex-col gap-4">
@@ -238,29 +205,25 @@
                 <div class={`xl:text-base text-2xl`}>
                   <span
                     class={`${
-                      compareData?.base?.netWorthChange?.networth1D < 0
+                      data?.base?.netWorthChange?.networth1D < 0
                         ? "text-red-500"
                         : "text-[#00A878]"
                     }`}
                   >
                     <TooltipNumber
-                      number={Math.abs(
-                        compareData?.base?.netWorthChange.networth1D
-                      )}
+                      number={Math.abs(data?.base?.netWorthChange.networth1D)}
                       type="percent"
                     />%</span
                   > <span class="text-gray-400">/</span>
                   <span
                     class={`${
-                      compareData?.btc?.netWorthChange?.networth1D < 0
+                      data?.btc?.netWorthChange?.networth1D < 0
                         ? "text-red-500"
                         : "text-[#00A878]"
                     }`}
                   >
                     <TooltipNumber
-                      number={Math.abs(
-                        compareData?.btc?.netWorthChange.networth1D
-                      )}
+                      number={Math.abs(data?.btc?.netWorthChange.networth1D)}
                       type="percent"
                     />%</span
                   >
@@ -280,29 +243,25 @@
                 <div class={`xl:text-base text-2xl`}>
                   <span
                     class={`${
-                      compareData?.base?.netWorthChange?.networth7D < 0
+                      data?.base?.netWorthChange?.networth7D < 0
                         ? "text-red-500"
                         : "text-[#00A878]"
                     }`}
                   >
                     <TooltipNumber
-                      number={Math.abs(
-                        compareData?.base?.netWorthChange.networth7D
-                      )}
+                      number={Math.abs(data?.base?.netWorthChange.networth7D)}
                       type="percent"
                     />%</span
                   > <span class="text-gray-400">/</span>
                   <span
                     class={`${
-                      compareData?.btc?.netWorthChange?.networth7D < 0
+                      data?.btc?.netWorthChange?.networth7D < 0
                         ? "text-red-500"
                         : "text-[#00A878]"
                     }`}
                   >
                     <TooltipNumber
-                      number={Math.abs(
-                        compareData?.btc?.netWorthChange.networth7D
-                      )}
+                      number={Math.abs(data?.btc?.netWorthChange.networth7D)}
                       type="percent"
                     />%</span
                   >
@@ -322,29 +281,25 @@
                 <div class={`xl:text-base text-2xl`}>
                   <span
                     class={`${
-                      compareData?.base?.netWorthChange?.networth30D < 0
+                      data?.base?.netWorthChange?.networth30D < 0
                         ? "text-red-500"
                         : "text-[#00A878]"
                     }`}
                   >
                     <TooltipNumber
-                      number={Math.abs(
-                        compareData?.base?.netWorthChange.networth30D
-                      )}
+                      number={Math.abs(data?.base?.netWorthChange.networth30D)}
                       type="percent"
                     />%</span
                   > <span class="text-gray-400">/</span>
                   <span
                     class={`${
-                      compareData?.btc?.netWorthChange?.networth30D < 0
+                      data?.btc?.netWorthChange?.networth30D < 0
                         ? "text-red-500"
                         : "text-[#00A878]"
                     }`}
                   >
                     <TooltipNumber
-                      number={Math.abs(
-                        compareData?.btc?.netWorthChange.networth30D
-                      )}
+                      number={Math.abs(data?.btc?.netWorthChange.networth30D)}
                       type="percent"
                     />%</span
                   >
@@ -364,29 +319,25 @@
                 <div class={`xl:text-base text-2xl`}>
                   <span
                     class={`${
-                      compareData?.base?.netWorthChange?.networth1Y < 0
+                      data?.base?.netWorthChange?.networth1Y < 0
                         ? "text-red-500"
                         : "text-[#00A878]"
                     }`}
                   >
                     <TooltipNumber
-                      number={Math.abs(
-                        compareData?.base?.netWorthChange.networth1Y
-                      )}
+                      number={Math.abs(data?.base?.netWorthChange.networth1Y)}
                       type="percent"
                     />%</span
                   > <span class="text-gray-400">/</span>
                   <span
                     class={`${
-                      compareData?.btc?.netWorthChange?.networth1Y < 0
+                      data?.btc?.netWorthChange?.networth1Y < 0
                         ? "text-red-500"
                         : "text-[#00A878]"
                     }`}
                   >
                     <TooltipNumber
-                      number={Math.abs(
-                        compareData?.btc?.netWorthChange.networth1Y
-                      )}
+                      number={Math.abs(data?.btc?.netWorthChange.networth1Y)}
                       type="percent"
                     />%</span
                   >
@@ -406,27 +357,25 @@
                 <div class={`xl:text-base text-2xl`}>
                   <span
                     class={`${
-                      compareData?.base?.changeLF?.portfolioChange < 0
+                      data?.base?.changeLF?.portfolioChange < 0
                         ? "text-red-500"
                         : "text-[#00A878]"
                     }`}
                   >
                     <TooltipNumber
-                      number={Math.abs(
-                        compareData?.base?.changeLF.portfolioChange
-                      )}
+                      number={Math.abs(data?.base?.changeLF.portfolioChange)}
                       type="percent"
                     />%</span
                   > <span class="text-gray-400">/</span>
                   <span
                     class={`${
-                      compareData?.base?.changeLF?.btcChange < 0
+                      data?.base?.changeLF?.btcChange < 0
                         ? "text-red-500"
                         : "text-[#00A878]"
                     }`}
                   >
                     <TooltipNumber
-                      number={Math.abs(compareData?.base?.changeLF.btcChange)}
+                      number={Math.abs(data?.base?.changeLF.btcChange)}
                       type="percent"
                     />%</span
                   >
@@ -441,8 +390,8 @@
               by
               <span class="font-medium"
                 >{Math.abs(
-                  compareData?.base?.netWorthChange?.networth30D -
-                    compareData?.btc?.netWorthChange?.networth30D
+                  data?.base?.netWorthChange?.networth30D -
+                    data?.btc?.netWorthChange?.networth30D
                 ).toFixed(2)}%</span
               >
             </div>
@@ -463,7 +412,8 @@
           <div
             class="flex justify-center items-center h-full xl:text-xs text-lg h-[465px]"
           >
-            {errorMsg}
+            Not enough data. CEX integration can only get data from the day you
+            connect
           </div>
         {:else}
           <div class="relative">

@@ -25,8 +25,6 @@
 
   import Logo from "~/assets/logo-1.svg";
 
-  export let packageSelected;
-
   const riskTypeChart = [
     {
       label: "Overview",
@@ -53,12 +51,13 @@
     typeWalletAddress = value;
   });
 
-  let compareData = {};
+  export let isLoadingDataCompare;
+  export let isEmptyDataCompare;
+  export let data;
+  export let dataRiskBreakdown;
+
   let selectedTypeChart = "overview";
-  let isLoadingDataCompare = false;
-  let isEmptyDataCompare = false;
   let dataRiskGroup = {};
-  let errorMsg = "";
   let optionBar = {
     tooltip: {
       trigger: "axis",
@@ -112,7 +111,6 @@
     ],
     series: [],
   };
-
   let riskBreakdownChartOption = {
     title: {
       text: "",
@@ -191,230 +189,197 @@
     ],
   };
 
-  const getAnalyticCompare = async () => {
-    if (packageSelected === "FREE") {
-      return;
-    }
-    isLoadingDataCompare = true;
-    isEmptyDataCompare = false;
-    try {
-      const response: any = await nimbus.get(
-        `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`
-      );
-      if (response && response.data) {
-        compareData = response.data;
+  $: {
+    if (
+      !isEmptyDataCompare &&
+      data !== undefined &&
+      dataRiskBreakdown &&
+      dataRiskBreakdown.length !== 0
+    ) {
+      const riskGroup = groupBy(dataRiskBreakdown, (item) => {
+        return item.volatilityLabel;
+      });
 
-        const chartDataResponse = await nimbus
-          .get(`/v2/analysis/${selectedWallet}/risk-breakdown`)
-          .then((res) => res.data);
+      // TODO: Break by high, medium, low risk
 
-        const riskGroup = groupBy(
-          chartDataResponse,
-          (item) => item.volatilityLabel
-        );
+      dataRiskGroup = riskGroup;
 
-        // TODO: Break by high, medium, low risk
+      riskBreakdownChartOption = {
+        ...riskBreakdownChartOption,
+        series: [
+          {
+            ...riskBreakdownChartOption.series[0],
+            data: Object.keys(riskGroup).map((riskType) => {
+              return {
+                name: riskType,
+                value: sumBy(
+                  riskGroup[riskType],
+                  (item) => Number(item.amount) * Number(item.rate)
+                ),
+              };
+            }),
+          },
+        ],
+      };
 
-        dataRiskGroup = riskGroup;
+      const listKey =
+        Object.keys(data).length !== 0 && Object.getOwnPropertyNames(data);
 
-        riskBreakdownChartOption = {
-          ...riskBreakdownChartOption,
-          series: [
+      const legendDataBarChart = listKey?.map((item) => {
+        let data = {
+          name: "",
+          itemStyle: {
+            color: "",
+          },
+        };
+        switch (item) {
+          case "btc":
+            data = {
+              name: "Bitcoin",
+              itemStyle: {
+                color: "#f7931a",
+              },
+            };
+            break;
+          case "eth":
+            data = {
+              name: "Ethereum",
+              itemStyle: {
+                color: "#547fef",
+              },
+            };
+            break;
+          case "base":
+            data = {
+              name: "This wallet",
+              itemStyle: {
+                color: "#00b580",
+              },
+            };
+            break;
+          case "compare":
+            data = {
+              name: "Compare wallet",
+              itemStyle: {
+                color: "rgba(178,184,255,1)",
+              },
+            };
+            break;
+        }
+        return data;
+      });
+
+      const dataBarChart = listKey?.map((item) => {
+        let custom = {
+          name: "",
+          color: "",
+        };
+        switch (item) {
+          case "btc":
+            custom = {
+              name: "Bitcoin",
+              color: "#f7931a",
+            };
+            break;
+          case "eth":
+            custom = {
+              name: "Ethereum",
+              color: "#547fef",
+            };
+            break;
+          case "base":
+            custom = {
+              name: "This wallet",
+              color: "#00b580",
+            };
+            break;
+          case "compare":
+            custom = {
+              name: "Compare wallet",
+              color: "rgba(178,184,255,1)",
+            };
+            break;
+        }
+
+        return {
+          name: custom.name,
+          type: "bar",
+          barStyle: {
+            type: "solid",
+            color: custom.color,
+          },
+          emphasis: {
+            focus: "series",
+          },
+          data: [
             {
-              ...riskBreakdownChartOption.series[0],
-              data: Object.keys(riskGroup).map((riskType) => {
-                return {
-                  name: riskType,
-                  value: sumBy(
-                    riskGroup[riskType],
-                    (item) => Number(item.amount) * Number(item.rate)
-                  ),
-                };
-              }),
+              value: data[item]?.sharpeRatio,
+              itemStyle: {
+                color: custom.color,
+              },
+            },
+            {
+              value: data[item]?.volatility,
+              itemStyle: {
+                color: custom.color,
+              },
+            },
+            {
+              value: data[item]?.drawDown,
+              itemStyle: {
+                color: custom.color,
+              },
             },
           ],
         };
+      });
 
-        const listKey = Object.getOwnPropertyNames(response.data);
-        const legendDataBarChart = listKey.map((item) => {
-          let data = {
-            name: "",
-            itemStyle: {
-              color: "",
-            },
-          };
-          switch (item) {
-            case "btc":
-              data = {
-                name: "Bitcoin",
-                itemStyle: {
-                  color: "#f7931a",
-                },
-              };
-              break;
-            case "eth":
-              data = {
-                name: "Ethereum",
-                itemStyle: {
-                  color: "#547fef",
-                },
-              };
-              break;
-            case "base":
-              data = {
-                name: "This wallet",
-                itemStyle: {
-                  color: "#00b580",
-                },
-              };
-              break;
-            case "compare":
-              data = {
-                name: "Compare wallet",
-                itemStyle: {
-                  color: "rgba(178,184,255,1)",
-                },
-              };
-              break;
-          }
-          return data;
-        });
-
-        const dataBarChart = listKey.map((item) => {
-          let custom = {
-            name: "",
-            color: "",
-          };
-          switch (item) {
-            case "btc":
-              custom = {
-                name: "Bitcoin",
-                color: "#f7931a",
-              };
-              break;
-            case "eth":
-              custom = {
-                name: "Ethereum",
-                color: "#547fef",
-              };
-              break;
-            case "base":
-              custom = {
-                name: "This wallet",
-                color: "#00b580",
-              };
-              break;
-            case "compare":
-              custom = {
-                name: "Compare wallet",
-                color: "rgba(178,184,255,1)",
-              };
-              break;
-          }
-
-          return {
-            name: custom.name,
-            type: "bar",
-            barStyle: {
-              type: "solid",
-              color: custom.color,
-            },
-            emphasis: {
-              focus: "series",
-            },
-            data: [
-              {
-                value: response.data[item].sharpeRatio,
-                itemStyle: {
-                  color: custom.color,
-                },
-              },
-              {
-                value: response.data[item].volatility,
-                itemStyle: {
-                  color: custom.color,
-                },
-              },
-              {
-                value: response.data[item].drawDown,
-                itemStyle: {
-                  color: custom.color,
-                },
-              },
-            ],
-          };
-        });
-
-        optionBar = {
-          ...optionBar,
-          legend: {
-            data: legendDataBarChart,
-          },
-          series: dataBarChart,
-        };
-
-        isLoadingDataCompare = false;
-      } else {
-        errorMsg = response.error;
-        isEmptyDataCompare = true;
-        isLoadingDataCompare = false;
-      }
-    } catch (e) {
-      console.log("e: ", e);
-      isEmptyDataCompare = true;
-      isLoadingDataCompare = false;
-    }
-  };
-
-  $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        if (
-          getAddressContext(selectedWallet)?.type === "EVM" ||
-          typeWalletAddress === "CEX"
-        ) {
-          getAnalyticCompare();
-        }
-      }
+      optionBar = {
+        ...optionBar,
+        legend: {
+          data: legendDataBarChart,
+        },
+        series: dataBarChart,
+      };
     }
   }
 
   $: sharpeRatioCompare = getChangePercent(
-    Number(compareData?.base?.sharpeRatio || 0),
-    Number(compareData?.btc?.sharpeRatio || 0)
+    Number(data?.base?.sharpeRatio || 0),
+    Number(data?.btc?.sharpeRatio || 0)
   );
 
   $: volatilityCompare = getChangePercent(
-    Number(compareData?.base?.volatility || 0),
-    Number(compareData?.btc?.volatility || 0)
+    Number(data?.base?.volatility || 0),
+    Number(data?.btc?.volatility || 0)
   );
 
   $: volatilityCompareAvg = getPostionInRage(
-    Number(compareData?.base?.volatility || 0),
-    Number(compareData?.base?.avgMarket?.minVolality || 0),
-    Number(compareData?.base?.avgMarket?.maxVolality || 0)
+    Number(data?.base?.volatility || 0),
+    Number(data?.base?.avgMarket?.minVolality || 0),
+    Number(data?.base?.avgMarket?.maxVolality || 0)
   );
 
   $: volatilityAvgMarket = (
-    (Number(compareData?.base?.avgMarket?.minVolality || 0) +
-      Number(compareData?.base?.avgMarket?.maxVolality || 0)) /
+    (Number(data?.base?.avgMarket?.minVolality || 0) +
+      Number(data?.base?.avgMarket?.maxVolality || 0)) /
     2
   ).toFixed(2);
 
   $: drawDownCompare = getChangePercent(
-    Number(compareData?.base?.drawDown || 0),
-    Number(compareData?.btc?.drawDown || 0)
+    Number(data?.base?.drawDown || 0),
+    Number(data?.btc?.drawDown || 0)
   );
 
   $: drawDownCompareAvg = getPostionInRage(
-    Number(compareData?.base?.drawDown || 0),
-    Number(compareData?.base?.avgMarket?.minDrawdown || 0),
-    Number(compareData?.base?.avgMarket?.maxDrawdown || 0)
+    Number(data?.base?.drawDown || 0),
+    Number(data?.base?.avgMarket?.minDrawdown || 0),
+    Number(data?.base?.avgMarket?.maxDrawdown || 0)
   );
 
   $: drawDownAvgMarket = (
-    (Number(compareData?.base?.avgMarket?.minDrawdown || 0) +
-      Number(compareData?.base?.avgMarket?.maxDrawdown || 0)) /
+    (Number(data?.base?.avgMarket?.minDrawdown || 0) +
+      Number(data?.base?.avgMarket?.maxDrawdown || 0)) /
     2
   ).toFixed(2);
 </script>
@@ -444,7 +409,8 @@
           <div
             class="absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg"
           >
-            {errorMsg}
+            Not enough data. CEX integration can only get data from the day you
+            connect
           </div>
         {:else}
           <div class="flex flex-col gap-4">
@@ -464,7 +430,7 @@
               <div class="col-span-1 flex items-center justify-end">
                 <div class="xl:text-base text-2xl">
                   <TooltipNumber
-                    number={compareData?.base?.sharpeRatio}
+                    number={data?.base?.sharpeRatio}
                     type="percent"
                   />
                 </div>
@@ -487,7 +453,7 @@
               <div class="col-span-1 flex items-center justify-end">
                 <div class="xl:text-base text-2xl">
                   <TooltipNumber
-                    number={compareData?.base?.volatility}
+                    number={data?.base?.volatility}
                     type="percent"
                   />%
                 </div>
@@ -510,7 +476,7 @@
               <div class="col-span-1 flex items-center justify-end">
                 <div class="xl:text-base text-2xl">
                   <TooltipNumber
-                    number={compareData?.base?.drawDown}
+                    number={data?.base?.drawDown}
                     type="percent"
                   />%
                 </div>
@@ -585,7 +551,8 @@
           <div
             class="flex justify-center items-center h-full xl:text-xs text-lg h-[465px]"
           >
-            {errorMsg}
+            Not enough data. CEX integration can only get data from the day you
+            connect
           </div>
         {:else}
           <div class="flex flex-row">

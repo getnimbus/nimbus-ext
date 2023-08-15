@@ -1,7 +1,9 @@
 <script lang="ts">
   import { getAddressContext } from "~/utils";
-  import { wallet, chain, selectedPackage } from "~/store";
+  import { wallet, chain, selectedPackage, typeWallet } from "~/store";
   import { useNavigate } from "svelte-navigator";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { nimbus } from "~/lib/network";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
   import Personality from "./Personality.svelte";
@@ -31,7 +33,58 @@
     packageSelected = value;
   });
 
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
+
   let isShowSoon = false;
+  let dataRiskBreakdown = [];
+
+  const queryClient = useQueryClient();
+  const query = createQuery({
+    queryKey: ["compare"],
+    queryFn: () => getAnalyticCompare(),
+    staleTime: Infinity,
+    onSuccess: () => getRiskBreakdown(),
+  });
+
+  const getAnalyticCompare = async () => {
+    if (packageSelected === "FREE") {
+      return;
+    }
+    const response: any = await nimbus.get(
+      `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`
+    );
+    return response.data;
+  };
+
+  const getRiskBreakdown = async () => {
+    try {
+      const response = await nimbus.get(
+        `/v2/analysis/${selectedWallet}/risk-breakdown`
+      );
+      if (response && response?.data) {
+        dataRiskBreakdown = response?.data;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  $: {
+    if (selectedWallet || selectedChain) {
+      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
+        if (
+          getAddressContext(selectedWallet)?.type === "EVM" ||
+          typeWalletAddress === "CEX"
+        ) {
+          queryClient.invalidateQueries(["compare"]);
+        }
+      }
+    }
+  }
+
   $: {
     if (selectedWallet) {
       if (
@@ -98,11 +151,25 @@
           </div>
         </section>
 
-        <RiskChart {packageSelected} />
+        <RiskChart
+          data={$query.data}
+          isLoadingDataCompare={$query.isFetching}
+          isEmptyDataCompare={$query.isError}
+          {dataRiskBreakdown}
+        />
 
-        <ReturnChart {packageSelected} />
+        <ReturnChart
+          data={$query.data}
+          isLoadingDataCompare={$query.isFetching}
+          isEmptyDataCompare={$query.isError}
+        />
 
-        <RiskReturnChart {packageSelected} />
+        <RiskReturnChart
+          data={$query.data}
+          isLoadingDataCompare={$query.isFetching}
+          isEmptyDataCompare={$query.isError}
+          {dataRiskBreakdown}
+        />
 
         <MoneyFlow {packageSelected} />
 
