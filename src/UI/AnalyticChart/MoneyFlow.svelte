@@ -342,99 +342,117 @@
   </span>
 
   <span slot="overview">
-    {#if !isLoadingInflowOutflow}
-      <div class="xl:text-xl text-3xl font-medium text-black mb-4">
-        Overview
-      </div>
-    {/if}
-    {#if isLoadingInflowOutflow}
-      <div class="flex items-center justify-center h-[465px]">
-        <LoadingPremium />
-      </div>
-    {:else}
-      <div class="flex flex-col gap-4">
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="text-black flex justify-start">30D Money Inflow</div>
+    <div class="relative h-full">
+      {#if !isLoadingInflowOutflow}
+        <div class="xl:text-xl text-3xl font-medium text-black mb-4">
+          Overview
+        </div>
+      {/if}
+      {#if isLoadingInflowOutflow}
+        <div class="flex items-center justify-center h-[465px]">
+          <LoadingPremium />
+        </div>
+      {:else}
+        <div class="flex flex-col gap-4">
+          <div class="grid grid-cols-2">
+            <div class="col-span-1">
+              <div class="text-black flex justify-start">30D Money Inflow</div>
+            </div>
+            <div class="col-span-1 flex items-center gap-1 justify-end">
+              <div>
+                $<TooltipNumber
+                  number={Math.abs(sumData.inflow)}
+                  type="balance"
+                />
+              </div>
+            </div>
           </div>
-          <div class="col-span-1 flex items-center gap-1 justify-end">
-            <div>
-              $<TooltipNumber
-                number={Math.abs(sumData.inflow)}
-                type="balance"
-              />
+          <div class="grid grid-cols-2">
+            <div class="col-span-1">
+              <div class="text-black flex justify-start">30D Money Outflow</div>
+            </div>
+            <div class="col-span-1 flex items-center gap-1 justify-end">
+              <div>
+                $<TooltipNumber
+                  number={Math.abs(sumData.outflow)}
+                  type="balance"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="grid grid-cols-2">
+            <div class="col-span-1">
+              <div class="text-black flex justify-start">30D Money Netflow</div>
+            </div>
+            <div class="col-span-1 flex items-center gap-1 justify-end">
+              <div
+                class={`${
+                  sumData.inflow + sumData.outflow >= 0
+                    ? "text-[#00A878]"
+                    : "text-red-500"
+                }`}
+              >
+                $<TooltipNumber
+                  number={sumData.inflow + sumData.outflow}
+                  type="balance"
+                />
+              </div>
             </div>
           </div>
         </div>
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="text-black flex justify-start">30D Money Outflow</div>
-          </div>
-          <div class="col-span-1 flex items-center gap-1 justify-end">
-            <div>
-              $<TooltipNumber
-                number={Math.abs(sumData.outflow)}
-                type="balance"
-              />
-            </div>
-          </div>
+      {/if}
+      {#if typeWalletAddress === "CEX"}
+        <div
+          class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-30 backdrop-blur-md"
+        >
+          <div class="text-lg">Comming soon 🚀</div>
         </div>
-        <div class="grid grid-cols-2">
-          <div class="col-span-1">
-            <div class="text-black flex justify-start">30D Money Netflow</div>
-          </div>
-          <div class="col-span-1 flex items-center gap-1 justify-end">
-            <div
-              class={`${
-                sumData.inflow + sumData.outflow >= 0
-                  ? "text-[#00A878]"
-                  : "text-red-500"
-              }`}
-            >
-              $<TooltipNumber
-                number={sumData.inflow + sumData.outflow}
-                type="balance"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    {/if}
+      {/if}
+    </div>
   </span>
 
   <span slot="chart">
-    {#if isLoadingInflowOutflow}
-      <div class="flex items-center justify-center h-[465px]">
-        <LoadingPremium />
-      </div>
-    {:else}
-      <div class="w-full h-full">
-        {#if isEmptyInflowOutflow}
-          <div
-            class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
-          >
-            Empty
-          </div>
-        {:else}
-          <div class="relative">
-            <EChart
-              id="inflow-outflow"
-              theme="white"
-              {option}
-              height={465}
-              notMerge={true}
-              type="full-width"
-            />
+    <div class="relative h-full">
+      {#if isLoadingInflowOutflow}
+        <div class="flex items-center justify-center h-[465px]">
+          <LoadingPremium />
+        </div>
+      {:else}
+        <div class="w-full h-full">
+          {#if isEmptyInflowOutflow}
             <div
-              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+              class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
             >
-              <img src={Logo} alt="" width="140" height="140" />
+              Empty
             </div>
-          </div>
-        {/if}
-      </div>
-    {/if}</span
-  >
+          {:else}
+            <div class="relative">
+              <EChart
+                id="inflow-outflow"
+                theme="white"
+                {option}
+                height={465}
+                notMerge={true}
+                type="full-width"
+              />
+              <div
+                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+              >
+                <img src={Logo} alt="" width="140" height="140" />
+              </div>
+            </div>
+          {/if}
+        </div>
+      {/if}
+      {#if typeWalletAddress === "CEX"}
+        <div
+          class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-30 backdrop-blur-md"
+        >
+          <div class="text-lg">Comming soon 🚀</div>
+        </div>
+      {/if}
+    </div>
+  </span>
 </AnalyticSection>
 
 <style windi:preflights:global windi:safelist:global>
