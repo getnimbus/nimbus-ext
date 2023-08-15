@@ -555,18 +555,18 @@
   <div
     class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 flex flex-col gap-2"
   >
-    <div class="xl:text-5xl text-7xl text-black font-semibold text-center">
+    <div class="xl:text-5xl text-7xl text-black font-medium text-center">
       Upgrade Plan
     </div>
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
       <div class="flex flex-col justify-center min-h-[700px]">
         <div class="flex flex-col items-center gap-1">
           <div class="flex items-center gap-1 xl:text-lg text-xl">
-            You're going to upgrade to plan <span class="font-semibold"
+            You're going to upgrade to plan <span class="font-medium"
               >{selectedPackage.name}</span
             >
             with
-            <span class="flex items-end gap-2 font-semibold">
+            <span class="flex items-end gap-2 font-medium">
               <span>{selectedPackage.price}</span><span
                 class="xl:text-lg text-xl text-gray-400 mb-[2px]"
                 >/{selectedPackage.selectedTypePackage}</span
@@ -591,7 +591,7 @@
             </div>
           {/each}
           <div
-            class="text-[#1E96FC] font-semibold xl:text-lg text-xl cursor-pointer flex items-center gap-2 mt-2"
+            class="text-[#1E96FC] font-medium xl:text-lg text-xl cursor-pointer flex items-center gap-2 mt-2"
             on:click={() => {
               selectedPackage = undefined;
             }}

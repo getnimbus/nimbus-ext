@@ -89,7 +89,7 @@
           <Link to="/analytic" class="cursor-pointer">
             <div class="flex items-center gap-1 text-white">
               <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="xl:text-sm text-xl font-semibold">
+              <div class="xl:text-sm text-xl font-medium">
                 Back to Analytics
               </div>
             </div>
@@ -206,7 +206,7 @@
           </div>
         </div>
 
-        <div class="xl:text-5xl text-7xl font-semibold text-white">
+        <div class="xl:text-5xl text-7xl font-medium text-white">
           Virtual Portfolio
         </div>
       </div>

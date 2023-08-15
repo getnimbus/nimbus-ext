@@ -822,7 +822,7 @@
                       {/if}
                     </div>
                   {:else}
-                    <div class="xl:text-base text-2xl font-semibold text-white">
+                    <div class="xl:text-base text-2xl font-medium text-white">
                       {MultipleLang.empty_wallet}
                     </div>
                   {/if}
@@ -921,7 +921,7 @@
                   </div>
                 {:else}
                   <div
-                    class="xl:hidden block xl:text-base text-2xl font-semibold text-white"
+                    class="xl:hidden block xl:text-base text-2xl font-medium text-white"
                   >
                     {MultipleLang.empty_wallet}
                   </div>
@@ -1010,7 +1010,7 @@
               <div class="flex items-end justify-between">
                 <div class="flex flex-col gap-3">
                   <div class="flex items-end gap-6">
-                    <div class="xl:text-5xl text-7xl font-semibold text-white">
+                    <div class="xl:text-5xl text-7xl font-medium text-white">
                       {title}
                     </div>
                     {#if type === "portfolio"}
@@ -1172,7 +1172,7 @@
   isOpen={isOpenAddModal}
   on:close={() => (isOpenAddModal = false)}
 >
-  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
+  <div class="xl:title-3 title-1 text-gray-600 font-medium">
     {MultipleLang.content.modal_add_title}
   </div>
   <div class="flex flex-col mt-4 gap-7">
@@ -1380,7 +1380,7 @@
     isOpenModal = false;
   }}
 >
-  <div class="xl:title-3 title-1 text-center text-gray-600 font-semibold">
+  <div class="xl:title-3 title-1 text-center text-gray-600 font-medium">
     Let's us know your email
   </div>
   <div class="mt-2">

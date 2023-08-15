@@ -92,7 +92,7 @@
     class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 flex flex-col xl:gap-10 gap-6"
   >
     <div class="flex flex-col gap-1">
-      <div class="xl:text-5xl text-7xl text-black font-semibold">
+      <div class="xl:text-5xl text-7xl text-black font-medium">
         {MultipleLang.market}
       </div>
       <div
@@ -171,42 +171,42 @@
               class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
             >
               <div
-                class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-left xl:text-xs text-base uppercase font-medium text-black"
               >
                 Pair
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-left xl:text-xs text-base uppercase font-medium text-black"
               >
                 Execution time
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-left xl:text-xs text-base uppercase font-medium text-black"
               >
                 Amount Out
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-left xl:text-xs text-base uppercase font-medium text-black"
               >
                 Amount In
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-center xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-center xl:text-xs text-base uppercase font-medium text-black"
               >
                 Maker
               </div>
             </th>
             <th class="pr-3 py-3 w-[190px] rounded-tr-[10px]">
               <div
-                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-right xl:text-xs text-base uppercase font-medium text-black"
               >
                 Action
               </div>

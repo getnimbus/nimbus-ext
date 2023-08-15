@@ -139,28 +139,28 @@
             class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[550px]"
           >
             <div
-              class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+              class="text-left xl:text-xs text-base uppercase font-medium text-black"
             >
               Name
             </div>
           </th>
           <th class="py-3">
             <div
-              class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+              class="text-right xl:text-xs text-base uppercase font-medium text-black"
             >
               Chain
             </div>
           </th>
           <th class="py-3">
             <div
-              class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+              class="text-right xl:text-xs text-base uppercase font-medium text-black"
             >
               Protocol
             </div>
           </th>
           <th class="py-3">
             <div
-              class="text-right xl:text-xs text-base uppercase font-semibold text-black flex items-center justify-end gap-2"
+              class="text-right xl:text-xs text-base uppercase font-medium text-black flex items-center justify-end gap-2"
             >
               APY
               <div on:click={toggleSortAPY} class="cursor-pointer">
@@ -177,7 +177,7 @@
           </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
             <div
-              class="text-right xl:text-xs text-base uppercase font-semibold text-black flex items-center justify-end gap-2"
+              class="text-right xl:text-xs text-base uppercase font-medium text-black flex items-center justify-end gap-2"
             >
               <TooltipTitle
                 tooltipText={"Total value locked in this protocol"}

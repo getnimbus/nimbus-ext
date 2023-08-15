@@ -297,7 +297,7 @@
             />
           {/if}
         </div>
-        <div class="xl:text-3xl text-4xl font-semibold text-right">
+        <div class="xl:text-3xl text-4xl font-medium text-right">
           $<TooltipNumber number={sumTokens} type="balance" />
           {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
             <span class="xl:text-xl text-2xl font-medium text-gray-400">
@@ -340,35 +340,35 @@
                   class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[420px]"
                 >
                   <div
-                    class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                    class="text-left xl:text-xs text-base uppercase font-medium text-black"
                   >
                     {MultipleLang.assets}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
                   >
                     {MultipleLang.price}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
                   >
                     {MultipleLang.amount}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
                   >
                     {MultipleLang.value}
                   </div>
                 </th>
                 <th class="py-3 pr-3 rounded-tr-[10px]">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
                   >
                     <TooltipTitle
                       tooltipText="Ratio based on total token holding"
@@ -379,7 +379,7 @@
                 </th>
                 <!-- <th class="py-3 pr-3 rounded-tr-[10px]">
                   <div
-                    class="xl:text-xs text-base uppercase font-semibold text-black"
+                    class="xl:text-xs text-base uppercase font-medium text-black"
                   >
                     <TooltipTitle
                       tooltipText="Profit and loss is calculated by transactions that swap the tokens. "
@@ -437,7 +437,7 @@
           <div class="xl:text-xl text-3xl font-medium text-black">
             {MultipleLang.nft}
           </div>
-          <div class="xl:text-3xl text-4xl font-semibold text-right">
+          <div class="xl:text-3xl text-4xl font-medium text-right">
             $<TooltipNumber number={sumNFT} type="balance" />
           </div>
         </div>
@@ -454,7 +454,7 @@
                   class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[220px]"
                 >
                   <div
-                    class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                    class="text-left xl:text-xs text-base uppercase font-medium text-black"
                   >
                     {MultipleLang.collection}
                   </div>
@@ -463,14 +463,14 @@
                   class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg-[#f4f5f8] w-[160px]"
                 >
                   <div
-                    class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                    class="text-left xl:text-xs text-base uppercase font-medium text-black"
                   >
                     {MultipleLang.Balance}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
                   >
                     <TooltipTitle
                       tooltipText={getAddressContext(selectedWallet)?.type ===
@@ -487,14 +487,14 @@
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
                   >
                     {MultipleLang.total_spent}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
                   >
                     {MultipleLang.current_value}
                   </div>
@@ -507,7 +507,7 @@
                   }`}
                 >
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
                   >
                     <TooltipTitle
                       tooltipText="Price NFTs now - Price NFTs at time you spent"

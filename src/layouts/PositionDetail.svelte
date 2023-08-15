@@ -88,7 +88,7 @@
           <Link to="/" class="cusor-pointer">
             <div class="flex items-center gap-1 text-white">
               <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="xl:text-sm text-xl font-semibold">
+              <div class="xl:text-sm text-xl font-medium">
                 Back to Portfolio
               </div>
             </div>
@@ -97,7 +97,7 @@
         <div class="flex items-center justify-between">
           <div class="flex flex-col gap-3">
             <div class="flex items-center gap-2 text-white">
-              <div class="text-3xl font-semibold">hello</div>
+              <div class="text-3xl font-medium">hello</div>
             </div>
           </div>
         </div>
@@ -247,7 +247,7 @@
               class="border-t-[1px] border-[#0000000d] mt-4 pt-4 flex justify-between items-center"
             >
               <div class="font-medium text-lg">Total fees</div>
-              <div class="text-xl font-semibold">$3,120.18</div>
+              <div class="text-xl font-medium">$3,120.18</div>
             </div>
           </div>
 
@@ -304,7 +304,7 @@
               class="border-t-[1px] border-[#0000000d] mt-4 pt-4 flex justify-between items-center"
             >
               <div class="font-medium text-lg">Impermanent Loss</div>
-              <div class="text-xl font-semibold">$3,120.18</div>
+              <div class="text-xl font-medium">$3,120.18</div>
             </div>
           </div>
         </div>
@@ -405,35 +405,35 @@
                     class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-[#f4f5f8]"
                   >
                     <div
-                      class="text-xs font-semibold text-left text-black uppercase"
+                      class="text-xs font-medium text-left text-black uppercase"
                     >
                       Transaction
                     </div>
                   </th>
                   <th class="py-3">
                     <div
-                      class="text-xs font-semibold text-left text-black uppercase"
+                      class="text-xs font-medium text-left text-black uppercase"
                     >
                       From
                     </div>
                   </th>
                   <th class="py-3">
                     <div
-                      class="text-xs font-semibold text-left text-black uppercase"
+                      class="text-xs font-medium text-left text-black uppercase"
                     >
                       To
                     </div>
                   </th>
                   <th class="py-3 min-w-[100px]">
                     <div
-                      class="text-xs font-semibold text-left text-black uppercase"
+                      class="text-xs font-medium text-left text-black uppercase"
                     >
                       Type
                     </div>
                   </th>
                   <th class="py-3 pr-3">
                     <div
-                      class="text-xs font-semibold text-left text-black uppercase"
+                      class="text-xs font-medium text-left text-black uppercase"
                     >
                       Token change
                     </div>

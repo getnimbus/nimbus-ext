@@ -507,7 +507,7 @@
           <Link to="/analytic" class="cusor-pointer">
             <div class="flex items-center gap-1 text-white">
               <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="xl:text-sm text-xl font-semibold">
+              <div class="xl:text-sm text-xl font-medium">
                 Back to Analytics
               </div>
             </div>
@@ -516,7 +516,7 @@
         <div class="flex items-center justify-between">
           <div class="flex flex-col gap-3">
             <div class="flex items-center gap-2 text-white">
-              <div class="xl:text-5xl text-7xl font-semibold">
+              <div class="xl:text-5xl text-7xl font-medium">
                 Custom Token Breakdown
               </div>
             </div>
@@ -951,35 +951,35 @@
                         class="py-3 xl:static xl:bg-transparent sticky left-10 z-10 bg-[#f4f5f8] xl:w-[230px] w-[280px]"
                       >
                         <div
-                          class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                          class="text-left xl:text-xs text-base uppercase font-medium text-black"
                         >
                           {MultipleLang.assets}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                          class="text-right xl:text-xs text-base uppercase font-medium text-black"
                         >
                           {MultipleLang.price}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                          class="text-right xl:text-xs text-base uppercase font-medium text-black"
                         >
                           {MultipleLang.amount}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                          class="text-right xl:text-xs text-base uppercase font-medium text-black"
                         >
                           {MultipleLang.value}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                          class="text-right xl:text-xs text-base uppercase font-medium text-black"
                         >
                           <TooltipTitle
                             tooltipText="Ratio based on total token holding"
@@ -990,7 +990,7 @@
                       </th>
                       <th class="py-3 pr-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-semibold text-black flex items-center justify-end gap-2"
+                          class="text-right xl:text-xs text-base uppercase font-medium text-black flex items-center justify-end gap-2"
                         >
                           Tag
                           <div

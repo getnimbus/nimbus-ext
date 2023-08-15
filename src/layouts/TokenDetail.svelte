@@ -387,7 +387,7 @@
           <Link to="/" class="cusor-pointer">
             <div class="flex items-center gap-1 text-white">
               <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="xl:text-sm text-xl font-semibold">
+              <div class="xl:text-sm text-xl font-medium">
                 Back to Portfolio
               </div>
             </div>
@@ -401,7 +401,7 @@
                 alt=""
                 class="w-10 h-10 rounded-full"
               />
-              <div class="text-3xl font-semibold">
+              <div class="text-3xl font-medium">
                 {positionDetail?.price?.symbol || "-"}
               </div>
             </div>
@@ -656,35 +656,35 @@
                       class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-[#f4f5f8]"
                     >
                       <div
-                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-medium text-left text-black uppercase"
                       >
                         Transaction
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-medium text-left text-black uppercase"
                       >
                         From
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-medium text-left text-black uppercase"
                       >
                         To
                       </div>
                     </th>
                     <th class="py-3 min-w-[100px]">
                       <div
-                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-medium text-left text-black uppercase"
                       >
                         Type
                       </div>
                     </th>
                     <th class="py-3 pr-3">
                       <div
-                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-medium text-left text-black uppercase"
                       >
                         Token change
                       </div>
@@ -840,21 +840,21 @@
                   <tr class="bg-[#f4f5f8]">
                     <th class="py-3 pl-3">
                       <div
-                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-medium text-left text-black uppercase"
                       >
                         Transaction
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-medium text-left text-black uppercase"
                       >
                         Type
                       </div>
                     </th>
                     <th class="py-3 pr-3">
                       <div
-                        class="xl:text-xs text-base font-semibold text-left text-black uppercase"
+                        class="xl:text-xs text-base font-medium text-left text-black uppercase"
                       >
                         Token Change
                       </div>

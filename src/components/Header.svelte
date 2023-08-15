@@ -249,7 +249,7 @@
           }}
         >
           <img src={PortfolioIcon} alt="" width="32" height="32" />
-          <span class="text-4xl font-semibold">
+          <span class="text-4xl font-medium">
             {MultipleLang.portfolio}
           </span>
         </div>
@@ -269,7 +269,7 @@
         >
           <img src={AnalyticIcon} alt="" width="32" height="32" />
           <span class="flex gap-[2px]">
-            <span class="text-4xl font-semibold">
+            <span class="text-4xl font-medium">
               {MultipleLang.analytics}
             </span>
             <span class="flex items-center gap-[1px] -mt-2">
@@ -295,7 +295,7 @@
           }}
         >
           <img src={TransactionsIcon} alt="" width="32" height="32" />
-          <span class="text-4xl font-semibold">
+          <span class="text-4xl font-medium">
             {MultipleLang.transactions}
           </span>
         </div>
@@ -314,7 +314,7 @@
           }}
         >
           <img src={WhaleIcon} alt="" width="32" height="32" />
-          <span class="text-4xl font-semibold">
+          <span class="text-4xl font-medium">
             {MultipleLang.whales}
           </span>
         </div>
@@ -333,7 +333,7 @@
           }}
         >
           <img src={NewsIcon} alt="" width="32" height="32" />
-          <span class="text-4xl font-semibold">
+          <span class="text-4xl font-medium">
             {MultipleLang.news}
           </span>
         </div>
@@ -349,7 +349,7 @@
       }}
     >
       <img src={SettingsIcon} alt="" width="32" height="32" />
-      <span class="text-4xl font-semibold">Settings</span>
+      <span class="text-4xl font-medium">Settings</span>
     </a>
   </div>
 </div>
