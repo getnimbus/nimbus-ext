@@ -15,6 +15,7 @@
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
   import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
@@ -115,7 +116,6 @@
 
   let userInfo = {};
 
-  let isLoading = false;
   let errors: any = {};
   let errorsEdit: any = {};
   let listAddress = [];
@@ -231,29 +231,35 @@
     }
   };
 
-  const getListAddress = async () => {
-    isLoading = true;
-    try {
-      const response: any = await nimbus.get("/accounts/list");
-      if (response && response?.data) {
-        const structWalletData = response?.data.map((item) => {
-          return {
-            position: item.position,
-            id: item.id,
-            type: item.type,
-            label: item.label,
-            address: item.type === "CEX" ? item.id : item.accountId,
-          };
-        });
-        listAddress = structWalletData;
-        isLoading = false;
-      } else {
-        isLoading = false;
-      }
-    } catch (e) {
-      console.log("e: ", e);
-      isLoading = false;
+  const queryClient = useQueryClient();
+  const query = createQuery({
+    queryKey: ["list-address"],
+    queryFn: () => getListAddress(),
+    staleTime: Infinity,
+  });
+
+  $: {
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataListAddress($query.data);
     }
+  }
+
+  const formatDataListAddress = (data) => {
+    const structWalletData = data.map((item) => {
+      return {
+        position: item.position,
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        address: item.type === "CEX" ? item.id : item.accountId,
+      };
+    });
+    listAddress = structWalletData;
+  };
+
+  const getListAddress = async () => {
+    const response: any = await nimbus.get("/accounts/list");
+    return response?.data;
   };
 
   $: {
@@ -299,7 +305,7 @@
 
         e.target.reset();
         isOpenAddModal = false;
-        getListAddress();
+        queryClient.invalidateQueries(["list-address"]);
         toastMsg = "Successfully add On-chain account!";
         isSuccess = true;
         trigger();
@@ -338,7 +344,7 @@
           .onConnection(async function (account) {
             await nimbus.get("/accounts/sync");
 
-            getListAddress();
+            queryClient.invalidateQueries(["list-address"]);
             isLoadingConnectCEX = false;
             isOpenAddModal = false;
 
@@ -350,7 +356,7 @@
           .onError(function (error) {
             console.error("connection vezgo error", error);
 
-            getListAddress();
+            queryClient.invalidateQueries(["list-address"]);
             isLoadingConnectCEX = false;
             isOpenAddModal = false;
 
@@ -381,7 +387,7 @@
           label: data.label,
         });
 
-        getListAddress();
+        queryClient.invalidateQueries(["list-address"]);
         e.target.reset();
         isOpenEditModal = false;
         isLoadingEdit = false;
@@ -405,7 +411,7 @@
             label: data.label,
           });
 
-          getListAddress();
+          queryClient.invalidateQueries(["list-address"]);
           e.target.reset();
           isOpenEditModal = false;
           isLoadingEdit = false;
@@ -432,7 +438,7 @@
     isLoadingDelete = true;
     try {
       await nimbus.delete(`/accounts/${item.id}`, {});
-      getListAddress();
+      queryClient.invalidateQueries(["list-address"]);
       isLoadingDelete = false;
       isOpenConfirmDelete = false;
       toastMsg = "Successfully delete your account!";
@@ -477,7 +483,6 @@
         picture: User,
       };
     }
-    getListAddress();
     if (
       localStorage.getItem("isGetUserEmailYet") !== null &&
       localStorage.getItem("isGetUserEmailYet") === "true"
@@ -733,7 +738,7 @@
           </th>
         </tr>
       </thead>
-      {#if isLoading}
+      {#if $query.isFetching}
         <tbody>
           <tr>
             <td colspan="3">

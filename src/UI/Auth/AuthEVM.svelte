@@ -8,6 +8,7 @@
   import mixpanel from "mixpanel-browser";
   import { shorterAddress } from "~/utils";
   import { useNavigate } from "svelte-navigator";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import User from "~/assets/user.png";
 
@@ -145,36 +146,46 @@
               picture: User,
             })
         );
-        getListAddress(data.publicAddress);
+        queryClient.invalidateQueries(["list-address"]);
       }
     } catch (e) {
       console.error("error: ", e);
     }
   };
 
-  const getListAddress = async (publicAddress) => {
-    try {
-      const response: any = await nimbus.get("/accounts/list");
-      if (response && response?.data) {
-        const structWalletData = response?.data.map((item) => {
-          return {
-            id: item.id,
-            type: item.type,
-            label: item.label,
-            value: item.type === "CEX" ? item.id : item.accountId,
-            logo: item.logo,
-          };
-        });
+  const queryClient = useQueryClient();
+  const query = createQuery({
+    queryKey: ["list-address"],
+    queryFn: () => getListAddress(),
+    staleTime: Infinity,
+  });
 
-        if (structWalletData && structWalletData.length === 0) {
-          handleAddAccount(publicAddress);
-        } else {
-          isFirstTimeLogin.update((n) => (n = false));
-        }
-      }
-    } catch (e) {
-      console.error("e: ", e);
+  $: {
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataListAddress($query.data);
     }
+  }
+
+  const formatDataListAddress = (data) => {
+    const structWalletData = data.map((item) => {
+      return {
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        value: item.type === "CEX" ? item.id : item.accountId,
+        logo: item.logo,
+      };
+    });
+    if (structWalletData && structWalletData.length === 0) {
+      handleAddAccount(addressWallet);
+    } else {
+      isFirstTimeLogin.update((n) => (n = false));
+    }
+  };
+
+  const getListAddress = async () => {
+    const response: any = await nimbus.get("/accounts/list");
+    return response?.data;
   };
 
   // Add DEX address account

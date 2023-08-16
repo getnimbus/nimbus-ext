@@ -1,10 +1,10 @@
 <svelte:options tag="tab-notification" />
 
 <script lang="ts">
-  import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import CopyToClipboard from "svelte-copy-to-clipboard";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import "~/components/Loading.custom.svelte";
   import Copy from "~/components/Copy.svelte";
@@ -31,40 +31,40 @@
     },
   };
 
-  let isLoading = false;
   let listAddress = [];
   let isOpenFollowWhaleModal = false;
   let showCommandTooltip = false;
   let selectedWallet;
 
-  const getListAddress = async () => {
-    isLoading = true;
-    try {
-      const response: any = await nimbus.get("/accounts/list");
-      if (response && response?.data) {
-        const structWalletData = response?.data.map((item) => {
-          return {
-            position: item.position,
-            id: item.id,
-            type: item.type,
-            label: item.label,
-            address: item.type === "CEX" ? item.id : item.accountId,
-          };
-        });
-        listAddress = structWalletData;
-        isLoading = false;
-      } else {
-        isLoading = false;
-      }
-    } catch (e) {
-      console.log("e: ", e);
-      isLoading = false;
+  const query = createQuery({
+    queryKey: ["list-address"],
+    queryFn: () => getListAddress(),
+    staleTime: Infinity,
+  });
+
+  $: {
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataListAddress($query.data);
     }
+  }
+
+  const formatDataListAddress = (data) => {
+    const structWalletData = data.map((item) => {
+      return {
+        position: item.position,
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        address: item.type === "CEX" ? item.id : item.accountId,
+      };
+    });
+    listAddress = structWalletData;
   };
 
-  onMount(() => {
-    getListAddress();
-  });
+  const getListAddress = async () => {
+    const response: any = await nimbus.get("/accounts/list");
+    return response?.data;
+  };
 </script>
 
 <div class="flex flex-col gap-2">
@@ -96,7 +96,7 @@
           </th>
         </tr>
       </thead>
-      {#if isLoading}
+      {#if $query.isFetching}
         <tbody>
           <tr>
             <td colspan="3">

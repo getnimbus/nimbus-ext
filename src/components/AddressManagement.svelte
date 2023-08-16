@@ -30,6 +30,8 @@
   import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
   import { useNavigate } from "svelte-navigator";
   import tooltip from "~/entries/contentScript/views/tooltip";
+  import { wait } from "~/entries/background/utils";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
@@ -225,6 +227,65 @@
     }
   };
 
+  const queryClient = useQueryClient();
+  const query = createQuery({
+    queryKey: ["list-address"],
+    queryFn: () => getListAddress(),
+    staleTime: Infinity,
+  });
+
+  $: {
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataListAddress($query.data);
+    }
+  }
+
+  const formatDataListAddress = async (data) => {
+    const structWalletData = data.map((item) => {
+      return {
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        value: item.type === "CEX" ? item.id : item.accountId,
+        logo: item.logo,
+      };
+    });
+
+    listAddress = structWalletData;
+
+    const selectedTypeWalletRes = await browser.storage.sync.get(
+      "typeWalletAddress"
+    );
+    if (selectedTypeWalletRes?.typeWalletAddress !== null) {
+      typeWallet.update((n) => (n = selectedTypeWalletRes.typeWalletAddress));
+    } else {
+      typeWallet.update((n) => (n = listAddress[0]?.type));
+    }
+
+    const selectedChainRes = await browser.storage.sync.get("selectedChain");
+    if (selectedChainRes?.selectedChain !== null) {
+      chain.update((n) => (n = selectedChainRes.selectedChain));
+    } else {
+      chain.update((n) => (n = "ALL"));
+    }
+
+    const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
+    if (selectedWalletRes?.selectedWallet !== null) {
+      if (selectedWalletRes?.selectedWallet?.length !== 0) {
+        wallet.update((n) => (n = selectedWalletRes.selectedWallet));
+      }
+      if (
+        selectedWalletRes?.selectedWallet?.length === 0 &&
+        listAddress.length !== 0 &&
+        listAddress.length === 1
+      ) {
+        wallet.update((n) => (n = listAddress[0].value));
+      }
+    } else {
+      wallet.update((n) => (n = listAddress[0].value));
+    }
+  };
+
   const updateStateFromParams = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const addressParams = urlParams.get("address");
@@ -300,74 +361,8 @@
   };
 
   const getListAddress = async () => {
-    if (formatListAddress && formatListAddress?.length !== 0) {
-      isLoadingFullPage = false;
-    } else {
-      isLoadingFullPage = true;
-    }
-    try {
-      const response: any = await nimbus.get("/accounts/list");
-      if (response && response?.data) {
-        const structWalletData = response?.data.map((item) => {
-          return {
-            id: item.id,
-            type: item.type,
-            label: item.label,
-            value: item.type === "CEX" ? item.id : item.accountId,
-            logo: item.logo,
-          };
-        });
-
-        listAddress = structWalletData;
-
-        const selectedTypeWalletRes = await browser.storage.sync.get(
-          "typeWalletAddress"
-        );
-        if (selectedTypeWalletRes?.typeWalletAddress !== null) {
-          typeWallet.update(
-            (n) => (n = selectedTypeWalletRes.typeWalletAddress)
-          );
-        } else {
-          typeWallet.update((n) => (n = listAddress[0]?.type));
-        }
-
-        const selectedChainRes = await browser.storage.sync.get(
-          "selectedChain"
-        );
-        if (selectedChainRes?.selectedChain !== null) {
-          chain.update((n) => (n = selectedChainRes.selectedChain));
-        } else {
-          chain.update((n) => (n = "ALL"));
-        }
-
-        const selectedWalletRes = await browser.storage.sync.get(
-          "selectedWallet"
-        );
-        if (selectedWalletRes?.selectedWallet !== null) {
-          if (selectedWalletRes?.selectedWallet?.length !== 0) {
-            wallet.update((n) => (n = selectedWalletRes.selectedWallet));
-          }
-          if (
-            selectedWalletRes?.selectedWallet?.length === 0 &&
-            listAddress.length !== 0 &&
-            listAddress.length === 1
-          ) {
-            wallet.update((n) => (n = listAddress[0].value));
-          }
-        } else {
-          wallet.update((n) => (n = listAddress[0]?.value));
-        }
-
-        updateStateFromParams();
-
-        isLoadingFullPage = false;
-      } else {
-        isLoadingFullPage = false;
-      }
-    } catch (e) {
-      console.log("e: ", e);
-      isLoadingFullPage = false;
-    }
+    const response: any = await nimbus.get("/accounts/list");
+    return response?.data;
   };
 
   // Add DEX address account
@@ -399,6 +394,7 @@
           label: dataFormat.label,
         });
 
+        queryClient.invalidateQueries(["list-address"]);
         chain.update((n) => (n = "ALL"));
         wallet.update((n) => (n = dataFormat.value));
         typeWallet.update((n) => (n = "DEX"));
@@ -406,7 +402,7 @@
         e.target.reset();
         errors = {};
         isOpenAddModal = false;
-        getListAddress();
+
         toastMsg = "Successfully add On-Chain account!";
         isSuccessToast = true;
         trigger();
@@ -446,11 +442,24 @@
           .onConnection(async function (account) {
             await nimbus.get("/accounts/sync");
 
-            chain.update((n) => (n = "ALL"));
-            wallet.update((n) => (n = account));
-            typeWallet.update((n) => (n = "CEX"));
+            queryClient.invalidateQueries(["list-address"]);
 
-            getListAddress();
+            await wait(1000);
+
+            if (
+              formatListAddress[formatListAddress.length - 1]?.type === "CEX"
+            ) {
+              chain.update((n) => (n = "ALL"));
+              wallet.update(
+                (n) => (n = formatListAddress[formatListAddress.length - 1]?.id)
+              );
+              typeWallet.update((n) => (n = "CEX"));
+            }
+
+            await wait(300);
+
+            queryClient.invalidateQueries(["list-address"]);
+
             isLoadingConnectCEX = false;
             isOpenAddModal = false;
 
@@ -461,7 +470,7 @@
           })
           .onError(function (error) {
             console.error("connection vezgo error", error);
-            getListAddress();
+            queryClient.invalidateQueries(["list-address"]);
             isLoadingConnectCEX = false;
             isOpenAddModal = false;
             toastMsg =
@@ -503,7 +512,6 @@
   };
 
   onMount(() => {
-    getListAddress();
     updateStateFromParams();
     if (
       localStorage.getItem("isGetUserEmailYet") !== null &&
@@ -599,7 +607,7 @@
 
   $: {
     if (checkFirstTimeLogin) {
-      getListAddress();
+      queryClient.invalidateQueries(["list-address"]);
     }
   }
 
@@ -662,7 +670,7 @@
   $: {
     const evmToken = localStorage.getItem("evm_token");
     if (Object.keys(userInfo).length !== 0 && evmToken) {
-      getListAddress();
+      queryClient.invalidateQueries(["list-address"]);
     } else {
       formatListAddress = [];
       listAddress = [];
@@ -671,7 +679,7 @@
 </script>
 
 <ErrorBoundary>
-  {#if isLoadingFullPage}
+  {#if $query.isFetching && formatListAddress && formatListAddress?.length === 0}
     <div class="flex items-center justify-center h-screen">
       <loading-icon />
     </div>
@@ -682,50 +690,57 @@
           <div
             class="flex flex-col items-center justify-center w-2/3 gap-4 p-6"
           >
-            <div class="text-lg">
-              {MultipleLang.addwallet}
-            </div>
-            {#if Object.keys(userInfo).length !== 0}
-              <div class="w-max">
-                <Button
-                  variant="tertiary"
-                  on:click={() => (isOpenAddModal = true)}
-                >
-                  <img src={Plus} alt="" width="12" height="12" />
-                  <div class="xl:text-base text-2xl font-medium text-white">
-                    {MultipleLang.content.btn_text}
-                  </div>
-                </Button>
+            {#if $query.isError && Object.keys(userInfo).length !== 0}
+              <div class="text-lg">
+                Too many request when get list address. Please wait for a
+                minutes
               </div>
             {:else}
-              <div
-                class="relative"
-                on:mouseenter={() => {
-                  if (Object.keys(userInfo).length === 0) {
-                    showDisableAddWallet = true;
-                  }
-                }}
-                on:mouseleave={() => {
-                  if (Object.keys(userInfo).length === 0) {
-                    showDisableAddWallet = false;
-                  }
-                }}
-              >
-                <Button variant="disabled">
-                  <img src={Plus} alt="" width="12" height="12" />
-                  <div class="xl:text-base text-2xl font-medium text-white">
-                    {MultipleLang.content.btn_text}
-                  </div>
-                </Button>
-                {#if showDisableAddWallet}
-                  <div
-                    class="absolute transform -translate-x-1/2 -top-8 left-1/2"
-                    style="z-index: 2147483648;"
-                  >
-                    <tooltip-detail text={"Connect wallet to add account"} />
-                  </div>
-                {/if}
+              <div class="text-lg">
+                {MultipleLang.addwallet}
               </div>
+              {#if Object.keys(userInfo).length !== 0}
+                <div class="w-max">
+                  <Button
+                    variant="tertiary"
+                    on:click={() => (isOpenAddModal = true)}
+                  >
+                    <img src={Plus} alt="" width="12" height="12" />
+                    <div class="xl:text-base text-2xl font-medium text-white">
+                      {MultipleLang.content.btn_text}
+                    </div>
+                  </Button>
+                </div>
+              {:else}
+                <div
+                  class="relative"
+                  on:mouseenter={() => {
+                    if (Object.keys(userInfo).length === 0) {
+                      showDisableAddWallet = true;
+                    }
+                  }}
+                  on:mouseleave={() => {
+                    if (Object.keys(userInfo).length === 0) {
+                      showDisableAddWallet = false;
+                    }
+                  }}
+                >
+                  <Button variant="disabled">
+                    <img src={Plus} alt="" width="12" height="12" />
+                    <div class="xl:text-base text-2xl font-medium text-white">
+                      {MultipleLang.content.btn_text}
+                    </div>
+                  </Button>
+                  {#if showDisableAddWallet}
+                    <div
+                      class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                      style="z-index: 2147483648;"
+                    >
+                      <tooltip-detail text={"Connect wallet to add account"} />
+                    </div>
+                  {/if}
+                </div>
+              {/if}
             {/if}
           </div>
         </div>
@@ -998,7 +1013,11 @@
                   {/if}
                   {#if showDisableAddWallet}
                     <div
-                      class="absolute transform -top-12 right-0"
+                      class={`absolute transform ${
+                        Object.keys(userInfo).length === 0
+                          ? "-top-8"
+                          : "-top-12"
+                      } right-0`}
                       style="z-index: 2147483648;"
                     >
                       <tooltip-detail text={tooltipDisableAddBtn} />

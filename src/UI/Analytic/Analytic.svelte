@@ -45,7 +45,7 @@
   const query = createQuery({
     queryKey: ["compare"],
     queryFn: () => getAnalyticCompare(),
-    staleTime: Infinity,
+    staleTime: 300000, // 5 minutes
     onSuccess: () => getRiskBreakdown(),
   });
 
