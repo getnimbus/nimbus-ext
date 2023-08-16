@@ -350,7 +350,6 @@
             data.name.match(regex)
           );
 
-          console.log({ filteredVaults });
           return {
             ...item,
             vaults: filteredVaults,
