@@ -8,6 +8,7 @@
   import { groupBy } from "lodash";
   import { getChangePercent } from "~/chart-utils";
   import { useNavigate } from "svelte-navigator";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import type { TokenData } from "~/types/HoldingTokenData";
 
@@ -74,13 +75,10 @@
     },
   };
   let isEmptyDataPie = false;
-  let isLoading = false;
   let showCompareTable = false;
   let showCompareWhalesSuggest = false;
 
   let compareData = {};
-  let errorMsg = "";
-  let isLoadingDataCompare = false;
   let searchCompare = "";
 
   let holdingTokenDataCompare: TokenData = [];
@@ -210,243 +208,228 @@
     series: [],
   };
 
-  const getPersonalizeTag = async () => {
-    if (packageSelected === "FREE") {
-      return;
-    }
-    try {
-      const response = await nimbus.get(
-        `/address/${selectedWallet}/personalize/tag`
-      );
-      if (response && response.data) {
-        const categoriesData = Object.getOwnPropertyNames(response.data);
-        const categoriesDataList = categoriesData.map((item) => {
-          return {
-            category: item,
-            dataTag: groupBy(response.data[item], "tag"),
-          };
-        });
-        const formatDataCategory = categoriesDataList.map((item) => {
-          return {
-            category: item.category,
-            dataTag: Object.getOwnPropertyNames(item.dataTag).map((tag) => {
-              return {
-                name: tag,
-                tokens: item.dataTag[tag],
-              };
-            }),
-          };
-        });
-
-        const listCategory = formatDataCategory.map((item) => {
-          return {
-            label: item.category,
-            value: item.category,
-          };
-        });
-
-        typeListCategory = [...typeListCategory, ...listCategory].reduce(
-          (unique, o) => {
-            if (
-              !unique.some(
-                (obj) => obj.label === o.label && obj.value === o.value
-              )
-            ) {
-              unique.push(o);
-            }
-            return unique;
-          },
-          []
-        );
-
-        return listCategory;
-      }
-    } catch (e) {
-      console.log("e: ", e);
-    }
-  };
+  const queryClient = useQueryClient();
 
   const getAnalyticCompare = async () => {
     if (packageSelected === "FREE") {
       return;
     }
-    isLoadingDataCompare = true;
-    try {
-      const response: any = await nimbus.get(
-        `/v2/analysis/${selectedWallet}/compare?compareAddress=${searchCompare}`
-      );
-      if (response && response.data) {
-        compareData = response.data;
-
-        const formatListSuggestion = Object.keys(
-          response?.data?.base?.suggestion
-        ).map((item) => {
-          let name = "";
-          switch (item) {
-            case "highRisk":
-              name = "High Risk";
-              break;
-            case "lowRisk":
-              name = "Low Risk";
-              break;
-            case "mediumRisk":
-              name = "Medium Risk";
-              break;
-          }
-          return {
-            name,
-            value: response?.data?.base?.suggestion[item]?.address,
-          };
-        });
-
-        listSuggestion = formatListSuggestion;
-
-        const formatData = response?.data?.base?.currentHolding.map((item) => {
-          return {
-            ...item,
-            amount: Number(item.balance),
-          };
-        });
-
-        holdingTokenData = formatData.sort((a, b) => {
-          if (a.value < b.value) {
-            return 1;
-          }
-          if (a.value > b.value) {
-            return -1;
-          }
-          return 0;
-        });
-
-        // pie chart format data Token holding
-        const sumToken = (formatData || []).reduce(
-          (prev, item) => prev + Number(item.value),
-          0
-        );
-
-        const sortBreakdownToken = formatData.sort((a, b) => {
-          if (a.value < b.value) {
-            return 1;
-          }
-          if (a.value > b.value) {
-            return -1;
-          }
-          return 0;
-        });
-
-        const topFiveBreakdownToken = sortBreakdownToken
-          ?.slice(0, 5)
-          .map((item) => {
-            return {
-              ...item,
-              id: item.id || "N/A",
-              symbol: item.symbol || "N/A",
-              name: item.name || "N/A",
-            };
-          });
-
-        const orderBreakdownToken = sortBreakdownToken.slice(
-          5,
-          sortBreakdownToken.length
-        );
-
-        const sumOrderBreakdownToken = (orderBreakdownToken || []).reduce(
-          (prev, item) => prev + Number(item.value),
-          0
-        );
-
-        const dataPieChartOrderBreakdownToken = [
-          {
-            logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
-            name: "Other tokens",
-            symbol: "",
-            name_ratio: "Ratio",
-            value: (sumOrderBreakdownToken / sumToken) * 100,
-            name_value: "Value",
-            value_value: sumOrderBreakdownToken,
-            name_balance: "",
-            value_balance: 0,
-          },
-        ];
-
-        const formatDataPieChartTopFiveToken = topFiveBreakdownToken.map(
-          (item) => {
-            return {
-              logo: item.logo,
-              name: item.name || item.symbol,
-              symbol: item.symbol,
-              name_ratio: "Ratio",
-              value: (Number(item.value) / sumToken) * 100,
-              name_value: "Value",
-              value_value: Number(item.value),
-              name_balance: "Balance",
-              value_balance: Number(item.balance),
-            };
-          }
-        );
-
-        const formatDataPie = {
-          token: {
-            sumOrderBreakdownToken,
-            formatDataPieChartTopFiveToken,
-            dataPieChartOrderBreakdownToken,
-          },
-        };
-
-        dataPieChart = formatDataPie;
-
-        isLoadingDataCompare = false;
-        return response.data;
-      } else {
-        errorMsg = response.error;
-        isLoadingDataCompare = false;
-      }
-    } catch (e) {
-      console.log("e: ", e);
-      isLoadingDataCompare = false;
-    }
+    const response: any = await nimbus.get(
+      `/v2/analysis/${selectedWallet}/compare?compareAddress=${searchCompare}`
+    );
+    return response.data;
   };
 
-  const handleGetAllData = async () => {
+  const getPersonalizeTag = async () => {
     if (packageSelected === "FREE") {
       return;
     }
-    isLoading = true;
-    try {
-      const [resCompare, resPersonalizeTag] = await Promise.all([
-        getAnalyticCompare().then((res) => {
-          return res;
-        }),
-        getPersonalizeTag().then((res) => {
-          return res;
-        }),
-      ]);
+    const response = await nimbus.get(
+      `/address/${selectedWallet}/personalize/tag`
+    );
+    return response.data;
+  };
 
-      if (resCompare === undefined && resPersonalizeTag.length === 0) {
-        isEmptyDataPie = true;
+  const query = createQuery({
+    queryKey: ["compare", searchCompare],
+    queryFn: () => getAnalyticCompare(),
+    staleTime: 300000, // 5 minutes
+  });
+
+  const queryPersonalTag = createQuery({
+    queryKey: ["personal-tag"],
+    queryFn: () => getPersonalizeTag(),
+    staleTime: 300000, // 5 minutes
+  });
+
+  const formatDataAnalyticCompare = (data) => {
+    const formatListSuggestion = Object.keys(data?.base?.suggestion).map(
+      (item) => {
+        let name = "";
+        switch (item) {
+          case "highRisk":
+            name = "High Risk";
+            break;
+          case "lowRisk":
+            name = "Low Risk";
+            break;
+          case "mediumRisk":
+            name = "Medium Risk";
+            break;
+        }
+        return {
+          name,
+          value: data?.base?.suggestion[item]?.address,
+        };
       }
-    } catch (e) {
-      console.log("e: ", e);
-      isLoading = false;
-    } finally {
-      isLoading = false;
-    }
+    );
+
+    listSuggestion = formatListSuggestion;
+
+    const formatData = data?.base?.currentHolding.map((item) => {
+      return {
+        ...item,
+        amount: Number(item.balance),
+      };
+    });
+
+    holdingTokenData = formatData.sort((a, b) => {
+      if (a.value < b.value) {
+        return 1;
+      }
+      if (a.value > b.value) {
+        return -1;
+      }
+      return 0;
+    });
+
+    // pie chart format data Token holding
+    const sumToken = (formatData || []).reduce(
+      (prev, item) => prev + Number(item.value),
+      0
+    );
+
+    const sortBreakdownToken = formatData.sort((a, b) => {
+      if (a.value < b.value) {
+        return 1;
+      }
+      if (a.value > b.value) {
+        return -1;
+      }
+      return 0;
+    });
+
+    const topFiveBreakdownToken = sortBreakdownToken
+      ?.slice(0, 5)
+      .map((item) => {
+        return {
+          ...item,
+          id: item.id || "N/A",
+          symbol: item.symbol || "N/A",
+          name: item.name || "N/A",
+        };
+      });
+
+    const orderBreakdownToken = sortBreakdownToken.slice(
+      5,
+      sortBreakdownToken.length
+    );
+
+    const sumOrderBreakdownToken = (orderBreakdownToken || []).reduce(
+      (prev, item) => prev + Number(item.value),
+      0
+    );
+
+    const dataPieChartOrderBreakdownToken = [
+      {
+        logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
+        name: "Other tokens",
+        symbol: "",
+        name_ratio: "Ratio",
+        value: (sumOrderBreakdownToken / sumToken) * 100,
+        name_value: "Value",
+        value_value: sumOrderBreakdownToken,
+        name_balance: "",
+        value_balance: 0,
+      },
+    ];
+
+    const formatDataPieChartTopFiveToken = topFiveBreakdownToken.map((item) => {
+      return {
+        logo: item.logo,
+        name: item.name || item.symbol,
+        symbol: item.symbol,
+        name_ratio: "Ratio",
+        value: (Number(item.value) / sumToken) * 100,
+        name_value: "Value",
+        value_value: Number(item.value),
+        name_balance: "Balance",
+        value_balance: Number(item.balance),
+      };
+    });
+
+    const formatDataPie = {
+      token: {
+        sumOrderBreakdownToken,
+        formatDataPieChartTopFiveToken,
+        dataPieChartOrderBreakdownToken,
+      },
+    };
+
+    dataPieChart = formatDataPie;
   };
 
-  const handleSelectedTableTokenHolding = (data, selectDatPieChart) => {
-    if (data.data && data.data.length !== 0) {
-      // console.log({
-      //   data,
-      //   selectDatPieChart,
-      // });
-    }
+  const formatDataPersonalTag = (data) => {
+    const categoriesData = Object.getOwnPropertyNames(data);
+    const categoriesDataList = categoriesData.map((item) => {
+      return {
+        category: item,
+        dataTag: groupBy(data[item], "tag"),
+      };
+    });
+    const formatDataCategory = categoriesDataList.map((item) => {
+      return {
+        category: item.category,
+        dataTag: Object.getOwnPropertyNames(item.dataTag).map((tag) => {
+          return {
+            name: tag,
+            tokens: item.dataTag[tag],
+          };
+        }),
+      };
+    });
+
+    const listCategory = formatDataCategory.map((item) => {
+      return {
+        label: item.category,
+        value: item.category,
+      };
+    });
+
+    typeListCategory = [...typeListCategory, ...listCategory].reduce(
+      (unique, o) => {
+        if (
+          !unique.some((obj) => obj.label === o.label && obj.value === o.value)
+        ) {
+          unique.push(o);
+        }
+        return unique;
+      },
+      []
+    );
   };
+
+  $: {
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataAnalyticCompare($query.data);
+      compareData = $query.data;
+    }
+  }
+
+  $: {
+    if (!$queryPersonalTag.isError && $queryPersonalTag.data !== undefined) {
+      formatDataPersonalTag($queryPersonalTag.data);
+    }
+  }
+
+  $: {
+    if (
+      $queryPersonalTag.isError &&
+      $queryPersonalTag.data == undefined &&
+      $query.isError &&
+      $query.data == undefined
+    ) {
+      isEmptyDataPie = true;
+    } else {
+      isEmptyDataPie = false;
+    }
+  }
 
   $: {
     if (selectedWallet) {
       if (selectedWallet.length !== 0) {
-        handleGetAllData();
-        getAnalyticCompare();
+        queryClient.invalidateQueries(["compare"]);
+        queryClient.invalidateQueries(["personal-tag"]);
       }
     }
   }
@@ -807,7 +790,7 @@
 
   const handleCopyAddress = (address) => {
     searchCompare = address;
-    getAnalyticCompare();
+    queryClient.invalidateQueries(["compare"]);
   };
 
   const handleCloseWhalesListModal = () => {
@@ -846,7 +829,7 @@
             >
               {MultipleLang.token_allocation}
             </div>
-            {#if isLoading}
+            {#if $query.isFetching && $queryPersonalTag.isFetching}
               <div class="flex items-center justify-center h-[465px]">
                 <loading-icon />
               </div>
@@ -856,14 +839,25 @@
                   <div
                     class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
                   >
-                    {errorMsg}
+                    Not enough data. CEX integration can only get data from the
+                    day you connect
                   </div>
                 {:else}
                   <div class="-mt-2">
                     <TokenAllocation
                       {dataPieChart}
                       {holdingTokenData}
-                      {handleSelectedTableTokenHolding}
+                      handleSelectedTableTokenHolding={(
+                        data,
+                        selectDatPieChart
+                      ) => {
+                        if (data.data && data.data.length !== 0) {
+                          // console.log({
+                          //   data,
+                          //   selectDatPieChart,
+                          // });
+                        }
+                      }}
                       listOptionTypeCategory={typeListCategory}
                       selectedOption={selectedType}
                       id="pie-chart-token-allocation"
@@ -898,13 +892,13 @@
                       variant="secondary"
                       on:click={() => {
                         searchCompare = "";
-                        getAnalyticCompare();
+                        queryClient.invalidateQueries(["compare"]);
                       }}>Remove</Button
                     >
                   </div>
                 </div>
                 <div class="h-full flex flex-col gap-5 mt-3">
-                  {#if isLoadingDataCompare}
+                  {#if $query.isFetching}
                     <div class="flex items-center justify-center h-[433px]">
                       <loading-icon />
                     </div>
@@ -914,13 +908,24 @@
                         <div
                           class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg"
                         >
-                          {errorMsg}
+                          Not enough data. CEX integration can only get data
+                          from the day you connect
                         </div>
                       {:else}
                         <TokenAllocation
                           dataPieChart={dataPieChartCompare}
                           holdingTokenData={holdingTokenDataCompare}
-                          {handleSelectedTableTokenHolding}
+                          handleSelectedTableTokenHolding={(
+                            data,
+                            selectDatPieChart
+                          ) => {
+                            if (data.data && data.data.length !== 0) {
+                              // console.log({
+                              //   data,
+                              //   selectDatPieChart,
+                              // });
+                            }
+                          }}
                           listOptionTypeCategory={typeListCategory}
                           selectedOption={selectedType}
                           id="pie-chart-token-allocation-compare"
@@ -932,7 +937,7 @@
               </div>
             {:else}
               <div class="h-full">
-                {#if isLoadingDataCompare}
+                {#if $query.isFetching}
                   <div
                     class="xl:text-2xl text-4xl font-medium text-black w-full"
                   >
@@ -952,7 +957,8 @@
                       <div
                         class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
                       >
-                        {errorMsg}
+                        Not enough data. CEX integration can only get data from
+                        the day you connect
                       </div>
                     {:else}
                       <div class="grid grid-rows-11 h-full">
@@ -979,7 +985,7 @@
                                 <Button
                                   on:click={() => {
                                     // searchCompare = suggestion.value;
-                                    // getAnalyticCompare();
+                                    // queryClient.invalidateQueries(["compare"]);
                                   }}
                                   variant="disabled"
                                 >
@@ -1009,7 +1015,7 @@
                                     (e.which == 13 || e.keyCode == 13) &&
                                     searchCompare
                                   ) {
-                                    getAnalyticCompare();
+                                    queryClient.invalidateQueries(["compare"]);
                                   }
                                 }}
                                 bind:value={searchCompare}
@@ -1042,7 +1048,7 @@
 
         <!-- Button Get re-balance action -->
         <div class="w-max">
-          {#if isLoading || searchCompare.length === 0}
+          {#if ($query.isFetching && $queryPersonalTag.isFetching) || searchCompare.length === 0}
             <Button variant="disabled">
               <div class="flex items-center gap-1">
                 <div class="">Get re-balance action</div>
@@ -1074,7 +1080,7 @@
       <div class="xl:text-2xl text-4xl font-medium text-black mb-3">
         Performance
       </div>
-      {#if isLoadingDataCompare}
+      {#if $query.isFetching}
         <div class="flex items-center justify-center h-[433px]">
           <loading-icon />
         </div>
@@ -1085,7 +1091,8 @@
               <div
                 class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
               >
-                {errorMsg}
+                Not enough data. CEX integration can only get data from the day
+                you connect
               </div>
             </div>
           {:else}
@@ -1119,7 +1126,7 @@
           </TooltipTitle>
         </div>
       </div>
-      {#if isLoadingDataCompare}
+      {#if $query.isFetching}
         <div class="flex items-center justify-center h-[465px]">
           <loading-icon />
         </div>
@@ -1130,7 +1137,8 @@
               <div
                 class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
               >
-                {errorMsg}
+                Not enough data. CEX integration can only get data from the day
+                you connect
               </div>
             </div>
           {:else}

@@ -21,11 +21,12 @@
   let isShowTooltipSymbol = false;
 
   $: amountChange =
-    data?.price?.price === 0
+    Number(data?.price?.price) === 0
       ? 0
-      : (totalNetWorth * (data?.ratio / 100)) / data?.price?.price;
+      : (totalNetWorth * (Number(data?.ratio) / 100)) /
+        Number(data?.price?.price);
 
-  $: valueChange = totalNetWorth * (data?.ratio / 100);
+  $: valueChange = totalNetWorth * (Number(data?.ratio) / 100);
 </script>
 
 <tr class="group transition-all">
