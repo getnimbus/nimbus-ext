@@ -77,8 +77,12 @@
             <div
               class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg"
             >
-              Not enough data. CEX integration can only get data from the day
-              you connect
+              {#if typeWalletAddress === "CEX"}
+                Not enough data. CEX integration can only get data from the day
+                you connect
+              {:else}
+                Empty
+              {/if}
             </div>
           {:else}
             <div class="flex flex-col gap-4">
@@ -274,8 +278,12 @@
             <div
               class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg"
             >
-              Not enough data. CEX integration can only get data from the day
-              you connect
+              {#if typeWalletAddress === "CEX"}
+                Not enough data. CEX integration can only get data from the day
+                you connect
+              {:else}
+                Empty
+              {/if}
             </div>
           {:else}
             <div>

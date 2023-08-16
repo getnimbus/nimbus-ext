@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { wallet, selectedPackage } from "~/store";
+  import { wallet, selectedPackage, typeWallet } from "~/store";
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
@@ -42,6 +42,11 @@
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   onMount(() => {
@@ -828,8 +833,12 @@
                   <div
                     class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
                   >
-                    Not enough data. CEX integration can only get data from the
-                    day you connect
+                    {#if typeWalletAddress === "CEX"}
+                      Not enough data. CEX integration can only get data from
+                      the day you connect
+                    {:else}
+                      Empty
+                    {/if}
                   </div>
                 {:else}
                   <div class="-mt-2">
@@ -897,8 +906,12 @@
                         <div
                           class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg"
                         >
-                          Not enough data. CEX integration can only get data
-                          from the day you connect
+                          {#if typeWalletAddress === "CEX"}
+                            Not enough data. CEX integration can only get data
+                            from the day you connect
+                          {:else}
+                            Empty
+                          {/if}
                         </div>
                       {:else}
                         <TokenAllocation
@@ -946,8 +959,12 @@
                       <div
                         class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
                       >
-                        Not enough data. CEX integration can only get data from
-                        the day you connect
+                        {#if typeWalletAddress === "CEX"}
+                          Not enough data. CEX integration can only get data
+                          from the day you connect
+                        {:else}
+                          Empty
+                        {/if}
                       </div>
                     {:else}
                       <div class="grid grid-rows-11 h-full">
@@ -1080,8 +1097,12 @@
               <div
                 class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
               >
-                Not enough data. CEX integration can only get data from the day
-                you connect
+                {#if typeWalletAddress === "CEX"}
+                  Not enough data. CEX integration can only get data from the
+                  day you connect
+                {:else}
+                  Empty
+                {/if}
               </div>
             </div>
           {:else}
@@ -1126,8 +1147,12 @@
               <div
                 class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
               >
-                Not enough data. CEX integration can only get data from the day
-                you connect
+                {#if typeWalletAddress === "CEX"}
+                  Not enough data. CEX integration can only get data from the
+                  day you connect
+                {:else}
+                  Empty
+                {/if}
               </div>
             </div>
           {:else}
