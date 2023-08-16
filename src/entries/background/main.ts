@@ -63,19 +63,6 @@ onMessage<IAddressInput, any>("getSectorGrowth", async ({ data: { address, chain
   }
 });
 
-onMessage<IAddressInput, any>("getInflowOutflow", async ({ data: { address, chain } }) => {
-  try {
-    return nimbus.get(`/v2/analysis/${address}/inflow-outflow?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
-      return {
-        result: response.data,
-        address: address
-      }
-    });
-  } catch (error) {
-    return {};
-  }
-});
-
 onMessage<IAddressInput, any>("getNetworthAnalysis", async ({ data: { address, chain } }) => {
   try {
     return nimbus.get(`/v2/analysis/${address}/networth?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {

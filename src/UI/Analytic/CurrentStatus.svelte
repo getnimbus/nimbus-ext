@@ -307,7 +307,7 @@
   // query personalize tag
   const getPersonalizeTag = async (address) => {
     if (packageSelected === "FREE") {
-      return;
+      return undefined;
     }
     const response = await nimbus.get(`/address/${address}/personalize/tag`);
     return response.data;
@@ -350,7 +350,7 @@
   // query holding token
   const getHoldingToken = async (address, chain) => {
     if (packageSelected === "FREE") {
-      return;
+      return null;
     }
     const response: HoldingTokenRes = await nimbus.get(
       `/v2/address/${address}/holding?chain=${chain}`
@@ -385,7 +385,7 @@
   // query overview
   const getOverview = async (address, chain) => {
     if (packageSelected === "FREE") {
-      return;
+      return undefined;
     }
     const response: OverviewDataRes = await nimbus.get(
       `/v2/address/${address}/overview?chain=${chain}`

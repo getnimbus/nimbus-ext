@@ -212,7 +212,7 @@
 
   const getAnalyticCompare = async (address, searchValue) => {
     if (packageSelected === "FREE") {
-      return;
+      return undefined;
     }
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${searchValue}`
@@ -222,7 +222,7 @@
 
   const getPersonalizeTag = async (address) => {
     if (packageSelected === "FREE") {
-      return;
+      return undefined;
     }
     const response = await nimbus.get(`/address/${address}/personalize/tag`);
     return response.data;

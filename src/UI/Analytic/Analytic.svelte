@@ -42,7 +42,7 @@
 
   const getAnalyticCompare = async (address: string) => {
     if (packageSelected === "FREE") {
-      return;
+      return undefined;
     }
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}`
@@ -52,7 +52,7 @@
 
   const getRiskBreakdown = async (address: string) => {
     if (packageSelected === "FREE") {
-      return;
+      return undefined;
     }
     const response = await nimbus.get(`/v2/analysis/${address}/risk-breakdown`);
     return response.data;
