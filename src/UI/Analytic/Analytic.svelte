@@ -15,6 +15,7 @@
   import RiskChart from "../AnalyticChart/RiskChart.svelte";
   import ReturnChart from "../AnalyticChart/ReturnChart.svelte";
   import RiskReturnChart from "../AnalyticChart/RiskReturnChart.svelte";
+  import { onMount } from "svelte";
 
   const navigate = useNavigate();
 
@@ -39,51 +40,46 @@
   });
 
   let isShowSoon = false;
-  let dataRiskBreakdown = [];
 
-  const queryClient = useQueryClient();
-  const query = createQuery({
-    queryKey: ["compare"],
-    queryFn: () => getAnalyticCompare(),
-    staleTime: 300000, // 5 minutes
-    onSuccess: () => getRiskBreakdown(),
+  $: enabledQuery = Boolean(
+    getAddressContext(selectedWallet)?.type === "EVM" ||
+      typeWalletAddress === "CEX"
+  );
+
+  $: query = createQuery({
+    queryKey: ["compare", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () => getAnalyticCompare(selectedWallet),
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const getAnalyticCompare = async () => {
+  $: queryBreakdown = createQuery({
+    queryKey: ["compare-breakdown", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () => getRiskBreakdown(selectedWallet),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  const getAnalyticCompare = async (address: string) => {
     if (packageSelected === "FREE") {
       return;
     }
     const response: any = await nimbus.get(
-      `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`
+      `/v2/analysis/${address}/compare?compareAddress=${""}`
     );
     return response.data;
   };
 
-  const getRiskBreakdown = async () => {
+  const getRiskBreakdown = async (address: string) => {
     try {
       const response = await nimbus.get(
-        `/v2/analysis/${selectedWallet}/risk-breakdown`
+        `/v2/analysis/${address}/risk-breakdown`
       );
-      if (response && response?.data) {
-        dataRiskBreakdown = response?.data;
-      }
+      return response.data;
     } catch (e) {
       console.error(e);
     }
   };
-
-  $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        if (
-          getAddressContext(selectedWallet)?.type === "EVM" ||
-          typeWalletAddress === "CEX"
-        ) {
-          queryClient.invalidateQueries(["compare"]);
-        }
-      }
-    }
-  }
 
   $: {
     if (selectedWallet) {
@@ -153,9 +149,9 @@
 
         <RiskChart
           data={$query.data}
-          isLoadingDataCompare={$query.isFetching}
+          isLoadingDataCompare={$query.isFetching || $queryBreakdown.isFetching}
           isEmptyDataCompare={$query.isError}
-          {dataRiskBreakdown}
+          dataRiskBreakdown={$queryBreakdown.data}
         />
 
         <ReturnChart
@@ -166,9 +162,9 @@
 
         <RiskReturnChart
           data={$query.data}
-          isLoadingDataCompare={$query.isFetching}
+          isLoadingDataCompare={$query.isFetching || $queryBreakdown.isFetching}
           isEmptyDataCompare={$query.isError}
-          {dataRiskBreakdown}
+          dataRiskBreakdown={$queryBreakdown.data}
         />
 
         <MoneyFlow {packageSelected} />
@@ -186,11 +182,11 @@
               <div class="text-lg font-medium">
                 Use Nimbus at its full potential
               </div>
-              <div class="text-gray-500 text-base">
+              <div class="text-base text-gray-500">
                 Upgrade to Premium to access Analytics feature
               </div>
             </div>
-            <div class="w-max mt-2">
+            <div class="mt-2 w-max">
               <Button variant="premium" on:click={() => navigate("/upgrade")}
                 >Start 30-day Trial</Button
               >
