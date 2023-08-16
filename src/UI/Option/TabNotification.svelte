@@ -140,7 +140,7 @@
                         isOpenFollowWhaleModal = true;
                       }}
                     >
-                      Turn on
+                      Get command
                     </div>
                   </div>
                 </td>
