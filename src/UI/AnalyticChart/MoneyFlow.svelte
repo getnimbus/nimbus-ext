@@ -408,7 +408,7 @@
       {/if}
       {#if typeWalletAddress === "CEX"}
         <div
-          class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-30 backdrop-blur-md"
+          class="absolute top-0 left-0 z-30 w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-30 backdrop-blur-md"
         >
           <div class="text-lg">Comming soon 🚀</div>
         </div>
