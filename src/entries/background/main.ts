@@ -100,19 +100,6 @@ onMessage<IAddressInput, any>("getDefillamaTokenChart", async ({ data: { address
   }
 });
 
-onMessage<IAddressInput, any>("getTotalValueHistory", async ({ data: { address, chain } }) => {
-  try {
-    return nimbus.get(`/v2/analysis/${address}/holding-history?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
-      return {
-        result: response.data,
-        address: address
-      }
-    });
-  } catch (error) {
-    return {};
-  }
-});
-
 onMessage("configPageList", async () => {
   try {
     return JSON.parse(
@@ -126,14 +113,6 @@ onMessage("configPageList", async () => {
 onMessage("getListTerm", async () => {
   try {
     return JSON.parse((await browser.storage.local.get("termList")).termList);
-  } catch (error) {
-    return [];
-  }
-});
-
-onMessage<IAddressInput, any>("getAnalytic", async ({ data: { address, chain } }) => {
-  try {
-    return await nimbus.get(`/v2/analysis/${address}/historical?chain=${chain}`).then((response) => response.data);
   } catch (error) {
     return [];
   }
@@ -262,20 +241,6 @@ onMessage<IAddressInput, any>("getNews", async ({ data: { address, chain, reload
       },
       { defaultValue: null, ttl: 5 * 60, disabled: reload }
     );
-    return res
-  } catch (error) {
-    return {};
-  }
-});
-
-onMessage<IAddressInput, any>("getTrxHistory", async ({ data: { address, chain, pageToken } }) => {
-  try {
-    const res = await nimbus.get(`/v2/address/${address}/history?chain=${chain}&pageToken=${pageToken}`).then((response) => {
-      return {
-        result: response.data,
-        address: address
-      }
-    });
     return res
   } catch (error) {
     return {};

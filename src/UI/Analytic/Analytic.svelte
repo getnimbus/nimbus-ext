@@ -2,7 +2,7 @@
   import { getAddressContext } from "~/utils";
   import { wallet, chain, selectedPackage, typeWallet } from "~/store";
   import { useNavigate } from "svelte-navigator";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
@@ -15,7 +15,6 @@
   import RiskChart from "../AnalyticChart/RiskChart.svelte";
   import ReturnChart from "../AnalyticChart/ReturnChart.svelte";
   import RiskReturnChart from "../AnalyticChart/RiskReturnChart.svelte";
-  import { onMount } from "svelte";
 
   const navigate = useNavigate();
 
@@ -41,6 +40,24 @@
 
   let isShowSoon = false;
 
+  const getAnalyticCompare = async (address: string) => {
+    if (packageSelected === "FREE") {
+      return;
+    }
+    const response: any = await nimbus.get(
+      `/v2/analysis/${address}/compare?compareAddress=${""}`
+    );
+    return response.data;
+  };
+
+  const getRiskBreakdown = async (address: string) => {
+    if (packageSelected === "FREE") {
+      return;
+    }
+    const response = await nimbus.get(`/v2/analysis/${address}/risk-breakdown`);
+    return response.data;
+  };
+
   $: enabledQuery = Boolean(
     getAddressContext(selectedWallet)?.type === "EVM" ||
       typeWalletAddress === "CEX"
@@ -59,27 +76,6 @@
     queryFn: () => getRiskBreakdown(selectedWallet),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
-
-  const getAnalyticCompare = async (address: string) => {
-    if (packageSelected === "FREE") {
-      return;
-    }
-    const response: any = await nimbus.get(
-      `/v2/analysis/${address}/compare?compareAddress=${""}`
-    );
-    return response.data;
-  };
-
-  const getRiskBreakdown = async (address: string) => {
-    try {
-      const response = await nimbus.get(
-        `/v2/analysis/${address}/risk-breakdown`
-      );
-      return response.data;
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   $: {
     if (selectedWallet) {

@@ -4,10 +4,11 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { sendMessage } from "webext-bridge";
-  import { wallet, chain, typeWallet } from "~/store";
+  import { wallet, chain, typeWallet, selectedPackage } from "~/store";
   import { getAddressContext, typeTrx } from "~/utils";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { nimbus } from "~/lib/network";
 
   import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
   import type {
@@ -18,7 +19,6 @@
   import AddressManagement from "~/components/AddressManagement.svelte";
   import CalendarChart from "~/components/CalendarChart.svelte";
   import HistoricalTransactions from "./HistoricalTransactions.svelte";
-  import { onMount } from "svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -35,11 +35,15 @@
     typeWalletAddress = value;
   });
 
+  let packageSelected = "";
+  selectedPackage.subscribe((value) => {
+    packageSelected = value;
+  });
+
   let isLoading = false;
   let data = [];
   let pageToken = "";
-  let isLoadingChart = false;
-  let isEmptyDataChart = false;
+
   let option = {
     tooltip: {
       extraCssText: "z-index: 9997",
@@ -115,64 +119,72 @@
     }, 300);
   };
 
-  const getAnalyticHistorical = async () => {
-    isLoadingChart = true;
-    try {
-      const response: AnalyticHistoricalRes = await sendMessage("getAnalytic", {
-        address: selectedWallet,
-        chain: selectedChain,
+  const getAnalyticHistorical = async (address, chain) => {
+    if (packageSelected === "FREE") {
+      return;
+    }
+    const response: AnalyticHistoricalRes = await nimbus.get(
+      `/v2/analysis/${address}/historical?chain=${chain}`
+    );
+    return response.data;
+  };
+
+  const formatDataHistorical = (data) => {
+    if (data.length !== 0) {
+      const maxHistorical = data?.reduce((prev, current) =>
+        prev.count > current.count ? prev : current
+      );
+      const formatData: AnalyticHistoricalFormat = data?.map((item) => {
+        return [
+          dayjs(Number(item.date) * 1000).format("YYYY-MM-DD"),
+          item.count,
+        ];
       });
-      if (response && response.length !== 0) {
-        const maxHistorical = response.reduce((prev, current) =>
-          prev.count > current.count ? prev : current
-        );
-
-        const formatData: AnalyticHistoricalFormat = response.map((item) => {
-          return [
-            dayjs(Number(item.date) * 1000).format("YYYY-MM-DD"),
-            item.count,
-          ];
-        });
-
-        option = {
-          ...option,
-          visualMap: {
-            ...option.visualMap,
-            max: maxHistorical.count,
-          },
-          calendar: {
-            ...option.calendar,
-            range: dayjs(Number(maxHistorical.date) * 1000).format("YYYY"),
-          },
-          series: {
-            ...option.series,
-            data: formatData,
-          },
-        };
-      } else {
-        isEmptyDataChart = true;
-      }
-    } catch (e) {
-      console.log("error: ", e);
-      isEmptyDataChart = true;
-    } finally {
-      isLoadingChart = false;
+      option = {
+        ...option,
+        visualMap: {
+          ...option.visualMap,
+          max: maxHistorical.count,
+        },
+        calendar: {
+          ...option.calendar,
+          range: dayjs(Number(maxHistorical.date) * 1000).format("YYYY"),
+        },
+        series: {
+          ...option.series,
+          data: formatData,
+        },
+      };
     }
   };
+
+  $: enabledQuery = Boolean(
+    getAddressContext(selectedWallet)?.type === "EVM" ||
+      typeWalletAddress === "CEX"
+  );
+
+  $: query = createQuery({
+    queryKey: ["historical", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () => getAnalyticHistorical(selectedWallet, selectedChain),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  $: {
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataHistorical($query.data);
+    }
+  }
 
   const getListTransactions = async (page: string) => {
     isLoading = true;
     try {
-      const response: TrxHistoryDataRes = await sendMessage("getTrxHistory", {
-        address: selectedWallet,
-        chain: selectedChain,
-        pageToken: page,
-      });
-      if (selectedWallet === response?.address) {
-        data = [...data, ...response.result.data];
-        pageToken = response.result.pageToken;
-      } else {
-        console.log("response: ", response);
+      const response: TrxHistoryDataRes = await nimbus.get(
+        `/v2/address/${selectedWallet}/history?chain=${selectedChain}&pageToken=${page}`
+      );
+      if (response && response.data) {
+        data = [...data, ...response.data.data];
+        pageToken = response.data.pageToken;
       }
     } catch (e) {
       console.log("error: ", e);
@@ -190,16 +202,8 @@
       data = [];
       pageToken = "";
       isLoading = false;
-      isLoadingChart = false;
-      isEmptyDataChart = false;
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
         getListTransactions("");
-        if (
-          getAddressContext(selectedWallet)?.type === "EVM" ||
-          typeWalletAddress === "CEX"
-        ) {
-          getAnalyticHistorical();
-        }
       }
     }
   }
@@ -218,8 +222,8 @@
           >
             <CalendarChart
               {option}
-              {isEmptyDataChart}
-              {isLoadingChart}
+              isEmptyDataChart={$query.isError}
+              isLoadingChart={$query.isFetching}
               isTrxPage
               title="Historical Activities"
               tooltipTitle="The chart shows only activities made by this wallet"

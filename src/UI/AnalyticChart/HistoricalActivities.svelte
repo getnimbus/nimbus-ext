@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { sendMessage } from "webext-bridge";
   import { wallet, chain, typeWallet } from "~/store";
   import dayjs from "dayjs";
   import { formatCurrency, getAddressContext } from "~/utils";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { nimbus } from "~/lib/network";
 
   import type {
     AnalyticHistoricalRes,
@@ -28,8 +29,6 @@
     typeWalletAddress = value;
   });
 
-  let isLoadingChart = false;
-  let isEmptyDataChart = false;
   let option = {
     tooltip: {
       extraCssText: "z-index: 9997",
@@ -94,66 +93,62 @@
     },
   };
 
-  const getAnalyticHistorical = async () => {
-    if (packageSelected === "FREE") {
-      return;
-    }
-    isLoadingChart = true;
-    try {
-      const response: AnalyticHistoricalRes = await sendMessage("getAnalytic", {
-        address: selectedWallet,
-        chain: selectedChain,
+  const formatDataHistorical = (data) => {
+    if (data.length !== 0) {
+      const maxHistorical = data?.reduce((prev, current) =>
+        prev.count > current.count ? prev : current
+      );
+
+      const formatData: AnalyticHistoricalFormat = data?.map((item) => {
+        return [
+          dayjs(Number(item.date) * 1000).format("YYYY-MM-DD"),
+          item.count,
+        ];
       });
-      if (response && response.length !== 0) {
-        const maxHistorical = response.reduce((prev, current) =>
-          prev.count > current.count ? prev : current
-        );
 
-        const formatData: AnalyticHistoricalFormat = response.map((item) => {
-          return [
-            dayjs(Number(item.date) * 1000).format("YYYY-MM-DD"),
-            item.count,
-          ];
-        });
-
-        option = {
-          ...option,
-          visualMap: {
-            ...option.visualMap,
-            max: maxHistorical.count,
-          },
-          calendar: {
-            ...option.calendar,
-            range: dayjs(Number(maxHistorical.date) * 1000).format("YYYY"),
-          },
-          series: {
-            ...option.series,
-            data: formatData,
-          },
-        };
-      } else {
-        isEmptyDataChart = true;
-      }
-    } catch (e) {
-      console.log("error: ", e);
-      isEmptyDataChart = true;
-    } finally {
-      isLoadingChart = false;
+      option = {
+        ...option,
+        visualMap: {
+          ...option.visualMap,
+          max: maxHistorical.count,
+        },
+        calendar: {
+          ...option.calendar,
+          range: dayjs(Number(maxHistorical.date) * 1000).format("YYYY"),
+        },
+        series: {
+          ...option.series,
+          data: formatData,
+        },
+      };
     }
   };
 
+  const getAnalyticHistorical = async (address, chain) => {
+    if (packageSelected === "FREE") {
+      return;
+    }
+    const response = await nimbus.get(
+      `/v2/analysis/${address}/historical?chain=${chain}`
+    );
+    return response.data;
+  };
+
+  $: enabledQuery = Boolean(
+    getAddressContext(selectedWallet)?.type === "EVM" ||
+      typeWalletAddress === "CEX"
+  );
+
+  $: query = createQuery({
+    queryKey: ["historical", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () => getAnalyticHistorical(selectedWallet, selectedChain),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
   $: {
-    if (selectedWallet || selectedChain) {
-      isLoadingChart = false;
-      isEmptyDataChart = false;
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        if (
-          getAddressContext(selectedWallet)?.type === "EVM" ||
-          typeWalletAddress === "CEX"
-        ) {
-          getAnalyticHistorical();
-        }
-      }
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataHistorical($query.data);
     }
   }
 </script>
@@ -161,8 +156,8 @@
 <div class="border border-[#0000001a] rounded-[20px] py-6">
   <CalendarChart
     {option}
-    {isEmptyDataChart}
-    {isLoadingChart}
+    isEmptyDataChart={$query.isError}
+    isLoadingChart={$query.isFetching}
     title="Activities"
     tooltipTitle="The chart shows only activities made by this wallet"
     id="historical-activities-analytic"

@@ -1,12 +1,19 @@
 <script lang="ts">
   import { getAddressContext } from "~/utils";
-  import { sendMessage } from "webext-bridge";
-  import { wallet, chain, isOpenReport } from "~/store";
+  import {
+    wallet,
+    chain,
+    isOpenReport,
+    typeWallet,
+    selectedPackage,
+  } from "~/store";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
+  import { createQuery } from "@tanstack/svelte-query";
+  import { nimbus } from "~/lib/network";
 
   import type {
     AnalyticHistoricalRes,
@@ -26,8 +33,15 @@
     selectedChain = value;
   });
 
-  let isLoadingChart = false;
-  let isEmptyDataChart = false;
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
+
+  let packageSelected = "";
+  selectedPackage.subscribe((value) => {
+    packageSelected = value;
+  });
 
   let option = {
     tooltip: {
@@ -93,56 +107,59 @@
     },
   };
 
-  const getAnalyticHistorical = async () => {
-    isLoadingChart = true;
-    try {
-      const response: AnalyticHistoricalRes = await sendMessage("getAnalytic", {
-        address: selectedWallet,
-        chain: selectedChain,
+  const getAnalyticHistorical = async (address, chain) => {
+    if (packageSelected === "FREE") {
+      return;
+    }
+    const response = await nimbus.get(
+      `/v2/analysis/${address}/historical?chain=${chain}`
+    );
+    return response.data;
+  };
+
+  const formatDataHistorical = (data) => {
+    if (data.length !== 0) {
+      const maxHistorical = data?.reduce((prev, current) =>
+        prev.count > current.count ? prev : current
+      );
+
+      const formatData: AnalyticHistoricalFormat = data?.map((item) => {
+        return [dayjs(item.date).format("YYYY-MM-DD"), item.count];
       });
-      if (response && response.length !== 0) {
-        const maxHistorical = response.reduce((prev, current) =>
-          prev.count > current.count ? prev : current
-        );
 
-        const formatData: AnalyticHistoricalFormat = response.map((item) => {
-          return [dayjs(item.date).format("YYYY-MM-DD"), item.count];
-        });
-
-        option = {
-          ...option,
-          visualMap: {
-            ...option.visualMap,
-            max: maxHistorical.count,
-          },
-          calendar: {
-            ...option.calendar,
-            range: dayjs(maxHistorical.date).format("YYYY"),
-          },
-          series: {
-            ...option.series,
-            data: formatData,
-          },
-        };
-        isLoadingChart = false;
-      } else {
-        isLoadingChart = false;
-        isEmptyDataChart = true;
-      }
-    } catch (e) {
-      console.log("error: ", e);
-      isLoadingChart = false;
-      isEmptyDataChart = true;
+      option = {
+        ...option,
+        visualMap: {
+          ...option.visualMap,
+          max: maxHistorical.count,
+        },
+        calendar: {
+          ...option.calendar,
+          range: dayjs(maxHistorical.date).format("YYYY"),
+        },
+        series: {
+          ...option.series,
+          data: formatData,
+        },
+      };
     }
   };
 
+  $: enabledQuery = Boolean(
+    getAddressContext(selectedWallet)?.type === "EVM" ||
+      typeWalletAddress === "CEX"
+  );
+
+  $: query = createQuery({
+    queryKey: ["historical", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () => getAnalyticHistorical(selectedWallet, selectedChain),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
   $: {
-    if (selectedWallet || selectedChain) {
-      isLoadingChart = false;
-      isEmptyDataChart = false;
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        getAnalyticHistorical();
-      }
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataHistorical($query.data);
     }
   }
 </script>
@@ -157,8 +174,8 @@
     <div class="pb-9 pt-7 border border-[#0000001a] rounded-[20px]">
       <CalendarChart
         {option}
-        {isEmptyDataChart}
-        {isLoadingChart}
+        isEmptyDataChart={$query.isError}
+        isLoadingChart={$query.isFetching}
         title="Historical activities"
         tooltipTitle="The chart shows only activities made by this wallet"
         id="historical-activities-personality"

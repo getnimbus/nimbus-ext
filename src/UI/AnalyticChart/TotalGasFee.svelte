@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { sendMessage } from "webext-bridge";
   import { wallet, chain, typeWallet } from "~/store";
   import dayjs from "dayjs";
   import { formatCurrency, getAddressContext } from "~/utils";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { nimbus } from "~/lib/network";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
 
@@ -23,8 +24,6 @@
     typeWalletAddress = value;
   });
 
-  let isLoadingChart = false;
-  let isEmptyDataChart = false;
   let sum = 0;
   let option = {
     tooltip: {
@@ -89,69 +88,64 @@
     },
   };
 
-  const getAnalyticHistorical = async () => {
+  const getAnalyticHistorical = async (address, chain) => {
     if (packageSelected === "FREE") {
       return;
     }
-    isLoadingChart = true;
-    try {
-      const response: any[] = await sendMessage("getAnalytic", {
-        address: selectedWallet,
-        chain: selectedChain,
+    const response = await nimbus.get(
+      `/v2/analysis/${address}/historical?chain=${chain}`
+    );
+    return response.data;
+  };
+
+  const formatDataHistorical = (data) => {
+    if (data.length !== 0) {
+      const maxHistorical = data?.reduce((prev, current) =>
+        prev.value > current.value ? prev : current
+      );
+
+      sum = data?.reduce((prev, item) => prev + item.value, 0);
+
+      const formatData = data?.map((item) => {
+        return [
+          dayjs(Number(item.date) * 1000).format("YYYY-MM-DD"),
+          item.value,
+        ];
       });
-      if (response && response.length !== 0) {
-        const maxHistorical = response.reduce((prev, current) =>
-          prev.value > current.value ? prev : current
-        );
 
-        sum = response.reduce((prev, item) => prev + item.value, 0);
-
-        const formatData = response.map((item) => {
-          return [
-            dayjs(Number(item.date) * 1000).format("YYYY-MM-DD"),
-            item.value,
-          ];
-        });
-
-        option = {
-          ...option,
-          visualMap: {
-            ...option.visualMap,
-            max: maxHistorical.value,
-          },
-          calendar: {
-            ...option.calendar,
-            range: dayjs(Number(maxHistorical.date) * 1000).format("YYYY"),
-          },
-          series: {
-            ...option.series,
-            data: formatData,
-          },
-        };
-        isLoadingChart = false;
-      } else {
-        isLoadingChart = false;
-        isEmptyDataChart = true;
-      }
-    } catch (e) {
-      console.log("error: ", e);
-      isLoadingChart = false;
-      isEmptyDataChart = true;
+      option = {
+        ...option,
+        visualMap: {
+          ...option.visualMap,
+          max: maxHistorical.value,
+        },
+        calendar: {
+          ...option.calendar,
+          range: dayjs(Number(maxHistorical.date) * 1000).format("YYYY"),
+        },
+        series: {
+          ...option.series,
+          data: formatData,
+        },
+      };
     }
   };
 
+  $: enabledQuery = Boolean(
+    getAddressContext(selectedWallet)?.type === "EVM" ||
+      typeWalletAddress === "CEX"
+  );
+
+  $: query = createQuery({
+    queryKey: ["historical", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () => getAnalyticHistorical(selectedWallet, selectedChain),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
   $: {
-    if (selectedWallet || selectedChain) {
-      isLoadingChart = false;
-      isEmptyDataChart = false;
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        if (
-          getAddressContext(selectedWallet)?.type === "EVM" ||
-          typeWalletAddress === "CEX"
-        ) {
-          getAnalyticHistorical();
-        }
-      }
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataHistorical($query.data);
     }
   }
 </script>
@@ -159,8 +153,8 @@
 <div class="border border-[#0000001a] rounded-[20px] py-6">
   <CalendarChart
     {option}
-    {isEmptyDataChart}
-    {isLoadingChart}
+    isEmptyDataChart={$query.isError}
+    isLoadingChart={$query.isFetching}
     title="Total gas fee paid"
     tooltipTitle=""
     id="total-gasfee-paid"
