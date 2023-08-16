@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { sendMessage } from "webext-bridge";
   import { wallet, chain, typeWallet } from "~/store";
   import { groupBy, flatten } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -15,6 +14,7 @@
   import { useNavigate } from "svelte-navigator";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
   import type { OverviewDataRes } from "~/types/OverviewData";
@@ -57,7 +57,6 @@
 
   let selectedType: "category" | "sector" | "rank" = "category";
   let isEmptyDataPie = false;
-  let isLoadingDataPie = false;
   let dataRank = [];
   let dataCategory = [];
   let dataSector = [];
@@ -159,8 +158,6 @@
   let container;
 
   let selectedTypeChart: "line" | "bar" = "line";
-  let isLoadingPerformanceChart = false;
-  let isEmptyPerformanceChart = false;
   let optionLine = {
     title: {
       text: "",
@@ -305,270 +302,261 @@
     isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
   };
 
-  const getHoldingToken = async (isReload: boolean = false) => {
+  const queryClient = useQueryClient();
+
+  // query personalize tag
+  const getPersonalizeTag = async (address) => {
     if (packageSelected === "FREE") {
       return;
     }
-    isLoadingDataPie = true;
-    try {
-      const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
-        address: selectedWallet,
-        reload: isReload,
-        chain: selectedChain,
-      });
+    const response = await nimbus.get(`/address/${address}/personalize/tag`);
+    return response.data;
+  };
 
-      if (response === null) {
-        isEmptyDataPie = true;
+  const formatDataPersonalTag = (data) => {
+    const categoriesData = Object.getOwnPropertyNames(data);
+    const categoriesDataList = categoriesData.map((item) => {
+      return {
+        category: item,
+        dataTag: groupBy(data[item], "tag"),
+      };
+    });
+    const formatDataCategory = categoriesDataList.map((item) => {
+      return {
+        category: item.category,
+        dataTag: Object.getOwnPropertyNames(item.dataTag).map((tag) => {
+          return {
+            name: tag,
+            tokens: item.dataTag[tag],
+          };
+        }),
+      };
+    });
+    dataPersonalizeTag = formatDataCategory;
+  };
 
-        isLoadingDataPie = false;
-      } else if (selectedWallet === response?.address) {
-        if (response?.result?.length === 0) {
-          isEmptyDataPie = true;
+  $: queryPersonalTag = createQuery({
+    queryKey: ["personalize-tag", selectedWallet],
+    queryFn: () => getPersonalizeTag(selectedWallet),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
-          isLoadingDataPie = false;
-          return;
-        }
+  $: {
+    if (!$queryPersonalTag.isError && $queryPersonalTag.data !== undefined) {
+      formatDataPersonalTag($queryPersonalTag.data);
+    }
+  }
 
-        dataTokenHolding = response.result;
-        getPersonalizeTag();
+  // query holding token
+  const getHoldingToken = async (address, chain) => {
+    if (packageSelected === "FREE") {
+      return;
+    }
+    const response: HoldingTokenRes = await nimbus.get(
+      `/v2/address/${address}/holding?chain=${chain}`
+    );
+    return response.data;
+  };
 
-        dataRank = handleFormatDataPieChart(response.result, "rank");
-        dataCategory = handleFormatDataPieChart(response.result, "category");
-        dataSector = handleFormatDataPieChart(response.result, "sector");
+  const formatDataHoldingToken = (data) => {
+    if (data && data.length !== 0) {
+      dataTokenHolding = data;
+      queryClient.invalidateQueries(["personalize-tag"]);
 
-        isLoadingDataPie = false;
-      } else {
-        isEmptyDataPie = true;
-        isLoadingDataPie = false;
-      }
-    } catch (e) {
-      console.log("error: ", e);
-      isLoadingDataPie = false;
-      isEmptyDataPie = true;
+      dataRank = handleFormatDataPieChart(data, "rank");
+      dataCategory = handleFormatDataPieChart(data, "category");
+      dataSector = handleFormatDataPieChart(data, "sector");
     }
   };
 
-  const getPersonalizeTag = async () => {
+  $: queryHoldingToken = createQuery({
+    queryKey: ["holding-token", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () => getHoldingToken(selectedWallet, selectedChain),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  $: {
+    if (!$queryHoldingToken.isError && $queryHoldingToken.data !== null) {
+      formatDataHoldingToken($queryHoldingToken.data);
+    }
+  }
+
+  // query overview
+  const getOverview = async (address, chain) => {
     if (packageSelected === "FREE") {
       return;
     }
-    try {
-      const response = await nimbus.get(
-        `/address/${selectedWallet}/personalize/tag`
-      );
-      if (response && response.data) {
-        const categoriesData = Object.getOwnPropertyNames(response.data);
-        const categoriesDataList = categoriesData.map((item) => {
-          return {
-            category: item,
-            dataTag: groupBy(response.data[item], "tag"),
-          };
-        });
-        const formatDataCategory = categoriesDataList.map((item) => {
-          return {
-            category: item.category,
-            dataTag: Object.getOwnPropertyNames(item.dataTag).map((tag) => {
-              return {
-                name: tag,
-                tokens: item.dataTag[tag],
-              };
-            }),
-          };
-        });
-
-        dataPersonalizeTag = formatDataCategory;
-      }
-    } catch (e) {
-      console.log("e: ", e);
-    }
+    const response: OverviewDataRes = await nimbus.get(
+      `/v2/address/${address}/overview?chain=${chain}`
+    );
+    return response.data;
   };
 
-  const getOverview = async (isReload: boolean = false) => {
-    if (packageSelected === "FREE") {
-      return;
-    }
-    isLoadingPerformanceChart = true;
-    isEmptyPerformanceChart = false;
-    try {
-      const response: OverviewDataRes = await sendMessage("getOverview", {
-        address: selectedWallet,
-        reload: isReload,
-        chain: selectedChain,
+  const formatDataOverview = (data) => {
+    if (data?.performance.length !== 0) {
+      const formatXAxis = data?.performance.map((item) => {
+        return dayjs(item.date).format("YYYY-MM-DD");
       });
 
-      if (selectedWallet === response?.address) {
-        if (
-          response.result?.performance &&
-          response.result?.performance.length !== 0
-        ) {
-          const formatXAxis = response.result?.performance.map((item) => {
-            return dayjs(item.date).format("YYYY-MM-DD");
-          });
+      // line chart format data
+      const formatDataPortfolio = data?.performance.map((item) => {
+        return {
+          value: item.portfolio,
+          itemStyle: {
+            color: "#00b580",
+          },
+        };
+      });
 
-          // line chart format data
-          const formatDataPortfolio = response.result?.performance.map(
-            (item) => {
-              return {
-                value: item.portfolio,
-                itemStyle: {
-                  color: "#00b580",
-                },
-              };
-            }
-          );
+      const formatDataETH = data?.performance.map((item) => {
+        return {
+          value: item.eth,
+          itemStyle: {
+            color: "#547fef",
+          },
+        };
+      });
 
-          const formatDataETH = response.result?.performance.map((item) => {
-            return {
-              value: item.eth,
+      const formatDataBTC = data?.performance.map((item) => {
+        return {
+          value: item.btc,
+          itemStyle: {
+            color: "#f7931a",
+          },
+        };
+      });
+
+      optionLine = {
+        ...optionLine,
+        legend: {
+          ...optionLine.legend,
+          data: [
+            {
+              name: "Your Portfolio",
               itemStyle: {
-                color: "#547fef",
+                color: "#00b580",
               },
-            };
-          });
-
-          const formatDataBTC = response.result?.performance.map((item) => {
-            return {
-              value: item.btc,
+            },
+            {
+              name: "Bitcoin",
               itemStyle: {
                 color: "#f7931a",
               },
-            };
-          });
+            },
+            {
+              name: "Ethereum",
+              itemStyle: {
+                color: "#547fef",
+              },
+            },
+          ],
+        },
+        xAxis: {
+          ...optionLine.xAxis,
+          data: formatXAxis,
+        },
+        series: [
+          {
+            name: "Your Portfolio",
+            type: "line",
+            lineStyle: {
+              type: "solid",
+              color: "#00b580",
+            },
+            data: formatDataPortfolio,
+          },
+          {
+            name: "Bitcoin",
+            type: "line",
+            lineStyle: {
+              type: "dashed",
+              color: "#f7931a",
+            },
+            data: formatDataBTC,
+          },
+          {
+            name: "Ethereum",
+            type: "line",
+            lineStyle: {
+              type: "dashed",
+              color: "#547fef",
+            },
+            data: formatDataETH,
+          },
+        ],
+      };
 
-          optionLine = {
-            ...optionLine,
-            legend: {
-              ...optionLine.legend,
-              data: [
-                {
-                  name: "Your Portfolio",
-                  itemStyle: {
-                    color: "#00b580",
-                  },
-                },
-                {
-                  name: "Bitcoin",
-                  itemStyle: {
-                    color: "#f7931a",
-                  },
-                },
-                {
-                  name: "Ethereum",
-                  itemStyle: {
-                    color: "#547fef",
-                  },
-                },
-              ],
+      // bar chart format data
+      const formatDataBarChart = ["portfolio", "btc", "eth"].map((item) => {
+        return {
+          name: item,
+          values: data?.performance.map((data) => data[item]),
+        };
+      });
+
+      optionBar = {
+        ...optionBar,
+        series: [
+          {
+            name: "Value",
+            type: "bar",
+            emphasis: {
+              focus: "series",
             },
-            xAxis: {
-              ...optionLine.xAxis,
-              data: formatXAxis,
-            },
-            series: [
+            data: [
               {
-                name: "Your Portfolio",
-                type: "line",
-                lineStyle: {
-                  type: "solid",
+                value: formatDataBarChart?.find(
+                  (data) => data.name === "portfolio"
+                )?.values[
+                  formatDataBarChart?.find((data) => data.name === "portfolio")
+                    .values?.length - 1
+                ],
+                itemStyle: {
                   color: "#00b580",
                 },
-                data: formatDataPortfolio,
               },
               {
-                name: "Bitcoin",
-                type: "line",
-                lineStyle: {
-                  type: "dashed",
+                value: formatDataBarChart?.find((data) => data.name === "btc")
+                  ?.values[
+                  formatDataBarChart?.find((data) => data.name === "btc")
+                    ?.values?.length - 1
+                ],
+                itemStyle: {
                   color: "#f7931a",
                 },
-                data: formatDataBTC,
               },
               {
-                name: "Ethereum",
-                type: "line",
-                lineStyle: {
-                  type: "dashed",
+                value: formatDataBarChart?.find((data) => data.name === "eth")
+                  ?.values[
+                  formatDataBarChart?.find((data) => data.name === "eth")
+                    ?.values?.length - 1
+                ],
+                itemStyle: {
                   color: "#547fef",
                 },
-                data: formatDataETH,
               },
             ],
-          };
-
-          // bar chart format data
-          const formatDataBarChart = ["portfolio", "btc", "eth"].map((item) => {
-            return {
-              name: item,
-              values: response.result?.performance.map((data) => data[item]),
-            };
-          });
-
-          optionBar = {
-            ...optionBar,
-            series: [
-              {
-                name: "Value",
-                type: "bar",
-                emphasis: {
-                  focus: "series",
-                },
-                data: [
-                  {
-                    value: formatDataBarChart.find(
-                      (data) => data.name === "portfolio"
-                    ).values[
-                      formatDataBarChart.find(
-                        (data) => data.name === "portfolio"
-                      ).values.length - 1
-                    ],
-                    itemStyle: {
-                      color: "#00b580",
-                    },
-                  },
-                  {
-                    value: formatDataBarChart.find(
-                      (data) => data.name === "btc"
-                    ).values[
-                      formatDataBarChart.find((data) => data.name === "btc")
-                        .values.length - 1
-                    ],
-                    itemStyle: {
-                      color: "#f7931a",
-                    },
-                  },
-                  {
-                    value: formatDataBarChart.find(
-                      (data) => data.name === "eth"
-                    ).values[
-                      formatDataBarChart.find((data) => data.name === "eth")
-                        .values.length - 1
-                    ],
-                    itemStyle: {
-                      color: "#547fef",
-                    },
-                  },
-                ],
-              },
-            ],
-          };
-
-          isLoadingPerformanceChart = false;
-        } else {
-          isEmptyPerformanceChart = true;
-          isLoadingPerformanceChart = false;
-        }
-      } else {
-        // console.log("response: ", response)
-        isLoadingPerformanceChart = false;
-        isEmptyPerformanceChart = true;
-      }
-    } catch (e) {
-      console.log("error: ", e);
-      isLoadingPerformanceChart = false;
-      isEmptyPerformanceChart = true;
+          },
+        ],
+      };
     }
   };
 
+  $: queryOverview = createQuery({
+    queryKey: ["overview", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () => getOverview(selectedWallet, selectedChain),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  $: {
+    if (!$queryOverview.isError && $queryOverview.data !== undefined) {
+      formatDataOverview($queryOverview.data);
+    }
+  }
+
+  // handle logic select
   $: {
     if (dataPersonalizeTag && dataTokenHolding) {
       const tokenDataEachCategory = dataPersonalizeTag.map((item) => {
@@ -683,15 +671,16 @@
             personalizeCategoryData[indexOfType];
 
           if (
-            selectedPersonalizeCategoryData !== undefined &&
-            isEmptyDataPie === false
+            (selectedPersonalizeCategoryData !== undefined &&
+              $queryHoldingToken.isError) ||
+            ($queryHoldingToken.data && $queryHoldingToken.data?.length === 0)
           ) {
             optionPie = {
               ...optionPie,
               series: [
                 {
                   ...optionPie.series[0],
-                  data: selectedPersonalizeCategoryData.dataPie.map((item) => {
+                  data: selectedPersonalizeCategoryData.dataPie?.map((item) => {
                     return {
                       ...item,
                       name_balance: "",
@@ -714,16 +703,14 @@
         personalizeCategoryData = [];
         isEmptyDataPie = false;
         selectedDataPie = [];
-        if (
-          getAddressContext(selectedWallet)?.type === "EVM" ||
-          typeWalletAddress === "CEX"
-        ) {
-          getHoldingToken();
-          getOverview();
-        }
       }
     }
   }
+
+  $: enabledQuery = Boolean(
+    getAddressContext(selectedWallet)?.type === "EVM" ||
+      typeWalletAddress === "CEX"
+  );
 </script>
 
 <div class="flex xl:flex-row flex-col justify-between gap-6">
@@ -841,13 +828,13 @@
     </div>
 
     <div class="w-full mt-5">
-      {#if isLoadingDataPie}
+      {#if $queryHoldingToken.isFetching}
         <div class="flex items-center justify-center h-[465px]">
           <LoadingPremium />
         </div>
       {:else}
         <div class="h-full">
-          {#if isEmptyDataPie}
+          {#if $queryHoldingToken.isError || ($queryHoldingToken.data && $queryHoldingToken.data.length === 0)}
             <div
               class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
             >
@@ -895,7 +882,7 @@
           </div>
         {/if}
       </div>
-      {#if !isEmptyPerformanceChart}
+      {#if !$queryOverview.isError || ($queryOverview.data?.performance && $queryOverview.data?.performance.length !== 0)}
         <div class="flex items-center gap-2">
           <AnimateSharedLayout>
             {#each performanceTypeChart as type}
@@ -935,13 +922,13 @@
         <div class="xl:text-lg text-xl">Comming soon 🚀</div>
       </div>
     {/if}
-    {#if isLoadingPerformanceChart}
+    {#if $queryOverview.isFetching}
       <div class="flex items-center justify-center h-[485px]">
         <LoadingPremium />
       </div>
     {:else}
       <div class="h-full">
-        {#if isEmptyPerformanceChart}
+        {#if $queryOverview.isError || ($queryOverview.data?.performance && $queryOverview.data?.performance.length === 0)}
           <div
             class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
           >

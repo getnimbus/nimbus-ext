@@ -162,7 +162,6 @@
   let showFollowTooltip = false;
   let showCommandTooltip = false;
   let showDisableAddWallet = false;
-  let isLoadingFullPage = false;
   let listAddress = [];
   let address = "";
   let label = "";

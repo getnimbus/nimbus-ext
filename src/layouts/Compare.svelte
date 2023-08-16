@@ -210,36 +210,34 @@
 
   const queryClient = useQueryClient();
 
-  const getAnalyticCompare = async () => {
+  const getAnalyticCompare = async (address, searchValue) => {
     if (packageSelected === "FREE") {
       return;
     }
     const response: any = await nimbus.get(
-      `/v2/analysis/${selectedWallet}/compare?compareAddress=${searchCompare}`
+      `/v2/analysis/${address}/compare?compareAddress=${searchValue}`
     );
     return response.data;
   };
 
-  const getPersonalizeTag = async () => {
+  const getPersonalizeTag = async (address) => {
     if (packageSelected === "FREE") {
       return;
     }
-    const response = await nimbus.get(
-      `/address/${selectedWallet}/personalize/tag`
-    );
+    const response = await nimbus.get(`/address/${address}/personalize/tag`);
     return response.data;
   };
 
-  const query = createQuery({
-    queryKey: ["compare", searchCompare],
-    queryFn: () => getAnalyticCompare(),
-    staleTime: 300000, // 5 minutes
+  $: query = createQuery({
+    queryKey: ["compare", selectedWallet],
+    queryFn: () => getAnalyticCompare(selectedWallet, searchCompare),
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const queryPersonalTag = createQuery({
-    queryKey: ["personal-tag"],
-    queryFn: () => getPersonalizeTag(),
-    staleTime: 300000, // 5 minutes
+  $: queryPersonalTag = createQuery({
+    queryKey: ["personal-tag", selectedWallet],
+    queryFn: () => getPersonalizeTag(selectedWallet),
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const formatDataAnalyticCompare = (data) => {
@@ -422,15 +420,6 @@
       isEmptyDataPie = true;
     } else {
       isEmptyDataPie = false;
-    }
-  }
-
-  $: {
-    if (selectedWallet) {
-      if (selectedWallet.length !== 0) {
-        queryClient.invalidateQueries(["compare"]);
-        queryClient.invalidateQueries(["personal-tag"]);
-      }
     }
   }
 
@@ -1051,7 +1040,7 @@
           {#if ($query.isFetching && $queryPersonalTag.isFetching) || searchCompare.length === 0}
             <Button variant="disabled">
               <div class="flex items-center gap-1">
-                <div class="">Get re-balance action</div>
+                <div class="xl:text-base text-2xl">Get re-balance action</div>
                 <img
                   src={LeftArrow}
                   alt=""

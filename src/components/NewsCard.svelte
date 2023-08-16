@@ -48,7 +48,7 @@
         </div>
       </div>
       <div class="xl:text-sm text-lg font-normal text-[#00000099]">
-        {add3Dots(data.description, 150)}
+        {add3Dots(data.description || "", 150)}
       </div>
     </div>
   </div>

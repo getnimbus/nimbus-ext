@@ -39,32 +39,24 @@
     isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
   };
 
-  const queryClient = useQueryClient();
-  const query = createQuery({
-    queryKey: ["compare"],
-    queryFn: () => getAnalyticCompare(),
-    staleTime: 300000, // 5 minutes
-  });
-
-  const getAnalyticCompare = async () => {
+  const getAnalyticCompare = async (address) => {
     const response: any = await nimbus.get(
-      `/v2/analysis/${selectedWallet}/compare?compareAddress=${""}`
+      `/v2/analysis/${address}/compare?compareAddress=${""}`
     );
     return response.data;
   };
 
-  $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        if (
-          getAddressContext(selectedWallet)?.type === "EVM" ||
-          typeWalletAddress === "CEX"
-        ) {
-          queryClient.invalidateQueries(["compare"]);
-        }
-      }
-    }
-  }
+  $: query = createQuery({
+    queryKey: ["compare", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () => getAnalyticCompare(selectedWallet),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  $: enabledQuery = Boolean(
+    getAddressContext(selectedWallet)?.type === "EVM" ||
+      typeWalletAddress === "CEX"
+  );
 </script>
 
 <ErrorBoundary>
