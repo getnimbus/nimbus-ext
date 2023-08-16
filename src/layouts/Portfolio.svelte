@@ -345,15 +345,22 @@
 
       if (selectedWallet === response?.address) {
         const formatDataTokenHolding = response?.result.map((item) => {
-          const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
-          const filteredVaults = responseVaults?.data?.filter((data) =>
-            data.name.match(regex)
-          );
+          try {
+            const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
+            const filteredVaults = responseVaults?.data?.filter((data) =>
+              data.name.match(regex)
+            );
 
-          return {
-            ...item,
-            vaults: filteredVaults,
-          };
+            return {
+              ...item,
+              vaults: filteredVaults,
+            };
+          } catch (error) {
+            return {
+              ...item,
+              vaults: [],
+            };
+          }
         });
 
         const formatData = formatDataTokenHolding.map((item) => {
