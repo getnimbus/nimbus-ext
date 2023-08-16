@@ -3,6 +3,8 @@
   import * as browser from "webextension-polyfill";
   import "flowbite/dist/flowbite.css";
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
+  import { nimbus } from "~/lib/network";
+  import { selectedPackage } from "~/store";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
@@ -25,6 +27,7 @@
   });
 
   onMount(() => {
+    getUserInfo();
     const urlParams = new URLSearchParams(window.location.search);
     const tabParams = urlParams.get("tab");
     if (tabParams) {
@@ -43,6 +46,24 @@
       );
     }
   });
+
+  const getUserInfo = async () => {
+    try {
+      const response = await nimbus.get("/users/me");
+      if (response && response.data) {
+        if (
+          response.data?.plan?.tier &&
+          response.data?.plan?.tier.length !== 0
+        ) {
+          selectedPackage.update(
+            (n) => (n = response.data?.plan?.tier.toUpperCase())
+          );
+        }
+      }
+    } catch (e) {
+      console.error("e: ", e);
+    }
+  };
 </script>
 
 <ErrorBoundary>

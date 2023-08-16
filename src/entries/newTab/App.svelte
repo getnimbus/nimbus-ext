@@ -4,6 +4,9 @@
   import * as browser from "webextension-polyfill";
   import createHashSource from "./hashHistory";
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
+  import { onMount } from "svelte";
+  import { nimbus } from "~/lib/network";
+  import { selectedPackage } from "~/store";
 
   import "flowbite/dist/flowbite.css";
 
@@ -45,6 +48,28 @@
       }
     });
   }
+
+  const getUserInfo = async () => {
+    try {
+      const response = await nimbus.get("/users/me");
+      if (response && response.data) {
+        if (
+          response.data?.plan?.tier &&
+          response.data?.plan?.tier.length !== 0
+        ) {
+          selectedPackage.update(
+            (n) => (n = response.data?.plan?.tier.toUpperCase())
+          );
+        }
+      }
+    } catch (e) {
+      console.error("e: ", e);
+    }
+  };
+
+  onMount(() => {
+    getUserInfo();
+  });
 </script>
 
 <ErrorBoundary>

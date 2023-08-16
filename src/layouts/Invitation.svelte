@@ -52,7 +52,6 @@
     try {
       const response = await nimbus.get("/users/me");
       if (response && response.data) {
-        console.log("response: ", response);
         userAddress = response?.data?.publicAddress;
         link = `https://app.getnimbus.io/?invitation=${response?.data?.id}`;
         qrcode.addData(link);

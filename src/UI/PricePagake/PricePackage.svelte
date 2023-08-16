@@ -22,7 +22,12 @@
     try {
       const response = await nimbus.get("/users/me");
       if (response && response.data) {
-        console.log("response: ", response);
+        if (
+          response.data?.plan?.tier &&
+          response.data?.plan?.tier.length !== 0
+        ) {
+          console.log("package: ", response.data?.plan?.tier.toUpperCase());
+        }
       }
     } catch (e) {
       console.error("e: ", e);

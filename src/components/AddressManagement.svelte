@@ -711,33 +711,55 @@
                   </Button>
                 </div>
               {:else}
-                <div
-                  class="relative"
-                  on:mouseenter={() => {
-                    if (Object.keys(userInfo).length === 0) {
-                      showDisableAddWallet = true;
-                    }
-                  }}
-                  on:mouseleave={() => {
-                    if (Object.keys(userInfo).length === 0) {
-                      showDisableAddWallet = false;
-                    }
-                  }}
-                >
-                  <Button variant="disabled">
-                    <img src={Plus} alt="" width="12" height="12" />
-                    <div class="xl:text-base text-2xl font-medium text-white">
-                      {MultipleLang.content.btn_text}
+                <div class="flex flex-col gap-4">
+                  <div
+                    class="relative"
+                    on:mouseenter={() => {
+                      if (Object.keys(userInfo).length === 0) {
+                        showDisableAddWallet = true;
+                      }
+                    }}
+                    on:mouseleave={() => {
+                      if (Object.keys(userInfo).length === 0) {
+                        showDisableAddWallet = false;
+                      }
+                    }}
+                  >
+                    <Button variant="disabled">
+                      <img src={Plus} alt="" width="12" height="12" />
+                      <div class="xl:text-base text-2xl font-medium text-white">
+                        {MultipleLang.content.btn_text}
+                      </div>
+                    </Button>
+
+                    {#if showDisableAddWallet}
+                      <div
+                        class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                        style="z-index: 2147483648;"
+                      >
+                        <tooltip-detail
+                          text={"Connect wallet to add account"}
+                        />
+                      </div>
+                    {/if}
+                  </div>
+                  <Button
+                    on:click={() => {
+                      mixpanel.track("user_search");
+                      chain.update((n) => (n = "ALL"));
+                      wallet.update(
+                        (n) =>
+                          (n = "0x39d787fdf7384597c7208644dbb6fda1cca4ebdf")
+                      );
+                      navigate(
+                        `/?type=DEX&chain=ALL&address=0x39d787fdf7384597c7208644dbb6fda1cca4ebdf`
+                      );
+                    }}
+                  >
+                    <div class="xl:text-base text-2xl font-medium">
+                      Try Demo account
                     </div>
                   </Button>
-                  {#if showDisableAddWallet}
-                    <div
-                      class="absolute transform -translate-x-1/2 -top-8 left-1/2"
-                      style="z-index: 2147483648;"
-                    >
-                      <tooltip-detail text={"Connect wallet to add account"} />
-                    </div>
-                  {/if}
                 </div>
               {/if}
             {/if}
