@@ -345,12 +345,12 @@
 
       if (selectedWallet === response?.address) {
         const formatDataTokenHolding = response?.result.map((item) => {
-          const regex = new RegExp(
-            `(^${item?.symbol?.toLowerCase()}|-${item?.symbol?.toLowerCase()})`
-          );
+          const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
           const filteredVaults = responseVaults?.data?.filter((data) =>
-            data.name.toLowerCase().match(regex)
+            data.name.match(regex)
           );
+
+          console.log({ filteredVaults });
           return {
             ...item,
             vaults: filteredVaults,
