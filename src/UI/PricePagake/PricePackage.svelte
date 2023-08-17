@@ -17,6 +17,7 @@
 
   let selectedTypePackage: "month" | "year" = "year";
   let buyPackage = "Professional";
+  let isNewUser = false;
 
   const getUserInfo = async () => {
     const response = await nimbus.get("/users/me");
@@ -366,6 +367,7 @@
                       plan: "Explorer",
                       selectedTypePackage,
                       price: selectedTypePackage === "month" ? "$30" : "$25",
+                      isNewUser,
                     });
                   }
                 }}
@@ -387,11 +389,13 @@
                   /></svg
                 >
               </div>
-              <div
-                class="underline cursor-pointer font-normal xl:text-sm text-base"
-              >
-                Or 30 days Trial
-              </div>
+              {#if isNewUser}
+                <div
+                  class="underline cursor-pointer font-normal xl:text-sm text-base"
+                >
+                  Or 30 days Trial
+                </div>
+              {/if}
             </div>
           </div>
         </div>
@@ -545,6 +549,7 @@
                     plan: "Professional",
                     selectedTypePackage,
                     price: selectedTypePackage === "month" ? "$99" : "$82.5",
+                    isNewUser,
                   });
                 }}
               >
@@ -561,11 +566,13 @@
                   /></svg
                 >
               </div>
-              <div
-                class="underline cursor-pointer font-normal xl:text-sm text-base"
-              >
-                Or 30 days Trial
-              </div>
+              {#if isNewUser}
+                <div
+                  class="underline cursor-pointer font-normal xl:text-sm text-base"
+                >
+                  Or 30 days Trial
+                </div>
+              {/if}
             </div>
           </div>
         </div>
