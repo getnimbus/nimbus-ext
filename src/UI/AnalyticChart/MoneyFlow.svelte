@@ -96,6 +96,7 @@
     },
     xAxis: {
       data: [],
+      axisTick: { show: false },
     },
     yAxis: {
       type: "value",
@@ -392,7 +393,7 @@
 
 <AnalyticSection>
   <span slot="title">
-    <div class="xl:text-2xl text-4xl font-medium text-black flex justify-start">
+    <div class="flex justify-start text-4xl font-medium text-black xl:text-2xl">
       Money flow
     </div>
   </span>
@@ -400,7 +401,7 @@
   <span slot="overview">
     <div class="relative h-full">
       {#if !$query.isFetching}
-        <div class="xl:text-xl text-3xl font-medium text-black mb-4">
+        <div class="mb-4 text-3xl font-medium text-black xl:text-xl">
           Overview
         </div>
       {/if}
@@ -412,9 +413,9 @@
         <div class="flex flex-col gap-4">
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="text-black flex justify-start">30D Money Inflow</div>
+              <div class="flex justify-start text-black">30D Money Inflow</div>
             </div>
-            <div class="col-span-1 flex items-center gap-1 justify-end">
+            <div class="flex items-center justify-end col-span-1 gap-1">
               <div>
                 $<TooltipNumber
                   number={Math.abs(sumData.inflow)}
@@ -425,9 +426,9 @@
           </div>
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="text-black flex justify-start">30D Money Outflow</div>
+              <div class="flex justify-start text-black">30D Money Outflow</div>
             </div>
-            <div class="col-span-1 flex items-center gap-1 justify-end">
+            <div class="flex items-center justify-end col-span-1 gap-1">
               <div>
                 $<TooltipNumber
                   number={Math.abs(sumData.outflow)}
@@ -438,9 +439,9 @@
           </div>
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="text-black flex justify-start">30D Money Netflow</div>
+              <div class="flex justify-start text-black">30D Money Netflow</div>
             </div>
-            <div class="col-span-1 flex items-center gap-1 justify-end">
+            <div class="flex items-center justify-end col-span-1 gap-1">
               <div
                 class={`${
                   sumData.inflow + sumData.outflow >= 0
@@ -459,7 +460,7 @@
       {/if}
       {#if typeWalletAddress === "CEX"}
         <div
-          class="absolute top-0 left-0 z-30 w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-30 backdrop-blur-md"
+          class="absolute top-0 left-0 z-30 flex flex-col items-center justify-center w-full h-full gap-3 bg-white/85 backdrop-blur-md"
         >
           <div class="text-lg">Comming soon 🚀</div>
         </div>
@@ -492,7 +493,7 @@
                 type="full-width"
               />
               <div
-                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
               >
                 <img src={Logo} alt="" width="140" height="140" />
               </div>
@@ -502,7 +503,7 @@
       {/if}
       {#if typeWalletAddress === "CEX"}
         <div
-          class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-30 backdrop-blur-md"
+          class="absolute top-0 left-0 z-30 flex flex-col items-center justify-center w-full h-full gap-3 bg-white/85 backdrop-blur-md"
         >
           <div class="text-lg">Comming soon 🚀</div>
         </div>
