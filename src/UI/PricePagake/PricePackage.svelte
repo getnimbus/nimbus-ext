@@ -16,7 +16,7 @@
   export let selectedPackage = (item) => {};
 
   let selectedTypePackage: "month" | "year" = "year";
-  let buyPackage = "Free";
+  let buyPackage = "Professional";
   let isNewUser = false;
 
   const getUserInfo = async () => {
@@ -32,8 +32,8 @@
 
   $: {
     if (!$query.isError && $query.data !== undefined) {
-      buyPackage = $query.data.plan?.tier;
-      isNewUser = $query.data.plan?.isNewUser;
+      // buyPackage = $query.data.plan?.tier;
+      // isNewUser = $query.data.plan?.isNewUser;
     }
   }
 

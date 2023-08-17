@@ -46,6 +46,7 @@
       plan: selectedPackage.plan,
       interval: selectedPackage.selectedTypePackage,
       chain: chainValue,
+      isTrial: selectedPackage.isNewUser,
     };
     isLoadingBuy = true;
     try {
@@ -88,7 +89,7 @@
         </div>
         {#if selectedPackage.isNewUser}
           <div class="flex items-center justify-center gap-2 mt-2">
-            Coupon:
+            Promotion Code:
             <span class="text-xl">
               <Copy
                 address="TRIAL"
