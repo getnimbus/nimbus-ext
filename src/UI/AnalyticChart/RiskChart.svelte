@@ -386,7 +386,7 @@
 
 <AnalyticSection>
   <span slot="title">
-    <div class="xl:text-2xl text-4xl font-medium text-black flex justify-start">
+    <div class="flex justify-start text-4xl font-medium text-black xl:text-2xl">
       Risks
       <!-- <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
       </TooltipTitle> -->
@@ -395,7 +395,7 @@
 
   <span slot="overview" class="relative">
     {#if !isLoadingDataCompare}
-      <div class="xl:text-xl text-3xl font-medium text-black mb-4">
+      <div class="mb-4 text-3xl font-medium text-black xl:text-xl">
         Overview
       </div>
     {/if}
@@ -421,7 +421,7 @@
             <div class="grid grid-cols-2">
               <div class="col-span-1">
                 <div
-                  class="xl:text-base text-2xl text-black flex justify-start"
+                  class="flex justify-start text-2xl text-black xl:text-base"
                 >
                   <TooltipTitle
                     tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
@@ -431,8 +431,8 @@
                   </TooltipTitle>
                 </div>
               </div>
-              <div class="col-span-1 flex items-center justify-end">
-                <div class="xl:text-base text-2xl">
+              <div class="flex items-center justify-end col-span-1">
+                <div class="text-2xl xl:text-base">
                   <TooltipNumber
                     number={data?.base?.sharpeRatio}
                     type="percent"
@@ -444,7 +444,7 @@
             <div class="grid grid-cols-2">
               <div class="col-span-1">
                 <div
-                  class="xl:text-base text-2xl text-black flex justify-start"
+                  class="flex justify-start text-2xl text-black xl:text-base"
                 >
                   <TooltipTitle
                     tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
@@ -454,8 +454,8 @@
                   </TooltipTitle>
                 </div>
               </div>
-              <div class="col-span-1 flex items-center justify-end">
-                <div class="xl:text-base text-2xl">
+              <div class="flex items-center justify-end col-span-1">
+                <div class="text-2xl xl:text-base">
                   <TooltipNumber
                     number={data?.base?.volatility}
                     type="percent"
@@ -467,7 +467,7 @@
             <div class="grid grid-cols-2">
               <div class="col-span-1">
                 <div
-                  class="xl:text-base text-2xl text-black flex justify-start"
+                  class="flex justify-start text-2xl text-black xl:text-base"
                 >
                   <TooltipTitle
                     tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
@@ -477,8 +477,8 @@
                   </TooltipTitle>
                 </div>
               </div>
-              <div class="col-span-1 flex items-center justify-end">
-                <div class="xl:text-base text-2xl">
+              <div class="flex items-center justify-end col-span-1">
+                <div class="text-2xl xl:text-base">
                   <TooltipNumber
                     number={data?.base?.drawDown}
                     type="percent"
@@ -488,20 +488,20 @@
             </div>
           </div>
           <div class="mt-8 space-y-3">
-            <div class="xl:text-base text-2xl">
+            <div class="text-2xl xl:text-base">
               <CtaIcon isGood={sharpeRatioCompare > 0} />
               Sharpe ratio is {sharpeRatioCompare > 0 ? "higher" : "lower"} than
               Bitcoin by
               <span class="font-medium">{Math.abs(sharpeRatioCompare)}%</span>
             </div>
-            <div class="xl:text-base text-2xl">
+            <div class="text-2xl xl:text-base">
               <CtaIcon isGood={volatilityCompare < 0} />
               Volatility is {volatilityCompare > 0 ? "higher" : "lower"} than Bitcoin
               by
               <span class="font-medium">{Math.abs(volatilityCompare)}%</span>
             </div>
 
-            <div class="xl:text-base text-2xl">
+            <div class="text-2xl xl:text-base">
               <CtaIcon isGood={drawDownCompare < 0} />
               Max Drawdown is {drawDownCompare > 0 ? "higher" : "lower"} than Bitcoin
               by
@@ -516,7 +516,7 @@
             </div> -->
           </div>
           <div class="flex flex-col gap-3 mt-8">
-            <div class="xl:text-lg text-2xl font-medium text-black">
+            <div class="text-2xl font-medium text-black xl:text-lg">
               <TooltipTitle
                 tooltipText={"Compare with top 100 by CoinMarketCap."}
                 isBigIcon
@@ -593,7 +593,7 @@
               {/each}
             </AnimateSharedLayout>
           </div>
-          <div class="relative">
+          <div class="relative mt-3">
             <EChart
               id="bar-chart-compare-analytic"
               theme="white"
@@ -604,7 +604,7 @@
               height={465}
             />
             <div
-              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >
               <img src={Logo} alt="" width="140" height="140" />
             </div>
