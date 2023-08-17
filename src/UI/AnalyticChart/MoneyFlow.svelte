@@ -462,7 +462,7 @@
         <div
           class="absolute top-0 left-0 z-30 flex flex-col items-center justify-center w-full h-full gap-3 bg-white/85 backdrop-blur-md"
         >
-          <div class="text-lg">Comming soon 🚀</div>
+          <div class="text-lg">Coming soon 🚀</div>
         </div>
       {/if}
     </div>
@@ -505,7 +505,7 @@
         <div
           class="absolute top-0 left-0 z-30 flex flex-col items-center justify-center w-full h-full gap-3 bg-white/85 backdrop-blur-md"
         >
-          <div class="text-lg">Comming soon 🚀</div>
+          <div class="text-lg">Coming soon 🚀</div>
         </div>
       {/if}
     </div>

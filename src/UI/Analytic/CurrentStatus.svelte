@@ -713,17 +713,17 @@
   );
 </script>
 
-<div class="flex xl:flex-row flex-col justify-between gap-6">
+<div class="flex flex-col justify-between gap-6 xl:flex-row">
   <div
     class="xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 border border-[#0000001a] rounded-[20px] p-6"
   >
-    <div class="xl:text-2xl text-4xl font-medium text-black">
+    <div class="text-4xl font-medium text-black xl:text-2xl">
       {MultipleLang.token_allocation}
     </div>
 
-    <div class="flex justify-end gap-5 w-full">
+    <div class="flex justify-end w-full gap-5">
       <div
-        class="relative overflow-hidden w-full flex gap-3 justify-between items-center"
+        class="relative flex items-center justify-between w-full gap-3 overflow-hidden"
         bind:this={container}
       >
         <div
@@ -750,7 +750,7 @@
           >
         </div>
         <div
-          class="w-max flex gap-3 overflow-x-auto whitespace-nowrap"
+          class="flex gap-3 overflow-x-auto w-max whitespace-nowrap"
           bind:this={scrollContainer}
           on:scroll={handleScroll}
         >
@@ -820,7 +820,7 @@
               )}&address=${encodeURIComponent(selectedWallet)}`
             );
           }}
-          class="xl:text-base text-2xl hover:underline font-medium text-blue-500 cursor-pointer w-max mt-1"
+          class="mt-1 text-2xl font-medium text-blue-500 cursor-pointer xl:text-base hover:underline w-max"
         >
           Custom category
         </div>
@@ -851,7 +851,7 @@
                 type="full-width"
               />
               <div
-                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
               >
                 <img src={Logo} alt="" width="140" height="140" />
               </div>
@@ -872,12 +872,12 @@
             tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
             type="warning"
           >
-            <div class="pl-4 xl:text-2xl text-4xl font-medium text-black">
+            <div class="pl-4 text-4xl font-medium text-black xl:text-2xl">
               {MultipleLang.performance}
             </div>
           </TooltipTitle>
         {:else}
-          <div class="pl-4 xl:text-2xl text-4xl font-medium text-black">
+          <div class="pl-4 text-4xl font-medium text-black xl:text-2xl">
             {MultipleLang.performance}
           </div>
         {/if}
@@ -919,7 +919,7 @@
       <div
         class="absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center bg-white/85 z-30 backdrop-blur-md"
       >
-        <div class="xl:text-lg text-xl">Comming soon 🚀</div>
+        <div class="text-xl xl:text-lg">Coming soon 🚀</div>
       </div>
     {/if}
     {#if $queryOverview.isFetching}
@@ -944,7 +944,7 @@
               height={selectedTypeChart === "line" ? 485 : 515}
             />
             <div
-              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >
               <img src={Logo} alt="" width="140" height="140" />
             </div>

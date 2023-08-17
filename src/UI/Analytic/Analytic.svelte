@@ -30,8 +30,13 @@
 
   let packageSelected = "";
   selectedPackage.subscribe((value) => {
+    console.trace({ value });
     packageSelected = value;
   });
+
+  $: {
+    console.log({ packageSelected });
+  }
 
   let typeWalletAddress: string = "";
   typeWallet.subscribe((value) => {
@@ -188,7 +193,7 @@
               >
             </div>
           {:else}
-            <div class="text-lg">Comming soon 🚀</div>
+            <div class="text-lg">Coming soon 🚀</div>
             <div class="w-max">
               <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
                 <Button variant="secondary">Request analytics</Button>

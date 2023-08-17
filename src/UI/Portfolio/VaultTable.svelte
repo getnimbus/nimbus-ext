@@ -133,7 +133,7 @@
 </script>
 
 <div class="h-[563px] flex flex-col gap-4">
-  <div class="xl:text-2xl text-4xl font-medium text-black">
+  <div class="text-4xl font-medium text-black xl:text-2xl">
     Yield farming opportunities
   </div>
   <div
@@ -146,28 +146,28 @@
             class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[550px]"
           >
             <div
-              class="text-left xl:text-xs text-base uppercase font-medium text-black"
+              class="text-base font-medium text-left text-black uppercase xl:text-xs"
             >
               Name
             </div>
           </th>
           <th class="py-3">
             <div
-              class="text-right xl:text-xs text-base uppercase font-medium text-black"
+              class="text-base font-medium text-right text-black uppercase xl:text-xs"
             >
               Chain
             </div>
           </th>
           <th class="py-3">
             <div
-              class="text-right xl:text-xs text-base uppercase font-medium text-black"
+              class="text-base font-medium text-right text-black uppercase xl:text-xs"
             >
               Protocol
             </div>
           </th>
           <th class="py-3">
             <div
-              class="text-right xl:text-xs text-base uppercase font-medium text-black flex items-center justify-end gap-2"
+              class="flex items-center justify-end gap-2 text-base font-medium text-right text-black uppercase xl:text-xs"
             >
               APY
               <div on:click={toggleSortAPY} class="cursor-pointer">
@@ -184,7 +184,7 @@
           </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
             <div
-              class="text-right xl:text-xs text-base uppercase font-medium text-black flex items-center justify-end gap-2"
+              class="flex items-center justify-end gap-2 text-base font-medium text-right text-black uppercase xl:text-xs"
             >
               <TooltipTitle
                 tooltipText={"Total value locked in this protocol"}
@@ -209,7 +209,7 @@
           <tr>
             <td colspan="5">
               <div
-                class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
+                class="flex items-center justify-center px-3 py-3 text-xl text-gray-400 xl:text-lg"
               >
                 Empty
               </div>
@@ -218,7 +218,7 @@
         {:else}
           {#each formatData.slice(0, packageSelected === "FREE" ? 10 : undefined) as item}
             <tr
-              class="group transition-all cursor-pointer"
+              class="transition-all cursor-pointer group"
               on:click={() => {
                 window.open(item.link, "_blank");
               }}
@@ -227,7 +227,7 @@
                 class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white w-[550px] group-hover:bg-gray-100"
               >
                 <div
-                  class="text-left text-black xl:text-sm text-xl font-medium"
+                  class="text-xl font-medium text-left text-black xl:text-sm"
                 >
                   {#if item.name === undefined}
                     N/A
@@ -238,7 +238,7 @@
               </td>
 
               <td class="py-3 group-hover:bg-gray-100">
-                <div class="xl:text-sm text-xl font-medium flex justify-end">
+                <div class="flex justify-end text-xl font-medium xl:text-sm">
                   {item.chain}
                 </div>
               </td>
@@ -249,7 +249,7 @@
                 >
                   <div class="text-left">
                     <div
-                      class="text-black xl:text-sm text-xl font-medium relative"
+                      class="relative text-xl font-medium text-black xl:text-sm"
                       on:mouseover={() => {
                         isShowTooltipProtocol = true;
                       }}
@@ -264,7 +264,7 @@
                       {/if}
                       {#if isShowTooltipProtocol && item?.protocol?.length > 20}
                         <div
-                          class="absolute -top-8 left-0"
+                          class="absolute left-0 -top-8"
                           style="z-index: 2147483648;"
                         >
                           <tooltip-detail text={item.protocol} />
@@ -301,14 +301,14 @@
               <div class="text-lg font-medium">
                 Use Nimbus at its full potential
               </div>
-              <div class="text-gray-500 text-base">
+              <div class="text-base text-gray-500">
                 Upgrade to Premium to access all other <span class="font-medium"
                   >{formatData.length - 5 > 0
                     ? formatData.length - 5
                     : ""}</span
                 > opportunities
               </div>
-              <div class="w-max mt-2">
+              <div class="mt-2 w-max">
                 <Button variant="premium" on:click={() => navigate("/upgrade")}
                   >Start 30-day Trial</Button
                 >

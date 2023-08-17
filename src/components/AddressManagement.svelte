@@ -705,7 +705,7 @@
                     on:click={() => (isOpenAddModal = true)}
                   >
                     <img src={Plus} alt="" width="12" height="12" />
-                    <div class="xl:text-base text-2xl font-medium text-white">
+                    <div class="text-2xl font-medium text-white xl:text-base">
                       {MultipleLang.content.btn_text}
                     </div>
                   </Button>
@@ -727,7 +727,7 @@
                   >
                     <Button variant="disabled">
                       <img src={Plus} alt="" width="12" height="12" />
-                      <div class="xl:text-base text-2xl font-medium text-white">
+                      <div class="text-2xl font-medium text-white xl:text-base">
                         {MultipleLang.content.btn_text}
                       </div>
                     </Button>
@@ -756,7 +756,7 @@
                       );
                     }}
                   >
-                    <div class="xl:text-base text-2xl font-medium">
+                    <div class="text-2xl font-medium xl:text-base">
                       Try Demo account
                     </div>
                   </Button>
@@ -771,7 +771,7 @@
             <div class="flex flex-col mb-5 gap-14">
               <div class="flex items-center justify-between gap-6">
                 <!-- desktop list address wallet -->
-                <div class="xl:block hidden">
+                <div class="hidden xl:block">
                   {#if formatListAddress && formatListAddress?.length !== 0}
                     <div class="flex items-center gap-5">
                       {#if formatListAddress.length > 5}
@@ -789,7 +789,7 @@
                               <img
                                 src={item.logo}
                                 alt=""
-                                class="xl:w-4 xl:h-4 w-5 h-5 rounded-full"
+                                class="w-5 h-5 rounded-full xl:w-4 xl:h-4"
                               />
                               {item.label}
                               {#if item.value === selectedWallet}
@@ -834,7 +834,7 @@
                               <img
                                 src={item.logo}
                                 alt=""
-                                class="xl:w-4 xl:h-4 w-5 h-5 rounded-full"
+                                class="w-5 h-5 rounded-full xl:w-4 xl:h-4"
                               />
                               {item.label}
                               {#if item.value === selectedWallet}
@@ -858,7 +858,7 @@
                       {/if}
                     </div>
                   {:else}
-                    <div class="xl:text-base text-2xl font-medium text-white">
+                    <div class="text-2xl font-medium text-white xl:text-base">
                       {MultipleLang.empty_wallet}
                     </div>
                   {/if}
@@ -867,7 +867,7 @@
                 <!-- mobile list address wallet -->
                 {#if formatListAddress && formatListAddress?.length !== 0}
                   <div
-                    class="xl:hidden relative overflow-hidden w-full flex flex-row gap-3 justify-between items-center"
+                    class="relative flex flex-row items-center justify-between w-full gap-3 overflow-hidden xl:hidden"
                     bind:this={container}
                   >
                     <div
@@ -894,7 +894,7 @@
                       >
                     </div>
                     <div
-                      class="w-max flex gap-3 overflow-x-auto whitespace-nowrap container"
+                      class="container flex gap-3 overflow-x-auto w-max whitespace-nowrap"
                       bind:this={scrollContainer}
                       on:scroll={handleScroll}
                     >
@@ -957,7 +957,7 @@
                   </div>
                 {:else}
                   <div
-                    class="xl:hidden block xl:text-base text-2xl font-medium text-white"
+                    class="block text-2xl font-medium text-white xl:hidden xl:text-base"
                   >
                     {MultipleLang.empty_wallet}
                   </div>
@@ -996,10 +996,10 @@
                           <img
                             src={Plus}
                             alt=""
-                            class="xl:w-3 xl:h-3 w-4 h-4"
+                            class="w-4 h-4 xl:w-3 xl:h-3"
                           />
                           <div
-                            class="xl:text-base text-2xl font-medium text-white"
+                            class="text-2xl font-medium text-white xl:text-base"
                           >
                             Add account
                           </div>
@@ -1009,10 +1009,10 @@
                           <img
                             src={Plus}
                             alt=""
-                            class="xl:w-3 xl:h-3 w-4 h-4"
+                            class="w-4 h-4 xl:w-3 xl:h-3"
                           />
                           <div
-                            class="xl:text-base text-2xl font-medium text-white"
+                            class="text-2xl font-medium text-white xl:text-base"
                           >
                             Add account
                           </div>
@@ -1026,8 +1026,8 @@
                         isOpenAddModal = true;
                       }}
                     >
-                      <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-                      <div class="xl:text-base text-2xl font-medium text-white">
+                      <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
+                      <div class="text-2xl font-medium text-white xl:text-base">
                         Add account
                       </div>
                     </Button>
@@ -1050,7 +1050,7 @@
               <div class="flex items-end justify-between">
                 <div class="flex flex-col gap-3">
                   <div class="flex items-end gap-6">
-                    <div class="xl:text-5xl text-7xl font-medium text-white">
+                    <div class="font-medium text-white xl:text-5xl text-7xl">
                       {title}
                     </div>
                     {#if type === "portfolio"}
@@ -1058,14 +1058,14 @@
                     {/if}
                   </div>
                   <div class="flex items-center gap-4">
-                    <div class="xl:text-base text-3xl xl:block hidden">
+                    <div class="hidden text-3xl xl:text-base xl:block">
                       <Copy
                         address={selectedWallet}
                         iconColor="#fff"
                         color="#fff"
                       />
                     </div>
-                    <div class="xl:text-base text-3xl xl:hidden block">
+                    <div class="block text-3xl xl:text-base xl:hidden">
                       <Copy
                         address={selectedWallet}
                         iconColor="#fff"
@@ -1100,11 +1100,11 @@
                       {/if}
                     </div>
 
-                    <div class="xl:block hidden">
+                    <div class="hidden xl:block">
                       {#if getAddressContext(selectedWallet)?.type === "BTC"}
                         <div
                           use:tooltip={{
-                            content: `<tooltip-detail text="Comming soon!" />`,
+                            content: `<tooltip-detail text="Coming soon!" />`,
                             allowHTML: true,
                             placement: "top",
                             interactive: true,
@@ -1140,11 +1140,11 @@
                 </div>
 
                 <div class="flex flex-col gap-6">
-                  <div class="xl:hidden block">
+                  <div class="block xl:hidden">
                     {#if getAddressContext(selectedWallet)?.type === "BTC"}
                       <div
                         use:tooltip={{
-                          content: `<tooltip-detail text="Comming soon!" />`,
+                          content: `<tooltip-detail text="Coming soon!" />`,
                           allowHTML: true,
                           placement: "top",
                           interactive: true,
@@ -1212,7 +1212,7 @@
   isOpen={isOpenAddModal}
   on:close={() => (isOpenAddModal = false)}
 >
-  <div class="xl:title-3 title-1 text-gray-600 font-medium">
+  <div class="font-medium text-gray-600 xl:title-3 title-1">
     {MultipleLang.content.modal_add_title}
   </div>
   <div class="flex flex-col mt-4 gap-7">
@@ -1224,13 +1224,13 @@
             isLoading={isLoadingConnectCEX}
             on:click={onSubmitCEX}
           >
-            <div class="xl:text-base text-2xl font-medium text-white">
+            <div class="text-2xl font-medium text-white xl:text-base">
               Connect Exchange
             </div>
           </Button>
         </div>
       </div>
-      <div class="xl:text-base text-xl flex items-center justify-center gap-1">
+      <div class="flex items-center justify-center gap-1 text-xl xl:text-base">
         <img src={Success} alt="" />
         Bank-level security/encryption.
         <a
@@ -1239,12 +1239,12 @@
           target="_blank">Learn more</a
         >
       </div>
-      <div class="flex justify-center items-center gap-6 my-3">
+      <div class="flex items-center justify-center gap-6 my-3">
         {#each listLogoCEX as logo}
           <div
-            class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
+            class="flex items-center justify-center w-8 h-8 overflow-hidden rounded-full"
           >
-            <img src={logo} alt="" class="w-full h-full object-contain" />
+            <img src={logo} alt="" class="object-contain w-full h-full" />
           </div>
         {/each}
         <div class="text-gray-400">+22 More</div>
@@ -1316,17 +1316,17 @@
           </div>
         {/if}
       </div>
-      <div class="flex justify-center items-center gap-6 my-3">
+      <div class="flex items-center justify-center gap-6 my-3">
         {#each chainList.slice(0, -1) as item}
           <div
-            class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
+            class="flex items-center justify-center w-8 h-8 overflow-hidden rounded-full"
           >
-            <img src={item.logo} alt="" class="w-full h-full object-contain" />
+            <img src={item.logo} alt="" class="object-contain w-full h-full" />
           </div>
         {/each}
         <div class="text-gray-400">More soon</div>
       </div>
-      <div class="flex justify-end lg:gap-2 gap-6">
+      <div class="flex justify-end gap-6 lg:gap-2">
         <div class="lg:w-[120px] w-full">
           <Button
             variant="secondary"
@@ -1356,19 +1356,19 @@
 >
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1">
-      <div class="xl:text-base text-2xl">
+      <div class="text-2xl xl:text-base">
         Go to <a
           href="https://t.me/GetNimbusBot"
           target="_blank"
           class="text-blue-500">https://t.me/GetNimbusBot</a
         >
       </div>
-      <div class="xl:text-base text-2xl">Use the command as follow video</div>
+      <div class="text-2xl xl:text-base">Use the command as follow video</div>
     </div>
     <div class="xl:h-[350px] h-[650px]">
-      <img src={FollowWhale} alt="" class="w-full h-full object-contain" />
+      <img src={FollowWhale} alt="" class="object-contain w-full h-full" />
     </div>
-    <div class="w-full flex justify-end">
+    <div class="flex justify-end w-full">
       <CopyToClipboard
         text={`/start ${selectedWallet} ${
           formatListAddress.filter((item) => item.value === selectedWallet)?.[0]
@@ -1377,7 +1377,7 @@
         let:copy
       >
         <div
-          class="w-max relative"
+          class="relative w-max"
           on:mouseenter={() => {
             showCommandTooltip = true;
           }}
@@ -1420,11 +1420,11 @@
     isOpenModal = false;
   }}
 >
-  <div class="xl:title-3 title-1 text-center text-gray-600 font-medium">
+  <div class="font-medium text-center text-gray-600 xl:title-3 title-1">
     Let's us know your email
   </div>
   <div class="mt-2">
-    <div class="xl:text-base text-lg text-gray-500 text-center">
+    <div class="text-lg text-center text-gray-500 xl:text-base">
       Add your email to get updates from us and receive exclusive benefits soon.
     </div>
     <form

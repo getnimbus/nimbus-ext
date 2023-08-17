@@ -657,10 +657,10 @@
 </script>
 
 <ErrorBoundary>
-  <div class="flex xl:flex-row flex-col justify-between gap-6">
+  <div class="flex flex-col justify-between gap-6 xl:flex-row">
     <div class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6">
-      <div class="relative mb-6 w-full">
-        <div class="xl:text-2xl text-4xl font-medium text-black w-full">
+      <div class="relative w-full mb-6">
+        <div class="w-full text-4xl font-medium text-black xl:text-2xl">
           {#if selectedType === "token"}
             {MultipleLang.token_allocation}
           {:else}
@@ -741,12 +741,12 @@
             tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
             type="warning"
           >
-            <div class="pl-4 xl:text-2xl text-4xl font-medium text-black">
+            <div class="pl-4 text-4xl font-medium text-black xl:text-2xl">
               {MultipleLang.performance}
             </div>
           </TooltipTitle>
         {:else}
-          <div class="pl-4 xl:text-2xl text-4xl font-medium text-black">
+          <div class="pl-4 text-4xl font-medium text-black xl:text-2xl">
             {MultipleLang.performance}
           </div>
         {/if}
@@ -787,7 +787,7 @@
         <div
           class="absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center bg-white/85 z-30 backdrop-blur-md"
         >
-          <div class="xl:text-lg text-xl">Comming soon 🚀</div>
+          <div class="text-xl xl:text-lg">Coming soon 🚀</div>
         </div>
       {/if}
       {#if isLoading}

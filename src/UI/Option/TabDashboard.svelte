@@ -38,7 +38,7 @@
 </script>
 
 <div class="flex flex-col gap-2">
-  <div class="xl:title-3 title-1 text-gray-500 mb-2">{MultipleLang.title}</div>
+  <div class="mb-2 text-gray-500 xl:title-3 title-1">{MultipleLang.title}</div>
   <Toast
     transition={fly}
     params={{ x: 200 }}
@@ -87,7 +87,7 @@
         <span class="slider" />
       </label>
     </div> -->
-    <div class="xl:title-5 title-3">Comming soon...</div>
+    <div class="xl:title-5 title-3">Coming soon...</div>
   {/if}
 </div>
 

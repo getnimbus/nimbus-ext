@@ -88,7 +88,7 @@
           <Link to="/" class="cusor-pointer">
             <div class="flex items-center gap-1 text-white">
               <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="xl:text-sm text-xl font-medium">
+              <div class="text-xl font-medium xl:text-sm">
                 Back to Portfolio
               </div>
             </div>
@@ -105,10 +105,10 @@
       <div class="flex flex-col justify-between gap-6 xl:flex-row">
         <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
           <OverviewCard title={"Current Value"}>
-            <div class="flex items-end gap-1 xl:text-3xl text-5xl text-black">
+            <div class="flex items-end gap-1 text-5xl text-black xl:text-3xl">
               <CountUpNumber id="current_liquidity" number={0} type="balance" />
             </div>
-            <div class="flex xl:text-lg text-3xl">
+            <div class="flex text-3xl xl:text-lg">
               $<CountUpNumber id="test2" number={0} type="balance" />
             </div>
           </OverviewCard>
@@ -150,7 +150,7 @@
 
         <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
           <OverviewCard title={"Unclaimed Fees"}>
-            <div class="flex xl:text-3xl text-5xl text-black">
+            <div class="flex text-5xl text-black xl:text-3xl">
               $<CountUpNumber id="unclaimed_fees" number={0} type="balance" />
             </div>
           </OverviewCard>
@@ -194,17 +194,17 @@
       style="box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.10);"
     >
       <div class="flex flex-col gap-6">
-        <div class="flex xl:flex-row flex-col gap-6">
+        <div class="flex flex-col gap-6 xl:flex-row">
           <div class="border border-[#0000001a] rounded-[20px] p-6 flex-1">
             <div class="text-2xl font-medium text-black">Fees</div>
-            <div class="mt-2 flex flex-col gap-4">
+            <div class="flex flex-col gap-4 mt-2">
               <div class="grid grid-cols-3">
                 <div class="col-span-1" />
                 <div class="col-span-1 font-medium">Claimable</div>
                 <div class="col-span-1 font-medium">Claimed</div>
               </div>
-              <div class="grid grid-cols-3 items-start">
-                <div class="col-span-1 flex items-center gap-2">
+              <div class="grid items-start grid-cols-3">
+                <div class="flex items-center col-span-1 gap-2">
                   <img
                     src="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
                     width="30"
@@ -214,17 +214,17 @@
                   />
                   <div>ETH</div>
                 </div>
-                <div class="col-span-1 flex flex-col gap-1">
+                <div class="flex flex-col col-span-1 gap-1">
                   <div class="text-black">1.66</div>
                   <div class="text-gray-500">$3,120.18</div>
                 </div>
-                <div class="col-span-1 flex flex-col gap-1">
+                <div class="flex flex-col col-span-1 gap-1">
                   <div class="text-black">0</div>
                   <div class="text-gray-500">$0</div>
                 </div>
               </div>
-              <div class="grid grid-cols-3 items-start">
-                <div class="col-span-1 flex items-center gap-2">
+              <div class="grid items-start grid-cols-3">
+                <div class="flex items-center col-span-1 gap-2">
                   <img
                     src="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
                     width="30"
@@ -234,11 +234,11 @@
                   />
                   <div>ETH</div>
                 </div>
-                <div class="col-span-1 flex flex-col gap-1">
+                <div class="flex flex-col col-span-1 gap-1">
                   <div class="text-black">1.66</div>
                   <div class="text-gray-500">$3,120.18</div>
                 </div>
-                <div class="col-span-1 flex flex-col gap-1">
+                <div class="flex flex-col col-span-1 gap-1">
                   <div class="text-black">0</div>
                   <div class="text-gray-500">$0</div>
                 </div>
@@ -247,21 +247,21 @@
             <div
               class="border-t-[1px] border-[#0000000d] mt-4 pt-4 flex justify-between items-center"
             >
-              <div class="font-medium text-lg">Total fees</div>
+              <div class="text-lg font-medium">Total fees</div>
               <div class="text-xl font-medium">$3,120.18</div>
             </div>
           </div>
 
           <div class="border border-[#0000001a] rounded-[20px] p-6 flex-1">
             <div class="text-2xl font-medium text-black">Liquidity</div>
-            <div class="mt-2 flex flex-col gap-4">
+            <div class="flex flex-col gap-4 mt-2">
               <div class="grid grid-cols-3">
                 <div class="col-span-1" />
                 <div class="col-span-1 font-medium">Current</div>
                 <div class="col-span-1 font-medium">Provided</div>
               </div>
-              <div class="grid grid-cols-3 items-start">
-                <div class="col-span-1 flex items-center gap-2">
+              <div class="grid items-start grid-cols-3">
+                <div class="flex items-center col-span-1 gap-2">
                   <img
                     src="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
                     width="30"
@@ -271,17 +271,17 @@
                   />
                   <div>ETH</div>
                 </div>
-                <div class="col-span-1 flex flex-col gap-1">
+                <div class="flex flex-col col-span-1 gap-1">
                   <div class="text-black">1.66</div>
                   <div class="text-gray-500">$3,120.18</div>
                 </div>
-                <div class="col-span-1 flex flex-col gap-1">
+                <div class="flex flex-col col-span-1 gap-1">
                   <div class="text-black">0</div>
                   <div class="text-gray-500">$0</div>
                 </div>
               </div>
-              <div class="grid grid-cols-3 items-start">
-                <div class="col-span-1 flex items-center gap-2">
+              <div class="grid items-start grid-cols-3">
+                <div class="flex items-center col-span-1 gap-2">
                   <img
                     src="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
                     width="30"
@@ -291,11 +291,11 @@
                   />
                   <div>ETH</div>
                 </div>
-                <div class="col-span-1 flex flex-col gap-1">
+                <div class="flex flex-col col-span-1 gap-1">
                   <div class="text-black">1.66</div>
                   <div class="text-gray-500">$3,120.18</div>
                 </div>
-                <div class="col-span-1 flex flex-col gap-1">
+                <div class="flex flex-col col-span-1 gap-1">
                   <div class="text-black">0</div>
                   <div class="text-gray-500">$0</div>
                 </div>
@@ -304,7 +304,7 @@
             <div
               class="border-t-[1px] border-[#0000000d] mt-4 pt-4 flex justify-between items-center"
             >
-              <div class="font-medium text-lg">Impermanent Loss</div>
+              <div class="text-lg font-medium">Impermanent Loss</div>
               <div class="text-xl font-medium">$3,120.18</div>
             </div>
           </div>
@@ -323,11 +323,11 @@
           />
 
           <div class="flex flex-col gap-4">
-            <div class="flex justify-between items-center gap-6">
+            <div class="flex items-center justify-between gap-6">
               <div
                 class="flex flex-col justify-center items-center border border-[#0000000d] px-4 py-2 rounded-[20px] flex-1"
               >
-                <div class="font-medium text-lg">Min Price</div>
+                <div class="text-lg font-medium">Min Price</div>
                 <div>2,439.6504</div>
               </div>
               <svg
@@ -365,18 +365,18 @@
               <div
                 class="flex flex-col justify-center items-center border border-[#0000000d] px-4 py-2 rounded-[20px] flex-1"
               >
-                <div class="font-medium text-lg">Max Price</div>
+                <div class="text-lg font-medium">Max Price</div>
                 <div>2,439.6504</div>
               </div>
             </div>
             <div
               class="flex flex-col justify-center items-center border border-[#0000000d] px-4 py-2 rounded-[20px]"
             >
-              <div class="font-medium text-lg">Current Price</div>
+              <div class="text-lg font-medium">Current Price</div>
               <div>2,439.6504</div>
             </div>
-            <div class="flex flex-col justify-center items-center">
-              <div class="font-medium text-lg">Liquidation Amount</div>
+            <div class="flex flex-col items-center justify-center">
+              <div class="text-lg font-medium">Liquidation Amount</div>
               1 ETH = 2,671.6718 IMX
             </div>
           </div>
@@ -389,7 +389,7 @@
             <div class="text-2xl font-medium text-black">History</div>
             <div
               use:tooltip={{
-                content: `<tooltip-detail text="Premium feature. Comming soon" />`,
+                content: `<tooltip-detail text="Premium feature. Coming soon" />`,
                 allowHTML: true,
                 placement: "top",
               }}
