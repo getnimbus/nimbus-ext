@@ -1,7 +1,7 @@
 <script lang="ts">
   import { wallet, chain, typeWallet } from "~/store";
   import dayjs from "dayjs";
-  import { formatCurrency, getAddressContext } from "~/utils";
+  import { formatBalance, formatCurrency, getAddressContext } from "~/utils";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
 
@@ -109,7 +109,7 @@
       const formatData = data?.map((item) => {
         return [
           dayjs(Number(item.date) * 1000).format("YYYY-MM-DD"),
-          item.value,
+          Number(formatCurrency(item.value)),
         ];
       });
 
@@ -117,7 +117,7 @@
         ...option,
         visualMap: {
           ...option.visualMap,
-          max: maxHistorical.value,
+          max: Number(formatBalance(maxHistorical.value)),
         },
         calendar: {
           ...option.calendar,
