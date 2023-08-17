@@ -376,7 +376,7 @@
     queryKey: ["inflow-outflow", selectedWallet, selectedChain],
     enabled: enabledQuery,
     queryFn: () => getInflowOutflow(selectedWallet, selectedChain),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: Infinity,
   });
 
   $: {

@@ -50,7 +50,7 @@
     queryKey: ["compare", selectedWallet, selectedChain],
     enabled: enabledQuery,
     queryFn: () => getAnalyticCompare(selectedWallet),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: Infinity,
   });
 
   $: enabledQuery = Boolean(

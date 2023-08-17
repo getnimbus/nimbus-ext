@@ -338,7 +338,7 @@
   $: queryPersonalTag = createQuery({
     queryKey: ["personalize-tag", selectedWallet],
     queryFn: () => getPersonalizeTag(selectedWallet),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: Infinity,
   });
 
   $: {
@@ -373,7 +373,7 @@
     queryKey: ["holding-token", selectedWallet, selectedChain],
     enabled: enabledQuery,
     queryFn: () => getHoldingToken(selectedWallet, selectedChain),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: Infinity,
   });
 
   $: {
@@ -547,7 +547,7 @@
     queryKey: ["overview", selectedWallet, selectedChain],
     enabled: enabledQuery,
     queryFn: () => getOverview(selectedWallet, selectedChain),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: Infinity,
   });
 
   $: {

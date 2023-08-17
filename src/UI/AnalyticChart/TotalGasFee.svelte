@@ -203,7 +203,7 @@
     queryKey: ["historical", selectedWallet, selectedChain],
     enabled: enabledQuery,
     queryFn: () => getAnalyticHistorical(selectedWallet, selectedChain),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: Infinity,
   });
 
   $: {

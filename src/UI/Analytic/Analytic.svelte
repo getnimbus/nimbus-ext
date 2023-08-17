@@ -72,14 +72,14 @@
     queryKey: ["compare", selectedWallet, selectedChain],
     enabled: enabledQuery,
     queryFn: () => getAnalyticCompare(selectedWallet),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: Infinity,
   });
 
   $: queryBreakdown = createQuery({
     queryKey: ["compare-breakdown", selectedWallet, selectedChain],
     enabled: enabledQuery,
     queryFn: () => getRiskBreakdown(selectedWallet),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: Infinity,
   });
 
   $: {

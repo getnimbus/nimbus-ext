@@ -236,13 +236,13 @@
   $: query = createQuery({
     queryKey: ["compare", selectedWallet],
     queryFn: () => getAnalyticCompare(selectedWallet, searchCompare),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: Infinity,
   });
 
   $: queryPersonalTag = createQuery({
     queryKey: ["personal-tag", selectedWallet],
     queryFn: () => getPersonalizeTag(selectedWallet),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: Infinity,
   });
 
   const formatDataAnalyticCompare = (data) => {
