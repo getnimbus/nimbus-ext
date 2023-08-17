@@ -169,7 +169,7 @@
           data: itemData.sparkline.map((item, index) => [
             dayjs()
               .startOf("day")
-              .subtract(30 - index)
+              .subtract(30 - index, "day")
               .valueOf(),
             getChangePercent(item, baseData),
           ]),
