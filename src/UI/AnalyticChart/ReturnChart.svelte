@@ -5,7 +5,6 @@
   import { sendMessage } from "webext-bridge";
   import dayjs from "dayjs";
   import { calculateVolatility, getChangePercent } from "~/chart-utils";
-  import dayjs from "dayjs";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
@@ -63,11 +62,11 @@
 
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
+                      item.value[1] >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${formatCurrency(Math.abs(item.value))}%
+                      ${formatCurrency(Math.abs(item.value[1]))}%
                       <img
-                        src=${item.value >= 0 ? TrendUp : TrendDown} 
+                        src=${item.value[1] >= 0 ? TrendUp : TrendDown} 
                         alt=""
                         style="margin-bottom: 4px;"
                       />
@@ -84,12 +83,11 @@
       data: [],
     },
     xAxis: {
-      type: "category",
+      type: "time",
       axisTick: { show: false },
       splitLine: { show: false },
       axisLine: { show: false },
       axisLabel: { show: false },
-      data: [],
     },
     yAxis: {
       type: "value",
@@ -168,30 +166,20 @@
           emphasis: {
             focus: "series",
           },
-          data: itemData.sparkline
-            .map((item, index) => [
-              dayjs()
-                .startOf("day")
-                .subtract(30 - index)
-                .valueOf(),
-              getChangePercent(item, baseData),
-            ])
-            .map((eachData) => eachData[1]),
+          data: itemData.sparkline.map((item, index) => [
+            dayjs()
+              .startOf("day")
+              .subtract(30 - index)
+              .valueOf(),
+            getChangePercent(item, baseData),
+          ]),
         };
-      });
-
-      const formatXAxis = series[0].data?.map((item) => {
-        return dayjs(item[0]).format("YYYY-MM-DD");
       });
 
       optionBar = {
         ...optionBar,
         legend: {
           data: legendDataBarChart,
-        },
-        xAxis: {
-          ...optionBar.xAxis,
-          data: formatXAxis,
         },
         series: series,
       };
