@@ -407,7 +407,7 @@
       <div class="h-full">
         {#if isEmptyDataCompare}
           <div
-            class="absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 bg-white/85 z-30 backdrop-blur-md xl:text-xs text-lg"
+            class="absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 bg-white/95 z-30 backdrop-blur-md xl:text-xs text-lg"
           >
             {#if typeWalletAddress === "CEX"}
               Not enough data. CEX integration can only get data from the day

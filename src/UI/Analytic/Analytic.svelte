@@ -34,10 +34,6 @@
     packageSelected = value;
   });
 
-  $: {
-    console.log({ packageSelected });
-  }
-
   let typeWalletAddress: string = "";
   typeWallet.subscribe((value) => {
     typeWalletAddress = value;
@@ -176,7 +172,7 @@
       </div>
       {#if isShowSoon}
         <div
-          class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 bg-white/85 z-30 backdrop-blur-md"
+          class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 bg-white/95 z-30 backdrop-blur-md"
         >
           {#if packageSelected === "FREE"}
             <div class="flex flex-col items-center gap-1">

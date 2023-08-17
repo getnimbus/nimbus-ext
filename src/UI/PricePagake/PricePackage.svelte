@@ -16,7 +16,7 @@
   export let selectedPackage = (item) => {};
 
   let selectedTypePackage: "month" | "year" = "year";
-  let buyPackage = "Professional";
+  let buyPackage = "Free";
   let isNewUser = false;
 
   const getUserInfo = async () => {
@@ -32,7 +32,8 @@
 
   $: {
     if (!$query.isError && $query.data !== undefined) {
-      // buyPackage = $query.data.plan?.tier;
+      buyPackage = $query.data.plan?.tier;
+      isNewUser = $query.data.plan?.isNewUser;
     }
   }
 
@@ -387,6 +388,19 @@
               {#if isNewUser}
                 <div
                   class="underline cursor-pointer font-normal xl:text-sm text-base"
+                  on:click={() => {
+                    if (buyPackage === "Professional") {
+                      console.log("downgrade to Explorer");
+                    }
+                    if (buyPackage === "Free") {
+                      selectedPackage({
+                        plan: "Explorer",
+                        selectedTypePackage,
+                        price: selectedTypePackage === "month" ? "$30" : "$25",
+                        isNewUser,
+                      });
+                    }
+                  }}
                 >
                   Or 30 days Trial
                 </div>
@@ -564,6 +578,17 @@
               {#if isNewUser}
                 <div
                   class="underline cursor-pointer font-normal xl:text-sm text-base"
+                  on:click={() => {
+                    if (buyPackage === "Professional") {
+                      return;
+                    }
+                    selectedPackage({
+                      plan: "Professional",
+                      selectedTypePackage,
+                      price: selectedTypePackage === "month" ? "$99" : "$82.5",
+                      isNewUser,
+                    });
+                  }}
                 >
                   Or 30 days Trial
                 </div>

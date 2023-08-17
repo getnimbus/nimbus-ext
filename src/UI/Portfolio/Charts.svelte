@@ -785,7 +785,7 @@
       </div>
       {#if selectedChain === "XDAI" || getAddressContext(selectedWallet)?.type === "BTC"}
         <div
-          class="absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center bg-white/85 z-30 backdrop-blur-md"
+          class="absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center bg-white/95 z-30 backdrop-blur-md"
         >
           <div class="text-xl xl:text-lg">Coming soon 🚀</div>
         </div>

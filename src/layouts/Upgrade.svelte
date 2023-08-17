@@ -4,6 +4,7 @@
   import PricePackage from "~/UI/PricePagake/PricePackage.svelte";
   import Button from "~/components/Button.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Copy from "~/components/Copy.svelte";
 
   import Bnb from "~/assets/bnb.png";
   import Ethereum from "~/assets/ethereum.png";
@@ -38,7 +39,6 @@
 
   const handleSelectedPackage = (item) => {
     selectedPackage = item;
-    console.log("selectedPackage: ", selectedPackage);
   };
 
   const handleBuy = async (chainValue: string) => {
@@ -47,21 +47,20 @@
       interval: selectedPackage.selectedTypePackage,
       chain: chainValue,
     };
-    console.log("formatData: ", formatData);
     isLoadingBuy = true;
-    // try {
-    //   const response = await nimbus.post(
-    //     "/v2/payments/create-session",
-    //     formatData
-    //   );
-    //   if (response && response?.data) {
-    //     isLoadingBuy = false;
-    //     window.location.replace(response?.data?.url);
-    //   }
-    // } catch (e) {
-    //   console.error(e);
-    //   isLoadingBuy = false;
-    // }
+    try {
+      const response = await nimbus.post(
+        "/v2/payments/create-session",
+        formatData
+      );
+      if (response && response?.data) {
+        isLoadingBuy = false;
+        window.location.replace(response?.data?.url);
+      }
+    } catch (e) {
+      console.error(e);
+      isLoadingBuy = false;
+    }
   };
 </script>
 
@@ -87,6 +86,19 @@
             </span>
           </div>
         </div>
+        {#if selectedPackage.isNewUser}
+          <div class="flex items-center justify-center gap-2 mt-2">
+            Coupon:
+            <span class="text-xl">
+              <Copy
+                address="TRIAL"
+                textTooltip="Copy coupon to clipboard"
+                iconColor="#000"
+                color="#000"
+              />
+            </span>
+          </div>
+        {/if}
         <div class="flex flex-col gap-3 items-center mt-5">
           <div class="my-3 xl:text-base text-lg">
             Choose your prefer payment method

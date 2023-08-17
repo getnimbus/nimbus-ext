@@ -460,7 +460,7 @@
       {/if}
       {#if typeWalletAddress === "CEX"}
         <div
-          class="absolute top-0 left-0 z-30 flex flex-col items-center justify-center w-full h-full gap-3 bg-white/85 backdrop-blur-md"
+          class="absolute top-0 left-0 z-30 flex flex-col items-center justify-center w-full h-full gap-3 bg-white/95 backdrop-blur-md"
         >
           <div class="text-lg">Coming soon 🚀</div>
         </div>
@@ -503,7 +503,7 @@
       {/if}
       {#if typeWalletAddress === "CEX"}
         <div
-          class="absolute top-0 left-0 z-30 flex flex-col items-center justify-center w-full h-full gap-3 bg-white/85 backdrop-blur-md"
+          class="absolute top-0 left-0 z-30 flex flex-col items-center justify-center w-full h-full gap-3 bg-white/95 backdrop-blur-md"
         >
           <div class="text-lg">Coming soon 🚀</div>
         </div>
