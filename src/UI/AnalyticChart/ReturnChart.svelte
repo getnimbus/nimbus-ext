@@ -86,7 +86,7 @@
       type: "time",
       axisTick: { show: false },
       splitLine: { show: false },
-      axisLine: { show: false },
+      // axisLine: { show: false },
       axisLabel: { show: false },
     },
     yAxis: {
@@ -159,7 +159,7 @@
         return {
           name: nameConfig[key].name,
           type: "bar",
-          barStyle: {
+          itemStyle: {
             type: "solid",
             color: nameConfig[key].color,
           },
@@ -198,7 +198,7 @@
 
 <AnalyticSection>
   <span slot="title">
-    <div class="xl:text-2xl text-4xl font-medium text-black flex justify-start">
+    <div class="flex justify-start text-4xl font-medium text-black xl:text-2xl">
       Returns
       <!-- <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
         Risks & Returns
@@ -208,7 +208,7 @@
 
   <span slot="overview" class="relative">
     {#if !isLoadingDataCompare}
-      <div class="xl:text-xl text-3xl font-medium text-black mb-4">
+      <div class="mb-4 text-3xl font-medium text-black xl:text-xl">
         Overview
       </div>
     {/if}
@@ -234,12 +234,12 @@
             <div class="grid grid-cols-2">
               <div class="col-span-1">
                 <div
-                  class="xl:text-base text-2xl text-black flex justify-start"
+                  class="flex justify-start text-2xl text-black xl:text-base"
                 >
                   Return 1D
                 </div>
               </div>
-              <div class="col-span-1 flex items-center justify-end">
+              <div class="flex items-center justify-end col-span-1">
                 <div class={`xl:text-base text-2xl`}>
                   <span
                     class={`${
@@ -272,12 +272,12 @@
             <div class="grid grid-cols-2">
               <div class="col-span-1">
                 <div
-                  class="xl:text-base text-2xl text-black flex justify-start"
+                  class="flex justify-start text-2xl text-black xl:text-base"
                 >
                   Return 7D
                 </div>
               </div>
-              <div class="col-span-1 flex items-center justify-end">
+              <div class="flex items-center justify-end col-span-1">
                 <div class={`xl:text-base text-2xl`}>
                   <span
                     class={`${
@@ -310,12 +310,12 @@
             <div class="grid grid-cols-2">
               <div class="col-span-1">
                 <div
-                  class="xl:text-base text-2xl text-black flex justify-start"
+                  class="flex justify-start text-2xl text-black xl:text-base"
                 >
                   Return 30D
                 </div>
               </div>
-              <div class="col-span-1 flex items-center justify-end">
+              <div class="flex items-center justify-end col-span-1">
                 <div class={`xl:text-base text-2xl`}>
                   <span
                     class={`${
@@ -348,12 +348,12 @@
             <div class="grid grid-cols-2">
               <div class="col-span-1">
                 <div
-                  class="xl:text-base text-2xl text-black flex justify-start"
+                  class="flex justify-start text-2xl text-black xl:text-base"
                 >
                   Return 1Y
                 </div>
               </div>
-              <div class="col-span-1 flex items-center justify-end">
+              <div class="flex items-center justify-end col-span-1">
                 <div class={`xl:text-base text-2xl`}>
                   <span
                     class={`${
@@ -386,12 +386,12 @@
             <div class="grid grid-cols-2">
               <div class="col-span-1">
                 <div
-                  class="xl:text-base text-2xl text-black flex justify-start"
+                  class="flex justify-start text-2xl text-black xl:text-base"
                 >
                   Return Lifetime
                 </div>
               </div>
-              <div class="col-span-1 flex items-center justify-end">
+              <div class="flex items-center justify-end col-span-1">
                 <div class={`xl:text-base text-2xl`}>
                   <span
                     class={`${
@@ -422,7 +422,7 @@
             </div>
           </div>
           <div class="mt-8 space-y-3">
-            <div class="xl:text-base text-2xl">
+            <div class="text-2xl xl:text-base">
               <CtaIcon isGood={isReturn30Higher} />
               30D return is {isReturn30Higher ? "higher" : "lower"} than Bitcoin
               by
@@ -467,7 +467,7 @@
               height={465}
             />
             <div
-              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >
               <img src={Logo} alt="" width="140" height="140" />
             </div>
