@@ -1,6 +1,5 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { onMount } from "svelte";
 
   import PricePackage from "~/UI/PricePagake/PricePackage.svelte";
   import Button from "~/components/Button.svelte";
@@ -36,518 +35,33 @@
 
   let isLoadingBuy = false;
   let selectedPackage;
-  let selectedExplorer;
-  let selectedProfessional;
-  let listPackageData = [];
 
   const handleSelectedPackage = (item) => {
     selectedPackage = item;
+    console.log("selectedPackage: ", selectedPackage);
   };
-
-  const getListPackage = async () => {
-    try {
-      const response = await nimbus.get("/v2/payments/subscription");
-      if (response && response?.data) {
-        // listPackageData = [
-        //   {
-        //     created: "2023-08-11T04:34:50.685Z",
-        //     description: "To win the market",
-        //     id: "product_9628d26e3219405dac33381eeed2fa8b",
-        //     images: [],
-        //     meta: {},
-        //     name: "Professional",
-        //     prices: [
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-11T09:56:34.842Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_sol_pro_month",
-        //         meta: {},
-        //         name: null,
-        //         network: "sol",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "month",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "perUnit",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "9900000",
-        //         unitAmountDecimal: 99,
-        //         updated: "2023-08-11T09:56:34.842Z",
-        //       },
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-11T09:56:34.842Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_sol_pro_year",
-        //         meta: {},
-        //         name: null,
-        //         network: "sol",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "year",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "perUnit",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "9900000",
-        //         unitAmountDecimal: 990,
-        //         updated: "2023-08-11T09:56:34.842Z",
-        //       },
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-11T09:56:34.842Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_eth_pro_month",
-        //         meta: {},
-        //         name: null,
-        //         network: "eth",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "month",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "perUnit",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "9900000",
-        //         unitAmountDecimal: 99,
-        //         updated: "2023-08-11T09:56:34.842Z",
-        //       },
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-11T09:56:34.842Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_eth_pro_year",
-        //         meta: {},
-        //         name: null,
-        //         network: "eth",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "year",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "perUnit",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "9900000",
-        //         unitAmountDecimal: 990,
-        //         updated: "2023-08-11T09:56:34.842Z",
-        //       },
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-11T09:56:34.842Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_bsc_pro_month",
-        //         meta: {},
-        //         name: null,
-        //         network: "bsc",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "month",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "perUnit",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "9900000",
-        //         unitAmountDecimal: 99,
-        //         updated: "2023-08-11T09:56:34.842Z",
-        //       },
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-11T09:56:34.842Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_bsc_pro_year",
-        //         meta: {},
-        //         name: null,
-        //         network: "bsc",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "year",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "perUnit",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "9900000",
-        //         unitAmountDecimal: 990,
-        //         updated: "2023-08-11T09:56:34.842Z",
-        //       },
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-11T09:56:34.842Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_pol_pro_month",
-        //         meta: {},
-        //         name: null,
-        //         network: "pol",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "month",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "perUnit",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "9900000",
-        //         unitAmountDecimal: 99,
-        //         updated: "2023-08-11T09:56:34.842Z",
-        //       },
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-11T09:56:34.842Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_pol_pro_year",
-        //         meta: {},
-        //         name: null,
-        //         network: "pol",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "year",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "perUnit",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "9900000",
-        //         unitAmountDecimal: 990,
-        //         updated: "2023-08-11T09:56:34.842Z",
-        //       },
-        //     ],
-        //     tags: [],
-        //     updated: "2023-08-11T04:34:50.685Z",
-        //   },
-        //   {
-        //     created: "2023-08-09T07:47:13.106Z",
-        //     description: "We help optimize your portfolio",
-        //     id: "product_9e87b125b078415eb4859306f753919f",
-        //     images: [],
-        //     meta: {},
-        //     name: "Explorer",
-        //     prices: [
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-09T07:49:55.443Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_sol_exp_month",
-        //         meta: {},
-        //         name: null,
-        //         network: "sol",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "month",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "licensed",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "1000000",
-        //         unitAmountDecimal: 30,
-        //         updated: "2023-08-09T07:49:55.443Z",
-        //       },
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-09T07:49:55.443Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_sol_exp_year",
-        //         meta: {},
-        //         name: null,
-        //         network: "sol",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "year",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "licensed",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "1000000",
-        //         unitAmountDecimal: 300,
-        //         updated: "2023-08-09T07:49:55.443Z",
-        //       },
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-09T07:49:55.443Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_eth_exp_month",
-        //         meta: {},
-        //         name: null,
-        //         network: "eth",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "month",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "licensed",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "1000000",
-        //         unitAmountDecimal: 30,
-        //         updated: "2023-08-09T07:49:55.443Z",
-        //       },
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-09T07:49:55.443Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_eth_exp_year",
-        //         meta: {},
-        //         name: null,
-        //         network: "eth",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "year",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "licensed",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "1000000",
-        //         unitAmountDecimal: 300,
-        //         updated: "2023-08-09T07:49:55.443Z",
-        //       },
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-09T07:49:55.443Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_bsc_exp_month",
-        //         meta: {},
-        //         name: null,
-        //         network: "bsc",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "month",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "licensed",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "1000000",
-        //         unitAmountDecimal: 30,
-        //         updated: "2023-08-09T07:49:55.443Z",
-        //       },
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-09T07:49:55.443Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_bsc_exp_year",
-        //         meta: {},
-        //         name: null,
-        //         network: "bsc",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "year",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "licensed",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "1000000",
-        //         unitAmountDecimal: 300,
-        //         updated: "2023-08-09T07:49:55.443Z",
-        //       },
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-09T07:49:55.443Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_pol_exp_month",
-        //         meta: {},
-        //         name: null,
-        //         network: "pol",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "month",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "licensed",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "1000000",
-        //         unitAmountDecimal: 30,
-        //         updated: "2023-08-09T07:49:55.443Z",
-        //       },
-        //       {
-        //         active: true,
-        //         billingScheme: "perUnit",
-        //         created: "2023-08-09T07:49:55.443Z",
-        //         currency: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-        //         description: null,
-        //         id: "price_pol_exp_year",
-        //         meta: {},
-        //         name: null,
-        //         network: "pol",
-        //         product: null,
-        //         recurring: {
-        //           defaultLength: 1,
-        //           interval: "year",
-        //           intervalCount: 1,
-        //           type: "delegated",
-        //           usageAggregation: "sum",
-        //           usageType: "licensed",
-        //         },
-        //         taxBehavior: "exclusive",
-        //         tierType: null,
-        //         tiers: [],
-        //         type: "recurring",
-        //         unitAmount: "1000000",
-        //         unitAmountDecimal: 300,
-        //         updated: "2023-08-09T07:49:55.443Z",
-        //       },
-        //     ],
-        //     tags: [],
-        //     updated: "2023-08-09T07:47:13.106Z",
-        //   },
-        // ];
-        listPackageData = response?.data?.data?.products;
-
-        selectedExplorer = listPackageData.find(
-          (item) => item.name === "Explorer"
-        );
-        selectedProfessional = listPackageData.find(
-          (item) => item.name === "Professional"
-        );
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  onMount(() => {
-    getListPackage();
-  });
 
   const handleBuy = async (chainValue: string) => {
+    const formatData = {
+      plan: selectedPackage.plan,
+      interval: selectedPackage.selectedTypePackage,
+      chain: chainValue,
+    };
+    console.log("formatData: ", formatData);
     isLoadingBuy = true;
-    try {
-      const selectedPackageData = listPackageData.find(
-        (item) => item.name === selectedPackage.name
-      );
-
-      const selectedPackageDataPrice = selectedPackageData.prices.find(
-        (item) =>
-          item.recurring.interval === selectedPackage.selectedTypePackage &&
-          item.network === chainValue
-      );
-
-      const response = await nimbus.post("/v2/payments/create-session", {
-        priceId: selectedPackageDataPrice.id,
-      });
-      if (response && response?.data) {
-        isLoadingBuy = false;
-        window.location.replace(response?.data?.url);
-      }
-    } catch (e) {
-      console.error(e);
-      isLoadingBuy = false;
-    }
+    // try {
+    //   const response = await nimbus.post(
+    //     "/v2/payments/create-session",
+    //     formatData
+    //   );
+    //   if (response && response?.data) {
+    //     isLoadingBuy = false;
+    //     window.location.replace(response?.data?.url);
+    //   }
+    // } catch (e) {
+    //   console.error(e);
+    //   isLoadingBuy = false;
+    // }
   };
 </script>
 
@@ -562,14 +76,13 @@
       <div class="flex flex-col justify-center min-h-[500px]">
         <div class="flex flex-col items-center gap-1">
           <div class="flex items-center gap-1 xl:text-lg text-xl">
-            You're going to upgrade to plan <span class="font-medium"
-              >{selectedPackage.name}</span
+            You're going to upgrade to plan <span class="font-medium uppercase"
+              >{selectedPackage.plan}</span
             >
             with
-            <span class="flex items-end gap-2 font-medium">
+            <span class="flex items-end gap-1 font-semibold">
               <span>{selectedPackage.price}</span><span
-                class="xl:text-lg text-xl text-gray-400 mb-[2px]"
-                >/{selectedPackage.selectedTypePackage}</span
+                class="xl:text-base text-lg text-gray-400 mb-[2px]">/month</span
               >
             </span>
           </div>
@@ -618,11 +131,7 @@
         </div>
       </div>
     {:else}
-      <PricePackage
-        selectedPackage={handleSelectedPackage}
-        {selectedExplorer}
-        {selectedProfessional}
-      />
+      <PricePackage selectedPackage={handleSelectedPackage} />
     {/if}
   </div>
 </ErrorBoundary>

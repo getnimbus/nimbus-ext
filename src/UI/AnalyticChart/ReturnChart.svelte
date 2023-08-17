@@ -1,10 +1,11 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { wallet, chain, typeWallet } from "~/store";
-  import { formatCurrencyV2, getAddressContext } from "~/utils";
+  import { formatCurrency, formatCurrencyV2, getAddressContext } from "~/utils";
   import { sendMessage } from "webext-bridge";
   import dayjs from "dayjs";
   import { calculateVolatility, getChangePercent } from "~/chart-utils";
+  import dayjs from "dayjs";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
@@ -45,59 +46,57 @@
       axisPointer: {
         type: "shadow",
       },
-      valueFormatter: (value) => `${value}%`,
-      // formatter: function (params) {
-      //   return `
-      //       <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
-      //         <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-      //           <span>${params?.marker}</span> ${params.seriesName}
-      //         </div>
-      //         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-      //           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
-      //             Return
-      //           </div>
+      formatter: function (params) {
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                ${dayjs(params[0].axisValueLabel).format("YYYY-MM-DD")}
+              </div>
+              ${params
+                .map((item) => {
+                  return `
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                    <span>${item?.marker}</span>
+                    ${item?.seriesName}
+                  </div>
 
-      //           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-      //             <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-      //               params.value[1] >= 0 ? "#05a878" : "#f25f5d"
-      //             };">
-      //               ${params.value[1]}%
-      //             </div>
-      //           </div>
-      //         </div>
-      //         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-      //           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
-      //             Risk
-      //           </div>
-
-      //           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-      //             <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
-      //               ${Number(params.value[0]).toFixed(2)}
-      //             </div>
-      //           </div>
-      //         </div>
-      //       </div>`;
-      // },
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                      item.value >= 0 ? "#05a878" : "#f25f5d"
+                    };">
+                      ${formatCurrency(Math.abs(item.value))}%
+                      <img
+                        src=${item.value >= 0 ? TrendUp : TrendDown} 
+                        alt=""
+                        style="margin-bottom: 4px;"
+                      />
+                    </div>
+                  </div>
+                </div>
+                `;
+                })
+                .join("")}
+            </div>`;
+      },
     },
-    // legend: {
-    //   data: [],
-    // },
-    xAxis: [
-      {
-        type: "time",
-        axisTick: { show: false },
-        // name: "Risk",
+    legend: {
+      data: [],
+    },
+    xAxis: {
+      type: "category",
+      axisTick: { show: false },
+      splitLine: { show: false },
+      axisLine: { show: false },
+      axisLabel: { show: false },
+      data: [],
+    },
+    yAxis: {
+      type: "value",
+      axisLabel: {
+        formatter: "{value}%",
       },
-    ],
-    yAxis: [
-      {
-        type: "value",
-        // name: "Return",
-        axisLabel: {
-          formatter: "{value}%",
-        },
-      },
-    ],
+    },
     series: [],
   };
 
@@ -106,7 +105,7 @@
       const nameConfig = {
         base: {
           name: "This wallet",
-          color: "#f7931a",
+          color: "#00b580",
         },
         btc: {
           name: "Bitcoin",
@@ -119,6 +118,43 @@
       };
 
       const listKey = Object.keys(data);
+
+      const legendDataBarChart = listKey.map((item) => {
+        let data = {
+          name: "",
+          itemStyle: {
+            color: "",
+          },
+        };
+        switch (item) {
+          case "btc":
+            data = {
+              name: "Bitcoin",
+              itemStyle: {
+                color: "#f7931a",
+              },
+            };
+            break;
+          case "eth":
+            data = {
+              name: "Ethereum",
+              itemStyle: {
+                color: "#547fef",
+              },
+            };
+            break;
+          case "base":
+            data = {
+              name: "This wallet",
+              itemStyle: {
+                color: "#00b580",
+              },
+            };
+            break;
+        }
+        return data;
+      });
+
       const series = listKey?.map((key) => {
         const itemData = data[key];
         const baseData = itemData.sparkline[0];
@@ -132,21 +168,31 @@
           emphasis: {
             focus: "series",
           },
-          data: itemData.sparkline.map((item, index) => [
-            dayjs()
-              .startOf("day")
-              .subtract(30 - index)
-              .valueOf(),
-            getChangePercent(item, baseData),
-          ]),
+          data: itemData.sparkline
+            .map((item, index) => [
+              dayjs()
+                .startOf("day")
+                .subtract(30 - index)
+                .valueOf(),
+              getChangePercent(item, baseData),
+            ])
+            .map((eachData) => eachData[1]),
         };
+      });
+
+      const formatXAxis = series[0].data?.map((item) => {
+        return dayjs(item[0]).format("YYYY-MM-DD");
       });
 
       optionBar = {
         ...optionBar,
-        // legend: {
-        //   data: legendDataBarChart,
-        // },
+        legend: {
+          data: legendDataBarChart,
+        },
+        xAxis: {
+          ...optionBar.xAxis,
+          data: formatXAxis,
+        },
         series: series,
       };
     }

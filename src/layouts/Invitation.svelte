@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
@@ -7,6 +6,7 @@
   import { shorterAddress } from "~/utils";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
@@ -37,36 +37,43 @@
     isSuccessToast = false;
   };
 
-  const getReferrals = async () => {
-    try {
-      const response = await nimbus.get("/referrals");
-      if (response && response.data) {
-        referrals = response?.data?.count;
-      }
-    } catch (e) {
-      console.error("e: ", e);
-    }
-  };
-
   const getUserInfo = async () => {
-    try {
-      const response = await nimbus.get("/users/me");
-      if (response && response.data) {
-        userAddress = response?.data?.publicAddress;
-        link = `https://app.getnimbus.io/?invitation=${response?.data?.id}`;
-        qrcode.addData(link);
-        qrcode.make();
-        qrImageDataUrl = qrcode.createDataURL(6, 0);
-      }
-    } catch (e) {
-      console.error("e: ", e);
-    }
+    const response = await nimbus.get("/users/me");
+    return response.data;
   };
 
-  onMount(() => {
-    getReferrals();
-    getUserInfo();
+  const getReferrals = async () => {
+    const response = await nimbus.get("/referrals");
+    return response.data;
+  };
+
+  const queryReferrals = createQuery({
+    queryKey: ["referrals"],
+    queryFn: () => getReferrals(),
+    staleTime: Infinity,
   });
+
+  const queryUserInfo = createQuery({
+    queryKey: ["users-me"],
+    queryFn: () => getUserInfo(),
+    staleTime: Infinity,
+  });
+
+  $: {
+    if (!$queryReferrals.isError && $queryReferrals.data !== undefined) {
+      referrals = $queryReferrals.data?.count;
+    }
+  }
+
+  $: {
+    if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
+      userAddress = $queryUserInfo.data?.publicAddress;
+      link = `https://app.getnimbus.io/?invitation=${$queryUserInfo.data?.id}`;
+      qrcode.addData(link);
+      qrcode.make();
+      qrImageDataUrl = qrcode.createDataURL(6, 0);
+    }
+  }
 
   const downloadQRCode = async () => {
     const targetElement = document.getElementById("target-element");
