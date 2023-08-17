@@ -100,7 +100,7 @@
     </AnimateSharedLayout>
   </div>
 
-  <div class="grid grid-cols-1 xl:grid-cols-3 xl:gap-7 gap-0">
+  <div class="grid grid-cols-1 xl:grid-cols-3 xl:gap-7 gap-4">
     <!-- Free -->
     <div class="flex flex-col gap-1">
       <div
