@@ -16,7 +16,7 @@
   export let selectedPackage = (item) => {};
 
   let selectedTypePackage: "month" | "year" = "year";
-  let buyPackage = "";
+  let buyPackage = "Professional";
 
   const getUserInfo = async () => {
     const response = await nimbus.get("/users/me");
@@ -36,11 +36,9 @@
       $query.data.plan?.tier &&
       $query.data.plan?.tier.length !== 0
     ) {
-      buyPackage = $query.data.plan?.tier;
+      // buyPackage = $query.data.plan?.tier;
     }
   }
-
-  $: console.log("$query.data: ", $query.data);
 
   const getTooltipContent = (text: string, videoUrl: string) => {
     return `
