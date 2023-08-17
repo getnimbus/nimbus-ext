@@ -55,9 +55,9 @@
           response.data?.plan?.tier &&
           response.data?.plan?.tier.length !== 0
         ) {
-          // selectedPackage.update(
-          //   (n) => (n = response.data?.plan?.tier.toUpperCase())
-          // );
+          selectedPackage.update(
+            (n) => (n = response.data?.plan?.tier.toUpperCase())
+          );
         }
       }
     } catch (e) {

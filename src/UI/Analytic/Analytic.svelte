@@ -30,7 +30,6 @@
 
   let packageSelected = "";
   selectedPackage.subscribe((value) => {
-    console.trace({ value });
     packageSelected = value;
   });
 

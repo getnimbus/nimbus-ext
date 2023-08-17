@@ -53,7 +53,6 @@
         `/address/${selectedWallet}/personalize/virtual-portflio`
       );
       if (response) {
-        console.log("response: ", response);
         const virtualPortfolioNameList = Object.getOwnPropertyNames(
           response.data
         );
