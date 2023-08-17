@@ -101,7 +101,7 @@
       {
         type: "category",
         axisTick: { show: false },
-        data: ["Sharpe Ratio", "Volatility", "Drawdown"],
+        data: ["Sharpe Ratio", "Volatility", "Max drawdown"],
       },
     ],
     yAxis: [
