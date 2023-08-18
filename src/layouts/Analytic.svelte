@@ -171,81 +171,87 @@
     </div>
   {/if} -->
   <Analytic />
-</ErrorBoundary>
 
-<AppOverlay
-  clickOutSideToClose
-  isOpen={isOpenModal}
-  on:close={() => {
-    localStorage.setItem("currentDay", currentDate.format("YYYY-MM-DD"));
-    localStorage.setItem("next7Days", next7Days.format("YYYY-MM-DD"));
-    isOpenModal = false;
-  }}
->
-  <div class="mt-2">
-    <div
-      class="xl:text-base text-lg text-gray-500 text-center xl:w-[600px] w-[700px]"
-    >
-      Our analysis is
-      <span class="font-medium">Premium</span>
-      <img src={Crown} alt="" width="13" height="12" class="inline-block" />
-      feature is under beta<br /> which you can access for free now. <br />Add
-      your email to get updates from us and receive exclusive benefits in the
-      future.
-    </div>
-    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
-      <div class="flex flex-col gap-1">
+  <AppOverlay
+    clickOutSideToClose
+    isOpen={isOpenModal}
+    on:close={() => {
+      localStorage.setItem("currentDay", currentDate.format("YYYY-MM-DD"));
+      localStorage.setItem("next7Days", next7Days.format("YYYY-MM-DD"));
+      isOpenModal = false;
+    }}
+  >
+    <div class="mt-2">
+      <div
+        class="xl:text-base text-lg text-gray-500 text-center xl:w-[600px] w-[700px]"
+      >
+        Our analysis is
+        <span class="font-medium">Premium</span>
+        <img src={Crown} alt="" width="13" height="12" class="inline-block" />
+        feature is under beta<br /> which you can access for free now. <br />Add
+        your email to get updates from us and receive exclusive benefits in the
+        future.
+      </div>
+      <form
+        on:submit|preventDefault={onSubmit}
+        class="flex flex-col gap-3 mt-4"
+      >
         <div class="flex flex-col gap-1">
-          <div
-            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-              email ? "bg-[#F0F2F7]" : ""
-            }`}
-          >
-            <div class="xl:text-base text-xl text-[#666666] font-medium">
-              Email
-            </div>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Your email"
-              value=""
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+          <div class="flex flex-col gap-1">
+            <div
+              class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
                 email ? "bg-[#F0F2F7]" : ""
-              }
+              }`}
+            >
+              <div class="xl:text-base text-xl text-[#666666] font-medium">
+                Email
+              </div>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Your email"
+                value=""
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                  email ? "bg-[#F0F2F7]" : ""
+                }
               `}
-              on:keyup={({ target: { value } }) => (email = value)}
-            />
+                on:keyup={({ target: { value } }) => (email = value)}
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div class="flex justify-end gap-2">
-        <div class="lg:w-[120px] w-full">
-          <Button
-            variant="secondary"
-            on:click={() => {
-              localStorage.setItem(
-                "currentDay",
-                currentDate.format("YYYY-MM-DD")
-              );
-              localStorage.setItem("next7Days", next7Days.format("YYYY-MM-DD"));
-              isOpenModal = false;
-            }}
-          >
-            Cancel
-          </Button>
+        <div class="flex justify-end gap-2">
+          <div class="lg:w-[120px] w-full">
+            <Button
+              variant="secondary"
+              on:click={() => {
+                localStorage.setItem(
+                  "currentDay",
+                  currentDate.format("YYYY-MM-DD")
+                );
+                localStorage.setItem(
+                  "next7Days",
+                  next7Days.format("YYYY-MM-DD")
+                );
+                isOpenModal = false;
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+          <div class="lg:w-[120px] w-full">
+            <Button
+              type="submit"
+              isLoading={isLoadingSendMail}
+              disabled={isLoadingSendMail}>Submit</Button
+            >
+          </div>
         </div>
-        <div class="lg:w-[120px] w-full">
-          <Button
-            type="submit"
-            isLoading={isLoadingSendMail}
-            disabled={isLoadingSendMail}>Submit</Button
-          >
-        </div>
-      </div>
-    </form>
-  </div>
-</AppOverlay>
+      </form>
+    </div>
+  </AppOverlay>
+</ErrorBoundary>
 
 <style>
   .input-border {

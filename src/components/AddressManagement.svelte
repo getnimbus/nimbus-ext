@@ -37,7 +37,6 @@
   export let title;
 
   import "~/components/Loading.custom.svelte";
-  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
   import Select from "~/components/Select.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -677,203 +676,255 @@
   }
 </script>
 
-<ErrorBoundary>
-  {#if $query.isFetching && formatListAddress && formatListAddress?.length === 0}
-    <div class="flex items-center justify-center h-screen">
-      <loading-icon />
-    </div>
-  {:else}
-    <div>
-      {#if formatListAddress.length === 0 && selectedWallet?.length === 0}
-        <div class="flex items-center justify-center h-screen">
-          <div
-            class="flex flex-col items-center justify-center w-2/3 gap-4 p-6"
-          >
-            {#if $query.isError && Object.keys(userInfo).length !== 0}
-              <div class="text-lg">
-                Too many request when get list address. Please wait for a
-                minutes
+{#if $query.isFetching && formatListAddress && formatListAddress?.length === 0}
+  <div class="flex items-center justify-center h-screen">
+    <loading-icon />
+  </div>
+{:else}
+  <div>
+    {#if formatListAddress.length === 0 && selectedWallet?.length === 0}
+      <div class="flex items-center justify-center h-screen">
+        <div class="flex flex-col items-center justify-center w-2/3 gap-4 p-6">
+          {#if $query.isError && Object.keys(userInfo).length !== 0}
+            <div class="text-lg">
+              Too many request when get list address. Please wait for a minutes
+            </div>
+          {:else}
+            <div class="text-lg">
+              {MultipleLang.addwallet}
+            </div>
+            {#if Object.keys(userInfo).length !== 0}
+              <div class="w-max">
+                <Button
+                  variant="tertiary"
+                  on:click={() => (isOpenAddModal = true)}
+                >
+                  <img src={Plus} alt="" width="12" height="12" />
+                  <div class="text-2xl font-medium text-white xl:text-base">
+                    {MultipleLang.content.btn_text}
+                  </div>
+                </Button>
               </div>
             {:else}
-              <div class="text-lg">
-                {MultipleLang.addwallet}
-              </div>
-              {#if Object.keys(userInfo).length !== 0}
-                <div class="w-max">
-                  <Button
-                    variant="tertiary"
-                    on:click={() => (isOpenAddModal = true)}
-                  >
+              <div class="flex flex-col gap-4">
+                <div
+                  class="relative"
+                  on:mouseenter={() => {
+                    if (Object.keys(userInfo).length === 0) {
+                      showDisableAddWallet = true;
+                    }
+                  }}
+                  on:mouseleave={() => {
+                    if (Object.keys(userInfo).length === 0) {
+                      showDisableAddWallet = false;
+                    }
+                  }}
+                >
+                  <Button variant="disabled">
                     <img src={Plus} alt="" width="12" height="12" />
                     <div class="text-2xl font-medium text-white xl:text-base">
                       {MultipleLang.content.btn_text}
                     </div>
                   </Button>
-                </div>
-              {:else}
-                <div class="flex flex-col gap-4">
-                  <div
-                    class="relative"
-                    on:mouseenter={() => {
-                      if (Object.keys(userInfo).length === 0) {
-                        showDisableAddWallet = true;
-                      }
-                    }}
-                    on:mouseleave={() => {
-                      if (Object.keys(userInfo).length === 0) {
-                        showDisableAddWallet = false;
-                      }
-                    }}
-                  >
-                    <Button variant="disabled">
-                      <img src={Plus} alt="" width="12" height="12" />
-                      <div class="text-2xl font-medium text-white xl:text-base">
-                        {MultipleLang.content.btn_text}
-                      </div>
-                    </Button>
 
-                    {#if showDisableAddWallet}
-                      <div
-                        class="absolute transform -translate-x-1/2 -top-8 left-1/2"
-                        style="z-index: 2147483648;"
-                      >
-                        <tooltip-detail
-                          text={"Connect wallet to add account"}
-                        />
-                      </div>
-                    {/if}
-                  </div>
-                  <div
-                    class="text-2xl font-medium xl:text-base mt-2 hover:underline text-[#1E96FC] cursor-pointer"
-                    on:click={() => {
-                      mixpanel.track("user_search");
-                      chain.update((n) => (n = "ALL"));
-                      wallet.update(
-                        (n) =>
-                          (n = "0x3d8fc1cffaa110f7a7f9f8bc237b73d54c4abf61")
-                      );
-                      navigate(
-                        `/?type=DEX&chain=ALL&address=0x3d8fc1cffaa110f7a7f9f8bc237b73d54c4abf61`
-                      );
-                    }}
-                  >
-                    Try Demo account
-                  </div>
-                </div>
-              {/if}
-            {/if}
-          </div>
-        </div>
-      {:else}
-        <div class="header-container">
-          <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[96%]">
-            <div class="flex flex-col mb-5 gap-14">
-              <div class="flex items-center justify-between gap-6">
-                <!-- desktop list address wallet -->
-                <div class="hidden xl:block">
-                  {#if formatListAddress && formatListAddress?.length !== 0}
-                    <div class="flex items-center gap-5">
-                      {#if formatListAddress.length > 5}
-                        <AnimateSharedLayout>
-                          {#each formatListAddress.slice(0, 5) as item}
-                            <div
-                              id={item.value}
-                              class="relative xl:text-base text-2xl text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
-                              class:hover:no-underline={item.value ===
-                                selectedWallet}
-                              on:click={() => {
-                                wallet.update((n) => (n = item.value));
-                              }}
-                            >
-                              <img
-                                src={item.logo}
-                                alt=""
-                                class="w-5 h-5 rounded-full xl:w-4 xl:h-4"
-                              />
-                              {item.label}
-                              {#if item.value === selectedWallet}
-                                <Motion
-                                  let:motion
-                                  layoutId="active-pill"
-                                  transition={{
-                                    type: "spring",
-                                    duration: 0.6,
-                                  }}
-                                >
-                                  <div
-                                    class="absolute inset-0 rounded-full bg-[#ffffff1c]"
-                                    use:motion
-                                  />
-                                </Motion>
-                              {/if}
-                            </div>
-                          {/each}
-                        </AnimateSharedLayout>
-                        <Select
-                          type="wallet"
-                          positionSelectList="right-0"
-                          listSelect={formatListAddress.slice(
-                            5,
-                            formatListAddress.length
-                          )}
-                          bind:selected={selectedWallet}
-                        />
-                      {:else}
-                        <AnimateSharedLayout>
-                          {#each formatListAddress as item}
-                            <div
-                              id={item.value}
-                              class="relative xl:text-base text-2xl text-white py-1 xl:pl-2 xl:pr-3 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
-                              class:hover:no-underline={item.value ===
-                                selectedWallet}
-                              on:click={() => {
-                                wallet.update((n) => (n = item.value));
-                              }}
-                            >
-                              <img
-                                src={item.logo}
-                                alt=""
-                                class="w-5 h-5 rounded-full xl:w-4 xl:h-4"
-                              />
-                              {item.label}
-                              {#if item.value === selectedWallet}
-                                <Motion
-                                  let:motion
-                                  layoutId="active-pill"
-                                  transition={{
-                                    type: "spring",
-                                    duration: 0.6,
-                                  }}
-                                >
-                                  <div
-                                    class="absolute inset-0 rounded-full bg-[#ffffff1c]"
-                                    use:motion
-                                  />
-                                </Motion>
-                              {/if}
-                            </div>
-                          {/each}
-                        </AnimateSharedLayout>
-                      {/if}
-                    </div>
-                  {:else}
-                    <div class="text-2xl font-medium text-white xl:text-base">
-                      {MultipleLang.empty_wallet}
+                  {#if showDisableAddWallet}
+                    <div
+                      class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                      style="z-index: 2147483648;"
+                    >
+                      <tooltip-detail text={"Connect wallet to add account"} />
                     </div>
                   {/if}
                 </div>
-
-                <!-- mobile list address wallet -->
+                <div
+                  class="text-2xl font-medium xl:text-base mt-2 hover:underline text-[#1E96FC] cursor-pointer"
+                  on:click={() => {
+                    mixpanel.track("user_search");
+                    chain.update((n) => (n = "ALL"));
+                    wallet.update(
+                      (n) => (n = "0x3d8fc1cffaa110f7a7f9f8bc237b73d54c4abf61")
+                    );
+                    navigate(
+                      `/?type=DEX&chain=ALL&address=0x3d8fc1cffaa110f7a7f9f8bc237b73d54c4abf61`
+                    );
+                  }}
+                >
+                  Try Demo account
+                </div>
+              </div>
+            {/if}
+          {/if}
+        </div>
+      </div>
+    {:else}
+      <div class="header-container">
+        <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[96%]">
+          <div class="flex flex-col mb-5 gap-14">
+            <div class="flex items-center justify-between gap-6">
+              <!-- desktop list address wallet -->
+              <div class="hidden xl:block">
                 {#if formatListAddress && formatListAddress?.length !== 0}
+                  <div class="flex items-center gap-5">
+                    {#if formatListAddress.length > 5}
+                      <AnimateSharedLayout>
+                        {#each formatListAddress.slice(0, 5) as item}
+                          <div
+                            id={item.value}
+                            class="relative xl:text-base text-2xl text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                            class:hover:no-underline={item.value ===
+                              selectedWallet}
+                            on:click={() => {
+                              wallet.update((n) => (n = item.value));
+                            }}
+                          >
+                            <img
+                              src={item.logo}
+                              alt=""
+                              class="w-5 h-5 rounded-full xl:w-4 xl:h-4"
+                            />
+                            {item.label}
+                            {#if item.value === selectedWallet}
+                              <Motion
+                                let:motion
+                                layoutId="active-pill"
+                                transition={{
+                                  type: "spring",
+                                  duration: 0.6,
+                                }}
+                              >
+                                <div
+                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                  use:motion
+                                />
+                              </Motion>
+                            {/if}
+                          </div>
+                        {/each}
+                      </AnimateSharedLayout>
+                      <Select
+                        type="wallet"
+                        positionSelectList="right-0"
+                        listSelect={formatListAddress.slice(
+                          5,
+                          formatListAddress.length
+                        )}
+                        bind:selected={selectedWallet}
+                      />
+                    {:else}
+                      <AnimateSharedLayout>
+                        {#each formatListAddress as item}
+                          <div
+                            id={item.value}
+                            class="relative xl:text-base text-2xl text-white py-1 xl:pl-2 xl:pr-3 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                            class:hover:no-underline={item.value ===
+                              selectedWallet}
+                            on:click={() => {
+                              wallet.update((n) => (n = item.value));
+                            }}
+                          >
+                            <img
+                              src={item.logo}
+                              alt=""
+                              class="w-5 h-5 rounded-full xl:w-4 xl:h-4"
+                            />
+                            {item.label}
+                            {#if item.value === selectedWallet}
+                              <Motion
+                                let:motion
+                                layoutId="active-pill"
+                                transition={{
+                                  type: "spring",
+                                  duration: 0.6,
+                                }}
+                              >
+                                <div
+                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                  use:motion
+                                />
+                              </Motion>
+                            {/if}
+                          </div>
+                        {/each}
+                      </AnimateSharedLayout>
+                    {/if}
+                  </div>
+                {:else}
+                  <div class="text-2xl font-medium text-white xl:text-base">
+                    {MultipleLang.empty_wallet}
+                  </div>
+                {/if}
+              </div>
+
+              <!-- mobile list address wallet -->
+              {#if formatListAddress && formatListAddress?.length !== 0}
+                <div
+                  class="relative flex flex-row items-center justify-between w-full gap-3 overflow-hidden xl:hidden"
+                  bind:this={container}
+                >
                   <div
-                    class="relative flex flex-row items-center justify-between w-full gap-3 overflow-hidden xl:hidden"
-                    bind:this={container}
+                    class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
+                      isScrollStart ? "hidden" : "block"
+                    }`}
+                    style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
                   >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      height="24px"
+                      width="24px"
+                      viewBox="0 0 24 24"
+                      class="sc-aef7b723-0 fKbUaI"
+                      ><path
+                        d="M15 6L9 12L15 18"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-miterlimit="10"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      /></svg
+                    >
+                  </div>
+                  <div
+                    class="container flex gap-3 overflow-x-auto w-max whitespace-nowrap"
+                    bind:this={scrollContainer}
+                    on:scroll={handleScroll}
+                  >
+                    {#each formatListAddress as item}
+                      <div
+                        id={item.value}
+                        class="w-max flex-shrink-0 relative text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
+                        class:hover:no-underline={item.value === selectedWallet}
+                        on:click={() => {
+                          wallet.update((n) => (n = item.value));
+                        }}
+                      >
+                        <img
+                          src={item.logo}
+                          alt=""
+                          class="w-5 h-5 rounded-full"
+                        />
+                        {item.label}
+                        {#if item.value === selectedWallet}
+                          <Motion
+                            let:motion
+                            layoutId="active-pill"
+                            transition={{ type: "spring", duration: 0.6 }}
+                          >
+                            <div
+                              class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                              use:motion
+                            />
+                          </Motion>
+                        {/if}
+                      </div>
+                    {/each}
+                  </div>
+                  {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
                     <div
-                      class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
-                        isScrollStart ? "hidden" : "block"
+                      class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
+                        isScrollEnd ? "hidden" : "block"
                       }`}
-                      style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
+                      style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -883,7 +934,7 @@
                         viewBox="0 0 24 24"
                         class="sc-aef7b723-0 fKbUaI"
                         ><path
-                          d="M15 6L9 12L15 18"
+                          d="M9 6L15 12L9 18"
                           stroke="currentColor"
                           stroke-width="2"
                           stroke-miterlimit="10"
@@ -892,254 +943,144 @@
                         /></svg
                       >
                     </div>
-                    <div
-                      class="container flex gap-3 overflow-x-auto w-max whitespace-nowrap"
-                      bind:this={scrollContainer}
-                      on:scroll={handleScroll}
-                    >
-                      {#each formatListAddress as item}
-                        <div
-                          id={item.value}
-                          class="w-max flex-shrink-0 relative text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
-                          class:hover:no-underline={item.value ===
-                            selectedWallet}
-                          on:click={() => {
-                            wallet.update((n) => (n = item.value));
-                          }}
-                        >
-                          <img
-                            src={item.logo}
-                            alt=""
-                            class="w-5 h-5 rounded-full"
-                          />
-                          {item.label}
-                          {#if item.value === selectedWallet}
-                            <Motion
-                              let:motion
-                              layoutId="active-pill"
-                              transition={{ type: "spring", duration: 0.6 }}
-                            >
-                              <div
-                                class="absolute inset-0 rounded-full bg-[#ffffff1c]"
-                                use:motion
-                              />
-                            </Motion>
-                          {/if}
-                        </div>
-                      {/each}
-                    </div>
-                    {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
-                      <div
-                        class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
-                          isScrollEnd ? "hidden" : "block"
-                        }`}
-                        style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
+                  {/if}
+                </div>
+              {:else}
+                <div
+                  class="block text-2xl font-medium text-white xl:hidden xl:text-base"
+                >
+                  {MultipleLang.empty_wallet}
+                </div>
+              {/if}
+
+              <!-- btn add address wallet -->
+              <div
+                class="relative xl:w-max w-[260px] flex justify-end"
+                on:mouseenter={() => {
+                  if (isDisabled || Object.keys(userInfo).length === 0) {
+                    showDisableAddWallet = true;
+                  }
+                }}
+                on:mouseleave={() => {
+                  if (isDisabled || Object.keys(userInfo).length === 0) {
+                    showDisableAddWallet = false;
+                  }
+                }}
+              >
+                {#if isDisabled || Object.keys(userInfo).length === 0}
+                  <div>
+                    {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
+                      <Button
+                        variant="tertiary"
+                        on:click={() => {
+                          if (
+                            localStorage.getItem("isGetUserEmailYet") !==
+                              null &&
+                            localStorage.getItem("isGetUserEmailYet") ===
+                              "false"
+                          ) {
+                            isOpenModal = true;
+                          }
+                        }}
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          height="24px"
-                          width="24px"
-                          viewBox="0 0 24 24"
-                          class="sc-aef7b723-0 fKbUaI"
-                          ><path
-                            d="M9 6L15 12L9 18"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-miterlimit="10"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          /></svg
+                        <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
+                        <div
+                          class="text-2xl font-medium text-white xl:text-base"
                         >
-                      </div>
+                          Add account
+                        </div>
+                      </Button>
+                    {:else}
+                      <Button variant="disabled" disabled>
+                        <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
+                        <div
+                          class="text-2xl font-medium text-white xl:text-base"
+                        >
+                          Add account
+                        </div>
+                      </Button>
                     {/if}
                   </div>
                 {:else}
-                  <div
-                    class="block text-2xl font-medium text-white xl:hidden xl:text-base"
+                  <Button
+                    variant="tertiary"
+                    on:click={() => {
+                      isOpenAddModal = true;
+                    }}
                   >
-                    {MultipleLang.empty_wallet}
+                    <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
+                    <div class="text-2xl font-medium text-white xl:text-base">
+                      Add account
+                    </div>
+                  </Button>
+                {/if}
+                {#if showDisableAddWallet}
+                  <div
+                    class={`absolute transform ${
+                      Object.keys(userInfo).length === 0 ? "-top-8" : "-top-12"
+                    } right-0`}
+                    style="z-index: 2147483648;"
+                  >
+                    <tooltip-detail text={tooltipDisableAddBtn} />
                   </div>
                 {/if}
+              </div>
+            </div>
 
-                <!-- btn add address wallet -->
-                <div
-                  class="relative xl:w-max w-[260px] flex justify-end"
-                  on:mouseenter={() => {
-                    if (isDisabled || Object.keys(userInfo).length === 0) {
-                      showDisableAddWallet = true;
-                    }
-                  }}
-                  on:mouseleave={() => {
-                    if (isDisabled || Object.keys(userInfo).length === 0) {
-                      showDisableAddWallet = false;
-                    }
-                  }}
-                >
-                  {#if isDisabled || Object.keys(userInfo).length === 0}
-                    <div>
-                      {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
-                        <Button
-                          variant="tertiary"
-                          on:click={() => {
-                            if (
-                              localStorage.getItem("isGetUserEmailYet") !==
-                                null &&
-                              localStorage.getItem("isGetUserEmailYet") ===
-                                "false"
-                            ) {
-                              isOpenModal = true;
-                            }
-                          }}
-                        >
-                          <img
-                            src={Plus}
-                            alt=""
-                            class="w-4 h-4 xl:w-3 xl:h-3"
-                          />
-                          <div
-                            class="text-2xl font-medium text-white xl:text-base"
-                          >
-                            Add account
-                          </div>
-                        </Button>
-                      {:else}
-                        <Button variant="disabled" disabled>
-                          <img
-                            src={Plus}
-                            alt=""
-                            class="w-4 h-4 xl:w-3 xl:h-3"
-                          />
-                          <div
-                            class="text-2xl font-medium text-white xl:text-base"
-                          >
-                            Add account
-                          </div>
-                        </Button>
-                      {/if}
-                    </div>
-                  {:else}
-                    <Button
-                      variant="tertiary"
-                      on:click={() => {
-                        isOpenAddModal = true;
-                      }}
-                    >
-                      <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                      <div class="text-2xl font-medium text-white xl:text-base">
-                        Add account
-                      </div>
-                    </Button>
-                  {/if}
-                  {#if showDisableAddWallet}
-                    <div
-                      class={`absolute transform ${
-                        Object.keys(userInfo).length === 0
-                          ? "-top-8"
-                          : "-top-12"
-                      } right-0`}
-                      style="z-index: 2147483648;"
-                    >
-                      <tooltip-detail text={tooltipDisableAddBtn} />
-                    </div>
+            <div class="flex items-end justify-between">
+              <div class="flex flex-col gap-3">
+                <div class="flex items-end gap-6">
+                  <div class="font-medium text-white xl:text-5xl text-7xl">
+                    {title}
+                  </div>
+                  {#if type === "portfolio"}
+                    <slot name="reload" />
                   {/if}
                 </div>
-              </div>
-
-              <div class="flex items-end justify-between">
-                <div class="flex flex-col gap-3">
-                  <div class="flex items-end gap-6">
-                    <div class="font-medium text-white xl:text-5xl text-7xl">
-                      {title}
-                    </div>
-                    {#if type === "portfolio"}
-                      <slot name="reload" />
+                <div class="flex items-center gap-4">
+                  <div class="hidden text-3xl xl:text-base xl:block">
+                    <Copy
+                      address={selectedWallet}
+                      iconColor="#fff"
+                      color="#fff"
+                    />
+                  </div>
+                  <div class="block text-3xl xl:text-base xl:hidden">
+                    <Copy
+                      address={selectedWallet}
+                      iconColor="#fff"
+                      color="#fff"
+                      isShorten
+                    />
+                  </div>
+                  <div
+                    class="relative"
+                    on:mouseenter={() => {
+                      showFollowTooltip = true;
+                    }}
+                    on:mouseleave={() => {
+                      showFollowTooltip = false;
+                    }}
+                  >
+                    <Button
+                      variant="secondary"
+                      on:click={() => (isOpenFollowWhaleModal = true)}
+                    >
+                      Follow this whale 🐳
+                    </Button>
+                    {#if showFollowTooltip}
+                      <div
+                        class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                        style="z-index: 2147483648;"
+                      >
+                        <tooltip-detail
+                          text={"Alert me when it makes a move"}
+                        />
+                      </div>
                     {/if}
                   </div>
-                  <div class="flex items-center gap-4">
-                    <div class="hidden text-3xl xl:text-base xl:block">
-                      <Copy
-                        address={selectedWallet}
-                        iconColor="#fff"
-                        color="#fff"
-                      />
-                    </div>
-                    <div class="block text-3xl xl:text-base xl:hidden">
-                      <Copy
-                        address={selectedWallet}
-                        iconColor="#fff"
-                        color="#fff"
-                        isShorten
-                      />
-                    </div>
-                    <div
-                      class="relative"
-                      on:mouseenter={() => {
-                        showFollowTooltip = true;
-                      }}
-                      on:mouseleave={() => {
-                        showFollowTooltip = false;
-                      }}
-                    >
-                      <Button
-                        variant="secondary"
-                        on:click={() => (isOpenFollowWhaleModal = true)}
-                      >
-                        Follow this whale 🐳
-                      </Button>
-                      {#if showFollowTooltip}
-                        <div
-                          class="absolute transform -translate-x-1/2 -top-8 left-1/2"
-                          style="z-index: 2147483648;"
-                        >
-                          <tooltip-detail
-                            text={"Alert me when it makes a move"}
-                          />
-                        </div>
-                      {/if}
-                    </div>
 
-                    <div class="hidden xl:block">
-                      {#if getAddressContext(selectedWallet)?.type === "BTC"}
-                        <div
-                          use:tooltip={{
-                            content: `<tooltip-detail text="Coming soon!" />`,
-                            allowHTML: true,
-                            placement: "top",
-                            interactive: true,
-                          }}
-                        >
-                          <Button variant="premium" disabled
-                            >Optimize return</Button
-                          >
-                        </div>
-                      {:else}
-                        <div
-                          use:tooltip={{
-                            content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
-                            allowHTML: true,
-                            placement: "top",
-                            interactive: true,
-                          }}
-                        >
-                          <Button
-                            variant="premium"
-                            on:click={() => {
-                              navigate(
-                                `/compare?address=${encodeURIComponent(
-                                  selectedWallet
-                                )}`
-                              );
-                            }}>Optimize return</Button
-                          >
-                        </div>
-                      {/if}
-                    </div>
-                  </div>
-                </div>
-
-                <div class="flex flex-col gap-6">
-                  <div class="block xl:hidden">
+                  <div class="hidden xl:block">
                     {#if getAddressContext(selectedWallet)?.type === "BTC"}
                       <div
                         use:tooltip={{
@@ -1175,35 +1116,73 @@
                       </div>
                     {/if}
                   </div>
-                  {#if getAddressContext(selectedWallet)?.type !== "BTC" && typeWalletAddress === "DEX"}
-                    <Select
-                      type="chain"
-                      positionSelectList="right-0"
-                      listSelect={window.location.pathname === "/transactions"
-                        ? chainList.slice(1, -1)
-                        : chainList}
-                      bind:selected={selectedChain}
-                    />
-                  {/if}
                 </div>
               </div>
 
-              {#key selectedWallet || selectedChain}
-                {#if type === "portfolio"}
-                  <slot name="overview" />
+              <div class="flex flex-col gap-6">
+                <div class="block xl:hidden">
+                  {#if getAddressContext(selectedWallet)?.type === "BTC"}
+                    <div
+                      use:tooltip={{
+                        content: `<tooltip-detail text="Coming soon!" />`,
+                        allowHTML: true,
+                        placement: "top",
+                        interactive: true,
+                      }}
+                    >
+                      <Button variant="premium" disabled>Optimize return</Button
+                      >
+                    </div>
+                  {:else}
+                    <div
+                      use:tooltip={{
+                        content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
+                        allowHTML: true,
+                        placement: "top",
+                        interactive: true,
+                      }}
+                    >
+                      <Button
+                        variant="premium"
+                        on:click={() => {
+                          navigate(
+                            `/compare?address=${encodeURIComponent(
+                              selectedWallet
+                            )}`
+                          );
+                        }}>Optimize return</Button
+                      >
+                    </div>
+                  {/if}
+                </div>
+                {#if getAddressContext(selectedWallet)?.type !== "BTC" && typeWalletAddress === "DEX"}
+                  <Select
+                    type="chain"
+                    positionSelectList="right-0"
+                    listSelect={window.location.pathname === "/transactions"
+                      ? chainList.slice(1, -1)
+                      : chainList}
+                    bind:selected={selectedChain}
+                  />
                 {/if}
-              {/key}
+              </div>
             </div>
+
+            {#key selectedWallet || selectedChain}
+              {#if type === "portfolio"}
+                <slot name="overview" />
+              {/if}
+            {/key}
           </div>
         </div>
+      </div>
 
-        {#key selectedWallet || selectedChain}
-          <slot name="body" />
-        {/key}
-      {/if}
-    </div>
-  {/if}
-</ErrorBoundary>
+      {#key selectedWallet || selectedChain}
+        <slot name="body" />
+      {/key}
+    {/if}
+  </div>
+{/if}
 
 <!-- Modal add DEX account -->
 <AppOverlay

@@ -7,6 +7,7 @@
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   export let data;
   export let totalPositions;
@@ -66,188 +67,190 @@
   );
 </script>
 
-<div class="flex xl:flex-row flex-col justify-between gap-6">
-  <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-    <OverviewCard title={MultipleLang.networth}>
-      <div class="xl:text-3xl text-5xl text-black flex">
-        $<CountUpNumber id="networth" number={networth} type="balance" />
-      </div>
-      <div
-        class={`flex items-center gap-3 ${
-          typeWalletAddress === "CEX" ||
-          getAddressContext(selectedWallet)?.type === "BTC"
-            ? "opacity-50"
-            : ""
-        }`}
-      >
+<ErrorBoundary>
+  <div class="flex xl:flex-row flex-col justify-between gap-6">
+    <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
+      <OverviewCard title={MultipleLang.networth}>
+        <div class="xl:text-3xl text-5xl text-black flex">
+          $<CountUpNumber id="networth" number={networth} type="balance" />
+        </div>
         <div
-          class={`flex xl:text-lg text-3xl font-medium ${
-            data?.overview.networthChange < 0
-              ? "text-red-500"
-              : "text-[#00A878]"
+          class={`flex items-center gap-3 ${
+            typeWalletAddress === "CEX" ||
+            getAddressContext(selectedWallet)?.type === "BTC"
+              ? "opacity-50"
+              : ""
           }`}
         >
-          {#if data?.overview.networthChange < 0}
-            ↓
-          {:else}
-            ↑
-          {/if}
-          <CountUpNumber
-            id="networth_grouth"
-            number={Math.abs(data?.overview.networthChange)}
-            type="percent"
-          />%
-        </div>
-        <div class="text-[#00000066] xl:text-base text-2xl font-medium">
-          24h
-        </div>
-      </div>
-    </OverviewCard>
-
-    <OverviewCard
-      title={MultipleLang.total_profit}
-      isTooltip
-      tooltipText="Total profit = Total Outflow - Total Inflow + Net Worth"
-    >
-      <div class="flex xl:text-3xl text-5xl text-black">
-        {#if totalProfit.toString().toLowerCase().includes("e-")}
-          $<TooltipNumber number={totalProfit} type="balance" />
-        {:else}
-          <span>
-            {#if totalProfit < 0}
-              -
+          <div
+            class={`flex xl:text-lg text-3xl font-medium ${
+              data?.overview.networthChange < 0
+                ? "text-red-500"
+                : "text-[#00A878]"
+            }`}
+          >
+            {#if data?.overview.networthChange < 0}
+              ↓
+            {:else}
+              ↑
             {/if}
-          </span>
-          $<CountUpNumber
-            id="claimable"
-            number={Math.abs(totalProfit)}
-            type="balance"
-          />
-        {/if}
-      </div>
-      <div
-        class={`flex items-center gap-3 ${
-          typeWalletAddress === "CEX" ||
-          getAddressContext(selectedWallet)?.type === "BTC"
-            ? "opacity-50"
-            : ""
-        }`}
-      >
-        <div
-          class={`flex xl:text-lg text-3xl font-medium ${
-            last24hTotalProfitPercent < 0 ? "text-red-500" : "text-[#00A878]"
-          }`}
-        >
-          {#if last24hTotalProfitPercent < 0}
-            ↓
-          {:else}
-            ↑
-          {/if}
-          <CountUpNumber
-            id="claimable_grouth"
-            number={Math.abs(last24hTotalProfitPercent)}
-            type="percent"
-          />%
+            <CountUpNumber
+              id="networth_grouth"
+              number={Math.abs(data?.overview.networthChange)}
+              type="percent"
+            />%
+          </div>
+          <div class="text-[#00000066] xl:text-base text-2xl font-medium">
+            24h
+          </div>
         </div>
-        <div class="text-[#00000066] xl:text-base text-2xl font-medium">
-          24h
-        </div>
-      </div>
-    </OverviewCard>
-  </div>
+      </OverviewCard>
 
-  <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-    <OverviewCard title={MultipleLang.total_inflow}>
-      <div class="xl:text-3xl text-5xl text-black flex">
-        $<CountUpNumber
-          id="total_assets"
-          number={data?.overview?.cumulativeInflow}
-          type="balance"
-        />
-      </div>
-      <div
-        class={`flex items-center gap-3 ${
-          typeWalletAddress === "CEX" ||
-          getAddressContext(selectedWallet)?.type === "BTC"
-            ? "opacity-50"
-            : ""
-        }`}
+      <OverviewCard
+        title={MultipleLang.total_profit}
+        isTooltip
+        tooltipText="Total profit = Total Outflow - Total Inflow + Net Worth"
       >
+        <div class="flex xl:text-3xl text-5xl text-black">
+          {#if totalProfit.toString().toLowerCase().includes("e-")}
+            $<TooltipNumber number={totalProfit} type="balance" />
+          {:else}
+            <span>
+              {#if totalProfit < 0}
+                -
+              {/if}
+            </span>
+            $<CountUpNumber
+              id="claimable"
+              number={Math.abs(totalProfit)}
+              type="balance"
+            />
+          {/if}
+        </div>
         <div
-          class={`flex xl:text-lg text-3xl font-medium ${
-            data?.overview?.cumulativeInflow < 0
-              ? "text-red-500"
-              : "text-[#00A878]"
+          class={`flex items-center gap-3 ${
+            typeWalletAddress === "CEX" ||
+            getAddressContext(selectedWallet)?.type === "BTC"
+              ? "opacity-50"
+              : ""
           }`}
         >
-          {#if data?.overview.cumulativeInflowChange < 0}
-            ↓
-          {:else}
-            ↑
-          {/if}
-          <CountUpNumber
-            id="total_assets_grouth"
-            number={Math.abs(data?.overview.cumulativeInflowChange)}
-            type="percent"
-          />%
+          <div
+            class={`flex xl:text-lg text-3xl font-medium ${
+              last24hTotalProfitPercent < 0 ? "text-red-500" : "text-[#00A878]"
+            }`}
+          >
+            {#if last24hTotalProfitPercent < 0}
+              ↓
+            {:else}
+              ↑
+            {/if}
+            <CountUpNumber
+              id="claimable_grouth"
+              number={Math.abs(last24hTotalProfitPercent)}
+              type="percent"
+            />%
+          </div>
+          <div class="text-[#00000066] xl:text-base text-2xl font-medium">
+            24h
+          </div>
         </div>
-        <div class="text-[#00000066] xl:text-base text-2xl font-medium">
-          24h
-        </div>
-      </div>
-    </OverviewCard>
+      </OverviewCard>
+    </div>
 
-    <OverviewCard title={MultipleLang.total_outflow}>
-      <div class="flex xl:text-3xl text-5xl text-black">
-        {#if data?.overview?.cumulativeOutflow
-          ?.toString()
-          .toLowerCase()
-          .includes("e-")}
-          $<TooltipNumber
-            number={data?.overview?.cumulativeOutflow}
-            type="balance"
-          />
-        {:else}
+    <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
+      <OverviewCard title={MultipleLang.total_inflow}>
+        <div class="xl:text-3xl text-5xl text-black flex">
           $<CountUpNumber
-            id="total_positions"
-            number={data?.overview?.cumulativeOutflow}
+            id="total_assets"
+            number={data?.overview?.cumulativeInflow}
             type="balance"
           />
-        {/if}
-      </div>
-      <div
-        class={`flex items-center gap-3 ${
-          typeWalletAddress === "CEX" ||
-          getAddressContext(selectedWallet)?.type === "BTC"
-            ? "opacity-50"
-            : ""
-        }`}
-      >
+        </div>
         <div
-          class={`flex xl:text-lg text-3xl font-medium ${
-            data?.overview.postionNetworthChange < 0
-              ? "text-red-500"
-              : "text-[#00A878]"
+          class={`flex items-center gap-3 ${
+            typeWalletAddress === "CEX" ||
+            getAddressContext(selectedWallet)?.type === "BTC"
+              ? "opacity-50"
+              : ""
           }`}
         >
-          {#if data?.overview.cumulativeOutflowChange < 0}
-            ↓
+          <div
+            class={`flex xl:text-lg text-3xl font-medium ${
+              data?.overview?.cumulativeInflow < 0
+                ? "text-red-500"
+                : "text-[#00A878]"
+            }`}
+          >
+            {#if data?.overview.cumulativeInflowChange < 0}
+              ↓
+            {:else}
+              ↑
+            {/if}
+            <CountUpNumber
+              id="total_assets_grouth"
+              number={Math.abs(data?.overview.cumulativeInflowChange)}
+              type="percent"
+            />%
+          </div>
+          <div class="text-[#00000066] xl:text-base text-2xl font-medium">
+            24h
+          </div>
+        </div>
+      </OverviewCard>
+
+      <OverviewCard title={MultipleLang.total_outflow}>
+        <div class="flex xl:text-3xl text-5xl text-black">
+          {#if data?.overview?.cumulativeOutflow
+            ?.toString()
+            .toLowerCase()
+            .includes("e-")}
+            $<TooltipNumber
+              number={data?.overview?.cumulativeOutflow}
+              type="balance"
+            />
           {:else}
-            ↑
+            $<CountUpNumber
+              id="total_positions"
+              number={data?.overview?.cumulativeOutflow}
+              type="balance"
+            />
           {/if}
-          <CountUpNumber
-            id="total_positions_grouth"
-            number={Math.abs(data?.overview.cumulativeOutflowChange)}
-            type="percent"
-          />%
         </div>
-        <div class="text-[#00000066] xl:text-base text-2xl font-medium">
-          24h
+        <div
+          class={`flex items-center gap-3 ${
+            typeWalletAddress === "CEX" ||
+            getAddressContext(selectedWallet)?.type === "BTC"
+              ? "opacity-50"
+              : ""
+          }`}
+        >
+          <div
+            class={`flex xl:text-lg text-3xl font-medium ${
+              data?.overview.postionNetworthChange < 0
+                ? "text-red-500"
+                : "text-[#00A878]"
+            }`}
+          >
+            {#if data?.overview.cumulativeOutflowChange < 0}
+              ↓
+            {:else}
+              ↑
+            {/if}
+            <CountUpNumber
+              id="total_positions_grouth"
+              number={Math.abs(data?.overview.cumulativeOutflowChange)}
+              type="percent"
+            />%
+          </div>
+          <div class="text-[#00000066] xl:text-base text-2xl font-medium">
+            24h
+          </div>
         </div>
-      </div>
-    </OverviewCard>
+      </OverviewCard>
+    </div>
   </div>
-</div>
+</ErrorBoundary>
 
 <style>
 </style>
