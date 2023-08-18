@@ -55,13 +55,15 @@
 
   const makeChart = () => {
     destroyChart();
-    chart = echarts.init(document.getElementById(id), theme);
-    if (!window.echarts) {
-      window.echarts = {
-        [id]: chart,
-      };
-    } else {
-      window.echarts[id] = chart;
+    if (echarts) {
+      chart = echarts?.init(document.getElementById(id), theme);
+      if (!window.echarts) {
+        window.echarts = {
+          [id]: chart,
+        };
+      } else {
+        window.echarts[id] = chart;
+      }
     }
   };
 

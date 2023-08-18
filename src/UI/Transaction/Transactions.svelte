@@ -149,65 +149,17 @@
       };
     } else {
       option = {
-        tooltip: {
-          extraCssText: "z-index: 9997",
-          formatter: function (params) {
-            return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 180px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                ${dayjs(params.data[0]).format("YYYY-MM-DD")}
-              </div>
-              <div style="display: flex; align-items: centers; justify-content: space-between;">
-                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
-                  <div style="background: #00b580; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
-                  Activity
-                </div>
-                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: #000;">
-                  ${params.data[1]}
-                </div>
-              </div>
-            </div>`;
-          },
-        },
+        ...option,
         visualMap: {
-          min: 0,
-          max: 1,
-          calculable: true,
-          orient: "horizontal",
-          top: 0,
-          right: 40,
-          inRange: {
-            color: ["#00A878"],
-            opacity: [0.1, 1],
-          },
-          controller: {
-            inRange: {
-              opacity: [0.1, 1],
-            },
-            outOfRange: {
-              color: "#f4f5f8",
-            },
-          },
+          ...option.visualMap,
+          max: 0,
         },
         calendar: {
-          top: 80,
-          left: 60,
-          right: 60,
-          cellSize: ["auto", "auto"],
+          ...option.calendar,
           range: dayjs(new Date()).format("YYYY"),
-          itemStyle: {
-            borderWidth: 0.5,
-          },
-          yearLabel: { show: false },
-          dayLabel: { show: true, color: "#6b7280" },
-          monthLabel: { show: true, color: "#6b7280" },
-        },
-        dayLabel: {
-          nameMap: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
         },
         series: {
-          type: "heatmap",
-          coordinateSystem: "calendar",
+          ...option.series,
           data: [dayjs(new Date()).format("YYYY-MM-DD"), 1],
         },
       };
@@ -276,16 +228,18 @@
           <div
             class="border border-[#0000001a] rounded-[20px] pt-6 pb-9 flex flex-col gap-4"
           >
-            <CalendarChart
-              {option}
-              isEmptyDataChart={$query.isError}
-              isLoadingChart={$query.isFetching}
-              isTrxPage
-              title="Historical Activities"
-              tooltipTitle="The chart shows only activities made by this wallet"
-              id="historical-activities"
-              type="normal"
-            />
+            {#if data.length !== 0}
+              <CalendarChart
+                {option}
+                isEmptyDataChart={$query.isError}
+                isLoadingChart={$query.isFetching}
+                isTrxPage
+                title="Historical Activities"
+                tooltipTitle="The chart shows only activities made by this wallet"
+                id="historical-activities"
+                type="normal"
+              />
+            {/if}
           </div>
         {/if}
 
