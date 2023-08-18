@@ -1,17 +1,17 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { wallet, chain, typeWallet } from "~/store";
+  import { wallet, chain, selectedPackage, typeWallet } from "~/store";
   import { formatCurrency, formatCurrencyV2, getAddressContext } from "~/utils";
   import groupBy from "lodash/groupBy";
   import sumBy from "lodash/sumBy";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { sendMessage } from "webext-bridge";
   import dayjs from "dayjs";
   import {
     calculateVolatility,
     getChangePercent,
     getPostionInRage,
   } from "~/chart-utils";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
@@ -25,6 +25,26 @@
 
   import Logo from "~/assets/logo-1.svg";
 
+  let selectedWallet: string = "";
+  wallet.subscribe((value) => {
+    selectedWallet = value;
+  });
+
+  let selectedChain: string = "";
+  chain.subscribe((value) => {
+    selectedChain = value;
+  });
+
+  let packageSelected = "";
+  selectedPackage.subscribe((value) => {
+    packageSelected = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
+
   const riskTypeChart = [
     {
       label: "Overview",
@@ -36,26 +56,8 @@
     },
   ];
 
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  export let isLoadingDataCompare;
-  export let isEmptyDataCompare;
-  export let data;
-  export let dataRiskBreakdown;
-
+  let data;
+  let dataRiskBreakdown;
   let selectedTypeChart = "overview";
   let dataRiskGroup = {};
   let optionBar = {
@@ -189,9 +191,58 @@
     ],
   };
 
+  const getAnalyticCompare = async (address: string) => {
+    if (packageSelected === "FREE") {
+      return undefined;
+    }
+    const response: any = await nimbus.get(
+      `/v2/analysis/${address}/compare?compareAddress=${""}`
+    );
+    return response.data;
+  };
+
+  const getRiskBreakdown = async (address: string) => {
+    if (packageSelected === "FREE") {
+      return undefined;
+    }
+    const response = await nimbus.get(`/v2/analysis/${address}/risk-breakdown`);
+    return response.data;
+  };
+
+  $: enabledQuery = Boolean(
+    getAddressContext(selectedWallet)?.type === "EVM" ||
+      typeWalletAddress === "CEX"
+  );
+
+  $: query = createQuery({
+    queryKey: ["compare", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () => getAnalyticCompare(selectedWallet),
+    staleTime: Infinity,
+  });
+
+  $: queryBreakdown = createQuery({
+    queryKey: ["compare-breakdown", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () => getRiskBreakdown(selectedWallet),
+    staleTime: Infinity,
+  });
+
+  $: {
+    if ($query.data) {
+      data = $query.data;
+    }
+  }
+
+  $: {
+    if ($queryBreakdown.data) {
+      dataRiskBreakdown = $queryBreakdown.data;
+    }
+  }
+
   $: {
     if (
-      !isEmptyDataCompare &&
+      !$query.isError &&
       data !== undefined &&
       dataRiskBreakdown &&
       dataRiskBreakdown.length !== 0
@@ -394,18 +445,18 @@
   </span>
 
   <span slot="overview" class="relative">
-    {#if !isLoadingDataCompare}
+    {#if !($query.isFetching || $queryBreakdown.isFetching)}
       <div class="mb-4 text-3xl font-medium text-black xl:text-xl">
         Overview
       </div>
     {/if}
-    {#if isLoadingDataCompare}
+    {#if $query.isFetching || $queryBreakdown.isFetching}
       <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />
       </div>
     {:else}
       <div class="h-full">
-        {#if isEmptyDataCompare}
+        {#if $query.isError}
           <div
             class="absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 bg-white/95 z-30 backdrop-blur-md xl:text-xs text-lg"
           >
@@ -545,13 +596,13 @@
   </span>
 
   <span slot="chart">
-    {#if isLoadingDataCompare}
+    {#if $query.isFetching || $queryBreakdown.isFetching}
       <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />
       </div>
     {:else}
       <div class="h-full">
-        {#if isEmptyDataCompare}
+        {#if $query.isError}
           <div
             class="flex justify-center items-center h-full xl:text-xs text-lg h-[465px]"
           >

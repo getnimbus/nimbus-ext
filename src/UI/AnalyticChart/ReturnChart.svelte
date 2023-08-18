@@ -1,10 +1,10 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { wallet, chain, typeWallet } from "~/store";
+  import { wallet, chain, typeWallet, selectedPackage } from "~/store";
   import { formatCurrency, formatCurrencyV2, getAddressContext } from "~/utils";
-  import { sendMessage } from "webext-bridge";
   import dayjs from "dayjs";
   import { calculateVolatility, getChangePercent } from "~/chart-utils";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
@@ -18,10 +18,6 @@
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import Logo from "~/assets/logo-1.svg";
-
-  export let isLoadingDataCompare;
-  export let isEmptyDataCompare;
-  export let data;
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -38,6 +34,12 @@
     typeWalletAddress = value;
   });
 
+  let packageSelected = "";
+  selectedPackage.subscribe((value) => {
+    packageSelected = value;
+  });
+
+  let data;
   let optionBar = {
     tooltip: {
       extraCssText: "z-index: 9997",
@@ -98,8 +100,36 @@
     series: [],
   };
 
+  const getAnalyticCompare = async (address: string) => {
+    if (packageSelected === "FREE") {
+      return undefined;
+    }
+    const response: any = await nimbus.get(
+      `/v2/analysis/${address}/compare?compareAddress=${""}`
+    );
+    return response.data;
+  };
+
+  $: enabledQuery = Boolean(
+    getAddressContext(selectedWallet)?.type === "EVM" ||
+      typeWalletAddress === "CEX"
+  );
+
+  $: query = createQuery({
+    queryKey: ["compare", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () => getAnalyticCompare(selectedWallet),
+    staleTime: Infinity,
+  });
+
   $: {
-    if (!isEmptyDataCompare && data !== undefined) {
+    if ($query.data) {
+      data = $query.data;
+    }
+  }
+
+  $: {
+    if (!$query.isError && data !== undefined) {
       const nameConfig = {
         base: {
           name: "This wallet",
@@ -207,18 +237,18 @@
   </span>
 
   <span slot="overview" class="relative">
-    {#if !isLoadingDataCompare}
+    {#if !$query.isFetching}
       <div class="mb-4 text-3xl font-medium text-black xl:text-xl">
         Overview
       </div>
     {/if}
-    {#if isLoadingDataCompare}
+    {#if $query.isFetching}
       <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />
       </div>
     {:else}
       <div class="h-full">
-        {#if isEmptyDataCompare}
+        {#if $query.isError}
           <div
             class="absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 bg-white/95 z-30 backdrop-blur-md xl:text-xs text-lg"
           >
@@ -440,13 +470,13 @@
   </span>
 
   <span slot="chart">
-    {#if isLoadingDataCompare}
+    {#if $query.isFetching}
       <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />
       </div>
     {:else}
       <div class="h-full">
-        {#if isEmptyDataCompare}
+        {#if $query.isError}
           <div
             class="flex justify-center items-center h-full xl:text-xs text-lg h-[465px]"
           >

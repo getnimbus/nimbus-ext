@@ -176,7 +176,7 @@
             };
           });
 
-        const orderBreakdownToken = sortBreakdownToken.slice(
+        const orderBreakdownToken = sortBreakdownToken?.slice(
           5,
           sortBreakdownToken.length
         );
@@ -200,7 +200,7 @@
           },
         ];
 
-        const formatDataPieChartTopFiveToken = topFiveBreakdownToken.map(
+        const formatDataPieChartTopFiveToken = topFiveBreakdownToken?.map(
           (item) => {
             return {
               logo: item.logo,

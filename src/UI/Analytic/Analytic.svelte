@@ -2,19 +2,17 @@
   import { getAddressContext } from "~/utils";
   import { wallet, chain, selectedPackage, typeWallet } from "~/store";
   import { useNavigate } from "svelte-navigator";
-  import { createQuery } from "@tanstack/svelte-query";
-  import { nimbus } from "~/lib/network";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
-  import Personality from "./Personality.svelte";
+  import Button from "~/components/Button.svelte";
   import CurrentStatus from "./CurrentStatus.svelte";
   import PastPerformance from "./PastPerformance.svelte";
-  import Button from "~/components/Button.svelte";
-  import Compare from "../Portfolio/Compare.svelte";
   import MoneyFlow from "../AnalyticChart/MoneyFlow.svelte";
   import RiskChart from "../AnalyticChart/RiskChart.svelte";
   import ReturnChart from "../AnalyticChart/ReturnChart.svelte";
   import RiskReturnChart from "../AnalyticChart/RiskReturnChart.svelte";
+  import Personality from "./Personality.svelte";
+  import Compare from "../Portfolio/Compare.svelte";
 
   const navigate = useNavigate();
 
@@ -39,43 +37,6 @@
   });
 
   let isShowSoon = false;
-
-  const getAnalyticCompare = async (address: string) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
-    const response: any = await nimbus.get(
-      `/v2/analysis/${address}/compare?compareAddress=${""}`
-    );
-    return response.data;
-  };
-
-  const getRiskBreakdown = async (address: string) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
-    const response = await nimbus.get(`/v2/analysis/${address}/risk-breakdown`);
-    return response.data;
-  };
-
-  $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
-  );
-
-  $: query = createQuery({
-    queryKey: ["compare", selectedWallet, selectedChain],
-    enabled: enabledQuery,
-    queryFn: () => getAnalyticCompare(selectedWallet),
-    staleTime: Infinity,
-  });
-
-  $: queryBreakdown = createQuery({
-    queryKey: ["compare-breakdown", selectedWallet, selectedChain],
-    enabled: enabledQuery,
-    queryFn: () => getRiskBreakdown(selectedWallet),
-    staleTime: Infinity,
-  });
 
   $: {
     if (selectedWallet) {
@@ -143,25 +104,11 @@
           </div>
         </section>
 
-        <RiskChart
-          data={$query.data}
-          isLoadingDataCompare={$query.isFetching || $queryBreakdown.isFetching}
-          isEmptyDataCompare={$query.isError}
-          dataRiskBreakdown={$queryBreakdown.data}
-        />
+        <RiskChart />
 
-        <ReturnChart
-          data={$query.data}
-          isLoadingDataCompare={$query.isFetching}
-          isEmptyDataCompare={$query.isError}
-        />
+        <ReturnChart />
 
-        <RiskReturnChart
-          data={$query.data}
-          isLoadingDataCompare={$query.isFetching || $queryBreakdown.isFetching}
-          isEmptyDataCompare={$query.isError}
-          dataRiskBreakdown={$queryBreakdown.data}
-        />
+        <RiskReturnChart />
 
         <MoneyFlow {packageSelected} />
 
