@@ -665,3 +665,17 @@ export const handleFormatDataTable = (data, type) => {
     data: formatGroupData,
   };
 };
+
+export const getTooltipContent = (text: string, videoUrl: string) => {
+  return `
+      <div style="padding: 8px; border-radius: 8px; background: rgba(0, 0, 0, 0.8); width: 560px; height: auto;">
+        ${text
+      ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 16px; color: #fff;">${text}</div>`
+      : ""
+    }
+        <video autoplay muted playsinline control disablepictureinpicture loop style="border-radius: 6px;">
+          <source type="video/mp4" src="${videoUrl}" />
+        </video>
+      </div>
+    `;
+};

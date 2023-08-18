@@ -1,16 +1,25 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { formatCurrencyV2, getAddressContext, returnType } from "~/utils";
+  import {
+    formatCurrencyV2,
+    getAddressContext,
+    getTooltipContent,
+    returnType,
+  } from "~/utils";
   import dayjs, { unix } from "dayjs";
   import { nimbus } from "~/lib/network";
   import { wallet, chain, typeWallet } from "~/store";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import "~/components/Loading.custom.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
+
+  import VolatilityExplain from "~/assets/explain/volatility-explain.mp4";
+  import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
+  import MaxDrawdownExplain from "~/assets/explain/max-drawdown-explain.mp4";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -92,8 +101,12 @@
                     class="xl:text-base text-2xl text-black flex justify-start"
                   >
                     <TooltipTitle
-                      tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
+                      tooltipText={getTooltipContent(
+                        "The Sharpe ratio measures how well an investment performs relative to its risk.",
+                        SharpeRatioExplain
+                      )}
                       isBigIcon
+                      isExplainVideo
                     >
                       Sharpe ratio
                     </TooltipTitle>
@@ -137,7 +150,11 @@
                     class="xl:text-base text-2xl text-black flex justify-start"
                   >
                     <TooltipTitle
-                      tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
+                      tooltipText={getTooltipContent(
+                        "Volatility measures the extent of price fluctuations for an asset over time.",
+                        VolatilityExplain
+                      )}
+                      isExplainVideo
                       isBigIcon
                     >
                       Volatility
@@ -182,7 +199,11 @@
                     class="xl:text-base text-2xl text-black flex justify-start"
                   >
                     <TooltipTitle
-                      tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
+                      tooltipText={getTooltipContent(
+                        "Max drawdown is the biggest loss experienced by an investment or portfolio.",
+                        MaxDrawdownExplain
+                      )}
+                      isExplainVideo
                       isBigIcon
                     >
                       Max drawdown

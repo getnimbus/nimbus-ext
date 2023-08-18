@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
 
-  import PricePackage from "~/UI/PricePagake/PricePackage.svelte";
+  import PricePackage from "~/UI/PricePackage/PricePackage.svelte";
   import Button from "~/components/Button.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Copy from "~/components/Copy.svelte";

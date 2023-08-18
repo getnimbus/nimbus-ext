@@ -7,6 +7,7 @@
   export let link = "";
   export let isBigIcon = false;
   export let type: "warning" | "default" = "default";
+  export let isExplainVideo = false;
 </script>
 
 <span class="inline-flex justify-end items-center gap-1 relative">
@@ -18,7 +19,9 @@
         alt=""
         class={`${isBigIcon ? "w-4 h-4" : "w-3 h-3"}`}
         use:tooltip={{
-          content: `<tooltip-detail text="${tooltipText}"  link="${link}" />`,
+          content: isExplainVideo
+            ? tooltipText
+            : `<tooltip-detail text="${tooltipText}"  link="${link}" />`,
           allowHTML: true,
           placement: "top",
           interactive: true,

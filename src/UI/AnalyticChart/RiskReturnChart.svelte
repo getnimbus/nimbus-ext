@@ -1,26 +1,31 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { wallet, chain, selectedPackage, typeWallet } from "~/store";
-  import { formatCurrency, getAddressContext } from "~/utils";
+  import {
+    formatCurrency,
+    getAddressContext,
+    getTooltipContent,
+  } from "~/utils";
   import maxBy from "lodash/maxBy";
   import minBy from "lodash/minBy";
   import groupBy from "lodash/groupBy";
   import sumBy from "lodash/sumBy";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery } from "@tanstack/svelte-query";
+  import { getPostionInRage } from "~/chart-utils";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import EChart from "~/components/EChart.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
+  import CtaIcon from "~/components/CtaIcon.svelte";
+  import ProgressBar from "~/components/ProgressBar.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
-  import ProgressBar from "~/components/ProgressBar.svelte";
-  import { getPostionInRage } from "~/chart-utils";
-  import CtaIcon from "~/components/CtaIcon.svelte";
+  import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
 
   const riskTypeChart = [
     {
@@ -447,8 +452,12 @@
                   class="xl:text-base text-2xl text-black flex justify-start"
                 >
                   <TooltipTitle
-                    tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
+                    tooltipText={getTooltipContent(
+                      "The Sharpe ratio measures how well an investment performs relative to its risk.",
+                      SharpeRatioExplain
+                    )}
                     isBigIcon
+                    isExplainVideo
                   >
                     Sharpe ratio
                   </TooltipTitle>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { typePackage } from "~/utils";
+  import { getTooltipContent, typePackage } from "~/utils";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -36,21 +36,6 @@
       isNewUser = $query.data.plan?.isNewUser;
     }
   }
-
-  const getTooltipContent = (text: string, videoUrl: string) => {
-    return `
-      <div style="padding: 8px; border-radius: 8px; background: rgba(0, 0, 0, 0.8); width: 560px; height: auto;">
-        ${
-          text
-            ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 16px; color: #fff;">${text}</div>`
-            : ""
-        }
-        <video autoplay muted playsinline control disablepictureinpicture loop style="border-radius: 6px;">
-          <source type="video/mp4" src="${videoUrl}" />
-        </video>
-      </div>
-    `;
-  };
 </script>
 
 <div class="flex flex-col gap-4 mt-2">

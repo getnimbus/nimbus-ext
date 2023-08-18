@@ -1,7 +1,12 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { wallet, chain, selectedPackage, typeWallet } from "~/store";
-  import { formatCurrency, formatCurrencyV2, getAddressContext } from "~/utils";
+  import {
+    formatCurrency,
+    formatCurrencyV2,
+    getAddressContext,
+    getTooltipContent,
+  } from "~/utils";
   import groupBy from "lodash/groupBy";
   import sumBy from "lodash/sumBy";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -24,6 +29,9 @@
   import DangerIcon from "~/components/DangerIcon.svelte";
 
   import Logo from "~/assets/logo-1.svg";
+  import VolatilityExplain from "~/assets/explain/volatility-explain.mp4";
+  import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
+  import MaxDrawdownExplain from "~/assets/explain/max-drawdown-explain.mp4";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -475,8 +483,12 @@
                   class="flex justify-start text-2xl text-black xl:text-base"
                 >
                   <TooltipTitle
-                    tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
+                    tooltipText={getTooltipContent(
+                      "The Sharpe ratio measures how well an investment performs relative to its risk.",
+                      SharpeRatioExplain
+                    )}
                     isBigIcon
+                    isExplainVideo
                   >
                     Sharpe ratio
                   </TooltipTitle>
@@ -498,7 +510,11 @@
                   class="flex justify-start text-2xl text-black xl:text-base"
                 >
                   <TooltipTitle
-                    tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
+                    tooltipText={getTooltipContent(
+                      "Volatility measures the extent of price fluctuations for an asset over time.",
+                      VolatilityExplain
+                    )}
+                    isExplainVideo
                     isBigIcon
                   >
                     Volatility
@@ -521,7 +537,11 @@
                   class="flex justify-start text-2xl text-black xl:text-base"
                 >
                   <TooltipTitle
-                    tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
+                    tooltipText={getTooltipContent(
+                      "Max drawdown is the biggest loss experienced by an investment or portfolio.",
+                      MaxDrawdownExplain
+                    )}
+                    isExplainVideo
                     isBigIcon
                   >
                     Max drawdown
