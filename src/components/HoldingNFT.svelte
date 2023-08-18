@@ -1,6 +1,7 @@
-<script>
+<script lang="ts">
   import { useNavigate } from "svelte-navigator";
   import { getAddressContext, shorterName } from "~/utils";
+  import { typeWallet } from "~/store";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -15,6 +16,11 @@
 
   const navigate = useNavigate();
 
+  let typeWalletAddress = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
+
   let showTooltipListNFT = false;
   let isShowTooltipName = false;
 
@@ -26,13 +32,23 @@
 </script>
 
 <tr
-  class="group transition-all cursor-pointer"
+  class={`group transition-all ${
+    typeWalletAddress === "DEX" &&
+    getAddressContext(selectedWallet)?.type !== "EVM"
+      ? "cursor-pointer"
+      : ""
+  }`}
   on:click={() => {
-    navigate(
-      `nft-detail?id=${encodeURIComponent(
-        data.collectionId
-      )}&address=${encodeURIComponent(selectedWallet)}`
-    );
+    if (typeWalletAddress === "DEX") {
+      if (getAddressContext(selectedWallet)?.type === "EVM") {
+        return;
+      }
+      navigate(
+        `nft-detail?id=${encodeURIComponent(
+          data.collectionId
+        )}&address=${encodeURIComponent(selectedWallet)}`
+      );
+    }
   }}
 >
   <td
@@ -46,7 +62,7 @@
         }}
         on:mouseleave={() => (isShowTooltipName = false)}
       >
-        {data?.collection?.name.length > 24
+        {data?.collection?.name && data?.collection?.name.length > 24
           ? shorterName(data?.collection?.name, 20)
           : data?.collection?.name}
         {#if isShowTooltipName && data?.collection?.name.length > 24}
@@ -67,17 +83,17 @@
         on:mouseenter={() => (showTooltipListNFT = true)}
         on:mouseleave={() => (showTooltipListNFT = false)}
       >
-        {#each data?.tokens.slice(0, 4) as token, index}
-          <img
-            src={token?.image_url ||
-              "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-            alt=""
-            class={`w-9 h-9 rounded-md border border-gray-300 overflow-hidden bg-white ${
-              index > 0 && "-ml-2"
-            }`}
-          />
-        {/each}
-        {#if data?.balance > 4}
+        {#if data?.balance > 5}
+          {#each data?.tokens.slice(0, 4) as token, index}
+            <img
+              src={token?.image_url ||
+                "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
+              alt=""
+              class={`w-9 h-9 rounded-md border border-gray-300 overflow-hidden bg-white ${
+                index > 0 && "-ml-2"
+              }`}
+            />
+          {/each}
           <div class="relative w-9 h-9">
             <img
               src={data?.tokens[4].image_url ||
@@ -91,15 +107,26 @@
               ...
             </div>
           </div>
+          {#if showTooltipListNFT && data?.balance > 5}
+            <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
+              <tooltip-detail
+                text={`${data?.balance} NFTs on collection ${data?.collection?.name}`}
+              />
+            </div>
+          {/if}
+        {:else}
+          {#each data?.tokens as token, index}
+            <img
+              src={token?.image_url ||
+                "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
+              alt=""
+              class={`w-9 h-9 rounded-md border border-gray-300 overflow-hidden bg-white ${
+                index > 0 && "-ml-2"
+              }`}
+            />
+          {/each}
         {/if}
       </div>
-      {#if showTooltipListNFT && data?.balance > 4}
-        <div class="absolute -top-7 left-0" style="z-index: 2147483648;">
-          <tooltip-detail
-            text={`${data?.balance} NFTs on collection ${data?.collection?.name}`}
-          />
-        </div>
-      {/if}
     </div>
   </td>
 
@@ -141,7 +168,7 @@
     </div>
   </td>
 
-  <td class="py-3 group-hover:bg-gray-100">
+  <td class="py-3 pr-3 group-hover:bg-gray-100">
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
@@ -175,19 +202,21 @@
     </div>
   </td>
 
-  <td class="py-3 w-10 group-hover:bg-gray-100">
-    <div class="flex justify-center">
-      <div
-        use:tooltip={{
-          content: `<tooltip-detail text="Show detail" />`,
-          allowHTML: true,
-          placement: "top",
-        }}
-      >
-        <img src={Chart} alt="" width={14} height={14} />
+  {#if typeWalletAddress === "DEX" && getAddressContext(selectedWallet)?.type !== "EVM"}
+    <td class="py-3 w-10 group-hover:bg-gray-100">
+      <div class="flex justify-center">
+        <div
+          use:tooltip={{
+            content: `<tooltip-detail text="Show detail" />`,
+            allowHTML: true,
+            placement: "top",
+          }}
+        >
+          <img src={Chart} alt="" width={14} height={14} />
+        </div>
       </div>
-    </div>
-  </td>
+    </td>
+  {/if}
 </tr>
 
 <style>

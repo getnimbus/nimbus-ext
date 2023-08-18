@@ -33,7 +33,11 @@
         {
           ...option,
           textStyle: {
-            fontSize: autoFontSize(),
+            fontFamily: "Golos Text",
+            fontSize:
+              id === "total-gasfee-paid" || "historical-activities-personality"
+                ? 14
+                : autoFontSize(),
           },
         },
         notMerge,
@@ -82,7 +86,11 @@
           chart.setOption({
             ...option,
             textStyle: {
-              fontSize: autoFontSize(),
+              fontSize:
+                id === "total-gasfee-paid" ||
+                "historical-activities-personality"
+                  ? 14
+                  : autoFontSize(),
             },
           });
         }

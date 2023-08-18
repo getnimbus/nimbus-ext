@@ -24,6 +24,9 @@ export default function tooltip(node: any, params: Partial<Props>) {
     onTrigger: (_, e) => {
       e.preventDefault();
       e.stopPropagation();
+      setTimeout(() => {
+        _?.popper?.querySelector('video')?.play();
+      }, 100)
     },
     // onHidden: (e) => {
     //   e.setProps({ content: "" });

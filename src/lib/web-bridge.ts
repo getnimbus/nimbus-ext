@@ -7,6 +7,6 @@ export const sendMessage = (name: string, data: any) => {
 }
 
 export const onMessage = (name, handler) => {
-  console.log('Event register', name);
+  // console.log('Event register', name);
   events[name] = handler
 }

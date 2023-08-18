@@ -2,7 +2,7 @@ import * as browser from "webextension-polyfill";
 import { onMessage } from "webext-bridge";
 import dayjs from "dayjs";
 import _, { isEmpty } from "lodash";
-import { coinGeko, mixpanel, nimbus, goplus, nimbusApi, aptos } from "../../lib/network";
+import { coinGeko, mixpanel, nimbus, goplus, nimbusApi, aptos, defillama } from "../../lib/network";
 import { cacheOrAPI } from "./utils";
 import type { JsonValue, JsonObject } from "type-fest";
 import langEN from "../../_locales/en/messages.json";
@@ -52,7 +52,7 @@ onMessage<ICoinListInput, any>("coinList", async ({ data: { limit } }) => {
 
 onMessage<IAddressInput, any>("getSectorGrowth", async ({ data: { address, chain } }) => {
   try {
-    return nimbus.get(`/analysis/${address}/sector-growth?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
+    return nimbus.get(`/v2/analysis/${address}/sector-growth?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
       return {
         result: response.data,
         address: address
@@ -63,9 +63,9 @@ onMessage<IAddressInput, any>("getSectorGrowth", async ({ data: { address, chain
   }
 });
 
-onMessage<IAddressInput, any>("getTotalGasFee", async ({ data: { address, chain } }) => {
+onMessage<IAddressInput, any>("getNetworthAnalysis", async ({ data: { address, chain } }) => {
   try {
-    return nimbus.get(`/analysis/${address}/gas-used?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
+    return nimbus.get(`/v2/analysis/${address}/networth?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
       return {
         result: response.data,
         address: address
@@ -76,28 +76,13 @@ onMessage<IAddressInput, any>("getTotalGasFee", async ({ data: { address, chain 
   }
 });
 
-onMessage<IAddressInput, any>("getInflowOutflow", async ({ data: { address, chain } }) => {
+onMessage<IAddressInput, any>("getDefillamaTokenChart", async ({ data: { addresses, start, span } }) => {
   try {
-    return nimbus.get(`/analysis/${address}/inflow-outflow?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
-      return {
-        result: response.data,
-        address: address
-      }
+    return defillama.get(`/chart/${addresses.join(',')}?start=${start}&span=${span}`).then((response) => {
+      return response;
     });
   } catch (error) {
-    return {};
-  }
-});
-
-onMessage<IAddressInput, any>("getTotalValueHistory", async ({ data: { address, chain } }) => {
-  try {
-    return nimbus.get(`/analysis/${address}/holding-history?chain=${chain}&fromDate=${""}&toDate=${""}`).then((response) => {
-      return {
-        result: response.data,
-        address: address
-      }
-    });
-  } catch (error) {
+    console.log(error);
     return {};
   }
 });
@@ -120,14 +105,6 @@ onMessage("getListTerm", async () => {
   }
 });
 
-onMessage<IAddressInput, any>("getAnalytic", async ({ data: { address, chain } }) => {
-  try {
-    return await nimbus.get(`/analysis/${address}/historical?chain=${chain}`).then((response) => response.data);
-  } catch (error) {
-    return [];
-  }
-});
-
 onMessage<IAddressInput, any>("getPreview", async ({ data: { address, chain } }) => {
   try {
     return await nimbus.get(`/address/${address}/preview?chain=${chain}`).then((response) => response.data);
@@ -138,7 +115,7 @@ onMessage<IAddressInput, any>("getPreview", async ({ data: { address, chain } })
 
 onMessage<IAddressInput, any>("getSync", async ({ data: { address, chain } }) => {
   try {
-    return await nimbus.post(`/address/${address}/sync?chain=${chain}`, {}).then((response) => response);
+    return await nimbus.post(`/v2/address/${address}/sync?chain=${chain}`, {}).then((response) => response);
   } catch (error) {
     return {};
   }
@@ -158,7 +135,7 @@ onMessage<IAddressInput, any>("getOverview", async ({ data: { address, chain, re
     const res = await cacheOrAPI(
       key,
       () => {
-        return nimbus.get(`/address/${address}/overview?chain=${chain}`).then((response) => {
+        return nimbus.get(`/v2/address/${address}/overview?chain=${chain}`).then((response) => {
           return {
             result: response.data,
             address: address
@@ -200,7 +177,7 @@ onMessage<IAddressInput, any>("getHoldingToken", async ({ data: { address, chain
     const res = await cacheOrAPI(
       key,
       () => {
-        return nimbus.get(`/address/${address}/holding?chain=${chain}`).then((response) => {
+        return nimbus.get(`/v2/address/${address}/holding?chain=${chain}`).then((response) => {
           return {
             result: response.data,
             address: address
@@ -221,7 +198,7 @@ onMessage<IAddressInput, any>("getHoldingNFT", async ({ data: { address, chain, 
     const res = await cacheOrAPI(
       key,
       () => {
-        return nimbus.get(`/address/${address}/nft-holding?chain=${chain}`).then((response) => {
+        return nimbus.get(`/v2/address/${address}/nft-holding?chain=${chain}`).then((response) => {
           return {
             result: response.data,
             address: address
@@ -251,20 +228,6 @@ onMessage<IAddressInput, any>("getNews", async ({ data: { address, chain, reload
       },
       { defaultValue: null, ttl: 5 * 60, disabled: reload }
     );
-    return res
-  } catch (error) {
-    return {};
-  }
-});
-
-onMessage<IAddressInput, any>("getTrxHistory", async ({ data: { address, chain, pageToken } }) => {
-  try {
-    const res = await nimbus.get(`/address/${address}/history?chain=${chain}&pageToken=${pageToken}`).then((response) => {
-      return {
-        result: response.data,
-        address: address
-      }
-    });
     return res
   } catch (error) {
     return {};

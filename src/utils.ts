@@ -1,12 +1,15 @@
 import numeral from "numeral";
 import jwt_decode from "jwt-decode";
 import { nimbus } from "./lib/network";
+import { groupBy } from "lodash";
 
 import logo from "~/assets/bitcoin.png";
 import Bnb from "~/assets/bnb.png";
 import Ethereum from "~/assets/ethereum.png";
 import Bitcoin from "~/assets/bitcoin.png";
-import Polygon from "~/assets/polygon.png";
+import Matic from "~/assets/matic.png";
+import Optimism from "~/assets/optimism.png";
+import Avax from "~/assets/avax.png";
 import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
@@ -48,6 +51,74 @@ export const regexList = [
   // }
 ]
 
+export const netWorthFilter = [
+  {
+    label: "1k - 50K",
+    value: "networth > 1000 AND networth < 50000",
+  },
+  {
+    label: "50K - 100K",
+    value: "networth > 50000 AND networth < 100000",
+  },
+  {
+    label: "> 100K",
+    value: "networth > 100000",
+  },
+];
+
+export const sharpeRatioFilter = [
+  {
+    label: "< 1",
+    value: "sharpeRatio < 1",
+  },
+  {
+    label: "> 1",
+    value: "sharpeRatio > 1",
+  },
+  {
+    label: "1 - 2",
+    value: "sharpeRatio > 1 AND sharpeRatio < 2",
+  },
+  {
+    label: "> 2",
+    value: "sharpeRatio > 2",
+  },
+];
+
+export const volatilityFilter = [
+  {
+    label: "0-10%",
+    value: "volatility > 0 AND volatility < 10",
+  },
+  {
+    label: "10% - 50%",
+    value: "volatility > 10 AND volatility < 50",
+  },
+  {
+    label: "> 50%",
+    value: "volatility > 50",
+  },
+];
+
+export const returnsFilter = [
+  {
+    label: "1D > 0",
+    value: "change1D > 0",
+  },
+  {
+    label: "7D > 0",
+    value: "change7D > 0",
+  },
+  {
+    label: "30D > 0",
+    value: "change30D > 0",
+  },
+  {
+    label: "1Y > 0",
+    value: "change1Y > 0",
+  },
+];
+
 export const typeList = [
   {
     label: "Category",
@@ -58,7 +129,7 @@ export const typeList = [
     value: "sector",
   },
   {
-    label: "Token Rank",
+    label: "Market Cap",
     value: "rank",
   },
 ];
@@ -93,6 +164,50 @@ export const typePieChart = [
   },
 ]
 
+export const typePackage = [
+  {
+    label: "Monthly",
+    value: "month",
+  },
+  {
+    label: "Yearly (Save 17%)",
+    value: "year",
+  },
+]
+
+export const performanceTypeChart = [
+  {
+    label: "Line",
+    value: "line",
+  },
+  {
+    label: "Bar",
+    value: "bar",
+  },
+]
+
+export const performanceTypeChartPortfolio = [
+  {
+    label: "Percent Change",
+    value: "percent",
+  },
+  {
+    label: "Net Worth",
+    value: "networth",
+  },
+]
+
+export const returnType = [
+  {
+    label: "Overview",
+    value: "overview",
+  },
+  {
+    label: "By month",
+    value: "month",
+  },
+]
+
 export const getAddressContext = (address: string) => {
   if (!address) {
     return undefined;
@@ -115,6 +230,143 @@ export const getAddressContext = (address: string) => {
   return undefined;
 }
 
+export const detectedChain = (type) => {
+  let chain
+  switch (type) {
+    case "ETH":
+      chain = Ethereum
+      break;
+    case "XDAI":
+      chain = Gnosis
+      break;
+    case "BNB":
+      chain = Bnb
+      break;
+    case "MATIC":
+      chain = Matic
+      break;
+    case "OP":
+      chain = Optimism
+      break;
+    case "AVAX":
+      chain = Avax
+      break;
+    case "ARB":
+      chain = Arbitrum
+      break;
+    default:
+      chain = logo
+  }
+  return chain
+}
+
+export const linkExplorer = (chain, hash) => {
+  let links = {
+    trx: "",
+    address: ""
+  }
+  switch (chain) {
+    case "BTC":
+      links = {
+        trx: `https://www.oklink.com/btc/tx/${hash}`,
+        address: `https://www.oklink.com/btc/address/${hash}`
+      }
+      break;
+    case "ETH":
+      links = {
+        trx: `https://etherscan.io/tx/${hash}`,
+        address: `https://etherscan.io/address/${hash}`
+      }
+      break;
+    case "XDAI":
+      links = {
+        trx: `https://gnosisscan.io/tx/${hash}`,
+        address: `https://gnosisscan.io/address/${hash}`
+      }
+      break;
+    case "BNB":
+      links = {
+        trx: `https://bscscan.com/tx/${hash}`,
+        address: `https://bscscan.com/address/${hash}`,
+      }
+      break;
+    case "MATIC":
+      links = {
+        trx: `https://polygonscan.com/tx/${hash}`,
+        address: `https://polygonscan.com/address/${hash}`,
+      }
+      break;
+    case "OP":
+      links = {
+        trx: `https://optimistic.etherscan.io/tx/${hash}`,
+        address: `https://optimistic.etherscan.io/address/${hash}`,
+      }
+      break;
+    case "AVAX":
+      links = {
+        trx: `https://snowtrace.io/tx/${hash}`,
+        address: `https://snowtrace.io/address/${hash}`,
+      }
+      break;
+    case "ARB":
+      links = {
+        trx: `https://arbiscan.io/tx/${hash}`,
+        address: `https://arbiscan.io/address/${hash}`,
+      }
+      break;
+    default:
+      links = {
+        trx: "",
+        address: ""
+      }
+  }
+  return links
+}
+
+export const listProviderCEX = [
+  "binance",
+  "binanceus",
+  "bitfinex",
+  "bittrex",
+  "bitvavo",
+  "blockchaincom",
+  "coinbasepro",
+  "coindcx",
+  "coinspot",
+  "cointracking",
+  "cryptocom",
+  "gateio",
+  "gemini",
+  "kraken",
+  "kucoin",
+  "ndax",
+  "newton",
+  "poloniex",
+  "wazirx",
+  "bitmart",
+  "bybit",
+  "huobi",
+  "mexc",
+  "okx",
+  "wavesexchange",
+  "bitrue",
+  "ascendex",
+  "bitso",
+  "upbit",
+  "bitstamp",
+]
+
+export const listLogoCEX = [
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/270.png",
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/89.png",
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/24.png",
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/311.png",
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/521.png",
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/294.png",
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/70.png",
+  "https://s2.coinmarketcap.com/static/img/exchanges/64x64/37.png",
+];
+
 export const chainList = [
   {
     logo: logo,
@@ -127,35 +379,50 @@ export const chainList = [
     value: "ETH",
   },
   {
-    logo: Gnosis,
-    label: "Gnosis",
-    value: "GNOSIS",
-  },
-  {
     logo: Bnb,
     label: "BNB",
     value: "BNB",
   },
   {
-    logo: Polygon,
-    label: "Polygon",
-    value: "POLYGON",
+    logo: Matic,
+    label: "Matic",
+    value: "MATIC",
   },
   {
-    logo: Solana,
-    label: "Solana",
-    value: "SOLANA",
+    logo: Optimism,
+    label: "Optimism",
+    value: "OP",
+  },
+  {
+    logo: Avax,
+    label: "Avax",
+    value: "AVAX",
   },
   {
     logo: Arbitrum,
     label: "Arbitrum",
-    value: "ARBITRUM",
+    value: "ARB",
+  },
+  {
+    logo: Gnosis,
+    label: "Gnosis",
+    value: "XDAI",
+  },
+  {
+    logo: Solana,
+    label: "Solana",
+    value: "SOL",
   },
 ];
 
 export const showChatAnimationVariants = {
   visible: { opacity: 1, y: 0, display: "flex" },
   hidden: { opacity: 0, y: 500, display: "none" },
+};
+
+export const showChangeLogAnimationVariants = {
+  visible: { opacity: 1, y: 0, display: "flex" },
+  hidden: { opacity: 0, y: -20, display: "none" },
 };
 
 export const showOverlayAnimationVariants = {
@@ -316,4 +583,85 @@ export const handleGetAccessToken = async (code: string) => {
     }
     return jwt_decode(res.data.id_token);
   }
+};
+
+export const handleFormatDataPieChart = (data, type) => {
+  const formatData = data.map((item) => {
+    return {
+      ...item,
+      value: item?.price?.price ? Number(item?.amount) * Number(item?.price?.price) : 0,
+    };
+  });
+
+  const groupData = groupBy(formatData, type);
+  const typesData = Object.getOwnPropertyNames(groupData);
+
+  const formatGroupData = typesData.map((item) => {
+    return {
+      logo: undefined,
+      name: item,
+      symbol: "",
+      name_ratio: "Ratio",
+      value: 0,
+      name_value: "Value",
+      value_value: groupData[item].reduce(
+        (prev, item) => prev + Number(item.value),
+        0
+      ),
+      name_balance: "Balance",
+      value_balance: groupData[item].reduce(
+        (prev, item) => prev + Number(item.amount),
+        0
+      ),
+    };
+  });
+
+  const sumData = formatGroupData.reduce(
+    (prev, item) => prev + Number(item.value_value),
+    0
+  );
+
+  return formatGroupData.map((item) => {
+    return {
+      logo: item.logo,
+      name: item.name,
+      symbol: "",
+      name_ratio: item.name_ratio,
+      value: (Number(item.value_value) / sumData) * 100,
+      name_value: item.name_value,
+      value_value: item.value_value,
+      name_balance: item.name_balance,
+      value_balance: item.value_balance,
+    };
+  });
+};
+
+export const handleFormatDataTable = (data, type) => {
+  let formatData = data.map((item) => {
+    return {
+      ...item,
+      value: Number(item?.amount) * Number(item?.price?.price),
+      market_price: Number(item?.price?.price) || 0,
+    };
+  });
+
+  let groupData = groupBy(formatData, type);
+  let typesData = Object.getOwnPropertyNames(groupData);
+
+  let formatGroupData = typesData.map((item) => {
+    return {
+      name: item,
+      data: groupData[item],
+    };
+  });
+
+  return {
+    select: typesData.map((item) => {
+      return {
+        value: item,
+        label: item,
+      };
+    }),
+    data: formatGroupData,
+  };
 };

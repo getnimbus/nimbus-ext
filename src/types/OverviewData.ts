@@ -15,6 +15,10 @@ export type OverviewData = {
     postionNetworthChange: number;
   };
   performance: PerformanceDetail[];
+  portfolioChart: {
+    timestamp: number,
+    value: number
+  }[]
   updatedAt: string;
 }
 

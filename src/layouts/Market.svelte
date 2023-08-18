@@ -70,8 +70,8 @@
     mixpanel.track("market_page");
 
     const handleScroll = () => {
-      const clientRectTokenHeader = tableHeader.getBoundingClientRect();
-      isSticky = clientRectTokenHeader.top <= 0;
+      const clientRectTokenHeader = tableHeader?.getBoundingClientRect();
+      isSticky = clientRectTokenHeader?.top <= 0;
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -92,7 +92,7 @@
     class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 flex flex-col xl:gap-10 gap-6"
   >
     <div class="flex flex-col gap-1">
-      <div class="xl:text-5xl text-7xl text-black font-semibold">
+      <div class="xl:text-5xl text-7xl text-black font-medium">
         {MultipleLang.market}
       </div>
       <div
@@ -102,34 +102,59 @@
           {MultipleLang.market_page_title}
         </div>
         <div class="flex flex-1 gap-3">
-          <input
-            on:keyup={({ target: { value } }) => debounceSearch(value)}
-            on:keydown={(event) => {
-              if (event.which == 13 || event.keyCode == 13) {
-                getMarketData();
-              }
-            }}
-            value={searchValue}
-            placeholder={MultipleLang.market_search_symbol}
-            type="text"
-            class="flex-1 xl:text-sm text-xl py-2 px-3 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
-          />
-          <input
-            on:keyup={({ target: { value } }) => debounceAmount(value)}
-            on:keydown={(event) => {
-              if (event.which == 13 || event.keyCode == 13) {
-                getMarketData();
-              }
-            }}
-            value={amountValue}
-            placeholder={MultipleLang.market_search_amount}
-            inputmode="decimal"
-            pattern="[0-9]*(.[0-9]+)?"
-            type="number"
-            autocorrect="off"
-            autocomplete="off"
-            class="xl:flex-[0.6] flex-[0.7] xl:text-sm text-xl py-2 px-3 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
-          />
+          <div
+            class={`flex-1 border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
+              searchValue ? "bg-[#F0F2F7]" : "bg-white"
+            }`}
+          >
+            <input
+              on:keyup={({ target: { value } }) => debounceSearch(value)}
+              on:keydown={(event) => {
+                if ((event.which == 13 || event.keyCode == 13) && searchValue) {
+                  getMarketData();
+                }
+              }}
+              value={searchValue}
+              placeholder={MultipleLang.market_search_symbol}
+              type="text"
+              class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                searchValue ? "bg-[#F0F2F7]" : ""
+              }`}
+            />
+          </div>
+          <div
+            class={`flex-[0.7] border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
+              amountValue ? "bg-[#F0F2F7]" : "bg-white"
+            }`}
+          >
+            <input
+              on:keyup={({ target: { value } }) => {
+                const parsedValue = parseFloat(value);
+                if (!isNaN(parsedValue) && parsedValue > 0) {
+                  debounceAmount(value);
+                } else {
+                  amountValue = "";
+                }
+              }}
+              on:keydown={(event) => {
+                if ((event.which == 13 || event.keyCode == 13) && amountValue) {
+                  getMarketData();
+                }
+              }}
+              value={amountValue}
+              placeholder={MultipleLang.market_search_amount}
+              inputmode="decimal"
+              pattern="[0-9]*(.[0-9]+)?"
+              type="number"
+              min="0.01"
+              step="0.01"
+              autocorrect="off"
+              autocomplete="off"
+              class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                amountValue ? "bg-[#F0F2F7]" : ""
+              }`}
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -146,42 +171,42 @@
               class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
             >
               <div
-                class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-left xl:text-xs text-base uppercase font-medium text-black"
               >
                 Pair
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-left xl:text-xs text-base uppercase font-medium text-black"
               >
                 Execution time
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-left xl:text-xs text-base uppercase font-medium text-black"
               >
                 Amount Out
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-left xl:text-xs text-base uppercase font-medium text-black"
               >
                 Amount In
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-center xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-center xl:text-xs text-base uppercase font-medium text-black"
               >
                 Maker
               </div>
             </th>
             <th class="pr-3 py-3 w-[190px] rounded-tr-[10px]">
               <div
-                class="text-right xl:text-xs text-base uppercase font-semibold text-black"
+                class="text-right xl:text-xs text-base uppercase font-medium text-black"
               >
                 Action
               </div>

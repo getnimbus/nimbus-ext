@@ -31,6 +31,10 @@ export default defineConfig(({ mode }) => {
             src: "src/_locales",
             dest: "",
           },
+          {
+            src: "public",
+            dest: "",
+          },
         ],
       }),
     ],
@@ -60,8 +64,6 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           app: path.resolve(__dirname, "./src/index.html"),
-          paymentSuccess: path.resolve(__dirname, "./src/entries/paymentSuccess/index.html"),
-          paymentCancel: path.resolve(__dirname, "./src/entries/paymentCancel/index.html"),
           options: path.resolve(__dirname, "./src/entries/options/index.html"),
         },
         output: {

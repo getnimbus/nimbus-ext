@@ -1,13 +1,12 @@
 <svelte:options tag="tab-notification" />
 
 <script lang="ts">
-  import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
-  import { sendMessage } from "webext-bridge";
+  import { nimbus } from "~/lib/network";
   import CopyToClipboard from "svelte-copy-to-clipboard";
+  import { createQuery } from "@tanstack/svelte-query";
 
-  import type { AddressData } from "~/types/AddressData";
-
+  import "~/components/Loading.custom.svelte";
   import Copy from "~/components/Copy.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
@@ -32,32 +31,40 @@
     },
   };
 
-  let isLoading = false;
   let listAddress = [];
   let isOpenFollowWhaleModal = false;
   let showCommandTooltip = false;
   let selectedWallet;
 
-  const getListAddress = async () => {
-    isLoading = true;
-    try {
-      const response: AddressData = await sendMessage(
-        "getListAddress",
-        undefined
-      );
-      if (response) {
-        listAddress = response;
-      }
-    } catch (e) {
-      console.log("e: ", e);
-    } finally {
-      isLoading = false;
+  const query = createQuery({
+    queryKey: ["list-address"],
+    queryFn: () => getListAddress(),
+    staleTime: Infinity,
+  });
+
+  $: {
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataListAddress($query.data);
     }
+  }
+
+  const formatDataListAddress = (data) => {
+    const structWalletData = data.map((item) => {
+      return {
+        position: item.position,
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        address: item.type === "CEX" ? item.id : item.accountId,
+      };
+    });
+    listAddress = structWalletData;
   };
 
-  onMount(() => {
-    getListAddress();
-  });
+  const getListAddress = async () => {
+    const response: any = await nimbus.get("/accounts/list");
+    return response?.data;
+  };
 </script>
 
 <div class="flex flex-col gap-2">
@@ -89,7 +96,7 @@
           </th>
         </tr>
       </thead>
-      {#if isLoading}
+      {#if $query.isFetching}
         <tbody>
           <tr>
             <td colspan="3">
@@ -133,7 +140,7 @@
                         isOpenFollowWhaleModal = true;
                       }}
                     >
-                      Turn on
+                      Get command
                     </div>
                   </div>
                 </td>
@@ -147,6 +154,7 @@
 </div>
 
 <AppOverlay
+  clickOutSideToClose
   isOpen={isOpenFollowWhaleModal}
   on:close={() => (isOpenFollowWhaleModal = false)}
 >
@@ -162,24 +170,24 @@
       <div class="xl:text-base text-2xl">Use the command as follow video</div>
     </div>
     <div class="xl:h-[350px] h-[650px]">
-      <img src={FollowWhale} alt="" class="w-full h-full" />
+      <img src={FollowWhale} alt="" class="w-full h-full object-contain" />
     </div>
-    <div
-      class="relative w-full flex justify-end"
-      on:mouseenter={() => {
-        showCommandTooltip = true;
-      }}
-      on:mouseleave={() => {
-        showCommandTooltip = false;
-      }}
-    >
+    <div class="w-full flex justify-end">
       <CopyToClipboard
         text={`/portfolio ${selectedWallet} ${
           listAddress.filter((item) => item.address === selectedWallet)[0].label
         }`}
         let:copy
       >
-        <div class="w-max">
+        <div
+          class="w-max relative"
+          on:mouseenter={() => {
+            showCommandTooltip = true;
+          }}
+          on:mouseleave={() => {
+            showCommandTooltip = false;
+          }}
+        >
           <Button
             on:click={() => {
               copy();
@@ -187,21 +195,22 @@
               showCommandTooltip = false;
             }}>Copy command</Button
           >
+          {#if showCommandTooltip}
+            <div
+              class="absolute -top-8 left-1/2 transform -translate-x-1/2"
+              style="z-index: 2147483648;"
+            >
+              <tooltip-detail
+                text={`/portfolio ${selectedWallet} ${
+                  listAddress.filter(
+                    (item) => item.address === selectedWallet
+                  )[0].label
+                }`}
+              />
+            </div>
+          {/if}
         </div>
       </CopyToClipboard>
-      {#if showCommandTooltip}
-        <div
-          class="absolute -top-8 left-1/2 transform -translate-x-1/2"
-          style="z-index: 2147483648;"
-        >
-          <tooltip-detail
-            text={`/portfolio ${selectedWallet} ${
-              listAddress.filter((item) => item.address === selectedWallet)[0]
-                .label
-            }`}
-          />
-        </div>
-      {/if}
     </div>
   </div>
 </AppOverlay>

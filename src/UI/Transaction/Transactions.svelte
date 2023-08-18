@@ -4,10 +4,11 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { sendMessage } from "webext-bridge";
-  import { wallet, chain } from "~/store";
-  import { typeTrx } from "~/utils";
+  import { wallet, chain, typeWallet } from "~/store";
+  import { getAddressContext, typeTrx } from "~/utils";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { nimbus } from "~/lib/network";
 
   import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
   import type {
@@ -29,11 +30,15 @@
     selectedChain = value;
   });
 
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
+
   let isLoading = false;
   let data = [];
   let pageToken = "";
-  let isLoadingChart = false;
-  let isEmptyDataChart = false;
+
   let option = {
     tooltip: {
       extraCssText: "z-index: 9997",
@@ -41,7 +46,7 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 180px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                ${dayjs(params.data[0]).format("DD MMM YYYY")}
+                ${dayjs(params.data[0]).format("YYYY-MM-DD")}
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between;">
                 <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
@@ -64,11 +69,11 @@
       right: 40,
       inRange: {
         color: ["#00A878"],
-        opacity: [0, 1],
+        opacity: [0.1, 1],
       },
       controller: {
         inRange: {
-          opacity: [0.2, 1],
+          opacity: [0.1, 1],
         },
         outOfRange: {
           color: "#f4f5f8",
@@ -109,61 +114,133 @@
     }, 300);
   };
 
-  const getAnalyticHistorical = async () => {
-    isLoadingChart = true;
-    try {
-      const response: AnalyticHistoricalRes = await sendMessage("getAnalytic", {
-        address: selectedWallet,
-        chain: selectedChain,
+  const getAnalyticHistorical = async (address, chain) => {
+    const response: AnalyticHistoricalRes = await nimbus.get(
+      `/v2/analysis/${address}/historical?chain=${chain}`
+    );
+    return response.data;
+  };
+
+  const formatDataHistorical = (data) => {
+    if (data.length !== 0) {
+      const maxHistorical = data?.reduce((prev, current) =>
+        prev.count > current.count ? prev : current
+      );
+      const formatData: AnalyticHistoricalFormat = data?.map((item) => {
+        return [
+          dayjs(Number(item.date) * 1000).format("YYYY-MM-DD"),
+          item.count,
+        ];
       });
-      if (response && response.length !== 0) {
-        const maxHistorical = response.reduce((prev, current) =>
-          prev.count > current.count ? prev : current
-        );
-
-        const formatData: AnalyticHistoricalFormat = response.map((item) => {
-          return [dayjs(item.date).format("YYYY-MM-DD"), item.count];
-        });
-
-        option = {
-          ...option,
-          visualMap: {
-            ...option.visualMap,
-            max: maxHistorical.count,
+      option = {
+        ...option,
+        visualMap: {
+          ...option.visualMap,
+          max: maxHistorical.count,
+        },
+        calendar: {
+          ...option.calendar,
+          range: dayjs(Number(maxHistorical.date) * 1000).format("YYYY"),
+        },
+        series: {
+          ...option.series,
+          data: formatData,
+        },
+      };
+    } else {
+      option = {
+        tooltip: {
+          extraCssText: "z-index: 9997",
+          formatter: function (params) {
+            return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 180px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                ${dayjs(params.data[0]).format("YYYY-MM-DD")}
+              </div>
+              <div style="display: flex; align-items: centers; justify-content: space-between;">
+                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
+                  <div style="background: #00b580; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
+                  Activity
+                </div>
+                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: #000;">
+                  ${params.data[1]}
+                </div>
+              </div>
+            </div>`;
           },
-          calendar: {
-            ...option.calendar,
-            range: dayjs(maxHistorical.date).format("YYYY"),
+        },
+        visualMap: {
+          min: 0,
+          max: 1,
+          calculable: true,
+          orient: "horizontal",
+          top: 0,
+          right: 40,
+          inRange: {
+            color: ["#00A878"],
+            opacity: [0.1, 1],
           },
-          series: {
-            ...option.series,
-            data: formatData,
+          controller: {
+            inRange: {
+              opacity: [0.1, 1],
+            },
+            outOfRange: {
+              color: "#f4f5f8",
+            },
           },
-        };
-      } else {
-        isEmptyDataChart = true;
-      }
-    } catch (e) {
-      console.log("error: ", e);
-      isEmptyDataChart = true;
-    } finally {
-      isLoadingChart = false;
+        },
+        calendar: {
+          top: 80,
+          left: 60,
+          right: 60,
+          cellSize: ["auto", "auto"],
+          range: dayjs(new Date()).format("YYYY"),
+          itemStyle: {
+            borderWidth: 0.5,
+          },
+          yearLabel: { show: false },
+          dayLabel: { show: true, color: "#6b7280" },
+          monthLabel: { show: true, color: "#6b7280" },
+        },
+        dayLabel: {
+          nameMap: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        },
+        series: {
+          type: "heatmap",
+          coordinateSystem: "calendar",
+          data: [dayjs(new Date()).format("YYYY-MM-DD"), 1],
+        },
+      };
     }
   };
+
+  $: enabledQuery = Boolean(
+    getAddressContext(selectedWallet)?.type === "EVM" ||
+      typeWalletAddress === "CEX"
+  );
+
+  $: query = createQuery({
+    queryKey: ["historical", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () => getAnalyticHistorical(selectedWallet, selectedChain),
+    staleTime: Infinity,
+  });
+
+  $: {
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataHistorical($query.data);
+    }
+  }
 
   const getListTransactions = async (page: string) => {
     isLoading = true;
     try {
-      const response: TrxHistoryDataRes = await sendMessage("getTrxHistory", {
-        address: selectedWallet,
-        chain: selectedChain,
-        pageToken: page,
-      });
-      if (selectedWallet === response?.address) {
-        data = [...data, ...response.result.data];
-        pageToken = response.result.pageToken;
-      } else {
-        console.log("response: ", response);
+      const response: TrxHistoryDataRes = await nimbus.get(
+        `/v2/address/${selectedWallet}/history?chain=${selectedChain}&pageToken=${page}`
+      );
+      if (response && response.data) {
+        data = [...data, ...response.data.data];
+        pageToken = response.data.pageToken;
       }
     } catch (e) {
       console.log("error: ", e);
@@ -181,11 +258,8 @@
       data = [];
       pageToken = "";
       isLoading = false;
-      isLoadingChart = false;
-      isEmptyDataChart = false;
-      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
         getListTransactions("");
-        getAnalyticHistorical();
       }
     }
   }
@@ -195,21 +269,26 @@
   <span slot="body">
     <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-32">
       <div
-        class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md"
+        class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8"
+        style="box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.10);"
       >
-        <div
-          class="border border-[#0000001a] rounded-[20px] pt-6 pb-9 flex flex-col gap-4"
-        >
-          <CalendarChart
-            {option}
-            {isEmptyDataChart}
-            {isLoadingChart}
-            isTrxPage
-            title="Historical Activities"
-            tooltipTitle="The chart shows only activities made by this wallet"
-            id="historical-activities"
-          />
-        </div>
+        {#if getAddressContext(selectedWallet)?.type === "EVM" || typeWalletAddress === "CEX"}
+          <div
+            class="border border-[#0000001a] rounded-[20px] pt-6 pb-9 flex flex-col gap-4"
+          >
+            <CalendarChart
+              {option}
+              isEmptyDataChart={$query.isError}
+              isLoadingChart={$query.isFetching}
+              isTrxPage
+              title="Historical Activities"
+              tooltipTitle="The chart shows only activities made by this wallet"
+              id="historical-activities"
+              type="normal"
+            />
+          </div>
+        {/if}
+
         <div
           class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
         >

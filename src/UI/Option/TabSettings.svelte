@@ -37,22 +37,17 @@
 
 <div class="flex flex-col gap-2">
   <div class="xl:title-3 title-1 text-gray-500 mb-2">{MultipleLang.title}</div>
-  {#if APP_TYPE.TYPE === "WEB"}
+  <div class="flex items-center gap-2">
     <div class="xl:title-5 title-3">
-      Install <a
-        href="https://getnimbus.io/"
-        class="text-blue-500"
-        target="_blank">our extension</a
-      > to try out this feature
+      {MultipleLang.change_lang_label}
     </div>
-  {:else}
-    <div class="flex items-center gap-2">
-      <div class="xl:title-5 title-3">
-        {MultipleLang.change_lang_label}
-      </div>
-      <Select type="lang" listSelect={langs} bind:selected={selectedLang} />
-    </div>
-  {/if}
+    <Select
+      type="lang"
+      positionSelectList="left-0"
+      listSelect={langs}
+      bind:selected={selectedLang}
+    />
+  </div>
 </div>
 
 <style>

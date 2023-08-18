@@ -1,25 +1,42 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { sendMessage } from "webext-bridge";
   import * as browser from "webextension-polyfill";
-  import { wallet, chain } from "~/store";
+  import {
+    wallet,
+    chain,
+    typeWallet,
+    user,
+    isFirstTimeLogin,
+    selectedPackage,
+  } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { chainList, getAddressContext } from "~/utils";
+  import {
+    chainList,
+    getAddressContext,
+    listLogoCEX,
+    listProviderCEX,
+  } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { nimbus } from "~/lib/network";
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
+  import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
+  import { useNavigate } from "svelte-navigator";
+  import tooltip from "~/entries/contentScript/views/tooltip";
+  import { wait } from "~/entries/background/utils";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
 
-  import type { AddressData } from "~/types/AddressData";
-
+  import "~/components/Loading.custom.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
   import Select from "~/components/Select.svelte";
@@ -27,15 +44,16 @@
   import Copy from "~/components/Copy.svelte";
 
   import Plus from "~/assets/plus.svg";
-  import EthereumLogo from "~/assets/ethereum.png";
+  import All from "~/assets/all.svg";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import FollowWhale from "~/assets/whale-tracking.gif";
+  import Success from "~/assets/shield-done.svg";
 
   const MultipleLang = {
-    empty_wallet: i18n("newtabPage.empty-wallet", "No wallet added yet."),
+    empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
     addwallet: i18n(
       "newtabPage.addwallet",
-      "Add your wallet to keep track of your investments."
+      "Add your account to keep track of your investments."
     ),
     content: {
       btn_text: i18n(
@@ -60,15 +78,15 @@
       ),
       modal_add_title: i18n(
         "optionsPage.accounts-page-content.modal-add-title",
-        "Add Your Wallet"
+        "Add your account"
       ),
       modal_add_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-add-sub-title",
-        "Add your wallet will give you more option to see the information at page new tab"
+        "Add your account will give you more option to see the information at page new tab"
       ),
       address_required: i18n(
         "optionsPage.accounts-page-content.address-required",
-        "Address is required"
+        "Account is required"
       ),
       label_required: i18n(
         "optionsPage.accounts-page-content.label-required",
@@ -76,14 +94,16 @@
       ),
       re_input_address: i18n(
         "optionsPage.accounts-page-content.re-input-address",
-        "Please enter your wallet address again!"
+        "Please enter your account again!"
       ),
       duplicate_address: i18n(
         "optionsPage.accounts-page-content.duplicate-address",
-        "This wallet address is duplicated!"
+        "This account is duplicated!"
       ),
     },
   };
+
+  const navigate = useNavigate();
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -95,10 +115,53 @@
     selectedChain = value;
   });
 
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
+
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
+
+  let checkFirstTimeLogin = false;
+  isFirstTimeLogin.subscribe((value) => {
+    checkFirstTimeLogin = value;
+  });
+
+  let packageSelected = "";
+  selectedPackage.subscribe((value) => {
+    packageSelected = value;
+  });
+
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 3;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
+
+  const handleScroll = () => {
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
+    isScrollStart = scrollLeft === 0;
+    isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+  };
+
   let showFollowTooltip = false;
   let showCommandTooltip = false;
   let showDisableAddWallet = false;
-  let isLoadingFullPage = false;
   let listAddress = [];
   let address = "";
   let label = "";
@@ -112,105 +175,10 @@
   let isScrollStart = true;
   let isScrollEnd = false;
   let container;
+  let isLoadingConnectCEX = false;
 
-  const getListAddress = async (type) => {
-    isLoadingFullPage = true;
-    try {
-      const response: AddressData = await sendMessage(
-        "getListAddress",
-        undefined
-      );
-
-      const structWalletData = (response || []).map((item) => {
-        return {
-          id: item.id,
-          label: item.label,
-          value: item.address,
-        };
-      });
-
-      if (type === "reload") {
-        isLoadingFullPage = false;
-        listAddress = structWalletData;
-        return;
-      }
-
-      listAddress = listAddress.concat(structWalletData);
-
-      const selectedChainRes = await browser.storage.sync.get("selectedChain");
-      if (selectedChainRes && selectedChainRes?.selectedChain?.length !== 0) {
-        chain.update((n) => (n = selectedChainRes.selectedChain));
-      }
-
-      const selectedWalletRes = await browser.storage.sync.get(
-        "selectedWallet"
-      );
-      if (selectedWalletRes) {
-        if (selectedWalletRes?.selectedWallet?.length !== 0) {
-          wallet.update((n) => (n = selectedWalletRes.selectedWallet));
-        }
-        if (
-          selectedWalletRes?.selectedWallet?.length === 0 &&
-          listAddress.length !== 0 &&
-          listAddress.length === 1
-        ) {
-          wallet.update((n) => (n = listAddress[0].value));
-        }
-      }
-
-      updateStateFromParams();
-
-      isLoadingFullPage = false;
-    } catch (error) {
-      console.log(error);
-      isLoadingFullPage = false;
-    }
-  };
-
-  const updateStateFromParams = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const addressParams = urlParams.get("address");
-    const chainParams = urlParams.get("chain");
-    if (chainParams) {
-      chain.update((n) => (n = chainParams));
-    }
-    if (!chainParams && listAddress.length === 0) {
-      chain.update((n) => (n = ""));
-    }
-    if (!chainParams && listAddress.length === 0 && addressParams) {
-      chain.update((n) => (n = "ALL"));
-      if (getAddressContext(selectedWallet)?.type === "BTC") {
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname + `?address=${selectedWallet}`
-        );
-      }
-    }
-    if (!chainParams && listAddress.length !== 0) {
-      if (getAddressContext(selectedWallet)?.type === "EVM") {
-        chain.update((n) => (n = "ALL"));
-      }
-      if (getAddressContext(selectedWallet)?.type === "BTC") {
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname + `?address=${selectedWallet}`
-        );
-      }
-    }
-    if (addressParams) {
-      wallet.update((n) => (n = addressParams));
-    }
-    if (!addressParams && listAddress.length === 0) {
-      wallet.update((n) => (n = ""));
-    }
-  };
-
-  onMount(() => {
-    getListAddress("fetch");
-    updateStateFromParams();
-  });
+  let isDisabled = false;
+  let tooltipDisableAddBtn = "";
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -258,101 +226,389 @@
     }
   };
 
-  const onSubmit = (e) => {
-    const formData = new FormData(e.target);
+  const queryClient = useQueryClient();
+  const query = createQuery({
+    queryKey: ["list-address"],
+    queryFn: () => getListAddress(),
+    staleTime: Infinity,
+  });
 
-    const data: any = {};
-    for (let field of formData) {
-      const [key, value] = field;
-      data[key] = value;
+  $: {
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataListAddress($query.data);
+    }
+  }
+
+  const formatDataListAddress = async (data) => {
+    const structWalletData = data.map((item) => {
+      return {
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        value: item.type === "CEX" ? item.id : item.accountId,
+        logo: item.logo,
+      };
+    });
+
+    listAddress = structWalletData;
+
+    const selectedTypeWalletRes = await browser.storage.sync.get(
+      "typeWalletAddress"
+    );
+    if (selectedTypeWalletRes?.typeWalletAddress !== null) {
+      typeWallet.update((n) => (n = selectedTypeWalletRes.typeWalletAddress));
+    } else {
+      typeWallet.update((n) => (n = listAddress[0]?.type));
     }
 
-    validateForm(data);
-
-    if (
-      !Object.keys(errors).some((inputName) => errors[inputName]["required"])
-    ) {
-      const dataFormat = {
-        id: data.address,
-        label: data.label,
-        value: data.address,
-      };
-
-      const addWallet = [...listAddress, dataFormat];
-      listAddress = addWallet;
-
-      if (addWallet.length === 1) {
-        wallet.update((n) => (n = listAddress[0].value));
-        if (getAddressContext(dataFormat.value)?.type === "EVM") {
-          chain.update((n) => (n = "ALL"));
-        }
-      }
-
-      wallet.update((n) => (n = dataFormat.value));
-
-      const filterWalletList = addWallet.filter((item) => item.value !== "all");
-      const structWalletList = filterWalletList.map((item) => {
-        return {
-          id: item.value,
-          label: item.label,
-          address: item.value,
-        };
-      });
-
-      browser.storage.sync
-        .set({ listAddress: JSON.stringify(structWalletList) })
-        .then(() => {
-          console.log("save address to sync storage");
-        });
-
-      // sendMessage("getSync", { address: dataFormat.value }); // Auto call sync when we add wallet?
-
-      e.target.reset();
-      errors = {};
-      isOpenAddModal = false;
-      getListAddress("reload");
-
-      mixpanel.track("user_add_address");
+    const selectedChainRes = await browser.storage.sync.get("selectedChain");
+    if (selectedChainRes?.selectedChain !== null) {
+      chain.update((n) => (n = selectedChainRes.selectedChain));
     } else {
-      console.log("Invalid Form");
+      chain.update((n) => (n = "ALL"));
+    }
+
+    const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
+    if (selectedWalletRes?.selectedWallet !== null) {
+      if (selectedWalletRes?.selectedWallet?.length !== 0) {
+        wallet.update((n) => (n = selectedWalletRes.selectedWallet));
+      }
+      if (
+        selectedWalletRes?.selectedWallet?.length === 0 &&
+        listAddress.length !== 0 &&
+        listAddress.length === 1
+      ) {
+        wallet.update((n) => (n = listAddress[0].value));
+      }
+    } else {
+      wallet.update((n) => (n = listAddress[0].value));
     }
   };
 
+  const updateStateFromParams = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const addressParams = urlParams.get("address");
+    const chainParams = urlParams.get("chain");
+    const typeParams = urlParams.get("type");
+
+    // reset all global state if list address is empty
+    if (!chainParams && listAddress.length === 0) {
+      chain.update((n) => (n = ""));
+    }
+    if (!addressParams && listAddress.length === 0) {
+      wallet.update((n) => (n = ""));
+    }
+    if (!typeParams && listAddress.length === 0) {
+      typeWallet.update((n) => (n = ""));
+    }
+
+    // update global chain state
+    if (chainParams) {
+      chain.update((n) => (n = chainParams));
+    }
+
+    // update global address state
+    if (addressParams) {
+      wallet.update((n) => (n = addressParams));
+    }
+
+    // update global type wallet state
+    if (typeParams) {
+      typeWallet.update((n) => (n = typeParams));
+    }
+
+    // check type address and handle logic update global state
+    if (typeParams === "CEX") {
+      chain.update((n) => (n = "ALL"));
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?type=${typeWalletAddress}&address=${selectedWallet}`
+      );
+    }
+
+    if (typeParams === "DEX") {
+      // if list address is empty and no chain params and have address param (btc address when search)
+      if (!chainParams && listAddress.length === 0 && addressParams) {
+        chain.update((n) => (n = "ALL"));
+        if (getAddressContext(selectedWallet)?.type === "BTC") {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname +
+              `?type=${typeWalletAddress}&address=${selectedWallet}`
+          );
+        }
+      }
+
+      // if no chain params and list address is not empty
+      if (!chainParams && listAddress.length !== 0) {
+        if (getAddressContext(selectedWallet)?.type === "EVM") {
+          chain.update((n) => (n = "ALL"));
+        }
+        if (getAddressContext(selectedWallet)?.type === "BTC") {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname +
+              `?type=${typeWalletAddress}&address=${selectedWallet}`
+          );
+        }
+      }
+    }
+  };
+
+  const getListAddress = async () => {
+    const response: any = await nimbus.get("/accounts/list");
+    return response?.data;
+  };
+
+  // Add DEX address account
+  const onSubmit = async (e) => {
+    try {
+      const formData = new FormData(e.target);
+
+      const data: any = {};
+      for (let field of formData) {
+        const [key, value] = field;
+        data[key] = value;
+      }
+
+      validateForm(data);
+
+      if (
+        !Object.keys(errors).some((inputName) => errors[inputName]["required"])
+      ) {
+        const dataFormat = {
+          id: data.address,
+          label: data.label,
+          value: data.address,
+        };
+
+        await nimbus.post("/accounts", {
+          type: "DEX",
+          publicAddress: dataFormat.value,
+          accountId: dataFormat.value,
+          label: dataFormat.label,
+        });
+
+        queryClient.invalidateQueries(["list-address"]);
+        chain.update((n) => (n = "ALL"));
+        wallet.update((n) => (n = dataFormat.value));
+        typeWallet.update((n) => (n = "DEX"));
+
+        e.target.reset();
+        errors = {};
+        isOpenAddModal = false;
+
+        toastMsg = "Successfully add On-Chain account!";
+        isSuccessToast = true;
+        trigger();
+        mixpanel.track("user_add_address");
+
+        errors["address"] = { ...errors["address"], required: false, msg: "" };
+        errors["label"] = { ...errors["label"], required: false, msg: "" };
+      } else {
+        console.log("Invalid Form");
+      }
+    } catch (e) {
+      console.error(e);
+      toastMsg = "Something wrong when add DEX account. Please try again!";
+      isSuccessToast = false;
+      trigger();
+    }
+  };
+
+  // Add CEX address account
+  const onSubmitCEX = () => {
+    const evmToken = localStorage.getItem("evm_token");
+    if (evmToken) {
+      isLoadingConnectCEX = true;
+      const vezgo: any = Vezgo.init({
+        clientId: "6st9c6s816su37qe8ld1d5iiq2",
+        authEndpoint: "https://api.getnimbus.io/auth/vezgo",
+        auth: {
+          headers: { Authorization: `${evmToken}` },
+        },
+      });
+      const userVezgo = vezgo.login();
+      if (userVezgo) {
+        userVezgo
+          .connect({
+            providers: listProviderCEX,
+          })
+          .onConnection(async function (account) {
+            await nimbus.get("/accounts/sync");
+
+            queryClient.invalidateQueries(["list-address"]);
+
+            await wait(1000);
+
+            if (
+              formatListAddress[formatListAddress.length - 1]?.type === "CEX"
+            ) {
+              chain.update((n) => (n = "ALL"));
+              wallet.update(
+                (n) => (n = formatListAddress[formatListAddress.length - 1]?.id)
+              );
+              typeWallet.update((n) => (n = "CEX"));
+            }
+
+            await wait(300);
+
+            queryClient.invalidateQueries(["list-address"]);
+
+            isLoadingConnectCEX = false;
+            isOpenAddModal = false;
+
+            toastMsg = "Successfully add CEX account!";
+            isSuccessToast = true;
+            trigger();
+            mixpanel.track("user_add_address");
+          })
+          .onError(function (error) {
+            console.error("connection vezgo error", error);
+            queryClient.invalidateQueries(["list-address"]);
+            isLoadingConnectCEX = false;
+            isOpenAddModal = false;
+            toastMsg =
+              "Something wrong when add CEX account. Please try again!";
+            isSuccessToast = false;
+            trigger();
+          });
+      }
+    }
+  };
+
+  // Handle get user email
   const onSubmitGetEmail = async (e) => {
     isLoadingSendMail = true;
     const formData = new FormData(e.target);
-
     const data: any = {};
     for (let field of formData) {
       const [key, value] = field;
       data[key] = value;
     }
-
     try {
-      const res = await nimbus.post(
-        "/subscription/analysis",
-        {
-          email: data.email,
-          address: selectedWallet,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      await nimbus.post("/subscription/analysis", {
+        email: data.email,
+        address: selectedWallet,
+      });
       isLoadingSendMail = false;
-      localStorage.setItem("showDisableAddWallet", "false");
+      localStorage.setItem("isGetUserEmailYet", "true");
+      toastMsg = "Ready to receive exclusive benefits soon!";
+      isSuccessToast = true;
+      trigger();
     } catch (e) {
       isLoadingSendMail = false;
+      toastMsg = "Something wrong when sending email. Please try again!";
+      isSuccessToast = false;
+      trigger();
     } finally {
       isOpenModal = false;
     }
   };
 
-  const handleScroll = () => {
-    const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
-    isScrollStart = scrollLeft === 0;
-    isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
-  };
+  onMount(() => {
+    updateStateFromParams();
+    if (
+      localStorage.getItem("isGetUserEmailYet") !== null &&
+      localStorage.getItem("isGetUserEmailYet") === "true"
+    ) {
+      return;
+    }
+    localStorage.setItem("isGetUserEmailYet", "false");
+  });
+
+  $: formatListAddress = listAddress.map((item) => {
+    return {
+      ...item,
+      logo:
+        item.type === "DEX"
+          ? getAddressContext(item.value)?.type === "EVM"
+            ? All
+            : BitcoinLogo
+          : item.logo,
+    };
+  });
+
+  $: {
+    if (selectedWallet) {
+      browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
+        console.log("save selected address to sync storage");
+      });
+
+      browser.storage.sync.set({ selectedChain: selectedChain }).then(() => {
+        console.log("save selected chain to sync storage");
+      });
+
+      const selected = formatListAddress.find((item) => {
+        return item.value === selectedWallet;
+      });
+
+      if (
+        selected &&
+        Object.keys(selected).length !== 0 &&
+        selected.type === "CEX"
+      ) {
+        typeWallet.update((n) => (n = "CEX"));
+        browser.storage.sync.set({ typeWalletAddress: "CEX" }).then(() => {
+          console.log("save selected type wallet to sync storage");
+        });
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&address=${selectedWallet}`
+        );
+        if (selectedChain) {
+          chain.update((n) => (n = selectedChain));
+        } else {
+          chain.update((n) => (n = "ALL"));
+        }
+      }
+
+      if (
+        selected &&
+        Object.keys(selected).length !== 0 &&
+        selected.type === "DEX"
+      ) {
+        typeWallet.update((n) => (n = "DEX"));
+        browser.storage.sync.set({ typeWalletAddress: "DEX" }).then(() => {
+          console.log("save selected type wallet to sync storage");
+        });
+        if (getAddressContext(selectedWallet)?.type === "EVM") {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname +
+              `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
+          );
+        }
+
+        if (getAddressContext(selectedWallet)?.type === "BTC") {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname +
+              `?type=${typeWalletAddress}&address=${selectedWallet}`
+          );
+          if (selectedChain) {
+            chain.update((n) => (n = selectedChain));
+          } else {
+            chain.update((n) => (n = "ALL"));
+          }
+        }
+      }
+    }
+  }
+
+  $: {
+    if (checkFirstTimeLogin) {
+      queryClient.invalidateQueries(["list-address"]);
+    }
+  }
 
   $: {
     if (
@@ -371,75 +627,142 @@
     }
   }
 
-  $: formatListAddress = listAddress.map((item) => {
-    return {
-      ...item,
-      logo:
-        getAddressContext(item.value).type === "EVM"
-          ? EthereumLogo
-          : BitcoinLogo,
-    };
-  });
-
   $: {
-    if (selectedWallet) {
-      browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
-        console.log("save selected address to sync storage");
-      });
-      browser.storage.sync.set({ selectedChain: selectedChain }).then(() => {
-        console.log("save selected chain to sync storage");
-      });
-      if (getAddressContext(selectedWallet)?.type === "EVM") {
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname +
-            `?chain=${selectedChain}&address=${selectedWallet}`
-        );
+    if (listAddress.length === 3 && packageSelected === "FREE") {
+      isDisabled = true;
+    }
+    if (listAddress.length === 7 && packageSelected === "EXPLORER") {
+      if (
+        localStorage.getItem("isGetUserEmailYet") !== null &&
+        localStorage.getItem("isGetUserEmailYet") === "false"
+      ) {
+        localStorage.setItem("isGetUserEmailYet", "true");
       }
-      if (getAddressContext(selectedWallet)?.type === "BTC") {
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname + `?address=${selectedWallet}`
-        );
-        if (selectedChain) {
-          chain.update((n) => (n = selectedChain));
-        } else {
-          chain.update((n) => (n = "ALL"));
-        }
+      isDisabled = true;
+    }
+    if (packageSelected === "PROFESSIONAL") {
+      if (
+        localStorage.getItem("isGetUserEmailYet") !== null &&
+        localStorage.getItem("isGetUserEmailYet") === "false"
+      ) {
+        localStorage.setItem("isGetUserEmailYet", "true");
       }
     }
   }
 
-  $: isDisabled = APP_TYPE.TYPE !== "EXT" && formatListAddress.length === 5;
-  $: isDisabledBtn =
-    isDisabled &&
-    (localStorage.getItem("showDisableAddWallet") === null ||
-      localStorage.getItem("showDisableAddWallet") === "true");
+  $: {
+    if (Object.keys(userInfo).length === 0) {
+      tooltipDisableAddBtn = "Connect wallet to add account";
+    }
+    if (isDisabled) {
+      if (packageSelected === "FREE") {
+        tooltipDisableAddBtn =
+          "Get the EXPLORER Plan to be able to add more accounts and experience our in-depth investment analysis";
+      }
+      if (packageSelected === "EXPLORER") {
+        tooltipDisableAddBtn =
+          "Get the PROFESSIONAL Plan so you can add unlimited accounts and experience all our functions";
+      }
+    }
+  }
+
+  $: {
+    const evmToken = localStorage.getItem("evm_token");
+    if (Object.keys(userInfo).length !== 0 && evmToken) {
+      queryClient.invalidateQueries(["list-address"]);
+    } else {
+      formatListAddress = [];
+      listAddress = [];
+    }
+  }
 </script>
 
 <ErrorBoundary>
-  {#if isLoadingFullPage}
+  {#if $query.isFetching && formatListAddress && formatListAddress?.length === 0}
     <div class="flex items-center justify-center h-screen">
       <loading-icon />
     </div>
   {:else}
     <div>
-      {#if formatListAddress.length === 0 && selectedWallet.length === 0}
+      {#if formatListAddress.length === 0 && selectedWallet?.length === 0}
         <div class="flex items-center justify-center h-screen">
           <div
             class="flex flex-col items-center justify-center w-2/3 gap-4 p-6"
           >
-            <div class="text-lg">
-              {MultipleLang.addwallet}
-            </div>
-            <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
-              <img src={Plus} alt="" width="12" height="12" />
-              <div class="text-base font-medium text-white">
-                {MultipleLang.content.btn_text}
+            {#if $query.isError && Object.keys(userInfo).length !== 0}
+              <div class="text-lg">
+                Too many request when get list address. Please wait for a
+                minutes
               </div>
-            </Button>
+            {:else}
+              <div class="text-lg">
+                {MultipleLang.addwallet}
+              </div>
+              {#if Object.keys(userInfo).length !== 0}
+                <div class="w-max">
+                  <Button
+                    variant="tertiary"
+                    on:click={() => (isOpenAddModal = true)}
+                  >
+                    <img src={Plus} alt="" width="12" height="12" />
+                    <div class="text-2xl font-medium text-white xl:text-base">
+                      {MultipleLang.content.btn_text}
+                    </div>
+                  </Button>
+                </div>
+              {:else}
+                <div class="flex flex-col gap-4">
+                  <div
+                    class="relative"
+                    on:mouseenter={() => {
+                      if (Object.keys(userInfo).length === 0) {
+                        showDisableAddWallet = true;
+                      }
+                    }}
+                    on:mouseleave={() => {
+                      if (Object.keys(userInfo).length === 0) {
+                        showDisableAddWallet = false;
+                      }
+                    }}
+                  >
+                    <Button variant="disabled">
+                      <img src={Plus} alt="" width="12" height="12" />
+                      <div class="text-2xl font-medium text-white xl:text-base">
+                        {MultipleLang.content.btn_text}
+                      </div>
+                    </Button>
+
+                    {#if showDisableAddWallet}
+                      <div
+                        class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                        style="z-index: 2147483648;"
+                      >
+                        <tooltip-detail
+                          text={"Connect wallet to add account"}
+                        />
+                      </div>
+                    {/if}
+                  </div>
+                  <Button
+                    on:click={() => {
+                      mixpanel.track("user_search");
+                      chain.update((n) => (n = "ALL"));
+                      wallet.update(
+                        (n) =>
+                          (n = "0x39d787fdf7384597c7208644dbb6fda1cca4ebdf")
+                      );
+                      navigate(
+                        `/?type=DEX&chain=ALL&address=0x39d787fdf7384597c7208644dbb6fda1cca4ebdf`
+                      );
+                    }}
+                  >
+                    <div class="text-2xl font-medium xl:text-base">
+                      Try Demo account
+                    </div>
+                  </Button>
+                </div>
+              {/if}
+            {/if}
           </div>
         </div>
       {:else}
@@ -447,8 +770,9 @@
           <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[96%]">
             <div class="flex flex-col mb-5 gap-14">
               <div class="flex items-center justify-between gap-6">
-                <div class="xl:block hidden">
-                  {#if formatListAddress.length !== 0}
+                <!-- desktop list address wallet -->
+                <div class="hidden xl:block">
+                  {#if formatListAddress && formatListAddress?.length !== 0}
                     <div class="flex items-center gap-5">
                       {#if formatListAddress.length > 5}
                         <AnimateSharedLayout>
@@ -465,14 +789,17 @@
                               <img
                                 src={item.logo}
                                 alt=""
-                                class="xl:w-4 xl:h-4 w-5 h-5"
+                                class="w-5 h-5 rounded-full xl:w-4 xl:h-4"
                               />
                               {item.label}
                               {#if item.value === selectedWallet}
                                 <Motion
                                   let:motion
                                   layoutId="active-pill"
-                                  transition={{ type: "spring", duration: 0.6 }}
+                                  transition={{
+                                    type: "spring",
+                                    duration: 0.6,
+                                  }}
                                 >
                                   <div
                                     class="absolute inset-0 rounded-full bg-[#ffffff1c]"
@@ -485,6 +812,7 @@
                         </AnimateSharedLayout>
                         <Select
                           type="wallet"
+                          positionSelectList="right-0"
                           listSelect={formatListAddress.slice(
                             5,
                             formatListAddress.length
@@ -496,7 +824,7 @@
                           {#each formatListAddress as item}
                             <div
                               id={item.value}
-                              class="relative xl:text-base text-2xl text-white py-1 xl:px-2 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
+                              class="relative xl:text-base text-2xl text-white py-1 xl:pl-2 xl:pr-3 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
                               class:hover:no-underline={item.value ===
                                 selectedWallet}
                               on:click={() => {
@@ -506,14 +834,17 @@
                               <img
                                 src={item.logo}
                                 alt=""
-                                class="xl:w-4 xl:h-4 w-5 h-5"
+                                class="w-5 h-5 rounded-full xl:w-4 xl:h-4"
                               />
                               {item.label}
                               {#if item.value === selectedWallet}
                                 <Motion
                                   let:motion
                                   layoutId="active-pill"
-                                  transition={{ type: "spring", duration: 0.6 }}
+                                  transition={{
+                                    type: "spring",
+                                    duration: 0.6,
+                                  }}
                                 >
                                   <div
                                     class="absolute inset-0 rounded-full bg-[#ffffff1c]"
@@ -527,76 +858,23 @@
                       {/if}
                     </div>
                   {:else}
-                    <div class="xl:text-base text-2xl font-semibold text-white">
+                    <div class="text-2xl font-medium text-white xl:text-base">
                       {MultipleLang.empty_wallet}
                     </div>
                   {/if}
                 </div>
 
-                <div
-                  class="xl:hidden relative overflow-x-hidden w-full flex flex-row gap-3 justify-between items-center"
-                  bind:this={container}
-                >
+                <!-- mobile list address wallet -->
+                {#if formatListAddress && formatListAddress?.length !== 0}
                   <div
-                    class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
-                      isScrollStart ? "hidden" : "block"
-                    }`}
-                    style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
+                    class="relative flex flex-row items-center justify-between w-full gap-3 overflow-hidden xl:hidden"
+                    bind:this={container}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      height="24px"
-                      width="24px"
-                      viewBox="0 0 24 24"
-                      class="sc-aef7b723-0 fKbUaI"
-                      ><path
-                        d="M15 6L9 12L15 18"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-miterlimit="10"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      /></svg
-                    >
-                  </div>
-                  <div
-                    class="w-max flex gap-3 overflow-x-scroll whitespace-nowrap"
-                    bind:this={scrollContainer}
-                    on:scroll={handleScroll}
-                  >
-                    {#each formatListAddress as item}
-                      <div
-                        id={item.value}
-                        class="w-max flex-shrink-0 relative text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
-                        class:hover:no-underline={item.value === selectedWallet}
-                        on:click={() => {
-                          wallet.update((n) => (n = item.value));
-                        }}
-                      >
-                        <img src={item.logo} alt="" class="w-5 h-5" />
-                        {item.label}
-                        {#if item.value === selectedWallet}
-                          <Motion
-                            let:motion
-                            layoutId="active-pill"
-                            transition={{ type: "spring", duration: 0.6 }}
-                          >
-                            <div
-                              class="absolute inset-0 rounded-full bg-[#ffffff1c]"
-                              use:motion
-                            />
-                          </Motion>
-                        {/if}
-                      </div>
-                    {/each}
-                  </div>
-                  {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
                     <div
-                      class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
-                        isScrollEnd ? "hidden" : "block"
+                      class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
+                        isScrollStart ? "hidden" : "block"
                       }`}
-                      style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
+                      style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -606,7 +884,7 @@
                         viewBox="0 0 24 24"
                         class="sc-aef7b723-0 fKbUaI"
                         ><path
-                          d="M9 6L15 12L9 18"
+                          d="M15 6L9 12L15 18"
                           stroke="currentColor"
                           stroke-width="2"
                           stroke-miterlimit="10"
@@ -615,56 +893,155 @@
                         /></svg
                       >
                     </div>
-                  {/if}
-                </div>
+                    <div
+                      class="container flex gap-3 overflow-x-auto w-max whitespace-nowrap"
+                      bind:this={scrollContainer}
+                      on:scroll={handleScroll}
+                    >
+                      {#each formatListAddress as item}
+                        <div
+                          id={item.value}
+                          class="w-max flex-shrink-0 relative text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
+                          class:hover:no-underline={item.value ===
+                            selectedWallet}
+                          on:click={() => {
+                            wallet.update((n) => (n = item.value));
+                          }}
+                        >
+                          <img
+                            src={item.logo}
+                            alt=""
+                            class="w-5 h-5 rounded-full"
+                          />
+                          {item.label}
+                          {#if item.value === selectedWallet}
+                            <Motion
+                              let:motion
+                              layoutId="active-pill"
+                              transition={{ type: "spring", duration: 0.6 }}
+                            >
+                              <div
+                                class="absolute inset-0 rounded-full bg-[#ffffff1c]"
+                                use:motion
+                              />
+                            </Motion>
+                          {/if}
+                        </div>
+                      {/each}
+                    </div>
+                    {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
+                      <div
+                        class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
+                          isScrollEnd ? "hidden" : "block"
+                        }`}
+                        style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          height="24px"
+                          width="24px"
+                          viewBox="0 0 24 24"
+                          class="sc-aef7b723-0 fKbUaI"
+                          ><path
+                            d="M9 6L15 12L9 18"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-miterlimit="10"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          /></svg
+                        >
+                      </div>
+                    {/if}
+                  </div>
+                {:else}
+                  <div
+                    class="block text-2xl font-medium text-white xl:hidden xl:text-base"
+                  >
+                    {MultipleLang.empty_wallet}
+                  </div>
+                {/if}
 
+                <!-- btn add address wallet -->
                 <div
-                  class="relative"
+                  class="relative xl:w-max w-[260px] flex justify-end"
                   on:mouseenter={() => {
-                    if (isDisabled) {
+                    if (isDisabled || Object.keys(userInfo).length === 0) {
                       showDisableAddWallet = true;
                     }
                   }}
                   on:mouseleave={() => {
-                    if (isDisabled) {
+                    if (isDisabled || Object.keys(userInfo).length === 0) {
                       showDisableAddWallet = false;
                     }
                   }}
                 >
-                  <Button
-                    variant={isDisabledBtn ? "disabled" : "tertiary"}
-                    on:click={() => {
-                      const showDisableAddWalletStorage = localStorage.getItem(
-                        "showDisableAddWallet"
-                      );
-                      if (isDisabled) {
-                        if (
-                          showDisableAddWalletStorage !== null &&
-                          showDisableAddWalletStorage === "false"
-                        ) {
-                          isOpenAddModal = true;
-                          return;
-                        }
-                        localStorage.setItem("showDisableAddWallet", "true");
-                        isOpenModal = true;
-                      } else {
-                        isOpenAddModal = true;
-                      }
-                    }}
-                  >
-                    <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-                    <div class="font-medium text-white">
-                      {MultipleLang.content.btn_text}
+                  {#if isDisabled || Object.keys(userInfo).length === 0}
+                    <div>
+                      {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
+                        <Button
+                          variant="tertiary"
+                          on:click={() => {
+                            if (
+                              localStorage.getItem("isGetUserEmailYet") !==
+                                null &&
+                              localStorage.getItem("isGetUserEmailYet") ===
+                                "false"
+                            ) {
+                              isOpenModal = true;
+                            }
+                          }}
+                        >
+                          <img
+                            src={Plus}
+                            alt=""
+                            class="w-4 h-4 xl:w-3 xl:h-3"
+                          />
+                          <div
+                            class="text-2xl font-medium text-white xl:text-base"
+                          >
+                            Add account
+                          </div>
+                        </Button>
+                      {:else}
+                        <Button variant="disabled" disabled>
+                          <img
+                            src={Plus}
+                            alt=""
+                            class="w-4 h-4 xl:w-3 xl:h-3"
+                          />
+                          <div
+                            class="text-2xl font-medium text-white xl:text-base"
+                          >
+                            Add account
+                          </div>
+                        </Button>
+                      {/if}
                     </div>
-                  </Button>
+                  {:else}
+                    <Button
+                      variant="tertiary"
+                      on:click={() => {
+                        isOpenAddModal = true;
+                      }}
+                    >
+                      <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
+                      <div class="text-2xl font-medium text-white xl:text-base">
+                        Add account
+                      </div>
+                    </Button>
+                  {/if}
                   {#if showDisableAddWallet}
                     <div
-                      class="xl:absolute hidden transform -translate-x-1/2 -top-8 left-1/2"
+                      class={`absolute transform ${
+                        Object.keys(userInfo).length === 0
+                          ? "-top-8"
+                          : "-top-12"
+                      } right-0`}
                       style="z-index: 2147483648;"
                     >
-                      <tooltip-detail
-                        text={"Install our extension to add more wallet"}
-                      />
+                      <tooltip-detail text={tooltipDisableAddBtn} />
                     </div>
                   {/if}
                 </div>
@@ -673,7 +1050,7 @@
               <div class="flex items-end justify-between">
                 <div class="flex flex-col gap-3">
                   <div class="flex items-end gap-6">
-                    <div class="xl:text-5xl text-7xl font-semibold text-white">
+                    <div class="font-medium text-white xl:text-5xl text-7xl">
                       {title}
                     </div>
                     {#if type === "portfolio"}
@@ -681,11 +1058,19 @@
                     {/if}
                   </div>
                   <div class="flex items-center gap-4">
-                    <div class="xl:text-base text-xl">
+                    <div class="hidden text-3xl xl:text-base xl:block">
                       <Copy
                         address={selectedWallet}
                         iconColor="#fff"
                         color="#fff"
+                      />
+                    </div>
+                    <div class="block text-3xl xl:text-base xl:hidden">
+                      <Copy
+                        address={selectedWallet}
+                        iconColor="#fff"
+                        color="#fff"
+                        isShorten
                       />
                     </div>
                     <div
@@ -699,7 +1084,6 @@
                     >
                       <Button
                         variant="secondary"
-                        size="supper-small"
                         on:click={() => (isOpenFollowWhaleModal = true)}
                       >
                         Follow this whale 🐳
@@ -715,15 +1099,94 @@
                         </div>
                       {/if}
                     </div>
+
+                    <div class="hidden xl:block">
+                      {#if getAddressContext(selectedWallet)?.type === "BTC"}
+                        <div
+                          use:tooltip={{
+                            content: `<tooltip-detail text="Coming soon!" />`,
+                            allowHTML: true,
+                            placement: "top",
+                            interactive: true,
+                          }}
+                        >
+                          <Button variant="premium" disabled
+                            >Optimize return</Button
+                          >
+                        </div>
+                      {:else}
+                        <div
+                          use:tooltip={{
+                            content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
+                            allowHTML: true,
+                            placement: "top",
+                            interactive: true,
+                          }}
+                        >
+                          <Button
+                            variant="premium"
+                            on:click={() => {
+                              navigate(
+                                `/compare?address=${encodeURIComponent(
+                                  selectedWallet
+                                )}`
+                              );
+                            }}>Optimize return</Button
+                          >
+                        </div>
+                      {/if}
+                    </div>
                   </div>
                 </div>
-                {#if getAddressContext(selectedWallet)?.type !== "BTC"}
-                  <Select
-                    type="chain"
-                    listSelect={chainList}
-                    bind:selected={selectedChain}
-                  />
-                {/if}
+
+                <div class="flex flex-col gap-6">
+                  <div class="block xl:hidden">
+                    {#if getAddressContext(selectedWallet)?.type === "BTC"}
+                      <div
+                        use:tooltip={{
+                          content: `<tooltip-detail text="Coming soon!" />`,
+                          allowHTML: true,
+                          placement: "top",
+                          interactive: true,
+                        }}
+                      >
+                        <Button variant="premium" disabled
+                          >Optimize return</Button
+                        >
+                      </div>
+                    {:else}
+                      <div
+                        use:tooltip={{
+                          content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
+                          allowHTML: true,
+                          placement: "top",
+                          interactive: true,
+                        }}
+                      >
+                        <Button
+                          variant="premium"
+                          on:click={() => {
+                            navigate(
+                              `/compare?address=${encodeURIComponent(
+                                selectedWallet
+                              )}`
+                            );
+                          }}>Optimize return</Button
+                        >
+                      </div>
+                    {/if}
+                  </div>
+                  {#if getAddressContext(selectedWallet)?.type !== "BTC" && typeWalletAddress === "DEX"}
+                    <Select
+                      type="chain"
+                      positionSelectList="right-0"
+                      listSelect={window.location.pathname === "/transactions"
+                        ? chainList.slice(1, -1)
+                        : chainList}
+                      bind:selected={selectedChain}
+                    />
+                  {/if}
+                </div>
               </div>
 
               {#key selectedWallet || selectedChain}
@@ -743,12 +1206,58 @@
   {/if}
 </ErrorBoundary>
 
-<AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
-  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
+<!-- Modal add DEX account -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenAddModal}
+  on:close={() => (isOpenAddModal = false)}
+>
+  <div class="font-medium text-gray-600 xl:title-3 title-1">
     {MultipleLang.content.modal_add_title}
   </div>
-  <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
-    <div class="flex flex-col gap-1">
+  <div class="flex flex-col mt-4 gap-7">
+    <div class="flex flex-col gap-3">
+      <div class="flex justify-center">
+        <div class="w-max">
+          <Button
+            variant="tertiary"
+            isLoading={isLoadingConnectCEX}
+            on:click={onSubmitCEX}
+          >
+            <div class="text-2xl font-medium text-white xl:text-base">
+              Connect Exchange
+            </div>
+          </Button>
+        </div>
+      </div>
+      <div class="flex items-center justify-center gap-1 text-xl xl:text-base">
+        <img src={Success} alt="" />
+        Bank-level security/encryption.
+        <a
+          href="https://vezgo.com/security"
+          class="text-blue-500 cursor-pointer"
+          target="_blank">Learn more</a
+        >
+      </div>
+      <div class="flex items-center justify-center gap-6 my-3">
+        {#each listLogoCEX as logo}
+          <div
+            class="flex items-center justify-center w-8 h-8 overflow-hidden rounded-full"
+          >
+            <img src={logo} alt="" class="object-contain w-full h-full" />
+          </div>
+        {/each}
+        <div class="text-gray-400">+22 More</div>
+      </div>
+    </div>
+    <div class="border-t-[1px] relative">
+      <div
+        class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 bg-white text-sm px-2"
+      >
+        Or
+      </div>
+    </div>
+    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-2">
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -757,13 +1266,13 @@
           class:input-border-error={errors.address && errors.address.required}
         >
           <div class="xl:text-base text-xl text-[#666666] font-medium">
-            {MultipleLang.content.modal_address_label}
+            Address
           </div>
           <input
             type="text"
             id="address"
             name="address"
-            placeholder={MultipleLang.content.modal_address_label}
+            placeholder={"You wallet address"}
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
               address ? "bg-[#F0F2F7]" : ""
@@ -778,8 +1287,6 @@
           </div>
         {/if}
       </div>
-    </div>
-    <div class="flex flex-col gap-1">
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -809,55 +1316,59 @@
           </div>
         {/if}
       </div>
-    </div>
-    <div class="flex justify-end gap-2">
-      <div class="lg:w-[100px] w-full">
-        <Button
-          variant="secondary"
-          on:click={() => {
-            errors = {};
-            isOpenAddModal = false;
-          }}
-        >
-          {MultipleLang.content.modal_cancel}</Button
-        >
+      <div class="flex items-center justify-center gap-6 my-3">
+        {#each chainList.slice(0, -1) as item}
+          <div
+            class="flex items-center justify-center w-8 h-8 overflow-hidden rounded-full"
+          >
+            <img src={item.logo} alt="" class="object-contain w-full h-full" />
+          </div>
+        {/each}
+        <div class="text-gray-400">More soon</div>
       </div>
-      <div class="lg:w-[100px] w-full">
-        <Button type="submit">
-          {MultipleLang.content.modal_add}</Button
-        >
+      <div class="flex justify-end gap-6 lg:gap-2">
+        <div class="lg:w-[120px] w-full">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              errors = {};
+              isOpenAddModal = false;
+            }}
+          >
+            {MultipleLang.content.modal_cancel}</Button
+          >
+        </div>
+        <div class="lg:w-[120px] w-full">
+          <Button type="submit" variant="tertiary">
+            {MultipleLang.content.modal_add}</Button
+          >
+        </div>
       </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </AppOverlay>
 
+<!-- Modal follow Whales -->
 <AppOverlay
+  clickOutSideToClose
   isOpen={isOpenFollowWhaleModal}
   on:close={() => (isOpenFollowWhaleModal = false)}
 >
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1">
-      <div class="xl:text-base text-2xl">
+      <div class="text-2xl xl:text-base">
         Go to <a
           href="https://t.me/GetNimbusBot"
           target="_blank"
           class="text-blue-500">https://t.me/GetNimbusBot</a
         >
       </div>
-      <div class="xl:text-base text-2xl">Use the command as follow video</div>
+      <div class="text-2xl xl:text-base">Use the command as follow video</div>
     </div>
     <div class="xl:h-[350px] h-[650px]">
-      <img src={FollowWhale} alt="" class="w-full h-full" />
+      <img src={FollowWhale} alt="" class="object-contain w-full h-full" />
     </div>
-    <div
-      class="relative w-full flex justify-end"
-      on:mouseenter={() => {
-        showCommandTooltip = true;
-      }}
-      on:mouseleave={() => {
-        showCommandTooltip = false;
-      }}
-    >
+    <div class="flex justify-end w-full">
       <CopyToClipboard
         text={`/start ${selectedWallet} ${
           formatListAddress.filter((item) => item.value === selectedWallet)?.[0]
@@ -865,7 +1376,15 @@
         }`}
         let:copy
       >
-        <div class="w-max">
+        <div
+          class="relative w-max"
+          on:mouseenter={() => {
+            showCommandTooltip = true;
+          }}
+          on:mouseleave={() => {
+            showCommandTooltip = false;
+          }}
+        >
           <Button
             on:click={() => {
               copy();
@@ -873,37 +1392,39 @@
               showCommandTooltip = false;
             }}>Copy command</Button
           >
+          {#if showCommandTooltip}
+            <div
+              class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+              style="z-index: 2147483648;"
+            >
+              <tooltip-detail
+                text={`/start ${selectedWallet} ${
+                  formatListAddress.filter(
+                    (item) => item.value === selectedWallet
+                  )?.[0]?.label || ""
+                }`}
+              />
+            </div>
+          {/if}
         </div>
       </CopyToClipboard>
-      {#if showCommandTooltip}
-        <div
-          class="absolute transform -translate-x-1/2 -top-8 left-1/2"
-          style="z-index: 2147483648;"
-        >
-          <tooltip-detail
-            text={`/start ${selectedWallet} ${
-              formatListAddress.filter(
-                (item) => item.value === selectedWallet
-              )?.[0]?.label || ""
-            }`}
-          />
-        </div>
-      {/if}
     </div>
   </div>
 </AppOverlay>
 
+<!-- Modal get user email -->
 <AppOverlay
+  clickOutSideToClose
   isOpen={isOpenModal}
   on:close={() => {
     isOpenModal = false;
   }}
 >
-  <div class="xl:title-3 title-1 text-center text-gray-600 font-semibold">
+  <div class="font-medium text-center text-gray-600 xl:title-3 title-1">
     Let's us know your email
   </div>
   <div class="mt-2">
-    <div class="xl:text-base text-lg text-gray-500 text-center">
+    <div class="text-lg text-center text-gray-500 xl:text-base">
       Add your email to get updates from us and receive exclusive benefits soon.
     </div>
     <form
@@ -911,32 +1432,31 @@
       class="flex flex-col gap-3 mt-4"
     >
       <div class="flex flex-col gap-1">
-        <div class="flex flex-col gap-1">
-          <div
-            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-              email ? "bg-[#F0F2F7]" : ""
-            }`}
-          >
-            <div class="xl:text-base text-xl text-[#666666] font-medium">
-              Email
-            </div>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Your email"
-              value=""
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                email ? "bg-[#F0F2F7]" : ""
-              }
-              `}
-              on:keyup={({ target: { value } }) => (email = value)}
-            />
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            email ? "bg-[#F0F2F7]" : ""
+          }`}
+        >
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
+            Email
           </div>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            placeholder="Your email"
+            value=""
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              email ? "bg-[#F0F2F7]" : ""
+            }
+              `}
+            on:keyup={({ target: { value } }) => (email = value)}
+          />
         </div>
       </div>
       <div class="flex justify-end gap-2">
-        <div class="lg:w-[100px] flex-1">
+        <div class="xl:w-[120px] w-full">
           <Button
             variant="secondary"
             on:click={() => {
@@ -946,7 +1466,7 @@
             {MultipleLang.content.modal_cancel}</Button
           >
         </div>
-        <div class="lg:w-[100px] flex-1">
+        <div class="xl:w-[120px] w-full">
           <Button
             type="submit"
             isLoading={isLoadingSendMail}
@@ -958,7 +1478,48 @@
   </div>
 </AppOverlay>
 
-<style>
+<Toast
+  transition={blur}
+  params={{ amount: 10 }}
+  position="top-right"
+  color={isSuccessToast ? "green" : "red"}
+  bind:open={showToast}
+>
+  <svelte:fragment slot="icon">
+    {#if isSuccessToast}
+      <svg
+        aria-hidden="true"
+        class="w-5 h-5"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        ><path
+          fill-rule="evenodd"
+          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+          clip-rule="evenodd"
+        /></svg
+      >
+      <span class="sr-only">Check icon</span>
+    {:else}
+      <svg
+        aria-hidden="true"
+        class="w-5 h-5"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        ><path
+          fill-rule="evenodd"
+          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+          clip-rule="evenodd"
+        /></svg
+      >
+      <span class="sr-only">Error icon</span>
+    {/if}
+  </svelte:fragment>
+  {toastMsg}
+</Toast>
+
+<style windi:preflights:global windi:safelist:global>
   .header-container {
     background-image: url("~/assets/capa.svg");
     background-color: #27326f;
@@ -975,5 +1536,15 @@
 
   .input-border-error {
     border: 1px solid red;
+  }
+
+  .container::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .container {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 </style>

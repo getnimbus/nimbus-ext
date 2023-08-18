@@ -5,23 +5,31 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
+  import { typeWallet } from "~/store";
 
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import "~/components/Loading.custom.svelte";
+  import { linkExplorer } from "~/utils";
 
   export let data;
   export let isLoading;
   export let pageToken;
   export let loadMore = (pageToken) => {};
 
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
+
   let tableHeader;
   let isSticky = false;
 
   onMount(() => {
     const handleScroll = () => {
-      const clientRectTokenHeader = tableHeader.getBoundingClientRect();
-      isSticky = clientRectTokenHeader.top <= 0;
+      const clientRectTokenHeader = tableHeader?.getBoundingClientRect();
+      isSticky = clientRectTokenHeader?.top <= 0;
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -41,42 +49,42 @@
           class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-9 bg-[#f4f5f8]"
         >
           <div
-            class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+            class="text-left xl:text-xs text-base uppercase font-medium text-black"
           >
             Transaction
           </div>
         </th>
         <th class="py-3">
           <div
-            class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+            class="text-left xl:text-xs text-base uppercase font-medium text-black"
           >
             From
           </div>
         </th>
         <th class="py-3">
           <div
-            class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+            class="text-left xl:text-xs text-base uppercase font-medium text-black"
           >
             To
           </div>
         </th>
         <th class="py-3">
           <div
-            class="text-left xl:text-xs text-base uppercase font-semibold text-black min-w-[100px]"
+            class="text-left xl:text-xs text-base uppercase font-medium text-black min-w-[100px]"
           >
             Type
           </div>
         </th>
         <th class="pr-3 py-3 rounded-tr-[10px]">
           <div
-            class="text-left xl:text-xs text-base uppercase font-semibold text-black"
+            class="text-left xl:text-xs text-base uppercase font-medium text-black"
           >
             Token change
           </div>
         </th>
       </tr>
     </thead>
-    {#if isLoading && pageToken.length === 0}
+    {#if isLoading && pageToken?.length === 0}
       <tbody>
         <tr>
           <td colspan={5}>
@@ -107,22 +115,30 @@
                 <div class="text-left flex items-start gap-2 w-max">
                   <div class="flex flex-col">
                     <div class="xl:text-sm text-xl">
-                      <Copy
-                        address={item?.transaction_hash}
-                        textTooltip="Copy transaction to clipboard"
-                        iconColor="#000"
-                        isShorten={true}
-                        isLink={true}
-                        link={`${
-                          item?.chain === "ETH"
-                            ? `https://etherscan.io/tx/${item?.transaction_hash}`
-                            : `https://www.oklink.com/btc/tx/${item?.transaction_hash}`
-                        }`}
-                      />
+                      {#if typeWalletAddress === "DEX"}
+                        <Copy
+                          address={item?.transaction_hash}
+                          textTooltip="Copy transaction to clipboard"
+                          iconColor="#000"
+                          isShorten={true}
+                          isLink={true}
+                          link={`${
+                            linkExplorer(item?.chain, item?.transaction_hash)
+                              .trx
+                          }`}
+                        />
+                      {:else}
+                        <Copy
+                          address={item?.transaction_hash}
+                          textTooltip="Copy transaction to clipboard"
+                          iconColor="#000"
+                          isShorten={true}
+                        />
+                      {/if}
                     </div>
                     <div class="text-gray-400 xl:text-xs text-lg">
                       {dayjs(new Date(item?.detail.timestamp)).format(
-                        "DD/MM/YYYY, hh:mm A"
+                        "YYYY-MM-DD, hh:mm A"
                       )}
                     </div>
                   </div>
@@ -132,17 +148,25 @@
               <td class="py-4 group-hover:bg-gray-100">
                 {#if item?.detail?.from}
                   <div class="w-max xl:text-sm text-xl">
-                    <Copy
-                      address={item?.detail?.from}
-                      iconColor="#000"
-                      isShorten={true}
-                      isLink={true}
-                      link={`${
-                        item?.chain === "ETH"
-                          ? `https://etherscan.io/address/${item?.detail?.from}`
-                          : `https://www.oklink.com/btc/address/${item?.detail?.from}`
-                      }`}
-                    />
+                    {#if typeWalletAddress === "DEX"}
+                      <Copy
+                        address={item?.detail?.from}
+                        iconColor="#000"
+                        textTooltip="Copy address to clipboard"
+                        isShorten={true}
+                        isLink={true}
+                        link={`${
+                          linkExplorer(item?.chain, item?.detail?.from).address
+                        }`}
+                      />
+                    {:else}
+                      <Copy
+                        address={item?.detail?.from}
+                        textTooltip="Copy address to clipboard"
+                        iconColor="#000"
+                        isShorten={true}
+                      />
+                    {/if}
                   </div>
                 {/if}
               </td>
@@ -150,17 +174,25 @@
               <td class="py-4 group-hover:bg-gray-100">
                 {#if item?.detail?.to}
                   <div class="w-max xl:text-sm text-xl">
-                    <Copy
-                      address={item?.detail?.to}
-                      iconColor="#000"
-                      isShorten={true}
-                      isLink={true}
-                      link={`${
-                        item?.chain === "ETH"
-                          ? `https://etherscan.io/address/${item?.detail?.to}`
-                          : `https://www.oklink.com/btc/address/${item?.detail?.to}`
-                      }`}
-                    />
+                    {#if typeWalletAddress === "DEX"}
+                      <Copy
+                        address={item?.detail?.to}
+                        iconColor="#000"
+                        textTooltip="Copy address to clipboard"
+                        isShorten={true}
+                        isLink={true}
+                        link={`${
+                          linkExplorer(item?.chain, item?.detail?.to).address
+                        }`}
+                      />
+                    {:else}
+                      <Copy
+                        address={item?.detail?.to}
+                        textTooltip="Copy address to clipboard"
+                        iconColor="#000"
+                        isShorten={true}
+                      />
+                    {/if}
                   </div>
                 {/if}
               </td>
@@ -238,4 +270,5 @@
   </div>
 {/if}
 
-<style></style>
+<style windi:preflights:global windi:safelist:global>
+</style>

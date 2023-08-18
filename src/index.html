@@ -10,10 +10,10 @@
     <link
       rel="icon"
       type="image/svg+xml"
-      href="https://getnimbus.io/favicon.svg"
+      href="https://getnimbus.io/nimbusFavicon.svg"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -22,7 +22,7 @@
         padding: 0;
         margin: 0;
         scroll-behavior: smooth;
-        font-family: "Golos Text", sans-serif;
+        font-family: "Golos Text", sans-serif !important;
       }
 
       a {
@@ -53,19 +53,65 @@
 
   <body>
     <div id="app"></div>
-    <script src="https://do.featurebase.app/js/widget.js"></script>
     <script>
-      FeaturebaseWidget.init({
+      !(function (e, t) {
+        const a = "featurebase-sdk";
+        function n() {
+          if (!t.getElementById(a)) {
+            var e = t.createElement("script");
+            (e.id = a),
+              (e.src = "https://do.featurebase.app/js/sdk.js"),
+              t
+                .getElementsByTagName("script")[0]
+                .parentNode.insertBefore(
+                  e,
+                  t.getElementsByTagName("script")[0]
+                );
+          }
+        }
+        "function" != typeof e.Featurebase &&
+          (e.Featurebase = function () {
+            (e.Featurebase.q = e.Featurebase.q || []).push(arguments);
+          }),
+          "complete" === t.readyState || "interactive" === t.readyState
+            ? n()
+            : t.addEventListener("DOMContentLoaded", n);
+      })(window, document);
+
+      Featurebase("initialize_changelog_widget", {
         organization: "nimbus",
+        placement: "bottom",
+        theme: "light",
         initialPage: "MainView",
-        placement: "right",
         fullScreen: false,
       });
     </script>
-    <script
-      async
-      src="https://analytics.umami.is/script.js"
-      data-website-id="2ecfa1ca-7bea-46ba-87a3-8f4f9bf12eae"
-    ></script>
+
+    <script>
+      Featurebase("initialize_feedback_widget", {
+        organization: "nimbus", // required
+        theme: "light", // required
+        placement: "right", // optional
+        // email: "youruser@example.com", // optional
+      });
+    </script>
+
+    <script type="text/javascript" id="zsiqchat">
+      var $zoho = $zoho || {};
+      $zoho.salesiq = $zoho.salesiq || {
+        widgetcode:
+          "siq8d466e3d68be01f65603263afdc21538ba145cc896d4858a1740fbe61eeeeeeb",
+        values: {},
+        ready: function () {},
+      };
+      var d = document;
+      s = d.createElement("script");
+      s.type = "text/javascript";
+      s.id = "zsiqscript";
+      s.defer = true;
+      s.src = "https://salesiq.zohopublic.com/widget";
+      t = d.getElementsByTagName("script")[0];
+      t.parentNode.insertBefore(s, t);
+    </script>
   </body>
 </html>

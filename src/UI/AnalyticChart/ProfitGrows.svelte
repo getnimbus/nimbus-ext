@@ -5,6 +5,7 @@
   import EChart from "~/components/EChart.svelte";
 
   import Logo from "~/assets/logo-1.svg";
+  import LoadingPremium from "~/components/LoadingPremium.svelte";
 
   export let isEmpty;
   export let isLoading;
@@ -78,7 +79,7 @@
   $: {
     if (dataTotalValueHistory && dataTotalValueHistory.length !== 0) {
       const formatXAxis = dataTotalValueHistory.map((item) => {
-        return dayjs(new Date(item.timestamp * 1000)).format("DD MMM YYYY");
+        return dayjs(new Date(item.timestamp * 1000)).format("YYYY-MM-DD");
       });
 
       const formatDataCost = dataTotalValueHistory.map((item) => {
@@ -176,7 +177,7 @@
   <div class="mt-2">
     {#if isLoading}
       <div class="flex items-center justify-center h-[415px]">
-        <loading-icon />
+        <LoadingPremium />
       </div>
     {:else}
       <div class="h-full">

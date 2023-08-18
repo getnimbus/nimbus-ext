@@ -57,13 +57,22 @@
       window.location.pathname + `?tab=${tabValue}`
     );
   };
+
+  $: listSideBar =
+    APP_TYPE.TYPE === "EXT"
+      ? items.filter((item, index) => {
+          return [0, 3].indexOf(index) == -1;
+        })
+      : items.filter((item, index) => {
+          return [1, 2].indexOf(index) == -1;
+        });
 </script>
 
 <Sidebar asideClass="bg-gray-50">
   <SidebarWrapper>
     <img src={logo} alt="logo" class="mb-4 mx-auto" width={150} />
     <SidebarGroup>
-      {#each items as item}
+      {#each listSideBar as item}
         <SidebarItem
           label={item.label}
           on:click={(e) => handleClick(e, item.value)}

@@ -5,6 +5,7 @@
   import EChart from "~/components/EChart.svelte";
 
   import Logo from "~/assets/logo-1.svg";
+  import LoadingPremium from "~/components/LoadingPremium.svelte";
 
   export let isEmpty;
   export let isLoading;
@@ -62,7 +63,7 @@
   $: {
     if (dataDailyPnL && dataDailyPnL.length !== 0) {
       const formatXAxis = dataDailyPnL.map((item) => {
-        return dayjs(new Date(item.timestamp * 1000)).format("DD MMM YYYY");
+        return dayjs(new Date(item.timestamp * 1000)).format("YYYY-MM-DD");
       });
       const formatDataDailyPnL = dataDailyPnL.map((item) => {
         return {
@@ -93,7 +94,7 @@
   <div>
     {#if isLoading}
       <div class="flex items-center justify-center h-[415px]">
-        <loading-icon />
+        <LoadingPremium />
       </div>
     {:else}
       <div class="w-full h-full">

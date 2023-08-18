@@ -4,6 +4,7 @@
   export let data;
   export let isLoading;
 
+  import "~/components/Loading.custom.svelte";
   import OpportunityCard from "~/components/OpportunityCard.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";

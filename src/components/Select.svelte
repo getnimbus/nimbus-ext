@@ -1,11 +1,13 @@
 <script lang="ts">
   import { wallet, chain } from "~/store";
+
   import UpArrow from "~/assets/up-arrow.svg";
   import All from "~/assets/all.svg";
 
   export let listSelect;
   export let selected;
   export let type: "chain" | "wallet" | "lang";
+  export let positionSelectList;
 
   let open = false;
 
@@ -21,6 +23,24 @@
       selected &&
       listSelect.filter((item) => item.value === selected)) ||
     [];
+
+  const disabledChains = ["XDAI", "SOL"];
+
+  const clickOutside = (node) => {
+    const handleClick = (event) => {
+      if (node && !node.contains(event.target) && !event.defaultPrevented) {
+        node.dispatchEvent(new CustomEvent("click_outside", node));
+      }
+    };
+
+    document.addEventListener("click", handleClick, true);
+
+    return {
+      destroy() {
+        document.removeEventListener("click", handleClick, true);
+      },
+    };
+  };
 </script>
 
 <div class="wrapper">
@@ -39,7 +59,7 @@
               ? All
               : selected?.logo || selectedChain[0]?.logo}
             alt=""
-            class="xl:w-5 xl:h-5 w-7 h-7"
+            class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
           />
         {/if}
         <div class="text-white xl:text-sm text-2xl">
@@ -61,7 +81,9 @@
 
   {#if open}
     <div
-      class="content xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] xl:max-h-[310px] max-h-[380px] w-[300px] min-w-[300px] mt-2"
+      class={`content xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] xl:max-h-[310px] max-h-[380px] w-[300px] min-w-[300px] mt-2 ${positionSelectList}`}
+      use:clickOutside
+      on:click_outside={() => (open = false)}
     >
       {#each listSelect as item}
         <div
@@ -81,7 +103,11 @@
                 item.value !== "ALL" &&
                 item.value !== "ETH" &&
                 item.value !== "BTC" &&
-                item.value !== "GNOSIS"
+                item.value !== "BNB" &&
+                item.value !== "MATIC" &&
+                item.value !== "OP" &&
+                item.value !== "AVAX" &&
+                item.value !== "ARB"
               ) {
                 open = false;
               } else {
@@ -100,22 +126,18 @@
             <img
               src={item.value === "ALL" ? All : item.logo}
               alt=""
-              class="xl:w-5 xl:h-5 w-7 h-7"
+              class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
             />
           {/if}
           <div
             class={`xl:text-sm text-2xl name ${
-              type === "chain" &&
-              item.value !== "ALL" &&
-              item.value !== "ETH" &&
-              item.value !== "BTC" &&
-              item.value !== "GNOSIS"
+              type === "chain" && disabledChains.includes(item.value)
                 ? "text-[#00000066]"
                 : "text-[#000000b3]"
             }`}
           >
             {item.label}
-            {#if type === "chain" && item.value !== "ALL" && item.value !== "ETH" && item.value !== "BTC" && item.value !== "GNOSIS"}
+            {#if type === "chain" && disabledChains.includes(item.value)}
               (Soon)
             {/if}
           </div>
@@ -128,6 +150,7 @@
 <style>
   .wrapper {
     position: relative;
+    width: max-content;
   }
 
   .button {
@@ -150,7 +173,6 @@
   .content {
     overflow-y: overlay;
     position: absolute;
-    right: 0;
     z-index: 2147483646;
     background: #ffffff;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
@@ -169,7 +191,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 16px;
+    padding: 14px;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;

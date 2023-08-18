@@ -1,11 +1,12 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import { Motion } from "svelte-motion";
   import { showOverlayAnimationVariants } from "~/utils";
   const dispatch = createEventDispatcher();
 
   export let isOpen;
   export let clickOutSideToClose = false;
+  export let isTableContent = false;
 
   const handleClose = () => {
     dispatch("close");
@@ -17,11 +18,24 @@
   // } else {
   //   document.body.style.overflow = "unset";
   // }
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      handleClose();
+    }
+  };
+
+  onMount(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  });
 </script>
 
 {#if isOpen}
   <div
-    class="w-screen h-screen fixed top-0 left-0 flex justify-center items-center bg-[#000000cc]"
+    class="w-screen h-screen fixed top-0 left-0 flex overflow-y-auto justify-center items-center bg-[#000000cc]"
     style="z-index: 2147483647;"
     on:click={clickOutSideToClose ? handleClose : null}
   >
@@ -32,7 +46,9 @@
       let:motion
     >
       <div
-        class="bg-white rounded-xl px-6 pt-9 pb-7 mx-6 relative xl:min-w-xl min-w-3xl"
+        class={`bg-white rounded-xl px-6 pt-9 pb-7 mx-6 relative ${
+          isTableContent ? "xl:min-w-7xl min-w-4xl" : "xl:min-w-2xl min-w-4xl"
+        }`}
         style="box-shadow: 0px 4px 20px 0px #00000026;"
         on:click|stopPropagation
         use:motion

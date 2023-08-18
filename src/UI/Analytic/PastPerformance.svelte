@@ -1,15 +1,19 @@
 <script lang="ts">
-  import { sendMessage } from "webext-bridge";
-  import { wallet, chain } from "~/store";
+  import { wallet, chain, typeWallet, isOpenReport } from "~/store";
   import { getAddressContext } from "~/utils";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { nimbus } from "~/lib/network";
 
+  import Button from "~/components/Button.svelte";
   import DateRangePicker from "~/components/DateRangePicker.svelte";
   import SectorGrowth from "../AnalyticChart/SectorGrowth.svelte";
-  import TotalGasFee from "../AnalyticChart/TotalGasFee.svelte";
-  import InflowOutflow from "../AnalyticChart/InflowOutflow.svelte";
   import TotalValueHistory from "../AnalyticChart/TotalValueHistory.svelte";
   import DailyPnL from "../AnalyticChart/DailyPnL.svelte";
   import ProfitGrows from "../AnalyticChart/ProfitGrows.svelte";
+  import TotalGasFee from "../AnalyticChart/TotalGasFee.svelte";
+  import HistoricalActivities from "../AnalyticChart/HistoricalActivities.svelte";
+
+  export let packageSelected;
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -21,73 +25,56 @@
     selectedChain = value;
   });
 
-  let isLoading = false;
-  let isEmpty = false;
-  let dataTotalValueHistory = [];
-  let dataDailyPnL = [];
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
 
   // const handleGetDateRange = (data) => {
   //   console.log(data);
   // };
 
-  const getTotalValueHistoryAndDailyGain = async () => {
-    if (getAddressContext(selectedWallet).type === "EVM") {
-      isLoading = true;
-      try {
-        const response: any = await sendMessage("getTotalValueHistory", {
-          address: selectedWallet,
-          chain: selectedChain,
-          // fromDate: "YYYY-MM-DD",
-          // toDate: "YYYY-MM-DD",
-        });
-
-        if (response === undefined) {
-          isEmpty = true;
-          isLoading = false;
-          return;
-        } else if (selectedWallet === response?.address) {
-          if (response?.result?.length === 0) {
-            isEmpty = true;
-            isLoading = false;
-            return;
-          }
-          dataTotalValueHistory = response?.result?.holdingHistory;
-          dataDailyPnL = response?.result?.returnsChange;
-
-          isLoading = false;
-        } else {
-          isEmpty = true;
-          isLoading = false;
-        }
-      } catch (e) {
-        console.log("error: ", e);
-      }
+  const getTotalValueHistoryAndDailyGain = async (address, chain) => {
+    if (packageSelected === "FREE") {
+      return undefined;
     }
+    const response = await nimbus.get(
+      `/v2/analysis/${address}/holding-history?chain=${chain}&fromDate=${""}&toDate=${""}`
+    );
+    return response.data;
   };
 
-  $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
-        getTotalValueHistoryAndDailyGain();
-      }
-    }
-  }
+  $: enabledQuery = Boolean(
+    getAddressContext(selectedWallet)?.type === "EVM" ||
+      typeWalletAddress === "CEX"
+  );
+
+  $: query = createQuery({
+    queryKey: ["holding-history", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () =>
+      getTotalValueHistoryAndDailyGain(selectedWallet, selectedChain),
+    staleTime: Infinity,
+  });
 </script>
 
-<div class="border border-[#0000001a] rounded-[20px] p-6">
-  <div class="flex justify-between items-center border-b-[1px] mb-6 pb-4">
+<div class="flex flex-col gap-5">
+  <div class="flex justify-between items-center">
     <div class="xl:text-2xl text-4xl font-medium text-black">
-      Past Performance
+      Historical Activities
     </div>
     <!-- <DateRangePicker onChange={handleGetDateRange} /> -->
   </div>
   <div class="flex flex-col gap-6">
-    <ProfitGrows {isLoading} {isEmpty} {dataTotalValueHistory} />
-    <TotalValueHistory {isLoading} {isEmpty} {dataTotalValueHistory} />
-    <DailyPnL {isLoading} {isEmpty} {dataDailyPnL} />
-    <SectorGrowth />
-    <InflowOutflow />
-    <TotalGasFee />
+    <!-- <ProfitGrows isLoading={$query.isFetching} isEmpty={$query.isError} dataTotalValueHistory={$query.data.holdingHistory} />
+    <TotalValueHistory isLoading={$query.isFetching} isEmpty={$query.isError} dataTotalValueHistory={$query.data.holdingHistory} />
+    <DailyPnL isLoading={$query.isFetching} isEmpty={$query.isError} dataDailyPnL={$query.data.returnsChange} />
+    <SectorGrowth /> -->
+    {#if typeWalletAddress === "DEX"}
+      <TotalGasFee {packageSelected} />
+    {:else}
+      <HistoricalActivities {packageSelected} />
+    {/if}
   </div>
 </div>
 

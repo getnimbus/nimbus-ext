@@ -135,7 +135,7 @@
   <!-- {#if Object.keys(userInfo).length === 0}
     <div class="flex justify-center items-center h-screen">
       <div class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center">
-        <div class="text-lg">Please login to use this feature</div>
+        <div class="text-lg">Please connect wallet to use this feature</div>
       </div>
     </div>
   {:else}
@@ -174,6 +174,7 @@
 </ErrorBoundary>
 
 <AppOverlay
+  clickOutSideToClose
   isOpen={isOpenModal}
   on:close={() => {
     localStorage.setItem("currentDay", currentDate.format("YYYY-MM-DD"));
@@ -181,18 +182,16 @@
     isOpenModal = false;
   }}
 >
-  <div class="xl:title-3 title-1 text-center text-gray-600 font-semibold">
-    Let's us analytic your portfolio
-  </div>
   <div class="mt-2">
     <div
       class="xl:text-base text-lg text-gray-500 text-center xl:w-[600px] w-[700px]"
     >
       Our analysis is
-      <span class="font-bold">Premium</span>
-      <img src={Crown} alt="" width="13" height="12" class="inline-block" /> feature
-      is under beta which you can access for free now. Add your email to get updates
-      from us and receive exclusive benefits soon.
+      <span class="font-medium">Premium</span>
+      <img src={Crown} alt="" width="13" height="12" class="inline-block" />
+      feature is under beta<br /> which you can access for free now. <br />Add
+      your email to get updates from us and receive exclusive benefits in the
+      future.
     </div>
     <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
       <div class="flex flex-col gap-1">
@@ -221,7 +220,7 @@
         </div>
       </div>
       <div class="flex justify-end gap-2">
-        <div class="lg:w-[100px] w-full">
+        <div class="lg:w-[120px] w-full">
           <Button
             variant="secondary"
             on:click={() => {
@@ -236,7 +235,7 @@
             Cancel
           </Button>
         </div>
-        <div class="lg:w-[100px] w-full">
+        <div class="lg:w-[120px] w-full">
           <Button
             type="submit"
             isLoading={isLoadingSendMail}

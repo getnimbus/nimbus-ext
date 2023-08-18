@@ -60,20 +60,6 @@
     let collectionIDParams = urlParams.get("id");
     let addressParams = urlParams.get("address");
 
-    if (APP_TYPE.TYPE === "EXT") {
-      const params = decodeURIComponent(window.location.hash)
-        .split("?")[1]
-        .split("&")
-        .reduce(function (result, param) {
-          var [key, value] = param.split("=");
-          result[key] = value;
-          return result;
-        }, {});
-
-      collectionIDParams = params.id;
-      addressParams = params.address;
-    }
-
     if (collectionIDParams && addressParams) {
       mixpanel.track("nft_detail_page", {
         address: addressParams,
@@ -107,12 +93,7 @@
     <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
       <div class="flex flex-col gap-14 mb-5">
         <div class="flex justify-between items-center">
-          <Link
-            to={`${
-              APP_TYPE.TYPE === "EXT" ? "src/entries/newTab/index.html" : "/"
-            }`}
-            class="cusor-pointer"
-          >
+          <Link to="/" class="cusor-pointer">
             <div class="text-white flex items-center gap-1">
               <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
               <div class="xl:text-sm text-xl font-semibold">
@@ -253,7 +234,8 @@
   </div>
   <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
     <div
-      class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md mt-6"
+      class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 mt-6"
+      style="box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.10);"
     >
       <div class="border border-[#0000001a] rounded-[20px] p-6">
         <div class="flex flex-col gap-6">

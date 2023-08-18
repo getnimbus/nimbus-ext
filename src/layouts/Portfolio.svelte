@@ -6,18 +6,14 @@
   dayjs.extend(relativeTime);
   import { groupBy, isEmpty } from "lodash";
   import { onDestroy, onMount } from "svelte";
-  import { Motion } from "svelte-motion";
   import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
   import { disconnectWs, initWS } from "~/lib/price-ws";
-  import {
-    formatBalance,
-    formatCurrency,
-    showChatAnimationVariants,
-  } from "~/utils";
+  import { formatCurrency, getAddressContext } from "~/utils";
   import { wait } from "../entries/background/utils";
-  import { isOpenReport, wallet, chain } from "~/store";
+  import { isOpenReport, wallet, chain, typeWallet } from "~/store";
   import mixpanel from "mixpanel-browser";
+  import { nimbus } from "~/lib/network";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
@@ -33,12 +29,11 @@
   import Overview from "~/UI/Portfolio/Overview.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
   import Testimonial from "~/UI/Testimonial/Testimonial.svelte";
+  import Compare from "~/UI/Portfolio/Compare.svelte";
   import "~/components/Tooltip.custom.svelte";
+  import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
 
-  import Comment from "~/assets/comment-bubble-icon.svg";
   import Reload from "~/assets/reload.svg";
-  import TrendDown from "~/assets/trend-down.svg";
-  import TrendUp from "~/assets/trend-up.svg";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -53,7 +48,7 @@
     Value: i18n("newtabPage.Value", "Value"),
     data_updated: i18n("newtabPage.data-updated", "Data updated"),
     updating_data: i18n("newtabPage.updating-data", "Updating data"),
-    search_placeholder: i18n("newtabPage.search-placeholder", "Search"),
+    search_placeholder: i18n("newtabPage.search-placeholder", "Search address"),
     missed_protocol: i18n(
       "newtabPage.missed-protocol",
       "Missing your protocol?"
@@ -68,6 +63,11 @@
   let selectedChain: string = "";
   chain.subscribe((value) => {
     selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let overviewData: OverviewData = {
@@ -86,6 +86,7 @@
       postionNetworth: 0,
       postionNetworthChange: 0,
     },
+    portfolioChart: [],
     performance: [],
     updatedAt: "",
   };
@@ -93,13 +94,13 @@
   let holdingTokenData: TokenData = [];
   let holdingNFTData: NFTData = [];
   let positionsData: PositionData = [];
+  let overviewDataPerformance = {
+    performance: [],
+    portfolioChart: [],
+  };
   let dataUpdatedTime;
   let isLoading = false;
   let isLoadingSync = false;
-  let isShowChat = false;
-  isOpenReport.subscribe((value) => {
-    isShowChat = value;
-  });
   let totalPositions = 0;
   let totalClaimable = 0;
   let totalAssets = 0;
@@ -110,84 +111,24 @@
   let loadingHoldingNFT = false;
   let loadingPositions = false;
   let loadingNews = false;
-  let optionLine = {
-    title: {
-      text: "",
-    },
-    tooltip: {
-      trigger: "axis",
-      extraCssText: "z-index: 9997",
-      formatter: function (params) {
-        return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                ${params[0].axisValue}
-              </div>
-              ${params
-                .map((item) => {
-                  return `
-                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
-                    <span>${item?.marker}</span>
-                    ${item?.seriesName}
-                  </div>
-
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
-                    };">
-                      ${formatCurrency(Math.abs(item.value))}%
-                      <img
-                        src=${item.value >= 0 ? TrendUp : TrendDown} 
-                        alt=""
-                        style="margin-bottom: 4px;"
-                      />
-                    </div>
-                  </div>
-                </div>
-                `;
-                })
-                .join("")}
-            </div>`;
-      },
-    },
-    legend: {
-      lineStyle: {
-        type: "solid",
-      },
-      data: [],
-    },
-    grid: {
-      left: "3%",
-      right: "4%",
-      bottom: "3%",
-      containLabel: true,
-    },
-    xAxis: {
-      type: "category",
-      boundaryGap: false,
-      data: [],
-    },
-    yAxis: {
-      type: "value",
-      axisLabel: {
-        formatter: "{value}%",
-      },
-    },
-    series: [],
-  };
   let dataPieChart = {
     token: {
       sumOrderBreakdownToken: 0,
-      formatDataPieChartTopFourToken: [],
+      formatDataPieChartTopFiveToken: [],
       dataPieChartOrderBreakdownToken: [],
     },
     nft: {
       sumOrderBreakdownNft: 0,
-      formatDataPieChartTopFourNft: [],
+      formatDataPieChartTopFiveNft: [],
       dataPieChartOrderBreakdownNft: [],
     },
   };
+
+  let selectedTokenHolding = {
+    data: [],
+    select: [],
+  };
+  let selectedDataPieChart = {};
 
   const getOverview = async (isReload: boolean = false) => {
     isEmptyDataPie = false;
@@ -202,8 +143,8 @@
         overviewData = response.result;
 
         if (
-          overviewData?.breakdownToken?.length === 0 ||
-          overviewData?.breakdownNft?.length === 0
+          overviewData?.breakdownToken?.length === 0
+          // || overviewData?.breakdownNft?.length === 0
         ) {
           isEmptyDataPie = true;
         }
@@ -224,8 +165,8 @@
           return 0;
         });
 
-        const topFourBreakdownToken = sortBreakdownToken
-          .slice(0, 4)
+        const topFiveBreakdownToken = sortBreakdownToken
+          ?.slice(0, 5)
           .map((item) => {
             return {
               ...item,
@@ -236,7 +177,7 @@
           });
 
         const orderBreakdownToken = sortBreakdownToken.slice(
-          4,
+          5,
           sortBreakdownToken.length
         );
 
@@ -259,7 +200,7 @@
           },
         ];
 
-        const formatDataPieChartTopFourToken = topFourBreakdownToken.map(
+        const formatDataPieChartTopFiveToken = topFiveBreakdownToken.map(
           (item) => {
             return {
               logo: item.logo,
@@ -270,7 +211,7 @@
               name_value: "Value",
               value_value: Number(item.value),
               name_balance: "Balance",
-              value_balance: Number(item.amount),
+              value_balance: Number(item.amount || item.balance),
             };
           }
         );
@@ -291,8 +232,8 @@
           return 0;
         });
 
-        const topFourBreakdownNft = sortBreakdownNft
-          ?.slice(0, 4)
+        const topFiveBreakdownNft = sortBreakdownNft
+          ?.slice(0, 5)
           .map((item) => {
             return {
               ...item,
@@ -302,7 +243,7 @@
           });
 
         const orderBreakdownNft = sortBreakdownNft?.slice(
-          4,
+          5,
           sortBreakdownNft.length
         );
 
@@ -323,7 +264,7 @@
           },
         ];
 
-        const formatDataPieChartTopFourNft = topFourBreakdownNft?.map(
+        const formatDataPieChartTopFiveNft = topFiveBreakdownNft?.map(
           (item) => {
             return {
               name: item.collection.name || item.collection.symbol,
@@ -332,7 +273,7 @@
               name_value: "Value",
               value_value: Number(item.value),
               name_balance: "Balance",
-              value_balance: Number(item.amount),
+              value_balance: Number(item.amount || item.balance),
             };
           }
         );
@@ -340,106 +281,19 @@
         dataPieChart = {
           token: {
             sumOrderBreakdownToken,
-            formatDataPieChartTopFourToken,
+            formatDataPieChartTopFiveToken,
             dataPieChartOrderBreakdownToken,
           },
           nft: {
             sumOrderBreakdownNft,
-            formatDataPieChartTopFourNft,
+            formatDataPieChartTopFiveNft,
             dataPieChartOrderBreakdownNft,
           },
         };
 
-        // line chart format data
-        const formatXAxis = overviewData?.performance.map((item) => {
-          return dayjs(item.date).format("DD MMM YYYY");
-        });
-
-        const formatDataPortfolio = overviewData?.performance.map((item) => {
-          return {
-            value: item.portfolio,
-            itemStyle: {
-              color: "#00b580",
-            },
-          };
-        });
-
-        const formatDataETH = overviewData?.performance.map((item) => {
-          return {
-            value: item.eth,
-            itemStyle: {
-              color: "#547fef",
-            },
-          };
-        });
-
-        const formatDataBTC = overviewData?.performance.map((item) => {
-          return {
-            value: item.btc,
-            itemStyle: {
-              color: "#f7931a",
-            },
-          };
-        });
-
-        optionLine = {
-          ...optionLine,
-          legend: {
-            ...optionLine.legend,
-            data: [
-              {
-                name: "Your Portfolio",
-                itemStyle: {
-                  color: "#00b580",
-                },
-              },
-              {
-                name: "Bitcoin",
-                itemStyle: {
-                  color: "#f7931a",
-                },
-              },
-              {
-                name: "Ethereum",
-                itemStyle: {
-                  color: "#547fef",
-                },
-              },
-            ],
-          },
-          xAxis: {
-            ...optionLine.xAxis,
-            data: formatXAxis,
-          },
-          series: [
-            {
-              name: "Your Portfolio",
-              type: "line",
-              lineStyle: {
-                type: "solid",
-                color: "#00b580",
-              },
-              data: formatDataPortfolio,
-            },
-            {
-              name: "Bitcoin",
-              type: "line",
-              lineStyle: {
-                type: "dashed",
-                color: "#f7931a",
-              },
-              data: formatDataBTC,
-            },
-            {
-              name: "Ethereum",
-              type: "line",
-              lineStyle: {
-                type: "dashed",
-                color: "#547fef",
-              },
-              data: formatDataETH,
-            },
-          ],
+        overviewDataPerformance = {
+          performance: overviewData?.performance,
+          portfolioChart: overviewData?.portfolioChart,
         };
 
         return response;
@@ -485,11 +339,35 @@
         chain: selectedChain,
       });
 
+      const responseVaults = await nimbus.get(
+        `/v2/investment/${selectedWallet}/vaults`
+      );
+
       if (selectedWallet === response?.address) {
-        const formatData = response.result.map((item) => {
+        const formatDataTokenHolding = response?.result.map((item) => {
+          try {
+            const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
+            const filteredVaults = responseVaults?.data?.filter((data) =>
+              data.name.match(regex)
+            );
+
+            return {
+              ...item,
+              vaults: filteredVaults,
+            };
+          } catch (error) {
+            return {
+              ...item,
+              vaults: [],
+            };
+          }
+        });
+
+        const formatData = formatDataTokenHolding.map((item) => {
           return {
             ...item,
-            value: item.amount * item.rate,
+            value:
+              Number(item?.amount) * Number(item?.price?.price || item?.rate),
           };
         });
         holdingTokenData = formatData.sort((a, b) => {
@@ -501,7 +379,10 @@
           }
           return 0;
         });
-        return response;
+        return {
+          ...response,
+          result: formatDataTokenHolding,
+        };
       } else {
         // console.log("response: ", response)
       }
@@ -511,6 +392,13 @@
   };
 
   const getHoldingNFT = async (isReload: boolean = false) => {
+    if (
+      typeWalletAddress === "CEX" ||
+      (typeWalletAddress === "DEX" &&
+        getAddressContext(selectedWallet).type === "EVM")
+    ) {
+      return [];
+    }
     try {
       const response: HoldingNFTRes = await sendMessage("getHoldingNFT", {
         address: selectedWallet,
@@ -561,29 +449,6 @@
   };
 
   const handleGetAllData = async (type: string) => {
-    overviewData = {
-      breakdownToken: [],
-      breakdownNft: [],
-      overview: {
-        assets: 0,
-        assetsChange: 0,
-        change: "",
-        claimable: 0,
-        claimableChange: 0,
-        debts: 0,
-        debtsChange: 0,
-        networth: 0,
-        networthChange: 0,
-        postionNetworth: 0,
-        postionNetworthChange: 0,
-      },
-      performance: [],
-      updatedAt: "",
-    };
-    positionsData = [];
-    newsData = [];
-    holdingNFTData = [];
-    holdingTokenData = [];
     loadingOverview = true;
     loadingHoldingToken = true;
     loadingHoldingNFT = true;
@@ -644,7 +509,7 @@
               resOverview,
               resHoldingToken,
               resHoldingNFT,
-              resPositions,
+              // resPositions,
               // resNews,
             ] = await Promise.all([
               getOverview(type === "reload").then((res) => {
@@ -659,10 +524,10 @@
                 loadingHoldingNFT = false;
                 return res;
               }),
-              getPositions(type === "reload").then((res) => {
-                loadingPositions = false;
-                return res;
-              }),
+              // getPositions(type === "reload").then((res) => {
+              //   loadingPositions = false;
+              //   return res;
+              // }),
               // getNews(type === "reload").then((res) => {
               //   loadingNews = false;
               //   return res;
@@ -672,8 +537,8 @@
             if (
               resOverview &&
               resHoldingToken &&
-              resHoldingNFT &&
-              (resPositions === undefined || resPositions)
+              resHoldingNFT
+              //  && (resPositions === undefined || resPositions)
             ) {
               syncMsg = "";
               isLoading = false;
@@ -705,6 +570,13 @@
     }
   };
 
+  const handleSelectedTableTokenHolding = (data, selectDatPieChart) => {
+    if (data.data && data.data.length !== 0) {
+      selectedTokenHolding = data;
+      selectedDataPieChart = selectDatPieChart;
+    }
+  };
+
   onMount(() => {
     initWS();
     mixpanel.track("portfolio_page", {
@@ -718,7 +590,53 @@
 
   $: {
     if (selectedWallet || selectedChain) {
-      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
+        overviewDataPerformance = {
+          performance: [],
+          portfolioChart: [],
+        };
+        selectedTokenHolding = {
+          data: [],
+          select: [],
+        };
+        selectedDataPieChart = {};
+        dataPieChart = {
+          token: {
+            sumOrderBreakdownToken: 0,
+            formatDataPieChartTopFiveToken: [],
+            dataPieChartOrderBreakdownToken: [],
+          },
+          nft: {
+            sumOrderBreakdownNft: 0,
+            formatDataPieChartTopFiveNft: [],
+            dataPieChartOrderBreakdownNft: [],
+          },
+        };
+        overviewData = {
+          breakdownToken: [],
+          breakdownNft: [],
+          overview: {
+            assets: 0,
+            assetsChange: 0,
+            change: "",
+            claimable: 0,
+            claimableChange: 0,
+            debts: 0,
+            debtsChange: 0,
+            networth: 0,
+            networthChange: 0,
+            postionNetworth: 0,
+            postionNetworthChange: 0,
+          },
+          performance: [],
+          portfolioChart: [],
+          updatedAt: "",
+        };
+        positionsData = [];
+        newsData = [];
+        holdingNFTData = [];
+        holdingTokenData = [];
+
         handleGetAllData("sync");
       }
     }
@@ -771,25 +689,34 @@
         </div>
       {:else}
         <div
-          class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 xl:shadow-md"
+          class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8"
+          style="box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.10);"
         >
           <Charts
+            {handleSelectedTableTokenHolding}
             isLoading={loadingOverview}
-            {optionLine}
+            {holdingTokenData}
+            {overviewDataPerformance}
             {dataPieChart}
             {isEmptyDataPie}
           />
+
+          {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+            <RiskReturn />
+          {/if}
 
           <Holding
             {selectedWallet}
             isLoadingNFT={loadingHoldingNFT}
             isLoadingToken={loadingHoldingToken}
             {holdingTokenData}
+            {selectedTokenHolding}
+            {selectedDataPieChart}
             {holdingNFTData}
             bind:totalAssets
           />
 
-          <div
+          <!-- <div
             class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
           >
             <Positions
@@ -807,52 +734,12 @@
               <Button variant="secondary">{MultipleLang.missed_protocol}</Button
               >
             </div>
-          </div>
+          </div> -->
 
           <!-- <News isLoading={loadingNews} data={newsData} /> -->
         </div>
       {/if}
     </div>
-
-    {#if APP_TYPE.TYPE === "EXT"}
-      <div class="sticky bottom-4 flex justify-end pr-4">
-        <div
-          class="p-4 w-[52px] h-[52px] rounded-full bg-[#27326F] cursor-pointer"
-          style="box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.15);"
-          on:click={() => {
-            isOpenReport.update((n) => (n = !n));
-          }}
-        >
-          <img src={Comment} alt="cmt" width="20" height="20" />
-        </div>
-        <Motion
-          initial="hidden"
-          animate={isShowChat ? "visible" : "hidden"}
-          variants={showChatAnimationVariants}
-          let:motion
-        >
-          <div
-            class="h-[630px] w-[430px] absolute right-4 bottom-15 p-4 bg-white rounded-[20px] items-end"
-            style="box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);"
-            use:motion
-          >
-            <iframe
-              id="feedback-board"
-              src="https://nimbus.featurebase.app"
-              class="h-[580px] w-full"
-            />
-            <div
-              class="absolute top-3 right-5 cursor-pointer font-medium"
-              on:click={() => {
-                isOpenReport.update((n) => (n = false));
-              }}
-            >
-              Close
-            </div>
-          </div>
-        </Motion>
-      </div>
-    {/if}
   </span>
 </AddressManagement>
 

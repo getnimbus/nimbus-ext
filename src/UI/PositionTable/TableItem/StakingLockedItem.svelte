@@ -61,13 +61,13 @@
 
     <td class="py-4 group-hover:bg-gray-100">
       <div class="text-right xl:text-sm text-xl text-[#00000099] font-medium">
-        {dayjs(data.inputTime).format("DD/MM/YYYY - HH:mm")}
+        {dayjs(data.inputTime).format("YYYY-MM-DD, hh:mm A")}
       </div>
     </td>
 
     <td class="py-4 group-hover:bg-gray-100">
       <div class="text-right xl:text-sm text-xl text-[#00000099] font-medium">
-        {dayjs(data.releaseTime).format("DD/MM/YYYY - HH:mm")}
+        {dayjs(data.releaseTime).format("YYYY-MM-DD, hh:mm A")}
       </div>
     </td>
 

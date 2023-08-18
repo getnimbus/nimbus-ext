@@ -1,16 +1,20 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { wallet } from "~/store";
-  import { isEmpty } from "lodash";
+  import { isOpenReport } from "~/store";
   import { Router, Route, createHistory } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
   import createHashSource from "./hashHistory";
+  import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
+  import { onMount } from "svelte";
+  import { nimbus } from "~/lib/network";
+  import { selectedPackage } from "~/store";
+
+  import "flowbite/dist/flowbite.css";
 
   import Header from "~/components/Header.svelte";
   import Footer from "~/components/Footer.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
-  import Market from "~/layouts/Market.svelte";
+  import WhalesList from "~/layouts/WhalesList.svelte";
   import Portfolio from "~/layouts/Portfolio.svelte";
   import News from "~/layouts/News.svelte";
   import Analytic from "~/layouts/Analytic.svelte";
@@ -18,24 +22,23 @@
   import TokenDetail from "~/layouts/TokenDetail.svelte";
   import NftDetail from "~/layouts/NFTDetail.svelte";
   import PositionDetail from "~/layouts/PositionDetail.svelte";
+  import PersonalTokenBreakdown from "~/layouts/PersonalTokenBreakdown.svelte";
+  import CustomVirtualPortfolio from "~/layouts/CustomVirtualPortfolio.svelte";
+  import VirtualPortfolio from "~/layouts/VirtualPortfolio.svelte";
+  import Compare from "~/layouts/Compare.svelte";
+  import Invitation from "~/layouts/Invitation.svelte";
+  import PaymentSuccess from "~/layouts/PaymentSuccess.svelte";
+  import PaymentFail from "~/layouts/PaymentFail.svelte";
+  import Upgrade from "~/layouts/Upgrade.svelte";
+
+  const queryClient = new QueryClient();
 
   // TODO: Add Lazyload for each routes
   const hash = createHistory(createHashSource());
 
-  const formatSelectedWallet = async () => {
-    const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
-
-    if (
-      selectedWalletRes.selectedWallet !== 0 &&
-      !isEmpty(JSON.parse(selectedWalletRes.selectedWallet))
-    ) {
-      const selectedWalletObject = JSON.parse(selectedWalletRes.selectedWallet);
-      wallet.update((n) => (n = selectedWalletObject?.value || ""));
-    }
-  };
-
-  onMount(() => {
-    formatSelectedWallet();
+  let isShowChat = false;
+  isOpenReport.subscribe((value) => {
+    isShowChat = value;
   });
 
   $: {
@@ -45,49 +48,106 @@
       }
     });
   }
+
+  const getUserInfo = async () => {
+    try {
+      const response = await nimbus.get("/users/me");
+      if (response && response.data) {
+        if (
+          response.data?.plan?.tier &&
+          response.data?.plan?.tier.length !== 0
+        ) {
+          selectedPackage.update(
+            (n) => (n = response.data?.plan?.tier.toUpperCase())
+          );
+        }
+      }
+    } catch (e) {
+      console.error("e: ", e);
+    }
+  };
+
+  onMount(() => {
+    getUserInfo();
+  });
 </script>
 
 <ErrorBoundary>
-  <Mixpanel>
-    <Router history={APP_TYPE.TYPE === "EXT" ? hash : undefined}>
-      <div class="flex flex-col pb-10">
-        <Header />
+  <QueryClientProvider client={queryClient}>
+    <Mixpanel>
+      <Router history={undefined}>
+        <div class="flex flex-col pb-14">
+          <Header />
 
-        <Route path="news">
-          <News />
-        </Route>
+          <Route path="upgrade">
+            <Upgrade />
+          </Route>
 
-        <Route path="market">
-          <Market />
-        </Route>
+          <Route path="payments/success">
+            <PaymentSuccess />
+          </Route>
 
-        <Route path="position-detail">
-          <TokenDetail />
-        </Route>
+          <Route path="payments/fail">
+            <PaymentFail />
+          </Route>
 
-        <Route path="nft-detail">
-          <NftDetail />
-        </Route>
+          <Route path="personal-token-breakdown">
+            <PersonalTokenBreakdown />
+          </Route>
 
-        <Route path="test-detail">
-          <PositionDetail />
-        </Route>
+          <Route path="custom-virtual-portfolio">
+            <CustomVirtualPortfolio />
+          </Route>
 
-        <Route path="analytic">
-          <Analytic />
-        </Route>
+          <Route path="virtual-portfolio">
+            <VirtualPortfolio />
+          </Route>
 
-        <Route path="transactions">
-          <Transactions />
-        </Route>
+          <Route path="compare">
+            <Compare />
+          </Route>
 
-        <Route path="*">
-          <Portfolio />
-        </Route>
-      </div>
-    </Router>
-    <Footer />
-  </Mixpanel>
+          <Route path="news">
+            <News />
+          </Route>
+
+          <Route path="invitation">
+            <Invitation />
+          </Route>
+
+          <Route path="whales">
+            <WhalesList />
+          </Route>
+
+          <Route path="position-detail">
+            <TokenDetail />
+          </Route>
+
+          <Route path="nft-detail">
+            <NftDetail />
+          </Route>
+
+          <Route path="test-detail">
+            <PositionDetail />
+          </Route>
+
+          <Route path="analytic">
+            <Analytic />
+          </Route>
+
+          <Route path="transactions">
+            <Transactions />
+          </Route>
+
+          <Route path="*">
+            <Portfolio />
+          </Route>
+        </div>
+      </Router>
+      <Footer />
+    </Mixpanel>
+  </QueryClientProvider>
 </ErrorBoundary>
 
-<style windi:preflights:global windi:safelist:global></style>
+<style windi:preflights:global windi:safelist:global>
+</style>

@@ -52,7 +52,7 @@ via @get_nimbus`;
 
   <td class="py-4 group-hover:bg-gray-100">
     <div class="text-left text-black xl:text-sm text-xl font-medium">
-      {dayjs(data?.timestamp).format("YYYY-MM-DD HH:mm:ss")}
+      {dayjs(data?.timestamp).format("YYYY-MM-DD, hh:mm A")}
       <br />
       <span class="text-[#00000080]">
         {dayjs(data?.timestamp).fromNow()}
@@ -92,24 +92,12 @@ via @get_nimbus`;
     <div
       class="xl:text-sm text-xl text-blue-500 hover:text-[#0d6efd] cursor-pointer font-medium flex justify-center"
     >
-      {#if APP_TYPE.TYPE === "EXT"}
-        <div
-          on:click={() => {
-            browser.tabs.create({
-              url: `src/entries/newTab/index.html?address=${data?.sender}`,
-            });
-          }}
-        >
-          {shorterAddress(data?.sender?.toLowerCase())}
-        </div>
-      {:else}
-        <a
-          href={`https://app.getnimbus.io/?address=${data?.sender}`}
-          target="_blank"
-        >
-          {shorterAddress(data?.sender?.toLowerCase())}
-        </a>
-      {/if}
+      <a
+        href={`https://app.getnimbus.io/?address=${data?.sender}`}
+        target="_blank"
+      >
+        {shorterAddress(data?.sender?.toLowerCase())}
+      </a>
     </div>
   </td>
 

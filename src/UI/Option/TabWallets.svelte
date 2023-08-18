@@ -1,16 +1,21 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
-  import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
   import { dndzone } from "svelte-dnd-action";
-  import { getAddressContext } from "~/utils";
+  import {
+    getAddressContext,
+    listLogoCEX,
+    listProviderCEX,
+    chainList,
+  } from "~/utils";
   import { Toast } from "flowbite-svelte";
-  import { fly } from "svelte/transition";
-  import { wallet, chain } from "~/store";
+  import { blur } from "svelte/transition";
+  import { wallet, chain, typeWallet, selectedPackage } from "~/store";
   import mixpanel from "mixpanel-browser";
-
-  import type { AddressData } from "~/types/AddressData";
+  import { nimbus } from "~/lib/network";
+  import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
@@ -18,17 +23,19 @@
   import "~/components/Loading.custom.svelte";
 
   import Plus from "~/assets/plus.svg";
+  import User from "~/assets/user.png";
+  import Success from "~/assets/shield-done.svg";
 
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "My wallets"),
     content: {
       btn_text: i18n(
         "optionsPage.accounts-page-content.address-btn-text",
-        "Add Wallet"
+        "Add Account"
       ),
       address_header_table: i18n(
         "optionsPage.accounts-page-content.address-header-table",
-        "Wallet"
+        "Account"
       ),
       label_header_table: i18n(
         "optionsPage.accounts-page-content.label-header-table",
@@ -53,7 +60,7 @@
       ),
       modal_address_label: i18n(
         "optionsPage.accounts-page-content.modal-address-label",
-        "Wallet"
+        "Account"
       ),
       modal_label_label: i18n(
         "optionsPage.accounts-page-content.modal-label-label",
@@ -61,11 +68,11 @@
       ),
       modal_add_title: i18n(
         "optionsPage.accounts-page-content.modal-add-title",
-        "Add your wallet"
+        "Add your account"
       ),
       modal_add_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-add-sub-title",
-        "Add your wallet will give you more option to see the information at page new tab"
+        "Add your account will give you more option to see the information at page new tab"
       ),
       modal_delete_title: i18n(
         "optionsPage.accounts-page-content.modal-delete-title",
@@ -73,19 +80,19 @@
       ),
       modal_delete_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-delete-sub-title",
-        "Do you really want to delete this wallet? This process cannot revert"
+        "Do you really want to delete this account? This process cannot revert"
       ),
       modal_edit_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-title",
-        "Edit your wallet"
+        "Edit your account"
       ),
       modal_edit_sub_title: i18n(
         "optionsPage.accounts-page-content.modal-edit-sub-title",
-        "Edit your wallet will make change the information at page new tab"
+        "Edit your account will make change the information at page new tab"
       ),
       address_required: i18n(
         "optionsPage.accounts-page-content.address-required",
-        "Address is required"
+        "Account is required"
       ),
       label_required: i18n(
         "optionsPage.accounts-page-content.label-required",
@@ -93,16 +100,22 @@
       ),
       re_input_address: i18n(
         "optionsPage.accounts-page-content.re-input-address",
-        "Please enter your wallet address again!"
+        "Please enter your account again!"
       ),
       duplicate_address: i18n(
         "optionsPage.accounts-page-content.duplicate-address",
-        "This wallet address is duplicated!"
+        "This account is duplicated!"
       ),
     },
   };
 
-  let isLoading = false;
+  let packageSelected = "";
+  selectedPackage.subscribe((value) => {
+    packageSelected = value;
+  });
+
+  let userInfo = {};
+
   let errors: any = {};
   let errorsEdit: any = {};
   let listAddress = [];
@@ -113,10 +126,22 @@
   let selectedWallet = {};
   let address = "";
   let label = "";
+  let isLoadingEdit = false;
+  let isLoadingDelete = false;
+  let isLoadingConnectCEX = false;
+  let showDisableAddWallet = false;
+
   let show = false;
   let counter = 3;
   let toastMsg = "";
   let isSuccess = false;
+
+  let isOpenModal = false;
+  let isLoadingSendMail = false;
+  let email = "";
+
+  let isDisabled = false;
+  let tooltipDisableAddBtn = "";
 
   const trigger = () => {
     show = true;
@@ -206,126 +231,245 @@
     }
   };
 
-  const onSubmit = (e) => {
-    const formData = new FormData(e.target);
+  const queryClient = useQueryClient();
+  const query = createQuery({
+    queryKey: ["list-address"],
+    queryFn: () => getListAddress(),
+    staleTime: Infinity,
+  });
 
-    const data: any = {};
-    for (let field of formData) {
-      const [key, value] = field;
-      data[key] = value;
+  $: {
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataListAddress($query.data);
     }
+  }
 
-    validateForm(data);
+  const formatDataListAddress = (data) => {
+    const structWalletData = data.map((item) => {
+      return {
+        position: item.position,
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        address: item.type === "CEX" ? item.id : item.accountId,
+      };
+    });
+    listAddress = structWalletData;
+  };
 
-    if (
-      !Object.keys(errors).some((inputName) => errors[inputName]["required"])
-    ) {
-      Object.assign(data, { id: data.address });
+  const getListAddress = async () => {
+    const response: any = await nimbus.get("/accounts/list");
+    return response?.data;
+  };
 
-      listAddress = [...listAddress, data];
-
-      if (listAddress.length === 1) {
-        browser.storage.sync.set({ selectedWallet: data.address }).then(() => {
-          console.log("save selected address to sync storage");
-        });
-        if (getAddressContext(data.address)?.type === "EVM") {
-          browser.storage.sync.set({ selectedChain: "ALL" }).then(() => {
-            console.log("save selected address to sync storage");
-          });
+  $: {
+    if (listAddress && listAddress?.length === 1) {
+      wallet.update((n) => (n = `${listAddress[0].address}`));
+      if (listAddress[0].type === "DEX") {
+        typeWallet.update((n) => (n = "DEX"));
+        if (getAddressContext(listAddress[0].address)?.type === "EVM") {
+          chain.update((n) => (n = "ALL"));
         }
       }
+      if (listAddress[0].type === "CEX") {
+        typeWallet.update((n) => (n = "CEX"));
+        chain.update((n) => (n = "ALL"));
+      }
+    }
+  }
 
-      browser.storage.sync.set({ listAddress: JSON.stringify(listAddress) });
+  // Add DEX address account
+  const onSubmit = async (e) => {
+    try {
+      const formData = new FormData(e.target);
 
-      e.target.reset();
-      isOpenAddModal = false;
-      toastMsg = "Successfully add new wallet!";
-      isSuccess = true;
-      trigger();
-      mixpanel.track("user_add_address");
-    } else {
-      console.log("Invalid Form");
-      toastMsg = "Something wrong when add new wallet. Please try again!";
+      const data: any = {};
+      for (let field of formData) {
+        const [key, value] = field;
+        data[key] = value;
+      }
+
+      validateForm(data);
+
+      if (
+        !Object.keys(errors).some((inputName) => errors[inputName]["required"])
+      ) {
+        Object.assign(data, { id: data.address });
+
+        await nimbus.post("/accounts", {
+          type: "DEX",
+          publicAddress: data.address,
+          accountId: data.address,
+          label: data.label,
+        });
+
+        e.target.reset();
+        isOpenAddModal = false;
+        queryClient.invalidateQueries(["list-address"]);
+        toastMsg = "Successfully add On-chain account!";
+        isSuccess = true;
+        trigger();
+        mixpanel.track("user_add_address");
+
+        errors["address"] = { ...errors["address"], required: false, msg: "" };
+        errors["label"] = { ...errors["label"], required: false, msg: "" };
+      } else {
+        console.log("Invalid Form");
+      }
+    } catch (e) {
+      console.error(e);
+      toastMsg = "Something wrong when add DEX account. Please try again!";
       isSuccess = false;
       trigger();
     }
   };
 
-  const onSubmitEdit = (e) => {
-    const formData = new FormData(e.target);
+  // Add CEX address account
+  const onSubmitCEX = () => {
+    const evmToken = localStorage.getItem("evm_token");
+    if (evmToken) {
+      const vezgo: any = Vezgo.init({
+        clientId: "6st9c6s816su37qe8ld1d5iiq2",
+        authEndpoint: "https://api.getnimbus.io/auth/vezgo",
+        auth: {
+          headers: { Authorization: `${evmToken}` },
+        },
+      });
+      const userVezgo = vezgo.login();
+      if (userVezgo) {
+        userVezgo
+          .connect({
+            providers: listProviderCEX,
+          })
+          .onConnection(async function (account) {
+            await nimbus.get("/accounts/sync");
 
-    const data: any = {};
-    for (let field of formData) {
-      const [key, value] = field;
-      data[key] = value;
+            queryClient.invalidateQueries(["list-address"]);
+            isLoadingConnectCEX = false;
+            isOpenAddModal = false;
+
+            toastMsg = "Successfully add CEX account!";
+            isSuccess = true;
+            trigger();
+            mixpanel.track("user_add_address");
+          })
+          .onError(function (error) {
+            console.error("connection vezgo error", error);
+
+            queryClient.invalidateQueries(["list-address"]);
+            isLoadingConnectCEX = false;
+            isOpenAddModal = false;
+
+            toastMsg =
+              "Something wrong when add CEX account. Please try again!";
+            isSuccess = false;
+            trigger();
+          });
+      }
     }
+  };
 
-    validateFormEdit(data);
+  // Edit account
+  const onSubmitEdit = async (e) => {
+    isLoadingEdit = true;
+    try {
+      const formData = new FormData(e.target);
 
-    if (
-      !Object.keys(errorsEdit).some(
-        (inputName) => errorsEdit[inputName]["required"]
-      )
-    ) {
-      Object.assign(data, { id: data.address });
+      const data: any = {};
+      for (let field of formData) {
+        const [key, value] = field;
+        data[key] = value;
+      }
 
-      const foundItemEdit = listAddress.find(
-        (element) => element.id === selectedItemEdit.id
-      );
+      if (selectedItemEdit.type === "CEX") {
+        await nimbus.put(`/accounts/${selectedItemEdit.id}`, {
+          accountId: selectedItemEdit.address,
+          label: data.label,
+        });
 
-      const index = listAddress.indexOf(foundItemEdit);
-      if (index > -1) {
-        listAddress[index] = data;
-
-        browser.storage.sync.set({ listAddress: JSON.stringify(listAddress) });
-
+        queryClient.invalidateQueries(["list-address"]);
         e.target.reset();
         isOpenEditModal = false;
+        isLoadingEdit = false;
         toastMsg = "Successfully edit your wallet!";
         isSuccess = true;
         trigger();
         mixpanel.track("user_edit_address");
       }
-    } else {
-      console.log("Invalid Form");
+
+      if (selectedItemEdit.type === "DEX") {
+        validateFormEdit(data);
+        if (
+          !Object.keys(errorsEdit).some(
+            (inputName) => errorsEdit[inputName]["required"]
+          )
+        ) {
+          Object.assign(data, { id: data.address });
+
+          await nimbus.put(`/accounts/${selectedItemEdit.id}`, {
+            accountId: data.address,
+            label: data.label,
+          });
+
+          queryClient.invalidateQueries(["list-address"]);
+          e.target.reset();
+          isOpenEditModal = false;
+          isLoadingEdit = false;
+          toastMsg = "Successfully edit your wallet!";
+          isSuccess = true;
+          trigger();
+          mixpanel.track("user_edit_address");
+        } else {
+          console.log("Invalid Form");
+          isLoadingEdit = false;
+        }
+      }
+    } catch (e) {
+      console.error(e);
       toastMsg = "Something wrong when edit your wallet. Please try again!";
+      isSuccess = false;
+      isLoadingEdit = false;
+      trigger();
+    }
+  };
+
+  // Delete account
+  const handleDelete = async (item) => {
+    isLoadingDelete = true;
+    try {
+      await nimbus.delete(`/accounts/${item.id}`, {});
+      queryClient.invalidateQueries(["list-address"]);
+      isLoadingDelete = false;
+      isOpenConfirmDelete = false;
+      toastMsg = "Successfully delete your account!";
+      isSuccess = true;
+      trigger();
+    } catch (e) {
+      console.error("e: ", e);
+      isLoadingDelete = false;
+      isOpenConfirmDelete = false;
+      toastMsg = "Something wrong when delete your account. Please try again!";
       isSuccess = false;
       trigger();
     }
   };
 
-  const getListAddress = async () => {
-    isLoading = true;
+  // Sort list address
+  const handleSortListAddress = async (listAddress) => {
     try {
-      const response: AddressData = await sendMessage(
-        "getListAddress",
-        undefined
-      );
-      if (response) {
-        listAddress = response;
-      }
+      const formatListAddress = listAddress.map((item, index) => {
+        return {
+          id: item.id,
+          position: index,
+        };
+      });
+      await nimbus.post(`/accounts/sorting`, formatListAddress);
     } catch (e) {
-      console.log("e: ", e);
-    } finally {
-      isLoading = false;
+      console.error("e: ", e);
     }
   };
 
-  const handleDelete = (item) => {
-    const index = listAddress.indexOf(item);
-    if (index > -1) {
-      listAddress.splice(index, 1);
-      browser.storage.sync.set({ listAddress: JSON.stringify(listAddress) });
-
-      getListAddress();
-      isOpenConfirmDelete = false;
-      toastMsg = "Successfully delete your wallet!";
-      isSuccess = true;
-      trigger();
-    }
-  };
-
-  const handleEdit = (item) => {
+  const handleSelectedEdit = (item) => {
     selectedItemEdit = item;
     address = item.address;
     label = item.label;
@@ -333,7 +477,19 @@
   };
 
   onMount(() => {
-    getListAddress();
+    const evmToken = localStorage.getItem("evm_token");
+    if (evmToken) {
+      userInfo = {
+        picture: User,
+      };
+    }
+    if (
+      localStorage.getItem("isGetUserEmailYet") !== null &&
+      localStorage.getItem("isGetUserEmailYet") === "true"
+    ) {
+      return;
+    }
+    localStorage.setItem("isGetUserEmailYet", "false");
   });
 
   $: {
@@ -375,6 +531,75 @@
     if (listAddress.length === 0) {
       wallet.update((n) => (n = ""));
       chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
+    }
+  }
+
+  // Handle get user email
+  const onSubmitGetEmail = async (e) => {
+    isLoadingSendMail = true;
+    const formData = new FormData(e.target);
+    const data: any = {};
+    for (let field of formData) {
+      const [key, value] = field;
+      data[key] = value;
+    }
+    try {
+      await nimbus.post("/subscription/analysis", {
+        email: data.email,
+        address: selectedWallet,
+      });
+      isLoadingSendMail = false;
+      localStorage.setItem("isGetUserEmailYet", "true");
+      toastMsg = "Ready to receive exclusive benefits soon!";
+      isSuccess = true;
+      trigger();
+    } catch (e) {
+      isLoadingSendMail = false;
+      toastMsg = "Something wrong when sending email. Please try again!";
+      isSuccess = false;
+      trigger();
+    } finally {
+      isOpenModal = false;
+    }
+  };
+
+  $: {
+    if (listAddress.length === 3 && packageSelected === "FREE") {
+      isDisabled = true;
+    }
+    if (listAddress.length === 7 && packageSelected === "EXPLORER") {
+      if (
+        localStorage.getItem("isGetUserEmailYet") !== null &&
+        localStorage.getItem("isGetUserEmailYet") === "false"
+      ) {
+        localStorage.setItem("isGetUserEmailYet", "true");
+      }
+      isDisabled = true;
+    }
+    if (packageSelected === "PROFESSIONAL") {
+      if (
+        localStorage.getItem("isGetUserEmailYet") !== null &&
+        localStorage.getItem("isGetUserEmailYet") === "false"
+      ) {
+        localStorage.setItem("isGetUserEmailYet", "true");
+      }
+    }
+  }
+
+  $: {
+    if (Object.keys(userInfo).length === 0) {
+      tooltipDisableAddBtn = "Connect wallet to add account";
+    }
+    if (isDisabled) {
+      if (packageSelected === "FREE") {
+        tooltipDisableAddBtn =
+          "Get the EXPLORER Plan to be able to add more accounts and experience our in-depth investment analysis";
+      }
+      if (packageSelected === "EXPLORER") {
+        tooltipDisableAddBtn =
+          "Get the PROFESSIONAL Plan so you can add unlimited accounts and experience all our functions";
+      }
     }
   }
 </script>
@@ -382,24 +607,110 @@
 <div class="flex flex-col gap-4">
   <div class="flex justify-between items-center">
     <div class="xl:title-3 title-1 text-gray-500">{MultipleLang.title}</div>
-    <Button
-      variant={APP_TYPE.TYPE !== "EXT" && listAddress.length === 3
-        ? "disabled"
-        : "tertiary"}
-      on:click={() => {
-        if (APP_TYPE.TYPE !== "EXT" && listAddress.length === 3) {
-          window.open("https://getnimbus.io", "_blank");
-        } else {
-          isOpenAddModal = true;
-        }
-      }}
-    >
-      <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-      <div class="font-medium text-white">
-        {MultipleLang.content.btn_text}
+
+    {#if listAddress && listAddress.length === 0}
+      <div class="relative xl:w-max w-[260px]">
+        {#if Object.keys(userInfo).length !== 0}
+          <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
+            <img src={Plus} alt="" width="12" height="12" />
+            <div class="xl:text-base text-2xl font-medium text-white">
+              {MultipleLang.content.btn_text}
+            </div>
+          </Button>
+        {:else}
+          <div
+            class="relative"
+            on:mouseenter={() => {
+              showDisableAddWallet = true;
+            }}
+            on:mouseleave={() => {
+              showDisableAddWallet = false;
+            }}
+          >
+            <Button variant="disabled">
+              <img src={Plus} alt="" width="12" height="12" />
+              <div class="xl:text-base text-2xl font-medium text-white">
+                {MultipleLang.content.btn_text}
+              </div>
+            </Button>
+            {#if showDisableAddWallet}
+              <div
+                class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                style="z-index: 2147483648;"
+              >
+                <tooltip-detail text={"Connect wallet to add account"} />
+              </div>
+            {/if}
+          </div>
+        {/if}
       </div>
-    </Button>
+    {:else}
+      <div
+        class="relative xl:w-max w-[260px]"
+        on:mouseenter={() => {
+          if (isDisabled || Object.keys(userInfo).length === 0) {
+            showDisableAddWallet = true;
+          }
+        }}
+        on:mouseleave={() => {
+          if (isDisabled || Object.keys(userInfo).length === 0) {
+            showDisableAddWallet = false;
+          }
+        }}
+      >
+        {#if isDisabled || Object.keys(userInfo).length === 0}
+          <div>
+            {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
+              <Button
+                variant="tertiary"
+                on:click={() => {
+                  if (
+                    localStorage.getItem("isGetUserEmailYet") !== null &&
+                    localStorage.getItem("isGetUserEmailYet") === "false"
+                  ) {
+                    isOpenModal = true;
+                  }
+                }}
+              >
+                <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+                <div class="xl:text-base text-2xl font-medium text-white">
+                  Add account
+                </div>
+              </Button>
+            {:else}
+              <Button variant="disabled" disabled>
+                <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+                <div class="xl:text-base text-2xl font-medium text-white">
+                  Add account
+                </div>
+              </Button>
+            {/if}
+          </div>
+        {:else}
+          <Button
+            variant="tertiary"
+            on:click={() => {
+              isOpenAddModal = true;
+            }}
+          >
+            <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+            <div class="xl:text-base text-2xl font-medium text-white">
+              Add account
+            </div>
+          </Button>
+        {/if}
+        {#if showDisableAddWallet}
+          <div
+            class="absolute transform -top-12 right-0"
+            style="z-index: 2147483648;"
+          >
+            <tooltip-detail text={tooltipDisableAddBtn} />
+          </div>
+        {/if}
+      </div>
+    {/if}
   </div>
+
   <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
     <table class="table-auto xl:w-full w-[1200px]">
       <thead>
@@ -427,7 +738,7 @@
           </th>
         </tr>
       </thead>
-      {#if isLoading}
+      {#if $query.isFetching}
         <tbody>
           <tr>
             <td colspan="3">
@@ -452,9 +763,7 @@
           }}
           on:finalize={(e) => {
             listAddress = e.detail.items;
-            browser.storage.sync.set({
-              listAddress: JSON.stringify(listAddress),
-            });
+            handleSortListAddress(e.detail.items);
           }}
         >
           {#if listAddress && listAddress.length === 0}
@@ -497,7 +806,7 @@
                 <td class="pr-3 py-4">
                   <div class="flex justify-end gap-6">
                     <div
-                      class="text-red-600 hover:underline dark:text-red-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
+                      class="text-red-600 hover:underline dark:text-red-500 xl:text-base text-2xl transition-all cursor-pointer"
                       on:click={() => {
                         isOpenConfirmDelete = true;
                         selectedWallet = item;
@@ -506,8 +815,8 @@
                       {MultipleLang.content.modal_delete}
                     </div>
                     <div
-                      class="text-blue-600 hover:underline dark:text-blue-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
-                      on:click={() => handleEdit(item)}
+                      class="text-blue-600 hover:underline dark:text-blue-500 xl:text-base text-2xl transition-all cursor-pointer"
+                      on:click={() => handleSelectedEdit(item)}
                     >
                       {MultipleLang.content.modal_edit}
                     </div>
@@ -522,9 +831,349 @@
   </div>
 </div>
 
+<!-- Modal edit account -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenEditModal}
+  on:close={() => (isOpenEditModal = false)}
+>
+  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
+    {MultipleLang.content.modal_edit_title}
+  </div>
+  <form
+    on:submit|preventDefault={onSubmitEdit}
+    class="flex flex-col gap-3 mt-4"
+  >
+    <div class="flex flex-col gap-1">
+      <div
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+          address ? "bg-[#F0F2F7]" : ""
+        }`}
+        class:input-border-error={errorsEdit.address &&
+          errorsEdit.address.required}
+      >
+        <div class="xl:text-base text-xl font-semibold text-gray-700">
+          {MultipleLang.content.modal_address_label}
+        </div>
+        <input
+          disabled={selectedItemEdit.type === "CEX"}
+          type="text"
+          id="address"
+          name="address"
+          placeholder={MultipleLang.content.modal_address_label}
+          bind:value={selectedItemEdit.address}
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            address ? "bg-[#F0F2F7]" : ""
+          }`}
+          on:keyup={({ target: { value } }) => (address = value)}
+        />
+      </div>
+      {#if errorsEdit.address && errorsEdit.address.required}
+        <div class="text-red-500">
+          {errorsEdit.address.msg}
+        </div>
+      {/if}
+    </div>
+    <div class="flex flex-col gap-1">
+      <div
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+          label ? "bg-[#F0F2F7]" : ""
+        }`}
+        class:input-border-error={errorsEdit.label && errorsEdit.label.required}
+      >
+        <div class="xl:text-base text-xl font-semibold text-gray-700">
+          {MultipleLang.content.modal_label_label}
+        </div>
+        <input
+          type="text"
+          id="label"
+          name="label"
+          placeholder={MultipleLang.content.modal_label_label}
+          bind:value={selectedItemEdit.label}
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            label ? "bg-[#F0F2F7]" : ""
+          }`}
+          on:keyup={({ target: { value } }) => (label = value)}
+        />
+      </div>
+      {#if errorsEdit.label && errorsEdit.label.required}
+        <div class="text-red-500">
+          {errorsEdit.label.msg}
+        </div>
+      {/if}
+    </div>
+    <div class="flex justify-end lg:gap-2 gap-6">
+      <div class="lg:w-[120px] w-full">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            errorsEdit = {};
+            isOpenEditModal = false;
+          }}
+        >
+          {MultipleLang.content.modal_cancel}</Button
+        >
+      </div>
+      <div class="lg:w-[120px] w-full">
+        <Button type="submit" variant="tertiary">
+          {MultipleLang.content.modal_edit}</Button
+        >
+      </div>
+    </div>
+  </form>
+</AppOverlay>
+
+<!-- Modal add DEX account -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenAddModal}
+  on:close={() => (isOpenAddModal = false)}
+>
+  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
+    {MultipleLang.content.modal_add_title}
+  </div>
+  <div class="flex flex-col mt-4 gap-7">
+    <div class="flex flex-col gap-3">
+      <div class="flex justify-center">
+        <div class="w-max">
+          <Button
+            variant="tertiary"
+            isLoading={isLoadingConnectCEX}
+            on:click={onSubmitCEX}
+          >
+            <div class="xl:text-base text-2xl font-medium text-white">
+              Connect Exchange
+            </div>
+          </Button>
+        </div>
+      </div>
+      <div class="xl:text-base text-xl flex items-center justify-center gap-1">
+        <img src={Success} alt="" />
+        Bank-level security/encryption.
+        <a
+          href="https://vezgo.com/security"
+          class="text-blue-500 cursor-pointer"
+          target="_blank">Learn more</a
+        >
+      </div>
+      <div class="flex justify-center items-center gap-6 my-3">
+        {#each listLogoCEX as logo}
+          <div
+            class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
+          >
+            <img src={logo} alt="" class="w-full h-full object-contain" />
+          </div>
+        {/each}
+        <div class="text-gray-400">+22 More</div>
+      </div>
+    </div>
+    <div class="border-t-[1px] relative">
+      <div
+        class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 bg-white text-sm px-2"
+      >
+        Or
+      </div>
+    </div>
+    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-2">
+      <div class="flex flex-col gap-1">
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            address ? "bg-[#F0F2F7]" : ""
+          }`}
+          class:input-border-error={errors.address && errors.address.required}
+        >
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
+            Address
+          </div>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            placeholder="Your wallet address"
+            value=""
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              address ? "bg-[#F0F2F7]" : ""
+            }
+              `}
+            on:keyup={({ target: { value } }) => (address = value)}
+          />
+        </div>
+        {#if errors.address && errors.address.required}
+          <div class="text-red-500">
+            {errors.address.msg}
+          </div>
+        {/if}
+      </div>
+      <div class="flex flex-col gap-1">
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            label ? "bg-[#F0F2F7]" : ""
+          }`}
+          class:input-border-error={errors.label && errors.label.required}
+        >
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
+            {MultipleLang.content.modal_label_label}
+          </div>
+          <input
+            type="text"
+            id="label"
+            name="label"
+            placeholder={MultipleLang.content.modal_label_label}
+            value=""
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              label ? "bg-[#F0F2F7]" : ""
+            }
+              `}
+            on:keyup={({ target: { value } }) => (label = value)}
+          />
+        </div>
+        {#if errors.label && errors.label.required}
+          <div class="text-red-500">
+            {errors.label.msg}
+          </div>
+        {/if}
+      </div>
+      <div class="flex justify-center items-center gap-6 my-3">
+        {#each chainList.slice(0, -1) as item}
+          <div
+            class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
+          >
+            <img src={item.logo} alt="" class="w-full h-full object-contain" />
+          </div>
+        {/each}
+        <div class="text-gray-400">More soon</div>
+      </div>
+      <div class="flex justify-end lg:gap-2 gap-6">
+        <div class="lg:w-[120px] w-full">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              errors = {};
+              isOpenAddModal = false;
+            }}
+          >
+            {MultipleLang.content.modal_cancel}</Button
+          >
+        </div>
+        <div class="lg:w-[120px] w-full">
+          <Button type="submit" variant="tertiary">
+            {MultipleLang.content.modal_add}</Button
+          >
+        </div>
+      </div>
+    </form>
+  </div>
+</AppOverlay>
+
+<!-- Modal confirm delete account -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenConfirmDelete}
+  on:close={() => (isOpenConfirmDelete = false)}
+>
+  <div class="flex flex-col gap-1 items-start">
+    <div class="xl:title-3 title-1 text-gray-600 font-semibold">
+      {MultipleLang.content.modal_delete_title}
+    </div>
+    <div class="xl:text-sm text-lg text-gray-500">
+      {MultipleLang.content.modal_delete_sub_title}
+    </div>
+  </div>
+  <div class="flex justify-end lg:gap-2 gap-6 mt-4">
+    <div class="lg:w-[120px] w-full h-[36px]">
+      <Button
+        variant="secondary"
+        on:click={() => {
+          isOpenConfirmDelete = false;
+          selectedWallet = {};
+        }}
+      >
+        {MultipleLang.content.modal_cancel}
+      </Button>
+    </div>
+    <div class="lg:w-[120px] w-full h-[36px]">
+      <Button
+        variant="delete"
+        isLoading={isLoadingDelete}
+        on:click={() => {
+          handleDelete(selectedWallet);
+        }}
+      >
+        {MultipleLang.content.modal_delete}
+      </Button>
+    </div>
+  </div>
+</AppOverlay>
+
+<!-- Modal get user email -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenModal}
+  on:close={() => {
+    isOpenModal = false;
+  }}
+>
+  <div class="xl:title-3 title-1 text-center text-gray-600 font-semibold">
+    Let's us know your email
+  </div>
+  <div class="mt-2">
+    <div class="xl:text-base text-lg text-gray-500 text-center">
+      Add your email to get updates from us and receive exclusive benefits soon.
+    </div>
+    <form
+      on:submit|preventDefault={onSubmitGetEmail}
+      class="flex flex-col gap-3 mt-4"
+    >
+      <div class="flex flex-col gap-1">
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            email ? "bg-[#F0F2F7]" : ""
+          }`}
+        >
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
+            Email
+          </div>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            placeholder="Your email"
+            value=""
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              email ? "bg-[#F0F2F7]" : ""
+            }
+              `}
+            on:keyup={({ target: { value } }) => (email = value)}
+          />
+        </div>
+      </div>
+      <div class="flex justify-end gap-2">
+        <div class="xl:w-[120px] w-full">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              isOpenModal = false;
+            }}
+          >
+            {MultipleLang.content.modal_cancel}</Button
+          >
+        </div>
+        <div class="xl:w-[120px] w-full">
+          <Button
+            type="submit"
+            isLoading={isLoadingSendMail}
+            disabled={isLoadingSendMail}>Submit</Button
+          >
+        </div>
+      </div>
+    </form>
+  </div>
+</AppOverlay>
+
 <Toast
-  transition={fly}
-  params={{ x: 200 }}
+  transition={blur}
+  params={{ amount: 10 }}
   position="top-right"
   color={isSuccess ? "green" : "red"}
   bind:open={show}
@@ -562,217 +1211,6 @@
   </svelte:fragment>
   {toastMsg}
 </Toast>
-
-<AppOverlay isOpen={isOpenEditModal} on:close={() => (isOpenEditModal = false)}>
-  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
-    {MultipleLang.content.modal_edit_title}
-  </div>
-  <form
-    on:submit|preventDefault={onSubmitEdit}
-    class="flex flex-col gap-3 mt-4"
-  >
-    <div class="flex flex-col gap-1">
-      <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          address ? "bg-[#F0F2F7]" : ""
-        }`}
-        class:input-border-error={errorsEdit.address &&
-          errorsEdit.address.required}
-      >
-        <div class="xl:text-base text-xl font-semibold text-gray-700">
-          {MultipleLang.content.modal_address_label}
-        </div>
-        <input
-          type="text"
-          id="address"
-          name="address"
-          placeholder={MultipleLang.content.modal_address_label}
-          bind:value={selectedItemEdit.address}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            address ? "bg-[#F0F2F7]" : ""
-          }`}
-          on:keyup={({ target: { value } }) => (address = value)}
-        />
-      </div>
-      {#if errorsEdit.address && errorsEdit.address.required}
-        <div class="text-red-500 font-medium">
-          {errorsEdit.address.msg}
-        </div>
-      {/if}
-    </div>
-    <div class="flex flex-col gap-1">
-      <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          label ? "bg-[#F0F2F7]" : ""
-        }`}
-        class:input-border-error={errorsEdit.label && errorsEdit.label.required}
-      >
-        <div class="xl:text-base text-xl font-semibold text-gray-700">
-          {MultipleLang.content.modal_label_label}
-        </div>
-        <input
-          type="text"
-          id="label"
-          name="label"
-          placeholder={MultipleLang.content.modal_label_label}
-          bind:value={selectedItemEdit.label}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            label ? "bg-[#F0F2F7]" : ""
-          }`}
-          on:keyup={({ target: { value } }) => (label = value)}
-        />
-      </div>
-      {#if errorsEdit.label && errorsEdit.label.required}
-        <div class="text-red-500 font-medium">
-          {errorsEdit.label.msg}
-        </div>
-      {/if}
-    </div>
-    <div class="flex justify-end gap-2">
-      <div class="lg:w-[100px] w-full">
-        <Button
-          variant="secondary"
-          on:click={() => {
-            errorsEdit = {};
-            isOpenEditModal = false;
-          }}
-        >
-          {MultipleLang.content.modal_cancel}</Button
-        >
-      </div>
-      <div class="lg:w-[100px] w-full">
-        <Button type="submit">
-          {MultipleLang.content.modal_edit}</Button
-        >
-      </div>
-    </div>
-  </form>
-</AppOverlay>
-
-<AppOverlay isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
-  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
-    {MultipleLang.content.modal_add_title}
-  </div>
-  <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-4">
-    <div class="flex flex-col gap-1">
-      <div class="flex flex-col gap-1">
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            address ? "bg-[#F0F2F7]" : ""
-          }`}
-          class:input-border-error={errors.address && errors.address.required}
-        >
-          <div class="xl:text-base text-xl text-[#666666] font-medium">
-            {MultipleLang.content.modal_address_label}
-          </div>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            placeholder={MultipleLang.content.modal_address_label}
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              address ? "bg-[#F0F2F7]" : ""
-            }
-              `}
-            on:keyup={({ target: { value } }) => (address = value)}
-          />
-        </div>
-        {#if errors.address && errors.address.required}
-          <div class="text-red-500 font-medium">
-            {errors.address.msg}
-          </div>
-        {/if}
-      </div>
-    </div>
-    <div class="flex flex-col gap-1">
-      <div class="flex flex-col gap-1">
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            label ? "bg-[#F0F2F7]" : ""
-          }`}
-          class:input-border-error={errors.label && errors.label.required}
-        >
-          <div class="xl:text-base text-xl text-[#666666] font-medium">
-            {MultipleLang.content.modal_label_label}
-          </div>
-          <input
-            type="text"
-            id="label"
-            name="label"
-            placeholder={MultipleLang.content.modal_label_label}
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              label ? "bg-[#F0F2F7]" : ""
-            }
-              `}
-            on:keyup={({ target: { value } }) => (label = value)}
-          />
-        </div>
-        {#if errors.label && errors.label.required}
-          <div class="text-red-500 font-medium">
-            {errors.label.msg}
-          </div>
-        {/if}
-      </div>
-    </div>
-    <div class="flex justify-end gap-2">
-      <div class="lg:w-[100px] w-full">
-        <Button
-          variant="secondary"
-          on:click={() => {
-            errors = {};
-            isOpenAddModal = false;
-          }}
-        >
-          {MultipleLang.content.modal_cancel}</Button
-        >
-      </div>
-      <div class="lg:w-[100px] w-full">
-        <Button type="submit">
-          {MultipleLang.content.modal_add}</Button
-        >
-      </div>
-    </div>
-  </form>
-</AppOverlay>
-
-<AppOverlay
-  isOpen={isOpenConfirmDelete}
-  on:close={() => (isOpenConfirmDelete = false)}
->
-  <div class="flex flex-col gap-1 items-start">
-    <div class="xl:title-3 title-1 text-gray-600 font-semibold">
-      {MultipleLang.content.modal_delete_title}
-    </div>
-    <div class="xl:text-sm text-lg text-gray-500">
-      {MultipleLang.content.modal_delete_sub_title}
-    </div>
-  </div>
-  <div class="flex justify-end gap-2 mt-4">
-    <div class="lg:w-[100px] w-full">
-      <Button
-        variant="secondary"
-        on:click={() => {
-          isOpenConfirmDelete = false;
-          selectedWallet = {};
-        }}
-      >
-        {MultipleLang.content.modal_cancel}
-      </Button>
-    </div>
-    <div class="lg:w-[100px] w-full">
-      <Button
-        variant="delete"
-        on:click={() => {
-          handleDelete(selectedWallet);
-        }}
-      >
-        {MultipleLang.content.modal_delete}
-      </Button>
-    </div>
-  </div>
-</AppOverlay>
 
 <style>
   .input-border {

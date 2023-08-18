@@ -7,6 +7,7 @@
 
   import type { TokenInfoData } from "~/types/TokenInfoData";
 
+  import "~/components/Loading.custom.svelte";
   import "~/components/ResetStyle.custom.svelte";
   import "~/components/CoinChart.custom.svelte";
   import "~/components/PriceConvert.custom.svelte";

@@ -17,7 +17,7 @@
   export let size: "supper-small" | "small" | "medium" | "large" = "small";
   export let type: "button" | "submit" | "reset" = "button";
 
-  const buttonClassName = classNames(className, "button", "container", {
+  const buttonClassName = classNames(className, "button", "btn-container", {
     ["disabled"]: disabled || variant === "disabled",
     ["underlined"]: variant === "underlined",
     ["secondary"]: variant === "secondary",
@@ -70,7 +70,6 @@
         width="16"
         height="16"
         viewBox="0 0 16 16"
-        class="mr-2"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -106,7 +105,7 @@
     background: #27326f;
   }
 
-  .button .container {
+  .button .btn-container {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -163,7 +162,7 @@
   .premium[type="button"] {
     background: #ffb800;
     color: #fff;
-    opacity: 0.6; /* TODO: Remove me later */
+    /* opacity: 0.6; TODO: Remove me later */
 
     &:hover {
       background: #f9b506;
@@ -178,17 +177,11 @@
     }
   }
 
-  .tertiary {
-    color: #fff;
-    border: none;
-    width: max-content;
-    height: max-content;
-    padding: 8px 16px;
-  }
   .tertiary[type="submit"],
   .tertiary[type="button"] {
     color: #fff;
     background: #1e96fc;
+    border: 1px solid #1e96fc;
   }
 
   .delete {

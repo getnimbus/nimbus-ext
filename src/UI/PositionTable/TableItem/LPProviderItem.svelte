@@ -28,9 +28,9 @@
 </script>
 
 <tr
-  class="group transition-all"
+  class="group transition-all cursor-pointer"
   on:click={() => {
-    // navigate(`/test-detail`);
+    navigate(`/test-detail`);
   }}
 >
   <td
@@ -185,7 +185,7 @@
     </div>
   </td>
 
-  <td class="pr-3 py-4 group-hover:bg-gray-100">
+  <td class="py-4 group-hover:bg-gray-100">
     <div class="xl:text-sm text-xl font-medium flex flex-col">
       <div
         class={`flex justify-end ${
@@ -217,7 +217,7 @@
     </div>
   </td>
 
-  <!-- <td class="py-3 w-10 group-hover:bg-gray-100">
+  <td class="py-3 w-10 group-hover:bg-gray-100">
     <div class="flex justify-center">
       <div
         use:tooltip={{
@@ -229,7 +229,7 @@
         <img src={Chart} alt="" width={14} height={14} />
       </div>
     </div>
-  </td> -->
+  </td>
 </tr>
 
 <style>
