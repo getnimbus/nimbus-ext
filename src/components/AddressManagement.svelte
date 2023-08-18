@@ -743,23 +743,22 @@
                       </div>
                     {/if}
                   </div>
-                  <Button
+                  <div
+                    class="text-2xl font-medium xl:text-base mt-2 hover:underline text-[#1E96FC] cursor-pointer"
                     on:click={() => {
                       mixpanel.track("user_search");
                       chain.update((n) => (n = "ALL"));
                       wallet.update(
                         (n) =>
-                          (n = "0x39d787fdf7384597c7208644dbb6fda1cca4ebdf")
+                          (n = "0x3d8fc1cffaa110f7a7f9f8bc237b73d54c4abf61")
                       );
                       navigate(
-                        `/?type=DEX&chain=ALL&address=0x39d787fdf7384597c7208644dbb6fda1cca4ebdf`
+                        `/?type=DEX&chain=ALL&address=0x3d8fc1cffaa110f7a7f9f8bc237b73d54c4abf61`
                       );
                     }}
                   >
-                    <div class="text-2xl font-medium xl:text-base">
-                      Try Demo account
-                    </div>
-                  </Button>
+                    Try Demo account
+                  </div>
                 </div>
               {/if}
             {/if}
