@@ -31,7 +31,13 @@
   import PaymentFail from "~/layouts/PaymentFail.svelte";
   import Upgrade from "~/layouts/Upgrade.svelte";
 
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
+    },
+  });
 
   // TODO: Add Lazyload for each routes
   const hash = createHistory(createHashSource());
