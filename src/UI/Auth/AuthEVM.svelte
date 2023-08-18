@@ -245,16 +245,16 @@
 
     {#if showPopover}
       <div
-        class="bg-white xl:py-2 py-3 px-4 text-sm rounded-lg absolute xl:-bottom-44 -bottom-48 right-0 transform flex flex-col gap-2 w-max z-50"
+        class="absolute right-0 z-50 flex flex-col gap-2 px-4 py-3 text-sm transform bg-white rounded-lg xl:py-2 top-12 w-max"
         style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
         use:clickOutside
         on:click_outside={() => (showPopover = false)}
       >
-        <div class="text-black xl:text-base text-2xl">
+        <div class="text-2xl text-black xl:text-base">
           GM 👋, {shorterAddress(addressWallet)}
         </div>
-        <div
-          class="text-yellow-400 font-medium cursor-pointer xl:text-base text-2xl flex items-center gap-1"
+        <!-- <div
+          class="flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base"
           on:click={() => {
             navigate("/upgrade");
             showPopover = false;
@@ -275,21 +275,21 @@
               fill="#ffb800"
             />
           </svg>
-        </div>
+        </div> -->
         <Link to="invitation">
-          <div class="text-gray-500 cursor-pointer xl:text-base text-2xl">
+          <div class="text-2xl text-gray-500 cursor-pointer xl:text-base">
             Invite
           </div>
         </Link>
         <a
           href="entries/options/index.html?tab=wallets"
           target="_blank"
-          class="text-gray-500 cursor-pointer xl:block hidden xl:text-base text-2xl"
+          class="hidden text-2xl text-gray-500 cursor-pointer xl:block xl:text-base"
         >
           Settings
         </a>
         <div
-          class="font-medium text-red-500 cursor-pointer xl:text-base text-2xl"
+          class="text-2xl font-medium text-red-500 cursor-pointer xl:text-base"
           on:click={handleSignOut}
         >
           Logout
@@ -300,7 +300,7 @@
 {:else}
   <div
     on:click={connect}
-    class="font-semibold text-white cursor-pointer xl:text-base text-2xl"
+    class="text-2xl font-semibold text-white cursor-pointer xl:text-base"
   >
     Connect Wallet
   </div>
