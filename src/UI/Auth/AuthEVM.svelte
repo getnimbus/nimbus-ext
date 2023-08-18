@@ -245,7 +245,7 @@
 
     {#if showPopover}
       <div
-        class="absolute right-0 z-50 flex flex-col gap-2 px-4 py-3 text-sm transform bg-white rounded-lg xl:py-2 top-12 w-max"
+        class="absolute right-0 z-50 flex flex-col gap-2 px-4 py-3 text-sm transform bg-white rounded-lg xl:py-2 md:top-12 top-20 w-max"
         style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
         use:clickOutside
         on:click_outside={() => (showPopover = false)}
