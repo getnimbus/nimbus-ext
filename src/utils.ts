@@ -330,6 +330,7 @@ export const listProviderCEX = [
   "bittrex",
   "bitvavo",
   "blockchaincom",
+  "coinbase",
   "coinbasepro",
   "coindcx",
   "coinspot",
