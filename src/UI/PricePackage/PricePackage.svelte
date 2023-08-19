@@ -163,7 +163,7 @@
               Rebalance Strategy
             </div>
             <div class="text-lg text-gray-400 xl:text-base">
-              Token Correlations metrix (soon)
+              Token Correlations matrix (soon)
             </div>
             <div class="text-lg text-gray-400 xl:text-base">
               Professional community
@@ -333,7 +333,7 @@
               Rebalance Strategy
             </div>
             <div class="text-lg text-black xl:text-base">
-              Token Correlations metrix (Soon)
+              Token Correlations matrix (Soon)
             </div>
             <div class="text-lg text-gray-400 xl:text-base">
               Professional community
@@ -533,7 +533,7 @@
               Rebalance Strategy
             </div>
             <div class="text-lg text-black xl:text-base">
-              Token Correlations metrix (Soon)
+              Token Correlations matrix (Soon)
             </div>
             <div class="text-lg text-black xl:text-base">
               Professional community
