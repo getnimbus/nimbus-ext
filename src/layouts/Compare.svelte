@@ -9,6 +9,7 @@
   import { getChangePercent } from "~/chart-utils";
   import { useNavigate } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import * as Sentry from "@sentry/svelte";
 
   import type { TokenData } from "~/types/HoldingTokenData";
 
@@ -237,6 +238,9 @@
     queryKey: ["compare", selectedWallet],
     queryFn: () => getAnalyticCompare(selectedWallet, searchCompare),
     staleTime: Infinity,
+    onError: (error) => {
+      // console.log("HELLO: ", error);
+    },
   });
 
   $: queryPersonalTag = createQuery({
@@ -1174,6 +1178,15 @@
         </div>
       {/if}
     </div>
+
+    <Button
+      on:click={() => {
+        Sentry.captureException("Sentry Frontend Error");
+        console.log("HELLO");
+      }}
+    >
+      HELLO WORLD
+    </Button>
 
     {#if packageSelected === "FREE"}
       <div
