@@ -414,11 +414,6 @@ export const chainList = [
     label: "Gnosis",
     value: "XDAI",
   },
-  {
-    logo: Solana,
-    label: "Solana",
-    value: "SOL",
-  },
 ];
 
 export const showChatAnimationVariants = {

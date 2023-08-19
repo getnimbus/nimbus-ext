@@ -1307,7 +1307,7 @@
         {/if}
       </div>
       <div class="flex items-center justify-center gap-6 my-3">
-        {#each chainList.slice(0, -1) as item}
+        {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
           <div
             class="flex items-center justify-center w-8 h-8 overflow-hidden rounded-full"
           >

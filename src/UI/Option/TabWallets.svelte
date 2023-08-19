@@ -24,6 +24,7 @@
   import Plus from "~/assets/plus.svg";
   import User from "~/assets/user.png";
   import Success from "~/assets/shield-done.svg";
+  import SolanaLogo from "~/assets/solana.png";
 
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "My wallets"),
@@ -1033,7 +1034,7 @@
         {/if}
       </div>
       <div class="flex justify-center items-center gap-6 my-3">
-        {#each chainList.slice(0, -1) as item}
+        {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
           <div
             class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
           >
