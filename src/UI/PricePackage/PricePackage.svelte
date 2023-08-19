@@ -348,7 +348,7 @@
                       plan: "Explorer",
                       selectedTypePackage,
                       price: selectedTypePackage === "month" ? "$30" : "$25",
-                      isNewUser,
+                      isNewUser: undefined,
                     });
                   }
                 }}
@@ -543,7 +543,7 @@
                     plan: "Professional",
                     selectedTypePackage,
                     price: selectedTypePackage === "month" ? "$99" : "$82.5",
-                    isNewUser,
+                    isNewUser: undefined,
                   });
                 }}
               >
