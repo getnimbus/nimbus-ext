@@ -85,9 +85,9 @@
         $queryUserInfo.data?.plan?.tier &&
         $queryUserInfo.data?.plan?.tier.length !== 0
       ) {
-        selectedPackage.update(
-          (n) => (n = $queryUserInfo.data?.plan?.tier.toUpperCase())
-        );
+        // selectedPackage.update(
+        //   (n) => (n = $queryUserInfo.data?.plan?.tier.toUpperCase())
+        // );
       }
     }
   }
@@ -132,6 +132,10 @@
         {:else}
           <Button isLoading={!status} variant="secondary">Continue</Button>
         {/if}
+      </div>
+      <div class="text-gray-500 xl:text-sm text-base">
+        Notice: Your can use our application as normal. We will upgrade your
+        account Plan as soon as we receive the payment
       </div>
     </div>
   </div>

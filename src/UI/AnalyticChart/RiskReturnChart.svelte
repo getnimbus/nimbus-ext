@@ -5,6 +5,7 @@
     formatCurrency,
     getAddressContext,
     getTooltipContent,
+    sharpeRatioColorChart,
   } from "~/utils";
   import maxBy from "lodash/maxBy";
   import minBy from "lodash/minBy";
@@ -176,7 +177,7 @@
       top: "0%",
       left: "center",
     },
-    // color: ["#000", "#000", "#000"],
+    color: [],
     series: [
       {
         type: "pie",
@@ -371,6 +372,16 @@
 
       riskBreakdownChartOption = {
         ...riskBreakdownChartOption,
+        color: Object.keys(shrapeRatioGroup)
+          .map((riskType) => {
+            return {
+              name: riskType,
+              value: shrapeRatioGroup[riskType][0],
+            };
+          })
+          .map((item) => {
+            return sharpeRatioColorChart(item.value.sharpeRatio);
+          }),
         series: [
           {
             ...riskBreakdownChartOption.series[0],
@@ -386,8 +397,6 @@
           },
         ],
       };
-
-      console.log("riskBreakdownChartOption: ", riskBreakdownChartOption);
 
       optionBar = {
         ...optionBar,

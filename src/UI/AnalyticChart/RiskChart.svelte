@@ -6,6 +6,7 @@
     formatCurrencyV2,
     getAddressContext,
     getTooltipContent,
+    volatilityColorChart,
   } from "~/utils";
   import groupBy from "lodash/groupBy";
   import sumBy from "lodash/sumBy";
@@ -174,6 +175,7 @@
       top: "0%",
       left: "center",
     },
+    color: [],
     series: [
       {
         type: "pie",
@@ -265,6 +267,16 @@
 
       riskBreakdownChartOption = {
         ...riskBreakdownChartOption,
+        color: Object.keys(riskGroup)
+          .map((riskType) => {
+            return {
+              name: riskType,
+              value: riskGroup[riskType][0],
+            };
+          })
+          .map((item) => {
+            return volatilityColorChart(item.value.sharpeRatio);
+          }),
         series: [
           {
             ...riskBreakdownChartOption.series[0],

@@ -667,36 +667,84 @@ export const handleFormatDataTable = (data, type) => {
   };
 };
 
-// export const sharpeRatioColorChart = (value: number) => {
-//   let sharpeRatioLabel = 'Very Poor (< -1)';
-//   if (value > -1 && value <= 0) {
-//     sharpeRatioLabel = 'Low (-1.0 - 0)';
-//   }
+export const volatilityColorChart = (value: number) => {
+  let color = '#35b86d'; // green
 
-//   if (value > -1 && value <= 0) {
-//     sharpeRatioLabel = 'Below Average (-1.0 - 0)';
-//   }
+  if (value > 5 && value <= 15) {
+    color = '#a2c04c';
+  }
 
-//   if (value > 0.5 && value <= 1) {
-//     sharpeRatioLabel = 'Average (0.5 - 1.0)';
-//   }
+  if (value > 15 && value <= 30) {
+    color = '#d8c42f';
+  }
 
-//   if (value > 1 && value <= 1.5) {
-//     sharpeRatioLabel = 'Good (1.0 - 1.5)';
-//   }
+  if (value > 30 && value <= 50) {
+    color = '#fec406';
+  }
 
-//   if (value > 1.5 && value <= 2) {
-//     sharpeRatioLabel = 'Very Good (1.5 - 2)';
-//   }
+  if (value > 50 && value <= 75) {
+    color = '#f79e28'
+  }
 
-//   if (value > 2 && value <= 3) {
-//     sharpeRatioLabel = 'Excellent (2 - 3)';
-//   }
+  if (value > 75 && value <= 100) {
+    color = '#f28a30'
+  }
 
-//   if (value > 3) {
-//     sharpeRatioLabel = 'Outstanding (> 3)';
-//   }
-// }
+  if (value > 100 && value <= 150) {
+    color = '#e6553d'
+  }
+
+  // red
+  if (value > 150) {
+    color = '#e14240'
+  }
+
+  if (value === null) {
+    color = "#6AC7F5"
+  }
+
+  return color
+
+}
+
+export const sharpeRatioColorChart = (value: number) => {
+  let color = "#e14240" // red
+
+  if (value > -1 && value <= 0) {
+    color = "#e6553d"
+  }
+
+  if (value > -1 && value <= 0) {
+    color = "#f28a30"
+  }
+
+  if (value > 0.5 && value <= 1) {
+    color = "#f79e28"
+  }
+
+  if (value > 1 && value <= 1.5) {
+    color = "#fec406"
+  }
+
+  if (value > 1.5 && value <= 2) {
+    color = "#d8c42f"
+  }
+
+  if (value > 2 && value <= 3) {
+    color = "#a2c04c"
+  }
+
+  //green
+  if (value > 3) {
+    color = "#35b86d"
+  }
+
+  if (value === null) {
+    color = "#6AC7F5"
+  }
+
+  return color
+}
 
 export const getTooltipContent = (text: string, videoUrl: string, width?: string) => {
   return `
