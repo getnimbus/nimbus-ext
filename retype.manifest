@@ -1,6 +1,6 @@
 {
   "version": "3.0.3",
-  "created": "2023-06-25T00:08:34Z",
+  "created": "2023-08-19T08:53:21Z",
   "files": [
     {
       "path": ".nojekyll"
@@ -10,6 +10,36 @@
     },
     {
       "path": "CNAME"
+    },
+    {
+      "path": "faqs/index.html"
+    },
+    {
+      "path": "img/chains/arbitrum.png"
+    },
+    {
+      "path": "img/chains/avax.png"
+    },
+    {
+      "path": "img/chains/bitcoin.png"
+    },
+    {
+      "path": "img/chains/bnb.png"
+    },
+    {
+      "path": "img/chains/ethereum.png"
+    },
+    {
+      "path": "img/chains/matic.png"
+    },
+    {
+      "path": "img/chains/optimism.png"
+    },
+    {
+      "path": "img/chains/solana.png"
+    },
+    {
+      "path": "img/overview.png"
     },
     {
       "path": "index.html"
@@ -24,13 +54,22 @@
       "path": "logo.png"
     },
     {
-      "path": "metrics/average_cost/index.html"
+      "path": "metrics/average_cost/index.html",
+      "old": true
     },
     {
-      "path": "metrics/holding_profit_loss/index.html"
+      "path": "metrics/holding_profit_loss/index.html",
+      "old": true
     },
     {
-      "path": "metrics/impermanent_loss/index.html"
+      "path": "metrics/impermanent_loss/index.html",
+      "old": true
+    },
+    {
+      "path": "metrics/risk-return/index.html"
+    },
+    {
+      "path": "metrics/risk/index.html"
     },
     {
       "path": "resources/css/retype.css"
