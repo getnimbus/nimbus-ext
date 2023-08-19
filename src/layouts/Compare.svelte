@@ -162,7 +162,7 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                ${dayjs(params[0].axisValue).format("DD/MM/YYYY")}
+                ${dayjs(params[0].axisValue).format("YYYY-MM-DD")}
               </div>
               ${params
                 .map((item) => {
@@ -656,6 +656,7 @@
             type: item.type,
             color: item.color,
           },
+          showSymbol: false,
           itemStyle: {
             color: item.color,
           },

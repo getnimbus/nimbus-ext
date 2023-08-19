@@ -431,6 +431,7 @@
                 type: "solid",
                 color: "#00b580",
               },
+              showSymbol: false,
               data: dataLineChartPercent.formatDataPortfolio,
             },
             {
@@ -440,6 +441,7 @@
                 type: "dashed",
                 color: "#f7931a",
               },
+              showSymbol: false,
               data: dataLineChartPercent.formatDataBTC,
             },
             {
@@ -449,6 +451,7 @@
                 type: "dashed",
                 color: "#547fef",
               },
+              showSymbol: false,
               data: dataLineChartPercent.formatDataETH,
             },
           ],
@@ -515,6 +518,7 @@
                 type: "solid",
                 color: "#00b580",
               },
+              showSymbol: false,
               data: overviewDataPerformance?.portfolioChart.map((item) => {
                 return {
                   value: item.value,

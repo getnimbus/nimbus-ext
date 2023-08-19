@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getAddressContext } from "~/utils";
-  import { wallet, chain, selectedPackage, typeWallet } from "~/store";
+  import { wallet, selectedPackage } from "~/store";
   import { useNavigate } from "svelte-navigator";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
@@ -21,19 +21,9 @@
     selectedWallet = value;
   });
 
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
   let packageSelected = "";
   selectedPackage.subscribe((value) => {
     packageSelected = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
   });
 
   let isShowSoon = false;

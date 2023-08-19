@@ -464,6 +464,7 @@
               type: "solid",
               color: "#00b580",
             },
+            showSymbol: false,
             data: formatDataPortfolio,
           },
           {
@@ -473,6 +474,7 @@
               type: "dashed",
               color: "#f7931a",
             },
+            showSymbol: false,
             data: formatDataBTC,
           },
           {
@@ -482,6 +484,7 @@
               type: "dashed",
               color: "#547fef",
             },
+            showSymbol: false,
             data: formatDataETH,
           },
         ],
@@ -829,14 +832,14 @@
 
     <div class="w-full mt-5">
       {#if $queryHoldingToken.isFetching}
-        <div class="flex items-center justify-center h-[465px]">
+        <div class="flex items-center justify-center h-[475px]">
           <LoadingPremium />
         </div>
       {:else}
         <div class="h-full">
           {#if $queryHoldingToken.isError || ($queryHoldingToken.data && $queryHoldingToken.data.length === 0)}
             <div
-              class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
+              class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
             >
               Empty
             </div>
@@ -846,7 +849,7 @@
                 id="current-status-analytics"
                 theme="white"
                 option={optionPie}
-                height={465}
+                height={475}
                 notMerge={true}
                 type="full-width"
               />
