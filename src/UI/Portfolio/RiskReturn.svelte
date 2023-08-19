@@ -103,7 +103,8 @@
                     <TooltipTitle
                       tooltipText={getTooltipContent(
                         "The Sharpe ratio measures how well an investment performs relative to its risk.",
-                        SharpeRatioExplain
+                        SharpeRatioExplain,
+                        "360px"
                       )}
                       isBigIcon
                       isExplainVideo
@@ -152,7 +153,8 @@
                     <TooltipTitle
                       tooltipText={getTooltipContent(
                         "Volatility measures the extent of price fluctuations for an asset over time.",
-                        VolatilityExplain
+                        VolatilityExplain,
+                        "360px"
                       )}
                       isExplainVideo
                       isBigIcon
@@ -201,7 +203,8 @@
                     <TooltipTitle
                       tooltipText={getTooltipContent(
                         "Max drawdown is the biggest loss experienced by an investment or portfolio.",
-                        MaxDrawdownExplain
+                        MaxDrawdownExplain,
+                        "360px"
                       )}
                       isExplainVideo
                       isBigIcon

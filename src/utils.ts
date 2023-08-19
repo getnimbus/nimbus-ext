@@ -667,16 +667,18 @@ export const handleFormatDataTable = (data, type) => {
   };
 };
 
-export const getTooltipContent = (text: string, videoUrl: string) => {
+export const getTooltipContent = (text: string, videoUrl: string, width?: string) => {
   return `
-      <div style="padding: 8px; border-radius: 8px; background: rgba(0, 0, 0, 0.8); width: 560px; height: auto;">
+      <div style="padding: 8px; border-radius: 8px; background: rgba(0, 0, 0, 0.8); width: ${width ? "100%" : "560px"}; height: auto;">
         ${text
       ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 16px; color: #fff;">${text}</div>`
       : ""
-    }
-        <video autoplay muted playsinline control disablepictureinpicture loop style="border-radius: 6px;">
-          <source type="video/mp4" src="${videoUrl}" />
-        </video>
+    } 
+        <div style="border-radius: 6px; width: ${width ? width : "100%"}; overflow: hidden">
+          <video autoplay muted playsinline control disablepictureinpicture loop>
+            <source type="video/mp4" src="${videoUrl}" />
+          </video>
+        </div>
       </div>
     `;
 };
