@@ -86,7 +86,7 @@
     </AnimateSharedLayout>
   </div>
 
-  <div class="grid grid-cols-1 xl:grid-cols-3 xl:gap-7 gap-4">
+  <div class="grid grid-cols-1 gap-4 xl:grid-cols-3 xl:gap-7">
     <!-- Free -->
     <div class="flex flex-col gap-1">
       <div
@@ -148,6 +148,7 @@
             >
               Yield farming opportunities (Limited)
             </div>
+            <div class="text-lg xl:text-base">Whales screeners</div>
             <div class="text-lg text-gray-400 xl:text-base">
               Custom token category
             </div>
@@ -160,6 +161,9 @@
             </div>
             <div class="text-lg text-gray-400 xl:text-base">
               Rebalance Strategy
+            </div>
+            <div class="text-lg text-gray-400 xl:text-base">
+              Token Correlations metrix (soon)
             </div>
             <div class="text-lg text-gray-400 xl:text-base">
               Professional community
@@ -263,6 +267,7 @@
             >
               Yield farming opportunities
             </div>
+            <div class="text-lg xl:text-base">Whales screeners</div>
             <div
               use:tooltip={{
                 content: getTooltipContent(
@@ -327,6 +332,9 @@
             >
               Rebalance Strategy
             </div>
+            <div class="text-lg text-black xl:text-base">
+              Token Correlations metrix (Soon)
+            </div>
             <div class="text-lg text-gray-400 xl:text-base">
               Professional community
             </div>
@@ -372,7 +380,7 @@
               </div>
               {#if isNewUser}
                 <div
-                  class="underline cursor-pointer font-normal xl:text-sm text-base"
+                  class="text-base font-normal underline cursor-pointer xl:text-sm"
                   on:click={() => {
                     if (buyPackage === "Professional") {
                       console.log("downgrade to Explorer");
@@ -459,6 +467,7 @@
             >
               Yield farming opportunities
             </div>
+            <div class="text-lg xl:text-base">Whales screeners</div>
             <div
               use:tooltip={{
                 content: getTooltipContent(
@@ -524,7 +533,10 @@
               Rebalance Strategy
             </div>
             <div class="text-lg text-black xl:text-base">
-              Professional community (Soon)
+              Token Correlations metrix (Soon)
+            </div>
+            <div class="text-lg text-black xl:text-base">
+              Professional community
             </div>
             <div
               class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-semibold xl:text-lg text-xl ${
@@ -562,7 +574,7 @@
               </div>
               {#if isNewUser}
                 <div
-                  class="underline cursor-pointer font-normal xl:text-sm text-base"
+                  class="text-base font-normal underline cursor-pointer xl:text-sm"
                   on:click={() => {
                     if (buyPackage === "Professional") {
                       return;
