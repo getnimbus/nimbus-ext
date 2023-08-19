@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import * as browser from "webextension-polyfill";
   import { i18n } from "~/lib/i18n";
   import { dndzone } from "svelte-dnd-action";
   import {
