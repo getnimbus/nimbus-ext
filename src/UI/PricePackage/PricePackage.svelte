@@ -166,7 +166,7 @@
             </div>
             <div
               class={`flex items-center gap-2 mt-2 text-[#1E96FC] font-semibold xl:text-lg text-xl ${
-                buyPackage.length !== 0 && buyPackage !== "Free"
+                buyPackage?.length !== 0 && buyPackage !== "Free"
                   ? "opacity-100 cursor-pointer"
                   : "opacity-0 cursor-default"
               }`}
@@ -332,7 +332,7 @@
             </div>
             <div
               class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-semibold xl:text-lg text-xl ${
-                buyPackage.length !== 0 && buyPackage !== "Explorer"
+                buyPackage?.length !== 0 && buyPackage !== "Explorer"
                   ? "opacity-100"
                   : "opacity-0 cursor-default"
               }`}
@@ -528,7 +528,7 @@
             </div>
             <div
               class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-semibold xl:text-lg text-xl ${
-                buyPackage.length !== 0 && buyPackage !== "Professional"
+                buyPackage?.length !== 0 && buyPackage !== "Professional"
                   ? "opacity-100"
                   : "opacity-0 cursor-default"
               }`}
