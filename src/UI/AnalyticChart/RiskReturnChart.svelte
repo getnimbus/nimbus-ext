@@ -413,7 +413,7 @@
 
 <AnalyticSection>
   <span slot="title">
-    <div class="xl:text-2xl text-4xl font-medium text-black flex justify-start">
+    <div class="flex justify-start text-4xl font-medium text-black xl:text-2xl">
       Risks & Returns
       <!-- <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
         Risks & Returns
@@ -423,7 +423,7 @@
 
   <span slot="overview" class="relative">
     {#if !($query.isFetching || $queryBreakdown.isFetching)}
-      <div class="xl:text-xl text-3xl font-medium text-black mb-4">
+      <div class="mb-4 text-3xl font-medium text-black xl:text-xl">
         Overview
       </div>
     {/if}
@@ -449,7 +449,7 @@
             <div class="grid grid-cols-2">
               <div class="col-span-1">
                 <div
-                  class="xl:text-base text-2xl text-black flex justify-start"
+                  class="flex justify-start text-2xl text-black xl:text-base"
                 >
                   <TooltipTitle
                     tooltipText={getTooltipContent(
@@ -463,8 +463,8 @@
                   </TooltipTitle>
                 </div>
               </div>
-              <div class="col-span-1 flex items-center justify-end">
-                <div class="xl:text-base text-2xl">
+              <div class="flex items-center justify-end col-span-1">
+                <div class="text-2xl xl:text-base">
                   <TooltipNumber
                     number={data?.base?.sharpeRatio}
                     type="percent"
@@ -472,6 +472,19 @@
                 </div>
               </div>
             </div>
+            {#if data?.base?.sharpeRatio < 1}
+              <div>
+                <CtaIcon isGood={false} />
+                <span class="text-red-500"
+                  >Your portfolio is not "balance" between risk and return:</span
+                >
+                It has expected yield only
+                <span class="font-medium"
+                  >{data?.base?.sharpeRatio?.toFixed(2)}</span
+                >
+                units of profit per <span class="font-medium">1</span> unit of risk.
+              </div>
+            {/if}
           </div>
           <div class="flex items-center gap-3 mt-3">
             {#if goodPerf}
@@ -482,8 +495,8 @@
                   />
                   Best return
                 </div>
-                <div class="xl:text-2xl text-3xl">{goodPerf?.symbol}</div>
-                <div class="xl:text-lg text-2xl flex items-center gap-1">
+                <div class="text-3xl xl:text-2xl">{goodPerf?.symbol}</div>
+                <div class="flex items-center gap-1 text-2xl xl:text-lg">
                   <img
                     src={goodPerf?.change30DPercent >= 0 ? TrendUp : TrendDown}
                     alt="trend"
@@ -514,8 +527,8 @@
                   />
                   Worse return
                 </div>
-                <div class="xl:text-2xl text-3xl">{badPerf?.symbol}</div>
-                <div class="xl:text-lg text-2xl flex items-center gap-1">
+                <div class="text-3xl xl:text-2xl">{badPerf?.symbol}</div>
+                <div class="flex items-center gap-1 text-2xl xl:text-lg">
                   <img
                     src={badPerf?.change30DPercent >= 0 ? TrendUp : TrendDown}
                     alt="trend"
@@ -539,7 +552,7 @@
             {/if}
           </div>
           <div class="flex flex-col gap-3 mt-8">
-            <div class="xl:text-lg text-2xl font-medium text-black">
+            <div class="text-2xl font-medium text-black xl:text-lg">
               <TooltipTitle
                 tooltipText={"Compare with top 100 by CoinMarketCap."}
                 isBigIcon
@@ -555,19 +568,6 @@
               lowerIsBetter={false}
               tooltipText="Shapre Ratio"
             />
-            {#if data?.base?.sharpeRatio < 1}
-              <div class="mt-5">
-                <CtaIcon isGood={false} />
-                <span class="text-red-500"
-                  >Your portfolio is not "balance" between risk and return:</span
-                >
-                It has expected yield only
-                <span class="font-medium"
-                  >{data?.base?.sharpeRatio?.toFixed(2)}</span
-                >
-                units of profit per <span class="font-medium">1</span> unit of risk.
-              </div>
-            {/if}
           </div>
         {/if}
       </div>
@@ -634,7 +634,7 @@
               height={465}
             />
             <div
-              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >
               <img src={Logo} alt="" width="140" height="140" />
             </div>
