@@ -253,7 +253,7 @@
         <div class="text-2xl text-black xl:text-base">
           GM 👋, {shorterAddress(addressWallet)}
         </div>
-        <!-- <div
+        <div
           class="flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base"
           on:click={() => {
             navigate("/upgrade");
@@ -275,7 +275,7 @@
               fill="#ffb800"
             />
           </svg>
-        </div> -->
+        </div>
         <Link to="invitation">
           <div class="text-2xl text-gray-500 cursor-pointer xl:text-base">
             Invite

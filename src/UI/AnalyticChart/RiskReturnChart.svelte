@@ -176,6 +176,7 @@
       top: "0%",
       left: "center",
     },
+    // color: ["#000", "#000", "#000"],
     series: [
       {
         type: "pie",
@@ -385,6 +386,8 @@
           },
         ],
       };
+
+      console.log("riskBreakdownChartOption: ", riskBreakdownChartOption);
 
       optionBar = {
         ...optionBar,

@@ -5,6 +5,8 @@
   import "flowbite/dist/flowbite.css";
   import { Toast } from "flowbite-svelte";
   import { useNavigate } from "svelte-navigator";
+  import { selectedPackage } from "~/store";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -65,6 +67,31 @@
     }
   };
 
+  const queryClient = useQueryClient();
+  const queryUserInfo = createQuery({
+    queryKey: ["users-me"],
+    queryFn: () => getUserInfo(),
+    staleTime: Infinity,
+  });
+
+  const getUserInfo = async () => {
+    const response = await nimbus.get("/users/me");
+    return response.data;
+  };
+
+  $: {
+    if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
+      if (
+        $queryUserInfo.data?.plan?.tier &&
+        $queryUserInfo.data?.plan?.tier.length !== 0
+      ) {
+        selectedPackage.update(
+          (n) => (n = $queryUserInfo.data?.plan?.tier.toUpperCase())
+        );
+      }
+    }
+  }
+
   onMount(() => {
     toastMsg = "Please waiting for a while we updating your payment!";
     isSuccessToast = true;
@@ -95,7 +122,12 @@
       <div class="w-[120px]">
         {#if status}
           <Link to="/">
-            <Button variant="secondary">Continue</Button>
+            <Button
+              variant="secondary"
+              on:click={() => {
+                queryClient.invalidateQueries(["users-me"]);
+              }}>Continue</Button
+            >
           </Link>
         {:else}
           <Button isLoading={!status} variant="secondary">Continue</Button>

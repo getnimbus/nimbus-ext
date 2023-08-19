@@ -667,6 +667,37 @@ export const handleFormatDataTable = (data, type) => {
   };
 };
 
+// export const sharpeRatioColorChart = (value: number) => {
+//   let sharpeRatioLabel = 'Very Poor (< -1)';
+//   if (value > -1 && value <= 0) {
+//     sharpeRatioLabel = 'Low (-1.0 - 0)';
+//   }
+
+//   if (value > -1 && value <= 0) {
+//     sharpeRatioLabel = 'Below Average (-1.0 - 0)';
+//   }
+
+//   if (value > 0.5 && value <= 1) {
+//     sharpeRatioLabel = 'Average (0.5 - 1.0)';
+//   }
+
+//   if (value > 1 && value <= 1.5) {
+//     sharpeRatioLabel = 'Good (1.0 - 1.5)';
+//   }
+
+//   if (value > 1.5 && value <= 2) {
+//     sharpeRatioLabel = 'Very Good (1.5 - 2)';
+//   }
+
+//   if (value > 2 && value <= 3) {
+//     sharpeRatioLabel = 'Excellent (2 - 3)';
+//   }
+
+//   if (value > 3) {
+//     sharpeRatioLabel = 'Outstanding (> 3)';
+//   }
+// }
+
 export const getTooltipContent = (text: string, videoUrl: string, width?: string) => {
   return `
       <div style="padding: 8px; border-radius: 8px; background: rgba(0, 0, 0, 0.8); width: ${width ? "100%" : "560px"}; height: auto;">
