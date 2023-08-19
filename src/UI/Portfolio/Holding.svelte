@@ -419,7 +419,7 @@
                     <HoldingToken
                       data={holding}
                       {selectedWallet}
-                      {sumAllTokens}
+                      sumAllTokens={totalAssets - sumNFT}
                     />
                   {/each}
                 {/if}
