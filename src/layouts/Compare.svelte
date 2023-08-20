@@ -238,9 +238,6 @@
     queryKey: ["compare", selectedWallet],
     queryFn: () => getAnalyticCompare(selectedWallet, searchCompare),
     staleTime: Infinity,
-    onError: (error) => {
-      // console.log("HELLO: ", error);
-    },
   });
 
   $: queryPersonalTag = createQuery({
@@ -1178,15 +1175,6 @@
         </div>
       {/if}
     </div>
-
-    <Button
-      on:click={() => {
-        Sentry.captureException("Sentry Frontend Error");
-        console.log("HELLO");
-      }}
-    >
-      HELLO WORLD
-    </Button>
 
     {#if packageSelected === "FREE"}
       <div

@@ -7,6 +7,7 @@
   import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
   import { selectedPackage } from "~/store";
+  import * as Sentry from "@sentry/svelte";
 
   import "flowbite/dist/flowbite.css";
 
@@ -35,12 +36,15 @@
     defaultOptions: {
       queries: {
         refetchOnWindowFocus: false,
+        onError: (error) => {
+          Sentry.captureException(error);
+        },
       },
     },
   });
 
   // TODO: Add Lazyload for each routes
-  const hash = createHistory(createHashSource());
+  // const hash = createHistory(createHashSource());
 
   let isShowChat = false;
   isOpenReport.subscribe((value) => {
