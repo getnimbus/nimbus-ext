@@ -20,7 +20,7 @@
   let interval = "month";
   let isNewUser = false;
   let endDatePackage = "";
-  let isSubscription = true;
+  let isSubscription = false;
   let isOpenConfirmCancel = false;
   let isLoadingCancel = false;
 
@@ -41,7 +41,7 @@
       buyPackage = $query.data.plan?.tier;
       interval = $query.data.plan?.interval;
       endDatePackage = $query.data.plan?.endDate;
-      // isSubscription = $query.data.plan?.subscription;
+      isSubscription = $query.data.plan?.subscription;
       isNewUser = $query.data.plan?.isNewUser;
     }
   }
