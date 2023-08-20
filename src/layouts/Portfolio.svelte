@@ -340,7 +340,9 @@
       });
 
       const responseVaults = await nimbus.get(
-        `/v2/investment/${selectedWallet}/vaults`
+        `/v2/investment/${selectedWallet}/vaults?chain=${
+          getAddressContext(selectedWallet).type === "SOL" ? "SOL" : ""
+        }`
       );
 
       if (selectedWallet === response?.address) {

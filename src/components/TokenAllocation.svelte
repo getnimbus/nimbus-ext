@@ -187,7 +187,7 @@
   };
 
   const formatDataPie = (data) => {
-    return data.map((item) => {
+    return data?.map((item) => {
       if (isNaN(item.value)) {
         return {
           ...item,

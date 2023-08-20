@@ -85,9 +85,9 @@
         $queryUserInfo.data?.plan?.tier &&
         $queryUserInfo.data?.plan?.tier.length !== 0
       ) {
-        // selectedPackage.update(
-        //   (n) => (n = $queryUserInfo.data?.plan?.tier.toUpperCase())
-        // );
+        selectedPackage.update(
+          (n) => (n = $queryUserInfo.data?.plan?.tier.toUpperCase())
+        );
       }
     }
   }

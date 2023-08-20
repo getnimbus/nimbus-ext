@@ -220,13 +220,13 @@
       overviewDataPerformance?.performance?.length !== 0 ||
       overviewDataPerformance?.portfolioChart?.length !== 0
     ) {
-      const formatXAxisPerformance = overviewDataPerformance?.performance.map(
+      const formatXAxisPerformance = overviewDataPerformance?.performance?.map(
         (item) => {
           return dayjs(item.date).format("YYYY-MM-DD");
         }
       );
 
-      const formatDataPortfolio = overviewDataPerformance?.performance.map(
+      const formatDataPortfolio = overviewDataPerformance?.performance?.map(
         (item) => {
           return {
             value: item.portfolio,
@@ -237,26 +237,30 @@
         }
       );
 
-      const formatDataETH = overviewDataPerformance?.performance.map((item) => {
-        return {
-          value: item.eth,
-          itemStyle: {
-            color: "#547fef",
-          },
-        };
-      });
+      const formatDataETH = overviewDataPerformance?.performance?.map(
+        (item) => {
+          return {
+            value: item.eth,
+            itemStyle: {
+              color: "#547fef",
+            },
+          };
+        }
+      );
 
-      const formatDataBTC = overviewDataPerformance?.performance.map((item) => {
-        return {
-          value: item.btc,
-          itemStyle: {
-            color: "#f7931a",
-          },
-        };
-      });
+      const formatDataBTC = overviewDataPerformance?.performance?.map(
+        (item) => {
+          return {
+            value: item.btc,
+            itemStyle: {
+              color: "#f7931a",
+            },
+          };
+        }
+      );
 
       const formatXAxisPortfolioChart =
-        overviewDataPerformance?.portfolioChart.map((item) => {
+        overviewDataPerformance?.portfolioChart?.map((item) => {
           return dayjs(item.timestamp * 1000).format("YYYY-MM-DD");
         });
 

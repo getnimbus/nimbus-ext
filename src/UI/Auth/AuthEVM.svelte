@@ -245,16 +245,16 @@
 
     {#if showPopover}
       <div
-        class="absolute right-0 z-50 flex flex-col gap-2 px-4 py-3 text-sm transform bg-white rounded-lg xl:py-2 md:top-12 top-20 w-max"
+        class="absolute right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform bg-white rounded-lg xl:top-12 top-20 w-max"
         style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
         use:clickOutside
         on:click_outside={() => (showPopover = false)}
       >
-        <div class="text-2xl text-black xl:text-base">
+        <div class="text-2xl text-black xl:text-base px-2 py-1">
           GM 👋, {shorterAddress(addressWallet)}
         </div>
         <div
-          class="flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base"
+          class="flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base hover:bg-gray-100 rounded-md transition-all px-2 py-1"
           on:click={() => {
             navigate("/upgrade");
             showPopover = false;
@@ -277,19 +277,23 @@
           </svg>
         </div>
         <Link to="invitation">
-          <div class="text-2xl text-gray-500 cursor-pointer xl:text-base">
+          <div
+            class="text-2xl text-gray-500 cursor-pointer xl:text-base hover:bg-gray-100 rounded-md transition-all px-2 py-1"
+            on:click={() => (showPopover = false)}
+          >
             Invite
           </div>
         </Link>
         <a
           href="entries/options/index.html?tab=wallets"
           target="_blank"
-          class="hidden text-2xl text-gray-500 cursor-pointer xl:block xl:text-base"
+          class="hidden text-2xl text-gray-500 cursor-pointer xl:block xl:text-base hover:bg-gray-100 rounded-md transition-all px-2 py-1"
+          on:click={() => (showPopover = false)}
         >
           Settings
         </a>
         <div
-          class="text-2xl font-medium text-red-500 cursor-pointer xl:text-base"
+          class="text-2xl font-medium text-red-500 cursor-pointer xl:text-base hover:bg-gray-100 rounded-md transition-all px-2 py-1"
           on:click={handleSignOut}
         >
           Logout
