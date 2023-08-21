@@ -110,6 +110,7 @@
       },
     },
     legend: {
+      type: "scroll",
       top: "0%",
       left: "center",
     },
@@ -632,6 +633,7 @@
             },
           },
           legend: {
+            type: "scroll",
             top: "0%",
             left: "center",
           },

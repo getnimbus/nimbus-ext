@@ -118,6 +118,7 @@
       },
     },
     legend: {
+      type: "scroll",
       top: "0%",
       left: "center",
     },
@@ -561,7 +562,13 @@
 
   // handle logic select
   $: {
-    if (dataPersonalizeTag && dataTokenHolding) {
+    if (
+      dataPersonalizeTag &&
+      dataPersonalizeTag.length !== 0 &&
+      dataTokenHolding &&
+      dataTokenHolding.length !== 0
+    ) {
+      console.log("HELLO");
       const tokenDataEachCategory = dataPersonalizeTag.map((item) => {
         return {
           category: item.category,
@@ -604,7 +611,14 @@
         };
       });
 
-      typeListCategory = [...typeListCategory, ...listCategory];
+      typeListCategory = [...typeList];
+      typeListCategory = [...typeListCategory, ...listCategory].filter(
+        (value, index, self) =>
+          index ===
+          self.findIndex(
+            (t) => t.label === value.label && t.value === value.value
+          )
+      );
 
       personalizeCategoryData = formatTokenDataEachCategory.map((item) => {
         return {
@@ -612,6 +626,11 @@
           dataPie: handleFormatDataPieChart(item.dataTokens, item.category),
         };
       });
+    } else {
+      typeListCategory = [...typeList];
+      personalizeCategoryData = [];
+      isEmptyDataPie = false;
+      selectedDataPie = [];
     }
   }
 
@@ -673,11 +692,7 @@
           const selectedPersonalizeCategoryData =
             personalizeCategoryData[indexOfType];
 
-          if (
-            (selectedPersonalizeCategoryData !== undefined &&
-              $queryHoldingToken.isError) ||
-            ($queryHoldingToken.data && $queryHoldingToken.data?.length === 0)
-          ) {
+          if (selectedPersonalizeCategoryData !== undefined) {
             optionPie = {
               ...optionPie,
               series: [
@@ -693,19 +708,18 @@
                 },
               ],
             };
+          } else {
+            optionPie = {
+              ...optionPie,
+              series: [
+                {
+                  ...optionPie.series[0],
+                  data: [],
+                },
+              ],
+            };
           }
         }
-      }
-    }
-  }
-
-  $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        typeListCategory = [...typeList];
-        personalizeCategoryData = [];
-        isEmptyDataPie = false;
-        selectedDataPie = [];
       }
     }
   }
