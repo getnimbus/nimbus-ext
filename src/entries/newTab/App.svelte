@@ -68,7 +68,8 @@
           response.data?.plan?.tier.length !== 0
         ) {
           selectedPackage.update(
-            (n) => (n = response.data?.plan?.tier.toUpperCase())
+            // (n) => (n = response.data?.plan?.tier.toUpperCase())
+            () => "PROFESSIONAL" // TODO: Remove me after integration compelete
           );
         }
       }
