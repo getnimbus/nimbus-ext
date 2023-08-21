@@ -185,7 +185,7 @@
       >
         <TooltipNumber number={ratio} type="percent" />%
       </div>
-      <div class="w-3/4">
+      <div class="w-3/4 max-w-40">
         <Progressbar progress={ratio} size="h-1" />
       </div>
     </div>
