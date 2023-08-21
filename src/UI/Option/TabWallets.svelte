@@ -895,7 +895,7 @@
           <div class="flex items-center gap-4">
             {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0}
               <div
-                class="text-red-500 font-medium w-max cursor-pointer"
+                class="text-red-500 font-semibold w-max cursor-pointer"
                 on:click={handleDeleteBundle}
               >
                 Delete
