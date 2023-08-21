@@ -116,25 +116,25 @@
       <div class="flex flex-col justify-center items-center">
         <div class="text-lg">Thank you for upgrading your plan</div>
         <div class="text-sm text-gray-500">
-          We hope you enjoy your investment with Nimbus
+          Let's enjoy investment in easy-mode with Nimbus
         </div>
       </div>
       <div class="w-[120px]">
         {#if status}
           <Link to="/">
             <Button
-              variant="secondary"
+              variant="primary"
               on:click={() => {
                 queryClient.invalidateQueries(["users-me"]);
               }}>Continue</Button
             >
           </Link>
         {:else}
-          <Button isLoading={!status} variant="secondary">Continue</Button>
+          <Button isLoading={!status} variant="primary">Continue</Button>
         {/if}
       </div>
       <div class="text-gray-500 xl:text-sm text-base">
-        Notice: Your can use our application as normal. We will upgrade your
+        Notice: You can use our application as normal. We will upgrade your
         account Plan as soon as we receive the payment
       </div>
     </div>
