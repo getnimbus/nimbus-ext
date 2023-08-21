@@ -35,6 +35,7 @@
     defaultOptions: {
       queries: {
         refetchOnWindowFocus: false,
+        staleTime: Infinity,
       },
     },
   });

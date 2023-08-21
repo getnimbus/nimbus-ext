@@ -123,7 +123,7 @@
           buyPackage === "Free" ? "border-[#1e96fc]" : "border-[#0000001a]"
         }`}
       >
-        <div class="text-4xl font-semibold xl:text-3xl">
+        <div class="text-4xl font-medium xl:text-3xl">
           0$<span class="xl:text-xl text-2xl ml-1 text-gray-400 mb-[2px]"
             >/month</span
           >
@@ -191,7 +191,7 @@
               Professional community
             </div>
             <!-- <div
-              class={`flex items-center gap-2 mt-2 text-[#1E96FC] font-semibold xl:text-lg text-xl ${
+              class={`flex items-center gap-2 mt-2 text-[#1E96FC] font-medium mt-5 xl:text-lg text-xl ${
                 buyPackage?.length !== 0 && buyPackage !== "Free"
                   ? "opacity-100 cursor-pointer"
                   : "opacity-0 cursor-default"
@@ -255,7 +255,7 @@
           <ExplorerPlan {selectedTypePackage}>
             <!-- <div
               slot="button"
-              class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-semibold xl:text-lg text-xl ${
+              class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-medium mt-5 xl:text-lg text-xl ${
                 buyPackage === "Free"
                   ? "opacity-100"
                   : buyPackage === "Explorer" && interval === "month"
@@ -319,7 +319,7 @@
             </div> -->
 
             <!-- remove me -->
-            <div slot="button" class="font-semibold xl:text-lg text-xl">
+            <div slot="button" class="font-medium mt-5 xl:text-lg text-xl">
               {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "month")}
                 {#if buyPackage === "Free"}
                   <div
@@ -383,7 +383,7 @@
           <ProfessionalPlan {selectedTypePackage}>
             <!-- <div
               slot="button"
-              class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-semibold xl:text-lg text-xl ${
+              class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-medium mt-5 xl:text-lg text-xl ${
                 buyPackage === "Free" || buyPackage === "Explorer"
                   ? "opacity-100"
                   : buyPackage === "Professional" && interval === "month"
@@ -446,7 +446,7 @@
             </div> -->
 
             <!-- remove me -->
-            <div slot="button" class="font-semibold xl:text-lg text-xl">
+            <div slot="button" class="font-medium mt-5 xl:text-lg text-xl">
               {#if buyPackage === "Free" || (buyPackage === "Professional" && interval === "month")}
                 {#if buyPackage === "Free"}
                   <div
@@ -517,7 +517,7 @@
           <ExplorerPlan {selectedTypePackage}>
             <!-- <div
               slot="button"
-              class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-semibold xl:text-lg text-xl ${
+              class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-medium mt-5 xl:text-lg text-xl ${
                 buyPackage === "Free"
                   ? "opacity-100"
                   : buyPackage === "Explorer" && interval === "year"
@@ -581,7 +581,7 @@
             </div> -->
 
             <!-- remove me -->
-            <div slot="button" class="font-semibold xl:text-lg text-xl">
+            <div slot="button" class="font-medium mt-5 xl:text-lg text-xl">
               {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "year")}
                 {#if buyPackage === "Free"}
                   <div
@@ -645,7 +645,7 @@
           <ProfessionalPlan {selectedTypePackage}>
             <!-- <div
               slot="button"
-              class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-semibold xl:text-lg text-xl ${
+              class={`flex justify-between items-center w-full mt-2 text-[#1E96FC] font-medium mt-5 xl:text-lg text-xl ${
                 buyPackage === "Free" || buyPackage === "Explorer"
                   ? "opacity-100"
                   : buyPackage === "Professional" && interval === "year"
@@ -700,7 +700,7 @@
             </div> -->
 
             <!-- remove me -->
-            <div slot="button" class="font-semibold xl:text-lg text-xl">
+            <div slot="button" class="font-medium mt-5 xl:text-lg text-xl">
               {#if buyPackage === "Free" || (buyPackage === "Professional" && interval === "year")}
                 {#if buyPackage === "Free"}
                   <div
@@ -759,7 +759,7 @@
   on:close={() => (isOpenConfirmCancel = false)}
 >
   <div class="flex flex-col gap-1 items-start">
-    <div class="xl:title-3 title-1 text-gray-600 font-semibold">
+    <div class="xl:title-3 title-1 text-gray-600 font-medium mt-5">
       Are you sure?
     </div>
     <div class="xl:text-sm text-lg text-gray-500">
