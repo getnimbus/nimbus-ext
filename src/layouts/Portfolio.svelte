@@ -341,7 +341,7 @@
 
       const responseVaults = await nimbus.get(
         `/v2/investment/${selectedWallet}/vaults?chain=${
-          getAddressContext(selectedWallet).type === "SOL" ? "SOL" : ""
+          getAddressContext(selectedWallet)?.type === "SOL" ? "SOL" : ""
         }`
       );
 
@@ -535,6 +535,12 @@
               //   return res;
               // }),
             ]);
+
+            console.log({
+              resOverview,
+              resHoldingToken,
+              resHoldingNFT,
+            });
 
             if (
               resOverview &&
