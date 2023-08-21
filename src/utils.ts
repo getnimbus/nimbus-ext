@@ -259,6 +259,9 @@ export const detectedChain = (type) => {
     case "ARB":
       chain = Arbitrum
       break;
+    case "SOL":
+      chain = Solana
+      break;
     default:
       chain = logo
   }
