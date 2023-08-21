@@ -9,6 +9,7 @@
   import { getChangePercent } from "~/chart-utils";
   import { useNavigate } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import * as Sentry from "@sentry/svelte";
 
   import type { TokenData } from "~/types/HoldingTokenData";
 
