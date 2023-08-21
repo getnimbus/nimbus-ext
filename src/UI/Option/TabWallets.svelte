@@ -987,7 +987,7 @@
   {/if}
 
   {#if isAddBundle || (selectedBundle && selectedBundle !== null && Object.keys(selectedBundle).length !== 0)}
-    <form on:submit|preventDefault={onSubmitBundle} class="flex flex-col gap-6">
+    <form on:submit|preventDefault={onSubmitBundle} class="flex flex-col gap-4">
       <div
         class={`flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
           nameBundle ? "bg-[#F0F2F7]" : ""
