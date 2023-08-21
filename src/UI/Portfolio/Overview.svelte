@@ -37,9 +37,11 @@
   $: networth = totalAssets + totalPositions;
 
   $: totalProfit =
-    networth +
-    Number(data?.overview?.cumulativeOutflow || 0) -
-    Number(data?.overview?.cumulativeInflow || 0);
+    getAddressContext(selectedWallet)?.type === "SOL"
+      ? 0
+      : networth +
+        Number(data?.overview?.cumulativeOutflow || 0) -
+        Number(data?.overview?.cumulativeInflow || 0);
 
   $: changeLast24hNetWorth = getChangeFromPercent(
     networth,
@@ -61,10 +63,10 @@
     changeLast24hTotalInflow +
     changeLast24hNetWorth;
 
-  $: last24hTotalProfitPercent = getChangePercent(
-    totalProfit,
-    changeLast24hTotalProfit
-  );
+  $: last24hTotalProfitPercent =
+    getAddressContext(selectedWallet)?.type === "SOL"
+      ? 0
+      : getChangePercent(totalProfit, changeLast24hTotalProfit);
 </script>
 
 <ErrorBoundary>
@@ -112,7 +114,13 @@
         isTooltip
         tooltipText="Total profit = Total Outflow - Total Inflow + Net Worth"
       >
-        <div class="flex xl:text-3xl text-5xl text-black">
+        <div
+          class={`flex xl:text-3xl text-5xl text-black ${
+            getAddressContext(selectedWallet)?.type === "SOL"
+              ? "opacity-50"
+              : ""
+          }`}
+        >
           {#if totalProfit.toString().toLowerCase().includes("e-")}
             $<TooltipNumber number={totalProfit} type="balance" />
           {:else}
