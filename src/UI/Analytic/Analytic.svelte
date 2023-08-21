@@ -32,6 +32,7 @@
     if (selectedWallet) {
       if (
         getAddressContext(selectedWallet)?.type === "BTC" ||
+        getAddressContext(selectedWallet)?.type === "SOL" ||
         packageSelected === "FREE"
       ) {
         isShowSoon = true;
@@ -124,7 +125,8 @@
                 >Start 30-day Trial</Button
               >
             </div>
-          {:else}
+          {/if}
+          {#if packageSelected !== "FREE" && (getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL")}
             <div class="text-lg">Coming soon 🚀</div>
             <div class="w-max">
               <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">

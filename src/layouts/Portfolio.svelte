@@ -703,7 +703,7 @@
             {isEmptyDataPie}
           />
 
-          {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+          {#if getAddressContext(selectedWallet)?.type === "EVM" || typeWalletAddress === "CEX"}
             <RiskReturn />
           {/if}
 

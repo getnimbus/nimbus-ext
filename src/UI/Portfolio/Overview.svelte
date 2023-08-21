@@ -77,7 +77,8 @@
         <div
           class={`flex items-center gap-3 ${
             typeWalletAddress === "CEX" ||
-            getAddressContext(selectedWallet)?.type === "BTC"
+            getAddressContext(selectedWallet)?.type === "BTC" ||
+            getAddressContext(selectedWallet)?.type === "SOL"
               ? "opacity-50"
               : ""
           }`}
@@ -130,7 +131,8 @@
         <div
           class={`flex items-center gap-3 ${
             typeWalletAddress === "CEX" ||
-            getAddressContext(selectedWallet)?.type === "BTC"
+            getAddressContext(selectedWallet)?.type === "BTC" ||
+            getAddressContext(selectedWallet)?.type === "SOL"
               ? "opacity-50"
               : ""
           }`}
@@ -160,7 +162,13 @@
 
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
       <OverviewCard title={MultipleLang.total_inflow}>
-        <div class="xl:text-3xl text-5xl text-black flex">
+        <div
+          class={`xl:text-3xl text-5xl text-black flex ${
+            getAddressContext(selectedWallet)?.type === "SOL"
+              ? "opacity-50"
+              : ""
+          }`}
+        >
           $<CountUpNumber
             id="total_assets"
             number={data?.overview?.cumulativeInflow}
@@ -170,7 +178,8 @@
         <div
           class={`flex items-center gap-3 ${
             typeWalletAddress === "CEX" ||
-            getAddressContext(selectedWallet)?.type === "BTC"
+            getAddressContext(selectedWallet)?.type === "BTC" ||
+            getAddressContext(selectedWallet)?.type === "SOL"
               ? "opacity-50"
               : ""
           }`}
@@ -200,7 +209,13 @@
       </OverviewCard>
 
       <OverviewCard title={MultipleLang.total_outflow}>
-        <div class="flex xl:text-3xl text-5xl text-black">
+        <div
+          class={`xl:text-3xl text-5xl text-black flex ${
+            getAddressContext(selectedWallet)?.type === "SOL"
+              ? "opacity-50"
+              : ""
+          }`}
+        >
           {#if data?.overview?.cumulativeOutflow
             ?.toString()
             .toLowerCase()
@@ -220,7 +235,8 @@
         <div
           class={`flex items-center gap-3 ${
             typeWalletAddress === "CEX" ||
-            getAddressContext(selectedWallet)?.type === "BTC"
+            getAddressContext(selectedWallet)?.type === "BTC" ||
+            getAddressContext(selectedWallet)?.type === "SOL"
               ? "opacity-50"
               : ""
           }`}
