@@ -546,18 +546,20 @@
               Add your custom token breakdown to keep track of investments by
               your way.
             </div>
-            <Button
-              variant="tertiary"
-              on:click={() => {
-                isAddCustom = true;
-                handleResetState();
-              }}
-            >
-              <img src={Plus} alt="" width="12" height="12" />
-              <div class="xl:text-base text-2xl font-medium text-white">
-                Add Category
-              </div>
-            </Button>
+            <div class="w-max">
+              <Button
+                variant="tertiary"
+                on:click={() => {
+                  isAddCustom = true;
+                  handleResetState();
+                }}
+              >
+                <img src={Plus} alt="" width="12" height="12" />
+                <div class="xl:text-base text-2xl font-medium text-white">
+                  Add Category
+                </div>
+              </Button>
+            </div>
           </div>
         {:else}
           <div class="flex justify-between gap-6">
@@ -680,23 +682,25 @@
                   }
                 }}
               >
-                {#if listCustom.length > 2}
-                  <Button variant="disabled" disabled>
-                    <img src={Plus} alt="" width="12" height="12" />
-                    <div class="font-medium text-white">Add Category</div>
-                  </Button>
-                {:else}
-                  <Button
-                    variant="tertiary"
-                    on:click={() => {
-                      isAddCustom = true;
-                      handleResetState();
-                    }}
-                  >
-                    <img src={Plus} alt="" width="12" height="12" />
-                    <div class="font-medium text-white">Add Category</div>
-                  </Button>
-                {/if}
+                <div class="w-max">
+                  {#if listCustom.length > 2}
+                    <Button variant="disabled" disabled>
+                      <img src={Plus} alt="" width="12" height="12" />
+                      <div class="font-medium text-white">Add Category</div>
+                    </Button>
+                  {:else}
+                    <Button
+                      variant="tertiary"
+                      on:click={() => {
+                        isAddCustom = true;
+                        handleResetState();
+                      }}
+                    >
+                      <img src={Plus} alt="" width="12" height="12" />
+                      <div class="font-medium text-white">Add Category</div>
+                    </Button>
+                  {/if}
+                </div>
                 {#if showDisableAddBtn}
                   <div
                     class="absolute transform -translate-x-1/2 -top-8 left-1/2"
