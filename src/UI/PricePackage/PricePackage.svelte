@@ -324,6 +324,14 @@
                 {#if buyPackage === "Free"}
                   <div
                     class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                    on:click={() => {
+                      selectedPackage({
+                        plan: "Explorer",
+                        selectedTypePackage,
+                        price: "$30",
+                        isNewUser: undefined,
+                      });
+                    }}
                   >
                     Upgrade
                     <svg
@@ -451,6 +459,14 @@
                 {#if buyPackage === "Free"}
                   <div
                     class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                    on:click={() => {
+                      selectedPackage({
+                        plan: "Professional",
+                        selectedTypePackage,
+                        price: "$99",
+                        isNewUser: undefined,
+                      });
+                    }}
                   >
                     Upgrade
                     <svg
@@ -586,6 +602,14 @@
                 {#if buyPackage === "Free"}
                   <div
                     class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                    on:click={() => {
+                      selectedPackage({
+                        plan: "Explorer",
+                        selectedTypePackage,
+                        price: "$25",
+                        isNewUser: undefined,
+                      });
+                    }}
                   >
                     Upgrade
                     <svg
@@ -705,6 +729,14 @@
                 {#if buyPackage === "Free"}
                   <div
                     class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                    on:click={() => {
+                      selectedPackage({
+                        plan: "Professional",
+                        selectedTypePackage,
+                        price: "$82.5",
+                        isNewUser: undefined,
+                      });
+                    }}
                   >
                     Upgrade
                     <svg
