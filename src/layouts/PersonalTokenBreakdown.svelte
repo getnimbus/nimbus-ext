@@ -663,7 +663,7 @@
             <div class="flex items-center gap-4 w-max">
               {#if selectedCustom && selectedCustom !== null && Object.keys(selectedCustom).length !== 0}
                 <div
-                  class="text-red-500 font-semibold cursor-pointer"
+                  class="text-red-500 font-semibold cursor-pointer xl:text-base text-2xl"
                   on:click={deleteCustomCategory}
                 >
                   Delete

@@ -155,6 +155,15 @@
     isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
   };
 
+  let selectedAddresses = [];
+  let nameBundle = "";
+  let listBundle = [];
+  let selectedBundle = {};
+  let isAddBundle = false;
+  let isLoadingBundle = false;
+
+  const queryClient = useQueryClient();
+
   const trigger = () => {
     show = true;
     counter = 3;
@@ -243,7 +252,6 @@
     }
   };
 
-  const queryClient = useQueryClient();
   const query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
@@ -615,13 +623,6 @@
     }
   }
 
-  let selectedAddresses = [];
-  let nameBundle = "";
-  let listBundle = [];
-  let selectedBundle = {};
-  let isAddBundle = false;
-  let isLoadingBundle = false;
-
   const queryListBundle = createQuery({
     queryKey: ["list-bundle"],
     queryFn: () => getListBundle(),
@@ -734,7 +735,9 @@
       toastMsg = "Successfully delete your bundle!";
       isSuccess = true;
       trigger();
-      queryClient.invalidateQueries(["list-bundle"]);
+      listBundle = listBundle.filter(
+        (item) => item.name !== selectedBundle?.name
+      );
       handleResetState();
       selectedAddresses = [];
       isAddBundle = false;
@@ -751,7 +754,7 @@
   {#if listAddress && listAddress.length === 0}
     <div class="flex justify-between items-center">
       <div class="xl:title-3 title-1 text-gray-500">{MultipleLang.title}</div>
-      <div class="relative xl:w-max w-[260px]">
+      <div class="relative xl:w-max w-[200px]">
         {#if Object.keys(userInfo).length !== 0}
           <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
             <img src={Plus} alt="" width="12" height="12" />
@@ -790,7 +793,7 @@
   {:else}
     <div class="flex flex-col gap-4">
       <div class="xl:title-3 title-1 text-gray-500">{MultipleLang.title}</div>
-      <div class="flex justify-between items-center">
+      <div class="flex justify-between items-center gap-10">
         {#if listBundle && listBundle.length === 0}
           <div class="text-base">
             Create your bundle with up to 7 addresses per bundle!
@@ -895,13 +898,13 @@
           <div class="flex items-center gap-4">
             {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0}
               <div
-                class="text-red-500 font-semibold w-max cursor-pointer"
+                class="text-red-500 font-semibold w-max cursor-pointer xl:text-base text-2xl"
                 on:click={handleDeleteBundle}
               >
                 Delete
               </div>
             {/if}
-            <div class="xl:w-max w-[260px]">
+            <div class="xl:w-max w-[200px]">
               <Button
                 variant="tertiary"
                 on:click={() => {
@@ -919,7 +922,7 @@
           </div>
           <!-- add account -->
           <div
-            class="relative xl:w-max w-[260px]"
+            class="relative xl:w-max w-[200px]"
             on:mouseenter={() => {
               if (isDisabled || Object.keys(userInfo).length === 0) {
                 showDisableAddWallet = true;
