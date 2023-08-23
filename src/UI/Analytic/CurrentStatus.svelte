@@ -118,7 +118,6 @@
       },
     },
     legend: {
-      type: "scroll",
       top: "0%",
       left: "center",
     },
@@ -465,7 +464,6 @@
               type: "solid",
               color: "#00b580",
             },
-            showSymbol: false,
             data: formatDataPortfolio,
           },
           {
@@ -475,7 +473,6 @@
               type: "dashed",
               color: "#f7931a",
             },
-            showSymbol: false,
             data: formatDataBTC,
           },
           {
@@ -485,7 +482,6 @@
               type: "dashed",
               color: "#547fef",
             },
-            showSymbol: false,
             data: formatDataETH,
           },
         ],
@@ -562,13 +558,7 @@
 
   // handle logic select
   $: {
-    if (
-      dataPersonalizeTag &&
-      dataPersonalizeTag.length !== 0 &&
-      dataTokenHolding &&
-      dataTokenHolding.length !== 0
-    ) {
-      console.log("HELLO");
+    if (dataPersonalizeTag && dataTokenHolding) {
       const tokenDataEachCategory = dataPersonalizeTag.map((item) => {
         return {
           category: item.category,
@@ -611,14 +601,7 @@
         };
       });
 
-      typeListCategory = [...typeList];
-      typeListCategory = [...typeListCategory, ...listCategory].filter(
-        (value, index, self) =>
-          index ===
-          self.findIndex(
-            (t) => t.label === value.label && t.value === value.value
-          )
-      );
+      typeListCategory = [...typeListCategory, ...listCategory];
 
       personalizeCategoryData = formatTokenDataEachCategory.map((item) => {
         return {
@@ -626,11 +609,6 @@
           dataPie: handleFormatDataPieChart(item.dataTokens, item.category),
         };
       });
-    } else {
-      typeListCategory = [...typeList];
-      personalizeCategoryData = [];
-      isEmptyDataPie = false;
-      selectedDataPie = [];
     }
   }
 
@@ -692,7 +670,11 @@
           const selectedPersonalizeCategoryData =
             personalizeCategoryData[indexOfType];
 
-          if (selectedPersonalizeCategoryData !== undefined) {
+          if (
+            (selectedPersonalizeCategoryData !== undefined &&
+              $queryHoldingToken.isError) ||
+            ($queryHoldingToken.data && $queryHoldingToken.data?.length === 0)
+          ) {
             optionPie = {
               ...optionPie,
               series: [
@@ -708,18 +690,19 @@
                 },
               ],
             };
-          } else {
-            optionPie = {
-              ...optionPie,
-              series: [
-                {
-                  ...optionPie.series[0],
-                  data: [],
-                },
-              ],
-            };
           }
         }
+      }
+    }
+  }
+
+  $: {
+    if (selectedWallet || selectedChain) {
+      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
+        typeListCategory = [...typeList];
+        personalizeCategoryData = [];
+        isEmptyDataPie = false;
+        selectedDataPie = [];
       }
     }
   }
@@ -846,14 +829,14 @@
 
     <div class="w-full mt-5">
       {#if $queryHoldingToken.isFetching}
-        <div class="flex items-center justify-center h-[475px]">
+        <div class="flex items-center justify-center h-[465px]">
           <LoadingPremium />
         </div>
       {:else}
         <div class="h-full">
           {#if $queryHoldingToken.isError || ($queryHoldingToken.data && $queryHoldingToken.data.length === 0)}
             <div
-              class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
+              class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
             >
               Empty
             </div>
@@ -863,7 +846,7 @@
                 id="current-status-analytics"
                 theme="white"
                 option={optionPie}
-                height={475}
+                height={465}
                 notMerge={true}
                 type="full-width"
               />

@@ -24,7 +24,7 @@
       listSelect.filter((item) => item.value === selected)) ||
     [];
 
-  const disabledChains = ["XDAI"];
+  const disabledChains = ["XDAI", "SOL"];
 
   const clickOutside = (node) => {
     const handleClick = (event) => {

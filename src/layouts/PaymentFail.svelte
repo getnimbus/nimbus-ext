@@ -36,7 +36,7 @@
       data[key] = value;
     }
     try {
-      await nimbus.post("/subscription/failure-email", {
+      await nimbus.post("/subscription/analysis", {
         email: data.email,
       });
       isLoadingSendMail = false;

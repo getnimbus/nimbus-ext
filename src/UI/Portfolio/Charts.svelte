@@ -110,7 +110,6 @@
       },
     },
     legend: {
-      type: "scroll",
       top: "0%",
       left: "center",
     },
@@ -221,13 +220,13 @@
       overviewDataPerformance?.performance?.length !== 0 ||
       overviewDataPerformance?.portfolioChart?.length !== 0
     ) {
-      const formatXAxisPerformance = overviewDataPerformance?.performance?.map(
+      const formatXAxisPerformance = overviewDataPerformance?.performance.map(
         (item) => {
           return dayjs(item.date).format("YYYY-MM-DD");
         }
       );
 
-      const formatDataPortfolio = overviewDataPerformance?.performance?.map(
+      const formatDataPortfolio = overviewDataPerformance?.performance.map(
         (item) => {
           return {
             value: item.portfolio,
@@ -238,30 +237,26 @@
         }
       );
 
-      const formatDataETH = overviewDataPerformance?.performance?.map(
-        (item) => {
-          return {
-            value: item.eth,
-            itemStyle: {
-              color: "#547fef",
-            },
-          };
-        }
-      );
+      const formatDataETH = overviewDataPerformance?.performance.map((item) => {
+        return {
+          value: item.eth,
+          itemStyle: {
+            color: "#547fef",
+          },
+        };
+      });
 
-      const formatDataBTC = overviewDataPerformance?.performance?.map(
-        (item) => {
-          return {
-            value: item.btc,
-            itemStyle: {
-              color: "#f7931a",
-            },
-          };
-        }
-      );
+      const formatDataBTC = overviewDataPerformance?.performance.map((item) => {
+        return {
+          value: item.btc,
+          itemStyle: {
+            color: "#f7931a",
+          },
+        };
+      });
 
       const formatXAxisPortfolioChart =
-        overviewDataPerformance?.portfolioChart?.map((item) => {
+        overviewDataPerformance?.portfolioChart.map((item) => {
           return dayjs(item.timestamp * 1000).format("YYYY-MM-DD");
         });
 
@@ -436,7 +431,6 @@
                 type: "solid",
                 color: "#00b580",
               },
-              showSymbol: false,
               data: dataLineChartPercent.formatDataPortfolio,
             },
             {
@@ -446,7 +440,6 @@
                 type: "dashed",
                 color: "#f7931a",
               },
-              showSymbol: false,
               data: dataLineChartPercent.formatDataBTC,
             },
             {
@@ -456,7 +449,6 @@
                 type: "dashed",
                 color: "#547fef",
               },
-              showSymbol: false,
               data: dataLineChartPercent.formatDataETH,
             },
           ],
@@ -523,7 +515,6 @@
                 type: "solid",
                 color: "#00b580",
               },
-              showSymbol: false,
               data: overviewDataPerformance?.portfolioChart.map((item) => {
                 return {
                   value: item.value,
@@ -633,7 +624,6 @@
             },
           },
           legend: {
-            type: "scroll",
             top: "0%",
             left: "center",
           },
@@ -793,7 +783,7 @@
           </div>
         {/if}
       </div>
-      {#if selectedChain === "XDAI" || getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
+      {#if selectedChain === "XDAI" || getAddressContext(selectedWallet)?.type === "BTC"}
         <div
           class="absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center bg-white/95 z-30 backdrop-blur-md"
         >

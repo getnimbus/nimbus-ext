@@ -96,7 +96,6 @@
       },
     },
     legend: {
-      type: "scroll",
       top: "0%",
       left: "center",
     },
@@ -188,7 +187,7 @@
   };
 
   const formatDataPie = (data) => {
-    return data?.map((item) => {
+    return data.map((item) => {
       if (isNaN(item.value)) {
         return {
           ...item,

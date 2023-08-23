@@ -7,7 +7,7 @@ export const wallet = writable("");
 export const chain = writable("ALL");
 export const typeWallet = writable("");
 export const isFirstTimeLogin = writable(false);
-export const selectedPackage = writable("FREE");
+export const selectedPackage = writable("PROFESSIONAL");
 
 let isFirstTime = true;
 isOpenReport.subscribe((value) => {

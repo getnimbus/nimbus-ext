@@ -3,7 +3,6 @@
   import { chain, typeWallet } from "~/store";
   import { detectedChain, getAddressContext, shorterName } from "~/utils";
   import numeral from "numeral";
-  import { Progressbar } from "flowbite-svelte";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -179,15 +178,10 @@
   </td>
 
   <td class="py-3 pr-3 group-hover:bg-gray-100">
-    <div class="flex flex-col gap-1 justify-end items-end">
-      <div
-        class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
-      >
-        <TooltipNumber number={ratio} type="percent" />%
-      </div>
-      <div class="w-3/4 max-w-40">
-        <Progressbar progress={ratio} size="h-1" />
-      </div>
+    <div
+      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+    >
+      <TooltipNumber number={ratio} type="percent" />%
     </div>
   </td>
 

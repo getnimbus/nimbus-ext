@@ -3,12 +3,10 @@
   import * as browser from "webextension-polyfill";
   import { getAddressContext } from "~/utils";
   import { i18n } from "~/lib/i18n";
-  import { chain, wallet, selectedPackage } from "~/store";
+  import { chain, wallet } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { Motion } from "svelte-motion";
   import { showChangeLogAnimationVariants } from "~/utils";
-  import { nimbus } from "~/lib/network";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import Auth from "~/UI/Auth/Auth.svelte";
   import AuthEvm from "~/UI/Auth/AuthEVM.svelte";
@@ -57,31 +55,6 @@
 
   const absoluteMatch = useMatch("/:page");
 
-  const queryClient = useQueryClient();
-  const queryUserInfo = createQuery({
-    queryKey: ["users-me"],
-    queryFn: () => getUserInfo(),
-    staleTime: Infinity,
-  });
-
-  const getUserInfo = async () => {
-    const response = await nimbus.get("/users/me");
-    return response.data;
-  };
-
-  $: {
-    if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
-      if (
-        $queryUserInfo.data?.plan?.tier &&
-        $queryUserInfo.data?.plan?.tier.length !== 0
-      ) {
-        selectedPackage.update(
-          (n) => (n = $queryUserInfo.data?.plan?.tier.toUpperCase())
-        );
-      }
-    }
-  }
-
   $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
 </script>
 
@@ -103,10 +76,7 @@
               ? "bg-[#525B8C] opacity-100"
               : "opacity-70"
           }`}
-          on:click={() => {
-            navActive = "portfolio";
-            queryClient.invalidateQueries(["users-me"]);
-          }}
+          on:click={() => (navActive = "portfolio")}
         >
           <img src={PortfolioIcon} alt="" width="20" height="20" />
           <span class="text-sm font-medium text-white xl:text-base">
@@ -120,10 +90,7 @@
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
             navActive === "analytic" ? "bg-[#525B8C] opacity-100" : "opacity-70"
           }`}
-          on:click={() => {
-            navActive = "analytic";
-            queryClient.invalidateQueries(["users-me"]);
-          }}
+          on:click={() => (navActive = "analytic")}
         >
           <img src={AnalyticIcon} alt="" width="20" height="20" />
           <span class="flex gap-[1px]">
@@ -150,7 +117,6 @@
           on:click={() => {
             navActive = "transactions";
             chain.update((n) => (n = "ETH"));
-            queryClient.invalidateQueries(["users-me"]);
           }}
         >
           <img src={TransactionsIcon} alt="" width="20" height="20" />
@@ -165,10 +131,7 @@
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
             navActive === "whales" ? "bg-[#525B8C] opacity-100" : "opacity-70"
           }`}
-          on:click={() => {
-            navActive = "whales";
-            queryClient.invalidateQueries(["users-me"]);
-          }}
+          on:click={() => (navActive = "whales")}
         >
           <img src={WhaleIcon} alt="" width="20" height="20" />
           <span class="text-sm font-medium text-white xl:text-base">
@@ -182,10 +145,7 @@
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
             navActive === "news" ? "bg-[#525B8C] opacity-100" : "opacity-70"
           }`}
-          on:click={() => {
-            navActive = "news";
-            queryClient.invalidateQueries(["users-me"]);
-          }}
+          on:click={() => (navActive = "news")}
         >
           <img src={NewsIcon} alt="" width="20" height="20" />
           <span class="text-sm font-medium text-white xl:text-base">
