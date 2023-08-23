@@ -719,7 +719,7 @@
                     {:else}
                       {#each positionDetail?.changes || [] as change}
                         <tr
-                          class="group transition-all border-b-[0.5px] last:border-none"
+                          class="group transition-all border-b-[0.5px] border_0000000d last:border-none"
                         >
                           <td
                             class={`sticky left-0 py-3 pl-3 xl:static xl:bg-transparent z-9  ${
@@ -918,7 +918,7 @@
                     {:else}
                       {#each positionDetail?.changes || [] as change}
                         <tr
-                          class="group transition-all border-b-[0.5px] last:border-none"
+                          class="group transition-all border-b-[0.5px] border_0000000d last:border-none"
                         >
                           <td
                             class={`py-3 pl-3 ${

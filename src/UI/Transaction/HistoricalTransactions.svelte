@@ -105,7 +105,9 @@
           </tr>
         {:else}
           {#each data || [] as item}
-            <tr class="group transition-all border-b-[0.5px] last:border-none">
+            <tr
+              class="group transition-all border-b-[0.5px] border_0000000d last:border-none"
+            >
               <td
                 class={`pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 ${
                   darkMode

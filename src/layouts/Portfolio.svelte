@@ -930,12 +930,10 @@
     {/if}
   </span>
   <span slot="body">
-    <div
-      class="portfolio_container max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26"
-    >
+    <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
       {#if isLoadingSync}
         <div
-          class="text-xl font-medium flex flex-col gap-5 justify-center items-center rounded-[20px] p-6 h-screen"
+          class="portfolio_container text-xl font-medium flex flex-col gap-5 justify-center items-center rounded-[20px] p-6 h-screen"
         >
           {syncMsg}
           {#if syncMsg !== "Invalid address"}
@@ -943,7 +941,9 @@
           {/if}
         </div>
       {:else}
-        <div class="flex flex-col gap-7 rounded-[20px] xl:p-8">
+        <div
+          class="portfolio_container flex flex-col gap-7 rounded-[20px] xl:p-8"
+        >
           <Charts
             {handleSelectedTableTokenHolding}
             isLoading={loadingOverview}
@@ -1017,6 +1017,6 @@
   }
   :global(body.dark) .portfolio_container {
     background: #110c2a;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 1);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
   }
 </style>

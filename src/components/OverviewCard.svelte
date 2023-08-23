@@ -31,6 +31,6 @@
   }
   :global(body.dark) .overview_card_container {
     background: #110c2a;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 1);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
   }
 </style>
