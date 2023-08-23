@@ -14,7 +14,6 @@
   import { isOpenReport, wallet, chain, typeWallet } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
-  import { getHoldingSOL, getOverviewSOL } from "~/solanaAPI";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
@@ -299,11 +298,10 @@
 
         return response;
       } else {
-        return undefined;
+        // console.log("response: ", response)
       }
     } catch (e) {
       console.log("error: ", e);
-      return undefined;
     }
   };
 
@@ -326,30 +324,10 @@
 
         return response;
       } else {
-        return undefined;
+        // console.log("response: ", response)
       }
     } catch (e) {
-      console.error("error: ", e);
-      return undefined;
-    }
-  };
-
-  const getNews = async (isReload: boolean = false) => {
-    try {
-      const response: NewDataRes = await sendMessage("getNews", {
-        address: selectedWallet,
-        reload: isReload,
-        chain: selectedChain,
-      });
-      if (selectedWallet === response?.address) {
-        newsData = response.result;
-        return response;
-      } else {
-        return undefined;
-      }
-    } catch (e) {
-      console.error("error: ", e);
-      return undefined;
+      console.log("error: ", e);
     }
   };
 
@@ -362,9 +340,7 @@
       });
 
       const responseVaults = await nimbus.get(
-        `/v2/investment/${selectedWallet}/vaults?chain=${
-          getAddressContext(selectedWallet)?.type === "SOL" ? "SOL" : ""
-        }`
+        `/v2/investment/${selectedWallet}/vaults`
       );
 
       if (selectedWallet === response?.address) {
@@ -394,7 +370,6 @@
               Number(item?.amount) * Number(item?.price?.price || item?.rate),
           };
         });
-
         holdingTokenData = formatData.sort((a, b) => {
           if (a.value < b.value) {
             return 1;
@@ -404,17 +379,15 @@
           }
           return 0;
         });
-
         return {
           ...response,
           result: formatDataTokenHolding,
         };
       } else {
-        return undefined;
+        // console.log("response: ", response)
       }
     } catch (e) {
       console.log("error: ", e);
-      return undefined;
     }
   };
 
@@ -437,11 +410,28 @@
         holdingNFTData = response.result;
         return response;
       } else {
-        return undefined;
+        // console.log("response: ", response)
       }
     } catch (e) {
-      console.error("error: ", e);
-      return undefined;
+      console.log("error: ", e);
+    }
+  };
+
+  const getNews = async (isReload: boolean = false) => {
+    try {
+      const response: NewDataRes = await sendMessage("getNews", {
+        address: selectedWallet,
+        reload: isReload,
+        chain: selectedChain,
+      });
+      if (selectedWallet === response?.address) {
+        newsData = response.result;
+        return response;
+      } else {
+        // console.log("response: ", response)
+      }
+    } catch (e) {
+      console.log("error: ", e);
     }
   };
 
@@ -515,73 +505,47 @@
           }
           if (syncStatus?.data?.lastSync) {
             console.log("start load data");
+            const [
+              resOverview,
+              resHoldingToken,
+              resHoldingNFT,
+              // resPositions,
+              // resNews,
+            ] = await Promise.all([
+              getOverview(type === "reload").then((res) => {
+                loadingOverview = false;
+                return res;
+              }),
+              getHoldingToken(type === "reload").then((res) => {
+                loadingHoldingToken = false;
+                return res;
+              }),
+              getHoldingNFT(type === "reload").then((res) => {
+                loadingHoldingNFT = false;
+                return res;
+              }),
+              // getPositions(type === "reload").then((res) => {
+              //   loadingPositions = false;
+              //   return res;
+              // }),
+              // getNews(type === "reload").then((res) => {
+              //   loadingNews = false;
+              //   return res;
+              // }),
+            ]);
 
-            if (getAddressContext(selectedWallet)?.type === "SOL") {
-              const [resOverview, resHoldingToken] = await Promise.all([
-                handleGetSolHolding().then((res) => {
-                  loadingOverview = false;
-                  return res;
-                }),
-                handleGetSolOverview().then((res) => {
-                  loadingHoldingToken = false;
-                  return res;
-                }),
-              ]);
-
-              if (
-                (resOverview === undefined || resOverview) &&
-                (resHoldingToken === undefined || resHoldingToken)
-              ) {
-                syncMsg = "";
-                isLoading = false;
-                isLoadingSync = false;
-              }
-
-              break;
-            } else {
-              const [
-                resOverview,
-                resHoldingToken,
-                resHoldingNFT,
-                // resPositions,
-                // resNews,
-              ] = await Promise.all([
-                getOverview(type === "reload").then((res) => {
-                  loadingOverview = false;
-                  return res;
-                }),
-                getHoldingToken(type === "reload").then((res) => {
-                  loadingHoldingToken = false;
-                  return res;
-                }),
-                getHoldingNFT(type === "reload").then((res) => {
-                  loadingHoldingNFT = false;
-                  return res;
-                }),
-                // getPositions(type === "reload").then((res) => {
-                //   loadingPositions = false;
-                //   return res;
-                // }),
-                // getNews(type === "reload").then((res) => {
-                //   loadingNews = false;
-                //   return res;
-                // }),
-              ]);
-
-              if (
-                (resOverview === undefined || resOverview) &&
-                (resHoldingToken === undefined || resHoldingToken) &&
-                (resHoldingNFT === undefined || resHoldingNFT)
-                //  && (resPositions === undefined || resPositions)
-                //  && (resNews === undefined || resNews)
-              ) {
-                syncMsg = "";
-                isLoading = false;
-                isLoadingSync = false;
-              }
-
-              break;
+            if (
+              resOverview &&
+              resHoldingToken &&
+              resHoldingNFT
+              //  && (resPositions === undefined || resPositions)
+            ) {
+              syncMsg = "";
+              isLoading = false;
+              isLoadingSync = false;
             }
+
+            break;
           } else {
             isLoadingSync = true;
             await wait(5000);
@@ -603,223 +567,6 @@
     } catch (e) {
       console.log("error: ", e);
       isLoading = false;
-    }
-  };
-
-  const handleGetSolHolding = async () => {
-    try {
-      const response = await getHoldingSOL(selectedWallet);
-
-      console.log({
-        response,
-      });
-
-      if (response !== undefined) {
-        const responseVaults = await nimbus.get(
-          `/v2/investment/${selectedWallet}/vaults?chain=SOL`
-        );
-
-        const formatDataTokenHolding = response?.map((item) => {
-          try {
-            const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
-            const filteredVaults = responseVaults?.data?.filter((data) =>
-              data.name.match(regex)
-            );
-            return {
-              ...item,
-              vaults: filteredVaults,
-            };
-          } catch (error) {
-            return {
-              ...item,
-              vaults: [],
-            };
-          }
-        });
-
-        const formatData = formatDataTokenHolding?.map((item) => {
-          return {
-            ...item,
-            value:
-              Number(item?.amount) * Number(item?.price?.price || item?.rate),
-          };
-        });
-
-        holdingTokenData = formatData?.sort((a, b) => {
-          if (a.value < b.value) {
-            return 1;
-          }
-          if (a.value > b.value) {
-            return -1;
-          }
-          return 0;
-        });
-
-        return {
-          ...response,
-          result: formatDataTokenHolding,
-        };
-      } else {
-        handleGetAllData("reload");
-      }
-    } catch (e) {
-      console.error("error: ", e);
-      return undefined;
-    }
-  };
-
-  const handleGetSolOverview = async () => {
-    try {
-      const response = await getOverviewSOL(selectedWallet);
-
-      overviewData = response;
-
-      if (overviewData?.breakdownToken?.length === 0) {
-        isEmptyDataPie = true;
-      }
-
-      // pie chart format data Token holding
-      const sumToken = (overviewData?.breakdownToken || []).reduce(
-        (prev, item) => prev + Number(item.value),
-        0
-      );
-
-      const sortBreakdownToken = overviewData?.breakdownToken?.sort((a, b) => {
-        if (a.value < b.value) {
-          return 1;
-        }
-        if (a.value > b.value) {
-          return -1;
-        }
-        return 0;
-      });
-
-      const topFiveBreakdownToken = sortBreakdownToken
-        ?.slice(0, 5)
-        ?.map((item) => {
-          return {
-            ...item,
-            id: item.id || "N/A",
-            symbol: item.symbol || "N/A",
-            name: item.name || "N/A",
-          };
-        });
-
-      const orderBreakdownToken = sortBreakdownToken?.slice(
-        5,
-        sortBreakdownToken.length
-      );
-
-      const sumOrderBreakdownToken = (orderBreakdownToken || []).reduce(
-        (prev, item) => prev + Number(item.value),
-        0
-      );
-
-      const dataPieChartOrderBreakdownToken = [
-        {
-          logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
-          name: "Other tokens",
-          symbol: "",
-          name_ratio: "Ratio",
-          value: (sumOrderBreakdownToken / sumToken) * 100,
-          name_value: "Value",
-          value_value: sumOrderBreakdownToken,
-          name_balance: "",
-          value_balance: 0,
-        },
-      ];
-
-      const formatDataPieChartTopFiveToken = topFiveBreakdownToken?.map(
-        (item) => {
-          return {
-            logo: item.logo,
-            name: item.name || item.symbol,
-            symbol: item.symbol,
-            name_ratio: "Ratio",
-            value: (Number(item.value) / sumToken) * 100,
-            name_value: "Value",
-            value_value: Number(item.value),
-            name_balance: "Balance",
-            value_balance: Number(item.amount || item.balance),
-          };
-        }
-      );
-
-      // pie chart format data NFT holding
-      const sumNft = (overviewData?.breakdownNft || []).reduce(
-        (prev, item) => prev + Number(item.value),
-        0
-      );
-
-      const sortBreakdownNft = overviewData?.breakdownNft?.sort((a, b) => {
-        if (a.value < b.value) {
-          return 1;
-        }
-        if (a.value > b.value) {
-          return -1;
-        }
-        return 0;
-      });
-
-      const topFiveBreakdownNft = sortBreakdownNft?.slice(0, 5).map((item) => {
-        return {
-          ...item,
-          id: item.id || "N/A",
-          name: item.collection.name || "N/A",
-        };
-      });
-
-      const orderBreakdownNft = sortBreakdownNft?.slice(
-        5,
-        sortBreakdownNft.length
-      );
-
-      const sumOrderBreakdownNft = (orderBreakdownNft || []).reduce(
-        (prev, item) => prev + Number(item.value),
-        0
-      );
-
-      const dataPieChartOrderBreakdownNft = [
-        {
-          name: "Other NFT Collection",
-          name_ratio: "Ratio",
-          value: (sumOrderBreakdownNft / sumNft) * 100 || 0,
-          name_value: "Value",
-          value_value: sumOrderBreakdownNft,
-          name_balance: "",
-          value_balance: 0,
-        },
-      ];
-
-      const formatDataPieChartTopFiveNft = topFiveBreakdownNft?.map((item) => {
-        return {
-          name: item.collection.name || item.collection.symbol,
-          name_ratio: "Ratio",
-          value: (Number(item.value) / sumNft) * 100 || 0,
-          name_value: "Value",
-          value_value: Number(item.value),
-          name_balance: "Balance",
-          value_balance: Number(item.amount || item.balance),
-        };
-      });
-
-      dataPieChart = {
-        token: {
-          sumOrderBreakdownToken,
-          formatDataPieChartTopFiveToken,
-          dataPieChartOrderBreakdownToken,
-        },
-        nft: {
-          sumOrderBreakdownNft,
-          formatDataPieChartTopFiveNft,
-          dataPieChartOrderBreakdownNft,
-        },
-      };
-
-      return response;
-    } catch (e) {
-      console.error("e: ", e);
-      return undefined;
     }
   };
 
@@ -954,7 +701,7 @@
             {isEmptyDataPie}
           />
 
-          {#if getAddressContext(selectedWallet)?.type === "EVM" || typeWalletAddress === "CEX"}
+          {#if getAddressContext(selectedWallet)?.type !== "BTC"}
             <RiskReturn />
           {/if}
 

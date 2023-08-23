@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getAddressContext } from "~/utils";
-  import { wallet, selectedPackage } from "~/store";
+  import { wallet, chain, selectedPackage, typeWallet } from "~/store";
   import { useNavigate } from "svelte-navigator";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
@@ -21,9 +21,19 @@
     selectedWallet = value;
   });
 
+  let selectedChain: string = "";
+  chain.subscribe((value) => {
+    selectedChain = value;
+  });
+
   let packageSelected = "";
   selectedPackage.subscribe((value) => {
     packageSelected = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let isShowSoon = false;
@@ -32,7 +42,6 @@
     if (selectedWallet) {
       if (
         getAddressContext(selectedWallet)?.type === "BTC" ||
-        getAddressContext(selectedWallet)?.type === "SOL" ||
         packageSelected === "FREE"
       ) {
         isShowSoon = true;
@@ -107,10 +116,9 @@
 
         <!-- <Personality /> -->
       </div>
-
       {#if isShowSoon}
         <div
-          class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 bg-white/95 z-30 backdrop-blur-md"
+          class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 bg-white/95 z-30 backdrop-blur-md"
         >
           {#if packageSelected === "FREE"}
             <div class="flex flex-col items-center gap-1">
@@ -126,8 +134,7 @@
                 >Start 30-day Trial</Button
               >
             </div>
-          {/if}
-          {#if packageSelected !== "FREE" && (getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL")}
+          {:else}
             <div class="text-lg">Coming soon 🚀</div>
             <div class="w-max">
               <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
