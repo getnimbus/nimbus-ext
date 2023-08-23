@@ -6,6 +6,7 @@
     formatCurrencyV2,
     getAddressContext,
     getTooltipContent,
+    volatilityColorChart,
   } from "~/utils";
   import groupBy from "lodash/groupBy";
   import sumBy from "lodash/sumBy";
@@ -143,6 +144,21 @@
               </div>
               <div style="border-top: 0.8px solid #d1d5db; padding-top: 10px; display: flex; flex-direction: column; gap: 12px;">
                 ${dataRiskGroup[params?.data?.name]
+                  .sort((a, b) => {
+                    if (
+                      Number(a?.amount) * Number(a?.price?.price) <
+                      Number(b?.amount) * Number(b?.price?.price)
+                    ) {
+                      return 1;
+                    }
+                    if (
+                      Number(a?.amount) * Number(a?.price?.price) >
+                      Number(b?.amount) * Number(b?.price?.price)
+                    ) {
+                      return -1;
+                    }
+                    return 0;
+                  })
                   .map((item) => {
                     return `
                       <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
@@ -174,6 +190,7 @@
       top: "0%",
       left: "center",
     },
+    color: [],
     series: [
       {
         type: "pie",
@@ -265,6 +282,16 @@
 
       riskBreakdownChartOption = {
         ...riskBreakdownChartOption,
+        color: Object.keys(riskGroup)
+          .map((riskType) => {
+            return {
+              name: riskType,
+              value: riskGroup[riskType][0],
+            };
+          })
+          .map((item) => {
+            return volatilityColorChart(item.value.sharpeRatio);
+          }),
         series: [
           {
             ...riskBreakdownChartOption.series[0],

@@ -19,6 +19,7 @@
   import AddressManagement from "~/components/AddressManagement.svelte";
   import CalendarChart from "~/components/CalendarChart.svelte";
   import HistoricalTransactions from "./HistoricalTransactions.svelte";
+  import "~/components/Loading.custom.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -239,6 +240,18 @@
                 id="historical-activities"
                 type="normal"
               />
+            {:else}
+              <div class="flex items-center justify-center h-[152px]">
+                {#if $query.isFetching}
+                  <loading-icon />
+                {:else}
+                  <div class="xl:text-lg text-xl text-gray-400">
+                    {#if $query.isError}
+                      Empty
+                    {/if}
+                  </div>
+                {/if}
+              </div>
             {/if}
           </div>
         {/if}

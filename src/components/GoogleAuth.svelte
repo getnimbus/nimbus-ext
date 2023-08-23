@@ -1,6 +1,6 @@
 <script lang="ts">
   import { user } from "~/store";
-  import { ExtensionsID, handleGetAccessToken } from "~/utils";
+  import { handleGetAccessToken } from "~/utils";
 
   import Google from "~/assets/google.png";
 
@@ -8,11 +8,7 @@
     "520245364327-4t6vius9egn2qfdrcj2paeefv5l3hgtg.apps.googleusercontent.com"
   );
   const oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
-  const redirectURL = encodeURIComponent(
-    APP_TYPE.TYPE === "EXT"
-      ? `https://${ExtensionsID}.chromiumapp.org`
-      : "https://app.getnimbus.io"
-  );
+  const redirectURL = encodeURIComponent("https://app.getnimbus.io");
 
   const handleLogin = async () => {
     const url = `${oauth2Endpoint}/oauthchooseaccount?redirect_uri=${redirectURL}&prompt=consent&response_type=code&client_id=${clientID}&scope=email%20profile&access_type=offline&service=lso&o2v=2&flowName=GeneralOAuthFlow`;
