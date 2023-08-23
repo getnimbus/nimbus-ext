@@ -36,9 +36,7 @@
     defaultOptions: {
       queries: {
         refetchOnWindowFocus: false,
-        onError: (error) => {
-          Sentry.captureException(error);
-        },
+        staleTime: Infinity,
       },
     },
   });

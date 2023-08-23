@@ -45,6 +45,7 @@
   import Plus from "~/assets/plus.svg";
   import All from "~/assets/all.svg";
   import BitcoinLogo from "~/assets/bitcoin.png";
+  import SolanaLogo from "~/assets/solana.png";
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
 
@@ -331,7 +332,10 @@
       // if list address is empty and no chain params and have address param (btc address when search)
       if (!chainParams && listAddress.length === 0 && addressParams) {
         chain.update((n) => (n = "ALL"));
-        if (getAddressContext(selectedWallet)?.type === "BTC") {
+        if (
+          getAddressContext(selectedWallet)?.type === "BTC" ||
+          getAddressContext(selectedWallet)?.type === "SOL"
+        ) {
           window.history.replaceState(
             null,
             "",
@@ -346,7 +350,10 @@
         if (getAddressContext(selectedWallet)?.type === "EVM") {
           chain.update((n) => (n = "ALL"));
         }
-        if (getAddressContext(selectedWallet)?.type === "BTC") {
+        if (
+          getAddressContext(selectedWallet)?.type === "BTC" ||
+          getAddressContext(selectedWallet)?.type === "SOL"
+        ) {
           window.history.replaceState(
             null,
             "",
@@ -521,14 +528,16 @@
   });
 
   $: formatListAddress = listAddress.map((item) => {
+    let logo = All;
+    if (getAddressContext(item.value)?.type === "BTC") {
+      logo = BitcoinLogo;
+    }
+    if (getAddressContext(item.value)?.type === "SOL") {
+      logo = SolanaLogo;
+    }
     return {
       ...item,
-      logo:
-        item.type === "DEX"
-          ? getAddressContext(item.value)?.type === "EVM"
-            ? All
-            : BitcoinLogo
-          : item.logo,
+      logo: item.type === "DEX" ? logo : item.logo,
     };
   });
 
@@ -586,7 +595,10 @@
           );
         }
 
-        if (getAddressContext(selectedWallet)?.type === "BTC") {
+        if (
+          getAddressContext(selectedWallet)?.type === "BTC" ||
+          getAddressContext(selectedWallet)?.type === "SOL"
+        ) {
           window.history.replaceState(
             null,
             "",
@@ -1155,7 +1167,7 @@
                     </div>
                   {/if}
                 </div>
-                {#if getAddressContext(selectedWallet)?.type !== "BTC" && typeWalletAddress === "DEX"}
+                {#if (getAddressContext(selectedWallet)?.type === "EVM" && typeWalletAddress === "DEX") || typeWalletAddress === "CEX"}
                   <Select
                     type="chain"
                     positionSelectList="right-0"
@@ -1295,7 +1307,7 @@
         {/if}
       </div>
       <div class="flex items-center justify-center gap-6 my-3">
-        {#each chainList.slice(0, -1) as item}
+        {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
           <div
             class="flex items-center justify-center w-8 h-8 overflow-hidden rounded-full"
           >

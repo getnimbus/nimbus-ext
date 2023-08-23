@@ -84,8 +84,8 @@
   });
 
   $: {
-    if (selectedTokenHolding && holdingTokenData.length !== 0) {
-      holdingTokenData.map((item) => {
+    if (selectedTokenHolding && holdingTokenData?.length !== 0) {
+      holdingTokenData?.map((item) => {
         priceSubscribe([item?.cmc_id], (data) => {
           marketPriceToken = {
             id: data.id,
@@ -93,13 +93,13 @@
           };
         });
       });
-      sumAllTokens = holdingTokenData.reduce(
+      sumAllTokens = holdingTokenData?.reduce(
         (prev, item) => prev + item.value,
         0
       );
     }
     if (holdingNFTData) {
-      holdingNFTData.map((item) => {
+      holdingNFTData?.map((item) => {
         priceSubscribe([item?.cmc_id], (data) => {
           marketPriceNFT = {
             id: data.id,
@@ -419,7 +419,7 @@
                     <HoldingToken
                       data={holding}
                       {selectedWallet}
-                      {sumAllTokens}
+                      sumAllTokens={totalAssets - sumNFT}
                     />
                   {/each}
                 {/if}
@@ -431,7 +431,7 @@
     </div>
 
     <!-- nft holding table -->
-    {#if typeWalletAddress === "DEX" && getAddressContext(selectedWallet)?.type !== "EVM"}
+    {#if typeWalletAddress === "DEX" && getAddressContext(selectedWallet)?.type === "BTC"}
       <div class="flex flex-col gap-2">
         <div class="flex justify-between items-center">
           <div class="xl:text-xl text-3xl font-medium text-black">

@@ -288,6 +288,7 @@
           {
             name: "Netflow",
             type: "line",
+            showSymbol: false,
             data: formatDataNetflow,
             lineStyle: {
               color: "rgba(0,169,236, 0.8)",

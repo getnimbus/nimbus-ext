@@ -14,8 +14,6 @@ import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
 
-export const ExtensionsID = "hjlilcigcidfaialcihialehachkldfd";
-
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
 export const BTCAddressRegex = /(\b(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}\b)/g
@@ -227,6 +225,13 @@ export const getAddressContext = (address: string) => {
     }
   }
 
+  if (address.match(SOLAddressRegex)) {
+    return {
+      type: 'SOL',
+      address
+    }
+  }
+
   return undefined;
 }
 
@@ -253,6 +258,9 @@ export const detectedChain = (type) => {
       break;
     case "ARB":
       chain = Arbitrum
+      break;
+    case "SOL":
+      chain = Solana
       break;
     default:
       chain = logo
@@ -408,11 +416,6 @@ export const chainList = [
     logo: Gnosis,
     label: "Gnosis",
     value: "XDAI",
-  },
-  {
-    logo: Solana,
-    label: "Solana",
-    value: "SOL",
   },
 ];
 
@@ -572,10 +575,7 @@ export const add3Dots = (string: string, limit: number) => {
 export const handleGetAccessToken = async (code: string) => {
   const res = await nimbus.post("/auth", {
     code,
-    direct_url:
-      APP_TYPE.TYPE === "EXT"
-        ? `https://${ExtensionsID}.chromiumapp.org`
-        : "https://app.getnimbus.io",
+    direct_url: "https://app.getnimbus.io",
   }).then((response) => response)
   if (res.data) {
     localStorage.setItem("token", JSON.stringify(res.data));
@@ -667,6 +667,85 @@ export const handleFormatDataTable = (data, type) => {
   };
 };
 
+export const volatilityColorChart = (value: number) => {
+  let color = '#35b86d'; // green
+
+  if (value > 5 && value <= 15) {
+    color = '#a2c04c';
+  }
+
+  if (value > 15 && value <= 30) {
+    color = '#d8c42f';
+  }
+
+  if (value > 30 && value <= 50) {
+    color = '#fec406';
+  }
+
+  if (value > 50 && value <= 75) {
+    color = '#f79e28'
+  }
+
+  if (value > 75 && value <= 100) {
+    color = '#f28a30'
+  }
+
+  if (value > 100 && value <= 150) {
+    color = '#e6553d'
+  }
+
+  // red
+  if (value > 150) {
+    color = '#e14240'
+  }
+
+  if (value === null) {
+    color = "#6AC7F5"
+  }
+
+  return color
+
+}
+
+export const sharpeRatioColorChart = (value: number) => {
+  let color = "#e14240" // red
+
+  if (value > -1 && value <= 0) {
+    color = "#e6553d"
+  }
+
+  if (value > -1 && value <= 0) {
+    color = "#f28a30"
+  }
+
+  if (value > 0.5 && value <= 1) {
+    color = "#f79e28"
+  }
+
+  if (value > 1 && value <= 1.5) {
+    color = "#fec406"
+  }
+
+  if (value > 1.5 && value <= 2) {
+    color = "#d8c42f"
+  }
+
+  if (value > 2 && value <= 3) {
+    color = "#a2c04c"
+  }
+
+  //green
+  if (value > 3) {
+    color = "#35b86d"
+  }
+
+  if (value === null) {
+    color = "#6AC7F5"
+  }
+
+  return color
+}
+
 export const getTooltipContent = (text: string, videoUrl: string, width?: string) => {
   return `
       <div style="padding: 8px; border-radius: 8px; background: rgba(0, 0, 0, 0.8); width: ${width ? "100%" : "560px"}; height: auto;">
@@ -682,3 +761,12 @@ export const getTooltipContent = (text: string, videoUrl: string, width?: string
       </div>
     `;
 };
+
+export const dateDiffInDays = (a, b) => {
+  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+  // Discard the time and time-zone information.
+  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+}
