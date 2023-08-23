@@ -49,7 +49,7 @@
     >
       <div class="text-[#666666] text-xs font-medium">{symbol}</div>
       <input
-        class="text-black border-none outline-none bg-transparent text-sm font-medium w-full"
+        class="border-none outline-none bg-transparent text-sm font-medium w-full"
         inputmode="decimal"
         pattern="[0-9]*(.[0-9]+)?"
         type="text"
@@ -80,7 +80,7 @@
     >
       <div class="text-[#666666] text-xs font-medium">USD</div>
       <input
-        class="text-black border-none outline-none bg-transparent text-sm font-medium w-full"
+        class="border-none outline-none bg-transparent text-sm font-medium w-full"
         inputmode="decimal"
         pattern="[0-9]*(.[0-9]+)?"
         type="text"

@@ -16,11 +16,9 @@
 </script>
 
 <ErrorBoundary>
-  <div
-    class="flex flex-col gap-10 border border-[#0000001a] rounded-[20px] p-6"
-  >
+  <div class="flex flex-col gap-10 border border_0000001a rounded-[20px] p-6">
     <div class="flex justify-between border-b border-[#00000014] pb-4">
-      <div class="text-2xl font-medium text-black">
+      <div class="text-2xl font-medium">
         {MultipleLang.news}
       </div>
       <div class="font-bold text-base cursor-pointer">

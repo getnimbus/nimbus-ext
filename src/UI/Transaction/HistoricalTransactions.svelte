@@ -5,7 +5,7 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { typeWallet } from "~/store";
+  import { typeWallet, isDarkMode } from "~/store";
 
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
@@ -21,6 +21,11 @@
   let typeWalletAddress: string = "";
   typeWallet.subscribe((value) => {
     typeWalletAddress = value;
+  });
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
   });
 
   let tableHeader;
@@ -40,45 +45,37 @@
 </script>
 
 <div
-  class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
+  class="border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto"
 >
   <table class="table-auto xl:w-full w-[1400px]">
     <thead class={isSticky ? "sticky top-0 z-10" : ""} bind:this={tableHeader}>
-      <tr class="bg-[#f4f5f8]">
+      <tr class="bg_f4f5f8">
         <th
-          class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-9 bg-[#f4f5f8]"
+          class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-9 bg_f4f5f8"
         >
-          <div
-            class="text-left xl:text-xs text-base uppercase font-medium text-black"
-          >
+          <div class="text-left xl:text-xs text-base uppercase font-medium">
             Transaction
           </div>
         </th>
         <th class="py-3">
-          <div
-            class="text-left xl:text-xs text-base uppercase font-medium text-black"
-          >
+          <div class="text-left xl:text-xs text-base uppercase font-medium">
             From
           </div>
         </th>
         <th class="py-3">
-          <div
-            class="text-left xl:text-xs text-base uppercase font-medium text-black"
-          >
+          <div class="text-left xl:text-xs text-base uppercase font-medium">
             To
           </div>
         </th>
         <th class="py-3">
           <div
-            class="text-left xl:text-xs text-base uppercase font-medium text-black min-w-[100px]"
+            class="text-left xl:text-xs text-base uppercase font-medium min-w-[100px]"
           >
             Type
           </div>
         </th>
         <th class="pr-3 py-3 rounded-tr-[10px]">
-          <div
-            class="text-left xl:text-xs text-base uppercase font-medium text-black"
-          >
+          <div class="text-left xl:text-xs text-base uppercase font-medium">
             Token change
           </div>
         </th>
@@ -110,7 +107,11 @@
           {#each data || [] as item}
             <tr class="group transition-all border-b-[0.5px] last:border-none">
               <td
-                class="pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 bg-white group-hover:bg-gray-100"
+                class={`pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 ${
+                  darkMode
+                    ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+                    : "bg-white group-hover:bg-gray-100"
+                }`}
               >
                 <div class="text-left flex items-start gap-2 w-max">
                   <div class="flex flex-col">
@@ -119,7 +120,8 @@
                         <Copy
                           address={item?.transaction_hash}
                           textTooltip="Copy transaction to clipboard"
-                          iconColor="#000"
+                          iconColor={`${darkMode ? "#fff" : "#000"}`}
+                          color={`${darkMode ? "#fff" : "#000"}`}
                           isShorten={true}
                           isLink={true}
                           link={`${
@@ -131,7 +133,8 @@
                         <Copy
                           address={item?.transaction_hash}
                           textTooltip="Copy transaction to clipboard"
-                          iconColor="#000"
+                          iconColor={`${darkMode ? "#fff" : "#000"}`}
+                          color={`${darkMode ? "#fff" : "#000"}`}
                           isShorten={true}
                         />
                       {/if}
@@ -145,13 +148,20 @@
                 </div>
               </td>
 
-              <td class="py-4 group-hover:bg-gray-100">
+              <td
+                class={`py-3  ${
+                  darkMode
+                    ? "group-hover:bg-[#00000033]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
                 {#if item?.detail?.from}
                   <div class="w-max xl:text-sm text-xl">
                     {#if typeWalletAddress === "DEX"}
                       <Copy
                         address={item?.detail?.from}
-                        iconColor="#000"
+                        iconColor={`${darkMode ? "#fff" : "#000"}`}
+                        color={`${darkMode ? "#fff" : "#000"}`}
                         textTooltip="Copy address to clipboard"
                         isShorten={true}
                         isLink={true}
@@ -163,7 +173,8 @@
                       <Copy
                         address={item?.detail?.from}
                         textTooltip="Copy address to clipboard"
-                        iconColor="#000"
+                        iconColor={`${darkMode ? "#fff" : "#000"}`}
+                        color={`${darkMode ? "#fff" : "#000"}`}
                         isShorten={true}
                       />
                     {/if}
@@ -171,13 +182,20 @@
                 {/if}
               </td>
 
-              <td class="py-4 group-hover:bg-gray-100">
+              <td
+                class={`py-3  ${
+                  darkMode
+                    ? "group-hover:bg-[#00000033]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
                 {#if item?.detail?.to}
                   <div class="w-max xl:text-sm text-xl">
                     {#if typeWalletAddress === "DEX"}
                       <Copy
                         address={item?.detail?.to}
-                        iconColor="#000"
+                        iconColor={`${darkMode ? "#fff" : "#000"}`}
+                        color={`${darkMode ? "#fff" : "#000"}`}
                         textTooltip="Copy address to clipboard"
                         isShorten={true}
                         isLink={true}
@@ -189,7 +207,8 @@
                       <Copy
                         address={item?.detail?.to}
                         textTooltip="Copy address to clipboard"
-                        iconColor="#000"
+                        iconColor={`${darkMode ? "#fff" : "#000"}`}
+                        color={`${darkMode ? "#fff" : "#000"}`}
                         isShorten={true}
                       />
                     {/if}
@@ -197,13 +216,19 @@
                 {/if}
               </td>
 
-              <td class="py-4 min-w-[100px] group-hover:bg-gray-100">
+              <td
+                class={`py-3 min-w-[100px] ${
+                  darkMode
+                    ? "group-hover:bg-[#00000033]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
                 <div
-                  class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-start"
+                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-start"
                 >
                   {#if item?.type}
                     <div
-                      class="w-max px-2 py-1 text-[#27326F] text-[12px] font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
+                      class="w-max px-2 py-1 text_27326F text-[12px] font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
                     >
                       {item?.type}
                     </div>
@@ -211,7 +236,13 @@
                 </div>
               </td>
 
-              <td class="py-4 pr-3 group-hover:bg-gray-100">
+              <td
+                class={`py-3 pr-3 ${
+                  darkMode
+                    ? "group-hover:bg-[#00000033]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
                 <div
                   class="xl:text-sm text-xl font-medium flex flex-col items-start gap-2"
                 >
@@ -224,9 +255,7 @@
                       />
                       <div
                         class={`flex gap-1 ${
-                          change?.total < 0
-                            ? "text-[#00000099]"
-                            : "text-[#00A878]"
+                          change?.total < 0 ? "text_00000099" : "text-[#00A878]"
                         }`}
                       >
                         <span

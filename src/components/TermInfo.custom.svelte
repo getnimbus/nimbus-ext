@@ -8,7 +8,7 @@
 <reset-style>
   <div class="p-4 bg-white rounded-[10px]">
     <div class="flex items-center gap-2">
-      <a href={data?.url} class="text-xl font-medium text-black no-underline">
+      <a href={data?.url} class="text-xl font-medium no-underline">
         {data?.term}
       </a>
       <a
@@ -50,7 +50,7 @@
         <img src={data?.img} alt="img" class="w-full h-full object-contain" />
       </div>
     {/if}
-    <div class="text-sm font-normal text-[#00000099] mt-[10px]">
+    <div class="text-sm font-normal text_00000099 mt-[10px]">
       {data?.define}
     </div>
   </div>

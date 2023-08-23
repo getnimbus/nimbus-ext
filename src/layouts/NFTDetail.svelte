@@ -109,7 +109,7 @@
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={"Position Value"}>
-            <div class="xl:text-3xl text-5xl text-black flex">
+            <div class="xl:text-3xl text-5xl flex">
               {#if data?.current_value.toString().toLowerCase().includes("e-")}
                 $<TooltipNumber number={data?.current_value} type="balance" />
               {:else}
@@ -237,11 +237,9 @@
       class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 mt-6"
       style="box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.10);"
     >
-      <div class="border border-[#0000001a] rounded-[20px] p-6">
+      <div class="border border_0000001a rounded-[20px] p-6">
         <div class="flex flex-col gap-6">
-          <div class="xl:text-2xl text-4xl font-medium text-black">
-            List NFT
-          </div>
+          <div class="xl:text-2xl text-4xl font-medium">List NFT</div>
           {#if isLoadingListNFT}
             <div
               class="min-h-[320px] flex justify-center items-center col-span-4"

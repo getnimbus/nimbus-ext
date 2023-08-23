@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
   import { i18n } from "~/lib/i18n";
+  import { isDarkMode } from "~/store";
 
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
@@ -60,6 +61,11 @@
       ),
     },
   };
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let isLoading = false;
   let listAddressLabel = [];
@@ -156,27 +162,23 @@
       > to try out this feature
     </div>
   {:else}
-    <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto mt-2">
+    <div class="border border_0000000d rounded-[10px] overflow-x-auto mt-2">
       <table class="table-auto xl:w-full w-[1200px]">
         <thead>
-          <tr class="bg-[#f4f5f8]">
+          <tr class="bg_f4f5f8">
             <th class="pl-3 py-3">
-              <div
-                class="text-left xl:text-sm text-lg uppercase font-semibold text-black"
-              >
+              <div class="text-left xl:text-sm text-lg uppercase font-semibold">
                 {MultipleLang.content.address_header_table}
               </div>
             </th>
             <th class="py-3">
-              <div
-                class="text-left xl:text-sm text-lg uppercase font-semibold text-black"
-              >
+              <div class="text-left xl:text-sm text-lg uppercase font-semibold">
                 {MultipleLang.content.label_header_table}
               </div>
             </th>
             <th class="pr-3 py-3">
               <div
-                class="text-right xl:text-sm text-lg uppercase font-semibold text-black"
+                class="text-right xl:text-sm text-lg uppercase font-semibold"
               >
                 {MultipleLang.content.action_header_table}
               </div>
@@ -210,12 +212,16 @@
                     <div
                       class="text-left xl:text-base text-xl flex items-start gap-2"
                     >
-                      <Copy address={item.address} iconColor="#000" />
+                      <Copy
+                        address={item.address}
+                        iconColor={`${darkMode ? "#fff" : "#000"}`}
+                        color={`${darkMode ? "#fff" : "#000"}`}
+                      />
                     </div>
                   </td>
                   <td class="py-4">
                     <div
-                      class="bg-[#6AC7F533] text-[#27326F] xl:text-base text-xl w-max px-3 py-1 rounded-[5px]"
+                      class="bg-[#6AC7F533] text_27326F xl:text-base text-xl w-max px-3 py-1 rounded-[5px]"
                     >
                       {item.label}
                     </div>

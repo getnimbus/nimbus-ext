@@ -92,13 +92,13 @@
     class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 flex flex-col xl:gap-10 gap-6"
   >
     <div class="flex flex-col gap-1">
-      <div class="xl:text-5xl text-7xl text-black font-medium">
+      <div class="xl:text-5xl text-7xl font-medium">
         {MultipleLang.market}
       </div>
       <div
         class="flex justify-between xl:items-center xl:gap-11 xl:flex-row flex-col gap-6"
       >
-        <div class="xl:text-xl text-3xl text-black font-medium w-max">
+        <div class="xl:text-xl text-3xl font-medium w-max">
           {MultipleLang.market_page_title}
         </div>
         <div class="flex flex-1 gap-3">
@@ -159,54 +159,46 @@
       </div>
     </div>
     <div
-      class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
+      class="border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto"
     >
       <table class="table-auto xl:w-full w-[1300px]">
         <thead
           class={isSticky ? "sticky top-0 z-10" : ""}
           bind:this={tableHeader}
         >
-          <tr class="bg-[#f4f5f8]">
+          <tr class="bg_f4f5f8">
             <th
-              class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
+              class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
             >
-              <div
-                class="text-left xl:text-xs text-base uppercase font-medium text-black"
-              >
+              <div class="text-left xl:text-xs text-base uppercase font-medium">
                 Pair
               </div>
             </th>
             <th class="py-3">
-              <div
-                class="text-left xl:text-xs text-base uppercase font-medium text-black"
-              >
+              <div class="text-left xl:text-xs text-base uppercase font-medium">
                 Execution time
               </div>
             </th>
             <th class="py-3">
-              <div
-                class="text-left xl:text-xs text-base uppercase font-medium text-black"
-              >
+              <div class="text-left xl:text-xs text-base uppercase font-medium">
                 Amount Out
               </div>
             </th>
             <th class="py-3">
-              <div
-                class="text-left xl:text-xs text-base uppercase font-medium text-black"
-              >
+              <div class="text-left xl:text-xs text-base uppercase font-medium">
                 Amount In
               </div>
             </th>
             <th class="py-3">
               <div
-                class="text-center xl:text-xs text-base uppercase font-medium text-black"
+                class="text-center xl:text-xs text-base uppercase font-medium"
               >
                 Maker
               </div>
             </th>
             <th class="pr-3 py-3 w-[190px] rounded-tr-[10px]">
               <div
-                class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                class="text-right xl:text-xs text-base uppercase font-medium"
               >
                 Action
               </div>

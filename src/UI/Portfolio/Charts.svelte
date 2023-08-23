@@ -1,7 +1,7 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { i18n } from "~/lib/i18n";
-  import { chain, wallet, typeWallet } from "~/store";
+  import { chain, wallet, typeWallet, isDarkMode } from "~/store";
   import {
     formatCurrency,
     getAddressContext,
@@ -34,6 +34,11 @@
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
   };
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -664,13 +669,15 @@
       }
     }
   }
+
+  $: theme = darkMode ? "dark" : "white";
 </script>
 
 <ErrorBoundary>
   <div class="flex flex-col justify-between gap-6 xl:flex-row">
-    <div class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6">
+    <div class="xl:w-1/2 w-full border border_0000001a rounded-[20px] p-6">
       <div class="relative w-full mb-6">
-        <div class="w-full text-4xl font-medium text-black xl:text-2xl">
+        <div class="w-full text-4xl font-medium xl:text-2xl">
           {#if selectedType === "token"}
             {MultipleLang.token_allocation}
           {:else}
@@ -743,7 +750,7 @@
     </div>
 
     <div
-      class="xl:w-1/2 w-full relative border border-[#0000001a] rounded-[20px] p-6"
+      class="xl:w-1/2 w-full relative border border_0000001a rounded-[20px] p-6"
     >
       <div class="flex justify-between mb-6">
         {#if typeWalletAddress === "CEX"}
@@ -751,12 +758,12 @@
             tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
             type="warning"
           >
-            <div class="pl-4 text-4xl font-medium text-black xl:text-2xl">
+            <div class="pl-4 text-4xl font-medium xl:text-2xl">
               {MultipleLang.performance}
             </div>
           </TooltipTitle>
         {:else}
-          <div class="pl-4 text-4xl font-medium text-black xl:text-2xl">
+          <div class="pl-4 text-4xl font-medium xl:text-2xl">
             {MultipleLang.performance}
           </div>
         {/if}
@@ -795,7 +802,9 @@
       </div>
       {#if selectedChain === "XDAI" || getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
         <div
-          class="absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center bg-white/95 z-30 backdrop-blur-md"
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center ${
+            darkMode ? "bg-black/95" : "bg-white/95"
+          } z-30 backdrop-blur-md`}
         >
           <div class="text-xl xl:text-lg">Coming soon 🚀</div>
         </div>
@@ -815,7 +824,7 @@
           {:else}
             <EChart
               id="line-chart"
-              theme="white"
+              {theme}
               notMerge={true}
               option={optionLine}
               height={465}

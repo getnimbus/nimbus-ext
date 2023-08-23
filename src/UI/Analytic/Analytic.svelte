@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getAddressContext } from "~/utils";
-  import { wallet, selectedPackage } from "~/store";
+  import { wallet, selectedPackage, isDarkMode } from "~/store";
   import { useNavigate } from "svelte-navigator";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
@@ -15,6 +15,11 @@
   import Compare from "../Portfolio/Compare.svelte";
 
   const navigate = useNavigate();
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -47,14 +52,17 @@
   <span slot="body">
     <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[96%] relative">
       <div
-        class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 space-y-4"
-        style="box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.10);"
+        class="analytic_container flex flex-col gap-7 rounded-[20px] xl:p-8 space-y-4"
       >
         <CurrentStatus {packageSelected} />
 
         <section class="overflow-hidden">
           <div
-            class="mx-auto max-w-c-1390 px-4 py-4 rounded-[20px] bg-gradient-to-t from-[#F8F9FF] to-[#DEE7FF]"
+            class={`mx-auto max-w-c-1390 px-4 py-4 rounded-[20px] bg-gradient-to-t ${
+              darkMode
+                ? "from-[#F8F9FF] to-[#27326f]"
+                : "from-[#F8F9FF] to-[#DEE7FF]"
+            }`}
           >
             <div
               class="flex flex-wrap gap-8 md:flex-nowrap md:items-center md:justify-between md:gap-0"
@@ -64,9 +72,7 @@
                 data-sr-id="39"
                 style="visibility: visible; opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: opacity 2.8s cubic-bezier(0.5, 0, 0, 1) 0s, transform 2.8s cubic-bezier(0.5, 0, 0, 1) 0s;"
               >
-                <h2
-                  class="px-2 py-3 text-xl font-medium text-black xl:text-sectiontitle4"
-                >
+                <h2 class="px-2 py-3 text-xl font-medium xl:text-sectiontitle4">
                   Minimize risk & maximize return by rebalance your portfolio 🚀
                 </h2>
               </div>
@@ -110,7 +116,9 @@
 
       {#if isShowSoon}
         <div
-          class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 bg-white/95 z-30 backdrop-blur-md"
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
+            darkMode ? "bg-black/95" : "bg-white/95"
+          } z-30 backdrop-blur-md`}
         >
           {#if packageSelected === "FREE"}
             <div class="flex flex-col items-center gap-1">
@@ -142,4 +150,12 @@
 </AddressManagement>
 
 <style>
+  :global(body) .analytic_container {
+    background: #fff;
+    box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
+  }
+  :global(body.dark) .analytic_container {
+    background: #110c2a;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 1);
+  }
 </style>

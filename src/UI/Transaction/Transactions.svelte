@@ -221,13 +221,10 @@
 <AddressManagement type="order" title="Transactions">
   <span slot="body">
     <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-32">
-      <div
-        class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8"
-        style="box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.10);"
-      >
+      <div class="trx_container flex flex-col gap-7 rounded-[20px] xl:p-8">
         {#if getAddressContext(selectedWallet)?.type === "EVM" || typeWalletAddress === "CEX"}
           <div
-            class="border border-[#0000001a] rounded-[20px] pt-6 pb-9 flex flex-col gap-4"
+            class="border border_0000001a rounded-[20px] pt-6 pb-9 flex flex-col gap-4"
           >
             {#if data.length !== 0}
               <CalendarChart
@@ -257,10 +254,10 @@
         {/if}
 
         <div
-          class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
+          class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
         >
           <div class="flex flex-col justify-between gap-4 xl:flex-row">
-            <div class="xl:text-2xl text-4xl font-medium text-black">
+            <div class="xl:text-2xl text-4xl font-medium">
               Historical Transactions
             </div>
             <div class="flex items-center justify-end gap-2">
@@ -304,7 +301,7 @@
                 value={searchValue}
                 placeholder={"Filter by hash/token"}
                 type="text"
-                class="xl:w-[250px] w-full text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
+                class="xl:w-[250px] w-full text-sm py-2 xl:px-3 px-2 rounded-[1000px] text_00000099 placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
               /> -->
             </div>
           </div>
@@ -321,4 +318,12 @@
 </AddressManagement>
 
 <style>
+  :global(body) .trx_container {
+    background: #fff;
+    box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
+  }
+  :global(body.dark) .trx_container {
+    background: #110c2a;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 1);
+  }
 </style>

@@ -1,6 +1,12 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { wallet, chain, typeWallet, selectedPackage } from "~/store";
+  import {
+    wallet,
+    chain,
+    typeWallet,
+    selectedPackage,
+    isDarkMode,
+  } from "~/store";
   import { formatCurrency, formatCurrencyV2, getAddressContext } from "~/utils";
   import dayjs from "dayjs";
   import { calculateVolatility, getChangePercent } from "~/chart-utils";
@@ -18,6 +24,12 @@
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import Logo from "~/assets/logo-1.svg";
+  import LogoWhite from "~/assets/logo-white.svg";
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -224,11 +236,13 @@
   $: isReturn30Higher =
     data?.base?.netWorthChange?.networth30D >
     data?.btc?.netWorthChange?.networth30D;
+
+  $: theme = darkMode ? "dark" : "white";
 </script>
 
 <AnalyticSection>
   <span slot="title">
-    <div class="flex justify-start text-4xl font-medium text-black xl:text-2xl">
+    <div class="flex justify-start text-4xl font-medium xl:text-2xl">
       Returns
       <!-- <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
         Risks & Returns
@@ -238,9 +252,7 @@
 
   <span slot="overview" class="relative">
     {#if !$query.isFetching}
-      <div class="mb-4 text-3xl font-medium text-black xl:text-xl">
-        Overview
-      </div>
+      <div class="mb-4 text-3xl font-medium xl:text-xl">Overview</div>
     {/if}
     {#if $query.isFetching}
       <div class="flex items-center justify-center h-[465px]">
@@ -250,7 +262,9 @@
       <div class="h-full">
         {#if $query.isError}
           <div
-            class="absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 bg-white/95 z-30 backdrop-blur-md xl:text-xs text-lg"
+            class={`absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 ${
+              darkMode ? "bg-black/95" : "bg-white/95"
+            } z-30 backdrop-blur-md xl:text-xs text-lg`}
           >
             {#if typeWalletAddress === "CEX"}
               Not enough data. CEX integration can only get data from the day
@@ -263,9 +277,7 @@
           <div class="flex flex-col gap-4">
             <div class="grid grid-cols-2">
               <div class="col-span-1">
-                <div
-                  class="flex justify-start text-2xl text-black xl:text-base"
-                >
+                <div class="flex justify-start text-2xl xl:text-base">
                   Return 1D
                 </div>
               </div>
@@ -301,9 +313,7 @@
 
             <div class="grid grid-cols-2">
               <div class="col-span-1">
-                <div
-                  class="flex justify-start text-2xl text-black xl:text-base"
-                >
+                <div class="flex justify-start text-2xl xl:text-base">
                   Return 7D
                 </div>
               </div>
@@ -339,9 +349,7 @@
 
             <div class="grid grid-cols-2">
               <div class="col-span-1">
-                <div
-                  class="flex justify-start text-2xl text-black xl:text-base"
-                >
+                <div class="flex justify-start text-2xl xl:text-base">
                   Return 30D
                 </div>
               </div>
@@ -377,9 +385,7 @@
 
             <div class="grid grid-cols-2">
               <div class="col-span-1">
-                <div
-                  class="flex justify-start text-2xl text-black xl:text-base"
-                >
+                <div class="flex justify-start text-2xl xl:text-base">
                   Return 1Y
                 </div>
               </div>
@@ -415,9 +421,7 @@
 
             <div class="grid grid-cols-2">
               <div class="col-span-1">
-                <div
-                  class="flex justify-start text-2xl text-black xl:text-base"
-                >
+                <div class="flex justify-start text-2xl xl:text-base">
                   Return Lifetime
                 </div>
               </div>
@@ -491,7 +495,7 @@
           <div class="relative">
             <EChart
               id="return-chart-analytic"
-              theme="white"
+              {theme}
               notMerge={true}
               option={optionBar}
               height={465}
@@ -499,7 +503,12 @@
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >
-              <img src={Logo} alt="" width="140" height="140" />
+              <img
+                src={darkMode ? LogoWhite : Logo}
+                alt=""
+                width="140"
+                height="140"
+              />
             </div>
           </div>
         {/if}

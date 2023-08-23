@@ -108,7 +108,7 @@
         bind:group={type}
         value={"7days"}
         name="type"
-        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg-gray-100 border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg_fafafbff border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
       />
       <span class="radio-mark" />
     </div>
@@ -122,7 +122,7 @@
         bind:group={type}
         value={"30days"}
         name="type"
-        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg-gray-100 border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg_fafafbff border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
       />
       <span class="radio-mark" />
     </div>
@@ -136,7 +136,7 @@
         bind:group={type}
         value={"90days"}
         name="type"
-        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg-gray-100 border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg_fafafbff border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
       />
     </div>
 
@@ -149,7 +149,7 @@
         bind:group={type}
         value={"1year"}
         name="type"
-        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg-gray-100 border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg_fafafbff border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
       />
     </div>
 
@@ -162,7 +162,7 @@
         bind:group={type}
         value={"custom"}
         name="type"
-        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg-gray-100 border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
+        class="cursor-pointer w-4 h-4 rounded-full text-blue-600 bg_fafafbff border-gray-300 focus:outline-none focus:ring-0 dark:focus:outline-none dark:focus:ring-0 dark:bg-gray-700 dark:border-gray-600"
       />
     </div>
   </div>

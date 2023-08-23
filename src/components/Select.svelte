@@ -81,7 +81,7 @@
 
   {#if open}
     <div
-      class={`content xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] xl:max-h-[310px] max-h-[380px] w-[300px] min-w-[300px] mt-2 ${positionSelectList}`}
+      class={`select_content content group xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] xl:max-h-[310px] max-h-[380px] w-[300px] min-w-[300px] mt-2 ${positionSelectList}`}
       use:clickOutside
       on:click_outside={() => (open = false)}
     >
@@ -129,13 +129,7 @@
               class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
             />
           {/if}
-          <div
-            class={`xl:text-sm text-2xl name ${
-              type === "chain" && disabledChains.includes(item.value)
-                ? "text-[#00000066]"
-                : "text-[#000000b3]"
-            }`}
-          >
+          <div class="xl:text-sm text-2xl name">
             {item.label}
             {#if type === "chain" && disabledChains.includes(item.value)}
               (Soon)
@@ -157,7 +151,6 @@
     width: max-content;
     border-radius: 1000px;
     padding: 8px 12px;
-    color: white;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -174,7 +167,6 @@
     overflow-y: overlay;
     position: absolute;
     z-index: 2147483646;
-    background: #ffffff;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
     padding: 8px;
@@ -197,14 +189,6 @@
     transition: all 0.3s ease;
   }
 
-  .content_item:hover {
-    background: #eff0f4;
-  }
-
-  .content_item.active {
-    background: #eff0f4;
-  }
-
   .content_item.active > .name {
     color: #1e96fc;
   }
@@ -212,5 +196,21 @@
   .content_item .name {
     font-weight: 500;
     transition: all 0.3s ease;
+  }
+
+  :global(body) .select_content {
+    background: #ffffff;
+  }
+  :global(body.dark) .select_content {
+    background: #1f2937;
+  }
+
+  :global(body) .select_content .content_item.active,
+  :global(body) .select_content .content_item:hover {
+    background: #eff0f4;
+  }
+  :global(body.dark) .select_content .content_item.active,
+  :global(body.dark) .select_content .content_item:hover {
+    background: #ccc;
   }
 </style>

@@ -3,27 +3,39 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   import { formatBalance, shorterAddress } from "~/utils";
   import { SparkLine } from "svelte-spark";
+  import { isDarkMode } from "~/store";
   dayjs.extend(relativeTime);
 
   export let data;
 
   import TooltipNumber from "./TooltipNumber.svelte";
+  import Copy from "./Copy.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
 
-  import Copy from "./Copy.svelte";
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
+
+  $: console.log("data: ", data);
 </script>
 
 <tr class="group transition-all">
   <td
-    class="pl-3 py-4 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-9 bg-white group-hover:bg-gray-100"
+    class={`pl-3 py-4 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-9 ${
+      darkMode
+        ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+        : "bg-white group-hover:bg-gray-100"
+    }`}
   >
-    <div class="text-left text-black xl:text-sm text-xl font-medium">
+    <div class="text-left xl:text-sm text-xl font-medium">
       <Copy
         address={data?.address}
         textTooltip="Copy transaction to clipboard"
-        iconColor="#000"
+        iconColor={darkMode ? "#fff" : "#000"}
+        color={darkMode ? "#fff" : "#000"}
         isShorten={true}
         isLink={true}
         link={`/?chain=ALL&address=${data?.address}`}
@@ -31,7 +43,11 @@
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div
       class="xl:text-sm text-xl text-red-500 font-medium flex flex-col justify-start gap-1"
     >
@@ -56,15 +72,23 @@
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
-    <div class="text-right text-black xl:text-sm text-xl font-medium">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
+    <div class="text-right xl:text-sm text-xl font-medium">
       $<TooltipNumber number={Number(data?.networth)} type="balance" />
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div
-      class="xl:text-sm text-right text-xl text-[#00A878] font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-right text-xl font-medium flex flex-col items-end gap-1"
     >
       <div
         class={`flex items-center ${
@@ -85,9 +109,13 @@
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div
-      class="xl:text-sm text-right text-xl text-[#00A878] font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-right text-xl font-medium flex flex-col items-end gap-1"
     >
       <div
         class={`flex items-center ${
@@ -108,9 +136,13 @@
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div
-      class="xl:text-sm text-right text-xl text-[#00A878] font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-right text-xl font-medium flex flex-col items-end gap-1"
     >
       <div
         class={`flex items-center ${
@@ -131,9 +163,13 @@
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div
-      class="xl:text-sm text-right text-xl text-[#00A878] font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-right text-xl font-medium flex flex-col items-end gap-1"
     >
       <div
         class={`flex items-center ${
@@ -154,7 +190,11 @@
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div
       class="xl:text-sm text-right text-xl font-medium flex flex-col items-end gap-1"
     >
@@ -162,7 +202,11 @@
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div
       class="xl:text-sm text-right text-xl font-medium flex flex-col items-end gap-1"
     >
@@ -170,7 +214,11 @@
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div
       class="xl:text-sm text-right text-xl font-medium flex flex-col items-end gap-1"
     >
@@ -178,7 +226,11 @@
     </div>
   </td>
 
-  <td class="pr-3 py-4 group-hover:bg-gray-100">
+  <td
+    class={`pr-3 py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div class="flex items-center justify-end gap-3">
       <SparkLine data={data?.sparkline || []} />
     </div>

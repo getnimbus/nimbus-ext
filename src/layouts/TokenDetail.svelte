@@ -5,6 +5,7 @@
   import dayjs from "dayjs";
   import { shorterAddress, formatCurrency, formatBalance } from "~/utils";
   import mixpanel from "mixpanel-browser";
+  import { isDarkMode } from "~/store";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import "~/components/Loading.custom.svelte";
@@ -18,6 +19,11 @@
 
   import TwitterLogo from "~/assets/twitter.svg";
   import LeftArrow from "~/assets/left-arrow.svg";
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let type = "";
   let positionDetail;
@@ -407,7 +413,11 @@
             </div>
             {#if address}
               <div class="text-base">
-                <Copy {address} iconColor="#fff" color="#fff" />
+                <Copy
+                  {address}
+                  iconColor={`${darkMode ? "#fff" : "#000"}`}
+                  color={`${darkMode ? "#fff" : "#000"}`}
+                />
               </div>
             {/if}
           </div>
@@ -425,7 +435,7 @@
       <div class="flex flex-col justify-between gap-6 xl:flex-row">
         <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
           <OverviewCard title={"Position Value"}>
-            <div class="flex items-end gap-1 text-5xl text-black xl:text-3xl">
+            <div class="flex items-end gap-1 text-5xl xl:text-3xl">
               {#if (positionDetail?.overview?.holding)
                 .toString()
                 .toLowerCase()
@@ -505,7 +515,7 @@
             link="https://docs.getnimbus.io/metrics/average_cost/"
             isTooltip
           >
-            <div class="flex text-5xl text-black xl:text-3xl">
+            <div class="flex text-5xl xl:text-3xl">
               {#if (positionDetail?.overview?.averageCost)
                 .toString()
                 .toLowerCase()
@@ -568,10 +578,8 @@
       style="box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.10);"
     >
       <div class="flex flex-col justify-between gap-6 xl:flex-row">
-        <div
-          class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6"
-        >
-          <div class="pl-4 mb-3 text-4xl font-medium text-black xl:text-2xl">
+        <div class="xl:w-1/2 w-full border border_0000001a rounded-[20px] p-6">
+          <div class="pl-4 mb-3 text-4xl font-medium xl:text-2xl">
             Price & Total Balance
           </div>
           {#if isLoadingPositionDetailPrice}
@@ -598,10 +606,8 @@
             </div>
           {/if}
         </div>
-        <div
-          class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6"
-        >
-          <div class="pl-4 mb-3 text-4xl font-medium text-black xl:text-2xl">
+        <div class="xl:w-1/2 w-full border border_0000001a rounded-[20px] p-6">
+          <div class="pl-4 mb-3 text-4xl font-medium xl:text-2xl">
             Position Value
           </div>
           {#if isLoadingPositionDetailPrice}
@@ -629,12 +635,10 @@
           {/if}
         </div>
       </div>
-      <div class="border border-[#0000001a] rounded-[20px] p-6">
+      <div class="border border_0000001a rounded-[20px] p-6">
         <div class="flex flex-col gap-6">
           <div class="flex items-center justify-between">
-            <div class="text-4xl font-medium text-black xl:text-2xl">
-              History
-            </div>
+            <div class="text-4xl font-medium xl:text-2xl">History</div>
             <div
               use:tooltip={{
                 content: `<tooltip-detail text="Premium feature. Coming soon" />`,
@@ -647,45 +651,43 @@
           </div>
 
           {#if type === "ERC_20"}
-            <div
-              class="border border-[#0000000d] rounded-[10px] overflow-x-auto"
-            >
+            <div class="border border_0000000d rounded-[10px] overflow-x-auto">
               <table class="table-auto xl:w-full w-[1200px]">
                 <thead>
-                  <tr class="bg-[#f4f5f8]">
+                  <tr class="bg_f4f5f8">
                     <th
-                      class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-[#f4f5f8]"
+                      class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg_f4f5f8"
                     >
                       <div
-                        class="text-base font-medium text-left text-black uppercase xl:text-xs"
+                        class="text-base font-medium text-left uppercase xl:text-xs"
                       >
                         Transaction
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-base font-medium text-left text-black uppercase xl:text-xs"
+                        class="text-base font-medium text-left uppercase xl:text-xs"
                       >
                         From
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-base font-medium text-left text-black uppercase xl:text-xs"
+                        class="text-base font-medium text-left uppercase xl:text-xs"
                       >
                         To
                       </div>
                     </th>
                     <th class="py-3 min-w-[100px]">
                       <div
-                        class="text-base font-medium text-left text-black uppercase xl:text-xs"
+                        class="text-base font-medium text-left uppercase xl:text-xs"
                       >
                         Type
                       </div>
                     </th>
                     <th class="py-3 pr-3">
                       <div
-                        class="text-base font-medium text-left text-black uppercase xl:text-xs"
+                        class="text-base font-medium text-left uppercase xl:text-xs"
                       >
                         Token change
                       </div>
@@ -720,7 +722,11 @@
                           class="group transition-all border-b-[0.5px] last:border-none"
                         >
                           <td
-                            class="sticky left-0 py-4 pl-3 bg-white xl:static xl:bg-transparent z-9 group-hover:bg-gray-100"
+                            class={`sticky left-0 py-3 pl-3 xl:static xl:bg-transparent z-9  ${
+                              darkMode
+                                ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+                                : "bg-white group-hover:bg-gray-100"
+                            }`}
                           >
                             <div class="flex items-start gap-2 text-left w-max">
                               <div class="flex flex-col">
@@ -728,7 +734,8 @@
                                   <Copy
                                     address={change?.transaction_hash}
                                     textTooltip="Copy transaction to clipboard"
-                                    iconColor="#000"
+                                    iconColor={`${darkMode ? "#fff" : "#000"}`}
+                                    color={`${darkMode ? "#fff" : "#000"}`}
                                     isShorten={true}
                                     isLink={true}
                                     link={`https://etherscan.io/tx/${change?.transaction_hash}`}
@@ -743,12 +750,19 @@
                             </div>
                           </td>
 
-                          <td class="py-4 group-hover:bg-gray-100">
+                          <td
+                            class={`py-3 ${
+                              darkMode
+                                ? "group-hover:bg-[#00000033]"
+                                : "group-hover:bg-gray-100"
+                            }`}
+                          >
                             {#if change?.detail?.from}
                               <div class="text-xl xl:text-sm w-max">
                                 <Copy
                                   address={change?.detail?.from}
-                                  iconColor="#000"
+                                  iconColor={`${darkMode ? "#fff" : "#000"}`}
+                                  color={`${darkMode ? "#fff" : "#000"}`}
                                   isShorten={true}
                                   isLink={true}
                                   link={`https://etherscan.io/address/${change?.detail?.from}`}
@@ -757,12 +771,19 @@
                             {/if}
                           </td>
 
-                          <td class="py-4 group-hover:bg-gray-100">
+                          <td
+                            class={`py-3 ${
+                              darkMode
+                                ? "group-hover:bg-[#00000033]"
+                                : "group-hover:bg-gray-100"
+                            }`}
+                          >
                             {#if change?.detail?.to}
                               <div class="text-xl xl:text-sm w-max">
                                 <Copy
                                   address={change?.detail?.to}
-                                  iconColor="#000"
+                                  iconColor={`${darkMode ? "#fff" : "#000"}`}
+                                  color={`${darkMode ? "#fff" : "#000"}`}
                                   isShorten={true}
                                   isLink={true}
                                   link={`https://etherscan.io/address/${change?.detail?.to}`}
@@ -772,14 +793,18 @@
                           </td>
 
                           <td
-                            class="py-4 min-w-[100px] group-hover:bg-gray-100"
+                            class={`py-3 min-w-[100px] ${
+                              darkMode
+                                ? "group-hover:bg-[#00000033]"
+                                : "group-hover:bg-gray-100"
+                            }`}
                           >
                             <div
-                              class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-start"
+                              class="xl:text-sm text-xl text_00000099 font-medium flex justify-start"
                             >
                               {#if change?.type}
                                 <div
-                                  class="w-max px-2 py-1 text-[#27326F] xl:text-[12px] text-lg font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
+                                  class="w-max px-2 py-1 text_27326F xl:text-[12px] text-lg font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
                                 >
                                   {change?.type}
                                 </div>
@@ -787,7 +812,13 @@
                             </div>
                           </td>
 
-                          <td class="py-4 pr-3 group-hover:bg-gray-100">
+                          <td
+                            class={`py-3 pr-3 ${
+                              darkMode
+                                ? "group-hover:bg-[#00000033]"
+                                : "group-hover:bg-gray-100"
+                            }`}
+                          >
                             <div
                               class="flex flex-col items-start gap-2 text-xl font-medium xl:text-sm"
                             >
@@ -801,7 +832,7 @@
                                   <div
                                     class={`flex gap-1 ${
                                       item?.total < 0
-                                        ? "text-[#00000099]"
+                                        ? "text_00000099"
                                         : "text-[#00A878]"
                                     }`}
                                   >
@@ -835,27 +866,27 @@
               </table>
             </div>
           {:else}
-            <div class="border border-[#0000000d] rounded-[10px]">
+            <div class="border border_0000000d rounded-[10px]">
               <table class="w-full table-auto">
                 <thead>
-                  <tr class="bg-[#f4f5f8]">
+                  <tr class="bg_f4f5f8">
                     <th class="py-3 pl-3">
                       <div
-                        class="text-base font-medium text-left text-black uppercase xl:text-xs"
+                        class="text-base font-medium text-left uppercase xl:text-xs"
                       >
                         Transaction
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-base font-medium text-left text-black uppercase xl:text-xs"
+                        class="text-base font-medium text-left uppercase xl:text-xs"
                       >
                         Type
                       </div>
                     </th>
                     <th class="py-3 pr-3">
                       <div
-                        class="text-base font-medium text-left text-black uppercase xl:text-xs"
+                        class="text-base font-medium text-left uppercase xl:text-xs"
                       >
                         Token Change
                       </div>
@@ -887,9 +918,15 @@
                     {:else}
                       {#each positionDetail?.changes || [] as change}
                         <tr
-                          class="hover:bg-gray-100 transition-all border-b-[0.5px] last:border-none"
+                          class="group transition-all border-b-[0.5px] last:border-none"
                         >
-                          <td class="py-4 pl-3">
+                          <td
+                            class={`py-3 pl-3 ${
+                              darkMode
+                                ? "group-hover:bg-[#00000033]"
+                                : "group-hover:bg-gray-100"
+                            }`}
+                          >
                             <div class="w-max">
                               <a
                                 href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}
@@ -920,16 +957,28 @@
                               </a>
                             </div>
                           </td>
-                          <td class="py-4">
+                          <td
+                            class={`py-3 ${
+                              darkMode
+                                ? "group-hover:bg-[#00000033]"
+                                : "group-hover:bg-gray-100"
+                            }`}
+                          >
                             {#if change?.metadata?.action}
                               <div
-                                class="w-max px-2 py-1 text-[#27326F] xl:text-[12px] text-lg font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
+                                class="w-max px-2 py-1 text_27326F xl:text-[12px] text-lg font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
                               >
                                 {change?.metadata?.action}
                               </div>
                             {/if}
                           </td>
-                          <td class="py-4 pr-3">
+                          <td
+                            class={`py-3 pr-3${
+                              darkMode
+                                ? "group-hover:bg-[#00000033]"
+                                : "group-hover:bg-gray-100"
+                            }`}
+                          >
                             <div class="w-max">
                               <a
                                 href={`https://www.oklink.com/btc/tx/${change?.transactionHash}`}

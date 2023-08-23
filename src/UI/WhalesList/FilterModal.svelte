@@ -6,12 +6,18 @@
     volatilityFilter,
     returnsFilter,
   } from "~/utils";
+  import { isDarkMode } from "~/store";
 
   import Button from "~/components/Button.svelte";
 
   export let closeModal = () => {};
   export let submit = (value) => {};
   export let resetFilter = () => {};
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let searchValue = "";
   let timerSearchDebounce;
@@ -71,13 +77,11 @@
 </script>
 
 <div class="flex flex-col xl:gap-7 gap-9">
-  <div class="xl:text-2xl text-4xl font-medium text-black">
-    Filter whales list
-  </div>
+  <div class="xl:text-2xl text-4xl font-medium">Filter whales list</div>
   <div class="flex flex-col xl:gap-6 gap-8">
     <div
       class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
-        searchValue ? "bg-[#F0F2F7]" : "bg-white"
+        searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
       }`}
     >
       <input
@@ -91,7 +95,7 @@
         placeholder={"Filter by token name. Eg: ETH, UNI,..."}
         type="text"
         class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-          searchValue ? "bg-[#F0F2F7]" : ""
+          searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
         }`}
       />
     </div>
@@ -101,7 +105,7 @@
         <div class="col-span-3 flex flex-wrap gap-4">
           {#each netWorthFilter as item}
             <div
-              class="relative cursor-pointer xl:text-base text-2xl font-medium rounded-[100px] transition-all flex items-center gap-2 bg-gray-100"
+              class="relative cursor-pointer xl:text-base text-2xl font-medium rounded-[100px] transition-all flex items-center gap-2 bg_fafafbff"
             >
               <div
                 class={`px-3 py-1 ${
@@ -126,7 +130,7 @@
         <div class="col-span-3 flex flex-wrap gap-4">
           {#each sharpeRatioFilter as item}
             <div
-              class="relative cursor-pointer xl:text-base text-2xl font-medium rounded-[100px] transition-all flex items-center gap-2 bg-gray-100"
+              class="relative cursor-pointer xl:text-base text-2xl font-medium rounded-[100px] transition-all flex items-center gap-2 bg_fafafbff"
             >
               <div
                 class={`px-3 py-1 ${
@@ -151,7 +155,7 @@
         <div class="col-span-3 flex flex-wrap gap-4">
           {#each volatilityFilter as item}
             <div
-              class="relative cursor-pointer xl:text-base text-2xl font-medium rounded-[100px] transition-all flex items-center gap-2 bg-gray-100"
+              class="relative cursor-pointer xl:text-base text-2xl font-medium rounded-[100px] transition-all flex items-center gap-2 bg_fafafbff"
             >
               <div
                 class={`px-3 py-1 ${
@@ -176,7 +180,7 @@
         <div class="col-span-3 flex flex-wrap gap-4">
           {#each returnsFilter as item}
             <div
-              class="relative cursor-pointer xl:text-base text-2xl font-medium rounded-[100px] transition-all flex items-center gap-2 bg-gray-100"
+              class="relative cursor-pointer xl:text-base text-2xl font-medium rounded-[100px] transition-all flex items-center gap-2 bg_fafafbff"
             >
               <div
                 class={`px-3 py-1 ${

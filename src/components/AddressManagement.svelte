@@ -8,6 +8,7 @@
     user,
     isFirstTimeLogin,
     selectedPackage,
+    isDarkMode,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
@@ -104,6 +105,11 @@
   };
 
   const navigate = useNavigate();
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -1033,7 +1039,11 @@
                     } right-0`}
                     style="z-index: 2147483648;"
                   >
-                    <tooltip-detail text={tooltipDisableAddBtn} />
+                    <div
+                      class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+                    >
+                      {tooltipDisableAddBtn}
+                    </div>
                   </div>
                 {/if}
               </div>
@@ -1242,7 +1252,9 @@
     </div>
     <div class="border-t-[1px] relative">
       <div
-        class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 bg-white text-sm px-2"
+        class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
+          darkMode ? "bg-[#110c2a]" : "bg-white"
+        } text-sm px-2`}
       >
         Or
       </div>
@@ -1251,7 +1263,7 @@
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            address ? "bg-[#F0F2F7]" : ""
+            address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
           class:input-border-error={errors.address && errors.address.required}
         >
@@ -1265,7 +1277,7 @@
             placeholder={"You wallet address"}
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              address ? "bg-[#F0F2F7]" : ""
+              address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }
               `}
             on:keyup={({ target: { value } }) => (address = value)}
@@ -1280,7 +1292,7 @@
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            label ? "bg-[#F0F2F7]" : ""
+            label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
           class:input-border-error={errors.label && errors.label.required}
         >
@@ -1294,7 +1306,7 @@
             placeholder={MultipleLang.content.modal_label_label}
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              label ? "bg-[#F0F2F7]" : ""
+              label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }
               `}
             on:keyup={({ target: { value } }) => (label = value)}
@@ -1424,7 +1436,7 @@
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            email ? "bg-[#F0F2F7]" : ""
+            email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
           <div class="xl:text-base text-xl text-[#666666] font-medium">
@@ -1438,7 +1450,7 @@
             placeholder="Your email"
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              email ? "bg-[#F0F2F7]" : ""
+              email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }
               `}
             on:keyup={({ target: { value } }) => (email = value)}

@@ -78,7 +78,7 @@
           on:click={(e) => handleClick(e, item.value)}
           active={activeTabValue === item.value}
           spanClass={`text-lg pl-2 ${
-            activeTabValue === item.value ? "text-blue-500" : "text-black"
+            activeTabValue === item.value ? "text-blue-500" : ""
           }`}
         >
           <svelte:fragment slot="icon">

@@ -16,7 +16,7 @@
 
 <div class="flex items-center justify-start gap-2">
   <div
-    class="rounded-full flex justify-center items-center bg-gray-100 relative w-[40px] h-[40px]"
+    class="rounded-full flex justify-center items-center bg_fafafbff relative w-[40px] h-[40px]"
   >
     <img
       class="w-full h-full object-cover"
@@ -41,7 +41,7 @@
     <a
       href={`https://etherscan.io/address/${address}`}
       target="_blank"
-      class="no-underline text-sm text-black font-medium"
+      class="no-underline text-sm font-medium"
       use:tooltip={{
         content: `<tooltip-detail text="${label ? label : address}" />`,
         allowHTML: true,

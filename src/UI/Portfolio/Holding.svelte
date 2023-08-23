@@ -267,10 +267,10 @@
   }
 </script>
 
-<div class="flex flex-col gap-6 border border-[#0000001a] rounded-[20px] p-6">
+<div class="flex flex-col gap-6 border border_0000001a rounded-[20px] p-6">
   <ErrorBoundary>
     <div class="flex items-end gap-3">
-      <div class="xl:text-2xl text-4xl font-medium text-black">
+      <div class="xl:text-2xl text-4xl font-medium">
         {MultipleLang.holding}
       </div>
       <!-- <a
@@ -285,7 +285,7 @@
     <div class="flex flex-col gap-2">
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-4">
-          <div class="xl:text-xl text-3xl font-medium text-black">
+          <div class="xl:text-xl text-3xl font-medium">
             {MultipleLang.token}
           </div>
           {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
@@ -328,47 +328,47 @@
           />
         </div>
         <div
-          class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
+          class="border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto"
         >
           <table class="table-auto xl:w-full w-[1800px]">
             <thead
               class={isStickyTableToken ? "sticky top-0 z-10" : ""}
               bind:this={tableTokenHeader}
             >
-              <tr class="bg-[#f4f5f8]">
+              <tr class="bg_f4f5f8">
                 <th
-                  class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[420px]"
+                  class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
                 >
                   <div
-                    class="text-left xl:text-xs text-base uppercase font-medium text-black"
+                    class="text-left xl:text-xs text-base uppercase font-medium"
                   >
                     {MultipleLang.assets}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium"
                   >
                     {MultipleLang.price}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium"
                   >
                     {MultipleLang.amount}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium"
                   >
                     {MultipleLang.value}
                   </div>
                 </th>
                 <th class="py-3 pr-3 rounded-tr-[10px]">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium"
                   >
                     <TooltipTitle
                       tooltipText="Ratio based on total token holding"
@@ -379,7 +379,7 @@
                 </th>
                 <!-- <th class="py-3 pr-3 rounded-tr-[10px]">
                   <div
-                    class="xl:text-xs text-base uppercase font-medium text-black"
+                    class="xl:text-xs text-base uppercase font-medium "
                   >
                     <TooltipTitle
                       tooltipText="Profit and loss is calculated by transactions that swap the tokens. "
@@ -434,7 +434,7 @@
     {#if typeWalletAddress === "DEX" && getAddressContext(selectedWallet)?.type === "BTC"}
       <div class="flex flex-col gap-2">
         <div class="flex justify-between items-center">
-          <div class="xl:text-xl text-3xl font-medium text-black">
+          <div class="xl:text-xl text-3xl font-medium">
             {MultipleLang.nft}
           </div>
           <div class="xl:text-3xl text-4xl font-medium text-right">
@@ -442,35 +442,35 @@
           </div>
         </div>
         <div
-          class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto"
+          class="border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto"
         >
           <table class="table-auto xl:w-full w-[1400px]">
             <thead
               class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
               bind:this={tableNFTHeader}
             >
-              <tr class="bg-[#f4f5f8]">
+              <tr class="bg_f4f5f8">
                 <th
-                  class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[220px]"
+                  class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[220px]"
                 >
                   <div
-                    class="text-left xl:text-xs text-base uppercase font-medium text-black"
+                    class="text-left xl:text-xs text-base uppercase font-medium"
                   >
                     {MultipleLang.collection}
                   </div>
                 </th>
                 <th
-                  class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg-[#f4f5f8] w-[160px]"
+                  class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg_f4f5f8 w-[160px]"
                 >
                   <div
-                    class="text-left xl:text-xs text-base uppercase font-medium text-black"
+                    class="text-left xl:text-xs text-base uppercase font-medium"
                   >
                     {MultipleLang.Balance}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium"
                   >
                     <TooltipTitle
                       tooltipText={getAddressContext(selectedWallet)?.type ===
@@ -487,14 +487,14 @@
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium"
                   >
                     {MultipleLang.total_spent}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium"
                   >
                     {MultipleLang.current_value}
                   </div>
@@ -507,7 +507,7 @@
                   }`}
                 >
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                    class="text-right xl:text-xs text-base uppercase font-medium"
                   >
                     <TooltipTitle
                       tooltipText="Price NFTs now - Price NFTs at time you spent"

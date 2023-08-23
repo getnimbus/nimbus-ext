@@ -34,7 +34,7 @@ export default defineConfig({
     ],
   },
   // include: ["./node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}"],
-  darkMode: "media",
+  darkMode: "class",
   theme: {
     borderRadius: rem2px(defaultTheme.borderRadius),
     columns: rem2px(defaultTheme.columns),

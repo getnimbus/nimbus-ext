@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { wallet, chain, typeWallet } from "~/store";
+  import { wallet, chain, typeWallet, isDarkMode } from "~/store";
   import { groupBy, flatten } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import {
@@ -27,6 +27,7 @@
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
   import Logo from "~/assets/logo-1.svg";
+  import LogoWhite from "~/assets/logo-white.svg";
 
   export let packageSelected;
 
@@ -39,6 +40,11 @@
   };
 
   const navigate = useNavigate();
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -728,13 +734,15 @@
     getAddressContext(selectedWallet)?.type === "EVM" ||
       typeWalletAddress === "CEX"
   );
+
+  $: theme = darkMode ? "dark" : "white";
 </script>
 
 <div class="flex flex-col justify-between gap-6 xl:flex-row">
   <div
-    class="xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 border border-[#0000001a] rounded-[20px] p-6"
+    class="xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 border border_0000001a rounded-[20px] p-6"
   >
-    <div class="text-4xl font-medium text-black xl:text-2xl">
+    <div class="text-4xl font-medium xl:text-2xl">
       {MultipleLang.token_allocation}
     </div>
 
@@ -861,7 +869,7 @@
             <div class="relative">
               <EChart
                 id="current-status-analytics"
-                theme="white"
+                {theme}
                 option={optionPie}
                 height={475}
                 notMerge={true}
@@ -870,7 +878,12 @@
               <div
                 class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
               >
-                <img src={Logo} alt="" width="140" height="140" />
+                <img
+                  src={darkMode ? LogoWhite : Logo}
+                  alt=""
+                  width="140"
+                  height="140"
+                />
               </div>
             </div>
           {/if}
@@ -880,7 +893,7 @@
   </div>
 
   <div
-    class="xl:w-1/2 w-full relative border border-[#0000001a] rounded-[20px] p-6"
+    class="xl:w-1/2 w-full relative border border_0000001a rounded-[20px] p-6"
   >
     <div class="flex justify-between mb-6">
       <div class="flex justify-start">
@@ -889,12 +902,12 @@
             tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
             type="warning"
           >
-            <div class="pl-4 text-4xl font-medium text-black xl:text-2xl">
+            <div class="pl-4 text-4xl font-medium xl:text-2xl">
               {MultipleLang.performance}
             </div>
           </TooltipTitle>
         {:else}
-          <div class="pl-4 text-4xl font-medium text-black xl:text-2xl">
+          <div class="pl-4 text-4xl font-medium xl:text-2xl">
             {MultipleLang.performance}
           </div>
         {/if}
@@ -934,7 +947,9 @@
     </div>
     {#if selectedChain === "XDAI"}
       <div
-        class="absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center bg-white/95 z-30 backdrop-blur-md"
+        class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center ${
+          darkMode ? "bg-black/95" : "bg-white/95"
+        } z-30 backdrop-blur-md`}
       >
         <div class="text-xl xl:text-lg">Coming soon 🚀</div>
       </div>
@@ -955,7 +970,7 @@
           <div class="relative">
             <EChart
               id="line-chart-anaylic-performace"
-              theme="white"
+              {theme}
               notMerge={true}
               option={selectedTypeChart === "line" ? optionLine : optionBar}
               height={selectedTypeChart === "line" ? 485 : 515}
@@ -963,7 +978,12 @@
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >
-              <img src={Logo} alt="" width="140" height="140" />
+              <img
+                src={darkMode ? LogoWhite : Logo}
+                alt=""
+                width="140"
+                height="140"
+              />
             </div>
           </div>
         {/if}

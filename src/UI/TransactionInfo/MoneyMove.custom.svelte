@@ -35,7 +35,7 @@
     <div class="flex-1">
       <app-arrow>
         <div class="flex justify-center items-center gap-2">
-          <div class="w-4 h-4 inline-block bg-gray-100 rounded-full">
+          <div class="w-4 h-4 inline-block bg_fafafbff rounded-full">
             {#if data?.tokenLogo}
               <img
                 src={data?.tokenLogo}
@@ -45,7 +45,7 @@
             {/if}
           </div>
           <div
-            class="text-black text-xs font-medium"
+            class=" text-xs font-medium"
             use:tooltip={{
               content: `<tooltip-detail text="${formatCurrency(data?.value)} ${
                 data?.symbol ? data?.symbol : "N/A"
@@ -62,7 +62,7 @@
         </div>
         <div class="absolute left-0 right-0 -bottom-6 flex justify-center">
           <div
-            class="text-[#27326F] text-xs font-medium py-[2px] px-1 bg-[#A795FD33] rounded-[5px] w-max"
+            class="text_27326F text-xs font-medium py-[2px] px-1 bg-[#A795FD33] rounded-[5px] w-max"
           >
             {data?.type}
           </div>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import { typeWallet, wallet } from "~/store";
+  import { typeWallet, wallet, isDarkMode } from "~/store";
   import { detectedChain, getAddressContext, shorterName } from "~/utils";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
@@ -17,6 +17,11 @@
     selectedWallet = value;
   });
 
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
+
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
 
@@ -31,7 +36,11 @@
 
 <tr class="group transition-all">
   <td
-    class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white xl:w-[230px] w-[280px] group-hover:bg-gray-100"
+    class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 xl:w-[230px] w-[280px] ${
+      darkMode
+        ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+        : "bg-white group-hover:bg-gray-100"
+    }`}
   >
     <div class="text-left flex items-center gap-3">
       <div class="relative">
@@ -56,7 +65,7 @@
       </div>
       <div class="flex flex-col gap-1">
         <div
-          class="text-black xl:text-sm text-xl font-medium relative"
+          class=" xl:text-sm text-xl font-medium relative"
           on:mouseover={() => {
             isShowTooltipName = true;
           }}
@@ -74,7 +83,7 @@
           {/if}
         </div>
         <div
-          class="text-[#00000080] text-xs font-medium relative"
+          class="text_00000080 text-xs font-medium relative"
           on:mouseover={() => {
             isShowTooltipSymbol = true;
           }}
@@ -95,20 +104,26 @@
     </div>
   </td>
 
-  <td class="py-3 group-hover:bg-gray-100">
-    <div
-      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
-    >
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
+    <div class="xl:text-sm text-xl ttext_00000099 font-medium flex justify-end">
       $<TooltipNumber number={data?.price?.price} type="balance" />
     </div>
   </td>
 
-  <td class="py-3 group-hover:bg-gray-100">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div class="flex justify-end">
       <div
         class={`xl:text-sm text-xl font-medium w-max ${
           amountChange === 0
-            ? "text-[#00000099]"
+            ? "text_00000099"
             : amountChange > 0
             ? "text-[#00A878]"
             : "text-red-500"
@@ -130,12 +145,16 @@
     </div>
   </td>
 
-  <td class="py-3 group-hover:bg-gray-100">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div class="flex justify-end">
       <div
         class={`xl:text-sm text-xl font-medium  ${
           valueChange === 0
-            ? "text-[#00000099]"
+            ? "text_00000099"
             : valueChange > 0
             ? "text-[#00A878]"
             : "text-red-500"
@@ -157,12 +176,16 @@
     </div>
   </td>
 
-  <td class="py-3 pr-3 group-hover:bg-gray-100">
+  <td
+    class={`py-3 pr-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div class="flex justify-end">
       <div
         class={`xl:text-sm text-xl w-max ${
           data?.ratio === 0
-            ? "text-[#00000099]"
+            ? "text_00000099"
             : data?.ratio > 0
             ? "text-[#00A878]"
             : "text-red-500"

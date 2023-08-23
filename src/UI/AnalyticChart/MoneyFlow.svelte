@@ -1,6 +1,6 @@
 <script lang="ts">
   import { groupBy, intersection, flatten, sumBy } from "lodash";
-  import { wallet, chain, typeWallet } from "~/store";
+  import { wallet, chain, typeWallet, isDarkMode } from "~/store";
   import { formatCurrency, getAddressContext } from "~/utils";
   import dayjs from "dayjs";
   import { createQuery } from "@tanstack/svelte-query";
@@ -12,10 +12,16 @@
   import EChart from "~/components/EChart.svelte";
 
   import Logo from "~/assets/logo-1.svg";
+  import LogoWhite from "~/assets/logo-white.svg";
 
   export let packageSelected;
 
   const listDirection = ["inflow", "outflow"];
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -390,11 +396,13 @@
     getAddressContext(selectedWallet)?.type === "EVM" ||
       typeWalletAddress === "CEX"
   );
+
+  $: theme = darkMode ? "dark" : "white";
 </script>
 
 <AnalyticSection>
   <span slot="title">
-    <div class="flex justify-start text-4xl font-medium text-black xl:text-2xl">
+    <div class="flex justify-start text-4xl font-medium xl:text-2xl">
       Money flow
     </div>
   </span>
@@ -402,9 +410,7 @@
   <span slot="overview">
     <div class="relative h-full">
       {#if !$query.isFetching}
-        <div class="mb-4 text-3xl font-medium text-black xl:text-xl">
-          Overview
-        </div>
+        <div class="mb-4 text-3xl font-medium xl:text-xl">Overview</div>
       {/if}
       {#if $query.isFetching}
         <div class="flex items-center justify-center h-[465px]">
@@ -414,7 +420,7 @@
         <div class="flex flex-col gap-4">
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start text-black">30D Money Inflow</div>
+              <div class="flex justify-start">30D Money Inflow</div>
             </div>
             <div class="flex items-center justify-end col-span-1 gap-1">
               <div>
@@ -427,7 +433,7 @@
           </div>
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start text-black">30D Money Outflow</div>
+              <div class="flex justify-start">30D Money Outflow</div>
             </div>
             <div class="flex items-center justify-end col-span-1 gap-1">
               <div>
@@ -440,7 +446,7 @@
           </div>
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start text-black">30D Money Netflow</div>
+              <div class="flex justify-start">30D Money Netflow</div>
             </div>
             <div class="flex items-center justify-end col-span-1 gap-1">
               <div
@@ -461,7 +467,9 @@
       {/if}
       {#if typeWalletAddress === "CEX"}
         <div
-          class="absolute top-0 left-0 z-30 flex flex-col items-center justify-center w-full h-full gap-3 bg-white/95 backdrop-blur-md"
+          class={`absolute top-0 left-0 z-30 flex flex-col items-center justify-center w-full h-full gap-3 ${
+            darkMode ? "bg-black/95" : "bg-white/95"
+          } backdrop-blur-md`}
         >
           <div class="text-lg">Coming soon 🚀</div>
         </div>
@@ -487,7 +495,7 @@
             <div class="relative">
               <EChart
                 id="inflow-outflow"
-                theme="white"
+                {theme}
                 {option}
                 height={465}
                 notMerge={true}
@@ -496,7 +504,12 @@
               <div
                 class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
               >
-                <img src={Logo} alt="" width="140" height="140" />
+                <img
+                  src={darkMode ? LogoWhite : Logo}
+                  alt=""
+                  width="140"
+                  height="140"
+                />
               </div>
             </div>
           {/if}
@@ -504,7 +517,9 @@
       {/if}
       {#if typeWalletAddress === "CEX"}
         <div
-          class="absolute top-0 left-0 z-30 flex flex-col items-center justify-center w-full h-full gap-3 bg-white/95 backdrop-blur-md"
+          class={`absolute top-0 left-0 z-30 flex flex-col items-center justify-center w-full h-full gap-3 ${
+            darkMode ? "bg-black/95" : "bg-white/95"
+          } backdrop-blur-md`}
         >
           <div class="text-lg">Coming soon 🚀</div>
         </div>

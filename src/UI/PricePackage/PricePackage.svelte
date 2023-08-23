@@ -120,7 +120,7 @@
       </div>
       <div
         class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 ${
-          buyPackage === "Free" ? "border-[#1e96fc]" : "border-[#0000001a]"
+          buyPackage === "Free" ? "border-[#1e96fc]" : "border_0000001a"
         }`}
       >
         <div class="text-4xl font-medium xl:text-3xl">
@@ -129,7 +129,7 @@
           >
         </div>
         <div>
-          <div class="flex flex-col border-b-[1px] border-[#0000001a] pb-4">
+          <div class="flex flex-col border-b-[1px] border_0000001a pb-4">
             <div class="text-2xl font-medium xl:text-xl">FREE</div>
             <div class="text-xl text-gray-500 xl:text-lg">
               For those who starting to invest
@@ -137,7 +137,7 @@
           </div>
           <div class="flex flex-col items-start gap-2 mt-4">
             <div
-              class="text-lg text-black underline cursor-pointer xl:text-base decoration-dotted"
+              class="text-lg underline cursor-pointer xl:text-base decoration-dotted"
               use:tooltip={{
                 content: getTooltipContent(
                   "Get latest market information and real-time market update",
@@ -150,14 +150,14 @@
             >
               Real-time market update
             </div>
-            <div class="text-lg text-black xl:text-base">
+            <div class="text-lg xl:text-base">
               <span class="font-bold">3</span> tracked Wallets
             </div>
-            <div class="text-lg text-black xl:text-base">
+            <div class="text-lg xl:text-base">
               <span class="font-bold">$2 000</span> total net worth
             </div>
             <div
-              class="text-lg text-black underline cursor-pointer xl:text-base decoration-dotted"
+              class="text-lg underline cursor-pointer xl:text-base decoration-dotted"
               use:tooltip={{
                 content: getTooltipContent(
                   "Get up to 1000+ yield farming opportunities to boost your earning",
@@ -244,7 +244,7 @@
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 relative ${
             buyPackage === "Explorer" && interval === "month"
               ? "border-[#1e96fc]"
-              : "border-[#0000001a]"
+              : "border_0000001a"
           }`}
         >
           <div
@@ -385,7 +385,7 @@
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 ${
             buyPackage === "Professional" && interval === "month"
               ? "border-[#1e96fc]"
-              : "border-[#0000001a]"
+              : "border_0000001a"
           }`}
         >
           <ProfessionalPlan {selectedTypePackage}>
@@ -522,7 +522,7 @@
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 relative ${
             buyPackage === "Explorer" && interval === "year"
               ? "border-[#1e96fc]"
-              : "border-[#0000001a]"
+              : "border_0000001a"
           }`}
         >
           <div
@@ -663,7 +663,7 @@
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 ${
             buyPackage === "Professional" && interval === "year"
               ? "border-[#1e96fc]"
-              : "border-[#0000001a]"
+              : "border_0000001a"
           }`}
         >
           <ProfessionalPlan {selectedTypePackage}>
@@ -795,9 +795,9 @@
       Are you sure?
     </div>
     <div class="xl:text-sm text-lg text-gray-500">
-      Your <span class="text-black uppercase font-medium">{buyPackage}</span>
+      Your <span class=" uppercase font-medium">{buyPackage}</span>
       Plan have
-      <span class="text-black font-medium"
+      <span class=" font-medium"
         >{dateDiffInDays(new Date(), new Date(endDatePackage))} days left</span
       >
       . Do you really want to cancel? This process cannot revert

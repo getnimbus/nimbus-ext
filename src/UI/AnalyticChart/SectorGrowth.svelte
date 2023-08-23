@@ -422,9 +422,9 @@
   }
 </script>
 
-<div class="border border-[#0000001a] rounded-[20px] p-6">
+<div class="border border_0000001a rounded-[20px] p-6">
   <div class="flex flex-col gap-4">
-    <div class="xl:text-xl text-3xl font-medium text-black">Sector Growth</div>
+    <div class="xl:text-xl text-3xl font-medium">Sector Growth</div>
     <div
       class="relative overflow-hidden w-full flex gap-3 justify-between items-center"
       bind:this={container}

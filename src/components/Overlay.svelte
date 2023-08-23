@@ -1,12 +1,18 @@
 <script>
   import { onMount, createEventDispatcher } from "svelte";
   import { Motion } from "svelte-motion";
+  import { isDarkMode } from "~/store";
   import { showOverlayAnimationVariants } from "~/utils";
   const dispatch = createEventDispatcher();
 
   export let isOpen;
   export let clickOutSideToClose = false;
   export let isTableContent = false;
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   const handleClose = () => {
     dispatch("close");
@@ -46,7 +52,7 @@
       let:motion
     >
       <div
-        class={`bg-white rounded-xl px-6 pt-9 pb-7 mx-6 relative ${
+        class={`${
           isTableContent ? "xl:min-w-7xl min-w-4xl" : "xl:min-w-2xl min-w-4xl"
         }`}
         style="box-shadow: 0px 4px 20px 0px #00000026;"
@@ -54,12 +60,18 @@
         use:motion
       >
         <div
-          class="absolute top-3 right-5 xl:text-4xl text-6xl text-gray-500 cursor-pointer"
-          on:click|stopPropagation={handleClose}
+          class={`rounded-xl px-6 pt-9 pb-7 mx-6 relative ${
+            darkMode ? "bg-[#110c2a]" : "bg-white"
+          }`}
         >
-          &times;
+          <div
+            class="absolute top-3 right-5 xl:text-4xl text-6xl text-gray-500 cursor-pointer"
+            on:click|stopPropagation={handleClose}
+          >
+            &times;
+          </div>
+          <slot />
         </div>
-        <slot />
       </div>
     </Motion>
   </div>

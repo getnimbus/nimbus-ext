@@ -10,6 +10,8 @@
   import { useNavigate } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
+  import DarkMode from "~/components/DarkMode.svelte";
+
   import User from "~/assets/user.png";
 
   const wallets$ = onboard.state.select("wallets");
@@ -245,13 +247,18 @@
 
     {#if showPopover}
       <div
-        class="absolute right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform bg-white rounded-lg xl:top-12 top-20 w-max"
+        class="select_content absolute right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg xl:top-12 top-20 w-max"
         style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
         use:clickOutside
         on:click_outside={() => (showPopover = false)}
       >
-        <div class="text-2xl text-black xl:text-base px-2 py-1">
-          GM 👋, {shorterAddress(addressWallet)}
+        <div
+          class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border-gray-200"
+        >
+          <div class="text-2xl xl:text-base">
+            GM 👋, {shorterAddress(addressWallet)}
+          </div>
+          <DarkMode />
         </div>
         <div
           class="flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base hover:bg-gray-100 rounded-md transition-all px-2 py-1"
@@ -278,7 +285,7 @@
         </div>
         <Link to="invitation">
           <div
-            class="text-2xl text-gray-500 cursor-pointer xl:text-base hover:bg-gray-100 rounded-md transition-all px-2 py-1"
+            class="text-2xl text_00000066 cursor-pointer xl:text-base hover:bg-gray-100 rounded-md transition-all px-2 py-1"
             on:click={() => (showPopover = false)}
           >
             Invite
@@ -287,7 +294,7 @@
         <a
           href="entries/options/index.html?tab=wallets"
           target="_blank"
-          class="hidden text-2xl text-gray-500 cursor-pointer xl:block xl:text-base hover:bg-gray-100 rounded-md transition-all px-2 py-1"
+          class="hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base hover:bg-gray-100 rounded-md transition-all px-2 py-1"
           on:click={() => (showPopover = false)}
         >
           Settings
@@ -311,4 +318,10 @@
 {/if}
 
 <style windi:preflights:global windi:safelist:global>
+  :global(body) .select_content {
+    background: #ffffff;
+  }
+  :global(body.dark) .select_content {
+    background: #1f2937;
+  }
 </style>

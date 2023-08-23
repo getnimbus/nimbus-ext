@@ -930,10 +930,12 @@
     {/if}
   </span>
   <span slot="body">
-    <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
+    <div
+      class="portfolio_container max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26"
+    >
       {#if isLoadingSync}
         <div
-          class="bg-white text-xl font-medium flex flex-col gap-5 justify-center items-center border border-[#0000001a] rounded-[20px] p-6 h-screen"
+          class="text-xl font-medium flex flex-col gap-5 justify-center items-center rounded-[20px] p-6 h-screen"
         >
           {syncMsg}
           {#if syncMsg !== "Invalid address"}
@@ -941,10 +943,7 @@
           {/if}
         </div>
       {:else}
-        <div
-          class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8"
-          style="box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.10);"
-        >
+        <div class="flex flex-col gap-7 rounded-[20px] xl:p-8">
           <Charts
             {handleSelectedTableTokenHolding}
             isLoading={loadingOverview}
@@ -970,7 +969,7 @@
           />
 
           <!-- <div
-            class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
+            class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
           >
             <Positions
               isLoading={loadingPositions}
@@ -1011,5 +1010,13 @@
     100% {
       transform: rotate(360deg);
     }
+  }
+  :global(body) .portfolio_container {
+    background: #fff;
+    box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
+  }
+  :global(body.dark) .portfolio_container {
+    background: #110c2a;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 1);
   }
 </style>

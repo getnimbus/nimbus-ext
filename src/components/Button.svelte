@@ -44,7 +44,7 @@
   {#if isLoading}
     <svg
       class={`animate-spin h-6 w-6 ${
-        variant === "secondary" ? "text-[#27326f]" : "text-white"
+        variant === "secondary" ? "text_27326F" : "text-white"
       }`}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"

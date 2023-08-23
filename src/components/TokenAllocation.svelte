@@ -10,7 +10,7 @@
     getAddressContext,
   } from "~/utils";
   import { flatten, groupBy } from "lodash";
-  import { wallet, chain } from "~/store";
+  import { wallet, chain, isDarkMode } from "~/store";
 
   export let handleSelectedTableTokenHolding = (data, selectDataPieChart) => {};
   export let holdingTokenData;
@@ -27,6 +27,11 @@
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
   };
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -539,6 +544,8 @@
       }
     }
   }
+
+  $: theme = darkMode ? "dark" : "white";
 </script>
 
 <div class="w-full">
@@ -557,7 +564,7 @@
       </div>
     {/if}
   {/if}
-  <EChart {id} theme="white" notMerge={true} option={optionPie} height={465} />
+  <EChart {id} {theme} notMerge={true} option={optionPie} height={465} />
 </div>
 
 <style windi:preflights:global windi:safelist:global></style>

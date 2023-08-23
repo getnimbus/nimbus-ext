@@ -161,10 +161,8 @@
   }
 </script>
 
-<div class="border border-[#0000001a] rounded-[20px] p-6">
-  <div class="xl:text-xl text-3xl font-medium text-black">
-    Total Value History
-  </div>
+<div class="border border_0000001a rounded-[20px] p-6">
+  <div class="xl:text-xl text-3xl font-medium">Total Value History</div>
   <div class="mt-2">
     {#if isLoading}
       <div class="flex items-center justify-center h-[415px]">

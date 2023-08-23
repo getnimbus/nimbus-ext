@@ -10,6 +10,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { isDarkMode } from "~/store";
 
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -58,6 +59,11 @@
   let isScrollStart = true;
   let isScrollEnd = false;
   let container;
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   const handleScroll = () => {
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
@@ -522,7 +528,11 @@
             </div>
             {#if selectedWallet && selectedWallet.length !== 0}
               <div class="text-base">
-                <Copy address={selectedWallet} iconColor="#fff" color="#fff" />
+                <Copy
+                  address={selectedWallet}
+                  iconColor={`${darkMode ? "#fff" : "#000"}`}
+                  color={`${darkMode ? "#fff" : "#000"}`}
+                />
               </div>
             {/if}
           </div>
@@ -534,9 +544,9 @@
   <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
     <div class="bg-white rounded-[20px] xl:p-8 xl:shadow-md">
       <div
-        class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
+        class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
       >
-        <div class="xl:text-2xl text-4xl font-medium text-black">
+        <div class="xl:text-2xl text-4xl font-medium">
           Custom Token Breakdown
         </div>
 
@@ -932,50 +942,50 @@
               </div>
 
               <div
-                class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto min-h-[600px]"
+                class="border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto min-h-[600px]"
               >
                 <table class="table-auto xl:w-full w-[1400px]">
                   <thead
                     class={isStickyTableToken ? "sticky top-0 z-10" : ""}
                     bind:this={tableTokenHeader}
                   >
-                    <tr class="bg-[#f4f5f8]">
+                    <tr class="bg_f4f5f8">
                       <th
-                        class="py-3 w-10 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
+                        class="py-3 w-10 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
                       />
                       <th
-                        class="py-3 xl:static xl:bg-transparent sticky left-10 z-10 bg-[#f4f5f8] xl:w-[230px] w-[280px]"
+                        class="py-3 xl:static xl:bg-transparent sticky left-10 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
                       >
                         <div
-                          class="text-left xl:text-xs text-base uppercase font-medium text-black"
+                          class="text-left xl:text-xs text-base uppercase font-medium"
                         >
                           {MultipleLang.assets}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                          class="text-right xl:text-xs text-base uppercase font-medium"
                         >
                           {MultipleLang.price}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                          class="text-right xl:text-xs text-base uppercase font-medium"
                         >
                           {MultipleLang.amount}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                          class="text-right xl:text-xs text-base uppercase font-medium"
                         >
                           {MultipleLang.value}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                          class="text-right xl:text-xs text-base uppercase font-medium"
                         >
                           <TooltipTitle
                             tooltipText="Ratio based on total token holding"
@@ -986,7 +996,7 @@
                       </th>
                       <th class="py-3 pr-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium text-black flex items-center justify-end gap-2"
+                          class="text-right xl:text-xs text-base uppercase font-medium flex items-center justify-end gap-2"
                         >
                           Tag
                           <div
@@ -1034,7 +1044,11 @@
                         {#each searchDataResult as data}
                           <tr class="group transition-all">
                             <td
-                              class="py-3 w-10 group-hover:bg-gray-100 xl:static xl:bg-transparent sticky left-0 z-10 bg-white"
+                              class={`py-3 w-10 xl:static xl:bg-transparent sticky left-0 z-10 ${
+                                darkMode
+                                  ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+                                  : "bg-white group-hover:bg-gray-100"
+                              }`}
                             >
                               <div class="flex justify-center">
                                 <input
@@ -1049,7 +1063,11 @@
                             </td>
 
                             <td
-                              class="py-3 xl:static xl:bg-transparent sticky left-10 z-9 bg-white xl:w-[230px] w-[280px] group-hover:bg-gray-100"
+                              class={`py-3 xl:static xl:bg-transparent sticky left-10 z-9 xl:w-[230px] w-[280px] ${
+                                darkMode
+                                  ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+                                  : "bg-white group-hover:bg-gray-100"
+                              }`}
                             >
                               <div class="text-left flex items-center gap-3">
                                 <div class="relative">
@@ -1074,7 +1092,7 @@
                                 </div>
                                 <div class="flex flex-col gap-1">
                                   <div
-                                    class="text-black xl:text-sm text-xl font-medium relative"
+                                    class=" xl:text-sm text-xl font-medium relative"
                                     on:mouseover={() => {
                                       if (data?.name?.length > 20) {
                                         selectedHover = data.name;
@@ -1105,7 +1123,7 @@
                                     {/if}
                                   </div>
                                   <div
-                                    class="text-[#00000080] text-xs font-medium relative"
+                                    class="text_00000080 text-xs font-medium relative"
                                     on:mouseover={() => {
                                       if (data?.symbol?.length > 20) {
                                         selectedHover = data.symbol;
@@ -1137,9 +1155,15 @@
                               </div>
                             </td>
 
-                            <td class="py-3 group-hover:bg-gray-100">
+                            <td
+                              class={`py-3 ${
+                                darkMode
+                                  ? "group-hover:bg-[#00000033]"
+                                  : "group-hover:bg-gray-100"
+                              }`}
+                            >
                               <div
-                                class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                                class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
                               >
                                 $<TooltipNumber
                                   number={data.market_price}
@@ -1148,9 +1172,15 @@
                               </div>
                             </td>
 
-                            <td class="py-3 group-hover:bg-gray-100">
+                            <td
+                              class={`py-3 ${
+                                darkMode
+                                  ? "group-hover:bg-[#00000033]"
+                                  : "group-hover:bg-gray-100"
+                              }`}
+                            >
                               <div
-                                class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                                class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
                               >
                                 <TooltipNumber
                                   number={data.amount}
@@ -1159,9 +1189,15 @@
                               </div>
                             </td>
 
-                            <td class="py-3 group-hover:bg-gray-100">
+                            <td
+                              class={`py-3 ${
+                                darkMode
+                                  ? "group-hover:bg-[#00000033]"
+                                  : "group-hover:bg-gray-100"
+                              }`}
+                            >
                               <div
-                                class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                                class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
                               >
                                 $<TooltipNumber
                                   number={data?.amount * data?.market_price}
@@ -1170,9 +1206,15 @@
                               </div>
                             </td>
 
-                            <td class="py-3 group-hover:bg-gray-100">
+                            <td
+                              class={`py-3 ${
+                                darkMode
+                                  ? "group-hover:bg-[#00000033]"
+                                  : "group-hover:bg-gray-100"
+                              }`}
+                            >
                               <div
-                                class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                                class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
                               >
                                 <TooltipNumber
                                   number={((data?.amount * data?.market_price) /
@@ -1183,10 +1225,16 @@
                               </div>
                             </td>
 
-                            <td class="py-3 pr-3 group-hover:bg-gray-100">
+                            <td
+                              class={`pr-3 py-3 ${
+                                darkMode
+                                  ? "group-hover:bg-[#00000033]"
+                                  : "group-hover:bg-gray-100"
+                              }`}
+                            >
                               <div class="flex justify-end">
                                 <div
-                                  class="bg-[#6AC7F533] text-[#27326F] xl:text-sm text-xl w-max px-3 py-1 rounded-[5px]"
+                                  class="bg-[#6AC7F533] text_27326F xl:text-sm text-xl w-max px-3 py-1 rounded-[5px]"
                                 >
                                   {data.tag}
                                 </div>

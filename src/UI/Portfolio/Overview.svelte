@@ -37,7 +37,8 @@
   $: networth = totalAssets + totalPositions;
 
   $: totalProfit =
-    getAddressContext(selectedWallet)?.type === "SOL"
+    getAddressContext(selectedWallet)?.type === "SOL" ||
+    typeWalletAddress === "CEX"
       ? 0
       : networth +
         Number(data?.overview?.cumulativeOutflow || 0) -
@@ -64,7 +65,8 @@
     changeLast24hNetWorth;
 
   $: last24hTotalProfitPercent =
-    getAddressContext(selectedWallet)?.type === "SOL"
+    getAddressContext(selectedWallet)?.type === "SOL" ||
+    typeWalletAddress === "CEX"
       ? 0
       : getChangePercent(totalProfit, changeLast24hTotalProfit);
 </script>
@@ -73,12 +75,11 @@
   <div class="flex xl:flex-row flex-col justify-between gap-6">
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
       <OverviewCard title={MultipleLang.networth}>
-        <div class="xl:text-3xl text-5xl text-black flex">
+        <div class="xl:text-3xl text-5xl flex">
           $<CountUpNumber id="networth" number={networth} type="balance" />
         </div>
         <div
           class={`flex items-center gap-3 ${
-            typeWalletAddress === "CEX" ||
             getAddressContext(selectedWallet)?.type === "BTC" ||
             getAddressContext(selectedWallet)?.type === "SOL"
               ? "opacity-50"
@@ -103,9 +104,7 @@
               type="percent"
             />%
           </div>
-          <div class="text-[#00000066] xl:text-base text-2xl font-medium">
-            24h
-          </div>
+          <div class="text_00000066 xl:text-base text-2xl font-medium">24h</div>
         </div>
       </OverviewCard>
 
@@ -115,7 +114,7 @@
         tooltipText="Total profit = Total Outflow - Total Inflow + Net Worth"
       >
         <div
-          class={`flex xl:text-3xl text-5xl text-black ${
+          class={`flex xl:text-3xl text-5xl ${
             getAddressContext(selectedWallet)?.type === "SOL"
               ? "opacity-50"
               : ""
@@ -161,9 +160,7 @@
               type="percent"
             />%
           </div>
-          <div class="text-[#00000066] xl:text-base text-2xl font-medium">
-            24h
-          </div>
+          <div class="text_00000066 xl:text-base text-2xl font-medium">24h</div>
         </div>
       </OverviewCard>
     </div>
@@ -171,7 +168,7 @@
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
       <OverviewCard title={MultipleLang.total_inflow}>
         <div
-          class={`xl:text-3xl text-5xl text-black flex ${
+          class={`xl:text-3xl text-5xl flex ${
             getAddressContext(selectedWallet)?.type === "SOL"
               ? "opacity-50"
               : ""
@@ -210,15 +207,13 @@
               type="percent"
             />%
           </div>
-          <div class="text-[#00000066] xl:text-base text-2xl font-medium">
-            24h
-          </div>
+          <div class="text_00000066 xl:text-base text-2xl font-medium">24h</div>
         </div>
       </OverviewCard>
 
       <OverviewCard title={MultipleLang.total_outflow}>
         <div
-          class={`xl:text-3xl text-5xl text-black flex ${
+          class={`xl:text-3xl text-5xl flex ${
             getAddressContext(selectedWallet)?.type === "SOL"
               ? "opacity-50"
               : ""
@@ -267,9 +262,7 @@
               type="percent"
             />%
           </div>
-          <div class="text-[#00000066] xl:text-base text-2xl font-medium">
-            24h
-          </div>
+          <div class="text_00000066 xl:text-base text-2xl font-medium">24h</div>
         </div>
       </OverviewCard>
     </div>

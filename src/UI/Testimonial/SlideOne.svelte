@@ -2,9 +2,7 @@
 </script>
 
 <div class="flex flex-col gap-5 h-[35vh]">
-  <blockquote
-    class="text-lg font-normal leading-8 tracking-tight text-gray-900"
-  >
+  <blockquote class="text-lg font-normal leading-8 tracking-tight">
     <p>
       “As the founder of Nimbus, It is anything I wish for as a portfolio tool
       in Web3. Tracking with real-time performance, and delivered a delightful
@@ -19,8 +17,8 @@
       alt="Thanh Le"
     />
     <div class="text-sm">
-      <div class="font-semibold text-gray-900">Thanh Le</div>
-      <div class="text-gray-600">
+      <div class="font-semibold">Thanh Le</div>
+      <div class="text-gray-500">
         Founder
         <a
           href="https://twitter.com/get_nimbus"

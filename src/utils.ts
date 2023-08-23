@@ -748,7 +748,7 @@ export const sharpeRatioColorChart = (value: number) => {
 
 export const getTooltipContent = (text: string, videoUrl: string, width?: string) => {
   return `
-      <div style="padding: 8px; border-radius: 8px; background: rgba(0, 0, 0, 0.8); width: ${width ? "100%" : "560px"}; height: auto;">
+      <div style="padding: 8px; border-radius: 8px; background: #000; width: ${width ? "100%" : "560px"}; height: auto;">
         ${text
       ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 16px; color: #fff;">${text}</div>`
       : ""

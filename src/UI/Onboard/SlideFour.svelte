@@ -9,10 +9,10 @@
   <div class="h-[90%] flex flex-col justify-between items-center">
     <div class="flex-1 flex flex-col items-center justify-center gap-6">
       <div class="flex flex-col items-center gap-6">
-        <div class="text-5xl text-black font-normal">
+        <div class="text-5xl font-normal">
           Know what inside an address or a transaction
         </div>
-        <div class="text-lg text-[#00000099] font-normal">
+        <div class="text-lg text_00000099 font-normal">
           Just click on that popup, we deliver understandable info right away
         </div>
       </div>
@@ -30,7 +30,7 @@
           <div
             class="rounded-[1000px] py-1 px-2 bg-[#1E96FC4D] select-none flex items-center gap-1"
           >
-            <div class="text-[#27326F] text-xs font-medium">More info</div>
+            <div class="text_27326F text-xs font-medium">More info</div>
             <svg
               width="12"
               height="12"

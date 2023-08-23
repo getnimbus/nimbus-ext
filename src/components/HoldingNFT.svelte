@@ -1,7 +1,7 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
   import { getAddressContext, shorterName } from "~/utils";
-  import { typeWallet } from "~/store";
+  import { typeWallet, isDarkMode } from "~/store";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -19,6 +19,11 @@
   let typeWalletAddress = "";
   typeWallet.subscribe((value) => {
     typeWalletAddress = value;
+  });
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
   });
 
   let showTooltipListNFT = false;
@@ -52,11 +57,15 @@
   }}
 >
   <td
-    class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-white w-[220px] group-hover:bg-gray-100"
+    class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 w-[220px] ${
+      darkMode
+        ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+        : "bg-white group-hover:bg-gray-100"
+    }`}
   >
     <div class="relative">
       <div
-        class="text-black xl:text-sm text-xl font-medium flex justify-start relative"
+        class="xl:text-sm text-xl font-medium flex justify-start relative"
         on:mouseover={() => {
           isShowTooltipName = true;
         }}
@@ -75,7 +84,11 @@
   </td>
 
   <td
-    class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg-white w-[200px] group-hover:bg-gray-100"
+    class={`py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 w-[200px] ${
+      darkMode
+        ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+        : "bg-white group-hover:bg-gray-100"
+    }`}
   >
     <div class="relative">
       <div
@@ -130,10 +143,12 @@
     </div>
   </td>
 
-  <td class="py-3 group-hover:bg-gray-100">
-    <div
-      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
-    >
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
+    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
       <TooltipNumber number={data?.floorPriceBTC} type="amount" /><span
         class="mx-1"
         >{getAddressContext(selectedWallet)?.type === "EVM"
@@ -147,10 +162,12 @@
     </div>
   </td>
 
-  <td class="py-3 group-hover:bg-gray-100">
-    <div
-      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
-    >
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
+    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
       <TooltipNumber number={data?.totalCostBTC} type="amount" /><span
         class="mx-1"
       >
@@ -160,15 +177,21 @@
     </div>
   </td>
 
-  <td class="py-3 group-hover:bg-gray-100">
-    <div
-      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
-    >
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
+    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
       $<TooltipNumber number={data?.current_value} type="balance" />
     </div>
   </td>
 
-  <td class="py-3 pr-3 group-hover:bg-gray-100">
+  <td
+    class={`py-3 pr-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
@@ -203,7 +226,11 @@
   </td>
 
   {#if typeWalletAddress === "DEX" && getAddressContext(selectedWallet)?.type !== "EVM"}
-    <td class="py-3 w-10 group-hover:bg-gray-100">
+    <td
+      class={`py-3 w-10 ${
+        darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      }`}
+    >
       <div class="flex justify-center">
         <div
           use:tooltip={{

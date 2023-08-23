@@ -1,6 +1,6 @@
 <script>
   import { useNavigate } from "svelte-navigator";
-  import { chain, typeWallet } from "~/store";
+  import { chain, typeWallet, isDarkMode } from "~/store";
   import { detectedChain, getAddressContext, shorterName } from "~/utils";
   import numeral from "numeral";
   import { Progressbar } from "flowbite-svelte";
@@ -26,6 +26,11 @@
   let typeWalletAddress = "";
   typeWallet.subscribe((value) => {
     typeWalletAddress = value;
+  });
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
   });
 
   let isShowTooltipName = false;
@@ -75,7 +80,11 @@
   }}
 >
   <td
-    class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white w-[420px] group-hover:bg-gray-100"
+    class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[420px] ${
+      darkMode
+        ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+        : "bg-white group-hover:bg-gray-100"
+    }`}
   >
     <div class="text-left flex items-start gap-3">
       <div class="relative">
@@ -101,7 +110,7 @@
       </div>
       <div class="flex flex-col gap-1">
         <div
-          class="text-black xl:text-sm text-xl font-medium relative"
+          class="xl:text-sm text-xl font-medium relative"
           on:mouseover={() => {
             isShowTooltipName = true;
           }}
@@ -119,7 +128,7 @@
           {/if}
         </div>
         <div
-          class="text-[#00000080] text-xs font-medium relative"
+          class="text_00000080 text-xs font-medium relative"
           on:mouseover={() => {
             isShowTooltipSymbol = true;
           }}
@@ -140,7 +149,7 @@
 
       {#if selectedHighestVault !== undefined}
         <div
-          class="flex items-center justyfy-center px-2 py-1 text-[#27326F] text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
+          class="flex items-center justyfy-center px-2 py-1 text_27326F text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
           on:click={() => {
             showTableVaults = true;
             selectedVaults = data.vaults;
@@ -154,34 +163,44 @@
     </div>
   </td>
 
-  <td class="py-3 group-hover:bg-gray-100">
-    <div
-      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
-    >
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
+    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
       $<TooltipNumber number={data.market_price} type="balance" />
     </div>
   </td>
 
-  <td class="py-3 group-hover:bg-gray-100">
-    <div
-      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
-    >
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
+    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
       <TooltipNumber number={data.amount} type="amount" />
     </div>
   </td>
 
-  <td class="py-3 group-hover:bg-gray-100">
-    <div
-      class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
-    >
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
+    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
       $<TooltipNumber number={price} type="balance" />
     </div>
   </td>
 
-  <td class="py-3 pr-3 group-hover:bg-gray-100">
+  <td
+    class={`py-3 pr-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div class="flex flex-col gap-1 justify-end items-end">
       <div
-        class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+        class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
       >
         <TooltipNumber number={ratio} type="percent" />%
       </div>
@@ -191,7 +210,11 @@
     </div>
   </td>
 
-  <!-- <td class="py-3 pr-3 group-hover:bg-gray-100">
+  <!-- <td
+    class={`py-3 pr-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
@@ -225,7 +248,11 @@
     </div>
   </td> -->
 
-  <!-- <td class="py-3 w-10 group-hover:bg-gray-100">
+  <!-- <td
+    class={`py-3 w-10 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     {#if clickable}
       <div class="flex justify-center">
         <div

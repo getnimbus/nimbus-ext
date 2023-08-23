@@ -5,7 +5,7 @@
   import isBetween from "dayjs/plugin/isBetween";
   dayjs.extend(isBetween);
   import { nimbus } from "~/lib/network";
-  import { wallet, user } from "~/store";
+  import { wallet, user, isDarkMode } from "~/store";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -17,6 +17,11 @@
 
   const currentDate = dayjs();
   const next7Days = currentDate.add(7, "day");
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   // let userInfo = {};
   // user.subscribe((value) => {
@@ -200,7 +205,7 @@
           <div class="flex flex-col gap-1">
             <div
               class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-                email ? "bg-[#F0F2F7]" : ""
+                email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
               }`}
             >
               <div class="xl:text-base text-xl text-[#666666] font-medium">
@@ -213,7 +218,7 @@
                 placeholder="Your email"
                 value=""
                 class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                  email ? "bg-[#F0F2F7]" : ""
+                  email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                 }
               `}
                 on:keyup={({ target: { value } }) => (email = value)}

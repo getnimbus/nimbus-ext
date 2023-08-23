@@ -107,13 +107,13 @@
   >
     <div class="flex justify-between items-end">
       <div class="flex flex-col gap-2">
-        <div class="xl:text-5xl text-7xl text-black font-medium">
+        <div class="xl:text-5xl text-7xl font-medium">
           {MultipleLang.whale}
         </div>
         <div
           class="flex justify-between xl:items-center xl:gap-11 xl:flex-row flex-col gap-6"
         >
-          <div class="xl:text-xl text-3xl text-black font-medium w-max">
+          <div class="xl:text-xl text-3xl font-medium w-max">
             {MultipleLang.whales_page_title}
           </div>
         </div>
@@ -144,68 +144,68 @@
       </div>
     </div>
     <div
-      class={`border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto ${
+      class={`border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto ${
         isLoading ? "h-[1200px]" : ""
       }`}
     >
       {#if isLoading}
         <table class="table-auto xl:w-full w-[1800px]">
           <thead>
-            <tr class="bg-[#f4f5f8]">
+            <tr class="bg_f4f5f8">
               <th
-                class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
+                class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
               >
                 <div
-                  class="text-left xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-left xl:text-xs text-base uppercase font-medium"
                 >
                   Address
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-left xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-left xl:text-xs text-base uppercase font-medium"
                 >
                   Tokens
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   Net Worth
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   1D
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   7D
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   30D
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   1Y
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   <TooltipTitle
                     tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
@@ -217,7 +217,7 @@
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   <TooltipTitle
                     tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
@@ -229,7 +229,7 @@
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   <TooltipTitle
                     tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
@@ -241,7 +241,7 @@
               </th>
               <th class="pr-3 py-3 rounded-tr-[10px]">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   Last 30D
                 </div>
@@ -260,61 +260,61 @@
             class={isSticky ? "sticky top-0 z-10" : ""}
             bind:this={tableHeader}
           >
-            <tr class="bg-[#f4f5f8]">
+            <tr class="bg_f4f5f8">
               <th
-                class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
+                class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
               >
                 <div
-                  class="text-left xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-left xl:text-xs text-base uppercase font-medium"
                 >
                   Address
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-left xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-left xl:text-xs text-base uppercase font-medium"
                 >
                   Tokens
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   Net Worth
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   1D
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   7D
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   30D
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   1Y
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   <TooltipTitle
                     tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
@@ -326,7 +326,7 @@
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   <TooltipTitle
                     tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
@@ -338,7 +338,7 @@
               </th>
               <th class="py-3">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   <TooltipTitle
                     tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
@@ -350,7 +350,7 @@
               </th>
               <th class="pr-3 py-3 rounded-tr-[10px]">
                 <div
-                  class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                  class="text-right xl:text-xs text-base uppercase font-medium"
                 >
                   Last 30D
                 </div>

@@ -6,6 +6,7 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import dayjs from "dayjs";
+  import { isDarkMode } from "~/store";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Copy from "~/components/Copy.svelte";
@@ -17,6 +18,11 @@
 
   let selectedWallet: string = "";
   let selectedChain: string = "";
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let showDisableAddBtn = false;
   let listVirtualPortfolio = [];
@@ -180,7 +186,11 @@
             </div>
             {#if selectedWallet && selectedWallet.length !== 0}
               <div class="text-base">
-                <Copy address={selectedWallet} iconColor="#fff" color="#fff" />
+                <Copy
+                  address={selectedWallet}
+                  iconColor={`${darkMode ? "#fff" : "#000"}`}
+                  color={`${darkMode ? "#fff" : "#000"}`}
+                />
               </div>
             {/if}
           </div>
@@ -192,9 +202,9 @@
   <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
     <div class="bg-white rounded-[20px] xl:p-8 xl:shadow-md">
       <div
-        class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
+        class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
       >
-        <div class="xl:text-2xl text-4xl font-medium text-black">
+        <div class="xl:text-2xl text-4xl font-medium">
           Custom Virtual Portfolio
         </div>
         <div class="flex justify-between">

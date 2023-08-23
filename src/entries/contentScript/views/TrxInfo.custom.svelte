@@ -244,11 +244,9 @@
               }`}
             >
               <div class="flex flex-col gap-1">
-                <div class="text-black text-xs font-normal">
-                  Transaction Detail
-                </div>
+                <div class="text-xs font-normal">Transaction Detail</div>
                 <div
-                  class="text-xs font-medium text-[#27326F] px-1 py-[2px] bg-[#6AC7F533] rounded-[5px]"
+                  class="text-xs font-medium text_27326F px-1 py-[2px] bg-[#6AC7F533] rounded-[5px]"
                 >
                   Gas fee: {`${Number(info?.gasUsed)} ${
                     info?.nativeToken
@@ -261,7 +259,7 @@
                     <input type="checkbox" bind:checked={enabledFilter} />
                     <span class="slider" />
                   </label>
-                  <div class="text-black text-xs font-normal">
+                  <div class="text-xs font-normal">
                     Only Sender & Receiver change
                   </div>
                 </div>
@@ -315,19 +313,19 @@
               fill="#27326F"
             />
           </svg>
-          <div class="text-[#27326F] text-xs font-medium">
+          <div class="text_27326F text-xs font-medium">
             Nimbus - A personalized portfolio
           </div>
         </div>
         <a
           href="https://nimbus.featurebase.app/"
           target="_blank"
-          class="inline-flex no-underline cursor-pointer items-center bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
+          class="inline-flex no-underline cursor-pointer items-center bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px]"
         >
           Report
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-3 w-3 ml-1 text-[#27326F]"
+            class="h-3 w-3 ml-1 text_27326F"
             viewBox="0 0 20 20"
             fill="currentColor"
           >
