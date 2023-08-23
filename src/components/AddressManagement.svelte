@@ -1053,7 +1053,7 @@
                       isShorten
                     />
                   </div>
-                  <div
+                  <!-- <div
                     class="relative"
                     on:mouseenter={() => {
                       showFollowTooltip = true;
@@ -1078,7 +1078,7 @@
                         />
                       </div>
                     {/if}
-                  </div>
+                  </div> -->
 
                   <div class="hidden xl:block">
                     {#if getAddressContext(selectedWallet)?.type === "BTC"}
