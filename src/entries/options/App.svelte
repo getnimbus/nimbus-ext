@@ -4,7 +4,7 @@
   import "flowbite/dist/flowbite.css";
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import { selectedPackage } from "~/store";
+  import { selectedPackage, isDarkMode } from "~/store";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
@@ -18,6 +18,10 @@
 
   const queryClient = new QueryClient();
 
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
   let activeTabValue = "wallets";
 
   browser.storage.onChanged.addListener((changes) => {
@@ -44,6 +48,18 @@
         "",
         window.location.pathname + `?tab=settings`
       );
+    }
+
+    if (
+      localStorage.theme === "dark" ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      window.document.body.classList.add("dark");
+      isDarkMode.update((n) => (n = true));
+    } else {
+      window.document.body.classList.remove("dark");
+      isDarkMode.update((n) => (n = false));
     }
   });
 
@@ -72,8 +88,10 @@
       <div
         class="max-w-[2000px] m-auto w-[100%] h-screen flex gap-1 xl:flex-row flex-col"
       >
-        <div class="bg-gray-50 xl:w-64 w-full">
-          <SidebarTabs bind:activeTabValue />
+        <div
+          class={`xl:w-64 w-full ${darkMode ? "bg-[#1f2937]" : "bg-gray-50"}`}
+        >
+          <SidebarTabs bind:activeTabValue {darkMode} />
         </div>
         <div class="flex-1 px-6 py-4">
           {#if activeTabValue === "wallets"}
@@ -95,5 +113,79 @@
   </QueryClientProvider>
 </ErrorBoundary>
 
-<style windi:preflights:global windi:safelist:global>
+<style global windi:preflights:global windi:safelist:global>
+  :global(body) {
+    background-color: white;
+    color: black;
+    transition: background-color 0.3s;
+  }
+  :global(body.dark) {
+    background-color: #110c2a;
+    color: #fff;
+  }
+
+  :global(body) .footer {
+    background: #fff;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 40px;
+  }
+  :global(body.dark) .footer {
+    background: #110c2a;
+    box-shadow: rgba(0, 0, 0, 1) 0px 0px 10px;
+  }
+
+  :global(body) .bg_f4f5f8 {
+    background: #f4f5f8;
+  }
+  :global(body.dark) .bg_f4f5f8 {
+    background: #000;
+  }
+
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #00000033;
+  }
+
+  :global(body) .text_00000080 {
+    color: #00000080;
+  }
+  :global(body.dark) .text_00000080 {
+    color: #d1d5db;
+  }
+
+  :global(body) .text_27326F {
+    color: #27326f;
+  }
+  :global(body.dark) .text_27326F {
+    color: #3b82f6;
+  }
+
+  :global(body) .text_00000099 {
+    color: #00000099;
+  }
+  :global(body.dark) .text_00000099 {
+    color: #ccc;
+  }
+
+  :global(body) .text_00000066 {
+    color: #00000099;
+  }
+  :global(body.dark) .text_00000066 {
+    color: #cdcdcd;
+  }
+
+  :global(body) .border_0000001a {
+    border-color: #0000001a;
+  }
+  :global(body.dark) .border_0000001a {
+    border-color: #cdcdcd59;
+  }
+
+  :global(body) .border_0000000d {
+    border-color: #0000000d;
+  }
+  :global(body.dark) .border_0000000d {
+    border-color: #cdcdcd26;
+  }
 </style>

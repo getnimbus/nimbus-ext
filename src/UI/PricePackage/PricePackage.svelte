@@ -67,7 +67,7 @@
   </div>
 
   <!-- <div
-    class="p-4 mb-4 text-2xl text-green-600 rounded-lg xl:text-base bg-green-50 dark:bg-gray-800 dark:text-green-500"
+    class="p-4 mb-4 text-2xl text-green-600 rounded-lg xl:text-base bg-green-50"
     role="alert"
   >
     <span class="mr-2 xl:mr-1">⭐️</span> We're giving 1000 coupon codes

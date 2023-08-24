@@ -1004,7 +1004,7 @@
     <form on:submit|preventDefault={onSubmitBundle} class="flex flex-col gap-4">
       <div
         class={`flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
-          nameBundle ? "bg-[#F0F2F7]" : ""
+          nameBundle && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
         }`}
       >
         <div class="xl:text-base text-xl text-[#666666] font-medium">
@@ -1014,7 +1014,7 @@
           type="text"
           placeholder="Your bundle name"
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            nameBundle ? "bg-[#F0F2F7]" : ""
+            nameBundle && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
           required
           bind:value={nameBundle}
@@ -1069,8 +1069,14 @@
                 </tr>
               {:else}
                 {#each listAddress as item (item.id)}
-                  <tr class="hover:bg-gray-100 transition-all">
-                    <td class="pl-3 py-4">
+                  <tr class="group transition-all">
+                    <td
+                      class={`pl-3 py-3  ${
+                        darkMode
+                          ? "group-hover:bg-[#00000033]"
+                          : "group-hover:bg-gray-100"
+                      }`}
+                    >
                       <div
                         class="text-left flex items-center gap-3 xl:text-base text-xl"
                       >
@@ -1089,14 +1095,28 @@
                         />
                       </div>
                     </td>
-                    <td class="py-4">
+
+                    <td
+                      class={`py-3  ${
+                        darkMode
+                          ? "group-hover:bg-[#00000033]"
+                          : "group-hover:bg-gray-100"
+                      }`}
+                    >
                       <div
                         class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-xl"
                       >
                         {item.label}
                       </div>
                     </td>
-                    <td class="pr-3 py-4">
+
+                    <td
+                      class={`py-3 pr-3 ${
+                        darkMode
+                          ? "group-hover:bg-[#00000033]"
+                          : "group-hover:bg-gray-100"
+                      }`}
+                    >
                       <div class="flex justify-end gap-6">
                         <div
                           class="text-red-600 hover:underline dark:text-red-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
@@ -1212,8 +1232,14 @@
               </tr>
             {:else}
               {#each listAddress as item (item.id)}
-                <tr class="hover:bg-gray-100 transition-all">
-                  <td class="pl-3 py-4">
+                <tr class="group transition-all">
+                  <td
+                    class={`pl-3 py-3  ${
+                      darkMode
+                        ? "group-hover:bg-[#00000033]"
+                        : "group-hover:bg-gray-100"
+                    }`}
+                  >
                     <div
                       class="text-left flex items-center gap-3 xl:text-base text-xl"
                     >
@@ -1236,14 +1262,28 @@
                       />
                     </div>
                   </td>
-                  <td class="py-4">
+
+                  <td
+                    class={`py-3  ${
+                      darkMode
+                        ? "group-hover:bg-[#00000033]"
+                        : "group-hover:bg-gray-100"
+                    }`}
+                  >
                     <div
                       class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-xl"
                     >
                       {item.label}
                     </div>
                   </td>
-                  <td class="pr-3 py-4">
+
+                  <td
+                    class={`py-3 pr-3 ${
+                      darkMode
+                        ? "group-hover:bg-[#00000033]"
+                        : "group-hover:bg-gray-100"
+                    }`}
+                  >
                     <div class="flex justify-end gap-6">
                       <div
                         class="text-red-600 hover:underline dark:text-red-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
@@ -1288,7 +1328,7 @@
     <div class="flex flex-col gap-1">
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          address ? "bg-[#F0F2F7]" : ""
+          address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
         }`}
         class:input-border-error={errorsEdit.address &&
           errorsEdit.address.required}
@@ -1304,7 +1344,7 @@
           placeholder={MultipleLang.content.modal_address_label}
           bind:value={selectedItemEdit.address}
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            address ? "bg-[#F0F2F7]" : ""
+            address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
           on:keyup={({ target: { value } }) => (address = value)}
         />
@@ -1318,7 +1358,7 @@
     <div class="flex flex-col gap-1">
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          label ? "bg-[#F0F2F7]" : ""
+          label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
         }`}
         class:input-border-error={errorsEdit.label && errorsEdit.label.required}
       >
@@ -1332,7 +1372,7 @@
           placeholder={MultipleLang.content.modal_label_label}
           bind:value={selectedItemEdit.label}
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            label ? "bg-[#F0F2F7]" : ""
+            label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
           on:keyup={({ target: { value } }) => (label = value)}
         />
@@ -1410,7 +1450,9 @@
     </div>
     <div class="border-t-[1px] relative">
       <div
-        class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 bg-white text-sm px-2"
+        class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
+          darkMode ? "bg-[#110c2a]" : "bg-white"
+        }  text-sm px-2`}
       >
         Or
       </div>
@@ -1419,7 +1461,7 @@
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            address ? "bg-[#F0F2F7]" : ""
+            address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
           class:input-border-error={errors.address && errors.address.required}
         >
@@ -1433,7 +1475,7 @@
             placeholder="Your wallet address"
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              address ? "bg-[#F0F2F7]" : ""
+              address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }
               `}
             on:keyup={({ target: { value } }) => (address = value)}
@@ -1448,7 +1490,7 @@
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            label ? "bg-[#F0F2F7]" : ""
+            label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
           class:input-border-error={errors.label && errors.label.required}
         >
@@ -1462,7 +1504,7 @@
             placeholder={MultipleLang.content.modal_label_label}
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              label ? "bg-[#F0F2F7]" : ""
+              label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }
               `}
             on:keyup={({ target: { value } }) => (label = value)}
@@ -1568,7 +1610,7 @@
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            email ? "bg-[#F0F2F7]" : ""
+            email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
           <div class="xl:text-base text-xl text-[#666666] font-medium">
@@ -1582,7 +1624,7 @@
             placeholder="Your email"
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              email ? "bg-[#F0F2F7]" : ""
+              email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }
               `}
             on:keyup={({ target: { value } }) => (email = value)}
@@ -1654,6 +1696,13 @@
 </Toast>
 
 <style>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #00000033;
+  }
+
   .input-border {
     border: 0.5px solid rgb(229, 231, 235);
   }

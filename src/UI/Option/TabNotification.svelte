@@ -118,8 +118,14 @@
             </tr>
           {:else}
             {#each listAddress as item (item.id)}
-              <tr class="hover:bg-gray-100 transition-all">
-                <td class="pl-3 py-4">
+              <tr class="group transition-all">
+                <td
+                  class={`pl-3 py-3  ${
+                    darkMode
+                      ? "group-hover:bg-[#00000033]"
+                      : "group-hover:bg-gray-100"
+                  }`}
+                >
                   <div class="text-left xl:text-base text-xl">
                     <Copy
                       address={item.address}
@@ -128,14 +134,28 @@
                     />
                   </div>
                 </td>
-                <td class="py-4">
+
+                <td
+                  class={`py-3  ${
+                    darkMode
+                      ? "group-hover:bg-[#00000033]"
+                      : "group-hover:bg-gray-100"
+                  }`}
+                >
                   <div
                     class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-xl"
                   >
                     {item.label}
                   </div>
                 </td>
-                <td class="pr-3 py-4">
+
+                <td
+                  class={`py-3 pr-3 ${
+                    darkMode
+                      ? "group-hover:bg-[#00000033]"
+                      : "group-hover:bg-gray-100"
+                  }`}
+                >
                   <div class="flex justify-end gap-6">
                     <div
                       class="text-blue-600 hover:underline xl:text-base text-2xl transition-all cursor-pointer font-semibold"
