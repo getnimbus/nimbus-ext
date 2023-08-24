@@ -110,7 +110,7 @@
                 <div class="flex items-center gap-2">
                   <div class="relative">
                     <div
-                      class="flex-1 text-sm font-medium"
+                      class="flex-1 text-sm font-medium text-black"
                       on:mouseenter={() => (showTooltip = true)}
                       on:mouseleave={() => (showTooltip = false)}
                     >
@@ -397,7 +397,7 @@ z"
                   </div>
                 {:else}
                   <div
-                    class="text-[11px] text_00000099 font-normal py-[2px] px-1 rounded bg-[#E9EBF1] w-max"
+                    class="text-[11px] text-[#00000099] font-normal py-[2px] px-1 rounded bg-[#E9EBF1] w-max"
                   >
                     {name}
                   </div>
@@ -407,7 +407,7 @@ z"
             <div class="flex items-start gap-1">
               <div class="flex flex-col items-end gap-1">
                 <div class="relative">
-                  <div class="text-base font-medium">
+                  <div class="text-base font-medium text-black">
                     {#if price}
                       $<TooltipNumber number={price} type="balance" />
                     {:else}
@@ -456,7 +456,7 @@ z"
           <div class="flex flex-wrap gap-1 mx-auto mt-3">
             {#each coinInfo.categories.slice(0, 6) as category}
               <div
-                class="w-max px-1 py-[2px] text_27326F text-[11px] font-normal bg-[#6AC7F533] rounded-[5px]"
+                class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px]"
               >
                 {category}
               </div>
@@ -464,7 +464,7 @@ z"
             {#if coinInfo.categories.length > 6}
               <div class="relative">
                 <div
-                  class="w-max px-1 py-[2px] text_27326F text-[11px] font-normal bg-[#6AC7F533] rounded-[5px] flex items-center gap-1 cursor-pointer"
+                  class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px] flex items-center gap-1 cursor-pointer"
                   bind:this={moreElement}
                   on:click={() =>
                     (openShowCategoryList = !openShowCategoryList)}
@@ -505,7 +505,7 @@ z"
                 </div>
                 {#if coinInfo.cmc_rank !== -1}
                   <div
-                    class="px-1 py-[2px] text_27326F text-[11px] font-medium bg-[#6AC7F533] rounded-[5px]"
+                    class="px-1 py-[2px] text-[#27326F] text-[11px] font-medium bg-[#6AC7F533] rounded-[5px]"
                   >
                     Rank #{coinInfo.cmc_rank}
                   </div>

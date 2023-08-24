@@ -16,7 +16,7 @@
 
 <div class="flex items-center justify-start gap-2">
   <div
-    class="rounded-full flex justify-center items-center bg_fafafbff relative w-[40px] h-[40px]"
+    class="rounded-full flex justify-center items-center bg-gray-100 relative w-[40px] h-[40px]"
   >
     <img
       class="w-full h-full object-cover"

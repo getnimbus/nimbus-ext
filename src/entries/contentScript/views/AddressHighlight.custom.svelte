@@ -102,7 +102,7 @@
       }}
       class="rounded-[1000px] py-1 px-2 bg-[#A5D5FE] select-none cursor-pointer whitespace-nowrap"
     >
-      <span class="text_27326F text-sm font-medium">More info</span>
+      <span class="text-[#27326F] text-sm font-medium">More info</span>
       {#if isShow}
         <svg
           width="12"

@@ -45,7 +45,7 @@
     class={`pl-2 pr-3 py-[6px] rounded-lg ${
       !isEmpty(data) && data.is_audit === 1
         ? "text-green-700 bg-green-100"
-        : "bg-[#FFCB5999]"
+        : "text-black bg-[#FFCB5999]"
     }`}
   >
     <div class="flex justify-between items-center">

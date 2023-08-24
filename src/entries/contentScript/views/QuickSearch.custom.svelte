@@ -579,14 +579,14 @@
                       alt="coin"
                     />
                     <div
-                      class="text-sm text_00000099 font-medium text-center px-12"
+                      class="text-sm text-[#00000099] font-medium text-center px-12"
                     >
                       {MultipleLang.title}
                     </div>
                     <div
                       class="flex items-center justify-center w-full gap-2 mt-8 text-xs font-medium"
                     >
-                      <div class="">
+                      <div class="text-black">
                         {JSON.stringify(suggestList) ===
                         JSON.stringify(defaultSuggestList)
                           ? MultipleLang.suggest_keyword
@@ -622,14 +622,14 @@
                       alt="coin"
                     />
                     <div
-                      class="text-sm text_00000099 font-medium text-center px-12"
+                      class="text-sm text-[#00000099] font-medium text-center px-12"
                     >
                       {MultipleLang.title}
                     </div>
                     <div
                       class="flex items-center justify-center w-full gap-2 mt-8 text-xs font-medium"
                     >
-                      <div class="">
+                      <div class="text-black">
                         {JSON.stringify(suggestList) ===
                         JSON.stringify(defaultSuggestList)
                           ? MultipleLang.suggest_keyword
@@ -655,7 +655,7 @@
               {#if search}
                 <div class="flex items-center gap-2 mt-4 mb-3">
                   <div
-                    class="text_27326F text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+                    class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
                     class:bg-[#E1F4FD]={tabSelected === "all"}
                     on:click={() => {
                       tabSelected = "all";
@@ -665,7 +665,7 @@
                     All
                   </div>
                   <div
-                    class="text_27326F text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+                    class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
                     class:bg-[#E1F4FD]={tabSelected === "term"}
                     on:click={() => {
                       tabSelected = "term";
@@ -675,7 +675,7 @@
                     Terms
                   </div>
                   <div
-                    class="text_27326F text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
+                    class="text-[#27326F] text-sm font-medium cursor-pointer py-1 px-3 rounded-lg"
                     class:bg-[#E1F4FD]={tabSelected === "token"}
                     on:click={() => {
                       tabSelected = "token";
@@ -727,7 +727,7 @@
                       </div>
                     {:else}
                       <div
-                        class="mt-10 font-medium leading-6 text-center text-4"
+                        class="mt-10 font-medium leading-6 text-center text-4 text-black"
                       >
                         {MultipleLang.empty}
                       </div>
@@ -736,7 +736,7 @@
                 {:else if search === ""}
                   {#if dataTokenDetectResult.length !== 0}
                     <div class="mb-2">
-                      <div class="title-2">
+                      <div class="title-2 text-black">
                         {MultipleLang.second_title}
                       </div>
                     </div>
@@ -765,14 +765,14 @@
                         alt="coin"
                       />
                       <div
-                        class="text-sm text_00000099 font-medium text-center px-12"
+                        class="text-sm text-[#00000099] font-medium text-center px-12"
                       >
                         {MultipleLang.title}
                       </div>
                       <div
                         class="flex items-center justify-center w-full gap-2 mt-8 text-xs font-medium"
                       >
-                        <div class="">
+                        <div class="text-black">
                           {JSON.stringify(suggestList) ===
                           JSON.stringify(defaultSuggestList)
                             ? MultipleLang.suggest_keyword
@@ -815,14 +815,14 @@
                             alt="coin"
                           />
                           <div
-                            class="text-sm text_00000099 font-medium text-center px-12"
+                            class="text-sm text-[#00000099] font-medium text-center px-12"
                           >
                             {MultipleLang.title}
                           </div>
                           <div
                             class="flex items-center justify-center w-full gap-2 mt-8 text-xs font-medium"
                           >
-                            <div class="">
+                            <div class="text-black">
                               {JSON.stringify(suggestList) ===
                               JSON.stringify(defaultSuggestList)
                                 ? MultipleLang.suggest_keyword
@@ -842,7 +842,7 @@
                         </div>
                       {:else}
                         <div
-                          class="mt-10 font-medium leading-6 text-center text-4"
+                          class="mt-10 font-medium leading-6 text-center text-4 text-black"
                         >
                           No terms
                         </div>
@@ -918,14 +918,14 @@
                         alt="coin"
                       />
                       <div
-                        class="text-sm text_00000099 font-medium text-center px-12"
+                        class="text-sm text-[#00000099] font-medium text-center px-12"
                       >
                         {MultipleLang.title}
                       </div>
                       <div
                         class="flex items-center justify-center w-full gap-2 mt-8 text-xs font-medium"
                       >
-                        <div class="">
+                        <div class="text-black">
                           {JSON.stringify(suggestList) ===
                           JSON.stringify(defaultSuggestList)
                             ? MultipleLang.suggest_keyword

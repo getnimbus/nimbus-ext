@@ -473,7 +473,7 @@
                             class="border-none focus:outline-none focus:ring-0 bg-white"
                           />
                         {:else}
-                          <div class="text-sm font-medium">
+                          <div class="text-black text-sm font-medium">
                             {#if addressLabel}
                               {addressLabel === address
                                 ? shorterAddress(addressLabel)
@@ -552,7 +552,7 @@
                 }}
               >
                 <img src={getLocalImg(Edit)} alt="" />
-                <div class="text-xs font-medium text_27326F">
+                <div class="text-xs font-medium text-[#27326F]">
                   {#if addressLabel !== address}
                     Reset Label
                   {:else}
@@ -564,7 +564,7 @@
             <div class="flex gap-1 flex-wrap">
               {#each addressInfo?.categories.slice(0, 6) as category}
                 <div
-                  class="w-max px-1 py-[2px] text_27326F text-[11px] font-normal bg-[#6AC7F533] rounded-[5px]"
+                  class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px]"
                 >
                   {category}
                 </div>
@@ -572,7 +572,7 @@
               {#if addressInfo?.categories.length > 6}
                 <div class="relative">
                   <div
-                    class="w-max px-1 py-[2px] text_27326F text-[11px] font-normal bg-[#6AC7F533] rounded-[5px] flex items-center gap-1 cursor-pointer"
+                    class="w-max px-1 py-[2px] text-[#27326F] text-[11px] font-normal bg-[#6AC7F533] rounded-[5px] flex items-center gap-1 cursor-pointer"
                     on:click={() => {
                       openShowCategoryList = !openShowCategoryList;
                     }}
@@ -594,9 +594,9 @@
             <check-safety-address {address} id={"1"} />
             <div class="flex justify-between items-end">
               <div class="flex flex-col gap-1">
-                <div class="text_00000099 text-sm">Net Worth</div>
+                <div class="text-[#00000099] text-sm">Net Worth</div>
                 <div class="flex items-end gap-4">
-                  <div class="text-2xl font-medium">
+                  <div class="text-2xl font-medium text-black">
                     $<TooltipNumber
                       number={addressInfo.networth}
                       type="balance"
@@ -622,7 +622,7 @@
                         />%
                       </div>
                     {:else}
-                      <div class="text-lg font-medium">--</div>
+                      <div class="text-lg font-medium text-black">--</div>
                     {/if}
                     <div class="text-[#00000066] text-base font-medium">
                       24h
@@ -661,23 +661,27 @@
                 </AnimateSharedLayout>
               </div>
             </div>
-            <div class="border border_0000001a rounded-[20px] overflow-hidden">
+            <div
+              class="border border-[#0000001a] rounded-[20px] overflow-hidden"
+            >
               {#if selectedType === "nft"}
                 <div class="flex flex-col">
-                  <div class="text-lg font-medium pt-4 px-4 pb-2">NFT</div>
+                  <div class="text-lg font-medium text-black pt-4 px-4 pb-2">
+                    NFT
+                  </div>
                   <table class="table-auto w-full">
                     <thead>
-                      <tr class="bg_f4f5f8">
+                      <tr class="bg-[#f4f5f8]">
                         <th class="pl-4 py-2 w-[200px]">
                           <div
-                            class="text-left text-xs uppercase font-semibold"
+                            class="text-left text-xs uppercase font-semibold text-black"
                           >
                             {MultipleLang.collection}
                           </div>
                         </th>
                         <th class="pr-4 py-2">
                           <div
-                            class="text-left text-xs uppercase font-semibold"
+                            class="text-left text-xs uppercase font-semibold text-black"
                           >
                             {MultipleLang.Balance}
                           </div>
@@ -716,7 +720,7 @@
                             <td class="pl-4 py-2 w-[200px]">
                               <div class="relative">
                                 <div
-                                  class="text-sm font-medium flex justify-start"
+                                  class="text-sm text-black font-medium flex justify-start"
                                 >
                                   {#if item?.collectionName.length > 20}
                                     <span
@@ -810,7 +814,9 @@
               {:else}
                 <div class="p-4">
                   <div class="flex justify-between">
-                    <div class="text-lg font-medium">Token Allocation</div>
+                    <div class="text-lg font-medium text-black">
+                      Token Allocation
+                    </div>
                     <!-- <div class="flex items-center gap-1">
                       <div
                         class={`cursor-pointer text-sm font-medium py-1 px-2 rounded-[100px] transition-all ${
@@ -886,19 +892,19 @@
               fill="#27326F"
             />
           </svg>
-          <div class="text_27326F text-xs font-medium">
+          <div class="text-[#27326F] text-xs font-medium">
             Nimbus - A personalized portfolio
           </div>
         </div>
         <a
           href="https://nimbus.featurebase.app/"
           target="_blank"
-          class="inline-flex no-underline cursor-pointer items-center bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px]"
+          class="inline-flex no-underline cursor-pointer items-center bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px]"
         >
           Report
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-3 w-3 ml-1 text_27326F"
+            class="h-3 w-3 ml-1 text-[#27326F]"
             viewBox="0 0 20 20"
             fill="currentColor"
           >

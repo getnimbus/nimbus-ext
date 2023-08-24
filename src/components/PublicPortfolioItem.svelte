@@ -18,8 +18,6 @@
   isDarkMode.subscribe((value) => {
     darkMode = value;
   });
-
-  $: console.log("data: ", data);
 </script>
 
 <tr class="group transition-all">
