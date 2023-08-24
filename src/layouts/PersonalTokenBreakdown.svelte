@@ -8,7 +8,7 @@
   import { nimbus } from "~/lib/network";
   import { groupBy, flatten, omit } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { Toast } from "flowbite-svelte";
+  import { Toast, Progressbar } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { isDarkMode } from "~/store";
 
@@ -528,11 +528,7 @@
             </div>
             {#if selectedWallet && selectedWallet.length !== 0}
               <div class="text-base">
-                <Copy
-                  address={selectedWallet}
-                  iconColor={`${darkMode ? "#fff" : "#000"}`}
-                  color={`${darkMode ? "#fff" : "#000"}`}
-                />
+                <Copy address={selectedWallet} iconColor="#fff" color="#fff" />
               </div>
             {/if}
           </div>
@@ -542,7 +538,9 @@
   </div>
 
   <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
-    <div class="bg-white rounded-[20px] xl:p-8 xl:shadow-md">
+    <div
+      class="custom_token_breakdown_container rounded-[20px] xl:p-8 xl:shadow-md"
+    >
       <div
         class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
       >
@@ -728,7 +726,7 @@
           <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-6">
             <div
               class={`flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
-                formData.category ? "bg-[#F0F2F7]" : ""
+                formData.category && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
               }`}
             >
               <div class="xl:text-base text-xl text-[#666666] font-medium">
@@ -738,7 +736,9 @@
                 type="text"
                 placeholder="Your category name"
                 class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                  formData.category ? "bg-[#F0F2F7]" : ""
+                  formData.category && !darkMode
+                    ? "bg-[#F0F2F7]"
+                    : "bg-transparent"
                 }`}
                 bind:value={formData.category}
                 on:blur={() => {
@@ -762,7 +762,7 @@
                     <div class="w-[600px] h-10">
                       <div
                         class={`flex justify-between gap-1 border bg-white focus:outline-none w-full py-[6px] px-3 rounded-t-lg ${
-                          query ? "bg-[#F0F2F7]" : ""
+                          query && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
                         } ${
                           showSuggestListTag ? "rounded-none" : "rounded-b-lg"
                         }`}
@@ -771,7 +771,9 @@
                           type="text"
                           placeholder="Your tag name"
                           class={`flex-1 p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                            query ? "bg-[#F0F2F7]" : ""
+                            query && !darkMode
+                              ? "bg-[#F0F2F7]"
+                              : "bg-transparent"
                           }`}
                           on:focus={() => {
                             showSuggestListTag = true;
@@ -811,7 +813,9 @@
                       {#if showSuggestListTag}
                         <div class="relative w-full">
                           <div
-                            class="absolute top-0 left-0 flex flex-col gap-1 border-b border-x-[1px] w-full bg-white text-[#5E656B] rounded-b-lg py-2 px-3 z-50"
+                            class={`absolute top-0 left-0 flex flex-col gap-1 border-b border-x-[1px] w-full ${
+                              darkMode ? "bg-[#110c2a]" : "bg-white"
+                            } text-[#5E656B] rounded-b-lg py-2 px-3 z-50`}
                           >
                             <div class="xl:text-xs text-base">
                               Select an option or create one
@@ -819,9 +823,11 @@
                             <div class="flex flex-col gap-2">
                               {#each filteredListTag as item}
                                 <div
-                                  class="xl:text-sm text-lg px-2 py-1 rounded-lg hover:bg-[#F0F2F7] cursor-pointer flex justify-between"
-                                  class:bg-[#F0F2F7]={editTag &&
-                                    editTag === item}
+                                  class={`xl:text-sm text-lg px-2 py-1 rounded-lg ${
+                                    editTag && editTag === item
+                                      ? "bg-[#F0F2F7]"
+                                      : ""
+                                  } hover:bg-[#F0F2F7] cursor-pointer flex justify-between`}
                                 >
                                   {#if editTag && editTag === item}
                                     <div class="flex justify-between w-full">
@@ -926,7 +932,7 @@
                 <div class="text-right">
                   <div
                     class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
-                      searchValue ? "bg-[#F0F2F7]" : "bg-white"
+                      searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
                     }`}
                   >
                     <input
@@ -934,7 +940,9 @@
                       placeholder={"Find by token name"}
                       type="text"
                       class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                        searchValue ? "bg-[#F0F2F7]" : ""
+                        searchValue && !darkMode
+                          ? "bg-[#F0F2F7]"
+                          : "bg-transparent"
                       }`}
                     />
                   </div>
@@ -1214,14 +1222,29 @@
                               }`}
                             >
                               <div
-                                class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                                class="flex flex-col gap-1 justify-end items-end"
                               >
-                                <TooltipNumber
-                                  number={((data?.amount * data?.market_price) /
-                                    sumTokens) *
-                                    100}
-                                  type="percent"
-                                />%
+                                <div
+                                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                                >
+                                  <TooltipNumber
+                                    number={((data?.amount *
+                                      data?.market_price) /
+                                      sumTokens) *
+                                      100}
+                                    type="percent"
+                                  />%
+                                </div>
+                                <div class="w-3/4 max-w-40">
+                                  <Progressbar
+                                    progress={Number(
+                                      ((data?.amount * data?.market_price) /
+                                        sumTokens) *
+                                        100
+                                    )}
+                                    size="h-1"
+                                  />
+                                </div>
                               </div>
                             </td>
 
@@ -1313,5 +1336,21 @@
     background-position: top right;
     padding-bottom: 144px;
     padding-top: 24px;
+  }
+
+  :global(body) .custom_token_breakdown_container {
+    background: #fff;
+    box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
+  }
+  :global(body.dark) .custom_token_breakdown_container {
+    background: #110c2a;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
+  }
+
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #00000033;
   }
 </style>

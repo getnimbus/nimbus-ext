@@ -3,6 +3,7 @@
   import { detectedChain, getAddressContext, shorterName } from "~/utils";
   import { i18n } from "~/lib/i18n";
   import { isDarkMode } from "~/store";
+  import { Progressbar } from "flowbite-svelte";
 
   import "~/components/Tooltip.custom.svelte";
   import "~/components/Loading.custom.svelte";
@@ -274,14 +275,25 @@
                     : "group-hover:bg-gray-100"
                 }`}
               >
-                <div
-                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
-                >
-                  <TooltipNumber
-                    number={((data?.amount * data?.market_price) / sumTokens) *
-                      100}
-                    type="percent"
-                  />%
+                <div class="flex flex-col gap-1 justify-end items-end">
+                  <div
+                    class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                  >
+                    <TooltipNumber
+                      number={((data?.amount * data?.market_price) /
+                        sumTokens) *
+                        100}
+                      type="percent"
+                    />%
+                  </div>
+                  <div class="w-3/4 max-w-40">
+                    <Progressbar
+                      progress={Number(
+                        ((data?.amount * data?.market_price) / sumTokens) * 100
+                      )}
+                      size="h-1"
+                    />
+                  </div>
                 </div>
               </td>
 
