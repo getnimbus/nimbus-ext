@@ -65,7 +65,11 @@
                 selectedTypeMode === type.value ? "text-white" : "text-gray-400"
               }`}
             >
-              <Icon name={type.icon} />
+              <Icon
+                name={type.icon}
+                role="img"
+                class="select-none border-none focus:outline-none focus:ring-0"
+              />
             </div>
             {#if type.value === selectedTypeMode}
               <Motion
