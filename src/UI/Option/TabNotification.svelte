@@ -74,7 +74,7 @@
 </script>
 
 <div class="flex flex-col gap-2">
-  <div class="xl:title-3 title-1 text-gray-500 mb-2">{MultipleLang.title}</div>
+  <div class="xl:title-3 title-1 mb-2">{MultipleLang.title}</div>
   <div class="border border_0000000d rounded-[10px] overflow-x-auto">
     <table class="table-auto xl:w-full w-[1200px]">
       <thead>

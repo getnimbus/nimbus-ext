@@ -36,7 +36,7 @@
 </script>
 
 <div class="flex flex-col gap-2">
-  <div class="xl:title-3 title-1 text-gray-500 mb-2">{MultipleLang.title}</div>
+  <div class="xl:title-3 title-1 mb-2">{MultipleLang.title}</div>
   <div class="flex items-center gap-2">
     <div class="xl:title-5 title-3">
       {MultipleLang.change_lang_label}

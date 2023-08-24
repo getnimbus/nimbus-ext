@@ -26,6 +26,7 @@
   import LeftArrow from "~/assets/left-arrow.svg";
   import Edit from "~/assets/edit.svg";
   import Plus from "~/assets/plus.svg";
+  import PlusBlack from "~/assets/plus-black.svg";
 
   const MultipleLang = {
     assets: i18n("newtabPage.assets", "Assets"),
@@ -693,8 +694,19 @@
                 <div class="w-max">
                   {#if listCustom.length > 2}
                     <Button variant="disabled" disabled>
-                      <img src={Plus} alt="" width="12" height="12" />
-                      <div class="font-medium text-white">Add Category</div>
+                      <img
+                        src={darkMode ? PlusBlack : Plus}
+                        alt=""
+                        width="12"
+                        height="12"
+                      />
+                      <div
+                        class={` font-medium ${
+                          darkMode ? "text-gray-400" : "text-white"
+                        }`}
+                      >
+                        Add Category
+                      </div>
                     </Button>
                   {:else}
                     <Button
@@ -824,69 +836,87 @@
                             <div class="flex flex-col gap-2">
                               {#each filteredListTag as item}
                                 <div
-                                  class={`xl:text-sm text-lg px-2 py-1 rounded-lg ${
+                                  class={`${
                                     editTag && editTag === item
-                                      ? "bg-[#F0F2F7]"
+                                      ? darkMode
+                                        ? "bg-[#00000033]"
+                                        : "bg-[#F0F2F7]"
                                       : ""
-                                  } hover:bg-[#F0F2F7] cursor-pointer flex justify-between`}
+                                  }`}
                                 >
-                                  {#if editTag && editTag === item}
-                                    <div class="flex justify-between w-full">
-                                      <div class="flex-1">
-                                        <input
-                                          type="text"
-                                          placeholder="Your category name"
-                                          class={`bg-[#F0F2F7] p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] w-full`}
-                                          bind:value={tag}
-                                          on:keyup={({ target: { value } }) =>
-                                            (tag = value)}
-                                        />
-                                      </div>
-                                      <div class="flex items-center gap-2">
-                                        <div
-                                          class="xl:text-sm text-base font-medium w-max text-[#1e96fc] cursor-pointer"
-                                          on:click={() => {
-                                            updatePersonalizeTag(
-                                              selectedWallet,
-                                              formData.category,
-                                              tag,
-                                              editTag
-                                            );
-                                          }}
-                                        >
-                                          Save
+                                  <div
+                                    class={`xl:text-sm text-lg px-2 py-1 rounded-lg cursor-pointer flex justify-between ${
+                                      darkMode
+                                        ? "hover:bg-[#00000066]"
+                                        : "hover:bg-[#F0F2F7]"
+                                    }`}
+                                  >
+                                    {#if editTag && editTag === item}
+                                      <div class="flex justify-between w-full">
+                                        <div class="flex-1">
+                                          <input
+                                            type="text"
+                                            placeholder="Your category name"
+                                            class={`${
+                                              darkMode
+                                                ? "bg-[#00000033]"
+                                                : "bg-[#F0F2F7]"
+                                            } p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] w-full`}
+                                            bind:value={tag}
+                                            on:keyup={({ target: { value } }) =>
+                                              (tag = value)}
+                                          />
                                         </div>
-                                        <div
-                                          class="xl:text-sm text-base font-medium w-max text-red-500 cursor-pointer"
-                                          on:click={() => {
-                                            editTag = "";
-                                            tag = "";
-                                          }}
-                                        >
-                                          Cancel
+                                        <div class="flex items-center gap-2">
+                                          <div
+                                            class="xl:text-sm text-base font-medium w-max text-[#1e96fc] cursor-pointer"
+                                            on:click={() => {
+                                              updatePersonalizeTag(
+                                                selectedWallet,
+                                                formData.category,
+                                                tag,
+                                                editTag
+                                              );
+                                            }}
+                                          >
+                                            Save
+                                          </div>
+                                          <div
+                                            class="xl:text-sm text-base font-medium w-max text-red-500 cursor-pointer"
+                                            on:click={() => {
+                                              editTag = "";
+                                              tag = "";
+                                            }}
+                                          >
+                                            Cancel
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  {:else}
-                                    <div
-                                      class="w-full"
-                                      on:click={() => {
-                                        showSuggestListTag = false;
-                                        query = item;
-                                      }}
-                                    >
-                                      {item}
-                                    </div>
-                                    <div
-                                      class="flex justify-center items-center px-2 hover:bg-gray-200 rounded"
-                                      on:click={() => {
-                                        editTag = item;
-                                        tag = item;
-                                      }}
-                                    >
-                                      <img src={Edit} alt="" />
-                                    </div>
-                                  {/if}
+                                    {:else}
+                                      <div
+                                        class="w-full"
+                                        on:click={() => {
+                                          showSuggestListTag = false;
+                                          query = item;
+                                        }}
+                                      >
+                                        {item}
+                                      </div>
+                                      <div
+                                        class={`flex justify-center items-center px-2 rounded ${
+                                          darkMode
+                                            ? "hover:bg-[#cdcdcd]"
+                                            : "hover:bg-gray-200"
+                                        }`}
+                                        on:click={() => {
+                                          editTag = item;
+                                          tag = item;
+                                        }}
+                                      >
+                                        <img src={Edit} alt="" />
+                                      </div>
+                                    {/if}
+                                  </div>
                                 </div>
                               {/each}
 
@@ -904,7 +934,11 @@
                                     Create
                                   </div>
                                   <div
-                                    class="py-1 px-2 rounded-lg hover:bg-[#F0F2F7] flex-1"
+                                    class={`py-1 px-2 rounded-lg flex-1 ${
+                                      darkMode
+                                        ? "hover:bg-[#00000066]"
+                                        : "hover:bg-[#F0F2F7]"
+                                    }`}
                                   >
                                     {query}
                                   </div>
@@ -1003,7 +1037,7 @@
                           </TooltipTitle>
                         </div>
                       </th>
-                      <th class="py-3 pr-3">
+                      <th class="py-3 pr-3 rounded-tr-[10px]">
                         <div
                           class="text-right xl:text-xs text-base uppercase font-medium flex items-center justify-end gap-2"
                         >

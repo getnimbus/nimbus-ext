@@ -15,6 +15,7 @@
 
   import LeftArrow from "~/assets/left-arrow.svg";
   import Plus from "~/assets/plus.svg";
+  import PlusBlack from "~/assets/plus-black.svg";
 
   let selectedWallet: string = "";
   let selectedChain: string = "";
@@ -325,8 +326,17 @@
             >
               {#if listVirtualPortfolio.length > 2}
                 <Button variant="disabled" disabled>
-                  <img src={Plus} alt="" width="12" height="12" />
-                  <div class="xl:text-base text-2xl font-medium text-white">
+                  <img
+                    src={darkMode ? PlusBlack : Plus}
+                    alt=""
+                    width="12"
+                    height="12"
+                  />
+                  <div
+                    class={`text-2xl font-medium xl:text-base ${
+                      darkMode ? "text-gray-400" : "text-white"
+                    }`}
+                  >
                     Add virtual portfolio
                   </div>
                 </Button>

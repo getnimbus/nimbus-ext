@@ -89,7 +89,9 @@
         class="max-w-[2000px] m-auto w-[100%] h-screen flex gap-1 xl:flex-row flex-col"
       >
         <div
-          class={`xl:w-64 w-full ${darkMode ? "bg-[#1f2937]" : "bg-gray-50"}`}
+          class={`xl:w-64 w-full px-4 py-3 ${
+            darkMode ? "bg-[#110c2a]" : "bg-gray-50"
+          }`}
         >
           <SidebarTabs bind:activeTabValue {darkMode} />
         </div>
@@ -120,7 +122,7 @@
     transition: background-color 0.3s;
   }
   :global(body.dark) {
-    background-color: #110c2a;
+    background-color: #1f1c3e;
     color: #fff;
   }
 
@@ -130,7 +132,7 @@
   }
   :global(body.dark) .footer {
     background: #110c2a;
-    box-shadow: rgba(0, 0, 0, 1) 0px 0px 10px;
+    box-shadow: rgba(0, 0, 0, 1) 0px 0px 5px;
   }
 
   :global(body) .bg_f4f5f8 {

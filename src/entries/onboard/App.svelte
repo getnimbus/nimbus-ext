@@ -62,7 +62,7 @@
     transition: background-color 0.3s;
   }
   :global(body.dark) {
-    background-color: #110c2a;
+    background-color: #1f1c3e;
     color: #fff;
   }
 
@@ -72,7 +72,7 @@
   }
   :global(body.dark) .footer {
     background: #110c2a;
-    box-shadow: rgba(0, 0, 0, 1) 0px 0px 10px;
+    box-shadow: rgba(0, 0, 0, 1) 0px 0px 5px;
   }
 
   :global(body) .bg_f4f5f8 {

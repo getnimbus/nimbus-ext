@@ -44,6 +44,7 @@
   import Copy from "~/components/Copy.svelte";
 
   import Plus from "~/assets/plus.svg";
+  import PlusBlack from "~/assets/plus-black.svg";
   import All from "~/assets/all.svg";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
@@ -739,8 +740,17 @@
                   }}
                 >
                   <Button variant="disabled">
-                    <img src={Plus} alt="" width="12" height="12" />
-                    <div class="text-2xl font-medium text-white xl:text-base">
+                    <img
+                      src={darkMode ? PlusBlack : Plus}
+                      alt=""
+                      width="12"
+                      height="12"
+                    />
+                    <div
+                      class={`text-2xl font-medium xl:text-base ${
+                        darkMode ? "text-gray-400" : "text-white"
+                      }`}
+                    >
                       {MultipleLang.content.btn_text}
                     </div>
                   </Button>
@@ -1010,9 +1020,15 @@
                       </Button>
                     {:else}
                       <Button variant="disabled" disabled>
-                        <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
+                        <img
+                          src={darkMode ? PlusBlack : Plus}
+                          alt=""
+                          class="w-4 h-4 xl:w-3 xl:h-3"
+                        />
                         <div
-                          class="text-2xl font-medium text-white xl:text-base"
+                          class={`text-2xl font-medium xl:text-base ${
+                            darkMode ? "text-gray-400" : "text-white"
+                          }`}
                         >
                           Add account
                         </div>
@@ -1103,7 +1119,7 @@
                   </div> -->
 
                   <div class="hidden xl:block">
-                    {#if getAddressContext(selectedWallet)?.type === "BTC"}
+                    {#if getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
                       <div
                         use:tooltip={{
                           content: `<tooltip-detail text="Coming soon!" />`,
@@ -1112,9 +1128,15 @@
                           interactive: true,
                         }}
                       >
-                        <Button variant="premium" disabled
-                          >Optimize return</Button
-                        >
+                        <Button variant="premium" disabled>
+                          <div
+                            class={`${
+                              darkMode ? "text-gray-400" : "text-white"
+                            }`}
+                          >
+                            Optimize return
+                          </div>
+                        </Button>
                       </div>
                     {:else}
                       <div
@@ -1143,7 +1165,7 @@
 
               <div class="flex flex-col gap-6">
                 <div class="block xl:hidden">
-                  {#if getAddressContext(selectedWallet)?.type === "BTC"}
+                  {#if getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
                     <div
                       use:tooltip={{
                         content: `<tooltip-detail text="Coming soon!" />`,
@@ -1152,8 +1174,13 @@
                         interactive: true,
                       }}
                     >
-                      <Button variant="premium" disabled>Optimize return</Button
-                      >
+                      <Button variant="premium" disabled>
+                        <div
+                          class={`${darkMode ? "text-gray-400" : "text-white"}`}
+                        >
+                          Optimize return
+                        </div>
+                      </Button>
                     </div>
                   {:else}
                     <div
@@ -1212,7 +1239,7 @@
   isOpen={isOpenAddModal}
   on:close={() => (isOpenAddModal = false)}
 >
-  <div class="font-medium text-gray-600 xl:title-3 title-1">
+  <div class="font-medium xl:title-3 title-1">
     {MultipleLang.content.modal_add_title}
   </div>
   <div class="flex flex-col mt-4 gap-7">
@@ -1422,7 +1449,7 @@
     isOpenModal = false;
   }}
 >
-  <div class="font-medium text-center text-gray-600 xl:title-3 title-1">
+  <div class="font-medium text-center xl:title-3 title-1">
     Let's us know your email
   </div>
   <div class="mt-2">

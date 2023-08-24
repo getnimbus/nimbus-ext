@@ -38,7 +38,7 @@
 </script>
 
 <div class="flex flex-col gap-2">
-  <div class="mb-2 text-gray-500 xl:title-3 title-1">{MultipleLang.title}</div>
+  <div class="mb-2 xl:title-3 title-1">{MultipleLang.title}</div>
   <Toast
     transition={fly}
     params={{ x: 200 }}

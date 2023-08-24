@@ -29,6 +29,7 @@
   import "~/components/Loading.custom.svelte";
 
   import Plus from "~/assets/plus.svg";
+  import PlusBlack from "~/assets/plus-black.svg";
   import User from "~/assets/user.png";
   import Success from "~/assets/shield-done.svg";
   import SolanaLogo from "~/assets/solana.png";
@@ -764,7 +765,7 @@
 <div class="flex flex-col gap-4">
   {#if listAddress && listAddress.length === 0}
     <div class="flex justify-between items-center">
-      <div class="xl:title-3 title-1 text-gray-500">{MultipleLang.title}</div>
+      <div class="xl:title-3 title-1">{MultipleLang.title}</div>
       <div class="relative xl:w-max w-[200px]">
         {#if Object.keys(userInfo).length !== 0}
           <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
@@ -784,8 +785,17 @@
             }}
           >
             <Button variant="disabled">
-              <img src={Plus} alt="" width="12" height="12" />
-              <div class="xl:text-base text-2xl font-medium text-white">
+              <img
+                src={darkMode ? PlusBlack : Plus}
+                alt=""
+                width="12"
+                height="12"
+              />
+              <div
+                class={`text-2xl font-medium xl:text-base ${
+                  darkMode ? "text-gray-400" : "text-white"
+                }`}
+              >
                 {MultipleLang.content.btn_text}
               </div>
             </Button>
@@ -803,7 +813,7 @@
     </div>
   {:else}
     <div class="flex flex-col gap-4">
-      <div class="xl:title-3 title-1 text-gray-500">{MultipleLang.title}</div>
+      <div class="xl:title-3 title-1">{MultipleLang.title}</div>
       <div class="flex justify-between items-center gap-10">
         {#if listBundle && listBundle.length === 0}
           <div class="text-base">
@@ -966,8 +976,16 @@
                   </Button>
                 {:else}
                   <Button variant="disabled" disabled>
-                    <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-                    <div class="xl:text-base text-2xl font-medium text-white">
+                    <img
+                      src={darkMode ? PlusBlack : Plus}
+                      alt=""
+                      class="xl:w-3 xl:h-3 w-4 h-4"
+                    />
+                    <div
+                      class={`text-2xl font-medium xl:text-base ${
+                        darkMode ? "text-gray-400" : "text-white"
+                      }`}
+                    >
                       Add account
                     </div>
                   </Button>
@@ -1318,7 +1336,7 @@
   isOpen={isOpenEditModal}
   on:close={() => (isOpenEditModal = false)}
 >
-  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
+  <div class="xl:title-3 title-1 font-semibold">
     {MultipleLang.content.modal_edit_title}
   </div>
   <form
@@ -1410,7 +1428,7 @@
   isOpen={isOpenAddModal}
   on:close={() => (isOpenAddModal = false)}
 >
-  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
+  <div class="xl:title-3 title-1 font-semibold">
     {MultipleLang.content.modal_add_title}
   </div>
   <div class="flex flex-col mt-4 gap-7">
@@ -1555,7 +1573,7 @@
   on:close={() => (isOpenConfirmDelete = false)}
 >
   <div class="flex flex-col gap-1 items-start">
-    <div class="xl:title-3 title-1 text-gray-600 font-semibold">
+    <div class="xl:title-3 title-1 font-semibold">
       {MultipleLang.content.modal_delete_title}
     </div>
     <div class="xl:text-sm text-lg text-gray-500">
@@ -1596,7 +1614,7 @@
     isOpenModal = false;
   }}
 >
-  <div class="xl:title-3 title-1 text-center text-gray-600 font-semibold">
+  <div class="xl:title-3 title-1 text-center font-semibold">
     Let's us know your email
   </div>
   <div class="mt-2">

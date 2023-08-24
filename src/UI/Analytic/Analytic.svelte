@@ -60,7 +60,7 @@
           <div
             class={`mx-auto max-w-c-1390 px-4 py-4 rounded-[20px] bg-gradient-to-t ${
               darkMode
-                ? "from-[#F8F9FF] to-[#27326f]"
+                ? "from-[#110c2a] to-[#27326f]"
                 : "from-[#F8F9FF] to-[#DEE7FF]"
             }`}
           >

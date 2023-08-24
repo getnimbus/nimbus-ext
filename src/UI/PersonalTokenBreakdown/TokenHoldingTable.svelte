@@ -58,7 +58,7 @@
     >
       <tr class="bg_f4f5f8">
         <th
-          class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
+          class="rounded-tl-[10px] py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
         >
           <div class="text-left xl:text-xs text-base uppercase font-semibold">
             {MultipleLang.assets}
@@ -86,7 +86,7 @@
             </TooltipTitle>
           </div>
         </th>
-        <th class="py-3 pr-3">
+        <th class="rounded-tr-[10px] py-3 pr-3">
           <div
             class="text-right xl:text-xs text-base uppercase font-semibold flex items-center justify-end gap-2"
           >

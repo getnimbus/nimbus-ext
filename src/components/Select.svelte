@@ -202,7 +202,7 @@
     background: #ffffff;
   }
   :global(body.dark) .select_content {
-    background: #1f2937;
+    background: #110c2a;
   }
 
   :global(body) .select_content .content_item.active,
@@ -211,6 +211,6 @@
   }
   :global(body.dark) .select_content .content_item.active,
   :global(body.dark) .select_content .content_item:hover {
-    background: #ccc;
+    background: #00000066;
   }
 </style>

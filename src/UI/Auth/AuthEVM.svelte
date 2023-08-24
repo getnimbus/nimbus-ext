@@ -3,7 +3,14 @@
   import { Link } from "svelte-navigator";
   import onboard from "~/lib/web3-onboard";
   import { ethers } from "ethers";
-  import { wallet, chain, typeWallet, user, isFirstTimeLogin } from "~/store";
+  import {
+    wallet,
+    chain,
+    typeWallet,
+    user,
+    isFirstTimeLogin,
+    isDarkMode,
+  } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
   import { shorterAddress } from "~/utils";
@@ -16,6 +23,11 @@
 
   const wallets$ = onboard.state.select("wallets");
   const navigate = useNavigate();
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -253,7 +265,7 @@
         on:click_outside={() => (showPopover = false)}
       >
         <div
-          class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border-gray-200"
+          class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border_0000001a"
         >
           <div class="text-2xl xl:text-base">
             GM 👋, {shorterAddress(addressWallet)}
@@ -261,7 +273,9 @@
           <DarkMode />
         </div>
         <div
-          class="flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base hover:bg-gray-100 rounded-md transition-all px-2 py-1"
+          class={`flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
+            darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
+          }`}
           on:click={() => {
             navigate("/upgrade");
             showPopover = false;
@@ -285,7 +299,9 @@
         </div>
         <Link to="invitation">
           <div
-            class="text-2xl text_00000066 cursor-pointer xl:text-base hover:bg-gray-100 rounded-md transition-all px-2 py-1"
+            class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
+              darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
+            }`}
             on:click={() => (showPopover = false)}
           >
             Invite
@@ -294,13 +310,17 @@
         <a
           href="entries/options/index.html?tab=wallets"
           target="_blank"
-          class="hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base hover:bg-gray-100 rounded-md transition-all px-2 py-1"
+          class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
+            darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
+          }`}
           on:click={() => (showPopover = false)}
         >
           Settings
         </a>
         <div
-          class="text-2xl font-medium text-red-500 cursor-pointer xl:text-base hover:bg-gray-100 rounded-md transition-all px-2 py-1"
+          class={`text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
+            darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
+          }`}
           on:click={handleSignOut}
         >
           Logout
@@ -322,6 +342,6 @@
     background: #ffffff;
   }
   :global(body.dark) .select_content {
-    background: #1f2937;
+    background: #110c2a;
   }
 </style>

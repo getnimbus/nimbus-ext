@@ -791,9 +791,7 @@
   on:close={() => (isOpenConfirmCancel = false)}
 >
   <div class="flex flex-col gap-1 items-start">
-    <div class="xl:title-3 title-1 text-gray-600 font-medium mt-5">
-      Are you sure?
-    </div>
+    <div class="xl:title-3 title-1 font-medium mt-5">Are you sure?</div>
     <div class="xl:text-sm text-lg text-gray-500">
       Your <span class=" uppercase font-medium">{buyPackage}</span>
       Plan have

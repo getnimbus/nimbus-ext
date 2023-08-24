@@ -27,6 +27,7 @@
   import WhalesList from "~/UI/Compare/WhalesList.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
+  import LeftArrowBlack from "~/assets/left-arrow-black.svg";
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
 
@@ -830,7 +831,9 @@
       <div class="flex justify-between items-center gap-6">
         <div class="grid xl:grid-cols-2 grid-cols-1 gap-6 flex-1 w-full">
           <div
-            class="border border_0000001a rounded-[20px] p-6 min-h-[535px] relative"
+            class={`border border_0000001a rounded-[20px] p-6 min-h-[535px] relative ${
+              darkMode ? "bg-[#110c2a]" : "bg-white"
+            }`}
           >
             <div class="xl:text-2xl text-4xl font-medium w-full mb-6">
               {MultipleLang.token_allocation}
@@ -881,7 +884,9 @@
           </div>
 
           <div
-            class="border border_0000001a rounded-[20px] p-6 min-h-[535px] relative"
+            class={`border border_0000001a rounded-[20px] p-6 min-h-[535px] relative ${
+              darkMode ? "bg-[#110c2a]" : "bg-white"
+            }`}
           >
             {#if compareData && Object.keys(compareData).length !== 0 && compareData?.compare}
               <div class="flex flex-col">
@@ -1007,7 +1012,9 @@
                                   }}
                                   variant="disabled"
                                 >
-                                  <div class="">
+                                  <div
+                                    class={`${darkMode ? "text-gray-400" : ""}`}
+                                  >
                                     {suggestion.name}
                                   </div>
                                 </Button>
@@ -1075,9 +1082,15 @@
           {#if ($query.isFetching && $queryPersonalTag.isFetching) || searchCompare.length === 0}
             <Button variant="disabled">
               <div class="flex items-center gap-1">
-                <div class="xl:text-base text-2xl">Get re-balance action</div>
+                <div
+                  class={`xl:text-base text-2xl ${
+                    darkMode ? "text-gray-400" : ""
+                  }`}
+                >
+                  Get re-balance action
+                </div>
                 <img
-                  src={LeftArrow}
+                  src={darkMode ? LeftArrowBlack : LeftArrow}
                   alt=""
                   class="xl:w-4 xl:h-4 w-6 h-6 transform rotate-180 mt-[2px]"
                 />
@@ -1100,7 +1113,11 @@
     </div>
 
     <!-- Performance chart -->
-    <div class="border border_0000001a rounded-[20px] p-6 relative">
+    <div
+      class={`border border_0000001a rounded-[20px] p-6 relative ${
+        darkMode ? "bg-[#110c2a]" : "bg-white"
+      }`}
+    >
       <div class="xl:text-2xl text-4xl font-medium mb-3">Performance</div>
       {#if $query.isFetching}
         <div class="flex items-center justify-center h-[433px]">
@@ -1149,7 +1166,11 @@
     </div>
 
     <!-- Risks chart -->
-    <div class="border border_0000001a rounded-[20px] p-6 relative">
+    <div
+      class={`border border_0000001a rounded-[20px] p-6 relative ${
+        darkMode ? "bg-[#110c2a]" : "bg-white"
+      }`}
+    >
       <div class="mb-1 w-full">
         <div class="xl:text-2xl text-4xl font-medium flex justify-start">
           <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
