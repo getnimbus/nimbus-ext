@@ -735,6 +735,7 @@
               <input
                 type="text"
                 placeholder="Your category name"
+                required
                 class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
                   formData.category && !darkMode
                     ? "bg-[#F0F2F7]"
