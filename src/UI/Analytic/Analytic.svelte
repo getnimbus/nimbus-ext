@@ -117,7 +117,7 @@
       {#if isShowSoon}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
-            darkMode ? "bg-black/95" : "bg-white/95"
+            darkMode ? "bg-[#110c2ae6]" : "bg-white/90"
           } z-30 backdrop-blur-md`}
         >
           {#if packageSelected === "FREE"}

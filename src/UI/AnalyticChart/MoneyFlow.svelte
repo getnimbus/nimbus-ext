@@ -468,7 +468,7 @@
       {#if typeWalletAddress === "CEX"}
         <div
           class={`absolute top-0 left-0 z-30 flex flex-col items-center justify-center w-full h-full gap-3 ${
-            darkMode ? "bg-black/95" : "bg-white/95"
+            darkMode ? "bg-[#110c2ae6]" : "bg-white/90"
           } backdrop-blur-md`}
         >
           <div class="text-lg">Coming soon 🚀</div>
@@ -518,7 +518,7 @@
       {#if typeWalletAddress === "CEX"}
         <div
           class={`absolute top-0 left-0 z-30 flex flex-col items-center justify-center w-full h-full gap-3 ${
-            darkMode ? "bg-black/95" : "bg-white/95"
+            darkMode ? "bg-[#110c2ae6]" : "bg-white/90"
           } backdrop-blur-md`}
         >
           <div class="text-lg">Coming soon 🚀</div>
