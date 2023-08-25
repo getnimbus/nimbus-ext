@@ -14,7 +14,7 @@
   import {
     calculateVolatility,
     getChangePercent,
-    getPostionInRage,
+    getPostionInRange,
   } from "~/chart-utils";
   import { createQuery } from "@tanstack/svelte-query";
 
@@ -413,7 +413,13 @@
     Number(data?.btc?.volatility || 0)
   );
 
-  $: volatilityCompareAvg = getPostionInRage(
+  $: console.log({
+    sharpeRatioCompare,
+    base: Number(data?.base?.sharpeRatio || 0),
+    btc: Number(data?.btc?.sharpeRatio || 0),
+  });
+
+  $: volatilityCompareAvg = getPostionInRange(
     Number(data?.base?.volatility || 0),
     Number(data?.base?.avgMarket?.minVolality || 0),
     Number(data?.base?.avgMarket?.maxVolality || 0)
@@ -430,7 +436,7 @@
     Number(data?.btc?.drawDown || 0)
   );
 
-  $: drawDownCompareAvg = getPostionInRage(
+  $: drawDownCompareAvg = getPostionInRange(
     Number(data?.base?.drawDown || 0),
     Number(data?.base?.avgMarket?.minDrawdown || 0),
     Number(data?.base?.avgMarket?.maxDrawdown || 0)

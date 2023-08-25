@@ -12,7 +12,7 @@
   import sumBy from "lodash/sumBy";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery } from "@tanstack/svelte-query";
-  import { getPostionInRage } from "~/chart-utils";
+  import { getPostionInRange } from "~/chart-utils";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import EChart from "~/components/EChart.svelte";
@@ -398,7 +398,7 @@
 
   $: goodPerf = maxBy(riskBreakdownData, (item) => item.change30DPercent);
   $: badPerf = minBy(riskBreakdownData, (item) => item.change30DPercent);
-  $: sharpeRatioCompareAvg = getPostionInRage(
+  $: sharpeRatioCompareAvg = getPostionInRange(
     Number(data?.base?.sharpeRatio || 0),
     Number(data?.base?.avgMarket?.minShapreRatio || 0),
     Number(data?.base?.avgMarket?.maxShapreRatio || 0)

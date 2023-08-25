@@ -96,14 +96,14 @@ export function calculateBeta(assetsPrices: number[], marketPrices: number[]) {
 
 export const getChangePercent = (current: number, previous: number) => {
   if (previous === 0) return 0;
-  return Number((((Number(current) - Number(previous)) / Number(previous)) * 100).toFixed(2));
+  return Number((((Number(current) - Number(previous)) / Math.abs(Number(previous))) * 100).toFixed(2));
 };
 
 export const getChangeFromPercent = (current: number, percent: number) => {
   return 100 * Number(current) / (Number(percent) + 100)
 }
 
-export const getPostionInRage = (current: number, min: number, max: number) => {
+export const getPostionInRange = (current: number, min: number, max: number) => {
   if (current < min) return 0;
   if (current > max) return 100;
 
