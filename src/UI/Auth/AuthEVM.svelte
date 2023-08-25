@@ -13,7 +13,7 @@
   } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
-  import { shorterAddress } from "~/utils";
+  import { shorterAddress, clickOutside } from "~/utils";
   import { useNavigate } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
@@ -236,22 +236,6 @@
       console.error(e);
     }
   };
-
-  const clickOutside = (node) => {
-    const handleClick = (event) => {
-      if (node && !node.contains(event.target) && !event.defaultPrevented) {
-        node.dispatchEvent(new CustomEvent("click_outside", node));
-      }
-    };
-
-    document.addEventListener("click", handleClick, true);
-
-    return {
-      destroy() {
-        document.removeEventListener("click", handleClick, true);
-      },
-    };
-  };
 </script>
 
 {#if Object.keys(userInfo).length !== 0}
@@ -278,7 +262,7 @@
           </div>
           <DarkMode />
         </div>
-        <div
+        <!-- <div
           class={`flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
             darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
           }`}
@@ -302,7 +286,7 @@
               fill="#ffb800"
             />
           </svg>
-        </div>
+        </div> -->
         <Link to="invitation">
           <div
             class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
@@ -346,8 +330,10 @@
 <style windi:preflights:global windi:safelist:global>
   :global(body) .select_content {
     background: #ffffff;
+    border: 0.5px solid transparent;
   }
   :global(body.dark) .select_content {
     background: #110c2a;
+    border: 0.5px solid #cdcdcd59;
   }
 </style>

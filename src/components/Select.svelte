@@ -1,5 +1,6 @@
 <script lang="ts">
   import { wallet, chain } from "~/store";
+  import { clickOutside } from "~/utils";
 
   import UpArrow from "~/assets/up-arrow.svg";
   import All from "~/assets/all.svg";
@@ -25,22 +26,6 @@
     [];
 
   const disabledChains = ["XDAI"];
-
-  const clickOutside = (node) => {
-    const handleClick = (event) => {
-      if (node && !node.contains(event.target) && !event.defaultPrevented) {
-        node.dispatchEvent(new CustomEvent("click_outside", node));
-      }
-    };
-
-    document.addEventListener("click", handleClick, true);
-
-    return {
-      destroy() {
-        document.removeEventListener("click", handleClick, true);
-      },
-    };
-  };
 </script>
 
 <div class="wrapper">
@@ -129,7 +114,13 @@
               class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
             />
           {/if}
-          <div class="xl:text-sm text-2xl name">
+          <div
+            class={`xl:text-sm text-2xl name ${
+              type === "chain" && disabledChains.includes(item.value)
+                ? "text-gray-400"
+                : ""
+            }`}
+          >
             {item.label}
             {#if type === "chain" && disabledChains.includes(item.value)}
               (Soon)
@@ -200,9 +191,11 @@
 
   :global(body) .select_content {
     background: #ffffff;
+    border: 0.5px solid transparent;
   }
   :global(body.dark) .select_content {
     background: #110c2a;
+    border: 0.5px solid #cdcdcd59;
   }
 
   :global(body) .select_content .content_item.active,

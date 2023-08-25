@@ -206,6 +206,33 @@ export const returnType = [
   },
 ]
 
+export const timeFrame = [
+  {
+    label: "1D",
+    value: "1D",
+  },
+  {
+    label: "7D",
+    value: "7D",
+  },
+  {
+    label: "30D",
+    value: "30D",
+  },
+  {
+    label: "3M",
+    value: "3M",
+  },
+  {
+    label: "1Y",
+    value: "1Y",
+  },
+  {
+    label: "ALL",
+    value: "ALL",
+  },
+]
+
 export const getAddressContext = (address: string) => {
   if (!address) {
     return undefined;
@@ -770,3 +797,19 @@ export const dateDiffInDays = (a, b) => {
 
   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 }
+
+export const clickOutside = (node) => {
+  const handleClick = (event) => {
+    if (node && !node.contains(event.target) && !event.defaultPrevented) {
+      node.dispatchEvent(new CustomEvent("click_outside", node));
+    }
+  };
+
+  document.addEventListener("click", handleClick, true);
+
+  return {
+    destroy() {
+      document.removeEventListener("click", handleClick, true);
+    },
+  };
+};

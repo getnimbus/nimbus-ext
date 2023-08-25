@@ -67,7 +67,7 @@
         ) {
           selectedPackage.update(
             // (n) => (n = response.data?.plan?.tier.toUpperCase())
-            () => "PROFESSIONAL" // TODO: Remove me after integration compelete
+            () => "PROFESSIONAL" // TODO: Remove me after integration complete
           );
         }
       }

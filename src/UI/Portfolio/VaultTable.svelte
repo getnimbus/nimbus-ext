@@ -320,9 +320,11 @@
         {/if}
         {#if packageSelected === "FREE"}
           <tr
-            class={`absolute z-10 left-0 right-0 bottom-0 top-[220px] flex justify-center pt-10 ${
-              darkMode ? "bg-[#110c2ae6]" : "bg-white/90"
-            } backdrop-blur-md bg-gradient-to-t from-white via-white to-transparent`}
+            class={`absolute z-10 left-0 right-0 bottom-0 top-[220px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
+              darkMode
+                ? "bg-[#110c2ae6] from-[#110c2ae6] to-[#110c2ae6]"
+                : "bg-white/90 from-white via-white"
+            } `}
           >
             <td colspan="5" class="flex flex-col items-center gap-1">
               <div class="text-lg font-medium">

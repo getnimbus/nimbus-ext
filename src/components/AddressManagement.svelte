@@ -21,12 +21,13 @@
     getAddressContext,
     listLogoCEX,
     listProviderCEX,
+    clickOutside,
   } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { nimbus } from "~/lib/network";
-  import { Toast } from "flowbite-svelte";
+  import { Toast, Avatar } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
   import { useNavigate } from "svelte-navigator";
@@ -187,6 +188,8 @@
 
   let isDisabled = false;
   let tooltipDisableAddBtn = "";
+  let selectBundle;
+  let showPopover = false;
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -258,6 +261,35 @@
         label: item.label,
         value: item.type === "CEX" ? item.id : item.accountId,
         logo: item.logo,
+        accounts:
+          item?.accounts?.map((item) => {
+            let logo = All;
+            if (
+              getAddressContext(item.type === "CEX" ? item.id : item.accountId)
+                ?.type === "BTC"
+            ) {
+              logo = BitcoinLogo;
+            }
+            if (
+              getAddressContext(item.type === "CEX" ? item.id : item.accountId)
+                ?.type === "SOL"
+            ) {
+              logo = SolanaLogo;
+            }
+            if (item.type === "BUNDLE") {
+              logo = Bundles;
+            }
+            return {
+              id: item.id,
+              type: item.type,
+              label: item.label,
+              value: item.type === "CEX" ? item.id : item.accountId,
+              logo:
+                item.type === "BUNDLE" || item.type === "DEX"
+                  ? logo
+                  : item.logo,
+            };
+          }) || [],
       };
     });
 
@@ -674,10 +706,10 @@
   }
 
   $: {
-    if (listAddress.length === 3 && packageSelected === "FREE") {
+    if (listAddress?.length === 3 && packageSelected === "FREE") {
       isDisabled = true;
     }
-    if (listAddress.length === 7 && packageSelected === "EXPLORER") {
+    if (listAddress?.length === 7 && packageSelected === "EXPLORER") {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
         localStorage.getItem("isGetUserEmailYet") === "false"
@@ -719,6 +751,14 @@
     } else {
       formatListAddress = [];
       listAddress = [];
+    }
+  }
+
+  $: {
+    if (selectedWallet) {
+      selectBundle = formatListAddress.find(
+        (item) => item.value === selectedWallet
+      );
     }
   }
 </script>
@@ -1104,21 +1144,91 @@
                   {/if}
                 </div>
                 <div class="flex items-center gap-4">
-                  <div class="hidden text-3xl xl:text-base xl:block">
-                    <Copy
-                      address={selectedWallet}
-                      iconColor="#fff"
-                      color="#fff"
-                    />
-                  </div>
-                  <div class="block text-3xl xl:text-base xl:hidden">
-                    <Copy
-                      address={selectedWallet}
-                      iconColor="#fff"
-                      color="#fff"
-                      isShorten
-                    />
-                  </div>
+                  {#if selectBundle && Object.keys(selectBundle).length !== 0 && selectBundle.type === "BUNDLE"}
+                    <div
+                      class="relative"
+                      on:click={() => (showPopover = !showPopover)}
+                    >
+                      <div class="flex cursor-pointer">
+                        {#if selectBundle && selectBundle?.accounts && selectBundle?.accounts?.length > 8}
+                          {#each selectBundle?.accounts.slice(0, 7) as item, index}
+                            <div class={`${index > 0 && "-ml-2"}`}>
+                              <div class="hidden xl:block">
+                                <Avatar src={item?.logo} stacked size="sm" />
+                              </div>
+                              <div class="block xl:hidden">
+                                <Avatar src={item?.logo} stacked size="md" />
+                              </div>
+                            </div>
+                          {/each}
+                          <div class="-ml-2">
+                            <div class="hidden xl:block">
+                              <Avatar stacked size="sm">...</Avatar>
+                            </div>
+                            <div class="block xl:hidden">
+                              <Avatar stacked size="md">...</Avatar>
+                            </div>
+                          </div>
+                        {:else}
+                          {#each selectBundle?.accounts as item, index}
+                            <div class={`${index > 0 && "-ml-2"}`}>
+                              <div class="hidden xl:block">
+                                <Avatar src={item?.logo} stacked size="sm" />
+                              </div>
+                              <div class="block xl:hidden">
+                                <Avatar src={item?.logo} stacked size="md" />
+                              </div>
+                            </div>
+                          {/each}
+                        {/if}
+                      </div>
+                      {#if showPopover}
+                        <div
+                          class="select_content absolute left-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 xl:w-[200px] w-[300px] xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
+                          style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
+                          use:clickOutside
+                          on:click_outside={() => (showPopover = false)}
+                        >
+                          {#each selectBundle?.accounts as item}
+                            <div class="hidden text-3xl xl:text-base xl:block">
+                              <Copy
+                                address={item?.value}
+                                iconColor={darkMode ? "#fff" : "#000"}
+                                color={darkMode ? "#fff" : "#000"}
+                                isShorten
+                              />
+                            </div>
+                            <div class="block text-3xl xl:text-base xl:hidden">
+                              <Copy
+                                address={item?.value}
+                                iconColor={darkMode ? "#fff" : "#000"}
+                                color={darkMode ? "#fff" : "#000"}
+                                isShorten
+                                iconSize={24}
+                              />
+                            </div>
+                          {/each}
+                        </div>
+                      {/if}
+                    </div>
+                  {:else}
+                    <div class="hidden text-3xl xl:text-base xl:block">
+                      <Copy
+                        address={selectedWallet}
+                        iconColor="#fff"
+                        color="#fff"
+                      />
+                    </div>
+                    <div class="block text-3xl xl:text-base xl:hidden">
+                      <Copy
+                        address={selectedWallet}
+                        iconColor="#fff"
+                        color="#fff"
+                        isShorten
+                        iconSize={24}
+                      />
+                    </div>
+                  {/if}
                   <!-- <div
                     class="relative"
                     on:mouseenter={() => {
@@ -1603,5 +1713,14 @@
   .container {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+  }
+
+  :global(body) .select_content {
+    background: #ffffff;
+    border: 0.5px solid transparent;
+  }
+  :global(body.dark) .select_content {
+    background: #110c2a;
+    border: 0.5px solid #cdcdcd59;
   }
 </style>
