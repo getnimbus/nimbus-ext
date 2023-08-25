@@ -268,6 +268,9 @@
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+    },
   });
 
   $: {
@@ -291,6 +294,9 @@
 
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
     return response?.data;
   };
 
@@ -1086,7 +1092,7 @@
                   </td>
                 </tr>
               {:else}
-                {#each listAddress as item (item.id)}
+                {#each listAddress.filter((item) => item.type !== "BUNDLE") as item (item.id)}
                   <tr class="group transition-all">
                     <td
                       class={`pl-3 py-3  ${
@@ -1249,7 +1255,7 @@
                 </td>
               </tr>
             {:else}
-              {#each listAddress as item (item.id)}
+              {#each listAddress.filter((item) => item.type !== "BUNDLE") as item (item.id)}
                 <tr class="group transition-all">
                   <td
                     class={`pl-3 py-3  ${

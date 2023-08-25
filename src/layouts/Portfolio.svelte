@@ -491,7 +491,7 @@
         }
       }
       if (syncStatus?.error) {
-        syncMsg = syncStatus?.error;
+        syncMsg = syncStatus?.error?.error;
         isLoadingSync = true;
         return;
       }
@@ -609,11 +609,6 @@
   const handleGetSolHolding = async () => {
     try {
       const response = await getHoldingSOL(selectedWallet);
-
-      console.log({
-        response,
-      });
-
       if (response !== undefined) {
         const responseVaults = await nimbus.get(
           `/v2/investment/${selectedWallet}/vaults?chain=SOL`

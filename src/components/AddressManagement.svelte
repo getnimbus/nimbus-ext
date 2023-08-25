@@ -50,6 +50,7 @@
   import SolanaLogo from "~/assets/solana.png";
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
+  import Bundles from "~/assets/bundles.png";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -238,6 +239,9 @@
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+    },
   });
 
   $: {
@@ -374,6 +378,9 @@
 
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
     return response?.data;
   };
 
@@ -542,9 +549,12 @@
     if (getAddressContext(item.value)?.type === "SOL") {
       logo = SolanaLogo;
     }
+    if (item.type === "BUNDLE") {
+      logo = Bundles;
+    }
     return {
       ...item,
-      logo: item.type === "DEX" ? logo : item.logo,
+      logo: item.type === "BUNDLE" || item.type === "DEX" ? logo : item.logo,
     };
   });
 
@@ -571,6 +581,24 @@
         browser.storage.sync.set({ typeWalletAddress: "CEX" }).then(() => {
           console.log("save selected type wallet to sync storage");
         });
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&address=${selectedWallet}`
+        );
+        if (selectedChain) {
+          chain.update((n) => (n = selectedChain));
+        } else {
+          chain.update((n) => (n = "ALL"));
+        }
+      }
+
+      if (
+        selected &&
+        Object.keys(selected).length !== 0 &&
+        selected.type === "BUNDLE"
+      ) {
         window.history.replaceState(
           null,
           "",
@@ -706,7 +734,7 @@
         <div class="flex flex-col items-center justify-center w-2/3 gap-4 p-6">
           {#if $query.isError && Object.keys(userInfo).length !== 0}
             <div class="text-lg">
-              Too many request when get list address. Please wait for a minutes
+              {$query.error}
             </div>
           {:else}
             <div class="text-lg">
@@ -808,7 +836,7 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class="w-5 h-5 rounded-full xl:w-4 xl:h-4"
+                              class="w-5 h-5 xl:w-4 xl:h-4"
                             />
                             {item.label}
                             {#if item.value === selectedWallet}
@@ -853,7 +881,7 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class="w-5 h-5 rounded-full xl:w-4 xl:h-4"
+                              class="w-5 h-5 xl:w-4 xl:h-4"
                             />
                             {item.label}
                             {#if item.value === selectedWallet}

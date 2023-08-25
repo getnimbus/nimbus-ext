@@ -44,8 +44,11 @@
   };
 
   const getUserInfo = async () => {
-    const response = await nimbus.get("/users/me");
-    return response.data;
+    const response: any = await nimbus.get("/users/me");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response?.data;
   };
 
   const getReferrals = async () => {
@@ -63,6 +66,9 @@
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
     staleTime: Infinity,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+    },
   });
 
   $: {
