@@ -19,6 +19,18 @@ Nimbus is a personalized portfolio tool that can help
 
 In Addition, we're not just limited to on-chain data, we support CEX as well so you can track your investment on every platform.
 
+- Understand your current investment
+- And then reduce the risk and maximize the return.
+
+==- What is benefit of using Nimbus?
+We do not guarantee that Nimbus can make you win the market but if you lose, we help you lose less, if you win, we help you win more
+==- What makes Nimbus different from others?
+
+- On Nansen, Debank, it shows how much you have and what's going on in the market
+- On Nimbus, we show how much you have and what's going on with your CURRENT INVESTMENT and then suggest you adjust it to reduce risk and maximize the return
+
+In Addition, we're not just limited to on-chain data, we support CEX as well so you can track your investment on every platform.
+
 [See full supported list](/supported_chain_protocol)
 ==- Is my crypto safe?
 We only get your wallet address and DO NOT ask you to make any transactions so basically you're safe. We also use Vezgo to integrate CEX, which has a certificate for banking security.
