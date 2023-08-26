@@ -211,14 +211,10 @@
           },
           data: itemData.holdingHistory.map((item, index) => [
             item.timestamp * 1000,
-<<<<<<< HEAD
-            getChangePercent(item[valueField], baseData[valueField]),
-=======
             getChangePercent(
               (itemData.holdingHistory?.[index - 1] || baseData)[valueField],
               baseData[valueField]
             ),
->>>>>>> main
           ]),
         };
       });
