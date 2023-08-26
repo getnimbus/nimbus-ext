@@ -119,7 +119,7 @@
             <div
               class={`mx-auto max-w-c-1390 px-4 py-4 rounded-[20px] bg-gradient-to-t ${
                 darkMode
-                  ? "from-[#110c2a] to-[#27326f]"
+                  ? "from-[#0f0f0f] to-[#222222]"
                   : "from-[#F8F9FF] to-[#DEE7FF]"
               }`}
             >
@@ -220,7 +220,7 @@
     box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
   }
   :global(body.dark) .analytic_container {
-    background: #110c2a;
+    background: #0f0f0f;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
   }
 </style>

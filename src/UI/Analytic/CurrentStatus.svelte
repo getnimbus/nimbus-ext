@@ -740,7 +740,9 @@
 
 <div class="flex flex-col justify-between gap-6 xl:flex-row">
   <div
-    class="xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 border border_0000001a rounded-[20px] p-6"
+    class={`xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 rounded-[20px] p-6 ${
+      darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+    }`}
   >
     <div class="text-4xl font-medium xl:text-2xl">
       {MultipleLang.token_allocation}
@@ -893,7 +895,9 @@
   </div>
 
   <div
-    class="xl:w-1/2 w-full relative border border_0000001a rounded-[20px] p-6"
+    class={`xl:w-1/2 w-full relative rounded-[20px] p-6 ${
+      darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+    }`}
   >
     <div class="flex justify-between items-start mb-6">
       <div class="flex justify-start">

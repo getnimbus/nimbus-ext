@@ -30,9 +30,7 @@
 
 <div class="wrapper">
   <div
-    class={`button xl:text-sm text-2xl hover:bg-[#525b8c] ${
-      type === "lang" && "bg-[#1E96FC]"
-    }`}
+    class={`button xl:text-sm text-2xl ${type === "lang" && "bg-[#1E96FC]"}`}
     class:active={open}
     on:click={() => (open = !open)}
   >
@@ -150,8 +148,18 @@
     transition: all 0.3s ease;
   }
 
-  .button.active {
+  :global(body) .button.active {
     background: #20295b;
+  }
+  :global(body.dark) .button.active {
+    background: #212121;
+  }
+
+  :global(body) .button:hover {
+    background: #525b8c;
+  }
+  :global(body.dark) .button:hover {
+    background: #222222;
   }
 
   .content {
@@ -194,16 +202,21 @@
     border: 0.5px solid transparent;
   }
   :global(body.dark) .select_content {
-    background: #110c2a;
+    background: #131313;
     border: 0.5px solid #cdcdcd59;
   }
 
-  :global(body) .select_content .content_item.active,
+  :global(body) .select_content .content_item.active {
+    background: #eff0f4;
+  }
+  :global(body.dark) .select_content .content_item.active {
+    background: #343434;
+  }
+
   :global(body) .select_content .content_item:hover {
     background: #eff0f4;
   }
-  :global(body.dark) .select_content .content_item.active,
   :global(body.dark) .select_content .content_item:hover {
-    background: #00000066;
+    background: #222222;
   }
 </style>

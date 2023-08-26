@@ -91,7 +91,7 @@
       >
         <div
           class={`xl:w-64 w-full px-4 py-3 ${
-            darkMode ? "bg-[#110c2a]" : "bg-gray-50"
+            darkMode ? "bg-[#080808]" : "bg-gray-50"
           }`}
         >
           <SidebarTabs bind:activeTabValue {darkMode} />
@@ -118,12 +118,12 @@
 
 <style global windi:preflights:global windi:safelist:global>
   :global(body) {
-    background-color: white;
+    background: #fff;
     color: black;
     transition: background-color 0.3s;
   }
   :global(body.dark) {
-    background-color: #1f1c3e;
+    background: #161616;
     color: #fff;
   }
 
@@ -132,7 +132,7 @@
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 40px;
   }
   :global(body.dark) .footer {
-    background: #110c2a;
+    background: #080808;
     box-shadow: rgba(0, 0, 0, 1) 0px 0px 5px;
   }
 

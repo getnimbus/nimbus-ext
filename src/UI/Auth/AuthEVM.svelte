@@ -264,7 +264,7 @@
         </div>
         <!-- <div
           class={`flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-            darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
+            darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
           }`}
           on:click={() => {
             navigate("/upgrade");
@@ -290,7 +290,7 @@
         <Link to="invitation">
           <div
             class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-              darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
+              darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
             }`}
             on:click={() => (showPopover = false)}
           >
@@ -301,7 +301,7 @@
           href="entries/options/index.html?tab=wallets"
           target="_blank"
           class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
-            darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
+            darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
           }`}
           on:click={() => (showPopover = false)}
         >
@@ -309,7 +309,7 @@
         </a>
         <div
           class={`text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
-            darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
+            darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
           }`}
           on:click={handleSignOut}
         >
@@ -333,7 +333,7 @@
     border: 0.5px solid transparent;
   }
   :global(body.dark) .select_content {
-    background: #110c2a;
+    background: #131313;
     border: 0.5px solid #cdcdcd59;
   }
 </style>

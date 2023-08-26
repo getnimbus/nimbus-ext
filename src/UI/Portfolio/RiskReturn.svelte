@@ -75,7 +75,11 @@
 
 <ErrorBoundary>
   <div class="grid xl:grid-cols-2 grid-cols-1 gap-6">
-    <div class="border border_0000001a rounded-[20px] p-6">
+    <div
+      class={`rounded-[20px] p-6 ${
+        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      }`}
+    >
       {#if $query.isFetching}
         <div class="flex items-center justify-center h-[200px]">
           <loading-icon />
@@ -251,7 +255,11 @@
       {/if}
     </div>
 
-    <div class="border border_0000001a rounded-[20px] p-6">
+    <div
+      class={`rounded-[20px] p-6 ${
+        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      }`}
+    >
       {#if $query.isFetching}
         <div class="flex items-center justify-center h-[200px]">
           <loading-icon />

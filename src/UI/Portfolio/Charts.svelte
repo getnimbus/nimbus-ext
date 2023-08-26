@@ -675,7 +675,11 @@
 
 <ErrorBoundary>
   <div class="flex flex-col justify-between gap-6 xl:flex-row">
-    <div class="xl:w-1/2 w-full border border_0000001a rounded-[20px] p-6">
+    <div
+      class={`xl:w-1/2 w-full rounded-[20px] p-6 ${
+        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      }`}
+    >
       <div class="relative w-full mb-6">
         <div class="w-full text-4xl font-medium xl:text-2xl">
           {#if selectedType === "token"}
@@ -750,7 +754,9 @@
     </div>
 
     <div
-      class="xl:w-1/2 w-full relative border border_0000001a rounded-[20px] p-6"
+      class={`xl:w-1/2 w-full rounded-[20px] p-6 ${
+        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      }`}
     >
       <div class="flex justify-between mb-6">
         {#if typeWalletAddress === "CEX"}

@@ -57,12 +57,12 @@
 
 <style global windi:preflights:global windi:safelist:global>
   :global(body) {
-    background-color: white;
+    background: #fff;
     color: black;
     transition: background-color 0.3s;
   }
   :global(body.dark) {
-    background-color: #1f1c3e;
+    background: #161616;
     color: #fff;
   }
 

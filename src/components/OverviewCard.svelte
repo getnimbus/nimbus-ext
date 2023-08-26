@@ -30,7 +30,7 @@
     box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
   }
   :global(body.dark) .overview_card_container {
-    background: #110c2a;
+    background: #222222;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
   }
 </style>

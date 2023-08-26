@@ -71,7 +71,7 @@
 </script>
 
 <Sidebar asideClass="h-full">
-  <SidebarWrapper divClass={`${darkMode ? "bg-[#110c2a]" : "bg-gray-50"}`}>
+  <SidebarWrapper divClass={`${darkMode ? "bg-[#080808]" : "bg-gray-50"}`}>
     <img
       src={darkMode ? LogoWhite : Logo}
       alt=""

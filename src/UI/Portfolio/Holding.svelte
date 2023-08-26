@@ -3,7 +3,7 @@
   import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
   import { getAddressContext } from "~/utils";
-  import { chain, typeWallet } from "~/store";
+  import { chain, typeWallet, isDarkMode } from "~/store";
 
   export let selectedTokenHolding;
   export let selectedDataPieChart;
@@ -35,6 +35,11 @@
   let isStickyTableToken = false;
   let tableNFTHeader;
   let isStickyTableNFT = false;
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedChain: string = "";
   chain.subscribe((value) => {
@@ -267,7 +272,11 @@
   }
 </script>
 
-<div class="flex flex-col gap-6 border border_0000001a rounded-[20px] p-6">
+<div
+  class={`flex flex-col gap-6 rounded-[20px] p-6 ${
+    darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+  }`}
+>
   <ErrorBoundary>
     <div class="flex items-end gap-3">
       <div class="xl:text-2xl text-4xl font-medium">
@@ -328,7 +337,9 @@
           />
         </div>
         <div
-          class="border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto"
+          class={`rounded-[10px] xl:overflow-visible overflow-x-auto ${
+            darkMode ? "bg-[#131313]" : "border border_0000000d"
+          }`}
         >
           <table class="table-auto xl:w-full w-[1800px]">
             <thead

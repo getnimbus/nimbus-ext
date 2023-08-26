@@ -173,12 +173,12 @@
 
 <style global windi:preflights:global windi:safelist:global>
   :global(body) {
-    background-color: white;
+    background: #fff;
     color: black;
     transition: background-color 0.3s;
   }
   :global(body.dark) {
-    background-color: #1f1c3e;
+    background-color: #161616;
     color: #fff;
   }
 
@@ -187,7 +187,7 @@
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 40px;
   }
   :global(body.dark) .footer {
-    background: #110c2a;
+    background: #080808;
     box-shadow: rgba(0, 0, 0, 1) 0px 0px 5px;
   }
 
@@ -195,7 +195,7 @@
     background: #f4f5f8;
   }
   :global(body.dark) .bg_f4f5f8 {
-    background: #000;
+    background: #131313;
   }
 
   :global(body) .bg_fafafbff {

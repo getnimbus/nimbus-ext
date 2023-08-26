@@ -1011,7 +1011,7 @@
     box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
   }
   :global(body.dark) .portfolio_container {
-    background: #110c2a;
+    background: #0f0f0f;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
   }
 </style>
