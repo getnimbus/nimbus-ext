@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { getAddressContext } from "~/utils";
+  import { getAddressContext, timeFrame } from "~/utils";
   import { wallet, selectedPackage, isDarkMode } from "~/store";
   import { useNavigate } from "svelte-navigator";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
   import Button from "~/components/Button.svelte";
@@ -32,6 +33,7 @@
   });
 
   let isShowSoon = false;
+  let selectedTimeFrame: "1D" | "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
 
   $: {
     if (selectedWallet) {
@@ -51,67 +53,107 @@
 <AddressManagement type="order" title="Analytics">
   <span slot="body">
     <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[96%] relative">
-      <div
-        class="analytic_container flex flex-col gap-7 rounded-[20px] xl:p-8 space-y-4"
-      >
-        <CurrentStatus {packageSelected} />
+      <div class="analytic_container rounded-[20px] xl:p-8 space-y-4">
+        <div class="flex items-center justify-end gap-1">
+          <AnimateSharedLayout>
+            {#each timeFrame as type}
+              <div
+                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                on:click={() => {
+                  // selectedTimeFrame = type.value;
+                }}
+              >
+                <div
+                  class={`relative z-20 ${
+                    selectedTimeFrame === type.value
+                      ? "text-white"
+                      : "text-gray-400"
+                  }`}
+                >
+                  {type.label}
+                </div>
+                {#if type.value === selectedTimeFrame}
+                  <Motion
+                    let:motion
+                    layoutId="active-pill"
+                    transition={{ type: "spring", duration: 0.6 }}
+                  >
+                    <div
+                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                      use:motion
+                    />
+                  </Motion>
+                {/if}
+              </div>
+            {/each}
+          </AnimateSharedLayout>
+        </div>
 
-        <section class="overflow-hidden">
-          <div
-            class={`mx-auto max-w-c-1390 px-4 py-4 rounded-[20px] bg-gradient-to-t ${
-              darkMode
-                ? "from-[#110c2a] to-[#27326f]"
-                : "from-[#F8F9FF] to-[#DEE7FF]"
-            }`}
-          >
+        <div class="flex flex-col gap-7">
+          <CurrentStatus {packageSelected} />
+
+          <section class="overflow-hidden">
             <div
-              class="flex flex-wrap gap-8 md:flex-nowrap md:items-center md:justify-between md:gap-0"
+              class={`mx-auto max-w-c-1390 px-4 py-4 rounded-[20px] bg-gradient-to-t ${
+                darkMode
+                  ? "from-[#110c2a] to-[#27326f]"
+                  : "from-[#F8F9FF] to-[#DEE7FF]"
+              }`}
             >
               <div
-                class="animate_left"
-                data-sr-id="39"
-                style="visibility: visible; opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: opacity 2.8s cubic-bezier(0.5, 0, 0, 1) 0s, transform 2.8s cubic-bezier(0.5, 0, 0, 1) 0s;"
+                class="flex flex-wrap gap-8 md:flex-nowrap md:items-center md:justify-between md:gap-0"
               >
-                <h2 class="px-2 py-3 text-xl font-medium xl:text-sectiontitle4">
-                  Minimize risk & maximize return by rebalance your portfolio 🚀
-                </h2>
-              </div>
-              <div
-                class="animate_right lg:w-[45%]"
-                data-sr-id="43"
-                style="visibility: visible; opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: opacity 2.8s cubic-bezier(0.5, 0, 0, 1) 0s, transform 2.8s cubic-bezier(0.5, 0, 0, 1) 0s;"
-              >
-                <div class="flex items-center justify-end">
-                  <a
-                    class="inline-flex items-center gap-2.5 font-medium text-white bg-black rounded-full py-3 px-6"
-                    href={`/compare?address=${encodeURIComponent(
-                      selectedWallet
-                    )}`}
-                    on:click|preventDefault={() => {
-                      navigate(
-                        `/compare?address=${encodeURIComponent(selectedWallet)}`
-                      );
-                    }}
+                <div
+                  class="animate_left"
+                  data-sr-id="39"
+                  style="visibility: visible; opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: opacity 2.8s cubic-bezier(0.5, 0, 0, 1) 0s, transform 2.8s cubic-bezier(0.5, 0, 0, 1) 0s;"
+                >
+                  <h2
+                    class="px-2 py-3 text-xl font-medium xl:text-sectiontitle4"
                   >
-                    Get suggestion
-                  </a>
+                    Minimize risk & maximize return by rebalance your portfolio
+                    🚀
+                  </h2>
+                </div>
+                <div
+                  class="animate_right lg:w-[45%]"
+                  data-sr-id="43"
+                  style="visibility: visible; opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: opacity 2.8s cubic-bezier(0.5, 0, 0, 1) 0s, transform 2.8s cubic-bezier(0.5, 0, 0, 1) 0s;"
+                >
+                  <div class="flex items-center justify-end">
+                    <a
+                      class="inline-flex items-center gap-2.5 font-medium text-white bg-black rounded-full py-3 px-6"
+                      href={`/compare?address=${encodeURIComponent(
+                        selectedWallet
+                      )}`}
+                      on:click|preventDefault={() => {
+                        navigate(
+                          `/compare?address=${encodeURIComponent(
+                            selectedWallet
+                          )}`
+                        );
+                      }}
+                    >
+                      Get suggestion
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <RiskChart />
+          <RiskChart />
 
-        <ReturnChart />
+          <ReturnChart />
 
-        <RiskReturnChart />
+          <RiskReturnChart />
 
-        <MoneyFlow {packageSelected} />
+          <MoneyFlow {packageSelected} />
 
-        <PastPerformance {packageSelected} />
+          <PastPerformance {packageSelected} />
 
-        <!-- <Personality /> -->
+          <!-- <Personality /> -->
+        </div>
       </div>
 
       {#if isShowSoon}

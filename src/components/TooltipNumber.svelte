@@ -3,7 +3,6 @@
     formatBigBalance,
     checkFormatBalance,
     formatCurrency,
-    formatCurrencyV2,
   } from "~/utils";
   import numeral from "numeral";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -50,9 +49,7 @@
         {/if}
       </span>
     {:else}
-      <span
-        >{number > 1 ? formatCurrencyV2(number) : formatCurrency(number)}</span
-      >
+      <span>{formatCurrency(number)}</span>
     {/if}
   </span>
 {/if}

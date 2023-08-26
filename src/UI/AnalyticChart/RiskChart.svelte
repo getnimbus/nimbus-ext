@@ -9,7 +9,6 @@
   } from "~/store";
   import {
     formatCurrency,
-    formatCurrencyV2,
     getAddressContext,
     getTooltipContent,
     volatilityColorChart,
@@ -107,7 +106,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.value >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${formatCurrencyV2(Math.abs(item.value))}
+                      ${formatCurrency(Math.abs(item.value))}
                     </div>
                   </div>
                 </div>

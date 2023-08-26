@@ -7,7 +7,7 @@
     selectedPackage,
     isDarkMode,
   } from "~/store";
-  import { formatCurrency, formatCurrencyV2, getAddressContext } from "~/utils";
+  import { formatCurrency, getAddressContext } from "~/utils";
   import dayjs from "dayjs";
   import { calculateVolatility, getChangePercent } from "~/chart-utils";
   import { createQuery } from "@tanstack/svelte-query";

@@ -9,7 +9,6 @@
     typeList,
     performanceTypeChart,
     handleFormatDataPieChart,
-    timeFrame,
   } from "~/utils";
   import { i18n } from "~/lib/i18n";
   import { useNavigate } from "svelte-navigator";
@@ -62,7 +61,6 @@
     typeWalletAddress = value;
   });
 
-  let selectedTimeFrame: "1D" | "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
   let selectedType: "category" | "sector" | "rank" = "category";
   let isEmptyDataPie = false;
   let dataRank = [];
@@ -915,69 +913,35 @@
         {/if}
       </div>
       {#if !$queryOverview.isError || ($queryOverview.data?.performance && $queryOverview.data?.performance.length !== 0)}
-        <div class="flex flex-col items-end gap-4">
-          <div class="flex items-center gap-1">
-            <AnimateSharedLayout>
-              {#each timeFrame as type}
+        <div class="flex items-center gap-2">
+          <AnimateSharedLayout>
+            {#each performanceTypeChart as type}
+              <div
+                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                on:click={() => (selectedTypeChart = type.value)}
+              >
                 <div
-                  class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                  on:click={() => {
-                    // selectedTimeFrame = type.value;
-                  }}
+                  class={`relative z-20 ${
+                    selectedTypeChart === type.value && "text-white"
+                  }`}
                 >
-                  <div
-                    class={`relative z-20 ${
-                      selectedTimeFrame === type.value && "text-white"
-                    }`}
-                  >
-                    {type.label}
-                  </div>
-                  {#if type.value === selectedTimeFrame}
-                    <Motion
-                      let:motion
-                      layoutId="active-pill"
-                      transition={{ type: "spring", duration: 0.6 }}
-                    >
-                      <div
-                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                        use:motion
-                      />
-                    </Motion>
-                  {/if}
+                  {type.label}
                 </div>
-              {/each}
-            </AnimateSharedLayout>
-          </div>
-          <div class="flex items-center gap-2">
-            <AnimateSharedLayout>
-              {#each performanceTypeChart as type}
-                <div
-                  class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                  on:click={() => (selectedTypeChart = type.value)}
-                >
-                  <div
-                    class={`relative z-20 ${
-                      selectedTypeChart === type.value && "text-white"
-                    }`}
+                {#if type.value === selectedTypeChart}
+                  <Motion
+                    let:motion
+                    layoutId="active-pill"
+                    transition={{ type: "spring", duration: 0.6 }}
                   >
-                    {type.label}
-                  </div>
-                  {#if type.value === selectedTypeChart}
-                    <Motion
-                      let:motion
-                      layoutId="active-pill"
-                      transition={{ type: "spring", duration: 0.6 }}
-                    >
-                      <div
-                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                        use:motion
-                      />
-                    </Motion>
-                  {/if}
-                </div>
-              {/each}
-            </AnimateSharedLayout>
-          </div>
+                    <div
+                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                      use:motion
+                    />
+                  </Motion>
+                {/if}
+              </div>
+            {/each}
+          </AnimateSharedLayout>
         </div>
       {/if}
     </div>
