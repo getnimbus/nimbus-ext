@@ -197,7 +197,8 @@
 
       const series = listKey?.map((key) => {
         const itemData = data[key];
-        const baseData = itemData.sparkline[0];
+        const valueField = key === "base" ? "networth" : "price";
+        const baseData = itemData.holdingHistory[0];
         return {
           name: nameConfig[key].name,
           type: "bar",
@@ -208,12 +209,9 @@
           emphasis: {
             focus: "series",
           },
-          data: itemData.sparkline.map((item, index) => [
-            dayjs()
-              .startOf("day")
-              .subtract(30 - index, "day")
-              .valueOf(),
-            getChangePercent(item, baseData),
+          data: itemData.holdingHistory.map((item, index) => [
+            item.timestamp * 1000,
+            getChangePercent(item[valueField], baseData[valueField]),
           ]),
         };
       });
