@@ -152,7 +152,7 @@
       <div
         style="box-shadow: 0 5px 20px rgba(0, 0, 0, 8%);"
         class={`flex flex-col gap-3 border border_0000001a rounded-[20px] py-4 px-6 ${
-          darkMode ? "bg-[#110c2a]" : "bg-white"
+          darkMode ? "bg-[#0f0f0f]" : "bg-white"
         }`}
       >
         <div class="xl:text-base text-xl text-center text_00000066 mb-2">

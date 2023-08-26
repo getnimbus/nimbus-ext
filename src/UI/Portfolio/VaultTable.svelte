@@ -142,7 +142,9 @@
     Yield farming opportunities
   </div>
   <div
-    class="border border_0000000d rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative"
+    class={`rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative ${
+      darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+    }`}
   >
     <table class="table-auto xl:w-full w-[1200px]">
       <thead>
@@ -225,7 +227,7 @@
               <td
                 class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[550px] ${
                   darkMode
-                    ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+                    ? "bg-[#131313] group-hover:bg-[#00000033]"
                     : "bg-white group-hover:bg-gray-100"
                 }`}
               >
@@ -322,7 +324,7 @@
           <tr
             class={`absolute z-10 left-0 right-0 bottom-0 top-[220px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
               darkMode
-                ? "bg-[#110c2ae6] from-[#110c2ae6] to-[#110c2ae6]"
+                ? "bg-[#222222e6] from-[#000] via-[#222222]"
                 : "bg-white/90 from-white via-white"
             } `}
           >

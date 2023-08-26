@@ -24,7 +24,7 @@
   <td
     class={`pl-3 py-4 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-9 ${
       darkMode
-        ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+        ? "bg-[#131313] group-hover:bg-[#00000033]"
         : "bg-white group-hover:bg-gray-100"
     }`}
   >

@@ -202,7 +202,7 @@
     background: #fafafbff;
   }
   :global(body.dark) .bg_fafafbff {
-    background: #00000033;
+    background: #212121;
   }
 
   :global(body) .text_00000080 {

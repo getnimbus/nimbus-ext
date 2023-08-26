@@ -4,7 +4,7 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { wallet, chain, typeWallet } from "~/store";
+  import { wallet, chain, typeWallet, isDarkMode } from "~/store";
   import { getAddressContext, typeTrx } from "~/utils";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery } from "@tanstack/svelte-query";
@@ -20,6 +20,11 @@
   import CalendarChart from "~/components/CalendarChart.svelte";
   import HistoricalTransactions from "./HistoricalTransactions.svelte";
   import "~/components/Loading.custom.svelte";
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -224,7 +229,9 @@
       <div class="trx_container flex flex-col gap-7 rounded-[20px] xl:p-8">
         {#if getAddressContext(selectedWallet)?.type === "EVM" || typeWalletAddress === "CEX"}
           <div
-            class="border border_0000001a rounded-[20px] pt-6 pb-9 flex flex-col gap-4"
+            class={`rounded-[20px] pt-6 pb-9 flex flex-col gap-4  ${
+              darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+            }`}
           >
             {#if data.length !== 0}
               <CalendarChart
@@ -254,7 +261,9 @@
         {/if}
 
         <div
-          class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
+          class={`rounded-[20px] p-6 flex flex-col gap-4 ${
+            darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+          }`}
         >
           <div class="flex flex-col justify-between gap-4 xl:flex-row">
             <div class="xl:text-2xl text-4xl font-medium">
@@ -323,7 +332,7 @@
     box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
   }
   :global(body.dark) .trx_container {
-    background: #110c2a;
+    background: #0f0f0f;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
   }
 </style>

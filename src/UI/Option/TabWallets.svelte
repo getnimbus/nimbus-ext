@@ -1193,7 +1193,11 @@
       </div>
     </form> -->
   {:else}
-    <div class="border border_0000000d rounded-[10px] overflow-x-auto">
+    <div
+      class={`border border_0000000d rounded-[10px] overflow-x-auto ${
+        darkMode ? "bg-[#131313]" : "bg-[#fff]"
+      }`}
+    >
       <table class="table-auto xl:w-full w-[1200px]">
         <thead>
           <tr class="bg_f4f5f8">
@@ -1251,7 +1255,9 @@
             {#if listAddress && listAddress.length === 0}
               <tr>
                 <td colspan="3">
-                  <div class="flex justify-center items-center py-4 px-3">
+                  <div
+                    class="flex justify-center items-center py-4 px-3 xl:text-base text-xl"
+                  >
                     No address
                   </div>
                 </td>
@@ -1359,7 +1365,7 @@
         class:input-border-error={errorsEdit.address &&
           errorsEdit.address.required}
       >
-        <div class="xl:text-base text-xl font-semibold text-gray-700">
+        <div class="xl:text-base text-xl font-semibold text-[#666666]">
           {MultipleLang.content.modal_address_label}
         </div>
         <input
@@ -1388,7 +1394,7 @@
         }`}
         class:input-border-error={errorsEdit.label && errorsEdit.label.required}
       >
-        <div class="xl:text-base text-xl font-semibold text-gray-700">
+        <div class="xl:text-base text-xl font-semibold text-[#666666]">
           {MultipleLang.content.modal_label_label}
         </div>
         <input
@@ -1477,7 +1483,7 @@
     <div class="border-t-[1px] relative">
       <div
         class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
-          darkMode ? "bg-[#110c2a]" : "bg-white"
+          darkMode ? "bg-[#0f0f0f]" : "bg-white"
         }  text-sm px-2`}
       >
         Or
@@ -1726,7 +1732,14 @@
     background: #fafafbff;
   }
   :global(body.dark) .bg_fafafbff {
-    background: #00000033;
+    background: #212121;
+  }
+
+  :global(body) .bg_f4f5f8 {
+    background: #f4f5f8;
+  }
+  :global(body.dark) .bg_f4f5f8 {
+    background: #131313;
   }
 
   .input-border {

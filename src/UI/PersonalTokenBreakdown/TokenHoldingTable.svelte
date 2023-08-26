@@ -49,7 +49,9 @@
 </script>
 
 <div
-  class="border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto min-h-[600px]"
+  class={`rounded-[10px] xl:overflow-visible overflow-x-auto min-h-[600px] ${
+    darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+  }`}
 >
   <table class="table-auto xl:w-full w-[1400px]">
     <thead
@@ -133,7 +135,7 @@
               <td
                 class={`py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 xl:w-[230px] w-[280px] ${
                   darkMode
-                    ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+                    ? "bg-[#131313] group-hover:bg-[#00000033]"
                     : "bg-white group-hover:bg-gray-100"
                 }`}
               >

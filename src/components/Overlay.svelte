@@ -61,7 +61,7 @@
       >
         <div
           class={`rounded-xl px-6 pt-9 pb-7 mx-6 relative ${
-            darkMode ? "bg-[#110c2a]" : "bg-white"
+            darkMode ? "bg-[#0f0f0f]" : "bg-white"
           }`}
         >
           <div

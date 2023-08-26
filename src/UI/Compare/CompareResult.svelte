@@ -5,6 +5,7 @@
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TokenHoldingCompare from "./TokenHoldingCompare.svelte";
 
+  export let darkMode;
   export let holdingTokenData;
   export let holdingTokenDataCompare;
 
@@ -176,7 +177,10 @@
     />
   </div>
   <div
-    class="border border_0000000d rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative"
+    class={`border border_0000000d rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative ${
+      darkMode ? "bg-[#131313]" : "bg-[#fff]"
+    }
+    `}
   >
     <table class="table-auto xl:w-full w-[1200px]">
       <thead>

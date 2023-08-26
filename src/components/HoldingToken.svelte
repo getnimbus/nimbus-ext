@@ -100,7 +100,7 @@
   <td
     class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[420px] ${
       darkMode
-        ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+        ? "bg-[#131313] group-hover:bg-[#00000033]"
         : "bg-white group-hover:bg-gray-100"
     }`}
   >

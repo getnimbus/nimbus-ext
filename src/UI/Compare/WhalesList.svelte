@@ -2,13 +2,16 @@
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import WhaleItem from "./WhaleItem.svelte";
 
+  export let darkMode;
   export let data;
   export let copyAddress = (address) => {};
   export let closeModal = () => {};
 </script>
 
 <div
-  class="border border_0000000d rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative"
+  class={`border border_0000000d rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative ${
+    darkMode ? "bg-[#131313]" : "bg-[#fff]"
+  }`}
 >
   <table class="table-auto xl:w-full w-[1800px]">
     <thead>

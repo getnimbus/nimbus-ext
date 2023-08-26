@@ -45,7 +45,9 @@
 </script>
 
 <div
-  class="border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto"
+  class={`rounded-[10px] xl:overflow-visible overflow-x-auto ${
+    darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+  }`}
 >
   <table class="table-auto xl:w-full w-[1400px]">
     <thead class={isSticky ? "sticky top-0 z-10" : ""} bind:this={tableHeader}>
@@ -111,7 +113,7 @@
               <td
                 class={`pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 ${
                   darkMode
-                    ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+                    ? "bg-[#131313] group-hover:bg-[#00000033]"
                     : "bg-white group-hover:bg-gray-100"
                 }`}
               >

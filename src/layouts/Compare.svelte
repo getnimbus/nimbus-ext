@@ -831,8 +831,8 @@
       <div class="flex justify-between items-center gap-6">
         <div class="grid xl:grid-cols-2 grid-cols-1 gap-6 flex-1 w-full">
           <div
-            class={`border border_0000001a rounded-[20px] p-6 min-h-[535px] relative ${
-              darkMode ? "bg-[#110c2a]" : "bg-white"
+            class={`rounded-[20px] p-6 min-h-[535px] relative ${
+              darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
             }`}
           >
             <div class="xl:text-2xl text-4xl font-medium w-full mb-6">
@@ -884,8 +884,8 @@
           </div>
 
           <div
-            class={`border border_0000001a rounded-[20px] p-6 min-h-[535px] relative ${
-              darkMode ? "bg-[#110c2a]" : "bg-white"
+            class={`rounded-[20px] p-6 min-h-[535px] relative ${
+              darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
             }`}
           >
             {#if compareData && Object.keys(compareData).length !== 0 && compareData?.compare}
@@ -1024,7 +1024,7 @@
                           <div class="border-t-[1px] relative">
                             <div
                               class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
-                                darkMode ? "bg-[#110c2a]" : "bg-white"
+                                darkMode ? "bg-[#222222]" : "bg-white"
                               } text-sm px-2`}
                             >
                               Or
@@ -1114,8 +1114,8 @@
 
     <!-- Performance chart -->
     <div
-      class={`border border_0000001a rounded-[20px] p-6 relative ${
-        darkMode ? "bg-[#110c2a]" : "bg-white"
+      class={`rounded-[20px] p-6 relative ${
+        darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
       }`}
     >
       <div class="xl:text-2xl text-4xl font-medium mb-3">Performance</div>
@@ -1167,8 +1167,8 @@
 
     <!-- Risks chart -->
     <div
-      class={`border border_0000001a rounded-[20px] p-6 relative ${
-        darkMode ? "bg-[#110c2a]" : "bg-white"
+      class={`rounded-[20px] p-6 relative ${
+        darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
       }`}
     >
       <div class="mb-1 w-full">
@@ -1256,7 +1256,7 @@
     }}
   >
     <div class="xl:mt-9 mt-12">
-      <CompareResult {holdingTokenData} {holdingTokenDataCompare} />
+      <CompareResult {darkMode} {holdingTokenData} {holdingTokenDataCompare} />
     </div>
   </AppOverlay>
 
@@ -1270,6 +1270,7 @@
   >
     <div class="flex flex-col gap-2 mt-9">
       <WhalesList
+        {darkMode}
         data={compareData?.base?.similarPortfolio}
         copyAddress={handleCopyAddress}
         closeModal={handleCloseWhalesListModal}

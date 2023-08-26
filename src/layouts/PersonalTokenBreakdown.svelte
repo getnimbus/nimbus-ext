@@ -15,13 +15,14 @@
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
   import Copy from "~/components/Copy.svelte";
   import Button from "~/components/Button.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
+  import TokenHoldingTable from "~/UI/PersonalTokenBreakdown/TokenHoldingTable.svelte";
   import "~/components/Loading.custom.svelte";
   import "~/components/Tooltip.custom.svelte";
-  import TokenHoldingTable from "~/UI/PersonalTokenBreakdown/TokenHoldingTable.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
   import Edit from "~/assets/edit.svg";
@@ -60,6 +61,9 @@
   let isScrollStart = true;
   let isScrollEnd = false;
   let container;
+
+  let isOpenConfirmDelete = false;
+  let isLoadingDelete = false;
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -284,6 +288,7 @@
   };
 
   const deleteCustomCategory = async () => {
+    isLoadingDelete = true;
     try {
       const response = await nimbus.delete(
         `/address/${selectedWallet}/personalize/tag?category=${selectedCustom.category}`,
@@ -291,6 +296,8 @@
       );
 
       isAddCustom = false;
+      isLoadingDelete = false;
+      isOpenConfirmDelete = false;
       listCustom = [];
       selectedTokenList = [];
       handleResetState();
@@ -305,6 +312,8 @@
         "Something wrong when delete your custom category. Please try again!";
       isSuccessToast = false;
       trigger();
+      isLoadingDelete = false;
+      isOpenConfirmDelete = false;
     }
   };
 
@@ -507,7 +516,7 @@
 </script>
 
 <ErrorBoundary>
-  <div class="header-container">
+  <div class="header header-container">
     <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
       <div class="flex flex-col mb-5 gap-14">
         <div class="flex items-center justify-between">
@@ -543,14 +552,16 @@
       class="custom_token_breakdown_container rounded-[20px] xl:p-8 xl:shadow-md"
     >
       <div
-        class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
+        class={`rounded-[20px] p-6 flex flex-col gap-4 bg-red-500 ${
+          darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+        }`}
       >
         <div class="xl:text-2xl text-4xl font-medium">
           Custom Token Breakdown
         </div>
 
         {#if listCustom.length === 0}
-          <div class="flex justify-between">
+          <div class="flex justify-between items-center">
             <div class="text-lg">
               Add your custom token breakdown to keep track of investments by
               your way.
@@ -673,7 +684,9 @@
               {#if selectedCustom && selectedCustom !== null && Object.keys(selectedCustom).length !== 0}
                 <div
                   class="text-red-500 font-semibold cursor-pointer xl:text-base text-2xl"
-                  on:click={deleteCustomCategory}
+                  on:click={() => {
+                    isOpenConfirmDelete = true;
+                  }}
                 >
                   Delete
                 </div>
@@ -827,7 +840,7 @@
                         <div class="relative w-full">
                           <div
                             class={`absolute top-0 left-0 flex flex-col gap-1 border-b border-x-[1px] w-full ${
-                              darkMode ? "bg-[#110c2a]" : "bg-white"
+                              darkMode ? "bg-[#212121]" : "bg-white"
                             } text-[#5E656B] rounded-b-lg py-2 px-3 z-50`}
                           >
                             <div class="xl:text-xs text-base">
@@ -836,7 +849,7 @@
                             <div class="flex flex-col gap-2">
                               {#each filteredListTag as item}
                                 <div
-                                  class={`${
+                                  class={`rounded-lg ${
                                     editTag && editTag === item
                                       ? darkMode
                                         ? "bg-[#00000033]"
@@ -847,7 +860,7 @@
                                   <div
                                     class={`xl:text-sm text-lg px-2 py-1 rounded-lg cursor-pointer flex justify-between ${
                                       darkMode
-                                        ? "hover:bg-[#00000066]"
+                                        ? "hover:bg-[#00000033]"
                                         : "hover:bg-[#F0F2F7]"
                                     }`}
                                   >
@@ -857,11 +870,7 @@
                                           <input
                                             type="text"
                                             placeholder="Your category name"
-                                            class={`${
-                                              darkMode
-                                                ? "bg-[#00000033]"
-                                                : "bg-[#F0F2F7]"
-                                            } p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] w-full`}
+                                            class={`bg-transparent p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] w-full`}
                                             bind:value={tag}
                                             on:keyup={({ target: { value } }) =>
                                               (tag = value)}
@@ -905,7 +914,7 @@
                                       <div
                                         class={`flex justify-center items-center px-2 rounded ${
                                           darkMode
-                                            ? "hover:bg-[#cdcdcd]"
+                                            ? "hover:bg-[#222222]"
                                             : "hover:bg-gray-200"
                                         }`}
                                         on:click={() => {
@@ -985,7 +994,9 @@
               </div>
 
               <div
-                class="border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto min-h-[600px]"
+                class={`rounded-[10px] xl:overflow-visible overflow-x-auto min-h-[600px] ${
+                  darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+                }`}
               >
                 <table class="table-auto xl:w-full w-[1400px]">
                   <thead
@@ -1087,9 +1098,9 @@
                         {#each searchDataResult as data}
                           <tr class="group transition-all">
                             <td
-                              class={`py-3 w-10 xl:static xl:bg-transparent sticky left-0 z-10 ${
+                              class={`py-3 w-10 xl:static xl:bg-transparent sticky left-0 z-9 ${
                                 darkMode
-                                  ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+                                  ? "bg-[#131313] group-hover:bg-[#00000033]"
                                   : "bg-white group-hover:bg-gray-100"
                               }`}
                             >
@@ -1108,7 +1119,7 @@
                             <td
                               class={`py-3 xl:static xl:bg-transparent sticky left-10 z-9 xl:w-[230px] w-[280px] ${
                                 darkMode
-                                  ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+                                  ? "bg-[#131313] group-hover:bg-[#00000033]"
                                   : "bg-white group-hover:bg-gray-100"
                               }`}
                             >
@@ -1360,10 +1371,48 @@
     </svelte:fragment>
     {toastMsg}
   </Toast>
+
+  <!-- Modal confirm delete account -->
+  <AppOverlay
+    clickOutSideToClose
+    isOpen={isOpenConfirmDelete}
+    on:close={() => (isOpenConfirmDelete = false)}
+  >
+    <div class="flex flex-col gap-1 items-start">
+      <div class="xl:title-3 title-1 font-semibold">Are you sure?</div>
+      <div class="xl:text-sm text-lg text-gray-500">
+        "Do you really want to delete this custom token breakdown? This process
+        cannot revert
+      </div>
+    </div>
+    <div class="flex justify-end lg:gap-2 gap-6 mt-4">
+      <div class="lg:w-[120px] w-full h-[36px]">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            isOpenConfirmDelete = false;
+          }}
+        >
+          Cancel
+        </Button>
+      </div>
+      <div class="lg:w-[120px] w-full h-[36px]">
+        <Button
+          variant="delete"
+          isLoading={isLoadingDelete}
+          on:click={() => {
+            deleteCustomCategory();
+          }}
+        >
+          Delete
+        </Button>
+      </div>
+    </div>
+  </AppOverlay>
 </ErrorBoundary>
 
 <style>
-  .header-container {
+  .header {
     background-image: url("~/assets/capa.svg");
     background-color: #27326f;
     background-repeat: no-repeat;
@@ -1373,12 +1422,21 @@
     padding-top: 24px;
   }
 
+  :global(body) .header-container {
+    background-color: #27326f;
+    background-image: url("~/assets/capa.svg");
+  }
+  :global(body.dark) .header-container {
+    background: #080808;
+    background-image: url("~/assets/capa-dark.svg");
+  }
+
   :global(body) .custom_token_breakdown_container {
     background: #fff;
     box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
   }
   :global(body.dark) .custom_token_breakdown_container {
-    background: #110c2a;
+    background: #0f0f0f;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
   }
 
@@ -1386,6 +1444,6 @@
     background: #fafafbff;
   }
   :global(body.dark) .bg_fafafbff {
-    background: #00000033;
+    background: #212121;
   }
 </style>

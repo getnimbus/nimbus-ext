@@ -59,7 +59,7 @@
   <td
     class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 w-[220px] ${
       darkMode
-        ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+        ? "bg-[#131313] group-hover:bg-[#00000033]"
         : "bg-white group-hover:bg-gray-100"
     }`}
   >
@@ -86,7 +86,7 @@
   <td
     class={`py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 w-[200px] ${
       darkMode
-        ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+        ? "bg-[#131313] group-hover:bg-[#00000033]"
         : "bg-white group-hover:bg-gray-100"
     }`}
   >

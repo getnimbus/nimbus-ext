@@ -153,7 +153,11 @@
 
 <div class="flex flex-col gap-2">
   <div class="xl:title-3 title-1 mb-2">{MultipleLang.title}</div>
-  <div class="border border_0000000d rounded-[10px] overflow-x-auto mt-2">
+  <div
+    class={`border border_0000000d rounded-[10px] overflow-x-auto mt-2  ${
+      darkMode ? "bg-[#131313]" : "bg-[#fff]"
+    }`}
+  >
     <table class="table-auto xl:w-full w-[1200px]">
       <thead>
         <tr class="bg_f4f5f8">
@@ -189,7 +193,9 @@
           {#if listAddressLabel && listAddressLabel.length === 0}
             <tr>
               <td colspan="3">
-                <div class="flex justify-center items-center py-4 px-3">
+                <div
+                  class="flex justify-center items-center py-4 px-3 xl:text-base text-xl"
+                >
                   No highlight
                 </div>
               </td>
@@ -361,4 +367,10 @@
 </AppOverlay>
 
 <style>
+  :global(body) .bg_f4f5f8 {
+    background: #f4f5f8;
+  }
+  :global(body.dark) .bg_f4f5f8 {
+    background: #131313;
+  }
 </style>

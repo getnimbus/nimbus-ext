@@ -1418,7 +1418,7 @@
     <div class="border-t-[1px] relative">
       <div
         class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
-          darkMode ? "bg-[#110c2a]" : "bg-white"
+          darkMode ? "bg-[#0f0f0f]" : "bg-white"
         } text-sm px-2`}
       >
         Or

@@ -13,6 +13,7 @@
   import CalendarChart from "~/components/CalendarChart.svelte";
 
   export let packageSelected;
+  export let darkMode;
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -169,7 +170,11 @@
   }
 </script>
 
-<div class="border border_0000001a rounded-[20px] py-6">
+<div
+  class={`rounded-[20px] py-6 ${
+    darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+  }`}
+>
   <CalendarChart
     {option}
     isEmptyDataChart={$query.isError}

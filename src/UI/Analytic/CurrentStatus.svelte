@@ -952,7 +952,7 @@
     {#if selectedChain === "XDAI"}
       <div
         class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center ${
-          darkMode ? "bg-[#110c2ae6]" : "bg-white/90"
+          darkMode ? "bg-[#222222e6]" : "bg-white/90"
         } z-30 backdrop-blur-md`}
       >
         <div class="text-xl xl:text-lg">Coming soon 🚀</div>

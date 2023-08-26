@@ -338,7 +338,7 @@
         </div>
         <div
           class={`rounded-[10px] xl:overflow-visible overflow-x-auto ${
-            darkMode ? "bg-[#131313]" : "border border_0000000d"
+            darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
           }`}
         >
           <table class="table-auto xl:w-full w-[1800px]">

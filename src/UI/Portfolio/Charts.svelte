@@ -754,7 +754,7 @@
     </div>
 
     <div
-      class={`xl:w-1/2 w-full rounded-[20px] p-6 ${
+      class={`xl:w-1/2 w-full rounded-[20px] p-6 relative ${
         darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
@@ -809,7 +809,7 @@
       {#if selectedChain === "XDAI" || getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center ${
-            darkMode ? "bg-[#110c2ae6]" : "bg-white/90"
+            darkMode ? "bg-[#222222e6]" : "bg-white/90"
           } z-30 backdrop-blur-md`}
         >
           <div class="text-xl xl:text-lg">Coming soon 🚀</div>
