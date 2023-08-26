@@ -32,6 +32,7 @@
       chart.setOption(
         {
           ...option,
+          backgroundColor: "transparent",
           textStyle: {
             fontFamily: "Golos Text",
             fontSize:
