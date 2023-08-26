@@ -211,7 +211,14 @@
           },
           data: itemData.holdingHistory.map((item, index) => [
             item.timestamp * 1000,
+<<<<<<< HEAD
             getChangePercent(item[valueField], baseData[valueField]),
+=======
+            getChangePercent(
+              (itemData.holdingHistory?.[index - 1] || baseData)[valueField],
+              baseData[valueField]
+            ),
+>>>>>>> main
           ]),
         };
       });
@@ -240,11 +247,13 @@
 
 <AnalyticSection>
   <span slot="title">
-    <div class="flex justify-start text-4xl font-medium xl:text-2xl">
-      Returns
-      <!-- <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
-        Risks & Returns
-      </TooltipTitle> -->
+    <div class="flex justify-start text-4xl font-medium text-black xl:text-2xl">
+      <TooltipTitle
+        tooltipText={"Approximate daily profit & loss based on current token holdings"}
+        isBigIcon
+      >
+        Daily PnL
+      </TooltipTitle>
     </div>
   </span>
 
