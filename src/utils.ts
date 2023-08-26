@@ -528,7 +528,7 @@ export const formatBalance = (input: number) => {
   return numeral(input).format("0,0.00") === "NaN" ? formatSmallBalance(input) : numeral(input).format("0,0.00")
 };
 
-export const checkFormatBalance = (input: number) => {
+export const formatPercent = (input: number) => {
   return numeral(input).format("0,0.00")
 }
 
@@ -537,7 +537,7 @@ export const formatSmallBalance = (input: number) => {
 };
 
 export const formatBigBalance = (input: number) => {
-  if (checkFormatBalance(input) === "NaN") {
+  if (formatPercent(input) === "NaN") {
     return {
       number_format: formatSmallBalance(input),
       number_size: ""

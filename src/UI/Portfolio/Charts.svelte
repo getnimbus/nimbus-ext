@@ -7,6 +7,7 @@
     getAddressContext,
     performanceTypeChartPortfolio,
     typePieChart,
+    formatPercent,
   } from "~/utils";
   import dayjs from "dayjs";
 
@@ -108,7 +109,7 @@
                   ${MultipleLang[params?.data?.name_ratio]}
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatCurrency(params?.value)}%
+                  ${formatPercent(params?.value)}%
                 </div>
               </div>
             </div>`;
@@ -385,7 +386,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.value >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${formatCurrency(Math.abs(item.value))}%
+                      ${formatPercent(Math.abs(item.value))}%
                       <img
                         src=${item.value >= 0 ? TrendUp : TrendDown}
                         alt=""
@@ -475,7 +476,7 @@
             extraCssText: "z-index: 9997",
             formatter: function (params) {
               return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 320px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
                 ${params[0].axisValue}
               </div>
@@ -487,7 +488,7 @@
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
                   </div>
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: #000;">
                       $${formatCurrency(Math.abs(item.value))}
                     </div>

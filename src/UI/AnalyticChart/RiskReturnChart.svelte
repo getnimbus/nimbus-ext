@@ -9,6 +9,7 @@
   } from "~/store";
   import {
     formatCurrency,
+    formatPercent,
     getAddressContext,
     getTooltipContent,
     sharpeRatioColorChart,
@@ -96,7 +97,7 @@
                   <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                     params.value[1] >= 0 ? "#05a878" : "#f25f5d"
                   };">
-                    ${params.value[1]}%
+                    ${formatPercent(params.value[1])}%
                   </div>
                 </div>
               </div>

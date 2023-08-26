@@ -2,11 +2,7 @@
   import { onMount } from "svelte";
   import { CountUp } from "countup.js";
   import numeral from "numeral";
-  import {
-    formatBigBalance,
-    checkFormatBalance,
-    formatCurrency,
-  } from "~/utils";
+  import { formatBigBalance, formatPercent, formatCurrency } from "~/utils";
 
   export let id;
   export let number;
@@ -100,7 +96,7 @@
     {#if numberSize !== "K"}
       <span>{numberSize}</span>
     {/if}
-    {#if showTooltip && ((numberSize && numberSize !== "K") || checkFormatBalance(number) === "NaN")}
+    {#if showTooltip && ((numberSize && numberSize !== "K") || formatPercent(number) === "NaN")}
       <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
         <tooltip-detail text={formatCurrency(number)} />
       </span>

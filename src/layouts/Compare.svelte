@@ -4,7 +4,7 @@
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
-  import { formatCurrency, typeList } from "~/utils";
+  import { formatCurrency, formatPercent, typeList } from "~/utils";
   import { groupBy } from "lodash";
   import { getChangePercent } from "~/chart-utils";
   import { useNavigate } from "svelte-navigator";
@@ -185,7 +185,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.data[1] >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${item.data[1]}%
+                      ${formatPercent(item.data[1])}%
                     </div>
                   </div>
                 </div>

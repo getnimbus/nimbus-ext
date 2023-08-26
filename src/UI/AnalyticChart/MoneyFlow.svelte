@@ -456,8 +456,9 @@
                     : "text-red-500"
                 }`}
               >
+                {#if sumData.inflow + sumData.outflow < 0}-{/if}
                 $<TooltipNumber
-                  number={sumData.inflow + sumData.outflow}
+                  number={Math.abs(sumData.inflow + sumData.outflow)}
                   type="balance"
                 />
               </div>

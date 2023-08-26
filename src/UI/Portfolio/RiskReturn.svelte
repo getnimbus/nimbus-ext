@@ -1,7 +1,7 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import {
-    formatCurrency,
+    formatPercent,
     getAddressContext,
     getTooltipContent,
     returnType,
@@ -476,7 +476,7 @@
                                 : "text-[#00A878]"
                             }`}
                           >
-                            {formatCurrency(Math.abs(item.percentChange))}%
+                            {formatPercent(Math.abs(item.percentChange))}%
                           </div>
                         </div>
                       {/each}

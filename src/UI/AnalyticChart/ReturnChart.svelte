@@ -7,7 +7,7 @@
     selectedPackage,
     isDarkMode,
   } from "~/store";
-  import { formatCurrency, getAddressContext } from "~/utils";
+  import { formatPercent, getAddressContext } from "~/utils";
   import dayjs from "dayjs";
   import { calculateVolatility, getChangePercent } from "~/chart-utils";
   import { createQuery } from "@tanstack/svelte-query";
@@ -78,7 +78,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.value[1] >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${formatCurrency(Math.abs(item.value[1]))}%
+                      ${formatPercent(Math.abs(item.value[1]))}%
                       <img
                         src=${item.value[1] >= 0 ? TrendUp : TrendDown} 
                         alt=""
@@ -243,7 +243,7 @@
 
 <AnalyticSection>
   <span slot="title">
-    <div class="flex justify-start text-4xl font-medium text-black xl:text-2xl">
+    <div class="flex justify-start text-4xl font-medium xl:text-2xl">
       <TooltipTitle
         tooltipText={"Approximate daily profit & loss based on current token holdings"}
         isBigIcon
