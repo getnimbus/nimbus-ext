@@ -16,7 +16,6 @@
   } from "~/types/AnalyticHistoricalData";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
-  import Heatmap from "~/components/Heatmap.svelte";
 
   export let packageSelected;
   export let darkMode;
