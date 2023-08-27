@@ -1,14 +1,9 @@
 <script lang="ts">
   import { wallet, chain, typeWallet } from "~/store";
   import dayjs from "dayjs";
-  import timezone from "dayjs/plugin/timezone";
-  dayjs.extend(timezone);
-  import utc from "dayjs/plugin/utc";
-  dayjs.extend(utc);
-
+  import { nimbus } from "~/lib/network";
   import { formatCurrency, getAddressContext } from "~/utils";
   import { createQuery } from "@tanstack/svelte-query";
-  import { nimbus } from "~/lib/network";
 
   import type {
     AnalyticHistoricalRes,
