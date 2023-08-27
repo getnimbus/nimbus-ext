@@ -53,7 +53,9 @@
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                darkMode ? "white" : "black"
+              }">
                 ${params[0].axisValue}
               </div>
               ${params
@@ -67,7 +69,9 @@
                     ${
                       item.seriesName.toLowerCase() !== "netflow"
                         ? `
-                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: #000; display: flex; align-items: centers; gap: 6px;">
+                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
+                      darkMode ? "white" : "black"
+                    }">
                       ${item.marker}  
                       <span style="color: ${
                         item.value >= 0 ? "#05a878" : "#f25f5d"
@@ -77,7 +81,9 @@
                     </div>
                     `
                         : `
-                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: #000; display: flex; align-items: centers; gap: 6px;">
+                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
+                      darkMode ? "white" : "black"
+                    }">
                       ${item.marker}  
                       ${item.seriesName} 
                     </div>
@@ -317,7 +323,9 @@
           formatter: function (params) {
             return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                darkMode ? "white" : "black"
+              }">
                 ${params[0].axisValue}
               </div>
               ${params
@@ -331,7 +339,9 @@
                     ${
                       item.seriesName.toLowerCase() !== "netflow"
                         ? `
-                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: #000; display: flex; align-items: centers; gap: 6px;">
+                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
+                      darkMode ? "white" : "black"
+                    }">
                       ${item.marker}  
                       <span style="color: ${
                         item.value >= 0 ? "#05a878" : "#f25f5d"
@@ -341,7 +351,9 @@
                     </div>
                     `
                         : `
-                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: #000; display: flex; align-items: centers; gap: 6px;">
+                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px;" color: ${
+                      darkMode ? "white" : "black"
+                    }>
                       ${item.marker}  
                       ${item.seriesName} 
                     </div>

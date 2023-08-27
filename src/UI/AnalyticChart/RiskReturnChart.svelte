@@ -85,11 +85,15 @@
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                darkMode ? "white" : "black"
+              }">
                 <span>${params?.marker}</span> ${params.seriesName}
               </div>
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                  darkMode ? "white" : "black"
+                }">
                   Return 
                 </div>
 
@@ -102,12 +106,16 @@
                 </div>
               </div>
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                  darkMode ? "white" : "black"
+                }">
                   Risk 
                 </div>
 
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
+                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                    darkMode ? "white" : "black"
+                  }">
                     ${Number(params.value[0]).toFixed(2)}
                   </div>
                 </div>
@@ -148,11 +156,15 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                  darkMode ? "white" : "black"
+                }">
                   <span>${params?.marker}</span> ${params?.data?.name}
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
+                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                    darkMode ? "white" : "black"
+                  }">
                     $${formatCurrency(Number(params?.data?.value))}
                   </div>
                 </div>
@@ -177,7 +189,9 @@
                   .map((item) => {
                     return `
                       <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                        <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                        <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                          darkMode ? "white" : "black"
+                        }">
                             <img src=${
                               item?.logo ||
                               "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
@@ -187,7 +201,9 @@
                     }
                         </div>
                         <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                          <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
+                          <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                            darkMode ? "white" : "black"
+                          }">
                            $${formatCurrency(
                              Number(item?.amount) * Number(item?.price?.price)
                            )}

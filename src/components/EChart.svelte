@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import * as echarts from "echarts";
+  import { isDarkMode } from "~/store";
 
   export let type = "default";
   export let id;
@@ -12,6 +13,11 @@
   export let notMerge = false;
   export let replaceMerge = undefined;
   export let lazyUpdate = false;
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let chart; // our chart instance
 
@@ -34,7 +40,7 @@
           ...option,
           tooltip: {
             ...(option?.tooltip || {}),
-            backgroundColor: "red", // TODO: Update me
+            backgroundColor: darkMode ? "#131313" : "#fff",
           },
           backgroundColor: "transparent",
           textStyle: {
