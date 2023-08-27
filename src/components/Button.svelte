@@ -91,7 +91,7 @@
   {/if}
 </button>
 
-<style>
+<style global>
   .button {
     width: 100%;
     display: flex;

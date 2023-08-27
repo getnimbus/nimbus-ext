@@ -203,9 +203,11 @@
           {#if packageSelected !== "FREE" && (getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL")}
             <div class="text-lg">Coming soon 🚀</div>
             <div class="w-max">
-              <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
-                <Button variant="secondary">Request analytics</Button>
-              </a>
+              <button
+                data-featurebase-feedback
+                class="button btn-container secondary small"
+                >Request analytics</button
+              >
             </div>
           {/if}
         </div>
