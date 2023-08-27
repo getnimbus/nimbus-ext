@@ -1,6 +1,11 @@
 <script lang="ts">
   import { wallet, chain, typeWallet } from "~/store";
   import dayjs from "dayjs";
+  import timezone from "dayjs/plugin/timezone";
+  dayjs.extend(timezone);
+  import utc from "dayjs/plugin/utc";
+  dayjs.extend(utc);
+
   import { formatCurrency, getAddressContext } from "~/utils";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
@@ -11,6 +16,7 @@
   } from "~/types/AnalyticHistoricalData";
 
   import CalendarChart from "~/components/CalendarChart.svelte";
+  import Heatmap from "~/components/Heatmap.svelte";
 
   export let packageSelected;
   export let darkMode;
@@ -29,6 +35,8 @@
   typeWallet.subscribe((value) => {
     typeWalletAddress = value;
   });
+
+  let heatMapData = [];
 
   let option = {
     tooltip: {
@@ -105,6 +113,15 @@
           dayjs(Number(item.date) * 1000).format("YYYY-MM-DD"),
           item.count,
         ];
+      });
+
+      heatMapData = data?.map((item) => {
+        return {
+          date: dayjs(new Date(Number(item.date) * 1000))
+            .utc()
+            .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+          value: item.count,
+        };
       });
 
       option = {
@@ -184,6 +201,8 @@
     id="historical-activities-analytic"
     type="normal"
   />
+
+  <Heatmap data={heatMapData} id="historical-activities-analytic" />
 </div>
 
 <style windi:preflights:global windi:safelist:global></style>
