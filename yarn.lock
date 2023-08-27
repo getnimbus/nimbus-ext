@@ -4389,13 +4389,13 @@ ecdsa-sig-formatter@1.0.11:
   dependencies:
     safe-buffer "^5.0.1"
 
-echarts@^5.4.1:
-  version "5.4.1"
-  resolved "https://registry.yarnpkg.com/echarts/-/echarts-5.4.1.tgz#d7f65a584d78beff62568d878b16151b3381811c"
-  integrity sha512-9ltS3M2JB0w2EhcYjCdmtrJ+6haZcW6acBolMGIuf01Hql1yrIV01L1aRj7jsaaIULJslEP9Z3vKlEmnJaWJVQ==
+echarts@^5.4.3:
+  version "5.4.3"
+  resolved "https://registry.yarnpkg.com/echarts/-/echarts-5.4.3.tgz#f5522ef24419164903eedcfd2b506c6fc91fb20c"
+  integrity sha512-mYKxLxhzy6zyTi/FaEbJMOZU1ULGEQHaeIeuMR5L+JnJTpz+YR03mnnpBhbR4+UYJAgiXgpyTVLffPAjOTLkZA==
   dependencies:
     tslib "2.3.0"
-    zrender "5.4.1"
+    zrender "5.4.4"
 
 eip1193-provider@^1.0.1:
   version "1.0.1"
@@ -8509,11 +8509,6 @@ svelte-dnd-action@^0.9.22:
   resolved "https://registry.yarnpkg.com/svelte-dnd-action/-/svelte-dnd-action-0.9.22.tgz#003eee9dddb31d8c782f6832aec8b1507fff194d"
   integrity sha512-lOQJsNLM1QWv5mdxIkCVtk6k4lHCtLgfE59y8rs7iOM6erchbLC9hMEFYSveZz7biJV0mpg7yDSs4bj/RT/YkA==
 
-svelte-heatmap@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/svelte-heatmap/-/svelte-heatmap-1.0.2.tgz#435fbadd409e8308a3f39070b67870f554acac14"
-  integrity sha512-qVsJj/Y/FQCjYJ2A7QU/v87FjGFjWqrTIb+qPumrudzH5w6D5WoubHF7Q2g38naJry4ADO1I0K29UuC86t5lJw==
-
 svelte-hmr@^0.15.1:
   version "0.15.1"
   resolved "https://registry.yarnpkg.com/svelte-hmr/-/svelte-hmr-0.15.1.tgz#d11d878a0bbb12ec1cba030f580cd2049f4ec86b"
@@ -9562,9 +9557,9 @@ zip-dir@2.0.0:
     async "^3.2.0"
     jszip "^3.2.2"
 
-zrender@5.4.1:
-  version "5.4.1"
-  resolved "https://registry.yarnpkg.com/zrender/-/zrender-5.4.1.tgz#892f864b885c71e1dc25dcb3c7a4ba42678d3f11"
-  integrity sha512-M4Z05BHWtajY2241EmMPHglDQAJ1UyHQcYsxDNzD9XLSkPDqMq4bB28v9Pb4mvHnVQ0GxyTklZ/69xCFP6RXBA==
+zrender@5.4.4:
+  version "5.4.4"
+  resolved "https://registry.yarnpkg.com/zrender/-/zrender-5.4.4.tgz#8854f1d95ecc82cf8912f5a11f86657cb8c9e261"
+  integrity sha512-0VxCNJ7AGOMCWeHVyTrGzUgrK4asT4ml9PEkeGirAkKNYXYzoPJCLvmyfdoOXcjTHPs10OZVMfD1Rwg16AZyYw==
   dependencies:
     tslib "2.3.0"

@@ -36,8 +36,6 @@
     typeWalletAddress = value;
   });
 
-  let heatMapData = [];
-
   let option = {
     tooltip: {
       extraCssText: "z-index: 9997",
@@ -113,13 +111,6 @@
           dayjs(Number(item.date) * 1000).format("YYYY-MM-DD"),
           item.count,
         ];
-      });
-
-      heatMapData = data?.map((item) => {
-        return {
-          date: dayjs.unix(item.date).toDate(),
-          value: item.count,
-        };
       });
 
       option = {
@@ -199,8 +190,6 @@
     id="historical-activities-analytic"
     type="normal"
   />
-
-  <Heatmap data={heatMapData} id="historical-activities-analytic" />
 </div>
 
 <style windi:preflights:global windi:safelist:global></style>
