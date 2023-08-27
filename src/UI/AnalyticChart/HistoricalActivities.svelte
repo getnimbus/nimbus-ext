@@ -117,9 +117,7 @@
 
       heatMapData = data?.map((item) => {
         return {
-          date: dayjs(new Date(Number(item.date) * 1000))
-            .utc()
-            .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+          date: dayjs.unix(item.date).toDate(),
           value: item.count,
         };
       });
