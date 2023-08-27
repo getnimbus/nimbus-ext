@@ -144,21 +144,19 @@
                   style="visibility: visible; opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: opacity 2.8s cubic-bezier(0.5, 0, 0, 1) 0s, transform 2.8s cubic-bezier(0.5, 0, 0, 1) 0s;"
                 >
                   <div class="flex items-center justify-end">
-                    <a
-                      class="inline-flex items-center gap-2.5 font-medium text-white bg-black rounded-full py-3 px-6"
-                      href={`/compare?address=${encodeURIComponent(
-                        selectedWallet
-                      )}`}
-                      on:click|preventDefault={() => {
-                        navigate(
-                          `/compare?address=${encodeURIComponent(
-                            selectedWallet
-                          )}`
-                        );
-                      }}
-                    >
-                      Get suggestion
-                    </a>
+                    <div class="xl:w-[164px] w-max">
+                      <Button
+                        on:click={() => {
+                          navigate(
+                            `/compare?address=${encodeURIComponent(
+                              selectedWallet
+                            )}`
+                          );
+                        }}
+                      >
+                        <div class="xl:text-base text-2xl">Get suggestion</div>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>

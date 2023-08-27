@@ -1413,8 +1413,6 @@
 
 <style>
   .header {
-    background-image: url("~/assets/capa.svg");
-    background-color: #27326f;
     background-repeat: no-repeat;
     background-size: auto;
     background-position: top right;
@@ -1427,7 +1425,7 @@
     background-image: url("~/assets/capa.svg");
   }
   :global(body.dark) .header-container {
-    background: #080808;
+    background-color: #080808;
     background-image: url("~/assets/capa-dark.svg");
   }
 

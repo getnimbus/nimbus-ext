@@ -761,6 +761,13 @@
       );
     }
   }
+
+  $: console.log(
+    "hello: ",
+    formatListAddress
+      .slice(5, formatListAddress.length)
+      .find((item) => item.value === selectedWallet)
+  );
 </script>
 
 {#if $query.isFetching && formatListAddress && formatListAddress?.length === 0}
@@ -897,15 +904,26 @@
                           </div>
                         {/each}
                       </AnimateSharedLayout>
-                      <Select
-                        type="wallet"
-                        positionSelectList="right-0"
-                        listSelect={formatListAddress.slice(
-                          5,
-                          formatListAddress.length
-                        )}
-                        bind:selected={selectedWallet}
-                      />
+                      <div class="relative">
+                        <div class="relative z-10">
+                          <Select
+                            type="wallet"
+                            positionSelectList="right-0"
+                            listSelect={formatListAddress.slice(
+                              5,
+                              formatListAddress.length
+                            )}
+                            bind:selected={selectedWallet}
+                          />
+                        </div>
+                        {#if formatListAddress
+                          .slice(5, formatListAddress.length)
+                          .find((item) => item.value === selectedWallet) !== undefined}
+                          <div
+                            class="absolute inset-0 rounded-full bg-[#ffffff1c] z-1"
+                          />
+                        {/if}
+                      </div>
                     {:else}
                       <AnimateSharedLayout>
                         {#each formatListAddress as item}
@@ -1718,7 +1736,7 @@
     background-image: url("~/assets/capa.svg");
   }
   :global(body.dark) .header-container {
-    background: #080808;
+    background-color: #080808;
     background-image: url("~/assets/capa-dark.svg");
   }
 
