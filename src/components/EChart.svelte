@@ -32,6 +32,10 @@
       chart.setOption(
         {
           ...option,
+          tooltip: {
+            ...(option?.tooltip || {}),
+            backgroundColor: "red", // TODO: Update me
+          },
           backgroundColor: "transparent",
           textStyle: {
             fontFamily: "Golos Text",
