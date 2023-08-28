@@ -208,10 +208,6 @@ export const returnType = [
 
 export const timeFrame = [
   {
-    label: "1D",
-    value: "1D",
-  },
-  {
     label: "7D",
     value: "7D",
   },
