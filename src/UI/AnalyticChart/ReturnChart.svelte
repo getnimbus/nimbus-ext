@@ -1,7 +1,13 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { wallet, chain, typeWallet, selectedPackage } from "~/store";
-  import { formatCurrency, formatCurrencyV2, getAddressContext } from "~/utils";
+  import {
+    wallet,
+    chain,
+    typeWallet,
+    selectedPackage,
+    isDarkMode,
+  } from "~/store";
+  import { formatPercent, getAddressContext } from "~/utils";
   import dayjs from "dayjs";
   import { calculateVolatility, getChangePercent } from "~/chart-utils";
   import { createQuery } from "@tanstack/svelte-query";
@@ -18,6 +24,12 @@
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import Logo from "~/assets/logo-1.svg";
+  import LogoWhite from "~/assets/logo-white.svg";
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -50,14 +62,18 @@
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                darkMode ? "white" : "black"
+              }">
                 ${dayjs(params[0].axisValueLabel).format("YYYY-MM-DD")}
               </div>
               ${params
                 .map((item) => {
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                    darkMode ? "white" : "black"
+                  }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
                   </div>
@@ -66,7 +82,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.value[1] >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${formatCurrency(Math.abs(item.value[1]))}%
+                      ${formatPercent(Math.abs(item.value[1]))}%
                       <img
                         src=${item.value[1] >= 0 ? TrendUp : TrendDown} 
                         alt=""
@@ -225,11 +241,13 @@
   $: isReturn30Higher =
     data?.base?.netWorthChange?.networth30D >
     data?.btc?.netWorthChange?.networth30D;
+
+  $: theme = darkMode ? "dark" : "white";
 </script>
 
 <AnalyticSection>
   <span slot="title">
-    <div class="flex justify-start text-4xl font-medium text-black xl:text-2xl">
+    <div class="flex justify-start text-4xl font-medium xl:text-2xl">
       <TooltipTitle
         tooltipText={"Approximate daily profit & loss based on current token holdings"}
         isBigIcon
@@ -241,9 +259,7 @@
 
   <span slot="overview" class="relative">
     {#if !$query.isFetching}
-      <div class="mb-4 text-3xl font-medium text-black xl:text-xl">
-        Overview
-      </div>
+      <div class="mb-4 text-3xl font-medium xl:text-xl">Overview</div>
     {/if}
     {#if $query.isFetching}
       <div class="flex items-center justify-center h-[465px]">
@@ -253,7 +269,9 @@
       <div class="h-full">
         {#if $query.isError}
           <div
-            class="absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 bg-white/95 z-30 backdrop-blur-md xl:text-xs text-lg"
+            class={`absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 ${
+              darkMode ? "bg-black/95" : "bg-white/95"
+            } z-30 backdrop-blur-md xl:text-xs text-lg`}
           >
             {#if typeWalletAddress === "CEX"}
               Not enough data. CEX integration can only get data from the day
@@ -266,9 +284,7 @@
           <div class="flex flex-col gap-4">
             <div class="grid grid-cols-2">
               <div class="col-span-1">
-                <div
-                  class="flex justify-start text-2xl text-black xl:text-base"
-                >
+                <div class="flex justify-start text-2xl xl:text-base">
                   Return 1D
                 </div>
               </div>
@@ -304,9 +320,7 @@
 
             <div class="grid grid-cols-2">
               <div class="col-span-1">
-                <div
-                  class="flex justify-start text-2xl text-black xl:text-base"
-                >
+                <div class="flex justify-start text-2xl xl:text-base">
                   Return 7D
                 </div>
               </div>
@@ -342,9 +356,7 @@
 
             <div class="grid grid-cols-2">
               <div class="col-span-1">
-                <div
-                  class="flex justify-start text-2xl text-black xl:text-base"
-                >
+                <div class="flex justify-start text-2xl xl:text-base">
                   Return 30D
                 </div>
               </div>
@@ -380,9 +392,7 @@
 
             <div class="grid grid-cols-2">
               <div class="col-span-1">
-                <div
-                  class="flex justify-start text-2xl text-black xl:text-base"
-                >
+                <div class="flex justify-start text-2xl xl:text-base">
                   Return 1Y
                 </div>
               </div>
@@ -418,9 +428,7 @@
 
             <div class="grid grid-cols-2">
               <div class="col-span-1">
-                <div
-                  class="flex justify-start text-2xl text-black xl:text-base"
-                >
+                <div class="flex justify-start text-2xl xl:text-base">
                   Return Lifetime
                 </div>
               </div>
@@ -494,7 +502,7 @@
           <div class="relative">
             <EChart
               id="return-chart-analytic"
-              theme="white"
+              {theme}
               notMerge={true}
               option={optionBar}
               height={465}
@@ -502,7 +510,12 @@
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >
-              <img src={Logo} alt="" width="140" height="140" />
+              <img
+                src={darkMode ? LogoWhite : Logo}
+                alt=""
+                width="140"
+                height="140"
+              />
             </div>
           </div>
         {/if}

@@ -473,7 +473,7 @@
                             class="border-none focus:outline-none focus:ring-0 bg-white"
                           />
                         {:else}
-                          <div class="text-sm font-medium text-black">
+                          <div class="text-black text-sm font-medium">
                             {#if addressLabel}
                               {addressLabel === address
                                 ? shorterAddress(addressLabel)
@@ -720,7 +720,7 @@
                             <td class="pl-4 py-2 w-[200px]">
                               <div class="relative">
                                 <div
-                                  class="text-black text-sm font-medium flex justify-start"
+                                  class="text-sm text-black font-medium flex justify-start"
                                 >
                                   {#if item?.collectionName.length > 20}
                                     <span

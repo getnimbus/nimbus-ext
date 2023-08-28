@@ -22,7 +22,7 @@
 </script>
 
 <div
-  class="border border-[#0000000d] rounded-[10px] px-1 pt-1 pb-3 flex flex-col gap-2"
+  class="border border_0000000d rounded-[10px] px-1 pt-1 pb-3 flex flex-col gap-2"
 >
   <div class="rounded-[10px] overflow-hidden xl:h-[270px] h-[470px]">
     <img

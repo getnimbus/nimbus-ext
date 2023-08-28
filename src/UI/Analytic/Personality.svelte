@@ -228,14 +228,12 @@
   }
 </script>
 
-<div class="border border-[#0000001a] rounded-[20px] p-6">
-  <div
-    class="xl:text-2xl text-4xl font-medium text-black border-b-[1px] mb-6 pb-4"
-  >
+<div class="border border_0000001a rounded-[20px] p-6">
+  <div class="xl:text-2xl text-4xl font-medium border-b-[1px] mb-6 pb-4">
     Personality
   </div>
   <div class="flex flex-col gap-6">
-    <div class="pb-9 pt-7 border border-[#0000001a] rounded-[20px]">
+    <div class="pb-9 pt-7 border border_0000001a rounded-[20px]">
       <CalendarChart
         {option}
         isEmptyDataChart={$query.isError}

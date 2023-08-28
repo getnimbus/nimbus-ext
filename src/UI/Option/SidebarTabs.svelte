@@ -11,11 +11,13 @@
 
   import Icon from "~/UI/Option/Icon.svelte";
 
-  import logo from "../../assets/logo-1.svg";
+  import Logo from "../../assets/logo-1.svg";
+  import LogoWhite from "~/assets/logo-white.svg";
 
   export let activeTabValue;
+  export let darkMode;
 
-  let items = [
+  const items = [
     {
       label: i18n("optionsPage.tab-title-accounts", "Accounts"),
       value: "wallets",
@@ -68,9 +70,14 @@
         });
 </script>
 
-<Sidebar asideClass="bg-gray-50">
-  <SidebarWrapper>
-    <img src={logo} alt="logo" class="mb-4 mx-auto" width={150} />
+<Sidebar asideClass="h-full">
+  <SidebarWrapper divClass={`${darkMode ? "bg-[#080808]" : "bg-gray-50"}`}>
+    <img
+      src={darkMode ? LogoWhite : Logo}
+      alt=""
+      class="mb-4 mx-auto"
+      width={150}
+    />
     <SidebarGroup>
       {#each listSideBar as item}
         <SidebarItem
@@ -78,13 +85,14 @@
           on:click={(e) => handleClick(e, item.value)}
           active={activeTabValue === item.value}
           spanClass={`text-lg pl-2 ${
-            activeTabValue === item.value ? "text-blue-500" : "text-black"
+            activeTabValue === item.value ? "text-blue-500" : ""
           }`}
         >
           <svelte:fragment slot="icon">
             <Icon
               type={item.type}
               active={activeTabValue === item.value ? true : false}
+              {darkMode}
             />
           </svelte:fragment>
         </SidebarItem>

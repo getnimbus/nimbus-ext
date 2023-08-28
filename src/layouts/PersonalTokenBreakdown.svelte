@@ -8,23 +8,26 @@
   import { nimbus } from "~/lib/network";
   import { groupBy, flatten, omit } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { Toast } from "flowbite-svelte";
+  import { Toast, Progressbar } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { isDarkMode } from "~/store";
 
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
   import Copy from "~/components/Copy.svelte";
   import Button from "~/components/Button.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
+  import TokenHoldingTable from "~/UI/PersonalTokenBreakdown/TokenHoldingTable.svelte";
   import "~/components/Loading.custom.svelte";
   import "~/components/Tooltip.custom.svelte";
-  import TokenHoldingTable from "~/UI/PersonalTokenBreakdown/TokenHoldingTable.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
   import Edit from "~/assets/edit.svg";
   import Plus from "~/assets/plus.svg";
+  import PlusBlack from "~/assets/plus-black.svg";
 
   const MultipleLang = {
     assets: i18n("newtabPage.assets", "Assets"),
@@ -58,6 +61,14 @@
   let isScrollStart = true;
   let isScrollEnd = false;
   let container;
+
+  let isOpenConfirmDelete = false;
+  let isLoadingDelete = false;
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   const handleScroll = () => {
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
@@ -277,6 +288,7 @@
   };
 
   const deleteCustomCategory = async () => {
+    isLoadingDelete = true;
     try {
       const response = await nimbus.delete(
         `/address/${selectedWallet}/personalize/tag?category=${selectedCustom.category}`,
@@ -284,6 +296,8 @@
       );
 
       isAddCustom = false;
+      isLoadingDelete = false;
+      isOpenConfirmDelete = false;
       listCustom = [];
       selectedTokenList = [];
       handleResetState();
@@ -298,6 +312,8 @@
         "Something wrong when delete your custom category. Please try again!";
       isSuccessToast = false;
       trigger();
+      isLoadingDelete = false;
+      isOpenConfirmDelete = false;
     }
   };
 
@@ -500,7 +516,7 @@
 </script>
 
 <ErrorBoundary>
-  <div class="header-container">
+  <div class="header header-container">
     <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
       <div class="flex flex-col mb-5 gap-14">
         <div class="flex items-center justify-between">
@@ -532,16 +548,20 @@
   </div>
 
   <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
-    <div class="bg-white rounded-[20px] xl:p-8 xl:shadow-md">
+    <div
+      class="custom_token_breakdown_container rounded-[20px] xl:p-8 xl:shadow-md"
+    >
       <div
-        class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
+        class={`rounded-[20px] p-6 flex flex-col gap-4 bg-red-500 ${
+          darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+        }`}
       >
-        <div class="xl:text-2xl text-4xl font-medium text-black">
+        <div class="xl:text-2xl text-4xl font-medium">
           Custom Token Breakdown
         </div>
 
         {#if listCustom.length === 0}
-          <div class="flex justify-between">
+          <div class="flex justify-between items-center">
             <div class="text-lg">
               Add your custom token breakdown to keep track of investments by
               your way.
@@ -663,8 +683,10 @@
             <div class="flex items-center gap-4 w-max">
               {#if selectedCustom && selectedCustom !== null && Object.keys(selectedCustom).length !== 0}
                 <div
-                  class="text-red-500 cursor-pointer"
-                  on:click={deleteCustomCategory}
+                  class="text-red-500 font-semibold cursor-pointer xl:text-base text-2xl"
+                  on:click={() => {
+                    isOpenConfirmDelete = true;
+                  }}
                 >
                   Delete
                 </div>
@@ -685,8 +707,19 @@
                 <div class="w-max">
                   {#if listCustom.length > 2}
                     <Button variant="disabled" disabled>
-                      <img src={Plus} alt="" width="12" height="12" />
-                      <div class="font-medium text-white">Add Category</div>
+                      <img
+                        src={darkMode ? PlusBlack : Plus}
+                        alt=""
+                        width="12"
+                        height="12"
+                      />
+                      <div
+                        class={` font-medium ${
+                          darkMode ? "text-gray-400" : "text-white"
+                        }`}
+                      >
+                        Add Category
+                      </div>
                     </Button>
                   {:else}
                     <Button
@@ -718,7 +751,7 @@
           <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-6">
             <div
               class={`flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
-                formData.category ? "bg-[#F0F2F7]" : ""
+                formData.category && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
               }`}
             >
               <div class="xl:text-base text-xl text-[#666666] font-medium">
@@ -727,8 +760,11 @@
               <input
                 type="text"
                 placeholder="Your category name"
+                required
                 class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                  formData.category ? "bg-[#F0F2F7]" : ""
+                  formData.category && !darkMode
+                    ? "bg-[#F0F2F7]"
+                    : "bg-transparent"
                 }`}
                 bind:value={formData.category}
                 on:blur={() => {
@@ -752,7 +788,7 @@
                     <div class="w-[600px] h-10">
                       <div
                         class={`flex justify-between gap-1 border bg-white focus:outline-none w-full py-[6px] px-3 rounded-t-lg ${
-                          query ? "bg-[#F0F2F7]" : ""
+                          query && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
                         } ${
                           showSuggestListTag ? "rounded-none" : "rounded-b-lg"
                         }`}
@@ -761,7 +797,9 @@
                           type="text"
                           placeholder="Your tag name"
                           class={`flex-1 p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                            query ? "bg-[#F0F2F7]" : ""
+                            query && !darkMode
+                              ? "bg-[#F0F2F7]"
+                              : "bg-transparent"
                           }`}
                           on:focus={() => {
                             showSuggestListTag = true;
@@ -801,7 +839,9 @@
                       {#if showSuggestListTag}
                         <div class="relative w-full">
                           <div
-                            class="absolute top-0 left-0 flex flex-col gap-1 border-b border-x-[1px] w-full bg-white text-[#5E656B] rounded-b-lg py-2 px-3 z-50"
+                            class={`absolute top-0 left-0 flex flex-col gap-1 border-b border-x-[1px] w-full ${
+                              darkMode ? "bg-[#212121]" : "bg-white"
+                            } text-[#5E656B] rounded-b-lg py-2 px-3 z-50`}
                           >
                             <div class="xl:text-xs text-base">
                               Select an option or create one
@@ -809,67 +849,83 @@
                             <div class="flex flex-col gap-2">
                               {#each filteredListTag as item}
                                 <div
-                                  class="xl:text-sm text-lg px-2 py-1 rounded-lg hover:bg-[#F0F2F7] cursor-pointer flex justify-between"
-                                  class:bg-[#F0F2F7]={editTag &&
-                                    editTag === item}
+                                  class={`rounded-lg ${
+                                    editTag && editTag === item
+                                      ? darkMode
+                                        ? "bg-[#00000033]"
+                                        : "bg-[#F0F2F7]"
+                                      : ""
+                                  }`}
                                 >
-                                  {#if editTag && editTag === item}
-                                    <div class="flex justify-between w-full">
-                                      <div class="flex-1">
-                                        <input
-                                          type="text"
-                                          placeholder="Your category name"
-                                          class={`bg-[#F0F2F7] p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] w-full`}
-                                          bind:value={tag}
-                                          on:keyup={({ target: { value } }) =>
-                                            (tag = value)}
-                                        />
-                                      </div>
-                                      <div class="flex items-center gap-2">
-                                        <div
-                                          class="xl:text-sm text-base font-medium w-max text-[#1e96fc] cursor-pointer"
-                                          on:click={() => {
-                                            updatePersonalizeTag(
-                                              selectedWallet,
-                                              formData.category,
-                                              tag,
-                                              editTag
-                                            );
-                                          }}
-                                        >
-                                          Save
+                                  <div
+                                    class={`xl:text-sm text-lg px-2 py-1 rounded-lg cursor-pointer flex justify-between ${
+                                      darkMode
+                                        ? "hover:bg-[#00000033]"
+                                        : "hover:bg-[#F0F2F7]"
+                                    }`}
+                                  >
+                                    {#if editTag && editTag === item}
+                                      <div class="flex justify-between w-full">
+                                        <div class="flex-1">
+                                          <input
+                                            type="text"
+                                            placeholder="Your category name"
+                                            class={`bg-transparent p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] w-full`}
+                                            bind:value={tag}
+                                            on:keyup={({ target: { value } }) =>
+                                              (tag = value)}
+                                          />
                                         </div>
-                                        <div
-                                          class="xl:text-sm text-base font-medium w-max text-red-500 cursor-pointer"
-                                          on:click={() => {
-                                            editTag = "";
-                                            tag = "";
-                                          }}
-                                        >
-                                          Cancel
+                                        <div class="flex items-center gap-2">
+                                          <div
+                                            class="xl:text-sm text-base font-medium w-max text-[#1e96fc] cursor-pointer"
+                                            on:click={() => {
+                                              updatePersonalizeTag(
+                                                selectedWallet,
+                                                formData.category,
+                                                tag,
+                                                editTag
+                                              );
+                                            }}
+                                          >
+                                            Save
+                                          </div>
+                                          <div
+                                            class="xl:text-sm text-base font-medium w-max text-red-500 cursor-pointer"
+                                            on:click={() => {
+                                              editTag = "";
+                                              tag = "";
+                                            }}
+                                          >
+                                            Cancel
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  {:else}
-                                    <div
-                                      class="w-full"
-                                      on:click={() => {
-                                        showSuggestListTag = false;
-                                        query = item;
-                                      }}
-                                    >
-                                      {item}
-                                    </div>
-                                    <div
-                                      class="flex justify-center items-center px-2 hover:bg-gray-200 rounded"
-                                      on:click={() => {
-                                        editTag = item;
-                                        tag = item;
-                                      }}
-                                    >
-                                      <img src={Edit} alt="" />
-                                    </div>
-                                  {/if}
+                                    {:else}
+                                      <div
+                                        class="w-full"
+                                        on:click={() => {
+                                          showSuggestListTag = false;
+                                          query = item;
+                                        }}
+                                      >
+                                        {item}
+                                      </div>
+                                      <div
+                                        class={`flex justify-center items-center px-2 rounded ${
+                                          darkMode
+                                            ? "hover:bg-[#222222]"
+                                            : "hover:bg-gray-200"
+                                        }`}
+                                        on:click={() => {
+                                          editTag = item;
+                                          tag = item;
+                                        }}
+                                      >
+                                        <img src={Edit} alt="" />
+                                      </div>
+                                    {/if}
+                                  </div>
                                 </div>
                               {/each}
 
@@ -887,7 +943,11 @@
                                     Create
                                   </div>
                                   <div
-                                    class="py-1 px-2 rounded-lg hover:bg-[#F0F2F7] flex-1"
+                                    class={`py-1 px-2 rounded-lg flex-1 ${
+                                      darkMode
+                                        ? "hover:bg-[#00000066]"
+                                        : "hover:bg-[#F0F2F7]"
+                                    }`}
                                   >
                                     {query}
                                   </div>
@@ -916,7 +976,7 @@
                 <div class="text-right">
                   <div
                     class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
-                      searchValue ? "bg-[#F0F2F7]" : "bg-white"
+                      searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
                     }`}
                   >
                     <input
@@ -924,7 +984,9 @@
                       placeholder={"Find by token name"}
                       type="text"
                       class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                        searchValue ? "bg-[#F0F2F7]" : ""
+                        searchValue && !darkMode
+                          ? "bg-[#F0F2F7]"
+                          : "bg-transparent"
                       }`}
                     />
                   </div>
@@ -932,50 +994,52 @@
               </div>
 
               <div
-                class="border border-[#0000000d] rounded-[10px] xl:overflow-visible overflow-x-auto min-h-[600px]"
+                class={`rounded-[10px] xl:overflow-visible overflow-x-auto min-h-[600px] ${
+                  darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+                }`}
               >
                 <table class="table-auto xl:w-full w-[1400px]">
                   <thead
                     class={isStickyTableToken ? "sticky top-0 z-10" : ""}
                     bind:this={tableTokenHeader}
                   >
-                    <tr class="bg-[#f4f5f8]">
+                    <tr class="bg_f4f5f8">
                       <th
-                        class="py-3 w-10 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
+                        class="py-3 w-10 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
                       />
                       <th
-                        class="py-3 xl:static xl:bg-transparent sticky left-10 z-10 bg-[#f4f5f8] xl:w-[230px] w-[280px]"
+                        class="py-3 xl:static xl:bg-transparent sticky left-10 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
                       >
                         <div
-                          class="text-left xl:text-xs text-base uppercase font-medium text-black"
+                          class="text-left xl:text-xs text-base uppercase font-medium"
                         >
                           {MultipleLang.assets}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                          class="text-right xl:text-xs text-base uppercase font-medium"
                         >
                           {MultipleLang.price}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                          class="text-right xl:text-xs text-base uppercase font-medium"
                         >
                           {MultipleLang.amount}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                          class="text-right xl:text-xs text-base uppercase font-medium"
                         >
                           {MultipleLang.value}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium text-black"
+                          class="text-right xl:text-xs text-base uppercase font-medium"
                         >
                           <TooltipTitle
                             tooltipText="Ratio based on total token holding"
@@ -984,9 +1048,9 @@
                           </TooltipTitle>
                         </div>
                       </th>
-                      <th class="py-3 pr-3">
+                      <th class="py-3 pr-3 rounded-tr-[10px]">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium text-black flex items-center justify-end gap-2"
+                          class="text-right xl:text-xs text-base uppercase font-medium flex items-center justify-end gap-2"
                         >
                           Tag
                           <div
@@ -1034,7 +1098,11 @@
                         {#each searchDataResult as data}
                           <tr class="group transition-all">
                             <td
-                              class="py-3 w-10 group-hover:bg-gray-100 xl:static xl:bg-transparent sticky left-0 z-10 bg-white"
+                              class={`py-3 w-10 xl:static xl:bg-transparent sticky left-0 z-9 ${
+                                darkMode
+                                  ? "bg-[#131313] group-hover:bg-[#00000033]"
+                                  : "bg-white group-hover:bg-gray-100"
+                              }`}
                             >
                               <div class="flex justify-center">
                                 <input
@@ -1049,7 +1117,11 @@
                             </td>
 
                             <td
-                              class="py-3 xl:static xl:bg-transparent sticky left-10 z-9 bg-white xl:w-[230px] w-[280px] group-hover:bg-gray-100"
+                              class={`py-3 xl:static xl:bg-transparent sticky left-10 z-9 xl:w-[230px] w-[280px] ${
+                                darkMode
+                                  ? "bg-[#131313] group-hover:bg-[#00000033]"
+                                  : "bg-white group-hover:bg-gray-100"
+                              }`}
                             >
                               <div class="text-left flex items-center gap-3">
                                 <div class="relative">
@@ -1074,7 +1146,7 @@
                                 </div>
                                 <div class="flex flex-col gap-1">
                                   <div
-                                    class="text-black xl:text-sm text-xl font-medium relative"
+                                    class=" xl:text-sm text-xl font-medium relative"
                                     on:mouseover={() => {
                                       if (data?.name?.length > 20) {
                                         selectedHover = data.name;
@@ -1105,7 +1177,7 @@
                                     {/if}
                                   </div>
                                   <div
-                                    class="text-[#00000080] text-xs font-medium relative"
+                                    class="text_00000080 text-xs font-medium relative"
                                     on:mouseover={() => {
                                       if (data?.symbol?.length > 20) {
                                         selectedHover = data.symbol;
@@ -1137,9 +1209,15 @@
                               </div>
                             </td>
 
-                            <td class="py-3 group-hover:bg-gray-100">
+                            <td
+                              class={`py-3 ${
+                                darkMode
+                                  ? "group-hover:bg-[#00000033]"
+                                  : "group-hover:bg-gray-100"
+                              }`}
+                            >
                               <div
-                                class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                                class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
                               >
                                 $<TooltipNumber
                                   number={data.market_price}
@@ -1148,9 +1226,15 @@
                               </div>
                             </td>
 
-                            <td class="py-3 group-hover:bg-gray-100">
+                            <td
+                              class={`py-3 ${
+                                darkMode
+                                  ? "group-hover:bg-[#00000033]"
+                                  : "group-hover:bg-gray-100"
+                              }`}
+                            >
                               <div
-                                class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                                class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
                               >
                                 <TooltipNumber
                                   number={data.amount}
@@ -1159,9 +1243,15 @@
                               </div>
                             </td>
 
-                            <td class="py-3 group-hover:bg-gray-100">
+                            <td
+                              class={`py-3 ${
+                                darkMode
+                                  ? "group-hover:bg-[#00000033]"
+                                  : "group-hover:bg-gray-100"
+                              }`}
+                            >
                               <div
-                                class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                                class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
                               >
                                 $<TooltipNumber
                                   number={data?.amount * data?.market_price}
@@ -1170,23 +1260,50 @@
                               </div>
                             </td>
 
-                            <td class="py-3 group-hover:bg-gray-100">
+                            <td
+                              class={`py-3 ${
+                                darkMode
+                                  ? "group-hover:bg-[#00000033]"
+                                  : "group-hover:bg-gray-100"
+                              }`}
+                            >
                               <div
-                                class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                                class="flex flex-col gap-1 justify-end items-end"
                               >
-                                <TooltipNumber
-                                  number={((data?.amount * data?.market_price) /
-                                    sumTokens) *
-                                    100}
-                                  type="percent"
-                                />%
+                                <div
+                                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                                >
+                                  <TooltipNumber
+                                    number={((data?.amount *
+                                      data?.market_price) /
+                                      sumTokens) *
+                                      100}
+                                    type="percent"
+                                  />%
+                                </div>
+                                <div class="w-3/4 max-w-40">
+                                  <Progressbar
+                                    progress={Number(
+                                      ((data?.amount * data?.market_price) /
+                                        sumTokens) *
+                                        100
+                                    )}
+                                    size="h-1"
+                                  />
+                                </div>
                               </div>
                             </td>
 
-                            <td class="py-3 pr-3 group-hover:bg-gray-100">
+                            <td
+                              class={`pr-3 py-3 ${
+                                darkMode
+                                  ? "group-hover:bg-[#00000033]"
+                                  : "group-hover:bg-gray-100"
+                              }`}
+                            >
                               <div class="flex justify-end">
                                 <div
-                                  class="bg-[#6AC7F533] text-[#27326F] xl:text-sm text-xl w-max px-3 py-1 rounded-[5px]"
+                                  class="bg-[#6AC7F533] text_27326F xl:text-sm text-xl w-max px-3 py-1 rounded-[5px]"
                                 >
                                   {data.tag}
                                 </div>
@@ -1254,16 +1371,77 @@
     </svelte:fragment>
     {toastMsg}
   </Toast>
+
+  <!-- Modal confirm delete account -->
+  <AppOverlay
+    clickOutSideToClose
+    isOpen={isOpenConfirmDelete}
+    on:close={() => (isOpenConfirmDelete = false)}
+  >
+    <div class="flex flex-col gap-1 items-start">
+      <div class="xl:title-3 title-1 font-semibold">Are you sure?</div>
+      <div class="xl:text-sm text-lg text-gray-500">
+        "Do you really want to delete this custom token breakdown? This process
+        cannot revert
+      </div>
+    </div>
+    <div class="flex justify-end lg:gap-2 gap-6 mt-4">
+      <div class="lg:w-[120px] w-full h-[36px]">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            isOpenConfirmDelete = false;
+          }}
+        >
+          Cancel
+        </Button>
+      </div>
+      <div class="lg:w-[120px] w-full h-[36px]">
+        <Button
+          variant="delete"
+          isLoading={isLoadingDelete}
+          on:click={() => {
+            deleteCustomCategory();
+          }}
+        >
+          Delete
+        </Button>
+      </div>
+    </div>
+  </AppOverlay>
 </ErrorBoundary>
 
 <style>
-  .header-container {
-    background-image: url("~/assets/capa.svg");
-    background-color: #27326f;
+  .header {
     background-repeat: no-repeat;
     background-size: auto;
     background-position: top right;
     padding-bottom: 144px;
     padding-top: 24px;
+  }
+
+  :global(body) .header-container {
+    background-color: #27326f;
+    background-image: url("~/assets/capa.svg");
+  }
+  :global(body.dark) .header-container {
+    background-color: #080808;
+    background-image: url("~/assets/capa-dark.svg");
+  }
+
+  :global(body) .custom_token_breakdown_container {
+    background: #fff;
+    box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
+  }
+  :global(body.dark) .custom_token_breakdown_container {
+    background: #0f0f0f;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
+  }
+
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
   }
 </style>

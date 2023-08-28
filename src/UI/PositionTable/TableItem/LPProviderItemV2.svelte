@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { isDarkMode } from "~/store";
+
   import "~/components/Tooltip.custom.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
@@ -6,6 +8,11 @@
   import TrendDown from "~/assets/trend-down.svg";
 
   export let data;
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let showTooltip = false;
 
@@ -23,7 +30,11 @@
 
 <tr class="group transition-all">
   <td
-    class="pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 bg-white group-hover:bg-gray-100"
+    class={`pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 ${
+      darkMode
+        ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+        : "bg-white group-hover:bg-gray-100"
+    }`}
   >
     <div class="text-left flex flex-col items-start gap-2">
       <div class="flex space-x-3">
@@ -38,15 +49,15 @@
         {/each}
       </div>
       <div class="flex flex-col gap-1">
-        <div class="text-black xl:text-sm text-xl font-medium">{data.name}</div>
+        <div class=" xl:text-sm text-xl font-medium">{data.name}</div>
         {#if data.tokens && data.tokens.length}
           <div class="flex items-center gap-1">
             {#each data.tokens as token, index}
-              <div class="text-[#00000080] xl:text-xs text-sm font-medium">
+              <div class="text_00000080 xl:text-xs text-sm font-medium">
                 {token.symbol}
               </div>
               {#if index < data.tokens.length - 1}
-                <div class="text-[#00000080] xl:text-xs text-sm font-medium">
+                <div class="text_00000080 xl:text-xs text-sm font-medium">
                   -
                 </div>
               {/if}
@@ -59,9 +70,13 @@
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3  ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div
-      class="xl:text-sm text-xl text-[#00000099] font-medium flex flex-col items-end"
+      class="xl:text-sm text-xl text_00000099 font-medium flex flex-col items-end"
     >
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
@@ -84,13 +99,21 @@
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3  ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div class="flex justify-end xl:text-sm text-xl text-[#000000] font-medium">
       $<TooltipNumber number={value} type="balance" />
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3  ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div class="xl:text-sm text-xl font-medium flex flex-col">
       <div
         class={`flex justify-end ${
@@ -120,7 +143,11 @@
     </div>
   </td>
 
-  <td class="pr-3 py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3 pr-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div class="xl:text-sm text-xl font-medium flex flex-col">
       <div
         class={`flex justify-end items-center gap-1 ${

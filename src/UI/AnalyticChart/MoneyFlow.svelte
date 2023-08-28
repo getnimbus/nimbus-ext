@@ -1,6 +1,6 @@
 <script lang="ts">
   import { groupBy, intersection, flatten, sumBy } from "lodash";
-  import { wallet, chain, typeWallet } from "~/store";
+  import { wallet, chain, typeWallet, isDarkMode } from "~/store";
   import { formatCurrency, getAddressContext } from "~/utils";
   import dayjs from "dayjs";
   import { createQuery } from "@tanstack/svelte-query";
@@ -12,10 +12,16 @@
   import EChart from "~/components/EChart.svelte";
 
   import Logo from "~/assets/logo-1.svg";
+  import LogoWhite from "~/assets/logo-white.svg";
 
   export let packageSelected;
 
   const listDirection = ["inflow", "outflow"];
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -47,7 +53,9 @@
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                darkMode ? "white" : "black"
+              }">
                 ${params[0].axisValue}
               </div>
               ${params
@@ -61,7 +69,9 @@
                     ${
                       item.seriesName.toLowerCase() !== "netflow"
                         ? `
-                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: #000; display: flex; align-items: centers; gap: 6px;">
+                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
+                      darkMode ? "white" : "black"
+                    }">
                       ${item.marker}  
                       <span style="color: ${
                         item.value >= 0 ? "#05a878" : "#f25f5d"
@@ -71,7 +81,9 @@
                     </div>
                     `
                         : `
-                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: #000; display: flex; align-items: centers; gap: 6px;">
+                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
+                      darkMode ? "white" : "black"
+                    }">
                       ${item.marker}  
                       ${item.seriesName} 
                     </div>
@@ -288,6 +300,7 @@
           {
             name: "Netflow",
             type: "line",
+            showSymbol: false,
             data: formatDataNetflow,
             lineStyle: {
               color: "rgba(0,169,236, 0.8)",
@@ -310,7 +323,9 @@
           formatter: function (params) {
             return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                darkMode ? "white" : "black"
+              }">
                 ${params[0].axisValue}
               </div>
               ${params
@@ -324,7 +339,9 @@
                     ${
                       item.seriesName.toLowerCase() !== "netflow"
                         ? `
-                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: #000; display: flex; align-items: centers; gap: 6px;">
+                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
+                      darkMode ? "white" : "black"
+                    }">
                       ${item.marker}  
                       <span style="color: ${
                         item.value >= 0 ? "#05a878" : "#f25f5d"
@@ -334,7 +351,9 @@
                     </div>
                     `
                         : `
-                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; color: #000; display: flex; align-items: centers; gap: 6px;">
+                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px;" color: ${
+                      darkMode ? "white" : "black"
+                    }>
                       ${item.marker}  
                       ${item.seriesName} 
                     </div>
@@ -389,11 +408,13 @@
     getAddressContext(selectedWallet)?.type === "EVM" ||
       typeWalletAddress === "CEX"
   );
+
+  $: theme = darkMode ? "dark" : "white";
 </script>
 
 <AnalyticSection>
   <span slot="title">
-    <div class="flex justify-start text-4xl font-medium text-black xl:text-2xl">
+    <div class="flex justify-start text-4xl font-medium xl:text-2xl">
       Money flow
     </div>
   </span>
@@ -401,9 +422,7 @@
   <span slot="overview">
     <div class="relative h-full">
       {#if !$query.isFetching}
-        <div class="mb-4 text-3xl font-medium text-black xl:text-xl">
-          Overview
-        </div>
+        <div class="mb-4 text-3xl font-medium xl:text-xl">Overview</div>
       {/if}
       {#if $query.isFetching}
         <div class="flex items-center justify-center h-[465px]">
@@ -413,7 +432,7 @@
         <div class="flex flex-col gap-4">
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start text-black">30D Money Inflow</div>
+              <div class="flex justify-start">30D Money Inflow</div>
             </div>
             <div class="flex items-center justify-end col-span-1 gap-1">
               <div>
@@ -426,7 +445,7 @@
           </div>
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start text-black">30D Money Outflow</div>
+              <div class="flex justify-start">30D Money Outflow</div>
             </div>
             <div class="flex items-center justify-end col-span-1 gap-1">
               <div>
@@ -439,7 +458,7 @@
           </div>
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start text-black">30D Money Netflow</div>
+              <div class="flex justify-start">30D Money Netflow</div>
             </div>
             <div class="flex items-center justify-end col-span-1 gap-1">
               <div
@@ -449,8 +468,9 @@
                     : "text-red-500"
                 }`}
               >
+                {#if sumData.inflow + sumData.outflow < 0}-{/if}
                 $<TooltipNumber
-                  number={sumData.inflow + sumData.outflow}
+                  number={Math.abs(sumData.inflow + sumData.outflow)}
                   type="balance"
                 />
               </div>
@@ -479,7 +499,7 @@
             <div class="relative">
               <EChart
                 id="inflow-outflow"
-                theme="white"
+                {theme}
                 {option}
                 height={465}
                 notMerge={true}
@@ -488,7 +508,12 @@
               <div
                 class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
               >
-                <img src={Logo} alt="" width="140" height="140" />
+                <img
+                  src={darkMode ? LogoWhite : Logo}
+                  alt=""
+                  width="140"
+                  height="140"
+                />
               </div>
             </div>
           {/if}

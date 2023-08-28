@@ -1,5 +1,6 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
+  import { isDarkMode } from "~/store";
 
   import PricePackage from "~/UI/PricePackage/PricePackage.svelte";
   import Button from "~/components/Button.svelte";
@@ -33,6 +34,11 @@
     //   value: "pol",
     // },
   ];
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let isLoadingBuy = false;
   let selectedPackage;
@@ -69,9 +75,7 @@
   <div
     class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 flex flex-col gap-2"
   >
-    <div class="xl:text-5xl text-7xl text-black font-medium text-center">
-      Upgrade Plan
-    </div>
+    <div class="xl:text-5xl text-7xl font-medium text-center">Upgrade Plan</div>
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
       <div class="flex flex-col justify-center min-h-[500px]">
         <div class="flex flex-col items-center gap-1">
@@ -94,8 +98,8 @@
               <Copy
                 address="TRIAL"
                 textTooltip="Copy coupon to clipboard"
-                iconColor="#000"
-                color="#000"
+                iconColor={`${darkMode ? "#fff" : "#000"}`}
+                color={`${darkMode ? "#fff" : "#000"}`}
               />
             </span>
           </div>

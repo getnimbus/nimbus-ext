@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { wallet, selectedPackage, typeWallet } from "~/store";
+  import { wallet, selectedPackage, typeWallet, isDarkMode } from "~/store";
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
-  import { formatCurrency, typeList } from "~/utils";
+  import { formatCurrency, formatPercent, typeList } from "~/utils";
   import { groupBy } from "lodash";
   import { getChangePercent } from "~/chart-utils";
   import { useNavigate } from "svelte-navigator";
@@ -27,13 +27,20 @@
   import WhalesList from "~/UI/Compare/WhalesList.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
+  import LeftArrowBlack from "~/assets/left-arrow-black.svg";
   import Logo from "~/assets/logo-1.svg";
+  import LogoWhite from "~/assets/logo-white.svg";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
   };
 
   const navigate = useNavigate();
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let packageSelected = "";
   selectedPackage.subscribe((value) => {
@@ -108,14 +115,18 @@
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                darkMode ? "white" : "black"
+              }">
                 ${params[0].axisValue}
               </div>
               ${params
                 .map((item) => {
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                    darkMode ? "white" : "black"
+                  }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
                   </div>
@@ -162,14 +173,18 @@
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
-                ${dayjs(params[0].axisValue).format("DD/MM/YYYY")}
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                darkMode ? "white" : "black"
+              }">
+                ${dayjs(params[0].axisValue).format("YYYY-MM-DD")}
               </div>
               ${params
                 .map((item) => {
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                    darkMode ? "white" : "black"
+                  }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
                   </div>
@@ -178,7 +193,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.data[1] >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${item.data[1]}%
+                      ${formatPercent(item.data[1])}%
                     </div>
                   </div>
                 </div>
@@ -657,6 +672,7 @@
             type: item.type,
             color: item.color,
           },
+          showSymbol: false,
           itemStyle: {
             color: item.color,
           },
@@ -791,6 +807,8 @@
   const handleCloseWhalesListModal = () => {
     showCompareWhalesSuggest = false;
   };
+
+  $: theme = darkMode ? "dark" : "white";
 </script>
 
 <ErrorBoundary>
@@ -798,9 +816,13 @@
     class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 flex flex-col gap-10 relative"
   >
     <div class="flex flex-col gap-2 justify-center">
-      <div class="xl:text-5xl text-7xl text-black font-medium">Compare</div>
-      <div class="xl:font-normal xl:text-base text-2xl text-black font-medium">
-        <Copy address={selectedWallet} iconColor="#000" color="#000" />
+      <div class="xl:text-5xl text-7xl font-medium">Compare</div>
+      <div class="xl:font-normal xl:text-base text-2xl font-medium">
+        <Copy
+          address={selectedWallet}
+          iconColor={`${darkMode ? "#fff" : "#000"}`}
+          color={`${darkMode ? "#fff" : "#000"}`}
+        />
       </div>
     </div>
 
@@ -817,11 +839,11 @@
       <div class="flex justify-between items-center gap-6">
         <div class="grid xl:grid-cols-2 grid-cols-1 gap-6 flex-1 w-full">
           <div
-            class="border border-[#0000001a] rounded-[20px] p-6 min-h-[535px] relative"
+            class={`rounded-[20px] p-6 min-h-[535px] relative ${
+              darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
+            }`}
           >
-            <div
-              class="xl:text-2xl text-4xl font-medium text-black w-full mb-6"
-            >
+            <div class="xl:text-2xl text-4xl font-medium w-full mb-6">
               {MultipleLang.token_allocation}
             </div>
             {#if $query.isFetching && $queryPersonalTag.isFetching}
@@ -832,7 +854,9 @@
               <div class="h-full">
                 {#if isEmptyDataPie}
                   <div
-                    class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/95 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
+                    class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+                      darkMode ? "bg-black/95" : "bg-white/95"
+                    } z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]`}
                   >
                     {#if typeWalletAddress === "CEX"}
                       Not enough data. CEX integration can only get data from
@@ -868,21 +892,23 @@
           </div>
 
           <div
-            class="border border-[#0000001a] rounded-[20px] p-6 min-h-[535px] relative"
+            class={`rounded-[20px] p-6 min-h-[535px] relative ${
+              darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
+            }`}
           >
             {#if compareData && Object.keys(compareData).length !== 0 && compareData?.compare}
               <div class="flex flex-col">
                 <div class="flex justify-between items-center">
                   <div class="flex items-end gap-3">
-                    <div class="xl:text-2xl text-4xl font-medium text-black">
+                    <div class="xl:text-2xl text-4xl font-medium">
                       Comparing with
                     </div>
-                    <div class="text-black font-medium">
+                    <div class="font-medium">
                       <Copy
                         isShorten
                         address={searchCompare}
-                        iconColor="#000"
-                        color="#000"
+                        iconColor={`${darkMode ? "#fff" : "#000"}`}
+                        color={`${darkMode ? "#fff" : "#000"}`}
                       />
                     </div>
                   </div>
@@ -905,7 +931,9 @@
                     <div class="h-full">
                       {#if compareData && Object.keys(compareData).length === 0}
                         <div
-                          class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/95 z-30 backdrop-blur-md xl:text-xs text-lg"
+                          class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+                            darkMode ? "bg-black/95" : "bg-white/95"
+                          } z-30 backdrop-blur-md xl:text-xs text-lg`}
                         >
                           {#if typeWalletAddress === "CEX"}
                             Not enough data. CEX integration can only get data
@@ -941,9 +969,7 @@
             {:else}
               <div class="h-full">
                 {#if $query.isFetching}
-                  <div
-                    class="xl:text-2xl text-4xl font-medium text-black w-full"
-                  >
+                  <div class="xl:text-2xl text-4xl font-medium w-full">
                     Compare with
                   </div>
                   <div class="flex items-center justify-center h-full">
@@ -952,13 +978,13 @@
                 {:else}
                   <div class="h-full">
                     {#if compareData && Object.keys(compareData).length === 0}
-                      <div
-                        class="xl:text-2xl text-4xl font-medium text-black w-full"
-                      >
+                      <div class="xl:text-2xl text-4xl font-medium w-full">
                         Compare with
                       </div>
                       <div
-                        class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/95 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
+                        class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+                          darkMode ? "bg-black/95" : "bg-white/95"
+                        } z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]`}
                       >
                         {#if typeWalletAddress === "CEX"}
                           Not enough data. CEX integration can only get data
@@ -969,9 +995,7 @@
                       </div>
                     {:else}
                       <div class="grid grid-rows-11 h-full">
-                        <div
-                          class="xl:text-2xl text-4xl font-medium text-black w-full"
-                        >
+                        <div class="xl:text-2xl text-4xl font-medium w-full">
                           Compare with
                         </div>
                         <div
@@ -996,7 +1020,9 @@
                                   }}
                                   variant="disabled"
                                 >
-                                  <div class="">
+                                  <div
+                                    class={`${darkMode ? "text-gray-400" : ""}`}
+                                  >
                                     {suggestion.name}
                                   </div>
                                 </Button>
@@ -1005,7 +1031,9 @@
                           </div>
                           <div class="border-t-[1px] relative">
                             <div
-                              class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 bg-white text-sm px-2"
+                              class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
+                                darkMode ? "bg-[#222222]" : "bg-white"
+                              } text-sm px-2`}
                             >
                               Or
                             </div>
@@ -1013,7 +1041,9 @@
                           <div class="flex flex-col gap-2">
                             <div
                               class={`border focus:outline-none w-full py-2 px-3 rounded-lg ${
-                                searchCompare ? "bg-[#F0F2F7]" : "bg-white"
+                                searchCompare && !darkMode
+                                  ? "bg-[#F0F2F7]"
+                                  : "bg_fafafbff"
                               }`}
                             >
                               <input
@@ -1029,7 +1059,9 @@
                                 placeholder={"Search address to compare"}
                                 type="text"
                                 class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] h-7 ${
-                                  searchCompare ? "bg-[#F0F2F7]" : ""
+                                  searchCompare && !darkMode
+                                    ? "bg-[#F0F2F7]"
+                                    : "bg-transparent"
                                 }`}
                               />
                             </div>
@@ -1058,9 +1090,15 @@
           {#if ($query.isFetching && $queryPersonalTag.isFetching) || searchCompare.length === 0}
             <Button variant="disabled">
               <div class="flex items-center gap-1">
-                <div class="xl:text-base text-2xl">Get re-balance action</div>
+                <div
+                  class={`xl:text-base text-2xl ${
+                    darkMode ? "text-gray-400" : ""
+                  }`}
+                >
+                  Get re-balance action
+                </div>
                 <img
-                  src={LeftArrow}
+                  src={darkMode ? LeftArrowBlack : LeftArrow}
                   alt=""
                   class="xl:w-4 xl:h-4 w-6 h-6 transform rotate-180 mt-[2px]"
                 />
@@ -1083,10 +1121,12 @@
     </div>
 
     <!-- Performance chart -->
-    <div class="border border-[#0000001a] rounded-[20px] p-6 relative">
-      <div class="xl:text-2xl text-4xl font-medium text-black mb-3">
-        Performance
-      </div>
+    <div
+      class={`rounded-[20px] p-6 relative ${
+        darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
+      }`}
+    >
+      <div class="xl:text-2xl text-4xl font-medium mb-3">Performance</div>
       {#if $query.isFetching}
         <div class="flex items-center justify-center h-[433px]">
           <loading-icon />
@@ -1096,7 +1136,9 @@
           {#if compareData && Object.keys(compareData).length === 0}
             <div class="h-[433px]">
               <div
-                class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/95 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
+                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+                  darkMode ? "bg-black/95" : "bg-white/95"
+                } z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]`}
               >
                 {#if typeWalletAddress === "CEX"}
                   Not enough data. CEX integration can only get data from the
@@ -1110,7 +1152,7 @@
             <div class="relative">
               <EChart
                 id="line-chart-compare"
-                theme="white"
+                {theme}
                 notMerge={true}
                 option={optionLine}
                 height={433}
@@ -1118,7 +1160,12 @@
               <div
                 class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
               >
-                <img src={Logo} alt="" width="140" height="140" />
+                <img
+                  src={darkMode ? LogoWhite : Logo}
+                  alt=""
+                  width="140"
+                  height="140"
+                />
               </div>
             </div>
           {/if}
@@ -1127,11 +1174,13 @@
     </div>
 
     <!-- Risks chart -->
-    <div class="border border-[#0000001a] rounded-[20px] p-6 relative">
+    <div
+      class={`rounded-[20px] p-6 relative ${
+        darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
+      }`}
+    >
       <div class="mb-1 w-full">
-        <div
-          class="xl:text-2xl text-4xl font-medium text-black flex justify-start"
-        >
+        <div class="xl:text-2xl text-4xl font-medium flex justify-start">
           <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
             Risks
           </TooltipTitle>
@@ -1146,7 +1195,9 @@
           {#if compareData && Object.keys(compareData).length === 0}
             <div class="h-[465px]">
               <div
-                class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/95 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]"
+                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+                  darkMode ? "bg-black/95" : "bg-white/95"
+                } z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]`}
               >
                 {#if typeWalletAddress === "CEX"}
                   Not enough data. CEX integration can only get data from the
@@ -1160,7 +1211,7 @@
             <div class="relative">
               <EChart
                 id="bar-chart-compare"
-                theme="white"
+                {theme}
                 notMerge={true}
                 option={optionBar}
                 height={465}
@@ -1168,7 +1219,12 @@
               <div
                 class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
               >
-                <img src={Logo} alt="" width="140" height="140" />
+                <img
+                  src={darkMode ? LogoWhite : Logo}
+                  alt=""
+                  width="140"
+                  height="140"
+                />
               </div>
             </div>
           {/if}
@@ -1178,7 +1234,9 @@
 
     {#if packageSelected === "FREE"}
       <div
-        class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 bg-white/95 z-30 backdrop-blur-md"
+        class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 ${
+          darkMode ? "bg-black/95" : "bg-white/95"
+        } z-30 backdrop-blur-md`}
       >
         <div class="flex flex-col items-center gap-1">
           <div class="text-lg font-medium">
@@ -1206,7 +1264,7 @@
     }}
   >
     <div class="xl:mt-9 mt-12">
-      <CompareResult {holdingTokenData} {holdingTokenDataCompare} />
+      <CompareResult {darkMode} {holdingTokenData} {holdingTokenDataCompare} />
     </div>
   </AppOverlay>
 
@@ -1220,6 +1278,7 @@
   >
     <div class="flex flex-col gap-2 mt-9">
       <WhalesList
+        {darkMode}
         data={compareData?.base?.similarPortfolio}
         copyAddress={handleCopyAddress}
         closeModal={handleCloseWhalesListModal}

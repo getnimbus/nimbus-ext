@@ -5,6 +5,7 @@
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TokenHoldingCompare from "./TokenHoldingCompare.svelte";
 
+  export let darkMode;
   export let holdingTokenData;
   export let holdingTokenDataCompare;
 
@@ -167,9 +168,7 @@
 
 <div class="h-[563px] flex flex-col gap-4">
   <div class="flex justify-between">
-    <div class="xl:text-2xl text-4xl font-medium text-black">
-      Re-balance Action
-    </div>
+    <div class="xl:text-2xl text-4xl font-medium">Re-balance Action</div>
     <Select
       type="lang"
       positionSelectList="right-0"
@@ -178,45 +177,38 @@
     />
   </div>
   <div
-    class="border border-[#0000000d] rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative"
+    class={`border border_0000000d rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative ${
+      darkMode ? "bg-[#131313]" : "bg-[#fff]"
+    }
+    `}
   >
     <table class="table-auto xl:w-full w-[1200px]">
       <thead>
-        <tr class="bg-[#f4f5f8]">
+        <tr class="bg_f4f5f8">
           <th
-            class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] xl:w-[230px] w-[280px]"
+            class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
           >
-            <div
-              class="text-left xl:text-xs text-base uppercase font-medium text-black"
-            >
+            <div class="text-left xl:text-xs text-base uppercase font-medium">
               {MultipleLang.assets}
             </div>
           </th>
           <th class="py-3">
-            <div
-              class="text-right xl:text-xs text-base uppercase font-medium text-black"
-            >
+            <div class="text-right xl:text-xs text-base uppercase font-medium">
               {MultipleLang.price}
             </div>
           </th>
           <th class="py-3">
-            <div
-              class="text-right xl:text-xs text-base uppercase font-medium text-black"
-            >
+            <div class="text-right xl:text-xs text-base uppercase font-medium">
               Amount change
             </div>
           </th>
           <th class="py-3">
-            <div
-              class="text-right xl:text-xs text-base uppercase font-medium text-black"
-            >
+            <div class="text-right xl:text-xs text-base uppercase font-medium">
               Value change
             </div>
           </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
-            <div
-              class="text-right xl:text-xs text-base uppercase font-medium text-black"
-            >
+            <div class="text-right xl:text-xs text-base uppercase font-medium">
               <TooltipTitle tooltipText="Ratio based on total token holding">
                 Ratio
               </TooltipTitle>

@@ -727,7 +727,7 @@
                       </div>
                     {:else}
                       <div
-                        class="mt-10 font-medium leading-6 text-center text-black text-4"
+                        class="mt-10 font-medium leading-6 text-center text-4 text-black"
                       >
                         {MultipleLang.empty}
                       </div>
@@ -736,7 +736,7 @@
                 {:else if search === ""}
                   {#if dataTokenDetectResult.length !== 0}
                     <div class="mb-2">
-                      <div class="text-black title-2">
+                      <div class="title-2 text-black">
                         {MultipleLang.second_title}
                       </div>
                     </div>
@@ -842,7 +842,7 @@
                         </div>
                       {:else}
                         <div
-                          class="mt-10 font-medium leading-6 text-center text-black text-4"
+                          class="mt-10 font-medium leading-6 text-center text-4 text-black"
                         >
                           No terms
                         </div>
@@ -882,7 +882,7 @@
                       </div>
                     {:else}
                       <div
-                        class="mt-10 font-medium leading-6 text-center text-black text-4"
+                        class="mt-10 font-medium leading-6 text-center text-4"
                       >
                         No tokens
                       </div>

@@ -42,12 +42,12 @@
             By
             <span class="font-medium">{data?.source}</span>
           </div>
-          <div class="xl:text-sm text-lg text-[#00000080]">
+          <div class="xl:text-sm text-lg text_00000080">
             {dayjs(new Date((Number(data?.feedDate) / 1000) * 1000)).fromNow()}
           </div>
         </div>
       </div>
-      <div class="xl:text-sm text-lg font-normal text-[#00000099]">
+      <div class="xl:text-sm text-lg font-normal text_00000099">
         {add3Dots(data.description || "", 150)}
       </div>
     </div>

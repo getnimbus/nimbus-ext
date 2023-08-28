@@ -3,10 +3,12 @@
   import * as browser from "webextension-polyfill";
   import { getAddressContext } from "~/utils";
   import { i18n } from "~/lib/i18n";
-  import { chain, wallet } from "~/store";
+  import { chain, wallet, selectedPackage, isDarkMode } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { Motion } from "svelte-motion";
   import { showChangeLogAnimationVariants } from "~/utils";
+  import { nimbus } from "~/lib/network";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import Auth from "~/UI/Auth/Auth.svelte";
   import AuthEvm from "~/UI/Auth/AuthEVM.svelte";
@@ -37,6 +39,11 @@
 
   const navigate = useNavigate();
 
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
+
   let selectedWallet;
   wallet.subscribe((value) => {
     selectedWallet = value;
@@ -55,10 +62,42 @@
 
   const absoluteMatch = useMatch("/:page");
 
+  const queryClient = useQueryClient();
+  const queryUserInfo = createQuery({
+    queryKey: ["users-me"],
+    queryFn: () => getUserInfo(),
+    staleTime: Infinity,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+    },
+  });
+
+  const getUserInfo = async () => {
+    const response: any = await nimbus.get("/users/me");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response?.data;
+  };
+
+  $: {
+    if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
+      if (
+        $queryUserInfo.data?.plan?.tier &&
+        $queryUserInfo.data?.plan?.tier.length !== 0
+      ) {
+        selectedPackage.update(
+          // (n) => (n = $queryUserInfo.data?.plan?.tier.toUpperCase())
+          () => "PROFESSIONAL" // TODO: Remove me after integration complete
+        );
+      }
+    }
+  }
+
   $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
 </script>
 
-<div class="py-1 bg-[#27326F] border-b-[1px] border-[#ffffff1a]">
+<div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">
   <div class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]">
     <Link to="/">
       <img
@@ -71,12 +110,19 @@
     <div class="items-center hidden gap-1 xl:flex">
       <Link to="/">
         <div
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
-            navActive === "portfolio"
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all ${
+            darkMode
+              ? navActive === "portfolio"
+                ? "bg-[#212121] opacity-100"
+                : "opacity-70 hover:bg-[#212121]"
+              : navActive === "portfolio"
               ? "bg-[#525B8C] opacity-100"
-              : "opacity-70"
+              : "opacity-70 hover:bg-[#525B8C]"
           }`}
-          on:click={() => (navActive = "portfolio")}
+          on:click={() => {
+            navActive = "portfolio";
+            queryClient.invalidateQueries(["users-me"]);
+          }}
         >
           <img src={PortfolioIcon} alt="" width="20" height="20" />
           <span class="text-sm font-medium text-white xl:text-base">
@@ -87,10 +133,21 @@
 
       <Link to="analytic">
         <div
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
-            navActive === "analytic" ? "bg-[#525B8C] opacity-100" : "opacity-70"
-          }`}
-          on:click={() => (navActive = "analytic")}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+          ${
+            darkMode
+              ? navActive === "analytic"
+                ? "bg-[#212121] opacity-100"
+                : "opacity-70 hover:bg-[#212121]"
+              : navActive === "analytic"
+              ? "bg-[#525B8C] opacity-100"
+              : "opacity-70 hover:bg-[#525B8C]"
+          }
+          `}
+          on:click={() => {
+            navActive = "analytic";
+            queryClient.invalidateQueries(["users-me"]);
+          }}
         >
           <img src={AnalyticIcon} alt="" width="20" height="20" />
           <span class="flex gap-[1px]">
@@ -109,14 +166,21 @@
 
       <Link to="transactions">
         <div
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
-            navActive === "transactions"
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+          ${
+            darkMode
+              ? navActive === "transactions"
+                ? "bg-[#212121] opacity-100"
+                : "opacity-70 hover:bg-[#212121]"
+              : navActive === "transactions"
               ? "bg-[#525B8C] opacity-100"
-              : "opacity-70"
-          }`}
+              : "opacity-70 hover:bg-[#525B8C]"
+          }
+          `}
           on:click={() => {
             navActive = "transactions";
             chain.update((n) => (n = "ETH"));
+            queryClient.invalidateQueries(["users-me"]);
           }}
         >
           <img src={TransactionsIcon} alt="" width="20" height="20" />
@@ -128,10 +192,21 @@
 
       <Link to="whales">
         <div
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
-            navActive === "whales" ? "bg-[#525B8C] opacity-100" : "opacity-70"
-          }`}
-          on:click={() => (navActive = "whales")}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+          ${
+            darkMode
+              ? navActive === "whales"
+                ? "bg-[#212121] opacity-100"
+                : "opacity-70 hover:bg-[#212121]"
+              : navActive === "whales"
+              ? "bg-[#525B8C] opacity-100"
+              : "opacity-70 hover:bg-[#525B8C]"
+          }
+          `}
+          on:click={() => {
+            navActive = "whales";
+            queryClient.invalidateQueries(["users-me"]);
+          }}
         >
           <img src={WhaleIcon} alt="" width="20" height="20" />
           <span class="text-sm font-medium text-white xl:text-base">
@@ -142,10 +217,21 @@
 
       <Link to="news">
         <div
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:bg-[#525B8C] hover:opacity-100 transition-all ${
-            navActive === "news" ? "bg-[#525B8C] opacity-100" : "opacity-70"
-          }`}
-          on:click={() => (navActive = "news")}
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+          ${
+            darkMode
+              ? navActive === "news"
+                ? "bg-[#212121] opacity-100"
+                : "opacity-70 hover:bg-[#212121]"
+              : navActive === "news"
+              ? "bg-[#525B8C] opacity-100"
+              : "opacity-70 hover:bg-[#525B8C]"
+          }
+          `}
+          on:click={() => {
+            navActive = "news";
+            queryClient.invalidateQueries(["users-me"]);
+          }}
         >
           <img src={NewsIcon} alt="" width="20" height="20" />
           <span class="text-sm font-medium text-white xl:text-base">
@@ -156,7 +242,11 @@
     </div>
 
     <div class="flex items-center justify-between gap-6 xl:gap-3">
-      <div class="bg-[#525B8C] xl:pl-4 pl-3 flex items-center rounded-[1000px]">
+      <div
+        class={`xl:pl-4 pl-3 flex items-center rounded-[1000px] ${
+          darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+        }`}
+      >
         <img src={Search} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
         <input
           on:keyup={({ target: { value } }) => debounceSearch(value)}
@@ -179,13 +269,17 @@
           value={search}
           placeholder={MultipleLang.search_placeholder}
           type="text"
-          class="bg-[#525B8C] xl:w-full w-[400px] xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-xl placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0"
+          class={`xl:w-full w-[400px] xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-xl placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0 ${
+            darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+          }`}
         />
       </div>
 
       <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
         <div
-          class="bg-[#525B8C] rounded-full flex justify-center items-center w-full h-full"
+          class={`rounded-full flex justify-center items-center w-full h-full ${
+            darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+          }`}
         >
           <img src={ChangeLogIcon} alt="" class="w-[26px] h-[26px]" />
         </div>
@@ -196,7 +290,9 @@
       </div>
 
       <!-- <div
-        class="cursor-pointer bg-[#525B8C] rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12"
+        class={`cursor-pointer rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
+          darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+        }`}
       >
         <img src={Bell} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
       </div> -->
@@ -216,7 +312,7 @@
 
 <!-- Mobile header -->
 <div
-  class={`fixed inset-0 h-screen w-full mobile ${
+  class={`fixed inset-0 h-screen w-full mobile mobile-container ${
     isShowHeaderMobile
       ? "opacity-100 transform translate-x-[0px]"
       : "opacity-0 transform translate-x-[-100vw]"
@@ -238,11 +334,17 @@
     >
       <Link to="/">
         <div
-          class={`flex items-center gap-3 text-white px-4 py-3 ${
-            navActive === "portfolio"
-              ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-              : "opacity-70"
-          }`}
+          class={`flex items-center gap-3 text-white px-4 py-3
+            ${
+              darkMode
+                ? navActive === "portfolio"
+                  ? "bg-[#212121] rounded-[1000px] opacity-100"
+                  : "opacity-70"
+                : navActive === "portfolio"
+                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                : "opacity-70"
+            }
+          `}
           on:click={() => {
             isShowHeaderMobile = false;
             navActive = "portfolio";
@@ -257,11 +359,17 @@
 
       <Link to="analytic">
         <div
-          class={`flex items-center gap-3 text-white px-4 py-3 ${
-            navActive === "analytic"
-              ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-              : "opacity-70"
-          }`}
+          class={`flex items-center gap-3 text-white px-4 py-3 
+            ${
+              darkMode
+                ? navActive === "analytic"
+                  ? "bg-[#212121] rounded-[1000px] opacity-100"
+                  : "opacity-70"
+                : navActive === "analytic"
+                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                : "opacity-70"
+            }
+          `}
           on:click={() => {
             isShowHeaderMobile = false;
             navActive = "analytic";
@@ -284,11 +392,17 @@
 
       <Link to="transactions">
         <div
-          class={`flex items-center gap-3 text-white px-4 py-3 ${
-            navActive === "transactions"
-              ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-              : "opacity-70"
-          }`}
+          class={`flex items-center gap-3 text-white px-4 py-3
+             ${
+               darkMode
+                 ? navActive === "transactions"
+                   ? "bg-[#212121] rounded-[1000px] opacity-100"
+                   : "opacity-70"
+                 : navActive === "transactions"
+                 ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                 : "opacity-70"
+             }
+          `}
           on:click={() => {
             isShowHeaderMobile = false;
             navActive = "transactions";
@@ -303,11 +417,17 @@
 
       <Link to="whales">
         <div
-          class={`flex items-center gap-3 text-white px-4 py-3 ${
-            navActive === "whales"
-              ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-              : "opacity-70"
-          }`}
+          class={`flex items-center gap-3 text-white px-4 py-3
+             ${
+               darkMode
+                 ? navActive === "whales"
+                   ? "bg-[#212121] rounded-[1000px] opacity-100"
+                   : "opacity-70"
+                 : navActive === "whales"
+                 ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                 : "opacity-70"
+             }
+          `}
           on:click={() => {
             isShowHeaderMobile = false;
             navActive = "whales";
@@ -322,11 +442,17 @@
 
       <Link to="news">
         <div
-          class={`flex items-center gap-3 text-white px-4 py-3 ${
-            navActive === "news"
-              ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-              : "opacity-70"
-          }`}
+          class={`flex items-center gap-3 text-white px-4 py-3 
+            ${
+              darkMode
+                ? navActive === "news"
+                  ? "bg-[#212121] rounded-[1000px] opacity-100"
+                  : "opacity-70"
+                : navActive === "news"
+                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                : "opacity-70"
+            }
+          `}
           on:click={() => {
             isShowHeaderMobile = false;
             navActive = "news";
@@ -357,7 +483,6 @@
 <style>
   .mobile {
     z-index: 2147483649;
-    background-color: rgba(39, 50, 111, 0.98);
     backdrop-filter: blur(12px);
 
     transition-property: all;
@@ -371,5 +496,19 @@
       0 8px 10px -6px var(--tw-shadow-color);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
       var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
+  :global(body) .mobile-container {
+    background: rgba(39, 50, 111, 0.98);
+  }
+  :global(body.dark) .mobile-container {
+    background: rgba(8, 8, 8, 0.98);
+  }
+
+  :global(body) .mobile-header-container {
+    background-color: #27326f;
+  }
+  :global(body.dark) .mobile-header-container {
+    background: #080808;
   }
 </style>

@@ -1,14 +1,14 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import {
-    formatCurrencyV2,
+    formatPercent,
     getAddressContext,
     getTooltipContent,
     returnType,
   } from "~/utils";
   import dayjs, { unix } from "dayjs";
   import { nimbus } from "~/lib/network";
-  import { wallet, chain, typeWallet } from "~/store";
+  import { wallet, chain, typeWallet, isDarkMode } from "~/store";
   import { createQuery } from "@tanstack/svelte-query";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -20,6 +20,11 @@
   import VolatilityExplain from "~/assets/explain/volatility-explain.mp4";
   import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
   import MaxDrawdownExplain from "~/assets/explain/max-drawdown-explain.mp4";
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -70,7 +75,11 @@
 
 <ErrorBoundary>
   <div class="grid xl:grid-cols-2 grid-cols-1 gap-6">
-    <div class="border border-[#0000001a] rounded-[20px] p-6">
+    <div
+      class={`rounded-[20px] p-6 ${
+        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      }`}
+    >
       {#if $query.isFetching}
         <div class="flex items-center justify-center h-[200px]">
           <loading-icon />
@@ -81,10 +90,12 @@
             $query.isError ? "h-[200px]" : ""
           }`}
         >
-          <div class="xl:text-2xl text-4xl font-medium text-black">Risks</div>
+          <div class="xl:text-2xl text-4xl font-medium">Risks</div>
           {#if $query.isError}
             <div
-              class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 bg-white/95 z-30 backdrop-blur-md xl:text-xs text-lg"
+              class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+                darkMode ? "bg-black/95" : "bg-white/95"
+              } z-30 backdrop-blur-md xl:text-xs text-lg`}
             >
               {#if typeWalletAddress === "CEX"}
                 Not enough data. CEX integration can only get data from the day
@@ -97,9 +108,7 @@
             <div class="flex flex-col gap-4">
               <div class="grid grid-cols-5">
                 <div class="col-span-2">
-                  <div
-                    class="xl:text-base text-2xl text-black flex justify-start"
-                  >
+                  <div class="xl:text-base text-2xl flex justify-start">
                     <TooltipTitle
                       tooltipText={getTooltipContent(
                         "The Sharpe ratio measures how well an investment performs relative to its risk.",
@@ -147,9 +156,7 @@
 
               <div class="grid grid-cols-5">
                 <div class="col-span-2">
-                  <div
-                    class="xl:text-base text-2xl text-black flex justify-start"
-                  >
+                  <div class="xl:text-base text-2xl flex justify-start">
                     <TooltipTitle
                       tooltipText={getTooltipContent(
                         "Volatility measures the extent of price fluctuations for an asset over time.",
@@ -197,9 +204,7 @@
 
               <div class="grid grid-cols-5">
                 <div class="col-span-2">
-                  <div
-                    class="xl:text-base text-2xl text-black flex justify-start"
-                  >
+                  <div class="xl:text-base text-2xl flex justify-start">
                     <TooltipTitle
                       tooltipText={getTooltipContent(
                         "Max drawdown is the biggest loss experienced by an investment or portfolio.",
@@ -250,7 +255,11 @@
       {/if}
     </div>
 
-    <div class="border border-[#0000001a] rounded-[20px] p-6">
+    <div
+      class={`rounded-[20px] p-6 ${
+        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      }`}
+    >
       {#if $query.isFetching}
         <div class="flex items-center justify-center h-[200px]">
           <loading-icon />
@@ -262,9 +271,7 @@
           }`}
         >
           <div class="flex justify-between">
-            <div class="xl:text-2xl text-4xl font-medium text-black">
-              Returns
-            </div>
+            <div class="xl:text-2xl text-4xl font-medium">Returns</div>
             {#if !$query.isError}
               <div class="flex items-center gap-2">
                 <AnimateSharedLayout>
@@ -300,7 +307,9 @@
           </div>
           {#if $query.isError}
             <div
-              class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-3 bg-white/95 z-30 backdrop-blur-md xl:text-xs text-lg"
+              class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-3 ${
+                darkMode ? "bg-black/95" : "bg-white/95"
+              } z-30 backdrop-blur-md xl:text-xs text-lg`}
             >
               {#if typeWalletAddress === "CEX"}
                 Not enough data. CEX integration can only get data from the day
@@ -314,10 +323,10 @@
               {#if selectedTypeReturn === "overview"}
                 <div class="flex gap-4">
                   <div
-                    class="rounded-[20px] bg-[#FAFAFBFF] px-4 py-3 flex flex-col gap-2"
+                    class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
                     style="z-index: 2"
                   >
-                    <div class="xl:text-base text-xl text-gray-500">1D</div>
+                    <div class="xl:text-base text-xl">1D</div>
                     <div
                       class={`xl:text-base text-xl ${
                         $query.data?.base?.netWorthChange?.networth1D < 0
@@ -335,10 +344,10 @@
                   </div>
 
                   <div
-                    class="rounded-[20px] bg-[#FAFAFBFF] px-4 py-3 flex flex-col gap-2"
+                    class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
                     style="z-index: 2"
                   >
-                    <div class="xl:text-base text-xl text-gray-500">7D</div>
+                    <div class="xl:text-base text-xl">7D</div>
                     <div
                       class={`xl:text-base text-xl ${
                         $query.data?.base?.netWorthChange?.networth7D < 0
@@ -356,10 +365,10 @@
                   </div>
 
                   <div
-                    class="rounded-[20px] bg-[#FAFAFBFF] px-4 py-3 flex flex-col gap-2"
+                    class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
                     style="z-index: 2"
                   >
-                    <div class="xl:text-base text-xl text-gray-500">30D</div>
+                    <div class="xl:text-base text-xl">30D</div>
                     <div
                       class={`xl:text-base text-xl ${
                         $query.data?.base?.netWorthChange?.networth30D < 0
@@ -377,10 +386,10 @@
                   </div>
 
                   <div
-                    class="rounded-[20px] bg-[#FAFAFBFF] px-4 py-3 flex flex-col gap-2"
+                    class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
                     style="z-index: 2"
                   >
-                    <div class="xl:text-base text-xl text-gray-500">1Y</div>
+                    <div class="xl:text-base text-xl">1Y</div>
                     <div
                       class={`xl:text-base text-xl ${
                         $query.data?.base?.netWorthChange?.networth1Y < 0
@@ -398,12 +407,10 @@
                   </div>
 
                   <div
-                    class="rounded-[20px] bg-[#FAFAFBFF] px-4 py-3 flex flex-col gap-2"
+                    class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
                     style="z-index: 2"
                   >
-                    <div class="xl:text-base text-xl text-gray-500">
-                      Lifetime
-                    </div>
+                    <div class="xl:text-base text-xl">Lifetime</div>
                     <div
                       class={`xl:text-base text-xl ${
                         $query.data?.base?.changeLF?.portfolioChange < 0
@@ -456,10 +463,10 @@
                     >
                       {#each $query.data?.base?.monthlyPerformance.sort((a, b) => a.timestamp - b.timestamp) || [] as item}
                         <div
-                          class="rounded-[20px] bg-[#FAFAFBFF] px-4 py-3 flex flex-col gap-2"
+                          class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
                           style="z-index: 2"
                         >
-                          <div class="xl:text-base text-xl text-gray-500">
+                          <div class="xl:text-base text-xl">
                             {dayjs.unix(item.timestamp).format("MMM YYYY")}
                           </div>
                           <div
@@ -469,7 +476,7 @@
                                 : "text-[#00A878]"
                             }`}
                           >
-                            {formatCurrencyV2(Math.abs(item.percentChange))}%
+                            {formatPercent(Math.abs(item.percentChange))}%
                           </div>
                         </div>
                       {/each}

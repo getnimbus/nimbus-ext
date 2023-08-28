@@ -4,7 +4,7 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { wallet, chain, typeWallet } from "~/store";
+  import { wallet, chain, typeWallet, isDarkMode } from "~/store";
   import { getAddressContext, typeTrx } from "~/utils";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery } from "@tanstack/svelte-query";
@@ -19,6 +19,12 @@
   import AddressManagement from "~/components/AddressManagement.svelte";
   import CalendarChart from "~/components/CalendarChart.svelte";
   import HistoricalTransactions from "./HistoricalTransactions.svelte";
+  import "~/components/Loading.custom.svelte";
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -220,13 +226,12 @@
 <AddressManagement type="order" title="Transactions">
   <span slot="body">
     <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-32">
-      <div
-        class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8"
-        style="box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.10);"
-      >
+      <div class="trx_container flex flex-col gap-7 rounded-[20px] xl:p-8">
         {#if getAddressContext(selectedWallet)?.type === "EVM" || typeWalletAddress === "CEX"}
           <div
-            class="border border-[#0000001a] rounded-[20px] pt-6 pb-9 flex flex-col gap-4"
+            class={`rounded-[20px] pt-6 pb-9 flex flex-col gap-4  ${
+              darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+            }`}
           >
             {#if data.length !== 0}
               <CalendarChart
@@ -239,15 +244,29 @@
                 id="historical-activities"
                 type="normal"
               />
+            {:else}
+              <div class="flex items-center justify-center h-[152px]">
+                {#if $query.isFetching}
+                  <loading-icon />
+                {:else}
+                  <div class="xl:text-lg text-xl text-gray-400">
+                    {#if $query.isError}
+                      Empty
+                    {/if}
+                  </div>
+                {/if}
+              </div>
             {/if}
           </div>
         {/if}
 
         <div
-          class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
+          class={`rounded-[20px] p-6 flex flex-col gap-4 ${
+            darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+          }`}
         >
           <div class="flex flex-col justify-between gap-4 xl:flex-row">
-            <div class="xl:text-2xl text-4xl font-medium text-black">
+            <div class="xl:text-2xl text-4xl font-medium">
               Historical Transactions
             </div>
             <div class="flex items-center justify-end gap-2">
@@ -291,7 +310,7 @@
                 value={searchValue}
                 placeholder={"Filter by hash/token"}
                 type="text"
-                class="xl:w-[250px] w-full text-sm py-2 xl:px-3 px-2 rounded-[1000px] text-[#00000099] placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
+                class="xl:w-[250px] w-full text-sm py-2 xl:px-3 px-2 rounded-[1000px] text_00000099 placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
               /> -->
             </div>
           </div>
@@ -308,4 +327,12 @@
 </AddressManagement>
 
 <style>
+  :global(body) .trx_container {
+    background: #fff;
+    box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
+  }
+  :global(body.dark) .trx_container {
+    background: #0f0f0f;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
+  }
 </style>

@@ -3,6 +3,7 @@
   import dayjs from "dayjs";
   import { i18n } from "~/lib/i18n";
   import { DateInput } from "date-picker-svelte";
+  import { isDarkMode } from "~/store";
 
   import Button from "~/components/Button.svelte";
   import "~/components/Loading.custom.svelte";
@@ -18,6 +19,11 @@
     assets: i18n("newtabPage.assets", "Assets"),
     empty: i18n("newtabPage.empty", "Empty"),
   };
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let searchValue = "";
   let timerDebounce;
@@ -196,7 +202,7 @@
 
   <div class="flex xl:flex-row flex-col justify-between gap-4">
     <div
-      class="flex-1 border border-[#0000001a] rounded-[20px] p-4 flex flex-col gap-2 relative"
+      class="flex-1 border border_0000001a rounded-[20px] p-4 flex flex-col gap-2 relative"
     >
       <div class="flex md:flex-row flex-col justify-between md:items-end gap-4">
         <div class="flex flex-col">
@@ -223,7 +229,7 @@
       </div>
 
       <div
-        class="border border-[#0000000d] rounded-[10px] overflow-y-auto h-[550px]"
+        class="border border_0000000d rounded-[10px] overflow-y-auto h-[550px]"
       >
         <table
           class={`table-auto w-full ${
@@ -271,7 +277,13 @@
                       }
                     }}
                   >
-                    <td class="py-3 pl-3 group-hover:bg-gray-100">
+                    <td
+                      class={`py-3 pl-3 ${
+                        darkMode
+                          ? "group-hover:bg-[#00000033]"
+                          : "group-hover:bg-gray-100"
+                      }`}
+                    >
                       <div class="text-left flex items-center gap-3">
                         <img
                           src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${data.id}.png`}
@@ -281,9 +293,7 @@
                           class="rounded-full"
                         />
                         <div class="flex flex-col gap-1">
-                          <div
-                            class="text-black xl:text-sm text-xl font-medium relative"
-                          >
+                          <div class=" xl:text-sm text-xl font-medium relative">
                             {#if data?.name === undefined}
                               N/A
                             {:else}
@@ -291,7 +301,7 @@
                             {/if}
                           </div>
                           <div
-                            class="text-[#00000080] text-xs font-medium relative"
+                            class="text_00000080 text-xs font-medium relative"
                           >
                             {#if data?.symbol === undefined}
                               N/A
@@ -306,7 +316,7 @@
                               <a
                                 href={item.url}
                                 target="_blank"
-                                class="flex items-center justyfy-center px-2 py-1 text-[#27326F] text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px]"
+                                class="flex items-center justyfy-center px-2 py-1 text_27326F text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px]"
                               >
                                 {item.tile}
                               </a>
@@ -315,9 +325,16 @@
                         </div>
                       </div>
                     </td>
-                    <td class="py-3 w-10 group-hover:bg-gray-100">
+
+                    <td
+                      class={`py-3 w-10 ${
+                        darkMode
+                          ? "group-hover:bg-[#00000033]"
+                          : "group-hover:bg-gray-100"
+                      }`}
+                    >
                       <div class="flex justify-center">
-                        <div class="text-3xl text-[#00000080]">&rsaquo;</div>
+                        <div class="text-3xl text_00000080">&rsaquo;</div>
                       </div>
                     </td>
                   </tr>
@@ -330,7 +347,7 @@
     </div>
 
     <div
-      class="flex-1 border border-[#0000001a] rounded-[20px] p-4 flex flex-col gap-2 relative"
+      class="flex-1 border border_0000001a rounded-[20px] p-4 flex flex-col gap-2 relative"
     >
       <div class="flex justify-between items-end">
         <div class="flex flex-col">
@@ -363,12 +380,12 @@
       </div>
 
       <div
-        class="border border-[#0000000d] rounded-[10px] overflow-y-auto h-[550px]"
+        class="border border_0000000d rounded-[10px] overflow-y-auto h-[550px]"
       >
         {#each selectedTokenList as data (data.id)}
           <div id={data.id} class="grid grid-cols-2 gap-2 my-2 mx-2">
             <div
-              class="py-2 pl-2 col-span-1 border border-[#0000000d] rounded-[10px]"
+              class="py-2 pl-2 col-span-1 border border_0000000d rounded-[10px]"
             >
               <div class="text-left flex items-center gap-3">
                 <img
@@ -379,16 +396,14 @@
                   class="rounded-full"
                 />
                 <div class="flex flex-col gap-1">
-                  <div
-                    class="text-black xl:text-sm text-xl font-medium relative"
-                  >
+                  <div class=" xl:text-sm text-xl font-medium relative">
                     {#if data.name === undefined}
                       N/A
                     {:else}
                       {data.name}
                     {/if}
                   </div>
-                  <div class="text-[#00000080] text-xs font-medium relative">
+                  <div class="text_00000080 text-xs font-medium relative">
                     {#if data.symbol === undefined}
                       N/A
                     {:else}
@@ -400,7 +415,7 @@
             </div>
             <div class="col-span-1 flex items-center gap-6">
               <div
-                class="flex-1 border border-[#0000000d] rounded-[10px] h-full flex justify-between items-center px-2"
+                class="flex-1 border border_0000000d rounded-[10px] h-full flex justify-between items-center px-2"
               >
                 <div
                   class="flex-1 flex justify-center items-center xl:text-3xl text-5xl text-gray-500"
@@ -497,7 +512,11 @@
     <div class="md:w-[120px] w-full">
       {#if remaining !== 100 || virtualPortfolioName.length === 0}
         <Button variant="disabled" disabled>
-          <div class="xl:text-base text-2xl font-medium">
+          <div
+            class={`xl:text-base text-2xl font-medium ${
+              darkMode ? "text-gray-400" : "text-white"
+            }`}
+          >
             {defaultData && Object.keys(defaultData).length !== 0
               ? "Edit"
               : "Create"}

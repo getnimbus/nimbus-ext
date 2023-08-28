@@ -2,6 +2,7 @@
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   import { formatBalance, shorterAddress } from "~/utils";
+  import { isDarkMode } from "~/store";
   dayjs.extend(relativeTime);
 
   export let data;
@@ -10,6 +11,11 @@
 
   import Etherscan from "~/assets/etherscan.jpg";
   import TwitterLogo from "~/assets/twitter.svg";
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   $: tweet = `${shorterAddress(
     data?.sender
@@ -27,9 +33,13 @@ via @get_nimbus`;
 
 <tr class="group transition-all">
   <td
-    class="pl-3 py-4 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-9 bg-white group-hover:bg-gray-100"
+    class={`pl-3 py-3 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-9 ${
+      darkMode
+        ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+        : "bg-white group-hover:bg-gray-100"
+    }`}
   >
-    <div class="text-left text-black xl:text-sm text-xl font-medium">
+    <div class="text-left xl:text-sm text-xl font-medium">
       <div class="flex space-x-3">
         <img
           src={data?.from_token_logo}
@@ -44,23 +54,31 @@ via @get_nimbus`;
           height="30"
         />
       </div>
-      <div class="text-[#00000080] xl:text-xs text-base mt-1">
+      <div class="text_00000080 xl:text-xs text-base mt-1">
         {data?.price_from?.symbol} - {data?.price_to?.symbol}
       </div>
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
-    <div class="text-left text-black xl:text-sm text-xl font-medium">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
+    <div class="text-left xl:text-sm text-xl font-medium">
       {dayjs(data?.timestamp).format("YYYY-MM-DD, hh:mm A")}
       <br />
-      <span class="text-[#00000080]">
+      <span class="text_00000080">
         {dayjs(data?.timestamp).fromNow()}
       </span>
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div
       class="xl:text-sm text-xl text-red-500 font-medium flex flex-col justify-start gap-1"
     >
@@ -74,7 +92,11 @@ via @get_nimbus`;
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div
       class="xl:text-sm text-xl text-[#00A878] font-medium flex flex-col justify-start gap-1"
     >
@@ -88,7 +110,11 @@ via @get_nimbus`;
     </div>
   </td>
 
-  <td class="py-4 group-hover:bg-gray-100">
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div
       class="xl:text-sm text-xl text-blue-500 hover:text-[#0d6efd] cursor-pointer font-medium flex justify-center"
     >
@@ -101,7 +127,11 @@ via @get_nimbus`;
     </div>
   </td>
 
-  <td class="pr-3 py-4 w-[190px] group-hover:bg-gray-100">
+  <td
+    class={`pr-3 py-3 w-[190px] ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
     <div class="flex items-center justify-end gap-3">
       <a
         href={`https://twitter.com/intent/tweet?text=${encodeURI(tweet)}`}

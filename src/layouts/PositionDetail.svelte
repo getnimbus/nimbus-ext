@@ -105,7 +105,7 @@
       <div class="flex flex-col justify-between gap-6 xl:flex-row">
         <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
           <OverviewCard title={"Current Value"}>
-            <div class="flex items-end gap-1 text-5xl text-black xl:text-3xl">
+            <div class="flex items-end gap-1 text-5xl xl:text-3xl">
               <CountUpNumber id="current_liquidity" number={0} type="balance" />
             </div>
             <div class="flex text-3xl xl:text-lg">
@@ -150,7 +150,7 @@
 
         <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
           <OverviewCard title={"Unclaimed Fees"}>
-            <div class="flex text-5xl text-black xl:text-3xl">
+            <div class="flex text-5xl xl:text-3xl">
               $<CountUpNumber id="unclaimed_fees" number={0} type="balance" />
             </div>
           </OverviewCard>
@@ -195,8 +195,8 @@
     >
       <div class="flex flex-col gap-6">
         <div class="flex flex-col gap-6 xl:flex-row">
-          <div class="border border-[#0000001a] rounded-[20px] p-6 flex-1">
-            <div class="text-2xl font-medium text-black">Fees</div>
+          <div class="border border_0000001a rounded-[20px] p-6 flex-1">
+            <div class="text-2xl font-medium">Fees</div>
             <div class="flex flex-col gap-4 mt-2">
               <div class="grid grid-cols-3">
                 <div class="col-span-1" />
@@ -215,11 +215,11 @@
                   <div>ETH</div>
                 </div>
                 <div class="flex flex-col col-span-1 gap-1">
-                  <div class="text-black">1.66</div>
+                  <div class="">1.66</div>
                   <div class="text-gray-500">$3,120.18</div>
                 </div>
                 <div class="flex flex-col col-span-1 gap-1">
-                  <div class="text-black">0</div>
+                  <div class="">0</div>
                   <div class="text-gray-500">$0</div>
                 </div>
               </div>
@@ -235,25 +235,25 @@
                   <div>ETH</div>
                 </div>
                 <div class="flex flex-col col-span-1 gap-1">
-                  <div class="text-black">1.66</div>
+                  <div class="">1.66</div>
                   <div class="text-gray-500">$3,120.18</div>
                 </div>
                 <div class="flex flex-col col-span-1 gap-1">
-                  <div class="text-black">0</div>
+                  <div class="">0</div>
                   <div class="text-gray-500">$0</div>
                 </div>
               </div>
             </div>
             <div
-              class="border-t-[1px] border-[#0000000d] mt-4 pt-4 flex justify-between items-center"
+              class="border-t-[1px] border_0000000d mt-4 pt-4 flex justify-between items-center"
             >
               <div class="text-lg font-medium">Total fees</div>
               <div class="text-xl font-medium">$3,120.18</div>
             </div>
           </div>
 
-          <div class="border border-[#0000001a] rounded-[20px] p-6 flex-1">
-            <div class="text-2xl font-medium text-black">Liquidity</div>
+          <div class="border border_0000001a rounded-[20px] p-6 flex-1">
+            <div class="text-2xl font-medium">Liquidity</div>
             <div class="flex flex-col gap-4 mt-2">
               <div class="grid grid-cols-3">
                 <div class="col-span-1" />
@@ -272,11 +272,11 @@
                   <div>ETH</div>
                 </div>
                 <div class="flex flex-col col-span-1 gap-1">
-                  <div class="text-black">1.66</div>
+                  <div class="">1.66</div>
                   <div class="text-gray-500">$3,120.18</div>
                 </div>
                 <div class="flex flex-col col-span-1 gap-1">
-                  <div class="text-black">0</div>
+                  <div class="">0</div>
                   <div class="text-gray-500">$0</div>
                 </div>
               </div>
@@ -292,17 +292,17 @@
                   <div>ETH</div>
                 </div>
                 <div class="flex flex-col col-span-1 gap-1">
-                  <div class="text-black">1.66</div>
+                  <div class="">1.66</div>
                   <div class="text-gray-500">$3,120.18</div>
                 </div>
                 <div class="flex flex-col col-span-1 gap-1">
-                  <div class="text-black">0</div>
+                  <div class="">0</div>
                   <div class="text-gray-500">$0</div>
                 </div>
               </div>
             </div>
             <div
-              class="border-t-[1px] border-[#0000000d] mt-4 pt-4 flex justify-between items-center"
+              class="border-t-[1px] border_0000000d mt-4 pt-4 flex justify-between items-center"
             >
               <div class="text-lg font-medium">Impermanent Loss</div>
               <div class="text-xl font-medium">$3,120.18</div>
@@ -310,8 +310,8 @@
           </div>
         </div>
 
-        <div class="border border-[#0000001a] rounded-[20px] p-6">
-          <div class="text-2xl font-medium text-black">Price Range</div>
+        <div class="border border_0000001a rounded-[20px] p-6">
+          <div class="text-2xl font-medium">Price Range</div>
 
           <EChart
             id="chartPriceRange"
@@ -325,7 +325,7 @@
           <div class="flex flex-col gap-4">
             <div class="flex items-center justify-between gap-6">
               <div
-                class="flex flex-col justify-center items-center border border-[#0000000d] px-4 py-2 rounded-[20px] flex-1"
+                class="flex flex-col justify-center items-center border border_0000000d px-4 py-2 rounded-[20px] flex-1"
               >
                 <div class="text-lg font-medium">Min Price</div>
                 <div>2,439.6504</div>
@@ -363,14 +363,14 @@
                 /></svg
               >
               <div
-                class="flex flex-col justify-center items-center border border-[#0000000d] px-4 py-2 rounded-[20px] flex-1"
+                class="flex flex-col justify-center items-center border border_0000000d px-4 py-2 rounded-[20px] flex-1"
               >
                 <div class="text-lg font-medium">Max Price</div>
                 <div>2,439.6504</div>
               </div>
             </div>
             <div
-              class="flex flex-col justify-center items-center border border-[#0000000d] px-4 py-2 rounded-[20px]"
+              class="flex flex-col justify-center items-center border border_0000000d px-4 py-2 rounded-[20px]"
             >
               <div class="text-lg font-medium">Current Price</div>
               <div>2,439.6504</div>
@@ -383,10 +383,10 @@
         </div>
       </div>
 
-      <div class="border border-[#0000001a] rounded-[20px] p-6">
+      <div class="border border_0000001a rounded-[20px] p-6">
         <div class="flex flex-col gap-6">
           <div class="flex items-center justify-between">
-            <div class="text-2xl font-medium text-black">History</div>
+            <div class="text-2xl font-medium">History</div>
             <div
               use:tooltip={{
                 content: `<tooltip-detail text="Premium feature. Coming soon" />`,
@@ -398,44 +398,34 @@
             </div>
           </div>
 
-          <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
+          <div class="border border_0000000d rounded-[10px] overflow-x-auto">
             <table class="table-auto xl:w-full w-[1200px]">
               <thead>
-                <tr class="bg-[#f4f5f8]">
+                <tr class="bg_f4f5f8">
                   <th
-                    class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-[#f4f5f8]"
+                    class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg_f4f5f8"
                   >
-                    <div
-                      class="text-xs font-medium text-left text-black uppercase"
-                    >
+                    <div class="text-xs font-medium text-left uppercase">
                       Transaction
                     </div>
                   </th>
                   <th class="py-3">
-                    <div
-                      class="text-xs font-medium text-left text-black uppercase"
-                    >
+                    <div class="text-xs font-medium text-left uppercase">
                       From
                     </div>
                   </th>
                   <th class="py-3">
-                    <div
-                      class="text-xs font-medium text-left text-black uppercase"
-                    >
+                    <div class="text-xs font-medium text-left uppercase">
                       To
                     </div>
                   </th>
                   <th class="py-3 min-w-[100px]">
-                    <div
-                      class="text-xs font-medium text-left text-black uppercase"
-                    >
+                    <div class="text-xs font-medium text-left uppercase">
                       Type
                     </div>
                   </th>
                   <th class="py-3 pr-3">
-                    <div
-                      class="text-xs font-medium text-left text-black uppercase"
-                    >
+                    <div class="text-xs font-medium text-left uppercase">
                       Token change
                     </div>
                   </th>

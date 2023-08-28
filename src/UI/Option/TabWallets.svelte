@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import * as browser from "webextension-polyfill";
   import { i18n } from "~/lib/i18n";
   import { dndzone } from "svelte-dnd-action";
   import {
@@ -11,11 +10,18 @@
   } from "~/utils";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { wallet, chain, typeWallet, selectedPackage } from "~/store";
+  import {
+    wallet,
+    chain,
+    typeWallet,
+    selectedPackage,
+    isDarkMode,
+  } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
   import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
 
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
@@ -23,8 +29,10 @@
   import "~/components/Loading.custom.svelte";
 
   import Plus from "~/assets/plus.svg";
+  import PlusBlack from "~/assets/plus-black.svg";
   import User from "~/assets/user.png";
   import Success from "~/assets/shield-done.svg";
+  import SolanaLogo from "~/assets/solana.png";
 
   const MultipleLang = {
     title: i18n("optionsPage.accounts-page-title", "My wallets"),
@@ -109,6 +117,11 @@
     },
   };
 
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
+
   let packageSelected = "";
   selectedPackage.subscribe((value) => {
     packageSelected = value;
@@ -142,6 +155,26 @@
 
   let isDisabled = false;
   let tooltipDisableAddBtn = "";
+
+  let scrollContainer;
+  let isScrollStart = true;
+  let isScrollEnd = false;
+  let container;
+
+  const handleScroll = () => {
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
+    isScrollStart = scrollLeft === 0;
+    isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+  };
+
+  let selectedAddresses = [];
+  let nameBundle = "";
+  let listBundle = [];
+  let selectedBundle = {};
+  let isAddBundle = false;
+  let isLoadingBundle = false;
+
+  const queryClient = useQueryClient();
 
   const trigger = () => {
     show = true;
@@ -231,11 +264,13 @@
     }
   };
 
-  const queryClient = useQueryClient();
   const query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+    },
   });
 
   $: {
@@ -259,6 +294,9 @@
 
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
     return response?.data;
   };
 
@@ -602,14 +640,139 @@
       }
     }
   }
+
+  const queryListBundle = createQuery({
+    queryKey: ["list-bundle"],
+    queryFn: () => getListBundle(),
+    staleTime: Infinity,
+  });
+
+  const getListBundle = async () => {
+    const response: any = await nimbus.get("/address/personalize/bundle");
+    return response.data;
+  };
+
+  $: {
+    if (
+      !$queryListBundle.isError &&
+      $queryListBundle.data &&
+      Object.keys($queryListBundle.data).length !== 0
+    ) {
+      const bundleData = Object.getOwnPropertyNames($queryListBundle.data);
+      listBundle = bundleData.map((item) => {
+        return {
+          name: item,
+          addresses: $queryListBundle.data[item]?.map(
+            (eachItem) => eachItem.address
+          ),
+        };
+      });
+    }
+  }
+
+  const handleResetState = () => {
+    nameBundle = "";
+    selectedBundle = {};
+  };
+
+  const selectedLastBundle = (data) => {
+    const bundleData = Object.getOwnPropertyNames(data);
+    listBundle = bundleData.map((item) => {
+      return {
+        name: item,
+        addresses: data[item]?.map((eachItem) => eachItem.address),
+      };
+    });
+    selectedBundle = listBundle[listBundle.length - 1];
+    selectedAddresses = listBundle[listBundle.length - 1].addresses;
+    nameBundle = listBundle[listBundle.length - 1].name;
+  };
+
+  const onSubmitBundle = async () => {
+    if (selectedAddresses.length === 7) {
+      toastMsg =
+        "You can create your bundle with maximum is 7 addresses. Please try again!";
+      isSuccess = false;
+      trigger();
+      isLoadingBundle = false;
+      return;
+    }
+
+    if (selectedAddresses.length === 0) {
+      toastMsg = "Please select addresses to bundle!";
+      isSuccess = false;
+      trigger();
+      isLoadingBundle = false;
+      return;
+    }
+
+    isLoadingBundle = true;
+    try {
+      const formData = {
+        name: nameBundle,
+        addresses: selectedAddresses,
+      };
+
+      if (selectedBundle && Object.keys(selectedBundle).length !== 0) {
+        const response = await nimbus.put(
+          `/address/personalize/bundle?name=${selectedBundle?.name}`,
+          formData
+        );
+        selectedLastBundle(response.data);
+        toastMsg = "Successfully edit your bundle!";
+      } else {
+        const response = await nimbus.post(
+          "/address/personalize/bundle",
+          formData
+        );
+        selectedLastBundle(response.data);
+        toastMsg = "Successfully create your bundle!";
+      }
+      isSuccess = true;
+      trigger();
+      isLoadingBundle = false;
+    } catch (e) {
+      toastMsg = `Something wrong when ${
+        selectedBundle && Object.keys(selectedBundle).length !== 0
+          ? "edit"
+          : "create"
+      } your bundle. Please try again!`;
+      isSuccess = false;
+      trigger();
+      isLoadingBundle = false;
+      console.error("e: ", e);
+    }
+  };
+
+  const handleDeleteBundle = async () => {
+    try {
+      const response = await nimbus.delete(
+        `/address/personalize/bundle?name=${selectedBundle?.name}`,
+        selectedBundle
+      );
+      toastMsg = "Successfully delete your bundle!";
+      isSuccess = true;
+      trigger();
+      listBundle = listBundle.filter(
+        (item) => item.name !== selectedBundle?.name
+      );
+      handleResetState();
+      selectedAddresses = [];
+      isAddBundle = false;
+    } catch (e) {
+      toastMsg = "Something wrong when delete your bundle. Please try again!";
+      isSuccess = false;
+      trigger();
+      console.error("e: ", e);
+    }
+  };
 </script>
 
 <div class="flex flex-col gap-4">
-  <div class="flex justify-between items-center">
-    <div class="xl:title-3 title-1 text-gray-500">{MultipleLang.title}</div>
-
-    {#if listAddress && listAddress.length === 0}
-      <div class="relative xl:w-max w-[260px]">
+  {#if listAddress && listAddress.length === 0}
+    <div class="flex justify-between items-center">
+      <div class="xl:title-3 title-1">{MultipleLang.title}</div>
+      <div class="relative xl:w-max w-[200px]">
         {#if Object.keys(userInfo).length !== 0}
           <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
             <img src={Plus} alt="" width="12" height="12" />
@@ -628,8 +791,17 @@
             }}
           >
             <Button variant="disabled">
-              <img src={Plus} alt="" width="12" height="12" />
-              <div class="xl:text-base text-2xl font-medium text-white">
+              <img
+                src={darkMode ? PlusBlack : Plus}
+                alt=""
+                width="12"
+                height="12"
+              />
+              <div
+                class={`text-2xl font-medium xl:text-base ${
+                  darkMode ? "text-gray-400" : "text-white"
+                }`}
+              >
                 {MultipleLang.content.btn_text}
               </div>
             </Button>
@@ -644,32 +816,194 @@
           </div>
         {/if}
       </div>
-    {:else}
-      <div
-        class="relative xl:w-max w-[260px]"
-        on:mouseenter={() => {
-          if (isDisabled || Object.keys(userInfo).length === 0) {
-            showDisableAddWallet = true;
-          }
-        }}
-        on:mouseleave={() => {
-          if (isDisabled || Object.keys(userInfo).length === 0) {
-            showDisableAddWallet = false;
-          }
-        }}
-      >
-        {#if isDisabled || Object.keys(userInfo).length === 0}
-          <div>
-            {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
+    </div>
+  {:else}
+    <div class="flex flex-col gap-4">
+      <!-- <div class="xl:title-3 title-1">{MultipleLang.title}</div> -->
+      <div class="flex justify-between items-center gap-10">
+        <!-- {#if listBundle && listBundle.length === 0}
+          <div class="text-base">
+            Create your bundle with up to 7 addresses per bundle!
+          </div>
+        {:else}
+          <div
+            class="relative overflow-hidden w-full flex gap-3 justify-between items-center"
+            bind:this={container}
+          >
+            <div
+              class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
+                isScrollStart ? "hidden" : "block"
+              }`}
+              style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                height="24px"
+                width="24px"
+                viewBox="0 0 24 24"
+                class="sc-aef7b723-0 fKbUaI"
+                ><path
+                  d="M15 6L9 12L15 18"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-miterlimit="10"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                /></svg
+              >
+            </div>
+            <div
+              class="w-max flex gap-3 overflow-x-auto whitespace-nowrap"
+              bind:this={scrollContainer}
+              on:scroll={handleScroll}
+            >
+              <AnimateSharedLayout>
+                {#each listBundle as item}
+                  <div
+                    class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                    on:click={() => {
+                      selectedBundle = item;
+                      selectedAddresses = item.addresses;
+                      nameBundle = item.name;
+                    }}
+                  >
+                    <div
+                      class={`relative ${
+                        selectedBundle === item && "text-white"
+                      }`}
+                      style="z-index: 2"
+                    >
+                      {item.name}
+                    </div>
+                    {#if item === selectedBundle}
+                      <Motion
+                        let:motion
+                        layoutId="active-pill"
+                        transition={{ type: "spring", duration: 0.6 }}
+                      >
+                        <div
+                          class="absolute inset-0 rounded-full bg-[#1E96FC]"
+                          style="z-index: 1"
+                          use:motion
+                        />
+                      </Motion>
+                    {/if}
+                  </div>
+                {/each}
+              </AnimateSharedLayout>
+            </div>
+            {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
+              <div
+                class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
+                  isScrollEnd ? "hidden" : "block"
+                }`}
+                style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  height="24px"
+                  width="24px"
+                  viewBox="0 0 24 24"
+                  class="sc-aef7b723-0 fKbUaI"
+                  ><path
+                    d="M9 6L15 12L9 18"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-miterlimit="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  /></svg
+                >
+              </div>
+            {/if}
+          </div>
+        {/if} -->
+        <div class="xl:title-3 title-1">{MultipleLang.title}</div>
+        <div class="flex gap-4 justify-end flex-1">
+          <!-- add bundle -->
+          <!-- <div class="flex items-center gap-4">
+            {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0}
+              <div
+                class="text-red-500 font-semibold w-max cursor-pointer xl:text-base text-2xl"
+                on:click={handleDeleteBundle}
+              >
+                Delete
+              </div>
+            {/if}
+            <div class="xl:w-max w-[200px]">
               <Button
                 variant="tertiary"
                 on:click={() => {
-                  if (
-                    localStorage.getItem("isGetUserEmailYet") !== null &&
-                    localStorage.getItem("isGetUserEmailYet") === "false"
-                  ) {
-                    isOpenModal = true;
-                  }
+                  isAddBundle = true;
+                  handleResetState();
+                  selectedAddresses = [];
+                }}
+              >
+                <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+                <div class="xl:text-base text-2xl font-medium text-white">
+                  Add bundle
+                </div>
+              </Button>
+            </div>
+          </div> -->
+
+          <!-- add account -->
+          <div
+            class="relative xl:w-max w-[200px]"
+            on:mouseenter={() => {
+              if (isDisabled || Object.keys(userInfo).length === 0) {
+                showDisableAddWallet = true;
+              }
+            }}
+            on:mouseleave={() => {
+              if (isDisabled || Object.keys(userInfo).length === 0) {
+                showDisableAddWallet = false;
+              }
+            }}
+          >
+            {#if isDisabled || Object.keys(userInfo).length === 0}
+              <div>
+                {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
+                  <Button
+                    variant="tertiary"
+                    on:click={() => {
+                      if (
+                        localStorage.getItem("isGetUserEmailYet") !== null &&
+                        localStorage.getItem("isGetUserEmailYet") === "false"
+                      ) {
+                        isOpenModal = true;
+                      }
+                    }}
+                  >
+                    <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+                    <div class="xl:text-base text-2xl font-medium text-white">
+                      Add account
+                    </div>
+                  </Button>
+                {:else}
+                  <Button variant="disabled" disabled>
+                    <img
+                      src={darkMode ? PlusBlack : Plus}
+                      alt=""
+                      class="xl:w-3 xl:h-3 w-4 h-4"
+                    />
+                    <div
+                      class={`text-2xl font-medium xl:text-base ${
+                        darkMode ? "text-gray-400" : "text-white"
+                      }`}
+                    >
+                      Add account
+                    </div>
+                  </Button>
+                {/if}
+              </div>
+            {:else}
+              <Button
+                variant="tertiary"
+                on:click={() => {
+                  isOpenAddModal = true;
                 }}
               >
                 <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
@@ -677,158 +1011,337 @@
                   Add account
                 </div>
               </Button>
-            {:else}
-              <Button variant="disabled" disabled>
-                <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-                <div class="xl:text-base text-2xl font-medium text-white">
-                  Add account
-                </div>
-              </Button>
+            {/if}
+            {#if showDisableAddWallet}
+              <div
+                class="absolute transform -top-12 right-0"
+                style="z-index: 2147483648;"
+              >
+                <tooltip-detail text={tooltipDisableAddBtn} />
+              </div>
             {/if}
           </div>
-        {:else}
-          <Button
-            variant="tertiary"
-            on:click={() => {
-              isOpenAddModal = true;
-            }}
-          >
-            <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-            <div class="xl:text-base text-2xl font-medium text-white">
-              Add account
-            </div>
-          </Button>
-        {/if}
-        {#if showDisableAddWallet}
-          <div
-            class="absolute transform -top-12 right-0"
-            style="z-index: 2147483648;"
-          >
-            <tooltip-detail text={tooltipDisableAddBtn} />
-          </div>
-        {/if}
+        </div>
       </div>
-    {/if}
-  </div>
+    </div>
+  {/if}
 
-  <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
-    <table class="table-auto xl:w-full w-[1200px]">
-      <thead>
-        <tr class="bg-[#f4f5f8]">
-          <th class="pl-3 py-3">
-            <div
-              class="text-left xl:text-sm text-base uppercase font-semibold text-black"
-            >
-              {MultipleLang.content.address_header_table}
-            </div>
-          </th>
-          <th class="py-3">
-            <div
-              class="text-left xl:text-sm text-base uppercase font-semibold text-black"
-            >
-              {MultipleLang.content.label_header_table}
-            </div>
-          </th>
-          <th class="pr-3 py-3">
-            <div
-              class="text-right xl:text-sm text-base uppercase font-semibold text-black"
-            >
-              {MultipleLang.content.action_header_table}
-            </div>
-          </th>
-        </tr>
-      </thead>
-      {#if $query.isFetching}
-        <tbody>
-          <tr>
-            <td colspan="3">
-              <div class="flex justify-center items-center py-4 px-3">
-                <loading-icon />
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      {:else}
-        <tbody
-          use:dndzone={{
-            items: listAddress,
-            flipDurationMs: 300,
-            dropTargetStyle: { outline: "none" },
-            transformDraggedElement: (draggedEl, data, index) => {
-              draggedEl.classList.add("myStyle");
-            },
-          }}
-          on:consider={(e) => {
-            listAddress = e.detail.items;
-          }}
-          on:finalize={(e) => {
-            listAddress = e.detail.items;
-            handleSortListAddress(e.detail.items);
-          }}
-        >
-          {#if listAddress && listAddress.length === 0}
-            <tr>
-              <td colspan="3">
-                <div class="flex justify-center items-center py-4 px-3">
-                  No address
+  {#if isAddBundle || (selectedBundle && selectedBundle !== null && Object.keys(selectedBundle).length !== 0)}
+    <!-- <form on:submit|preventDefault={onSubmitBundle} class="flex flex-col gap-4">
+      <div
+        class={`flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
+          nameBundle && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+        }`}
+      >
+        <div class="xl:text-base text-xl text-[#666666] font-medium">
+          Bundle
+        </div>
+        <input
+          type="text"
+          placeholder="Your bundle name"
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            nameBundle && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+          }`}
+          required
+          bind:value={nameBundle}
+        />
+      </div>
+      <div class="border border_0000000d rounded-[10px] overflow-x-auto">
+        <table class="table-auto xl:w-full w-[1200px]">
+          <thead>
+            <tr class="bg_f4f5f8">
+              <th class="pl-3 py-3">
+                <div
+                  class="text-left xl:text-sm text-base uppercase font-semibold"
+                >
+                  {MultipleLang.content.address_header_table}
                 </div>
-              </td>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-left xl:text-sm text-base uppercase font-semibold"
+                >
+                  {MultipleLang.content.label_header_table}
+                </div>
+              </th>
+              <th class="pr-3 py-3">
+                <div
+                  class="text-right xl:text-sm text-base uppercase font-semibold"
+                >
+                  {MultipleLang.content.action_header_table}
+                </div>
+              </th>
             </tr>
-          {:else}
-            {#each listAddress as item (item.id)}
-              <tr class="hover:bg-gray-100 transition-all">
-                <td class="pl-3 py-4">
-                  <div
-                    class="text-left flex items-center gap-3 xl:text-base text-xl"
-                  >
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M21 7.75H3C2.59 7.75 2.25 7.41 2.25 7C2.25 6.59 2.59 6.25 3 6.25H21C21.41 6.25 21.75 6.59 21.75 7C21.75 7.41 21.41 7.75 21 7.75ZM21 12.75H3C2.59 12.75 2.25 12.41 2.25 12C2.25 11.59 2.59 11.25 3 11.25H21C21.41 11.25 21.75 11.59 21.75 12C21.75 12.41 21.41 12.75 21 12.75ZM21 17.75H3C2.59 17.75 2.25 17.41 2.25 17C2.25 16.59 2.59 16.25 3 16.25H21C21.41 16.25 21.75 16.59 21.75 17C21.75 17.41 21.41 17.75 21 17.75Z"
-                        fill="#9ca3af"
-                      />
-                    </svg>
-                    <Copy address={item.address} iconColor="#000" />
-                  </div>
-                </td>
-                <td class="py-4">
-                  <div
-                    class="bg-[#6AC7F533] text-[#27326F] w-max px-3 py-1 rounded-[5px] xl:text-base text-xl"
-                  >
-                    {item.label}
-                  </div>
-                </td>
-                <td class="pr-3 py-4">
-                  <div class="flex justify-end gap-6">
-                    <div
-                      class="text-red-600 hover:underline dark:text-red-500 xl:text-base text-2xl transition-all cursor-pointer"
-                      on:click={() => {
-                        isOpenConfirmDelete = true;
-                        selectedWallet = item;
-                      }}
-                    >
-                      {MultipleLang.content.modal_delete}
-                    </div>
-                    <div
-                      class="text-blue-600 hover:underline dark:text-blue-500 xl:text-base text-2xl transition-all cursor-pointer"
-                      on:click={() => handleSelectedEdit(item)}
-                    >
-                      {MultipleLang.content.modal_edit}
-                    </div>
+          </thead>
+          {#if $query.isFetching}
+            <tbody>
+              <tr>
+                <td colspan="3">
+                  <div class="flex justify-center items-center py-4 px-3">
+                    <loading-icon />
                   </div>
                 </td>
               </tr>
-            {/each}
+            </tbody>
+          {:else}
+            <tbody>
+              {#if listAddress && listAddress.length === 0}
+                <tr>
+                  <td colspan="3">
+                    <div class="flex justify-center items-center py-4 px-3">
+                      No address
+                    </div>
+                  </td>
+                </tr>
+              {:else}
+                {#each listAddress.filter((item) => item.type !== "BUNDLE") as item (item.id)}
+                  <tr class="group transition-all">
+                    <td
+                      class={`pl-3 py-3  ${
+                        darkMode
+                          ? "group-hover:bg-[#00000033]"
+                          : "group-hover:bg-gray-100"
+                      }`}
+                    >
+                      <div
+                        class="text-left flex items-center gap-3 xl:text-base text-xl"
+                      >
+                        <div class="flex justify-center">
+                          <input
+                            type="checkbox"
+                            value={item.address}
+                            bind:group={selectedAddresses}
+                            class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                          />
+                        </div>
+                        <Copy
+                          address={item.address}
+                          iconColor={`${darkMode ? "#fff" : "#000"}`}
+                          color={`${darkMode ? "#fff" : "#000"}`}
+                        />
+                      </div>
+                    </td>
+
+                    <td
+                      class={`py-3  ${
+                        darkMode
+                          ? "group-hover:bg-[#00000033]"
+                          : "group-hover:bg-gray-100"
+                      }`}
+                    >
+                      <div
+                        class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-xl"
+                      >
+                        {item.label}
+                      </div>
+                    </td>
+
+                    <td
+                      class={`py-3 pr-3 ${
+                        darkMode
+                          ? "group-hover:bg-[#00000033]"
+                          : "group-hover:bg-gray-100"
+                      }`}
+                    >
+                      <div class="flex justify-end gap-6">
+                        <div
+                          class="text-red-600 hover:underline dark:text-red-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
+                          on:click={() => {
+                            isOpenConfirmDelete = true;
+                            selectedWallet = item;
+                          }}
+                        >
+                          {MultipleLang.content.modal_delete}
+                        </div>
+                        <div
+                          class="text-blue-600 hover:underline dark:text-blue-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
+                          on:click={() => handleSelectedEdit(item)}
+                        >
+                          {MultipleLang.content.modal_edit}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                {/each}
+              {/if}
+            </tbody>
           {/if}
-        </tbody>
-      {/if}
-    </table>
-  </div>
+        </table>
+      </div>
+      <div class="flex justify-end lg:gap-2 gap-6">
+        <div class="lg:w-[120px] w-full">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              selectedAddresses = selectedBundle.addresses;
+              isAddBundle = false;
+              handleResetState();
+            }}
+          >
+            {MultipleLang.content.modal_cancel}</Button
+          >
+        </div>
+        <div class="lg:w-[120px] w-full">
+          <Button type="submit" variant="tertiary" isLoading={isLoadingBundle}>
+            {#if selectedBundle && Object.keys(selectedBundle).length !== 0}
+              {MultipleLang.content.modal_edit}
+            {:else}
+              {MultipleLang.content.modal_add}
+            {/if}
+          </Button>
+        </div>
+      </div>
+    </form> -->
+  {:else}
+    <div
+      class={`border border_0000000d rounded-[10px] overflow-x-auto ${
+        darkMode ? "bg-[#131313]" : "bg-[#fff]"
+      }`}
+    >
+      <table class="table-auto xl:w-full w-[1200px]">
+        <thead>
+          <tr class="bg_f4f5f8">
+            <th class="pl-3 py-3">
+              <div
+                class="text-left xl:text-sm text-base uppercase font-semibold"
+              >
+                {MultipleLang.content.address_header_table}
+              </div>
+            </th>
+            <th class="py-3">
+              <div
+                class="text-left xl:text-sm text-base uppercase font-semibold"
+              >
+                {MultipleLang.content.label_header_table}
+              </div>
+            </th>
+            <th class="pr-3 py-3">
+              <div
+                class="text-right xl:text-sm text-base uppercase font-semibold"
+              >
+                {MultipleLang.content.action_header_table}
+              </div>
+            </th>
+          </tr>
+        </thead>
+        {#if $query.isFetching}
+          <tbody>
+            <tr>
+              <td colspan="3">
+                <div class="flex justify-center items-center py-4 px-3">
+                  <loading-icon />
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        {:else}
+          <tbody
+            use:dndzone={{
+              items: listAddress,
+              flipDurationMs: 300,
+              dropTargetStyle: { outline: "none" },
+              transformDraggedElement: (draggedEl, data, index) => {
+                draggedEl.classList.add("myStyle");
+              },
+            }}
+            on:consider={(e) => {
+              listAddress = e.detail.items;
+            }}
+            on:finalize={(e) => {
+              listAddress = e.detail.items;
+              handleSortListAddress(e.detail.items);
+            }}
+          >
+            {#if listAddress && listAddress.length === 0}
+              <tr>
+                <td colspan="3">
+                  <div
+                    class="flex justify-center items-center py-4 px-3 xl:text-base text-xl"
+                  >
+                    No address
+                  </div>
+                </td>
+              </tr>
+            {:else}
+              {#each listAddress.filter((item) => item.type !== "BUNDLE") as item (item.id)}
+                <tr class="group transition-all">
+                  <td
+                    class={`pl-3 py-3  ${
+                      darkMode
+                        ? "group-hover:bg-[#00000033]"
+                        : "group-hover:bg-gray-100"
+                    }`}
+                  >
+                    <div
+                      class="text-left flex items-center gap-3 xl:text-base text-xl"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M21 7.75H3C2.59 7.75 2.25 7.41 2.25 7C2.25 6.59 2.59 6.25 3 6.25H21C21.41 6.25 21.75 6.59 21.75 7C21.75 7.41 21.41 7.75 21 7.75ZM21 12.75H3C2.59 12.75 2.25 12.41 2.25 12C2.25 11.59 2.59 11.25 3 11.25H21C21.41 11.25 21.75 11.59 21.75 12C21.75 12.41 21.41 12.75 21 12.75ZM21 17.75H3C2.59 17.75 2.25 17.41 2.25 17C2.25 16.59 2.59 16.25 3 16.25H21C21.41 16.25 21.75 16.59 21.75 17C21.75 17.41 21.41 17.75 21 17.75Z"
+                          fill="#9ca3af"
+                        />
+                      </svg>
+                      <Copy
+                        address={item.address}
+                        iconColor={`${darkMode ? "#fff" : "#000"}`}
+                        color={`${darkMode ? "#fff" : "#000"}`}
+                      />
+                    </div>
+                  </td>
+
+                  <td
+                    class={`py-3  ${
+                      darkMode
+                        ? "group-hover:bg-[#00000033]"
+                        : "group-hover:bg-gray-100"
+                    }`}
+                  >
+                    <div
+                      class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-xl"
+                    >
+                      {item.label}
+                    </div>
+                  </td>
+
+                  <td
+                    class={`py-3 pr-3 ${
+                      darkMode
+                        ? "group-hover:bg-[#00000033]"
+                        : "group-hover:bg-gray-100"
+                    }`}
+                  >
+                    <div class="flex justify-end gap-6">
+                      <div
+                        class="text-red-600 hover:underline dark:text-red-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
+                        on:click={() => {
+                          isOpenConfirmDelete = true;
+                          selectedWallet = item;
+                        }}
+                      >
+                        {MultipleLang.content.modal_delete}
+                      </div>
+                      <div
+                        class="text-blue-600 hover:underline dark:text-blue-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
+                        on:click={() => handleSelectedEdit(item)}
+                      >
+                        {MultipleLang.content.modal_edit}
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              {/each}
+            {/if}
+          </tbody>
+        {/if}
+      </table>
+    </div>
+  {/if}
 </div>
 
 <!-- Modal edit account -->
@@ -837,7 +1350,7 @@
   isOpen={isOpenEditModal}
   on:close={() => (isOpenEditModal = false)}
 >
-  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
+  <div class="xl:title-3 title-1 font-semibold">
     {MultipleLang.content.modal_edit_title}
   </div>
   <form
@@ -847,12 +1360,12 @@
     <div class="flex flex-col gap-1">
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          address ? "bg-[#F0F2F7]" : ""
+          address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
         }`}
         class:input-border-error={errorsEdit.address &&
           errorsEdit.address.required}
       >
-        <div class="xl:text-base text-xl font-semibold text-gray-700">
+        <div class="xl:text-base text-xl font-semibold text-[#666666]">
           {MultipleLang.content.modal_address_label}
         </div>
         <input
@@ -863,7 +1376,7 @@
           placeholder={MultipleLang.content.modal_address_label}
           bind:value={selectedItemEdit.address}
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            address ? "bg-[#F0F2F7]" : ""
+            address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
           on:keyup={({ target: { value } }) => (address = value)}
         />
@@ -877,11 +1390,11 @@
     <div class="flex flex-col gap-1">
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          label ? "bg-[#F0F2F7]" : ""
+          label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
         }`}
         class:input-border-error={errorsEdit.label && errorsEdit.label.required}
       >
-        <div class="xl:text-base text-xl font-semibold text-gray-700">
+        <div class="xl:text-base text-xl font-semibold text-[#666666]">
           {MultipleLang.content.modal_label_label}
         </div>
         <input
@@ -891,7 +1404,7 @@
           placeholder={MultipleLang.content.modal_label_label}
           bind:value={selectedItemEdit.label}
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            label ? "bg-[#F0F2F7]" : ""
+            label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
           on:keyup={({ target: { value } }) => (label = value)}
         />
@@ -929,7 +1442,7 @@
   isOpen={isOpenAddModal}
   on:close={() => (isOpenAddModal = false)}
 >
-  <div class="xl:title-3 title-1 text-gray-600 font-semibold">
+  <div class="xl:title-3 title-1 font-semibold">
     {MultipleLang.content.modal_add_title}
   </div>
   <div class="flex flex-col mt-4 gap-7">
@@ -969,7 +1482,9 @@
     </div>
     <div class="border-t-[1px] relative">
       <div
-        class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 bg-white text-sm px-2"
+        class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
+          darkMode ? "bg-[#0f0f0f]" : "bg-white"
+        }  text-sm px-2`}
       >
         Or
       </div>
@@ -978,7 +1493,7 @@
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            address ? "bg-[#F0F2F7]" : ""
+            address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
           class:input-border-error={errors.address && errors.address.required}
         >
@@ -992,7 +1507,7 @@
             placeholder="Your wallet address"
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              address ? "bg-[#F0F2F7]" : ""
+              address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }
               `}
             on:keyup={({ target: { value } }) => (address = value)}
@@ -1007,7 +1522,7 @@
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            label ? "bg-[#F0F2F7]" : ""
+            label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
           class:input-border-error={errors.label && errors.label.required}
         >
@@ -1021,7 +1536,7 @@
             placeholder={MultipleLang.content.modal_label_label}
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              label ? "bg-[#F0F2F7]" : ""
+              label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }
               `}
             on:keyup={({ target: { value } }) => (label = value)}
@@ -1034,7 +1549,7 @@
         {/if}
       </div>
       <div class="flex justify-center items-center gap-6 my-3">
-        {#each chainList.slice(0, -1) as item}
+        {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
           <div
             class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
           >
@@ -1072,7 +1587,7 @@
   on:close={() => (isOpenConfirmDelete = false)}
 >
   <div class="flex flex-col gap-1 items-start">
-    <div class="xl:title-3 title-1 text-gray-600 font-semibold">
+    <div class="xl:title-3 title-1 font-semibold">
       {MultipleLang.content.modal_delete_title}
     </div>
     <div class="xl:text-sm text-lg text-gray-500">
@@ -1113,7 +1628,7 @@
     isOpenModal = false;
   }}
 >
-  <div class="xl:title-3 title-1 text-center text-gray-600 font-semibold">
+  <div class="xl:title-3 title-1 text-center font-semibold">
     Let's us know your email
   </div>
   <div class="mt-2">
@@ -1127,7 +1642,7 @@
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            email ? "bg-[#F0F2F7]" : ""
+            email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
           <div class="xl:text-base text-xl text-[#666666] font-medium">
@@ -1141,7 +1656,7 @@
             placeholder="Your email"
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              email ? "bg-[#F0F2F7]" : ""
+              email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }
               `}
             on:keyup={({ target: { value } }) => (email = value)}
@@ -1213,6 +1728,20 @@
 </Toast>
 
 <style>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
+
+  :global(body) .bg_f4f5f8 {
+    background: #f4f5f8;
+  }
+  :global(body.dark) .bg_f4f5f8 {
+    background: #131313;
+  }
+
   .input-border {
     border: 0.5px solid rgb(229, 231, 235);
   }

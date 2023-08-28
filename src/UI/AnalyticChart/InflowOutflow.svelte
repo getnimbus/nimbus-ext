@@ -368,10 +368,8 @@
   );
 </script>
 
-<div class="border border-[#0000001a] rounded-[20px] pt-6">
-  <div class="px-6 xl:text-xl text-3xl font-medium text-black">
-    Token Inflow - Outflow
-  </div>
+<div class="border border_0000001a rounded-[20px] pt-6">
+  <div class="px-6 xl:text-xl text-3xl font-medium">Token Inflow - Outflow</div>
   {#if $query.isFetching}
     <div class="flex items-center justify-center h-[415px]">
       <LoadingPremium />

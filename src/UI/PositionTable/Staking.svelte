@@ -32,37 +32,35 @@
     </div>
   </div>
 
-  <div class="border border-[#0000000d] rounded-[10px] overflow-x-auto">
+  <div class="border border_0000000d rounded-[10px] overflow-x-auto">
     <table class="table-auto xl:w-full w-[1200px]">
       <thead>
-        <tr class="bg-[#f4f5f8]">
+        <tr class="bg_f4f5f8">
           <th
-            class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
+            class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
           >
-            <div
-              class="xl:text-xs text-base font-semibold text-black uppercase text-left"
-            >
+            <div class="xl:text-xs text-base font-semibold uppercase text-left">
               Pool
             </div>
           </th>
 
           <th class="py-3">
             <div
-              class="text-right xl:text-xs text-base font-semibold text-black uppercase"
+              class="text-right xl:text-xs text-base font-semibold uppercase"
             >
               Entry
             </div>
           </th>
 
           <!-- <th class="py-3">
-            <div class="text-right xl:text-xs text-base font-semibold text-black uppercase">
+            <div class="text-right xl:text-xs text-base font-semibold  uppercase">
               Entry Time
             </div>
           </th> -->
 
           <th class="py-3">
             <div
-              class="text-right xl:text-xs text-base font-semibold text-black uppercase"
+              class="text-right xl:text-xs text-base font-semibold uppercase"
             >
               Claimable (ETH)
             </div>
@@ -70,7 +68,7 @@
 
           <th class="py-3">
             <div
-              class="xl:text-xs text-base font-semibold text-black uppercase text-right"
+              class="xl:text-xs text-base font-semibold uppercase text-right"
             >
               Value
             </div>
@@ -78,7 +76,7 @@
 
           <th class="pr-3 py-3">
             <div
-              class="xl:text-xs text-base font-semibold text-black uppercase text-right"
+              class="xl:text-xs text-base font-semibold uppercase text-right"
             >
               Profit & Loss
             </div>

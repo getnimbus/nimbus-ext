@@ -4389,13 +4389,13 @@ ecdsa-sig-formatter@1.0.11:
   dependencies:
     safe-buffer "^5.0.1"
 
-echarts@^5.4.1:
-  version "5.4.1"
-  resolved "https://registry.yarnpkg.com/echarts/-/echarts-5.4.1.tgz#d7f65a584d78beff62568d878b16151b3381811c"
-  integrity sha512-9ltS3M2JB0w2EhcYjCdmtrJ+6haZcW6acBolMGIuf01Hql1yrIV01L1aRj7jsaaIULJslEP9Z3vKlEmnJaWJVQ==
+echarts@^5.4.3:
+  version "5.4.3"
+  resolved "https://registry.yarnpkg.com/echarts/-/echarts-5.4.3.tgz#f5522ef24419164903eedcfd2b506c6fc91fb20c"
+  integrity sha512-mYKxLxhzy6zyTi/FaEbJMOZU1ULGEQHaeIeuMR5L+JnJTpz+YR03mnnpBhbR4+UYJAgiXgpyTVLffPAjOTLkZA==
   dependencies:
     tslib "2.3.0"
-    zrender "5.4.1"
+    zrender "5.4.4"
 
 eip1193-provider@^1.0.1:
   version "1.0.1"
@@ -5314,6 +5314,11 @@ flatted@^3.1.0:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.7.tgz#609f39207cb614b89d0765b477cb2d437fbf9787"
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
+
+flowbite-svelte-icons@^0.3.6:
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/flowbite-svelte-icons/-/flowbite-svelte-icons-0.3.6.tgz#62ab2ece8ea9bb04e759da51a06b7ee0b6de0c2c"
+  integrity sha512-4YEq++cbD36KF+zGgLqfkmQgfWGMAP7tjDbesuieROx6UgbMBTtj7f4n49iO+g1cMLelGsCkyZiwelCXDbIJ2w==
 
 flowbite-svelte@^0.27.1:
   version "0.27.17"
@@ -8608,6 +8613,11 @@ swiper@6:
     dom7 "^3.0.0"
     ssr-window "^3.0.0"
 
+tailwind-merge@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-1.14.0.tgz#e677f55d864edc6794562c63f5001f45093cdb8b"
+  integrity sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==
+
 tailwindcss@^3.1.8:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.2.7.tgz#5936dd08c250b05180f0944500c01dce19188c07"
@@ -9547,9 +9557,9 @@ zip-dir@2.0.0:
     async "^3.2.0"
     jszip "^3.2.2"
 
-zrender@5.4.1:
-  version "5.4.1"
-  resolved "https://registry.yarnpkg.com/zrender/-/zrender-5.4.1.tgz#892f864b885c71e1dc25dcb3c7a4ba42678d3f11"
-  integrity sha512-M4Z05BHWtajY2241EmMPHglDQAJ1UyHQcYsxDNzD9XLSkPDqMq4bB28v9Pb4mvHnVQ0GxyTklZ/69xCFP6RXBA==
+zrender@5.4.4:
+  version "5.4.4"
+  resolved "https://registry.yarnpkg.com/zrender/-/zrender-5.4.4.tgz#8854f1d95ecc82cf8912f5a11f86657cb8c9e261"
+  integrity sha512-0VxCNJ7AGOMCWeHVyTrGzUgrK4asT4ml9PEkeGirAkKNYXYzoPJCLvmyfdoOXcjTHPs10OZVMfD1Rwg16AZyYw==
   dependencies:
     tslib "2.3.0"

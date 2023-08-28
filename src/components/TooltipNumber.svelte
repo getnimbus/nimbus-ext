@@ -1,10 +1,5 @@
 <script lang="ts">
-  import {
-    formatBigBalance,
-    checkFormatBalance,
-    formatCurrency,
-    formatCurrencyV2,
-  } from "~/utils";
+  import { formatBigBalance, formatPercent, formatCurrency } from "~/utils";
   import numeral from "numeral";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
@@ -23,11 +18,11 @@
 
 {#if type === "percent"}
   <span class="w-max">
-    {checkFormatBalance(number) === "NaN" ? 0 : checkFormatBalance(number)}
+    {formatPercent(number) === "NaN" ? 0 : formatPercent(number)}
   </span>
 {:else}
   <span class="w-max">
-    {#if (numberSize && numberSize !== "K") || checkFormatBalance(number) === "NaN"}
+    {#if (numberSize && numberSize !== "K") || formatPercent(number) === "NaN"}
       <span
         use:tooltip={{
           content: `<tooltip-detail text="${formatCurrency(number)}" />`,
@@ -50,9 +45,7 @@
         {/if}
       </span>
     {:else}
-      <span
-        >{number > 1 ? formatCurrencyV2(number) : formatCurrency(number)}</span
-      >
+      <span>{formatCurrency(number)}</span>
     {/if}
   </span>
 {/if}

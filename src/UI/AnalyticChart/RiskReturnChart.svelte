@@ -1,10 +1,18 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
-  import { wallet, chain, selectedPackage, typeWallet } from "~/store";
+  import {
+    wallet,
+    chain,
+    selectedPackage,
+    typeWallet,
+    isDarkMode,
+  } from "~/store";
   import {
     formatCurrency,
+    formatPercent,
     getAddressContext,
     getTooltipContent,
+    sharpeRatioColorChart,
   } from "~/utils";
   import maxBy from "lodash/maxBy";
   import minBy from "lodash/minBy";
@@ -23,6 +31,7 @@
   import ProgressBar from "~/components/ProgressBar.svelte";
 
   import Logo from "~/assets/logo-1.svg";
+  import LogoWhite from "~/assets/logo-white.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
   import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
@@ -37,6 +46,11 @@
       value: "shrapeRatioBreakdown",
     },
   ];
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -71,11 +85,15 @@
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                darkMode ? "white" : "black"
+              }">
                 <span>${params?.marker}</span> ${params.seriesName}
               </div>
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                  darkMode ? "white" : "black"
+                }">
                   Return 
                 </div>
 
@@ -83,17 +101,21 @@
                   <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                     params.value[1] >= 0 ? "#05a878" : "#f25f5d"
                   };">
-                    ${params.value[1]}%
+                    ${formatPercent(params.value[1])}%
                   </div>
                 </div>
               </div>
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                  darkMode ? "white" : "black"
+                }">
                   Risk 
                 </div>
 
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
+                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                    darkMode ? "white" : "black"
+                  }">
                     ${Number(params.value[0]).toFixed(2)}
                   </div>
                 </div>
@@ -134,21 +156,42 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                  darkMode ? "white" : "black"
+                }">
                   <span>${params?.marker}</span> ${params?.data?.name}
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
+                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                    darkMode ? "white" : "black"
+                  }">
                     $${formatCurrency(Number(params?.data?.value))}
                   </div>
                 </div>
               </div>
               <div style="border-top: 0.8px solid #d1d5db; padding-top: 10px; display: flex; flex-direction: column; gap: 12px;">
                 ${dataShrapeRatioGroup[params?.data?.name]
+                  .sort((a, b) => {
+                    if (
+                      Number(a?.amount) * Number(a?.price?.price) <
+                      Number(b?.amount) * Number(b?.price?.price)
+                    ) {
+                      return 1;
+                    }
+                    if (
+                      Number(a?.amount) * Number(a?.price?.price) >
+                      Number(b?.amount) * Number(b?.price?.price)
+                    ) {
+                      return -1;
+                    }
+                    return 0;
+                  })
                   .map((item) => {
                     return `
                       <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                        <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                        <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                          darkMode ? "white" : "black"
+                        }">
                             <img src=${
                               item?.logo ||
                               "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
@@ -158,7 +201,9 @@
                     }
                         </div>
                         <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                          <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
+                          <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                            darkMode ? "white" : "black"
+                          }">
                            $${formatCurrency(
                              Number(item?.amount) * Number(item?.price?.price)
                            )}
@@ -176,6 +221,7 @@
       top: "0%",
       left: "center",
     },
+    color: [],
     series: [
       {
         type: "pie",
@@ -370,6 +416,16 @@
 
       riskBreakdownChartOption = {
         ...riskBreakdownChartOption,
+        color: Object.keys(shrapeRatioGroup)
+          .map((riskType) => {
+            return {
+              name: riskType,
+              value: shrapeRatioGroup[riskType][0],
+            };
+          })
+          .map((item) => {
+            return sharpeRatioColorChart(item.value.sharpeRatio);
+          }),
         series: [
           {
             ...riskBreakdownChartOption.series[0],
@@ -409,11 +465,13 @@
       Number(data?.base?.avgMarket?.maxShapreRatio || 0)) /
     2
   ).toFixed(2);
+
+  $: theme = darkMode ? "dark" : "white";
 </script>
 
 <AnalyticSection>
   <span slot="title">
-    <div class="flex justify-start text-4xl font-medium text-black xl:text-2xl">
+    <div class="flex justify-start text-4xl font-medium xl:text-2xl">
       Risks & Returns
       <!-- <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
         Risks & Returns
@@ -423,9 +481,7 @@
 
   <span slot="overview" class="relative">
     {#if !($query.isFetching || $queryBreakdown.isFetching)}
-      <div class="mb-4 text-3xl font-medium text-black xl:text-xl">
-        Overview
-      </div>
+      <div class="mb-4 text-3xl font-medium xl:text-xl">Overview</div>
     {/if}
     {#if $query.isFetching || $queryBreakdown.isFetching}
       <div class="flex items-center justify-center h-[465px]">
@@ -435,7 +491,9 @@
       <div class="h-full">
         {#if $query.isError}
           <div
-            class="absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 bg-white/95 z-30 backdrop-blur-md xl:text-xs text-lg"
+            class={`absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 ${
+              darkMode ? "bg-black/95" : "bg-white/95"
+            } z-30 backdrop-blur-md xl:text-xs text-lg`}
           >
             {#if typeWalletAddress === "CEX"}
               Not enough data. CEX integration can only get data from the day
@@ -448,9 +506,7 @@
           <div class="flex flex-col gap-4">
             <div class="grid grid-cols-2">
               <div class="col-span-1">
-                <div
-                  class="flex justify-start text-2xl text-black xl:text-base"
-                >
+                <div class="flex justify-start text-2xl xl:text-base">
                   <TooltipTitle
                     tooltipText={getTooltipContent(
                       "The Sharpe ratio measures how well an investment performs relative to its risk.",
@@ -489,7 +545,7 @@
           </div>
           <div class="flex items-center gap-3 mt-3">
             {#if goodPerf}
-              <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
+              <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
                 <div class="xl:text-base text-lg text-[#6E7787FF] relative">
                   <div
                     class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
@@ -521,7 +577,7 @@
             {/if}
 
             {#if badPerf}
-              <div class="rounded-[20px] flex-1 bg-[#FAFAFBFF] px-4 pb-3 pt-5">
+              <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
                 <div class="xl:text-base text-lg text-[#6E7787FF] relative">
                   <div
                     class="border border-red-500 absolute -top-1 left-0 w-[40px]"
@@ -553,7 +609,7 @@
             {/if}
           </div>
           <div class="flex flex-col gap-3 mt-8">
-            <div class="text-2xl font-medium text-black xl:text-lg">
+            <div class="text-2xl font-medium xl:text-lg">
               <TooltipTitle
                 tooltipText={"Compare with top 100 by CoinMarketCap."}
                 isBigIcon
@@ -627,7 +683,7 @@
           <div class="relative">
             <EChart
               id="risk-return-chart-analytic"
-              theme="white"
+              {theme}
               notMerge={true}
               option={selectedTypeChart === "overview"
                 ? optionBar
@@ -637,7 +693,12 @@
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >
-              <img src={Logo} alt="" width="140" height="140" />
+              <img
+                src={darkMode ? LogoWhite : Logo}
+                alt=""
+                width="140"
+                height="140"
+              />
             </div>
           </div>
         {/if}

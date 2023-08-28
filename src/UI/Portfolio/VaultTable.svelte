@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { selectedPackage } from "~/store";
+  import { selectedPackage, isDarkMode } from "~/store";
   import { shorterName } from "~/utils";
   import { useNavigate } from "svelte-navigator";
 
@@ -14,6 +14,11 @@
   let packageSelected = "";
   selectedPackage.subscribe((value) => {
     packageSelected = value;
+  });
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
   });
 
   let isShowTooltipProtocol = false;
@@ -133,41 +138,37 @@
 </script>
 
 <div class="h-[563px] flex flex-col gap-4">
-  <div class="text-4xl font-medium text-black xl:text-2xl">
+  <div class="text-4xl font-medium xl:text-2xl">
     Yield farming opportunities
   </div>
   <div
-    class="border border-[#0000000d] rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative"
+    class={`rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative ${
+      darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+    }`}
   >
     <table class="table-auto xl:w-full w-[1200px]">
       <thead>
-        <tr class="bg-[#f4f5f8]">
+        <tr class="bg_f4f5f8">
           <th
-            class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8] w-[550px]"
+            class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[550px]"
           >
-            <div
-              class="text-base font-medium text-left text-black uppercase xl:text-xs"
-            >
+            <div class="text-base font-medium text-left uppercase xl:text-xs">
               Name
             </div>
           </th>
           <th class="py-3">
-            <div
-              class="text-base font-medium text-right text-black uppercase xl:text-xs"
-            >
+            <div class="text-base font-medium text-right uppercase xl:text-xs">
               Chain
             </div>
           </th>
           <th class="py-3">
-            <div
-              class="text-base font-medium text-right text-black uppercase xl:text-xs"
-            >
+            <div class="text-base font-medium text-right uppercase xl:text-xs">
               Protocol
             </div>
           </th>
           <th class="py-3">
             <div
-              class="flex items-center justify-end gap-2 text-base font-medium text-right text-black uppercase xl:text-xs"
+              class="flex items-center justify-end gap-2 text-base font-medium text-right uppercase xl:text-xs"
             >
               APY
               <div on:click={toggleSortAPY} class="cursor-pointer">
@@ -184,7 +185,7 @@
           </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
             <div
-              class="flex items-center justify-end gap-2 text-base font-medium text-right text-black uppercase xl:text-xs"
+              class="flex items-center justify-end gap-2 text-base font-medium text-right uppercase xl:text-xs"
             >
               <TooltipTitle
                 tooltipText={"Total value locked in this protocol"}
@@ -224,11 +225,13 @@
               }}
             >
               <td
-                class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 bg-white w-[550px] group-hover:bg-gray-100"
+                class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[550px] ${
+                  darkMode
+                    ? "bg-[#131313] group-hover:bg-[#00000033]"
+                    : "bg-white group-hover:bg-gray-100"
+                }`}
               >
-                <div
-                  class="text-xl font-medium text-left text-black xl:text-sm"
-                >
+                <div class="text-xl font-medium text-left xl:text-sm">
                   {#if item.name === undefined}
                     N/A
                   {:else}
@@ -237,19 +240,31 @@
                 </div>
               </td>
 
-              <td class="py-3 group-hover:bg-gray-100">
+              <td
+                class={`py-3 ${
+                  darkMode
+                    ? "group-hover:bg-[#00000033]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
                 <div class="flex justify-end text-xl font-medium xl:text-sm">
                   {item.chain}
                 </div>
               </td>
 
-              <td class="py-3 group-hover:bg-gray-100">
+              <td
+                class={`py-3 ${
+                  darkMode
+                    ? "group-hover:bg-[#00000033]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
                 <div
-                  class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
                 >
                   <div class="text-left">
                     <div
-                      class="relative text-xl font-medium text-black xl:text-sm"
+                      class="relative text-xl font-medium xl:text-sm"
                       on:mouseover={() => {
                         isShowTooltipProtocol = true;
                       }}
@@ -275,17 +290,29 @@
                 </div>
               </td>
 
-              <td class="py-3 group-hover:bg-gray-100">
+              <td
+                class={`py-3 ${
+                  darkMode
+                    ? "group-hover:bg-[#00000033]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
                 <div
-                  class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
                 >
                   <TooltipNumber number={item.apy} type="percent" />%
                 </div>
               </td>
 
-              <td class="py-3 pr-3 group-hover:bg-gray-100">
+              <td
+                class={`py-3 pr-3 ${
+                  darkMode
+                    ? "group-hover:bg-[#00000033]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
                 <div
-                  class="xl:text-sm text-xl text-[#00000099] font-medium flex justify-end"
+                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
                 >
                   $<TooltipNumber number={item.tvl} type="balance" />
                 </div>
@@ -295,7 +322,11 @@
         {/if}
         {#if packageSelected === "FREE"}
           <tr
-            class="absolute z-10 left-0 right-0 bottom-0 top-[220px] flex justify-center pt-10 bg-white/90 backdrop-blur-md bg-gradient-to-t from-white via-white to-transparent"
+            class={`absolute z-10 left-0 right-0 bottom-0 top-[220px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
+              darkMode
+                ? "bg-[#222222e6] from-[#000] via-[#222222]"
+                : "bg-white/90 from-white via-white"
+            } `}
           >
             <td colspan="5" class="flex flex-col items-center gap-1">
               <div class="text-lg font-medium">

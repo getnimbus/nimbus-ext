@@ -5,6 +5,8 @@
   import "flowbite/dist/flowbite.css";
   import { Toast } from "flowbite-svelte";
   import { useNavigate } from "svelte-navigator";
+  import { selectedPackage } from "~/store";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -65,6 +67,37 @@
     }
   };
 
+  const queryClient = useQueryClient();
+  const queryUserInfo = createQuery({
+    queryKey: ["users-me"],
+    queryFn: () => getUserInfo(),
+    staleTime: Infinity,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+    },
+  });
+
+  const getUserInfo = async () => {
+    const response: any = await nimbus.get("/users/me");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response?.data;
+  };
+
+  $: {
+    if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
+      if (
+        $queryUserInfo.data?.plan?.tier &&
+        $queryUserInfo.data?.plan?.tier.length !== 0
+      ) {
+        selectedPackage.update(
+          (n) => (n = $queryUserInfo.data?.plan?.tier.toUpperCase())
+        );
+      }
+    }
+  }
+
   onMount(() => {
     toastMsg = "Please waiting for a while we updating your payment!";
     isSuccessToast = true;
@@ -89,17 +122,26 @@
       <div class="flex flex-col justify-center items-center">
         <div class="text-lg">Thank you for upgrading your plan</div>
         <div class="text-sm text-gray-500">
-          We hope you enjoy your investment with Nimbus
+          Let's enjoy investment in easy-mode with Nimbus
         </div>
       </div>
       <div class="w-[120px]">
         {#if status}
           <Link to="/">
-            <Button variant="secondary">Continue</Button>
+            <Button
+              variant="primary"
+              on:click={() => {
+                queryClient.invalidateQueries(["users-me"]);
+              }}>Continue</Button
+            >
           </Link>
         {:else}
-          <Button isLoading={!status} variant="secondary">Continue</Button>
+          <Button isLoading={!status} variant="primary">Continue</Button>
         {/if}
+      </div>
+      <div class="text-gray-500 xl:text-sm text-base">
+        Notice: You can use our application as normal. We will upgrade your
+        account Plan as soon as we receive the payment
       </div>
     </div>
   </div>

@@ -8,7 +8,7 @@
 <reset-style>
   <div class="p-4 bg-white rounded-[10px]">
     <div class="flex items-center gap-2">
-      <a href={data?.url} class="text-xl font-medium text-black no-underline">
+      <a href={data?.url} class="text-xl text-black font-medium no-underline">
         {data?.term}
       </a>
       <a

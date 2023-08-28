@@ -14,8 +14,6 @@ import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
 
-export const ExtensionsID = "hjlilcigcidfaialcihialehachkldfd";
-
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
 export const BTCAddressRegex = /(\b(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}\b)/g
@@ -208,6 +206,33 @@ export const returnType = [
   },
 ]
 
+export const timeFrame = [
+  {
+    label: "1D",
+    value: "1D",
+  },
+  {
+    label: "7D",
+    value: "7D",
+  },
+  {
+    label: "30D",
+    value: "30D",
+  },
+  {
+    label: "3M",
+    value: "3M",
+  },
+  {
+    label: "1Y",
+    value: "1Y",
+  },
+  {
+    label: "ALL",
+    value: "ALL",
+  },
+]
+
 export const getAddressContext = (address: string) => {
   if (!address) {
     return undefined;
@@ -223,6 +248,13 @@ export const getAddressContext = (address: string) => {
   if (address.match(BTCAddressRegex)) {
     return {
       type: 'BTC',
+      address
+    }
+  }
+
+  if (address.match(SOLAddressRegex)) {
+    return {
+      type: 'SOL',
       address
     }
   }
@@ -253,6 +285,9 @@ export const detectedChain = (type) => {
       break;
     case "ARB":
       chain = Arbitrum
+      break;
+    case "SOL":
+      chain = Solana
       break;
     default:
       chain = logo
@@ -409,11 +444,6 @@ export const chainList = [
     label: "Gnosis",
     value: "XDAI",
   },
-  {
-    logo: Solana,
-    label: "Solana",
-    value: "SOL",
-  },
 ];
 
 export const showChatAnimationVariants = {
@@ -488,23 +518,17 @@ export const formatLongNumber = (number: number) => {
   return formatNumber;
 };
 
-export const formatCurrencyV2 = (input: number) => {
-  return numeral(input).format("0,0.00") === "NaN"
-    ? formatLongNumber(input)
-    : numeral(input).format("0,0.00");
-};
-
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.000000") === "NaN"
     ? formatLongNumber(input)
-    : numeral(input).format("0,0.0[00000]");
+    : numeral(input).format("0,0.000000");
 };
 
 export const formatBalance = (input: number) => {
   return numeral(input).format("0,0.00") === "NaN" ? formatSmallBalance(input) : numeral(input).format("0,0.00")
 };
 
-export const checkFormatBalance = (input: number) => {
+export const formatPercent = (input: number) => {
   return numeral(input).format("0,0.00")
 }
 
@@ -513,7 +537,7 @@ export const formatSmallBalance = (input: number) => {
 };
 
 export const formatBigBalance = (input: number) => {
-  if (checkFormatBalance(input) === "NaN") {
+  if (formatPercent(input) === "NaN") {
     return {
       number_format: formatSmallBalance(input),
       number_size: ""
@@ -572,10 +596,7 @@ export const add3Dots = (string: string, limit: number) => {
 export const handleGetAccessToken = async (code: string) => {
   const res = await nimbus.post("/auth", {
     code,
-    direct_url:
-      APP_TYPE.TYPE === "EXT"
-        ? `https://${ExtensionsID}.chromiumapp.org`
-        : "https://app.getnimbus.io",
+    direct_url: "https://app.getnimbus.io",
   }).then((response) => response)
   if (res.data) {
     localStorage.setItem("token", JSON.stringify(res.data));
@@ -667,9 +688,88 @@ export const handleFormatDataTable = (data, type) => {
   };
 };
 
+export const volatilityColorChart = (value: number) => {
+  let color = '#35b86d'; // green
+
+  if (value > 5 && value <= 15) {
+    color = '#a2c04c';
+  }
+
+  if (value > 15 && value <= 30) {
+    color = '#d8c42f';
+  }
+
+  if (value > 30 && value <= 50) {
+    color = '#fec406';
+  }
+
+  if (value > 50 && value <= 75) {
+    color = '#f79e28'
+  }
+
+  if (value > 75 && value <= 100) {
+    color = '#f28a30'
+  }
+
+  if (value > 100 && value <= 150) {
+    color = '#e6553d'
+  }
+
+  // red
+  if (value > 150) {
+    color = '#e14240'
+  }
+
+  if (value === null) {
+    color = "#6AC7F5"
+  }
+
+  return color
+
+}
+
+export const sharpeRatioColorChart = (value: number) => {
+  let color = "#e14240" // red
+
+  if (value > -1 && value <= 0) {
+    color = "#e6553d"
+  }
+
+  if (value > -1 && value <= 0) {
+    color = "#f28a30"
+  }
+
+  if (value > 0.5 && value <= 1) {
+    color = "#f79e28"
+  }
+
+  if (value > 1 && value <= 1.5) {
+    color = "#fec406"
+  }
+
+  if (value > 1.5 && value <= 2) {
+    color = "#d8c42f"
+  }
+
+  if (value > 2 && value <= 3) {
+    color = "#a2c04c"
+  }
+
+  //green
+  if (value > 3) {
+    color = "#35b86d"
+  }
+
+  if (value === null) {
+    color = "#6AC7F5"
+  }
+
+  return color
+}
+
 export const getTooltipContent = (text: string, videoUrl: string, width?: string) => {
   return `
-      <div style="padding: 8px; border-radius: 8px; background: rgba(0, 0, 0, 0.8); width: ${width ? "100%" : "560px"}; height: auto;">
+      <div style="padding: 8px; border-radius: 8px; background: #000; width: ${width ? "100%" : "560px"}; height: auto;">
         ${text
       ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 16px; color: #fff;">${text}</div>`
       : ""
@@ -681,4 +781,29 @@ export const getTooltipContent = (text: string, videoUrl: string, width?: string
         </div>
       </div>
     `;
+};
+
+export const dateDiffInDays = (a, b) => {
+  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+  // Discard the time and time-zone information.
+  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+}
+
+export const clickOutside = (node) => {
+  const handleClick = (event) => {
+    if (node && !node.contains(event.target) && !event.defaultPrevented) {
+      node.dispatchEvent(new CustomEvent("click_outside", node));
+    }
+  };
+
+  document.addEventListener("click", handleClick, true);
+
+  return {
+    destroy() {
+      document.removeEventListener("click", handleClick, true);
+    },
+  };
 };

@@ -6,7 +6,7 @@
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
-  import { selectedPackage } from "~/store";
+  import { selectedPackage, isDarkMode } from "~/store";
   import * as Sentry from "@sentry/svelte";
 
   import "flowbite/dist/flowbite.css";
@@ -36,9 +36,7 @@
     defaultOptions: {
       queries: {
         refetchOnWindowFocus: false,
-        onError: (error) => {
-          Sentry.captureException(error);
-        },
+        staleTime: Infinity,
       },
     },
   });
@@ -69,7 +67,7 @@
         ) {
           selectedPackage.update(
             // (n) => (n = response.data?.plan?.tier.toUpperCase())
-            () => "PROFESSIONAL" // TODO: Remove me after integration compelete
+            () => "PROFESSIONAL" // TODO: Remove me after integration complete
           );
         }
       }
@@ -80,6 +78,17 @@
 
   onMount(() => {
     getUserInfo();
+    if (
+      localStorage.theme === "dark" ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      window.document.body.classList.add("dark");
+      isDarkMode.update((n) => (n = true));
+    } else {
+      window.document.body.classList.remove("dark");
+      isDarkMode.update((n) => (n = false));
+    }
   });
 </script>
 
@@ -155,10 +164,86 @@
           </Route>
         </div>
       </Router>
-      <Footer />
+      <div class="footer">
+        <Footer />
+      </div>
     </Mixpanel>
   </QueryClientProvider>
 </ErrorBoundary>
 
-<style windi:preflights:global windi:safelist:global>
+<style global windi:preflights:global windi:safelist:global>
+  :global(body) {
+    background: #fff;
+    color: black;
+    transition: background-color 0.3s;
+  }
+  :global(body.dark) {
+    background-color: #161616;
+    color: #fff;
+  }
+
+  :global(body) .footer {
+    background: #fff;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 40px;
+  }
+  :global(body.dark) .footer {
+    background: #080808;
+    box-shadow: rgba(0, 0, 0, 1) 0px 0px 5px;
+  }
+
+  :global(body) .bg_f4f5f8 {
+    background: #f4f5f8;
+  }
+  :global(body.dark) .bg_f4f5f8 {
+    background: #131313;
+  }
+
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
+
+  :global(body) .text_00000080 {
+    color: #00000080;
+  }
+  :global(body.dark) .text_00000080 {
+    color: #d1d5db;
+  }
+
+  :global(body) .text_27326F {
+    color: #27326f;
+  }
+  :global(body.dark) .text_27326F {
+    color: #3b82f6;
+  }
+
+  :global(body) .text_00000099 {
+    color: #00000099;
+  }
+  :global(body.dark) .text_00000099 {
+    color: #ccc;
+  }
+
+  :global(body) .text_00000066 {
+    color: #00000099;
+  }
+  :global(body.dark) .text_00000066 {
+    color: #cdcdcd;
+  }
+
+  :global(body) .border_0000001a {
+    border-color: #0000001a;
+  }
+  :global(body.dark) .border_0000001a {
+    border-color: #cdcdcd59;
+  }
+
+  :global(body) .border_0000000d {
+    border-color: #0000000d;
+  }
+  :global(body.dark) .border_0000000d {
+    border-color: #cdcdcd26;
+  }
 </style>

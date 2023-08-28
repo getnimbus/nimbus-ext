@@ -7,10 +7,16 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { createQuery } from "@tanstack/svelte-query";
+  import { isDarkMode } from "~/store";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   import Logo from "~/assets/logo-1.svg";
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   const qrcode = QRCode(0, "L");
 
@@ -38,8 +44,11 @@
   };
 
   const getUserInfo = async () => {
-    const response = await nimbus.get("/users/me");
-    return response.data;
+    const response: any = await nimbus.get("/users/me");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response?.data;
   };
 
   const getReferrals = async () => {
@@ -57,6 +66,9 @@
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
     staleTime: Infinity,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+    },
   });
 
   $: {
@@ -130,9 +142,7 @@
     class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 flex flex-col gap-10"
   >
     <div class="flex flex-col gap-2 justify-center">
-      <div class="xl:text-5xl text-7xl text-black font-medium">
-        Invite Friends
-      </div>
+      <div class="xl:text-5xl text-7xl font-medium">Invite Friends</div>
       <div class="">
         Tell your friends it’s fun and effective for portfolio management. <br
         /> Easy way to minimize risk while maximazing return.
@@ -141,10 +151,12 @@
     <div class="xl:min-w-2xl min-w-4xl flex justify-center items-center">
       <div
         style="box-shadow: 0 5px 20px rgba(0, 0, 0, 8%);"
-        class="flex flex-col gap-3 border border-[#0000001a] rounded-[20px] py-4 px-6"
+        class={`flex flex-col gap-3 border border_0000001a rounded-[20px] py-4 px-6 ${
+          darkMode ? "bg-[#0f0f0f]" : "bg-white"
+        }`}
       >
-        <div class="xl:text-base text-xl text-center text-gray-500 mb-2">
-          Your code has been used by <span class="text-black font-medium"
+        <div class="xl:text-base text-xl text-center text_00000066 mb-2">
+          Your code has been used by <span class=" font-medium"
             >{referrals}</span
           >
           {#if referrals > 1}
@@ -185,7 +197,9 @@
             }}
           >
             <div
-              class="flex items-center gap-1 hover:bg-gray-100 transition-all ease-in py-1 px-3 rounded-[10px] cursor-pointer flex-1"
+              class={`flex items-center gap-1 transition-all ease-in py-1 px-3 rounded-[10px] cursor-pointer flex-1 ${
+                darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
+              }`}
               on:click={() => {
                 copy();
               }}
@@ -196,7 +210,7 @@
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="rgb(92,92,92)"
+                stroke={`${darkMode ? "#cdcdcd" : "#00000099"}`}
                 stroke-width="1.8"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -207,14 +221,16 @@
                   d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463"
                 /></svg
               >
-              <div class="text-gray-500 xl:text-base text-lg">Link</div>
+              <div class="text_00000066 xl:text-base text-lg">Link</div>
             </div>
           </CopyToClipboard>
 
           <div class="border-l-[1px] my-1" />
 
           <div
-            class="flex items-center gap-1 hover:bg-gray-100 transition-all ease-in py-1 px-2 rounded-[10px] cursor-pointer flex-1"
+            class={`flex items-center gap-1 transition-all ease-in py-1 px-2 rounded-[10px] cursor-pointer flex-1 ${
+              darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
+            }`}
             on:click={downloadQRCode}
           >
             <svg
@@ -223,7 +239,7 @@
               height="24"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="rgb(92,92,92)"
+              stroke={`${darkMode ? "#cdcdcd" : "#00000099"}`}
               stroke-width="1.8"
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -232,13 +248,15 @@
                 d="M7 11l5 5l5 -5"
               /><path d="M12 4l0 12" /></svg
             >
-            <div class="text-gray-500 xl:text-base text-lg">Save</div>
+            <div class="text_00000066 xl:text-base text-lg">Save</div>
           </div>
 
           <div class="border-l-[1px] my-1" />
 
           <div
-            class="flex items-center gap-1 hover:bg-gray-100 transition-all ease-in py-1 px-2 rounded-[10px] cursor-pointer flex-1"
+            class={`flex items-center gap-1 transition-all ease-in py-1 px-2 rounded-[10px] cursor-pointer flex-1 ${
+              darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
+            }`}
             on:click={copyQRCode}
           >
             <svg
@@ -247,7 +265,7 @@
               height="24"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="rgb(92,92,92)"
+              stroke={`${darkMode ? "#cdcdcd" : "#00000099"}`}
               stroke-width="1.8"
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -258,7 +276,7 @@
                 d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3"
               /></svg
             >
-            <div class="text-gray-500 xl:text-base text-lg">Copy</div>
+            <div class="text_00000066 xl:text-base text-lg">Copy</div>
           </div>
         </div>
       </div>
@@ -312,6 +330,7 @@
     border: 2px solid black;
     border-radius: 12px;
     overflow: hidden;
+    background: white;
   }
 
   .card .title_container {
@@ -340,6 +359,7 @@
   }
 
   .card .body_container .title_wrapper .address {
+    color: black;
     font-size: 24px;
     line-height: 32px;
   }

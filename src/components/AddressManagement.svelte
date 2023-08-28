@@ -8,6 +8,7 @@
     user,
     isFirstTimeLogin,
     selectedPackage,
+    isDarkMode,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
@@ -20,12 +21,13 @@
     getAddressContext,
     listLogoCEX,
     listProviderCEX,
+    clickOutside,
   } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { nimbus } from "~/lib/network";
-  import { Toast } from "flowbite-svelte";
+  import { Toast, Avatar } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
   import { useNavigate } from "svelte-navigator";
@@ -43,10 +45,13 @@
   import Copy from "~/components/Copy.svelte";
 
   import Plus from "~/assets/plus.svg";
+  import PlusBlack from "~/assets/plus-black.svg";
   import All from "~/assets/all.svg";
   import BitcoinLogo from "~/assets/bitcoin.png";
+  import SolanaLogo from "~/assets/solana.png";
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
+  import Bundles from "~/assets/bundles.png";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -103,6 +108,11 @@
   };
 
   const navigate = useNavigate();
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -178,6 +188,8 @@
 
   let isDisabled = false;
   let tooltipDisableAddBtn = "";
+  let selectBundle;
+  let showPopover = false;
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -230,6 +242,9 @@
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+    },
   });
 
   $: {
@@ -246,6 +261,35 @@
         label: item.label,
         value: item.type === "CEX" ? item.id : item.accountId,
         logo: item.logo,
+        accounts:
+          item?.accounts?.map((item) => {
+            let logo = All;
+            if (
+              getAddressContext(item.type === "CEX" ? item.id : item.accountId)
+                ?.type === "BTC"
+            ) {
+              logo = BitcoinLogo;
+            }
+            if (
+              getAddressContext(item.type === "CEX" ? item.id : item.accountId)
+                ?.type === "SOL"
+            ) {
+              logo = SolanaLogo;
+            }
+            if (item.type === "BUNDLE") {
+              logo = Bundles;
+            }
+            return {
+              id: item.id,
+              type: item.type,
+              label: item.label,
+              value: item.type === "CEX" ? item.id : item.accountId,
+              logo:
+                item.type === "BUNDLE" || item.type === "DEX"
+                  ? logo
+                  : item.logo,
+            };
+          }) || [],
       };
     });
 
@@ -331,7 +375,10 @@
       // if list address is empty and no chain params and have address param (btc address when search)
       if (!chainParams && listAddress.length === 0 && addressParams) {
         chain.update((n) => (n = "ALL"));
-        if (getAddressContext(selectedWallet)?.type === "BTC") {
+        if (
+          getAddressContext(selectedWallet)?.type === "BTC" ||
+          getAddressContext(selectedWallet)?.type === "SOL"
+        ) {
           window.history.replaceState(
             null,
             "",
@@ -346,7 +393,10 @@
         if (getAddressContext(selectedWallet)?.type === "EVM") {
           chain.update((n) => (n = "ALL"));
         }
-        if (getAddressContext(selectedWallet)?.type === "BTC") {
+        if (
+          getAddressContext(selectedWallet)?.type === "BTC" ||
+          getAddressContext(selectedWallet)?.type === "SOL"
+        ) {
           window.history.replaceState(
             null,
             "",
@@ -360,6 +410,9 @@
 
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
     return response?.data;
   };
 
@@ -521,14 +574,19 @@
   });
 
   $: formatListAddress = listAddress.map((item) => {
+    let logo = All;
+    if (getAddressContext(item.value)?.type === "BTC") {
+      logo = BitcoinLogo;
+    }
+    if (getAddressContext(item.value)?.type === "SOL") {
+      logo = SolanaLogo;
+    }
+    if (item.type === "BUNDLE") {
+      logo = Bundles;
+    }
     return {
       ...item,
-      logo:
-        item.type === "DEX"
-          ? getAddressContext(item.value)?.type === "EVM"
-            ? All
-            : BitcoinLogo
-          : item.logo,
+      logo: item.type === "BUNDLE" || item.type === "DEX" ? logo : item.logo,
     };
   });
 
@@ -571,6 +629,24 @@
       if (
         selected &&
         Object.keys(selected).length !== 0 &&
+        selected.type === "BUNDLE"
+      ) {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&address=${selectedWallet}`
+        );
+        if (selectedChain) {
+          chain.update((n) => (n = selectedChain));
+        } else {
+          chain.update((n) => (n = "ALL"));
+        }
+      }
+
+      if (
+        selected &&
+        Object.keys(selected).length !== 0 &&
         selected.type === "DEX"
       ) {
         typeWallet.update((n) => (n = "DEX"));
@@ -586,7 +662,10 @@
           );
         }
 
-        if (getAddressContext(selectedWallet)?.type === "BTC") {
+        if (
+          getAddressContext(selectedWallet)?.type === "BTC" ||
+          getAddressContext(selectedWallet)?.type === "SOL"
+        ) {
           window.history.replaceState(
             null,
             "",
@@ -627,10 +706,10 @@
   }
 
   $: {
-    if (listAddress.length === 3 && packageSelected === "FREE") {
+    if (listAddress?.length === 3 && packageSelected === "FREE") {
       isDisabled = true;
     }
-    if (listAddress.length === 7 && packageSelected === "EXPLORER") {
+    if (listAddress?.length === 7 && packageSelected === "EXPLORER") {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
         localStorage.getItem("isGetUserEmailYet") === "false"
@@ -674,6 +753,21 @@
       listAddress = [];
     }
   }
+
+  $: {
+    if (selectedWallet) {
+      selectBundle = formatListAddress.find(
+        (item) => item.value === selectedWallet
+      );
+    }
+  }
+
+  $: console.log(
+    "hello: ",
+    formatListAddress
+      .slice(5, formatListAddress.length)
+      .find((item) => item.value === selectedWallet)
+  );
 </script>
 
 {#if $query.isFetching && formatListAddress && formatListAddress?.length === 0}
@@ -687,7 +781,7 @@
         <div class="flex flex-col items-center justify-center w-2/3 gap-4 p-6">
           {#if $query.isError && Object.keys(userInfo).length !== 0}
             <div class="text-lg">
-              Too many request when get list address. Please wait for a minutes
+              {$query.error}
             </div>
           {:else}
             <div class="text-lg">
@@ -721,8 +815,17 @@
                   }}
                 >
                   <Button variant="disabled">
-                    <img src={Plus} alt="" width="12" height="12" />
-                    <div class="text-2xl font-medium text-white xl:text-base">
+                    <img
+                      src={darkMode ? PlusBlack : Plus}
+                      alt=""
+                      width="12"
+                      height="12"
+                    />
+                    <div
+                      class={`text-2xl font-medium xl:text-base ${
+                        darkMode ? "text-gray-400" : "text-white"
+                      }`}
+                    >
                       {MultipleLang.content.btn_text}
                     </div>
                   </Button>
@@ -757,7 +860,7 @@
         </div>
       </div>
     {:else}
-      <div class="header-container">
+      <div class="header header-container">
         <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[96%]">
           <div class="flex flex-col mb-5 gap-14">
             <div class="flex items-center justify-between gap-6">
@@ -780,7 +883,7 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class="w-5 h-5 rounded-full xl:w-4 xl:h-4"
+                              class="w-5 h-5 xl:w-4 xl:h-4"
                             />
                             {item.label}
                             {#if item.value === selectedWallet}
@@ -801,15 +904,26 @@
                           </div>
                         {/each}
                       </AnimateSharedLayout>
-                      <Select
-                        type="wallet"
-                        positionSelectList="right-0"
-                        listSelect={formatListAddress.slice(
-                          5,
-                          formatListAddress.length
-                        )}
-                        bind:selected={selectedWallet}
-                      />
+                      <div class="relative">
+                        <div class="relative z-10">
+                          <Select
+                            type="wallet"
+                            positionSelectList="right-0"
+                            listSelect={formatListAddress.slice(
+                              5,
+                              formatListAddress.length
+                            )}
+                            bind:selected={selectedWallet}
+                          />
+                        </div>
+                        {#if formatListAddress
+                          .slice(5, formatListAddress.length)
+                          .find((item) => item.value === selectedWallet) !== undefined}
+                          <div
+                            class="absolute inset-0 rounded-full bg-[#ffffff1c] z-1"
+                          />
+                        {/if}
+                      </div>
                     {:else}
                       <AnimateSharedLayout>
                         {#each formatListAddress as item}
@@ -825,7 +939,7 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class="w-5 h-5 rounded-full xl:w-4 xl:h-4"
+                              class="w-5 h-5 xl:w-4 xl:h-4"
                             />
                             {item.label}
                             {#if item.value === selectedWallet}
@@ -992,9 +1106,15 @@
                       </Button>
                     {:else}
                       <Button variant="disabled" disabled>
-                        <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
+                        <img
+                          src={darkMode ? PlusBlack : Plus}
+                          alt=""
+                          class="w-4 h-4 xl:w-3 xl:h-3"
+                        />
                         <div
-                          class="text-2xl font-medium text-white xl:text-base"
+                          class={`text-2xl font-medium xl:text-base ${
+                            darkMode ? "text-gray-400" : "text-white"
+                          }`}
                         >
                           Add account
                         </div>
@@ -1021,7 +1141,11 @@
                     } right-0`}
                     style="z-index: 2147483648;"
                   >
-                    <tooltip-detail text={tooltipDisableAddBtn} />
+                    <div
+                      class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+                    >
+                      {tooltipDisableAddBtn}
+                    </div>
                   </div>
                 {/if}
               </div>
@@ -1038,21 +1162,91 @@
                   {/if}
                 </div>
                 <div class="flex items-center gap-4">
-                  <div class="hidden text-3xl xl:text-base xl:block">
-                    <Copy
-                      address={selectedWallet}
-                      iconColor="#fff"
-                      color="#fff"
-                    />
-                  </div>
-                  <div class="block text-3xl xl:text-base xl:hidden">
-                    <Copy
-                      address={selectedWallet}
-                      iconColor="#fff"
-                      color="#fff"
-                      isShorten
-                    />
-                  </div>
+                  {#if selectBundle && Object.keys(selectBundle).length !== 0 && selectBundle.type === "BUNDLE"}
+                    <div
+                      class="relative"
+                      on:click={() => (showPopover = !showPopover)}
+                    >
+                      <div class="flex cursor-pointer">
+                        {#if selectBundle && selectBundle?.accounts && selectBundle?.accounts?.length > 8}
+                          {#each selectBundle?.accounts.slice(0, 7) as item, index}
+                            <div class={`${index > 0 && "-ml-2"}`}>
+                              <div class="hidden xl:block">
+                                <Avatar src={item?.logo} stacked size="sm" />
+                              </div>
+                              <div class="block xl:hidden">
+                                <Avatar src={item?.logo} stacked size="md" />
+                              </div>
+                            </div>
+                          {/each}
+                          <div class="-ml-2">
+                            <div class="hidden xl:block">
+                              <Avatar stacked size="sm">...</Avatar>
+                            </div>
+                            <div class="block xl:hidden">
+                              <Avatar stacked size="md">...</Avatar>
+                            </div>
+                          </div>
+                        {:else}
+                          {#each selectBundle?.accounts as item, index}
+                            <div class={`${index > 0 && "-ml-2"}`}>
+                              <div class="hidden xl:block">
+                                <Avatar src={item?.logo} stacked size="sm" />
+                              </div>
+                              <div class="block xl:hidden">
+                                <Avatar src={item?.logo} stacked size="md" />
+                              </div>
+                            </div>
+                          {/each}
+                        {/if}
+                      </div>
+                      {#if showPopover}
+                        <div
+                          class="select_content absolute left-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 xl:w-[200px] w-[300px] xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
+                          style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
+                          use:clickOutside
+                          on:click_outside={() => (showPopover = false)}
+                        >
+                          {#each selectBundle?.accounts as item}
+                            <div class="hidden text-3xl xl:text-base xl:block">
+                              <Copy
+                                address={item?.value}
+                                iconColor={darkMode ? "#fff" : "#000"}
+                                color={darkMode ? "#fff" : "#000"}
+                                isShorten
+                              />
+                            </div>
+                            <div class="block text-3xl xl:text-base xl:hidden">
+                              <Copy
+                                address={item?.value}
+                                iconColor={darkMode ? "#fff" : "#000"}
+                                color={darkMode ? "#fff" : "#000"}
+                                isShorten
+                                iconSize={24}
+                              />
+                            </div>
+                          {/each}
+                        </div>
+                      {/if}
+                    </div>
+                  {:else}
+                    <div class="hidden text-3xl xl:text-base xl:block">
+                      <Copy
+                        address={selectedWallet}
+                        iconColor="#fff"
+                        color="#fff"
+                      />
+                    </div>
+                    <div class="block text-3xl xl:text-base xl:hidden">
+                      <Copy
+                        address={selectedWallet}
+                        iconColor="#fff"
+                        color="#fff"
+                        isShorten
+                        iconSize={24}
+                      />
+                    </div>
+                  {/if}
                   <!-- <div
                     class="relative"
                     on:mouseenter={() => {
@@ -1081,7 +1275,7 @@
                   </div> -->
 
                   <div class="hidden xl:block">
-                    {#if getAddressContext(selectedWallet)?.type === "BTC"}
+                    {#if getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
                       <div
                         use:tooltip={{
                           content: `<tooltip-detail text="Coming soon!" />`,
@@ -1090,9 +1284,15 @@
                           interactive: true,
                         }}
                       >
-                        <Button variant="premium" disabled
-                          >Optimize return</Button
-                        >
+                        <Button variant="premium" disabled>
+                          <div
+                            class={`${
+                              darkMode ? "text-gray-400" : "text-white"
+                            }`}
+                          >
+                            Optimize return
+                          </div>
+                        </Button>
                       </div>
                     {:else}
                       <div
@@ -1121,7 +1321,7 @@
 
               <div class="flex flex-col gap-6">
                 <div class="block xl:hidden">
-                  {#if getAddressContext(selectedWallet)?.type === "BTC"}
+                  {#if getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
                     <div
                       use:tooltip={{
                         content: `<tooltip-detail text="Coming soon!" />`,
@@ -1130,8 +1330,13 @@
                         interactive: true,
                       }}
                     >
-                      <Button variant="premium" disabled>Optimize return</Button
-                      >
+                      <Button variant="premium" disabled>
+                        <div
+                          class={`${darkMode ? "text-gray-400" : "text-white"}`}
+                        >
+                          Optimize return
+                        </div>
+                      </Button>
                     </div>
                   {:else}
                     <div
@@ -1155,7 +1360,7 @@
                     </div>
                   {/if}
                 </div>
-                {#if getAddressContext(selectedWallet)?.type !== "BTC" && typeWalletAddress === "DEX"}
+                {#if (getAddressContext(selectedWallet)?.type === "EVM" && typeWalletAddress === "DEX") || typeWalletAddress === "CEX"}
                   <Select
                     type="chain"
                     positionSelectList="right-0"
@@ -1190,7 +1395,7 @@
   isOpen={isOpenAddModal}
   on:close={() => (isOpenAddModal = false)}
 >
-  <div class="font-medium text-gray-600 xl:title-3 title-1">
+  <div class="font-medium xl:title-3 title-1">
     {MultipleLang.content.modal_add_title}
   </div>
   <div class="flex flex-col mt-4 gap-7">
@@ -1230,7 +1435,9 @@
     </div>
     <div class="border-t-[1px] relative">
       <div
-        class="absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 bg-white text-sm px-2"
+        class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
+          darkMode ? "bg-[#0f0f0f]" : "bg-white"
+        } text-sm px-2`}
       >
         Or
       </div>
@@ -1239,7 +1446,7 @@
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            address ? "bg-[#F0F2F7]" : ""
+            address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
           class:input-border-error={errors.address && errors.address.required}
         >
@@ -1250,10 +1457,10 @@
             type="text"
             id="address"
             name="address"
-            placeholder={"You wallet address"}
+            placeholder={"Your wallet address"}
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              address ? "bg-[#F0F2F7]" : ""
+              address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }
               `}
             on:keyup={({ target: { value } }) => (address = value)}
@@ -1268,7 +1475,7 @@
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            label ? "bg-[#F0F2F7]" : ""
+            label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
           class:input-border-error={errors.label && errors.label.required}
         >
@@ -1282,7 +1489,7 @@
             placeholder={MultipleLang.content.modal_label_label}
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              label ? "bg-[#F0F2F7]" : ""
+              label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }
               `}
             on:keyup={({ target: { value } }) => (label = value)}
@@ -1295,7 +1502,7 @@
         {/if}
       </div>
       <div class="flex items-center justify-center gap-6 my-3">
-        {#each chainList.slice(0, -1) as item}
+        {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
           <div
             class="flex items-center justify-center w-8 h-8 overflow-hidden rounded-full"
           >
@@ -1398,7 +1605,7 @@
     isOpenModal = false;
   }}
 >
-  <div class="font-medium text-center text-gray-600 xl:title-3 title-1">
+  <div class="font-medium text-center xl:title-3 title-1">
     Let's us know your email
   </div>
   <div class="mt-2">
@@ -1412,7 +1619,7 @@
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            email ? "bg-[#F0F2F7]" : ""
+            email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
           <div class="xl:text-base text-xl text-[#666666] font-medium">
@@ -1426,7 +1633,7 @@
             placeholder="Your email"
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              email ? "bg-[#F0F2F7]" : ""
+              email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }
               `}
             on:keyup={({ target: { value } }) => (email = value)}
@@ -1498,9 +1705,7 @@
 </Toast>
 
 <style windi:preflights:global windi:safelist:global>
-  .header-container {
-    background-image: url("~/assets/capa.svg");
-    background-color: #27326f;
+  .header {
     background-repeat: no-repeat;
     background-size: auto;
     background-position: top right;
@@ -1524,5 +1729,23 @@
   .container {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+  }
+
+  :global(body) .header-container {
+    background-color: #27326f;
+    background-image: url("~/assets/capa.svg");
+  }
+  :global(body.dark) .header-container {
+    background-color: #080808;
+    background-image: url("~/assets/capa-dark.svg");
+  }
+
+  :global(body) .select_content {
+    background: #ffffff;
+    border: 0.5px solid transparent;
+  }
+  :global(body.dark) .select_content {
+    background: #131313;
+    border: 0.5px solid #cdcdcd59;
   }
 </style>

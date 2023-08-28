@@ -244,9 +244,7 @@
               }`}
             >
               <div class="flex flex-col gap-1">
-                <div class="text-black text-xs font-normal">
-                  Transaction Detail
-                </div>
+                <div class="text-xs font-normal">Transaction Detail</div>
                 <div
                   class="text-xs font-medium text-[#27326F] px-1 py-[2px] bg-[#6AC7F533] rounded-[5px]"
                 >
@@ -261,7 +259,7 @@
                     <input type="checkbox" bind:checked={enabledFilter} />
                     <span class="slider" />
                   </label>
-                  <div class="text-black text-xs font-normal">
+                  <div class="text-xs text-black font-normal">
                     Only Sender & Receiver change
                   </div>
                 </div>

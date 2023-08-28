@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { getAddressContext } from "~/utils";
-  import { wallet, chain, selectedPackage, typeWallet } from "~/store";
+  import { getAddressContext, timeFrame } from "~/utils";
+  import { wallet, selectedPackage, isDarkMode } from "~/store";
   import { useNavigate } from "svelte-navigator";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
   import Button from "~/components/Button.svelte";
@@ -13,17 +14,18 @@
   import RiskReturnChart from "../AnalyticChart/RiskReturnChart.svelte";
   import Personality from "./Personality.svelte";
   import Compare from "../Portfolio/Compare.svelte";
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   const navigate = useNavigate();
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
   });
 
   let packageSelected = "";
@@ -31,17 +33,14 @@
     packageSelected = value;
   });
 
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   let isShowSoon = false;
+  let selectedTimeFrame: "1D" | "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
 
   $: {
     if (selectedWallet) {
       if (
         getAddressContext(selectedWallet)?.type === "BTC" ||
+        getAddressContext(selectedWallet)?.type === "SOL" ||
         packageSelected === "FREE"
       ) {
         isShowSoon = true;
@@ -55,70 +54,134 @@
 <AddressManagement type="order" title="Analytics">
   <span slot="body">
     <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[96%] relative">
-      <div
-        class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 space-y-4"
-        style="box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.10);"
-      >
-        <CurrentStatus {packageSelected} />
-
-        <section class="overflow-hidden">
-          <div
-            class="mx-auto max-w-c-1390 px-4 py-4 rounded-[20px] bg-gradient-to-t from-[#F8F9FF] to-[#DEE7FF]"
+      <div class="analytic_container rounded-[20px] xl:p-8 space-y-4">
+        <div class="flex items-center justify-end gap-1">
+          Timeframe <span
+            class="text-yellow-400 w-5 h-5 cursor-pointer"
+            use:tooltip={{
+              content: `<tooltip-detail text="Others timeframe will be available soon" />`,
+              allowHTML: true,
+              placement: "top",
+              interactive: true,
+            }}
           >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </span>
+          <AnimateSharedLayout>
+            {#each timeFrame as type}
+              <div
+                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                on:click={() => {
+                  // selectedTimeFrame = type.value;
+                }}
+              >
+                <div
+                  class={`relative z-20 ${
+                    selectedTimeFrame === type.value
+                      ? "text-white"
+                      : "text-gray-400"
+                  }`}
+                >
+                  {type.label}
+                </div>
+                {#if type.value === selectedTimeFrame}
+                  <Motion
+                    let:motion
+                    layoutId="active-pill"
+                    transition={{ type: "spring", duration: 0.6 }}
+                  >
+                    <div
+                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                      use:motion
+                    />
+                  </Motion>
+                {/if}
+              </div>
+            {/each}
+          </AnimateSharedLayout>
+        </div>
+
+        <div class="flex flex-col gap-7">
+          <CurrentStatus {packageSelected} />
+
+          <section class="overflow-hidden">
             <div
-              class="flex flex-wrap gap-8 md:flex-nowrap md:items-center md:justify-between md:gap-0"
+              class={`mx-auto max-w-c-1390 px-4 py-4 rounded-[20px] bg-gradient-to-t ${
+                darkMode
+                  ? "from-[#0f0f0f] to-[#222222]"
+                  : "from-[#F8F9FF] to-[#DEE7FF]"
+              }`}
             >
               <div
-                class="animate_left"
-                data-sr-id="39"
-                style="visibility: visible; opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: opacity 2.8s cubic-bezier(0.5, 0, 0, 1) 0s, transform 2.8s cubic-bezier(0.5, 0, 0, 1) 0s;"
+                class="flex flex-wrap gap-8 md:flex-nowrap md:items-center md:justify-between md:gap-0"
               >
-                <h2
-                  class="px-2 py-3 text-xl font-medium text-black xl:text-sectiontitle4"
+                <div
+                  class="animate_left"
+                  data-sr-id="39"
+                  style="visibility: visible; opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: opacity 2.8s cubic-bezier(0.5, 0, 0, 1) 0s, transform 2.8s cubic-bezier(0.5, 0, 0, 1) 0s;"
                 >
-                  Minimize risk & maximize return by rebalance your portfolio 🚀
-                </h2>
-              </div>
-              <div
-                class="animate_right lg:w-[45%]"
-                data-sr-id="43"
-                style="visibility: visible; opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: opacity 2.8s cubic-bezier(0.5, 0, 0, 1) 0s, transform 2.8s cubic-bezier(0.5, 0, 0, 1) 0s;"
-              >
-                <div class="flex items-center justify-end">
-                  <a
-                    class="inline-flex items-center gap-2.5 font-medium text-white bg-black rounded-full py-3 px-6"
-                    href={`/compare?address=${encodeURIComponent(
-                      selectedWallet
-                    )}`}
-                    on:click|preventDefault={() => {
-                      navigate(
-                        `/compare?address=${encodeURIComponent(selectedWallet)}`
-                      );
-                    }}
+                  <h2
+                    class="px-2 py-3 text-xl font-medium xl:text-sectiontitle4"
                   >
-                    Get suggestion
-                  </a>
+                    Minimize risk & maximize return by rebalance your portfolio
+                    🚀
+                  </h2>
+                </div>
+                <div
+                  class="animate_right lg:w-[45%]"
+                  data-sr-id="43"
+                  style="visibility: visible; opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: opacity 2.8s cubic-bezier(0.5, 0, 0, 1) 0s, transform 2.8s cubic-bezier(0.5, 0, 0, 1) 0s;"
+                >
+                  <div class="flex items-center justify-end">
+                    <div class="xl:w-[164px] w-max">
+                      <Button
+                        on:click={() => {
+                          navigate(
+                            `/compare?address=${encodeURIComponent(
+                              selectedWallet
+                            )}`
+                          );
+                        }}
+                      >
+                        <div class="xl:text-base text-2xl">Get suggestion</div>
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <RiskChart />
+          <RiskChart />
 
-        <ReturnChart />
+          <ReturnChart />
 
-        <RiskReturnChart />
+          <RiskReturnChart />
 
-        <MoneyFlow {packageSelected} />
+          <MoneyFlow {packageSelected} />
 
-        <PastPerformance {packageSelected} />
+          <PastPerformance {packageSelected} />
 
-        <!-- <Personality /> -->
+          <!-- <Personality /> -->
+        </div>
       </div>
+
       {#if isShowSoon}
         <div
-          class="absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 bg-white/95 z-30 backdrop-blur-md"
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
+            darkMode ? "bg-[#222222e6]" : "bg-white/90"
+          } z-30 backdrop-blur-md`}
         >
           {#if packageSelected === "FREE"}
             <div class="flex flex-col items-center gap-1">
@@ -134,12 +197,15 @@
                 >Start 30-day Trial</Button
               >
             </div>
-          {:else}
+          {/if}
+          {#if packageSelected !== "FREE" && (getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL")}
             <div class="text-lg">Coming soon 🚀</div>
             <div class="w-max">
-              <a href="https://forms.gle/kg23ZmgXjsTgtjTN7" target="_blank">
-                <Button variant="secondary">Request analytics</Button>
-              </a>
+              <button
+                data-featurebase-feedback
+                class="button btn-container secondary small"
+                >Request analytics</button
+              >
             </div>
           {/if}
         </div>
@@ -149,4 +215,12 @@
 </AddressManagement>
 
 <style>
+  :global(body) .analytic_container {
+    background: #fff;
+    box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
+  }
+  :global(body.dark) .analytic_container {
+    background: #0f0f0f;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
+  }
 </style>

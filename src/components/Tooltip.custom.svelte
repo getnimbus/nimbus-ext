@@ -6,7 +6,8 @@
 </script>
 
 <div
-  class="text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case max-w-[360px]"
+  class="text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case border-[0.5px] border-[#cdcdcd59]"
+  style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
 >
   {#if link.length !== 0}
     {text}

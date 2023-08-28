@@ -3,9 +3,7 @@
 </script>
 
 <div class="flex flex-col gap-5 h-[35vh]">
-  <blockquote
-    class="text-lg font-normal leading-8 tracking-tight text-gray-900"
-  >
+  <blockquote class="text-lg font-normal leading-8 tracking-tight">
     <p>
       These guys are truly building some hidden gem tools that absolutely
       deserve your attention, Champ! <br /> ヾ(´▽｀;)ゝ
@@ -14,8 +12,8 @@
   <figcaption class="flex items-center gap-x-6">
     <img class="h-12 w-12 rounded-full bg-gray-50" src={Avatar} alt="" />
     <div class="text-sm">
-      <div class="font-semibold text-gray-900">Stacy Muur</div>
-      <div class="text-gray-600">
+      <div class="font-semibold">Stacy Muur</div>
+      <div class="text-gray-500">
         <a
           href="https://twitter.com/spin_fi"
           target="_blank"

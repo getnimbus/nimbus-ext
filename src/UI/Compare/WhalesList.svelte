@@ -2,65 +2,54 @@
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import WhaleItem from "./WhaleItem.svelte";
 
+  export let darkMode;
   export let data;
   export let copyAddress = (address) => {};
   export let closeModal = () => {};
 </script>
 
 <div
-  class="border border-[#0000000d] rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative"
+  class={`border border_0000000d rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative ${
+    darkMode ? "bg-[#131313]" : "bg-[#fff]"
+  }`}
 >
   <table class="table-auto xl:w-full w-[1800px]">
     <thead>
-      <tr class="bg-[#f4f5f8]">
+      <tr class="bg_f4f5f8">
         <th
-          class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg-[#f4f5f8]"
+          class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
         >
-          <div
-            class="text-left xl:text-xs text-base uppercase font-medium text-black"
-          >
+          <div class="text-left xl:text-xs text-base uppercase font-medium">
             Address
           </div>
         </th>
         <th class="py-3">
-          <div
-            class="text-right xl:text-xs text-base uppercase font-medium text-black"
-          >
+          <div class="text-right xl:text-xs text-base uppercase font-medium">
             Net Worth
           </div>
         </th>
         <th class="py-3">
-          <div
-            class="text-right xl:text-xs text-base uppercase font-medium text-black"
-          >
+          <div class="text-right xl:text-xs text-base uppercase font-medium">
             1D
           </div>
         </th>
         <th class="py-3">
-          <div
-            class="text-right xl:text-xs text-base uppercase font-medium text-black"
-          >
+          <div class="text-right xl:text-xs text-base uppercase font-medium">
             7D
           </div>
         </th>
         <th class="py-3">
-          <div
-            class="text-right xl:text-xs text-base uppercase font-medium text-black"
-          >
+          <div class="text-right xl:text-xs text-base uppercase font-medium">
             30D
           </div>
         </th>
         <th class="py-3">
-          <div
-            class="text-right xl:text-xs text-base uppercase font-medium text-black"
-          >
+          <div class="text-right xl:text-xs text-base uppercase font-medium">
             1Y
           </div>
         </th>
         <th class="py-3">
-          <div
-            class="text-right xl:text-xs text-base uppercase font-medium text-black"
-          >
+          <div class="text-right xl:text-xs text-base uppercase font-medium">
             <TooltipTitle
               tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
               isBigIcon
@@ -70,9 +59,7 @@
           </div>
         </th>
         <th class="py-3">
-          <div
-            class="text-right xl:text-xs text-base uppercase font-medium text-black"
-          >
+          <div class="text-right xl:text-xs text-base uppercase font-medium">
             <TooltipTitle
               tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
               isBigIcon
@@ -82,9 +69,7 @@
           </div>
         </th>
         <th class="py-3">
-          <div
-            class="text-right xl:text-xs text-base uppercase font-medium text-black"
-          >
+          <div class="text-right xl:text-xs text-base uppercase font-medium">
             <TooltipTitle
               tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
               isBigIcon

@@ -21,7 +21,7 @@
   };
 </script>
 
-<div class="max-w-[2000px] m-auto w-[90%] h-full font-family">
+<div class="max-w-[2000px] m-auto w-[90%] h-full">
   <Swiper
     cssMode={true}
     slidesPerView={1}
@@ -55,10 +55,79 @@
   </Swiper>
 </div>
 
-<style windi:preflights:global windi:safelist:global>
-  .font-family {
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-      Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
-      Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+<style global windi:preflights:global windi:safelist:global>
+  :global(body) {
+    background: #fff;
+    color: black;
+    transition: background-color 0.3s;
+  }
+  :global(body.dark) {
+    background: #161616;
+    color: #fff;
+  }
+
+  :global(body) .footer {
+    background: #fff;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 40px;
+  }
+  :global(body.dark) .footer {
+    background: #110c2a;
+    box-shadow: rgba(0, 0, 0, 1) 0px 0px 5px;
+  }
+
+  :global(body) .bg_f4f5f8 {
+    background: #f4f5f8;
+  }
+  :global(body.dark) .bg_f4f5f8 {
+    background: #000;
+  }
+
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #00000033;
+  }
+
+  :global(body) .text_00000080 {
+    color: #00000080;
+  }
+  :global(body.dark) .text_00000080 {
+    color: #d1d5db;
+  }
+
+  :global(body) .text_27326F {
+    color: #27326f;
+  }
+  :global(body.dark) .text_27326F {
+    color: #3b82f6;
+  }
+
+  :global(body) .text_00000099 {
+    color: #00000099;
+  }
+  :global(body.dark) .text_00000099 {
+    color: #ccc;
+  }
+
+  :global(body) .text_00000066 {
+    color: #00000099;
+  }
+  :global(body.dark) .text_00000066 {
+    color: #cdcdcd;
+  }
+
+  :global(body) .border_0000001a {
+    border-color: #0000001a;
+  }
+  :global(body.dark) .border_0000001a {
+    border-color: #cdcdcd59;
+  }
+
+  :global(body) .border_0000000d {
+    border-color: #0000000d;
+  }
+  :global(body.dark) .border_0000000d {
+    border-color: #cdcdcd26;
   }
 </style>

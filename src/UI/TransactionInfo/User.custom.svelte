@@ -41,7 +41,7 @@
     <a
       href={`https://etherscan.io/address/${address}`}
       target="_blank"
-      class="no-underline text-sm text-black font-medium"
+      class="no-underline text-sm font-medium"
       use:tooltip={{
         content: `<tooltip-detail text="${label ? label : address}" />`,
         allowHTML: true,

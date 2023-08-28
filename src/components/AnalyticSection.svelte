@@ -1,16 +1,26 @@
 <script lang="ts">
+  import { isDarkMode } from "~/store";
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 </script>
 
 <div class="flex flex-col gap-5">
   <slot name="title" />
   <div class="grid xl:grid-cols-6 grid-cols-1 gap-6">
     <div
-      class="xl:col-span-2 col-span-1 border border-[#0000001a] rounded-[20px] p-6"
+      class={`xl:col-span-2 col-span-1 rounded-[20px] p-6 ${
+        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      }`}
     >
       <slot name="overview" />
     </div>
     <div
-      class="xl:col-span-4 col-span-1 border border-[#0000001a] rounded-[20px] p-6"
+      class={`xl:col-span-4 col-span-1 rounded-[20px] p-6 ${
+        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      }`}
     >
       <slot name="chart" />
     </div>

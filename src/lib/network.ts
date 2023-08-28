@@ -25,9 +25,15 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
           "Content-Type": "application/json",
           ...authorization
         },
-      }).then((response) =>
-        response.json()
-      );
+      }).then(async (response) => {
+        if (response.status === 401) {
+          return {
+            response: await response.json(),
+            status: response.status
+          }
+        }
+        return await response.json()
+      });
     },
     post<T>(url: string, body: any, config?: any): Promise<T> {
       const apiUrl = new URL(`${baseURL}${url}`);
@@ -97,8 +103,8 @@ export const coinGeko = createAxiosInterface({
 });
 
 export const nimbus = createAxiosInterface({
-  baseURL: "https://api.getnimbus.io",
-  // baseURL: "https://api-staging.getnimbus.io",
+  // baseURL: "https://api.getnimbus.io",
+  baseURL: "https://api-staging.getnimbus.io",
   // baseURL: "https://nimbus-api.yellowstone-2bd26c73.eastus.azurecontainerapps.io"
   // baseURL: "https://nimbus-api.fly.dev"
   // baseURL: "https://nimbus-api-asia.wonderfulwave-5f958dca.southeastasia.azurecontainerapps.io",

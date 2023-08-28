@@ -212,7 +212,7 @@
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={MultipleLang.networth}>
-            <div class="xl:text-3xl text-5xl text-black flex">
+            <div class="xl:text-3xl text-5xl flex">
               $<CountUpNumber id="networth-virtual" number={0} type="balance" />
             </div>
             <div class="flex items-center gap-3 opacity-50">
@@ -239,7 +239,7 @@
           </OverviewCard>
 
           <OverviewCard title={MultipleLang.claimable}>
-            <div class="flex xl:text-3xl text-5xl text-black">
+            <div class="flex xl:text-3xl text-5xl">
               {#if {}.toString().toLowerCase().includes("e-")}
                 $<TooltipNumber number={0} type="balance" />
               {:else}
@@ -276,7 +276,7 @@
 
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={MultipleLang.total_assets}>
-            <div class="xl:text-3xl text-5xl text-black flex">
+            <div class="xl:text-3xl text-5xl flex">
               $<CountUpNumber id="total_assets" number={0} type="balance" />
             </div>
             <div class="flex items-center gap-3 opacity-50">
@@ -303,7 +303,7 @@
           </OverviewCard>
 
           <OverviewCard title={MultipleLang.total_positions}>
-            <div class="flex xl:text-3xl text-5xl text-black">
+            <div class="flex xl:text-3xl text-5xl">
               {#if {}.toString().toLowerCase().includes("e-")}
                 $<TooltipNumber number={0} type="balance" />
               {:else}
@@ -344,7 +344,7 @@
   <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
     <div class="bg-white rounded-[20px] xl:p-8 xl:shadow-md">
       <div
-        class="border border-[#0000001a] rounded-[20px] p-6 flex flex-col gap-4"
+        class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
       >
         hello
       </div>

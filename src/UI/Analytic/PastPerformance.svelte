@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { wallet, chain, typeWallet, isOpenReport } from "~/store";
+  import { wallet, chain, typeWallet, isOpenReport, isDarkMode } from "~/store";
   import { getAddressContext } from "~/utils";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
@@ -14,6 +14,11 @@
   import HistoricalActivities from "../AnalyticChart/HistoricalActivities.svelte";
 
   export let packageSelected;
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -60,9 +65,7 @@
 
 <div class="flex flex-col gap-5">
   <div class="flex justify-between items-center">
-    <div class="xl:text-2xl text-4xl font-medium text-black">
-      Historical Activities
-    </div>
+    <div class="xl:text-2xl text-4xl font-medium">Historical Activities</div>
     <!-- <DateRangePicker onChange={handleGetDateRange} /> -->
   </div>
   <div class="flex flex-col gap-6">
@@ -71,9 +74,9 @@
     <DailyPnL isLoading={$query.isFetching} isEmpty={$query.isError} dataDailyPnL={$query.data.returnsChange} />
     <SectorGrowth /> -->
     {#if typeWalletAddress === "DEX"}
-      <TotalGasFee {packageSelected} />
+      <TotalGasFee {packageSelected} {darkMode} />
     {:else}
-      <HistoricalActivities {packageSelected} />
+      <HistoricalActivities {packageSelected} {darkMode} />
     {/if}
   </div>
 </div>

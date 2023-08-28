@@ -6,10 +6,10 @@
   <div class="flex flex-col items-center gap-10">
     <div class="flex-1">
       <div class="flex flex-col items-center gap-6">
-        <div class="text-5xl text-black font-normal">
+        <div class="text-5xl  font-normal">
           You are ready to enjoy
         </div>
-        <div class="text-lg text-[#00000099] font-normal">
+        <div class="text-lg text_00000099 font-normal">
           Join us on Discord and build Nimbus together. WAGMI 🙌
         </div>
       </div>

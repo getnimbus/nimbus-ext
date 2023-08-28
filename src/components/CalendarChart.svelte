@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { isDarkMode } from "~/store";
+
   import EChart from "~/components/EChart.svelte";
   import TooltipTitle from "./TooltipTitle.svelte";
   import TooltipNumber from "./TooltipNumber.svelte";
@@ -17,12 +19,20 @@
   import "~/components/Loading.custom.svelte";
 
   import Logo from "~/assets/logo-1.svg";
+  import LogoWhite from "~/assets/logo-white.svg";
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
+
+  $: theme = darkMode ? "dark" : "white";
 </script>
 
 <div class="flex flex-col gap-4">
   <div class="flex flex-col gap-1 pl-6">
     <div
-      class={`font-medium text-black flex justify-start z-10 w-max ${
+      class={`font-medium flex justify-start z-10 w-max ${
         isTrxPage ? "xl:text-2xl text-4xl" : "xl:text-xl text-3xl"
       }`}
     >
@@ -58,17 +68,16 @@
         </div>
       {:else}
         <div class="relative xl:-mt-12">
-          <EChart
-            {id}
-            theme="white"
-            {option}
-            type="full-width"
-            notMerge={true}
-          />
+          <EChart {id} {theme} {option} type="full-width" notMerge={true} />
           <div
             class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-2/3 left-1/2 pointer-events-none"
           >
-            <img src={Logo} alt="" width="140" height="140" />
+            <img
+              src={darkMode ? LogoWhite : Logo}
+              alt=""
+              width="140"
+              height="140"
+            />
           </div>
         </div>
       {/if}

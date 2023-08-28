@@ -1,9 +1,9 @@
 <script lang="ts">
   import { wallet, chain, typeWallet } from "~/store";
   import dayjs from "dayjs";
+  import { nimbus } from "~/lib/network";
   import { formatCurrency, getAddressContext } from "~/utils";
   import { createQuery } from "@tanstack/svelte-query";
-  import { nimbus } from "~/lib/network";
 
   import type {
     AnalyticHistoricalRes,
@@ -13,6 +13,7 @@
   import CalendarChart from "~/components/CalendarChart.svelte";
 
   export let packageSelected;
+  export let darkMode;
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -35,15 +36,17 @@
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 180px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                darkMode ? "white" : "black"
+              }">
                 ${dayjs(params.data[0]).format("YYYY-MM-DD")}
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between;">
-                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; color: black; display: flex; align-items: centers; gap: 6px;">
+                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; display: flex; align-items: centers; gap: 6px;">
                   <div style="background: #00b580; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
                   Activity
                 </div>
-                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: #000;">
+                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
                   ${params.data[1]}
                 </div>
               </div>
@@ -169,7 +172,11 @@
   }
 </script>
 
-<div class="border border-[#0000001a] rounded-[20px] py-6">
+<div
+  class={`rounded-[20px] py-6 ${
+    darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+  }`}
+>
   <CalendarChart
     {option}
     isEmptyDataChart={$query.isError}

@@ -382,11 +382,9 @@
 
 <ErrorBoundary>
   <div class="flex xl:flex-row flex-col justify-between gap-6">
-    <div class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6">
+    <div class="xl:w-1/2 w-full border border_0000001a rounded-[20px] p-6">
       <div class="mb-1 w-full">
-        <div
-          class="xl:text-xl text-3xl font-medium text-black flex justify-start"
-        >
+        <div class="xl:text-xl text-3xl font-medium flex justify-start">
           Risks
           <!-- <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
             Risks
@@ -418,9 +416,9 @@
       {/if}
     </div>
     <div
-      class="xl:w-1/2 w-full relative border border-[#0000001a] rounded-[20px] p-6"
+      class="xl:w-1/2 w-full relative border border_0000001a rounded-[20px] p-6"
     >
-      <div class="pl-4 xl:text-xl text-3xl font-medium text-black mb-3">
+      <div class="pl-4 xl:text-xl text-3xl font-medium  mb-3">
         Performance
       </div>
       {#if isLoadingDataCompare}

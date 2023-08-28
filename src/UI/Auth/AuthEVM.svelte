@@ -3,17 +3,31 @@
   import { Link } from "svelte-navigator";
   import onboard from "~/lib/web3-onboard";
   import { ethers } from "ethers";
-  import { wallet, chain, typeWallet, user, isFirstTimeLogin } from "~/store";
+  import {
+    wallet,
+    chain,
+    typeWallet,
+    user,
+    isFirstTimeLogin,
+    isDarkMode,
+  } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
-  import { shorterAddress } from "~/utils";
+  import { shorterAddress, clickOutside } from "~/utils";
   import { useNavigate } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+
+  import DarkMode from "~/components/DarkMode.svelte";
 
   import User from "~/assets/user.png";
 
   const wallets$ = onboard.state.select("wallets");
   const navigate = useNavigate();
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -158,6 +172,9 @@
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+    },
   });
 
   $: {
@@ -185,6 +202,9 @@
 
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
     return response?.data;
   };
 
@@ -216,22 +236,6 @@
       console.error(e);
     }
   };
-
-  const clickOutside = (node) => {
-    const handleClick = (event) => {
-      if (node && !node.contains(event.target) && !event.defaultPrevented) {
-        node.dispatchEvent(new CustomEvent("click_outside", node));
-      }
-    };
-
-    document.addEventListener("click", handleClick, true);
-
-    return {
-      destroy() {
-        document.removeEventListener("click", handleClick, true);
-      },
-    };
-  };
 </script>
 
 {#if Object.keys(userInfo).length !== 0}
@@ -245,16 +249,23 @@
 
     {#if showPopover}
       <div
-        class="absolute right-0 z-50 flex flex-col gap-2 px-4 py-3 text-sm transform bg-white rounded-lg xl:py-2 md:top-12 top-20 w-max"
+        class="select_content absolute right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg xl:top-12 top-20 w-max"
         style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"
         use:clickOutside
         on:click_outside={() => (showPopover = false)}
       >
-        <div class="text-2xl text-black xl:text-base">
-          GM 👋, {shorterAddress(addressWallet)}
+        <div
+          class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border_0000001a"
+        >
+          <div class="text-2xl xl:text-base">
+            GM 👋, {shorterAddress(addressWallet)}
+          </div>
+          <DarkMode />
         </div>
         <!-- <div
-          class="flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base"
+          class={`flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
+            darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+          }`}
           on:click={() => {
             navigate("/upgrade");
             showPopover = false;
@@ -277,19 +288,29 @@
           </svg>
         </div> -->
         <Link to="invitation">
-          <div class="text-2xl text-gray-500 cursor-pointer xl:text-base">
+          <div
+            class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
+              darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+            }`}
+            on:click={() => (showPopover = false)}
+          >
             Invite
           </div>
         </Link>
         <a
           href="entries/options/index.html?tab=wallets"
           target="_blank"
-          class="hidden text-2xl text-gray-500 cursor-pointer xl:block xl:text-base"
+          class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
+            darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+          }`}
+          on:click={() => (showPopover = false)}
         >
           Settings
         </a>
         <div
-          class="text-2xl font-medium text-red-500 cursor-pointer xl:text-base"
+          class={`text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
+            darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+          }`}
           on:click={handleSignOut}
         >
           Logout
@@ -307,4 +328,12 @@
 {/if}
 
 <style windi:preflights:global windi:safelist:global>
+  :global(body) .select_content {
+    background: #ffffff;
+    border: 0.5px solid transparent;
+  }
+  :global(body.dark) .select_content {
+    background: #131313;
+    border: 0.5px solid #cdcdcd59;
+  }
 </style>

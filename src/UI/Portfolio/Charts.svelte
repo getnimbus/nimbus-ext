@@ -1,12 +1,13 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { i18n } from "~/lib/i18n";
-  import { chain, wallet, typeWallet } from "~/store";
+  import { chain, wallet, typeWallet, isDarkMode } from "~/store";
   import {
     formatCurrency,
     getAddressContext,
     performanceTypeChartPortfolio,
     typePieChart,
+    formatPercent,
   } from "~/utils";
   import dayjs from "dayjs";
 
@@ -34,6 +35,11 @@
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
   };
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -67,7 +73,9 @@
                   params?.data?.logo ||
                   "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
                 } alt="" width=20 height=20 style="border-radius: 100%" />
-                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                  darkMode ? "white" : "black"
+                }">
                   ${params?.name} ${
           params?.data?.symbol ? `(${params?.data?.symbol})` : ""
         }
@@ -77,11 +85,13 @@
               ${
                 params?.data?.name_balance
                   ? `
-                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
+                  darkMode ? "white" : "black"
+                }">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                     ${MultipleLang[params?.data?.name_balance]}
                   </div>
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                     ${formatCurrency(params?.data?.value_balance)}
                   </div>
                 </div>
@@ -89,21 +99,25 @@
                   : ""
               }
 
-              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
+                darkMode ? "white" : "black"
+              }">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   ${MultipleLang[params?.data?.name_value]}
                 </div>
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   $${formatCurrency(params?.data?.value_value)}
                 </div>
               </div>
               
-              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
+                darkMode ? "white" : "black"
+              }">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   ${MultipleLang[params?.data?.name_ratio]}
                 </div>
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatCurrency(params?.value)}%
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
+                  ${formatPercent(params?.value)}%
                 </div>
               </div>
             </div>`;
@@ -148,14 +162,18 @@
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                darkMode ? "white" : "black"
+              }">
                 ${params[0].axisValue}
               </div>
               ${params
                 .map((item) => {
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                    darkMode ? "white" : "black"
+                  }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
                   </div>
@@ -221,13 +239,13 @@
       overviewDataPerformance?.performance?.length !== 0 ||
       overviewDataPerformance?.portfolioChart?.length !== 0
     ) {
-      const formatXAxisPerformance = overviewDataPerformance?.performance.map(
+      const formatXAxisPerformance = overviewDataPerformance?.performance?.map(
         (item) => {
           return dayjs(item.date).format("YYYY-MM-DD");
         }
       );
 
-      const formatDataPortfolio = overviewDataPerformance?.performance.map(
+      const formatDataPortfolio = overviewDataPerformance?.performance?.map(
         (item) => {
           return {
             value: item.portfolio,
@@ -238,26 +256,30 @@
         }
       );
 
-      const formatDataETH = overviewDataPerformance?.performance.map((item) => {
-        return {
-          value: item.eth,
-          itemStyle: {
-            color: "#547fef",
-          },
-        };
-      });
+      const formatDataETH = overviewDataPerformance?.performance?.map(
+        (item) => {
+          return {
+            value: item.eth,
+            itemStyle: {
+              color: "#547fef",
+            },
+          };
+        }
+      );
 
-      const formatDataBTC = overviewDataPerformance?.performance.map((item) => {
-        return {
-          value: item.btc,
-          itemStyle: {
-            color: "#f7931a",
-          },
-        };
-      });
+      const formatDataBTC = overviewDataPerformance?.performance?.map(
+        (item) => {
+          return {
+            value: item.btc,
+            itemStyle: {
+              color: "#f7931a",
+            },
+          };
+        }
+      );
 
       const formatXAxisPortfolioChart =
-        overviewDataPerformance?.portfolioChart.map((item) => {
+        overviewDataPerformance?.portfolioChart?.map((item) => {
           return dayjs(item.timestamp * 1000).format("YYYY-MM-DD");
         });
 
@@ -291,14 +313,18 @@
           formatter: function (params) {
             return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                darkMode ? "white" : "black"
+              }">
                 ${params[0].axisValue}
               </div>
               ${params
                 .map((item) => {
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                    darkMode ? "white" : "black"
+                  }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
                   </div>
@@ -361,14 +387,18 @@
             formatter: function (params) {
               return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                darkMode ? "white" : "black"
+              }">
                 ${params[0].axisValue}
               </div>
               ${params
                 .map((item) => {
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500;color: ${
+                    darkMode ? "white" : "black"
+                  }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
                   </div>
@@ -376,7 +406,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.value >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${formatCurrency(Math.abs(item.value))}%
+                      ${formatPercent(Math.abs(item.value))}%
                       <img
                         src=${item.value >= 0 ? TrendUp : TrendDown}
                         alt=""
@@ -432,6 +462,7 @@
                 type: "solid",
                 color: "#00b580",
               },
+              showSymbol: false,
               data: dataLineChartPercent.formatDataPortfolio,
             },
             {
@@ -441,6 +472,7 @@
                 type: "dashed",
                 color: "#f7931a",
               },
+              showSymbol: false,
               data: dataLineChartPercent.formatDataBTC,
             },
             {
@@ -450,6 +482,7 @@
                 type: "dashed",
                 color: "#547fef",
               },
+              showSymbol: false,
               data: dataLineChartPercent.formatDataETH,
             },
           ],
@@ -463,20 +496,26 @@
             extraCssText: "z-index: 9997",
             formatter: function (params) {
               return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 320px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                darkMode ? "white" : "black"
+              }">
                 ${params[0].axisValue}
               </div>
               ${params
                 .map((item) => {
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: #000;">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                    darkMode ? "white" : "black"
+                  }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
                   </div>
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: #000;">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                      darkMode ? "white" : "black"
+                    }">
                       $${formatCurrency(Math.abs(item.value))}
                     </div>
                   </div>
@@ -516,6 +555,7 @@
                 type: "solid",
                 color: "#00b580",
               },
+              showSymbol: false,
               data: overviewDataPerformance?.portfolioChart.map((item) => {
                 return {
                   value: item.value,
@@ -582,7 +622,9 @@
                   params?.data?.logo ||
                   "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
                 } alt="" width=20 height=20 style="border-radius: 100%" />
-                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: black;">
+                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                  darkMode ? "white" : "black"
+                }">
                   ${params?.name} ${
                 params?.data?.symbol ? `(${params?.data?.symbol})` : ""
               }
@@ -592,11 +634,13 @@
               ${
                 params?.data?.name_balance
                   ? `
-                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
+                  darkMode ? "white" : "black"
+                }">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                     ${MultipleLang[params?.data?.name_balance]}
                   </div>
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                     ${formatCurrency(params?.data?.value_balance)}
                   </div>
                 </div>
@@ -604,17 +648,21 @@
                   : ""
               }
 
-              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
+                darkMode ? "white" : "black"
+              }">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   ${MultipleLang[params?.data?.name_value]}
                 </div>
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   $${formatCurrency(params?.data?.value_value)}
                 </div>
               </div>
               
-              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: black;">
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
+                darkMode ? "white" : "black"
+              }">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   ${MultipleLang[params?.data?.name_ratio]}
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
@@ -656,13 +704,19 @@
       }
     }
   }
+
+  $: theme = darkMode ? "dark" : "white";
 </script>
 
 <ErrorBoundary>
   <div class="flex flex-col justify-between gap-6 xl:flex-row">
-    <div class="xl:w-1/2 w-full border border-[#0000001a] rounded-[20px] p-6">
+    <div
+      class={`xl:w-1/2 w-full rounded-[20px] p-6 ${
+        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      }`}
+    >
       <div class="relative w-full mb-6">
-        <div class="w-full text-4xl font-medium text-black xl:text-2xl">
+        <div class="w-full text-4xl font-medium xl:text-2xl">
           {#if selectedType === "token"}
             {MultipleLang.token_allocation}
           {:else}
@@ -735,7 +789,9 @@
     </div>
 
     <div
-      class="xl:w-1/2 w-full relative border border-[#0000001a] rounded-[20px] p-6"
+      class={`xl:w-1/2 w-full rounded-[20px] p-6 relative ${
+        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      }`}
     >
       <div class="flex justify-between mb-6">
         {#if typeWalletAddress === "CEX"}
@@ -743,12 +799,12 @@
             tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
             type="warning"
           >
-            <div class="pl-4 text-4xl font-medium text-black xl:text-2xl">
+            <div class="pl-4 text-4xl font-medium xl:text-2xl">
               {MultipleLang.performance}
             </div>
           </TooltipTitle>
         {:else}
-          <div class="pl-4 text-4xl font-medium text-black xl:text-2xl">
+          <div class="pl-4 text-4xl font-medium xl:text-2xl">
             {MultipleLang.performance}
           </div>
         {/if}
@@ -785,9 +841,11 @@
           </div>
         {/if}
       </div>
-      {#if selectedChain === "XDAI" || getAddressContext(selectedWallet)?.type === "BTC"}
+      {#if selectedChain === "XDAI" || getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
         <div
-          class="absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center bg-white/95 z-30 backdrop-blur-md"
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center ${
+            darkMode ? "bg-[#222222e6]" : "bg-white/90"
+          } z-30 backdrop-blur-md`}
         >
           <div class="text-xl xl:text-lg">Coming soon 🚀</div>
         </div>
@@ -807,7 +865,7 @@
           {:else}
             <EChart
               id="line-chart"
-              theme="white"
+              {theme}
               notMerge={true}
               option={optionLine}
               height={465}
