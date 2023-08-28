@@ -362,7 +362,12 @@
 
     // check type address and handle logic update global state
     if (typeParams === "CEX") {
-      chain.update((n) => (n = "ALL"));
+      console.log("CEX");
+      if (window.location.pathname === "/transactions") {
+        chain.update((n) => (n = "ETH"));
+      } else {
+        chain.update((n) => (n = "ALL"));
+      }
       window.history.replaceState(
         null,
         "",
@@ -372,9 +377,15 @@
     }
 
     if (typeParams === "DEX") {
+      console.log("DEX");
       // if list address is empty and no chain params and have address param (btc address when search)
       if (!chainParams && listAddress.length === 0 && addressParams) {
-        chain.update((n) => (n = "ALL"));
+        if (window.location.pathname === "/transactions") {
+          chain.update((n) => (n = "ETH"));
+        } else {
+          chain.update((n) => (n = "ALL"));
+        }
+
         if (
           getAddressContext(selectedWallet)?.type === "BTC" ||
           getAddressContext(selectedWallet)?.type === "SOL"
@@ -391,7 +402,11 @@
       // if no chain params and list address is not empty
       if (!chainParams && listAddress.length !== 0) {
         if (getAddressContext(selectedWallet)?.type === "EVM") {
-          chain.update((n) => (n = "ALL"));
+          if (window.location.pathname === "/transactions") {
+            chain.update((n) => (n = "ETH"));
+          } else {
+            chain.update((n) => (n = "ALL"));
+          }
         }
         if (
           getAddressContext(selectedWallet)?.type === "BTC" ||
@@ -761,6 +776,8 @@
       );
     }
   }
+
+  $: console.log("selectedChain: ", selectedChain);
 </script>
 
 {#if $query.isFetching && formatListAddress && formatListAddress?.length === 0}
