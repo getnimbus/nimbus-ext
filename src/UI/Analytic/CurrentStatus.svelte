@@ -31,6 +31,7 @@
   import LogoWhite from "~/assets/logo-white.svg";
 
   export let packageSelected;
+  export let selectedTimeFrame;
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -407,12 +408,16 @@
   }
 
   // query overview
-  const getOverview = async (address, chain) => {
+  const getOverview = async (
+    address: string,
+    chain: string,
+    timeFrame: string
+  ) => {
     if (packageSelected === "FREE") {
       return undefined;
     }
     const response: OverviewDataRes = await nimbus.get(
-      `/v2/address/${address}/overview?chain=${chain}`
+      `/v2/address/${address}/overview?chain=${chain}&timeRange=${timeFrame}`
     );
     return response.data;
   };
@@ -571,9 +576,10 @@
   };
 
   $: queryOverview = createQuery({
-    queryKey: ["overview", selectedWallet, selectedChain],
+    queryKey: ["overview", selectedWallet, selectedChain, selectedTimeFrame],
     enabled: enabledQuery,
-    queryFn: () => getOverview(selectedWallet, selectedChain),
+    queryFn: () =>
+      getOverview(selectedWallet, selectedChain, selectedTimeFrame),
     staleTime: Infinity,
   });
 

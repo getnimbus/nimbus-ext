@@ -90,7 +90,7 @@
         </div>
 
         <div class="flex flex-col gap-7">
-          <CurrentStatus {packageSelected} />
+          <CurrentStatus {packageSelected} {selectedTimeFrame} />
 
           <section class="overflow-hidden">
             <div
