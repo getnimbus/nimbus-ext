@@ -102,7 +102,7 @@
         }
       }
     } catch (e) {
-      console.log("e: ", e);
+      console.error("e: ", e);
     }
   };
 
@@ -132,7 +132,7 @@
         trigger();
       }
     } catch (e) {
-      console.log("e: ", e);
+      console.error("e: ", e);
       isLoadingSubmit = false;
       toastMsg = `Something wrong when ${
         type === "edit" ? "edit" : "create"
@@ -155,7 +155,7 @@
         trigger();
       }
     } catch (e) {
-      console.log("e: ", e);
+      console.error("e: ", e);
       toastMsg =
         "Something wrong when delete your custom category. Please try again!";
       isSuccessToast = true;

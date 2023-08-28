@@ -29,7 +29,7 @@
         .then((response) => response.data);
       newsData = [...newsData, ...res.news];
     } catch (e) {
-      console.log("error: ", e);
+      console.error("error: ", e);
     } finally {
       isLoading = false;
     }

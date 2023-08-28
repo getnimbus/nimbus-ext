@@ -52,7 +52,7 @@
       }
       isLoading = false;
     } catch (e) {
-      console.log(e);
+      console.error(e);
       isLoading = false;
       unknownTRX = true;
     }
@@ -76,7 +76,7 @@
         trxExplain = responseExplain?.content || responseExplainAptos?.data;
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 

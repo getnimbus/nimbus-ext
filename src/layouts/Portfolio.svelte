@@ -302,7 +302,7 @@
         return undefined;
       }
     } catch (e) {
-      console.log("error: ", e);
+      console.error("error: ", e);
       return undefined;
     }
   };
@@ -413,7 +413,7 @@
         return undefined;
       }
     } catch (e) {
-      console.log("error: ", e);
+      console.error("error: ", e);
       return undefined;
     }
   };
@@ -454,7 +454,7 @@
       dataUpdatedTime = response?.data?.lastSync;
       return response;
     } catch (e) {
-      console.log("e: ", e);
+      console.error("e: ", e);
     }
   };
 
@@ -588,7 +588,7 @@
             syncStatus = await getSyncStatus();
           }
         } catch (e) {
-          console.log(e.message);
+          console.error(e.message);
           syncMsg = "";
           isLoading = false;
           loadingOverview = false;
@@ -601,7 +601,7 @@
         }
       }
     } catch (e) {
-      console.log("error: ", e);
+      console.error("error: ", e);
       isLoading = false;
     }
   };

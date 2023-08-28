@@ -207,7 +207,7 @@
         pageToken = response.data.pageToken;
       }
     } catch (e) {
-      console.log("error: ", e);
+      console.error("error: ", e);
     } finally {
       isLoading = false;
     }

@@ -463,12 +463,6 @@
     Number(data?.btc?.volatility || 0)
   );
 
-  $: console.log({
-    sharpeRatioCompare,
-    base: Number(data?.base?.sharpeRatio || 0),
-    btc: Number(data?.btc?.sharpeRatio || 0),
-  });
-
   $: volatilityCompareAvg = getPostionInRange(
     Number(data?.base?.volatility || 0),
     Number(data?.base?.avgMarket?.minVolality || 0),

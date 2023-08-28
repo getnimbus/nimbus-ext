@@ -298,7 +298,7 @@
         unknownSmartContract = true;
       }
     } catch (e) {
-      console.log("e: ", e);
+      console.error("e: ", e);
       unknownSmartContract = true;
     } finally {
       isLoading = false;

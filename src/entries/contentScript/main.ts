@@ -160,7 +160,7 @@ import { regexList } from "../../utils";
           }
         })
       } else {
-        console.log('There are no spans that are siblings.');
+        console.error('There are no spans that are siblings.');
       }
     })();
 

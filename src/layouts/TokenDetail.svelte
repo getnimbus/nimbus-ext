@@ -293,7 +293,7 @@
         isEmptyChart = true;
       }
     } catch (e) {
-      console.log("error: ", e);
+      console.error("error: ", e);
       isEmptyChart = true;
     } finally {
       isLoadingPositionDetailPrice = false;
@@ -359,7 +359,7 @@
         positionDetail = response;
       }
     } catch (e) {
-      console.log("error: ", e);
+      console.error("error: ", e);
     } finally {
       isLoadingPositionDetail = false;
     }
