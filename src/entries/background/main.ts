@@ -82,7 +82,7 @@ onMessage<IAddressInput, any>("getDefillamaTokenChart", async ({ data: { address
       return response;
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return {};
   }
 });
@@ -371,7 +371,7 @@ onMessage<ISymbolInput, any>("chartData", async ({ data: { symbol } }) => {
     }
     return resCoingeko
   } catch (error) {
-    console.log("error: ", error)
+    console.error("error: ", error)
     return {}
   }
 });
@@ -422,7 +422,7 @@ onMessage<any, any>("trackEvent", async ({ data: { type, payload } }) => {
       }
     );
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return false;
   }
 });

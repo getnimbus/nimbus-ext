@@ -36,6 +36,8 @@
   import TrendUp from "~/assets/trend-up.svg";
   import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
 
+  export let selectedTimeFrame;
+
   const riskTypeChart = [
     {
       label: "Overview",
@@ -247,21 +249,23 @@
     ],
   };
 
-  const getAnalyticCompare = async (address: string) => {
+  const getAnalyticCompare = async (address: string, timeFrame: string) => {
     if (packageSelected === "FREE") {
       return undefined;
     }
     const response: any = await nimbus.get(
-      `/v2/analysis/${address}/compare?compareAddress=${""}`
+      `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
     return response.data;
   };
 
-  const getRiskBreakdown = async (address: string) => {
+  const getRiskBreakdown = async (address: string, timeFrame: string) => {
     if (packageSelected === "FREE") {
       return undefined;
     }
-    const response = await nimbus.get(`/v2/analysis/${address}/risk-breakdown`);
+    const response = await nimbus.get(
+      `/v2/analysis/${address}/risk-breakdown?timeRange=${timeFrame}`
+    );
     return response.data;
   };
 
@@ -271,16 +275,21 @@
   );
 
   $: query = createQuery({
-    queryKey: ["compare", selectedWallet, selectedChain],
+    queryKey: ["compare", selectedWallet, selectedChain, selectedTimeFrame],
     enabled: enabledQuery,
-    queryFn: () => getAnalyticCompare(selectedWallet),
+    queryFn: () => getAnalyticCompare(selectedWallet, selectedTimeFrame),
     staleTime: Infinity,
   });
 
   $: queryBreakdown = createQuery({
-    queryKey: ["compare-breakdown", selectedWallet, selectedChain],
+    queryKey: [
+      "compare-breakdown",
+      selectedWallet,
+      selectedChain,
+      selectedTimeFrame,
+    ],
     enabled: enabledQuery,
-    queryFn: () => getRiskBreakdown(selectedWallet),
+    queryFn: () => getRiskBreakdown(selectedWallet, selectedTimeFrame),
     staleTime: Infinity,
   });
 

@@ -591,7 +591,6 @@
       dataTokenHolding &&
       dataTokenHolding.length !== 0
     ) {
-      console.log("HELLO");
       const tokenDataEachCategory = dataPersonalizeTag.map((item) => {
         return {
           category: item.category,

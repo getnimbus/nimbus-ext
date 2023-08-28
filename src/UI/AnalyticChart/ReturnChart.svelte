@@ -26,6 +26,8 @@
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
 
+  export let selectedTimeFrame;
+
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
@@ -116,12 +118,12 @@
     series: [],
   };
 
-  const getAnalyticCompare = async (address: string) => {
+  const getAnalyticCompare = async (address: string, timeFrame: string) => {
     if (packageSelected === "FREE") {
       return undefined;
     }
     const response: any = await nimbus.get(
-      `/v2/analysis/${address}/compare?compareAddress=${""}`
+      `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
     return response.data;
   };
@@ -132,9 +134,9 @@
   );
 
   $: query = createQuery({
-    queryKey: ["compare", selectedWallet, selectedChain],
+    queryKey: ["compare", selectedWallet, selectedChain, selectedTimeFrame],
     enabled: enabledQuery,
-    queryFn: () => getAnalyticCompare(selectedWallet),
+    queryFn: () => getAnalyticCompare(selectedWallet, selectedTimeFrame),
     staleTime: Infinity,
   });
 

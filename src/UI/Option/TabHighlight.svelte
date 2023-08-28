@@ -142,7 +142,7 @@
         isOpenEditModal = false;
       }
     } else {
-      console.log("Invalid Form");
+      console.error("Invalid Form");
     }
   };
 

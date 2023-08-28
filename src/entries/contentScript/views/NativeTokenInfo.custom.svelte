@@ -69,7 +69,7 @@
         cmc_rank: data?.cmc_rank || -1,
       };
     } catch (e) {
-      console.log(e);
+      console.error(e);
     } finally {
       isLoading = false;
     }

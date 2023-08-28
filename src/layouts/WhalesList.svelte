@@ -53,7 +53,7 @@
         .then((response) => response.data);
       whalesData = res;
     } catch (e) {
-      console.log("error: ", e);
+      console.error("error: ", e);
     } finally {
       isLoading = false;
     }

@@ -144,7 +144,7 @@
         trigger();
       }
     } catch (e) {
-      console.log("e: ", e);
+      console.error("e: ", e);
       toastMsg =
         "Something wrong when add tag to your custom category. Please try again!";
       isSuccessToast = false;
@@ -201,7 +201,7 @@
         }
       }
     } catch (e) {
-      console.log("e: ", e);
+      console.error("e: ", e);
     }
   };
 
@@ -243,7 +243,7 @@
       isSuccessToast = true;
       trigger();
     } catch (e) {
-      console.log("e: ", e);
+      console.error("e: ", e);
       toastMsg =
         "Something wrong when edit your custom category. Please try again!";
       isSuccessToast = false;
@@ -307,7 +307,7 @@
       isSuccessToast = true;
       trigger();
     } catch (e) {
-      console.log("e:", e);
+      console.error("e:", e);
       toastMsg =
         "Something wrong when delete your custom category. Please try again!";
       isSuccessToast = false;
@@ -348,7 +348,7 @@
         // console.log("response: ", response)
       }
     } catch (e) {
-      console.log("error: ", e);
+      console.error("error: ", e);
       isLoadingToken = false;
     }
   };

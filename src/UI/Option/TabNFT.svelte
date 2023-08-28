@@ -74,7 +74,7 @@
         }
       }
     } catch (e) {
-      console.log("error: ", e);
+      console.error("error: ", e);
     } finally {
       isLoading = false;
     }

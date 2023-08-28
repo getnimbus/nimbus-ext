@@ -15,6 +15,7 @@
   import LogoWhite from "~/assets/logo-white.svg";
 
   export let packageSelected;
+  export let selectedTimeFrame;
 
   const listDirection = ["inflow", "outflow"];
 
@@ -182,12 +183,16 @@
   //   });
   // };
 
-  const getInflowOutflow = async (address, chain) => {
+  const getInflowOutflow = async (
+    address: string,
+    chain: string,
+    timeFrame: string
+  ) => {
     if (packageSelected === "FREE") {
       return undefined;
     }
     const response = await nimbus.get(
-      `/v2/analysis/${address}/inflow-outflow?chain=${chain}&fromDate=${""}&toDate=${""}`
+      `/v2/analysis/${address}/inflow-outflow?chain=${chain}&timeRange=${timeFrame}`
     );
     return response.data;
   };
@@ -392,9 +397,15 @@
   };
 
   $: query = createQuery({
-    queryKey: ["inflow-outflow", selectedWallet, selectedChain],
+    queryKey: [
+      "inflow-outflow",
+      selectedWallet,
+      selectedChain,
+      selectedTimeFrame,
+    ],
     enabled: enabledQuery,
-    queryFn: () => getInflowOutflow(selectedWallet, selectedChain),
+    queryFn: () =>
+      getInflowOutflow(selectedWallet, selectedChain, selectedTimeFrame),
     staleTime: Infinity,
   });
 

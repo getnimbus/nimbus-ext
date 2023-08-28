@@ -352,7 +352,7 @@
         errors["address"] = { ...errors["address"], required: false, msg: "" };
         errors["label"] = { ...errors["label"], required: false, msg: "" };
       } else {
-        console.log("Invalid Form");
+        console.error("Invalid Form");
       }
     } catch (e) {
       console.error(e);
@@ -458,7 +458,7 @@
           trigger();
           mixpanel.track("user_edit_address");
         } else {
-          console.log("Invalid Form");
+          console.error("Invalid Form");
           isLoadingEdit = false;
         }
       }

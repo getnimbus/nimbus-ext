@@ -42,8 +42,6 @@
         }),
       ]);
 
-      console.log("networthChart: ", networthChart);
-
       const addresses = (holdingData?.result || []).map((item) =>
         item.cg_id
           ? `coingecko:${item.cg_id}`
@@ -76,7 +74,6 @@
   }
 
   $: {
-    console.log("portfolioData: ", portfolioData);
     if (chartData && portfolioData.length) {
       const seriesList = Object.keys(chartData).map((token) => {
         const basePoint = chartData[token]?.prices[0];
@@ -126,8 +123,6 @@
             100,
         ]),
       };
-
-      console.log("portfolioSeries: ", portfolioSeries);
 
       chartOption = {
         animationDuration: 5000,

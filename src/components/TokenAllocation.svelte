@@ -242,7 +242,7 @@
         dataPersonalizeTag = formatDataCategory;
       }
     } catch (e) {
-      console.log("e: ", e);
+      console.error("e: ", e);
     }
   };
 

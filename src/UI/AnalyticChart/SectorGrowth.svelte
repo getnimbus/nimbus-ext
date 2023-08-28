@@ -299,7 +299,7 @@
         isLoadingSectorGrowth = false;
       }
     } catch (e) {
-      console.log("error: ", e);
+      console.error("error: ", e);
       isLoadingSectorGrowth = false;
       isEmptySectorGrowth = true;
     }
@@ -333,7 +333,7 @@
         getSectorGrowth(formatDataCategory);
       }
     } catch (e) {
-      console.log("e: ", e);
+      console.error("e: ", e);
     }
   };
 
