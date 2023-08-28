@@ -22,6 +22,7 @@
   import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { wait } from "~/entries/background/utils";
 
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
@@ -366,6 +367,7 @@
   const onSubmitCEX = () => {
     const evmToken = localStorage.getItem("evm_token");
     if (evmToken) {
+      isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
         clientId: "6st9c6s816su37qe8ld1d5iiq2",
         authEndpoint: "https://api.getnimbus.io/auth/vezgo",
@@ -383,6 +385,9 @@
             await nimbus.get("/accounts/sync");
 
             queryClient.invalidateQueries(["list-address"]);
+
+            await wait(1000);
+
             isLoadingConnectCEX = false;
             isOpenAddModal = false;
 

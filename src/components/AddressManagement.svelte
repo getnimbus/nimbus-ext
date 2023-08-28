@@ -776,8 +776,6 @@
       );
     }
   }
-
-  $: console.log("selectedChain: ", selectedChain);
 </script>
 
 {#if $query.isFetching && formatListAddress && formatListAddress?.length === 0}
