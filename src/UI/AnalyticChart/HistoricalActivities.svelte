@@ -42,11 +42,15 @@
                 ${dayjs(params.data[0]).format("YYYY-MM-DD")}
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between;">
-                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; display: flex; align-items: centers; gap: 6px;">
+                <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; display: flex; align-items: centers; gap: 6px; color: ${
+                  darkMode ? "white" : "black"
+                }">
                   <div style="background: #00b580; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
                   Activity
                 </div>
-                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
+                <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                  darkMode ? "white" : "black"
+                }">
                   ${params.data[1]}
                 </div>
               </div>
