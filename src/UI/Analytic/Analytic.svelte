@@ -65,7 +65,11 @@
                   selectedTimeFrame = type.value;
                 }}
               >
-                <div class="relative z-20 text-white">
+                <div
+                  class={`relative z-20 ${
+                    type.value === selectedTimeFrame && "text-white"
+                  }`}
+                >
                   {type.label}
                 </div>
                 {#if type.value === selectedTimeFrame}
