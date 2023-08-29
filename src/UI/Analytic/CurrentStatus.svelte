@@ -7,9 +7,9 @@
     formatCurrency,
     getAddressContext,
     typeList,
-    performanceTypeChart,
     handleFormatDataPieChart,
     formatPercent,
+    performanceTypeChartPortfolio,
   } from "~/utils";
   import { i18n } from "~/lib/i18n";
   import { useNavigate } from "svelte-navigator";
@@ -18,7 +18,6 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
-  import type { OverviewDataRes } from "~/types/OverviewData";
 
   import EChart from "~/components/EChart.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
@@ -173,8 +172,8 @@
   let isScrollEnd = false;
   let container;
 
-  let selectedTypeChart: "line" | "bar" = "line";
-  let optionLine = {
+  let selectedTypeChart: "percent" | "networth" = "percent";
+  let optionLinePercentChange = {
     title: {
       text: "",
     },
@@ -244,13 +243,13 @@
     },
     series: [],
   };
-  let optionBar = {
+  let optionLineNetWorth = {
+    title: {
+      text: "",
+    },
     tooltip: {
       trigger: "axis",
       extraCssText: "z-index: 9997",
-      axisPointer: {
-        type: "shadow",
-      },
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
@@ -270,11 +269,16 @@
                     ${item?.seriesName}
                   </div>
 
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.value >= 0 ? "#05a878" : "#f25f5d"
                     };">
                       ${formatPercent(Math.abs(item.value))}%
+                      <img
+                        src=${item.value >= 0 ? TrendUp : TrendDown} 
+                        alt=""
+                        style="margin-bottom: 4px;"
+                      />
                     </div>
                   </div>
                 </div>
@@ -285,36 +289,26 @@
       },
     },
     legend: {
-      data: [
-        {
-          name: "Your Portfolio",
-          itemStyle: {
-            color: "#00b580",
-          },
-        },
-        {
-          name: "Bitcoin",
-          itemStyle: {
-            color: "#f7931a",
-          },
-        },
-        {
-          name: "Ethereum",
-          itemStyle: {
-            color: "#547fef",
-          },
-        },
-      ],
+      lineStyle: {
+        type: "solid",
+      },
+      data: [],
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "3%",
+      containLabel: true,
     },
     xAxis: {
       type: "category",
-      axisTick: { show: false },
-      data: ["Your Portfolio", "Bitcoin", "Ethereum"],
+      boundaryGap: false,
+      data: [],
     },
     yAxis: {
       type: "value",
       axisLabel: {
-        formatter: "{value}%",
+        formatter: "${value}",
       },
     },
     series: [],
@@ -406,182 +400,6 @@
     }
   }
 
-  // query overview
-  const getOverview = async (
-    address: string,
-    chain: string,
-    timeFrame: string
-  ) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
-    const response: OverviewDataRes = await nimbus.get(
-      `/v2/address/${address}/overview?chain=${chain}&timeRange=${timeFrame}`
-    );
-    return response.data;
-  };
-
-  const formatDataOverview = (data) => {
-    if (data?.performance.length !== 0) {
-      // line chart format data
-      // const formatXAxis = data?.performance.map((item) => {
-      //   return dayjs(item.date).format("YYYY-MM-DD");
-      // });
-      // const formatDataPortfolio = data?.performance.map((item) => {
-      //   return {
-      //     value: item.portfolio,
-      //     itemStyle: {
-      //       color: "#00b580",
-      //     },
-      //   };
-      // });
-      // const formatDataETH = data?.performance.map((item) => {
-      //   return {
-      //     value: item.eth,
-      //     itemStyle: {
-      //       color: "#547fef",
-      //     },
-      //   };
-      // });
-      // const formatDataBTC = data?.performance.map((item) => {
-      //   return {
-      //     value: item.btc,
-      //     itemStyle: {
-      //       color: "#f7931a",
-      //     },
-      //   };
-      // });
-      // optionLine = {
-      //   ...optionLine,
-      //   legend: {
-      //     ...optionLine.legend,
-      //     data: [
-      //       {
-      //         name: "Your Portfolio",
-      //         itemStyle: {
-      //           color: "#00b580",
-      //         },
-      //       },
-      //       {
-      //         name: "Bitcoin",
-      //         itemStyle: {
-      //           color: "#f7931a",
-      //         },
-      //       },
-      //       {
-      //         name: "Ethereum",
-      //         itemStyle: {
-      //           color: "#547fef",
-      //         },
-      //       },
-      //     ],
-      //   },
-      //   xAxis: {
-      //     ...optionLine.xAxis,
-      //     data: formatXAxis,
-      //   },
-      //   series: [
-      //     {
-      //       name: "Your Portfolio",
-      //       type: "line",
-      //       lineStyle: {
-      //         type: "solid",
-      //         color: "#00b580",
-      //       },
-      //       showSymbol: false,
-      //       data: formatDataPortfolio,
-      //     },
-      //     {
-      //       name: "Bitcoin",
-      //       type: "line",
-      //       lineStyle: {
-      //         type: "dashed",
-      //         color: "#f7931a",
-      //       },
-      //       showSymbol: false,
-      //       data: formatDataBTC,
-      //     },
-      //     {
-      //       name: "Ethereum",
-      //       type: "line",
-      //       lineStyle: {
-      //         type: "dashed",
-      //         color: "#547fef",
-      //       },
-      //       showSymbol: false,
-      //       data: formatDataETH,
-      //     },
-      //   ],
-      // };
-      // bar chart format data
-      // const formatDataBarChart = ["portfolio", "btc", "eth"].map((item) => {
-      //   return {
-      //     name: item,
-      //     values: data?.performance.map((data) => data[item]),
-      //   };
-      // });
-      // optionBar = {
-      //   ...optionBar,
-      //   series: [
-      //     {
-      //       name: "Value",
-      //       type: "bar",
-      //       emphasis: {
-      //         focus: "series",
-      //       },
-      //       data: [
-      //         {
-      //           value: formatDataBarChart?.find(
-      //             (data) => data.name === "portfolio"
-      //           )?.values[
-      //             formatDataBarChart?.find((data) => data.name === "portfolio")
-      //               .values?.length - 1
-      //           ],
-      //           itemStyle: {
-      //             color: "#00b580",
-      //           },
-      //         },
-      //         {
-      //           value: formatDataBarChart?.find((data) => data.name === "btc")
-      //             ?.values[
-      //             formatDataBarChart?.find((data) => data.name === "btc")
-      //               ?.values?.length - 1
-      //           ],
-      //           itemStyle: {
-      //             color: "#f7931a",
-      //           },
-      //         },
-      //         {
-      //           value: formatDataBarChart?.find((data) => data.name === "eth")
-      //             ?.values[
-      //             formatDataBarChart?.find((data) => data.name === "eth")
-      //               ?.values?.length - 1
-      //           ],
-      //           itemStyle: {
-      //             color: "#547fef",
-      //           },
-      //         },
-      //       ],
-      //     },
-      //   ],
-      // };
-    }
-  };
-
-  $: queryOverview = createQuery({
-    queryKey: ["overview", selectedWallet, selectedChain, selectedTimeFrame],
-    enabled: enabledQuery,
-    queryFn: () =>
-      getOverview(selectedWallet, selectedChain, selectedTimeFrame),
-    staleTime: Infinity,
-  });
-
-  $: {
-    if (!$queryOverview.isError && $queryOverview.data !== undefined) {
-      formatDataOverview($queryOverview.data);
-    }
-  }
-
   // query compare
   const getAnalyticCompare = async (address: string, timeFrame: string) => {
     if (packageSelected === "FREE") {
@@ -602,98 +420,201 @@
 
   $: {
     if ($queryCompare.data) {
-      if ($queryCompare?.data?.base?.holdingHistory?.length !== 0) {
-        const formatXAxis = $queryCompare?.data?.base?.holdingHistory?.map(
-          (item) => {
-            return dayjs(item?.timestamp * 1000).format("YYYY-MM-DD");
-          }
-        );
+      formatDataCompare($queryCompare?.data);
+    }
+  }
 
-        const formatDataPortfolio =
-          $queryCompare?.data?.base?.holdingHistory?.map((item) => {
-            return {
-              value: item.performance,
-              itemStyle: {
-                color: "#00b580",
-              },
-            };
-          });
+  const formatDataCompare = (data) => {
+    if (data?.base?.holdingHistory?.length !== 0) {
+      const formatXAxis = data?.base?.holdingHistory?.map((item) => {
+        return dayjs(item?.timestamp * 1000).format("YYYY-MM-DD");
+      });
 
-        const formatDataETH = $queryCompare?.data?.eth?.holdingHistory.map(
-          (item) => {
-            return {
-              value: item.performance,
-              itemStyle: {
-                color: "#547fef",
-              },
-            };
-          }
-        );
-
-        const formatDataBTC = $queryCompare?.data?.btc?.holdingHistory.map(
-          (item) => {
-            return {
-              value: item.performance,
-              itemStyle: {
-                color: "#f7931a",
-              },
-            };
-          }
-        );
-
-        optionLine = {
-          ...optionLine,
-          legend: {
-            ...optionLine.legend,
-            data: [
-              {
-                name: "Your Portfolio",
-                itemStyle: {
-                  color: "#00b580",
-                },
-              },
-            ],
+      // percent change
+      const formatDataPortfolio = data?.base?.holdingHistory?.map((item) => {
+        return {
+          value: item.performance,
+          itemStyle: {
+            color: "#00b580",
           },
-          xAxis: {
-            ...optionLine.xAxis,
-            data: formatXAxis,
+        };
+      });
+
+      const formatDataETH = data?.eth?.holdingHistory.map((item) => {
+        return {
+          value: item.performance,
+          itemStyle: {
+            color: "#547fef",
           },
-          series: [
+        };
+      });
+
+      const formatDataBTC = data?.btc?.holdingHistory.map((item) => {
+        return {
+          value: item.performance,
+          itemStyle: {
+            color: "#f7931a",
+          },
+        };
+      });
+
+      optionLinePercentChange = {
+        ...optionLinePercentChange,
+        legend: {
+          ...optionLinePercentChange.legend,
+          data: [
             {
               name: "Your Portfolio",
-              type: "line",
-              lineStyle: {
-                type: "solid",
+              itemStyle: {
                 color: "#00b580",
               },
-              showSymbol: false,
-              data: formatDataPortfolio,
             },
             {
               name: "Bitcoin",
-              type: "line",
-              lineStyle: {
-                type: "dashed",
+              itemStyle: {
                 color: "#f7931a",
               },
-              showSymbol: false,
-              data: formatDataBTC,
             },
             {
               name: "Ethereum",
-              type: "line",
-              lineStyle: {
-                type: "dashed",
+              itemStyle: {
                 color: "#547fef",
               },
-              showSymbol: false,
-              data: formatDataETH,
             },
           ],
+        },
+        xAxis: {
+          ...optionLinePercentChange.xAxis,
+          data: formatXAxis,
+        },
+        series: [
+          {
+            name: "Your Portfolio",
+            type: "line",
+            lineStyle: {
+              type: "solid",
+              color: "#00b580",
+            },
+            showSymbol: false,
+            data: formatDataPortfolio,
+          },
+          {
+            name: "Bitcoin",
+            type: "line",
+            lineStyle: {
+              type: "dashed",
+              color: "#f7931a",
+            },
+            showSymbol: false,
+            data: formatDataBTC,
+          },
+          {
+            name: "Ethereum",
+            type: "line",
+            lineStyle: {
+              type: "dashed",
+              color: "#547fef",
+            },
+            showSymbol: false,
+            data: formatDataETH,
+          },
+        ],
+      };
+
+      // net worth
+      const formatDataPortfolioNetWorth = data?.base?.holdingHistory?.map(
+        (item) => {
+          return {
+            value: item.networth,
+            itemStyle: {
+              color: "#00b580",
+            },
+          };
+        }
+      );
+
+      const formatDataETHNetWorth = data?.eth?.holdingHistory.map((item) => {
+        return {
+          value: item.networth,
+          itemStyle: {
+            color: "#547fef",
+          },
         };
-      }
+      });
+
+      const formatDataBTCNetWorth = data?.btc?.holdingHistory.map((item) => {
+        return {
+          value: item.networth,
+          itemStyle: {
+            color: "#f7931a",
+          },
+        };
+      });
+
+      optionLineNetWorth = {
+        ...optionLineNetWorth,
+        legend: {
+          ...optionLineNetWorth.legend,
+          data: [
+            {
+              name: "Your Portfolio",
+              itemStyle: {
+                color: "#00b580",
+              },
+            },
+            {
+              name: "Bitcoin",
+              itemStyle: {
+                color: "#f7931a",
+              },
+            },
+            {
+              name: "Ethereum",
+              itemStyle: {
+                color: "#547fef",
+              },
+            },
+          ],
+        },
+        xAxis: {
+          ...optionLineNetWorth.xAxis,
+          data: formatXAxis,
+        },
+        series: [
+          {
+            name: "Your Portfolio",
+            type: "line",
+            lineStyle: {
+              type: "solid",
+              color: "#00b580",
+            },
+            showSymbol: false,
+            data: formatDataPortfolioNetWorth,
+          },
+          {
+            name: "Bitcoin",
+            type: "line",
+            lineStyle: {
+              type: "dashed",
+              color: "#f7931a",
+            },
+            showSymbol: false,
+            data: formatDataBTCNetWorth,
+          },
+          {
+            name: "Ethereum",
+            type: "line",
+            lineStyle: {
+              type: "dashed",
+              color: "#547fef",
+            },
+            showSymbol: false,
+            data: formatDataETHNetWorth,
+          },
+        ],
+      };
     }
-  }
+  };
 
   // handle logic select
   $: {
@@ -1046,10 +967,10 @@
           </div>
         {/if}
       </div>
-      <!-- {#if !$queryOverview.isError || ($queryOverview.data?.performance && $queryOverview.data?.performance.length !== 0)}
+      {#if !$queryCompare.isError || ($queryCompare.data?.performance && $queryCompare.data?.performance.length !== 0)}
         <div class="flex items-center gap-2">
           <AnimateSharedLayout>
-            {#each performanceTypeChart as type}
+            {#each performanceTypeChartPortfolio as type}
               <div
                 class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
                 on:click={() => (selectedTypeChart = type.value)}
@@ -1077,7 +998,7 @@
             {/each}
           </AnimateSharedLayout>
         </div>
-      {/if} -->
+      {/if}
     </div>
     {#if selectedChain === "XDAI"}
       <div
@@ -1088,13 +1009,13 @@
         <div class="text-xl xl:text-lg">Coming soon 🚀</div>
       </div>
     {/if}
-    {#if $queryOverview.isFetching}
+    {#if $queryCompare.isFetching}
       <div class="flex items-center justify-center h-[485px]">
         <LoadingPremium />
       </div>
     {:else}
       <div class="h-full">
-        {#if $queryOverview.isError || ($queryOverview.data?.performance && $queryOverview.data?.performance.length === 0)}
+        {#if $queryCompare.isError || ($queryCompare.data?.performance && $queryCompare.data?.performance.length === 0)}
           <div
             class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
           >
@@ -1102,18 +1023,13 @@
           </div>
         {:else}
           <div class="relative">
-            <!-- <EChart
-              id="line-chart-anaylic-performace"
-              {theme}
-              notMerge={true}
-              option={selectedTypeChart === "line" ? optionLine : optionBar}
-              height={selectedTypeChart === "line" ? 485 : 515}
-            /> -->
             <EChart
               id="line-chart-anaylic-performace"
               {theme}
               notMerge={true}
-              option={optionLine}
+              option={selectedTypeChart === "percent"
+                ? optionLinePercentChange
+                : optionLineNetWorth}
               height={485}
             />
             <div
