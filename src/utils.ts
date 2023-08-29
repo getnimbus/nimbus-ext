@@ -173,17 +173,6 @@ export const typePackage = [
   },
 ]
 
-export const performanceTypeChart = [
-  {
-    label: "Line",
-    value: "line",
-  },
-  {
-    label: "Bar",
-    value: "bar",
-  },
-]
-
 export const performanceTypeChartPortfolio = [
   {
     label: "Percent Change",
