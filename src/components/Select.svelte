@@ -28,7 +28,7 @@
   const disabledChains = ["XDAI"];
 </script>
 
-<div class="wrapper">
+<div class="wrapper" use:clickOutside on:click_outside={() => (open = false)}>
   <div
     class={`button xl:text-sm text-2xl ${type === "lang" && "bg-[#1E96FC]"}`}
     class:active={open}
@@ -65,8 +65,6 @@
   {#if open}
     <div
       class={`select_content content group xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] xl:max-h-[310px] max-h-[380px] w-[300px] min-w-[300px] mt-2 ${positionSelectList}`}
-      use:clickOutside
-      on:click_outside={() => (open = false)}
     >
       {#each listSelect as item}
         <div
