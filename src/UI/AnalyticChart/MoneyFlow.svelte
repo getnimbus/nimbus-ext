@@ -389,11 +389,17 @@
         },
         xAxis: {
           data: [],
+          axisTick: { show: false },
         },
         yAxis: {
           type: "value",
           axisLabel: {
-            formatter: "${value}",
+            formatter: function (value, index) {
+              return (
+                `${value < 0 ? "-" : ""} $` +
+                numeral(Math.abs(value)).format("0.00a")
+              );
+            },
           },
         },
         grid: [{ right: "5%" }],
