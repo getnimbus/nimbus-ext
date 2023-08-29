@@ -5,6 +5,7 @@
   import dayjs from "dayjs";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
+  import numeral from "numeral";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
@@ -114,7 +115,12 @@
     yAxis: {
       type: "value",
       axisLabel: {
-        formatter: "${value}",
+        formatter: function (value, index) {
+          return (
+            `${value < 0 ? "-" : ""} $` +
+            numeral(Math.abs(value)).format("0.00a")
+          );
+        },
       },
     },
     grid: [{ right: "5%" }],
