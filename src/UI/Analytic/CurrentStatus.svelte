@@ -16,6 +16,7 @@
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import numeral from "numeral";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -182,7 +183,7 @@
       extraCssText: "z-index: 9997",
       formatter: function (params) {
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 260px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 darkMode ? "white" : "black"
               }">
@@ -252,7 +253,7 @@
       extraCssText: "z-index: 9997",
       formatter: function (params) {
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 320px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 darkMode ? "white" : "black"
               }">
@@ -269,16 +270,11 @@
                     ${item?.seriesName}
                   </div>
 
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
-                    };">
-                      ${formatPercent(Math.abs(item.value))}%
-                      <img
-                        src=${item.value >= 0 ? TrendUp : TrendDown} 
-                        alt=""
-                        style="margin-bottom: 4px;"
-                      />
+                      darkMode ? "white" : "black"
+                    }">
+                      $${formatCurrency(Math.abs(item.value))}
                     </div>
                   </div>
                 </div>
@@ -308,7 +304,12 @@
     yAxis: {
       type: "value",
       axisLabel: {
-        formatter: "${value}",
+        formatter: function (value, index) {
+          return (
+            `${value < 0 ? "-" : ""} $` +
+            numeral(Math.abs(value)).format("0.00a")
+          );
+        },
       },
     },
     series: [],
@@ -533,24 +534,6 @@
         }
       );
 
-      const formatDataETHNetWorth = data?.eth?.holdingHistory.map((item) => {
-        return {
-          value: item.networth,
-          itemStyle: {
-            color: "#547fef",
-          },
-        };
-      });
-
-      const formatDataBTCNetWorth = data?.btc?.holdingHistory.map((item) => {
-        return {
-          value: item.networth,
-          itemStyle: {
-            color: "#f7931a",
-          },
-        };
-      });
-
       optionLineNetWorth = {
         ...optionLineNetWorth,
         legend: {
@@ -560,18 +543,6 @@
               name: "Your Portfolio",
               itemStyle: {
                 color: "#00b580",
-              },
-            },
-            {
-              name: "Bitcoin",
-              itemStyle: {
-                color: "#f7931a",
-              },
-            },
-            {
-              name: "Ethereum",
-              itemStyle: {
-                color: "#547fef",
               },
             },
           ],
@@ -590,26 +561,6 @@
             },
             showSymbol: false,
             data: formatDataPortfolioNetWorth,
-          },
-          {
-            name: "Bitcoin",
-            type: "line",
-            lineStyle: {
-              type: "dashed",
-              color: "#f7931a",
-            },
-            showSymbol: false,
-            data: formatDataBTCNetWorth,
-          },
-          {
-            name: "Ethereum",
-            type: "line",
-            lineStyle: {
-              type: "dashed",
-              color: "#547fef",
-            },
-            showSymbol: false,
-            data: formatDataETHNetWorth,
           },
         ],
       };
