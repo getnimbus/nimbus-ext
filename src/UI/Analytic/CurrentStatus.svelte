@@ -619,6 +619,28 @@
             };
           });
 
+        const formatDataETH = $queryCompare?.data?.eth?.holdingHistory.map(
+          (item) => {
+            return {
+              value: item.performance,
+              itemStyle: {
+                color: "#547fef",
+              },
+            };
+          }
+        );
+
+        const formatDataBTC = $queryCompare?.data?.btc?.holdingHistory.map(
+          (item) => {
+            return {
+              value: item.performance,
+              itemStyle: {
+                color: "#f7931a",
+              },
+            };
+          }
+        );
+
         optionLine = {
           ...optionLine,
           legend: {
@@ -646,6 +668,26 @@
               },
               showSymbol: false,
               data: formatDataPortfolio,
+            },
+            {
+              name: "Bitcoin",
+              type: "line",
+              lineStyle: {
+                type: "dashed",
+                color: "#f7931a",
+              },
+              showSymbol: false,
+              data: formatDataBTC,
+            },
+            {
+              name: "Ethereum",
+              type: "line",
+              lineStyle: {
+                type: "dashed",
+                color: "#547fef",
+              },
+              showSymbol: false,
+              data: formatDataETH,
             },
           ],
         };
