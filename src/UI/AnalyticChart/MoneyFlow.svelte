@@ -52,56 +52,56 @@
       axisPointer: {
         type: "shadow",
       },
-      formatter: function (params) {
-        return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
-              }">
-                ${params[0].axisValue}
-              </div>
-              ${params
-                .map((item) => {
-                  if (item.value) {
-                    return `
-                  <div style="display: flex; align-items: center; justify-content: space-between; ${
-                    item.seriesName.toLowerCase() === "netflow" &&
-                    "border-top: 0.8px solid #d1d5db; padding-top: 10px;"
-                  }">
-                    ${
-                      item.seriesName.toLowerCase() !== "netflow"
-                        ? `
-                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
-                      darkMode ? "white" : "black"
-                    }">
-                      ${item.marker}  
-                      <span style="color: ${
-                        item.value >= 0 ? "#05a878" : "#f25f5d"
-                      };">
-                        ${item.value >= 0 ? "Inflow" : "Outflow"}
-                      </span>
-                    </div>
-                    `
-                        : `
-                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
-                      darkMode ? "white" : "black"
-                    }">
-                      ${item.marker}  
-                      ${item.seriesName} 
-                    </div>
-                    `
-                    }
-                    <div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
-                    };">
-                      $${formatCurrency(Math.abs(item.value))}
-                    </div>
-                  </div>`;
-                  }
-                })
-                .join("")}
-            </div>`;
-      },
+      // formatter: function (params) {
+      //   return `
+      //       <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
+      //         <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+      //           darkMode ? "white" : "black"
+      //         }">
+      //           ${params[0].axisValue}
+      //         </div>
+      //         ${params
+      //           .map((item) => {
+      //             if (item.value) {
+      //               return `
+      //             <div style="display: flex; align-items: center; justify-content: space-between; ${
+      //               item.seriesName.toLowerCase() === "netflow" &&
+      //               "border-top: 0.8px solid #d1d5db; padding-top: 10px;"
+      //             }">
+      //               ${
+      //                 item.seriesName.toLowerCase() !== "netflow"
+      //                   ? `
+      //               <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
+      //                 darkMode ? "white" : "black"
+      //               }">
+      //                 ${item.marker}
+      //                 <span style="color: ${
+      //                   item.value >= 0 ? "#05a878" : "#f25f5d"
+      //                 };">
+      //                   ${item.value >= 0 ? "Inflow" : "Outflow"}
+      //                 </span>
+      //               </div>
+      //               `
+      //                   : `
+      //               <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
+      //                 darkMode ? "white" : "black"
+      //               }">
+      //                 ${item.marker}
+      //                 ${item.seriesName}
+      //               </div>
+      //               `
+      //               }
+      //               <div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+      //                 item.value >= 0 ? "#05a878" : "#f25f5d"
+      //               };">
+      //                 $${formatCurrency(Math.abs(item.value))}
+      //               </div>
+      //             </div>`;
+      //             }
+      //           })
+      //           .join("")}
+      //       </div>`;
+      // },
     },
     legend: {
       data: [],
@@ -110,6 +110,7 @@
     },
     xAxis: {
       data: [],
+      type: "time",
       axisTick: { show: false },
     },
     yAxis: {
@@ -206,8 +207,11 @@
   const formatDataInflowOutFlow = (data) => {
     if (data.length !== 0) {
       const formatXAxis = data?.map((item) => {
-        return dayjs(item.timestamp * 1000).format("YYYY-MM-DD");
+        // return dayjs(item.timestamp * 1000).toDate();
+        return item.timestamp * 1000;
       });
+
+      console.log({ formatXAxis });
 
       const groupByDirectionData = data?.map((item) => {
         return {
@@ -219,17 +223,20 @@
 
       const listType = ["Inflow", "Outflow"];
 
+      console.log(groupByDirectionData);
+
       const inflowData = [
         {
           stack: "inflow",
           type: "bar",
           name: "Inflow",
-          data: groupByDirectionData.map((item) =>
+          data: groupByDirectionData.map((item) => [
+            item.timestamp * 1000,
             sumBy(
               item.changes.inflow,
               (row) => Number(row.amount) * Number(row.price?.price || 0)
-            )
-          ),
+            ),
+          ]),
         },
       ];
 
@@ -238,62 +245,63 @@
           stack: "outflow",
           type: "bar",
           name: "Outflow",
-          data: groupByDirectionData.map((item) =>
+          data: groupByDirectionData.map((item) => [
+            item.timestamp * 1000,
             sumBy(
               item.changes.outflow,
               (row) => Number(row.amount) * Number(row.price?.price || 0)
-            )
-          ),
+            ) * -1,
+          ]),
         },
       ];
 
-      const formatOutflowData = outflowData.map((item) => {
-        return {
-          ...item,
-          data: item.data.map((data) => {
-            if (data !== 0) {
-              return data * -1;
-            }
-            return 0;
-          }),
-        };
-      });
+      // const formatOutflowData = outflowData.map((item) => {
+      //   return {
+      //     ...item,
+      //     data: item.data.map((data) => {
+      //       if (data !== 0) {
+      //         return data * -1;
+      //       }
+      //       return 0;
+      //     }),
+      //   };
+      // });
 
-      const sumDataInflow =
-        inflowData[0]?.data.map((data, index) => {
-          return inflowData.reduce((prev, item) => prev + item.data[index], 0);
-        }) || [];
+      // const sumDataInflow =
+      //   inflowData[0]?.data.map((data, index) => {
+      //     return inflowData.reduce((prev, item) => prev + item.data[index], 0);
+      //   }) || [];
 
-      const sumDataOutflow = formatOutflowData[0]?.data.map((data, index) => {
-        return formatOutflowData.reduce(
-          (prev, item) => prev + item.data[index],
-          0
-        );
-      });
+      // const sumDataOutflow = outflowData[0]?.data.map((data, index) => {
+      //   return outflowData.reduce(
+      //     (prev, item) => prev + item.data[index],
+      //     0
+      //   );
+      // });
 
-      sumData.inflow = (sumDataInflow || []).reduce(
-        (prev, item) => prev + Number(item),
-        0
-      );
-      sumData.outflow = (sumDataOutflow || []).reduce(
-        (prev, item) => prev + Number(item),
-        0
-      );
+      // sumData.inflow = (sumDataInflow || []).reduce(
+      //   (prev, item) => prev + Number(item),
+      //   0
+      // );
+      // sumData.outflow = (sumDataOutflow || []).reduce(
+      //   (prev, item) => prev + Number(item),
+      //   0
+      // );
 
-      const dataNetflow = [];
-      for (let i = 0; i < sumDataInflow.length; i++) {
-        const sum = sumDataInflow[i] + sumDataOutflow[i];
-        dataNetflow.push(sum);
-      }
+      // const dataNetflow = [];
+      // for (let i = 0; i < sumDataInflow.length; i++) {
+      //   const sum = sumDataInflow[i] + sumDataOutflow[i];
+      //   dataNetflow.push(sum);
+      // }
 
-      const formatDataNetflow = dataNetflow.map((item) => {
-        return {
-          value: item,
-          itemStyle: {
-            color: "rgba(0,169,236, 0.8)",
-          },
-        };
-      });
+      // const formatDataNetflow = dataNetflow.map((item) => {
+      //   return {
+      //     value: item,
+      //     itemStyle: {
+      //       color: "rgba(0,169,236, 0.8)",
+      //     },
+      //   };
+      // });
 
       option = {
         ...option,
@@ -303,22 +311,24 @@
         },
         xAxis: {
           ...option.xAxis,
-          data: formatXAxis,
+          // data: formatXAxis,
         },
         series: [
           ...inflowData,
-          ...formatOutflowData,
-          {
-            name: "Netflow",
-            type: "line",
-            showSymbol: false,
-            data: formatDataNetflow,
-            lineStyle: {
-              color: "rgba(0,169,236, 0.8)",
-            },
-          },
+          ...outflowData,
+          // {
+          //   name: "Netflow",
+          //   type: "line",
+          //   showSymbol: false,
+          //   data: formatDataNetflow,
+          //   lineStyle: {
+          //     color: "rgba(0,169,236, 0.8)",
+          //   },
+          // },
         ],
       };
+
+      console.log(option);
     } else {
       sumData = {
         inflow: 0,
