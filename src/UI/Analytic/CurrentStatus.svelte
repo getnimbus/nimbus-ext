@@ -21,7 +21,6 @@
   import type { OverviewDataRes } from "~/types/OverviewData";
 
   import EChart from "~/components/EChart.svelte";
-  import Button from "~/components/Button.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
 
@@ -424,154 +423,148 @@
 
   const formatDataOverview = (data) => {
     if (data?.performance.length !== 0) {
-      const formatXAxis = data?.performance.map((item) => {
-        return dayjs(item.date).format("YYYY-MM-DD");
-      });
-
       // line chart format data
-      const formatDataPortfolio = data?.performance.map((item) => {
-        return {
-          value: item.portfolio,
-          itemStyle: {
-            color: "#00b580",
-          },
-        };
-      });
-
-      const formatDataETH = data?.performance.map((item) => {
-        return {
-          value: item.eth,
-          itemStyle: {
-            color: "#547fef",
-          },
-        };
-      });
-
-      const formatDataBTC = data?.performance.map((item) => {
-        return {
-          value: item.btc,
-          itemStyle: {
-            color: "#f7931a",
-          },
-        };
-      });
-
-      optionLine = {
-        ...optionLine,
-        legend: {
-          ...optionLine.legend,
-          data: [
-            {
-              name: "Your Portfolio",
-              itemStyle: {
-                color: "#00b580",
-              },
-            },
-            {
-              name: "Bitcoin",
-              itemStyle: {
-                color: "#f7931a",
-              },
-            },
-            {
-              name: "Ethereum",
-              itemStyle: {
-                color: "#547fef",
-              },
-            },
-          ],
-        },
-        xAxis: {
-          ...optionLine.xAxis,
-          data: formatXAxis,
-        },
-        series: [
-          {
-            name: "Your Portfolio",
-            type: "line",
-            lineStyle: {
-              type: "solid",
-              color: "#00b580",
-            },
-            showSymbol: false,
-            data: formatDataPortfolio,
-          },
-          {
-            name: "Bitcoin",
-            type: "line",
-            lineStyle: {
-              type: "dashed",
-              color: "#f7931a",
-            },
-            showSymbol: false,
-            data: formatDataBTC,
-          },
-          {
-            name: "Ethereum",
-            type: "line",
-            lineStyle: {
-              type: "dashed",
-              color: "#547fef",
-            },
-            showSymbol: false,
-            data: formatDataETH,
-          },
-        ],
-      };
-
+      // const formatXAxis = data?.performance.map((item) => {
+      //   return dayjs(item.date).format("YYYY-MM-DD");
+      // });
+      // const formatDataPortfolio = data?.performance.map((item) => {
+      //   return {
+      //     value: item.portfolio,
+      //     itemStyle: {
+      //       color: "#00b580",
+      //     },
+      //   };
+      // });
+      // const formatDataETH = data?.performance.map((item) => {
+      //   return {
+      //     value: item.eth,
+      //     itemStyle: {
+      //       color: "#547fef",
+      //     },
+      //   };
+      // });
+      // const formatDataBTC = data?.performance.map((item) => {
+      //   return {
+      //     value: item.btc,
+      //     itemStyle: {
+      //       color: "#f7931a",
+      //     },
+      //   };
+      // });
+      // optionLine = {
+      //   ...optionLine,
+      //   legend: {
+      //     ...optionLine.legend,
+      //     data: [
+      //       {
+      //         name: "Your Portfolio",
+      //         itemStyle: {
+      //           color: "#00b580",
+      //         },
+      //       },
+      //       {
+      //         name: "Bitcoin",
+      //         itemStyle: {
+      //           color: "#f7931a",
+      //         },
+      //       },
+      //       {
+      //         name: "Ethereum",
+      //         itemStyle: {
+      //           color: "#547fef",
+      //         },
+      //       },
+      //     ],
+      //   },
+      //   xAxis: {
+      //     ...optionLine.xAxis,
+      //     data: formatXAxis,
+      //   },
+      //   series: [
+      //     {
+      //       name: "Your Portfolio",
+      //       type: "line",
+      //       lineStyle: {
+      //         type: "solid",
+      //         color: "#00b580",
+      //       },
+      //       showSymbol: false,
+      //       data: formatDataPortfolio,
+      //     },
+      //     {
+      //       name: "Bitcoin",
+      //       type: "line",
+      //       lineStyle: {
+      //         type: "dashed",
+      //         color: "#f7931a",
+      //       },
+      //       showSymbol: false,
+      //       data: formatDataBTC,
+      //     },
+      //     {
+      //       name: "Ethereum",
+      //       type: "line",
+      //       lineStyle: {
+      //         type: "dashed",
+      //         color: "#547fef",
+      //       },
+      //       showSymbol: false,
+      //       data: formatDataETH,
+      //     },
+      //   ],
+      // };
       // bar chart format data
-      const formatDataBarChart = ["portfolio", "btc", "eth"].map((item) => {
-        return {
-          name: item,
-          values: data?.performance.map((data) => data[item]),
-        };
-      });
-
-      optionBar = {
-        ...optionBar,
-        series: [
-          {
-            name: "Value",
-            type: "bar",
-            emphasis: {
-              focus: "series",
-            },
-            data: [
-              {
-                value: formatDataBarChart?.find(
-                  (data) => data.name === "portfolio"
-                )?.values[
-                  formatDataBarChart?.find((data) => data.name === "portfolio")
-                    .values?.length - 1
-                ],
-                itemStyle: {
-                  color: "#00b580",
-                },
-              },
-              {
-                value: formatDataBarChart?.find((data) => data.name === "btc")
-                  ?.values[
-                  formatDataBarChart?.find((data) => data.name === "btc")
-                    ?.values?.length - 1
-                ],
-                itemStyle: {
-                  color: "#f7931a",
-                },
-              },
-              {
-                value: formatDataBarChart?.find((data) => data.name === "eth")
-                  ?.values[
-                  formatDataBarChart?.find((data) => data.name === "eth")
-                    ?.values?.length - 1
-                ],
-                itemStyle: {
-                  color: "#547fef",
-                },
-              },
-            ],
-          },
-        ],
-      };
+      // const formatDataBarChart = ["portfolio", "btc", "eth"].map((item) => {
+      //   return {
+      //     name: item,
+      //     values: data?.performance.map((data) => data[item]),
+      //   };
+      // });
+      // optionBar = {
+      //   ...optionBar,
+      //   series: [
+      //     {
+      //       name: "Value",
+      //       type: "bar",
+      //       emphasis: {
+      //         focus: "series",
+      //       },
+      //       data: [
+      //         {
+      //           value: formatDataBarChart?.find(
+      //             (data) => data.name === "portfolio"
+      //           )?.values[
+      //             formatDataBarChart?.find((data) => data.name === "portfolio")
+      //               .values?.length - 1
+      //           ],
+      //           itemStyle: {
+      //             color: "#00b580",
+      //           },
+      //         },
+      //         {
+      //           value: formatDataBarChart?.find((data) => data.name === "btc")
+      //             ?.values[
+      //             formatDataBarChart?.find((data) => data.name === "btc")
+      //               ?.values?.length - 1
+      //           ],
+      //           itemStyle: {
+      //             color: "#f7931a",
+      //           },
+      //         },
+      //         {
+      //           value: formatDataBarChart?.find((data) => data.name === "eth")
+      //             ?.values[
+      //             formatDataBarChart?.find((data) => data.name === "eth")
+      //               ?.values?.length - 1
+      //           ],
+      //           itemStyle: {
+      //             color: "#547fef",
+      //           },
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // };
     }
   };
 
@@ -586,6 +579,119 @@
   $: {
     if (!$queryOverview.isError && $queryOverview.data !== undefined) {
       formatDataOverview($queryOverview.data);
+    }
+  }
+
+  // query compare
+  const getAnalyticCompare = async (address: string, timeFrame: string) => {
+    if (packageSelected === "FREE") {
+      return undefined;
+    }
+    const response: any = await nimbus.get(
+      `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
+    );
+    return response.data;
+  };
+
+  $: queryCompare = createQuery({
+    queryKey: ["compare", selectedWallet, selectedChain, selectedTimeFrame],
+    enabled: enabledQuery,
+    queryFn: () => getAnalyticCompare(selectedWallet, selectedTimeFrame),
+    staleTime: Infinity,
+  });
+
+  $: {
+    if ($queryCompare.data) {
+      if ($queryCompare?.data?.base?.holdingHistory?.length !== 0) {
+        const formatXAxis = $queryCompare?.data?.base?.holdingHistory?.map(
+          (item) => {
+            return dayjs(item?.timestamp * 1000).format("YYYY-MM-DD");
+          }
+        );
+
+        const formatDataPortfolio =
+          $queryCompare?.data?.base?.holdingHistory?.map((item) => {
+            return {
+              value: item.performance,
+              itemStyle: {
+                color: "#00b580",
+              },
+            };
+          });
+
+        const formatDataETH = $queryCompare?.data?.eth?.holdingHistory.map(
+          (item) => {
+            return {
+              value: item.performance,
+              itemStyle: {
+                color: "#547fef",
+              },
+            };
+          }
+        );
+
+        const formatDataBTC = $queryCompare?.data?.btc?.holdingHistory.map(
+          (item) => {
+            return {
+              value: item.performance,
+              itemStyle: {
+                color: "#f7931a",
+              },
+            };
+          }
+        );
+
+        optionLine = {
+          ...optionLine,
+          legend: {
+            ...optionLine.legend,
+            data: [
+              {
+                name: "Your Portfolio",
+                itemStyle: {
+                  color: "#00b580",
+                },
+              },
+            ],
+          },
+          xAxis: {
+            ...optionLine.xAxis,
+            data: formatXAxis,
+          },
+          series: [
+            {
+              name: "Your Portfolio",
+              type: "line",
+              lineStyle: {
+                type: "solid",
+                color: "#00b580",
+              },
+              showSymbol: false,
+              data: formatDataPortfolio,
+            },
+            {
+              name: "Bitcoin",
+              type: "line",
+              lineStyle: {
+                type: "dashed",
+                color: "#f7931a",
+              },
+              showSymbol: false,
+              data: formatDataBTC,
+            },
+            {
+              name: "Ethereum",
+              type: "line",
+              lineStyle: {
+                type: "dashed",
+                color: "#547fef",
+              },
+              showSymbol: false,
+              data: formatDataETH,
+            },
+          ],
+        };
+      }
     }
   }
 
@@ -761,6 +867,7 @@
 </script>
 
 <div class="flex flex-col justify-between gap-6 xl:flex-row">
+  <!-- Token allocation -->
   <div
     class={`xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 rounded-[20px] p-6 ${
       darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
@@ -916,6 +1023,7 @@
     </div>
   </div>
 
+  <!-- Performance -->
   <div
     class={`xl:w-1/2 w-full relative rounded-[20px] p-6 ${
       darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
@@ -938,7 +1046,7 @@
           </div>
         {/if}
       </div>
-      {#if !$queryOverview.isError || ($queryOverview.data?.performance && $queryOverview.data?.performance.length !== 0)}
+      <!-- {#if !$queryOverview.isError || ($queryOverview.data?.performance && $queryOverview.data?.performance.length !== 0)}
         <div class="flex items-center gap-2">
           <AnimateSharedLayout>
             {#each performanceTypeChart as type}
@@ -969,7 +1077,7 @@
             {/each}
           </AnimateSharedLayout>
         </div>
-      {/if}
+      {/if} -->
     </div>
     {#if selectedChain === "XDAI"}
       <div
@@ -994,12 +1102,19 @@
           </div>
         {:else}
           <div class="relative">
-            <EChart
+            <!-- <EChart
               id="line-chart-anaylic-performace"
               {theme}
               notMerge={true}
               option={selectedTypeChart === "line" ? optionLine : optionBar}
               height={selectedTypeChart === "line" ? 485 : 515}
+            /> -->
+            <EChart
+              id="line-chart-anaylic-performace"
+              {theme}
+              notMerge={true}
+              option={optionLine}
+              height={485}
             />
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
