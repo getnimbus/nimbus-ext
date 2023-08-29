@@ -99,6 +99,14 @@
             </div>`;
       },
     },
+    toolbox: {
+      right: "4%",
+      feature: {
+        dataZoom: {
+          yAxisIndex: "none",
+        },
+      },
+    },
     legend: {
       data: [],
     },
