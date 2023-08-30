@@ -20,7 +20,7 @@
   import sumBy from "lodash/sumBy";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery } from "@tanstack/svelte-query";
-  import { getPostionInRange } from "~/chart-utils";
+  import { getChangePercent, getPostionInRange } from "~/chart-utils";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import EChart from "~/components/EChart.svelte";
@@ -401,7 +401,13 @@
           data: [
             [
               Number(data[item].volatility),
-              Number(data[item].netWorthChange?.networth30D),
+              Number(
+                getChangePercent(
+                  data[item]?.sparkline[data[item].sparkline.length - 1] || 0,
+                  data[item]?.sparkline[0]
+                )
+              ),
+              // Number(data[item].netWorthChange?.networth30D),
             ],
           ],
         };
