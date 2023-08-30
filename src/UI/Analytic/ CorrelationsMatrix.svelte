@@ -37,25 +37,13 @@
   let coinName = "bitcoin";
 
   let matrixData = [
-    ["", "BTC", "ETH", "BNB", "DOGE"],
-    ["BTC", 1, 2, 3, 4],
-    ["ETH", 1, 2, 3, 4],
-    ["BNB", 1, 2, 3, 4],
-    ["DOGE", 1, 2, 3, 4],
+    ["", "BTC", "ETH", "BNB"],
+    ["BTC", 1, 0.95, -0.0],
+    ["ETH", 0.95, 1, 0.13],
+    ["BNB", -0.0, 0.13, 1],
   ];
 
   let coinList = ["ethereum", "bitcoin", "celo", "dogecoin"];
-
-  const handleCoinPrice = async (coinName) => {
-    const result = await axios
-      .get(
-        `https://coins.llama.fi/chart/coingecko:${coinName}?start=1664364537&span=10&period=2d&searchWidth=600`
-      )
-      .then((res) => res.data);
-
-    // console.log("result", result);
-    return result;
-  };
 
   const calculateCorrelation = (priceArray1, priceArray2) => {
     if (priceArray1.length !== priceArray2.length) {
@@ -92,63 +80,22 @@
     return correlation;
   };
 
-  // let ethArrays = ethereum.coins["coingecko:ethereum"].prices;
-  // let btcArrays = bitcoin.coins["coingecko:bitcoin"].prices;
-
-  // $: {
-  //   ethArray =
-  //     ethereum.coins !== undefined
-  //       ? ethereum.coins["coingecko:ethereum"].prices.map(
-  //           (price) => price.price
-  //         )
-  //       : {};
-
-  //   btcArray =
-  //     bitcoin.coins !== undefined
-  //       ? bitcoin.coins["coingecko:bitcoin"].prices.map((price) => price.price)
-  //       : {};
-
-  //   console.log("ethereum", ethArray);
-  //   console.log("bitcoin", btcArray);
-  // }
-
-  // Example usage
-  const tokenPriceArray1 = [15, 20, 32, 12, 23];
-  const tokenPriceArray2 = [20, 5, 21, 6, 12];
-
-  $: {
-    coinList.map((c) => {
-      const handledata = async () => {
-        const a = await handleCoinPrice(c);
-        let b = a.coins[`coingecko:${c.toLocaleLowerCase()}`];
-        // console.log("reasda", b);
-        let symbol = b.symbol;
-        return b.prices;
-      };
-      // const a = handledata();
-
-      // console.log("das", handledata());
-    });
-  }
-
-  $: {
-  }
-
-  // $: {
-  //   if (ethereum.coins && bitcoin.coins !== undefined) {
-  //     // correlationCoefficient = calculateCorrelation(btcArray, ethArray);
-  //     // console.log("correlationCoefficient", correlationCoefficient);
-  //   }
-  // }
-
-  $: query = createQuery({
+  // get token history price
+  $: queryTokenPrices = createQuery({
     queryKey: ["correlation-matrix", coinName],
     enabled: enabledQuery,
-    queryFn: () => handleCoinPrice(coinName),
+    queryFn: () => getCoinPrice(coinName),
     staleTime: Infinity,
   });
 
-  $: console.log("listTokenHolding: ", listTokenHolding);
+  const getCoinPrice = async (coinName) => {
+    const result = await axios
+      .get(
+        `https://coins.llama.fi/chart/coingecko:${coinName}?start=1664364537&span=10&period=2d&searchWidth=600`
+      )
+      .then((res) => res.data);
+    return result;
+  };
 
   // get token holding
   const getHoldingToken = async (address, chain) => {
@@ -184,9 +131,15 @@
           value: Number(item?.price?.price) * Number(item?.amount),
         };
       });
-      listTokenHolding = formatDataTokenHolding.filter(
-        (item) => item.value > 1
-      );
+      listTokenHolding = formatDataTokenHolding
+        .filter((item) => item.value > 1)
+        .map((item) => {
+          return {
+            name: item.symbol,
+            value: item.cg_id,
+            logo: item.logo,
+          };
+        });
     }
   };
 
@@ -201,9 +154,10 @@
     <div id="Side Selected Coin">
       <h1>Selected Coins</h1>
       <ul class="flex flex-col items-center justify-center w-full">
-        {#each coinList as item}
+        {#each listTokenHolding as item}
           <li class="border-b border-black py-2 w-full text-center">
-            {item.toLocaleUpperCase()}
+            <img src={item.logo} alt="" class="w-6 h-6" />
+            <div>{item.name.toLocaleUpperCase()}</div>
           </li>
         {/each}
       </ul>
