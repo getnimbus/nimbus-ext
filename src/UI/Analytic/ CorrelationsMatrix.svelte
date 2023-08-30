@@ -1,8 +1,6 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
-  import bnb from "./../../assets/bnb.png";
   import axios from "axios";
-  import { A } from "flowbite-svelte";
   import {
     chain,
     wallet,
@@ -16,8 +14,10 @@
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
   import AppOverlay from "~/components/Overlay.svelte";
+  import "~/components/Loading.custom.svelte";
 
   import Search from "~/assets/search.svg";
+  import bnb from "./../../assets/bnb.png";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -44,6 +44,7 @@
     typeWalletAddress = value;
   });
 
+  let dataTokenHolding = [];
   let listTokenHolding = [];
   let isOpenModal = false;
   let listToken = [];
@@ -55,14 +56,20 @@
   let colIndex = undefined;
   let coinName = "bitcoin";
 
+  let listCoinPrice = [];
+
   let matrixData = [
-    ["", "BTC", "ETH", "BNB"],
-    ["BTC", 1, 0.95, -0.0],
-    ["ETH", 0.95, 1, 0.13],
-    ["BNB", -0.0, 0.13, 1],
+    ["", "BTC", "ETH", "USDC"],
+    ["BTC", bnb, 0.95, 0.0],
+    ["ETH", 0.95, bnb, -0.1],
+    ["USDC", 0.0, -0.1, bnb],
   ];
 
-  let coinList = ["ethereum", "bitcoin", "celo", "dogecoin"];
+  // const result2 = [
+  //   [bnb, 1, 0.0],
+  //   [0.95, bnb, -0.1],
+  //   [0.0, -0.1, bnb],
+  // ];
 
   const calculateCorrelation = (priceArray1, priceArray2) => {
     if (priceArray1.length !== priceArray2.length) {
@@ -99,23 +106,24 @@
     return correlation;
   };
 
-  $: console.log("listTokenHolding: ", listTokenHolding);
-
-  // get token history price
-  $: queryTokenPrices = createQuery({
-    queryKey: ["correlation-matrix", coinName],
-    enabled: enabledQuery,
-    queryFn: () => getCoinPrice(coinName),
-    staleTime: Infinity,
-  });
+  const debounceSearch = (value) => {
+    clearTimeout(timerDebounce);
+    timerDebounce = setTimeout(() => {
+      searchValue = value;
+    }, 300);
+  };
 
   const getCoinPrice = async (coinName) => {
-    const result = await axios
-      .get(
-        `https://coins.llama.fi/chart/coingecko:${coinName}?start=1664364537&span=10&period=2d&searchWidth=600`
-      )
-      .then((res) => res.data);
-    return result;
+    try {
+      const result = await axios
+        .get(
+          `https://coins.llama.fi/chart/coingecko:${coinName}?start=1664364537&span=10&period=2d&searchWidth=600`
+        )
+        .then((res) => res.data);
+      return result;
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   // get token holding
@@ -126,7 +134,6 @@
     const response: HoldingTokenRes = await nimbus.get(
       `/v2/address/${address}/holding?chain=${chain}`
     );
-    console.log("response: ", response);
     return response?.data;
   };
 
@@ -151,15 +158,9 @@
           value: Number(item?.price?.price) * Number(item?.amount),
         };
       });
-      listTokenHolding = formatDataTokenHolding
-        .filter((item) => item.value > 1)
-        .map((item) => {
-          return {
-            name: item.symbol,
-            value: item.cg_id,
-            logo: item.logo,
-          };
-        });
+      dataTokenHolding = formatDataTokenHolding.filter(
+        (item) => item.value > 1
+      );
     }
   };
 
@@ -179,28 +180,53 @@
   });
 
   $: {
-    if (!$queryListToken.isError && listTokenHolding.length !== 0) {
+    if (!$queryListToken.isError && $queryListToken?.data) {
       formatListAllToken($queryListToken?.data?.coins);
     }
   }
-
-  const debounceSearch = (value) => {
-    clearTimeout(timerDebounce);
-    timerDebounce = setTimeout(() => {
-      searchValue = value;
-    }, 300);
-  };
 
   const formatListAllToken = (data) => {
     listToken = data?.map((item) => {
       return {
         name: item?.symbol,
         full_name: item?.name,
-        value: item?.id,
+        value: item?.api_symbol,
         logo: item?.large,
       };
     });
   };
+
+  $: {
+    if (
+      listToken &&
+      listToken.length !== 0 &&
+      dataTokenHolding &&
+      dataTokenHolding.length !== 0
+    ) {
+      const formatDataTokeHolding = dataTokenHolding.map((item) => {
+        const selectedToken = listToken.find(
+          (eachToken) =>
+            eachToken?.full_name === item?.name ||
+            eachToken?.name === item?.symbol
+        );
+        return {
+          ...item,
+          cg_id:
+            selectedToken !== undefined ? selectedToken?.value : item?.cg_id,
+        };
+      });
+
+      listTokenHolding = formatDataTokeHolding
+        .filter((item) => item.value > 1 && item.cg_id)
+        .map((item) => {
+          return {
+            name: item?.symbol,
+            value: item?.cg_id,
+            logo: item?.logo,
+          };
+        });
+    }
+  }
 
   $: searchDataResult = searchValue
     ? listToken?.filter(
@@ -244,10 +270,97 @@
 
     isOpenModal = false;
   };
+
+  const handleGetPriceEachToken = (data) => {
+    Promise.all(
+      data.map(async (item) => {
+        const res = await getCoinPrice(item.value);
+        return res.coins[`coingecko:${item.value}`];
+      })
+    ).then((res) => {
+      const formatListCoinPrice = res.map((item) => {
+        return {
+          symbol: item?.symbol,
+          prices: item?.prices.map((price) => price.price),
+        };
+      });
+      listCoinPrice = formatListCoinPrice;
+    });
+  };
+
+  $: {
+    if (listTokenHolding && listTokenHolding.length !== 0) {
+      handleGetPriceEachToken(listTokenHolding);
+    }
+  }
+
+  $: {
+    if (listCoinPrice && listCoinPrice.length !== 0) {
+      console.log("listCoinPrice: ", listCoinPrice);
+      console.log("listTokenHolding: ", listTokenHolding);
+
+      const filterListCoinPrice = listCoinPrice.map((item, index) => {
+        return {
+          symbol:
+            item.symbol !== undefined
+              ? item.symbol
+              : listTokenHolding[index]?.name.toUpperCase(),
+          prices: item.prices !== undefined ? item.prices : [],
+        };
+      });
+      console.log("filterListCoinPrice: ", filterListCoinPrice);
+
+      let test = [];
+      for (let i = 0; i < filterListCoinPrice.length; i++) {
+        for (let l = i; l < filterListCoinPrice.length; l++) {
+          console.log(
+            filterListCoinPrice[i].symbol,
+            "-",
+            filterListCoinPrice[l].symbol
+          );
+          test.push({
+            pair: `${filterListCoinPrice[i].symbol} - ${filterListCoinPrice[l].symbol}`,
+            value:
+              filterListCoinPrice[i].symbol === filterListCoinPrice[l].symbol
+                ? null
+                : {
+                    [filterListCoinPrice[i].symbol]:
+                      filterListCoinPrice[i].prices,
+                    [filterListCoinPrice[l].symbol]:
+                      filterListCoinPrice[l].prices,
+                  },
+          });
+        }
+      }
+      console.log("test: ", test);
+
+      // const formatListCoinPrice = filterListCoinPrice.map((item) => {
+      //   let listPairTokenPrice = [];
+      //   for (let i = 0; i < filterListCoinPrice.length; i++) {
+      //     for (let l = i; l < filterListCoinPrice.length; l++) {
+      //       listPairTokenPrice.push({
+      //         pair: `${filterListCoinPrice[i].symbol} - ${filterListCoinPrice[l].symbol}`,
+      //         value:
+      //           filterListCoinPrice[i].symbol === filterListCoinPrice[l].symbol
+      //             ? null
+      //             : calculateCorrelation(
+      //                 filterListCoinPrice[i].prices,
+      //                 filterListCoinPrice[l].prices
+      //               ),
+      //       });
+      //     }
+      //   }
+      //   return listPairTokenPrice.filter((eachItem) =>
+      //     eachItem.pair.includes(item.symbol)
+      //   );
+      // });
+      // console.log("formatListCoinPrice: ", formatListCoinPrice);
+    }
+  }
 </script>
 
 <div class="flex gap-9">
-  <div class="flex-[0.3] flex flex-col gap-2">
+  <div class="flex-[0.2] flex flex-col gap-2">
     <div class="2xl:text-lg text-2xl">Selected Coins</div>
     <div class="flex flex-col gap-1 items-center justify-center w-full">
       {#each listTokenHolding as item}
@@ -292,7 +405,7 @@
     </div>
   </div>
 
-  <div class="flex-1">
+  <!-- <div class="flex-1">
     <table class="">
       <tbody on:mouseleave={() => (colIndex = undefined)}>
         {#each matrixData as data, indexY}
@@ -324,7 +437,7 @@
         {/each}
       </tbody>
     </table>
-  </div>
+  </div> -->
 </div>
 
 <!-- Modal search token -->
@@ -349,19 +462,35 @@
       }`}
     />
   </div>
-  <div class="mt-2 flex flex-col max-h-[500px] overflow-y-auto">
-    {#each searchDataResult || [] as item}
-      <div
-        class="border-b last:border-none border-gray-500 py-3 px-1 w-full text-center flex items-center justify-start gap-2 cursor-pointer"
-        on:click={handleSelectToken(item)}
-      >
-        <img src={item.logo} alt="" class="w-6 h-6" />
-        <div class="2xl:text-base text-xl">
-          {item.full_name} ({item.name.toLocaleUpperCase()})
+  {#if $queryHoldingToken.isFetching}
+    <div class="flex items-center justify-center h-[465px]">
+      <loading-icon />
+    </div>
+  {:else}
+    <div>
+      {#if $queryHoldingToken.isError}
+        <div
+          class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
+        >
+          Empty
         </div>
-      </div>
-    {/each}
-  </div>
+      {:else}
+        <div class="mt-2 flex flex-col max-h-[500px] overflow-y-auto">
+          {#each searchDataResult || [] as item}
+            <div
+              class="border-b last:border-none border-gray-500 py-3 px-1 w-full text-center flex items-center justify-start gap-2 cursor-pointer"
+              on:click={handleSelectToken(item)}
+            >
+              <img src={item.logo} alt="" class="w-6 h-6" />
+              <div class="2xl:text-base text-xl">
+                {item.full_name} ({item.name.toLocaleUpperCase()})
+              </div>
+            </div>
+          {/each}
+        </div>
+      {/if}
+    </div>
+  {/if}
 </AppOverlay>
 
 <style global windi:preflights:global windi:safelist:global></style>
