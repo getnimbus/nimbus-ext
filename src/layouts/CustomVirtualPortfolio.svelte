@@ -237,7 +237,7 @@
               >
             </div>
             <div
-              class="w-max flex gap-3 overflow-x-auto whitespace-nowrap"
+              class="w-max flex gap-3 overflow-x-auto whitespace-nowrap px-2"
               bind:this={scrollContainer}
               on:scroll={handleScroll}
             >

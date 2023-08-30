@@ -362,7 +362,6 @@
 
     // check type address and handle logic update global state
     if (typeParams === "CEX") {
-      console.log("CEX");
       if (window.location.pathname === "/transactions") {
         chain.update((n) => (n = "ETH"));
       } else {
@@ -377,7 +376,6 @@
     }
 
     if (typeParams === "DEX") {
-      console.log("DEX");
       // if list address is empty and no chain params and have address param (btc address when search)
       if (!chainParams && listAddress.length === 0 && addressParams) {
         if (window.location.pathname === "/transactions") {

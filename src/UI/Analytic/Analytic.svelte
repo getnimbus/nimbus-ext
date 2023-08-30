@@ -34,7 +34,7 @@
   });
 
   let isShowSoon = false;
-  let selectedTimeFrame: "1D" | "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
+  let selectedTimeFrame: "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
 
   $: {
     if (selectedWallet) {
@@ -56,41 +56,18 @@
     <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[96%] relative">
       <div class="analytic_container rounded-[20px] xl:p-8 space-y-4">
         <div class="flex items-center justify-end gap-1">
-          Timeframe <span
-            class="text-yellow-400 w-5 h-5 cursor-pointer"
-            use:tooltip={{
-              content: `<tooltip-detail text="Others timeframe will be available soon" />`,
-              allowHTML: true,
-              placement: "top",
-              interactive: true,
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              class="w-5 h-5"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </span>
+          <div class="mr-1 xl:text-base text-2xl">Timeframe</div>
           <AnimateSharedLayout>
             {#each timeFrame as type}
               <div
                 class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
                 on:click={() => {
-                  // selectedTimeFrame = type.value;
+                  selectedTimeFrame = type.value;
                 }}
               >
                 <div
                   class={`relative z-20 ${
-                    selectedTimeFrame === type.value
-                      ? "text-white"
-                      : "text-gray-400"
+                    type.value === selectedTimeFrame && "text-white"
                   }`}
                 >
                   {type.label}
@@ -113,7 +90,7 @@
         </div>
 
         <div class="flex flex-col gap-7">
-          <CurrentStatus {packageSelected} />
+          <CurrentStatus {packageSelected} {selectedTimeFrame} />
 
           <section class="overflow-hidden">
             <div
@@ -163,13 +140,13 @@
             </div>
           </section>
 
-          <RiskChart />
+          <RiskChart {selectedTimeFrame} />
 
-          <ReturnChart />
+          <ReturnChart {selectedTimeFrame} />
 
-          <RiskReturnChart />
+          <RiskReturnChart {selectedTimeFrame} />
 
-          <MoneyFlow {packageSelected} />
+          <MoneyFlow {packageSelected} {selectedTimeFrame} />
 
           <PastPerformance {packageSelected} />
 

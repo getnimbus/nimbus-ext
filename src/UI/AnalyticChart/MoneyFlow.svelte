@@ -5,6 +5,7 @@
   import dayjs from "dayjs";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
+  import numeral from "numeral";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
@@ -15,6 +16,7 @@
   import LogoWhite from "~/assets/logo-white.svg";
 
   export let packageSelected;
+  export let selectedTimeFrame;
 
   const listDirection = ["inflow", "outflow"];
 
@@ -56,49 +58,38 @@
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 darkMode ? "white" : "black"
               }">
-                ${params[0].axisValue}
+                ${dayjs(params[0].axisValue).format("YYYY-MM-DD")}
               </div>
               ${params
                 .map((item) => {
-                  if (item.value) {
-                    return `
+                  return `
                   <div style="display: flex; align-items: center; justify-content: space-between; ${
                     item.seriesName.toLowerCase() === "netflow" &&
                     "border-top: 0.8px solid #d1d5db; padding-top: 10px;"
                   }">
-                    ${
-                      item.seriesName.toLowerCase() !== "netflow"
-                        ? `
                     <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
                       darkMode ? "white" : "black"
                     }">
-                      ${item.marker}  
-                      <span style="color: ${
-                        item.value >= 0 ? "#05a878" : "#f25f5d"
-                      };">
-                        ${item.value >= 0 ? "Inflow" : "Outflow"}
-                      </span>
-                    </div>
-                    `
-                        : `
-                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
-                      darkMode ? "white" : "black"
-                    }">
-                      ${item.marker}  
-                      ${item.seriesName} 
-                    </div>
-                    `
-                    }
-                    <div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
-                    };">
-                      $${formatCurrency(Math.abs(item.value))}
-                    </div>
+                          ${item.marker}
+                          ${item.seriesName}
+                        </div>
+                        <div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                          item.value[1] >= 0 ? "#05a878" : "#f25f5d"
+                        };">
+                          $${formatCurrency(Math.abs(item.value[1]))}
+                        </div>
                   </div>`;
-                  }
                 })
                 .join("")}
             </div>`;
+      },
+    },
+    toolbox: {
+      right: "4%",
+      feature: {
+        dataZoom: {
+          yAxisIndex: "none",
+        },
       },
     },
     legend: {
@@ -107,13 +98,18 @@
       left: "center",
     },
     xAxis: {
-      data: [],
+      type: "time",
       axisTick: { show: false },
     },
     yAxis: {
       type: "value",
       axisLabel: {
-        formatter: "${value}",
+        formatter: function (value, index) {
+          return (
+            `${value < 0 ? "-" : ""} $` +
+            numeral(Math.abs(value)).format("0.00a")
+          );
+        },
       },
     },
     grid: [{ right: "5%" }],
@@ -182,22 +178,22 @@
   //   });
   // };
 
-  const getInflowOutflow = async (address, chain) => {
+  const getInflowOutflow = async (
+    address: string,
+    chain: string,
+    timeFrame: string
+  ) => {
     if (packageSelected === "FREE") {
       return undefined;
     }
     const response = await nimbus.get(
-      `/v2/analysis/${address}/inflow-outflow?chain=${chain}&fromDate=${""}&toDate=${""}`
+      `/v2/analysis/${address}/inflow-outflow?chain=${chain}&timeRange=${timeFrame}`
     );
     return response.data;
   };
 
   const formatDataInflowOutFlow = (data) => {
     if (data.length !== 0) {
-      const formatXAxis = data?.map((item) => {
-        return dayjs(item.timestamp * 1000).format("YYYY-MM-DD");
-      });
-
       const groupByDirectionData = data?.map((item) => {
         return {
           ...item,
@@ -213,12 +209,13 @@
           stack: "inflow",
           type: "bar",
           name: "Inflow",
-          data: groupByDirectionData.map((item) =>
+          data: groupByDirectionData.map((item) => [
+            item.timestamp * 1000,
             sumBy(
               item.changes.inflow,
               (row) => Number(row.amount) * Number(row.price?.price || 0)
-            )
-          ),
+            ),
+          ]),
         },
       ];
 
@@ -227,57 +224,46 @@
           stack: "outflow",
           type: "bar",
           name: "Outflow",
-          data: groupByDirectionData.map((item) =>
+          data: groupByDirectionData.map((item) => [
+            item.timestamp * 1000,
             sumBy(
               item.changes.outflow,
               (row) => Number(row.amount) * Number(row.price?.price || 0)
-            )
-          ),
+            ) * -1,
+          ]),
         },
       ];
 
-      const formatOutflowData = outflowData.map((item) => {
-        return {
-          ...item,
-          data: item.data.map((data) => {
-            if (data !== 0) {
-              return data * -1;
-            }
-            return 0;
-          }),
-        };
-      });
-
-      const sumDataInflow =
-        inflowData[0]?.data.map((data, index) => {
-          return inflowData.reduce((prev, item) => prev + item.data[index], 0);
+      const formatDataInflow =
+        inflowData[0]?.data.map((item, index) => {
+          return {
+            time: item[0],
+            value: item[1],
+          };
         }) || [];
 
-      const sumDataOutflow = formatOutflowData[0]?.data.map((data, index) => {
-        return formatOutflowData.reduce(
-          (prev, item) => prev + item.data[index],
-          0
-        );
-      });
+      const formatDataOutflow =
+        outflowData[0]?.data.map((item, index) => {
+          return item[1];
+        }) || [];
 
-      sumData.inflow = (sumDataInflow || []).reduce(
-        (prev, item) => prev + Number(item),
-        0
-      );
-      sumData.outflow = (sumDataOutflow || []).reduce(
-        (prev, item) => prev + Number(item),
-        0
-      );
+      sumData = {
+        inflow: formatDataInflow.reduce((prev, item) => prev + item.value, 0),
+        outflow: formatDataOutflow.reduce((prev, item) => prev + item, 0),
+      };
 
       const dataNetflow = [];
-      for (let i = 0; i < sumDataInflow.length; i++) {
-        const sum = sumDataInflow[i] + sumDataOutflow[i];
-        dataNetflow.push(sum);
+      for (let i = 0; i < formatDataInflow.length; i++) {
+        const sum = formatDataInflow[i].value + formatDataOutflow[i];
+        dataNetflow.push({
+          time: formatDataInflow[i].time,
+          value: sum,
+        });
       }
 
       const formatDataNetflow = dataNetflow.map((item) => {
         return {
-          value: item,
+          value: [item.time, item.value],
           itemStyle: {
             color: "rgba(0,169,236, 0.8)",
           },
@@ -290,13 +276,9 @@
           ...option.legend,
           data: listType,
         },
-        xAxis: {
-          ...option.xAxis,
-          data: formatXAxis,
-        },
         series: [
           ...inflowData,
-          ...formatOutflowData,
+          ...outflowData,
           {
             name: "Netflow",
             type: "line",
@@ -326,46 +308,27 @@
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 darkMode ? "white" : "black"
               }">
-                ${params[0].axisValue}
+                ${dayjs(params[0].axisValue).format("YYYY-MM-DD")}
               </div>
               ${params
                 .map((item) => {
-                  if (item.value) {
-                    return `
+                  return `
                   <div style="display: flex; align-items: center; justify-content: space-between; ${
                     item.seriesName.toLowerCase() === "netflow" &&
                     "border-top: 0.8px solid #d1d5db; padding-top: 10px;"
                   }">
-                    ${
-                      item.seriesName.toLowerCase() !== "netflow"
-                        ? `
                     <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
                       darkMode ? "white" : "black"
                     }">
-                      ${item.marker}  
-                      <span style="color: ${
-                        item.value >= 0 ? "#05a878" : "#f25f5d"
-                      };">
-                        ${item.value >= 0 ? "Inflow" : "Outflow"}
-                      </span>
-                    </div>
-                    `
-                        : `
-                    <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px;" color: ${
-                      darkMode ? "white" : "black"
-                    }>
-                      ${item.marker}  
-                      ${item.seriesName} 
-                    </div>
-                    `
-                    }
-                    <div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
-                    };">
-                      $${formatCurrency(Math.abs(item.value))}
-                    </div>
+                          ${item.marker}
+                          ${item.seriesName}
+                        </div>
+                        <div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                          item.value[1] >= 0 ? "#05a878" : "#f25f5d"
+                        };">
+                          $${formatCurrency(Math.abs(item.value[1]))}
+                        </div>
                   </div>`;
-                  }
                 })
                 .join("")}
             </div>`;
@@ -377,12 +340,18 @@
           left: "center",
         },
         xAxis: {
-          data: [],
+          type: "time",
+          axisTick: { show: false },
         },
         yAxis: {
           type: "value",
           axisLabel: {
-            formatter: "${value}",
+            formatter: function (value, index) {
+              return (
+                `${value < 0 ? "-" : ""} $` +
+                numeral(Math.abs(value)).format("0.00a")
+              );
+            },
           },
         },
         grid: [{ right: "5%" }],
@@ -392,9 +361,15 @@
   };
 
   $: query = createQuery({
-    queryKey: ["inflow-outflow", selectedWallet, selectedChain],
+    queryKey: [
+      "inflow-outflow",
+      selectedWallet,
+      selectedChain,
+      selectedTimeFrame,
+    ],
     enabled: enabledQuery,
-    queryFn: () => getInflowOutflow(selectedWallet, selectedChain),
+    queryFn: () =>
+      getInflowOutflow(selectedWallet, selectedChain, selectedTimeFrame),
     staleTime: Infinity,
   });
 
@@ -432,7 +407,9 @@
         <div class="flex flex-col gap-4">
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start">30D Money Inflow</div>
+              <div class="flex justify-start">
+                {selectedTimeFrame} Money Inflow
+              </div>
             </div>
             <div class="flex items-center justify-end col-span-1 gap-1">
               <div>
@@ -445,7 +422,9 @@
           </div>
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start">30D Money Outflow</div>
+              <div class="flex justify-start">
+                {selectedTimeFrame} Money Outflow
+              </div>
             </div>
             <div class="flex items-center justify-end col-span-1 gap-1">
               <div>
@@ -458,7 +437,9 @@
           </div>
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start">30D Money Netflow</div>
+              <div class="flex justify-start">
+                {selectedTimeFrame} Money Netflow
+              </div>
             </div>
             <div class="flex items-center justify-end col-span-1 gap-1">
               <div

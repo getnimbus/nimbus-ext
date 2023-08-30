@@ -202,8 +202,8 @@
       const response: TrxHistoryDataRes = await nimbus.get(
         `/v2/address/${selectedWallet}/history?chain=${selectedChain}&pageToken=${page}`
       );
-      if (response && response.data) {
-        data = [...data, ...response.data.data];
+      if (response && response?.data) {
+        data = [...data, ...response?.data?.data];
         pageToken = response.data.pageToken;
       }
     } catch (e) {
@@ -239,25 +239,35 @@
               darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
             }`}
           >
-            {#if data.length !== 0}
-              <CalendarChart
-                {option}
-                isEmptyDataChart={$query.isError}
-                isLoadingChart={$query.isFetching}
-                isTrxPage
-                title="Historical Activities"
-                tooltipTitle="The chart shows only activities made by this wallet"
-                id="historical-activities"
-                type="normal"
-              />
-            {:else}
+            {#if $query.isFetching}
               <div class="flex items-center justify-center h-[152px]">
-                {#if $query.isFetching}
-                  <loading-icon />
+                <loading-icon />
+              </div>
+            {:else}
+              <div>
+                {#if $query.isError}
+                  <div class="flex items-center justify-center h-[152px]">
+                    <div class="xl:text-lg text-xl text-gray-400">Empty</div>
+                  </div>
                 {:else}
-                  <div class="xl:text-lg text-xl text-gray-400">
-                    {#if $query.isError}
-                      Empty
+                  <div>
+                    {#if data.length !== 0}
+                      <CalendarChart
+                        {option}
+                        isEmptyDataChart={$query.isError}
+                        isLoadingChart={$query.isFetching}
+                        isTrxPage
+                        title="Historical Activities"
+                        tooltipTitle="The chart shows only activities made by this wallet"
+                        id="historical-activities"
+                        type="normal"
+                      />
+                    {:else}
+                      <div class="flex items-center justify-center h-[152px]">
+                        <div class="xl:text-lg text-xl text-gray-400">
+                          Empty
+                        </div>
+                      </div>
                     {/if}
                   </div>
                 {/if}
