@@ -1,8 +1,35 @@
-<script>
+<script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
   import bnb from "./../../assets/bnb.png";
   import axios from "axios";
   import { A } from "flowbite-svelte";
+  import { chain, wallet, selectedPackage, typeWallet } from "~/store";
+  import { getAddressContext } from "~/utils";
+
+  import type { HoldingTokenRes } from "~/types/HoldingTokenData";
+  import { nimbus } from "~/lib/network";
+
+  let selectedWallet: string = "";
+  wallet.subscribe((value) => {
+    selectedWallet = value;
+  });
+
+  let selectedChain: string = "";
+  chain.subscribe((value) => {
+    selectedChain = value;
+  });
+
+  let packageSelected = "";
+  selectedPackage.subscribe((value) => {
+    packageSelected = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
+
+  let listTokenHolding = [];
 
   let correlationCoefficient = 0;
   let dataArr;
@@ -116,9 +143,57 @@
 
   $: query = createQuery({
     queryKey: ["correlation-matrix", coinName],
+    enabled: enabledQuery,
     queryFn: () => handleCoinPrice(coinName),
     staleTime: Infinity,
   });
+
+  $: console.log("listTokenHolding: ", listTokenHolding);
+
+  // get token holding
+  const getHoldingToken = async (address, chain) => {
+    if (packageSelected === "FREE") {
+      return null;
+    }
+    const response: HoldingTokenRes = await nimbus.get(
+      `/v2/address/${address}/holding?chain=${chain}`
+    );
+    console.log("response: ", response);
+    return response?.data;
+  };
+
+  $: queryHoldingToken = createQuery({
+    queryKey: ["holding-token", selectedWallet, selectedChain],
+    enabled: enabledQuery,
+    queryFn: () => getHoldingToken(selectedWallet, selectedChain),
+    staleTime: Infinity,
+  });
+
+  $: {
+    if (!$queryHoldingToken.isError && $queryHoldingToken.data !== null) {
+      formatDataHoldingToken($queryHoldingToken.data);
+    }
+  }
+
+  const formatDataHoldingToken = (data) => {
+    if (data && data.length !== 0) {
+      console.log("data: ", data);
+      const formatDataTokenHolding = data.map((item) => {
+        return {
+          ...item,
+          value: Number(item?.price?.price) * Number(item?.amount),
+        };
+      });
+      listTokenHolding = formatDataTokenHolding.filter(
+        (item) => item.value > 1
+      );
+    }
+  };
+
+  $: enabledQuery = Boolean(
+    getAddressContext(selectedWallet)?.type === "EVM" ||
+      typeWalletAddress === "CEX"
+  );
 </script>
 
 <div class="w-full">
