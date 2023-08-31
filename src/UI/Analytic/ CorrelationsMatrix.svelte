@@ -18,6 +18,8 @@
 
   import bnb from "./../../assets/bnb.png";
   import type { matrix } from "echarts";
+  import { each, each } from "svelte/internal";
+  // import { transform } from "html2canvas/dist/types/css/property-descriptors/transform";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -52,6 +54,7 @@
   let searchValue = "";
   let timerDebounce;
   let matrix = [];
+  let colImg = false;
 
   let colIndex = undefined;
   let matrixData = [
@@ -378,65 +381,25 @@
     }
   }
 
-  // const result = [];
-  // let matrixRender = [];
+  const result = [];
+  let matrixRender = [];
 
-  // const getMetrix = (var1, var2, index) => {
-  //   return (
-  //     result[index][var1 + " - " + var2] || result[index][var2 + " - " + var1]
-  //   );
-  // };
+  const getMetrix = (var1, var2, index) => {
+    return (
+      result[index][var1 + " - " + var2] || result[index][var2 + " - " + var1]
+    );
+  };
 
-  // $: {
-  //   for (let i = 0; i < matrix.length; i++) {
-  //     result.push({});
-  //     for (let j = 0; j < matrix.length; j++) {
-  //       result[i][matrix[i][j].pair] = matrix[i][j].value;
-  //     }
-  //   }
+  $: {
+    for (let i = 0; i < matrix.length; i++) {
+      result.push({});
+      for (let j = 0; j < matrix.length; j++) {
+        result[i][matrix[i][j].pair] = matrix[i][j].value;
+      }
+    }
 
-  //   // console.log("list token name: ", listTokenHolding[0].name);
-  // }
-
-  // $: {
-  //   if (result[1]) {
-  //     for (let i = 0; i < listTokenHolding.length; i++) {
-  //       matrixRender.push([]);
-  //       for (let j = 0; j < listTokenHolding.length; j++) {
-  //         matrixRender[i].push([]);
-  //         // const a = getMetrix(
-  //         //   listTokenHolding[i].name,
-  //         //   listTokenHolding[j].name,
-  //         //   i
-  //         // );
-  //         // console.log("list token name: ", a);
-  //         matrixRender[i][j] = getMetrix(
-  //           listTokenHolding[i].name,
-  //           listTokenHolding[j].name,
-  //           i
-  //         );
-  //       }
-  //     }
-  //     matrixRender.unshift([]);
-  //     for (let i = 0; i < listTokenHolding.length; i++) {
-  //       matrixRender[0].push(listTokenHolding[i].name);
-  //     }
-  //   }
-  // }
-
-  // $: {
-  //   if (result[1]) {
-  //     console.log("tokenname", result[0]);
-  //   }
-  // }
-
-  // $: {
-  //   console.log("listTokenHolding: ", listTokenHolding);
-  // }
-
-  // $: {
-  //   console.log("result from matrix", result);
-  // }
+    // console.log("list token name: ", listTokenHolding[0].name);
+  }
 
   // $: {
   //   console.log("matrixRender: ", matrixRender);
@@ -448,17 +411,17 @@
   );
 </script>
 
-<div class="flex gap-9">
-  <div class="flex-[0.2] flex flex-col gap-2">
-    <div class="2xl:text-lg text-2xl">Selected Coins</div>
-    <div class="flex flex-col gap-1 items-center justify-center w-full">
+<div class="flex gap-9 relative px-2">
+  <div class="flex flex-col xl:flex-[0.2] flex-[0.4]">
+    <div class="font-medium xl:text-base text-2xl py-4">Selected Coins</div>
+    <div class="flex flex-col items-center justify-center w-full">
       {#each listTokenHolding as item}
         <div
-          class="border-b border-gray-200 py-2 px-1 w-full text-center flex items-center justify-between gap-2"
+          class="border-b border-gray-200 py-4 px-1 w-full text-center flex items-center justify-between"
         >
           <div class="flex items-center gap-2">
             <img src={item.logo} alt="" class="w-6 h-6" />
-            <div class="2xl:text-base text-xl">
+            <div class="xl:text-base text-2xl font-medium">
               {item.name.toLocaleUpperCase()}
             </div>
           </div>
@@ -494,36 +457,50 @@
     </div>
   </div>
 
-  <div class="flex-1">
-    <table class="">
+  <div class="2xl:overflow-visible overflow-x-auto w-full flex-1">
+    <table class="rounded-[10px] border lg:w-full w-[1800px]">
       <tbody on:mouseleave={() => (colIndex = undefined)}>
-        <!-- {#each matrixRender as data, indexY}
-          <tr class="hover:bg-blue-300">
+        {#each listTokenHolding as tokenItem, index}
+          <th
+            class={`py-4 px-3 xl:text-base text-2xl ${
+              colIndex == index && "bg-blue-300"
+            }`}
+            on:mouseenter={() => (colIndex = index)}>{tokenItem.name}</th
+          >
+        {/each}
+        {#each matrix as data, indexY}
+          <tr class={`border ${colImg == false && "hover:bg-blue-300"}`}>
             {#each data as item, indexX}
-              {#if indexY == 0}
-                <th class={`py-1`} on:mouseenter={() => (colIndex = undefined)}
-                  >{item}</th
+              {#if indexX == indexY}
+                <td
+                  class={`py-4 px-3 ${colIndex == indexX && "bg-blue-300"}`}
+                  on:mouseenter={() => {
+                    colIndex = undefined;
+                    colImg = true;
+                  }}
+                  on:mouseleave={() => {
+                    colImg = false;
+                  }}
                 >
-              {:else if indexX + 1 == indexY}
-                <td class={`p-2 ${colIndex == indexX && "bg-blue-300"}`}>
                   <img
-                    src={item}
-                    alt="Bnb coin"
-                    style="width: 30px; height: 30px; margin: auto;"
+                    src={item.value}
+                    alt="Coin Icon"
+                    style="margin:auto;"
+                    class="w-6 h-6"
                   />
                 </td>
               {:else}
                 <td
-                  class={`p-2 text-center ${
+                  class={`xl:text-base text-2xl text-center border py-4 px-3 ${
                     colIndex == indexX && "bg-blue-300"
-                  }`}
-                  on:mouseenter={() => (colIndex = indexX)}>{item}</td
+                  } `}
+                  on:mouseenter={() => (colIndex = indexX)}
+                  >{item.value == "NaN" ? "NaN" : item.value.toFixed(2)}</td
                 >
               {/if}
             {/each}
-            <td />
           </tr>
-        {/each} -->
+        {/each}
       </tbody>
     </table>
   </div>
