@@ -3,6 +3,8 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { user } from "~/store";
+  import { useNavigate } from "svelte-navigator";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import ExplorerPlan from "./ExplorerPlan.svelte";
@@ -14,6 +16,8 @@
   import RealtimeVideo from "~/assets/pricing/Realtime.mp4";
 
   export let selectedPackage = (item) => {};
+
+  const navigate = useNavigate();
 
   let selectedTypePackage: "month" | "year" = "year";
   let buyPackage = "Explorer";
@@ -39,6 +43,8 @@
     staleTime: Infinity,
     onError(err) {
       localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+      navigate("/");
     },
   });
 
