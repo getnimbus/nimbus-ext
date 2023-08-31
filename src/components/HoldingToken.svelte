@@ -42,11 +42,17 @@
   let showTableVaults = false;
 
   $: price = data?.amount * data?.market_price;
-  $: profitAndLoss = price + (data?.avgCost || 0);
-  $: profitAndLossPercent =
-    Math.abs(data?.avgCost || 0) === 0
-      ? 0
-      : profitAndLoss / Math.abs(data?.avgCost);
+  // $: profitAndLoss = price + (data?.avgCost || 0);
+  // $: profitAndLossPercent =
+  //   Math.abs(data?.avgCost || 0) === 0
+  //     ? 0
+  //     : profitAndLoss / Math.abs(data?.avgCost);
+
+  $: realizedProfit = data?.profit?.realizedProfit
+    ? data?.profit?.realizedProfit
+    : 0;
+
+  $: unrealizedProfit = data?.avgCost !== 0 ? 0 : price - data?.avgCost;
 
   $: clickable =
     data.name !== "Bitcoin" &&
@@ -457,7 +463,7 @@
   </td>
 
   <td
-    class={`py-3 pr-3 ${
+    class={`py-3 w-25 ${
       darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
     }`}
   >
@@ -473,8 +479,8 @@
     </div>
   </td>
 
-  <!-- <td
-    class={`py-3 pr-3 ${
+  <td
+    class={`py-3 ${
       darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
     }`}
   >
@@ -484,12 +490,12 @@
       <div class="flex flex-col">
         <div
           class={`flex justify-end ${
-            profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
+            unrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          $<TooltipNumber number={Math.abs(profitAndLoss)} type="balance" />
+          $<TooltipNumber number={Math.abs(unrealizedProfit)} type="balance" />
         </div>
-        <div class="flex items-center justify-end gap-1">
+        <!-- <div class="flex items-center justify-end gap-1">
           <div
             class={`flex items-center ${
               profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
@@ -506,10 +512,48 @@
             alt="trend"
             class="mb-1"
           />
-        </div>
+        </div> -->
       </div>
     </div>
-  </td> -->
+  </td>
+
+  <td
+    class={`py-3 pr-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
+    <div
+      class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
+    >
+      <div class="flex flex-col">
+        <div
+          class={`flex justify-end ${
+            realizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
+          }`}
+        >
+          $<TooltipNumber number={Math.abs(realizedProfit)} type="balance" />
+        </div>
+        <!-- <div class="flex items-center justify-end gap-1">
+          <div
+            class={`flex items-center ${
+              profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+            }`}
+          >
+            <TooltipNumber
+              number={Math.abs(profitAndLossPercent) * 100}
+              type="percent"
+            />
+            <span>%</span>
+          </div>
+          <img
+            src={profitAndLoss >= 0 ? TrendUp : TrendDown}
+            alt="trend"
+            class="mb-1"
+          />
+        </div> -->
+      </div>
+    </div>
+  </td>
 
   <!-- <td
     class={`py-3 w-10 ${

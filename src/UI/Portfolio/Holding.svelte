@@ -241,8 +241,8 @@
   $: colspan =
     typeWalletAddress === "DEX" &&
     getAddressContext(selectedWallet)?.type !== "EVM"
-      ? 8
-      : 7;
+      ? 7
+      : 6;
 
   $: {
     if (selectedWallet || selectedChain) {
@@ -270,6 +270,8 @@
       sumTokens = 0;
     }
   }
+
+  $: console.log("holdingTokenData: ", holdingTokenData);
 </script>
 
 <div
@@ -377,7 +379,7 @@
                     {MultipleLang.value}
                   </div>
                 </th>
-                <th class="py-3 pr-3 rounded-tr-[10px]">
+                <th class="py-3">
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
@@ -388,18 +390,20 @@
                     </TooltipTitle>
                   </div>
                 </th>
-                <!-- <th class="py-3 pr-3 rounded-tr-[10px]">
+                <th class="py-3">
                   <div
-                    class="xl:text-xs text-base uppercase font-medium "
+                    class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    <TooltipTitle
-                      tooltipText="Profit and loss is calculated by transactions that swap the tokens. "
-                      link="https://docs.getnimbus.io/metrics/holding_profit_loss/"
-                    >
-                      {MultipleLang.profit}
-                    </TooltipTitle>
+                    Unrealized Profit
                   </div>
-                </th> -->
+                </th>
+                <th class="py-3 pr-3 rounded-tr-[10px]">
+                  <div
+                    class="text-right xl:text-xs text-base uppercase font-medium"
+                  >
+                    Realized Profit
+                  </div>
+                </th>
                 <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
               </tr>
             </thead>
