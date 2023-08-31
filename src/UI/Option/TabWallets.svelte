@@ -200,7 +200,7 @@
 
   const validateForm = (data) => {
     const isDuplicatedAddress = listAddress.some((item) => {
-      return item.address === data.address;
+      return item.address.toLowerCase() === data.address.toLowerCase();
     });
 
     if (!isRequiredFieldValid(data.address)) {
