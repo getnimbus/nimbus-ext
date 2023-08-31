@@ -8,7 +8,7 @@
     typeWallet,
     isDarkMode,
   } from "~/store";
-  import { getAddressContext } from "~/utils";
+  import { equalizeArrayLengths, getAddressContext } from "~/utils";
   import { nimbus } from "~/lib/network";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
@@ -17,7 +17,7 @@
   import "~/components/Loading.custom.svelte";
 
   import Search from "~/assets/search.svg";
-  import bnb from "./../../assets/bnb.png";
+  // import bnb from "./../../assets/bnb.png";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -44,6 +44,7 @@
     typeWalletAddress = value;
   });
 
+  let listCoinPrice = [];
   let dataTokenHolding = [];
   let listTokenHolding = [];
   let isOpenModal = false;
@@ -51,25 +52,19 @@
   let searchValue = "";
   let timerDebounce;
 
-  let correlationCoefficient = 0;
-  let dataArr;
-  let colIndex = undefined;
-  let coinName = "bitcoin";
+  // let correlationCoefficient = 0;
+  // let dataArr;
+  // let colIndex = undefined;
+  // let coinName = "bitcoin";
 
-  let listCoinPrice = [];
-
-  let matrixData = [
-    ["", "BTC", "ETH", "USDC"],
-    ["BTC", bnb, 0.95, 0.0],
-    ["ETH", 0.95, bnb, -0.1],
-    ["USDC", 0.0, -0.1, bnb],
-  ];
-
-  // const result2 = [
-  //   [bnb, 1, 0.0],
-  //   [0.95, bnb, -0.1],
-  //   [0.0, -0.1, bnb],
+  // let matrixData = [
+  //   ["", "BTC", "ETH", "USDC"],
+  //   ["BTC", bnb, 0.95, 0.0],
+  //   ["ETH", 0.95, bnb, -0.1],
+  //   ["USDC", 0.0, -0.1, bnb],
   // ];
+
+  let matrix = [];
 
   const calculateCorrelation = (priceArray1, priceArray2) => {
     if (priceArray1.length !== priceArray2.length) {
@@ -236,11 +231,6 @@
       )
     : listToken?.slice(0, 1000);
 
-  $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
-  );
-
   const handleRemoveCoin = (selectedCoin) => {
     listTokenHolding = listTokenHolding.filter(
       (item) =>
@@ -296,67 +286,97 @@
 
   $: {
     if (listCoinPrice && listCoinPrice.length !== 0) {
-      console.log("listCoinPrice: ", listCoinPrice);
-      console.log("listTokenHolding: ", listTokenHolding);
+      let formatFilterListCoinPrice = [];
 
-      const filterListCoinPrice = listCoinPrice.map((item, index) => {
-        return {
-          symbol:
-            item.symbol !== undefined
-              ? item.symbol
-              : listTokenHolding[index]?.name.toUpperCase(),
-          prices: item.prices !== undefined ? item.prices : [],
-        };
-      });
-      console.log("filterListCoinPrice: ", filterListCoinPrice);
+      const filterListCoinPrice = listCoinPrice
+        .map((item, index) => {
+          return {
+            symbol:
+              item.symbol !== undefined
+                ? item.symbol
+                : listTokenHolding[index]?.name.toUpperCase(),
+            prices: item.prices !== undefined ? item.prices : [],
+          };
+        })
+        .map((item) => {
+          const selectedToken = listTokenHolding.find(
+            (eachToken) =>
+              eachToken.name.toLowerCase() === item.symbol.toLowerCase()
+          );
+          return {
+            ...item,
+            logo: selectedToken?.logo || "",
+          };
+        });
 
-      let test = [];
       for (let i = 0; i < filterListCoinPrice.length; i++) {
         for (let l = i; l < filterListCoinPrice.length; l++) {
-          console.log(
-            filterListCoinPrice[i].symbol,
-            "-",
-            filterListCoinPrice[l].symbol
-          );
-          test.push({
+          let value: any = "NaN";
+
+          if (filterListCoinPrice[i].symbol === filterListCoinPrice[l].symbol) {
+            value = null;
+          } else {
+            if (
+              filterListCoinPrice[i].prices.length !== 0 &&
+              filterListCoinPrice[l].prices.length !== 0 &&
+              filterListCoinPrice[i].prices.length !==
+                filterListCoinPrice[l].prices.length
+            ) {
+              equalizeArrayLengths(
+                filterListCoinPrice[i].prices,
+                filterListCoinPrice[l].prices
+              );
+              value = calculateCorrelation(
+                filterListCoinPrice[i].prices,
+                filterListCoinPrice[l].prices
+              );
+            }
+            if (
+              filterListCoinPrice[i].prices.length !== 0 &&
+              filterListCoinPrice[l].prices.length !== 0 &&
+              filterListCoinPrice[i].prices.length ===
+                filterListCoinPrice[l].prices.length
+            ) {
+              value = calculateCorrelation(
+                filterListCoinPrice[i].prices,
+                filterListCoinPrice[l].prices
+              );
+            }
+            if (
+              filterListCoinPrice[i].prices.length === 0 ||
+              filterListCoinPrice[l].prices.length === 0
+            ) {
+              value = "NaN";
+            }
+          }
+
+          formatFilterListCoinPrice.push({
+            logo: filterListCoinPrice[i].logo,
             pair: `${filterListCoinPrice[i].symbol} - ${filterListCoinPrice[l].symbol}`,
-            value:
-              filterListCoinPrice[i].symbol === filterListCoinPrice[l].symbol
-                ? null
-                : {
-                    [filterListCoinPrice[i].symbol]:
-                      filterListCoinPrice[i].prices,
-                    [filterListCoinPrice[l].symbol]:
-                      filterListCoinPrice[l].prices,
-                  },
+            value,
           });
         }
       }
-      console.log("test: ", test);
 
-      // const formatListCoinPrice = filterListCoinPrice.map((item) => {
-      //   let listPairTokenPrice = [];
-      //   for (let i = 0; i < filterListCoinPrice.length; i++) {
-      //     for (let l = i; l < filterListCoinPrice.length; l++) {
-      //       listPairTokenPrice.push({
-      //         pair: `${filterListCoinPrice[i].symbol} - ${filterListCoinPrice[l].symbol}`,
-      //         value:
-      //           filterListCoinPrice[i].symbol === filterListCoinPrice[l].symbol
-      //             ? null
-      //             : calculateCorrelation(
-      //                 filterListCoinPrice[i].prices,
-      //                 filterListCoinPrice[l].prices
-      //               ),
-      //       });
-      //     }
-      //   }
-      //   return listPairTokenPrice.filter((eachItem) =>
-      //     eachItem.pair.includes(item.symbol)
-      //   );
-      // });
-      // console.log("formatListCoinPrice: ", formatListCoinPrice);
+      matrix = filterListCoinPrice.map((item) => {
+        return formatFilterListCoinPrice
+          .filter((eachItem) => {
+            const [firstPart, secondPart] = eachItem.pair.split(" - ");
+            return firstPart === item.symbol || secondPart === item.symbol;
+          })
+          .map((tokenPair) => {
+            return tokenPair.value === null ? tokenPair.logo : tokenPair.value;
+          });
+      });
     }
   }
+
+  $: console.log("matrix: ", matrix);
+
+  $: enabledQuery = Boolean(
+    getAddressContext(selectedWallet)?.type === "EVM" ||
+      typeWalletAddress === "CEX"
+  );
 </script>
 
 <div class="flex gap-9">

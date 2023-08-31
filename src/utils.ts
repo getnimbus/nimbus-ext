@@ -792,3 +792,13 @@ export const clickOutside = (node) => {
     },
   };
 };
+
+export const equalizeArrayLengths = (arrA, arrB) => {
+  while (arrA.length > arrB.length) {
+    arrA.pop(); // Remove the last element from array A
+  }
+
+  while (arrB.length > arrA.length) {
+    arrB.pop(); // Remove the last element from array B
+  }
+}
