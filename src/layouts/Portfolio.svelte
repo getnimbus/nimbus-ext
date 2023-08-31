@@ -35,7 +35,6 @@
   import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
 
   import Reload from "~/assets/reload.svg";
-  import CorrelationsMatrix from "~/UI/Analytic/ CorrelationsMatrix.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -963,8 +962,6 @@
             {holdingNFTData}
             bind:totalAssets
           />
-
-          <CorrelationsMatrix />
 
           <!-- <div
             class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"

@@ -15,6 +15,7 @@
   import Personality from "./Personality.svelte";
   import Compare from "../Portfolio/Compare.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
+  import CorrelationsMatrix from "./ CorrelationsMatrix.svelte";
 
   const navigate = useNavigate();
 
@@ -139,6 +140,8 @@
               </div>
             </div>
           </section>
+
+          <CorrelationsMatrix />
 
           <RiskChart {selectedTimeFrame} />
 
