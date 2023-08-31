@@ -16,7 +16,6 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import "~/components/Loading.custom.svelte";
 
-  import Search from "~/assets/search.svg";
   import bnb from "./../../assets/bnb.png";
   import type { matrix } from "echarts";
 
@@ -455,7 +454,7 @@
     <div class="flex flex-col gap-1 items-center justify-center w-full">
       {#each listTokenHolding as item}
         <div
-          class="border-b border-gray-500 py-2 px-1 w-full text-center flex items-center justify-between gap-2"
+          class="border-b border-gray-200 py-2 px-1 w-full text-center flex items-center justify-between gap-2"
         >
           <div class="flex items-center gap-2">
             <img src={item.logo} alt="" class="w-6 h-6" />
@@ -538,17 +537,16 @@
 >
   <div class="font-medium xl:title-3 title-1">List market token</div>
   <div
-    class={`xl:pl-4 pl-3 flex items-center rounded-[1000px] gap-2 mt-2 ${
-      darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+    class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg mt-2 ${
+      searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
     }`}
   >
-    <img src={Search} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
     <input
       on:keyup={({ target: { value } }) => debounceSearch(value)}
       value={searchValue}
       placeholder={"Find by token name"}
-      class={`w-full xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-xl placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0 ${
-        darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+      class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+        searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
       }`}
     />
   </div>
@@ -568,7 +566,7 @@
         <div class="mt-2 flex flex-col max-h-[500px] overflow-y-auto">
           {#each searchDataResult || [] as item}
             <div
-              class="border-b last:border-none border-gray-500 py-3 px-1 w-full text-center flex items-center justify-start gap-2 cursor-pointer"
+              class="border-b last:border-none border-gray-200 py-3 px-1 w-full text-center flex items-center justify-start gap-2 cursor-pointer"
               on:click={handleSelectToken(item)}
             >
               <img src={item.logo} alt="" class="w-6 h-6" />
