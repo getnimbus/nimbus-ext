@@ -7,21 +7,20 @@
     formatCurrency,
     getAddressContext,
     typeList,
-    performanceTypeChart,
     handleFormatDataPieChart,
     formatPercent,
+    performanceTypeChartPortfolio,
   } from "~/utils";
   import { i18n } from "~/lib/i18n";
   import { useNavigate } from "svelte-navigator";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import numeral from "numeral";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
-  import type { OverviewDataRes } from "~/types/OverviewData";
 
   import EChart from "~/components/EChart.svelte";
-  import Button from "~/components/Button.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
 
@@ -31,6 +30,7 @@
   import LogoWhite from "~/assets/logo-white.svg";
 
   export let packageSelected;
+  export let selectedTimeFrame;
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -173,21 +173,18 @@
   let isScrollEnd = false;
   let container;
 
-  let selectedTypeChart: "line" | "bar" = "line";
-  let optionLine = {
-    title: {
-      text: "",
-    },
+  let selectedTypeChart: "percent" | "networth" = "percent";
+  let optionLinePercentChange = {
     tooltip: {
       trigger: "axis",
       extraCssText: "z-index: 9997",
       formatter: function (params) {
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 260px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 darkMode ? "white" : "black"
               }">
-                ${params[0].axisValue}
+                ${dayjs(params[0].axisValue).format("YYYY-MM-DD")}
               </div>
               ${params
                 .map((item) => {
@@ -202,11 +199,11 @@
 
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
+                      item.value[1] >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${formatPercent(Math.abs(item.value))}%
+                      ${formatPercent(Math.abs(item.value[1]))}%
                       <img
-                        src=${item.value >= 0 ? TrendUp : TrendDown} 
+                        src=${item.value[1] >= 0 ? TrendUp : TrendDown} 
                         alt=""
                         style="margin-bottom: 4px;"
                       />
@@ -217,6 +214,15 @@
                 })
                 .join("")}
             </div>`;
+      },
+    },
+    toolbox: {
+      right: "3%",
+      top: "-1%",
+      feature: {
+        dataZoom: {
+          yAxisIndex: "none",
+        },
       },
     },
     legend: {
@@ -232,9 +238,7 @@
       containLabel: true,
     },
     xAxis: {
-      type: "category",
-      boundaryGap: false,
-      data: [],
+      type: "time",
     },
     yAxis: {
       type: "value",
@@ -244,20 +248,17 @@
     },
     series: [],
   };
-  let optionBar = {
+  let optionLineNetWorth = {
     tooltip: {
       trigger: "axis",
       extraCssText: "z-index: 9997",
-      axisPointer: {
-        type: "shadow",
-      },
       formatter: function (params) {
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 320px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 darkMode ? "white" : "black"
               }">
-                ${params[0].axisValue}
+                 ${dayjs(params[0].axisValue).format("YYYY-MM-DD")}
               </div>
               ${params
                 .map((item) => {
@@ -272,9 +273,9 @@
 
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
-                    };">
-                      ${formatPercent(Math.abs(item.value))}%
+                      darkMode ? "white" : "black"
+                    }">
+                      $${formatCurrency(Math.abs(item.value[1]))}
                     </div>
                   </div>
                 </div>
@@ -284,37 +285,39 @@
             </div>`;
       },
     },
+    toolbox: {
+      right: "3%",
+      top: "-1%",
+      feature: {
+        dataZoom: {
+          yAxisIndex: "none",
+        },
+      },
+    },
     legend: {
-      data: [
-        {
-          name: "Your Portfolio",
-          itemStyle: {
-            color: "#00b580",
-          },
-        },
-        {
-          name: "Bitcoin",
-          itemStyle: {
-            color: "#f7931a",
-          },
-        },
-        {
-          name: "Ethereum",
-          itemStyle: {
-            color: "#547fef",
-          },
-        },
-      ],
+      lineStyle: {
+        type: "solid",
+      },
+      data: [],
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "3%",
+      containLabel: true,
     },
     xAxis: {
-      type: "category",
-      axisTick: { show: false },
-      data: ["Your Portfolio", "Bitcoin", "Ethereum"],
+      type: "time",
     },
     yAxis: {
       type: "value",
       axisLabel: {
-        formatter: "{value}%",
+        formatter: function (value, index) {
+          return (
+            `${value < 0 ? "-" : ""} $` +
+            numeral(Math.abs(value)).format("0.00a")
+          );
+        },
       },
     },
     series: [],
@@ -406,55 +409,64 @@
     }
   }
 
-  // query overview
-  const getOverview = async (address, chain) => {
+  // query compare
+  const getAnalyticCompare = async (address: string, timeFrame: string) => {
     if (packageSelected === "FREE") {
       return undefined;
     }
-    const response: OverviewDataRes = await nimbus.get(
-      `/v2/address/${address}/overview?chain=${chain}`
+    const response: any = await nimbus.get(
+      `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
     return response.data;
   };
 
-  const formatDataOverview = (data) => {
-    if (data?.performance.length !== 0) {
-      const formatXAxis = data?.performance.map((item) => {
-        return dayjs(item.date).format("YYYY-MM-DD");
-      });
+  $: queryCompare = createQuery({
+    queryKey: ["compare", selectedWallet, selectedChain, selectedTimeFrame],
+    enabled: enabledQuery,
+    queryFn: () => getAnalyticCompare(selectedWallet, selectedTimeFrame),
+    staleTime: Infinity,
+  });
 
-      // line chart format data
-      const formatDataPortfolio = data?.performance.map((item) => {
+  $: {
+    if ($queryCompare.data) {
+      formatDataCompare($queryCompare?.data);
+    }
+  }
+
+  const formatDataCompare = (data) => {
+    if (data?.base?.holdingHistory?.length !== 0) {
+      // percent change
+      const formatDataPortfolio = data?.base?.holdingHistory?.map((item) => {
         return {
-          value: item.portfolio,
+          value: [item?.timestamp * 1000, item.performance],
           itemStyle: {
             color: "#00b580",
           },
         };
       });
 
-      const formatDataETH = data?.performance.map((item) => {
+      const formatDataETH = data?.eth?.holdingHistory.map((item) => {
         return {
-          value: item.eth,
+          value: [item?.timestamp * 1000, item.performance],
           itemStyle: {
             color: "#547fef",
           },
         };
       });
 
-      const formatDataBTC = data?.performance.map((item) => {
+      const formatDataBTC = data?.btc?.holdingHistory.map((item) => {
         return {
-          value: item.btc,
+          value: [item?.timestamp * 1000, item.performance],
           itemStyle: {
             color: "#f7931a",
           },
         };
       });
 
-      optionLine = {
-        ...optionLine,
+      optionLinePercentChange = {
+        ...optionLinePercentChange,
         legend: {
-          ...optionLine.legend,
+          ...optionLinePercentChange.legend,
           data: [
             {
               name: "Your Portfolio",
@@ -475,10 +487,6 @@
               },
             },
           ],
-        },
-        xAxis: {
-          ...optionLine.xAxis,
-          data: formatXAxis,
         },
         series: [
           {
@@ -514,74 +522,46 @@
         ],
       };
 
-      // bar chart format data
-      const formatDataBarChart = ["portfolio", "btc", "eth"].map((item) => {
-        return {
-          name: item,
-          values: data?.performance.map((data) => data[item]),
-        };
-      });
+      // net worth
+      const formatDataPortfolioNetWorth = data?.base?.holdingHistory?.map(
+        (item) => {
+          return {
+            value: [item.timestamp * 1000, item.networth],
+            itemStyle: {
+              color: "#00b580",
+            },
+          };
+        }
+      );
 
-      optionBar = {
-        ...optionBar,
+      optionLineNetWorth = {
+        ...optionLineNetWorth,
+        legend: {
+          ...optionLineNetWorth.legend,
+          data: [
+            {
+              name: "Your Portfolio",
+              itemStyle: {
+                color: "#00b580",
+              },
+            },
+          ],
+        },
         series: [
           {
-            name: "Value",
-            type: "bar",
-            emphasis: {
-              focus: "series",
+            name: "Your Portfolio",
+            type: "line",
+            lineStyle: {
+              type: "solid",
+              color: "#00b580",
             },
-            data: [
-              {
-                value: formatDataBarChart?.find(
-                  (data) => data.name === "portfolio"
-                )?.values[
-                  formatDataBarChart?.find((data) => data.name === "portfolio")
-                    .values?.length - 1
-                ],
-                itemStyle: {
-                  color: "#00b580",
-                },
-              },
-              {
-                value: formatDataBarChart?.find((data) => data.name === "btc")
-                  ?.values[
-                  formatDataBarChart?.find((data) => data.name === "btc")
-                    ?.values?.length - 1
-                ],
-                itemStyle: {
-                  color: "#f7931a",
-                },
-              },
-              {
-                value: formatDataBarChart?.find((data) => data.name === "eth")
-                  ?.values[
-                  formatDataBarChart?.find((data) => data.name === "eth")
-                    ?.values?.length - 1
-                ],
-                itemStyle: {
-                  color: "#547fef",
-                },
-              },
-            ],
+            showSymbol: false,
+            data: formatDataPortfolioNetWorth,
           },
         ],
       };
     }
   };
-
-  $: queryOverview = createQuery({
-    queryKey: ["overview", selectedWallet, selectedChain],
-    enabled: enabledQuery,
-    queryFn: () => getOverview(selectedWallet, selectedChain),
-    staleTime: Infinity,
-  });
-
-  $: {
-    if (!$queryOverview.isError && $queryOverview.data !== undefined) {
-      formatDataOverview($queryOverview.data);
-    }
-  }
 
   // handle logic select
   $: {
@@ -755,6 +735,7 @@
 </script>
 
 <div class="flex flex-col justify-between gap-6 xl:flex-row">
+  <!-- Token allocation -->
   <div
     class={`xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 rounded-[20px] p-6 ${
       darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
@@ -793,7 +774,7 @@
           >
         </div>
         <div
-          class="flex gap-3 overflow-x-auto w-max whitespace-nowrap"
+          class="flex gap-3 overflow-x-auto w-max whitespace-nowrap px-2"
           bind:this={scrollContainer}
           on:scroll={handleScroll}
         >
@@ -910,6 +891,7 @@
     </div>
   </div>
 
+  <!-- Performance -->
   <div
     class={`xl:w-1/2 w-full relative rounded-[20px] p-6 ${
       darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
@@ -932,10 +914,10 @@
           </div>
         {/if}
       </div>
-      {#if !$queryOverview.isError || ($queryOverview.data?.performance && $queryOverview.data?.performance.length !== 0)}
+      {#if !$queryCompare.isError || ($queryCompare.data?.performance && $queryCompare.data?.performance.length !== 0)}
         <div class="flex items-center gap-2">
           <AnimateSharedLayout>
-            {#each performanceTypeChart as type}
+            {#each performanceTypeChartPortfolio as type}
               <div
                 class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
                 on:click={() => (selectedTypeChart = type.value)}
@@ -974,13 +956,13 @@
         <div class="text-xl xl:text-lg">Coming soon 🚀</div>
       </div>
     {/if}
-    {#if $queryOverview.isFetching}
+    {#if $queryCompare.isFetching}
       <div class="flex items-center justify-center h-[485px]">
         <LoadingPremium />
       </div>
     {:else}
       <div class="h-full">
-        {#if $queryOverview.isError || ($queryOverview.data?.performance && $queryOverview.data?.performance.length === 0)}
+        {#if $queryCompare.isError || ($queryCompare.data?.performance && $queryCompare.data?.performance.length === 0)}
           <div
             class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
           >
@@ -992,8 +974,10 @@
               id="line-chart-anaylic-performace"
               {theme}
               notMerge={true}
-              option={selectedTypeChart === "line" ? optionLine : optionBar}
-              height={selectedTypeChart === "line" ? 485 : 515}
+              option={selectedTypeChart === "percent"
+                ? optionLinePercentChange
+                : optionLineNetWorth}
+              height={485}
             />
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"

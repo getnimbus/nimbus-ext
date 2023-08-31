@@ -77,6 +77,8 @@
       localStorage.removeItem("evm_token");
       addressWallet = "";
       disconnect($wallets$?.[0]);
+      navigate("/");
+      queryClient.invalidateQueries(["list-address"]);
     }
   });
 
@@ -102,6 +104,8 @@
     localStorage.removeItem("evm_token");
     addressWallet = "";
     disconnect($wallets$?.[0]);
+    navigate("/");
+    queryClient.invalidateQueries(["list-address"]);
   };
 
   const handleSignAddressMessage = async (provider, signatureString) => {
@@ -174,6 +178,8 @@
     staleTime: Infinity,
     onError(err) {
       localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+      navigate("/");
     },
   });
 

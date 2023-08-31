@@ -10,6 +10,7 @@
     formatPercent,
   } from "~/utils";
   import dayjs from "dayjs";
+  import numeral from "numeral";
 
   export let handleSelectedTableTokenHolding = (data, selectDataPieChart) => {};
   export let holdingTokenData;
@@ -216,9 +217,6 @@
     },
     yAxis: {
       type: "value",
-      axisLabel: {
-        formatter: "{value}",
-      },
     },
     series: [],
   };
@@ -367,9 +365,6 @@
         },
         yAxis: {
           type: "value",
-          axisLabel: {
-            formatter: "{value}",
-          },
         },
         series: [],
       };
@@ -386,7 +381,7 @@
             extraCssText: "z-index: 9997",
             formatter: function (params) {
               return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 260px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 darkMode ? "white" : "black"
               }">
@@ -544,7 +539,12 @@
           yAxis: {
             ...optionLine.yAxis,
             axisLabel: {
-              formatter: "${value}",
+              formatter: function (value, index) {
+                return (
+                  `${value < 0 ? "-" : ""} $` +
+                  numeral(Math.abs(value)).format("0.00a")
+                );
+              },
             },
           },
           series: [

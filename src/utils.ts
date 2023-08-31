@@ -173,17 +173,6 @@ export const typePackage = [
   },
 ]
 
-export const performanceTypeChart = [
-  {
-    label: "Line",
-    value: "line",
-  },
-  {
-    label: "Bar",
-    value: "bar",
-  },
-]
-
 export const performanceTypeChartPortfolio = [
   {
     label: "Percent Change",
@@ -207,10 +196,6 @@ export const returnType = [
 ]
 
 export const timeFrame = [
-  {
-    label: "1D",
-    value: "1D",
-  },
   {
     label: "7D",
     value: "7D",
