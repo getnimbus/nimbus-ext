@@ -18,6 +18,7 @@
 
   import Search from "~/assets/search.svg";
   import bnb from "./../../assets/bnb.png";
+  import type { matrix } from "echarts";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -53,10 +54,7 @@
   let timerDebounce;
   let matrix = [];
 
-  let correlationCoefficient = 0;
-  let dataArr;
   let colIndex = undefined;
-  let coinName = "bitcoin";
   let matrixData = [
     ["", "BTC", "ETH", "USDC"],
     ["BTC", bnb, 0.95, 0.0],
@@ -374,6 +372,70 @@
     }
   }
 
+  const result = [];
+  let matrixRender = [];
+
+  const getMetrix = (var1, var2, index) => {
+    return (
+      result[index][var1 + " - " + var2] || result[index][var2 + " - " + var1]
+    );
+  };
+
+  $: {
+    for (let i = 0; i < matrix.length; i++) {
+      result.push({});
+      for (let j = 0; j < matrix.length; j++) {
+        result[i][matrix[i][j].pair] = matrix[i][j].value;
+      }
+    }
+
+    // console.log("list token name: ", listTokenHolding[0].name);
+  }
+
+  $: {
+    if (result[1]) {
+      for (let i = 0; i < listTokenHolding.length; i++) {
+        matrixRender.push([]);
+        for (let j = 0; j < listTokenHolding.length; j++) {
+          matrixRender[i].push([]);
+          // const a = getMetrix(
+          //   listTokenHolding[i].name,
+          //   listTokenHolding[j].name,
+          //   i
+          // );
+          // console.log("list token name: ", a);
+          matrixRender[i][j] = getMetrix(
+            listTokenHolding[i].name,
+            listTokenHolding[j].name,
+            i
+          );
+        }
+      }
+      matrixRender.unshift([]);
+      for (let i = 0; i < listTokenHolding.length; i++) {
+        matrixRender[0].push(listTokenHolding[i].name);
+      }
+    }
+  }
+
+  // $: {
+  //   if (result[1]) {
+  //     console.log("tokenname", result[0]);
+  //   }
+  // }
+
+  $: {
+    console.log("listTokenHolding: ", listTokenHolding);
+  }
+
+  $: {
+    console.log("result from matrix", result);
+  }
+
+  $: {
+    console.log("matrixRender: ", matrixRender);
+  }
+
   $: enabledQuery = Boolean(
     getAddressContext(selectedWallet)?.type === "EVM" ||
       typeWalletAddress === "CEX"
@@ -429,33 +491,33 @@
   <div class="flex-1">
     <table class="">
       <tbody on:mouseleave={() => (colIndex = undefined)}>
-        {#each matrixData as data, indexY}
+        <!-- {#each matrixRender as data, indexY}
           <tr class="hover:bg-blue-300">
             {#each data as item, indexX}
               {#if indexY == 0}
-                <th class={`p-3`} on:mouseenter={() => (colIndex = undefined)}
+                <th class={`py-1`} on:mouseenter={() => (colIndex = undefined)}
                   >{item}</th
                 >
-              {:else if indexX == indexY}
-                <td class={`p-3 ${colIndex == indexX && "bg-blue-300"}`}>
+              {:else if indexX + 1 == indexY}
+                <td class={`p-2 ${colIndex == indexX && "bg-blue-300"}`}>
                   <img
-                    src={bnb}
+                    src={item}
                     alt="Bnb coin"
                     style="width: 30px; height: 30px; margin: auto;"
                   />
                 </td>
               {:else}
                 <td
-                  class={`p-3 text-center ${
+                  class={`p-2 text-center ${
                     colIndex == indexX && "bg-blue-300"
-                  } ${indexX == 0 && "font-bold"}`}
+                  }`}
                   on:mouseenter={() => (colIndex = indexX)}>{item}</td
                 >
               {/if}
             {/each}
             <td />
           </tr>
-        {/each}
+        {/each} -->
       </tbody>
     </table>
   </div>
