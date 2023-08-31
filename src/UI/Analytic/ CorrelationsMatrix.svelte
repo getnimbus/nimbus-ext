@@ -211,6 +211,7 @@
         .filter((item) => item.value > 1 && item.cg_id)
         .map((item) => {
           return {
+            chain: item.chain,
             name: item?.symbol,
             value: item?.cg_id,
             logo: item?.logo,
@@ -230,7 +231,9 @@
   const handleRemoveCoin = (selectedCoin) => {
     listTokenHolding = listTokenHolding.filter(
       (item) =>
-        item.value !== selectedCoin.value || item.name !== selectedCoin.name
+        item.value !== selectedCoin.value ||
+        item.name !== selectedCoin.name ||
+        item.chain !== selectedCoin.chain
     );
   };
 
@@ -284,26 +287,28 @@
     if (listCoinPrice && listCoinPrice.length !== 0) {
       let formatFilterListCoinPrice = [];
 
-      const filterListCoinPrice = listCoinPrice
-        .map((item, index) => {
-          return {
-            symbol:
-              item.symbol !== undefined
-                ? item.symbol
-                : listTokenHolding[index]?.name.toUpperCase(),
-            prices: item.prices !== undefined ? item.prices : [],
-          };
-        })
-        .map((item) => {
-          const selectedToken = listTokenHolding.find(
-            (eachToken) =>
-              eachToken.name.toLowerCase() === item.symbol.toLowerCase()
-          );
-          return {
-            ...item,
-            logo: selectedToken?.logo || "",
-          };
-        });
+      const structListCoinPrice = listCoinPrice.map((item, index) => {
+        return {
+          symbol:
+            item.symbol !== undefined
+              ? item.symbol
+              : listTokenHolding[index]?.name.toUpperCase(),
+          prices: item.prices !== undefined ? item.prices : [],
+        };
+      });
+
+      const filterListCoinPrice = listTokenHolding.map((item) => {
+        const selectedToken = structListCoinPrice.find(
+          (eachToken) =>
+            eachToken.symbol.toLowerCase() === item.name.toLowerCase()
+        );
+        return {
+          symbol: `${selectedToken.symbol}(${item?.chain})`,
+          logo: item?.logo || "",
+          chain: item?.chain || "",
+          prices: selectedToken?.prices || [],
+        };
+      });
 
       for (let i = 0; i < filterListCoinPrice.length; i++) {
         for (let l = i; l < filterListCoinPrice.length; l++) {
@@ -347,6 +352,7 @@
           }
 
           formatFilterListCoinPrice.push({
+            chain: filterListCoinPrice[i].chain,
             logo: filterListCoinPrice[i].logo,
             pair: `${filterListCoinPrice[i].symbol} - ${filterListCoinPrice[l].symbol}`,
             value,
@@ -362,6 +368,7 @@
           })
           .map((tokenPair) => {
             return {
+              chain: tokenPair.chain,
               pair: tokenPair.pair,
               value:
                 tokenPair.value === null ? tokenPair.logo : tokenPair.value,
@@ -372,51 +379,51 @@
     }
   }
 
-  const result = [];
-  let matrixRender = [];
+  // const result = [];
+  // let matrixRender = [];
 
-  const getMetrix = (var1, var2, index) => {
-    return (
-      result[index][var1 + " - " + var2] || result[index][var2 + " - " + var1]
-    );
-  };
+  // const getMetrix = (var1, var2, index) => {
+  //   return (
+  //     result[index][var1 + " - " + var2] || result[index][var2 + " - " + var1]
+  //   );
+  // };
 
-  $: {
-    for (let i = 0; i < matrix.length; i++) {
-      result.push({});
-      for (let j = 0; j < matrix.length; j++) {
-        result[i][matrix[i][j].pair] = matrix[i][j].value;
-      }
-    }
+  // $: {
+  //   for (let i = 0; i < matrix.length; i++) {
+  //     result.push({});
+  //     for (let j = 0; j < matrix.length; j++) {
+  //       result[i][matrix[i][j].pair] = matrix[i][j].value;
+  //     }
+  //   }
 
-    // console.log("list token name: ", listTokenHolding[0].name);
-  }
+  //   // console.log("list token name: ", listTokenHolding[0].name);
+  // }
 
-  $: {
-    if (result[1]) {
-      for (let i = 0; i < listTokenHolding.length; i++) {
-        matrixRender.push([]);
-        for (let j = 0; j < listTokenHolding.length; j++) {
-          matrixRender[i].push([]);
-          // const a = getMetrix(
-          //   listTokenHolding[i].name,
-          //   listTokenHolding[j].name,
-          //   i
-          // );
-          // console.log("list token name: ", a);
-          matrixRender[i][j] = getMetrix(
-            listTokenHolding[i].name,
-            listTokenHolding[j].name,
-            i
-          );
-        }
-      }
-      matrixRender.unshift([]);
-      for (let i = 0; i < listTokenHolding.length; i++) {
-        matrixRender[0].push(listTokenHolding[i].name);
-      }
-    }
-  }
+  // $: {
+  //   if (result[1]) {
+  //     for (let i = 0; i < listTokenHolding.length; i++) {
+  //       matrixRender.push([]);
+  //       for (let j = 0; j < listTokenHolding.length; j++) {
+  //         matrixRender[i].push([]);
+  //         // const a = getMetrix(
+  //         //   listTokenHolding[i].name,
+  //         //   listTokenHolding[j].name,
+  //         //   i
+  //         // );
+  //         // console.log("list token name: ", a);
+  //         matrixRender[i][j] = getMetrix(
+  //           listTokenHolding[i].name,
+  //           listTokenHolding[j].name,
+  //           i
+  //         );
+  //       }
+  //     }
+  //     matrixRender.unshift([]);
+  //     for (let i = 0; i < listTokenHolding.length; i++) {
+  //       matrixRender[0].push(listTokenHolding[i].name);
+  //     }
+  //   }
+  // }
 
   // $: {
   //   if (result[1]) {
@@ -424,17 +431,17 @@
   //   }
   // }
 
-  $: {
-    console.log("listTokenHolding: ", listTokenHolding);
-  }
+  // $: {
+  //   console.log("listTokenHolding: ", listTokenHolding);
+  // }
 
-  $: {
-    console.log("result from matrix", result);
-  }
+  // $: {
+  //   console.log("result from matrix", result);
+  // }
 
-  $: {
-    console.log("matrixRender: ", matrixRender);
-  }
+  // $: {
+  //   console.log("matrixRender: ", matrixRender);
+  // }
 
   $: enabledQuery = Boolean(
     getAddressContext(selectedWallet)?.type === "EVM" ||
