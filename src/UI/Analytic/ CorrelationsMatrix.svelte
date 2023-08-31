@@ -17,7 +17,7 @@
   import "~/components/Loading.custom.svelte";
 
   import Search from "~/assets/search.svg";
-  // import bnb from "./../../assets/bnb.png";
+  import bnb from "./../../assets/bnb.png";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -51,20 +51,18 @@
   let listToken = [];
   let searchValue = "";
   let timerDebounce;
-
-  // let correlationCoefficient = 0;
-  // let dataArr;
-  // let colIndex = undefined;
-  // let coinName = "bitcoin";
-
-  // let matrixData = [
-  //   ["", "BTC", "ETH", "USDC"],
-  //   ["BTC", bnb, 0.95, 0.0],
-  //   ["ETH", 0.95, bnb, -0.1],
-  //   ["USDC", 0.0, -0.1, bnb],
-  // ];
-
   let matrix = [];
+
+  let correlationCoefficient = 0;
+  let dataArr;
+  let colIndex = undefined;
+  let coinName = "bitcoin";
+  let matrixData = [
+    ["", "BTC", "ETH", "USDC"],
+    ["BTC", bnb, 0.95, 0.0],
+    ["ETH", 0.95, bnb, -0.1],
+    ["USDC", 0.0, -0.1, bnb],
+  ];
 
   const calculateCorrelation = (priceArray1, priceArray2) => {
     if (priceArray1.length !== priceArray2.length) {
@@ -365,13 +363,16 @@
             return firstPart === item.symbol || secondPart === item.symbol;
           })
           .map((tokenPair) => {
-            return tokenPair.value === null ? tokenPair.logo : tokenPair.value;
+            return {
+              pair: tokenPair.pair,
+              value:
+                tokenPair.value === null ? tokenPair.logo : tokenPair.value,
+            };
           });
       });
+      console.log("matrix: ", matrix);
     }
   }
-
-  $: console.log("matrix: ", matrix);
 
   $: enabledQuery = Boolean(
     getAddressContext(selectedWallet)?.type === "EVM" ||
@@ -425,7 +426,7 @@
     </div>
   </div>
 
-  <!-- <div class="flex-1">
+  <div class="flex-1">
     <table class="">
       <tbody on:mouseleave={() => (colIndex = undefined)}>
         {#each matrixData as data, indexY}
@@ -457,7 +458,7 @@
         {/each}
       </tbody>
     </table>
-  </div> -->
+  </div>
 </div>
 
 <!-- Modal search token -->
