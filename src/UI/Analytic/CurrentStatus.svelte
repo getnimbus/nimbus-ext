@@ -239,7 +239,6 @@
     },
     xAxis: {
       type: "time",
-      axisTick: { show: false },
     },
     yAxis: {
       type: "value",
@@ -309,7 +308,6 @@
     },
     xAxis: {
       type: "time",
-      axisTick: { show: false },
     },
     yAxis: {
       type: "value",

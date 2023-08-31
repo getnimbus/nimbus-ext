@@ -203,6 +203,15 @@
             </div>`;
       },
     },
+    toolbox: {
+      right: "3%",
+      top: "-1%",
+      feature: {
+        dataZoom: {
+          yAxisIndex: "none",
+        },
+      },
+    },
     legend: {
       lineStyle: {
         type: "solid",
@@ -217,8 +226,6 @@
     },
     xAxis: {
       type: "time",
-      // boundaryGap: false,
-      // data: [],
     },
     yAxis: {
       type: "value",
@@ -649,12 +656,6 @@
         return formatData;
       });
 
-      const XAxisDataLineChart = formatDataLineChart[0].dataChart.map(
-        (item) => {
-          return item.timestamp;
-        }
-      );
-
       const legendDataLineChart = formatDataLineChart.map((item) => {
         return {
           name: item.name,
@@ -695,10 +696,6 @@
         legend: {
           ...optionLine.legend,
           data: legendDataLineChart,
-        },
-        xAxis: {
-          ...optionLine.xAxis,
-          data: XAxisDataLineChart,
         },
         series: dataLineChart,
       };
