@@ -1,7 +1,7 @@
 <script lang="ts">
   import { groupBy, intersection, flatten, sumBy } from "lodash";
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
-  import { formatCurrency, getAddressContext } from "~/utils";
+  import { formatCurrency, formatValue, getAddressContext } from "~/utils";
   import dayjs from "dayjs";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
@@ -76,7 +76,7 @@
                         <div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                           item.value[1] >= 0 ? "#05a878" : "#f25f5d"
                         };">
-                          $${formatCurrency(Math.abs(item.value[1]))}
+                          ${formatValue(Math.abs(item.value[1]))}
                         </div>
                   </div>`;
                 })
@@ -325,12 +325,20 @@
                         <div style="display:flex; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                           item.value[1] >= 0 ? "#05a878" : "#f25f5d"
                         };">
-                          $${formatCurrency(Math.abs(item.value[1]))}
+                          ${formatValue(Math.abs(item.value[1]))}
                         </div>
                   </div>`;
                 })
                 .join("")}
             </div>`;
+          },
+        },
+        toolbox: {
+          right: "4%",
+          feature: {
+            dataZoom: {
+              yAxisIndex: "none",
+            },
           },
         },
         legend: {
@@ -411,10 +419,7 @@
             </div>
             <div class="flex items-center justify-end col-span-1 gap-1">
               <div>
-                $<TooltipNumber
-                  number={Math.abs(sumData.inflow)}
-                  type="balance"
-                />
+                <TooltipNumber number={Math.abs(sumData.inflow)} type="value" />
               </div>
             </div>
           </div>
@@ -426,9 +431,9 @@
             </div>
             <div class="flex items-center justify-end col-span-1 gap-1">
               <div>
-                $<TooltipNumber
+                <TooltipNumber
                   number={Math.abs(sumData.outflow)}
-                  type="balance"
+                  type="value"
                 />
               </div>
             </div>
@@ -448,9 +453,9 @@
                 }`}
               >
                 {#if sumData.inflow + sumData.outflow < 0}-{/if}
-                $<TooltipNumber
+                <TooltipNumber
                   number={Math.abs(sumData.inflow + sumData.outflow)}
-                  type="balance"
+                  type="value"
                 />
               </div>
             </div>

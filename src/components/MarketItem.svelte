@@ -83,11 +83,14 @@ via @get_nimbus`;
       class="xl:text-sm text-xl text-red-500 font-medium flex flex-col justify-start gap-1"
     >
       <div>
-        <TooltipNumber number={data?.amountIn} type="amount" />
+        <TooltipNumber number={data?.amountIn} type="balance" />
         {data?.price_from?.symbol}
       </div>
       <div>
-        $<TooltipNumber number={data?.amountIn * data?.price_from?.price} />
+        $<TooltipNumber
+          number={data?.amountIn * data?.price_from?.price}
+          type="balance"
+        />
       </div>
     </div>
   </td>
@@ -101,11 +104,14 @@ via @get_nimbus`;
       class="xl:text-sm text-xl text-[#00A878] font-medium flex flex-col justify-start gap-1"
     >
       <div>
-        <TooltipNumber number={data?.amountOut} type="amount" />
+        <TooltipNumber number={data?.amountOut} type="balance" />
         {data?.price_to?.symbol}
       </div>
       <div>
-        $<TooltipNumber number={data?.amountOut * data?.price_to?.price} />
+        $<TooltipNumber
+          number={data?.amountOut * data?.price_to?.price}
+          type="balance"
+        />
       </div>
     </div>
   </td>

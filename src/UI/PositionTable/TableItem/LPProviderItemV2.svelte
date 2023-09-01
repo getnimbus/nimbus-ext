@@ -80,7 +80,7 @@
     >
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
-          <TooltipNumber number={Number(data.amount0out)} type="amount" />
+          <TooltipNumber number={Number(data.amount0out)} type="balance" />
           {data.amount0Price?.symbol ? data.amount0Price?.symbol : ""} |
         </div>
         <div class="flex">
@@ -89,7 +89,7 @@
       </div>
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
-          <TooltipNumber number={Number(data.amount1out)} type="amount" />
+          <TooltipNumber number={Number(data.amount1out)} type="balance" />
           {data.amount1Price?.symbol ? data.amount1Price?.symbol : ""} |
         </div>
         <div class="flex">

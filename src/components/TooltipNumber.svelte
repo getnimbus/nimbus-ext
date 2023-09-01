@@ -1,10 +1,15 @@
 <script lang="ts">
-  import { formatBigBalance, formatPercent, formatCurrency } from "~/utils";
+  import {
+    formatBigBalance,
+    formatPercent,
+    formatCurrency,
+    formatValue,
+  } from "~/utils";
   import numeral from "numeral";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
   export let number;
-  export let type: "amount" | "balance" | "percent" = "balance";
+  export let type: "amount" | "balance" | "percent" | "value" = "value";
 
   let numberFormat = 0;
   let numberSize = "";
@@ -30,22 +35,20 @@
           placement: "top",
         }}
       >
-        {#if type === "amount" && number < 100000}
-          <span
-            >{numeral(number).format("0,0.000000") === "NaN"
-              ? number
-              : numeral(number).format("0,0.000000")}</span
-          >
-        {:else}
-          <span
-            >{numeral(numberFormat).format("0,0.00") === "NaN"
-              ? numberFormat
-              : numeral(numberFormat).format("0,0.00")}</span
-          ><span>{numberSize}</span>
-        {/if}
+        <span
+          >{numeral(numberFormat).format("0,0.00") === "NaN"
+            ? numberFormat
+            : numeral(numberFormat).format("0,0.00")}</span
+        ><span>{numberSize}</span>
       </span>
     {:else}
-      <span>{formatCurrency(number)}</span>
+      <span>
+        {#if type === "value"}
+          {formatValue(number)}
+        {:else}
+          {formatCurrency(number)}
+        {/if}
+      </span>
     {/if}
   </span>
 {/if}

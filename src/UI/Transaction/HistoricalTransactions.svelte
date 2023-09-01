@@ -265,16 +265,16 @@
                         <span
                           >{change?.total < 0 ? "-" : "+"}<TooltipNumber
                             number={Math.abs(change?.total)}
-                            type="amount"
+                            type="balance"
                           />
                           {change?.symbol || change?.name || "⎯"}
                         </span>
                         <span class="flex">
-                          ($<TooltipNumber
+                          (<TooltipNumber
                             number={Math.abs(
                               change?.total * change?.price?.price
                             )}
-                            type="balance"
+                            type="value"
                           />)
                         </span>
                       </div>

@@ -1239,7 +1239,7 @@
                               >
                                 <TooltipNumber
                                   number={data.amount}
-                                  type="amount"
+                                  type="balance"
                                 />
                               </div>
                             </td>
@@ -1254,9 +1254,9 @@
                               <div
                                 class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
                               >
-                                $<TooltipNumber
+                                <TooltipNumber
                                   number={data?.amount * data?.market_price}
-                                  type="balance"
+                                  type="value"
                                 />
                               </div>
                             </td>

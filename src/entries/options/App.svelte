@@ -5,6 +5,7 @@
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
   import { selectedPackage, isDarkMode } from "~/store";
+  import { Router, Route, createHistory } from "svelte-navigator";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
@@ -86,32 +87,34 @@
 <ErrorBoundary>
   <QueryClientProvider client={queryClient}>
     <Mixpanel>
-      <div
-        class="max-w-[2000px] m-auto w-[100%] h-screen flex gap-1 xl:flex-row flex-col"
-      >
+      <Router history={undefined}>
         <div
-          class={`xl:w-64 w-full px-4 py-3 ${
-            darkMode ? "bg-[#080808]" : "bg-gray-50"
-          }`}
+          class="max-w-[2000px] m-auto w-[100%] h-screen flex gap-1 xl:flex-row flex-col"
         >
-          <SidebarTabs bind:activeTabValue {darkMode} />
-        </div>
-        <div class="flex-1 px-6 py-4">
-          {#if activeTabValue === "wallets"}
-            <TabWallets />
-            <!-- {:else if activeTabValue === "nft"}
+          <div
+            class={`xl:w-64 w-full px-4 py-3 ${
+              darkMode ? "bg-[#080808]" : "bg-gray-50"
+            }`}
+          >
+            <SidebarTabs bind:activeTabValue {darkMode} />
+          </div>
+          <div class="flex-1 px-6 py-4">
+            {#if activeTabValue === "wallets"}
+              <TabWallets />
+              <!-- {:else if activeTabValue === "nft"}
           <TabNft /> -->
-          {:else if activeTabValue === "dashboard"}
-            <TabDashboard />
-          {:else if activeTabValue === "highlight"}
-            <TabHighlight />
-          {:else if activeTabValue === "notification"}
-            <TabNotification />
-          {:else if activeTabValue === "settings"}
-            <TabSettings />
-          {/if}
+            {:else if activeTabValue === "dashboard"}
+              <TabDashboard />
+            {:else if activeTabValue === "highlight"}
+              <TabHighlight />
+            {:else if activeTabValue === "notification"}
+              <TabNotification />
+            {:else if activeTabValue === "settings"}
+              <TabSettings />
+            {/if}
+          </div>
         </div>
-      </div>
+      </Router>
     </Mixpanel>
   </QueryClientProvider>
 </ErrorBoundary>
