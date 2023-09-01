@@ -269,29 +269,31 @@
           item?.accounts?.map((item) => {
             let logo = All;
             if (
-              getAddressContext(item.type === "CEX" ? item.id : item.accountId)
-                ?.type === "BTC"
+              getAddressContext(
+                item?.type === "CEX" ? item.id : item?.accountId
+              )?.type === "BTC"
             ) {
               logo = BitcoinLogo;
             }
             if (
-              getAddressContext(item.type === "CEX" ? item.id : item.accountId)
-                ?.type === "SOL"
+              getAddressContext(
+                item?.type === "CEX" ? item.id : item?.accountId
+              )?.type === "SOL"
             ) {
               logo = SolanaLogo;
             }
-            if (item.type === "BUNDLE") {
+            if (item?.type === "BUNDLE") {
               logo = Bundles;
             }
             return {
-              id: item.id,
-              type: item.type,
-              label: item.label,
-              value: item.type === "CEX" ? item.id : item.accountId,
+              id: item?.id,
+              type: item?.type,
+              label: item?.label,
+              value: item?.type === "CEX" ? item?.id : item?.accountId,
               logo:
-                item.type === "BUNDLE" || item.type === "DEX"
+                item?.type === "BUNDLE" || item?.type === "DEX"
                   ? logo
-                  : item.logo,
+                  : item?.logo,
             };
           }) || [],
       };
