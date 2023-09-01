@@ -35,16 +35,37 @@
           placement: "top",
         }}
       >
-        <span
-          >{numeral(numberFormat).format("0,0.00") === "NaN"
+        <span>
+          {#if type === "value"}${/if}{numeral(numberFormat).format(
+            "0,0.00"
+          ) === "NaN"
             ? numberFormat
-            : numeral(numberFormat).format("0,0.00")}</span
-        ><span>{numberSize}</span>
+            : numeral(numberFormat).format("0,0.00")}
+        </span>
+        <span>
+          {numberSize}
+        </span>
       </span>
     {:else}
       <span>
         {#if type === "value"}
-          {formatValue(number)}
+          <span>
+            {#if number !== 0 && number > 0 && number < 0.01}
+              <span
+                use:tooltip={{
+                  content: `<tooltip-detail text="${formatCurrency(
+                    number
+                  )}" />`,
+                  allowHTML: true,
+                  placement: "top",
+                }}
+              >
+                {formatValue(number)}
+              </span>
+            {:else}
+              {formatValue(number)}
+            {/if}
+          </span>
         {:else}
           {formatCurrency(number)}
         {/if}
