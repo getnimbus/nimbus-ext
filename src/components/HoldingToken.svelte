@@ -47,9 +47,7 @@
     ? data?.profit?.realizedProfit
     : 0;
 
-  $: console.log("data: ", data);
-
-  $: unrealizedProfit = data?.avgCost !== 0 ? value + data?.avgCost : 0;
+  $: unrealizedProfit = data?.avgCost === 0 ? 0 : value + data?.avgCost;
   $: percentUnrealizedProfit =
     (data?.avgCost || 0) === 0 ? 0 : unrealizedProfit / data?.avgCost;
 
@@ -447,7 +445,7 @@
     }`}
   >
     <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
-      <TooltipNumber number={data.amount} type="amount" />
+      <TooltipNumber number={data.amount} type="balance" />
     </div>
   </td>
 
@@ -457,7 +455,7 @@
     }`}
   >
     <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
-      $<TooltipNumber number={value} type="balance" />
+      <TooltipNumber number={value} type="value" />
     </div>
   </td>
 
@@ -492,7 +490,7 @@
             realizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          $<TooltipNumber number={Math.abs(realizedProfit)} type="balance" />
+          <TooltipNumber number={Math.abs(realizedProfit)} type="value" />
         </div>
       </div>
     </div>
@@ -512,7 +510,7 @@
             unrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          $<TooltipNumber number={Math.abs(unrealizedProfit)} type="balance" />
+          <TooltipNumber number={Math.abs(unrealizedProfit)} type="value" />
         </div>
         <div class="flex items-center justify-end gap-1">
           <div

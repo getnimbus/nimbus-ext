@@ -9,6 +9,7 @@
     handleFormatDataTable,
     getAddressContext,
     formatPercent,
+    formatValue,
   } from "~/utils";
   import { flatten, groupBy } from "lodash";
   import { wallet, chain, isDarkMode } from "~/store";
@@ -92,7 +93,7 @@
                   ${MultipleLang[params?.data?.name_value]}
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
-                  $${formatCurrency(params?.data?.value_value)}
+                  ${formatValue(params?.data?.value_value)}
                 </div>
               </div>
               

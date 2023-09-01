@@ -168,9 +168,9 @@
           interactive: true,
         }}
       >
-        {valueChange === 0 ? "" : valueChange >= 0 ? "+" : "-"}$<TooltipNumber
+        {valueChange === 0 ? "" : valueChange >= 0 ? "+" : "-"}<TooltipNumber
           number={Math.abs(valueChange)}
-          type="balance"
+          type="value"
         />
       </div>
     </div>

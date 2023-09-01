@@ -24,7 +24,7 @@
       <!-- <div class="xl:text-lg text-2xl font-medium text-gray-600 flex justify-end gap-1">
         {MultipleLang.claimable}:
         <span>
-          $<TooltipNumber number={sum_claimable} />
+          $<TooltipNumber number={sum_claimable} type="balance" />
         </span>
       </div> -->
     </div>

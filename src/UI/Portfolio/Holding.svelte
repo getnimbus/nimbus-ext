@@ -307,7 +307,7 @@
           {/if}
         </div>
         <div class="xl:text-3xl text-4xl font-medium text-right">
-          $<TooltipNumber number={sumTokens} type="balance" />
+          <TooltipNumber number={sumTokens} type="value" />
           {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
             <span class="xl:text-xl text-2xl font-medium text-gray-400">
               <TooltipNumber
@@ -451,7 +451,7 @@
             {MultipleLang.nft}
           </div>
           <div class="xl:text-3xl text-4xl font-medium text-right">
-            $<TooltipNumber number={sumNFT} type="balance" />
+            <TooltipNumber number={sumNFT} type="value" />
           </div>
         </div>
         <div

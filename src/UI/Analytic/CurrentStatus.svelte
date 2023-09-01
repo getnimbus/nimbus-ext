@@ -10,6 +10,7 @@
     handleFormatDataPieChart,
     formatPercent,
     performanceTypeChartPortfolio,
+    formatValue,
   } from "~/utils";
   import { i18n } from "~/lib/i18n";
   import { useNavigate } from "svelte-navigator";
@@ -115,7 +116,7 @@
                   ${MultipleLang[params?.data?.name_value]}
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
-                  $${formatCurrency(params?.data?.value_value)}
+                  ${formatValue(params?.data?.value_value)}
                 </div>
               </div>
               
@@ -275,7 +276,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       darkMode ? "white" : "black"
                     }">
-                      $${formatCurrency(Math.abs(item.value[1]))}
+                      ${formatValue(Math.abs(item.value[1]))}
                     </div>
                   </div>
                 </div>
