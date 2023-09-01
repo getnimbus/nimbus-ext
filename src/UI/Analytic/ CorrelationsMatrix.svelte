@@ -56,12 +56,6 @@
   let colImg = false;
 
   let colIndex = undefined;
-  let matrixData = [
-    ["", "BTC", "ETH", "USDC"],
-    ["BTC", bnb, 0.95, 0.0],
-    ["ETH", 0.95, bnb, -0.1],
-    ["USDC", 0.0, -0.1, bnb],
-  ];
 
   const calculateCorrelation = (priceArray1, priceArray2) => {
     if (priceArray1.length !== priceArray2.length) {
@@ -380,81 +374,10 @@
     }
   }
 
-  const result = [];
-  let matrixRender = [];
-
-  const getMetrix = (var1, var2, index) => {
-    return (
-      result[index][var1 + " - " + var2] || result[index][var2 + " - " + var1]
-    );
-  };
-
-  $: {
-    for (let i = 0; i < matrix.length; i++) {
-      result.push({});
-      for (let j = 0; j < matrix.length; j++) {
-        result[i][matrix[i][j].pair] = matrix[i][j].value;
-      }
-    }
-
-    // console.log("list token name: ", listTokenHolding[0].name);
-  }
-
-  $: {
-    if (result[1]) {
-      for (let i = 0; i < listTokenHolding.length; i++) {
-        matrixRender.push([]);
-        for (let j = 0; j < listTokenHolding.length; j++) {
-          matrixRender[i].push([]);
-          // const a = getMetrix(
-          //   listTokenHolding[i].name,
-          //   listTokenHolding[j].name,
-          //   i
-          // );
-          // console.log("list token name: ", a);
-          matrixRender[i][j] = getMetrix(
-            listTokenHolding[i].name,
-            listTokenHolding[j].name,
-            i
-          );
-        }
-      }
-      matrixRender.unshift([]);
-      for (let i = 0; i < listTokenHolding.length; i++) {
-        matrixRender[0].push(listTokenHolding[i].name);
-      }
-    }
-  }
-
-  // $: {
-  //   if (result[1]) {
-  //     console.log("tokenname", result[0]);
-  //   }
-  // }
-
-  $: {
-    console.log("listTokenHolding: ", listTokenHolding);
-  }
-
-  $: {
-    console.log("result from matrix", result);
-  }
-
-  $: {
-    console.log("matrixRender: ", matrixRender);
-  }
-
   $: enabledQuery = Boolean(
     getAddressContext(selectedWallet)?.type === "EVM" ||
       typeWalletAddress === "CEX"
   );
-
-  const handleColIndex = (indexX) => {
-    console.log({ indexX, colIndex });
-    colIndex = indexX;
-    // colIndex = Math.random();
-    test = 10;
-  };
 
   $: console.log("colX: ", colIndex);
 </script>
@@ -522,36 +445,74 @@
       {/if}
     </div>
 
-    <div class="flex-1">
-      <table class="">
+    <div class="2xl:overflow-visible overflow-x-auto w-full flex-1">
+      <table class="rounded-[10px] lg:w-full w-[1800px]">
         <tbody on:mouseleave={() => (colIndex = undefined)}>
-          <!-- {#each matrixRender as data, indexY}
-          <tr class="hover:bg-blue-300">
-            {#each data as item, indexX}
-              {#if indexY == 0}
-                <th class={`py-1`} on:mouseenter={() => (colIndex = undefined)}
-                  >{item}</th
-                >
-              {:else if indexX + 1 == indexY}
-                <td class={`p-2 ${colIndex == indexX && "bg-blue-300"}`}>
-                  <img
-                    src={item}
-                    alt="Bnb coin"
-                    style="width: 30px; height: 30px; margin: auto;"
-                  />
-                </td>
-              {:else}
-                <td
-                  class={`p-2 text-center ${
-                    colIndex == indexX && "bg-blue-300"
-                  }`}
-                  on:mouseenter={() => (colIndex = indexX)}>{item}</td
-                >
-              {/if}
-            {/each}
-            <td />
-          </tr>
-        {/each} -->
+          {#each listTokenHolding as tokenItem, index}
+            <th
+              class={`py-4 px-3 xl:text-base text-2xl font-medium ${
+                colIndex === index
+                  ? darkMode
+                    ? "bg-[#cdcdcd26]"
+                    : "bg-[#dbeafe]"
+                  : ""
+              }`}
+              on:mouseenter={() => (colIndex = index)}
+            >
+              {tokenItem.name}
+            </th>
+          {/each}
+          {#each matrix as data, indexY}
+            <tr
+              class={`border ${
+                darkMode ? "border-[#0f0f0f]" : "border-gray-200"
+              } ${!colImg ? "active" : ""}`}
+            >
+              {#each data as item, indexX}
+                {#if indexX == indexY}
+                  <td
+                    class={`py-4 px-3 ${
+                      colIndex === indexX
+                        ? darkMode
+                          ? "bg-[#cdcdcd26]"
+                          : "bg-[#dbeafe]"
+                        : ""
+                    }`}
+                    on:mouseenter={() => {
+                      colIndex = undefined;
+                      colImg = true;
+                    }}
+                    on:mouseleave={() => {
+                      colImg = false;
+                    }}
+                  >
+                    <div class="w-7 h-7 mx-auto rounded-full overflow-hidden">
+                      <img
+                        src={item.value}
+                        alt="Coin Icon"
+                        class="w-full h-full object-contain"
+                      />
+                    </div>
+                  </td>
+                {:else}
+                  <td
+                    class={`xl:text-base text-2xl text-center border ${
+                      darkMode ? "border-[#0f0f0f]" : "border-gray-200"
+                    } py-4 px-3 ${
+                      colIndex === indexX
+                        ? darkMode
+                          ? "bg-[#cdcdcd26]"
+                          : "bg-[#dbeafe]"
+                        : ""
+                    } `}
+                    on:mouseenter={() => (colIndex = indexX)}
+                  >
+                    {item.value == "NaN" ? "NaN" : formatPercent(item.value)}
+                  </td>
+                {/if}
+              {/each}
+            </tr>
+          {/each}
         </tbody>
       </table>
     </div>
