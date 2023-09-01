@@ -41,25 +41,24 @@
   let selectedVaults;
   let showTableVaults = false;
 
-  $: price = data?.amount * data?.market_price;
-  // $: profitAndLoss = price + (data?.avgCost || 0);
-  // $: profitAndLossPercent =
-  //   Math.abs(data?.avgCost || 0) === 0
-  //     ? 0
-  //     : profitAndLoss / Math.abs(data?.avgCost);
+  $: value = data?.amount * data?.market_price;
 
   $: realizedProfit = data?.profit?.realizedProfit
     ? data?.profit?.realizedProfit
     : 0;
 
-  $: unrealizedProfit = data?.avgCost !== 0 ? 0 : price - data?.avgCost;
+  $: console.log("data: ", data);
+
+  $: unrealizedProfit = data?.avgCost !== 0 ? value + data?.avgCost : 0;
+  $: percentUnrealizedProfit =
+    (data?.avgCost || 0) === 0 ? 0 : unrealizedProfit / data?.avgCost;
 
   $: clickable =
     data.name !== "Bitcoin" &&
     data.name !== "Ethereum" &&
     selectedChain !== "XDAI";
 
-  $: ratio = (price / sumAllTokens) * 100;
+  $: ratio = (value / sumAllTokens) * 100;
 
   $: {
     if (data?.vaults && data?.vaults.length !== 0) {
@@ -458,7 +457,7 @@
     }`}
   >
     <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
-      $<TooltipNumber number={price} type="balance" />
+      $<TooltipNumber number={value} type="balance" />
     </div>
   </td>
 
@@ -490,29 +489,11 @@
       <div class="flex flex-col">
         <div
           class={`flex justify-end ${
-            unrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
+            realizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          $<TooltipNumber number={Math.abs(unrealizedProfit)} type="balance" />
+          $<TooltipNumber number={Math.abs(realizedProfit)} type="balance" />
         </div>
-        <!-- <div class="flex items-center justify-end gap-1">
-          <div
-            class={`flex items-center ${
-              profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
-            }`}
-          >
-            <TooltipNumber
-              number={Math.abs(profitAndLossPercent) * 100}
-              type="percent"
-            />
-            <span>%</span>
-          </div>
-          <img
-            src={profitAndLoss >= 0 ? TrendUp : TrendDown}
-            alt="trend"
-            class="mb-1"
-          />
-        </div> -->
       </div>
     </div>
   </td>
@@ -528,29 +509,29 @@
       <div class="flex flex-col">
         <div
           class={`flex justify-end ${
-            realizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
+            unrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          $<TooltipNumber number={Math.abs(realizedProfit)} type="balance" />
+          $<TooltipNumber number={Math.abs(unrealizedProfit)} type="balance" />
         </div>
-        <!-- <div class="flex items-center justify-end gap-1">
+        <div class="flex items-center justify-end gap-1">
           <div
             class={`flex items-center ${
-              profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+              percentUnrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
             }`}
           >
             <TooltipNumber
-              number={Math.abs(profitAndLossPercent) * 100}
+              number={Math.abs(percentUnrealizedProfit) * 100}
               type="percent"
             />
             <span>%</span>
           </div>
           <img
-            src={profitAndLoss >= 0 ? TrendUp : TrendDown}
+            src={percentUnrealizedProfit >= 0 ? TrendUp : TrendDown}
             alt="trend"
             class="mb-1"
           />
-        </div> -->
+        </div>
       </div>
     </div>
   </td>

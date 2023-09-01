@@ -241,8 +241,8 @@
   $: colspan =
     typeWalletAddress === "DEX" &&
     getAddressContext(selectedWallet)?.type !== "EVM"
-      ? 7
-      : 6;
+      ? 8
+      : 7;
 
   $: {
     if (selectedWallet || selectedChain) {
@@ -270,8 +270,6 @@
       sumTokens = 0;
     }
   }
-
-  $: console.log("holdingTokenData: ", holdingTokenData);
 </script>
 
 <div
@@ -394,14 +392,14 @@
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    Unrealized Profit
+                    Realized Profit
                   </div>
                 </th>
                 <th class="py-3 pr-3 rounded-tr-[10px]">
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    Realized Profit
+                    Unrealized Profit
                   </div>
                 </th>
                 <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
