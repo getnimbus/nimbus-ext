@@ -81,18 +81,18 @@
     // }
   }}
   on:mouseover={() => {
-    if (data?.cmc_slug !== undefined) {
+    if (data?.cmc_slug) {
       isShowCMC = true;
     }
-    if (data?.cg_id !== undefined) {
+    if (data?.cg_id) {
       isShowCoingecko = true;
     }
   }}
   on:mouseleave={() => {
-    if (data?.cmc_slug !== undefined) {
+    if (data?.cmc_slug) {
       isShowCMC = false;
     }
-    if (data?.cg_id !== undefined) {
+    if (data?.cg_id) {
       isShowCoingecko = false;
     }
   }}

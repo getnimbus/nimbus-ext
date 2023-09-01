@@ -112,10 +112,6 @@
     },
     xAxis: {
       type: "time",
-      axisTick: { show: false },
-      splitLine: { show: false },
-      // axisLine: { show: false },
-      axisLabel: { show: false },
     },
     yAxis: {
       type: "value",

@@ -175,9 +175,6 @@
 
   let selectedTypeChart: "percent" | "networth" = "percent";
   let optionLinePercentChange = {
-    title: {
-      text: "",
-    },
     tooltip: {
       trigger: "axis",
       extraCssText: "z-index: 9997",
@@ -187,7 +184,7 @@
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 darkMode ? "white" : "black"
               }">
-                ${params[0].axisValue}
+                ${dayjs(params[0].axisValue).format("YYYY-MM-DD")}
               </div>
               ${params
                 .map((item) => {
@@ -202,11 +199,11 @@
 
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
+                      item.value[1] >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${formatPercent(Math.abs(item.value))}%
+                      ${formatPercent(Math.abs(item.value[1]))}%
                       <img
-                        src=${item.value >= 0 ? TrendUp : TrendDown} 
+                        src=${item.value[1] >= 0 ? TrendUp : TrendDown} 
                         alt=""
                         style="margin-bottom: 4px;"
                       />
@@ -217,6 +214,15 @@
                 })
                 .join("")}
             </div>`;
+      },
+    },
+    toolbox: {
+      right: "3%",
+      top: "-1%",
+      feature: {
+        dataZoom: {
+          yAxisIndex: "none",
+        },
       },
     },
     legend: {
@@ -232,9 +238,7 @@
       containLabel: true,
     },
     xAxis: {
-      type: "category",
-      boundaryGap: false,
-      data: [],
+      type: "time",
     },
     yAxis: {
       type: "value",
@@ -245,9 +249,6 @@
     series: [],
   };
   let optionLineNetWorth = {
-    title: {
-      text: "",
-    },
     tooltip: {
       trigger: "axis",
       extraCssText: "z-index: 9997",
@@ -257,7 +258,7 @@
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 darkMode ? "white" : "black"
               }">
-                ${params[0].axisValue}
+                 ${dayjs(params[0].axisValue).format("YYYY-MM-DD")}
               </div>
               ${params
                 .map((item) => {
@@ -274,7 +275,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       darkMode ? "white" : "black"
                     }">
-                      $${formatCurrency(Math.abs(item.value))}
+                      $${formatCurrency(Math.abs(item.value[1]))}
                     </div>
                   </div>
                 </div>
@@ -282,6 +283,15 @@
                 })
                 .join("")}
             </div>`;
+      },
+    },
+    toolbox: {
+      right: "3%",
+      top: "-1%",
+      feature: {
+        dataZoom: {
+          yAxisIndex: "none",
+        },
       },
     },
     legend: {
@@ -297,9 +307,7 @@
       containLabel: true,
     },
     xAxis: {
-      type: "category",
-      boundaryGap: false,
-      data: [],
+      type: "time",
     },
     yAxis: {
       type: "value",
@@ -427,14 +435,10 @@
 
   const formatDataCompare = (data) => {
     if (data?.base?.holdingHistory?.length !== 0) {
-      const formatXAxis = data?.base?.holdingHistory?.map((item) => {
-        return dayjs(item?.timestamp * 1000).format("YYYY-MM-DD");
-      });
-
       // percent change
       const formatDataPortfolio = data?.base?.holdingHistory?.map((item) => {
         return {
-          value: item.performance,
+          value: [item?.timestamp * 1000, item.performance],
           itemStyle: {
             color: "#00b580",
           },
@@ -443,7 +447,7 @@
 
       const formatDataETH = data?.eth?.holdingHistory.map((item) => {
         return {
-          value: item.performance,
+          value: [item?.timestamp * 1000, item.performance],
           itemStyle: {
             color: "#547fef",
           },
@@ -452,7 +456,7 @@
 
       const formatDataBTC = data?.btc?.holdingHistory.map((item) => {
         return {
-          value: item.performance,
+          value: [item?.timestamp * 1000, item.performance],
           itemStyle: {
             color: "#f7931a",
           },
@@ -483,10 +487,6 @@
               },
             },
           ],
-        },
-        xAxis: {
-          ...optionLinePercentChange.xAxis,
-          data: formatXAxis,
         },
         series: [
           {
@@ -526,7 +526,7 @@
       const formatDataPortfolioNetWorth = data?.base?.holdingHistory?.map(
         (item) => {
           return {
-            value: item.networth,
+            value: [item.timestamp * 1000, item.networth],
             itemStyle: {
               color: "#00b580",
             },
@@ -546,10 +546,6 @@
               },
             },
           ],
-        },
-        xAxis: {
-          ...optionLineNetWorth.xAxis,
-          data: formatXAxis,
         },
         series: [
           {

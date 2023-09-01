@@ -16,6 +16,7 @@
     typeWallet,
     selectedPackage,
     isDarkMode,
+    user,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
@@ -23,6 +24,7 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { wait } from "~/entries/background/utils";
+  import { useNavigate } from "svelte-navigator";
 
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
@@ -118,6 +120,8 @@
     },
   };
 
+  const navigate = useNavigate();
+
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
@@ -196,7 +200,7 @@
 
   const validateForm = (data) => {
     const isDuplicatedAddress = listAddress.some((item) => {
-      return item.address === data.address;
+      return item.address.toLowerCase() === data.address.toLowerCase();
     });
 
     if (!isRequiredFieldValid(data.address)) {
@@ -271,6 +275,8 @@
     staleTime: Infinity,
     onError(err) {
       localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+      navigate("/");
     },
   });
 

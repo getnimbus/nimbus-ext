@@ -74,6 +74,8 @@
     staleTime: Infinity,
     onError(err) {
       localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+      navigate("/");
     },
   });
 
