@@ -15,9 +15,11 @@
     getAddressContext,
   } from "~/utils";
   import { nimbus } from "~/lib/network";
+  import dayjs from "dayjs";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
+  import LoadingPremium from "~/components/LoadingPremium.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import "~/components/Loading.custom.svelte";
 
@@ -104,7 +106,10 @@
     try {
       const result = await axios
         .get(
-          `https://coins.llama.fi/chart/coingecko:${coinName}?start=1664364537&span=10&period=2d&searchWidth=600`
+          `https://coins.llama.fi/chart/coingecko:${coinName}?start=${dayjs()
+            .startOf("d")
+            .subtract(30, "d")
+            .unix()}&span=30&period=1d&searchWidth=600`
         )
         .then((res) => res.data);
       return result;
@@ -308,7 +313,7 @@
 
       for (let i = 0; i < filterListCoinPrice.length; i++) {
         for (let l = i; l < filterListCoinPrice.length; l++) {
-          let value: any = "NaN";
+          let value: any = "N/A";
 
           if (filterListCoinPrice[i].symbol === filterListCoinPrice[l].symbol) {
             value = null;
@@ -343,7 +348,7 @@
               filterListCoinPrice[i].prices.length === 0 ||
               filterListCoinPrice[l].prices.length === 0
             ) {
-              value = "NaN";
+              value = "N/A";
             }
           }
 
@@ -371,7 +376,6 @@
             };
           });
       });
-      console.log("matrix: ", matrix);
     }
   }
 
@@ -379,8 +383,6 @@
     getAddressContext(selectedWallet)?.type === "EVM" ||
       typeWalletAddress === "CEX"
   );
-
-  $: console.log("colX: ", colIndex);
 </script>
 
 <div
@@ -388,147 +390,159 @@
     darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
   }`}
 >
-  <div class="text-4xl font-medium xl:text-2xl">Correlations Matrix</div>
+  <div class="xl:text-2xl text-4xl font-medium">Correlations Matrix</div>
 
-  <div class="flex gap-9 relative">
-    <div class="flex flex-col xl:flex-[0.2] flex-[0.4]">
-      <div class="font-medium xl:text-base text-2xl py-4">Selected Coins</div>
-      <div class="flex flex-col items-center justify-center w-full">
-        {#each listTokenHolding as item}
-          <div
-            class={`border-b ${
-              darkMode ? "border-[#0f0f0f]" : "border-gray-200"
-            } py-4 px-1 w-full text-center flex items-center justify-between`}
-          >
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 mx-auto rounded-full overflow-hidden">
-                <img
-                  src={item.logo}
-                  alt=""
-                  class="w-full h-full object-contain"
-                />
-              </div>
-              <div class="xl:text-base text-2xl font-medium">
-                {item.name.toLocaleUpperCase()}
-              </div>
-            </div>
-            <div class="cursor-pointer" on:click={handleRemoveCoin(item)}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                ><line x1="18" y1="6" x2="6" y2="18" /><line
-                  x1="6"
-                  y1="6"
-                  x2="18"
-                  y2="18"
-                /></svg
-              >
-            </div>
+  {#if $queryHoldingToken.isFetching && listTokenHolding && listTokenHolding.length === 0}
+    <div class="flex items-center justify-center h-[465px]">
+      <LoadingPremium />
+    </div>
+  {:else}
+    <div class="flex gap-9 relative">
+      <div class="flex flex-col xl:flex-[0.2] flex-[0.4]">
+        {#if listTokenHolding && listTokenHolding.length !== 0}
+          <div class="font-medium xl:text-base text-2xl py-[6px]">
+            Selected Coins
           </div>
-        {/each}
-      </div>
-      {#if listTokenHolding && listTokenHolding.length !== 0}
-        <div
-          class="text-3xl text-center cursor-pointer mt-4"
-          on:click={() => {
-            isOpenModal = true;
-          }}
-        >
-          +
-        </div>
-      {/if}
-    </div>
-
-    <div class="2xl:overflow-visible overflow-x-auto w-full flex-1">
-      <table class="rounded-[10px] lg:w-full w-[1800px]">
-        <tbody on:mouseleave={() => (colIndex = undefined)}>
-          {#each listTokenHolding as tokenItem, index}
-            <th
-              class={`py-4 px-3 xl:text-base text-2xl font-medium ${
-                colIndex === index
-                  ? darkMode
-                    ? "bg-[#cdcdcd26]"
-                    : "bg-[#dbeafe]"
-                  : ""
-              }`}
-              on:mouseenter={() => (colIndex = index)}
-            >
-              {tokenItem.name}
-            </th>
-          {/each}
-          {#each matrix as data, indexY}
-            <tr
-              class={`border ${
+        {/if}
+        <div class="flex flex-col items-center justify-center w-full">
+          {#each listTokenHolding as item}
+            <div
+              class={`border-b ${
                 darkMode ? "border-[#0f0f0f]" : "border-gray-200"
-              } ${!colImg ? "active" : ""}`}
+              } py-[6px] px-1 w-full text-center flex items-center justify-between`}
             >
-              {#each data as item, indexX}
-                {#if indexX == indexY}
-                  <td
-                    class={`py-4 px-3 ${
-                      colIndex === indexX
-                        ? darkMode
-                          ? "bg-[#cdcdcd26]"
-                          : "bg-[#dbeafe]"
-                        : ""
-                    }`}
-                    on:mouseenter={() => {
-                      colIndex = undefined;
-                      colImg = true;
-                    }}
-                    on:mouseleave={() => {
-                      colImg = false;
-                    }}
-                  >
-                    <div class="w-7 h-7 mx-auto rounded-full overflow-hidden">
-                      <img
-                        src={item.value}
-                        alt="Coin Icon"
-                        class="w-full h-full object-contain"
-                      />
-                    </div>
-                  </td>
-                {:else}
-                  <td
-                    class={`xl:text-base text-2xl text-center border ${
-                      darkMode ? "border-[#0f0f0f]" : "border-gray-200"
-                    } ${
-                      colIndex === indexX
-                        ? darkMode
-                          ? "bg-[#cdcdcd26]"
-                          : "bg-[#dbeafe]"
-                        : ""
-                    }`}
-                    on:mouseenter={() => (colIndex = indexX)}
-                  >
-                    <div
-                      class={`py-4 px-3 ${
-                        item.value === "NaN"
-                          ? ""
-                          : `bg-[${correlationsMatrixColor(item.value)}]`
-                      }`}
-                      style={`background: ${correlationsMatrixColor(
-                        item.value
-                      )}`}
-                    >
-                      {item.value === "NaN" ? "NaN" : formatPercent(item.value)}
-                    </div>
-                  </td>
-                {/if}
-              {/each}
-            </tr>
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 mx-auto rounded-full overflow-hidden">
+                  <img
+                    src={item.logo}
+                    alt=""
+                    class="w-full h-full object-contain"
+                  />
+                </div>
+                <div class="text-2xl xl:text-base">
+                  {item.name.toLocaleUpperCase()}
+                </div>
+              </div>
+              <div class="cursor-pointer" on:click={handleRemoveCoin(item)}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  ><line x1="18" y1="6" x2="6" y2="18" /><line
+                    x1="6"
+                    y1="6"
+                    x2="18"
+                    y2="18"
+                  /></svg
+                >
+              </div>
+            </div>
           {/each}
-        </tbody>
-      </table>
+        </div>
+        {#if listTokenHolding && listTokenHolding.length !== 0}
+          <div
+            class="text-3xl text-center cursor-pointer mt-4"
+            on:click={() => {
+              isOpenModal = true;
+            }}
+          >
+            +
+          </div>
+        {/if}
+      </div>
+
+      <div class="2xl:overflow-visible overflow-x-auto w-full flex-1">
+        <table class="rounded-[10px] lg:w-full w-[1800px]">
+          <tbody on:mouseleave={() => (colIndex = undefined)}>
+            {#each listTokenHolding as tokenItem, index}
+              <th
+                class={`p-[6px] text-2xl xl:text-base font-medium ${
+                  colIndex === index
+                    ? darkMode
+                      ? "bg-[#cdcdcd26]"
+                      : "bg-[#dbeafe]"
+                    : ""
+                }`}
+                on:mouseenter={() => (colIndex = index)}
+              >
+                {tokenItem.name}
+              </th>
+            {/each}
+            {#each matrix as data, indexY}
+              <tr
+                class={`border ${
+                  darkMode ? "border-[#0f0f0f]" : "border-gray-200"
+                } ${!colImg ? "active" : ""}`}
+              >
+                {#each data as item, indexX}
+                  {#if indexX == indexY}
+                    <td
+                      class={`p-[6px] ${
+                        colIndex === indexX
+                          ? darkMode
+                            ? "bg-[#cdcdcd26]"
+                            : "bg-[#dbeafe]"
+                          : ""
+                      }`}
+                      on:mouseenter={() => {
+                        colIndex = undefined;
+                        colImg = true;
+                      }}
+                      on:mouseleave={() => {
+                        colImg = false;
+                      }}
+                    >
+                      <div class="w-7 h-7 mx-auto rounded-full overflow-hidden">
+                        <img
+                          src={item.value}
+                          alt="Coin Icon"
+                          class="w-full h-full object-contain"
+                        />
+                      </div>
+                    </td>
+                  {:else}
+                    <td
+                      class={`text-2xl xl:text-base text-center border ${
+                        darkMode ? "border-[#0f0f0f]" : "border-gray-200"
+                      } ${
+                        colIndex === indexX
+                          ? darkMode
+                            ? "bg-[#cdcdcd26]"
+                            : "bg-[#dbeafe]"
+                          : ""
+                      }`}
+                      on:mouseenter={() => (colIndex = indexX)}
+                    >
+                      <div
+                        class={`p-[6px] ${
+                          item.value === "N/A"
+                            ? ""
+                            : `bg-[${correlationsMatrixColor(item.value)}]`
+                        }`}
+                        style={`background: ${correlationsMatrixColor(
+                          item.value
+                        )}`}
+                      >
+                        {item.value === "N/A"
+                          ? "N/A"
+                          : formatPercent(item.value)}
+                      </div>
+                    </td>
+                  {/if}
+                {/each}
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
+  {/if}
 </div>
 
 <!-- Modal search token -->
@@ -560,25 +574,45 @@
     <div>
       {#if $queryHoldingToken.isError}
         <div
-          class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
+          class="flex justify-center items-center p-[6px] text-lg text-gray-400"
         >
           Empty
         </div>
       {:else}
-        <div class="mt-2 flex flex-col max-h-[500px] overflow-y-auto">
-          {#each searchDataResult || [] as item}
+        <div class="mt-2 flex flex-col max-h-[500px] h-[500px] overflow-y-auto">
+          {#if searchDataResult.length === 0}
             <div
-              class={`border-b last:border-none py-3 px-1 w-full text-center flex items-center justify-start gap-2 cursor-pointer ${
-                darkMode ? "border-[#222222]" : "border-gray-200"
-              }`}
-              on:click={handleSelectToken(item)}
+              class="flex justify-center items-center p-[6px] text-lg text-gray-400"
             >
-              <img src={item.logo} alt="" class="w-6 h-6" />
-              <div class="2xl:text-base text-xl">
-                {item.full_name} ({item.name.toLocaleUpperCase()})
-              </div>
+              No result
             </div>
-          {/each}
+          {:else}
+            {#each searchDataResult || [] as item}
+              <div
+                class={`border-b last:border-none py-3 px-1 w-full text-center flex items-center justify-start gap-2 cursor-pointer ${
+                  darkMode ? "border-[#222222]" : "border-gray-200"
+                }`}
+                on:click={handleSelectToken(item)}
+              >
+                <div class="w-7 h-7 rounded-full overflow-hidden">
+                  <img
+                    src={item.logo}
+                    alt="Coin Icon"
+                    class="w-full h-full object-contain"
+                  />
+                </div>
+                <div class="2xl:text-sm text-lg">
+                  {item.full_name}
+                  <span
+                    class={`${
+                      darkMode ? "text-gray-600" : "text-gray-400"
+                    } 2xl:text-xs text-base`}
+                    >({item.name.toLocaleUpperCase()})
+                  </span>
+                </div>
+              </div>
+            {/each}
+          {/if}
         </div>
       {/if}
     </div>
