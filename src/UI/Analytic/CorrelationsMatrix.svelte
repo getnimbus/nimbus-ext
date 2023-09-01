@@ -400,9 +400,12 @@
       Correlations Matrix
     </TooltipTitle>
   </div>
-  <!-- <div class="xl:text-2xl text-4xl font-medium">Correlations Matrix</div> -->
 
-  <div class="text-gray-700 text-sm">
+  <div
+    class={`xl:text-sm text-lg ${
+      darkMode ? "text-[#ebebeb]" : "text-gray-700"
+    } `}
+  >
     <div>
       🟩 Positive Value A positive value indicates a positive correlation
       between two variables
@@ -490,8 +493,10 @@
                 variant="primary"
                 on:click={() => {
                   isOpenModal = true;
-                }}>Compare more</Button
+                }}
               >
+                <div class="xl:text-sm text-xl">Compare more</div>
+              </Button>
             {/if}
           </div>
 
