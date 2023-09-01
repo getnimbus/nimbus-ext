@@ -22,6 +22,8 @@
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import "~/components/Loading.custom.svelte";
+  import Button from "~/components/Button.svelte";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -227,7 +229,7 @@
           item.name.toLowerCase() === searchValue.toLowerCase() ||
           item.name.toLowerCase().includes(searchValue.toLowerCase())
       )
-    : listToken?.slice(0, 1000);
+    : listToken?.slice(0, 100);
 
   const handleRemoveCoin = (selectedCoin) => {
     listTokenHolding = listTokenHolding.filter(
@@ -390,7 +392,33 @@
     darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
   }`}
 >
-  <div class="xl:text-2xl text-4xl font-medium">Correlations Matrix</div>
+  <div class="xl:text-2xl text-4xl font-medium">
+    <TooltipTitle
+      tooltipText={"Positively correlated variables tend to move together, negatively correlated variables move inversely to each other, and uncorrelated variables move independently of each other."}
+      isBigIcon
+    >
+      Correlations Matrix
+    </TooltipTitle>
+  </div>
+  <!-- <div class="xl:text-2xl text-4xl font-medium">Correlations Matrix</div> -->
+
+  <div class="text-gray-700 text-sm">
+    <div>
+      🟩 Positive Value A positive value indicates a positive correlation
+      between two variables
+    </div>
+    <div>
+      🟥 Negative Value A negative value indicates a negative correlation
+      between two variables
+    </div>
+    <div>
+      Learn more <a
+        class="text-blue-500 hover:underline"
+        href="https://docs.getnimbus.io/metrics/correlation-matrix/"
+        target="blank">How to use correlation to reduce risk?</a
+      >
+    </div>
+  </div>
 
   {#if $queryHoldingToken.isFetching && listTokenHolding && listTokenHolding.length === 0}
     <div class="flex items-center justify-center h-[465px]">
@@ -417,10 +445,10 @@
                 <div
                   class={`border-b ${
                     darkMode ? "border-[#0f0f0f]" : "border-gray-200"
-                  } py-[6px] px-1 w-full text-center flex items-center justify-between`}
+                  } py-2 px-1 w-full text-center flex items-center justify-between`}
                 >
                   <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 mx-auto rounded-full overflow-hidden">
+                    <div class="w-6 h-6 mx-auto rounded-full overflow-hidden">
                       <img
                         src={item.logo}
                         alt=""
@@ -431,7 +459,10 @@
                       {item.name.toLocaleUpperCase()}
                     </div>
                   </div>
-                  <div class="cursor-pointer" on:click={handleRemoveCoin(item)}>
+                  <div
+                    class="cursor-pointer text-gray-500"
+                    on:click={handleRemoveCoin(item)}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -454,14 +485,13 @@
               {/each}
             </div>
             {#if listTokenHolding && listTokenHolding.length !== 0}
-              <div
-                class="text-3xl text-center cursor-pointer mt-4"
+              <Button
+                className="mt-4"
+                variant="primary"
                 on:click={() => {
                   isOpenModal = true;
-                }}
+                }}>Compare more</Button
               >
-                +
-              </div>
             {/if}
           </div>
 
@@ -470,7 +500,7 @@
               <tbody on:mouseleave={() => (colIndex = undefined)}>
                 {#each listTokenHolding as tokenItem, index}
                   <th
-                    class={`p-[6px] text-2xl xl:text-base font-medium ${
+                    class={`py-[6px] text-2xl xl:text-base font-medium ${
                       colIndex === index
                         ? darkMode
                           ? "bg-[#cdcdcd26]"
@@ -491,7 +521,7 @@
                     {#each data as item, indexX}
                       {#if indexX == indexY}
                         <td
-                          class={`p-[6px] ${
+                          class={`p-[8px] ${
                             colIndex === indexX
                               ? darkMode
                                 ? "bg-[#cdcdcd26]"
@@ -507,7 +537,7 @@
                           }}
                         >
                           <div
-                            class="w-7 h-7 mx-auto rounded-full overflow-hidden"
+                            class="w-6 h-6 mx-auto rounded-full overflow-hidden"
                           >
                             <img
                               src={item.value}
@@ -563,7 +593,7 @@
   isOpen={isOpenModal}
   on:close={() => (isOpenModal = false)}
 >
-  <div class="font-medium xl:title-3 title-1">List market token</div>
+  <div class="font-medium xl:title-3 title-1">Search market token</div>
   <div
     class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg mt-2 ${
       searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
@@ -616,10 +646,8 @@
                 <div class="2xl:text-sm text-lg">
                   {item.full_name}
                   <span
-                    class={`${
-                      darkMode ? "text-gray-600" : "text-gray-400"
-                    } 2xl:text-xs text-base`}
-                    >({item.name.toLocaleUpperCase()})
+                    class={`${darkMode ? "text-gray-600" : "text-gray-400"}`}
+                    >{item.name.toLocaleUpperCase()}
                   </span>
                 </div>
               </div>
