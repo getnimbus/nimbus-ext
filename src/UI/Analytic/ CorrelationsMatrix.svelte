@@ -9,6 +9,7 @@
     isDarkMode,
   } from "~/store";
   import {
+    correlationsMatrixColor,
     equalizeArrayLengths,
     formatPercent,
     getAddressContext,
@@ -498,16 +499,27 @@
                   <td
                     class={`xl:text-base text-2xl text-center border ${
                       darkMode ? "border-[#0f0f0f]" : "border-gray-200"
-                    } py-4 px-3 ${
+                    } ${
                       colIndex === indexX
                         ? darkMode
                           ? "bg-[#cdcdcd26]"
                           : "bg-[#dbeafe]"
                         : ""
-                    } `}
+                    }`}
                     on:mouseenter={() => (colIndex = indexX)}
                   >
-                    {item.value == "NaN" ? "NaN" : formatPercent(item.value)}
+                    <div
+                      class={`py-4 px-3 ${
+                        item.value === "NaN"
+                          ? ""
+                          : `bg-[${correlationsMatrixColor(item.value)}]`
+                      }`}
+                      style={`background: ${correlationsMatrixColor(
+                        item.value
+                      )}`}
+                    >
+                      {item.value === "NaN" ? "NaN" : formatPercent(item.value)}
+                    </div>
                   </td>
                 {/if}
               {/each}
