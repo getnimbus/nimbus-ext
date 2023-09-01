@@ -841,7 +841,7 @@
                                         ? "-"
                                         : "+"}<TooltipNumber
                                         number={Math.abs(item?.total)}
-                                        type="amount"
+                                        type="balance"
                                       />
                                       {item?.symbol || item?.name || "⎯"}
                                     </span>
@@ -1003,7 +1003,7 @@
                                             change?.metadata?.btcChange
                                               ?.final_result
                                           )}
-                                          type="amount"
+                                          type="balance"
                                         />
                                         <div>
                                           {change?.metadata?.btcPrice?.symbol}
@@ -1037,7 +1037,7 @@
                                         number={Math.abs(
                                           change?.metadata?.info?.total
                                         )}
-                                        type="amount"
+                                        type="balance"
                                       />
                                       <div>
                                         {change?.metadata?.info?.tokenName}

@@ -1,6 +1,8 @@
 <script lang="ts">
   import { isDarkMode } from "~/store";
 
+  import DarkModeFooter from "./DarkModeFooter.svelte";
+
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
 
@@ -13,12 +15,20 @@
 <div
   class="flex justify-between xl:items-center max-w-[2000px] m-auto xl:w-[88%] w-[96%] xl:flex-row flex-col gap-1 xl:py-2 py-5"
 >
-  <img
-    src={darkMode ? LogoWhite : Logo}
-    alt="logo"
-    class="xl:-ml-10 -ml-8 xl:w-[167px] w-[197px] xl:h-[50px] h-[80px]"
-  />
+  <div class="xl:-ml-10 -ml-8 flex items-center">
+    <img
+      src={darkMode ? LogoWhite : Logo}
+      alt="logo"
+      class="xl:w-[167px] w-[197px] xl:h-[50px] h-[80px]"
+    />
+    <div class="xl:hidden block">
+      <DarkModeFooter />
+    </div>
+  </div>
   <div class="flex items-center xl:gap-4 gap-6">
+    <div class="xl:block hidden">
+      <DarkModeFooter />
+    </div>
     <a
       href="https://getnimbus.io/"
       target="_blank"

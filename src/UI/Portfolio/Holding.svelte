@@ -307,7 +307,7 @@
           {/if}
         </div>
         <div class="xl:text-3xl text-4xl font-medium text-right">
-          $<TooltipNumber number={sumTokens} type="balance" />
+          <TooltipNumber number={sumTokens} type="value" />
           {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
             <span class="xl:text-xl text-2xl font-medium text-gray-400">
               <TooltipNumber
@@ -377,7 +377,7 @@
                     {MultipleLang.value}
                   </div>
                 </th>
-                <th class="py-3 pr-3 rounded-tr-[10px]">
+                <th class="py-3">
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
@@ -388,18 +388,20 @@
                     </TooltipTitle>
                   </div>
                 </th>
-                <!-- <th class="py-3 pr-3 rounded-tr-[10px]">
+                <th class="py-3">
                   <div
-                    class="xl:text-xs text-base uppercase font-medium "
+                    class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    <TooltipTitle
-                      tooltipText="Profit and loss is calculated by transactions that swap the tokens. "
-                      link="https://docs.getnimbus.io/metrics/holding_profit_loss/"
-                    >
-                      {MultipleLang.profit}
-                    </TooltipTitle>
+                    Realized Profit
                   </div>
-                </th> -->
+                </th>
+                <th class="py-3 pr-3 rounded-tr-[10px]">
+                  <div
+                    class="text-right xl:text-xs text-base uppercase font-medium"
+                  >
+                    Unrealized Profit
+                  </div>
+                </th>
                 <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
               </tr>
             </thead>
@@ -449,7 +451,7 @@
             {MultipleLang.nft}
           </div>
           <div class="xl:text-3xl text-4xl font-medium text-right">
-            $<TooltipNumber number={sumNFT} type="balance" />
+            <TooltipNumber number={sumNFT} type="value" />
           </div>
         </div>
         <div

@@ -58,7 +58,7 @@
     <div class="xl:text-xs text-lg font-normal text-[#616b84] flex gap-1">
       <div>Est. value</div>
       <div>
-        <TooltipNumber number={data?.est_valueBTC} type="amount" />
+        <TooltipNumber number={data?.est_valueBTC} type="balance" />
         {getAddressContext(selectedWallet)?.type === "EVM" ? "ETH" : "BTC"} | $<TooltipNumber
           number={data?.est_valueBTC * marketPrice}
           type="balance"

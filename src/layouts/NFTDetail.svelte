@@ -170,7 +170,7 @@
                 id="AverageCostBTC"
                 number={data?.overview?.avgCostBTC || 0}
                 format={8}
-                type="amount"
+                type="balance"
               />
               <span class="text-xl text-gray-500">
                 {getAddressContext(addressWallet)?.type === "EVM"
@@ -211,7 +211,7 @@
                 id="24-hourReturn"
                 number={data?.floorPriceBTC || 0}
                 format={8}
-                type="amount"
+                type="balance"
               />
               <span class="text-xl text-gray-500">
                 {getAddressContext(addressWallet)?.type === "EVM"

@@ -8,6 +8,7 @@
     performanceTypeChartPortfolio,
     typePieChart,
     formatPercent,
+    formatValue,
   } from "~/utils";
   import dayjs from "dayjs";
   import numeral from "numeral";
@@ -107,7 +108,7 @@
                   ${MultipleLang[params?.data?.name_value]}
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
-                  $${formatCurrency(params?.data?.value_value)}
+                  ${formatValue(params?.data?.value_value)}
                 </div>
               </div>
               
@@ -183,7 +184,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.value >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${formatCurrency(Math.abs(item.value))}%
+                      ${formatPercent(Math.abs(item.value))}%
                       <img
                         src=${item.value >= 0 ? TrendUp : TrendDown} 
                         alt=""
@@ -331,7 +332,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.value >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${formatCurrency(Math.abs(item.value))}%
+                      ${formatPercent(Math.abs(item.value))}%
                       <img
                         src=${item.value >= 0 ? TrendUp : TrendDown} 
                         alt=""
@@ -511,7 +512,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       darkMode ? "white" : "black"
                     }">
-                      $${formatCurrency(Math.abs(item.value))}
+                      ${formatValue(Math.abs(item.value))}
                     </div>
                   </div>
                 </div>

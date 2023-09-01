@@ -61,7 +61,7 @@
         <div class="flex items-center gap-1">
           <TooltipNumber
             number={Number(data?.collateralAmount)}
-            type="amount"
+            type="balance"
           />
           {data.token?.symbol ? data.token?.symbol : ""} |
         </div>
@@ -105,7 +105,7 @@
     >
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
-          <TooltipNumber number={Number(data?.debtAmount)} type="amount" />
+          <TooltipNumber number={Number(data?.debtAmount)} type="balance" />
           DAI |
         </div>
         <div class="flex">

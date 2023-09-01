@@ -488,7 +488,7 @@ export const exponentialToDecimal = (exponential: number) => {
   return decimal;
 };
 
-export const formatLongNumber = (number: number) => {
+export const formatSupperSmallNumber = (number: number) => {
   if (!number.toString().includes("e-")) {
     return number;
   }
@@ -503,10 +503,16 @@ export const formatLongNumber = (number: number) => {
   return formatNumber;
 };
 
+export const formatValue = (input: number) => {
+  return numeral(input).format("0,0.00") === "NaN"
+    ? formatSupperSmallNumber(input)
+    : input !== 0 && input > 0 && input < 0.01 ? "<$0.01" : numeral(input).format("$0,0.00");
+};
+
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.000000") === "NaN"
-    ? formatLongNumber(input)
-    : numeral(input).format("0,0.000000");
+    ? formatSupperSmallNumber(input)
+    : input < 0.01 ? numeral(input).format("0,0.000000") : numeral(input).format("0,0.0000");
 };
 
 export const formatBalance = (input: number) => {
