@@ -149,7 +149,7 @@
     }`}
   >
     <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
-      <TooltipNumber number={data?.floorPriceBTC} type="amount" /><span
+      <TooltipNumber number={data?.floorPriceBTC} type="balance" /><span
         class="mx-1"
         >{getAddressContext(selectedWallet)?.type === "EVM"
           ? "ETH"
@@ -168,7 +168,7 @@
     }`}
   >
     <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
-      <TooltipNumber number={data?.totalCostBTC} type="amount" /><span
+      <TooltipNumber number={data?.totalCostBTC} type="balance" /><span
         class="mx-1"
       >
         {getAddressContext(selectedWallet)?.type === "EVM" ? "ETH" : "BTC"}

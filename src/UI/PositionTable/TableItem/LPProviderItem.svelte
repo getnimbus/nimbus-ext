@@ -103,7 +103,7 @@
       <div class="flex flex-col items-end">
         <div class="flex items-center gap-1">
           <div class="flex items-center gap-1">
-            <TooltipNumber number={Number(data.amount0out)} type="amount" />
+            <TooltipNumber number={Number(data.amount0out)} type="balance" />
             {data.amount0Price?.symbol ? data.amount0Price?.symbol : ""} |
           </div>
           <div class="flex">
@@ -112,7 +112,7 @@
         </div>
         <div class="flex items-center gap-1">
           <div class="flex items-center gap-1">
-            <TooltipNumber number={Number(data.amount1out)} type="amount" />
+            <TooltipNumber number={Number(data.amount1out)} type="balance" />
             {data.amount1Price?.symbol ? data.amount1Price?.symbol : ""} |
           </div>
           <div class="flex">
@@ -141,7 +141,7 @@
           <div class="flex items-center gap-1">
             <TooltipNumber
               number={Number(data.claimable0Amount)}
-              type="amount"
+              type="balance"
             />
             {data.amount0Price?.symbol ? data.amount0Price?.symbol : ""} |
           </div>
@@ -153,7 +153,7 @@
           <div class="flex items-center gap-1">
             <TooltipNumber
               number={Number(data.claimable1Amount)}
-              type="amount"
+              type="balance"
             />
             {data.amount1Price?.symbol ? data.amount1Price?.symbol : ""} |
           </div>

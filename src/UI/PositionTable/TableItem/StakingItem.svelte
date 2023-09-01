@@ -70,7 +70,7 @@
     }`}
   >
     <div class="flex justify-end xl:text-sm text-xl text_00000099 font-medium">
-      <TooltipNumber number={data.claimable} type="amount" />
+      <TooltipNumber number={data.claimable} type="balance" />
     </div>
   </td>
 

@@ -9,6 +9,7 @@
   } from "~/store";
   import {
     formatCurrency,
+    formatValue,
     getAddressContext,
     getTooltipContent,
     volatilityColorChart,
@@ -159,7 +160,7 @@
                   darkMode ? "white" : "black"
                 }">
                   <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
-                    $${formatCurrency(Number(params?.data?.value))}
+                    ${formatValue(Number(params?.data?.value))}
                   </div>
                 </div>
               </div>
@@ -198,7 +199,7 @@
                           <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                             darkMode ? "white" : "black"
                           }">
-                           $${formatCurrency(
+                           ${formatValue(
                              Number(item?.amount) * Number(item?.price?.price)
                            )}
                           </div>
