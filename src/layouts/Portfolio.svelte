@@ -457,25 +457,10 @@
     ],
     queryFn: () => handleGetAllData(typeQueryGetAllData),
     staleTime: Infinity,
+    cacheTime: 0,
   });
 
-  $: queryTest = createQuery({
-    queryKey: [
-      "getAllData",
-      selectedWallet,
-      selectedChain,
-      typeQueryGetAllData,
-    ],
-    queryFn: () => test(typeQueryGetAllData),
-    staleTime: Infinity,
-  });
-
-  const test = (data) => {
-    console.log("HELLO");
-    return "success";
-  };
-
-  $: console.log("queryTest: ", $queryTest);
+  $: console.log("queryGetAllData: ", $queryGetAllData);
 
   const getSyncStatus = async () => {
     try {
