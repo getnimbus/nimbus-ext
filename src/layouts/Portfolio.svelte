@@ -72,6 +72,9 @@
     typeWalletAddress = value;
   });
 
+  let typeQueryGetAllData: "reload" | "sync" = "sync";
+  const queryClient = useQueryClient();
+
   let overviewData: OverviewData = {
     breakdownToken: [],
     breakdownNft: [],
@@ -101,8 +104,6 @@
     portfolioChart: [],
   };
   let dataUpdatedTime;
-  let isLoading = false;
-  let isLoadingSync = false;
   let totalPositions = 0;
   let totalClaimable = 0;
   let totalAssets = 0;
@@ -445,9 +446,6 @@
     }
   };
 
-  let typeQueryGetAllData: "reload" | "sync" = "sync";
-  const queryClient = useQueryClient();
-
   $: queryGetAllData = createQuery({
     queryKey: [
       "getAllData",
@@ -459,8 +457,6 @@
     staleTime: Infinity,
     cacheTime: 0,
   });
-
-  $: console.log("queryGetAllData: ", $queryGetAllData);
 
   const getSyncStatus = async () => {
     try {
@@ -476,15 +472,12 @@
   };
 
   const handleGetAllData = async (type: string) => {
-    console.log("HELLO WORLD");
     loadingOverview = true;
     loadingHoldingToken = true;
     loadingHoldingNFT = true;
     loadingPositions = true;
     loadingNews = true;
 
-    isLoading = true;
-    isLoadingSync = false;
     try {
       if (type === "reload") {
         console.log("Going to full sync");
@@ -497,12 +490,10 @@
       let syncStatus = await getSyncStatus();
       if (isEmpty(syncStatus)) {
         // syncMsg = "Invalid address";
-        isLoadingSync = true;
         return "fail";
       }
       if (syncStatus?.data?.error) {
         syncMsg = syncStatus?.data?.error;
-        isLoadingSync = true;
         if (!syncStatus?.data?.canWait) {
           // Cut call when we can not wait
           return "fail";
@@ -510,7 +501,6 @@
       }
       if (syncStatus?.error) {
         syncMsg = syncStatus?.error?.error;
-        isLoadingSync = true;
         return "fail";
       }
       if (!syncStatus?.data?.lastSync) {
@@ -525,7 +515,6 @@
         try {
           if (syncStatus?.data?.error) {
             syncMsg = syncStatus?.data?.error;
-            isLoadingSync = true;
             if (!syncStatus?.data?.canWait) {
               // Cut call when we can not wait
               return "fail";
@@ -551,8 +540,6 @@
                 (resHoldingToken === undefined || resHoldingToken)
               ) {
                 syncMsg = "";
-                isLoading = false;
-                isLoadingSync = false;
                 return "success";
               }
 
@@ -595,15 +582,12 @@
                 //  && (resNews === undefined || resNews)
               ) {
                 syncMsg = "";
-                isLoading = false;
-                isLoadingSync = false;
                 return "success";
               }
 
               break;
             }
           } else {
-            isLoadingSync = true;
             await wait(5000);
             syncStatus = await getSyncStatus();
             return "fail";
@@ -611,7 +595,6 @@
         } catch (e) {
           console.error(e.message);
           syncMsg = "";
-          isLoading = false;
           loadingOverview = false;
           loadingHoldingToken = false;
           loadingHoldingNFT = false;
@@ -623,7 +606,6 @@
       }
     } catch (e) {
       console.error("error: ", e);
-      isLoading = false;
       return "fail";
     }
   };
@@ -919,7 +901,7 @@
     <div class="flex items-center gap-2 mb-1">
       <div
         class="cursor-pointer"
-        class:loading={isLoading}
+        class:loading={$queryGetAllData.isFetching}
         on:click={() => {
           typeQueryGetAllData = "reload";
           queryClient.invalidateQueries(["getAllData"]);
@@ -929,7 +911,7 @@
         <img src={Reload} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
       </div>
       <div class="xl:text-xs text-lg text-white font-medium">
-        {#if isLoading}
+        {#if $queryGetAllData.isFetching}
           {MultipleLang.updating_data}
         {:else}
           {MultipleLang.data_updated}
@@ -939,7 +921,7 @@
     </div>
   </span>
   <span slot="overview">
-    {#if !isLoadingSync}
+    {#if !$queryGetAllData.isFetching}
       <Overview
         data={overviewData}
         {totalPositions}
@@ -950,7 +932,7 @@
   </span>
   <span slot="body">
     <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
-      {#if isLoadingSync}
+      {#if $queryGetAllData.isFetching}
         <div
           class="portfolio_container text-xl font-medium flex flex-col gap-5 justify-center items-center rounded-[20px] p-6 h-screen"
         >
