@@ -713,32 +713,32 @@ export const correlationsMatrixColor = (value: number) => {
 export const volatilityColorChart = (value: number) => {
   let color = '#35b86d'; // green
 
-  if (value > 5 && value <= 15) {
+  if (value * 100 > 5 && value * 100 <= 15) {
     color = '#a2c04c';
   }
 
-  if (value > 15 && value <= 30) {
+  if (value * 100 > 15 && value * 100 <= 30) {
     color = '#d8c42f';
   }
 
-  if (value > 30 && value <= 50) {
+  if (value * 100 > 30 && value * 100 <= 50) {
     color = '#fec406';
   }
 
-  if (value > 50 && value <= 75) {
+  if (value * 100 > 50 && value * 100 <= 75) {
     color = '#f79e28'
   }
 
-  if (value > 75 && value <= 100) {
+  if (value * 100 > 75 && value * 100 <= 100) {
     color = '#f28a30'
   }
 
-  if (value > 100 && value <= 150) {
+  if (value * 100 > 100 && value * 100 <= 150) {
     color = '#e6553d'
   }
 
   // red
-  if (value > 150) {
+  if (value * 100 > 150) {
     color = '#e14240'
   }
 
