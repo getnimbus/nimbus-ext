@@ -365,11 +365,10 @@
 
       matrix = filterListCoinPrice.map((item) => {
         return filterListCoinPrice.map((tokenPair) => {
-          const pairData = formatFilterListCoinPrice.find((row) =>
-            [
-              `${item.symbol} - ${tokenPair.symbol}`,
-              `${tokenPair.symbol} - ${item.symbol}`,
-            ].includes(row.pair)
+          const pairData = formatFilterListCoinPrice.find(
+            (row) =>
+              row.pair === `${item.symbol} - ${tokenPair.symbol}` ||
+              row.pair === `${tokenPair.symbol} - ${item.symbol}`
           );
           return {
             chain: tokenPair.chain,
@@ -430,7 +429,7 @@
     </div>
   {:else}
     <div>
-      {#if listTokenHolding.length === 0}
+      {#if $queryHoldingToken.isError}
         <div
           class="flex justify-center items-center p-[6px] text-lg text-gray-400"
         >
@@ -439,17 +438,15 @@
       {:else}
         <div class="flex gap-9 relative">
           <div class="flex flex-col xl:flex-[0.2] flex-[0.4]">
-            {#if listTokenHolding && listTokenHolding.length !== 0}
-              <div class="font-medium xl:text-base text-2xl py-[6px]">
-                Selected Coins
-              </div>
-            {/if}
+            <div class="font-medium xl:text-base text-2xl py-[6px]">
+              Selected Coins
+            </div>
             <div class="flex flex-col items-center justify-center w-full">
               {#each listTokenHolding as item}
                 <div
                   class={`border-b ${
                     darkMode ? "border-[#0f0f0f]" : "border-gray-200"
-                  } py-2 px-1 w-full text-center flex items-center justify-between`}
+                  } last:border-none py-2 px-1 w-full text-center flex items-center justify-between`}
                 >
                   <div class="flex items-center gap-2">
                     <div class="w-6 h-6 mx-auto rounded-full overflow-hidden">
@@ -488,9 +485,12 @@
                 </div>
               {/each}
             </div>
-            {#if listTokenHolding && listTokenHolding.length !== 0}
+            <div
+              class={`pt-4 border-t ${
+                darkMode ? "border-[#0f0f0f]" : "border-gray-200"
+              }`}
+            >
               <Button
-                className="mt-4"
                 variant="primary"
                 on:click={() => {
                   isOpenModal = true;
@@ -498,95 +498,105 @@
               >
                 <div class="xl:text-sm text-xl">Compare more</div>
               </Button>
-            {/if}
+            </div>
           </div>
 
-          <div class="2xl:overflow-visible overflow-x-auto w-full flex-1">
-            <table class="rounded-[10px] lg:w-full w-[1800px]">
-              <tbody on:mouseleave={() => (colIndex = undefined)}>
-                {#each listTokenHolding as tokenItem, index}
-                  <th
-                    class={`py-[6px] text-2xl xl:text-base font-medium ${
-                      colIndex === index
-                        ? darkMode
-                          ? "bg-[#cdcdcd26]"
-                          : "bg-[#dbeafe]"
-                        : ""
-                    }`}
-                    on:mouseenter={() => (colIndex = index)}
-                  >
-                    {tokenItem.name}
-                  </th>
-                {/each}
-                {#each matrix as data, indexY}
-                  <tr
-                    class={`border ${
-                      darkMode ? "border-[#0f0f0f]" : "border-gray-200"
-                    } ${!colImg ? "active" : ""}`}
-                  >
-                    {#each data as item, indexX}
-                      {#if indexX == indexY}
-                        <td
-                          class={`p-[8px] ${
-                            colIndex === indexX
-                              ? darkMode
-                                ? "bg-[#cdcdcd26]"
-                                : "bg-[#dbeafe]"
-                              : ""
-                          }`}
-                          on:mouseenter={() => {
-                            colIndex = undefined;
-                            colImg = true;
-                          }}
-                          on:mouseleave={() => {
-                            colImg = false;
-                          }}
-                        >
-                          <div
-                            class="w-6 h-6 mx-auto rounded-full overflow-hidden"
-                          >
-                            <img
-                              src={item.value}
-                              alt="Coin Icon"
-                              class="w-full h-full object-contain"
-                            />
-                          </div>
-                        </td>
-                      {:else}
-                        <td
-                          class={`text-2xl xl:text-base text-center border ${
-                            darkMode ? "border-[#0f0f0f]" : "border-gray-200"
-                          } ${
-                            colIndex === indexX
-                              ? darkMode
-                                ? "bg-[#cdcdcd26]"
-                                : "bg-[#dbeafe]"
-                              : ""
-                          }`}
-                          on:mouseenter={() => (colIndex = indexX)}
-                        >
-                          <div
-                            class={`p-[6px] ${
-                              item.value === "N/A"
-                                ? ""
-                                : `bg-[${correlationsMatrixColor(item.value)}]`
+          {#if listTokenHolding && listTokenHolding.length === 0}
+            <div
+              class="flex justify-center items-center p-[6px] text-lg text-gray-400 flex-1"
+            >
+              Empty
+            </div>
+          {:else}
+            <div class="2xl:overflow-visible overflow-x-auto w-full flex-1">
+              <table class="rounded-[10px] lg:w-full w-[1800px]">
+                <tbody on:mouseleave={() => (colIndex = undefined)}>
+                  {#each listTokenHolding as tokenItem, index}
+                    <th
+                      class={`py-[6px] text-2xl xl:text-base font-medium ${
+                        colIndex === index
+                          ? darkMode
+                            ? "bg-[#cdcdcd26]"
+                            : "bg-[#dbeafe]"
+                          : ""
+                      }`}
+                      on:mouseenter={() => (colIndex = index)}
+                    >
+                      {tokenItem.name}
+                    </th>
+                  {/each}
+                  {#each matrix as data, indexY}
+                    <tr
+                      class={`border ${
+                        darkMode ? "border-[#0f0f0f]" : "border-gray-200"
+                      } ${!colImg ? "active" : ""}`}
+                    >
+                      {#each data as item, indexX}
+                        {#if indexX == indexY}
+                          <td
+                            class={`p-[8px] ${
+                              colIndex === indexX
+                                ? darkMode
+                                  ? "bg-[#cdcdcd26]"
+                                  : "bg-[#dbeafe]"
+                                : ""
                             }`}
-                            style={`background: ${correlationsMatrixColor(
-                              item.value
-                            )}`}
+                            on:mouseenter={() => {
+                              colIndex = undefined;
+                              colImg = true;
+                            }}
+                            on:mouseleave={() => {
+                              colImg = false;
+                            }}
                           >
-                            {item.value === "N/A"
-                              ? "N/A"
-                              : formatPercent(item.value)}
-                          </div>
-                        </td>
-                      {/if}
-                    {/each}
-                  </tr>
-                {/each}
-              </tbody>
-            </table>
-          </div>
+                            <div
+                              class="w-6 h-6 mx-auto rounded-full overflow-hidden"
+                            >
+                              <img
+                                src={item.value}
+                                alt="Coin Icon"
+                                class="w-full h-full object-contain"
+                              />
+                            </div>
+                          </td>
+                        {:else}
+                          <td
+                            class={`text-2xl xl:text-base text-center border ${
+                              darkMode ? "border-[#0f0f0f]" : "border-gray-200"
+                            } ${
+                              colIndex === indexX
+                                ? darkMode
+                                  ? "bg-[#cdcdcd26]"
+                                  : "bg-[#dbeafe]"
+                                : ""
+                            }`}
+                            on:mouseenter={() => (colIndex = indexX)}
+                          >
+                            <div
+                              class={`p-[6px] ${
+                                item.value === "N/A"
+                                  ? ""
+                                  : `bg-[${correlationsMatrixColor(
+                                      item.value
+                                    )}]`
+                              }`}
+                              style={`background: ${correlationsMatrixColor(
+                                item.value
+                              )}`}
+                            >
+                              {item.value === "N/A"
+                                ? "N/A"
+                                : formatPercent(item.value)}
+                            </div>
+                          </td>
+                        {/if}
+                      {/each}
+                    </tr>
+                  {/each}
+                </tbody>
+              </table>
+            </div>
+          {/if}
         </div>
       {/if}
     </div>
