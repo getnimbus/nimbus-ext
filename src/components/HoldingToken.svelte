@@ -487,7 +487,7 @@
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
-      {#if typeWalletAddress === "CEX"}
+      {#if typeWalletAddress === "CEX" || getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
         N/A
       {:else}
         <div
@@ -507,7 +507,7 @@
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
-      {#if typeWalletAddress === "CEX"}
+      {#if typeWalletAddress === "CEX" || getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
         N/A
       {:else}
         <div class="flex flex-col">
