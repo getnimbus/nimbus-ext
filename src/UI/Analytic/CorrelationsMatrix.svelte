@@ -364,20 +364,24 @@
       }
 
       matrix = filterListCoinPrice.map((item) => {
-        return formatFilterListCoinPrice
-          .filter((eachItem) => {
-            const [firstPart, secondPart] = eachItem.pair.split(" - ");
-            return firstPart === item.symbol || secondPart === item.symbol;
-          })
-          .map((tokenPair) => {
-            return {
-              chain: tokenPair.chain,
-              pair: tokenPair.pair,
-              value:
-                tokenPair.value === null ? tokenPair.logo : tokenPair.value,
-            };
-          });
+        return filterListCoinPrice.map((tokenPair) => {
+          const pairData = formatFilterListCoinPrice.find((row) =>
+            [
+              `${item.symbol} - ${tokenPair.symbol}`,
+              `${tokenPair.symbol} - ${item.symbol}`,
+            ].includes(row.pair)
+          );
+          return {
+            chain: tokenPair.chain,
+            pair: `${item.symbol} - ${tokenPair.symbol}`,
+            value:
+              item.symbol === tokenPair.symbol ? item.logo : pairData?.value,
+          };
+        });
       });
+
+      console.log({ filterListCoinPrice, formatFilterListCoinPrice });
+      console.log(matrix);
     }
   }
 
