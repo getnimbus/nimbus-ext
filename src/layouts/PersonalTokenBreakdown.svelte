@@ -549,7 +549,7 @@
 
   <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
     <div
-      class="custom_token_breakdown_container rounded-[20px] xl:p-8 xl:shadow-md"
+      class="custom_token_breakdown_container rounded-[20px] xl:p-8 p-6 xl:shadow-md"
     >
       <div
         class={`rounded-[20px] p-6 flex flex-col gap-4 bg-red-500 ${
@@ -562,7 +562,7 @@
 
         {#if listCustom.length === 0}
           <div class="flex justify-between items-center">
-            <div class="text-lg">
+            <div class="text-lg flex-1">
               Add your custom token breakdown to keep track of investments by
               your way.
             </div>
@@ -1387,7 +1387,7 @@
       </div>
     </div>
     <div class="flex justify-end lg:gap-2 gap-6 mt-4">
-      <div class="lg:w-[120px] w-full h-[36px]">
+      <div class="lg:w-[120px] w-full">
         <Button
           variant="secondary"
           on:click={() => {
@@ -1397,7 +1397,7 @@
           Cancel
         </Button>
       </div>
-      <div class="lg:w-[120px] w-full h-[36px]">
+      <div class="lg:w-[120px] w-full">
         <Button
           variant="delete"
           isLoading={isLoadingDelete}
