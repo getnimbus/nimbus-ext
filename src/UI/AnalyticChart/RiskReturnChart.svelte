@@ -489,26 +489,23 @@
   <span slot="title">
     <div class="flex justify-start text-4xl font-medium xl:text-2xl">
       Risks & Returns
-      <!-- <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
-        Risks & Returns
-      </TooltipTitle> -->
     </div>
   </span>
 
-  <span slot="overview" class="relative">
-    {#if !($query.isFetching || $queryBreakdown.isFetching)}
-      <div class="mb-4 text-3xl font-medium xl:text-xl">Overview</div>
+  <span slot="overview">
+    {#if !($query.isFetching || $queryBreakdown.isFetching) && !$query.isError}
+      <div class="mb-4 text-3xl font-medium xl:text-xl px-6 pt-6">Overview</div>
     {/if}
     {#if $query.isFetching || $queryBreakdown.isFetching}
       <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />
       </div>
     {:else}
-      <div class="h-full">
+      <div class="h-full relative">
         {#if $query.isError}
           <div
-            class={`absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 ${
-              darkMode ? "bg-black/95" : "bg-white/95"
+            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+              darkMode ? "bg-[#222222e6]" : "bg-white/90"
             } z-30 backdrop-blur-md xl:text-xs text-lg`}
           >
             {#if typeWalletAddress === "CEX"}
@@ -519,128 +516,137 @@
             {/if}
           </div>
         {:else}
-          <div class="flex flex-col gap-4">
-            <div class="grid grid-cols-2">
-              <div class="col-span-1">
-                <div class="flex justify-start text-2xl xl:text-base">
-                  <TooltipTitle
-                    tooltipText={getTooltipContent(
-                      "The Sharpe ratio measures how well an investment performs relative to its risk.",
-                      SharpeRatioExplain,
-                      "360px"
-                    )}
-                    isBigIcon
-                    isExplainVideo
-                  >
-                    Sharpe ratio
-                  </TooltipTitle>
-                </div>
-              </div>
-              <div class="flex items-center justify-end col-span-1">
-                <div class="text-2xl xl:text-base">
-                  <TooltipNumber
-                    number={data?.base?.sharpeRatio}
-                    type="percent"
-                  />
-                </div>
-              </div>
-            </div>
-            {#if data?.base?.sharpeRatio < 1}
-              <div>
-                <CtaIcon isGood={false} />
-                <span class="text-red-500"
-                  >Your portfolio is not "balance" between risk and return:</span
-                >
-                It has expected yield only
-                <span class="font-medium"
-                  >{data?.base?.sharpeRatio?.toFixed(2)}</span
-                >
-                units of profit per <span class="font-medium">1</span> unit of risk.
-              </div>
-            {/if}
-          </div>
-          <div class="flex items-center gap-3 mt-3">
-            {#if goodPerf}
-              <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
-                <div class="xl:text-base text-lg text-[#6E7787FF] relative">
-                  <div
-                    class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
-                  />
-                  Best return
-                </div>
-                <div class="text-3xl xl:text-2xl">{goodPerf?.symbol}</div>
-                <div class="flex items-center gap-1 text-2xl xl:text-lg">
-                  <img
-                    src={goodPerf?.change30DPercent >= 0 ? TrendUp : TrendDown}
-                    alt="trend"
-                    class="mb-1"
-                  />
-                  <div
-                    class={`${
-                      goodPerf?.change30DPercent >= 0
-                        ? "text-[#00A878]"
-                        : "text-red-500"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(goodPerf?.change30DPercent || 0)}
-                      type="percent"
-                    />
-                    %
+          <div class="flex flex-col gap-8 px-6 pb-8">
+            <div class="flex flex-col gap-3">
+              <div class="flex flex-col gap-4">
+                <div class="grid grid-cols-2">
+                  <div class="col-span-1">
+                    <div class="flex justify-start text-2xl xl:text-base">
+                      <TooltipTitle
+                        tooltipText={getTooltipContent(
+                          "The Sharpe ratio measures how well an investment performs relative to its risk.",
+                          SharpeRatioExplain,
+                          "360px"
+                        )}
+                        isBigIcon
+                        isExplainVideo
+                      >
+                        Sharpe ratio
+                      </TooltipTitle>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-end col-span-1">
+                    <div class="text-2xl xl:text-base">
+                      <TooltipNumber
+                        number={data?.base?.sharpeRatio}
+                        type="percent"
+                      />
+                    </div>
                   </div>
                 </div>
+                {#if data?.base?.sharpeRatio < 1}
+                  <div>
+                    <CtaIcon isGood={false} />
+                    <span class="text-red-500"
+                      >Your portfolio is not "balance" between risk and return:</span
+                    >
+                    It has expected yield only
+                    <span class="font-medium"
+                      >{data?.base?.sharpeRatio?.toFixed(2)}</span
+                    >
+                    units of profit per <span class="font-medium">1</span> unit of
+                    risk.
+                  </div>
+                {/if}
               </div>
-            {/if}
+              <div class="flex items-center gap-3">
+                {#if goodPerf}
+                  <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
+                    <div class="xl:text-base text-lg text-[#6E7787FF] relative">
+                      <div
+                        class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
+                      />
+                      Best return
+                    </div>
+                    <div class="text-3xl xl:text-2xl">{goodPerf?.symbol}</div>
+                    <div class="flex items-center gap-1 text-2xl xl:text-lg">
+                      <img
+                        src={goodPerf?.change30DPercent >= 0
+                          ? TrendUp
+                          : TrendDown}
+                        alt="trend"
+                        class="mb-1"
+                      />
+                      <div
+                        class={`${
+                          goodPerf?.change30DPercent >= 0
+                            ? "text-[#00A878]"
+                            : "text-red-500"
+                        }`}
+                      >
+                        <TooltipNumber
+                          number={Math.abs(goodPerf?.change30DPercent || 0)}
+                          type="percent"
+                        />
+                        %
+                      </div>
+                    </div>
+                  </div>
+                {/if}
 
-            {#if badPerf}
-              <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
-                <div class="xl:text-base text-lg text-[#6E7787FF] relative">
-                  <div
-                    class="border border-red-500 absolute -top-1 left-0 w-[40px]"
-                  />
-                  Worse return
-                </div>
-                <div class="text-3xl xl:text-2xl">{badPerf?.symbol}</div>
-                <div class="flex items-center gap-1 text-2xl xl:text-lg">
-                  <img
-                    src={badPerf?.change30DPercent >= 0 ? TrendUp : TrendDown}
-                    alt="trend"
-                    class="mb-1"
-                  />
-                  <div
-                    class={`${
-                      badPerf?.change30DPercent >= 0
-                        ? "text-[#00A878]"
-                        : "text-red-500"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(badPerf?.change30DPercent || 0)}
-                      type="percent"
-                    />
-                    %
+                {#if badPerf}
+                  <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
+                    <div class="xl:text-base text-lg text-[#6E7787FF] relative">
+                      <div
+                        class="border border-red-500 absolute -top-1 left-0 w-[40px]"
+                      />
+                      Worse return
+                    </div>
+                    <div class="text-3xl xl:text-2xl">{badPerf?.symbol}</div>
+                    <div class="flex items-center gap-1 text-2xl xl:text-lg">
+                      <img
+                        src={badPerf?.change30DPercent >= 0
+                          ? TrendUp
+                          : TrendDown}
+                        alt="trend"
+                        class="mb-1"
+                      />
+                      <div
+                        class={`${
+                          badPerf?.change30DPercent >= 0
+                            ? "text-[#00A878]"
+                            : "text-red-500"
+                        }`}
+                      >
+                        <TooltipNumber
+                          number={Math.abs(badPerf?.change30DPercent || 0)}
+                          type="percent"
+                        />
+                        %
+                      </div>
+                    </div>
                   </div>
-                </div>
+                {/if}
               </div>
-            {/if}
-          </div>
-          <div class="flex flex-col gap-3 mt-8">
-            <div class="text-2xl font-medium xl:text-lg">
-              <TooltipTitle
-                tooltipText={"Compare with top 100 by CoinMarketCap."}
-                isBigIcon
-              >
-                Compare to Market
-              </TooltipTitle>
             </div>
-            <ProgressBar
-              leftLabel="Low"
-              rightLabel="High"
-              averageText={`Avg Market (${sharpeRatioAvgMarket})`}
-              progress={sharpeRatioCompareAvg}
-              lowerIsBetter={false}
-              tooltipText="Shapre Ratio"
-            />
+            <div class="flex flex-col gap-3">
+              <div class="text-2xl font-medium xl:text-lg">
+                <TooltipTitle
+                  tooltipText={"Compare with top 100 by CoinMarketCap."}
+                  isBigIcon
+                >
+                  Compare to Market
+                </TooltipTitle>
+              </div>
+              <ProgressBar
+                leftLabel="Low"
+                rightLabel="High"
+                averageText={`Avg Market (${sharpeRatioAvgMarket})`}
+                progress={sharpeRatioCompareAvg}
+                lowerIsBetter={false}
+                tooltipText="Shapre Ratio"
+              />
+            </div>
           </div>
         {/if}
       </div>
@@ -649,14 +655,16 @@
 
   <span slot="chart">
     {#if $query.isFetching || $queryBreakdown.isFetching}
-      <div class="flex items-center justify-center h-[465px]">
+      <div class="flex items-center justify-center h-[465px] p-6">
         <LoadingPremium />
       </div>
     {:else}
-      <div class="h-full">
+      <div class="h-full relative">
         {#if $query.isError}
           <div
-            class="flex justify-center items-center h-full xl:text-xs text-lg h-[465px]"
+            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+              darkMode ? "bg-[#222222e6]" : "bg-white/90"
+            } z-30 backdrop-blur-md xl:text-xs text-lg`}
           >
             {#if typeWalletAddress === "CEX"}
               Not enough data. CEX integration can only get data from the day
@@ -666,7 +674,7 @@
             {/if}
           </div>
         {:else}
-          <div class="flex flex-row mb-2">
+          <div class="flex flex-row mb-2 p-6">
             <AnimateSharedLayout>
               {#each riskTypeChart as type}
                 <div

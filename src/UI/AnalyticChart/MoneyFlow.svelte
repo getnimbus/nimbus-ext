@@ -403,14 +403,16 @@
   <span slot="overview">
     <div class="relative h-full">
       {#if !$query.isFetching}
-        <div class="mb-4 text-3xl font-medium xl:text-xl">Overview</div>
+        <div class="mb-4 text-3xl font-medium xl:text-xl px-6 pt-6">
+          Overview
+        </div>
       {/if}
       {#if $query.isFetching}
         <div class="flex items-center justify-center h-[465px]">
           <LoadingPremium />
         </div>
       {:else}
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-4 px-6 pb-6">
           <div class="grid grid-cols-2">
             <div class="col-span-1">
               <div class="flex justify-start">
@@ -466,44 +468,44 @@
   </span>
 
   <span slot="chart">
-    <div class="relative h-full">
-      {#if $query.isFetching}
-        <div class="flex items-center justify-center h-[465px]">
-          <LoadingPremium />
-        </div>
-      {:else}
-        <div class="w-full h-full">
-          {#if $query.isError || ($query.data && $query.data.length === 0)}
+    {#if $query.isFetching}
+      <div class="flex items-center justify-center h-[465px] p-6">
+        <LoadingPremium />
+      </div>
+    {:else}
+      <div class="h-full relative">
+        {#if $query.isError || ($query.data && $query.data.length === 0)}
+          <div
+            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+              darkMode ? "bg-[#222222e6]" : "bg-white/90"
+            } z-30 backdrop-blur-md xl:text-xs text-lg`}
+          >
+            Empty
+          </div>
+        {:else}
+          <div class="relative p-6">
+            <EChart
+              id="inflow-outflow"
+              {theme}
+              {option}
+              height={465}
+              notMerge={true}
+              type="full-width"
+            />
             <div
-              class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >
-              Empty
-            </div>
-          {:else}
-            <div class="relative">
-              <EChart
-                id="inflow-outflow"
-                {theme}
-                {option}
-                height={465}
-                notMerge={true}
-                type="full-width"
+              <img
+                src={darkMode ? LogoWhite : Logo}
+                alt=""
+                width="140"
+                height="140"
               />
-              <div
-                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
-              >
-                <img
-                  src={darkMode ? LogoWhite : Logo}
-                  alt=""
-                  width="140"
-                  height="140"
-                />
-              </div>
             </div>
-          {/if}
-        </div>
-      {/if}
-    </div>
+          </div>
+        {/if}
+      </div>
+    {/if}
   </span>
 </AnalyticSection>
 

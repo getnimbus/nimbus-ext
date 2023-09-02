@@ -237,15 +237,23 @@
     }
   };
 
+  const getListAddress = async () => {
+    const response: any = await nimbus.get("/accounts/list");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response?.data;
+  };
+
   const queryClient = useQueryClient();
-  const query = createQuery({
+  $: query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
+    retry: false,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
-      navigate("/");
       formatListAddress = [];
       selectedWallet = "";
     },
@@ -332,9 +340,13 @@
     } else {
       wallet.update((n) => (n = listAddress[0].value));
     }
+
+    updateStateFromParams();
   };
 
-  const updateStateFromParams = () => {
+  const updateStateFromParams = async () => {
+    await wait(1000);
+
     const urlParams = new URLSearchParams(window.location.search);
     const addressParams = urlParams.get("address");
     const chainParams = urlParams.get("chain");
@@ -425,14 +437,6 @@
         }
       }
     }
-  };
-
-  const getListAddress = async () => {
-    const response: any = await nimbus.get("/accounts/list");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
-    return response?.data;
   };
 
   // Add DEX address account
@@ -582,7 +586,6 @@
   };
 
   onMount(() => {
-    updateStateFromParams();
     if (
       localStorage.getItem("isGetUserEmailYet") !== null &&
       localStorage.getItem("isGetUserEmailYet") === "true"
@@ -782,7 +785,7 @@
   }
 </script>
 
-{#if $query.isFetching && formatListAddress && formatListAddress?.length === 0}
+{#if $query.isFetching}
   <div class="flex items-center justify-center h-screen">
     <loading-icon />
   </div>
@@ -844,7 +847,7 @@
 
                   {#if showDisableAddWallet}
                     <div
-                      class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                      class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
                       style="z-index: 2147483648;"
                     >
                       <tooltip-detail text={"Connect wallet to add account"} />
@@ -1276,7 +1279,7 @@
                     </Button>
                     {#if showFollowTooltip}
                       <div
-                        class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                        class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
                         style="z-index: 2147483648;"
                       >
                         <tooltip-detail
@@ -1307,24 +1310,32 @@
                         </Button>
                       </div>
                     {:else}
-                      <div
-                        use:tooltip={{
-                          content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
-                          allowHTML: true,
-                          placement: "top",
-                          interactive: true,
-                        }}
-                      >
-                        <Button
-                          variant="premium"
-                          on:click={() => {
-                            navigate(
-                              `/compare?address=${encodeURIComponent(
-                                selectedWallet
-                              )}`
-                            );
-                          }}>Optimize return</Button
-                        >
+                      <div>
+                        {#if Object.keys(userInfo).length !== 0}
+                          <div
+                            use:tooltip={{
+                              content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
+                              allowHTML: true,
+                              placement: "top",
+                              interactive: true,
+                            }}
+                          >
+                            <Button
+                              variant="premium"
+                              on:click={() => {
+                                navigate(
+                                  `/compare?address=${encodeURIComponent(
+                                    selectedWallet
+                                  )}`
+                                );
+                              }}>Optimize return</Button
+                            >
+                          </div>
+                        {:else}
+                          <Button variant="premium" disabled
+                            >Optimize return</Button
+                          >
+                        {/if}
                       </div>
                     {/if}
                   </div>
@@ -1351,24 +1362,32 @@
                       </Button>
                     </div>
                   {:else}
-                    <div
-                      use:tooltip={{
-                        content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
-                        allowHTML: true,
-                        placement: "top",
-                        interactive: true,
-                      }}
-                    >
-                      <Button
-                        variant="premium"
-                        on:click={() => {
-                          navigate(
-                            `/compare?address=${encodeURIComponent(
-                              selectedWallet
-                            )}`
-                          );
-                        }}>Optimize return</Button
-                      >
+                    <div>
+                      {#if Object.keys(userInfo).length !== 0}
+                        <div
+                          use:tooltip={{
+                            content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
+                            allowHTML: true,
+                            placement: "top",
+                            interactive: true,
+                          }}
+                        >
+                          <Button
+                            variant="premium"
+                            on:click={() => {
+                              navigate(
+                                `/compare?address=${encodeURIComponent(
+                                  selectedWallet
+                                )}`
+                              );
+                            }}>Optimize return</Button
+                          >
+                        </div>
+                      {:else}
+                        <Button variant="premium" disabled
+                          >Optimize return</Button
+                        >
+                      {/if}
                     </div>
                   {/if}
                 </div>
@@ -1591,7 +1610,7 @@
           >
           {#if showCommandTooltip}
             <div
-              class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+              class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
               style="z-index: 2147483648;"
             >
               <tooltip-detail

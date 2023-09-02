@@ -507,27 +507,23 @@
 
 <AnalyticSection>
   <span slot="title">
-    <div class="flex justify-start text-4xl font-medium xl:text-2xl">
-      Risks
-      <!-- <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
-      </TooltipTitle> -->
-    </div>
+    <div class="flex justify-start text-4xl font-medium xl:text-2xl">Risks</div>
   </span>
 
-  <span slot="overview" class="relative">
-    {#if !($query.isFetching || $queryBreakdown.isFetching)}
-      <div class="mb-4 text-3xl font-medium xl:text-xl">Overview</div>
+  <span slot="overview">
+    {#if !($query.isFetching || $queryBreakdown.isFetching) && !$query.isError}
+      <div class="mb-4 text-3xl font-medium xl:text-xl px-6 pt-6">Overview</div>
     {/if}
     {#if $query.isFetching || $queryBreakdown.isFetching}
       <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />
       </div>
     {:else}
-      <div class="h-full">
+      <div class="h-full relative">
         {#if $query.isError}
           <div
-            class={`absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 ${
-              darkMode ? "bg-black/95" : "bg-white/95"
+            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+              darkMode ? "bg-[#222222e6]" : "bg-white/90"
             } z-30 backdrop-blur-md xl:text-xs text-lg`}
           >
             {#if typeWalletAddress === "CEX"}
@@ -538,136 +534,138 @@
             {/if}
           </div>
         {:else}
-          <div class="flex flex-col gap-4">
-            <div class="grid grid-cols-2">
-              <div class="col-span-1">
-                <div class="flex justify-start text-2xl xl:text-base">
-                  <TooltipTitle
-                    tooltipText={getTooltipContent(
-                      "The Sharpe ratio measures how well an investment performs relative to its risk.",
-                      SharpeRatioExplain,
-                      "360px"
-                    )}
-                    isBigIcon
-                    isExplainVideo
-                  >
-                    Sharpe ratio
-                  </TooltipTitle>
+          <div class="flex flex-col gap-8 px-6 pb-8">
+            <div class="flex flex-col gap-4">
+              <div class="grid grid-cols-2">
+                <div class="col-span-1">
+                  <div class="flex justify-start text-2xl xl:text-base">
+                    <TooltipTitle
+                      tooltipText={getTooltipContent(
+                        "The Sharpe ratio measures how well an investment performs relative to its risk.",
+                        SharpeRatioExplain,
+                        "360px"
+                      )}
+                      isBigIcon
+                      isExplainVideo
+                    >
+                      Sharpe ratio
+                    </TooltipTitle>
+                  </div>
+                </div>
+                <div class="flex items-center justify-end col-span-1">
+                  <div class="text-2xl xl:text-base">
+                    <TooltipNumber
+                      number={data?.base?.sharpeRatio}
+                      type="percent"
+                    />
+                  </div>
                 </div>
               </div>
-              <div class="flex items-center justify-end col-span-1">
-                <div class="text-2xl xl:text-base">
-                  <TooltipNumber
-                    number={data?.base?.sharpeRatio}
-                    type="percent"
-                  />
-                </div>
-              </div>
-            </div>
 
-            <div class="grid grid-cols-2">
-              <div class="col-span-1">
-                <div class="flex justify-start text-2xl xl:text-base">
-                  <TooltipTitle
-                    tooltipText={getTooltipContent(
-                      "Volatility measures the extent of price fluctuations for an asset over time.",
-                      VolatilityExplain,
-                      "360px"
-                    )}
-                    isExplainVideo
-                    isBigIcon
-                  >
-                    Volatility
-                  </TooltipTitle>
+              <div class="grid grid-cols-2">
+                <div class="col-span-1">
+                  <div class="flex justify-start text-2xl xl:text-base">
+                    <TooltipTitle
+                      tooltipText={getTooltipContent(
+                        "Volatility measures the extent of price fluctuations for an asset over time.",
+                        VolatilityExplain,
+                        "360px"
+                      )}
+                      isExplainVideo
+                      isBigIcon
+                    >
+                      Volatility
+                    </TooltipTitle>
+                  </div>
+                </div>
+                <div class="flex items-center justify-end col-span-1">
+                  <div class="text-2xl xl:text-base">
+                    <TooltipNumber
+                      number={data?.base?.volatility}
+                      type="percent"
+                    />%
+                  </div>
                 </div>
               </div>
-              <div class="flex items-center justify-end col-span-1">
-                <div class="text-2xl xl:text-base">
-                  <TooltipNumber
-                    number={data?.base?.volatility}
-                    type="percent"
-                  />%
-                </div>
-              </div>
-            </div>
 
-            <div class="grid grid-cols-2">
-              <div class="col-span-1">
-                <div class="flex justify-start text-2xl xl:text-base">
-                  <TooltipTitle
-                    tooltipText={getTooltipContent(
-                      "Max drawdown is the biggest loss experienced by an investment or portfolio.",
-                      MaxDrawdownExplain,
-                      "360px"
-                    )}
-                    isExplainVideo
-                    isBigIcon
-                  >
-                    Max drawdown
-                  </TooltipTitle>
+              <div class="grid grid-cols-2">
+                <div class="col-span-1">
+                  <div class="flex justify-start text-2xl xl:text-base">
+                    <TooltipTitle
+                      tooltipText={getTooltipContent(
+                        "Max drawdown is the biggest loss experienced by an investment or portfolio.",
+                        MaxDrawdownExplain,
+                        "360px"
+                      )}
+                      isExplainVideo
+                      isBigIcon
+                    >
+                      Max drawdown
+                    </TooltipTitle>
+                  </div>
+                </div>
+                <div class="flex items-center justify-end col-span-1">
+                  <div class="text-2xl xl:text-base">
+                    <TooltipNumber
+                      number={data?.base?.drawDown}
+                      type="percent"
+                    />%
+                  </div>
                 </div>
               </div>
-              <div class="flex items-center justify-end col-span-1">
-                <div class="text-2xl xl:text-base">
-                  <TooltipNumber
-                    number={data?.base?.drawDown}
-                    type="percent"
-                  />%
-                </div>
+            </div>
+            <div class="space-y-3">
+              <div class="text-2xl xl:text-base">
+                <CtaIcon isGood={sharpeRatioCompare > 0} />
+                Sharpe ratio is {sharpeRatioCompare > 0 ? "higher" : "lower"} than
+                Bitcoin by
+                <span class="font-medium">{Math.abs(sharpeRatioCompare)}%</span>
               </div>
-            </div>
-          </div>
-          <div class="mt-8 space-y-3">
-            <div class="text-2xl xl:text-base">
-              <CtaIcon isGood={sharpeRatioCompare > 0} />
-              Sharpe ratio is {sharpeRatioCompare > 0 ? "higher" : "lower"} than
-              Bitcoin by
-              <span class="font-medium">{Math.abs(sharpeRatioCompare)}%</span>
-            </div>
-            <div class="text-2xl xl:text-base">
-              <CtaIcon isGood={volatilityCompare < 0} />
-              Volatility is {volatilityCompare > 0 ? "higher" : "lower"} than Bitcoin
-              by
-              <span class="font-medium">{Math.abs(volatilityCompare)}%</span>
-            </div>
+              <div class="text-2xl xl:text-base">
+                <CtaIcon isGood={volatilityCompare < 0} />
+                Volatility is {volatilityCompare > 0 ? "higher" : "lower"} than Bitcoin
+                by
+                <span class="font-medium">{Math.abs(volatilityCompare)}%</span>
+              </div>
 
-            <div class="text-2xl xl:text-base">
-              <CtaIcon isGood={drawDownCompare < 0} />
-              Max Drawdown is {drawDownCompare > 0 ? "higher" : "lower"} than Bitcoin
-              by
-              <span class="font-medium">{Math.abs(drawDownCompare)}%</span>
-            </div>
+              <div class="text-2xl xl:text-base">
+                <CtaIcon isGood={drawDownCompare < 0} />
+                Max Drawdown is {drawDownCompare > 0 ? "higher" : "lower"} than Bitcoin
+                by
+                <span class="font-medium">{Math.abs(drawDownCompare)}%</span>
+              </div>
 
-            <!-- <div>
-              <div>Meaning</div>
-              <ul>
-                <li />
-              </ul>
-            </div> -->
-          </div>
-          <div class="flex flex-col gap-3 mt-8">
-            <div class="text-2xl font-medium xl:text-lg">
-              <TooltipTitle
-                tooltipText={"Compare with top 100 by CoinMarketCap."}
-                isBigIcon
-              >
-                Compare to Market
-              </TooltipTitle>
+              <!-- <div>
+                <div>Meaning</div>
+                <ul>
+                  <li />
+                </ul>
+              </div> -->
             </div>
-            <ProgressBar
-              leftLabel="Low"
-              rightLabel="High"
-              averageText={`Avg Market (${volatilityAvgMarket}%)`}
-              progress={volatilityCompareAvg}
-              tooltipText="Volatility"
-            />
-            <ProgressBar
-              leftLabel="Low"
-              rightLabel="High"
-              averageText={`Avg Market (${drawDownAvgMarket}%)`}
-              progress={drawDownCompareAvg}
-              tooltipText="Max Drawdown"
-            />
+            <div class="flex flex-col gap-3">
+              <div class="text-2xl font-medium xl:text-lg">
+                <TooltipTitle
+                  tooltipText={"Compare with top 100 by CoinMarketCap."}
+                  isBigIcon
+                >
+                  Compare to Market
+                </TooltipTitle>
+              </div>
+              <ProgressBar
+                leftLabel="Low"
+                rightLabel="High"
+                averageText={`Avg Market (${volatilityAvgMarket}%)`}
+                progress={volatilityCompareAvg}
+                tooltipText="Volatility"
+              />
+              <ProgressBar
+                leftLabel="Low"
+                rightLabel="High"
+                averageText={`Avg Market (${drawDownAvgMarket}%)`}
+                progress={drawDownCompareAvg}
+                tooltipText="Max Drawdown"
+              />
+            </div>
           </div>
         {/if}
       </div>
@@ -676,14 +674,16 @@
 
   <span slot="chart">
     {#if $query.isFetching || $queryBreakdown.isFetching}
-      <div class="flex items-center justify-center h-[465px]">
+      <div class="flex items-center justify-center h-[465px] p-6">
         <LoadingPremium />
       </div>
     {:else}
-      <div class="h-full">
+      <div class="h-full relative">
         {#if $query.isError}
           <div
-            class="flex justify-center items-center h-full xl:text-xs text-lg h-[465px]"
+            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+              darkMode ? "bg-[#222222e6]" : "bg-white/90"
+            } z-30 backdrop-blur-md xl:text-xs text-lg`}
           >
             {#if typeWalletAddress === "CEX"}
               Not enough data. CEX integration can only get data from the day
@@ -693,7 +693,7 @@
             {/if}
           </div>
         {:else}
-          <div class="flex flex-row">
+          <div class="flex flex-row p-6">
             <AnimateSharedLayout>
               {#each riskTypeChart as type}
                 <div

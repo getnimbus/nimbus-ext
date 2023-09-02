@@ -16,6 +16,7 @@
   import { shorterAddress, clickOutside } from "~/utils";
   import { useNavigate } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import * as browser from "webextension-polyfill";
 
   import DarkMode from "~/components/DarkMode.svelte";
 
@@ -53,6 +54,8 @@
   let addressWallet = "";
   let invitation = "";
 
+  const queryClient = useQueryClient();
+
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     let invitationParams = urlParams.get("invitation");
@@ -71,14 +74,7 @@
           })
       );
     } else {
-      user.update((n) => (n = {}));
-      showPopover = false;
-      localStorage.removeItem("evm_address");
-      localStorage.removeItem("evm_token");
-      addressWallet = "";
-      disconnect($wallets$?.[0]);
-      navigate("/");
-      queryClient.invalidateQueries(["list-address"]);
+      handleSignOut();
     }
   });
 
@@ -93,18 +89,22 @@
     }
   };
 
-  const disconnect = ({ label }) => {
-    onboard.disconnectWallet({ label });
+  const disconnect = (value: any) => {
+    if (value && Object.keys(value).length !== 0) {
+      onboard.disconnectWallet({ label: value.label });
+    }
   };
 
   const handleSignOut = () => {
     user.update((n) => (n = {}));
+    wallet.update((n) => (n = ""));
+    chain.update((n) => (n = ""));
+    typeWallet.update((n) => (n = ""));
     showPopover = false;
     localStorage.removeItem("evm_address");
     localStorage.removeItem("evm_token");
     addressWallet = "";
     disconnect($wallets$?.[0]);
-    navigate("/");
     queryClient.invalidateQueries(["list-address"]);
   };
 
@@ -154,10 +154,10 @@
   const handleGetEVMToken = async (data) => {
     try {
       const res = await nimbus.post("/auth/evm", data);
-      if (res.data.result) {
+      if (res?.data?.result) {
         addressWallet = data.publicAddress;
         localStorage.setItem("evm_address", data.publicAddress);
-        localStorage.setItem("evm_token", res.data.result);
+        localStorage.setItem("evm_token", res?.data?.result);
         user.update(
           (n) =>
             (n = {
@@ -171,11 +171,19 @@
     }
   };
 
-  const queryClient = useQueryClient();
-  const query = createQuery({
+  const getListAddress = async () => {
+    const response: any = await nimbus.get("/accounts/list");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response?.data;
+  };
+
+  $: query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
+    retry: false,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -204,14 +212,6 @@
     } else {
       isFirstTimeLogin.update((n) => (n = false));
     }
-  };
-
-  const getListAddress = async () => {
-    const response: any = await nimbus.get("/accounts/list");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
-    return response?.data;
   };
 
   // Add DEX address account
