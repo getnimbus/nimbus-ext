@@ -49,7 +49,7 @@
 
   $: unrealizedProfit = data?.avgCost === 0 ? 0 : value + data?.avgCost;
   $: percentUnrealizedProfit =
-    (data?.avgCost || 0) === 0 ? 0 : unrealizedProfit / data?.avgCost;
+    (data?.avgCost || 0) === 0 ? 0 : unrealizedProfit / Math.abs(data?.avgCost);
 
   $: clickable =
     data.name !== "Bitcoin" &&
