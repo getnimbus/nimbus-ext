@@ -14,6 +14,7 @@
   import { wallet, chain, typeWallet } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { getHoldingSOL, getOverviewSOL } from "~/solanaAPI";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
@@ -307,52 +308,6 @@
     }
   };
 
-  const getPositions = async (isReload: boolean = false) => {
-    try {
-      const response: PositionDataRes = await sendMessage("getPositions", {
-        address: selectedWallet,
-        reload: isReload,
-        chain: selectedChain,
-      });
-      if (selectedWallet === response?.address && response && response.result) {
-        const formatData = response.result.map((item) => {
-          const groupPosition = groupBy(item.positions, "type");
-          return {
-            ...item,
-            positions: groupPosition,
-          };
-        });
-        positionsData = formatData;
-
-        return response;
-      } else {
-        return undefined;
-      }
-    } catch (e) {
-      console.error("error: ", e);
-      return undefined;
-    }
-  };
-
-  const getNews = async (isReload: boolean = false) => {
-    try {
-      const response: NewDataRes = await sendMessage("getNews", {
-        address: selectedWallet,
-        reload: isReload,
-        chain: selectedChain,
-      });
-      if (selectedWallet === response?.address) {
-        newsData = response.result;
-        return response;
-      } else {
-        return undefined;
-      }
-    } catch (e) {
-      console.error("error: ", e);
-      return undefined;
-    }
-  };
-
   const getHoldingToken = async (isReload: boolean = false) => {
     try {
       const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
@@ -445,6 +400,69 @@
     }
   };
 
+  const getPositions = async (isReload: boolean = false) => {
+    try {
+      const response: PositionDataRes = await sendMessage("getPositions", {
+        address: selectedWallet,
+        reload: isReload,
+        chain: selectedChain,
+      });
+      if (selectedWallet === response?.address && response && response.result) {
+        const formatData = response.result.map((item) => {
+          const groupPosition = groupBy(item.positions, "type");
+          return {
+            ...item,
+            positions: groupPosition,
+          };
+        });
+        positionsData = formatData;
+
+        return response;
+      } else {
+        return undefined;
+      }
+    } catch (e) {
+      console.error("error: ", e);
+      return undefined;
+    }
+  };
+
+  const getNews = async (isReload: boolean = false) => {
+    try {
+      const response: NewDataRes = await sendMessage("getNews", {
+        address: selectedWallet,
+        reload: isReload,
+        chain: selectedChain,
+      });
+      if (selectedWallet === response?.address) {
+        newsData = response.result;
+        return response;
+      } else {
+        return undefined;
+      }
+    } catch (e) {
+      console.error("error: ", e);
+      return undefined;
+    }
+  };
+
+  let typeQueryGetAllData: "reload" | "sync" = "sync";
+  const queryClient = useQueryClient();
+
+  $: queryGetAllData = createQuery({
+    queryKey: [
+      "getAllData",
+      selectedWallet,
+      selectedChain,
+      typeQueryGetAllData,
+    ],
+    queryFn: () => handleGetAllData(typeQueryGetAllData),
+    staleTime: Infinity,
+    cacheTime: Infinity,
+  });
+
+  $: console.log("queryGetAllData: ", $queryGetAllData);
+
   const getSyncStatus = async () => {
     try {
       const response: any = await sendMessage("getSyncStatus", {
@@ -459,6 +477,7 @@
   };
 
   const handleGetAllData = async (type: string) => {
+    console.log("HELLO WORLD");
     loadingOverview = true;
     loadingHoldingToken = true;
     loadingHoldingNFT = true;
@@ -480,20 +499,20 @@
       if (isEmpty(syncStatus)) {
         // syncMsg = "Invalid address";
         isLoadingSync = true;
-        return;
+        return "fail";
       }
       if (syncStatus?.data?.error) {
         syncMsg = syncStatus?.data?.error;
         isLoadingSync = true;
         if (!syncStatus?.data?.canWait) {
           // Cut call when we can not wait
-          return;
+          return "fail";
         }
       }
       if (syncStatus?.error) {
         syncMsg = syncStatus?.error?.error;
         isLoadingSync = true;
-        return;
+        return "fail";
       }
       if (!syncStatus?.data?.lastSync) {
         console.log("Going to full sync");
@@ -510,7 +529,7 @@
             isLoadingSync = true;
             if (!syncStatus?.data?.canWait) {
               // Cut call when we can not wait
-              return;
+              return "fail";
             }
           }
           if (syncStatus?.data?.lastSync) {
@@ -535,6 +554,7 @@
                 syncMsg = "";
                 isLoading = false;
                 isLoadingSync = false;
+                return "success";
               }
 
               break;
@@ -578,6 +598,7 @@
                 syncMsg = "";
                 isLoading = false;
                 isLoadingSync = false;
+                return "success";
               }
 
               break;
@@ -586,6 +607,7 @@
             isLoadingSync = true;
             await wait(5000);
             syncStatus = await getSyncStatus();
+            return "fail";
           }
         } catch (e) {
           console.error(e.message);
@@ -603,9 +625,11 @@
     } catch (e) {
       console.error("error: ", e);
       isLoading = false;
+      return "fail";
     }
   };
 
+  // SOLANA data holding and overview
   const handleGetSolHolding = async () => {
     try {
       const response = await getHoldingSOL(selectedWallet);
@@ -655,7 +679,9 @@
           result: formatDataTokenHolding,
         };
       } else {
-        handleGetAllData("reload");
+        // handleGetAllData("reload");
+        typeQueryGetAllData = "reload";
+        queryClient.invalidateQueries(["getAllData"]);
       }
     } catch (e) {
       console.error("error: ", e);
@@ -884,8 +910,6 @@
         newsData = [];
         holdingNFTData = [];
         holdingTokenData = [];
-
-        handleGetAllData("sync");
       }
     }
   }
@@ -898,7 +922,8 @@
         class="cursor-pointer"
         class:loading={isLoading}
         on:click={() => {
-          handleGetAllData("reload");
+          typeQueryGetAllData = "reload";
+          queryClient.invalidateQueries(["getAllData"]);
           mixpanel.track("user_reload");
         }}
       >
