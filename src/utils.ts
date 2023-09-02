@@ -679,6 +679,37 @@ export const handleFormatDataTable = (data, type) => {
   };
 };
 
+export const correlationsMatrixColor = (value: number) => {
+  if (value < -1) value = -1;
+  if (value > 1) value = 1;
+
+  const minColor = [255, 0, 0, 1];
+  const maxColor = [53, 222, 59, 1];
+
+  const opacity = (value + 1) / 2;
+
+  const interpolatedColorMax = [
+    maxColor[0],
+    maxColor[1],
+    maxColor[2],
+    opacity,
+  ];
+
+  const interpolatedColorMin = [
+    minColor[0],
+    minColor[1],
+    minColor[2],
+    opacity,
+  ];
+
+  if (value > 0) {
+    return `rgba(${interpolatedColorMax.join(', ')})`;
+  }
+  if (value < 0) {
+    return `rgba(${interpolatedColorMin.join(', ')})`;
+  }
+}
+
 export const volatilityColorChart = (value: number) => {
   let color = '#35b86d'; // green
 
@@ -798,3 +829,13 @@ export const clickOutside = (node) => {
     },
   };
 };
+
+export const equalizeArrayLengths = (arrA, arrB) => {
+  while (arrA.length > arrB.length) {
+    arrA.pop(); // Remove the last element from array A
+  }
+
+  while (arrB.length > arrA.length) {
+    arrB.pop(); // Remove the last element from array B
+  }
+}
