@@ -264,19 +264,19 @@
   </span>
 
   <span slot="overview" class="relative">
-    {#if !$query.isFetching}
-      <div class="mb-4 text-3xl font-medium xl:text-xl">Overview</div>
+    {#if !$query.isFetching && !$query.isError}
+      <div class="mb-4 text-3xl font-medium xl:text-xl px-6 pt-6">Overview</div>
     {/if}
     {#if $query.isFetching}
       <div class="flex items-center justify-center h-[465px]">
         <LoadingPremium />
       </div>
     {:else}
-      <div class="h-full">
+      <div class="h-full relative">
         {#if $query.isError}
           <div
-            class={`absolute top-0 left-0 w-full h-[465px] flex flex-col items-center justify-center text-center gap-3 ${
-              darkMode ? "bg-black/95" : "bg-white/95"
+            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+              darkMode ? "bg-[#222222e6]" : "bg-white/90"
             } z-30 backdrop-blur-md xl:text-xs text-lg`}
           >
             {#if typeWalletAddress === "CEX"}
@@ -287,198 +287,202 @@
             {/if}
           </div>
         {:else}
-          <div class="flex flex-col gap-4">
-            <div class="grid grid-cols-2">
-              <div class="col-span-1">
-                <div class="flex justify-start text-2xl xl:text-base">
-                  Return 1D
+          <div class="flex flex-col gap-8 px-6 pb-6">
+            <div class="flex flex-col gap-4">
+              <div class="grid grid-cols-2">
+                <div class="col-span-1">
+                  <div class="flex justify-start text-2xl xl:text-base">
+                    Return 1D
+                  </div>
+                </div>
+                <div class="flex items-center justify-end col-span-1">
+                  <div class={`xl:text-base text-2xl`}>
+                    <span
+                      class={`${
+                        data?.base?.netWorthChange?.networth1D < 0
+                          ? "text-red-500"
+                          : "text-[#00A878]"
+                      }`}
+                    >
+                      <TooltipNumber
+                        number={Math.abs(data?.base?.netWorthChange.networth1D)}
+                        type="percent"
+                      />%</span
+                    > <span class="text-gray-400">/</span>
+                    <span
+                      class={`${
+                        data?.btc?.netWorthChange?.networth1D < 0
+                          ? "text-red-500"
+                          : "text-[#00A878]"
+                      }`}
+                    >
+                      <TooltipNumber
+                        number={Math.abs(data?.btc?.netWorthChange.networth1D)}
+                        type="percent"
+                      />%</span
+                    >
+                  </div>
                 </div>
               </div>
-              <div class="flex items-center justify-end col-span-1">
-                <div class={`xl:text-base text-2xl`}>
-                  <span
-                    class={`${
-                      data?.base?.netWorthChange?.networth1D < 0
-                        ? "text-red-500"
-                        : "text-[#00A878]"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(data?.base?.netWorthChange.networth1D)}
-                      type="percent"
-                    />%</span
-                  > <span class="text-gray-400">/</span>
-                  <span
-                    class={`${
-                      data?.btc?.netWorthChange?.networth1D < 0
-                        ? "text-red-500"
-                        : "text-[#00A878]"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(data?.btc?.netWorthChange.networth1D)}
-                      type="percent"
-                    />%</span
-                  >
-                </div>
-              </div>
-            </div>
 
-            <div class="grid grid-cols-2">
-              <div class="col-span-1">
-                <div class="flex justify-start text-2xl xl:text-base">
-                  Return 7D
+              <div class="grid grid-cols-2">
+                <div class="col-span-1">
+                  <div class="flex justify-start text-2xl xl:text-base">
+                    Return 7D
+                  </div>
+                </div>
+                <div class="flex items-center justify-end col-span-1">
+                  <div class={`xl:text-base text-2xl`}>
+                    <span
+                      class={`${
+                        data?.base?.netWorthChange?.networth7D < 0
+                          ? "text-red-500"
+                          : "text-[#00A878]"
+                      }`}
+                    >
+                      <TooltipNumber
+                        number={Math.abs(data?.base?.netWorthChange.networth7D)}
+                        type="percent"
+                      />%</span
+                    > <span class="text-gray-400">/</span>
+                    <span
+                      class={`${
+                        data?.btc?.netWorthChange?.networth7D < 0
+                          ? "text-red-500"
+                          : "text-[#00A878]"
+                      }`}
+                    >
+                      <TooltipNumber
+                        number={Math.abs(data?.btc?.netWorthChange.networth7D)}
+                        type="percent"
+                      />%</span
+                    >
+                  </div>
                 </div>
               </div>
-              <div class="flex items-center justify-end col-span-1">
-                <div class={`xl:text-base text-2xl`}>
-                  <span
-                    class={`${
-                      data?.base?.netWorthChange?.networth7D < 0
-                        ? "text-red-500"
-                        : "text-[#00A878]"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(data?.base?.netWorthChange.networth7D)}
-                      type="percent"
-                    />%</span
-                  > <span class="text-gray-400">/</span>
-                  <span
-                    class={`${
-                      data?.btc?.netWorthChange?.networth7D < 0
-                        ? "text-red-500"
-                        : "text-[#00A878]"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(data?.btc?.netWorthChange.networth7D)}
-                      type="percent"
-                    />%</span
-                  >
-                </div>
-              </div>
-            </div>
 
-            <div class="grid grid-cols-2">
-              <div class="col-span-1">
-                <div class="flex justify-start text-2xl xl:text-base">
-                  Return 30D
+              <div class="grid grid-cols-2">
+                <div class="col-span-1">
+                  <div class="flex justify-start text-2xl xl:text-base">
+                    Return 30D
+                  </div>
+                </div>
+                <div class="flex items-center justify-end col-span-1">
+                  <div class={`xl:text-base text-2xl`}>
+                    <span
+                      class={`${
+                        data?.base?.netWorthChange?.networth30D < 0
+                          ? "text-red-500"
+                          : "text-[#00A878]"
+                      }`}
+                    >
+                      <TooltipNumber
+                        number={Math.abs(
+                          data?.base?.netWorthChange.networth30D
+                        )}
+                        type="percent"
+                      />%</span
+                    > <span class="text-gray-400">/</span>
+                    <span
+                      class={`${
+                        data?.btc?.netWorthChange?.networth30D < 0
+                          ? "text-red-500"
+                          : "text-[#00A878]"
+                      }`}
+                    >
+                      <TooltipNumber
+                        number={Math.abs(data?.btc?.netWorthChange.networth30D)}
+                        type="percent"
+                      />%</span
+                    >
+                  </div>
                 </div>
               </div>
-              <div class="flex items-center justify-end col-span-1">
-                <div class={`xl:text-base text-2xl`}>
-                  <span
-                    class={`${
-                      data?.base?.netWorthChange?.networth30D < 0
-                        ? "text-red-500"
-                        : "text-[#00A878]"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(data?.base?.netWorthChange.networth30D)}
-                      type="percent"
-                    />%</span
-                  > <span class="text-gray-400">/</span>
-                  <span
-                    class={`${
-                      data?.btc?.netWorthChange?.networth30D < 0
-                        ? "text-red-500"
-                        : "text-[#00A878]"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(data?.btc?.netWorthChange.networth30D)}
-                      type="percent"
-                    />%</span
-                  >
-                </div>
-              </div>
-            </div>
 
-            <div class="grid grid-cols-2">
-              <div class="col-span-1">
-                <div class="flex justify-start text-2xl xl:text-base">
-                  Return 1Y
+              <div class="grid grid-cols-2">
+                <div class="col-span-1">
+                  <div class="flex justify-start text-2xl xl:text-base">
+                    Return 1Y
+                  </div>
+                </div>
+                <div class="flex items-center justify-end col-span-1">
+                  <div class={`xl:text-base text-2xl`}>
+                    <span
+                      class={`${
+                        data?.base?.netWorthChange?.networth1Y < 0
+                          ? "text-red-500"
+                          : "text-[#00A878]"
+                      }`}
+                    >
+                      <TooltipNumber
+                        number={Math.abs(data?.base?.netWorthChange.networth1Y)}
+                        type="percent"
+                      />%</span
+                    > <span class="text-gray-400">/</span>
+                    <span
+                      class={`${
+                        data?.btc?.netWorthChange?.networth1Y < 0
+                          ? "text-red-500"
+                          : "text-[#00A878]"
+                      }`}
+                    >
+                      <TooltipNumber
+                        number={Math.abs(data?.btc?.netWorthChange.networth1Y)}
+                        type="percent"
+                      />%</span
+                    >
+                  </div>
                 </div>
               </div>
-              <div class="flex items-center justify-end col-span-1">
-                <div class={`xl:text-base text-2xl`}>
-                  <span
-                    class={`${
-                      data?.base?.netWorthChange?.networth1Y < 0
-                        ? "text-red-500"
-                        : "text-[#00A878]"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(data?.base?.netWorthChange.networth1Y)}
-                      type="percent"
-                    />%</span
-                  > <span class="text-gray-400">/</span>
-                  <span
-                    class={`${
-                      data?.btc?.netWorthChange?.networth1Y < 0
-                        ? "text-red-500"
-                        : "text-[#00A878]"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(data?.btc?.netWorthChange.networth1Y)}
-                      type="percent"
-                    />%</span
-                  >
-                </div>
-              </div>
-            </div>
 
-            <div class="grid grid-cols-2">
-              <div class="col-span-1">
-                <div class="flex justify-start text-2xl xl:text-base">
-                  Return Lifetime
+              <div class="grid grid-cols-2">
+                <div class="col-span-1">
+                  <div class="flex justify-start text-2xl xl:text-base">
+                    Return Lifetime
+                  </div>
                 </div>
-              </div>
-              <div class="flex items-center justify-end col-span-1">
-                <div class={`xl:text-base text-2xl`}>
-                  <span
-                    class={`${
-                      data?.base?.changeLF?.portfolioChange < 0
-                        ? "text-red-500"
-                        : "text-[#00A878]"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(data?.base?.changeLF.portfolioChange)}
-                      type="percent"
-                    />%</span
-                  > <span class="text-gray-400">/</span>
-                  <span
-                    class={`${
-                      data?.base?.changeLF?.btcChange < 0
-                        ? "text-red-500"
-                        : "text-[#00A878]"
-                    }`}
-                  >
-                    <TooltipNumber
-                      number={Math.abs(data?.base?.changeLF.btcChange)}
-                      type="percent"
-                    />%</span
-                  >
+                <div class="flex items-center justify-end col-span-1">
+                  <div class={`xl:text-base text-2xl`}>
+                    <span
+                      class={`${
+                        data?.base?.changeLF?.portfolioChange < 0
+                          ? "text-red-500"
+                          : "text-[#00A878]"
+                      }`}
+                    >
+                      <TooltipNumber
+                        number={Math.abs(data?.base?.changeLF.portfolioChange)}
+                        type="percent"
+                      />%</span
+                    > <span class="text-gray-400">/</span>
+                    <span
+                      class={`${
+                        data?.base?.changeLF?.btcChange < 0
+                          ? "text-red-500"
+                          : "text-[#00A878]"
+                      }`}
+                    >
+                      <TooltipNumber
+                        number={Math.abs(data?.base?.changeLF.btcChange)}
+                        type="percent"
+                      />%</span
+                    >
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="mt-8 space-y-3">
-            <div class="text-2xl xl:text-base">
-              <CtaIcon isGood={isReturn30Higher} />
-              30D return is {isReturn30Higher ? "higher" : "lower"} than Bitcoin
-              by
-              <span class="font-medium"
-                >{Math.abs(
-                  data?.base?.netWorthChange?.networth30D -
-                    data?.btc?.netWorthChange?.networth30D
-                ).toFixed(2)}%</span
-              >
+            <div class="space-y-3">
+              <div class="text-2xl xl:text-base">
+                <CtaIcon isGood={isReturn30Higher} />
+                30D return is {isReturn30Higher ? "higher" : "lower"} than Bitcoin
+                by
+                <span class="font-medium"
+                  >{Math.abs(
+                    data?.base?.netWorthChange?.networth30D -
+                      data?.btc?.netWorthChange?.networth30D
+                  ).toFixed(2)}%</span
+                >
+              </div>
             </div>
           </div>
         {/if}
@@ -488,14 +492,16 @@
 
   <span slot="chart">
     {#if $query.isFetching}
-      <div class="flex items-center justify-center h-[465px]">
+      <div class="flex items-center justify-center h-[465px] p-6">
         <LoadingPremium />
       </div>
     {:else}
-      <div class="h-full">
+      <div class="h-full relative">
         {#if $query.isError}
           <div
-            class="flex justify-center items-center h-full xl:text-xs text-lg h-[465px]"
+            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+              darkMode ? "bg-[#222222e6]" : "bg-white/90"
+            } z-30 backdrop-blur-md xl:text-xs text-lg`}
           >
             {#if typeWalletAddress === "CEX"}
               Not enough data. CEX integration can only get data from the day
@@ -505,7 +511,7 @@
             {/if}
           </div>
         {:else}
-          <div class="relative">
+          <div class="relative p-6">
             <EChart
               id="return-chart-analytic"
               {theme}

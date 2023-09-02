@@ -818,7 +818,7 @@
             </Button>
             {#if showDisableAddWallet}
               <div
-                class="absolute transform -translate-x-1/2 -top-8 left-1/2"
+                class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
                 style="z-index: 2147483648;"
               >
                 <tooltip-detail text={"Connect wallet to add account"} />

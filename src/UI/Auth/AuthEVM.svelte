@@ -16,6 +16,7 @@
   import { shorterAddress, clickOutside } from "~/utils";
   import { useNavigate } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import * as browser from "webextension-polyfill";
 
   import DarkMode from "~/components/DarkMode.svelte";
 
@@ -72,6 +73,9 @@
       );
     } else {
       user.update((n) => (n = {}));
+      wallet.update((n) => (n = ""));
+      chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
       showPopover = false;
       localStorage.removeItem("evm_address");
       localStorage.removeItem("evm_token");
@@ -99,6 +103,9 @@
 
   const handleSignOut = () => {
     user.update((n) => (n = {}));
+    wallet.update((n) => (n = ""));
+    chain.update((n) => (n = ""));
+    typeWallet.update((n) => (n = ""));
     showPopover = false;
     localStorage.removeItem("evm_address");
     localStorage.removeItem("evm_token");
