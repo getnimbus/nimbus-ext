@@ -526,6 +526,8 @@
                         tooltipText={getTooltipContent(
                           "The Sharpe ratio measures how well an investment performs relative to its risk.",
                           SharpeRatioExplain,
+                          true,
+                          darkMode,
                           "360px"
                         )}
                         isBigIcon

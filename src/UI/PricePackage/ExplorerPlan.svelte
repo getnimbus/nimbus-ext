@@ -1,5 +1,6 @@
 <script lang="ts">
   import { getTooltipContent } from "~/utils";
+  import { isDarkMode } from "~/store";
 
   export let selectedTypePackage;
 
@@ -12,6 +13,11 @@
   import RealtimeVideo from "~/assets/pricing/Realtime.mp4";
   import RebalanceVideo from "~/assets/pricing/Rebalance.mp4";
   import CustomAllocationVideo from "~/assets/pricing/Custom-Allocation.mp4";
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 </script>
 
 <div class="flex items-end gap-2 text-4xl font-semibold xl:text-3xl">
@@ -32,7 +38,9 @@
       use:tooltip={{
         content: getTooltipContent(
           "Get latest market information and real-time market update",
-          RealtimeVideo
+          RealtimeVideo,
+          false,
+          darkMode
         ),
         allowHTML: true,
         placement: "top",
@@ -51,7 +59,9 @@
       use:tooltip={{
         content: getTooltipContent(
           "Get up to 1000+ yield farming opportunities to boost your earning",
-          YieldFarmingVideo
+          YieldFarmingVideo,
+          false,
+          darkMode
         ),
         allowHTML: true,
         placement: "top",
@@ -66,7 +76,9 @@
       use:tooltip={{
         content: getTooltipContent(
           "Custom your token category to diversify your portfolio on your own way",
-          CustomAllocationVideo
+          CustomAllocationVideo,
+          false,
+          darkMode
         ),
         allowHTML: true,
         placement: "top",
@@ -80,7 +92,9 @@
       use:tooltip={{
         content: getTooltipContent(
           "Know what is your portfolio risk, in every single token you hold",
-          RiskVideo
+          RiskVideo,
+          false,
+          darkMode
         ),
         allowHTML: true,
         placement: "top",
@@ -93,7 +107,7 @@
     <div
       class="text-lg underline cursor-pointer xl:text-base decoration-dotted"
       use:tooltip={{
-        content: getTooltipContent("", ReturnVideo),
+        content: getTooltipContent("", ReturnVideo, false, darkMode),
         allowHTML: true,
         placement: "top",
         interactive: true,
@@ -104,7 +118,7 @@
     <div
       class="text-lg underline cursor-pointer xl:text-base decoration-dotted"
       use:tooltip={{
-        content: getTooltipContent("", RiskReturnVideo),
+        content: getTooltipContent("", RiskReturnVideo, false, darkMode),
         allowHTML: true,
         placement: "top",
         interactive: true,
@@ -117,7 +131,9 @@
       use:tooltip={{
         content: getTooltipContent(
           "We suggest you how to optimize your portfolio to minimize the risk while maximizing the return",
-          RebalanceVideo
+          RebalanceVideo,
+          false,
+          darkMode
         ),
         allowHTML: true,
         placement: "top",
