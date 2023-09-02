@@ -1,12 +1,6 @@
 <script lang="ts">
   import { getAddressContext } from "~/utils";
-  import {
-    wallet,
-    chain,
-    isOpenReport,
-    typeWallet,
-    selectedPackage,
-  } from "~/store";
+  import { wallet, chain, typeWallet, selectedPackage } from "~/store";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";

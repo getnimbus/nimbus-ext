@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { isOpenReport } from "~/store";
   import { Router, Route, createHistory } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
   import createHashSource from "./hashHistory";
@@ -43,11 +42,6 @@
 
   // TODO: Add Lazyload for each routes
   // const hash = createHistory(createHashSource());
-
-  let isShowChat = false;
-  isOpenReport.subscribe((value) => {
-    isShowChat = value;
-  });
 
   $: {
     browser.storage.onChanged.addListener((changes) => {

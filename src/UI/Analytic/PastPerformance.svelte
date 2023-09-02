@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { wallet, chain, typeWallet, isOpenReport, isDarkMode } from "~/store";
+  import { wallet, chain, typeWallet, isDarkMode } from "~/store";
   import { getAddressContext } from "~/utils";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
