@@ -273,10 +273,10 @@
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
+    retry: false,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
-      navigate("/");
     },
   });
 

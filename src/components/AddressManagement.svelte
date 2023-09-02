@@ -237,15 +237,23 @@
     }
   };
 
+  const getListAddress = async () => {
+    const response: any = await nimbus.get("/accounts/list");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response?.data;
+  };
+
   const queryClient = useQueryClient();
-  const query = createQuery({
+  $: query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
+    retry: false,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
-      navigate("/");
       formatListAddress = [];
       selectedWallet = "";
     },
@@ -332,9 +340,13 @@
     } else {
       wallet.update((n) => (n = listAddress[0].value));
     }
+
+    updateStateFromParams();
   };
 
-  const updateStateFromParams = () => {
+  const updateStateFromParams = async () => {
+    await wait(1000);
+
     const urlParams = new URLSearchParams(window.location.search);
     const addressParams = urlParams.get("address");
     const chainParams = urlParams.get("chain");
@@ -425,14 +437,6 @@
         }
       }
     }
-  };
-
-  const getListAddress = async () => {
-    const response: any = await nimbus.get("/accounts/list");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
-    return response?.data;
   };
 
   // Add DEX address account
@@ -582,7 +586,6 @@
   };
 
   onMount(() => {
-    updateStateFromParams();
     if (
       localStorage.getItem("isGetUserEmailYet") !== null &&
       localStorage.getItem("isGetUserEmailYet") === "true"
@@ -782,7 +785,7 @@
   }
 </script>
 
-{#if $query.isFetching && formatListAddress && formatListAddress?.length === 0}
+{#if $query.isFetching}
   <div class="flex items-center justify-center h-screen">
     <loading-icon />
   </div>

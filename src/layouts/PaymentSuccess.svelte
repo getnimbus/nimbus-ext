@@ -5,7 +5,7 @@
   import "flowbite/dist/flowbite.css";
   import { Toast } from "flowbite-svelte";
   import { useNavigate } from "svelte-navigator";
-  import { selectedPackage } from "~/store";
+  import { selectedPackage, user } from "~/store";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";
@@ -72,10 +72,10 @@
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
     staleTime: Infinity,
+    retry: false,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
-      navigate("/");
     },
   });
 

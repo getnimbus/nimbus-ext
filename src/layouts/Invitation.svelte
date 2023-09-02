@@ -7,11 +7,14 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { createQuery } from "@tanstack/svelte-query";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, user } from "~/store";
+  import { useNavigate } from "svelte-navigator";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   import Logo from "~/assets/logo-1.svg";
+
+  const navigate = useNavigate();
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -66,10 +69,10 @@
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
     staleTime: Infinity,
+    retry: false,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
-      navigate("/");
     },
   });
 
