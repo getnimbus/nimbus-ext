@@ -28,7 +28,7 @@
         use:tooltip={{
           content: isExplainVideo
             ? tooltipText
-            : `<tooltip-detail text="${tooltipText}"  link="${link}" />`,
+            : `<tooltip-detail text="${tooltipText}" link="${link}" />`,
           allowHTML: true,
           placement: "top",
           interactive: true,
@@ -38,7 +38,7 @@
       <span
         class={`text-yellow-400 ${isBigIcon ? "w-5 h-5" : "w-3 h-3"}`}
         use:tooltip={{
-          content: `<tooltip-detail text="${tooltipText}"  link="${link}" />`,
+          content: `<tooltip-detail text="${tooltipText}" link="${link}" />`,
           allowHTML: true,
           placement: "top",
           interactive: true,
