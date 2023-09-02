@@ -66,11 +66,14 @@
         },
         { apy: -Infinity }
       );
+    } else {
+      selectedHighestVault = undefined;
     }
   }
 </script>
 
 <tr
+  key={data?.symbol}
   class={`group transition-all`}
   on:click={() => {
     // if (clickable) {
