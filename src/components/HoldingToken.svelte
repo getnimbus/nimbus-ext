@@ -484,15 +484,15 @@
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
-      <div class="flex flex-col">
+      {#if typeWalletAddress === "CEX"}
+        N/A
+      {:else}
         <div
-          class={`flex justify-end ${
-            realizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
-          }`}
+          class={`${realizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"}`}
         >
           <TooltipNumber number={Math.abs(realizedProfit)} type="value" />
         </div>
-      </div>
+      {/if}
     </div>
   </td>
 
@@ -504,33 +504,37 @@
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
-      <div class="flex flex-col">
-        <div
-          class={`flex justify-end ${
-            unrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
-          }`}
-        >
-          <TooltipNumber number={Math.abs(unrealizedProfit)} type="value" />
-        </div>
-        <div class="flex items-center justify-end gap-1">
+      {#if typeWalletAddress === "CEX"}
+        N/A
+      {:else}
+        <div class="flex flex-col">
           <div
-            class={`flex items-center ${
-              percentUnrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
+            class={`flex justify-end ${
+              unrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
             }`}
           >
-            <TooltipNumber
-              number={Math.abs(percentUnrealizedProfit) * 100}
-              type="percent"
-            />
-            <span>%</span>
+            <TooltipNumber number={Math.abs(unrealizedProfit)} type="value" />
           </div>
-          <img
-            src={percentUnrealizedProfit >= 0 ? TrendUp : TrendDown}
-            alt="trend"
-            class="mb-1"
-          />
+          <div class="flex items-center justify-end gap-1">
+            <div
+              class={`flex items-center ${
+                percentUnrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
+              }`}
+            >
+              <TooltipNumber
+                number={Math.abs(percentUnrealizedProfit) * 100}
+                type="percent"
+              />
+              <span>%</span>
+            </div>
+            <img
+              src={percentUnrealizedProfit >= 0 ? TrendUp : TrendDown}
+              alt="trend"
+              class="mb-1"
+            />
+          </div>
         </div>
-      </div>
+      {/if}
     </div>
   </td>
 
