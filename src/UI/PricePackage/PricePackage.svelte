@@ -814,7 +814,7 @@
     </div>
   </div>
   <div class="flex justify-end lg:gap-2 gap-6 mt-4">
-    <div class="lg:w-[120px] w-full h-[36px]">
+    <div class="lg:w-[120px] w-full">
       <Button
         variant="secondary"
         on:click={() => {
@@ -824,7 +824,7 @@
         Cancel
       </Button>
     </div>
-    <div class="lg:w-[120px] w-full h-[36px]">
+    <div class="lg:w-[120px] w-full">
       <Button isLoading={isLoadingCancel} on:click={handleCancelSubscription}>
         Submit
       </Button>

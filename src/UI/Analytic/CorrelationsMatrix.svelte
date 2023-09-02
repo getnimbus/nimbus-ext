@@ -406,13 +406,19 @@
       darkMode ? "text-[#ebebeb]" : "text-gray-700"
     } `}
   >
-    <div>
-      🟩 Positive Value A positive value indicates a positive correlation
-      between two variables
+    <div class="flex items-center xl:gap-1 gap-2">
+      <div class="w-max">🟩</div>
+      <div class="flex-1">
+        Positive Value A positive value indicates a positive correlation between
+        two variables
+      </div>
     </div>
-    <div>
-      🟥 Negative Value A negative value indicates a negative correlation
-      between two variables
+    <div class="flex items-center xl:gap-1 gap-2">
+      <div class="w-max">🟥</div>
+      <div class="flex-1">
+        Negative Value A negative value indicates a negative correlation between
+        two variables
+      </div>
     </div>
     <div>
       Learn more <a
