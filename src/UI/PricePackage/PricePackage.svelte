@@ -3,7 +3,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { user } from "~/store";
+  import { isDarkMode, user } from "~/store";
   import { useNavigate } from "svelte-navigator";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -18,6 +18,11 @@
   export let selectedPackage = (item) => {};
 
   const navigate = useNavigate();
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let selectedTypePackage: "month" | "year" = "year";
   let buyPackage = "Explorer";
@@ -153,7 +158,9 @@
               use:tooltip={{
                 content: getTooltipContent(
                   "Get latest market information and real-time market update",
-                  RealtimeVideo
+                  RealtimeVideo,
+                  false,
+                  darkMode
                 ),
                 allowHTML: true,
                 placement: "top",
@@ -173,7 +180,9 @@
               use:tooltip={{
                 content: getTooltipContent(
                   "Get up to 1000+ yield farming opportunities to boost your earning",
-                  YieldFarmingVideo
+                  YieldFarmingVideo,
+                  false,
+                  darkMode
                 ),
                 allowHTML: true,
                 placement: "top",
