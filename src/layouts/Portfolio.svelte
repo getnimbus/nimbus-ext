@@ -937,7 +937,7 @@
         </div>
       {:else}
         <div
-          class="portfolio_container flex flex-col gap-7 rounded-[20px] xl:p-8"
+          class="portfolio_container flex flex-col gap-7 rounded-[20px] xl:p-8 p-6"
         >
           <Charts
             {handleSelectedTableTokenHolding}

@@ -232,7 +232,7 @@
 <AddressManagement type="order" title="Transactions">
   <span slot="body">
     <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-32">
-      <div class="trx_container flex flex-col gap-7 rounded-[20px] xl:p-8">
+      <div class="trx_container flex flex-col gap-7 rounded-[20px] xl:p-8 p-6">
         {#if getAddressContext(selectedWallet)?.type === "EVM" || typeWalletAddress === "CEX"}
           <div
             class={`rounded-[20px] pt-6 pb-9 flex flex-col gap-4  ${
