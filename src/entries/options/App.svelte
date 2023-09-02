@@ -4,7 +4,7 @@
   import "flowbite/dist/flowbite.css";
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-  import { selectedPackage, isDarkMode } from "~/store";
+  import { selectedPackage, isDarkMode, user } from "~/store";
   import { Router, Route, createHistory } from "svelte-navigator";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -17,12 +17,25 @@
   import TabSettings from "~/UI/Option/TabSettings.svelte";
   import TabNft from "~/UI/Option/TabNFT.svelte";
 
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        staleTime: Infinity,
+      },
+    },
+  });
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
   });
+
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
+
   let activeTabValue = "wallets";
 
   browser.storage.onChanged.addListener((changes) => {
@@ -31,8 +44,29 @@
     }
   });
 
+  const getUserInfo = async () => {
+    try {
+      const response = await nimbus.get("/users/me");
+      if (response && response.data) {
+        if (
+          response.data?.plan?.tier &&
+          response.data?.plan?.tier.length !== 0
+        ) {
+          selectedPackage.update(
+            // (n) => (n = response.data?.plan?.tier.toUpperCase())
+            () => "PROFESSIONAL" // TODO: Remove me after integration complete
+          );
+        }
+      }
+    } catch (e) {
+      console.error("e: ", e);
+    }
+  };
+
   onMount(() => {
-    getUserInfo();
+    if (userInfo && Object.keys(userInfo).length !== 0) {
+      getUserInfo();
+    }
     const urlParams = new URLSearchParams(window.location.search);
     const tabParams = urlParams.get("tab");
     if (tabParams) {
@@ -63,25 +97,6 @@
       isDarkMode.update((n) => (n = false));
     }
   });
-
-  const getUserInfo = async () => {
-    try {
-      const response = await nimbus.get("/users/me");
-      if (response && response.data) {
-        if (
-          response.data?.plan?.tier &&
-          response.data?.plan?.tier.length !== 0
-        ) {
-          selectedPackage.update(
-            // (n) => (n = response.data?.plan?.tier.toUpperCase())
-            () => "PROFESSIONAL" // TODO: Remove me after integration complete
-          );
-        }
-      }
-    } catch (e) {
-      console.error("e: ", e);
-    }
-  };
 </script>
 
 <ErrorBoundary>

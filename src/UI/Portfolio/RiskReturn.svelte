@@ -76,12 +76,12 @@
 <ErrorBoundary>
   <div class="grid xl:grid-cols-2 grid-cols-1 gap-6">
     <div
-      class={`rounded-[20px] p-6 ${
+      class={`rounded-[20px] ${
         darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
       {#if $query.isFetching}
-        <div class="flex items-center justify-center h-[200px]">
+        <div class="flex items-center justify-center h-[200px] p-6">
           <loading-icon />
         </div>
       {:else}
@@ -90,11 +90,11 @@
             $query.isError ? "h-[200px]" : ""
           }`}
         >
-          <div class="xl:text-2xl text-4xl font-medium">Risks</div>
+          <div class="xl:text-2xl text-4xl font-medium px-6 pt-6">Risks</div>
           {#if $query.isError}
             <div
-              class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
-                darkMode ? "bg-black/95" : "bg-white/95"
+              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+                darkMode ? "bg-[#222222e6]" : "bg-white/90"
               } z-30 backdrop-blur-md xl:text-xs text-lg`}
             >
               {#if typeWalletAddress === "CEX"}
@@ -105,7 +105,7 @@
               {/if}
             </div>
           {:else}
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4 px-6 pb-6">
               <div class="grid grid-cols-5">
                 <div class="col-span-2">
                   <div class="xl:text-base text-2xl flex justify-start">
@@ -256,12 +256,12 @@
     </div>
 
     <div
-      class={`rounded-[20px] p-6 ${
+      class={`rounded-[20px] ${
         darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
       {#if $query.isFetching}
-        <div class="flex items-center justify-center h-[200px]">
+        <div class="flex items-center justify-center h-[200px] p-6">
           <loading-icon />
         </div>
       {:else}
@@ -271,9 +271,11 @@
           }`}
         >
           <div class="flex justify-between">
-            <div class="xl:text-2xl text-4xl font-medium">Returns</div>
+            <div class="xl:text-2xl text-4xl font-medium px-6 pt-6">
+              Returns
+            </div>
             {#if !$query.isError}
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 pt-6 pr-6">
                 <AnimateSharedLayout>
                   {#each returnType as type}
                     <div
@@ -307,8 +309,8 @@
           </div>
           {#if $query.isError}
             <div
-              class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-3 ${
-                darkMode ? "bg-black/95" : "bg-white/95"
+              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-3 ${
+                darkMode ? "bg-[#222222e6]" : "bg-white/90"
               } z-30 backdrop-blur-md xl:text-xs text-lg`}
             >
               {#if typeWalletAddress === "CEX"}
@@ -319,7 +321,7 @@
               {/if}
             </div>
           {:else}
-            <div>
+            <div class="px-6">
               {#if selectedTypeReturn === "overview"}
                 <div class="flex gap-4">
                   <div

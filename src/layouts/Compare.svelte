@@ -852,7 +852,7 @@
                 {#if isEmptyDataPie}
                   <div
                     class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
-                      darkMode ? "bg-black/95" : "bg-white/95"
+                      darkMode ? "bg-[#222222e6]" : "bg-white/90"
                     } z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]`}
                   >
                     {#if typeWalletAddress === "CEX"}
@@ -929,7 +929,7 @@
                       {#if compareData && Object.keys(compareData).length === 0}
                         <div
                           class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
-                            darkMode ? "bg-black/95" : "bg-white/95"
+                            darkMode ? "bg-[#222222e6]" : "bg-white/90"
                           } z-30 backdrop-blur-md xl:text-xs text-lg`}
                         >
                           {#if typeWalletAddress === "CEX"}
@@ -980,7 +980,7 @@
                       </div>
                       <div
                         class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
-                          darkMode ? "bg-black/95" : "bg-white/95"
+                          darkMode ? "bg-[#222222e6]" : "bg-white/90"
                         } z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]`}
                       >
                         {#if typeWalletAddress === "CEX"}
@@ -1134,7 +1134,7 @@
             <div class="h-[433px]">
               <div
                 class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
-                  darkMode ? "bg-black/95" : "bg-white/95"
+                  darkMode ? "bg-[#222222e6]" : "bg-white/90"
                 } z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]`}
               >
                 {#if typeWalletAddress === "CEX"}
@@ -1193,7 +1193,7 @@
             <div class="h-[465px]">
               <div
                 class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
-                  darkMode ? "bg-black/95" : "bg-white/95"
+                  darkMode ? "bg-[#222222e6]" : "bg-white/90"
                 } z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]`}
               >
                 {#if typeWalletAddress === "CEX"}
@@ -1232,7 +1232,7 @@
     {#if packageSelected === "FREE"}
       <div
         class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 ${
-          darkMode ? "bg-black/95" : "bg-white/95"
+          darkMode ? "bg-[#222222e6]" : "bg-white/90"
         } z-30 backdrop-blur-md`}
       >
         <div class="flex flex-col items-center gap-1">

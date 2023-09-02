@@ -5,7 +5,7 @@
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
-  import { selectedPackage, isDarkMode } from "~/store";
+  import { selectedPackage, isDarkMode, user } from "~/store";
   import * as Sentry from "@sentry/svelte";
 
   import "flowbite/dist/flowbite.css";
@@ -40,6 +40,11 @@
     },
   });
 
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
+
   // TODO: Add Lazyload for each routes
   // const hash = createHistory(createHashSource());
 
@@ -71,7 +76,9 @@
   };
 
   onMount(() => {
-    getUserInfo();
+    if (userInfo && Object.keys(userInfo).length !== 0) {
+      getUserInfo();
+    }
     if (
       localStorage.theme === "dark" ||
       (!("theme" in localStorage) &&

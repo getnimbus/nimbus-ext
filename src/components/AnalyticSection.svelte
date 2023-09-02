@@ -11,14 +11,14 @@
   <slot name="title" />
   <div class="grid xl:grid-cols-6 grid-cols-1 gap-6">
     <div
-      class={`xl:col-span-2 col-span-1 rounded-[20px] p-6 ${
+      class={`xl:col-span-2 col-span-1 rounded-[20px] ${
         darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
       <slot name="overview" />
     </div>
     <div
-      class={`xl:col-span-4 col-span-1 rounded-[20px] p-6 ${
+      class={`xl:col-span-4 col-span-1 rounded-[20px] ${
         darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >

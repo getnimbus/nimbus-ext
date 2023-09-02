@@ -44,6 +44,11 @@
     darkMode = value;
   });
 
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
+
   let selectedWallet;
   wallet.subscribe((value) => {
     selectedWallet = value;
@@ -70,7 +75,6 @@
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
-      navigate("/");
     },
   });
 
