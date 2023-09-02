@@ -11,7 +11,7 @@
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import { formatCurrency, getAddressContext } from "~/utils";
   import { wait } from "../entries/background/utils";
-  import { isOpenReport, wallet, chain, typeWallet } from "~/store";
+  import { wallet, chain, typeWallet } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
   import { getHoldingSOL, getOverviewSOL } from "~/solanaAPI";
@@ -962,26 +962,6 @@
             {holdingNFTData}
             bind:totalAssets
           />
-
-          <!-- <div
-            class="border border_0000001a rounded-[20px] p-6 flex flex-col gap-4"
-          >
-            <Positions
-              isLoading={loadingPositions}
-              data={positionsData}
-              bind:totalPositions
-              bind:totalClaimable
-            />
-            <div
-              on:click={() => {
-                isOpenReport.update((n) => (n = true));
-              }}
-              class="mx-auto"
-            >
-              <Button variant="secondary">{MultipleLang.missed_protocol}</Button
-              >
-            </div>
-          </div> -->
 
           <!-- <News isLoading={loadingNews} data={newsData} /> -->
         </div>
