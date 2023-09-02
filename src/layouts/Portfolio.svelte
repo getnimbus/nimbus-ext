@@ -73,6 +73,7 @@
   });
 
   let typeQueryGetAllData: "reload" | "sync" = "sync";
+  let isLoadingSync = false;
   const queryClient = useQueryClient();
 
   let overviewData: OverviewData = {
@@ -478,6 +479,8 @@
     loadingPositions = true;
     loadingNews = true;
 
+    isLoadingSync = false;
+
     try {
       if (type === "reload") {
         console.log("Going to full sync");
@@ -490,12 +493,14 @@
       let syncStatus = await getSyncStatus();
       if (isEmpty(syncStatus)) {
         // syncMsg = "Invalid address";
+        isLoadingSync = true;
         return "fail";
       }
       if (syncStatus?.data?.error) {
         syncMsg = syncStatus?.data?.error;
         if (!syncStatus?.data?.canWait) {
           // Cut call when we can not wait
+          isLoadingSync = true;
           return "fail";
         }
       }
@@ -515,6 +520,7 @@
         try {
           if (syncStatus?.data?.error) {
             syncMsg = syncStatus?.data?.error;
+            isLoadingSync = true;
             if (!syncStatus?.data?.canWait) {
               // Cut call when we can not wait
               return "fail";
@@ -540,6 +546,7 @@
                 (resHoldingToken === undefined || resHoldingToken)
               ) {
                 syncMsg = "";
+                isLoadingSync = false;
                 return "success";
               }
 
@@ -582,12 +589,14 @@
                 //  && (resNews === undefined || resNews)
               ) {
                 syncMsg = "";
+                isLoadingSync = false;
                 return "success";
               }
 
               break;
             }
           } else {
+            isLoadingSync = true;
             await wait(5000);
             syncStatus = await getSyncStatus();
             return "fail";
@@ -600,12 +609,13 @@
           loadingHoldingNFT = false;
           loadingPositions = false;
           loadingNews = false;
-
+          isLoadingSync = false;
           break;
         }
       }
     } catch (e) {
       console.error("error: ", e);
+      isLoadingSync = false;
       return "fail";
     }
   };
@@ -921,7 +931,7 @@
     </div>
   </span>
   <span slot="overview">
-    {#if !$queryGetAllData.isFetching}
+    {#if !isLoadingSync}
       <Overview
         data={overviewData}
         {totalPositions}
@@ -932,7 +942,7 @@
   </span>
   <span slot="body">
     <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
-      {#if $queryGetAllData.isFetching}
+      {#if isLoadingSync}
         <div
           class="portfolio_container text-xl font-medium flex flex-col gap-5 justify-center items-center rounded-[20px] p-6 h-screen"
         >
