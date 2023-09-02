@@ -14,6 +14,7 @@
   import { wallet, chain, typeWallet } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { getHoldingSOL, getOverviewSOL } from "~/solanaAPI";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
@@ -71,6 +72,9 @@
     typeWalletAddress = value;
   });
 
+  let typeQueryGetAllData: "reload" | "sync" = "sync";
+  const queryClient = useQueryClient();
+
   let overviewData: OverviewData = {
     breakdownToken: [],
     breakdownNft: [],
@@ -100,8 +104,6 @@
     portfolioChart: [],
   };
   let dataUpdatedTime;
-  let isLoading = false;
-  let isLoadingSync = false;
   let totalPositions = 0;
   let totalClaimable = 0;
   let totalAssets = 0;
@@ -124,7 +126,6 @@
       dataPieChartOrderBreakdownNft: [],
     },
   };
-
   let selectedTokenHolding = {
     data: [],
     select: [],
@@ -307,52 +308,6 @@
     }
   };
 
-  const getPositions = async (isReload: boolean = false) => {
-    try {
-      const response: PositionDataRes = await sendMessage("getPositions", {
-        address: selectedWallet,
-        reload: isReload,
-        chain: selectedChain,
-      });
-      if (selectedWallet === response?.address && response && response.result) {
-        const formatData = response.result.map((item) => {
-          const groupPosition = groupBy(item.positions, "type");
-          return {
-            ...item,
-            positions: groupPosition,
-          };
-        });
-        positionsData = formatData;
-
-        return response;
-      } else {
-        return undefined;
-      }
-    } catch (e) {
-      console.error("error: ", e);
-      return undefined;
-    }
-  };
-
-  const getNews = async (isReload: boolean = false) => {
-    try {
-      const response: NewDataRes = await sendMessage("getNews", {
-        address: selectedWallet,
-        reload: isReload,
-        chain: selectedChain,
-      });
-      if (selectedWallet === response?.address) {
-        newsData = response.result;
-        return response;
-      } else {
-        return undefined;
-      }
-    } catch (e) {
-      console.error("error: ", e);
-      return undefined;
-    }
-  };
-
   const getHoldingToken = async (isReload: boolean = false) => {
     try {
       const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
@@ -445,6 +400,64 @@
     }
   };
 
+  const getPositions = async (isReload: boolean = false) => {
+    try {
+      const response: PositionDataRes = await sendMessage("getPositions", {
+        address: selectedWallet,
+        reload: isReload,
+        chain: selectedChain,
+      });
+      if (selectedWallet === response?.address && response && response.result) {
+        const formatData = response.result.map((item) => {
+          const groupPosition = groupBy(item.positions, "type");
+          return {
+            ...item,
+            positions: groupPosition,
+          };
+        });
+        positionsData = formatData;
+
+        return response;
+      } else {
+        return undefined;
+      }
+    } catch (e) {
+      console.error("error: ", e);
+      return undefined;
+    }
+  };
+
+  const getNews = async (isReload: boolean = false) => {
+    try {
+      const response: NewDataRes = await sendMessage("getNews", {
+        address: selectedWallet,
+        reload: isReload,
+        chain: selectedChain,
+      });
+      if (selectedWallet === response?.address) {
+        newsData = response.result;
+        return response;
+      } else {
+        return undefined;
+      }
+    } catch (e) {
+      console.error("error: ", e);
+      return undefined;
+    }
+  };
+
+  $: queryGetAllData = createQuery({
+    queryKey: [
+      "getAllData",
+      selectedWallet,
+      selectedChain,
+      typeQueryGetAllData,
+    ],
+    queryFn: () => handleGetAllData(typeQueryGetAllData),
+    staleTime: Infinity,
+    cacheTime: 0,
+  });
+
   const getSyncStatus = async () => {
     try {
       const response: any = await sendMessage("getSyncStatus", {
@@ -465,8 +478,6 @@
     loadingPositions = true;
     loadingNews = true;
 
-    isLoading = true;
-    isLoadingSync = false;
     try {
       if (type === "reload") {
         console.log("Going to full sync");
@@ -479,21 +490,18 @@
       let syncStatus = await getSyncStatus();
       if (isEmpty(syncStatus)) {
         // syncMsg = "Invalid address";
-        isLoadingSync = true;
-        return;
+        return "fail";
       }
       if (syncStatus?.data?.error) {
         syncMsg = syncStatus?.data?.error;
-        isLoadingSync = true;
         if (!syncStatus?.data?.canWait) {
           // Cut call when we can not wait
-          return;
+          return "fail";
         }
       }
       if (syncStatus?.error) {
         syncMsg = syncStatus?.error?.error;
-        isLoadingSync = true;
-        return;
+        return "fail";
       }
       if (!syncStatus?.data?.lastSync) {
         console.log("Going to full sync");
@@ -507,10 +515,9 @@
         try {
           if (syncStatus?.data?.error) {
             syncMsg = syncStatus?.data?.error;
-            isLoadingSync = true;
             if (!syncStatus?.data?.canWait) {
               // Cut call when we can not wait
-              return;
+              return "fail";
             }
           }
           if (syncStatus?.data?.lastSync) {
@@ -533,8 +540,7 @@
                 (resHoldingToken === undefined || resHoldingToken)
               ) {
                 syncMsg = "";
-                isLoading = false;
-                isLoadingSync = false;
+                return "success";
               }
 
               break;
@@ -576,21 +582,19 @@
                 //  && (resNews === undefined || resNews)
               ) {
                 syncMsg = "";
-                isLoading = false;
-                isLoadingSync = false;
+                return "success";
               }
 
               break;
             }
           } else {
-            isLoadingSync = true;
             await wait(5000);
             syncStatus = await getSyncStatus();
+            return "fail";
           }
         } catch (e) {
           console.error(e.message);
           syncMsg = "";
-          isLoading = false;
           loadingOverview = false;
           loadingHoldingToken = false;
           loadingHoldingNFT = false;
@@ -602,10 +606,11 @@
       }
     } catch (e) {
       console.error("error: ", e);
-      isLoading = false;
+      return "fail";
     }
   };
 
+  // SOLANA data holding and overview
   const handleGetSolHolding = async () => {
     try {
       const response = await getHoldingSOL(selectedWallet);
@@ -655,7 +660,9 @@
           result: formatDataTokenHolding,
         };
       } else {
-        handleGetAllData("reload");
+        // handleGetAllData("reload");
+        typeQueryGetAllData = "reload";
+        queryClient.invalidateQueries(["getAllData"]);
       }
     } catch (e) {
       console.error("error: ", e);
@@ -884,8 +891,6 @@
         newsData = [];
         holdingNFTData = [];
         holdingTokenData = [];
-
-        handleGetAllData("sync");
       }
     }
   }
@@ -896,16 +901,17 @@
     <div class="flex items-center gap-2 mb-1">
       <div
         class="cursor-pointer"
-        class:loading={isLoading}
+        class:loading={$queryGetAllData.isFetching}
         on:click={() => {
-          handleGetAllData("reload");
+          typeQueryGetAllData = "reload";
+          queryClient.invalidateQueries(["getAllData"]);
           mixpanel.track("user_reload");
         }}
       >
         <img src={Reload} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
       </div>
       <div class="xl:text-xs text-lg text-white font-medium">
-        {#if isLoading}
+        {#if $queryGetAllData.isFetching}
           {MultipleLang.updating_data}
         {:else}
           {MultipleLang.data_updated}
@@ -915,7 +921,7 @@
     </div>
   </span>
   <span slot="overview">
-    {#if !isLoadingSync}
+    {#if !$queryGetAllData.isFetching}
       <Overview
         data={overviewData}
         {totalPositions}
@@ -926,7 +932,7 @@
   </span>
   <span slot="body">
     <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
-      {#if isLoadingSync}
+      {#if $queryGetAllData.isFetching}
         <div
           class="portfolio_container text-xl font-medium flex flex-col gap-5 justify-center items-center rounded-[20px] p-6 h-screen"
         >
