@@ -379,9 +379,6 @@
           };
         });
       });
-
-      console.log({ filterListCoinPrice, formatFilterListCoinPrice });
-      console.log(matrix);
     }
   }
 
