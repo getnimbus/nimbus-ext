@@ -14,7 +14,7 @@
   import { wallet, chain, typeWallet } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
-  import { createQuery } from "@tanstack/svelte-query";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { getHoldingSOL, getOverviewSOL } from "~/solanaAPI";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
@@ -56,6 +56,8 @@
       "Missing your protocol?"
     ),
   };
+
+  const queryClient = useQueryClient();
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -419,16 +421,25 @@
     }
   };
 
+  const handleSync = async () => {
+    console.log("Going to full sync");
+    await getSync();
+    queryClient.invalidateQueries(["overview"]);
+    queryClient.invalidateQueries(["vaults"]);
+    queryClient.invalidateQueries(["token-holding"]);
+    queryClient.invalidateQueries(["nft-holding"]);
+  };
+
   const handleGetAllData = async (type: string) => {
     isLoadingSync = false;
+    enabledFetchAllData = false;
 
     try {
       let syncStatus = await getSyncStatus();
 
       // sync data again
       if (type === "reload" || !syncStatus?.data?.lastSync) {
-        console.log("Going to full sync");
-        await getSync();
+        handleSync();
       }
 
       // already sync data from db
@@ -477,7 +488,6 @@
       if (syncStatus?.data?.canWait) {
         syncMsg = syncStatus?.data?.error;
         isLoadingSync = true;
-        enabledFetchAllData = false;
         // keep call api /sync-status until we can not wait
         while (true) {
           if (syncStatus?.data?.lastSync) {
@@ -522,7 +532,6 @@
             break;
           } else {
             isLoadingSync = true;
-            enabledFetchAllData = false;
             await wait(5000);
             syncStatus = await getSyncStatus();
           }
@@ -531,14 +540,12 @@
         // Cut call when we can not wait
         syncMsg = syncStatus?.data?.error;
         isLoadingSync = false;
-        enabledFetchAllData = false;
         isErrorAllData = true;
         return "fail";
       }
     } catch (e) {
       console.error("error: ", e);
       isLoadingSync = false;
-      enabledFetchAllData = false;
       isErrorAllData = true;
       return "fail";
     }
