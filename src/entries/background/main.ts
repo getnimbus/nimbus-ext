@@ -113,43 +113,6 @@ onMessage<IAddressInput, any>("getPreview", async ({ data: { address, chain } })
   }
 });
 
-onMessage<IAddressInput, any>("getSync", async ({ data: { address, chain } }) => {
-  try {
-    return await nimbus.post(`/v2/address/${address}/sync?chain=${chain}`, {}).then((response) => response);
-  } catch (error) {
-    return {};
-  }
-});
-
-onMessage<IAddressInput, any>("getSyncStatus", async ({ data: { address, chain }, ...rest }) => {
-  try {
-    return await nimbus.get(`/address/${address}/sync-status?chain=${chain}`).then((response) => response);
-  } catch (error) {
-    return {};
-  }
-});
-
-onMessage<IAddressInput, any>("getOverview", async ({ data: { address, chain, reload = false } }) => {
-  try {
-    const key = address + chain + "_overview";
-    const res = await cacheOrAPI(
-      key,
-      () => {
-        return nimbus.get(`/v2/address/${address}/overview?chain=${chain}`).then((response) => {
-          return {
-            result: response.data,
-            address: address
-          }
-        });
-      },
-      { defaultValue: null, ttl: 1, reload }
-    );
-    return res
-  } catch (error) {
-    return {};
-  }
-});
-
 onMessage<IAddressInput, any>("getPositions", async ({ data: { address, chain, reload } }) => {
   try {
     const key = address + chain + "_positions";

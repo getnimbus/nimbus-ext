@@ -380,10 +380,10 @@
     if (packageSelected === "FREE") {
       return null;
     }
-    const response: HoldingTokenRes = await nimbus.get(
-      `/v2/address/${address}/holding?chain=${chain}`
-    );
-    return response.data;
+    const response: HoldingTokenRes = await nimbus
+      .get(`/v2/address/${address}/holding?chain=${chain}`)
+      .then((response) => response.data);
+    return response;
   };
 
   const formatDataHoldingToken = (data) => {
