@@ -374,18 +374,18 @@
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    {MultipleLang.value}
+                    <TooltipTitle
+                      tooltipText="Ratio based on total token holding"
+                    >
+                      Ratio
+                    </TooltipTitle>
                   </div>
                 </th>
                 <th class="py-3">
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    <TooltipTitle
-                      tooltipText="Ratio based on total token holding"
-                    >
-                      Ratio
-                    </TooltipTitle>
+                    {MultipleLang.value}
                   </div>
                 </th>
                 <th class="py-3">
