@@ -66,7 +66,7 @@
           >
             &times;
           </div>
-          <div class="px-6 pt-9 pb-7 mx-6">
+          <div class="px-6 pt-9 pb-7">
             <slot />
           </div>
         </div>
