@@ -42,7 +42,7 @@
   };
 
   const queryClient = useQueryClient();
-  const query = createQuery({
+  $: query = createQuery({
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
     staleTime: Infinity,

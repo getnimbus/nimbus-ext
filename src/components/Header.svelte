@@ -68,7 +68,7 @@
   const absoluteMatch = useMatch("/:page");
 
   const queryClient = useQueryClient();
-  const queryUserInfo = createQuery({
+  $: queryUserInfo = createQuery({
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
     staleTime: Infinity,
