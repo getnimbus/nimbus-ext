@@ -52,21 +52,23 @@
       let:motion
     >
       <div
-        class={`rounded-xl relative ${
+        class={`relative ${
           isTableContent ? "xl:min-w-7xl min-w-4xl" : "xl:min-w-2xl min-w-4xl"
-        }  ${darkMode ? "bg-[#0f0f0f]" : "bg-white"}`}
+        }`}
         style="box-shadow: 0px 4px 20px 0px #00000026;"
         on:click|stopPropagation
         use:motion
       >
-        <div
-          class="absolute top-3 right-5 xl:text-4xl text-6xl text-gray-500 cursor-pointer"
-          on:click|stopPropagation={handleClose}
-        >
-          &times;
-        </div>
-        <div class="px-6 pt-9 pb-7 mx-6">
-          <slot />
+        <div class={`rounded-xl ${darkMode ? "bg-[#0f0f0f]" : "bg-white"}`}>
+          <div
+            class="absolute top-3 right-5 xl:text-4xl text-6xl text-gray-500 cursor-pointer"
+            on:click|stopPropagation={handleClose}
+          >
+            &times;
+          </div>
+          <div class="px-6 pt-9 pb-7 mx-6">
+            <slot />
+          </div>
         </div>
       </div>
     </Motion>

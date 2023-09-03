@@ -269,6 +269,27 @@
     }
   };
 
+  const getListAddress = async () => {
+    const response: any = await nimbus.get("/accounts/list");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response?.data;
+  };
+
+  const formatDataListAddress = (data) => {
+    const structWalletData = data.map((item) => {
+      return {
+        position: item.position,
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        address: item.type === "CEX" ? item.id : item.accountId,
+      };
+    });
+    listAddress = structWalletData;
+  };
+
   const query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
@@ -285,27 +306,6 @@
       formatDataListAddress($query.data);
     }
   }
-
-  const formatDataListAddress = (data) => {
-    const structWalletData = data.map((item) => {
-      return {
-        position: item.position,
-        id: item.id,
-        type: item.type,
-        label: item.label,
-        address: item.type === "CEX" ? item.id : item.accountId,
-      };
-    });
-    listAddress = structWalletData;
-  };
-
-  const getListAddress = async () => {
-    const response: any = await nimbus.get("/accounts/list");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
-    return response?.data;
-  };
 
   $: {
     if (listAddress && listAddress?.length === 1) {
