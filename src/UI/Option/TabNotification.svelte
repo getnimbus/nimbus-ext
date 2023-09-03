@@ -45,23 +45,6 @@
   let showCommandTooltip = false;
   let selectedWallet;
 
-  const query = createQuery({
-    queryKey: ["list-address"],
-    queryFn: () => getListAddress(),
-    staleTime: Infinity,
-    retry: false,
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
-  });
-
-  $: {
-    if (!$query.isError && $query.data !== undefined) {
-      formatDataListAddress($query.data);
-    }
-  }
-
   const formatDataListAddress = (data) => {
     const structWalletData = data.map((item) => {
       return {
@@ -82,6 +65,23 @@
     }
     return response?.data;
   };
+
+  const query = createQuery({
+    queryKey: ["list-address"],
+    queryFn: () => getListAddress(),
+    staleTime: Infinity,
+    retry: false,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
+  });
+
+  $: {
+    if (!$query.isError && $query.data !== undefined) {
+      formatDataListAddress($query.data);
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-2">
