@@ -11,6 +11,7 @@
   import { Toast, Progressbar } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { isDarkMode } from "~/store";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -45,7 +46,6 @@
   let marketPriceToken;
   let formatData = [];
   let sumTokens = 0;
-  let isLoadingToken = false;
   let tableTokenHeader;
   let isStickyTableToken = false;
   let isShowTooltipName = false;
@@ -317,41 +317,44 @@
     }
   };
 
-  const getHoldingToken = async (isReload: boolean = false) => {
-    isLoadingToken = true;
-    try {
-      const response: HoldingTokenRes = await sendMessage("getHoldingToken", {
-        address: selectedWallet,
-        reload: isReload,
-        chain: selectedChain,
-      });
-
-      if (selectedWallet === response?.address) {
-        const formatData = response.result.map((item) => {
-          return {
-            ...item,
-            tag: "Other",
-            value: item.amount * item.rate,
-          };
-        });
-        holdingTokenData = formatData.sort((a, b) => {
-          if (a.value < b.value) {
-            return 1;
-          }
-          if (a.value > b.value) {
-            return -1;
-          }
-          return 0;
-        });
-        isLoadingToken = false;
-      } else {
-        // console.log("response: ", response)
-      }
-    } catch (e) {
-      console.error("error: ", e);
-      isLoadingToken = false;
-    }
+  const getHoldingToken = async (address, chain) => {
+    const response: HoldingTokenRes = await nimbus
+      .get(`/v2/address/${address}/holding?chain=${chain}`)
+      .then((response) => response.data);
+    return response;
   };
+
+  const formatDataHoldingToken = (data) => {
+    const formatData = data.map((item) => {
+      return {
+        ...item,
+        tag: "Other",
+        value: item.amount * item.rate,
+      };
+    });
+    holdingTokenData = formatData.sort((a, b) => {
+      if (a.value < b.value) {
+        return 1;
+      }
+      if (a.value > b.value) {
+        return -1;
+      }
+      return 0;
+    });
+  };
+
+  // query token holding
+  $: queryTokenHolding = createQuery({
+    queryKey: ["token-holding", selectedWallet, selectedChain],
+    queryFn: () => getHoldingToken(selectedWallet, selectedChain),
+    staleTime: Infinity,
+  });
+
+  $: {
+    if (!$queryTokenHolding.isError && $queryTokenHolding.data !== undefined) {
+      formatDataHoldingToken($queryTokenHolding.data);
+    }
+  }
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -373,14 +376,6 @@
       window.removeEventListener("scroll", handleScroll);
     };
   });
-
-  $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        getHoldingToken();
-      }
-    }
-  }
 
   $: {
     if (holdingTokenData) {
@@ -1071,7 +1066,7 @@
                       </th>
                     </tr>
                   </thead>
-                  {#if isLoadingToken}
+                  {#if $queryTokenHolding.isFetching}
                     <tbody>
                       <tr>
                         <td colspan={7}>
@@ -1322,7 +1317,7 @@
         {:else}
           <TokenHoldingTable
             {toggleSortOrderTag}
-            {isLoadingToken}
+            isLoadingToken={$queryTokenHolding.isFetching}
             {searchDataResult}
             {selectedWallet}
             {sumTokens}
