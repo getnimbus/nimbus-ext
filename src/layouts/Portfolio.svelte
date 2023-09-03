@@ -452,53 +452,96 @@
     isLoadingSync = false;
 
     try {
-      if (type === "reload") {
-        console.log("Going to full sync");
-        await getSync();
-      }
-
       let syncStatus = await getSyncStatus();
       console.log("syncStatus: ", syncStatus);
 
-      if (isEmpty(syncStatus)) {
-        // syncMsg = "Invalid address";
-        isLoadingSync = true;
-        return "fail";
-      }
-
-      if (syncStatus?.data?.error) {
-        syncMsg = syncStatus?.data?.error;
-        isLoadingSync = true;
-        if (!syncStatus?.data?.canWait) {
-          // Cut call when we can not wait
-          return "fail";
-        }
-      }
-
-      if (syncStatus?.error) {
-        syncMsg = syncStatus?.error?.error;
-        return "fail";
-      }
-
-      if (!syncStatus?.data?.lastSync) {
+      // sync data again
+      if (type === "reload" || !syncStatus?.data?.lastSync) {
         console.log("Going to full sync");
         await getSync();
       }
 
-      while (true) {
-        try {
-          if (syncStatus?.data?.error) {
-            syncMsg = syncStatus?.data?.error;
-            isLoadingSync = true;
-            if (!syncStatus?.data?.canWait) {
-              // Cut call when we can not wait
-              return "fail";
-            }
+      // already sync data from db
+      if (syncStatus?.data?.lastSync) {
+        console.log("start load data (already sync)");
+        enabledFetchAllData = true;
+        if (getAddressContext(selectedWallet)?.type === "SOL") {
+          const [resOverview, resHoldingToken] = await Promise.all([
+            handleGetSolHolding().then((res) => {
+              return res;
+            }),
+            handleGetSolOverview().then((res) => {
+              return res;
+            }),
+          ]);
+
+          if (
+            (resOverview === undefined || resOverview) &&
+            (resHoldingToken === undefined || resHoldingToken)
+          ) {
+            syncMsg = "";
+            isLoadingSync = false;
+            return "success";
           }
+        } else {
+          // const [
+          //   resOverview,
+          //   resHoldingToken,
+          //   resHoldingNFT,
+          //   resPositions,
+          //   resNews,
+          // ] = await Promise.all([
+          //   getOverview().then((res) => {
+          //     return res;
+          //   }),
+          //   getHoldingToken().then((res) => {
+          //     return res;
+          //   }),
+          //   getHoldingNFT(type === "reload").then((res) => {
+          //     return res;
+          //   }),
+          //   getPositions(type === "reload").then((res) => {
+          //     return res;
+          //   }),
+          //   getNews(type === "reload").then((res) => {
+          //     return res;
+          //   }),
+          // ]);
 
+          // if (
+          //   (resOverview === undefined || resOverview) &&
+          //   (resHoldingToken === undefined || resHoldingToken) &&
+          //   (resHoldingNFT === undefined || resHoldingNFT)
+          //   //  && (resPositions === undefined || resPositions)
+          //   //  && (resNews === undefined || resNews)
+          // ) {
+          //   syncMsg = "";
+          //   isLoadingSync = false;
+          //   return "success";
+          // }
+
+          if (
+            !$queryOverview.isError &&
+            !$queryTokenHolding.isError &&
+            !$queryVaults.isError
+          ) {
+            syncMsg = "";
+            isLoadingSync = false;
+            return "success";
+          }
+        }
+      }
+
+      // check data from db
+      if (syncStatus?.data?.canWait) {
+        syncMsg = syncStatus?.data?.error;
+        isLoadingSync = true;
+        enabledFetchAllData = false;
+        // keep call api /sync-status until we can not wait
+        while (true) {
           if (syncStatus?.data?.lastSync) {
-            console.log("start load data");
-
+            console.log("start load data (newest sync)");
+            enabledFetchAllData = true;
             if (getAddressContext(selectedWallet)?.type === "SOL") {
               const [resOverview, resHoldingToken] = await Promise.all([
                 handleGetSolHolding().then((res) => {
@@ -517,8 +560,6 @@
                 isLoadingSync = false;
                 return "success";
               }
-
-              break;
             } else {
               // const [
               //   resOverview,
@@ -565,27 +606,26 @@
                 isLoadingSync = false;
                 return "success";
               }
-
-              break;
             }
+            break;
           } else {
             isLoadingSync = true;
+            enabledFetchAllData = false;
             await wait(5000);
             syncStatus = await getSyncStatus();
-            return "fail";
           }
-        } catch (e) {
-          console.error(e.message);
-          syncMsg = "";
-          isLoadingSync = false;
-          break;
         }
+      } else {
+        // Cut call when we can not wait
+        syncMsg = syncStatus?.data?.error;
+        isLoadingSync = false;
+        enabledFetchAllData = false;
+        return "fail";
       }
-
-      return "success";
     } catch (e) {
       console.error("error: ", e);
       isLoadingSync = false;
+      enabledFetchAllData = false;
       return "fail";
     }
   };
@@ -601,6 +641,7 @@
     staleTime: Infinity,
     cacheTime: 0,
   });
+  $: console.log("queryGetAllData: ", $queryGetAllData);
 
   // query overview
   $: queryOverview = createQuery({
@@ -973,35 +1014,48 @@
           {/if}
         </div>
       {:else}
-        <div
-          class="portfolio_container flex flex-col gap-7 rounded-[20px] xl:p-8 p-6"
-        >
-          <Charts
-            {handleSelectedTableTokenHolding}
-            isLoading={$queryOverview.isFetching}
-            {holdingTokenData}
-            {overviewDataPerformance}
-            {dataPieChart}
-            {isEmptyDataPie}
-          />
+        <div>
+          {#if syncMsg}
+            <div
+              class="portfolio_container text-xl font-medium flex flex-col gap-5 justify-center items-center rounded-[20px] p-6 h-screen"
+            >
+              {syncMsg}
+              {#if syncMsg !== "Invalid address"}
+                <Testimonial />
+              {/if}
+            </div>
+          {:else}
+            <div
+              class="portfolio_container flex flex-col gap-7 rounded-[20px] xl:p-8 p-6"
+            >
+              <Charts
+                {handleSelectedTableTokenHolding}
+                isLoading={$queryOverview.isFetching}
+                {holdingTokenData}
+                {overviewDataPerformance}
+                {dataPieChart}
+                {isEmptyDataPie}
+              />
 
-          {#if getAddressContext(selectedWallet)?.type === "EVM" || typeWalletAddress === "CEX"}
-            <RiskReturn />
+              {#if getAddressContext(selectedWallet)?.type === "EVM" || typeWalletAddress === "CEX"}
+                <RiskReturn />
+              {/if}
+
+              <Holding
+                {selectedWallet}
+                isLoadingNFT={$queryTokenHolding.isFetching}
+                isLoadingToken={$queryTokenHolding.isFetching &&
+                  $queryVaults.isFetching}
+                {holdingTokenData}
+                {selectedTokenHolding}
+                {selectedDataPieChart}
+                {holdingNFTData}
+                bind:totalAssets
+              />
+
+              <!-- <News isLoading={$queryGetAllData.isFetching} data={newsData} /> -->
+            </div>
           {/if}
-
-          <Holding
-            {selectedWallet}
-            isLoadingNFT={$queryTokenHolding.isFetching}
-            isLoadingToken={$queryTokenHolding.isFetching &&
-              $queryVaults.isFetching}
-            {holdingTokenData}
-            {selectedTokenHolding}
-            {selectedDataPieChart}
-            {holdingNFTData}
-            bind:totalAssets
-          />
-
-          <!-- <News isLoading={$queryGetAllData.isFetching} data={newsData} /> -->
         </div>
       {/if}
     </div>
