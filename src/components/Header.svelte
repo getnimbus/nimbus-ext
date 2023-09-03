@@ -72,6 +72,7 @@
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
     staleTime: Infinity,
+    retry: false,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -137,7 +138,11 @@
         </div>
       </Link>
 
-      <Link to="analytic">
+      <Link
+        to={`${
+          userInfo && Object.keys(userInfo).length !== 0 ? "analytic" : "/"
+        }`}
+      >
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
@@ -151,8 +156,10 @@
           }
           `}
           on:click={() => {
-            navActive = "analytic";
-            queryClient.invalidateQueries(["users-me"]);
+            if (userInfo && Object.keys(userInfo).length !== 0) {
+              navActive = "analytic";
+              queryClient.invalidateQueries(["users-me"]);
+            }
           }}
         >
           <img src={AnalyticIcon} alt="" width="20" height="20" />
@@ -170,7 +177,11 @@
         </div>
       </Link>
 
-      <Link to="transactions">
+      <Link
+        to={`${
+          userInfo && Object.keys(userInfo).length !== 0 ? "transactions" : "/"
+        }`}
+      >
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
@@ -184,9 +195,11 @@
           }
           `}
           on:click={() => {
-            navActive = "transactions";
-            chain.update((n) => (n = "ETH"));
-            queryClient.invalidateQueries(["users-me"]);
+            if (userInfo && Object.keys(userInfo).length !== 0) {
+              navActive = "transactions";
+              chain.update((n) => (n = "ETH"));
+              queryClient.invalidateQueries(["users-me"]);
+            }
           }}
         >
           <img src={TransactionsIcon} alt="" width="20" height="20" />
@@ -363,7 +376,11 @@
         </div>
       </Link>
 
-      <Link to="analytic">
+      <Link
+        to={`${
+          userInfo && Object.keys(userInfo).length !== 0 ? "analytic" : "/"
+        }`}
+      >
         <div
           class={`flex items-center gap-3 text-white px-4 py-3 
             ${
@@ -377,8 +394,10 @@
             }
           `}
           on:click={() => {
-            isShowHeaderMobile = false;
-            navActive = "analytic";
+            if (userInfo && Object.keys(userInfo).length !== 0) {
+              isShowHeaderMobile = false;
+              navActive = "analytic";
+            }
           }}
         >
           <img src={AnalyticIcon} alt="" width="32" height="32" />
@@ -396,7 +415,11 @@
         </div>
       </Link>
 
-      <Link to="transactions">
+      <Link
+        to={`${
+          userInfo && Object.keys(userInfo).length !== 0 ? "transactions" : "/"
+        }`}
+      >
         <div
           class={`flex items-center gap-3 text-white px-4 py-3
              ${
@@ -410,8 +433,10 @@
              }
           `}
           on:click={() => {
-            isShowHeaderMobile = false;
-            navActive = "transactions";
+            if (userInfo && Object.keys(userInfo).length !== 0) {
+              isShowHeaderMobile = false;
+              navActive = "transactions";
+            }
           }}
         >
           <img src={TransactionsIcon} alt="" width="32" height="32" />
