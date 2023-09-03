@@ -34,6 +34,7 @@
           allowHTML: true,
           placement: "top",
         }}
+        class="flex items-center"
       >
         <span>
           {#if type === "value"}${/if}{numeral(numberFormat).format(
