@@ -14,7 +14,7 @@
   import { wallet, chain, typeWallet } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { createQuery } from "@tanstack/svelte-query";
   import { getHoldingSOL, getOverviewSOL } from "~/solanaAPI";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
@@ -57,8 +57,6 @@
     ),
   };
 
-  const queryClient = useQueryClient();
-
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
@@ -74,7 +72,8 @@
     typeWalletAddress = value;
   });
 
-  let typeQueryGetAllData: "reload" | "sync" = "sync";
+  let enabledFetchAllData = false;
+  let isErrorAllData = false;
   let isLoadingSync = false;
 
   let overviewData: OverviewData = {
@@ -128,8 +127,6 @@
     select: [],
   };
   let selectedDataPieChart = {};
-
-  let enabledFetchAllData = false;
 
   // overview
   const getOverview = async (address, chain) => {
@@ -351,7 +348,7 @@
   };
 
   // nft holding
-  const getHoldingNFT = async (isReload: boolean = false) => {
+  const getHoldingNFT = async (address, chain) => {
     if (
       typeWalletAddress === "CEX" ||
       (typeWalletAddress === "DEX" &&
@@ -359,71 +356,45 @@
     ) {
       return [];
     }
-    try {
-      const response: HoldingNFTRes = await sendMessage("getHoldingNFT", {
-        address: selectedWallet,
-        reload: isReload,
-        chain: selectedChain,
-      });
+    const response: HoldingNFTRes = await nimbus
+      .get(`/v2/address/${address}/nft-holding?chain=${chain}`)
+      .then((response) => response?.data);
+    return response;
+  };
 
-      if (selectedWallet === response?.address) {
-        holdingNFTData = response.result;
-        return response;
-      } else {
-        return undefined;
-      }
-    } catch (e) {
-      console.error("error: ", e);
-      return undefined;
-    }
+  const formatDataHoldingNFT = (data) => {
+    holdingNFTData = data;
   };
 
   // positions
-  const getPositions = async (isReload: boolean = false) => {
-    try {
-      const response: PositionDataRes = await sendMessage("getPositions", {
-        address: selectedWallet,
-        reload: isReload,
-        chain: selectedChain,
-      });
-      if (selectedWallet === response?.address && response && response.result) {
-        const formatData = response.result.map((item) => {
-          const groupPosition = groupBy(item.positions, "type");
-          return {
-            ...item,
-            positions: groupPosition,
-          };
-        });
-        positionsData = formatData;
+  const getPositions = async (address, chain) => {
+    const response: PositionDataRes = await nimbus
+      .get(`/address/${address}/positions?chain=${chain}`)
+      .then((response) => response.data.positions);
+    return response;
+  };
 
-        return response;
-      } else {
-        return undefined;
-      }
-    } catch (e) {
-      console.error("error: ", e);
-      return undefined;
-    }
+  const formatDataPositions = (data) => {
+    const formatData = data.map((item) => {
+      const groupPosition = groupBy(item.positions, "type");
+      return {
+        ...item,
+        positions: groupPosition,
+      };
+    });
+    positionsData = formatData;
   };
 
   // news
-  const getNews = async (isReload: boolean = false) => {
-    try {
-      const response: NewDataRes = await sendMessage("getNews", {
-        address: selectedWallet,
-        reload: isReload,
-        chain: selectedChain,
-      });
-      if (selectedWallet === response?.address) {
-        newsData = response.result;
-        return response;
-      } else {
-        return undefined;
-      }
-    } catch (e) {
-      console.error("error: ", e);
-      return undefined;
-    }
+  const getNews = async (address, chain) => {
+    const response = nimbus
+      .get(`/news/${address}?chain=${chain}`)
+      .then((response) => response?.data?.news);
+    return response;
+  };
+
+  const formatDataNews = (data) => {
+    newsData = data;
   };
 
   const getSync = async () => {
@@ -453,7 +424,6 @@
 
     try {
       let syncStatus = await getSyncStatus();
-      console.log("syncStatus: ", syncStatus);
 
       // sync data again
       if (type === "reload" || !syncStatus?.data?.lastSync) {
@@ -481,53 +451,24 @@
           ) {
             syncMsg = "";
             isLoadingSync = false;
+            isErrorAllData = false;
             return "success";
+          } else {
+            isErrorAllData = true;
           }
         } else {
-          // const [
-          //   resOverview,
-          //   resHoldingToken,
-          //   resHoldingNFT,
-          //   resPositions,
-          //   resNews,
-          // ] = await Promise.all([
-          //   getOverview().then((res) => {
-          //     return res;
-          //   }),
-          //   getHoldingToken().then((res) => {
-          //     return res;
-          //   }),
-          //   getHoldingNFT(type === "reload").then((res) => {
-          //     return res;
-          //   }),
-          //   getPositions(type === "reload").then((res) => {
-          //     return res;
-          //   }),
-          //   getNews(type === "reload").then((res) => {
-          //     return res;
-          //   }),
-          // ]);
-
-          // if (
-          //   (resOverview === undefined || resOverview) &&
-          //   (resHoldingToken === undefined || resHoldingToken) &&
-          //   (resHoldingNFT === undefined || resHoldingNFT)
-          //   //  && (resPositions === undefined || resPositions)
-          //   //  && (resNews === undefined || resNews)
-          // ) {
-          //   syncMsg = "";
-          //   isLoadingSync = false;
-          //   return "success";
-          // }
-
           if (
             !$queryOverview.isError &&
             !$queryTokenHolding.isError &&
-            !$queryVaults.isError
+            !$queryVaults.isError &&
+            !$queryNftHolding.isError
           ) {
             syncMsg = "";
             isLoadingSync = false;
+            isErrorAllData = false;
             return "success";
+          } else {
+            isErrorAllData = true;
           }
         }
       }
@@ -558,53 +499,24 @@
               ) {
                 syncMsg = "";
                 isLoadingSync = false;
+                isErrorAllData = false;
                 return "success";
+              } else {
+                isErrorAllData = true;
               }
             } else {
-              // const [
-              //   resOverview,
-              //   resHoldingToken,
-              //   resHoldingNFT,
-              //   resPositions,
-              //   resNews,
-              // ] = await Promise.all([
-              //   getOverview().then((res) => {
-              //     return res;
-              //   }),
-              //   getHoldingToken().then((res) => {
-              //     return res;
-              //   }),
-              //   getHoldingNFT(type === "reload").then((res) => {
-              //     return res;
-              //   }),
-              //   getPositions(type === "reload").then((res) => {
-              //     return res;
-              //   }),
-              //   getNews(type === "reload").then((res) => {
-              //     return res;
-              //   }),
-              // ]);
-
-              // if (
-              //   (resOverview === undefined || resOverview) &&
-              //   (resHoldingToken === undefined || resHoldingToken) &&
-              //   (resHoldingNFT === undefined || resHoldingNFT)
-              //   //  && (resPositions === undefined || resPositions)
-              //   //  && (resNews === undefined || resNews)
-              // ) {
-              //   syncMsg = "";
-              //   isLoadingSync = false;
-              //   return "success";
-              // }
-
               if (
                 !$queryOverview.isError &&
                 !$queryTokenHolding.isError &&
-                !$queryVaults.isError
+                !$queryVaults.isError &&
+                !$queryNftHolding.isError
               ) {
                 syncMsg = "";
                 isLoadingSync = false;
+                isErrorAllData = false;
                 return "success";
+              } else {
+                isErrorAllData = true;
               }
             }
             break;
@@ -620,28 +532,17 @@
         syncMsg = syncStatus?.data?.error;
         isLoadingSync = false;
         enabledFetchAllData = false;
+        isErrorAllData = true;
         return "fail";
       }
     } catch (e) {
       console.error("error: ", e);
       isLoadingSync = false;
       enabledFetchAllData = false;
+      isErrorAllData = true;
       return "fail";
     }
   };
-
-  $: queryGetAllData = createQuery({
-    queryKey: [
-      "all-data-portfolio",
-      selectedWallet,
-      selectedChain,
-      typeQueryGetAllData,
-    ],
-    queryFn: () => handleGetAllData(typeQueryGetAllData),
-    staleTime: Infinity,
-    cacheTime: 0,
-  });
-  $: console.log("queryGetAllData: ", $queryGetAllData);
 
   // query overview
   $: queryOverview = createQuery({
@@ -680,6 +581,20 @@
       $queryVaults.data !== undefined
     ) {
       formatDataHoldingToken($queryTokenHolding.data, $queryVaults.data);
+    }
+  }
+
+  // query nft holding
+  $: queryNftHolding = createQuery({
+    queryKey: ["nft-holding", selectedWallet, selectedChain],
+    queryFn: () => getHoldingNFT(selectedWallet, selectedChain),
+    staleTime: Infinity,
+    enabled: enabledFetchAllData,
+  });
+
+  $: {
+    if (!$queryNftHolding.isError && $queryNftHolding.data !== undefined) {
+      formatDataHoldingNFT($queryNftHolding.data);
     }
   }
 
@@ -751,8 +666,7 @@
           result: formatDataTokenHolding,
         };
       } else {
-        typeQueryGetAllData = "reload";
-        queryClient.invalidateQueries(["all-data-portfolio"]);
+        handleGetAllData("reload");
       }
     } catch (e) {
       console.error("error: ", e);
@@ -963,9 +877,21 @@
         newsData = [];
         holdingNFTData = [];
         holdingTokenData = [];
+        isErrorAllData = false;
+        isLoadingSync = false;
+        enabledFetchAllData = false;
+
+        handleGetAllData("sync");
       }
     }
   }
+
+  $: loading =
+    !isErrorAllData &&
+    $queryTokenHolding.isFetching &&
+    $queryVaults.isFetching &&
+    $queryOverview.isFetching &&
+    !$queryNftHolding.isFetching;
 </script>
 
 <AddressManagement title={MultipleLang.overview}>
@@ -973,17 +899,16 @@
     <div class="flex items-center gap-2 mb-1">
       <div
         class="cursor-pointer"
-        class:loading={$queryGetAllData.isFetching}
+        class:loading
         on:click={() => {
-          typeQueryGetAllData = "reload";
-          queryClient.invalidateQueries(["all-data-portfolio"]);
+          handleGetAllData("reload");
           mixpanel.track("user_reload");
         }}
       >
         <img src={Reload} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
       </div>
       <div class="xl:text-xs text-lg text-white font-medium">
-        {#if $queryGetAllData.isFetching}
+        {#if loading}
           {MultipleLang.updating_data}
         {:else}
           {MultipleLang.data_updated}
@@ -1043,7 +968,7 @@
 
               <Holding
                 {selectedWallet}
-                isLoadingNFT={$queryTokenHolding.isFetching}
+                isLoadingNFT={$queryNftHolding.isFetching}
                 isLoadingToken={$queryTokenHolding.isFetching &&
                   $queryVaults.isFetching}
                 {holdingTokenData}
@@ -1053,7 +978,7 @@
                 bind:totalAssets
               />
 
-              <!-- <News isLoading={$queryGetAllData.isFetching} data={newsData} /> -->
+              <!-- <News isLoading={false} data={newsData} /> -->
             </div>
           {/if}
         </div>
