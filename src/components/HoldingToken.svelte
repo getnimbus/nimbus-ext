@@ -453,16 +453,6 @@
   </td>
 
   <td
-    class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
-      <TooltipNumber number={value} type="value" />
-    </div>
-  </td>
-
-  <td
     class={`py-3 w-25 ${
       darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
     }`}
@@ -476,6 +466,16 @@
       <div class="w-3/4 max-w-40">
         <Progressbar progress={ratio} size="h-1" />
       </div>
+    </div>
+  </td>
+
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+    }`}
+  >
+    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
+      <TooltipNumber number={value} type="value" />
     </div>
   </td>
 
