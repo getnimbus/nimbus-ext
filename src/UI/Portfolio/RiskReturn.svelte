@@ -93,9 +93,9 @@
           <div class="xl:text-2xl text-4xl font-medium px-6 pt-6">Risks</div>
           {#if $query.isError}
             <div
-              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
                 darkMode ? "bg-[#222222e6]" : "bg-white/90"
-              } z-30 backdrop-blur-md xl:text-xs text-lg`}
+              }`}
             >
               {#if typeWalletAddress === "CEX"}
                 Not enough data. CEX integration can only get data from the day
@@ -315,9 +315,9 @@
           </div>
           {#if $query.isError}
             <div
-              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center gap-3 ${
+              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
                 darkMode ? "bg-[#222222e6]" : "bg-white/90"
-              } z-30 backdrop-blur-md xl:text-xs text-lg`}
+              }`}
             >
               {#if typeWalletAddress === "CEX"}
                 Not enough data. CEX integration can only get data from the day
