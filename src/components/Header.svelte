@@ -61,6 +61,11 @@
     selectedWallet = value;
   });
 
+  let selectedChain: string = "";
+  chain.subscribe((value) => {
+    selectedChain = value;
+  });
+
   let timerDebounce;
   let search = "";
   let isShowHeaderMobile = false;
@@ -130,7 +135,7 @@
     </Link>
 
     <div class="items-center hidden gap-1 xl:flex">
-      <Link to="/">
+      {#if selectedWallet === "0xc02ad7b9a9121fc849196e844dc869d2250df3a6"}
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all ${
             darkMode
@@ -143,7 +148,11 @@
           }`}
           on:click={() => {
             navActive = "portfolio";
-            queryClient.invalidateQueries(["users-me"]);
+            navigate(
+              `/?type=DEX&chain=${
+                selectedChain || "All"
+              }&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
+            );
           }}
         >
           <img src={PortfolioIcon} alt="" width="20" height="20" />
@@ -151,9 +160,6 @@
             {MultipleLang.portfolio}
           </span>
         </div>
-      </Link>
-
-      {#if selectedWallet === "0xc02ad7b9a9121fc849196e844dc869d2250df3a6"}
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
@@ -167,8 +173,11 @@
           }
           `}
           on:click={() => {
+            navActive = "analytic";
             navigate(
-              `/analytic?type=DEX&chain=ALL&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
+              `/analytic?type=DEX&chain=${
+                selectedChain || "All"
+              }&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
             );
           }}
         >
@@ -186,6 +195,28 @@
           </span>
         </div>
       {:else}
+        <Link to="/">
+          <div
+            class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all ${
+              darkMode
+                ? navActive === "portfolio"
+                  ? "bg-[#212121] opacity-100"
+                  : "opacity-70 hover:bg-[#212121]"
+                : navActive === "portfolio"
+                ? "bg-[#525B8C] opacity-100"
+                : "opacity-70 hover:bg-[#525B8C]"
+            }`}
+            on:click={() => {
+              navActive = "portfolio";
+              queryClient.invalidateQueries(["users-me"]);
+            }}
+          >
+            <img src={PortfolioIcon} alt="" width="20" height="20" />
+            <span class="text-sm font-medium text-white xl:text-base">
+              {MultipleLang.portfolio}
+            </span>
+          </div>
+        </Link>
         <Link
           to={`${
             userInfo && Object.keys(userInfo).length !== 0 ? "analytic" : "/"

@@ -124,8 +124,6 @@
     selectedChain = value;
   });
 
-  $: console.log("selectedChain: ", selectedChain);
-
   let typeWalletAddress: string = "";
   typeWallet.subscribe((value) => {
     typeWalletAddress = value;
@@ -248,7 +246,7 @@
   };
 
   const queryClient = useQueryClient();
-  $: query = createQuery({
+  const query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,

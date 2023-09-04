@@ -179,7 +179,7 @@
     return response?.data;
   };
 
-  $: query = createQuery({
+  const query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
