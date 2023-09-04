@@ -851,9 +851,9 @@
               <div class="h-full">
                 {#if isEmptyDataPie}
                   <div
-                    class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+                    class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
                       darkMode ? "bg-[#222222e6]" : "bg-white/90"
-                    } z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]`}
+                    }`}
                   >
                     {#if typeWalletAddress === "CEX"}
                       Not enough data. CEX integration can only get data from
@@ -928,9 +928,9 @@
                     <div class="h-full">
                       {#if compareData && Object.keys(compareData).length === 0}
                         <div
-                          class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+                          class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
                             darkMode ? "bg-[#222222e6]" : "bg-white/90"
-                          } z-30 backdrop-blur-md xl:text-xs text-lg`}
+                          }`}
                         >
                           {#if typeWalletAddress === "CEX"}
                             Not enough data. CEX integration can only get data
@@ -979,9 +979,9 @@
                         Compare with
                       </div>
                       <div
-                        class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+                        class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
                           darkMode ? "bg-[#222222e6]" : "bg-white/90"
-                        } z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]`}
+                        }`}
                       >
                         {#if typeWalletAddress === "CEX"}
                           Not enough data. CEX integration can only get data
@@ -1133,9 +1133,9 @@
           {#if compareData && Object.keys(compareData).length === 0}
             <div class="h-[433px]">
               <div
-                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
                   darkMode ? "bg-[#222222e6]" : "bg-white/90"
-                } z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]`}
+                }`}
               >
                 {#if typeWalletAddress === "CEX"}
                   Not enough data. CEX integration can only get data from the
@@ -1192,9 +1192,9 @@
           {#if compareData && Object.keys(compareData).length === 0}
             <div class="h-[465px]">
               <div
-                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 ${
+                class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
                   darkMode ? "bg-[#222222e6]" : "bg-white/90"
-                } z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px]`}
+                }`}
               >
                 {#if typeWalletAddress === "CEX"}
                   Not enough data. CEX integration can only get data from the
