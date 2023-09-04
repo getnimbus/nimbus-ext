@@ -249,7 +249,7 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
-    return response.data;
+    return response?.data || [];
   };
 
   const getRiskBreakdown = async (address: string, timeFrame: string) => {
@@ -259,7 +259,7 @@
     const response = await nimbus.get(
       `/v2/analysis/${address}/risk-breakdown?timeRange=${timeFrame}`
     );
-    return response.data;
+    return response?.data || [];
   };
 
   $: enabledQuery = Boolean(

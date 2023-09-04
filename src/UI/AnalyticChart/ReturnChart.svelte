@@ -129,7 +129,7 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
-    return response.data;
+    return response?.data || [];
   };
 
   $: enabledQuery = Boolean(

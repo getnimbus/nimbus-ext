@@ -130,7 +130,7 @@
     const response: AnalyticHistoricalRes = await nimbus.get(
       `/v2/analysis/${address}/historical?chain=${chain}`
     );
-    return response.data;
+    return response?.data || [];
   };
 
   const formatDataHistorical = (data) => {

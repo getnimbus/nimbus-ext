@@ -69,6 +69,10 @@
             () => "PROFESSIONAL" // TODO: Remove me after integration complete
           );
         }
+      } else {
+        selectedPackage.update(
+          () => "PROFESSIONAL" // TODO: Remove me after integration complete
+        );
       }
     } catch (e) {
       console.error("e: ", e);
