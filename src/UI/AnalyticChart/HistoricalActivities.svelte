@@ -154,7 +154,7 @@
     const response = await nimbus.get(
       `/v2/analysis/${address}/historical?chain=${chain}`
     );
-    return response.data;
+    return response?.data || [];
   };
 
   $: enabledQuery = Boolean(

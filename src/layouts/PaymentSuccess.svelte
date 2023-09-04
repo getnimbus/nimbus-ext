@@ -5,7 +5,7 @@
   import "flowbite/dist/flowbite.css";
   import { Toast } from "flowbite-svelte";
   import { useNavigate } from "svelte-navigator";
-  import { selectedPackage, user } from "~/store";
+  import { selectedPackage, user, wallet, chain, typeWallet } from "~/store";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import Button from "~/components/Button.svelte";
@@ -76,6 +76,10 @@
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
+      wallet.update((n) => (n = ""));
+      chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
+      queryClient.invalidateQueries(["list-address"]);
     },
   });
 
@@ -97,6 +101,10 @@
           (n) => (n = $queryUserInfo.data?.plan?.tier.toUpperCase())
         );
       }
+    } else {
+      selectedPackage.update(
+        () => "PROFESSIONAL" // TODO: Remove me after integration complete
+      );
     }
   }
 

@@ -3,7 +3,14 @@
   import * as browser from "webextension-polyfill";
   import { getAddressContext } from "~/utils";
   import { i18n } from "~/lib/i18n";
-  import { chain, wallet, selectedPackage, isDarkMode, user } from "~/store";
+  import {
+    chain,
+    wallet,
+    selectedPackage,
+    isDarkMode,
+    user,
+    typeWallet,
+  } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { Motion } from "svelte-motion";
   import { showChangeLogAnimationVariants } from "~/utils";
@@ -54,6 +61,11 @@
     selectedWallet = value;
   });
 
+  let selectedChain: string = "";
+  chain.subscribe((value) => {
+    selectedChain = value;
+  });
+
   let timerDebounce;
   let search = "";
   let isShowHeaderMobile = false;
@@ -76,6 +88,10 @@
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
+      wallet.update((n) => (n = ""));
+      chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
+      queryClient.invalidateQueries(["list-address"]);
     },
   });
 
@@ -98,6 +114,10 @@
           () => "PROFESSIONAL" // TODO: Remove me after integration complete
         );
       }
+    } else {
+      selectedPackage.update(
+        () => "PROFESSIONAL" // TODO: Remove me after integration complete
+      );
     }
   }
 
@@ -115,7 +135,7 @@
     </Link>
 
     <div class="items-center hidden gap-1 xl:flex">
-      <Link to="/">
+      {#if selectedWallet === "0xc02ad7b9a9121fc849196e844dc869d2250df3a6"}
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all ${
             darkMode
@@ -128,7 +148,11 @@
           }`}
           on:click={() => {
             navActive = "portfolio";
-            queryClient.invalidateQueries(["users-me"]);
+            navigate(
+              `/?type=DEX&chain=${
+                selectedChain || "All"
+              }&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
+            );
           }}
         >
           <img src={PortfolioIcon} alt="" width="20" height="20" />
@@ -136,13 +160,6 @@
             {MultipleLang.portfolio}
           </span>
         </div>
-      </Link>
-
-      <Link
-        to={`${
-          userInfo && Object.keys(userInfo).length !== 0 ? "analytic" : "/"
-        }`}
-      >
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
@@ -156,10 +173,12 @@
           }
           `}
           on:click={() => {
-            if (userInfo && Object.keys(userInfo).length !== 0) {
-              navActive = "analytic";
-              queryClient.invalidateQueries(["users-me"]);
-            }
+            navActive = "analytic";
+            navigate(
+              `/analytic?type=DEX&chain=${
+                selectedChain || "All"
+              }&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
+            );
           }}
         >
           <img src={AnalyticIcon} alt="" width="20" height="20" />
@@ -175,7 +194,74 @@
             </span>
           </span>
         </div>
-      </Link>
+      {:else}
+        <Link to="/">
+          <div
+            class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all ${
+              darkMode
+                ? navActive === "portfolio"
+                  ? "bg-[#212121] opacity-100"
+                  : "opacity-70 hover:bg-[#212121]"
+                : navActive === "portfolio"
+                ? "bg-[#525B8C] opacity-100"
+                : "opacity-70 hover:bg-[#525B8C]"
+            }`}
+            on:click={() => {
+              navActive = "portfolio";
+              queryClient.invalidateQueries(["users-me"]);
+            }}
+          >
+            <img src={PortfolioIcon} alt="" width="20" height="20" />
+            <span class="text-sm font-medium text-white xl:text-base">
+              {MultipleLang.portfolio}
+            </span>
+          </div>
+        </Link>
+        <Link
+          to={`${
+            userInfo && Object.keys(userInfo).length !== 0 ? "analytic" : "/"
+          }`}
+        >
+          <div
+            class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+          ${
+            darkMode
+              ? navActive === "analytic"
+                ? "bg-[#212121] opacity-100"
+                : "opacity-70 hover:bg-[#212121]"
+              : navActive === "analytic"
+              ? "bg-[#525B8C] opacity-100"
+              : "opacity-70 hover:bg-[#525B8C]"
+          }
+          `}
+            on:click={() => {
+              if (userInfo && Object.keys(userInfo).length !== 0) {
+                navActive = "analytic";
+                queryClient.invalidateQueries(["users-me"]);
+              } else {
+                user.update((n) => (n = {}));
+                wallet.update((n) => (n = ""));
+                chain.update((n) => (n = ""));
+                typeWallet.update((n) => (n = ""));
+                queryClient.invalidateQueries(["list-address"]);
+              }
+            }}
+          >
+            <img src={AnalyticIcon} alt="" width="20" height="20" />
+            <span class="flex gap-[1px]">
+              <span class="text-sm font-medium text-white xl:text-base">
+                {MultipleLang.analytics}
+              </span>
+              <span class="flex items-center gap-[1px] -mt-2">
+                <img src={Crown} alt="" width="13" height="12" />
+                <span class="text-xs font-medium text-[#FFB800] -mt-[1px]"
+                  >Pro</span
+                >
+              </span>
+            </span>
+          </div>
+        </Link>
+      {/if}
 
       <Link
         to={`${
@@ -199,6 +285,12 @@
               navActive = "transactions";
               chain.update((n) => (n = "ETH"));
               queryClient.invalidateQueries(["users-me"]);
+            } else {
+              user.update((n) => (n = {}));
+              wallet.update((n) => (n = ""));
+              chain.update((n) => (n = ""));
+              typeWallet.update((n) => (n = ""));
+              queryClient.invalidateQueries(["list-address"]);
             }
           }}
         >
@@ -209,7 +301,11 @@
         </div>
       </Link>
 
-      <Link to="whales">
+      <Link
+        to={`${
+          userInfo && Object.keys(userInfo).length !== 0 ? "whales" : "/"
+        }`}
+      >
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
@@ -223,8 +319,16 @@
           }
           `}
           on:click={() => {
-            navActive = "whales";
-            queryClient.invalidateQueries(["users-me"]);
+            if (userInfo && Object.keys(userInfo).length !== 0) {
+              navActive = "whales";
+              queryClient.invalidateQueries(["users-me"]);
+            } else {
+              user.update((n) => (n = {}));
+              wallet.update((n) => (n = ""));
+              chain.update((n) => (n = ""));
+              typeWallet.update((n) => (n = ""));
+              queryClient.invalidateQueries(["list-address"]);
+            }
           }}
         >
           <img src={WhaleIcon} alt="" width="20" height="20" />
@@ -234,7 +338,9 @@
         </div>
       </Link>
 
-      <Link to="news">
+      <Link
+        to={`${userInfo && Object.keys(userInfo).length !== 0 ? "news" : "/"}`}
+      >
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
@@ -248,8 +354,16 @@
           }
           `}
           on:click={() => {
-            navActive = "news";
-            queryClient.invalidateQueries(["users-me"]);
+            if (userInfo && Object.keys(userInfo).length !== 0) {
+              navActive = "news";
+              queryClient.invalidateQueries(["users-me"]);
+            } else {
+              user.update((n) => (n = {}));
+              wallet.update((n) => (n = ""));
+              chain.update((n) => (n = ""));
+              typeWallet.update((n) => (n = ""));
+              queryClient.invalidateQueries(["list-address"]);
+            }
           }}
         >
           <img src={NewsIcon} alt="" width="20" height="20" />
@@ -260,6 +374,7 @@
       </Link>
     </div>
 
+    <!-- Search -->
     <div class="flex items-center justify-between gap-6 xl:gap-3">
       <div
         class={`xl:pl-4 pl-3 flex items-center rounded-[1000px] ${
@@ -376,13 +491,46 @@
         </div>
       </Link>
 
-      <Link
-        to={`${
-          userInfo && Object.keys(userInfo).length !== 0 ? "analytic" : "/"
-        }`}
-      >
+      {#if selectedWallet === "0xc02ad7b9a9121fc849196e844dc869d2250df3a6"}
         <div
-          class={`flex items-center gap-3 text-white px-4 py-3 
+          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
+          ${
+            darkMode
+              ? navActive === "analytic"
+                ? "bg-[#212121] opacity-100"
+                : "opacity-70 hover:bg-[#212121]"
+              : navActive === "analytic"
+              ? "bg-[#525B8C] opacity-100"
+              : "opacity-70 hover:bg-[#525B8C]"
+          }
+          `}
+          on:click={() => {
+            navigate(
+              `/analytic?type=DEX&chain=ALL&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
+            );
+          }}
+        >
+          <img src={AnalyticIcon} alt="" width="20" height="20" />
+          <span class="flex gap-[1px]">
+            <span class="text-sm font-medium text-white xl:text-base">
+              {MultipleLang.analytics}
+            </span>
+            <span class="flex items-center gap-[1px] -mt-2">
+              <img src={Crown} alt="" width="13" height="12" />
+              <span class="text-xs font-medium text-[#FFB800] -mt-[1px]"
+                >Pro</span
+              >
+            </span>
+          </span>
+        </div>
+      {:else}
+        <Link
+          to={`${
+            userInfo && Object.keys(userInfo).length !== 0 ? "analytic" : "/"
+          }`}
+        >
+          <div
+            class={`flex items-center gap-3 text-white px-4 py-3 
             ${
               darkMode
                 ? navActive === "analytic"
@@ -393,27 +541,35 @@
                 : "opacity-70"
             }
           `}
-          on:click={() => {
-            if (userInfo && Object.keys(userInfo).length !== 0) {
+            on:click={() => {
+              if (userInfo && Object.keys(userInfo).length !== 0) {
+                navActive = "analytic";
+                queryClient.invalidateQueries(["users-me"]);
+              } else {
+                user.update((n) => (n = {}));
+                wallet.update((n) => (n = ""));
+                chain.update((n) => (n = ""));
+                typeWallet.update((n) => (n = ""));
+                queryClient.invalidateQueries(["list-address"]);
+              }
               isShowHeaderMobile = false;
-              navActive = "analytic";
-            }
-          }}
-        >
-          <img src={AnalyticIcon} alt="" width="32" height="32" />
-          <span class="flex gap-[2px]">
-            <span class="text-4xl font-medium">
-              {MultipleLang.analytics}
+            }}
+          >
+            <img src={AnalyticIcon} alt="" width="32" height="32" />
+            <span class="flex gap-[2px]">
+              <span class="text-4xl font-medium">
+                {MultipleLang.analytics}
+              </span>
+              <span class="flex items-center gap-[1px] -mt-2">
+                <img src={Crown} alt="" width="16" height="16" />
+                <span class="text-base font-medium text-[#FFB800] -mt-[1px]"
+                  >Pro</span
+                >
+              </span>
             </span>
-            <span class="flex items-center gap-[1px] -mt-2">
-              <img src={Crown} alt="" width="16" height="16" />
-              <span class="text-base font-medium text-[#FFB800] -mt-[1px]"
-                >Pro</span
-              >
-            </span>
-          </span>
-        </div>
-      </Link>
+          </div>
+        </Link>
+      {/if}
 
       <Link
         to={`${
@@ -434,9 +590,16 @@
           `}
           on:click={() => {
             if (userInfo && Object.keys(userInfo).length !== 0) {
-              isShowHeaderMobile = false;
               navActive = "transactions";
+              queryClient.invalidateQueries(["users-me"]);
+            } else {
+              user.update((n) => (n = {}));
+              wallet.update((n) => (n = ""));
+              chain.update((n) => (n = ""));
+              typeWallet.update((n) => (n = ""));
+              queryClient.invalidateQueries(["list-address"]);
             }
+            isShowHeaderMobile = false;
           }}
         >
           <img src={TransactionsIcon} alt="" width="32" height="32" />
@@ -446,7 +609,11 @@
         </div>
       </Link>
 
-      <Link to="whales">
+      <Link
+        to={`${
+          userInfo && Object.keys(userInfo).length !== 0 ? "whales" : "/"
+        }`}
+      >
         <div
           class={`flex items-center gap-3 text-white px-4 py-3
              ${
@@ -460,8 +627,17 @@
              }
           `}
           on:click={() => {
+            if (userInfo && Object.keys(userInfo).length !== 0) {
+              navActive = "whales";
+              queryClient.invalidateQueries(["users-me"]);
+            } else {
+              user.update((n) => (n = {}));
+              wallet.update((n) => (n = ""));
+              chain.update((n) => (n = ""));
+              typeWallet.update((n) => (n = ""));
+              queryClient.invalidateQueries(["list-address"]);
+            }
             isShowHeaderMobile = false;
-            navActive = "whales";
           }}
         >
           <img src={WhaleIcon} alt="" width="32" height="32" />
@@ -471,7 +647,9 @@
         </div>
       </Link>
 
-      <Link to="news">
+      <Link
+        to={`${userInfo && Object.keys(userInfo).length !== 0 ? "news" : "/"}`}
+      >
         <div
           class={`flex items-center gap-3 text-white px-4 py-3 
             ${
@@ -485,8 +663,17 @@
             }
           `}
           on:click={() => {
+            if (userInfo && Object.keys(userInfo).length !== 0) {
+              navActive = "news";
+              queryClient.invalidateQueries(["users-me"]);
+            } else {
+              user.update((n) => (n = {}));
+              wallet.update((n) => (n = ""));
+              chain.update((n) => (n = ""));
+              typeWallet.update((n) => (n = ""));
+              queryClient.invalidateQueries(["list-address"]);
+            }
             isShowHeaderMobile = false;
-            navActive = "news";
           }}
         >
           <img src={NewsIcon} alt="" width="32" height="32" />

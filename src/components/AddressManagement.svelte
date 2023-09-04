@@ -246,7 +246,7 @@
   };
 
   const queryClient = useQueryClient();
-  $: query = createQuery({
+  const query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
@@ -257,6 +257,7 @@
       formatListAddress = [];
       selectedWallet = "";
     },
+    enabled: selectedWallet !== "0xc02ad7b9a9121fc849196e844dc869d2250df3a6",
   });
 
   $: {
@@ -613,91 +614,104 @@
   });
 
   $: {
-    if (selectedWallet) {
-      browser.storage.sync.set({ selectedWallet: selectedWallet }).then(() => {
-        console.log("save selected address to sync storage");
-      });
+    if (selectedWallet || selectedChain) {
+      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+        browser.storage.sync
+          .set({ selectedWallet: selectedWallet })
+          .then(() => {
+            console.log("save selected address to sync storage");
+          });
 
-      browser.storage.sync.set({ selectedChain: selectedChain }).then(() => {
-        console.log("save selected chain to sync storage");
-      });
-
-      const selected = formatListAddress.find((item) => {
-        return item.value === selectedWallet;
-      });
-
-      if (
-        selected &&
-        Object.keys(selected).length !== 0 &&
-        selected.type === "CEX"
-      ) {
-        typeWallet.update((n) => (n = "CEX"));
-        browser.storage.sync.set({ typeWalletAddress: "CEX" }).then(() => {
-          console.log("save selected type wallet to sync storage");
+        browser.storage.sync.set({ selectedChain: selectedChain }).then(() => {
+          console.log("save selected chain to sync storage");
         });
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname +
-            `?type=${typeWalletAddress}&address=${selectedWallet}`
-        );
-        if (selectedChain) {
-          chain.update((n) => (n = selectedChain));
-        } else {
-          chain.update((n) => (n = "ALL"));
-        }
-      }
 
-      if (
-        selected &&
-        Object.keys(selected).length !== 0 &&
-        selected.type === "BUNDLE"
-      ) {
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname +
-            `?type=${typeWalletAddress}&address=${selectedWallet}`
-        );
-        if (selectedChain) {
-          chain.update((n) => (n = selectedChain));
-        } else {
-          chain.update((n) => (n = "ALL"));
-        }
-      }
-
-      if (
-        selected &&
-        Object.keys(selected).length !== 0 &&
-        selected.type === "DEX"
-      ) {
-        typeWallet.update((n) => (n = "DEX"));
-        browser.storage.sync.set({ typeWalletAddress: "DEX" }).then(() => {
-          console.log("save selected type wallet to sync storage");
-        });
-        if (getAddressContext(selectedWallet)?.type === "EVM") {
+        if (selectedWallet === "0xc02ad7b9a9121fc849196e844dc869d2250df3a6") {
           window.history.replaceState(
             null,
             "",
             window.location.pathname +
-              `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
+              `?type=CEX&chain=${selectedChain}&address=${selectedWallet}`
           );
-        }
+        } else {
+          const selected = formatListAddress.find((item) => {
+            return item.value === selectedWallet;
+          });
 
-        if (
-          getAddressContext(selectedWallet)?.type === "BTC" ||
-          getAddressContext(selectedWallet)?.type === "SOL"
-        ) {
-          window.history.replaceState(
-            null,
-            "",
-            window.location.pathname +
-              `?type=${typeWalletAddress}&address=${selectedWallet}`
-          );
-          if (selectedChain) {
-            chain.update((n) => (n = selectedChain));
-          } else {
-            chain.update((n) => (n = "ALL"));
+          if (
+            selected &&
+            Object.keys(selected).length !== 0 &&
+            selected.type === "CEX"
+          ) {
+            typeWallet.update((n) => (n = "CEX"));
+            browser.storage.sync.set({ typeWalletAddress: "CEX" }).then(() => {
+              console.log("save selected type wallet to sync storage");
+            });
+            window.history.replaceState(
+              null,
+              "",
+              window.location.pathname +
+                `?type=${typeWalletAddress}&address=${selectedWallet}`
+            );
+            if (selectedChain) {
+              chain.update((n) => (n = selectedChain));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
+          }
+
+          if (
+            selected &&
+            Object.keys(selected).length !== 0 &&
+            selected.type === "BUNDLE"
+          ) {
+            window.history.replaceState(
+              null,
+              "",
+              window.location.pathname +
+                `?type=${typeWalletAddress}&address=${selectedWallet}`
+            );
+            if (selectedChain) {
+              chain.update((n) => (n = selectedChain));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
+          }
+
+          if (
+            selected &&
+            Object.keys(selected).length !== 0 &&
+            selected.type === "DEX"
+          ) {
+            typeWallet.update((n) => (n = "DEX"));
+            browser.storage.sync.set({ typeWalletAddress: "DEX" }).then(() => {
+              console.log("save selected type wallet to sync storage");
+            });
+            if (getAddressContext(selectedWallet)?.type === "EVM") {
+              window.history.replaceState(
+                null,
+                "",
+                window.location.pathname +
+                  `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
+              );
+            }
+
+            if (
+              getAddressContext(selectedWallet)?.type === "BTC" ||
+              getAddressContext(selectedWallet)?.type === "SOL"
+            ) {
+              window.history.replaceState(
+                null,
+                "",
+                window.location.pathname +
+                  `?type=${typeWalletAddress}&address=${selectedWallet}`
+              );
+              if (selectedChain) {
+                chain.update((n) => (n = selectedChain));
+              } else {
+                chain.update((n) => (n = "ALL"));
+              }
+            }
           }
         }
       }
@@ -860,10 +874,11 @@
                     mixpanel.track("user_search");
                     chain.update((n) => (n = "ALL"));
                     wallet.update(
-                      (n) => (n = "0x3d8fc1cffaa110f7a7f9f8bc237b73d54c4abf61")
+                      (n) => (n = "0xc02ad7b9a9121fc849196e844dc869d2250df3a6")
                     );
+                    typeWallet.update((n) => (n = "DEX"));
                     navigate(
-                      `/?type=DEX&chain=ALL&address=0x3d8fc1cffaa110f7a7f9f8bc237b73d54c4abf61`
+                      `/?type=DEX&chain=ALL&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
                     );
                   }}
                 >

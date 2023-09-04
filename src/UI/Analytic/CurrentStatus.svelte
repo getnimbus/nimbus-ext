@@ -63,6 +63,13 @@
     typeWalletAddress = value;
   });
 
+  $: console.log({
+    packageSelected,
+    selectedWallet,
+    selectedChain,
+    typeWalletAddress,
+  });
+
   let selectedType: "category" | "sector" | "rank" = "category";
   let isEmptyDataPie = false;
   let dataRank = [];
@@ -338,11 +345,11 @@
       return undefined;
     }
     const response = await nimbus.get(`/address/${address}/personalize/tag`);
-    return response.data;
+    return response?.data || [];
   };
 
   const formatDataPersonalTag = (data) => {
-    const categoriesData = Object.getOwnPropertyNames(data);
+    const categoriesData = data && Object.getOwnPropertyNames(data);
     const categoriesDataList = categoriesData.map((item) => {
       return {
         category: item,
@@ -418,7 +425,7 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
-    return response.data;
+    return response?.data || [];
   };
 
   $: queryCompare = createQuery({
