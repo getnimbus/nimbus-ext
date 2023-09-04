@@ -3,7 +3,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { isDarkMode, user } from "~/store";
+  import { isDarkMode, user, wallet, chain, typeWallet } from "~/store";
   import { useNavigate } from "svelte-navigator";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -50,6 +50,10 @@
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
+      wallet.update((n) => (n = ""));
+      chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
+      queryClient.invalidateQueries(["list-address"]);
     },
   });
 

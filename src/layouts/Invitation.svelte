@@ -6,8 +6,8 @@
   import { shorterAddress } from "~/utils";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { createQuery } from "@tanstack/svelte-query";
-  import { isDarkMode, user } from "~/store";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { isDarkMode, user, wallet, chain, typeWallet } from "~/store";
   import { useNavigate } from "svelte-navigator";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -65,6 +65,7 @@
     staleTime: Infinity,
   });
 
+  const queryClient = useQueryClient();
   $: queryUserInfo = createQuery({
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
@@ -73,6 +74,10 @@
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
+      wallet.update((n) => (n = ""));
+      chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
+      queryClient.invalidateQueries(["list-address"]);
     },
   });
 

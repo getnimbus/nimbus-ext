@@ -3,7 +3,14 @@
   import * as browser from "webextension-polyfill";
   import { getAddressContext } from "~/utils";
   import { i18n } from "~/lib/i18n";
-  import { chain, wallet, selectedPackage, isDarkMode, user } from "~/store";
+  import {
+    chain,
+    wallet,
+    selectedPackage,
+    isDarkMode,
+    user,
+    typeWallet,
+  } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { Motion } from "svelte-motion";
   import { showChangeLogAnimationVariants } from "~/utils";
@@ -76,6 +83,10 @@
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
+      wallet.update((n) => (n = ""));
+      chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
+      queryClient.invalidateQueries(["list-address"]);
     },
   });
 
