@@ -157,7 +157,7 @@
         </div>
       </div>
 
-      {#if isShowSoon}
+      {#if isShowSoon && selectedWallet !== "0xc02ad7b9a9121fc849196e844dc869d2250df3a6"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
             darkMode ? "bg-[#222222e6]" : "bg-white/90"

@@ -57,7 +57,7 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}`
     );
-    return response.data;
+    return response?.data || [];
   };
 
   $: query = createQuery({

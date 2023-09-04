@@ -174,7 +174,7 @@
     const response = await nimbus.get(
       `/v2/analysis/${address}/inflow-outflow?chain=${chain}&fromDate=${""}&toDate=${""}`
     );
-    return response.data;
+    return response?.data || [];
   };
 
   const formatDataInflowOutFlow = (data) => {
