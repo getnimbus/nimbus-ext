@@ -63,13 +63,6 @@
     typeWalletAddress = value;
   });
 
-  $: console.log({
-    packageSelected,
-    selectedWallet,
-    selectedChain,
-    typeWalletAddress,
-  });
-
   let selectedType: "category" | "sector" | "rank" = "category";
   let isEmptyDataPie = false;
   let dataRank = [];
@@ -349,25 +342,27 @@
   };
 
   const formatDataPersonalTag = (data) => {
-    const categoriesData = data && Object.getOwnPropertyNames(data);
-    const categoriesDataList = categoriesData.map((item) => {
-      return {
-        category: item,
-        dataTag: groupBy(data[item], "tag"),
-      };
-    });
-    const formatDataCategory = categoriesDataList.map((item) => {
-      return {
-        category: item.category,
-        dataTag: Object.getOwnPropertyNames(item.dataTag).map((tag) => {
-          return {
-            name: tag,
-            tokens: item.dataTag[tag],
-          };
-        }),
-      };
-    });
-    dataPersonalizeTag = formatDataCategory;
+    if (data && data.length !== 0) {
+      const categoriesData = data && Object.getOwnPropertyNames(data);
+      const categoriesDataList = categoriesData.map((item) => {
+        return {
+          category: item,
+          dataTag: groupBy(data[item], "tag"),
+        };
+      });
+      const formatDataCategory = categoriesDataList.map((item) => {
+        return {
+          category: item.category,
+          dataTag: Object.getOwnPropertyNames(item.dataTag).map((tag) => {
+            return {
+              name: tag,
+              tokens: item.dataTag[tag],
+            };
+          }),
+        };
+      });
+      dataPersonalizeTag = formatDataCategory;
+    }
   };
 
   $: queryPersonalTag = createQuery({
@@ -844,18 +839,26 @@
         {/if}
       </div>
       <div class="flex-1">
-        <div
-          on:click={() => {
-            navigate(
-              `/personal-token-breakdown?chain=${encodeURIComponent(
-                selectedChain
-              )}&address=${encodeURIComponent(selectedWallet)}`
-            );
-          }}
-          class="mt-1 text-2xl font-medium text-blue-500 cursor-pointer xl:text-base hover:underline w-max"
-        >
-          Custom category
-        </div>
+        {#if selectedWallet !== "0xc02ad7b9a9121fc849196e844dc869d2250df3a6"}
+          <div
+            on:click={() => {
+              navigate(
+                `/personal-token-breakdown?chain=${encodeURIComponent(
+                  selectedChain
+                )}&address=${encodeURIComponent(selectedWallet)}`
+              );
+            }}
+            class="mt-1 text-2xl font-medium text-blue-500 cursor-pointer xl:text-base hover:underline w-max"
+          >
+            Custom category
+          </div>
+        {:else}
+          <div
+            class="mt-1 text-2xl font-medium text-gray-500 cursor-pointer xl:text-base hover:underline w-max"
+          >
+            Custom category
+          </div>
+        {/if}
       </div>
     </div>
 

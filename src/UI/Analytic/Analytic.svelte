@@ -123,17 +123,27 @@
                 >
                   <div class="flex items-center justify-end">
                     <div class="xl:w-[164px] w-max">
-                      <Button
-                        on:click={() => {
-                          navigate(
-                            `/compare?address=${encodeURIComponent(
-                              selectedWallet
-                            )}`
-                          );
-                        }}
-                      >
-                        <div class="xl:text-base text-2xl">Get suggestion</div>
-                      </Button>
+                      {#if selectedWallet === "0xc02ad7b9a9121fc849196e844dc869d2250df3a6"}
+                        <Button disabled>
+                          <div class="xl:text-base text-2xl">
+                            Get suggestion
+                          </div>
+                        </Button>
+                      {:else}
+                        <Button
+                          on:click={() => {
+                            navigate(
+                              `/compare?address=${encodeURIComponent(
+                                selectedWallet
+                              )}`
+                            );
+                          }}
+                        >
+                          <div class="xl:text-base text-2xl">
+                            Get suggestion
+                          </div>
+                        </Button>
+                      {/if}
                     </div>
                   </div>
                 </div>
