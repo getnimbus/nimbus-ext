@@ -149,7 +149,8 @@
           return {
             ...item,
             market_price: item?.btcPrice || 0,
-            current_value: item?.floorPriceBTC * item?.btcPrice * item?.balance,
+            current_value:
+              item?.floorPriceBTC * item?.btcPrice * item?.balance || 0,
           };
         })
         .sort((a, b) => {
