@@ -4,7 +4,7 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { groupBy, isEmpty } from "lodash";
+  import { groupBy, isEmpty, flatten } from "lodash";
   import { onDestroy, onMount } from "svelte";
   import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
@@ -605,15 +605,22 @@
     })
   );
 
+  $: console.log('here', $queryAllTokenHolding);
+
   $: {
-    if ($queryAllTokenHolding.length !== 0 && $queryVaults.data) {
-      $queryAllTokenHolding.map((item) => {
-        if (item.data && item.data !== undefined && item.data.length !== 0) {
-          formatDataHoldingToken(item.data, $queryVaults.data);
-        }
-      });
-    }
+    const allTokens = flatten($queryAllTokenHolding.filter(item => Array.isArray(item.data)).map(item => item.data));
+    formatDataHoldingToken(allTokens, $queryVaults.data);
   }
+
+  // $: {
+  //   if ($queryAllTokenHolding.length !== 0 && $queryVaults.data) {
+  //     $queryAllTokenHolding.map((item) => {
+  //       if (item.data && item.data !== undefined && item.data.length !== 0) {
+  //         formatDataHoldingToken(item.data, $queryVaults.data);
+  //       }
+  //     });
+  //   }
+  // }
 
   $: {
     if (
