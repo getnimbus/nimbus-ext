@@ -9,12 +9,16 @@
   import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
   import { disconnectWs, initWS } from "~/lib/price-ws";
-  import { getAddressContext } from "~/utils";
+  import { chainList, getAddressContext } from "~/utils";
   import { wait } from "../entries/background/utils";
   import { wallet, chain, typeWallet } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import {
+    createQuery,
+    createQueries,
+    useQueryClient,
+  } from "@tanstack/svelte-query";
   import { getHoldingSOL, getOverviewSOL } from "~/solanaAPI";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
@@ -307,8 +311,16 @@
   };
 
   const getHoldingToken = async (address, chain) => {
+    holdingTokenData = [];
     const response: HoldingTokenRes = await nimbus
       .get(`/v2/address/${address}/holding?chain=${chain}`)
+      .then((response) => response.data);
+    return response;
+  };
+
+  const getAllHoldingToken = async (address, chain) => {
+    const response: HoldingTokenRes = await nimbus
+      .get(`/v2/address/${address}/holding?chain=${chain.value}`)
       .then((response) => response.data);
     return response;
   };
@@ -579,8 +591,29 @@
     queryKey: ["token-holding", selectedWallet, selectedChain],
     queryFn: () => getHoldingToken(selectedWallet, selectedChain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData,
+    enabled: enabledFetchAllData && selectedChain !== "ALL",
   });
+
+  $: queryAllTokenHolding = createQueries(
+    chainList.slice(1).map((item) => {
+      return {
+        queryKey: ["token-holding-all", selectedWallet, selectedChain, item],
+        queryFn: () => getAllHoldingToken(selectedWallet, item),
+        staleTime: Infinity,
+        enabled: enabledFetchAllData && selectedChain === "ALL",
+      };
+    })
+  );
+
+  $: {
+    if ($queryAllTokenHolding.length !== 0 && $queryVaults.data) {
+      $queryAllTokenHolding.map((item) => {
+        if (item.data && item.data !== undefined && item.data.length !== 0) {
+          formatDataHoldingToken(item.data, $queryVaults.data);
+        }
+      });
+    }
+  }
 
   $: {
     if (
