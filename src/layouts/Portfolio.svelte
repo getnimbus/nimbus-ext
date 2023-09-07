@@ -326,6 +326,7 @@
   };
 
   const formatDataHoldingToken = (dataTokenHolding, dataVaults) => {
+    console.time("myFunction");
     const formatDataTokenHolding = dataTokenHolding.map((item) => {
       try {
         const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
@@ -361,6 +362,8 @@
       }
       return 0;
     });
+    console.log("holdingTokenData: ", holdingTokenData);
+    console.timeEnd("myFunction");
   };
 
   // nft holding
@@ -605,22 +608,18 @@
     })
   );
 
-  $: console.log('here', $queryAllTokenHolding);
-
   $: {
-    const allTokens = flatten($queryAllTokenHolding.filter(item => Array.isArray(item.data)).map(item => item.data));
-    formatDataHoldingToken(allTokens, $queryVaults.data);
+    if ($queryAllTokenHolding.length !== 0 && $queryVaults.data) {
+      const allTokens = flatten(
+        $queryAllTokenHolding
+          .filter((item) => Array.isArray(item.data))
+          .map((item) => item.data)
+      );
+      if (allTokens && allTokens.length !== 0) {
+        formatDataHoldingToken(allTokens, $queryVaults.data);
+      }
+    }
   }
-
-  // $: {
-  //   if ($queryAllTokenHolding.length !== 0 && $queryVaults.data) {
-  //     $queryAllTokenHolding.map((item) => {
-  //       if (item.data && item.data !== undefined && item.data.length !== 0) {
-  //         formatDataHoldingToken(item.data, $queryVaults.data);
-  //       }
-  //     });
-  //   }
-  // }
 
   $: {
     if (
