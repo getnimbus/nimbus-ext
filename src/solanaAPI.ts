@@ -50,7 +50,7 @@ export const getHoldingSOL = async (owner: string) => {
 
 export const getOverviewSOL = async (owner: string) => {
   const holding = await getHoldingSOL(owner);
-  const breakdownToken = holding.map((item) => {
+  const breakdownToken = holding?.map((item) => {
     return {
       ...item,
       value: Number(item.amount) * Number(item.price?.price || 0),
