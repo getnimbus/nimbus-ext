@@ -386,43 +386,47 @@
   };
 
   const formatDataPersonalTag = (data) => {
-    const categoriesData = Object.getOwnPropertyNames(data);
-    const categoriesDataList = categoriesData.map((item) => {
-      return {
-        category: item,
-        dataTag: groupBy(data[item], "tag"),
-      };
-    });
-    const formatDataCategory = categoriesDataList.map((item) => {
-      return {
-        category: item.category,
-        dataTag: Object.getOwnPropertyNames(item.dataTag).map((tag) => {
-          return {
-            name: tag,
-            tokens: item.dataTag[tag],
-          };
-        }),
-      };
-    });
+    if (data) {
+      const categoriesData = Object.getOwnPropertyNames(data);
+      const categoriesDataList = categoriesData.map((item) => {
+        return {
+          category: item,
+          dataTag: groupBy(data[item], "tag"),
+        };
+      });
+      const formatDataCategory = categoriesDataList.map((item) => {
+        return {
+          category: item.category,
+          dataTag: Object.getOwnPropertyNames(item.dataTag).map((tag) => {
+            return {
+              name: tag,
+              tokens: item.dataTag[tag],
+            };
+          }),
+        };
+      });
 
-    const listCategory = formatDataCategory.map((item) => {
-      return {
-        label: item.category,
-        value: item.category,
-      };
-    });
+      const listCategory = formatDataCategory.map((item) => {
+        return {
+          label: item.category,
+          value: item.category,
+        };
+      });
 
-    typeListCategory = [...typeListCategory, ...listCategory].reduce(
-      (unique, o) => {
-        if (
-          !unique.some((obj) => obj.label === o.label && obj.value === o.value)
-        ) {
-          unique.push(o);
-        }
-        return unique;
-      },
-      []
-    );
+      typeListCategory = [...typeListCategory, ...listCategory].reduce(
+        (unique, o) => {
+          if (
+            !unique.some(
+              (obj) => obj.label === o.label && obj.value === o.value
+            )
+          ) {
+            unique.push(o);
+          }
+          return unique;
+        },
+        []
+      );
+    }
   };
 
   $: {
