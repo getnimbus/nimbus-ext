@@ -36,6 +36,8 @@
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";
+  import ClosedPositionToken from "~/UI/Portfolio/ClosedTokenPosition.svelte";
+  import ClosedTokenPosition from "~/UI/Portfolio/ClosedTokenPosition.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -974,6 +976,18 @@
               {/if}
 
               <Holding
+                {selectedWallet}
+                isLoadingNFT={$queryNftHolding.isFetching}
+                isLoadingToken={$queryTokenHolding.isFetching &&
+                  $queryVaults.isFetching}
+                {holdingTokenData}
+                {selectedTokenHolding}
+                {selectedDataPieChart}
+                {holdingNFTData}
+                bind:totalAssets
+              />
+
+              <ClosedTokenPosition
                 {selectedWallet}
                 isLoadingNFT={$queryNftHolding.isFetching}
                 isLoadingToken={$queryTokenHolding.isFetching &&

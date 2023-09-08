@@ -443,7 +443,7 @@
       $<TooltipNumber number={data.market_price} type="balance" />
     </div>
   </td>
-
+  <!-- Amount -->
   <td
     class={`py-3 ${
       darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
@@ -454,7 +454,8 @@
     </div>
   </td>
 
-  <td
+  <!-- Ratio -->
+  <!-- <td
     class={`py-3 w-25 ${
       darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
     }`}
@@ -469,9 +470,10 @@
         <Progressbar progress={ratio} size="h-1" />
       </div>
     </div>
-  </td>
+  </td> -->
 
-  <td
+  <!-- Value -->
+  <!-- <td
     class={`py-3 ${
       darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
     }`}
@@ -479,10 +481,10 @@
     <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
       <TooltipNumber number={value} type="value" />
     </div>
-  </td>
+  </td> -->
 
   <td
-    class={`py-3 ${
+    class={`py-3 pr-3 ${
       darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
     }`}
   >
@@ -501,7 +503,8 @@
     </div>
   </td>
 
-  <td
+  <!-- Unrealized profit -->
+  <!-- <td
     class={`py-3 pr-3 ${
       darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
     }`}
@@ -541,7 +544,7 @@
         </div>
       {/if}
     </div>
-  </td>
+  </td> -->
 
   <!-- <td
     class={`py-3 w-10 ${

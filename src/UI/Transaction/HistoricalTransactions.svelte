@@ -262,21 +262,25 @@
                           change?.total < 0 ? "text_00000099" : "text-[#00A878]"
                         }`}
                       >
-                        <span
-                          >{change?.total < 0 ? "-" : "+"}<TooltipNumber
-                            number={Math.abs(change?.total)}
-                            type="balance"
-                          />
-                          {change?.symbol || change?.name || "⎯"}
-                        </span>
-                        <span class="flex">
+                        <div class="flex gap-1">
+                          <div class="flex">
+                            {change?.total < 0 ? "-" : "+"}<TooltipNumber
+                              number={Math.abs(change?.total)}
+                              type="balance"
+                            />
+                          </div>
+                          <div>
+                            {change?.symbol || change?.name || "⎯"}
+                          </div>
+                        </div>
+                        <div class="flex w-max">
                           (<TooltipNumber
                             number={Math.abs(
                               change?.total * change?.price?.price
                             )}
                             type="value"
                           />)
-                        </span>
+                        </div>
                       </div>
                     </div>
                   {/each}

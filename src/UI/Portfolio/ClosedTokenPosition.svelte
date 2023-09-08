@@ -21,6 +21,7 @@
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import "~/components/Loading.custom.svelte";
+  import ClosedHoldingTokenPosition from "~/components/ClosedHoldingTokenPosition.svelte";
 
   let filteredHoldingToken = true;
   let filteredHoldingDataToken = [];
@@ -56,8 +57,9 @@
     value: "",
   };
 
+  // goi kieu du lieu
   const MultipleLang = {
-    holding: i18n("newtabPage.holding", "Holding"),
+    token_position: i18n("newtabPage.token_position", "Closed Token Position"),
     token: i18n("newtabPage.token", "Tokens"),
     nft: i18n("newtabPage.nft", "NFTs"),
     assets: i18n("newtabPage.assets", "Assets"),
@@ -74,6 +76,7 @@
     empty: i18n("newtabPage.empty", "Empty"),
   };
 
+  // handle scroll vao bang neu nhu co nhieu coin
   onMount(() => {
     const handleScroll = () => {
       const clientRectTokenHeader = tableTokenHeader?.getBoundingClientRect();
@@ -88,6 +91,7 @@
     };
   });
 
+  //
   $: {
     if (selectedTokenHolding && holdingTokenData?.length !== 0) {
       holdingTokenData?.map((item) => {
@@ -207,9 +211,29 @@
     }
   }
 
+  // filter holdingData
   $: filteredHoldingDataToken = filteredHoldingToken
-    ? formatData?.filter((item) => item?.amount * item.market_price > 1)
+    ? formatData
+        ?.filter((item) => item?.amount == 0)
+        ?.filter((item) => {
+          if (item?.profit !== undefined) {
+            return item?.profit.realizedProfit !== 0;
+          }
+        })
     : formatData;
+
+  //filter data into closed token position
+  $: {
+    const filterAmount = formatData
+      ?.filter((item) => item?.amount == 0)
+      ?.filter((item) => {
+        if (item?.profit !== undefined) {
+          return item?.profit.realizedProfit !== 0;
+        }
+      });
+
+    console.log("formatData: ", filterAmount);
+  }
 
   $: {
     if (formatData?.length === 0) {
@@ -271,6 +295,8 @@
       sumTokens = 0;
     }
   }
+
+  // $: console.log("data to holdingtoken: ", filteredHoldingDataToken);
 </script>
 
 <div
@@ -281,15 +307,15 @@
   <ErrorBoundary>
     <div class="flex items-end gap-3">
       <div class="xl:text-2xl text-4xl font-medium">
-        {MultipleLang.holding}
+        {MultipleLang.token_position}
       </div>
       <!-- <a
-        href="https://forms.gle/HfmvSTzd5frPPYDz8"
-        target="_blank"
-        class="xl:text-sm text-xl font-normal text-blue-500 mb-[2px] hover:text-blue-700 transition-all"
-      >
-        Get investment opportunities notification
-      </a> -->
+          href="https://forms.gle/HfmvSTzd5frPPYDz8"
+          target="_blank"
+          class="xl:text-sm text-xl font-normal text-blue-500 mb-[2px] hover:text-blue-700 transition-all"
+        >
+          Get investment opportunities notification
+        </a> -->
     </div>
 
     <div class="flex flex-col gap-2">
@@ -371,36 +397,11 @@
                     {MultipleLang.amount}
                   </div>
                 </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
-                  >
-                    <TooltipTitle
-                      tooltipText="Ratio based on total token holding"
-                    >
-                      Ratio
-                    </TooltipTitle>
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
-                  >
-                    {MultipleLang.value}
-                  </div>
-                </th>
-                <th class="py-3">
+                <th class="py-3 pr-3 rounded-tr-[10px] pr-3 rounded-tr-[10px]">
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
                     Realized Profit
-                  </div>
-                </th>
-                <th class="py-3 pr-3 rounded-tr-[10px]">
-                  <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
-                  >
-                    Unrealized Profit
                   </div>
                 </th>
                 <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
@@ -434,7 +435,7 @@
                   </tr>
                 {:else}
                   {#each filteredHoldingDataToken as holding}
-                    <HoldingToken
+                    <ClosedHoldingTokenPosition
                       data={holding}
                       {selectedWallet}
                       sumAllTokens={totalAssets - sumNFT}
@@ -449,7 +450,7 @@
     </div>
 
     <!-- nft holding table -->
-    {#if typeWalletAddress === "DEX" && getAddressContext(selectedWallet)?.type === "BTC"}
+    <!-- {#if typeWalletAddress === "DEX" && getAddressContext(selectedWallet)?.type === "BTC"}
       <div class="flex flex-col gap-2">
         <div class="flex justify-between items-center">
           <div class="xl:text-xl text-3xl font-medium">
@@ -563,6 +564,7 @@
                   </tr>
                 {:else}
                   {#each formatDataNFT as holding}
+
                     <HoldingNFT data={holding} {selectedWallet} />
                   {/each}
                 {/if}
@@ -571,7 +573,7 @@
           </table>
         </div>
       </div>
-    {/if}
+    {/if} -->
   </ErrorBoundary>
 </div>
 
