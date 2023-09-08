@@ -220,6 +220,7 @@
             return item?.profit.realizedProfit !== 0;
           }
         })
+        .sort((a, b) => b?.profit.realizedProfit - a?.profit.realizedProfit)
     : formatData;
 
   //filter data into closed token position
@@ -368,7 +369,7 @@
             darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
           }`}
         >
-          <table class="table-auto xl:w-full w-[1800px]">
+          <table class="table-auto xl:w-full w-[1400px]">
             <thead
               class={isStickyTableToken ? "sticky top-0 z-10" : ""}
               bind:this={tableTokenHeader}
@@ -394,14 +395,14 @@
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    {MultipleLang.amount}
+                    Average Cost
                   </div>
                 </th>
                 <th class="py-3 pr-3 rounded-tr-[10px] pr-3 rounded-tr-[10px]">
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    Realized Profit
+                    ROI
                   </div>
                 </th>
                 <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
