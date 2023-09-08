@@ -17,6 +17,7 @@
   export let holdingTokenData;
   export let dataPieChart;
   export let isLoading;
+  export let isLoadingBreakdown;
   export let isEmptyDataPie;
   export let overviewDataPerformance;
 
@@ -755,7 +756,7 @@
           </AnimateSharedLayout> -->
         </div>
       </div>
-      {#if isLoading}
+      {#if isLoadingBreakdown}
         <div class="flex items-center justify-center h-[465px]">
           <loading-icon />
         </div>

@@ -142,9 +142,7 @@
     return response;
   };
 
-  const formatDataOverview = (data) => {
-    overviewData = data;
-
+  const formatTokenBreakdown = (overviewData) => {
     if (
       overviewData?.breakdownToken?.length === 0
       // || overviewData?.breakdownNft?.length === 0
@@ -291,11 +289,6 @@
         dataPieChartOrderBreakdownNft,
       },
     };
-
-    overviewDataPerformance = {
-      performance: overviewData?.performance,
-      portfolioChart: overviewData?.portfolioChart,
-    };
   };
 
   // token holding
@@ -324,25 +317,26 @@
   };
 
   const formatDataHoldingToken = (dataTokenHolding, dataVaults) => {
-    console.time("myFunction");
-    const formatDataTokenHolding = dataTokenHolding.map((item) => {
-      try {
-        const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
-        const filteredVaults = dataVaults.filter((data) =>
-          data.name.match(regex)
-        );
+    const formatDataTokenHolding = dataTokenHolding
+      .filter((item) => Number(item.amount) > 0)
+      .map((item) => {
+        try {
+          const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
+          const filteredVaults = dataVaults.filter((data) =>
+            data.name.match(regex)
+          );
 
-        return {
-          ...item,
-          vaults: filteredVaults,
-        };
-      } catch (error) {
-        return {
-          ...item,
-          vaults: [],
-        };
-      }
-    });
+          return {
+            ...item,
+            vaults: filteredVaults,
+          };
+        } catch (error) {
+          return {
+            ...item,
+            vaults: [],
+          };
+        }
+      });
 
     const formatData = formatDataTokenHolding.map((item) => {
       return {
@@ -360,8 +354,8 @@
       }
       return 0;
     });
-    console.log("holdingTokenData: ", holdingTokenData);
-    console.timeEnd("myFunction");
+
+    formatTokenBreakdown({ breakdownToken: holdingTokenData });
   };
 
   // nft holding
@@ -400,18 +394,6 @@
       };
     });
     positionsData = formatData;
-  };
-
-  // news
-  const getNews = async (address, chain) => {
-    const response = nimbus
-      .get(`/news/${address}?chain=${chain}`)
-      .then((response) => response?.data?.news);
-    return response;
-  };
-
-  const formatDataNews = (data) => {
-    newsData = data;
   };
 
   const getSync = async () => {
@@ -576,7 +558,11 @@
 
   $: {
     if (!$queryOverview.isError && $queryOverview.data !== undefined) {
-      formatDataOverview($queryOverview.data);
+      overviewData = $queryOverview.data;
+      overviewDataPerformance = {
+        performance: $queryOverview?.data?.performance,
+        portfolioChart: $queryOverview?.data?.portfolioChart,
+      };
     }
   }
 
@@ -586,6 +572,7 @@
     queryFn: () => getVaults(selectedWallet, selectedChain),
     staleTime: Infinity,
     enabled: enabledFetchAllData,
+    placeholderData: [],
   });
 
   $: queryTokenHolding = createQuery({
@@ -607,12 +594,13 @@
   );
 
   $: {
-    if ($queryAllTokenHolding.length !== 0 && $queryVaults.data) {
+    if ($queryAllTokenHolding.length !== 0) {
       const allTokens = flatten(
         $queryAllTokenHolding
           .filter((item) => Array.isArray(item.data))
           .map((item) => item.data)
       );
+
       if (allTokens && allTokens.length !== 0) {
         formatDataHoldingToken(allTokens, $queryVaults.data);
       }
@@ -943,6 +931,10 @@
     getAddressContext(selectedWallet)?.type === "EVM"
       ? chainList.slice(1)
       : [chainList[0]];
+
+  $: isLoadingBreakdown = $queryAllTokenHolding.every(
+    (item) => item.isFetching === true
+  );
 </script>
 
 <AddressManagement title={MultipleLang.overview}>
@@ -1007,6 +999,7 @@
               <Charts
                 {handleSelectedTableTokenHolding}
                 isLoading={$queryOverview.isFetching}
+                {isLoadingBreakdown}
                 {holdingTokenData}
                 {overviewDataPerformance}
                 {dataPieChart}
@@ -1020,9 +1013,9 @@
               <Holding
                 {selectedWallet}
                 isLoadingNFT={$queryNftHolding.isFetching}
-                isLoadingToken={!$queryAllTokenHolding.every(
+                isLoadingToken={$queryAllTokenHolding.some(
                   (item) => item.isFetching === true
-                ) && $queryVaults.isFetching}
+                )}
                 {holdingTokenData}
                 {selectedTokenHolding}
                 {selectedDataPieChart}
