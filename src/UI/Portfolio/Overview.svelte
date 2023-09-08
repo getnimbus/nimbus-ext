@@ -10,9 +10,31 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   export let data;
+  export let dataTokenHolding;
   export let totalPositions;
-  export let totalClaimable;
   export let totalAssets;
+
+  $: realizedProfit = (dataTokenHolding || [])
+    .map((item) => {
+      return {
+        ...item,
+        realized_profit: item?.profit?.realizedProfit || 0,
+      };
+    })
+    .reduce((prev, item) => prev + Number(item.realized_profit), 0);
+
+  $: unrealizedProfit = (dataTokenHolding || [])
+    .map((item) => {
+      console.log("item: ", item);
+      return {
+        ...item,
+        unrealized_profit:
+          data?.avgCost === 0
+            ? 0
+            : Number(item?.amount) * Number(item?.price?.price) + item?.avgCost,
+      };
+    })
+    .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
 
   const MultipleLang = {
     networth: i18n("newtabPage.networth", "Net Worth"),
@@ -176,11 +198,11 @@
         >
           $<CountUpNumber
             id="total_assets"
-            number={data?.overview?.cumulativeInflow}
+            number={realizedProfit}
             type="balance"
           />
         </div>
-        <div
+        <!-- <div
           class={`flex items-center gap-3 ${
             typeWalletAddress === "CEX" ||
             getAddressContext(selectedWallet)?.type === "BTC" ||
@@ -208,7 +230,7 @@
             />%
           </div>
           <div class="text_00000066 xl:text-base text-2xl font-medium">24h</div>
-        </div>
+        </div> -->
       </OverviewCard>
 
       <OverviewCard title={MultipleLang.total_outflow}>
@@ -219,23 +241,18 @@
               : ""
           }`}
         >
-          {#if data?.overview?.cumulativeOutflow
-            ?.toString()
-            .toLowerCase()
-            .includes("e-")}
-            $<TooltipNumber
-              number={data?.overview?.cumulativeOutflow}
-              type="balance"
-            />
-          {:else}
-            $<CountUpNumber
-              id="total_positions"
-              number={data?.overview?.cumulativeOutflow}
-              type="balance"
-            />
-          {/if}
+          <span>
+            {#if unrealizedProfit < 0}
+              -
+            {/if}
+          </span>
+          $<CountUpNumber
+            id="total_positions"
+            number={Math.abs(unrealizedProfit)}
+            type="balance"
+          />
         </div>
-        <div
+        <!-- <div
           class={`flex items-center gap-3 ${
             typeWalletAddress === "CEX" ||
             getAddressContext(selectedWallet)?.type === "BTC" ||
@@ -263,7 +280,7 @@
             />%
           </div>
           <div class="text_00000066 xl:text-base text-2xl font-medium">24h</div>
-        </div>
+        </div> -->
       </OverviewCard>
     </div>
   </div>

@@ -14,12 +14,12 @@
   import numeral from "numeral";
 
   export let handleSelectedTableTokenHolding = (data, selectDataPieChart) => {};
-  export let holdingTokenData;
-  export let dataPieChart;
   export let isLoading;
   export let isLoadingBreakdown;
-  export let isEmptyDataPie;
+  export let holdingTokenData;
   export let overviewDataPerformance;
+  export let dataPieChart;
+  export let isEmptyDataPie;
 
   import EChart from "~/components/EChart.svelte";
   import "~/components/Loading.custom.svelte";

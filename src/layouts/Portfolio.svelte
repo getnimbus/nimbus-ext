@@ -112,7 +112,6 @@
   };
   let dataUpdatedTime;
   let totalPositions = 0;
-  let totalClaimable = 0;
   let totalAssets = 0;
   let isEmptyDataPie = false;
   let syncMsg = "";
@@ -964,8 +963,8 @@
     {#if !isLoadingSync}
       <Overview
         data={overviewData}
+        dataTokenHolding={holdingTokenData}
         {totalPositions}
-        {totalClaimable}
         {totalAssets}
       />
     {/if}
