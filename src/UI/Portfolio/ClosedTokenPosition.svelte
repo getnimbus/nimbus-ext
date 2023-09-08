@@ -29,7 +29,7 @@
   let marketPriceNFT;
   let formatData = [];
   let formatDataNFT = [];
-  let sumTokens = 0;
+  let sumRoiToken = 0;
   let sumAllTokens = 0;
   let sumNFT = 0;
   let tableTokenHeader;
@@ -72,7 +72,10 @@
     floor_price: i18n("newtabPage.floor_price", "Floor Price"),
     current_value: i18n("newtabPage.current_value", "Current Value"),
     Balance: i18n("newtabPage.Balance", "Balance"),
-    hide: i18n("newtabPage.hide-less-than-1", "Hide tokens less than $1"),
+    hide_roi_token: i18n(
+      "newtabPage.hide-token-has-roi-less-than-1",
+      "Hide tokens has ROI less than $1"
+    ),
     empty: i18n("newtabPage.empty", "Empty"),
   };
 
@@ -107,16 +110,16 @@
         0
       );
     }
-    if (holdingNFTData) {
-      holdingNFTData?.map((item) => {
-        priceSubscribe([item?.cmc_id], (data) => {
-          marketPriceNFT = {
-            id: data.id,
-            market_price: data.p,
-          };
-        });
-      });
-    }
+    // if (holdingNFTData) {
+    //   holdingNFTData?.map((item) => {
+    //     priceSubscribe([item?.cmc_id], (data) => {
+    //       marketPriceNFT = {
+    //         id: data.id,
+    //         market_price: data.p,
+    //       };
+    //     });
+    //   });
+    // }
   }
 
   $: {
@@ -144,33 +147,37 @@
           };
         });
         filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
-        sumTokens = data.reduce((prev, item) => prev + item.value, 0);
+        sumRoiToken = data.reduce(
+          (prev, item) => console.log("data profit : ", item?.profit),
+          0
+        );
       }
+      // prev + item.profit.realizedProfit
     }
-    if (holdingNFTData) {
-      formatDataNFT = holdingNFTData
-        .map((item) => {
-          return {
-            ...item,
-            market_price: item?.btcPrice || 0,
-            current_value:
-              item?.floorPriceBTC * item?.btcPrice * item?.balance || 0,
-          };
-        })
-        .sort((a, b) => {
-          if (a.current_value < b.current_value) {
-            return 1;
-          }
-          if (a.current_value > b.current_value) {
-            return -1;
-          }
-          return 0;
-        });
-      sumNFT = formatDataNFT.reduce(
-        (prev, item) => prev + item.current_value,
-        0
-      );
-    }
+    // if (holdingNFTData) {
+    //   formatDataNFT = holdingNFTData
+    //     .map((item) => {
+    //       return {
+    //         ...item,
+    //         market_price: item?.btcPrice || 0,
+    //         current_value:
+    //           item?.floorPriceBTC * item?.btcPrice * item?.balance || 0,
+    //       };
+    //     })
+    //     .sort((a, b) => {
+    //       if (a.current_value < b.current_value) {
+    //         return 1;
+    //       }
+    //       if (a.current_value > b.current_value) {
+    //         return -1;
+    //       }
+    //       return 0;
+    //     });
+    //   sumNFT = formatDataNFT.reduce(
+    //     (prev, item) => prev + item.current_value,
+    //     0
+    //   );
+    // }
   }
 
   $: {
@@ -186,7 +193,7 @@
       });
       formatData = formatDataWithMarketPrice;
       filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
-      sumTokens = formatDataWithMarketPrice.reduce(
+      sumRoiToken = formatDataWithMarketPrice.reduce(
         (prev, item) => prev + item.value,
         0
       );
@@ -195,54 +202,58 @@
         0
       );
     }
-    if (marketPriceNFT) {
-      const formatDataWithMarketPrice = formatDataNFT.map((item) => {
-        if (marketPriceNFT.id === item.cmc_id) {
-          return {
-            ...item,
-            market_price: marketPriceNFT.market_price,
-            current_value:
-              item?.floorPriceBTC * marketPriceNFT.market_price * item?.balance,
-          };
-        }
-        return { ...item };
-      });
-      formatDataNFT = formatDataWithMarketPrice;
-    }
+    // if (marketPriceNFT) {
+    //   const formatDataWithMarketPrice = formatDataNFT.map((item) => {
+    //     if (marketPriceNFT.id === item.cmc_id) {
+    //       return {
+    //         ...item,
+    //         market_price: marketPriceNFT.market_price,
+    //         current_value:
+    //           item?.floorPriceBTC * marketPriceNFT.market_price * item?.balance,
+    //       };
+    //     }
+    //     return { ...item };
+    //   });
+    //   formatDataNFT = formatDataWithMarketPrice;
+    // }
   }
 
   // filter holdingData
-  $: filteredHoldingDataToken = filteredHoldingToken
-    ? formatData
-        ?.filter((item) => item?.amount == 0)
-        ?.filter((item) => {
-          if (item?.profit !== undefined) {
-            return item?.profit.realizedProfit !== 0;
-          }
-        })
-        .sort((a, b) => b?.profit.realizedProfit - a?.profit.realizedProfit)
-    : formatData;
-
-  //filter data into closed token position
   $: {
-    const filterAmount = formatData
+    const filterRoiValue = formatData
       ?.filter((item) => item?.amount == 0)
       ?.filter((item) => {
         if (item?.profit !== undefined) {
           return item?.profit.realizedProfit !== 0;
         }
-      });
+      })
+      .sort((a, b) => b?.profit.realizedProfit - a?.profit.realizedProfit);
 
-    console.log("formatData: ", filterAmount);
+    filteredHoldingDataToken = filteredHoldingToken
+      ? filterRoiValue?.filter((item) => {
+          if (
+            item?.profit.realizedProfit > 1 ||
+            item?.profit.realizedProfit < -1
+          ) {
+            return item;
+          }
+        })
+      : filterRoiValue;
+  }
+
+  $: {
+    console.log("formatData: ", formatData);
+
+    console.log("filteredHoldingDataToken: ", filteredHoldingDataToken);
   }
 
   $: {
     if (formatData?.length === 0) {
       totalAssets = 0;
-      sumTokens = 0;
+      sumRoiToken = 0;
       sumNFT = 0;
     } else {
-      sumTokens = (formatData || []).reduce(
+      sumRoiToken = (formatData || []).reduce(
         (prev, item) => prev + item?.amount * item.market_price,
         0
       );
@@ -258,9 +269,9 @@
       selectedTokenHolding &&
       Object.keys(selectedTokenHolding).length !== 0 &&
       selectedTokenHolding?.select.length === 0 &&
-      (sumTokens || sumNFT)
+      (sumRoiToken || sumNFT)
     ) {
-      totalAssets = sumNFT + sumTokens;
+      totalAssets = sumNFT + sumRoiToken;
     }
   }
 
@@ -273,7 +284,7 @@
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        sumTokens = 0;
+        sumRoiToken = 0;
         sumAllTokens = 0;
         sumNFT = 0;
         formatData = [];
@@ -293,7 +304,7 @@
       selectedTokenHolding?.data?.data?.length === 0
     ) {
       filteredHoldingDataToken = [];
-      sumTokens = 0;
+      sumRoiToken = 0;
     }
   }
 
@@ -335,7 +346,7 @@
           {/if}
         </div>
         <div class="xl:text-3xl text-4xl font-medium text-right">
-          <TooltipNumber number={sumTokens} type="value" />
+          <TooltipNumber number={sumRoiToken} type="value" />
           {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
             <span class="xl:text-xl text-2xl font-medium text-gray-400">
               <TooltipNumber
@@ -355,7 +366,7 @@
           <label
             class="xl:text-sm text-lg font-regular text-gray-400"
             for="filter-value"
-            >{MultipleLang.hide}
+            >{MultipleLang.hide_roi_token}
           </label>
           <input
             type="checkbox"
