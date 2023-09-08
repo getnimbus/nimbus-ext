@@ -33,6 +33,7 @@
   import Charts from "~/UI/Portfolio/Charts.svelte";
   import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
   import Holding from "~/UI/Portfolio/Holding.svelte";
+  import ClosedTokenPosition from "~/UI/Portfolio/ClosedTokenPosition.svelte";
   import News from "~/UI/Portfolio/News.svelte";
   import Button from "~/components/Button.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
@@ -40,8 +41,6 @@
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";
-  import ClosedPositionToken from "~/UI/Portfolio/ClosedTokenPosition.svelte";
-  import ClosedTokenPosition from "~/UI/Portfolio/ClosedTokenPosition.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -1031,10 +1030,7 @@
                 isLoadingToken={$queryTokenHolding.isFetching &&
                   $queryVaults.isFetching}
                 {holdingTokenData}
-                {selectedTokenHolding}
-                {selectedDataPieChart}
                 {holdingNFTData}
-                bind:totalAssets
               />
 
               <!-- <News isLoading={false} data={newsData} /> -->

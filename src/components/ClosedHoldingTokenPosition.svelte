@@ -3,21 +3,16 @@
   import { chain, typeWallet, isDarkMode } from "~/store";
   import { detectedChain, getAddressContext, shorterName } from "~/utils";
   import numeral from "numeral";
-  import { Progressbar } from "flowbite-svelte";
 
   import "~/components/Tooltip.custom.svelte";
-  import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
 
-  import TrendUp from "~/assets/trend-up.svg";
-  import TrendDown from "~/assets/trend-down.svg";
   import Chart from "~/assets/chart.svg";
 
   export let data;
   export let selectedWallet;
-  export let sumAllTokens;
 
   $: selectedChain = $chain;
 
@@ -47,16 +42,10 @@
     ? data?.profit?.realizedProfit
     : 0;
 
-  $: unrealizedProfit = data?.avgCost === 0 ? 0 : value + data?.avgCost;
-  $: percentUnrealizedProfit =
-    (data?.avgCost || 0) === 0 ? 0 : unrealizedProfit / Math.abs(data?.avgCost);
-
   $: clickable =
     data.name !== "Bitcoin" &&
     data.name !== "Ethereum" &&
     selectedChain !== "XDAI";
-
-  $: ratio = (value / sumAllTokens) * 100;
 
   $: {
     if (data?.vaults && data?.vaults.length !== 0) {
@@ -70,8 +59,6 @@
       selectedHighestVault = undefined;
     }
   }
-
-  // $: console.log("data from holding token: ", data);
 </script>
 
 <tr
@@ -105,7 +92,6 @@
     }
   }}
 >
-  <!-- Assets -->
   <td
     class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[420px] ${
       darkMode
@@ -434,7 +420,7 @@
       </div>
     </div>
   </td>
-  <!-- Price -->
+
   <td
     class={`py-3 ${
       darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
@@ -444,7 +430,7 @@
       $<TooltipNumber number={data.market_price} type="balance" />
     </div>
   </td>
-  <!-- Amount -->
+
   <td
     class={`py-3 ${
       darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
@@ -454,35 +440,6 @@
       $<TooltipNumber number={data.profit.averageCost} type="balance" />
     </div>
   </td>
-
-  <!-- Ratio -->
-  <!-- <td
-    class={`py-3 w-25 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div class="flex flex-col gap-1 justify-end items-end">
-      <div
-        class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
-      >
-        <TooltipNumber number={ratio} type="percent" />%
-      </div>
-      <div class="w-3/4 max-w-40">
-        <Progressbar progress={ratio} size="h-1" />
-      </div>
-    </div>
-  </td> -->
-
-  <!-- Value -->
-  <!-- <td
-    class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
-      <TooltipNumber number={value} type="value" />
-    </div>
-  </td> -->
 
   <td
     class={`py-3 pr-3 ${
@@ -503,49 +460,6 @@
       {/if}
     </div>
   </td>
-
-  <!-- Unrealized profit -->
-  <!-- <td
-    class={`py-3 pr-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div
-      class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
-    >
-      {#if typeWalletAddress === "CEX" || getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
-        N/A
-      {:else}
-        <div class="flex flex-col">
-          <div
-            class={`flex justify-end ${
-              unrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
-            }`}
-          >
-            <TooltipNumber number={Math.abs(unrealizedProfit)} type="value" />
-          </div>
-          <div class="flex items-center justify-end gap-1">
-            <div
-              class={`flex items-center ${
-                percentUnrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
-              }`}
-            >
-              <TooltipNumber
-                number={Math.abs(percentUnrealizedProfit) * 100}
-                type="percent"
-              />
-              <span>%</span>
-            </div>
-            <img
-              src={percentUnrealizedProfit >= 0 ? TrendUp : TrendDown}
-              alt="trend"
-              class="mb-1"
-            />
-          </div>
-        </div>
-      {/if}
-    </div>
-  </td> -->
 
   <!-- <td
     class={`py-3 w-10 ${
