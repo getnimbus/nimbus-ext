@@ -484,7 +484,7 @@
   </td> -->
 
   <td
-    class={`py-3 ${
+    class={`py-3 pr-3 ${
       darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
     }`}
   >
