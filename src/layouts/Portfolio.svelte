@@ -113,7 +113,6 @@
   };
   let dataUpdatedTime;
   let totalPositions = 0;
-  let totalClaimable = 0;
   let totalAssets = 0;
   let isEmptyDataPie = false;
   let syncMsg = "";
@@ -306,13 +305,6 @@
     holdingTokenData = [];
     const response: HoldingTokenRes = await nimbus
       .get(`/v2/address/${address}/holding?chain=${chain}`)
-      .then((response) => response.data);
-    return response;
-  };
-
-  const getAllHoldingToken = async (address, chain) => {
-    const response: HoldingTokenRes = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${chain.value}`)
       .then((response) => response.data);
     return response;
   };
@@ -587,7 +579,7 @@
     chainListQueries.map((item) => {
       return {
         queryKey: ["token-holding-all", selectedWallet, selectedChain, item],
-        queryFn: () => getAllHoldingToken(selectedWallet, item),
+        queryFn: () => getHoldingToken(selectedWallet, item),
         staleTime: Infinity,
         enabled: enabledFetchAllData && selectedChain === "ALL",
       };
@@ -601,7 +593,6 @@
           .filter((item) => Array.isArray(item.data))
           .map((item) => item.data)
       );
-
       if (allTokens && allTokens.length !== 0) {
         formatDataHoldingToken(allTokens, $queryVaults.data);
       }
@@ -609,12 +600,7 @@
   }
 
   $: {
-    if (
-      !$queryTokenHolding.isError &&
-      $queryTokenHolding.data !== undefined &&
-      !$queryVaults.isError &&
-      $queryVaults.data !== undefined
-    ) {
+    if (!$queryTokenHolding.isError && $queryTokenHolding.data !== undefined) {
       formatDataHoldingToken($queryTokenHolding.data, $queryVaults.data);
     }
   }
@@ -922,20 +908,18 @@
   }
 
   $: loading =
-    !isErrorAllData &&
-    $queryTokenHolding.isFetching &&
-    $queryVaults.isFetching &&
-    $queryOverview.isFetching &&
-    !$queryNftHolding.isFetching;
+    selectedChain === "ALL"
+      ? $queryAllTokenHolding.some((item) => item.isFetching === true)
+      : !isErrorAllData &&
+        $queryTokenHolding.isFetching &&
+        $queryVaults.isFetching &&
+        $queryOverview.isFetching &&
+        !$queryNftHolding.isFetching;
 
   $: chainListQueries =
     getAddressContext(selectedWallet)?.type === "EVM"
-      ? chainList.slice(1)
-      : [chainList[0]];
-
-  $: isLoadingBreakdown = $queryAllTokenHolding.every(
-    (item) => item.isFetching === true
-  );
+      ? chainList.slice(1).map((item) => item.value)
+      : [chainList[0].value];
 </script>
 
 <AddressManagement title={MultipleLang.overview}>
@@ -965,8 +949,8 @@
     {#if !isLoadingSync}
       <Overview
         data={overviewData}
+        dataTokenHolding={holdingTokenData}
         {totalPositions}
-        {totalClaimable}
         {totalAssets}
       />
     {/if}
@@ -1000,7 +984,9 @@
               <Charts
                 {handleSelectedTableTokenHolding}
                 isLoading={$queryOverview.isFetching}
-                {isLoadingBreakdown}
+                isLoadingBreakdown={$queryAllTokenHolding.some(
+                  (item) => item.isFetching === true
+                )}
                 {holdingTokenData}
                 {overviewDataPerformance}
                 {dataPieChart}
