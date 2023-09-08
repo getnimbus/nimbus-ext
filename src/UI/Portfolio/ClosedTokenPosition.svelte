@@ -257,7 +257,11 @@
             {MultipleLang.token}
           </div>
         </div>
-        <div class="xl:text-3xl text-4xl font-medium text-right flex">
+        <div
+          class={`xl:text-3xl text-4xl font-medium text-right flex text-green-500 ${
+            sumAllTokens < 0 ? "text-red-500" : "text-green-500"
+          } `}
+        >
           {#if sumAllTokens < 0}-{/if}
           <TooltipNumber number={Math.abs(sumAllTokens)} type="value" />
         </div>
