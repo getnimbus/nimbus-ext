@@ -108,7 +108,7 @@
     <Mixpanel>
       <Router history={undefined}>
         <div
-          class="max-w-[2000px] m-auto w-[100%] h-screen flex gap-1 xl:flex-row flex-col"
+          class="max-w-[2000px] m-auto w-[100%] flex gap-1 xl:flex-row flex-col"
         >
           <div
             class={`xl:w-64 w-full px-4 py-3 ${
