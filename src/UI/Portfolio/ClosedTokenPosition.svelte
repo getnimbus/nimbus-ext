@@ -59,7 +59,7 @@
 
   // goi kieu du lieu
   const MultipleLang = {
-    token_position: i18n("newtabPage.token_position", "Closed Token Position"),
+    token_position: i18n("newtabPage.token_position", "Closed Position"),
     token: i18n("newtabPage.token", "Tokens"),
     nft: i18n("newtabPage.nft", "NFTs"),
     assets: i18n("newtabPage.assets", "Assets"),
