@@ -236,9 +236,6 @@
       }
     }
   }
-
-  $: console.log("holdingTokenData: ", holdingTokenData);
-  $: console.log("filteredHoldingDataToken: ", filteredHoldingDataToken);
 </script>
 
 <div
