@@ -596,7 +596,7 @@
   });
 
   $: queryAllTokenHolding = createQueries(
-    chainList.slice(1).map((item) => {
+    chainListQueries.map((item) => {
       return {
         queryKey: ["token-holding-all", selectedWallet, selectedChain, item],
         queryFn: () => getAllHoldingToken(selectedWallet, item),
@@ -938,6 +938,11 @@
     $queryVaults.isFetching &&
     $queryOverview.isFetching &&
     !$queryNftHolding.isFetching;
+
+  $: chainListQueries =
+    getAddressContext(selectedWallet)?.type === "EVM"
+      ? chainList.slice(1)
+      : [chainList[0]];
 </script>
 
 <AddressManagement title={MultipleLang.overview}>
