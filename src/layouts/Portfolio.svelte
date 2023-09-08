@@ -1015,8 +1015,9 @@
               <Holding
                 {selectedWallet}
                 isLoadingNFT={$queryNftHolding.isFetching}
-                isLoadingToken={$queryTokenHolding.isFetching &&
-                  $queryVaults.isFetching}
+                isLoadingToken={!$queryAllTokenHolding.every(
+                  (item) => item.isFetching === true
+                ) && $queryVaults.isFetching}
                 {holdingTokenData}
                 {selectedTokenHolding}
                 {selectedDataPieChart}
