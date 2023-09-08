@@ -5,7 +5,6 @@
   import {
     formatBalance,
     formatCurrency,
-    getAddressContext,
     typeList,
     handleFormatDataPieChart,
     formatPercent,
@@ -730,8 +729,7 @@
   }
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 
   $: theme = darkMode ? "dark" : "white";

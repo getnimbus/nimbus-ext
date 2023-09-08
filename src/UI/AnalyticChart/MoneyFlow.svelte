@@ -1,7 +1,7 @@
 <script lang="ts">
   import { groupBy, intersection, flatten, sumBy } from "lodash";
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
-  import { formatCurrency, formatValue, getAddressContext } from "~/utils";
+  import { formatCurrency, formatValue } from "~/utils";
   import dayjs from "dayjs";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
@@ -386,8 +386,7 @@
   }
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 
   $: theme = darkMode ? "dark" : "white";

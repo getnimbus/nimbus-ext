@@ -5,7 +5,7 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
-  import { getAddressContext, typeTrx } from "~/utils";
+  import { typeTrx } from "~/utils";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
@@ -179,8 +179,7 @@
   };
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 
   $: query = createQuery({
@@ -233,7 +232,7 @@
   <span slot="body">
     <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-32">
       <div class="trx_container flex flex-col gap-7 rounded-[20px] xl:p-8 p-6">
-        {#if getAddressContext(selectedWallet)?.type === "EVM" || typeWalletAddress === "CEX"}
+        {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX"}
           <div
             class={`rounded-[20px] pt-6 pb-9 flex flex-col gap-4  ${
               darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"

@@ -11,7 +11,6 @@
     formatCurrency,
     formatPercent,
     formatValue,
-    getAddressContext,
     getTooltipContent,
     sharpeRatioColorChart,
   } from "~/utils";
@@ -271,8 +270,7 @@
   };
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 
   $: query = createQuery({

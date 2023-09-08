@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
-  import { getAddressContext, shorterName } from "~/utils";
+  import { shorterName } from "~/utils";
   import { typeWallet, isDarkMode } from "~/store";
 
   import "~/components/Tooltip.custom.svelte";
@@ -38,22 +38,17 @@
 
 <tr
   class={`group transition-all ${
-    typeWalletAddress === "DEX" &&
-    getAddressContext(selectedWallet)?.type !== "EVM"
-      ? "cursor-pointer"
-      : ""
+    typeWalletAddress === "BTC" ? "cursor-pointer" : ""
   }`}
   on:click={() => {
-    if (typeWalletAddress === "DEX") {
-      if (getAddressContext(selectedWallet)?.type === "EVM") {
-        return;
-      }
-      navigate(
-        `nft-detail?id=${encodeURIComponent(
-          data.collectionId
-        )}&address=${encodeURIComponent(selectedWallet)}`
-      );
+    if (typeWalletAddress === "EVM") {
+      return;
     }
+    navigate(
+      `nft-detail?id=${encodeURIComponent(
+        data.collectionId
+      )}&address=${encodeURIComponent(selectedWallet)}`
+    );
   }}
 >
   <td
@@ -150,10 +145,7 @@
   >
     <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
       <TooltipNumber number={data?.floorPriceBTC} type="balance" /><span
-        class="mx-1"
-        >{getAddressContext(selectedWallet)?.type === "EVM"
-          ? "ETH"
-          : "BTC"}</span
+        class="mx-1">{typeWalletAddress === "EVM" ? "ETH" : "BTC"}</span
       >
       | $<TooltipNumber
         number={data?.floorPriceBTC * data?.market_price}
@@ -171,7 +163,7 @@
       <TooltipNumber number={data?.totalCostBTC} type="balance" /><span
         class="mx-1"
       >
-        {getAddressContext(selectedWallet)?.type === "EVM" ? "ETH" : "BTC"}
+        {typeWalletAddress === "EVM" ? "ETH" : "BTC"}
       </span>
       | $<TooltipNumber number={data?.totalCost} type="balance" />
     </div>
@@ -225,7 +217,7 @@
     </div>
   </td>
 
-  {#if typeWalletAddress === "DEX" && getAddressContext(selectedWallet)?.type !== "EVM"}
+  {#if typeWalletAddress === "BTC"}
     <td
       class={`py-3 w-10 ${
         darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"

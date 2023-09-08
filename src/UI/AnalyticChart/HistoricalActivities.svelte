@@ -2,7 +2,7 @@
   import { wallet, chain, typeWallet } from "~/store";
   import dayjs from "dayjs";
   import { nimbus } from "~/lib/network";
-  import { formatCurrency, getAddressContext } from "~/utils";
+  import { formatCurrency } from "~/utils";
   import { createQuery } from "@tanstack/svelte-query";
 
   import type {
@@ -158,8 +158,7 @@
   };
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 
   $: query = createQuery({

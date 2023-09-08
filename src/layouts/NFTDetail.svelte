@@ -4,7 +4,7 @@
   import { Link } from "svelte-navigator";
   import { priceSubscribe } from "~/lib/price-ws";
   import mixpanel from "mixpanel-browser";
-  import { getAddressContext } from "~/utils";
+  import { typeWallet } from "~/store";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -14,6 +14,11 @@
   import "~/components/Loading.custom.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
 
   let isLoadingListNFT = false;
   let tokens = [];
@@ -173,9 +178,7 @@
                 type="balance"
               />
               <span class="text-xl text-gray-500">
-                {getAddressContext(addressWallet)?.type === "EVM"
-                  ? "ETH"
-                  : "BTC"}
+                {typeWalletAddress === "EVM" ? "ETH" : "BTC"}
               </span>
             </div>
             <div class="xl:text-lg text-3xl flex">
@@ -198,11 +201,11 @@
           </OverviewCard>
           <OverviewCard
             title={"Floor Price"}
-            tooltipText={getAddressContext(addressWallet)?.type === "EVM"
+            tooltipText={typeWalletAddress === "EVM"
               ? "The Floor price of last 24h, if there is no volume, the floor price is 0"
               : "The Floor price from Magic Eden marketplace. "}
             isTooltip
-            link={getAddressContext(addressWallet)?.type === "EVM"
+            link={typeWalletAddress === "EVM"
               ? ""
               : `https://magiceden.io/ordinals/marketplace/${collectionName}`}
           >
@@ -214,9 +217,7 @@
                 type="balance"
               />
               <span class="text-xl text-gray-500">
-                {getAddressContext(addressWallet)?.type === "EVM"
-                  ? "ETH"
-                  : "BTC"}
+                {typeWalletAddress === "EVM" ? "ETH" : "BTC"}
               </span>
             </div>
             <div class="xl:text-lg text-3xl flex">

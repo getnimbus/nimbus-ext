@@ -1,7 +1,7 @@
 <script>
   import { useNavigate } from "svelte-navigator";
   import { chain, typeWallet, isDarkMode } from "~/store";
-  import { detectedChain, getAddressContext, shorterName } from "~/utils";
+  import { detectedChain, shorterName } from "~/utils";
   import numeral from "numeral";
   import { Progressbar } from "flowbite-svelte";
 
@@ -120,7 +120,7 @@
           height="30"
           class="rounded-full"
         />
-        {#if getAddressContext(selectedWallet)?.type !== "BTC" && typeWalletAddress === "DEX"}
+        {#if typeWalletAddress !== "BTC"}
           <div class="absolute -top-2 -right-1">
             <img
               src={detectedChain(data.chain)}
@@ -487,7 +487,7 @@
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
-      {#if typeWalletAddress === "CEX" || getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
+      {#if typeWalletAddress === "CEX" || typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
         N/A
       {:else}
         <div
@@ -507,7 +507,7 @@
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
-      {#if typeWalletAddress === "CEX" || getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
+      {#if typeWalletAddress === "CEX" || typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
         N/A
       {:else}
         <div class="flex flex-col">

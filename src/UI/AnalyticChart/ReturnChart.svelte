@@ -7,7 +7,7 @@
     selectedPackage,
     isDarkMode,
   } from "~/store";
-  import { formatPercent, getAddressContext } from "~/utils";
+  import { formatPercent } from "~/utils";
   import dayjs from "dayjs";
   import { calculateVolatility, getChangePercent } from "~/chart-utils";
   import { createQuery } from "@tanstack/svelte-query";
@@ -133,8 +133,7 @@
   };
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 
   $: query = createQuery({
