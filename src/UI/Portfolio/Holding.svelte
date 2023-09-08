@@ -406,32 +406,17 @@
                 <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
               </tr>
             </thead>
-
             <tbody>
-              {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
-                <tr>
-                  <td {colspan}>
-                    <div
-                      class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
-                    >
-                      {#if holdingTokenData && !isLoadingToken && holdingTokenData.length === 0}
-                        {MultipleLang.empty}
-                      {:else}
-                        All tokens less than $1
-                      {/if}
-                    </div>
-                  </td>
-                </tr>
-              {:else}
-                {#each filteredHoldingDataToken as holding}
-                  <HoldingToken
-                    data={holding}
-                    {selectedWallet}
-                    sumAllTokens={totalAssets - sumNFT}
-                  />
-                {/each}
-              {/if}
-              {#if isLoadingToken}
+              {#each filteredHoldingDataToken as holding}
+                <HoldingToken
+                  data={holding}
+                  {selectedWallet}
+                  sumAllTokens={totalAssets - sumNFT}
+                />
+              {/each}
+            </tbody>
+            {#if isLoadingToken}
+              <tbody>
                 <tr>
                   <td {colspan}>
                     <div class="flex justify-center items-center py-3 px-3">
@@ -439,8 +424,26 @@
                     </div>
                   </td>
                 </tr>
-              {/if}
-            </tbody>
+              </tbody>
+            {:else}
+              <tbody>
+                {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+                  <tr>
+                    <td {colspan}>
+                      <div
+                        class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
+                      >
+                        {#if holdingTokenData && holdingTokenData.length === 0}
+                          {MultipleLang.empty}
+                        {:else}
+                          All tokens less than $1
+                        {/if}
+                      </div>
+                    </td>
+                  </tr>
+                {/if}
+              </tbody>
+            {/if}
           </table>
         </div>
       </div>

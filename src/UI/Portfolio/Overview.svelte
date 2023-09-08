@@ -25,7 +25,6 @@
 
   $: unrealizedProfit = (dataTokenHolding || [])
     .map((item) => {
-      console.log("item: ", item);
       return {
         ...item,
         unrealized_profit:
