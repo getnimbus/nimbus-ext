@@ -907,11 +907,13 @@
   }
 
   $: loading =
-    !isErrorAllData &&
-    $queryTokenHolding.isFetching &&
-    $queryVaults.isFetching &&
-    $queryOverview.isFetching &&
-    !$queryNftHolding.isFetching;
+    selectedChain === "ALL"
+      ? $queryAllTokenHolding.some((item) => item.isFetching === true)
+      : !isErrorAllData &&
+        $queryTokenHolding.isFetching &&
+        $queryVaults.isFetching &&
+        $queryOverview.isFetching &&
+        !$queryNftHolding.isFetching;
 
   $: chainListQueries =
     getAddressContext(selectedWallet)?.type === "EVM"
