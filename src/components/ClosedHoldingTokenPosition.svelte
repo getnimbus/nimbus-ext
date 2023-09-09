@@ -1,24 +1,18 @@
 <script>
   import { useNavigate } from "svelte-navigator";
   import { chain, typeWallet, isDarkMode } from "~/store";
-  import { detectedChain, shorterName } from "~/utils";
+  import { detectedChain, getAddressContext, shorterName } from "~/utils";
   import numeral from "numeral";
-  import { Badge, Indicator, Progressbar } from "flowbite-svelte";
-  import dayjs from "dayjs";
 
   import "~/components/Tooltip.custom.svelte";
-  import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
 
-  import TrendUp from "~/assets/trend-up.svg";
-  import TrendDown from "~/assets/trend-down.svg";
   import Chart from "~/assets/chart.svg";
 
   export let data;
   export let selectedWallet;
-  export let sumAllTokens;
 
   $: selectedChain = $chain;
 
@@ -48,16 +42,10 @@
     ? data?.profit?.realizedProfit
     : 0;
 
-  $: unrealizedProfit = data?.avgCost === 0 ? 0 : value + data?.avgCost;
-  $: percentUnrealizedProfit =
-    (data?.avgCost || 0) === 0 ? 0 : unrealizedProfit / Math.abs(data?.avgCost);
-
   $: clickable =
     data.name !== "Bitcoin" &&
     data.name !== "Ethereum" &&
     selectedChain !== "XDAI";
-
-  $: ratio = (value / sumAllTokens) * 100;
 
   $: {
     if (data?.vaults && data?.vaults.length !== 0) {
@@ -71,8 +59,6 @@
       selectedHighestVault = undefined;
     }
   }
-
-  $: withinLast24Hours = dayjs().diff(dayjs(data?.last_transferred_at), "hour");
 </script>
 
 <tr
@@ -123,7 +109,7 @@
           height="30"
           class="rounded-full"
         />
-        {#if typeWalletAddress !== "BTC"}
+        {#if getAddressContext(selectedWallet)?.type !== "BTC" && typeWalletAddress === "DEX"}
           <div class="absolute -top-2 -right-1">
             <img
               src={detectedChain(data.chain)}
@@ -450,70 +436,8 @@
       darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div
-      class="xl:text-sm text-xl text_00000099 font-medium flex items-center gap-1 justify-end"
-    >
-      {#if withinLast24Hours > 24}
-        <span
-          use:tooltip={{
-            content: `<tooltip-detail text="Changed" />`,
-            allowHTML: true,
-            placement: "top",
-            interactive: true,
-          }}
-          class="cursor-pointer"
-        >
-          <Indicator color="indigo" size="xs" class="mr-1" />
-        </span>
-      {/if}
-      <TooltipNumber number={data.amount} type="balance" />
-    </div>
-  </td>
-
-  <td
-    class={`py-3 w-25 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div class="flex flex-col gap-1 justify-end items-end">
-      <div
-        class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
-      >
-        <TooltipNumber number={ratio} type="percent" />%
-      </div>
-      <div class="w-3/4 max-w-40">
-        <Progressbar progress={ratio} size="h-1" />
-      </div>
-    </div>
-  </td>
-
-  <td
-    class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
-    }`}
-  >
     <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
-      <TooltipNumber number={value} type="value" />
-    </div>
-  </td>
-
-  <td
-    class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    <div
-      class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
-    >
-      {#if typeWalletAddress === "CEX" || typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
-        N/A
-      {:else}
-        <div
-          class={`${realizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"}`}
-        >
-          <TooltipNumber number={Math.abs(realizedProfit)} type="value" />
-        </div>
-      {/if}
+      $<TooltipNumber number={data.profit.averageCost} type="balance" />
     </div>
   </td>
 
@@ -525,35 +449,13 @@
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
-      {#if typeWalletAddress === "CEX" || typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
+      {#if typeWalletAddress === "CEX" || getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
         N/A
       {:else}
-        <div class="flex flex-col">
-          <div
-            class={`flex justify-end ${
-              unrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
-            }`}
-          >
-            <TooltipNumber number={Math.abs(unrealizedProfit)} type="value" />
-          </div>
-          <div class="flex items-center justify-end gap-1">
-            <div
-              class={`flex items-center ${
-                percentUnrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
-              }`}
-            >
-              <TooltipNumber
-                number={Math.abs(percentUnrealizedProfit) * 100}
-                type="percent"
-              />
-              <span>%</span>
-            </div>
-            <img
-              src={percentUnrealizedProfit >= 0 ? TrendUp : TrendDown}
-              alt="trend"
-              class="mb-1"
-            />
-          </div>
+        <div
+          class={`${realizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"}`}
+        >
+          <TooltipNumber number={Math.abs(realizedProfit)} type="value" />
         </div>
       {/if}
     </div>

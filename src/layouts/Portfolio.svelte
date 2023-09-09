@@ -4,17 +4,21 @@
   import "dayjs/locale/vi";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
-  import { groupBy, isEmpty } from "lodash";
+  import { groupBy, isEmpty, flatten } from "lodash";
   import { onDestroy, onMount } from "svelte";
   import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
   import { disconnectWs, initWS } from "~/lib/price-ws";
-  import { getAddressContext } from "~/utils";
+  import { chainList, getAddressContext } from "~/utils";
   import { wait } from "../entries/background/utils";
   import { wallet, chain, typeWallet } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import {
+    createQuery,
+    createQueries,
+    useQueryClient,
+  } from "@tanstack/svelte-query";
   import { getHoldingSOL, getOverviewSOL } from "~/solanaAPI";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
@@ -29,6 +33,7 @@
   import Charts from "~/UI/Portfolio/Charts.svelte";
   import RiskReturn from "~/UI/Portfolio/RiskReturn.svelte";
   import Holding from "~/UI/Portfolio/Holding.svelte";
+  import ClosedTokenPosition from "~/UI/Portfolio/ClosedTokenPosition.svelte";
   import News from "~/UI/Portfolio/News.svelte";
   import Button from "~/components/Button.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
@@ -100,6 +105,7 @@
   };
   let newsData: NewData = [];
   let holdingTokenData: TokenData = [];
+  let closedHoldingPosition: TokenData = [];
   let holdingNFTData: NFTData = [];
   let positionsData: PositionData = [];
   let overviewDataPerformance = {
@@ -108,7 +114,6 @@
   };
   let dataUpdatedTime;
   let totalPositions = 0;
-  let totalClaimable = 0;
   let totalAssets = 0;
   let isEmptyDataPie = false;
   let syncMsg = "";
@@ -138,9 +143,7 @@
     return response;
   };
 
-  const formatDataOverview = (data) => {
-    overviewData = data;
-
+  const formatTokenBreakdown = (overviewData) => {
     if (
       overviewData?.breakdownToken?.length === 0
       // || overviewData?.breakdownNft?.length === 0
@@ -287,11 +290,6 @@
         dataPieChartOrderBreakdownNft,
       },
     };
-
-    overviewDataPerformance = {
-      performance: overviewData?.performance,
-      portfolioChart: overviewData?.portfolioChart,
-    };
   };
 
   // token holding
@@ -305,6 +303,7 @@
   };
 
   const getHoldingToken = async (address, chain) => {
+    holdingTokenData = [];
     const response: HoldingTokenRes = await nimbus
       .get(`/v2/address/${address}/holding?chain=${chain}`)
       .then((response) => response.data);
@@ -331,22 +330,31 @@
       }
     });
 
-    const formatData = formatDataTokenHolding.map((item) => {
-      return {
-        ...item,
-        value: Number(item?.amount) * Number(item?.price?.price || item?.rate),
-      };
-    });
+    const formatData = formatDataTokenHolding
+      .map((item) => {
+        return {
+          ...item,
+          value:
+            Number(item?.amount) * Number(item?.price?.price || item?.rate),
+        };
+      })
+      .sort((a, b) => {
+        if (a.value < b.value) {
+          return 1;
+        }
+        if (a.value > b.value) {
+          return -1;
+        }
+        return 0;
+      });
 
-    holdingTokenData = formatData.sort((a, b) => {
-      if (a.value < b.value) {
-        return 1;
-      }
-      if (a.value > b.value) {
-        return -1;
-      }
-      return 0;
-    });
+    holdingTokenData = formatData.filter((item) => Number(item.amount) > 0);
+
+    closedHoldingPosition = formatData
+      .filter((item) => item?.profit?.realizedProfit)
+      .filter((item) => Number(item.amount) === 0);
+
+    formatTokenBreakdown({ breakdownToken: holdingTokenData });
   };
 
   // nft holding
@@ -385,18 +393,6 @@
       };
     });
     positionsData = formatData;
-  };
-
-  // news
-  const getNews = async (address, chain) => {
-    const response = nimbus
-      .get(`/news/${address}?chain=${chain}`)
-      .then((response) => response?.data?.news);
-    return response;
-  };
-
-  const formatDataNews = (data) => {
-    newsData = data;
   };
 
   const getSync = async () => {
@@ -561,7 +557,11 @@
 
   $: {
     if (!$queryOverview.isError && $queryOverview.data !== undefined) {
-      formatDataOverview($queryOverview.data);
+      overviewData = $queryOverview.data;
+      overviewDataPerformance = {
+        performance: $queryOverview?.data?.performance,
+        portfolioChart: $queryOverview?.data?.portfolioChart,
+      };
     }
   }
 
@@ -571,22 +571,42 @@
     queryFn: () => getVaults(selectedWallet, selectedChain),
     staleTime: Infinity,
     enabled: enabledFetchAllData,
+    placeholderData: [],
   });
 
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", selectedWallet, selectedChain],
     queryFn: () => getHoldingToken(selectedWallet, selectedChain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData,
+    enabled: enabledFetchAllData && selectedChain !== "ALL",
   });
 
+  $: queryAllTokenHolding = createQueries(
+    chainListQueries.map((item) => {
+      return {
+        queryKey: ["token-holding-all", selectedWallet, selectedChain, item],
+        queryFn: () => getHoldingToken(selectedWallet, item),
+        staleTime: Infinity,
+        enabled: enabledFetchAllData && selectedChain === "ALL",
+      };
+    })
+  );
+
   $: {
-    if (
-      !$queryTokenHolding.isError &&
-      $queryTokenHolding.data !== undefined &&
-      !$queryVaults.isError &&
-      $queryVaults.data !== undefined
-    ) {
+    if ($queryAllTokenHolding.length !== 0) {
+      const allTokens = flatten(
+        $queryAllTokenHolding
+          .filter((item) => Array.isArray(item.data))
+          .map((item) => item.data)
+      );
+      if (allTokens && allTokens.length !== 0) {
+        formatDataHoldingToken(allTokens, $queryVaults.data);
+      }
+    }
+  }
+
+  $: {
+    if (!$queryTokenHolding.isError && $queryTokenHolding.data !== undefined) {
       formatDataHoldingToken($queryTokenHolding.data, $queryVaults.data);
     }
   }
@@ -894,11 +914,18 @@
   }
 
   $: loading =
-    !isErrorAllData &&
-    $queryTokenHolding.isFetching &&
-    $queryVaults.isFetching &&
-    $queryOverview.isFetching &&
-    !$queryNftHolding.isFetching;
+    selectedChain === "ALL"
+      ? $queryAllTokenHolding.some((item) => item.isFetching === true)
+      : !isErrorAllData &&
+        $queryTokenHolding.isFetching &&
+        $queryVaults.isFetching &&
+        $queryOverview.isFetching &&
+        !$queryNftHolding.isFetching;
+
+  $: chainListQueries =
+    getAddressContext(selectedWallet)?.type === "EVM"
+      ? chainList.slice(1).map((item) => item.value)
+      : [chainList[0].value];
 </script>
 
 <AddressManagement title={MultipleLang.overview}>
@@ -928,8 +955,8 @@
     {#if !isLoadingSync}
       <Overview
         data={overviewData}
+        dataTokenHolding={holdingTokenData}
         {totalPositions}
-        {totalClaimable}
         {totalAssets}
       />
     {/if}
@@ -963,6 +990,9 @@
               <Charts
                 {handleSelectedTableTokenHolding}
                 isLoading={$queryOverview.isFetching}
+                isLoadingBreakdown={$queryAllTokenHolding.some(
+                  (item) => item.isFetching === true
+                )}
                 {holdingTokenData}
                 {overviewDataPerformance}
                 {dataPieChart}
@@ -976,13 +1006,23 @@
               <Holding
                 {selectedWallet}
                 isLoadingNFT={$queryNftHolding.isFetching}
-                isLoadingToken={$queryTokenHolding.isFetching &&
-                  $queryVaults.isFetching}
+                isLoadingToken={$queryAllTokenHolding.some(
+                  (item) => item.isFetching === true
+                )}
                 {holdingTokenData}
                 {selectedTokenHolding}
                 {selectedDataPieChart}
                 {holdingNFTData}
                 bind:totalAssets
+              />
+
+              <ClosedTokenPosition
+                {selectedWallet}
+                isLoadingNFT={$queryNftHolding.isFetching}
+                isLoadingToken={$queryTokenHolding.isFetching &&
+                  $queryVaults.isFetching}
+                holdingTokenData={closedHoldingPosition}
+                {holdingNFTData}
               />
 
               <!-- <News isLoading={false} data={newsData} /> -->

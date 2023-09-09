@@ -5,17 +5,13 @@
   import { getAddressContext } from "~/utils";
   import { chain, typeWallet, isDarkMode } from "~/store";
 
-  export let selectedTokenHolding;
-  export let selectedDataPieChart;
   export let holdingTokenData;
   export let holdingNFTData;
   export let isLoadingToken;
   export let isLoadingNFT;
-  export let totalAssets;
   export let selectedWallet;
 
-  import Select from "~/components/Select.svelte";
-  import HoldingToken from "~/components/HoldingToken.svelte";
+  import ClosedHoldingTokenPosition from "~/components/ClosedHoldingTokenPosition.svelte";
   import HoldingNFT from "~/components/HoldingNFT.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
@@ -28,7 +24,6 @@
   let marketPriceNFT;
   let formatData = [];
   let formatDataNFT = [];
-  let sumTokens = 0;
   let sumAllTokens = 0;
   let sumNFT = 0;
   let tableTokenHeader;
@@ -51,13 +46,8 @@
     typeWalletAddress = value;
   });
 
-  let selectedTypeTable = {
-    label: "",
-    value: "",
-  };
-
   const MultipleLang = {
-    holding: i18n("newtabPage.holding", "Holding"),
+    token_position: i18n("newtabPage.token_position", "Closed Positions"),
     token: i18n("newtabPage.token", "Tokens"),
     nft: i18n("newtabPage.nft", "NFTs"),
     assets: i18n("newtabPage.assets", "Assets"),
@@ -70,7 +60,10 @@
     floor_price: i18n("newtabPage.floor_price", "Floor Price"),
     current_value: i18n("newtabPage.current_value", "Current Value"),
     Balance: i18n("newtabPage.Balance", "Balance"),
-    hide: i18n("newtabPage.hide-less-than-1", "Hide tokens less than $1"),
+    hide_roi_token: i18n(
+      "newtabPage.hide-token-has-roi-less-than-1",
+      "Hide tokens has ROI less than $1"
+    ),
     empty: i18n("newtabPage.empty", "Empty"),
   };
 
@@ -88,8 +81,9 @@
     };
   });
 
+  // subscribe to ws
   $: {
-    if (selectedTokenHolding && holdingTokenData?.length !== 0) {
+    if (holdingTokenData?.length !== 0) {
       holdingTokenData?.map((item) => {
         priceSubscribe([item?.cmc_id], (data) => {
           marketPriceToken = {
@@ -98,10 +92,6 @@
           };
         });
       });
-      sumAllTokens = holdingTokenData?.reduce(
-        (prev, item) => prev + item.value,
-        0
-      );
     }
     if (holdingNFTData) {
       holdingNFTData?.map((item) => {
@@ -115,33 +105,32 @@
     }
   }
 
+  // format initial data
   $: {
-    if (
-      selectedTokenHolding &&
-      Object.keys(selectedTokenHolding).length !== 0 &&
-      selectedTokenHolding.data.length !== 0
-    ) {
-      let data = [];
-      if (selectedTypeTable && Object.keys(selectedTypeTable).length !== 0) {
-        if (Array.isArray(selectedTokenHolding.data)) {
-          data = selectedTokenHolding?.data.find(
-            (item) => item.name === selectedTypeTable.value
-          )?.data;
-        } else {
-          data = selectedTokenHolding.data.data;
-        }
-      }
-
-      if (data && data.length !== 0) {
-        formatData = data.map((item) => {
+    if (holdingTokenData) {
+      formatData = holdingTokenData
+        ?.filter((item) => Number(item?.amount) === 0)
+        ?.filter((item) => {
+          if (item?.profit !== undefined) {
+            return item?.profit.realizedProfit !== 0;
+          }
+        })
+        ?.map((item) => {
           return {
             ...item,
             market_price: item?.rate || 0,
           };
-        });
-        filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
-        sumTokens = data.reduce((prev, item) => prev + item.value, 0);
-      }
+        })
+        .sort((a, b) => b?.profit.realizedProfit - a?.profit.realizedProfit);
+
+      sumAllTokens = formatData.reduce(
+        (prev, item) => prev + item?.profit.realizedProfit,
+        0
+      );
+
+      filteredHoldingDataToken = formatData.filter(
+        (item) => Math.abs(item?.profit.realizedProfit) > 1
+      );
     }
     if (holdingNFTData) {
       formatDataNFT = holdingNFTData
@@ -169,6 +158,7 @@
     }
   }
 
+  // check market price and update price real-time
   $: {
     if (marketPriceToken) {
       const formatDataWithMarketPrice = formatData.map((item) => {
@@ -181,13 +171,13 @@
         return { ...item };
       });
       formatData = formatDataWithMarketPrice;
-      filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
-      sumTokens = formatDataWithMarketPrice.reduce(
-        (prev, item) => prev + item.value,
-        0
+
+      filteredHoldingDataToken = formatData.filter(
+        (item) => Math.abs(item?.profit.realizedProfit) > 1
       );
-      sumAllTokens = formatDataWithMarketPrice.reduce(
-        (prev, item) => prev + item.value,
+
+      sumAllTokens = formatData.reduce(
+        (prev, item) => prev + item?.profit.realizedProfit,
         0
       );
     }
@@ -208,17 +198,16 @@
   }
 
   $: filteredHoldingDataToken = filteredHoldingToken
-    ? formatData?.filter((item) => item?.amount * item.market_price > 1)
+    ? formatData?.filter((item) => Math.abs(item?.profit.realizedProfit) > 1)
     : formatData;
 
   $: {
     if (formatData?.length === 0) {
-      totalAssets = 0;
-      sumTokens = 0;
+      sumAllTokens = 0;
       sumNFT = 0;
     } else {
-      sumTokens = (formatData || []).reduce(
-        (prev, item) => prev + item?.amount * item.market_price,
+      sumAllTokens = (formatData || []).reduce(
+        (prev, item) => prev + item?.profit.realizedProfit,
         0
       );
       sumNFT = (formatDataNFT || []).reduce(
@@ -228,27 +217,15 @@
     }
   }
 
-  $: {
-    if (
-      selectedTokenHolding &&
-      Object.keys(selectedTokenHolding).length !== 0 &&
-      selectedTokenHolding?.select.length === 0 &&
-      (sumTokens || sumNFT)
-    ) {
-      totalAssets = sumNFT + sumTokens;
-    }
-  }
-
   $: colspan =
     typeWalletAddress === "DEX" &&
     getAddressContext(selectedWallet)?.type !== "EVM"
-      ? 8
-      : 7;
+      ? 5
+      : 4;
 
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        sumTokens = 0;
         sumAllTokens = 0;
         sumNFT = 0;
         formatData = [];
@@ -257,18 +234,6 @@
         marketPriceToken = undefined;
         marketPriceNFT = undefined;
       }
-    }
-  }
-
-  $: {
-    if (
-      selectedTokenHolding &&
-      Object.keys(selectedTokenHolding).length !== 0 &&
-      selectedTokenHolding.data.length !== 0 &&
-      selectedTokenHolding?.data?.data?.length === 0
-    ) {
-      filteredHoldingDataToken = [];
-      sumTokens = 0;
     }
   }
 </script>
@@ -281,15 +246,8 @@
   <ErrorBoundary>
     <div class="flex items-end gap-3">
       <div class="xl:text-2xl text-4xl font-medium">
-        {MultipleLang.holding}
+        {MultipleLang.token_position}
       </div>
-      <!-- <a
-        href="https://forms.gle/HfmvSTzd5frPPYDz8"
-        target="_blank"
-        class="xl:text-sm text-xl font-normal text-blue-500 mb-[2px] hover:text-blue-700 transition-all"
-      >
-        Get investment opportunities notification
-      </a> -->
     </div>
 
     <div class="flex flex-col gap-2">
@@ -298,27 +256,14 @@
           <div class="xl:text-xl text-3xl font-medium">
             {MultipleLang.token}
           </div>
-          {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
-            <Select
-              type="lang"
-              positionSelectList="left-0"
-              listSelect={selectedTokenHolding?.select || []}
-              bind:selected={selectedTypeTable}
-            />
-          {/if}
         </div>
-        <div class="xl:text-3xl text-4xl font-medium text-right">
-          <TooltipNumber number={sumTokens} type="value" />
-          {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
-            <span class="xl:text-xl text-2xl font-medium text-gray-400">
-              <TooltipNumber
-                number={selectedDataPieChart?.series[0]?.data.filter(
-                  (item) => item.name === selectedTypeTable?.value
-                )[0]?.value}
-                type="percent"
-              />%
-            </span>
-          {/if}
+        <div
+          class={`xl:text-3xl text-4xl font-medium text-right flex text-green-500 ${
+            sumAllTokens < 0 ? "text-red-500" : "text-green-500"
+          } `}
+        >
+          {#if sumAllTokens < 0}-{/if}
+          <TooltipNumber number={Math.abs(sumAllTokens)} type="value" />
         </div>
       </div>
 
@@ -328,7 +273,7 @@
           <label
             class="xl:text-sm text-lg font-regular text-gray-400"
             for="filter-value"
-            >{MultipleLang.hide}
+            >{MultipleLang.hide_roi_token}
           </label>
           <input
             type="checkbox"
@@ -342,7 +287,7 @@
             darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
           }`}
         >
-          <table class="table-auto xl:w-full w-[1800px]">
+          <table class="table-auto xl:w-full w-[1400px]">
             <thead
               class={isStickyTableToken ? "sticky top-0 z-10" : ""}
               bind:this={tableTokenHeader}
@@ -368,53 +313,19 @@
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    {MultipleLang.amount}
+                    Average Cost
                   </div>
                 </th>
-                <th class="py-3">
+                <th class="py-3 pr-3 rounded-tr-[10px] pr-3 rounded-tr-[10px]">
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    <TooltipTitle
-                      tooltipText="Ratio based on total token holding"
-                    >
-                      Ratio
-                    </TooltipTitle>
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
-                  >
-                    {MultipleLang.value}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
-                  >
-                    Realized Profit
-                  </div>
-                </th>
-                <th class="py-3 pr-3 rounded-tr-[10px]">
-                  <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
-                  >
-                    Unrealized Profit
+                    ROI
                   </div>
                 </th>
                 <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
               </tr>
             </thead>
-            <tbody>
-              {#each filteredHoldingDataToken as holding}
-                <HoldingToken
-                  data={holding}
-                  {selectedWallet}
-                  sumAllTokens={totalAssets - sumNFT}
-                />
-              {/each}
-            </tbody>
             {#if isLoadingToken}
               <tbody>
                 <tr>
@@ -441,6 +352,13 @@
                       </div>
                     </td>
                   </tr>
+                {:else}
+                  {#each filteredHoldingDataToken as holding}
+                    <ClosedHoldingTokenPosition
+                      data={holding}
+                      {selectedWallet}
+                    />
+                  {/each}
                 {/if}
               </tbody>
             {/if}
