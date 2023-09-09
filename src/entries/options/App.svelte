@@ -17,6 +17,8 @@
   import TabSettings from "~/UI/Option/TabSettings.svelte";
   import TabNft from "~/UI/Option/TabNFT.svelte";
 
+  import User from "~/assets/user.png";
+
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -29,11 +31,6 @@
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
   });
 
   let activeTabValue = "wallets";
@@ -68,8 +65,15 @@
   };
 
   onMount(() => {
-    if (userInfo && Object.keys(userInfo).length !== 0) {
-      console.log("HELLO");
+    const evmToken = localStorage.getItem("evm_token");
+    const evmAddress = localStorage.getItem("evm_address");
+    if (evmToken && evmAddress) {
+      user.update(
+        (n) =>
+          (n = {
+            picture: User,
+          })
+      );
       getUserInfo();
     }
     const urlParams = new URLSearchParams(window.location.search);

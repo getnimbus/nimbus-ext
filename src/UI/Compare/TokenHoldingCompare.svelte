@@ -152,7 +152,7 @@
   >
     <div class="flex justify-end">
       <div
-        class={`xl:text-sm text-xl font-medium  ${
+        class={`xl:text-sm text-xl font-medium flex ${
           valueChange === 0
             ? "text_00000099"
             : valueChange > 0

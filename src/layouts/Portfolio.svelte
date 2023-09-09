@@ -1004,9 +1004,11 @@
               <Holding
                 {selectedWallet}
                 isLoadingNFT={$queryNftHolding.isFetching}
-                isLoadingToken={$queryAllTokenHolding.some(
-                  (item) => item.isFetching === true
-                )}
+                isLoadingToken={selectedChain === "ALL"
+                  ? $queryAllTokenHolding.some(
+                      (item) => item.isFetching === true
+                    )
+                  : $queryTokenHolding.isFetching}
                 holdingTokenData={holdingTokenData.filter(
                   (item) => Number(item.amount) > 0
                 )}
@@ -1020,8 +1022,11 @@
                 <ClosedTokenPosition
                   {selectedWallet}
                   isLoadingNFT={$queryNftHolding.isFetching}
-                  isLoadingToken={$queryTokenHolding.isFetching &&
-                    $queryVaults.isFetching}
+                  isLoadingToken={selectedChain === "ALL"
+                    ? $queryAllTokenHolding.some(
+                        (item) => item.isFetching === true
+                      )
+                    : $queryTokenHolding.isFetching}
                   holdingTokenData={closedHoldingPosition}
                   {holdingNFTData}
                 />
