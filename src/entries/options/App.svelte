@@ -113,10 +113,10 @@
     <Mixpanel>
       <Router history={undefined}>
         <div
-          class="max-w-[2000px] m-auto w-[100%] flex gap-1 xl:flex-row flex-col h-screen"
+          class="max-w-[2000px] m-auto w-[100%] flex gap-1 xl:flex-row flex-col"
         >
           <div
-            class={`xl:w-64 w-full px-4 py-3 ${
+            class={`xl:w-64 w-full px-4 py-3 h-screen ${
               darkMode ? "bg-[#080808]" : "bg-gray-50"
             }`}
           >

@@ -303,7 +303,6 @@
   };
 
   const getHoldingToken = async (address, chain) => {
-    holdingTokenData = [];
     const response: HoldingTokenRes = await nimbus
       .get(`/v2/address/${address}/holding?chain=${chain}`)
       .then((response) => response.data);
@@ -419,6 +418,7 @@
     queryClient.invalidateQueries(["overview"]);
     queryClient.invalidateQueries(["vaults"]);
     queryClient.invalidateQueries(["token-holding"]);
+    queryClient.invalidateQueries(["token-holding-all"]);
     queryClient.invalidateQueries(["nft-holding"]);
   };
 
