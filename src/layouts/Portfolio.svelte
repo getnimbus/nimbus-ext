@@ -105,6 +105,7 @@
   };
   let newsData: NewData = [];
   let holdingTokenData: TokenData = [];
+  let closedHoldingPosition: TokenData = [];
   let holdingNFTData: NFTData = [];
   let positionsData: PositionData = [];
   let overviewDataPerformance = {
@@ -310,43 +311,48 @@
   };
 
   const formatDataHoldingToken = (dataTokenHolding, dataVaults) => {
-    const formatDataTokenHolding = dataTokenHolding
-      .filter((item) => Number(item.amount) > 0)
-      .map((item) => {
-        try {
-          const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
-          const filteredVaults = dataVaults.filter((data) =>
-            data.name.match(regex)
-          );
+    const formatDataTokenHolding = dataTokenHolding.map((item) => {
+      try {
+        const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
+        const filteredVaults = dataVaults.filter((data) =>
+          data.name.match(regex)
+        );
 
-          return {
-            ...item,
-            vaults: filteredVaults,
-          };
-        } catch (error) {
-          return {
-            ...item,
-            vaults: [],
-          };
+        return {
+          ...item,
+          vaults: filteredVaults,
+        };
+      } catch (error) {
+        return {
+          ...item,
+          vaults: [],
+        };
+      }
+    });
+
+    const formatData = formatDataTokenHolding
+      .map((item) => {
+        return {
+          ...item,
+          value:
+            Number(item?.amount) * Number(item?.price?.price || item?.rate),
+        };
+      })
+      .sort((a, b) => {
+        if (a.value < b.value) {
+          return 1;
         }
+        if (a.value > b.value) {
+          return -1;
+        }
+        return 0;
       });
 
-    const formatData = formatDataTokenHolding.map((item) => {
-      return {
-        ...item,
-        value: Number(item?.amount) * Number(item?.price?.price || item?.rate),
-      };
-    });
+    holdingTokenData = formatData.filter((item) => Number(item.amount) > 0);
 
-    holdingTokenData = formatData.sort((a, b) => {
-      if (a.value < b.value) {
-        return 1;
-      }
-      if (a.value > b.value) {
-        return -1;
-      }
-      return 0;
-    });
+    closedHoldingPosition = formatData
+      .filter((item) => item?.profit?.realizedProfit)
+      .filter((item) => Number(item.amount) === 0);
 
     formatTokenBreakdown({ breakdownToken: holdingTokenData });
   };
@@ -1015,7 +1021,7 @@
                 isLoadingNFT={$queryNftHolding.isFetching}
                 isLoadingToken={$queryTokenHolding.isFetching &&
                   $queryVaults.isFetching}
-                {holdingTokenData}
+                holdingTokenData={closedHoldingPosition}
                 {holdingNFTData}
               />
 

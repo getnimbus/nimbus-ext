@@ -47,7 +47,7 @@
   });
 
   const MultipleLang = {
-    token_position: i18n("newtabPage.token_position", "Closed Position"),
+    token_position: i18n("newtabPage.token_position", "Closed Positions"),
     token: i18n("newtabPage.token", "Tokens"),
     nft: i18n("newtabPage.nft", "NFTs"),
     assets: i18n("newtabPage.assets", "Assets"),
@@ -109,17 +109,17 @@
   $: {
     if (holdingTokenData) {
       formatData = holdingTokenData
-        .map((item) => {
-          return {
-            ...item,
-            market_price: item?.rate || 0,
-          };
-        })
         ?.filter((item) => Number(item?.amount) === 0)
         ?.filter((item) => {
           if (item?.profit !== undefined) {
             return item?.profit.realizedProfit !== 0;
           }
+        })
+        ?.map((item) => {
+          return {
+            ...item,
+            market_price: item?.rate || 0,
+          };
         })
         .sort((a, b) => b?.profit.realizedProfit - a?.profit.realizedProfit);
 
