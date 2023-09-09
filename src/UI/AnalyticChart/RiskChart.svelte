@@ -10,7 +10,6 @@
   import {
     formatCurrency,
     formatValue,
-    getAddressContext,
     getTooltipContent,
     volatilityColorChart,
   } from "~/utils";
@@ -263,8 +262,7 @@
   };
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 
   $: query = createQuery({

@@ -4,13 +4,13 @@
   import { sendMessage } from "webext-bridge";
   import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
-  import { detectedChain, getAddressContext, shorterName } from "~/utils";
+  import { detectedChain, shorterName } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { groupBy, flatten, omit } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { Toast, Progressbar } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, typeWallet } from "~/store";
   import { createQuery } from "@tanstack/svelte-query";
 
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
@@ -68,6 +68,11 @@
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   const handleScroll = () => {
@@ -1128,7 +1133,7 @@
                                     height="30"
                                     class="rounded-full"
                                   />
-                                  {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+                                  {#if typeWalletAddress !== "BTC"}
                                     <div class="absolute -top-2 -right-1">
                                       <img
                                         src={detectedChain(data.chain)}

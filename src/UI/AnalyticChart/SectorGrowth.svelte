@@ -4,7 +4,7 @@
   import dayjs from "dayjs";
   import { groupBy, intersection, flatten } from "lodash";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import { formatCurrency, getAddressContext, typeList } from "~/utils";
+  import { formatCurrency, typeList } from "~/utils";
   import { nimbus } from "~/lib/network";
 
   import type { AnalyticSectorGrowthRes } from "~/types/AnalyticSectorGrowthData";

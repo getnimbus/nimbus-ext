@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { wallet } from "~/store";
-  import { getAddressContext, shorterName } from "~/utils";
+  import { wallet, typeWallet } from "~/store";
+  import { shorterName } from "~/utils";
 
   import TooltipNumber from "./TooltipNumber.svelte";
 
@@ -12,6 +12,11 @@
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   $: profitAndLoss = data?.est_valueBTC * marketPrice - (data.totalCost || 0);
@@ -47,9 +52,7 @@
     </div>
     <div class="flex gap-1 items-center">
       <div class="xl:text-sm text-xl font-semibold">
-        {getAddressContext(selectedWallet)?.type === "EVM"
-          ? "Token ID"
-          : "Inscription"}
+        {typeWalletAddress === "EVM" ? "Token ID" : "Inscription"}
       </div>
       <div class="xl:text-sm text-xl font-semibold">
         #{data?.inscription_number}
@@ -59,7 +62,7 @@
       <div>Est. value</div>
       <div>
         <TooltipNumber number={data?.est_valueBTC} type="balance" />
-        {getAddressContext(selectedWallet)?.type === "EVM" ? "ETH" : "BTC"} | $<TooltipNumber
+        {typeWalletAddress === "EVM" ? "ETH" : "BTC"} | $<TooltipNumber
           number={data?.est_valueBTC * marketPrice}
           type="balance"
         />

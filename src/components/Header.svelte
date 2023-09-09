@@ -1,7 +1,6 @@
 <script lang="ts">
   import { Link, useMatch, useNavigate } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
-  import { getAddressContext } from "~/utils";
   import { i18n } from "~/lib/i18n";
   import {
     chain,
@@ -80,6 +79,17 @@
   const absoluteMatch = useMatch("/:page");
 
   const queryClient = useQueryClient();
+
+  const validateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data?.type;
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  };
+
   $: queryUserInfo = createQuery({
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
@@ -384,19 +394,24 @@
         <img src={Search} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
         <input
           on:keyup={({ target: { value } }) => debounceSearch(value)}
-          on:keydown={(event) => {
+          on:keydown={async (event) => {
             if (
               search.length !== 0 &&
               (event.which == 13 || event.keyCode == 13)
             ) {
               mixpanel.track("user_search");
+              const searchAccountType = await validateAddress(search);
               chain.update((n) => (n = "ALL"));
               wallet.update((n) => (n = search));
-              if (getAddressContext(search)?.type === "EVM") {
-                navigate(`/?type=DEX&chain=ALL&address=${search}`);
+              if (searchAccountType === "EVM") {
+                navigate(
+                  `/?type=${searchAccountType}&chain=ALL&address=${search}`
+                );
               }
-              if (getAddressContext(selectedWallet)?.type === "BTC") {
-                navigate(`/?type=DEX&address=${selectedWallet}`);
+              if (searchAccountType === "BTC" || searchAccountType === "SOL") {
+                navigate(
+                  `/?type=${searchAccountType}&address=${selectedWallet}`
+                );
               }
             }
           }}

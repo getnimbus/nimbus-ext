@@ -9,7 +9,7 @@
   import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
   import { disconnectWs, initWS } from "~/lib/price-ws";
-  import { chainList, getAddressContext } from "~/utils";
+  import { chainList } from "~/utils";
   import { wait } from "../entries/background/utils";
   import { wallet, chain, typeWallet } from "~/store";
   import mixpanel from "mixpanel-browser";
@@ -105,6 +105,7 @@
   };
   let newsData: NewData = [];
   let holdingTokenData: TokenData = [];
+  let closedHoldingPosition: TokenData = [];
   let holdingNFTData: NFTData = [];
   let positionsData: PositionData = [];
   let overviewDataPerformance = {
@@ -295,7 +296,7 @@
   const getVaults = async (address, chain) => {
     const response = await nimbus.get(
       `/v2/investment/${address}/vaults?chain=${
-        getAddressContext(address)?.type === "SOL" ? "SOL" : ""
+        typeWalletAddress === "SOL" ? "SOL" : ""
       }`
     );
     return response?.data;
@@ -310,54 +311,55 @@
   };
 
   const formatDataHoldingToken = (dataTokenHolding, dataVaults) => {
-    const formatDataTokenHolding = dataTokenHolding
-      .filter((item) => Number(item.amount) > 0)
-      .map((item) => {
-        try {
-          const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
-          const filteredVaults = dataVaults.filter((data) =>
-            data.name.match(regex)
-          );
+    const formatDataTokenHolding = dataTokenHolding.map((item) => {
+      try {
+        const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
+        const filteredVaults = dataVaults.filter((data) =>
+          data.name.match(regex)
+        );
 
-          return {
-            ...item,
-            vaults: filteredVaults,
-          };
-        } catch (error) {
-          return {
-            ...item,
-            vaults: [],
-          };
+        return {
+          ...item,
+          vaults: filteredVaults,
+        };
+      } catch (error) {
+        return {
+          ...item,
+          vaults: [],
+        };
+      }
+    });
+
+    const formatData = formatDataTokenHolding
+      .map((item) => {
+        return {
+          ...item,
+          value:
+            Number(item?.amount) * Number(item?.price?.price || item?.rate),
+        };
+      })
+      .sort((a, b) => {
+        if (a.value < b.value) {
+          return 1;
         }
+        if (a.value > b.value) {
+          return -1;
+        }
+        return 0;
       });
 
-    const formatData = formatDataTokenHolding.map((item) => {
-      return {
-        ...item,
-        value: Number(item?.amount) * Number(item?.price?.price || item?.rate),
-      };
-    });
+    holdingTokenData = formatData.filter((item) => Number(item.amount) > 0);
 
-    holdingTokenData = formatData.sort((a, b) => {
-      if (a.value < b.value) {
-        return 1;
-      }
-      if (a.value > b.value) {
-        return -1;
-      }
-      return 0;
-    });
+    closedHoldingPosition = formatData
+      .filter((item) => item?.profit?.realizedProfit)
+      .filter((item) => Number(item.amount) === 0);
 
     formatTokenBreakdown({ breakdownToken: holdingTokenData });
   };
 
   // nft holding
   const getHoldingNFT = async (address, chain) => {
-    if (
-      typeWalletAddress === "CEX" ||
-      (typeWalletAddress === "DEX" &&
-        getAddressContext(selectedWallet).type === "EVM")
-    ) {
+    if (typeWalletAddress === "CEX" || typeWalletAddress === "EVM") {
       return [];
     }
     const response: HoldingNFTRes = await nimbus
@@ -436,7 +438,7 @@
       if (syncStatus?.data?.lastSync) {
         console.log("start load data (already sync)");
         enabledFetchAllData = true;
-        if (getAddressContext(selectedWallet)?.type === "SOL") {
+        if (typeWalletAddress === "SOL") {
           const [resOverview, resHoldingToken] = await Promise.all([
             handleGetSolHolding().then((res) => {
               return res;
@@ -483,7 +485,7 @@
           if (syncStatus?.data?.lastSync) {
             console.log("start load data (newest sync)");
             enabledFetchAllData = true;
-            if (getAddressContext(selectedWallet)?.type === "SOL") {
+            if (typeWalletAddress === "SOL") {
               const [resOverview, resHoldingToken] = await Promise.all([
                 handleGetSolHolding().then((res) => {
                   return res;
@@ -917,7 +919,7 @@
         !$queryNftHolding.isFetching;
 
   $: chainListQueries =
-    getAddressContext(selectedWallet)?.type === "EVM"
+    typeWalletAddress === "EVM"
       ? chainList.slice(1).map((item) => item.value)
       : [chainList[0].value];
 </script>
@@ -993,7 +995,7 @@
                 {isEmptyDataPie}
               />
 
-              {#if getAddressContext(selectedWallet)?.type === "EVM" || typeWalletAddress === "CEX"}
+              {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX"}
                 <RiskReturn />
               {/if}
 
@@ -1010,14 +1012,16 @@
                 bind:totalAssets
               />
 
-              <ClosedTokenPosition
-                {selectedWallet}
-                isLoadingNFT={$queryNftHolding.isFetching}
-                isLoadingToken={$queryTokenHolding.isFetching &&
-                  $queryVaults.isFetching}
-                {holdingTokenData}
-                {holdingNFTData}
-              />
+              {#if typeWalletAddress === "EVM"}
+                <ClosedTokenPosition
+                  {selectedWallet}
+                  isLoadingNFT={$queryNftHolding.isFetching}
+                  isLoadingToken={$queryTokenHolding.isFetching &&
+                    $queryVaults.isFetching}
+                  holdingTokenData={closedHoldingPosition}
+                  {holdingNFTData}
+                />
+              {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->
             </div>

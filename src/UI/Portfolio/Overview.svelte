@@ -1,7 +1,6 @@
 <script lang="ts">
   import { getChangeFromPercent, getChangePercent } from "~/chart-utils";
   import { i18n } from "~/lib/i18n";
-  import { getAddressContext } from "~/utils";
   import { wallet, typeWallet } from "~/store";
 
   import CountUpNumber from "~/components/CountUpNumber.svelte";
@@ -40,9 +39,9 @@
     claimable: i18n("newtabPage.claimable", "Claimable"),
     total_assets: i18n("newtabPage.total-assets", "Total Assets"),
     total_positions: i18n("newtabPage.total-positions", "Total Positions"),
-    total_profit: i18n("newtabPage.total-profit", "Total Profit"),
-    total_inflow: i18n("newtabPage.total-inflow", "Total Inflow"),
-    total_outflow: i18n("newtabPage.total-outflow", "Total Outflow"),
+    net_flow: i18n("newtabPage.net_flow", "Net Flow"),
+    realizedProfit: i18n("newtabPage.realizedProfit", "Realized Profit"),
+    unrealizedProfit: i18n("newtabPage.unrealizedProfit", "Unrealized Profit"),
   };
 
   let selectedWallet: string = "";
@@ -58,8 +57,7 @@
   $: networth = totalAssets + totalPositions;
 
   $: totalProfit =
-    getAddressContext(selectedWallet)?.type === "SOL" ||
-    typeWalletAddress === "CEX"
+    typeWalletAddress === "SOL" || typeWalletAddress === "CEX"
       ? 0
       : networth +
         Number(data?.overview?.cumulativeOutflow || 0) -
@@ -86,8 +84,7 @@
     changeLast24hNetWorth;
 
   $: last24hTotalProfitPercent =
-    getAddressContext(selectedWallet)?.type === "SOL" ||
-    typeWalletAddress === "CEX"
+    typeWalletAddress === "SOL" || typeWalletAddress === "CEX"
       ? 0
       : getChangePercent(totalProfit, changeLast24hTotalProfit);
 </script>
@@ -101,8 +98,7 @@
         </div>
         <div
           class={`flex items-center gap-3 ${
-            getAddressContext(selectedWallet)?.type === "BTC" ||
-            getAddressContext(selectedWallet)?.type === "SOL"
+            typeWalletAddress === "BTC" || typeWalletAddress === "SOL"
               ? "opacity-50"
               : ""
           }`}
@@ -130,15 +126,13 @@
       </OverviewCard>
 
       <OverviewCard
-        title={MultipleLang.total_profit}
+        title={MultipleLang.net_flow}
         isTooltip
-        tooltipText="Total profit = Total Outflow - Total Inflow + Net Worth"
+        tooltipText="Net Flow = Total Outflow - Total Inflow + Net Worth"
       >
         <div
           class={`flex xl:text-3xl text-5xl ${
-            getAddressContext(selectedWallet)?.type === "SOL"
-              ? "opacity-50"
-              : ""
+            typeWalletAddress === "SOL" ? "opacity-50" : ""
           }`}
         >
           {#if totalProfit.toString().toLowerCase().includes("e-")}
@@ -159,8 +153,8 @@
         <div
           class={`flex items-center gap-3 ${
             typeWalletAddress === "CEX" ||
-            getAddressContext(selectedWallet)?.type === "BTC" ||
-            getAddressContext(selectedWallet)?.type === "SOL"
+            typeWalletAddress === "BTC" ||
+            typeWalletAddress === "SOL"
               ? "opacity-50"
               : ""
           }`}
@@ -187,12 +181,10 @@
     </div>
 
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-      <OverviewCard title={MultipleLang.total_inflow}>
+      <OverviewCard title={MultipleLang.realizedProfit}>
         <div
           class={`xl:text-3xl text-5xl flex ${
-            getAddressContext(selectedWallet)?.type === "SOL"
-              ? "opacity-50"
-              : ""
+            typeWalletAddress === "SOL" ? "opacity-50" : ""
           }`}
         >
           $<CountUpNumber
@@ -204,8 +196,8 @@
         <!-- <div
           class={`flex items-center gap-3 ${
             typeWalletAddress === "CEX" ||
-            getAddressContext(selectedWallet)?.type === "BTC" ||
-            getAddressContext(selectedWallet)?.type === "SOL"
+            typeWalletAddress === "BTC" ||
+            typeWalletAddress === "SOL"
               ? "opacity-50"
               : ""
           }`}
@@ -232,12 +224,10 @@
         </div> -->
       </OverviewCard>
 
-      <OverviewCard title={MultipleLang.total_outflow}>
+      <OverviewCard title={MultipleLang.unrealizedProfit}>
         <div
           class={`xl:text-3xl text-5xl flex ${
-            getAddressContext(selectedWallet)?.type === "SOL"
-              ? "opacity-50"
-              : ""
+            typeWalletAddress === "SOL" ? "opacity-50" : ""
           }`}
         >
           <span>
@@ -254,8 +244,8 @@
         <!-- <div
           class={`flex items-center gap-3 ${
             typeWalletAddress === "CEX" ||
-            getAddressContext(selectedWallet)?.type === "BTC" ||
-            getAddressContext(selectedWallet)?.type === "SOL"
+            typeWalletAddress === "BTC" ||
+            typeWalletAddress === "SOL"
               ? "opacity-50"
               : ""
           }`}

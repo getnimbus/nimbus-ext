@@ -1,11 +1,6 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import {
-    formatPercent,
-    getAddressContext,
-    getTooltipContent,
-    returnType,
-  } from "~/utils";
+  import { formatPercent, getTooltipContent, returnType } from "~/utils";
   import dayjs, { unix } from "dayjs";
   import { nimbus } from "~/lib/network";
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
@@ -68,8 +63,7 @@
   });
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 </script>
 
