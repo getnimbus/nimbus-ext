@@ -198,10 +198,21 @@
     return value != null && value !== "";
   };
 
-  const validateForm = (data) => {
+  const validateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data?.type;
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  };
+
+  const validateForm = async (data) => {
     const isDuplicatedAddress = listAddress.some((item) => {
       return item.address.toLowerCase() === data.address.toLowerCase();
     });
+    const addressValidate = await validateAddress(data.address);
 
     if (!isRequiredFieldValid(data.address)) {
       errors["address"] = {
@@ -210,7 +221,7 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      if (data.address && !getAddressContext(data.address)) {
+      if (data.address && !addressValidate) {
         errors["address"] = {
           ...errors["address"],
           required: true,
@@ -239,7 +250,9 @@
     }
   };
 
-  const validateFormEdit = (data) => {
+  const validateFormEdit = async (data) => {
+    const addressValidate = await validateAddress(data.address);
+
     if (!isRequiredFieldValid(data.address)) {
       errorsEdit["address"] = {
         ...errorsEdit["address"],
@@ -247,7 +260,7 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      if (!getAddressContext(data.address)) {
+      if (!addressValidate) {
         errorsEdit["address"] = {
           ...errorsEdit["address"],
           required: true,
@@ -287,7 +300,21 @@
         address: item.type === "CEX" ? item.id : item.accountId,
       };
     });
+
     listAddress = structWalletData;
+
+    if (structWalletData && structWalletData?.length === 1) {
+      wallet.update((n) => (n = `${structWalletData[0].address}`));
+      if (structWalletData[0].type === "CEX") {
+        typeWallet.update((n) => (n = "CEX"));
+        chain.update((n) => (n = "ALL"));
+      } else {
+        typeWallet.update((n) => (n = structWalletData[0].type));
+        if (structWalletData[0].type === "EVM") {
+          chain.update((n) => (n = "ALL"));
+        }
+      }
+    }
   };
 
   const query = createQuery({
@@ -307,22 +334,6 @@
     }
   }
 
-  $: {
-    if (listAddress && listAddress?.length === 1) {
-      wallet.update((n) => (n = `${listAddress[0].address}`));
-      if (listAddress[0].type === "DEX") {
-        typeWallet.update((n) => (n = "DEX"));
-        if (getAddressContext(listAddress[0].address)?.type === "EVM") {
-          chain.update((n) => (n = "ALL"));
-        }
-      }
-      if (listAddress[0].type === "CEX") {
-        typeWallet.update((n) => (n = "CEX"));
-        chain.update((n) => (n = "ALL"));
-      }
-    }
-  }
-
   // Add DEX address account
   const onSubmit = async (e) => {
     try {
@@ -334,7 +345,7 @@
         data[key] = value;
       }
 
-      validateForm(data);
+      await validateForm(data);
 
       if (
         !Object.keys(errors).some((inputName) => errors[inputName]["required"])
@@ -444,10 +455,8 @@
         isSuccess = true;
         trigger();
         mixpanel.track("user_edit_address");
-      }
-
-      if (selectedItemEdit.type === "DEX") {
-        validateFormEdit(data);
+      } else {
+        await validateFormEdit(data);
         if (
           !Object.keys(errorsEdit).some(
             (inputName) => errorsEdit[inputName]["required"]
@@ -652,16 +661,16 @@
     }
   }
 
+  const getListBundle = async () => {
+    const response: any = await nimbus.get("/address/personalize/bundle");
+    return response.data;
+  };
+
   const queryListBundle = createQuery({
     queryKey: ["list-bundle"],
     queryFn: () => getListBundle(),
     staleTime: Infinity,
   });
-
-  const getListBundle = async () => {
-    const response: any = await nimbus.get("/address/personalize/bundle");
-    return response.data;
-  };
 
   $: {
     if (
@@ -681,7 +690,7 @@
     }
   }
 
-  const handleResetState = () => {
+  const handleResetBundleState = () => {
     nameBundle = "";
     selectedBundle = {};
   };
@@ -699,6 +708,7 @@
     nameBundle = listBundle[listBundle.length - 1].name;
   };
 
+  // handle submit (create and edit) bundle
   const onSubmitBundle = async () => {
     if (selectedAddresses.length === 7) {
       toastMsg =
@@ -755,6 +765,7 @@
     }
   };
 
+  // handle delete bundle
   const handleDeleteBundle = async () => {
     try {
       const response = await nimbus.delete(
@@ -767,7 +778,7 @@
       listBundle = listBundle.filter(
         (item) => item.name !== selectedBundle?.name
       );
-      handleResetState();
+      handleResetBundleState();
       selectedAddresses = [];
       isAddBundle = false;
     } catch (e) {
@@ -947,7 +958,7 @@
                 variant="tertiary"
                 on:click={() => {
                   isAddBundle = true;
-                  handleResetState();
+                  handleResetBundleState();
                   selectedAddresses = [];
                 }}
               >
@@ -1185,7 +1196,7 @@
             on:click={() => {
               selectedAddresses = selectedBundle.addresses;
               isAddBundle = false;
-              handleResetState();
+              handleResetBundleState();
             }}
           >
             {MultipleLang.content.modal_cancel}</Button

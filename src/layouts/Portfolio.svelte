@@ -9,7 +9,7 @@
   import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
   import { disconnectWs, initWS } from "~/lib/price-ws";
-  import { chainList, getAddressContext } from "~/utils";
+  import { chainList } from "~/utils";
   import { wait } from "../entries/background/utils";
   import { wallet, chain, typeWallet } from "~/store";
   import mixpanel from "mixpanel-browser";
@@ -296,7 +296,7 @@
   const getVaults = async (address, chain) => {
     const response = await nimbus.get(
       `/v2/investment/${address}/vaults?chain=${
-        getAddressContext(address)?.type === "SOL" ? "SOL" : ""
+        typeWalletAddress === "SOL" ? "SOL" : ""
       }`
     );
     return response?.data;
@@ -359,11 +359,7 @@
 
   // nft holding
   const getHoldingNFT = async (address, chain) => {
-    if (
-      typeWalletAddress === "CEX" ||
-      (typeWalletAddress === "DEX" &&
-        getAddressContext(selectedWallet).type === "EVM")
-    ) {
+    if (typeWalletAddress === "CEX" || typeWalletAddress === "EVM") {
       return [];
     }
     const response: HoldingNFTRes = await nimbus
@@ -442,7 +438,7 @@
       if (syncStatus?.data?.lastSync) {
         console.log("start load data (already sync)");
         enabledFetchAllData = true;
-        if (getAddressContext(selectedWallet)?.type === "SOL") {
+        if (typeWalletAddress === "SOL") {
           const [resOverview, resHoldingToken] = await Promise.all([
             handleGetSolHolding().then((res) => {
               return res;
@@ -489,7 +485,7 @@
           if (syncStatus?.data?.lastSync) {
             console.log("start load data (newest sync)");
             enabledFetchAllData = true;
-            if (getAddressContext(selectedWallet)?.type === "SOL") {
+            if (typeWalletAddress === "SOL") {
               const [resOverview, resHoldingToken] = await Promise.all([
                 handleGetSolHolding().then((res) => {
                   return res;
@@ -923,7 +919,7 @@
         !$queryNftHolding.isFetching;
 
   $: chainListQueries =
-    getAddressContext(selectedWallet)?.type === "EVM"
+    typeWalletAddress === "EVM"
       ? chainList.slice(1).map((item) => item.value)
       : [chainList[0].value];
 </script>
@@ -999,7 +995,7 @@
                 {isEmptyDataPie}
               />
 
-              {#if getAddressContext(selectedWallet)?.type === "EVM" || typeWalletAddress === "CEX"}
+              {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX"}
                 <RiskReturn />
               {/if}
 

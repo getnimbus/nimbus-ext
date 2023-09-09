@@ -4,7 +4,6 @@
   import { chain, wallet, typeWallet, isDarkMode } from "~/store";
   import {
     formatCurrency,
-    getAddressContext,
     performanceTypeChartPortfolio,
     typePieChart,
     formatPercent,
@@ -769,13 +768,7 @@
               Empty
             </div>
           {:else}
-            <div
-              class={`${
-                getAddressContext(selectedWallet)?.type !== "BTC"
-                  ? "-mt-14"
-                  : ""
-              }`}
-            >
+            <div class={`${typeWalletAddress !== "BTC" ? "-mt-14" : ""}`}>
               <TokenAllocation
                 {dataPieChart}
                 {holdingTokenData}
@@ -843,7 +836,7 @@
           </div>
         {/if}
       </div>
-      {#if selectedChain === "XDAI" || getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
+      {#if selectedChain === "XDAI" || typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center ${
             darkMode ? "bg-[#222222e6]" : "bg-white/90"

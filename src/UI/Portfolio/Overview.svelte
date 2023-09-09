@@ -1,7 +1,6 @@
 <script lang="ts">
   import { getChangeFromPercent, getChangePercent } from "~/chart-utils";
   import { i18n } from "~/lib/i18n";
-  import { getAddressContext } from "~/utils";
   import { wallet, typeWallet } from "~/store";
 
   import CountUpNumber from "~/components/CountUpNumber.svelte";
@@ -58,8 +57,7 @@
   $: networth = totalAssets + totalPositions;
 
   $: totalProfit =
-    getAddressContext(selectedWallet)?.type === "SOL" ||
-    typeWalletAddress === "CEX"
+    typeWalletAddress === "SOL" || typeWalletAddress === "CEX"
       ? 0
       : networth +
         Number(data?.overview?.cumulativeOutflow || 0) -
@@ -86,8 +84,7 @@
     changeLast24hNetWorth;
 
   $: last24hTotalProfitPercent =
-    getAddressContext(selectedWallet)?.type === "SOL" ||
-    typeWalletAddress === "CEX"
+    typeWalletAddress === "SOL" || typeWalletAddress === "CEX"
       ? 0
       : getChangePercent(totalProfit, changeLast24hTotalProfit);
 </script>
@@ -101,8 +98,7 @@
         </div>
         <div
           class={`flex items-center gap-3 ${
-            getAddressContext(selectedWallet)?.type === "BTC" ||
-            getAddressContext(selectedWallet)?.type === "SOL"
+            typeWalletAddress === "BTC" || typeWalletAddress === "SOL"
               ? "opacity-50"
               : ""
           }`}
@@ -136,9 +132,7 @@
       >
         <div
           class={`flex xl:text-3xl text-5xl ${
-            getAddressContext(selectedWallet)?.type === "SOL"
-              ? "opacity-50"
-              : ""
+            typeWalletAddress === "SOL" ? "opacity-50" : ""
           }`}
         >
           {#if totalProfit.toString().toLowerCase().includes("e-")}
@@ -159,8 +153,8 @@
         <div
           class={`flex items-center gap-3 ${
             typeWalletAddress === "CEX" ||
-            getAddressContext(selectedWallet)?.type === "BTC" ||
-            getAddressContext(selectedWallet)?.type === "SOL"
+            typeWalletAddress === "BTC" ||
+            typeWalletAddress === "SOL"
               ? "opacity-50"
               : ""
           }`}
@@ -190,9 +184,7 @@
       <OverviewCard title={MultipleLang.realizedProfit}>
         <div
           class={`xl:text-3xl text-5xl flex ${
-            getAddressContext(selectedWallet)?.type === "SOL"
-              ? "opacity-50"
-              : ""
+            typeWalletAddress === "SOL" ? "opacity-50" : ""
           }`}
         >
           $<CountUpNumber
@@ -204,8 +196,8 @@
         <!-- <div
           class={`flex items-center gap-3 ${
             typeWalletAddress === "CEX" ||
-            getAddressContext(selectedWallet)?.type === "BTC" ||
-            getAddressContext(selectedWallet)?.type === "SOL"
+            typeWalletAddress === "BTC" ||
+            typeWalletAddress === "SOL"
               ? "opacity-50"
               : ""
           }`}
@@ -235,9 +227,7 @@
       <OverviewCard title={MultipleLang.unrealizedProfit}>
         <div
           class={`xl:text-3xl text-5xl flex ${
-            getAddressContext(selectedWallet)?.type === "SOL"
-              ? "opacity-50"
-              : ""
+            typeWalletAddress === "SOL" ? "opacity-50" : ""
           }`}
         >
           <span>
@@ -254,8 +244,8 @@
         <!-- <div
           class={`flex items-center gap-3 ${
             typeWalletAddress === "CEX" ||
-            getAddressContext(selectedWallet)?.type === "BTC" ||
-            getAddressContext(selectedWallet)?.type === "SOL"
+            typeWalletAddress === "BTC" ||
+            typeWalletAddress === "SOL"
               ? "opacity-50"
               : ""
           }`}

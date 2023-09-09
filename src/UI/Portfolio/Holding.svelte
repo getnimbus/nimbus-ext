@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import { priceSubscribe } from "~/lib/price-ws";
   import { i18n } from "~/lib/i18n";
-  import { getAddressContext } from "~/utils";
   import { chain, typeWallet, isDarkMode } from "~/store";
 
   export let selectedTokenHolding;
@@ -239,11 +238,7 @@
     }
   }
 
-  $: colspan =
-    typeWalletAddress === "DEX" &&
-    getAddressContext(selectedWallet)?.type !== "EVM"
-      ? 8
-      : 7;
+  $: colspan = typeWalletAddress !== "EVM" ? 8 : 7;
 
   $: {
     if (selectedWallet || selectedChain) {
@@ -450,7 +445,7 @@
     </div>
 
     <!-- nft holding table -->
-    {#if typeWalletAddress === "DEX" && getAddressContext(selectedWallet)?.type === "BTC"}
+    {#if typeWalletAddress === "BTC"}
       <div class="flex flex-col gap-2">
         <div class="flex justify-between items-center">
           <div class="xl:text-xl text-3xl font-medium">
@@ -492,13 +487,12 @@
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
                     <TooltipTitle
-                      tooltipText={getAddressContext(selectedWallet)?.type ===
-                      "EVM"
-                        ? "The Floor price of last 24h, if there is no volume, the floor price is 0"
-                        : "The Floor price from Magic Eden marketplace. "}
-                      link={getAddressContext(selectedWallet)?.type === "EVM"
-                        ? ""
-                        : "https://magiceden.io/ordinals"}
+                      tooltipText={typeWalletAddress === "BTC"
+                        ? "The Floor price from Magic Eden marketplace. "
+                        : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
+                      link={typeWalletAddress === "BTC"
+                        ? "https://magiceden.io/ordinals"
+                        : ""}
                     >
                       {MultipleLang.floor_price}
                     </TooltipTitle>
@@ -520,9 +514,7 @@
                 </th>
                 <th
                   class={`py-3 pr-3 ${
-                    getAddressContext(selectedWallet)?.type === "EVM"
-                      ? "rounded-tr-[10px]"
-                      : ""
+                    typeWalletAddress === "BTC" ? "" : "rounded-tr-[10px]"
                   }`}
                 >
                   <div
@@ -535,7 +527,7 @@
                     </TooltipTitle>
                   </div>
                 </th>
-                {#if typeWalletAddress === "DEX" && getAddressContext(selectedWallet)?.type !== "EVM"}
+                {#if typeWalletAddress === "BTC"}
                   <th class="py-3 w-10 rounded-tr-[10px]" />
                 {/if}
               </tr>
