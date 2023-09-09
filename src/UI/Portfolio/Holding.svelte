@@ -406,6 +406,15 @@
                 <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
               </tr>
             </thead>
+            <tbody>
+              {#each filteredHoldingDataToken as holding}
+                <HoldingToken
+                  data={holding}
+                  {selectedWallet}
+                  sumAllTokens={totalAssets - sumNFT}
+                />
+              {/each}
+            </tbody>
             {#if isLoadingToken}
               <tbody>
                 <tr>
@@ -432,14 +441,6 @@
                       </div>
                     </td>
                   </tr>
-                {:else}
-                  {#each filteredHoldingDataToken as holding}
-                    <HoldingToken
-                      data={holding}
-                      {selectedWallet}
-                      sumAllTokens={totalAssets - sumNFT}
-                    />
-                  {/each}
                 {/if}
               </tbody>
             {/if}

@@ -14,11 +14,12 @@
   import numeral from "numeral";
 
   export let handleSelectedTableTokenHolding = (data, selectDataPieChart) => {};
-  export let holdingTokenData;
-  export let dataPieChart;
   export let isLoading;
-  export let isEmptyDataPie;
+  export let isLoadingBreakdown;
+  export let holdingTokenData;
   export let overviewDataPerformance;
+  export let dataPieChart;
+  export let isEmptyDataPie;
 
   import EChart from "~/components/EChart.svelte";
   import "~/components/Loading.custom.svelte";
@@ -755,7 +756,7 @@
           </AnimateSharedLayout> -->
         </div>
       </div>
-      {#if isLoading}
+      {#if isLoadingBreakdown}
         <div class="flex items-center justify-center h-[465px]">
           <loading-icon />
         </div>
