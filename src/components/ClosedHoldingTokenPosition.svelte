@@ -6,9 +6,9 @@
 
   import "~/components/Tooltip.custom.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
-  import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
 
+  import TrendUp from "~/assets/trend-up.svg";
+  import TrendDown from "~/assets/trend-down.svg";
   import Chart from "~/assets/chart.svg";
 
   export let data;
@@ -32,9 +32,6 @@
   let isShowTooltipSymbol = false;
   let isShowCMC = false;
   let isShowCoingecko = false;
-  let selectedHighestVault;
-  let selectedVaults;
-  let showTableVaults = false;
 
   $: value = data?.amount * data?.market_price;
 
@@ -42,23 +39,13 @@
     ? data?.profit?.realizedProfit
     : 0;
 
+  $: percentRealizedProfit =
+    (data?.avgCost || 0) === 0 ? 0 : realizedProfit / Math.abs(data?.avgCost);
+
   $: clickable =
     data.name !== "Bitcoin" &&
     data.name !== "Ethereum" &&
     selectedChain !== "XDAI";
-
-  $: {
-    if (data?.vaults && data?.vaults.length !== 0) {
-      selectedHighestVault = data?.vaults.reduce(
-        (maxObject, currentObject) => {
-          return currentObject.apy > maxObject.apy ? currentObject : maxObject;
-        },
-        { apy: -Infinity }
-      );
-    } else {
-      selectedHighestVault = undefined;
-    }
-  }
 </script>
 
 <tr
@@ -141,19 +128,6 @@
               </div>
             {/if}
           </div>
-          {#if selectedHighestVault !== undefined}
-            <div
-              class="flex items-center justyfy-center px-2 py-1 text_27326F text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
-              on:click={() => {
-                showTableVaults = true;
-                selectedVaults = data.vaults;
-              }}
-            >
-              {`Farm up to ${numeral(selectedHighestVault.apy * 100).format(
-                "0,0.00"
-              )}% APY`}
-            </div>
-          {/if}
         </div>
 
         <div class="flex items-center gap-2">
@@ -452,10 +426,32 @@
       {#if typeWalletAddress === "CEX" || typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
         N/A
       {:else}
-        <div
-          class={`${realizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"}`}
-        >
-          <TooltipNumber number={Math.abs(realizedProfit)} type="value" />
+        <div class="flex flex-col">
+          <div
+            class={`flex justify-end ${
+              realizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
+            }`}
+          >
+            <TooltipNumber number={Math.abs(realizedProfit)} type="value" />
+          </div>
+          <div class="flex items-center justify-end gap-1">
+            <div
+              class={`flex items-center ${
+                percentRealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
+              }`}
+            >
+              <TooltipNumber
+                number={Math.abs(percentRealizedProfit) * 100}
+                type="percent"
+              />
+              <span>%</span>
+            </div>
+            <img
+              src={percentRealizedProfit >= 0 ? TrendUp : TrendDown}
+              alt="trend"
+              class="mb-1"
+            />
+          </div>
         </div>
       {/if}
     </div>
@@ -481,17 +477,6 @@
     {/if}
   </td> -->
 </tr>
-
-<AppOverlay
-  clickOutSideToClose
-  isOpen={showTableVaults}
-  isTableContent
-  on:close={() => {
-    showTableVaults = false;
-  }}
->
-  <VaultTable data={selectedVaults} />
-</AppOverlay>
 
 <style>
 </style>

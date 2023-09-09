@@ -257,7 +257,6 @@
             sumAllTokens < 0 ? "text-red-500" : "text-green-500"
           } `}
         >
-          {#if sumAllTokens < 0}-{/if}
           <TooltipNumber number={Math.abs(sumAllTokens)} type="value" />
         </div>
       </div>

@@ -69,6 +69,7 @@
 
   onMount(() => {
     if (userInfo && Object.keys(userInfo).length !== 0) {
+      console.log("HELLO");
       getUserInfo();
     }
     const urlParams = new URLSearchParams(window.location.search);
