@@ -40,9 +40,9 @@
     claimable: i18n("newtabPage.claimable", "Claimable"),
     total_assets: i18n("newtabPage.total-assets", "Total Assets"),
     total_positions: i18n("newtabPage.total-positions", "Total Positions"),
-    total_profit: i18n("newtabPage.total-profit", "Total Profit"),
-    total_inflow: i18n("newtabPage.total-inflow", "Total Inflow"),
-    total_outflow: i18n("newtabPage.total-outflow", "Total Outflow"),
+    net_flow: i18n("newtabPage.net_flow", "Net Flow"),
+    realizedProfit: i18n("newtabPage.realizedProfit", "Realized Profit"),
+    unrealizedProfit: i18n("newtabPage.unrealizedProfit", "Unrealized Profit"),
   };
 
   let selectedWallet: string = "";
@@ -130,9 +130,9 @@
       </OverviewCard>
 
       <OverviewCard
-        title={MultipleLang.total_profit}
+        title={MultipleLang.net_flow}
         isTooltip
-        tooltipText="Total profit = Total Outflow - Total Inflow + Net Worth"
+        tooltipText="Net Flow = Total Outflow - Total Inflow + Net Worth"
       >
         <div
           class={`flex xl:text-3xl text-5xl ${
@@ -187,7 +187,7 @@
     </div>
 
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
-      <OverviewCard title={MultipleLang.total_inflow}>
+      <OverviewCard title={MultipleLang.realizedProfit}>
         <div
           class={`xl:text-3xl text-5xl flex ${
             getAddressContext(selectedWallet)?.type === "SOL"
@@ -232,7 +232,7 @@
         </div> -->
       </OverviewCard>
 
-      <OverviewCard title={MultipleLang.total_outflow}>
+      <OverviewCard title={MultipleLang.unrealizedProfit}>
         <div
           class={`xl:text-3xl text-5xl flex ${
             getAddressContext(selectedWallet)?.type === "SOL"
