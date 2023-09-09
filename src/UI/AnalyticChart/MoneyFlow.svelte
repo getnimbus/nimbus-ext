@@ -445,20 +445,18 @@
                 {selectedTimeFrame} Money Netflow
               </div>
             </div>
-            <div class="flex items-center justify-end col-span-1 gap-1">
-              <div
-                class={`${
-                  sumData.inflow + sumData.outflow >= 0
-                    ? "text-[#00A878]"
-                    : "text-red-500"
-                }`}
-              >
-                {#if sumData.inflow + sumData.outflow < 0}-{/if}
-                <TooltipNumber
-                  number={Math.abs(sumData.inflow + sumData.outflow)}
-                  type="value"
-                />
-              </div>
+            <div
+              class={`flex items-center justify-end col-span-1 ${
+                sumData.inflow + sumData.outflow >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+              }`}
+            >
+              {#if sumData.inflow + sumData.outflow < 0}-{/if}
+              <TooltipNumber
+                number={Math.abs(sumData.inflow + sumData.outflow)}
+                type="value"
+              />
             </div>
           </div>
         </div>

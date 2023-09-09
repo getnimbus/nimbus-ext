@@ -512,14 +512,24 @@
       {:else}
         <div class="flex flex-col">
           <div
-            class={`${realizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"}`}
+            class={`flex justify-end ${
+              realizedProfit !== 0
+                ? realizedProfit >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+                : "text_00000099"
+            }`}
           >
             <TooltipNumber number={Math.abs(realizedProfit)} type="value" />
           </div>
           <div class="flex items-center justify-end gap-1">
             <div
               class={`flex items-center ${
-                percentRealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
+                percentRealizedProfit !== 0
+                  ? percentRealizedProfit >= 0
+                    ? "text-[#00A878]"
+                    : "text-red-500"
+                  : "text_00000099"
               }`}
             >
               <TooltipNumber
@@ -528,11 +538,13 @@
               />
               <span>%</span>
             </div>
-            <img
-              src={percentRealizedProfit >= 0 ? TrendUp : TrendDown}
-              alt="trend"
-              class="mb-1"
-            />
+            {#if percentRealizedProfit !== 0}
+              <img
+                src={percentRealizedProfit >= 0 ? TrendUp : TrendDown}
+                alt="trend"
+                class="mb-1"
+              />
+            {/if}
           </div>
         </div>
       {/if}
@@ -553,7 +565,11 @@
         <div class="flex flex-col">
           <div
             class={`flex justify-end ${
-              unrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
+              unrealizedProfit !== 0
+                ? percentUnrealizedProfit >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+                : "text_00000099"
             }`}
           >
             <TooltipNumber number={Math.abs(unrealizedProfit)} type="value" />
@@ -561,7 +577,11 @@
           <div class="flex items-center justify-end gap-1">
             <div
               class={`flex items-center ${
-                percentUnrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
+                percentUnrealizedProfit !== 0
+                  ? percentUnrealizedProfit >= 0
+                    ? "text-[#00A878]"
+                    : "text-red-500"
+                  : "text_00000099"
               }`}
             >
               <TooltipNumber
@@ -570,11 +590,13 @@
               />
               <span>%</span>
             </div>
-            <img
-              src={percentUnrealizedProfit >= 0 ? TrendUp : TrendDown}
-              alt="trend"
-              class="mb-1"
-            />
+            {#if percentUnrealizedProfit !== 0}
+              <img
+                src={percentUnrealizedProfit >= 0 ? TrendUp : TrendDown}
+                alt="trend"
+                class="mb-1"
+              />
+            {/if}
           </div>
         </div>
       {/if}
