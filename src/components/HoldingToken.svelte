@@ -3,7 +3,8 @@
   import { chain, typeWallet, isDarkMode } from "~/store";
   import { detectedChain, getAddressContext, shorterName } from "~/utils";
   import numeral from "numeral";
-  import { Progressbar } from "flowbite-svelte";
+  import { Badge, Indicator, Progressbar } from "flowbite-svelte";
+  import dayjs from "dayjs";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -70,6 +71,8 @@
       selectedHighestVault = undefined;
     }
   }
+
+  $: withinLast24Hours = dayjs().diff(dayjs(data?.last_transferred_at), "hour");
 </script>
 
 <tr
@@ -447,7 +450,22 @@
       darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
+    <div
+      class="xl:text-sm text-xl text_00000099 font-medium flex items-center gap-1 justify-end"
+    >
+      {#if withinLast24Hours > 24}
+        <span
+          use:tooltip={{
+            content: `<tooltip-detail text="Changed" />`,
+            allowHTML: true,
+            placement: "top",
+            interactive: true,
+          }}
+          class="cursor-pointer"
+        >
+          <Indicator color="indigo" size="xs" class="mr-1" />
+        </span>
+      {/if}
       <TooltipNumber number={data.amount} type="balance" />
     </div>
   </td>
