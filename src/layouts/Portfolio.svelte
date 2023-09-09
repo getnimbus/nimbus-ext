@@ -1012,14 +1012,16 @@
                 bind:totalAssets
               />
 
-              <ClosedTokenPosition
-                {selectedWallet}
-                isLoadingNFT={$queryNftHolding.isFetching}
-                isLoadingToken={$queryTokenHolding.isFetching &&
-                  $queryVaults.isFetching}
-                holdingTokenData={closedHoldingPosition}
-                {holdingNFTData}
-              />
+              {#if typeWalletAddress === "EVM"}
+                <ClosedTokenPosition
+                  {selectedWallet}
+                  isLoadingNFT={$queryNftHolding.isFetching}
+                  isLoadingToken={$queryTokenHolding.isFetching &&
+                    $queryVaults.isFetching}
+                  holdingTokenData={closedHoldingPosition}
+                  {holdingNFTData}
+                />
+              {/if}
 
               <!-- <News isLoading={false} data={newsData} /> -->
             </div>

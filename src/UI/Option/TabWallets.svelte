@@ -20,6 +20,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { wait } from "~/entries/background/utils";
   import { useNavigate } from "svelte-navigator";
+  import * as browser from "webextension-polyfill";
 
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
@@ -299,16 +300,27 @@
     listAddress = structWalletData;
 
     if (structWalletData && structWalletData?.length === 1) {
-      wallet.update((n) => (n = `${structWalletData[0].address}`));
-      if (structWalletData[0].type === "CEX") {
-        typeWallet.update((n) => (n = "CEX"));
-        chain.update((n) => (n = "ALL"));
-      } else {
-        typeWallet.update((n) => (n = structWalletData[0].type));
-        if (structWalletData[0].type === "EVM") {
-          chain.update((n) => (n = "ALL"));
-        }
-      }
+      browser.storage.sync.set({
+        selectedWallet: structWalletData[0]?.address,
+      });
+      browser.storage.sync.set({ selectedChain: "ALL" });
+      browser.storage.sync.set({
+        typeWalletAddress: structWalletData[0]?.type,
+      });
+    }
+    if (
+      structWalletData &&
+      structWalletData?.length !== 0 &&
+      structWalletData &&
+      structWalletData?.length > 1
+    ) {
+      browser.storage.sync.set({
+        selectedWallet: structWalletData[structWalletData.length - 1]?.address,
+      });
+      browser.storage.sync.set({ selectedChain: "ALL" });
+      browser.storage.sync.set({
+        typeWalletAddress: structWalletData[structWalletData.length - 1]?.type,
+      });
     }
   };
 

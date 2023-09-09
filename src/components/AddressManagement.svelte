@@ -337,16 +337,7 @@
     // check wallet
     const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
     if (selectedWalletRes?.selectedWallet !== null) {
-      if (selectedWalletRes?.selectedWallet?.length !== 0) {
-        wallet.update((n) => (n = selectedWalletRes.selectedWallet));
-      }
-      if (
-        selectedWalletRes?.selectedWallet?.length === 0 &&
-        listAddress.length !== 0 &&
-        listAddress.length === 1
-      ) {
-        wallet.update((n) => (n = listAddress[0].value));
-      }
+      wallet.update((n) => (n = selectedWalletRes.selectedWallet));
     } else {
       wallet.update((n) => (n = listAddress[0].value));
     }
@@ -485,9 +476,7 @@
         });
 
         queryClient.invalidateQueries(["list-address"]);
-        chain.update((n) => (n = "ALL"));
         wallet.update((n) => (n = dataFormat.value));
-        typeWallet.update((n) => (n = "DEX"));
 
         e.target.reset();
         errors = {};
