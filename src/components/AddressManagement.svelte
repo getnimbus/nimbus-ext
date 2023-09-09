@@ -600,7 +600,7 @@
 
   $: {
     if (selectedWallet || selectedChain) {
-      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
+      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
         browser.storage.sync.set({ selectedWallet: selectedWallet });
         browser.storage.sync.set({ selectedChain: selectedChain });
 
