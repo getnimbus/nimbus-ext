@@ -348,7 +348,7 @@
         return 0;
       });
 
-    holdingTokenData = formatData.filter((item) => Number(item.amount) > 0);
+    holdingTokenData = formatData;
 
     closedHoldingPosition = formatData
       .filter((item) => item?.profit?.realizedProfit)
@@ -989,7 +989,9 @@
                 isLoadingBreakdown={$queryAllTokenHolding.some(
                   (item) => item.isFetching === true
                 )}
-                {holdingTokenData}
+                holdingTokenData={holdingTokenData.filter(
+                  (item) => Number(item.amount) > 0
+                )}
                 {overviewDataPerformance}
                 {dataPieChart}
                 {isEmptyDataPie}
@@ -1005,7 +1007,9 @@
                 isLoadingToken={$queryAllTokenHolding.some(
                   (item) => item.isFetching === true
                 )}
-                {holdingTokenData}
+                holdingTokenData={holdingTokenData.filter(
+                  (item) => Number(item.amount) > 0
+                )}
                 {selectedTokenHolding}
                 {selectedDataPieChart}
                 {holdingNFTData}

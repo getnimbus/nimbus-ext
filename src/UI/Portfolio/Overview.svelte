@@ -23,13 +23,12 @@
     .reduce((prev, item) => prev + Number(item.realized_profit), 0);
 
   $: unrealizedProfit = (dataTokenHolding || [])
-    .map((item) => {
+    ?.filter((item) => Number(item?.amount) > 0)
+    ?.map((item) => {
       return {
         ...item,
         unrealized_profit:
-          data?.avgCost === 0
-            ? 0
-            : Number(item?.amount) * Number(item?.price?.price) + item?.avgCost,
+          Number(item?.amount) * Number(item?.price?.price) + item?.avgCost,
       };
     })
     .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
@@ -187,9 +186,14 @@
             typeWalletAddress === "SOL" ? "opacity-50" : ""
           }`}
         >
+          <span>
+            {#if unrealizedProfit < 0}
+              -
+            {/if}
+          </span>
           $<CountUpNumber
             id="total_assets"
-            number={realizedProfit}
+            number={Math.abs(realizedProfit)}
             type="balance"
           />
         </div>
