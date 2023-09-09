@@ -3,7 +3,7 @@
   import { chain, typeWallet, isDarkMode } from "~/store";
   import { detectedChain, getAddressContext, shorterName } from "~/utils";
   import numeral from "numeral";
-  import { Badge, Indicator, Progressbar } from "flowbite-svelte";
+  import { Progressbar } from "flowbite-svelte";
   import dayjs from "dayjs";
 
   import "~/components/Tooltip.custom.svelte";
@@ -463,7 +463,7 @@
           }}
           class="cursor-pointer"
         >
-          <Indicator color="indigo" size="xs" class="mr-1" />
+          <div class="w-2 h-2 rounded-full bg-indigo-500" />
         </span>
       {/if}
       <TooltipNumber number={data.amount} type="balance" />
