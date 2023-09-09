@@ -77,8 +77,45 @@
   >
     <div class="xl:text-5xl text-7xl font-medium text-center">Upgrade Plan</div>
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
-      <div class="flex flex-col justify-center min-h-[500px]">
-        <div class="flex flex-col items-center gap-1">
+      <div class="flex flex-col justify-center min-h-[70vh]">
+        <div class="text-lg mb-3">Please follow this payment steps:</div>
+        <ul class="text-lg flex flex-col gap-5">
+          <li>
+            <span class="text-xl font-medium">Step 1:</span> Send
+            <span>{selectedPackage.price}</span><span
+              class="xl:text-base text-lg text-gray-400 mb-[2px]">/month</span
+            >
+
+            USDT or USDC to this address
+            <i class="font-medium"
+              >0x6aedbe81435bbd67e2223eadd256992dc64fc90b
+            </i>on Ethereum, BNB or Polygon.
+          </li>
+          <li>
+            <span class="text-xl font-medium">Step 2:</span> After transfer
+            success, Dm TG
+            <a
+              href="https://t.me/thanhle27"
+              target="_blank"
+              class="font-medium text-[#1E96FC] hover:text-[#27326f]"
+              >@thanhle27</a
+            >
+            or send email to
+            <a
+              href="mailto:thanhle@getnimbus.io"
+              target="_blank"
+              class="font-medium text-[#1E96FC] hover:text-[#27326f]"
+              >thanhle@getnimbus.io</a
+            >
+            including your wallet address you want to upgrade, the transaction hash
+            and the coupon code you want to apply.
+          </li>
+          <li>
+            <span class="text-xl font-medium">Step 3:</span> We will check and upgrade
+            your account after we receive your information.
+          </li>
+        </ul>
+        <!-- <div class="flex flex-col items-center gap-1">
           <div class="flex items-center gap-1 xl:text-lg text-xl">
             You're going to upgrade to plan <span class="font-medium uppercase"
               >{selectedPackage.plan}</span
@@ -90,8 +127,8 @@
               >
             </span>
           </div>
-        </div>
-        {#if selectedPackage.isNewUser}
+        </div> -->
+        <!-- {#if selectedPackage.isNewUser}
           <div class="flex items-center justify-center gap-2 mt-2">
             Promotion Code:
             <span class="text-xl">
@@ -103,11 +140,11 @@
               />
             </span>
           </div>
-        {/if}
-        <div class="flex flex-col gap-3 items-center mt-5">
+        {/if} -->
+        <!-- <div class="flex flex-col gap-3 items-center mt-5">
           <div class="my-3 xl:text-base text-lg">
             Choose your prefer payment method
-          </div>
+          </div> 
           {#each listChain as chain}
             <div class="w-62 xl:text-lg text-xl">
               <Button
@@ -119,8 +156,8 @@
                 {chain.label}</Button
               >
             </div>
-          {/each}
-          <div
+          {/each} 
+           <div
             class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 xl:text-base text-xl"
             on:click={() => {
               selectedPackage = undefined;
@@ -140,12 +177,12 @@
               >
             </div>
             Choose other Plan
-          </div>
-        </div>
-        <div class="text-center text-gray-500 xl:text-sm text-lg mt-8">
+          </div> 
+      </div> 
+      <div class="text-center text-gray-500 xl:text-sm text-lg mt-8">
           If missing your prefer payment method, please contact Telegram
           <strong>@thanhle27</strong> for support
-        </div>
+        </div> -->
       </div>
     {:else}
       <PricePackage selectedPackage={handleSelectedPackage} />
