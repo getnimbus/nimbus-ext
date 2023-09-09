@@ -115,7 +115,7 @@
             market_price: item?.rate || 0,
           };
         })
-        ?.filter((item) => item?.amount == 0)
+        ?.filter((item) => Number(item?.amount) === 0)
         ?.filter((item) => {
           if (item?.profit !== undefined) {
             return item?.profit.realizedProfit !== 0;
