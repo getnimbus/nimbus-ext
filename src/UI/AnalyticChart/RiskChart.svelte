@@ -342,7 +342,7 @@
       const listKey =
         Object.keys(data).length !== 0 && Object.getOwnPropertyNames(data);
 
-      const legendDataBarChart = listKey?.map((item) => {
+      const legendDataBarChart = (listKey || [])?.map((item) => {
         let data = {
           name: "",
           itemStyle: {
@@ -386,7 +386,7 @@
         return data;
       });
 
-      const dataBarChart = listKey?.map((item) => {
+      const dataBarChart = (listKey || [])?.map((item) => {
         let custom = {
           name: "",
           color: "",

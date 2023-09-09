@@ -314,7 +314,7 @@
       riskBreakdownData = dataRiskBreakdown;
 
       const listKey = Object.getOwnPropertyNames(data);
-      const legendDataBarChart = listKey.map((item) => {
+      const legendDataBarChart = (listKey || [])?.map((item) => {
         let data = {
           name: "",
           // itemStyle: {
@@ -358,7 +358,7 @@
         return data;
       });
 
-      const scatterData = listKey.map((item) => {
+      const scatterData = (listKey || []).map((item) => {
         let custom = {
           name: "",
           color: "",
@@ -402,8 +402,10 @@
               Number(data[item].volatility),
               Number(
                 getChangePercent(
-                  data[item]?.sparkline[data[item].sparkline.length - 1] || 0,
-                  data[item]?.sparkline[0]
+                  data[item].sparkline?.length - 1
+                    ? data[item]?.sparkline[data[item].sparkline?.length - 1]
+                    : 0,
+                  data[item]?.sparkline ? data[item]?.sparkline[0] : 0
                 )
               ),
               // Number(data[item].netWorthChange?.networth30D),

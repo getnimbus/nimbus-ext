@@ -168,7 +168,7 @@
 
       const listKey = Object.keys(data);
 
-      const legendDataBarChart = listKey.map((item) => {
+      const legendDataBarChart = (listKey || [])?.map((item) => {
         let data = {
           name: "",
           itemStyle: {
@@ -204,7 +204,7 @@
         return data;
       });
 
-      const series = listKey?.map((key) => {
+      const series = (listKey || [])?.map((key) => {
         const itemData = data[key];
         const valueField = key === "base" ? "networth" : "price";
         const baseData = itemData.holdingHistory[0];
