@@ -129,6 +129,9 @@
   });
 
   let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
 
   let errors: any = {};
   let errorsEdit: any = {};

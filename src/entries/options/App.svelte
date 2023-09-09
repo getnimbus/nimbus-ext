@@ -121,7 +121,7 @@
             {#if activeTabValue === "wallets"}
               <TabWallets />
               <!-- {:else if activeTabValue === "nft"}
-          <TabNft /> -->
+              <TabNft /> -->
             {:else if activeTabValue === "dashboard"}
               <TabDashboard />
             {:else if activeTabValue === "highlight"}
