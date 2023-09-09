@@ -453,7 +453,7 @@
     <div
       class="xl:text-sm text-xl text_00000099 font-medium flex items-center gap-1 justify-end"
     >
-      {#if withinLast24Hours > 24}
+      {#if withinLast24Hours < 24}
         <span
           use:tooltip={{
             content: `<tooltip-detail text="Changed recently" />`,
