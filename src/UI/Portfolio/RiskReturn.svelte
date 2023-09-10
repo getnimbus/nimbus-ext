@@ -15,6 +15,7 @@
   import VolatilityExplain from "~/assets/explain/volatility-explain.mp4";
   import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
   import MaxDrawdownExplain from "~/assets/explain/max-drawdown-explain.mp4";
+  import Error from "~/components/Error.svelte";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -52,6 +53,9 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}`
     );
+    if (response?.error) {
+      throw new Error(response?.error);
+    }
     return response?.data || [];
   };
 
