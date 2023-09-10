@@ -23,7 +23,7 @@
     .reduce((prev, item) => prev + Number(item.realized_profit), 0);
 
   $: unrealizedProfit = (dataTokenHolding || [])
-    ?.filter((item) => Number(item?.amount) > 0)
+    ?.filter((item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0)
     ?.map((item) => {
       return {
         ...item,
