@@ -253,11 +253,16 @@
           </div>
         </div>
         <div
-          class={`xl:text-3xl text-4xl font-medium text-right flex text-green-500 ${
-            sumAllTokens < 0 ? "text-red-500" : "text-green-500"
-          } `}
+          class={`xl:text-3xl text-4xl font-medium text-right ${
+            sumAllTokens !== 0
+              ? sumAllTokens >= 0
+                ? "text-[#00A878]"
+                : "text-red-500"
+              : darkMode
+              ? "text-white"
+              : "text-black"
+          }`}
         >
-          {#if sumAllTokens < 0}-{/if}
           <TooltipNumber number={Math.abs(sumAllTokens)} type="value" />
         </div>
       </div>

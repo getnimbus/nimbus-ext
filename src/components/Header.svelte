@@ -159,7 +159,7 @@
           on:click={() => {
             navActive = "portfolio";
             navigate(
-              `/?type=DEX&chain=${
+              `/?type=EVM&chain=${
                 selectedChain || "All"
               }&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
             );
@@ -185,7 +185,7 @@
           on:click={() => {
             navActive = "analytic";
             navigate(
-              `/analytic?type=DEX&chain=${
+              `/analytic?type=EVM&chain=${
                 selectedChain || "All"
               }&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
             );
@@ -508,31 +508,31 @@
 
       {#if selectedWallet === "0xc02ad7b9a9121fc849196e844dc869d2250df3a6"}
         <div
-          class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
-          ${
+          class={`flex items-center gap-3 text-white px-4 py-3 ${
             darkMode
               ? navActive === "analytic"
-                ? "bg-[#212121] opacity-100"
-                : "opacity-70 hover:bg-[#212121]"
+                ? "bg-[#212121] rounded-[1000px] opacity-100"
+                : "opacity-70"
               : navActive === "analytic"
-              ? "bg-[#525B8C] opacity-100"
-              : "opacity-70 hover:bg-[#525B8C]"
+              ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+              : "opacity-70"
           }
           `}
           on:click={() => {
             navigate(
-              `/analytic?type=DEX&chain=ALL&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
+              `/analytic?type=EVM&chain=ALL&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
             );
+            isShowHeaderMobile = false;
           }}
         >
-          <img src={AnalyticIcon} alt="" width="20" height="20" />
-          <span class="flex gap-[1px]">
-            <span class="text-sm font-medium text-white xl:text-base">
+          <img src={AnalyticIcon} alt="" width="32" height="32" />
+          <span class="flex gap-[2px]">
+            <span class="text-4xl font-medium">
               {MultipleLang.analytics}
             </span>
             <span class="flex items-center gap-[1px] -mt-2">
-              <img src={Crown} alt="" width="13" height="12" />
-              <span class="text-xs font-medium text-[#FFB800] -mt-[1px]"
+              <img src={Crown} alt="" width="16" height="16" />
+              <span class="text-base font-medium text-[#FFB800] -mt-[1px]"
                 >Pro</span
               >
             </span>

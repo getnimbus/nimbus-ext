@@ -248,6 +248,9 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
+    if (response?.error) {
+      throw new Error(response?.error);
+    }
     return response?.data || [];
   };
 
@@ -342,7 +345,7 @@
       const listKey =
         Object.keys(data).length !== 0 && Object.getOwnPropertyNames(data);
 
-      const legendDataBarChart = listKey?.map((item) => {
+      const legendDataBarChart = (listKey || [])?.map((item) => {
         let data = {
           name: "",
           itemStyle: {
@@ -386,7 +389,7 @@
         return data;
       });
 
-      const dataBarChart = listKey?.map((item) => {
+      const dataBarChart = (listKey || [])?.map((item) => {
         let custom = {
           name: "",
           color: "",
@@ -517,7 +520,7 @@
         <LoadingPremium />
       </div>
     {:else}
-      <div class="h-full relative">
+      <div class="h-full relative min-h-[465px]">
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
