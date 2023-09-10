@@ -418,7 +418,6 @@
     queryClient.invalidateQueries(["overview"]);
     queryClient.invalidateQueries(["vaults"]);
     queryClient.invalidateQueries(["token-holding"]);
-    queryClient.invalidateQueries(["token-holding-all"]);
     queryClient.invalidateQueries(["nft-holding"]);
   };
 
@@ -580,7 +579,7 @@
   $: queryAllTokenHolding = createQueries(
     chainListQueries.map((item) => {
       return {
-        queryKey: ["token-holding-all", selectedWallet, selectedChain, item],
+        queryKey: ["token-holding", selectedWallet, selectedChain, item],
         queryFn: () => getHoldingToken(selectedWallet, item),
         staleTime: Infinity,
         enabled: enabledFetchAllData && selectedChain === "ALL",
