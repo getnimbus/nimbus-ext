@@ -115,6 +115,7 @@
             your account after we receive your information.
           </li>
         </ul>
+
         <!-- <div class="flex flex-col items-center gap-1">
           <div class="flex items-center gap-1 xl:text-lg text-xl">
             You're going to upgrade to plan <span class="font-medium uppercase"
@@ -127,8 +128,8 @@
               >
             </span>
           </div>
-        </div> -->
-        <!-- {#if selectedPackage.isNewUser}
+        </div>
+        {#if selectedPackage.isNewUser}
           <div class="flex items-center justify-center gap-2 mt-2">
             Promotion Code:
             <span class="text-xl">
@@ -140,11 +141,11 @@
               />
             </span>
           </div>
-        {/if} -->
-        <!-- <div class="flex flex-col gap-3 items-center mt-5">
+        {/if}
+        <div class="flex flex-col gap-3 items-center mt-5">
           <div class="my-3 xl:text-base text-lg">
             Choose your prefer payment method
-          </div> 
+          </div>
           {#each listChain as chain}
             <div class="w-62 xl:text-lg text-xl">
               <Button
@@ -156,8 +157,8 @@
                 {chain.label}</Button
               >
             </div>
-          {/each} 
-           <div
+          {/each}
+          <div
             class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 xl:text-base text-xl"
             on:click={() => {
               selectedPackage = undefined;
@@ -177,9 +178,9 @@
               >
             </div>
             Choose other Plan
-          </div> 
-      </div> 
-      <div class="text-center text-gray-500 xl:text-sm text-lg mt-8">
+          </div>
+        </div>
+        <div class="text-center text-gray-500 xl:text-sm text-lg mt-8">
           If missing your prefer payment method, please contact Telegram
           <strong>@thanhle27</strong> for support
         </div> -->
