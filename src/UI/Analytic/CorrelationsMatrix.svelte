@@ -12,7 +12,6 @@
     correlationsMatrixColor,
     equalizeArrayLengths,
     formatPercent,
-    getAddressContext,
   } from "~/utils";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
@@ -382,8 +381,7 @@
   }
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 </script>
 

@@ -1,11 +1,6 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import {
-    formatPercent,
-    getAddressContext,
-    getTooltipContent,
-    returnType,
-  } from "~/utils";
+  import { formatPercent, getTooltipContent, returnType } from "~/utils";
   import dayjs, { unix } from "dayjs";
   import { nimbus } from "~/lib/network";
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
@@ -20,6 +15,7 @@
   import VolatilityExplain from "~/assets/explain/volatility-explain.mp4";
   import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
   import MaxDrawdownExplain from "~/assets/explain/max-drawdown-explain.mp4";
+  import Error from "~/components/Error.svelte";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -57,6 +53,9 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}`
     );
+    if (response?.error) {
+      throw new Error(response?.error);
+    }
     return response?.data || [];
   };
 
@@ -68,8 +67,7 @@
   });
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 </script>
 

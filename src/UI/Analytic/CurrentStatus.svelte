@@ -5,7 +5,6 @@
   import {
     formatBalance,
     formatCurrency,
-    getAddressContext,
     typeList,
     handleFormatDataPieChart,
     formatPercent,
@@ -420,6 +419,9 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
+    if (response?.error) {
+      throw new Error(response?.error);
+    }
     return response?.data || [];
   };
 
@@ -730,8 +732,7 @@
   }
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 
   $: theme = darkMode ? "dark" : "white";
@@ -869,7 +870,7 @@
         </div>
       {:else}
         <div class="h-full">
-          {#if $queryHoldingToken.isError || ($queryHoldingToken.data && $queryHoldingToken.data.length === 0)}
+          {#if $queryHoldingToken.isError || ($queryHoldingToken.data && $queryHoldingToken.data?.length === 0)}
             <div
               class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
             >
@@ -975,9 +976,14 @@
       <div class="h-full">
         {#if $queryCompare.isError || ($queryCompare.data?.performance && $queryCompare.data?.performance.length === 0)}
           <div
-            class="flex justify-center items-center h-full text-lg text-gray-400 h-[465px]"
+            class="flex justify-center items-center h-full xl:text-xs text-lg text-center h-[465px]"
           >
-            Empty
+            {#if typeWalletAddress === "CEX" && $queryCompare.isError}
+              Not enough data. CEX integration can only get data from the day
+              you connect
+            {:else}
+              Empty
+            {/if}
           </div>
         {:else}
           <div class="relative">

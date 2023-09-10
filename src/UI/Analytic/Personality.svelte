@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { getAddressContext } from "~/utils";
   import { wallet, chain, typeWallet, selectedPackage } from "~/store";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
@@ -204,8 +203,7 @@
   };
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 
   $: query = createQuery({

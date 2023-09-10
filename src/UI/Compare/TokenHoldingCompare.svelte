@@ -1,7 +1,7 @@
 <script lang="ts">
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import { typeWallet, wallet, isDarkMode } from "~/store";
-  import { detectedChain, getAddressContext, shorterName } from "~/utils";
+  import { detectedChain, shorterName } from "~/utils";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
   export let data;
@@ -51,7 +51,7 @@
           height="30"
           class="rounded-full"
         />
-        {#if getAddressContext(selectedWallet)?.type !== "BTC" && typeWalletAddress === "DEX"}
+        {#if typeWalletAddress !== "BTC"}
           <div class="absolute -top-2 -right-1">
             <img
               src={detectedChain(data.chain)}
@@ -152,7 +152,7 @@
   >
     <div class="flex justify-end">
       <div
-        class={`xl:text-sm text-xl font-medium  ${
+        class={`xl:text-sm text-xl font-medium flex ${
           valueChange === 0
             ? "text_00000099"
             : valueChange > 0

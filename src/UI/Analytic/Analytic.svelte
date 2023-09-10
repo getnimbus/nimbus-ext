@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { getAddressContext, timeFrame } from "~/utils";
-  import { wallet, selectedPackage, isDarkMode } from "~/store";
+  import { timeFrame } from "~/utils";
+  import { wallet, selectedPackage, isDarkMode, typeWallet } from "~/store";
   import { useNavigate } from "svelte-navigator";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
 
@@ -34,14 +34,19 @@
     packageSelected = value;
   });
 
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
+
   let isShowSoon = false;
   let selectedTimeFrame: "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
 
   $: {
     if (selectedWallet) {
       if (
-        getAddressContext(selectedWallet)?.type === "BTC" ||
-        getAddressContext(selectedWallet)?.type === "SOL" ||
+        typeWalletAddress === "BTC" ||
+        typeWalletAddress === "SOL" ||
         packageSelected === "FREE"
       ) {
         isShowSoon = true;
@@ -178,7 +183,7 @@
               >
             </div>
           {/if}
-          {#if packageSelected !== "FREE" && (getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL")}
+          {#if packageSelected !== "FREE" && (typeWalletAddress === "BTC" || typeWalletAddress === "SOL")}
             <div class="text-lg">Coming soon 🚀</div>
             <div class="w-max">
               <button
