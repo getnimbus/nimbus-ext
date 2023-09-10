@@ -50,7 +50,7 @@
   $: percentRealizedProfit =
     data?.avgCost === 0 ? 0 : realizedProfit / Math.abs(data?.avgCost);
 
-  $: unrealizedProfit = value + data?.avgCost;
+  $: unrealizedProfit = data?.avgCost === 0 ? 0 : value + data?.avgCost;
   $: percentUnrealizedProfit =
     data?.avgCost === 0 ? 0 : unrealizedProfit / Math.abs(data?.avgCost);
 

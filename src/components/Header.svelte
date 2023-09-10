@@ -403,6 +403,7 @@
               const searchAccountType = await validateAddress(search);
               chain.update((n) => (n = "ALL"));
               wallet.update((n) => (n = search));
+              typeWallet.update((n) => (n = searchAccountType));
               if (searchAccountType === "EVM") {
                 navigate(
                   `/?type=${searchAccountType}&chain=ALL&address=${search}`
