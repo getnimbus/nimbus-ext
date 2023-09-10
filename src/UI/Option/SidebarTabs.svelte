@@ -38,11 +38,11 @@
       value: "highlight",
       type: "Highlight",
     },
-    {
-      label: i18n("optionsPage.tab-title-notification", "Notification"),
-      value: "notification",
-      type: "Notification",
-    },
+    // {
+    //   label: i18n("optionsPage.tab-title-notification", "Notification"),
+    //   value: "notification",
+    //   type: "Notification",
+    // },
     {
       label: i18n("optionsPage.tab-title-settings", "Settings"),
       value: "settings",

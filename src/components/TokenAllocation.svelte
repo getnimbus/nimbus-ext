@@ -7,12 +7,11 @@
     typeList,
     handleFormatDataPieChart,
     handleFormatDataTable,
-    getAddressContext,
     formatPercent,
     formatValue,
   } from "~/utils";
   import { flatten, groupBy } from "lodash";
-  import { wallet, chain, isDarkMode } from "~/store";
+  import { wallet, chain, isDarkMode, typeWallet } from "~/store";
 
   export let handleSelectedTableTokenHolding = (data, selectDataPieChart) => {};
   export let holdingTokenData;
@@ -38,6 +37,11 @@
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let selectedChain: string = "";
@@ -560,7 +564,7 @@
 
 <div class="w-full">
   {#if listOptionTypeCategory && listOptionTypeCategory.length === 0}
-    {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+    {#if typeWalletAddress !== "BTC"}
       <div class="flex justify-end mb-5">
         <Select
           type="lang"

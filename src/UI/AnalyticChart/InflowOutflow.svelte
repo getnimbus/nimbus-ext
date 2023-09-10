@@ -3,7 +3,7 @@
   import { wallet, chain, typeWallet, selectedPackage } from "~/store";
   import { groupBy, intersection, flatten } from "lodash";
   import dayjs from "dayjs";
-  import { formatCurrency, getAddressContext } from "~/utils";
+  import { formatCurrency } from "~/utils";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
 
@@ -363,8 +363,7 @@
   }
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 </script>
 

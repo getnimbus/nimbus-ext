@@ -2,12 +2,7 @@
   import { onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { dndzone } from "svelte-dnd-action";
-  import {
-    getAddressContext,
-    listLogoCEX,
-    listProviderCEX,
-    chainList,
-  } from "~/utils";
+  import { listLogoCEX, listProviderCEX, chainList } from "~/utils";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import {
@@ -25,6 +20,7 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { wait } from "~/entries/background/utils";
   import { useNavigate } from "svelte-navigator";
+  import * as browser from "webextension-polyfill";
 
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
@@ -133,6 +129,9 @@
   });
 
   let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
 
   let errors: any = {};
   let errorsEdit: any = {};
@@ -198,10 +197,21 @@
     return value != null && value !== "";
   };
 
-  const validateForm = (data) => {
+  const validateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data?.type;
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  };
+
+  const validateForm = async (data) => {
     const isDuplicatedAddress = listAddress.some((item) => {
       return item.address.toLowerCase() === data.address.toLowerCase();
     });
+    const addressValidate = await validateAddress(data.address);
 
     if (!isRequiredFieldValid(data.address)) {
       errors["address"] = {
@@ -210,7 +220,7 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      if (data.address && !getAddressContext(data.address)) {
+      if (data.address && !addressValidate) {
         errors["address"] = {
           ...errors["address"],
           required: true,
@@ -239,7 +249,9 @@
     }
   };
 
-  const validateFormEdit = (data) => {
+  const validateFormEdit = async (data) => {
+    const addressValidate = await validateAddress(data.address);
+
     if (!isRequiredFieldValid(data.address)) {
       errorsEdit["address"] = {
         ...errorsEdit["address"],
@@ -247,7 +259,7 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      if (!getAddressContext(data.address)) {
+      if (!addressValidate) {
         errorsEdit["address"] = {
           ...errorsEdit["address"],
           required: true,
@@ -287,7 +299,32 @@
         address: item.type === "CEX" ? item.id : item.accountId,
       };
     });
+
     listAddress = structWalletData;
+
+    if (structWalletData && structWalletData?.length === 1) {
+      browser.storage.sync.set({
+        selectedWallet: structWalletData[0]?.address,
+      });
+      browser.storage.sync.set({ selectedChain: "ALL" });
+      browser.storage.sync.set({
+        typeWalletAddress: structWalletData[0]?.type,
+      });
+    }
+    if (
+      structWalletData &&
+      structWalletData?.length !== 0 &&
+      structWalletData &&
+      structWalletData?.length > 1
+    ) {
+      browser.storage.sync.set({
+        selectedWallet: structWalletData[structWalletData.length - 1]?.address,
+      });
+      browser.storage.sync.set({ selectedChain: "ALL" });
+      browser.storage.sync.set({
+        typeWalletAddress: structWalletData[structWalletData.length - 1]?.type,
+      });
+    }
   };
 
   const query = createQuery({
@@ -307,22 +344,6 @@
     }
   }
 
-  $: {
-    if (listAddress && listAddress?.length === 1) {
-      wallet.update((n) => (n = `${listAddress[0].address}`));
-      if (listAddress[0].type === "DEX") {
-        typeWallet.update((n) => (n = "DEX"));
-        if (getAddressContext(listAddress[0].address)?.type === "EVM") {
-          chain.update((n) => (n = "ALL"));
-        }
-      }
-      if (listAddress[0].type === "CEX") {
-        typeWallet.update((n) => (n = "CEX"));
-        chain.update((n) => (n = "ALL"));
-      }
-    }
-  }
-
   // Add DEX address account
   const onSubmit = async (e) => {
     try {
@@ -334,7 +355,7 @@
         data[key] = value;
       }
 
-      validateForm(data);
+      await validateForm(data);
 
       if (
         !Object.keys(errors).some((inputName) => errors[inputName]["required"])
@@ -444,10 +465,8 @@
         isSuccess = true;
         trigger();
         mixpanel.track("user_edit_address");
-      }
-
-      if (selectedItemEdit.type === "DEX") {
-        validateFormEdit(data);
+      } else {
+        await validateFormEdit(data);
         if (
           !Object.keys(errorsEdit).some(
             (inputName) => errorsEdit[inputName]["required"]
@@ -652,16 +671,16 @@
     }
   }
 
+  const getListBundle = async () => {
+    const response: any = await nimbus.get("/address/personalize/bundle");
+    return response.data;
+  };
+
   const queryListBundle = createQuery({
     queryKey: ["list-bundle"],
     queryFn: () => getListBundle(),
     staleTime: Infinity,
   });
-
-  const getListBundle = async () => {
-    const response: any = await nimbus.get("/address/personalize/bundle");
-    return response.data;
-  };
 
   $: {
     if (
@@ -681,7 +700,7 @@
     }
   }
 
-  const handleResetState = () => {
+  const handleResetBundleState = () => {
     nameBundle = "";
     selectedBundle = {};
   };
@@ -699,6 +718,7 @@
     nameBundle = listBundle[listBundle.length - 1].name;
   };
 
+  // handle submit (create and edit) bundle
   const onSubmitBundle = async () => {
     if (selectedAddresses.length === 7) {
       toastMsg =
@@ -755,6 +775,7 @@
     }
   };
 
+  // handle delete bundle
   const handleDeleteBundle = async () => {
     try {
       const response = await nimbus.delete(
@@ -767,7 +788,7 @@
       listBundle = listBundle.filter(
         (item) => item.name !== selectedBundle?.name
       );
-      handleResetState();
+      handleResetBundleState();
       selectedAddresses = [];
       isAddBundle = false;
     } catch (e) {
@@ -948,7 +969,7 @@
                 variant="tertiary"
                 on:click={() => {
                   isAddBundle = true;
-                  handleResetState();
+                  handleResetBundleState();
                   selectedAddresses = [];
                 }}
               >
@@ -1038,7 +1059,7 @@
   {/if}
 
   {#if isAddBundle || (selectedBundle && selectedBundle !== null && Object.keys(selectedBundle).length !== 0)}
-    <!-- <form on:submit|preventDefault={onSubmitBundle} class="flex flex-col gap-4">
+    <form on:submit|preventDefault={onSubmitBundle} class="flex flex-col gap-4">
       <div
         class={`flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
           nameBundle && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
@@ -1186,7 +1207,7 @@
             on:click={() => {
               selectedAddresses = selectedBundle.addresses;
               isAddBundle = false;
-              handleResetState();
+              handleResetBundleState();
             }}
           >
             {MultipleLang.content.modal_cancel}</Button
@@ -1202,7 +1223,7 @@
           </Button>
         </div>
       </div>
-    </form> -->
+    </form>
   {:else}
     <div
       class={`border border_0000000d rounded-[10px] overflow-x-auto ${

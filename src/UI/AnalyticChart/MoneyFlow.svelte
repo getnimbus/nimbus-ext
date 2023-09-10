@@ -1,7 +1,7 @@
 <script lang="ts">
   import { groupBy, intersection, flatten, sumBy } from "lodash";
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
-  import { formatCurrency, formatValue, getAddressContext } from "~/utils";
+  import { formatCurrency, formatValue } from "~/utils";
   import dayjs from "dayjs";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
@@ -386,8 +386,7 @@
   }
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 
   $: theme = darkMode ? "dark" : "white";
@@ -446,20 +445,18 @@
                 {selectedTimeFrame} Money Netflow
               </div>
             </div>
-            <div class="flex items-center justify-end col-span-1 gap-1">
-              <div
-                class={`${
-                  sumData.inflow + sumData.outflow >= 0
-                    ? "text-[#00A878]"
-                    : "text-red-500"
-                }`}
-              >
-                {#if sumData.inflow + sumData.outflow < 0}-{/if}
-                <TooltipNumber
-                  number={Math.abs(sumData.inflow + sumData.outflow)}
-                  type="value"
-                />
-              </div>
+            <div
+              class={`flex items-center justify-end col-span-1 ${
+                sumData.inflow + sumData.outflow >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+              }`}
+            >
+              {#if sumData.inflow + sumData.outflow < 0}-{/if}
+              <TooltipNumber
+                number={Math.abs(sumData.inflow + sumData.outflow)}
+                type="value"
+              />
             </div>
           </div>
         </div>

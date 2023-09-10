@@ -1,6 +1,5 @@
 <script lang="ts">
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
-  import { getAddressContext } from "~/utils";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
 
@@ -50,8 +49,7 @@
   };
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 
   $: query = createQuery({

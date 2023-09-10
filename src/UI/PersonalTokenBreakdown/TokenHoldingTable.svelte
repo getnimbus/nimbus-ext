@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { detectedChain, getAddressContext, shorterName } from "~/utils";
+  import { detectedChain, shorterName } from "~/utils";
   import { i18n } from "~/lib/i18n";
-  import { isDarkMode } from "~/store";
+  import { isDarkMode, typeWallet } from "~/store";
   import { Progressbar } from "flowbite-svelte";
 
   import "~/components/Tooltip.custom.svelte";
@@ -28,6 +28,11 @@
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let tableTokenHeader;
@@ -149,7 +154,7 @@
                       height="30"
                       class="rounded-full"
                     />
-                    {#if getAddressContext(selectedWallet)?.type !== "BTC"}
+                    {#if typeWalletAddress !== "BTC"}
                       <div class="absolute -top-2 -right-1">
                         <img
                           src={detectedChain(data.chain)}
@@ -323,4 +328,4 @@
   </table>
 </div>
 
-<style></style>
+<style global windi:preflights:global windi:safelist:global></style>

@@ -1,7 +1,7 @@
 <script>
   import { useNavigate } from "svelte-navigator";
   import { chain, typeWallet, isDarkMode } from "~/store";
-  import { detectedChain, getAddressContext, shorterName } from "~/utils";
+  import { detectedChain, shorterName } from "~/utils";
   import numeral from "numeral";
   import { Progressbar } from "flowbite-svelte";
   import dayjs from "dayjs";
@@ -42,15 +42,17 @@
   let selectedVaults;
   let showTableVaults = false;
 
-  $: value = data?.amount * data?.market_price;
+  $: value = Number(data?.amount) * Number(data?.market_price);
 
   $: realizedProfit = data?.profit?.realizedProfit
     ? data?.profit?.realizedProfit
     : 0;
+  $: percentRealizedProfit =
+    data?.avgCost === 0 ? 0 : realizedProfit / Math.abs(data?.avgCost);
 
-  $: unrealizedProfit = data?.avgCost === 0 ? 0 : value + data?.avgCost;
+  $: unrealizedProfit = value + data?.avgCost;
   $: percentUnrealizedProfit =
-    (data?.avgCost || 0) === 0 ? 0 : unrealizedProfit / Math.abs(data?.avgCost);
+    data?.avgCost === 0 ? 0 : unrealizedProfit / Math.abs(data?.avgCost);
 
   $: clickable =
     data.name !== "Bitcoin" &&
@@ -123,7 +125,7 @@
           height="30"
           class="rounded-full"
         />
-        {#if getAddressContext(selectedWallet)?.type !== "BTC" && typeWalletAddress === "DEX"}
+        {#if typeWalletAddress !== "BTC"}
           <div class="absolute -top-2 -right-1">
             <img
               src={detectedChain(data.chain)}
@@ -505,13 +507,45 @@
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
-      {#if typeWalletAddress === "CEX" || getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
+      {#if typeWalletAddress === "CEX" || typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
         N/A
       {:else}
-        <div
-          class={`${realizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"}`}
-        >
-          <TooltipNumber number={Math.abs(realizedProfit)} type="value" />
+        <div class="flex flex-col">
+          <div
+            class={`flex justify-end ${
+              realizedProfit !== 0
+                ? realizedProfit >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+                : "text_00000099"
+            }`}
+          >
+            <TooltipNumber number={Math.abs(realizedProfit)} type="value" />
+          </div>
+          <div class="flex items-center justify-end gap-1">
+            <div
+              class={`flex items-center ${
+                percentRealizedProfit !== 0
+                  ? percentRealizedProfit >= 0
+                    ? "text-[#00A878]"
+                    : "text-red-500"
+                  : "text_00000099"
+              }`}
+            >
+              <TooltipNumber
+                number={Math.abs(percentRealizedProfit) * 100}
+                type="percent"
+              />
+              <span>%</span>
+            </div>
+            {#if percentRealizedProfit !== 0}
+              <img
+                src={percentRealizedProfit >= 0 ? TrendUp : TrendDown}
+                alt="trend"
+                class="mb-1"
+              />
+            {/if}
+          </div>
         </div>
       {/if}
     </div>
@@ -525,13 +559,17 @@
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
     >
-      {#if typeWalletAddress === "CEX" || getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
+      {#if typeWalletAddress === "CEX" || typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
         N/A
       {:else}
         <div class="flex flex-col">
           <div
             class={`flex justify-end ${
-              unrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
+              unrealizedProfit !== 0
+                ? percentUnrealizedProfit >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+                : "text_00000099"
             }`}
           >
             <TooltipNumber number={Math.abs(unrealizedProfit)} type="value" />
@@ -539,7 +577,11 @@
           <div class="flex items-center justify-end gap-1">
             <div
               class={`flex items-center ${
-                percentUnrealizedProfit >= 0 ? "text-[#00A878]" : "text-red-500"
+                percentUnrealizedProfit !== 0
+                  ? percentUnrealizedProfit >= 0
+                    ? "text-[#00A878]"
+                    : "text-red-500"
+                  : "text_00000099"
               }`}
             >
               <TooltipNumber
@@ -548,11 +590,13 @@
               />
               <span>%</span>
             </div>
-            <img
-              src={percentUnrealizedProfit >= 0 ? TrendUp : TrendDown}
-              alt="trend"
-              class="mb-1"
-            />
+            {#if percentUnrealizedProfit !== 0}
+              <img
+                src={percentUnrealizedProfit >= 0 ? TrendUp : TrendDown}
+                alt="trend"
+                class="mb-1"
+              />
+            {/if}
           </div>
         </div>
       {/if}

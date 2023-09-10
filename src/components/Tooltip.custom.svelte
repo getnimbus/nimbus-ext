@@ -13,7 +13,7 @@
 </script>
 
 <div
-  class={`text-white font-normal py-1 px-2 text-xs rounded relative max-w-96 w-max normal-case border-[0.5px] border-[#cdcdcd59] ${
+  class={`text-white font-normal py-1 px-2 text-xs rounded relative w-max normal-case border-[0.5px] border-[#cdcdcd59] ${
     darkMode ? "bg-[#0f0f0f]" : "bg-black"
   }`}
   style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);"

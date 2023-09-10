@@ -18,7 +18,6 @@
   dayjs.extend(relativeTime);
   import {
     chainList,
-    getAddressContext,
     listLogoCEX,
     listProviderCEX,
     clickOutside,
@@ -108,6 +107,7 @@
   };
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -195,10 +195,21 @@
     return value != null && value !== "";
   };
 
-  const validateForm = (data) => {
+  const validateAddress = async (address: string) => {
+    try {
+      const response = await nimbus.get(`/v2/address/${address}/validate`);
+      return response?.data?.type;
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  };
+
+  const validateForm = async (data) => {
     const isDuplicatedAddress = listAddress.some((item) => {
       return item.value.toLowerCase() === data.address.toLowerCase();
     });
+    const addressValidate = await validateAddress(data.address);
 
     if (!isRequiredFieldValid(data.address)) {
       errors["address"] = {
@@ -207,7 +218,7 @@
         msg: MultipleLang.content.address_required,
       };
     } else {
-      if (data.address && !getAddressContext(data.address)) {
+      if (data.address && !addressValidate) {
         errors["address"] = {
           ...errors["address"],
           required: true,
@@ -245,7 +256,6 @@
     return response?.data;
   };
 
-  const queryClient = useQueryClient();
   const query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
@@ -254,7 +264,7 @@
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
-      formatListAddress = [];
+      listAddress = [];
       selectedWallet = "";
     },
     enabled: selectedWallet !== "0xc02ad7b9a9121fc849196e844dc869d2250df3a6",
@@ -268,41 +278,37 @@
 
   const formatDataListAddress = async (data) => {
     const structWalletData = data.map((item) => {
+      let logo = All;
+      if (item?.type === "BTC") {
+        logo = BitcoinLogo;
+      }
+      if (item?.type === "SOL") {
+        logo = SolanaLogo;
+      }
+      if (item?.type === "BUNDLE") {
+        logo = Bundles;
+      }
       return {
         id: item.id,
         type: item.type,
         label: item.label,
         value: item.type === "CEX" ? item.id : item.accountId,
-        logo: item.logo,
+        logo: item.type === "CEX" ? item.logo : logo,
         accounts:
-          item?.accounts?.map((item) => {
+          item?.accounts?.map((account) => {
             let logo = All;
-            if (
-              getAddressContext(
-                item?.type === "CEX" ? item.id : item?.accountId
-              )?.type === "BTC"
-            ) {
+            if (account.type === "BTC") {
               logo = BitcoinLogo;
             }
-            if (
-              getAddressContext(
-                item?.type === "CEX" ? item.id : item?.accountId
-              )?.type === "SOL"
-            ) {
+            if (account.type === "SOL") {
               logo = SolanaLogo;
             }
-            if (item?.type === "BUNDLE") {
-              logo = Bundles;
-            }
             return {
-              id: item?.id,
-              type: item?.type,
-              label: item?.label,
-              value: item?.type === "CEX" ? item?.id : item?.accountId,
-              logo:
-                item?.type === "BUNDLE" || item?.type === "DEX"
-                  ? logo
-                  : item?.logo,
+              id: account?.id,
+              type: account?.type,
+              label: account?.label,
+              value: account?.type === "CEX" ? account?.id : account?.accountId,
+              logo: account?.type === "CEX" ? account?.logo : logo,
             };
           }) || [],
       };
@@ -310,6 +316,7 @@
 
     listAddress = structWalletData;
 
+    // check type wallet
     const selectedTypeWalletRes = await browser.storage.sync.get(
       "typeWalletAddress"
     );
@@ -319,6 +326,7 @@
       typeWallet.update((n) => (n = listAddress[0]?.type));
     }
 
+    // check chain wallet
     const selectedChainRes = await browser.storage.sync.get("selectedChain");
     if (selectedChainRes?.selectedChain !== null) {
       chain.update((n) => (n = selectedChainRes.selectedChain));
@@ -326,18 +334,10 @@
       chain.update((n) => (n = "ALL"));
     }
 
+    // check wallet
     const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
     if (selectedWalletRes?.selectedWallet !== null) {
-      if (selectedWalletRes?.selectedWallet?.length !== 0) {
-        wallet.update((n) => (n = selectedWalletRes.selectedWallet));
-      }
-      if (
-        selectedWalletRes?.selectedWallet?.length === 0 &&
-        listAddress.length !== 0 &&
-        listAddress.length === 1
-      ) {
-        wallet.update((n) => (n = listAddress[0].value));
-      }
+      wallet.update((n) => (n = selectedWalletRes.selectedWallet));
     } else {
       wallet.update((n) => (n = listAddress[0].value));
     }
@@ -394,48 +394,54 @@
       );
     }
 
-    if (typeParams === "DEX") {
-      // if list address is empty and no chain params and have address param (btc address when search)
-      if (!chainParams && listAddress.length === 0 && addressParams) {
+    // if list address is empty and no chain params and have address param
+    if (
+      !chainParams &&
+      listAddress.length === 0 &&
+      addressParams &&
+      typeParams
+    ) {
+      if (window.location.pathname === "/transactions") {
+        chain.update((n) => (n = "ETH"));
+      } else {
+        chain.update((n) => (n = "ALL"));
+      }
+
+      if (typeParams === "BTC" || typeParams === "SOL") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&address=${selectedWallet}`
+        );
+      }
+
+      if (typeParams === "EVM") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
+        );
+      }
+    }
+
+    // if no chain params and list address is not empty
+    if (!chainParams && listAddress.length !== 0 && typeParams) {
+      if (typeParams === "EVM") {
         if (window.location.pathname === "/transactions") {
           chain.update((n) => (n = "ETH"));
         } else {
           chain.update((n) => (n = "ALL"));
         }
-
-        if (
-          getAddressContext(selectedWallet)?.type === "BTC" ||
-          getAddressContext(selectedWallet)?.type === "SOL"
-        ) {
-          window.history.replaceState(
-            null,
-            "",
-            window.location.pathname +
-              `?type=${typeWalletAddress}&address=${selectedWallet}`
-          );
-        }
       }
-
-      // if no chain params and list address is not empty
-      if (!chainParams && listAddress.length !== 0) {
-        if (getAddressContext(selectedWallet)?.type === "EVM") {
-          if (window.location.pathname === "/transactions") {
-            chain.update((n) => (n = "ETH"));
-          } else {
-            chain.update((n) => (n = "ALL"));
-          }
-        }
-        if (
-          getAddressContext(selectedWallet)?.type === "BTC" ||
-          getAddressContext(selectedWallet)?.type === "SOL"
-        ) {
-          window.history.replaceState(
-            null,
-            "",
-            window.location.pathname +
-              `?type=${typeWalletAddress}&address=${selectedWallet}`
-          );
-        }
+      if (typeParams === "BTC" || typeParams === "SOL") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&address=${selectedWallet}`
+        );
       }
     }
   };
@@ -451,7 +457,7 @@
         data[key] = value;
       }
 
-      validateForm(data);
+      await validateForm(data);
 
       if (
         !Object.keys(errors).some((inputName) => errors[inputName]["required"])
@@ -470,9 +476,7 @@
         });
 
         queryClient.invalidateQueries(["list-address"]);
-        chain.update((n) => (n = "ALL"));
         wallet.update((n) => (n = dataFormat.value));
-        typeWallet.update((n) => (n = "DEX"));
 
         e.target.reset();
         errors = {};
@@ -521,12 +525,10 @@
 
             await wait(1000);
 
-            if (
-              formatListAddress[formatListAddress.length - 1]?.type === "CEX"
-            ) {
+            if (listAddress[listAddress.length - 1]?.type === "CEX") {
               chain.update((n) => (n = "ALL"));
               wallet.update(
-                (n) => (n = formatListAddress[formatListAddress.length - 1]?.id)
+                (n) => (n = listAddress[listAddress.length - 1]?.id)
               );
               typeWallet.update((n) => (n = "CEX"));
             }
@@ -596,35 +598,11 @@
     localStorage.setItem("isGetUserEmailYet", "false");
   });
 
-  $: formatListAddress = listAddress.map((item) => {
-    let logo = All;
-    if (getAddressContext(item.value)?.type === "BTC") {
-      logo = BitcoinLogo;
-    }
-    if (getAddressContext(item.value)?.type === "SOL") {
-      logo = SolanaLogo;
-    }
-    if (item.type === "BUNDLE") {
-      logo = Bundles;
-    }
-    return {
-      ...item,
-      logo: item.type === "BUNDLE" || item.type === "DEX" ? logo : item.logo,
-    };
-  });
-
   $: {
     if (selectedWallet || selectedChain) {
-      if (selectedWallet.length !== 0 && selectedChain.length !== 0) {
-        browser.storage.sync
-          .set({ selectedWallet: selectedWallet })
-          .then(() => {
-            console.log("save selected address to sync storage");
-          });
-
-        browser.storage.sync.set({ selectedChain: selectedChain }).then(() => {
-          console.log("save selected chain to sync storage");
-        });
+      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
+        browser.storage.sync.set({ selectedWallet: selectedWallet });
+        browser.storage.sync.set({ selectedChain: selectedChain });
 
         if (selectedWallet === "0xc02ad7b9a9121fc849196e844dc869d2250df3a6") {
           window.history.replaceState(
@@ -634,7 +612,7 @@
               `?type=CEX&chain=${selectedChain}&address=${selectedWallet}`
           );
         } else {
-          const selected = formatListAddress.find((item) => {
+          const selected = listAddress.find((item) => {
             return item.value === selectedWallet;
           });
 
@@ -644,20 +622,13 @@
             selected.type === "CEX"
           ) {
             typeWallet.update((n) => (n = "CEX"));
-            browser.storage.sync.set({ typeWalletAddress: "CEX" }).then(() => {
-              console.log("save selected type wallet to sync storage");
-            });
+            browser.storage.sync.set({ typeWalletAddress: "CEX" });
             window.history.replaceState(
               null,
               "",
               window.location.pathname +
                 `?type=${typeWalletAddress}&address=${selectedWallet}`
             );
-            if (selectedChain) {
-              chain.update((n) => (n = selectedChain));
-            } else {
-              chain.update((n) => (n = "ALL"));
-            }
           }
 
           if (
@@ -665,53 +636,65 @@
             Object.keys(selected).length !== 0 &&
             selected.type === "BUNDLE"
           ) {
+            typeWallet.update((n) => (n = "BUNDLE"));
+            browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
             window.history.replaceState(
               null,
               "",
               window.location.pathname +
                 `?type=${typeWalletAddress}&address=${selectedWallet}`
             );
-            if (selectedChain) {
-              chain.update((n) => (n = selectedChain));
-            } else {
-              chain.update((n) => (n = "ALL"));
-            }
           }
 
           if (
             selected &&
             Object.keys(selected).length !== 0 &&
-            selected.type === "DEX"
+            selected.type === "EVM"
           ) {
-            typeWallet.update((n) => (n = "DEX"));
-            browser.storage.sync.set({ typeWalletAddress: "DEX" }).then(() => {
-              console.log("save selected type wallet to sync storage");
-            });
-            if (getAddressContext(selectedWallet)?.type === "EVM") {
-              window.history.replaceState(
-                null,
-                "",
-                window.location.pathname +
-                  `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
-              );
-            }
+            typeWallet.update((n) => (n = "EVM"));
+            browser.storage.sync.set({ typeWalletAddress: "EVM" });
+            window.history.replaceState(
+              null,
+              "",
+              window.location.pathname +
+                `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
+            );
+          }
 
-            if (
-              getAddressContext(selectedWallet)?.type === "BTC" ||
-              getAddressContext(selectedWallet)?.type === "SOL"
-            ) {
-              window.history.replaceState(
-                null,
-                "",
-                window.location.pathname +
-                  `?type=${typeWalletAddress}&address=${selectedWallet}`
-              );
-              if (selectedChain) {
-                chain.update((n) => (n = selectedChain));
-              } else {
-                chain.update((n) => (n = "ALL"));
-              }
-            }
+          if (
+            selected &&
+            Object.keys(selected).length !== 0 &&
+            selected.type === "SOL"
+          ) {
+            typeWallet.update((n) => (n = "SOL"));
+            browser.storage.sync.set({ typeWalletAddress: "SOL" });
+            window.history.replaceState(
+              null,
+              "",
+              window.location.pathname +
+                `?type=${typeWalletAddress}&address=${selectedWallet}`
+            );
+          }
+
+          if (
+            selected &&
+            Object.keys(selected).length !== 0 &&
+            selected.type === "BTC"
+          ) {
+            typeWallet.update((n) => (n = "BTC"));
+            browser.storage.sync.set({ typeWalletAddress: "BTC" });
+            window.history.replaceState(
+              null,
+              "",
+              window.location.pathname +
+                `?type=${typeWalletAddress}&address=${selectedWallet}`
+            );
+          }
+
+          if (selectedChain) {
+            chain.update((n) => (n = selectedChain));
+          } else {
+            chain.update((n) => (n = "ALL"));
           }
         }
       }
@@ -785,16 +768,13 @@
     if (Object.keys(userInfo).length !== 0 && evmToken) {
       queryClient.invalidateQueries(["list-address"]);
     } else {
-      formatListAddress = [];
       listAddress = [];
     }
   }
 
   $: {
     if (selectedWallet) {
-      selectBundle = formatListAddress.find(
-        (item) => item.value === selectedWallet
-      );
+      selectBundle = listAddress.find((item) => item.value === selectedWallet);
     }
   }
 </script>
@@ -805,7 +785,7 @@
   </div>
 {:else}
   <div>
-    {#if formatListAddress.length === 0 && selectedWallet?.length === 0}
+    {#if listAddress.length === 0 && selectedWallet?.length === 0}
       <div class="flex items-center justify-center h-screen">
         <div class="flex flex-col items-center justify-center w-2/3 gap-4 p-6">
           {#if $query.isError && Object.keys(userInfo).length !== 0}
@@ -896,11 +876,11 @@
             <div class="flex items-center justify-between gap-6">
               <!-- desktop list address wallet -->
               <div class="hidden xl:block">
-                {#if formatListAddress && formatListAddress?.length !== 0}
+                {#if listAddress && listAddress?.length !== 0}
                   <div class="flex items-center gap-5">
-                    {#if formatListAddress.length > 5}
+                    {#if listAddress.length > 5}
                       <AnimateSharedLayout>
-                        {#each formatListAddress.slice(0, 5) as item}
+                        {#each listAddress.slice(0, 5) as item}
                           <div
                             id={item.value}
                             class="relative xl:text-base text-2xl text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
@@ -939,15 +919,15 @@
                           <Select
                             type="wallet"
                             positionSelectList="right-0"
-                            listSelect={formatListAddress.slice(
+                            listSelect={listAddress.slice(
                               5,
-                              formatListAddress.length
+                              listAddress.length
                             )}
                             bind:selected={selectedWallet}
                           />
                         </div>
-                        {#if formatListAddress
-                          .slice(5, formatListAddress.length)
+                        {#if listAddress
+                          .slice(5, listAddress.length)
                           .find((item) => item.value === selectedWallet) !== undefined}
                           <div
                             class="absolute inset-0 rounded-full bg-[#ffffff1c] z-1"
@@ -956,7 +936,7 @@
                       </div>
                     {:else}
                       <AnimateSharedLayout>
-                        {#each formatListAddress as item}
+                        {#each listAddress as item}
                           <div
                             id={item.value}
                             class="relative xl:text-base text-2xl text-white py-1 xl:pl-2 xl:pr-3 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
@@ -1000,7 +980,7 @@
               </div>
 
               <!-- mobile list address wallet -->
-              {#if formatListAddress && formatListAddress?.length !== 0}
+              {#if listAddress && listAddress?.length !== 0}
                 <div
                   class="relative flex flex-row items-center justify-between w-full gap-3 overflow-hidden xl:hidden"
                   bind:this={container}
@@ -1033,7 +1013,7 @@
                     bind:this={scrollContainer}
                     on:scroll={handleScroll}
                   >
-                    {#each formatListAddress as item}
+                    {#each listAddress as item}
                       <div
                         id={item.value}
                         class="w-max flex-shrink-0 relative text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
@@ -1305,7 +1285,7 @@
                   </div> -->
 
                   <div class="hidden xl:block">
-                    {#if getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
+                    {#if typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
                       <div
                         use:tooltip={{
                           content: `<tooltip-detail text="Coming soon!" />`,
@@ -1359,7 +1339,7 @@
 
               <div class="flex flex-col gap-6">
                 <div class="block xl:hidden">
-                  {#if getAddressContext(selectedWallet)?.type === "BTC" || getAddressContext(selectedWallet)?.type === "SOL"}
+                  {#if typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
                     <div
                       use:tooltip={{
                         content: `<tooltip-detail text="Coming soon!" />`,
@@ -1406,7 +1386,7 @@
                     </div>
                   {/if}
                 </div>
-                {#if (getAddressContext(selectedWallet)?.type === "EVM" && typeWalletAddress === "DEX") || typeWalletAddress === "CEX"}
+                {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX"}
                   <Select
                     type="chain"
                     positionSelectList="right-0"
@@ -1602,7 +1582,7 @@
     <div class="flex justify-end w-full">
       <CopyToClipboard
         text={`/start ${selectedWallet} ${
-          formatListAddress.filter((item) => item.value === selectedWallet)?.[0]
+          listAddress.filter((item) => item.value === selectedWallet)?.[0]
             ?.label || ""
         }`}
         let:copy
@@ -1630,7 +1610,7 @@
             >
               <tooltip-detail
                 text={`/start ${selectedWallet} ${
-                  formatListAddress.filter(
+                  listAddress.filter(
                     (item) => item.value === selectedWallet
                   )?.[0]?.label || ""
                 }`}

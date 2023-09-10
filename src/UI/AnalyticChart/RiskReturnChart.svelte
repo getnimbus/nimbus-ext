@@ -11,7 +11,6 @@
     formatCurrency,
     formatPercent,
     formatValue,
-    getAddressContext,
     getTooltipContent,
     sharpeRatioColorChart,
   } from "~/utils";
@@ -257,6 +256,9 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
+    if (response?.error) {
+      throw new Error(response?.error);
+    }
     return response?.data || [];
   };
 
@@ -271,8 +273,7 @@
   };
 
   $: enabledQuery = Boolean(
-    getAddressContext(selectedWallet)?.type === "EVM" ||
-      typeWalletAddress === "CEX"
+    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
   );
 
   $: query = createQuery({
@@ -316,7 +317,7 @@
       riskBreakdownData = dataRiskBreakdown;
 
       const listKey = Object.getOwnPropertyNames(data);
-      const legendDataBarChart = listKey.map((item) => {
+      const legendDataBarChart = (listKey || [])?.map((item) => {
         let data = {
           name: "",
           // itemStyle: {
@@ -360,7 +361,7 @@
         return data;
       });
 
-      const scatterData = listKey.map((item) => {
+      const scatterData = (listKey || []).map((item) => {
         let custom = {
           name: "",
           color: "",
@@ -404,8 +405,10 @@
               Number(data[item].volatility),
               Number(
                 getChangePercent(
-                  data[item]?.sparkline[data[item].sparkline.length - 1] || 0,
-                  data[item]?.sparkline[0]
+                  data[item].sparkline?.length - 1
+                    ? data[item]?.sparkline[data[item].sparkline?.length - 1]
+                    : 0,
+                  data[item]?.sparkline ? data[item]?.sparkline[0] : 0
                 )
               ),
               // Number(data[item].netWorthChange?.networth30D),
@@ -501,7 +504,7 @@
         <LoadingPremium />
       </div>
     {:else}
-      <div class="h-full relative">
+      <div class="h-full relative min-h-[465px]">
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
