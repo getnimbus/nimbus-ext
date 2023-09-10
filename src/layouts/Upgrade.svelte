@@ -78,6 +78,7 @@
     <div class="xl:text-5xl text-7xl font-medium text-center">Upgrade Plan</div>
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
       <div class="flex flex-col justify-center min-h-[70vh]">
+        <!-- remove me -->
         <div class="text-lg mb-3">Please follow this payment steps:</div>
         <ul class="text-lg flex flex-col gap-5">
           <li>
@@ -115,6 +116,27 @@
             your account after we receive your information.
           </li>
         </ul>
+        <div
+          class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 xl:text-base text-xl"
+          on:click={() => {
+            selectedPackage = undefined;
+          }}
+        >
+          <div class="transform -rotate-180">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="#1E96FC"
+              xmlns="http://www.w3.org/2000/svg"
+              ><path
+                d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                fill=""
+              /></svg
+            >
+          </div>
+          Choose other Plan
+        </div>
 
         <!-- <div class="flex flex-col items-center gap-1">
           <div class="flex items-center gap-1 xl:text-lg text-xl">

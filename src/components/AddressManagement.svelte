@@ -1323,6 +1323,7 @@
                                     selectedWallet
                                   )}`
                                 );
+                                mixpanel.track("user_compare");
                               }}>Optimize return</Button
                             >
                           </div>
@@ -1375,6 +1376,7 @@
                                   selectedWallet
                                 )}`
                               );
+                              mixpanel.track("user_compare");
                             }}>Optimize return</Button
                           >
                         </div>
