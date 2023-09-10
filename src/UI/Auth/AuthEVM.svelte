@@ -326,7 +326,10 @@
   </div>
 {:else}
   <div
-    on:click={connect}
+    on:click={() => {
+      connect();
+      mixpanel.track("user_connect_wallet");
+    }}
     class="text-2xl font-semibold text-white cursor-pointer xl:text-base"
   >
     Connect Wallet
