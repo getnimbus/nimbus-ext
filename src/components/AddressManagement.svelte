@@ -854,11 +854,11 @@
                     mixpanel.track("user_search");
                     chain.update((n) => (n = "ALL"));
                     wallet.update(
-                      (n) => (n = "0xc02ad7b9a9121fc849196e844dc869d2250df3a6")
+                      (n) => (n = "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0")
                     );
                     typeWallet.update((n) => (n = "EVM"));
                     navigate(
-                      `/?type=EVM&chain=ALL&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
+                      `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
                     );
                   }}
                 >
