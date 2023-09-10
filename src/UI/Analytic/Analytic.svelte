@@ -13,10 +13,10 @@
   import RiskChart from "../AnalyticChart/RiskChart.svelte";
   import ReturnChart from "../AnalyticChart/ReturnChart.svelte";
   import RiskReturnChart from "../AnalyticChart/RiskReturnChart.svelte";
+  import CorrelationsMatrix from "./CorrelationsMatrix.svelte";
   import Personality from "./Personality.svelte";
   import Compare from "../Portfolio/Compare.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
-  import CorrelationsMatrix from "./CorrelationsMatrix.svelte";
 
   const navigate = useNavigate();
 

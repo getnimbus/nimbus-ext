@@ -366,6 +366,7 @@
 
   $: queryPersonalTag = createQuery({
     queryKey: ["personalize-tag", selectedWallet],
+    enabled: enabledQuery,
     queryFn: () => getPersonalizeTag(selectedWallet),
     staleTime: Infinity,
   });
@@ -732,7 +733,8 @@
   }
 
   $: enabledQuery = Boolean(
-    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
+    (typeWalletAddress === "EVM" || typeWalletAddress === "CEX") &&
+      selectedWallet.length !== 0
   );
 
   $: theme = darkMode ? "dark" : "white";
