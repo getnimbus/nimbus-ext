@@ -489,6 +489,7 @@
                 </div>
               {/each}
             </div>
+
             <div
               class={`pt-4 border-t ${
                 darkMode ? "border-[#0f0f0f]" : "border-gray-200"
@@ -538,7 +539,7 @@
                       {#each data as item, indexX}
                         {#if indexX == indexY}
                           <td
-                            class={`p-[8px] ${
+                            class={`py-2 px-1 ${
                               colIndex === indexX
                                 ? darkMode
                                   ? "bg-[#cdcdcd26]"
@@ -565,7 +566,7 @@
                           </td>
                         {:else}
                           <td
-                            class={`text-2xl xl:text-base text-center border ${
+                            class={`py-2 px-1 text-2xl xl:text-base text-center border ${
                               darkMode ? "border-[#0f0f0f]" : "border-gray-200"
                             } ${
                               colIndex === indexX
@@ -574,24 +575,16 @@
                                   : "bg-[#dbeafe]"
                                 : ""
                             }`}
+                            style={`background: ${
+                              item.value === "N/A"
+                                ? "transparent"
+                                : correlationsMatrixColor(item.value)
+                            }`}
                             on:mouseenter={() => (colIndex = indexX)}
                           >
-                            <div
-                              class={`p-[6px] ${
-                                item.value === "N/A"
-                                  ? ""
-                                  : `bg-[${correlationsMatrixColor(
-                                      item.value
-                                    )}]`
-                              }`}
-                              style={`background: ${correlationsMatrixColor(
-                                item.value
-                              )}`}
-                            >
-                              {item.value === "N/A"
-                                ? "N/A"
-                                : formatPercent(item.value)}
-                            </div>
+                            {item.value === "N/A"
+                              ? "N/A"
+                              : formatPercent(item.value)}
                           </td>
                         {/if}
                       {/each}
