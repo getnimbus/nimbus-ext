@@ -609,7 +609,7 @@
             null,
             "",
             window.location.pathname +
-              `?type=CEX&chain=${selectedChain}&address=${selectedWallet}`
+              `?type=EVM&chain=${selectedChain}&address=${selectedWallet}`
           );
         } else {
           const selected = listAddress.find((item) => {
@@ -856,9 +856,9 @@
                     wallet.update(
                       (n) => (n = "0xc02ad7b9a9121fc849196e844dc869d2250df3a6")
                     );
-                    typeWallet.update((n) => (n = "DEX"));
+                    typeWallet.update((n) => (n = "EVM"));
                     navigate(
-                      `/?type=DEX&chain=ALL&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
+                      `/?type=EVM&chain=ALL&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
                     );
                   }}
                 >
