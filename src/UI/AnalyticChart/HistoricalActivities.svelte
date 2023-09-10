@@ -158,7 +158,8 @@
   };
 
   $: enabledQuery = Boolean(
-    typeWalletAddress === "EVM" || typeWalletAddress === "CEX"
+    (typeWalletAddress === "EVM" || typeWalletAddress === "CEX") &&
+      selectedWallet.length !== 0
   );
 
   $: query = createQuery({
