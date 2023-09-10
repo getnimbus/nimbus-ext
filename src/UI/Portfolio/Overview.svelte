@@ -187,7 +187,7 @@
           }`}
         >
           <span>
-            {#if unrealizedProfit < 0}
+            {#if realizedProfit < 0}
               -
             {/if}
           </span>
