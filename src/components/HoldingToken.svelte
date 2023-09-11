@@ -140,7 +140,7 @@
   }}
 >
   <td
-    class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[420px] ${
+    class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[450px] ${
       darkMode
         ? "bg-[#131313] group-hover:bg-[#00000033]"
         : "bg-white group-hover:bg-gray-100"
@@ -150,13 +150,13 @@
       <!-- icon report -->
       {#if isShowReport}
         <div
-          class="absolute -left-9 top-2 hover:opacity-60"
-          on:click={() => (isShowReportTable = !isShowReportTable)}
+          class="absolute w-5 xl:-left-8 sm:-left-6 top-3 opacity-80 hover:opacity-60 hidden xl:block"
+          on:click={() => (isShowReportTable = true)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="16"
+            height="16"
             viewBox="0 0 24 24"
             ><g
               fill="none"
@@ -204,7 +204,35 @@
             {#if data.name === undefined}
               N/A
             {:else}
-              {data?.name?.length > 20 ? shorterName(data.name, 20) : data.name}
+              <div class="flex xl:hidden">
+                {data?.name?.length > 20
+                  ? shorterName(data.name, 20)
+                  : data.name}
+                <!-- icon report -->
+                {#if isShowReport}
+                  <span
+                    class="opacity-80 hover:opacity-60 flex items-center justify-center ml-3"
+                    on:click={() => (isShowReportTable = true)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      ><g
+                        fill="none"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        ><path d="M0 0h24v24H0z" /><path
+                          fill="currentColor"
+                          d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
+                        /></g
+                      ></svg
+                    >
+                  </span>
+                {/if}
+              </div>
             {/if}
             {#if isShowTooltipName && data?.name?.length > 20}
               <div class="absolute -top-8 left-0" style="z-index: 2147483648;">
@@ -701,40 +729,75 @@
     on:submit|preventDefault={handleReportTrashCoin}
   >
     <div class="flex flex-col gap-5">
-      <div class="flex gap-2 flex-col">
-        <p>Chain</p>
+      <div class="">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="50"
+          height="50"
+          viewBox="0 0 24 24"
+          class="font-bold mx-auto"
+          ><g transform="rotate(90 12 12)"
+            ><path
+              fill="currentColor"
+              d="M11.5 22C6.26 22 2 17.75 2 12.5A9.5 9.5 0 0 1 11.5 3a9.5 9.5 0 0 1 9.5 9.5a9.5 9.5 0 0 1-9.5 9.5m0-1a8.5 8.5 0 0 0 8.5-8.5c0-2.17-.81-4.15-2.14-5.65l-12.01 12A8.468 8.468 0 0 0 11.5 21m0-17A8.5 8.5 0 0 0 3 12.5c0 2.17.81 4.14 2.15 5.64l12-12A8.49 8.49 0 0 0 11.5 4Z"
+            /></g
+          ></svg
+        >
+      </div>
+      <div class="text-2xl font-semibold text-center">Blacklist Position</div>
+      <div
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3`}
+      >
+        <div class="xl:text-base text-xl text-[#666666] font-medium">Chain</div>
         <input
           type="text"
           id="chain"
-          class="rounded-lg"
+          name="chain"
           value={data.chain}
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B]`}
           disabled
         />
       </div>
-      <div class="flex gap-2 flex-col">
-        <p>Contract Adress</p>
+      <div
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3`}
+      >
+        <div class="xl:text-base text-xl text-[#666666] font-medium">
+          Contract Address
+        </div>
         <input
           type="text"
           id="contractaddress"
-          class="rounded-lg"
+          name="contractaddress"
           value={data.contractAddress}
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B]`}
           disabled
         />
       </div>
-      <div class="flex gap-2 flex-col">
-        <p>Reason</p>
-        <input
-          type="text"
+      <div
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3`}
+      >
+        <div class="xl:text-base text-xl text-[#666666] font-medium">
+          Reason
+        </div>
+        <textarea
+          placeholder="Please write some reason to block this token"
+          rows="5"
           id="reason"
-          class="rounded-lg"
-          placeholder="Please type a reason"
+          name="reason"
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B]`}
         />
       </div>
-      <button
-        type="submit"
-        class="rounded-lg border py-2 bg-[#27326f] text-white"
-        >Submit Report</button
-      >
+      <div class="flex gap-10">
+        <button
+          on:click={() => (isShowReportTable = false)}
+          class="rounded-lg border py-2 border-[#27326f] w-full">Cancel</button
+        >
+        <button
+          type="submit"
+          class="rounded-lg border py-2 bg-[#1e96fc] text-white w-full"
+          >Submit Report</button
+        >
+      </div>
     </div>
   </form>
 </AppOverlay>
