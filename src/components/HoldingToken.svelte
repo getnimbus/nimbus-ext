@@ -780,7 +780,9 @@
       </div>
 
       <div
-        class={`flex flex-col gap-3 input-2 input-border w-full py-[6px] px-3`}
+        class={`flex flex-col gap-3 input-2 input-border w-full py-[8px] px-3 ${
+          darkMode ? "text-black" : "text-white"
+        }`}
       >
         <div class="xl:text-base text-xl text-[#666666] font-medium">
           Reason
@@ -790,7 +792,7 @@
             type="checkbox"
             name=""
             id="content"
-            class="mr-2 rounded-lg"
+            class={`mr-2 rounded-lg `}
           /><label for="">This Token is a trash 🗑️ </label>
         </div>
         <div class="flex items-center">
