@@ -701,7 +701,7 @@
     on:submit|preventDefault={handleReportTrashCoin}
   >
     <div class="flex flex-col gap-5">
-      <div>
+      <div class="flex gap-2 flex-col">
         <p>Chain</p>
         <input
           type="text"
@@ -711,7 +711,7 @@
           disabled
         />
       </div>
-      <div>
+      <div class="flex gap-2 flex-col">
         <p>Contract Adress</p>
         <input
           type="text"
@@ -721,7 +721,7 @@
           disabled
         />
       </div>
-      <div>
+      <div class="flex gap-2 flex-col">
         <p>Reason</p>
         <input
           type="text"
