@@ -9,6 +9,7 @@
   import { getChangePercent } from "~/chart-utils";
   import { useNavigate } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import mixpanel from "mixpanel-browser";
   import * as Sentry from "@sentry/svelte";
 
   import type { TokenData } from "~/types/HoldingTokenData";
@@ -235,6 +236,10 @@
     },
     series: [],
   };
+
+  onMount(() => {
+    mixpanel.track("user_compare");
+  });
 
   const queryClient = useQueryClient();
 

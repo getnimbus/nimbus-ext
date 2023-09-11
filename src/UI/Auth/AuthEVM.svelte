@@ -268,7 +268,7 @@
           </div>
           <DarkMode />
         </div>
-        <!-- <div
+        <div
           class={`flex items-center gap-1 text-2xl font-medium text-yellow-400 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
             darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
           }`}
@@ -292,7 +292,7 @@
               fill="#ffb800"
             />
           </svg>
-        </div> -->
+        </div>
         <Link to="invitation">
           <div
             class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
@@ -326,7 +326,10 @@
   </div>
 {:else}
   <div
-    on:click={connect}
+    on:click={() => {
+      connect();
+      mixpanel.track("user_connect_wallet");
+    }}
     class="text-2xl font-semibold text-white cursor-pointer xl:text-base"
   >
     Connect Wallet

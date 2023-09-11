@@ -996,7 +996,7 @@
                 {isEmptyDataPie}
               />
 
-              {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX"}
+              {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX" || typeWalletAddress === "BUNDLE"}
                 <RiskReturn />
               {/if}
 
@@ -1017,7 +1017,7 @@
                 bind:totalAssets
               />
 
-              {#if typeWalletAddress === "EVM"}
+              {#if typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE"}
                 <ClosedTokenPosition
                   {selectedWallet}
                   isLoadingNFT={$queryNftHolding.isFetching}
