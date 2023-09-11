@@ -132,16 +132,16 @@
   <div class="grid grid-cols-1 gap-4 xl:grid-cols-3 xl:gap-7">
     <!-- Free -->
     <div class="flex flex-col gap-1">
-      <div
+      <!-- <div
         class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
           buyPackage === "Free" ? "opacity-100" : "opacity-0"
         }`}
       >
         Current Plan
-      </div>
+      </div> -->
       <div
         class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 ${
-          buyPackage === "Free" ? "border-[#1e96fc]" : "border_0000001a"
+          false ? "border-[#1e96fc]" : "border_0000001a"
         }`}
       >
         <div class="text-4xl font-medium xl:text-3xl">
@@ -256,7 +256,7 @@
     {#if selectedTypePackage === "month"}
       <!-- Explorer -->
       <div class="flex flex-col gap-1">
-        <div
+        <!-- <div
           class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
             buyPackage === "Explorer" && interval === "month"
               ? "opacity-100"
@@ -264,12 +264,10 @@
           }`}
         >
           Current Plan
-        </div>
+        </div> -->
         <div
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 relative ${
-            buyPackage === "Explorer" && interval === "month"
-              ? "border-[#1e96fc]"
-              : "border_0000001a"
+            false ? "border-[#1e96fc]" : "border_0000001a"
           }`}
         >
           <div
@@ -425,7 +423,7 @@
 
       <!-- Professional -->
       <div class="flex flex-col gap-1">
-        <div
+        <!-- <div
           class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
             buyPackage === "Professional" && interval === "month"
               ? "opacity-100"
@@ -433,12 +431,10 @@
           }`}
         >
           Current Plan
-        </div>
+        </div> -->
         <div
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 ${
-            buyPackage === "Professional" && interval === "month"
-              ? "border-[#1e96fc]"
-              : "border_0000001a"
+            false ? "border-[#1e96fc]" : "border_0000001a"
           }`}
         >
           <ProfessionalPlan {selectedTypePackage}>
@@ -590,7 +586,7 @@
     {#if selectedTypePackage === "year"}
       <!-- Explorer -->
       <div class="flex flex-col gap-1">
-        <div
+        <!-- <div
           class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
             buyPackage === "Explorer" && interval === "year"
               ? "opacity-100"
@@ -598,12 +594,10 @@
           }`}
         >
           Current Plan
-        </div>
+        </div> -->
         <div
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 relative ${
-            buyPackage === "Explorer" && interval === "year"
-              ? "border-[#1e96fc]"
-              : "border_0000001a"
+            false ? "border-[#1e96fc]" : "border_0000001a"
           }`}
         >
           <div
@@ -759,7 +753,7 @@
 
       <!-- Professional -->
       <div class="flex flex-col gap-1">
-        <div
+        <!-- <div
           class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
             buyPackage === "Professional" && interval === "year"
               ? "opacity-100"
@@ -767,12 +761,10 @@
           }`}
         >
           Current Plan
-        </div>
+        </div> -->
         <div
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 ${
-            buyPackage === "Professional" && interval === "year"
-              ? "border-[#1e96fc]"
-              : "border_0000001a"
+            false ? "border-[#1e96fc]" : "border_0000001a"
           }`}
         >
           <ProfessionalPlan {selectedTypePackage}>
