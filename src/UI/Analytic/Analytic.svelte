@@ -3,6 +3,7 @@
   import { wallet, selectedPackage, isDarkMode, typeWallet } from "~/store";
   import { useNavigate } from "svelte-navigator";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import mixpanel from "mixpanel-browser";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
   import Button from "~/components/Button.svelte";
@@ -12,10 +13,10 @@
   import RiskChart from "../AnalyticChart/RiskChart.svelte";
   import ReturnChart from "../AnalyticChart/ReturnChart.svelte";
   import RiskReturnChart from "../AnalyticChart/RiskReturnChart.svelte";
+  import CorrelationsMatrix from "./CorrelationsMatrix.svelte";
   import Personality from "./Personality.svelte";
   import Compare from "../Portfolio/Compare.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
-  import CorrelationsMatrix from "./CorrelationsMatrix.svelte";
 
   const navigate = useNavigate();
 
@@ -135,6 +136,7 @@
                               selectedWallet
                             )}`
                           );
+                          mixpanel.track("user_compare");
                         }}
                       >
                         <div class="xl:text-base text-2xl">Get suggestion</div>

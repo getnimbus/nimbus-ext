@@ -82,7 +82,7 @@
   <td
     class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[420px] ${
       darkMode
-        ? "bg-[#131313] group-hover:bg-[#00000033]"
+        ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
   >
@@ -397,7 +397,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
@@ -407,7 +407,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
@@ -417,7 +417,7 @@
 
   <td
     class={`py-3 pr-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
@@ -469,7 +469,7 @@
 
   <!-- <td
     class={`py-3 w-10 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     {#if clickable}
