@@ -3,11 +3,19 @@
   import { createQuery } from "@tanstack/svelte-query";
   import { isDarkMode, typeWallet, wallet, chain } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import numeral from "numeral";
+  import { formatPercent, formatValue, shorterName } from "~/utils";
 
-  import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
+  import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
+  import EChart from "~/components/EChart.svelte";
+
+  import Logo from "~/assets/logo-1.svg";
+  import LogoWhite from "~/assets/logo-white.svg";
+  import TrendDown from "~/assets/trend-down.svg";
+  import TrendUp from "~/assets/trend-up.svg";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -40,8 +48,174 @@
     },
   ];
 
-  let closedHoldingPosition: TokenData = [];
-  let selectedTypeChart = "value";
+  let formatXAxisData = [];
+  let selectedTypeChart: "value" | "percent" = "value";
+  let optionBarValue = {
+    tooltip: {
+      trigger: "axis",
+      extraCssText: "z-index: 9997",
+      axisPointer: {
+        type: "shadow",
+      },
+      formatter: function (params) {
+        const selectedItem = formatXAxisData.find(
+          (item) =>
+            item?.contractAddress?.toLowerCase() ===
+            params[0]?.name?.toLowerCase()
+        );
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                params[0].value >= 0 ? "#05a878" : "#f25f5d"
+              };">
+                ${params[0].value > 0 ? "Win" : "Lose"}
+              </div>
+
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: centers; gap: 4px">
+                  <img src=${
+                    selectedItem?.logo ||
+                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                  } alt="" width=20 height=20 style="border-radius: 100%" />
+                  <div style="margin-top: 2px; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                    darkMode ? "white" : "black"
+                  }">
+                    ${
+                      selectedItem?.name?.length > 20
+                        ? shorterName(selectedItem?.name, 20)
+                        : selectedItem?.name || "N/A"
+                    } ${selectedItem?.symbol ? `(${selectedItem?.symbol})` : ""}
+                  </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                  params[0].value >= 0 ? "#05a878" : "#f25f5d"
+                };">
+                    <div style="display:flex; justify-content: flex-end; align-items: center;">
+                      <span>${params[0].value < 0 ? "-" : ""}</span>
+                      ${formatValue(Math.abs(params[0].value))}
+                    </div>  
+                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px;">
+                      ${formatPercent(Math.abs(selectedItem?.percent))}%
+                      <img src=${
+                        selectedItem?.percent >= 0 ? TrendUp : TrendDown
+                      } alt="" style="margin-bottom: 4px;" />
+                    </div>
+                </div>
+              </div>
+            </div>`;
+      },
+    },
+    toolbox: {
+      right: "3%",
+      top: "-1%",
+      feature: {
+        dataZoom: {
+          yAxisIndex: "none",
+        },
+      },
+    },
+    xAxis: {
+      type: "category",
+      axisTick: { show: false },
+      show: false,
+      data: [],
+    },
+    yAxis: {
+      type: "value",
+      axisLabel: {
+        formatter: function (value, index) {
+          return (
+            `${value < 0 ? "-" : ""} $` +
+            numeral(Math.abs(value)).format("0.00a")
+          );
+        },
+      },
+    },
+    series: [],
+  };
+  let optionBarPercent = {
+    tooltip: {
+      trigger: "axis",
+      extraCssText: "z-index: 9997",
+      axisPointer: {
+        type: "shadow",
+      },
+      formatter: function (params) {
+        const selectedItem = formatXAxisData.find(
+          (item) =>
+            item?.contractAddress?.toLowerCase() ===
+            params[0]?.name?.toLowerCase()
+        );
+        return `
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
+              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                params[0].value >= 0 ? "#05a878" : "#f25f5d"
+              };">
+                ${params[0].value > 0 ? "Win" : "Lose"}
+              </div>
+
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: centers; gap: 4px">
+                  <img src=${
+                    selectedItem?.logo ||
+                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                  } alt="" width=20 height=20 style="border-radius: 100%" />
+                  <div style="margin-top: 2px; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                    darkMode ? "white" : "black"
+                  }">
+                    ${
+                      selectedItem?.name?.length > 20
+                        ? shorterName(selectedItem?.name, 20)
+                        : selectedItem?.name || "N/A"
+                    } ${selectedItem?.symbol ? `(${selectedItem?.symbol})` : ""}
+                  </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                  params[0].value >= 0 ? "#05a878" : "#f25f5d"
+                };">
+                    <div style="display:flex; justify-content: flex-end; align-items: center;">
+                      <span>${selectedItem?.value < 0 ? "-" : ""}</span>
+                      ${formatValue(Math.abs(selectedItem?.value))}  
+                    </div>  
+                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px;">
+                      ${formatPercent(Math.abs(params[0].value))}%
+                      <img src=${
+                        params[0].value >= 0 ? TrendUp : TrendDown
+                      } alt="" style="margin-bottom: 4px;" />
+                    </div>
+                </div>
+              </div>
+            </div>`;
+      },
+    },
+    toolbox: {
+      right: "3%",
+      top: "-1%",
+      feature: {
+        dataZoom: {
+          yAxisIndex: "none",
+        },
+      },
+    },
+    xAxis: {
+      type: "category",
+      axisTick: { show: false },
+      show: false,
+      data: [],
+    },
+    yAxis: {
+      type: "value",
+      axisLabel: {
+        formatter: "{value}%",
+      },
+    },
+    series: [],
+  };
+  let biggestWin = {};
+  let worseLose = {};
+  let sumRealizedProfit = 0;
 
   const getHoldingToken = async (address, chain) => {
     const response: HoldingTokenRes = await nimbus
@@ -69,9 +243,99 @@
         return 0;
       });
 
-    closedHoldingPosition = formatData
+    const closedHoldingPosition = formatData
       .filter((item) => item?.profit?.realizedProfit)
-      .filter((item) => Number(item.amount) === 0);
+      .filter((item) => Number(item.amount) === 0)
+      .map((item) => {
+        return {
+          ...item,
+          realizedProfit: item?.profit?.realizedProfit,
+          percentRealizedProfit:
+            (item?.avgCost || 0) === 0
+              ? 0
+              : item?.profit?.realizedProfit / Math.abs(item?.avgCost),
+        };
+      })
+      .sort((a, b) => a?.profit.realizedProfit - b?.profit.realizedProfit);
+
+    sumRealizedProfit = (closedHoldingPosition || []).reduce(
+      (prev, item) => prev + Number(item.realizedProfit),
+      0
+    );
+
+    biggestWin = closedHoldingPosition.reduce((maxObject, currentObject) => {
+      if (currentObject.realizedProfit > maxObject.realizedProfit) {
+        return currentObject;
+      } else {
+        return maxObject;
+      }
+    });
+
+    worseLose = closedHoldingPosition.reduce((maxObject, currentObject) => {
+      if (currentObject.realizedProfit < maxObject.realizedProfit) {
+        return currentObject;
+      } else {
+        return maxObject;
+      }
+    });
+
+    const formatXAxis = closedHoldingPosition.map((item) => {
+      return item.contractAddress;
+    });
+
+    formatXAxisData = closedHoldingPosition.map((item) => {
+      return {
+        contractAddress: item.contractAddress,
+        name: item.name,
+        symbol: item.symbol,
+        logo: item.logo,
+        chain: item.chain,
+        value: item.realizedProfit,
+        percent: item.percentRealizedProfit,
+      };
+    });
+
+    optionBarValue = {
+      ...optionBarValue,
+      xAxis: {
+        ...optionBarValue.xAxis,
+        data: formatXAxis,
+      },
+      series: [
+        {
+          type: "bar",
+          data: closedHoldingPosition.map((item) => {
+            return {
+              value: item.realizedProfit,
+              itemStyle: {
+                color: item.realizedProfit >= 0 ? "#05a878" : "#f25f5d",
+              },
+            };
+          }),
+        },
+      ],
+    };
+
+    optionBarPercent = {
+      ...optionBarPercent,
+      xAxis: {
+        ...optionBarPercent.xAxis,
+        data: formatXAxis,
+      },
+      series: [
+        {
+          type: "bar",
+          data: closedHoldingPosition.map((item) => {
+            return {
+              value: item.percentRealizedProfit,
+              itemStyle: {
+                color: item.percentRealizedProfit >= 0 ? "#05a878" : "#f25f5d",
+              },
+            };
+          }),
+        },
+      ],
+    };
   };
 
   $: queryTokenHolding = createQuery({
@@ -94,7 +358,7 @@
       selectedWallet.length !== 0
   );
 
-  $: console.log("closedHoldingPosition: ", closedHoldingPosition);
+  $: theme = darkMode ? "dark" : "white";
 </script>
 
 <AnalyticSection>
@@ -135,8 +399,17 @@
                   Biggest win
                 </div>
               </div>
-              <div class="flex items-center justify-end col-span-1">
-                <div class={`xl:text-base text-2xl`}>hello</div>
+              <div
+                class="flex items-center justify-end gap-1 xl:text-base text-2xl text-[#05a878] col-span-1"
+              >
+                <div>
+                  {formatValue(Math.abs(biggestWin?.realizedProfit))}
+                </div>
+                /
+                <div class="flex items-center gap-1">
+                  {formatPercent(Math.abs(biggestWin?.percentRealizedProfit))}%
+                  <img src={TrendUp} alt="" style="margin-bottom: 4px;" />
+                </div>
               </div>
             </div>
 
@@ -146,8 +419,17 @@
                   Worse lose
                 </div>
               </div>
-              <div class="flex items-center justify-end col-span-1">
-                <div class={`xl:text-base text-2xl`}>hello</div>
+              <div
+                class="flex items-center justify-end gap-1 xl:text-base text-2xl text-[#f25f5d] col-span-1"
+              >
+                <div>
+                  {formatValue(Math.abs(worseLose?.realizedProfit))}
+                </div>
+                /
+                <div class="flex items-center gap-1">
+                  {formatPercent(Math.abs(worseLose?.percentRealizedProfit))}%
+                  <img src={TrendDown} alt="" style="margin-bottom: 4px;" />
+                </div>
               </div>
             </div>
 
@@ -157,8 +439,10 @@
                   Total realized profit
                 </div>
               </div>
-              <div class="flex items-center justify-end col-span-1">
-                <div class={`xl:text-base text-2xl`}>hello</div>
+              <div
+                class="flex items-center justify-end xl:text-base text-2xl col-span-1"
+              >
+                {formatValue(sumRealizedProfit)}
               </div>
             </div>
           </div>
@@ -218,7 +502,27 @@
               {/each}
             </AnimateSharedLayout>
           </div>
-          <div>chart</div>
+          <div class="relative">
+            <EChart
+              id="closed-holding-token"
+              {theme}
+              option={selectedTypeChart === "value"
+                ? optionBarValue
+                : optionBarPercent}
+              notMerge={true}
+              height={465}
+            />
+            <div
+              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
+            >
+              <img
+                src={darkMode ? LogoWhite : Logo}
+                alt=""
+                width="140"
+                height="140"
+              />
+            </div>
+          </div>
         {/if}
       </div>
     {/if}
