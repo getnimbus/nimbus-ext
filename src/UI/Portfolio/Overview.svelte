@@ -39,8 +39,8 @@
     total_assets: i18n("newtabPage.total-assets", "Total Assets"),
     total_positions: i18n("newtabPage.total-positions", "Total Positions"),
     net_flow: i18n("newtabPage.net_flow", "Net Flow"),
-    realizedProfit: i18n("newtabPage.realizedProfit", "Realized Profit"),
-    unrealizedProfit: i18n("newtabPage.unrealizedProfit", "Unrealized Profit"),
+    realizedProfit: i18n("newtabPage.realizedProfit", "Realized PnL"),
+    unrealizedProfit: i18n("newtabPage.unrealizedProfit", "Unrealized PnL"),
   };
 
   let selectedWallet: string = "";

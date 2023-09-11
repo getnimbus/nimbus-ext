@@ -388,14 +388,14 @@
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    Realized Profit
+                    Realized PnL
                   </div>
                 </th>
                 <th class="py-3 pr-3 rounded-tr-[10px]">
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    Unrealized Profit
+                    Unrealized PnL
                   </div>
                 </th>
                 <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
