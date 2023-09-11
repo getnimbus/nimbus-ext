@@ -66,7 +66,8 @@
           }
         )
         .then((res) => {
-          console.log("Post success!!!", res);
+          // console.log("Post success!!!", res);
+          isShowReportTable = false;
           // return response;
         });
     } catch (error) {
@@ -778,32 +779,35 @@
         />
       </div>
 
-      <!-- <div><input type="checkbox" name="" id="" /></div>
+      <div class="flex flex-col gap-4">
+        <input type="checkbox" name="" id="" />
         <div>
           <input
             type="checkbox"
             name=""
             id=""
+            class="mr-2"
             on:change={(e) => (isOldToken = e.target.checked)}
           />
+          The Token is Old
         </div>
-        {#if isOldToken} -->
-      <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3`}
-      >
-        <div class="xl:text-base text-xl text-[#666666] font-medium">
-          Reason
-        </div>
-        <textarea
-          placeholder="Please write some reason to block this token"
-          rows="5"
-          id="reason"
-          name="reason"
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal placeholder-[#5E656B]`}
-        />
+        {#if isOldToken}
+          <div
+            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3`}
+          >
+            <div class="xl:text-base text-xl text-[#666666] font-medium">
+              Reason
+            </div>
+            <textarea
+              placeholder="Please type new info about that token"
+              rows="5"
+              id="reason"
+              name="reason"
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal placeholder-[#5E656B]`}
+            />
+          </div>
+        {/if}
       </div>
-      <!-- {/if}
-      </div> -->
       <div class="flex gap-10">
         <button
           on:click={() => (isShowReportTable = false)}
