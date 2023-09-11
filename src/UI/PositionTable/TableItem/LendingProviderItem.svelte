@@ -27,7 +27,7 @@
   <td
     class={`pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 ${
       darkMode
-        ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+        ? "bg-[#110c2a] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
   >
@@ -65,7 +65,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="flex justify-end xl:text-sm text-xl text_00000099 font-medium">
@@ -75,7 +75,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="flex justify-end xl:text-sm text-xl text_00000099 font-medium">
@@ -84,7 +84,7 @@
   </td>
 
   <!-- <td   class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}>
     <div class="text-right xl:text-sm text-xl text_00000099 font-medium">
       {dayjs(data.inputTime).format("YYYY-MM-DD, hh:mm A")}
@@ -92,7 +92,7 @@
   </td>
 
   <td   class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}>
     <div class="text-right xl:text-sm text-xl text_00000099 font-medium">
       {formatBalance(data.apy)}
@@ -101,7 +101,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="flex justify-end xl:text-sm text-xl text_00000099 font-medium">
@@ -111,7 +111,7 @@
 
   <td
     class={`py-3 pr-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="xl:text-sm text-xl font-medium flex flex-col">

@@ -113,7 +113,7 @@
               <td
                 class={`pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 ${
                   darkMode
-                    ? "bg-[#131313] group-hover:bg-[#00000033]"
+                    ? "bg-[#131313] group-hover:bg-[#000]"
                     : "bg-white group-hover:bg-gray-100"
                 }`}
               >
@@ -154,9 +154,7 @@
 
               <td
                 class={`py-3  ${
-                  darkMode
-                    ? "group-hover:bg-[#00000033]"
-                    : "group-hover:bg-gray-100"
+                  darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
                 }`}
               >
                 {#if item?.detail?.from}
@@ -188,9 +186,7 @@
 
               <td
                 class={`py-3  ${
-                  darkMode
-                    ? "group-hover:bg-[#00000033]"
-                    : "group-hover:bg-gray-100"
+                  darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
                 }`}
               >
                 {#if item?.detail?.to}
@@ -222,9 +218,7 @@
 
               <td
                 class={`py-3 min-w-[100px] ${
-                  darkMode
-                    ? "group-hover:bg-[#00000033]"
-                    : "group-hover:bg-gray-100"
+                  darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
                 }`}
               >
                 <div
@@ -242,9 +236,7 @@
 
               <td
                 class={`py-3 pr-3 ${
-                  darkMode
-                    ? "group-hover:bg-[#00000033]"
-                    : "group-hover:bg-gray-100"
+                  darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
                 }`}
               >
                 <div
