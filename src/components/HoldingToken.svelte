@@ -44,6 +44,7 @@
   let selectedHighestVault;
   let selectedVaults;
   let showTableVaults = false;
+  let isOldToken = false;
 
   const handleReportTrashCoin = () => {
     const formData = {
@@ -54,13 +55,18 @@
 
     try {
       axios
-        .post("https://api.getnimbus.io/tokens/report-trash", formData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          console.log("Post succes!!!", response);
+        .post(
+          "https://api-staging.getnimbus.io/tokens/report-trash",
+          formData,
+          {
+            headers: {
+              Authorization:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvd25lciI6IjB4MDVmOGY2ODQwZmI3MzZjZmMxODU0MWRiMGI1ZWJhMTc0OTg3MDI2ZCIsIm1ldGFkYXRhIjp7fSwiaWF0IjoxNjk0NDE5NDg2LCJleHAiOjE2OTUwMjQyODZ9.qQ050KBoieJmhPcp2tdDZG_jhiRtKPA-Uu1egW6LBPM",
+            },
+          }
+        )
+        .then((res) => {
+          console.log("Post success!!!", res);
           // return response;
         });
     } catch (error) {
@@ -102,8 +108,6 @@
   }
 
   $: withinLast24Hours = dayjs().diff(dayjs(data?.last_transferred_at), "hour");
-
-  // $: console.log({ data });
 </script>
 
 <tr
@@ -754,7 +758,7 @@
           id="chain"
           name="chain"
           value={data.chain}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B]`}
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B]`}
           disabled
         />
       </div>
@@ -769,10 +773,21 @@
           id="contractaddress"
           name="contractaddress"
           value={data.contractAddress}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B]`}
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B]`}
           disabled
         />
       </div>
+
+      <!-- <div><input type="checkbox" name="" id="" /></div>
+        <div>
+          <input
+            type="checkbox"
+            name=""
+            id=""
+            on:change={(e) => (isOldToken = e.target.checked)}
+          />
+        </div>
+        {#if isOldToken} -->
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3`}
       >
@@ -784,9 +799,11 @@
           rows="5"
           id="reason"
           name="reason"
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B]`}
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal placeholder-[#5E656B]`}
         />
       </div>
+      <!-- {/if}
+      </div> -->
       <div class="flex gap-10">
         <button
           on:click={() => (isShowReportTable = false)}
