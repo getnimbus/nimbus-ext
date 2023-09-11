@@ -730,7 +730,7 @@
   on:close={() => (isShowReportTable = false)}
 >
   <form
-    class="w-full h-full p-5"
+    class="w-full h-full p-5 transition-all duration-1000"
     on:submit|preventDefault={handleReportTrashCoin}
   >
     <div class="flex flex-col gap-5">
@@ -779,33 +779,54 @@
         />
       </div>
 
-      <div class="flex flex-col gap-4">
-        <input type="checkbox" name="" id="" />
-        <div>
+      <div
+        class={`flex flex-col gap-3 input-2 input-border w-full py-[6px] px-3`}
+      >
+        <div class="xl:text-base text-xl text-[#666666] font-medium">
+          Reason
+        </div>
+        <div class="flex items-center">
           <input
             type="checkbox"
             name=""
-            id=""
-            class="mr-2"
+            id="content"
+            class="mr-2 rounded-lg"
+          /><label for="">This Token is a trash 🗑️ </label>
+        </div>
+        <div class="flex items-center">
+          <input
+            type="checkbox"
+            name=""
+            id="content"
+            class="mr-2 rounded-lg"
+          /><label for="">It 's a scam 🤬</label>
+        </div>
+        <div class="flex items-center">
+          <input
+            type="checkbox"
+            name=""
+            id="content"
+            class="mr-2 rounded-lg"
+          /><label for="">I Hate this Token 😠 </label>
+        </div>
+        <div class="flex items-center">
+          <input
+            type="checkbox"
+            name="oldtoken"
+            id="oldtoken"
+            class="mr-2 rounded-lg"
             on:change={(e) => (isOldToken = e.target.checked)}
           />
-          The Token is Old
+          <label for="oldtoken">The Token is Old</label>
         </div>
         {#if isOldToken}
-          <div
-            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3`}
-          >
-            <div class="xl:text-base text-xl text-[#666666] font-medium">
-              Reason
-            </div>
-            <textarea
-              placeholder="Please type new info about that token"
-              rows="5"
-              id="reason"
-              name="reason"
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal placeholder-[#5E656B]`}
-            />
-          </div>
+          <textarea
+            placeholder="Please type new info about that token"
+            rows="5"
+            id="reason"
+            name="reason"
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal placeholder-[#5E656B] reason-textarea`}
+          />
         {/if}
       </div>
       <div class="flex gap-10">
@@ -824,4 +845,22 @@
 </AppOverlay>
 
 <style>
+  .reason-textarea {
+    animation-name: fadein;
+    animation-duration: 1s;
+    transition: all 3s ease-in;
+  }
+
+  @keyframes fadein {
+    0% {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+
+    100% {
+      transform: translateY(0px);
+      height: auto;
+      opacity: 1;
+    }
+  }
 </style>

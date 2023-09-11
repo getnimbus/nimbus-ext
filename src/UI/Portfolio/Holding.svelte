@@ -210,6 +210,8 @@
     ? formatData?.filter((item) => item?.amount * item.market_price > 1)
     : formatData;
 
+  $: console.log("filteredHoldingDataToken", filteredHoldingDataToken);
+
   $: {
     if (formatData?.length === 0) {
       totalAssets = 0;
