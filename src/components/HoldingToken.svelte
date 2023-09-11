@@ -5,8 +5,9 @@
   import numeral from "numeral";
   import { Progressbar } from "flowbite-svelte";
   import dayjs from "dayjs";
-  import "~/components/Tooltip.custom.svelte";
+  import { nimbus } from "~/lib/network";
 
+  import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -15,7 +16,6 @@
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import Chart from "~/assets/chart.svg";
-  import axios from "axios";
 
   export let data;
   export let selectedWallet;
@@ -47,32 +47,16 @@
   let isOldToken = false;
 
   const handleReportTrashCoin = () => {
-    const formData = {
-      chain: document.getElementById("chain").value,
-      contractAddress: document.getElementById("contractaddress").value,
-      reason: document.getElementById("reason").value,
-    };
-
     try {
-      axios
-        .post(
-          "https://api-staging.getnimbus.io/tokens/report-trash",
-          formData,
-          {
-            headers: {
-              Authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvd25lciI6IjB4MDVmOGY2ODQwZmI3MzZjZmMxODU0MWRiMGI1ZWJhMTc0OTg3MDI2ZCIsIm1ldGFkYXRhIjp7fSwiaWF0IjoxNjk0NDE5NDg2LCJleHAiOjE2OTUwMjQyODZ9.qQ050KBoieJmhPcp2tdDZG_jhiRtKPA-Uu1egW6LBPM",
-            },
-          }
-        )
-        .then((res) => {
-          // console.log("Post success!!!", res);
-          isShowReportTable = false;
-          // return response;
-        });
+      const formData = {
+        chain: document.getElementById("chain").value,
+        contractAddress: document.getElementById("contractaddress").value,
+        reason: document.getElementById("reason").value,
+      };
+      nimbus.post("/tokens/report-trash", formData);
+      isShowReportTable = false;
     } catch (error) {
-      console.error("Error:", error);
-      // alert("Report fail");
+      console.error("error:", error);
     }
   };
 
@@ -155,7 +139,7 @@
       <!-- icon report -->
       {#if isShowReport}
         <div
-          class="absolute w-5 xl:-left-8 sm:-left-6 top-2 opacity-80 hover:opacity-60 hidden xl:block"
+          class="absolute w-5 xl:-left-8 sm:-left-6 top-2 opacity-80 hover:opacity-60 hidden xl:block cursor-pointer"
           on:click={() => (isShowReportTable = true)}
         >
           <svg
@@ -176,6 +160,7 @@
           >
         </div>
       {/if}
+
       <div class="relative">
         <img
           src={data.logo ||
@@ -197,6 +182,7 @@
           </div>
         {/if}
       </div>
+
       <div class="flex flex-col gap-1">
         <div class="flex items-start gap-2">
           <div
@@ -209,14 +195,14 @@
             {#if data.name === undefined}
               N/A
             {:else}
-              <div class="flex xl:hidden">
+              <div class="flex">
                 {data?.name?.length > 20
                   ? shorterName(data.name, 20)
                   : data.name}
                 <!-- icon report -->
                 {#if isShowReport}
                   <span
-                    class="opacity-80 hover:opacity-60 flex items-center justify-center ml-3"
+                    class="opacity-80 hover:opacity-60 flex items-center justify-center ml-3 xl:hidden"
                     on:click={() => (isShowReportTable = true)}
                   >
                     <svg
@@ -245,6 +231,7 @@
               </div>
             {/if}
           </div>
+
           {#if selectedHighestVault !== undefined}
             <div
               class="flex items-center justyfy-center px-2 py-1 text_27326F text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
@@ -279,6 +266,7 @@
               </div>
             {/if}
           </div>
+
           {#if isShowCMC}
             <a
               href={`https://coinmarketcap.com/currencies/${data?.cmc_slug}`}
