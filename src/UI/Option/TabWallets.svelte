@@ -1131,7 +1131,7 @@
                     <td
                       class={`pl-3 py-3  ${
                         darkMode
-                          ? "group-hover:bg-[#00000033]"
+                          ? "group-hover:bg-[#000]"
                           : "group-hover:bg-gray-100"
                       }`}
                     >
@@ -1157,7 +1157,7 @@
                     <td
                       class={`py-3  ${
                         darkMode
-                          ? "group-hover:bg-[#00000033]"
+                          ? "group-hover:bg-[#000]"
                           : "group-hover:bg-gray-100"
                       }`}
                     >
@@ -1171,7 +1171,7 @@
                     <td
                       class={`py-3 pr-3 ${
                         darkMode
-                          ? "group-hover:bg-[#00000033]"
+                          ? "group-hover:bg-[#000]"
                           : "group-hover:bg-gray-100"
                       }`}
                     >
@@ -1300,7 +1300,7 @@
                   <td
                     class={`pl-3 py-3  ${
                       darkMode
-                        ? "group-hover:bg-[#00000033]"
+                        ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
                   >
@@ -1330,7 +1330,7 @@
                   <td
                     class={`py-3  ${
                       darkMode
-                        ? "group-hover:bg-[#00000033]"
+                        ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
                   >
@@ -1344,7 +1344,7 @@
                   <td
                     class={`py-3 pr-3 ${
                       darkMode
-                        ? "group-hover:bg-[#00000033]"
+                        ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
                   >

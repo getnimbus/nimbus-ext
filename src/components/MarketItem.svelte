@@ -35,7 +35,7 @@ via @get_nimbus`;
   <td
     class={`pl-3 py-3 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-9 ${
       darkMode
-        ? "bg-[#110c2a] group-hover:bg-[#00000033]"
+        ? "bg-[#110c2a] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
   >
@@ -62,7 +62,7 @@ via @get_nimbus`;
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="text-left xl:text-sm text-xl font-medium">
@@ -76,7 +76,7 @@ via @get_nimbus`;
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
@@ -97,7 +97,7 @@ via @get_nimbus`;
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
@@ -118,7 +118,7 @@ via @get_nimbus`;
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
@@ -135,7 +135,7 @@ via @get_nimbus`;
 
   <td
     class={`pr-3 py-3 w-[190px] ${
-      darkMode ? "group-hover:bg-[#00000033]" : "group-hover:bg-gray-100"
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="flex items-center justify-end gap-3">
