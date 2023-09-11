@@ -150,7 +150,7 @@
       <!-- icon report -->
       {#if isShowReport}
         <div
-          class="absolute w-5 xl:-left-8 sm:-left-6 top-3 opacity-80 hover:opacity-60 hidden xl:block"
+          class="absolute w-5 xl:-left-8 sm:-left-6 top-2 opacity-80 hover:opacity-60 hidden xl:block"
           on:click={() => (isShowReportTable = true)}
         >
           <svg
