@@ -1,12 +1,12 @@
-<script>
+<script lang="ts">
   import { useNavigate } from "svelte-navigator";
   import { chain, typeWallet, isDarkMode } from "~/store";
   import { detectedChain, shorterName } from "~/utils";
   import numeral from "numeral";
   import { Progressbar } from "flowbite-svelte";
   import dayjs from "dayjs";
-
   import "~/components/Tooltip.custom.svelte";
+
   import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -15,6 +15,7 @@
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import Chart from "~/assets/chart.svg";
+  import axios from "axios";
 
   export let data;
   export let selectedWallet;
@@ -38,9 +39,35 @@
   let isShowTooltipSymbol = false;
   let isShowCMC = false;
   let isShowCoingecko = false;
+  let isShowReport = false;
+  let isShowReportTable = false;
   let selectedHighestVault;
   let selectedVaults;
   let showTableVaults = false;
+
+  const handleReportTrashCoin = () => {
+    const formData = {
+      chain: document.getElementById("chain").value,
+      contractAddress: document.getElementById("contractaddress").value,
+      reason: document.getElementById("reason").value,
+    };
+
+    try {
+      axios
+        .post("https://api.getnimbus.io/tokens/report-trash", formData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log("Post succes!!!", response);
+          // return response;
+        });
+    } catch (error) {
+      console.error("Error:", error);
+      // alert("Report fail");
+    }
+  };
 
   $: value = Number(data?.amount) * Number(data?.market_price);
 
@@ -75,6 +102,8 @@
   }
 
   $: withinLast24Hours = dayjs().diff(dayjs(data?.last_transferred_at), "hour");
+
+  // $: console.log({ data });
 </script>
 
 <tr
@@ -92,6 +121,7 @@
     // }
   }}
   on:mouseover={() => {
+    isShowReport = true;
     if (data?.cmc_slug) {
       isShowCMC = true;
     }
@@ -100,6 +130,7 @@
     }
   }}
   on:mouseleave={() => {
+    isShowReport = false;
     if (data?.cmc_slug) {
       isShowCMC = false;
     }
@@ -115,7 +146,31 @@
         : "bg-white group-hover:bg-gray-100"
     }`}
   >
-    <div class="text-left flex items-center gap-3">
+    <div class="text-left flex items-center gap-3 relative">
+      <!-- icon report -->
+      {#if isShowReport}
+        <div
+          class="absolute -left-9 top-2 hover:opacity-60"
+          on:click={() => (isShowReportTable = !isShowReportTable)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            ><g
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              ><path d="M0 0h24v24H0z" /><path
+                fill="currentColor"
+                d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
+              /></g
+            ></svg
+          >
+        </div>
+      {/if}
       <div class="relative">
         <img
           src={data.logo ||
@@ -633,6 +688,55 @@
   }}
 >
   <VaultTable data={selectedVaults} />
+</AppOverlay>
+
+<!-- show form report  -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isShowReportTable}
+  on:close={() => (isShowReportTable = false)}
+>
+  <form
+    class="w-full h-full p-5"
+    on:submit|preventDefault={handleReportTrashCoin}
+  >
+    <div class="flex flex-col gap-5">
+      <div class="flex gap-2 flex-col">
+        <p>Chain</p>
+        <input
+          type="text"
+          id="chain"
+          class="rounded-lg"
+          value={data.chain}
+          disabled
+        />
+      </div>
+      <div class="flex gap-2 flex-col">
+        <p>Contract Adress</p>
+        <input
+          type="text"
+          id="contractaddress"
+          class="rounded-lg"
+          value={data.contractAddress}
+          disabled
+        />
+      </div>
+      <div class="flex gap-2 flex-col">
+        <p>Reason</p>
+        <input
+          type="text"
+          id="reason"
+          class="rounded-lg"
+          placeholder="Please type a reason"
+        />
+      </div>
+      <button
+        type="submit"
+        class="rounded-lg border py-2 bg-[#27326f] text-white"
+        >Submit Report</button
+      >
+    </div>
+  </form>
 </AppOverlay>
 
 <style>
