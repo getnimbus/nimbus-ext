@@ -1791,8 +1791,15 @@
     border: 0.5px solid rgb(229, 231, 235);
   }
 
-  .myStyle {
+  :global(body) .myStyle {
     display: flex !important;
     justify-content: space-between !important;
+    background: #f3f4f6 !important;
+  }
+
+  :global(body.dark) .myStyle {
+    display: flex !important;
+    justify-content: space-between !important;
+    background: black !important;
   }
 </style>

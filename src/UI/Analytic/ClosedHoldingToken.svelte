@@ -271,81 +271,89 @@
         };
       });
 
-    sumRealizedProfit = (closedHoldingPosition || []).reduce(
-      (prev, item) => prev + Number(item.realizedProfit),
-      0
-    );
+    if (closedHoldingPosition && closedHoldingPosition.length !== 0) {
+      sumRealizedProfit = (closedHoldingPosition || [])?.reduce(
+        (prev, item) => prev + Number(item.realizedProfit),
+        0
+      );
 
-    biggestWin = closedHoldingPosition.reduce((maxObject, currentObject) => {
-      if (currentObject.realizedProfit > maxObject.realizedProfit) {
-        return currentObject;
-      } else {
-        return maxObject;
-      }
-    });
+      biggestWin = (closedHoldingPosition || [])?.reduce(
+        (maxObject, currentObject) => {
+          if (currentObject.realizedProfit > maxObject.realizedProfit) {
+            return currentObject;
+          } else {
+            return maxObject;
+          }
+        }
+      );
 
-    worseLose = closedHoldingPosition.reduce((maxObject, currentObject) => {
-      if (currentObject.realizedProfit < maxObject.realizedProfit) {
-        return currentObject;
-      } else {
-        return maxObject;
-      }
-    });
+      worseLose = (closedHoldingPosition || [])?.reduce(
+        (maxObject, currentObject) => {
+          if (currentObject.realizedProfit < maxObject.realizedProfit) {
+            return currentObject;
+          } else {
+            return maxObject;
+          }
+        }
+      );
 
-    optionBarValue = {
-      ...optionBarValue,
-      xAxis: {
-        ...optionBarValue.xAxis,
-        data: closedHoldingPosition
-          .sort((a, b) => a?.realizedProfit - b?.realizedProfit)
-          .map((item) => {
-            return item?.contractAddress?.toLowerCase();
-          }),
-      },
-      series: [
-        {
-          type: "bar",
+      optionBarValue = {
+        ...optionBarValue,
+        xAxis: {
+          ...optionBarValue.xAxis,
           data: closedHoldingPosition
             .sort((a, b) => a?.realizedProfit - b?.realizedProfit)
             .map((item) => {
-              return {
-                value: item.realizedProfit,
-                itemStyle: {
-                  color: item.realizedProfit >= 0 ? "#05a878" : "#f25f5d",
-                },
-              };
+              return item?.contractAddress?.toLowerCase();
             }),
         },
-      ],
-    };
+        series: [
+          {
+            type: "bar",
+            data: closedHoldingPosition
+              .sort((a, b) => a?.realizedProfit - b?.realizedProfit)
+              .map((item) => {
+                return {
+                  value: item.realizedProfit,
+                  itemStyle: {
+                    color: item.realizedProfit >= 0 ? "#05a878" : "#f25f5d",
+                  },
+                };
+              }),
+          },
+        ],
+      };
 
-    optionBarPercent = {
-      ...optionBarPercent,
-      xAxis: {
-        ...optionBarPercent.xAxis,
-        data: closedHoldingPosition
-          .sort((a, b) => a?.percentRealizedProfit - b?.percentRealizedProfit)
-          .map((item) => {
-            return item?.contractAddress?.toLowerCase();
-          }),
-      },
-      series: [
-        {
-          type: "bar",
+      optionBarPercent = {
+        ...optionBarPercent,
+        xAxis: {
+          ...optionBarPercent.xAxis,
           data: closedHoldingPosition
             .sort((a, b) => a?.percentRealizedProfit - b?.percentRealizedProfit)
             .map((item) => {
-              return {
-                value: item.percentRealizedProfit,
-                itemStyle: {
-                  color:
-                    item.percentRealizedProfit >= 0 ? "#05a878" : "#f25f5d",
-                },
-              };
+              return item?.contractAddress?.toLowerCase();
             }),
         },
-      ],
-    };
+        series: [
+          {
+            type: "bar",
+            data: closedHoldingPosition
+              .sort(
+                (a, b) => a?.percentRealizedProfit - b?.percentRealizedProfit
+              )
+              .map((item) => {
+                return {
+                  value: item.percentRealizedProfit,
+                  itemStyle: {
+                    color:
+                      item.percentRealizedProfit >= 0 ? "#05a878" : "#f25f5d",
+                  },
+                };
+              }),
+          },
+        ],
+      };
+    }
   };
 
   $: queryTokenHolding = createQuery({
@@ -414,7 +422,6 @@
                   sumRealizedProfit >= 0 ? "" : "text-[#f25f5d]"
                 }`}
               >
-                <span>{sumRealizedProfit < 0 ? "-" : ""}</span>
                 <TooltipNumber number={sumRealizedProfit} type="value" />
               </div>
             </div>
@@ -513,27 +520,35 @@
               {/each}
             </AnimateSharedLayout>
           </div>
-          <div class="relative">
-            <EChart
-              id="closed-holding-token"
-              {theme}
-              option={selectedTypeChart === "value"
-                ? optionBarValue
-                : optionBarPercent}
-              notMerge={true}
-              height={465}
-            />
+          {#if closedHoldingPosition && closedHoldingPosition.length === 0}
             <div
-              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
+              class="flex justify-center items-center h-[465px] xl:text-xs text-lg"
             >
-              <img
-                src={darkMode ? LogoWhite : Logo}
-                alt=""
-                width="140"
-                height="140"
-              />
+              Empty
             </div>
-          </div>
+          {:else}
+            <div class="relative">
+              <EChart
+                id="closed-holding-token"
+                {theme}
+                option={selectedTypeChart === "value"
+                  ? optionBarValue
+                  : optionBarPercent}
+                notMerge={true}
+                height={465}
+              />
+              <div
+                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
+              >
+                <img
+                  src={darkMode ? LogoWhite : Logo}
+                  alt=""
+                  width="140"
+                  height="140"
+                />
+              </div>
+            </div>
+          {/if}
         {/if}
       </div>
     {/if}
