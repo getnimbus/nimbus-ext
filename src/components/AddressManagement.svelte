@@ -297,10 +297,10 @@
         accounts:
           item?.accounts?.map((account) => {
             let logo = All;
-            if (account.type === "BTC") {
+            if (account?.type === "BTC") {
               logo = BitcoinLogo;
             }
-            if (account.type === "SOL") {
+            if (account?.type === "SOL") {
               logo = SolanaLogo;
             }
             return {
