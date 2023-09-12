@@ -1,24 +1,24 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
-  import { chain, typeWallet, isDarkMode } from "~/store";
+  import { chain, typeWallet, isDarkMode, user } from "~/store";
   import { detectedChain, shorterName } from "~/utils";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import dayjs from "dayjs";
   import { nimbus } from "~/lib/network";
+  import { i18n } from "~/lib/i18n";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
+  import Button from "./Button.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import Chart from "~/assets/chart.svg";
-  import Button from "./Button.svelte";
-  import { i18n } from "~/lib/i18n";
 
   export let data;
   export let selectedWallet;
@@ -36,6 +36,11 @@
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
+  });
+
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
   });
 
   let isShowTooltipName = false;
@@ -74,60 +79,61 @@
       ),
       modal_submitreport: i18n(
         "optionsPage.accounts-page-content.modal-submitreport",
-        "Submit Report"
+        "Report"
       ),
     },
   };
 
-  let checkboxData = [
+  const reasonReportData = [
     {
-      id: "trashtoken",
+      id: "trash",
       content: "This token is trash 🗑️",
     },
     {
-      id: "scamtoken",
+      id: "scam",
       content: "This token is the scam 🤬",
     },
     {
-      id: "hatetoke",
+      id: "hate",
       content: "I hate this token 😠",
     },
   ];
 
-  const handleReportTrashCoin = () => {
+  const handleReportTrashCoin = async () => {
     try {
-      let reasonvalue = "";
+      let reason = "";
 
-      if (document.getElementById("trashtoken").checked) {
-        reasonvalue += "Trash Token, ";
+      if (document.getElementById("trash").checked) {
+        reason += "Trash Token, ";
       }
 
-      if (document.getElementById("hatetoke").checked) {
-        reasonvalue += "Hate Token, ";
+      if (document.getElementById("hate").checked) {
+        reason += "Hate Token, ";
       }
 
-      if (document.getElementById("scamtoken").checked) {
-        reasonvalue += "Scam Token, ";
+      if (document.getElementById("scam").checked) {
+        reason += "Scam Token, ";
       }
 
-      if (document.getElementById("oldtoken").checked === true) {
-        reasonvalue += document.getElementById("reason").value;
+      if (document.getElementById("outdated").checked === true) {
+        reason += document.getElementById("reason").value;
       }
-
-      // console.log({ reasonvalue });
 
       const formData = {
         chain: document.getElementById("chain").value,
-        contractAddress: document.getElementById("contractaddress").value,
-        reason: reasonvalue,
+        contractAddress: document.getElementById("contract_address").value,
+        reason: reason,
       };
-
-      nimbus.post("/tokens/report-trash", formData);
+      const response = await nimbus.post("/tokens/report-trash", formData);
+      toastMsg = "We will update after 2 minutes.";
       isSuccessToast = true;
-      trigger();
-      isShowReportTable = false;
     } catch (error) {
+      toastMsg = "Something wrong when report token. Please try again!";
+      isSuccessToast = false;
       console.error("error:", error);
+    } finally {
+      isShowReportTable = false;
+      trigger();
     }
   };
 
@@ -181,7 +187,10 @@
     // }
   }}
   on:mouseover={() => {
-    isShowReport = true;
+    if (userInfo && Object.keys(userInfo).length !== 0) {
+      isShowReport = true;
+    }
+
     if (data?.cmc_slug) {
       isShowCMC = true;
     }
@@ -190,7 +199,10 @@
     }
   }}
   on:mouseleave={() => {
-    isShowReport = false;
+    if (userInfo && Object.keys(userInfo).length !== 0) {
+      isShowReport = false;
+    }
+
     if (data?.cmc_slug) {
       isShowCMC = false;
     }
@@ -787,136 +799,124 @@
     isOldToken = false;
   }}
 >
-  <form
-    class="w-full h-full p-5 transition-all duration-1000"
-    on:submit|preventDefault={handleReportTrashCoin}
-  >
-    <div class="flex flex-col gap-5">
-      <div class="">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="60"
-          height="60"
-          viewBox="0 0 24 24"
-          class="font-bold mx-auto"
-          ><g transform="rotate(90 12 12)"
-            ><path
-              fill="currentColor"
-              d="M11.5 22C6.26 22 2 17.75 2 12.5A9.5 9.5 0 0 1 11.5 3a9.5 9.5 0 0 1 9.5 9.5a9.5 9.5 0 0 1-9.5 9.5m0-1a8.5 8.5 0 0 0 8.5-8.5c0-2.17-.81-4.15-2.14-5.65l-12.01 12A8.468 8.468 0 0 0 11.5 21m0-17A8.5 8.5 0 0 0 3 12.5c0 2.17.81 4.14 2.15 5.64l12-12A8.49 8.49 0 0 0 11.5 4Z"
-            /></g
-          ></svg
-        >
-      </div>
-      <div class="text-2xl font-semibold text-center">Blacklist Token</div>
-      <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3  ${
-          darkMode ? "bg-dark-900" : "bg-[#f4f5f8]"
-        } `}
-      >
-        <div class={`xl:text-base text-xl  font-medium text-[#666666]`}>
-          Chain
-        </div>
-        <input
-          type="text"
-          id="chain"
-          name="chain"
-          value={data.chain}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal ${
-            darkMode
-              ? "   bg-dark-900 text-gray-700"
-              : "bg-[#f4f5f8] text-[#5E656B]"
-          } `}
-          disabled
-        />
-      </div>
-      <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3  text-[#666666] ${
-          darkMode ? "bg-dark-900" : "bg-[#f4f5f8]"
-        } `}
-      >
-        <div class={`xl:text-base text-xl  font-medium`}>Contract Address</div>
-        <input
-          type="text"
-          id="contractaddress"
-          name="contractaddress"
-          value={data.contractAddress}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal ${
-            darkMode
-              ? "bg-dark-900 text-gray-700"
-              : "bg-[#f4f5f8] text-[#5E656B]"
-          } `}
-          disabled
-        />
-      </div>
-
-      <div
-        class={`flex flex-col gap-3 input-2 input-border w-full py-[8px] px-3 ${
-          darkMode && "bg-transparent"
-        }`}
-      >
-        <!-- class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-        address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-      }
-        `} -->
-
+  <form on:submit|preventDefault={handleReportTrashCoin}>
+    <div class="flex flex-col gap-4">
+      <div class="font-medium xl:title-3 title-1">Blacklist Token</div>
+      <div class="flex flex-col gap-3">
         <div
-          class={`xl:text-base text-xl font-medium ${
-            darkMode && "text-[#666666]"
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
-          Reason
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
+            Chain
+          </div>
+          <input
+            type="text"
+            id="chain"
+            name="chain"
+            value={data.chain}
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            }`}
+            disabled
+          />
         </div>
-        {#each checkboxData as item}
-          <div class="flex items-center">
+
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+          }`}
+        >
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
+            Contract Address
+          </div>
+          <input
+            type="text"
+            id="contract_address"
+            name="contract_address"
+            value={data.contractAddress}
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            }`}
+            disabled
+          />
+        </div>
+
+        <div
+          class={`flex flex-col gap-3 input-2 input-border w-full py-[8px] px-3 ${
+            darkMode && "bg-transparent"
+          }`}
+        >
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
+            Reason
+          </div>
+
+          {#each reasonReportData as item}
+            <div class="flex items-center gap-2 w-max cursor-pointer">
+              <input
+                type="checkbox"
+                name={item.id}
+                id={item.id}
+                class="rounded-full"
+              />
+              <label
+                for={item.id}
+                class="xl:text-sm text-lg font-normal text-[#5E656B] cursor-pointer"
+              >
+                {item.content}
+              </label>
+            </div>
+          {/each}
+
+          <div class="flex items-center gap-2 w-max cursor-pointer">
             <input
               type="checkbox"
-              name={item.id}
-              id={item.id}
-              class={`mr-2 rounded-lg  ${darkMode && "text-white"} `}
-            /><label for={item.id}>{item.content}</label>
+              name="outdated"
+              id="outdated"
+              class="rounded-full"
+              on:change={(e) => {
+                e.target.checked ? (isOldToken = true) : (isOldToken = false);
+              }}
+            />
+            <label
+              for="outdated"
+              class="xl:text-sm text-lg font-normal text-[#5E656B] cursor-pointer"
+            >
+              The token is outdate
+            </label>
           </div>
-        {/each}
 
-        <div class="flex items-center">
-          <input
-            type="checkbox"
-            name="oldtoken"
-            id="oldtoken"
-            class={`mr-2 rounded-lg  ${darkMode && "text-white"} `}
-            on:change={(e) => {
-              e.target.checked ? (isOldToken = true) : (isOldToken = false);
-            }}
-          />
-          <label for="oldtoken">The token is outdate</label>
+          {#if isOldToken}
+            <textarea
+              placeholder="Please type info about that token"
+              rows="5"
+              id="reason"
+              name="reason"
+              class={`mb-2 p-0 input-2 input-border w-full py-[6px] px-3 focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              }`}
+            />
+          {/if}
         </div>
-        {#if isOldToken}
-          <textarea
-            placeholder="Please type info about that token"
-            rows="5"
-            id="reason"
-            name="reason"
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal placeholder-[#5E656B] ${
-              darkMode && "bg-transparent text-white"
-            } `}
-          />
-        {/if}
-      </div>
-      <div class="flex justify-end gap-6 lg:gap-2">
-        <div class="xl:w-[120px] w-full">
-          <Button
-            variant="secondary"
-            on:click={() => {
-              isShowReportTable = false;
-              isOldToken = false;
-            }}
-          >
-            {MultipleLang.content.modal_cancel}</Button
-          >
-        </div>
-        <div class="xl:w-[120px] w-full">
-          <Button type="submit" variant="tertiary">
-            {MultipleLang.content.modal_submitreport}</Button
-          >
+
+        <div class="flex justify-end gap-6 lg:gap-2">
+          <div class="xl:w-[120px] w-full">
+            <Button
+              variant="secondary"
+              on:click={() => {
+                isShowReportTable = false;
+                isOldToken = false;
+              }}
+            >
+              {MultipleLang.content.modal_cancel}</Button
+            >
+          </div>
+          <div class="xl:w-[120px] w-full">
+            <Button type="submit" variant="tertiary">
+              {MultipleLang.content.modal_submitreport}</Button
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -924,7 +924,7 @@
 </AppOverlay>
 
 {#if showToast}
-  <div class="fixed top-3 right-3 w-[300px]">
+  <div class="fixed top-3 right-3 w-full z-30">
     <Toast
       transition={blur}
       params={{ amount: 10 }}
@@ -968,5 +968,11 @@
   </div>
 {/if}
 
-<style>
+<style windi:preflights:global windi:safelist:global>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
 </style>
