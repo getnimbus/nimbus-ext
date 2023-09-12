@@ -568,40 +568,6 @@
                 {/if}
               </div>
               <div class="flex items-center gap-3">
-                {#if goodPerf}
-                  <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
-                    <div class="xl:text-base text-lg text-[#6E7787FF] relative">
-                      <div
-                        class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
-                      />
-                      Best return
-                    </div>
-                    <div class="text-3xl xl:text-2xl">{goodPerf?.symbol}</div>
-                    <div class="flex items-center gap-1 text-2xl xl:text-lg">
-                      <img
-                        src={goodPerf?.change30DPercent >= 0
-                          ? TrendUp
-                          : TrendDown}
-                        alt="trend"
-                        class="mb-1"
-                      />
-                      <div
-                        class={`${
-                          goodPerf?.change30DPercent >= 0
-                            ? "text-[#00A878]"
-                            : "text-red-500"
-                        }`}
-                      >
-                        <TooltipNumber
-                          number={Math.abs(goodPerf?.change30DPercent || 0)}
-                          type="percent"
-                        />
-                        %
-                      </div>
-                    </div>
-                  </div>
-                {/if}
-
                 {#if badPerf}
                   <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
                     <div class="xl:text-base text-lg text-[#6E7787FF] relative">
@@ -628,6 +594,40 @@
                       >
                         <TooltipNumber
                           number={Math.abs(badPerf?.change30DPercent || 0)}
+                          type="percent"
+                        />
+                        %
+                      </div>
+                    </div>
+                  </div>
+                {/if}
+
+                {#if goodPerf}
+                  <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
+                    <div class="xl:text-base text-lg text-[#6E7787FF] relative">
+                      <div
+                        class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
+                      />
+                      Best return
+                    </div>
+                    <div class="text-3xl xl:text-2xl">{goodPerf?.symbol}</div>
+                    <div class="flex items-center gap-1 text-2xl xl:text-lg">
+                      <img
+                        src={goodPerf?.change30DPercent >= 0
+                          ? TrendUp
+                          : TrendDown}
+                        alt="trend"
+                        class="mb-1"
+                      />
+                      <div
+                        class={`${
+                          goodPerf?.change30DPercent >= 0
+                            ? "text-[#00A878]"
+                            : "text-red-500"
+                        }`}
+                      >
+                        <TooltipNumber
+                          number={Math.abs(goodPerf?.change30DPercent || 0)}
                           type="percent"
                         />
                         %
