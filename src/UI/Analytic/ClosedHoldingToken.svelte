@@ -414,7 +414,6 @@
                   sumRealizedProfit >= 0 ? "" : "text-[#f25f5d]"
                 }`}
               >
-                <span>{sumRealizedProfit < 0 ? "-" : ""}</span>
                 <TooltipNumber number={sumRealizedProfit} type="value" />
               </div>
             </div>
