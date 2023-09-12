@@ -865,7 +865,7 @@
 
 <ErrorBoundary>
   <div class="flex flex-col gap-4">
-    <div class="xl:text-2xl text-4xl font-medium ">
+    <div class="xl:text-2xl text-4xl font-medium">
       {MultipleLang.positions}
     </div>
 

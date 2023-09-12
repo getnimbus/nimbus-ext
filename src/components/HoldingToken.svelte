@@ -1,16 +1,20 @@
-<script>
+<script lang="ts">
   import { useNavigate } from "svelte-navigator";
-  import { chain, typeWallet, isDarkMode } from "~/store";
+  import { chain, typeWallet, isDarkMode, user } from "~/store";
   import { detectedChain, shorterName } from "~/utils";
   import numeral from "numeral";
-  import { Progressbar } from "flowbite-svelte";
+  import { Progressbar, Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
   import dayjs from "dayjs";
+  import { nimbus } from "~/lib/network";
+  import { i18n } from "~/lib/i18n";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
+  import Button from "./Button.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -34,13 +38,104 @@
     darkMode = value;
   });
 
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
+
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
   let isShowCMC = false;
   let isShowCoingecko = false;
+  let isShowReport = false;
+  let isShowReportTable = false;
   let selectedHighestVault;
   let selectedVaults;
   let showTableVaults = false;
+  let isOldToken = false;
+
+  let toastMsg = "Report Success";
+  let isSuccessToast = false;
+  let counter = 3;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    isSuccessToast = false;
+  };
+
+  const MultipleLang = {
+    content: {
+      modal_cancel: i18n(
+        "optionsPage.accounts-page-content.modal-cancel",
+        "Cancel"
+      ),
+      modal_submitreport: i18n(
+        "optionsPage.accounts-page-content.modal-submitreport",
+        "Report"
+      ),
+    },
+  };
+
+  const reasonReportData = [
+    {
+      id: "trash",
+      content: "This token is trash 🗑️",
+    },
+    {
+      id: "scam",
+      content: "This token is the scam 🤬",
+    },
+    {
+      id: "hate",
+      content: "I hate this token 😠",
+    },
+  ];
+
+  const handleReportTrashCoin = async () => {
+    try {
+      let reason = "";
+
+      if (document.getElementById("trash").checked) {
+        reason += "Trash Token, ";
+      }
+
+      if (document.getElementById("hate").checked) {
+        reason += "Hate Token, ";
+      }
+
+      if (document.getElementById("scam").checked) {
+        reason += "Scam Token, ";
+      }
+
+      if (document.getElementById("outdated").checked === true) {
+        reason += document.getElementById("reason").value;
+      }
+
+      const formData = {
+        chain: document.getElementById("chain").value,
+        contractAddress: document.getElementById("contract_address").value,
+        reason: reason,
+      };
+      const response = await nimbus.post("/tokens/report-trash", formData);
+      toastMsg = "We will update after 2 minutes.";
+      isSuccessToast = true;
+    } catch (error) {
+      toastMsg = "Something wrong when report token. Please try again!";
+      isSuccessToast = false;
+      console.error("error:", error);
+    } finally {
+      isShowReportTable = false;
+      trigger();
+    }
+  };
 
   $: value = Number(data?.amount) * Number(data?.market_price);
 
@@ -92,6 +187,10 @@
     // }
   }}
   on:mouseover={() => {
+    if (userInfo && Object.keys(userInfo).length !== 0) {
+      isShowReport = true;
+    }
+
     if (data?.cmc_slug) {
       isShowCMC = true;
     }
@@ -100,6 +199,10 @@
     }
   }}
   on:mouseleave={() => {
+    if (userInfo && Object.keys(userInfo).length !== 0) {
+      isShowReport = false;
+    }
+
     if (data?.cmc_slug) {
       isShowCMC = false;
     }
@@ -109,13 +212,37 @@
   }}
 >
   <td
-    class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[420px] ${
+    class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[450px] ${
       darkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
   >
-    <div class="text-left flex items-center gap-3">
+    <div class="text-left flex items-center gap-3 relative">
+      <!-- icon report -->
+      {#if isShowReport}
+        <div
+          class="absolute w-5 xl:-left-8 sm:-left-6 top-3 opacity-80 hover:opacity-60 hidden xl:block cursor-pointer"
+          on:click={() => (isShowReportTable = true)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            ><g
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              ><path d="M0 0h24v24H0z" /><path
+                fill="currentColor"
+                d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
+              /></g
+            ></svg
+          >
+        </div>
+      {/if}
       <div class="relative">
         <img
           src={data.logo ||
@@ -149,7 +276,35 @@
             {#if data.name === undefined}
               N/A
             {:else}
-              {data?.name?.length > 20 ? shorterName(data.name, 20) : data.name}
+              <div class="flex">
+                {data?.name?.length > 20
+                  ? shorterName(data.name, 20)
+                  : data.name}
+                <!-- icon report -->
+                {#if isShowReport}
+                  <span
+                    class="opacity-80 hover:opacity-60 flex items-center justify-center ml-3 xl:hidden"
+                    on:click={() => (isShowReportTable = true)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      ><g
+                        fill="none"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        ><path d="M0 0h24v24H0z" /><path
+                          fill="currentColor"
+                          d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
+                        /></g
+                      ></svg
+                    >
+                  </span>
+                {/if}
+              </div>
             {/if}
             {#if isShowTooltipName && data?.name?.length > 20}
               <div class="absolute -top-8 left-0" style="z-index: 2147483648;">
@@ -635,5 +790,189 @@
   <VaultTable data={selectedVaults} />
 </AppOverlay>
 
-<style>
+<!-- show form report  -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isShowReportTable}
+  on:close={() => {
+    isShowReportTable = false;
+    isOldToken = false;
+  }}
+>
+  <form on:submit|preventDefault={handleReportTrashCoin}>
+    <div class="flex flex-col gap-4">
+      <div class="font-medium xl:title-3 title-1">Blacklist Token</div>
+      <div class="flex flex-col gap-3">
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+          }`}
+        >
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
+            Chain
+          </div>
+          <input
+            type="text"
+            id="chain"
+            name="chain"
+            value={data.chain}
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            }`}
+            disabled
+          />
+        </div>
+
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+          }`}
+        >
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
+            Contract Address
+          </div>
+          <input
+            type="text"
+            id="contract_address"
+            name="contract_address"
+            value={data.contractAddress}
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            }`}
+            disabled
+          />
+        </div>
+
+        <div
+          class={`flex flex-col gap-3 input-2 input-border w-full py-[8px] px-3 ${
+            darkMode && "bg-transparent"
+          }`}
+        >
+          <div class="xl:text-base text-xl text-[#666666] font-medium">
+            Reason
+          </div>
+
+          {#each reasonReportData as item}
+            <div class="flex items-center gap-2 w-max cursor-pointer">
+              <input
+                type="checkbox"
+                name={item.id}
+                id={item.id}
+                class="rounded-full"
+              />
+              <label
+                for={item.id}
+                class="xl:text-sm text-lg font-normal text-[#5E656B] cursor-pointer"
+              >
+                {item.content}
+              </label>
+            </div>
+          {/each}
+
+          <div class="flex items-center gap-2 w-max cursor-pointer">
+            <input
+              type="checkbox"
+              name="outdated"
+              id="outdated"
+              class="rounded-full"
+              on:change={(e) => {
+                e.target.checked ? (isOldToken = true) : (isOldToken = false);
+              }}
+            />
+            <label
+              for="outdated"
+              class="xl:text-sm text-lg font-normal text-[#5E656B] cursor-pointer"
+            >
+              The token is outdate
+            </label>
+          </div>
+
+          {#if isOldToken}
+            <textarea
+              placeholder="Please type info about that token"
+              rows="5"
+              id="reason"
+              name="reason"
+              class={`mb-2 p-0 input-2 input-border w-full py-[6px] px-3 focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              }`}
+            />
+          {/if}
+        </div>
+
+        <div class="flex justify-end gap-6 lg:gap-2">
+          <div class="xl:w-[120px] w-full">
+            <Button
+              variant="secondary"
+              on:click={() => {
+                isShowReportTable = false;
+                isOldToken = false;
+              }}
+            >
+              {MultipleLang.content.modal_cancel}</Button
+            >
+          </div>
+          <div class="xl:w-[120px] w-full">
+            <Button type="submit" variant="tertiary">
+              {MultipleLang.content.modal_submitreport}</Button
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</AppOverlay>
+
+{#if showToast}
+  <div class="fixed top-3 right-3 w-full z-30">
+    <Toast
+      transition={blur}
+      params={{ amount: 10 }}
+      position="top-right"
+      color={isSuccessToast ? "green" : "red"}
+      bind:open={showToast}
+    >
+      <svelte:fragment slot="icon">
+        {#if isSuccessToast}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Check icon</span>
+        {:else}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Error icon</span>
+        {/if}
+      </svelte:fragment>
+      {toastMsg}
+    </Toast>
+  </div>
+{/if}
+
+<style windi:preflights:global windi:safelist:global>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
 </style>

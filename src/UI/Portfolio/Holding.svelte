@@ -34,7 +34,6 @@
   let isStickyTableToken = false;
   let tableNFTHeader;
   let isStickyTableNFT = false;
-
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
