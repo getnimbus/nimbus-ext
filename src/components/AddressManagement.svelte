@@ -1489,8 +1489,7 @@
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
               address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-            }
-              `}
+            } `}
             on:keyup={({ target: { value } }) => (address = value)}
           />
         </div>

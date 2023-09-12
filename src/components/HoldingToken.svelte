@@ -82,15 +82,15 @@
   let checkboxData = [
     {
       id: "trashtoken",
-      content: "This Token is Trash 🗑️",
+      content: "This token is trash 🗑️",
     },
     {
       id: "scamtoken",
-      content: "This Token is the scam 🤬",
+      content: "This token is the scam 🤬",
     },
     {
       id: "hatetoke",
-      content: "I hate this Token 😠",
+      content: "I hate this token 😠",
     },
   ];
 
@@ -782,7 +782,10 @@
 <AppOverlay
   clickOutSideToClose
   isOpen={isShowReportTable}
-  on:close={() => (isShowReportTable = false)}
+  on:close={() => {
+    isShowReportTable = false;
+    isOldToken = false;
+  }}
 >
   <form
     class="w-full h-full p-5 transition-all duration-1000"
@@ -807,36 +810,40 @@
       <div class="text-2xl font-semibold text-center">Blacklist Token</div>
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3  ${
-          darkMode ? "bg-gray-300" : "bg-[#f4f5f8]"
+          darkMode ? "bg-dark-900" : "bg-[#f4f5f8]"
         } `}
       >
-        <div class="xl:text-base text-xl text-[#666666] font-medium">Chain</div>
+        <div class={`xl:text-base text-xl  font-medium text-[#666666]`}>
+          Chain
+        </div>
         <input
           type="text"
           id="chain"
           name="chain"
           value={data.chain}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] ${
-            darkMode ? "bg-gray-300" : "bg-[#f4f5f8]"
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal ${
+            darkMode
+              ? "   bg-dark-900 text-gray-700"
+              : "bg-[#f4f5f8] text-[#5E656B]"
           } `}
           disabled
         />
       </div>
       <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3  ${
-          darkMode ? "bg-gray-300" : "bg-[#f4f5f8]"
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3  text-[#666666] ${
+          darkMode ? "bg-dark-900" : "bg-[#f4f5f8]"
         } `}
       >
-        <div class="xl:text-base text-xl text-[#666666] font-medium">
-          Contract Address
-        </div>
+        <div class={`xl:text-base text-xl  font-medium`}>Contract Address</div>
         <input
           type="text"
           id="contractaddress"
           name="contractaddress"
           value={data.contractAddress}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B]  ${
-            darkMode ? "bg-gray-300" : "bg-[#f4f5f8]"
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal ${
+            darkMode
+              ? "bg-dark-900 text-gray-700"
+              : "bg-[#f4f5f8] text-[#5E656B]"
           } `}
           disabled
         />
@@ -844,19 +851,22 @@
 
       <div
         class={`flex flex-col gap-3 input-2 input-border w-full py-[8px] px-3 ${
-          darkMode && "text-black"
+          darkMode && "bg-transparent"
         }`}
       >
-        <div class="xl:text-base text-xl text-[#666666] font-medium">
-          Reason
-        </div>
+        <!-- class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+        address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+      }
+        `} -->
+
+        <div class={`xl:text-base text-xl font-medium ${darkMode && "text-[#666666]"}`}>Reason</div>
         {#each checkboxData as item}
           <div class="flex items-center">
             <input
               type="checkbox"
               name={item.id}
               id={item.id}
-              class={`mr-2 rounded-lg `}
+              class={`mr-2 rounded-lg  ${darkMode && "text-white"} `}
             /><label for={item.id}>{item.content}</label>
           </div>
         {/each}
@@ -866,12 +876,12 @@
             type="checkbox"
             name="oldtoken"
             id="oldtoken"
-            class="mr-2 rounded-lg"
+            class={`mr-2 rounded-lg  ${darkMode && "text-white"} `}
             on:change={(e) => {
               e.target.checked ? (isOldToken = true) : (isOldToken = false);
             }}
           />
-          <label for="oldtoken">The Token is Old</label>
+          <label for="oldtoken">The token is outdate</label>
         </div>
         {#if isOldToken}
           <textarea
@@ -879,7 +889,9 @@
             rows="5"
             id="reason"
             name="reason"
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal placeholder-[#5E656B]`}
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal placeholder-[#5E656B] ${
+              darkMode && "bg-transparent text-white"
+            } `}
           />
         {/if}
       </div>
@@ -889,6 +901,7 @@
             variant="secondary"
             on:click={() => {
               isShowReportTable = false;
+              isOldToken = false;
             }}
           >
             {MultipleLang.content.modal_cancel}</Button
