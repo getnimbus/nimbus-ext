@@ -41,7 +41,7 @@
   <div class="mb-2 xl:title-3 title-1">{MultipleLang.title}</div>
 
   {#if show}
-    <div class="fixed top-3 right-3 w-[300px]">
+    <div class="fixed top-3 right-3 w-[300px] z-10">
       <Toast
         transition={fly}
         params={{ x: 200 }}

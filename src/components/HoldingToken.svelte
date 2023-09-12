@@ -895,7 +895,7 @@
             rows="5"
             id="reason"
             name="reason"
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal placeholder-[#5E656B] ${
+            class={`p-2 border rounded-lg text-lg font-normal placeholder-[#5E656B] ${
               darkMode && "bg-transparent text-white"
             } `}
           />
