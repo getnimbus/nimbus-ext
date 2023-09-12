@@ -149,13 +149,6 @@
         );
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                params[0].value >= 0 ? "#05a878" : "#f25f5d"
-              };">
-                ${params[0].value > 0 ? "Win" : "Lose"}
-              </div>
-
-              <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div style="display: flex; align-items: centers; gap: 4px">
                   <img src=${
                     selectedItem?.logo ||
@@ -170,6 +163,13 @@
                         : selectedItem?.name || "N/A"
                     } ${selectedItem?.symbol ? `(${selectedItem?.symbol})` : ""}
                   </div>
+                </div>
+
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                  darkMode ? "white" : "black"
+                }">
+                  ROI
                 </div>
 
                 <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
