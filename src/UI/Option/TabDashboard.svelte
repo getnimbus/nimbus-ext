@@ -39,31 +39,35 @@
 
 <div class="flex flex-col gap-2">
   <div class="mb-2 xl:title-3 title-1">{MultipleLang.title}</div>
-  <Toast
-    transition={fly}
-    params={{ x: 200 }}
-    position="top-right"
-    color="green"
-    bind:open={show}
-  >
-    <svelte:fragment slot="icon">
-      <svg
-        aria-hidden="true"
-        class="w-5 h-5"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-        xmlns="http://www.w3.org/2000/svg"
-        ><path
-          fill-rule="evenodd"
-          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-          clip-rule="evenodd"
-        /></svg
-      >
-      <span class="sr-only">Check icon</span>
-    </svelte:fragment>
-    {checked ? "Show" : "Hide"} your Portfolio on new tab
-  </Toast>
 
+  {#if show}
+    <div class="fixed top-3 right-3 w-[300px]">
+      <Toast
+        transition={fly}
+        params={{ x: 200 }}
+        position="top-right"
+        color="green"
+        bind:open={show}
+      >
+        <svelte:fragment slot="icon">
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Check icon</span>
+        </svelte:fragment>
+        {checked ? "Show" : "Hide"} your Portfolio on new tab
+      </Toast>
+    </div>
+  {/if}
   {#if APP_TYPE.TYPE === "WEB"}
     <div class="xl:title-5 title-3">
       Install <a
