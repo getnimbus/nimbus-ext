@@ -46,6 +46,21 @@
   let showTableVaults = false;
   let isOldToken = false;
 
+  let checkboxData = [
+    {
+      id: "trashtoken",
+      content: "This Token is Trash 🗑️",
+    },
+    {
+      id: "scamtoken",
+      content: "This Token is the scam 🤬",
+    },
+    {
+      id: "hatetoke",
+      content: "I hate this Token 😠",
+    },
+  ];
+
   const handleReportTrashCoin = () => {
     try {
       const formData = {
@@ -160,7 +175,6 @@
           >
         </div>
       {/if}
-
       <div class="relative">
         <img
           src={data.logo ||
@@ -182,7 +196,6 @@
           </div>
         {/if}
       </div>
-
       <div class="flex flex-col gap-1">
         <div class="flex items-start gap-2">
           <div
@@ -231,7 +244,6 @@
               </div>
             {/if}
           </div>
-
           {#if selectedHighestVault !== undefined}
             <div
               class="flex items-center justyfy-center px-2 py-1 text_27326F text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
@@ -266,7 +278,6 @@
               </div>
             {/if}
           </div>
-
           {#if isShowCMC}
             <a
               href={`https://coinmarketcap.com/currencies/${data?.cmc_slug}`}
@@ -725,8 +736,8 @@
       <div class="">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="50"
-          height="50"
+          width="60"
+          height="60"
           viewBox="0 0 24 24"
           class="font-bold mx-auto"
           ><g transform="rotate(90 12 12)"
@@ -769,36 +780,23 @@
 
       <div
         class={`flex flex-col gap-3 input-2 input-border w-full py-[8px] px-3 ${
-          darkMode ? "text-black" : "text-white"
+          darkMode && "text-black"
         }`}
       >
         <div class="xl:text-base text-xl text-[#666666] font-medium">
           Reason
         </div>
-        <div class="flex items-center">
-          <input
-            type="checkbox"
-            name=""
-            id="content"
-            class={`mr-2 rounded-lg `}
-          /><label for="">This Token is a trash 🗑️ </label>
-        </div>
-        <div class="flex items-center">
-          <input
-            type="checkbox"
-            name=""
-            id="content"
-            class="mr-2 rounded-lg"
-          /><label for="">It 's a scam 🤬</label>
-        </div>
-        <div class="flex items-center">
-          <input
-            type="checkbox"
-            name=""
-            id="content"
-            class="mr-2 rounded-lg"
-          /><label for="">I Hate this Token 😠 </label>
-        </div>
+        {#each checkboxData as item}
+          <div class="flex items-center">
+            <input
+              type="checkbox"
+              name={item.id}
+              id={item.id}
+              class={`mr-2 rounded-lg `}
+            /><label for={item.id}>{item.content}</label>
+          </div>
+        {/each}
+
         <div class="flex items-center">
           <input
             type="checkbox"
@@ -822,7 +820,7 @@
       <div class="flex gap-10">
         <button
           on:click={() => (isShowReportTable = false)}
-          class="rounded-lg border py-2 border-[#27326f] w-full">Cancel</button
+          class="rounded-lg border py-2 w-full">Cancel</button
         >
         <button
           type="submit"
