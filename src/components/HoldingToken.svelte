@@ -3,7 +3,8 @@
   import { chain, typeWallet, isDarkMode } from "~/store";
   import { detectedChain, shorterName } from "~/utils";
   import numeral from "numeral";
-  import { Progressbar } from "flowbite-svelte";
+  import { Progressbar, Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
   import dayjs from "dayjs";
   import { nimbus } from "~/lib/network";
 
@@ -48,6 +49,23 @@
   let showTableVaults = false;
   let isOldToken = false;
 
+  let toastMsg = "Report Success";
+  let isSuccessToast = false;
+  let counter = 3;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    isSuccessToast = false;
+  };
+
   const MultipleLang = {
     content: {
       modal_cancel: i18n(
@@ -78,12 +96,35 @@
 
   const handleReportTrashCoin = () => {
     try {
+      let reasonvalue = "";
+
+      if (document.getElementById("trashtoken").checked) {
+        reasonvalue += "Trash Token, ";
+      }
+
+      if (document.getElementById("hatetoke").checked) {
+        reasonvalue += "Hate Token, ";
+      }
+
+      if (document.getElementById("scamtoken").checked) {
+        reasonvalue += "Scam Token, ";
+      }
+
+      if (document.getElementById("oldtoken").checked === true) {
+        reasonvalue += document.getElementById("reason").value;
+      }
+
+      // console.log({ reasonvalue });
+
       const formData = {
         chain: document.getElementById("chain").value,
         contractAddress: document.getElementById("contractaddress").value,
-        reason: document.getElementById("reason").value,
+        reason: reasonvalue,
       };
+
       nimbus.post("/tokens/report-trash", formData);
+      isSuccessToast = true;
+      trigger();
       isShowReportTable = false;
     } catch (error) {
       console.error("error:", error);
@@ -169,7 +210,7 @@
       <!-- icon report -->
       {#if isShowReport}
         <div
-          class="absolute w-5 xl:-left-8 sm:-left-6 top-2 opacity-80 hover:opacity-60 hidden xl:block cursor-pointer"
+          class="absolute w-5 xl:-left-8 sm:-left-6 top-3 opacity-80 hover:opacity-60 hidden xl:block cursor-pointer"
           on:click={() => (isShowReportTable = true)}
         >
           <svg
@@ -763,9 +804,11 @@
           ></svg
         >
       </div>
-      <div class="text-2xl font-semibold text-center">Blacklist Position</div>
+      <div class="text-2xl font-semibold text-center">Blacklist Token</div>
       <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3`}
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3  ${
+          darkMode ? "bg-gray-300" : "bg-[#f4f5f8]"
+        } `}
       >
         <div class="xl:text-base text-xl text-[#666666] font-medium">Chain</div>
         <input
@@ -773,12 +816,16 @@
           id="chain"
           name="chain"
           value={data.chain}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B]`}
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] ${
+            darkMode ? "bg-gray-300" : "bg-[#f4f5f8]"
+          } `}
           disabled
         />
       </div>
       <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3`}
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3  ${
+          darkMode ? "bg-gray-300" : "bg-[#f4f5f8]"
+        } `}
       >
         <div class="xl:text-base text-xl text-[#666666] font-medium">
           Contract Address
@@ -788,7 +835,9 @@
           id="contractaddress"
           name="contractaddress"
           value={data.contractAddress}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B]`}
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B]  ${
+            darkMode ? "bg-gray-300" : "bg-[#f4f5f8]"
+          } `}
           disabled
         />
       </div>
@@ -818,35 +867,24 @@
             name="oldtoken"
             id="oldtoken"
             class="mr-2 rounded-lg"
-            on:change={(e) => (isOldToken = e.target.checked)}
+            on:change={(e) => {
+              e.target.checked ? (isOldToken = true) : (isOldToken = false);
+            }}
           />
           <label for="oldtoken">The Token is Old</label>
         </div>
         {#if isOldToken}
           <textarea
-            placeholder="Please type new info about that token"
+            placeholder="Please type info about that token"
             rows="5"
             id="reason"
             name="reason"
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal placeholder-[#5E656B] reason-textarea`}
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal placeholder-[#5E656B]`}
           />
         {/if}
       </div>
-      <!-- <div class="flex justify-between gap-6 lg:gap-2">
-        <div class="w-full">
-          <Button
-            variant="secondary"
-            on:click={() => (isShowReportTable = false)}
-          >
-            Cancel</Button
-          >
-        </div>
-        <div class="w-full">
-          <Button type="submit" variant="tertiary">Submit Report</Button>
-        </div>
-      </div> -->
-      <div class="flex justify-between gap-6 lg:gap-2">
-        <div class="w-full">
+      <div class="flex justify-end gap-6 lg:gap-2">
+        <div class="xl:w-[120px] w-full">
           <Button
             variant="secondary"
             on:click={() => {
@@ -856,7 +894,7 @@
             {MultipleLang.content.modal_cancel}</Button
           >
         </div>
-        <div class="w-full">
+        <div class="xl:w-[120px] w-full">
           <Button type="submit" variant="tertiary">
             {MultipleLang.content.modal_submitreport}</Button
           >
@@ -866,23 +904,50 @@
   </form>
 </AppOverlay>
 
+{#if showToast}
+  <div class="fixed top-3 right-3 w-[300px]">
+    <Toast
+      transition={blur}
+      params={{ amount: 10 }}
+      position="top-right"
+      color={isSuccessToast ? "green" : "red"}
+      bind:open={showToast}
+    >
+      <svelte:fragment slot="icon">
+        {#if isSuccessToast}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Check icon</span>
+        {:else}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Error icon</span>
+        {/if}
+      </svelte:fragment>
+      {toastMsg}
+    </Toast>
+  </div>
+{/if}
+
 <style>
-  .reason-textarea {
-    animation-name: fadein;
-    animation-duration: 1s;
-    transition: all 3s ease-in;
-  }
-
-  @keyframes fadein {
-    0% {
-      transform: translateY(30px);
-      opacity: 0;
-    }
-
-    100% {
-      transform: translateY(0px);
-      height: auto;
-      opacity: 1;
-    }
-  }
 </style>
