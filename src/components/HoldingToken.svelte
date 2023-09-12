@@ -16,6 +16,8 @@
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import Chart from "~/assets/chart.svg";
+  import Button from "./Button.svelte";
+  import { i18n } from "~/lib/i18n";
 
   export let data;
   export let selectedWallet;
@@ -45,6 +47,19 @@
   let selectedVaults;
   let showTableVaults = false;
   let isOldToken = false;
+
+  const MultipleLang = {
+    content: {
+      modal_cancel: i18n(
+        "optionsPage.accounts-page-content.modal-cancel",
+        "Cancel"
+      ),
+      modal_submitreport: i18n(
+        "optionsPage.accounts-page-content.modal-submitreport",
+        "Submit Report"
+      ),
+    },
+  };
 
   let checkboxData = [
     {
@@ -817,16 +832,35 @@
           />
         {/if}
       </div>
-      <div class="flex gap-10">
-        <button
-          on:click={() => (isShowReportTable = false)}
-          class="rounded-lg border py-2 w-full">Cancel</button
-        >
-        <button
-          type="submit"
-          class="rounded-lg border py-2 bg-[#1e96fc] text-white w-full"
-          >Submit Report</button
-        >
+      <!-- <div class="flex justify-between gap-6 lg:gap-2">
+        <div class="w-full">
+          <Button
+            variant="secondary"
+            on:click={() => (isShowReportTable = false)}
+          >
+            Cancel</Button
+          >
+        </div>
+        <div class="w-full">
+          <Button type="submit" variant="tertiary">Submit Report</Button>
+        </div>
+      </div> -->
+      <div class="flex justify-between gap-6 lg:gap-2">
+        <div class="w-full">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              isShowReportTable = false;
+            }}
+          >
+            {MultipleLang.content.modal_cancel}</Button
+          >
+        </div>
+        <div class="w-full">
+          <Button type="submit" variant="tertiary">
+            {MultipleLang.content.modal_submitreport}</Button
+          >
+        </div>
       </div>
     </div>
   </form>
