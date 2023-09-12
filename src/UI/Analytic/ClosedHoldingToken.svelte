@@ -11,6 +11,7 @@
   import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import EChart from "~/components/EChart.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
@@ -48,7 +49,7 @@
     },
   ];
 
-  let formatXAxisData = [];
+  let closedHoldingPosition = [];
   let selectedTypeChart: "value" | "percent" = "value";
   let optionBarValue = {
     tooltip: {
@@ -58,7 +59,7 @@
         type: "shadow",
       },
       formatter: function (params) {
-        const selectedItem = formatXAxisData.find(
+        const selectedItem = closedHoldingPosition.find(
           (item) =>
             item?.contractAddress?.toLowerCase() ===
             params[0]?.name?.toLowerCase()
@@ -88,17 +89,25 @@
                   ROI
                 </div>
 
-                <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[0].value >= 0 ? "#05a878" : "#f25f5d"
-                };">
-                    <div style="display:flex; justify-content: flex-end; align-items: center;">
+                <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px;">
+                    <div style="display:flex; justify-content: flex-end; align-items: center; color: ${
+                      params[0].value >= 0 ? "#05a878" : "#f25f5d"
+                    };">
                       <span>${params[0].value < 0 ? "-" : ""}</span>
                       ${formatValue(Math.abs(params[0].value))}
                     </div>  
-                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px;">
-                      ${formatPercent(Math.abs(selectedItem?.percent))}%
+                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; color: ${
+                      selectedItem?.percentRealizedProfit >= 0
+                        ? "#05a878"
+                        : "#f25f5d"
+                    };">
+                      ${formatPercent(
+                        Math.abs(selectedItem?.percentRealizedProfit)
+                      )}%
                       <img src=${
-                        selectedItem?.percent >= 0 ? TrendUp : TrendDown
+                        selectedItem?.percentRealizedProfit >= 0
+                          ? TrendUp
+                          : TrendDown
                       } alt="" style="margin-bottom: 4px;" />
                     </div>
                 </div>
@@ -142,28 +151,28 @@
         type: "shadow",
       },
       formatter: function (params) {
-        const selectedItem = formatXAxisData.find(
+        const selectedItem = closedHoldingPosition.find(
           (item) =>
             item?.contractAddress?.toLowerCase() ===
             params[0]?.name?.toLowerCase()
         );
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
-                <div style="display: flex; align-items: centers; gap: 4px">
-                  <img src=${
-                    selectedItem?.logo ||
-                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                  } alt="" width=20 height=20 style="border-radius: 100%" />
-                  <div style="margin-top: 2px; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    darkMode ? "white" : "black"
-                  }">
-                    ${
-                      selectedItem?.name?.length > 20
-                        ? shorterName(selectedItem?.name, 20)
-                        : selectedItem?.name || "N/A"
-                    } ${selectedItem?.symbol ? `(${selectedItem?.symbol})` : ""}
-                  </div>
+              <div style="display: flex; align-items: centers; gap: 4px">
+                <img src=${
+                  selectedItem?.logo ||
+                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                } alt="" width=20 height=20 style="border-radius: 100%" />
+                <div style="margin-top: 2px; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                  darkMode ? "white" : "black"
+                }">
+                  ${
+                    selectedItem?.name?.length > 20
+                      ? shorterName(selectedItem?.name, 20)
+                      : selectedItem?.name || "N/A"
+                  } ${selectedItem?.symbol ? `(${selectedItem?.symbol})` : ""}
                 </div>
+              </div>
 
               <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: ${
@@ -171,15 +180,18 @@
                 }">
                   ROI
                 </div>
-
-                <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  params[0].value >= 0 ? "#05a878" : "#f25f5d"
-                };">
-                    <div style="display:flex; justify-content: flex-end; align-items: center;">
-                      <span>${selectedItem?.value < 0 ? "-" : ""}</span>
-                      ${formatValue(Math.abs(selectedItem?.value))}  
+                <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px;">
+                    <div style="display:flex; justify-content: flex-end; align-items: center; color: ${
+                      selectedItem?.realizedProfit >= 0 ? "#05a878" : "#f25f5d"
+                    };">
+                      <span>${
+                        selectedItem?.realizedProfit < 0 ? "-" : ""
+                      }</span>
+                      ${formatValue(Math.abs(selectedItem?.realizedProfit))}  
                     </div>  
-                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px;">
+                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; color: ${
+                      params[0].value >= 0 ? "#05a878" : "#f25f5d"
+                    };">
                       ${formatPercent(Math.abs(params[0].value))}%
                       <img src=${
                         params[0].value >= 0 ? TrendUp : TrendDown
@@ -243,7 +255,7 @@
         return 0;
       });
 
-    const closedHoldingPosition = formatData
+    closedHoldingPosition = formatData
       .filter((item) => item?.profit?.realizedProfit)
       .filter((item) => Number(item.amount) === 0)
       .map((item) => {
@@ -257,8 +269,7 @@
                   Number(Math.abs(item?.avgCost))) *
                 100,
         };
-      })
-      .sort((a, b) => a?.profit.realizedProfit - b?.profit.realizedProfit);
+      });
 
     sumRealizedProfit = (closedHoldingPosition || []).reduce(
       (prev, item) => prev + Number(item.realizedProfit),
@@ -281,39 +292,29 @@
       }
     });
 
-    const formatXAxis = closedHoldingPosition.map((item) => {
-      return item.contractAddress;
-    });
-
-    formatXAxisData = closedHoldingPosition.map((item) => {
-      return {
-        contractAddress: item.contractAddress,
-        name: item.name,
-        symbol: item.symbol,
-        logo: item.logo,
-        chain: item.chain,
-        value: item.realizedProfit,
-        percent: item.percentRealizedProfit,
-      };
-    });
-
     optionBarValue = {
       ...optionBarValue,
       xAxis: {
         ...optionBarValue.xAxis,
-        data: formatXAxis,
+        data: closedHoldingPosition
+          .sort((a, b) => a?.realizedProfit - b?.realizedProfit)
+          .map((item) => {
+            return item?.contractAddress?.toLowerCase();
+          }),
       },
       series: [
         {
           type: "bar",
-          data: closedHoldingPosition.map((item) => {
-            return {
-              value: item.realizedProfit,
-              itemStyle: {
-                color: item.realizedProfit >= 0 ? "#05a878" : "#f25f5d",
-              },
-            };
-          }),
+          data: closedHoldingPosition
+            .sort((a, b) => a?.realizedProfit - b?.realizedProfit)
+            .map((item) => {
+              return {
+                value: item.realizedProfit,
+                itemStyle: {
+                  color: item.realizedProfit >= 0 ? "#05a878" : "#f25f5d",
+                },
+              };
+            }),
         },
       ],
     };
@@ -322,19 +323,26 @@
       ...optionBarPercent,
       xAxis: {
         ...optionBarPercent.xAxis,
-        data: formatXAxis,
+        data: closedHoldingPosition
+          .sort((a, b) => a?.percentRealizedProfit - b?.percentRealizedProfit)
+          .map((item) => {
+            return item?.contractAddress?.toLowerCase();
+          }),
       },
       series: [
         {
           type: "bar",
-          data: closedHoldingPosition.map((item) => {
-            return {
-              value: item.percentRealizedProfit,
-              itemStyle: {
-                color: item.percentRealizedProfit >= 0 ? "#05a878" : "#f25f5d",
-              },
-            };
-          }),
+          data: closedHoldingPosition
+            .sort((a, b) => a?.percentRealizedProfit - b?.percentRealizedProfit)
+            .map((item) => {
+              return {
+                value: item.percentRealizedProfit,
+                itemStyle: {
+                  color:
+                    item.percentRealizedProfit >= 0 ? "#05a878" : "#f25f5d",
+                },
+              };
+            }),
         },
       ],
     };
@@ -398,54 +406,55 @@
             <div class="grid grid-cols-2">
               <div class="col-span-1">
                 <div class="flex justify-start text-2xl xl:text-base">
-                  Biggest win
-                </div>
-              </div>
-              <div
-                class="flex items-center justify-end gap-1 xl:text-base text-2xl text-[#05a878] col-span-1"
-              >
-                <div>
-                  {formatValue(Math.abs(biggestWin?.realizedProfit))}
-                </div>
-                /
-                <div class="flex items-center gap-1">
-                  {formatPercent(Math.abs(biggestWin?.percentRealizedProfit))}%
-                  <img src={TrendUp} alt="" style="margin-bottom: 4px;" />
-                </div>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2">
-              <div class="col-span-1">
-                <div class="flex justify-start text-2xl xl:text-base">
-                  Worse lose
-                </div>
-              </div>
-              <div
-                class="flex items-center justify-end gap-1 xl:text-base text-2xl text-[#f25f5d] col-span-1"
-              >
-                <div>
-                  {formatValue(Math.abs(worseLose?.realizedProfit))}
-                </div>
-                /
-                <div class="flex items-center gap-1">
-                  {formatPercent(Math.abs(worseLose?.percentRealizedProfit))}%
-                  <img src={TrendDown} alt="" style="margin-bottom: 4px;" />
-                </div>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2">
-              <div class="col-span-1">
-                <div class="flex justify-start text-2xl xl:text-base">
                   Total realized profit
                 </div>
               </div>
               <div
-                class="flex items-center justify-end xl:text-base text-2xl col-span-1"
+                class={`flex items-center justify-end xl:text-base text-2xl col-span-1 ${
+                  sumRealizedProfit >= 0 ? "" : "text-[#f25f5d]"
+                }`}
               >
-                {formatValue(sumRealizedProfit)}
+                <span>{sumRealizedProfit < 0 ? "-" : ""}</span>
+                <TooltipNumber number={sumRealizedProfit} type="value" />
               </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              {#if worseLose && Object.keys(worseLose).length !== 0}
+                <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
+                  <div class="xl:text-base text-lg text-[#6E7787FF] relative">
+                    <div
+                      class="border border-red-500 absolute -top-1 left-0 w-[40px]"
+                    />
+                    Worse lose
+                  </div>
+                  <div class="text-3xl xl:text-2xl">{worseLose?.symbol}</div>
+                  <div class="text-2xl xl:text-lg text-[#f25f5d]">
+                    <TooltipNumber
+                      number={Math.abs(worseLose?.realizedProfit)}
+                      type="value"
+                    />
+                  </div>
+                </div>
+              {/if}
+
+              {#if biggestWin && Object.keys(biggestWin).length !== 0}
+                <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
+                  <div class="xl:text-base text-lg text-[#6E7787FF] relative">
+                    <div
+                      class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
+                    />
+                    Biggest win
+                  </div>
+                  <div class="text-3xl xl:text-2xl">{biggestWin?.symbol}</div>
+                  <div class="text-2xl xl:text-lg text-[#05a878]">
+                    <TooltipNumber
+                      number={Math.abs(biggestWin?.realizedProfit)}
+                      type="value"
+                    />
+                  </div>
+                </div>
+              {/if}
             </div>
           </div>
         {/if}
