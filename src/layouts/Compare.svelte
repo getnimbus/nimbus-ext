@@ -59,6 +59,7 @@
   });
 
   onMount(() => {
+    mixpanel.track("user_compare");
     const urlParams = new URLSearchParams(window.location.search);
     let addressParams = urlParams.get("address");
 
@@ -237,11 +238,8 @@
     series: [],
   };
 
-  onMount(() => {
-    mixpanel.track("user_compare");
-  });
-
-  const queryClient = useQueryClient();
+  let timerDebounce;
+  let search = "";
 
   const getAnalyticCompare = async (address, searchValue) => {
     if (packageSelected === "FREE") {
@@ -262,7 +260,7 @@
   };
 
   $: query = createQuery({
-    queryKey: ["compare", selectedWallet],
+    queryKey: ["compare", selectedWallet, searchCompare],
     queryFn: () => getAnalyticCompare(selectedWallet, searchCompare),
     staleTime: Infinity,
   });
@@ -807,7 +805,6 @@
 
   const handleCopyAddress = (address) => {
     searchCompare = address;
-    queryClient.invalidateQueries(["compare"]);
   };
 
   const handleCloseWhalesListModal = () => {
@@ -815,6 +812,13 @@
   };
 
   $: theme = darkMode ? "dark" : "white";
+
+  const debounceSearch = (value) => {
+    clearTimeout(timerDebounce);
+    timerDebounce = setTimeout(() => {
+      search = value;
+    }, 300);
+  };
 </script>
 
 <ErrorBoundary>
@@ -923,7 +927,7 @@
                       variant="secondary"
                       on:click={() => {
                         searchCompare = "";
-                        queryClient.invalidateQueries(["compare"]);
+                        search = "";
                       }}>Remove</Button
                     >
                   </div>
@@ -1053,15 +1057,17 @@
                               }`}
                             >
                               <input
+                                on:keyup={({ target: { value } }) =>
+                                  debounceSearch(value)}
                                 on:keydown={(e) => {
                                   if (
                                     (e.which == 13 || e.keyCode == 13) &&
-                                    searchCompare
+                                    search
                                   ) {
-                                    queryClient.invalidateQueries(["compare"]);
+                                    searchCompare = search;
                                   }
                                 }}
-                                bind:value={searchCompare}
+                                value={search}
                                 placeholder={"Search address to compare"}
                                 type="text"
                                 class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] h-7 ${
@@ -1071,11 +1077,11 @@
                                 }`}
                               />
                             </div>
-                            <div class="xl:text-sm text-lg text-right">
+                            <div class="xl:text-sm text-lg flex justify-end">
                               <div
                                 on:click={() =>
                                   (showCompareWhalesSuggest = true)}
-                                class="text-blue-500 cursor-pointer"
+                                class="text-blue-500 cursor-pointer w-max"
                               >
                                 Get inspired from the whale list
                               </div>
