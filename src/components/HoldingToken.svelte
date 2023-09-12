@@ -78,10 +78,20 @@
 
   const handleReportTrashCoin = () => {
     try {
+      let reasonvalue;
+      if (document.getElementById("oldtoken").checked === true) {
+        reasonvalue = document.getElementById("reason").value;
+      } else {
+        reasonvalue = "";
+      }
+
       const formData = {
         chain: document.getElementById("chain").value,
         contractAddress: document.getElementById("contractaddress").value,
-        reason: document.getElementById("reason").value,
+        // trashtoken: document.getElementById("trashtoken").checked,
+        // scamtoken: document.getElementById("scamtoken").checked,
+        // hatetoke: document.getElementById("hatetoke").checked,
+        reason: reasonvalue,
       };
       nimbus.post("/tokens/report-trash", formData);
       isShowReportTable = false;
