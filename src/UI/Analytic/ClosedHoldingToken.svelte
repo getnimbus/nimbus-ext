@@ -356,8 +356,6 @@
     }
   };
 
-  $: console.log("closedHoldingPosition: ", closedHoldingPosition);
-
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", selectedWallet, selectedChain],
     queryFn: () => getHoldingToken(selectedWallet, selectedChain),
