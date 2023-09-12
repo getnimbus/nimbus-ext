@@ -65,19 +65,12 @@
         );
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                params[0].value >= 0 ? "#05a878" : "#f25f5d"
-              };">
-                ${params[0].value > 0 ? "Win" : "Lose"}
-              </div>
-
-              <div style="display: flex; align-items: center; justify-content: space-between;">
-                <div style="display: flex; align-items: centers; gap: 4px">
+              <div style="display: flex; align-items: centers; gap: 4px">
                   <img src=${
                     selectedItem?.logo ||
                     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
                   } alt="" width=20 height=20 style="border-radius: 100%" />
-                  <div style="margin-top: 2px; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                  <div style="margin-top: 2px; font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                     darkMode ? "white" : "black"
                   }">
                     ${
@@ -86,6 +79,13 @@
                         : selectedItem?.name || "N/A"
                     } ${selectedItem?.symbol ? `(${selectedItem?.symbol})` : ""}
                   </div>
+              </div>
+
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                  darkMode ? "white" : "black"
+                }">
+                  ROI
                 </div>
 
                 <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
@@ -253,7 +253,9 @@
           percentRealizedProfit:
             (item?.avgCost || 0) === 0
               ? 0
-              : item?.profit?.realizedProfit / Math.abs(item?.avgCost),
+              : (Number(item?.profit?.realizedProfit) /
+                  Number(Math.abs(item?.avgCost))) *
+                100,
         };
       })
       .sort((a, b) => a?.profit.realizedProfit - b?.profit.realizedProfit);
