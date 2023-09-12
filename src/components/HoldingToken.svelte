@@ -84,47 +84,47 @@
     },
   };
 
-  const checkboxData = [
+  const reasonReportData = [
     {
-      id: "trashtoken",
+      id: "trash",
       content: "This token is trash 🗑️",
     },
     {
-      id: "scamtoken",
+      id: "scam",
       content: "This token is the scam 🤬",
     },
     {
-      id: "hatetoke",
+      id: "hate",
       content: "I hate this token 😠",
     },
   ];
 
-  const handleReportTrashCoin = () => {
+  const handleReportTrashCoin = async () => {
     try {
       let reason = "";
 
-      if (document.getElementById("trashtoken").checked) {
+      if (document.getElementById("trash").checked) {
         reason += "Trash Token, ";
       }
 
-      if (document.getElementById("hatetoke").checked) {
+      if (document.getElementById("hate").checked) {
         reason += "Hate Token, ";
       }
 
-      if (document.getElementById("scamtoken").checked) {
+      if (document.getElementById("scam").checked) {
         reason += "Scam Token, ";
       }
 
-      if (document.getElementById("oldtoken").checked === true) {
+      if (document.getElementById("outdated").checked === true) {
         reason += document.getElementById("reason").value;
       }
 
       const formData = {
         chain: document.getElementById("chain").value,
-        contractAddress: document.getElementById("contractaddress").value,
+        contractAddress: document.getElementById("contract_address").value,
         reason: reason,
       };
-      nimbus.post("/tokens/report-trash", formData);
+      const response = await nimbus.post("/tokens/report-trash", formData);
       toastMsg = "We will update after 2 minutes.";
       isSuccessToast = true;
     } catch (error) {
@@ -833,8 +833,8 @@
           </div>
           <input
             type="text"
-            id="contractaddress"
-            name="contractaddress"
+            id="contract_address"
+            name="contract_address"
             value={data.contractAddress}
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
               !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
@@ -852,7 +852,7 @@
             Reason
           </div>
 
-          {#each checkboxData as item}
+          {#each reasonReportData as item}
             <div class="flex items-center gap-2 w-max cursor-pointer">
               <input
                 type="checkbox"
@@ -872,15 +872,15 @@
           <div class="flex items-center gap-2 w-max cursor-pointer">
             <input
               type="checkbox"
-              name="oldtoken"
-              id="oldtoken"
+              name="outdated"
+              id="outdated"
               class="rounded-full"
               on:change={(e) => {
                 e.target.checked ? (isOldToken = true) : (isOldToken = false);
               }}
             />
             <label
-              for="oldtoken"
+              for="outdated"
               class="xl:text-sm text-lg font-normal text-[#5E656B] cursor-pointer"
             >
               The token is outdate
