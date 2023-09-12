@@ -74,7 +74,7 @@
       ),
       modal_submitreport: i18n(
         "optionsPage.accounts-page-content.modal-submitreport",
-        "Submit Report"
+        "Report"
       ),
     },
   };
@@ -859,7 +859,13 @@
       }
         `} -->
 
-        <div class={`xl:text-base text-xl font-medium ${darkMode && "text-[#666666]"}`}>Reason</div>
+        <div
+          class={`xl:text-base text-xl font-medium ${
+            darkMode && "text-[#666666]"
+          }`}
+        >
+          Reason
+        </div>
         {#each checkboxData as item}
           <div class="flex items-center">
             <input
@@ -918,7 +924,7 @@
 </AppOverlay>
 
 {#if showToast}
-  <div class="fixed top-3 right-3 w-[300px]">
+  <div class="fixed top-3 right-3 w-full z-30">
     <Toast
       transition={blur}
       params={{ amount: 10 }}
