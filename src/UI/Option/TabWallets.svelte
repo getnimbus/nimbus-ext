@@ -851,9 +851,9 @@
     </div>
   {:else}
     <div class="flex flex-col gap-4">
-      <!-- <div class="xl:title-3 title-1">{MultipleLang.title}</div> -->
+      <div class="xl:title-3 title-1">{MultipleLang.title}</div>
       <div class="flex justify-between items-center gap-10">
-        <!-- {#if listBundle && listBundle.length === 0}
+        {#if listBundle && listBundle.length === 0}
           <div class="text-base">
             Create your bundle with up to 7 addresses per bundle!
           </div>
@@ -951,11 +951,10 @@
               </div>
             {/if}
           </div>
-        {/if} -->
-        <div class="xl:title-3 title-1">{MultipleLang.title}</div>
+        {/if}
         <div class="flex gap-4 justify-end flex-1">
           <!-- add bundle -->
-          <!-- <div class="flex items-center gap-4">
+          <div class="flex items-center gap-4">
             {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0}
               <div
                 class="text-red-500 font-semibold w-max cursor-pointer xl:text-base text-2xl"
@@ -979,7 +978,7 @@
                 </div>
               </Button>
             </div>
-          </div> -->
+          </div>
 
           <!-- add account -->
           <div
