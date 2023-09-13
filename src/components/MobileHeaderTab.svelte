@@ -87,7 +87,7 @@
 <div class="flex items-center justify-evenly py-2">
   {#if selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
     <div
-      class={`flex items-center gap-2 cursor-pointer hover:opacity-100 transition-all ${
+      class={`flex flex-col items-center gap-2 cursor-pointer hover:opacity-100 transition-all ${
         darkMode
           ? navActive === "portfolio"
             ? "opacity-100"
@@ -139,7 +139,7 @@
       </span>
     </div>
     <div
-      class={`flex items-center gap-2 cursor-pointer py-2 hover:opacity-100 transition-all
+      class={`flex flex-col items-center gap-2 cursor-pointer py-2 hover:opacity-100 transition-all
           ${
             darkMode
               ? navActive === "analytic"
