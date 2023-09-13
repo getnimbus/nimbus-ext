@@ -115,11 +115,7 @@
         <div
           class="max-w-[2000px] m-auto w-[100%] flex gap-1 xl:flex-row flex-col"
         >
-          <div
-            class={`xl:w-64 w-full px-4 py-3 ${
-              darkMode ? "bg-[#080808]" : "bg-gray-50"
-            }`}
-          >
+          <div class="xl:w-64 w-full px-4 py-3">
             <SidebarTabs bind:activeTabValue {darkMode} />
           </div>
           <div class="flex-1 px-6 py-4">
