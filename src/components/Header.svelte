@@ -607,6 +607,7 @@
           on:click={() => {
             if (userInfo && Object.keys(userInfo).length !== 0) {
               navActive = "transactions";
+              chain.update((n) => (n = "ETH"));
               queryClient.invalidateQueries(["users-me"]);
             } else {
               user.update((n) => (n = {}));
@@ -700,17 +701,17 @@
       </Link>
     </div>
 
-    <a
-      href="entries/options/index.html?tab=wallets"
-      target="_blank"
-      class="flex items-center gap-3 text-white px-4"
-      on:click={() => {
-        isShowHeaderMobile = false;
-      }}
-    >
-      <img src={SettingsIcon} alt="" width="32" height="32" />
-      <span class="text-4xl font-medium">Settings</span>
-    </a>
+    <Link to="options/?tab=wallets">
+      <div
+        class="flex items-center gap-3 text-white px-4"
+        on:click={() => {
+          isShowHeaderMobile = false;
+        }}
+      >
+        <img src={SettingsIcon} alt="" width="32" height="32" />
+        <span class="text-4xl font-medium">Settings</span>
+      </div>
+    </Link>
   </div>
 </div>
 
