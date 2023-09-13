@@ -267,7 +267,7 @@
       listAddress = [];
       selectedWallet = "";
     },
-    enabled: selectedWallet !== "0xc02ad7b9a9121fc849196e844dc869d2250df3a6",
+    enabled: selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0",
   });
 
   $: {
@@ -604,7 +604,7 @@
         browser.storage.sync.set({ selectedWallet: selectedWallet });
         browser.storage.sync.set({ selectedChain: selectedChain });
 
-        if (selectedWallet === "0xc02ad7b9a9121fc849196e844dc869d2250df3a6") {
+        if (selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0") {
           window.history.replaceState(
             null,
             "",
