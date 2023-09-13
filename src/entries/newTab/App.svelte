@@ -231,13 +231,15 @@
   }
 
   @media (max-width: 1280px) {
-    .zsiq_floatmain {
+    .zsiq_floatmain,
+    .fb-feedback-widget-feedback-button {
       display: block !important;
     }
   }
 
   @media (max-width: 1024px) {
-    .zsiq_floatmain {
+    .zsiq_floatmain,
+    .fb-feedback-widget-feedback-button {
       display: none !important;
     }
   }
