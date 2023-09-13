@@ -369,11 +369,7 @@
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    <TooltipTitle
-                      tooltipText="Ratio based on total token holding"
-                    >
-                      Ratio
-                    </TooltipTitle>
+                    Avg Cost
                   </div>
                 </th>
                 <th class="py-3">
