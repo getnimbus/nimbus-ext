@@ -286,7 +286,7 @@
                       type="percent"
                     />%
                   </div>
-                  <div class="w-3/4 max-w-40">
+                  <div class="w-3/4 max-w-20">
                     <Progressbar
                       progress={Number(
                         ((data?.amount * data?.market_price) / sumTokens) * 100

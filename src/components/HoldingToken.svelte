@@ -628,19 +628,16 @@
   </td>
 
   <td
-    class={`py-3 w-25 ${
+    class={`py-3 ${
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="flex flex-col gap-1 justify-end items-end">
-      <div
-        class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
-      >
-        <TooltipNumber number={ratio} type="percent" />%
-      </div>
-      <div class="w-3/4 max-w-40">
-        <Progressbar progress={ratio} size="h-1" />
-      </div>
+    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
+      {#if data?.profit}
+        <TooltipNumber number={data?.profit?.averageCost} type="value" />
+      {:else}
+        $0
+      {/if}
     </div>
   </td>
 
@@ -649,8 +646,22 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
-      <TooltipNumber number={value} type="value" />
+    <div class="flex flex-col gap-1">
+      <div
+        class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+      >
+        <TooltipNumber number={value} type="value" />
+      </div>
+      <div class="flex flex-col gap-1 justify-end items-end">
+        <div
+          class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+        >
+          <TooltipNumber number={ratio} type="percent" />%
+        </div>
+        <div class="w-3/4 max-w-20">
+          <Progressbar progress={ratio} size="h-1" />
+        </div>
+      </div>
     </div>
   </td>
 
