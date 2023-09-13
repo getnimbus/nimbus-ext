@@ -303,7 +303,8 @@
             Invite
           </div>
         </Link>
-        <a
+
+        <!-- <a
           href="entries/options/index.html?tab=wallets"
           target="_blank"
           class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
@@ -312,7 +313,19 @@
           on:click={() => (showPopover = false)}
         >
           Settings
-        </a>
+        </a> -->
+
+        <Link to="options/?tab=wallets">
+          <div
+            class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
+              darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+            }`}
+            on:click={() => (showPopover = false)}
+          >
+            Settings
+          </div>
+        </Link>
+
         <div
           class={`text-2xl font-medium text-red-500 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
             darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"

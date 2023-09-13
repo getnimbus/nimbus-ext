@@ -640,7 +640,7 @@
       </div>
       <div class="flex flex-col gap-1 justify-end items-end">
         <div
-          class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+          class="xl:text-sm text-xl text-gray-400 font-medium flex justify-end"
         >
           <TooltipNumber number={ratio} type="percent" />%
         </div>
@@ -658,7 +658,7 @@
   >
     <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
       {#if data?.profit}
-        <TooltipNumber number={data?.profit?.averageCost} type="value" />
+        $<TooltipNumber number={data?.profit?.averageCost} type="balance" />
       {:else}
         $0
       {/if}

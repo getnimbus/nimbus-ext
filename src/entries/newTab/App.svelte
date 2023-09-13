@@ -30,6 +30,7 @@
   import PaymentSuccess from "~/layouts/PaymentSuccess.svelte";
   import PaymentFail from "~/layouts/PaymentFail.svelte";
   import Upgrade from "~/layouts/Upgrade.svelte";
+  import Options from "~/layouts/Options.svelte";
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -103,6 +104,10 @@
       <Router history={undefined}>
         <div class="flex flex-col pb-14">
           <Header />
+
+          <Route path="options">
+            <Options />
+          </Route>
 
           <Route path="upgrade">
             <Upgrade />
