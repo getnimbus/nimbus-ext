@@ -632,20 +632,6 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
-      {#if data?.profit}
-        <TooltipNumber number={data?.profit?.averageCost} type="value" />
-      {:else}
-        $0
-      {/if}
-    </div>
-  </td>
-
-  <td
-    class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
     <div class="flex flex-col gap-1">
       <div
         class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
@@ -662,6 +648,20 @@
           <Progressbar progress={ratio} size="h-1" />
         </div>
       </div>
+    </div>
+  </td>
+
+  <td
+    class={`py-3 ${
+      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+    }`}
+  >
+    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
+      {#if data?.profit}
+        <TooltipNumber number={data?.profit?.averageCost} type="value" />
+      {:else}
+        $0
+      {/if}
     </div>
   </td>
 

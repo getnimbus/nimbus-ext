@@ -369,14 +369,14 @@
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    Avg Cost
+                    {MultipleLang.value}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
                     class="text-right xl:text-xs text-base uppercase font-medium"
                   >
-                    {MultipleLang.value}
+                    Avg Cost
                   </div>
                 </th>
                 <th class="py-3">
