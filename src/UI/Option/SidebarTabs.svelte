@@ -7,7 +7,6 @@
     SidebarItem,
     SidebarWrapper,
   } from "flowbite-svelte";
-  import { i18n } from "~/lib/i18n";
 
   import Icon from "~/UI/Option/Icon.svelte";
 
@@ -16,39 +15,7 @@
 
   export let activeTabValue;
   export let darkMode;
-
-  const items = [
-    {
-      label: i18n("optionsPage.tab-title-accounts", "Accounts"),
-      value: "wallets",
-      type: "Wallets",
-    },
-    // {
-    //   label: i18n("optionsPage.tab-title-nft", "NFT"),
-    //   value: "nft",
-    //   type: "NFT",
-    // },
-    {
-      label: i18n("optionsPage.tab-title-dashboard", "Dashboard"),
-      value: "dashboard",
-      type: "Dashboard",
-    },
-    {
-      label: i18n("optionsPage.tab-title-highlight", "Highlight"),
-      value: "highlight",
-      type: "Highlight",
-    },
-    // {
-    //   label: i18n("optionsPage.tab-title-notification", "Notification"),
-    //   value: "notification",
-    //   type: "Notification",
-    // },
-    {
-      label: i18n("optionsPage.tab-title-settings", "Settings"),
-      value: "settings",
-      type: "Settings",
-    },
-  ];
+  export let listSideBar;
 
   const handleClick = (e, tabValue) => {
     e.preventDefault();
@@ -59,25 +26,18 @@
       window.location.pathname + `?tab=${tabValue}`
     );
   };
-
-  $: listSideBar =
-    APP_TYPE.TYPE === "EXT"
-      ? items.filter((item, index) => {
-          return [0, 3].indexOf(index) == -1;
-        })
-      : items.filter((item, index) => {
-          return [1, 2].indexOf(index) == -1;
-        });
 </script>
 
 <Sidebar asideClass="h-full">
   <SidebarWrapper divClass={`${darkMode ? "bg-[#080808]" : "bg-white"}`}>
-    <img
-      src={darkMode ? LogoWhite : Logo}
-      alt=""
-      class="mb-4 mx-auto"
-      width={150}
-    />
+    {#if APP_TYPE.TYPE === "EXT"}
+      <img
+        src={darkMode ? LogoWhite : Logo}
+        alt=""
+        class="mb-4 mx-auto"
+        width={150}
+      />
+    {/if}
     <SidebarGroup>
       {#each listSideBar as item}
         <SidebarItem

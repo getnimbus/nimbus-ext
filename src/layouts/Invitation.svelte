@@ -15,6 +15,7 @@
   import Logo from "~/assets/logo-1.svg";
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -65,7 +66,6 @@
     staleTime: Infinity,
   });
 
-  const queryClient = useQueryClient();
   $: queryUserInfo = createQuery({
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
@@ -295,7 +295,7 @@
 </ErrorBoundary>
 
 {#if showToast}
-  <div class="fixed top-3 right-3 w-[300px] z-10">
+  <div class="fixed top-3 right-3 w-full z-10">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

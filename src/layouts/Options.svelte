@@ -1,0 +1,98 @@
+<script lang="ts">
+  import { onMount } from "svelte";
+  import * as browser from "webextension-polyfill";
+  import { isDarkMode } from "~/store";
+  import { i18n } from "~/lib/i18n";
+
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Mixpanel from "~/components/Mixpanel.svelte";
+  import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
+  import TabWallets from "~/UI/Option/TabWallets.svelte";
+  import TabSettings from "~/UI/Option/TabSettings.svelte";
+  import TabNotification from "~/UI/Option/TabNotification.svelte";
+  import TabNft from "~/UI/Option/TabNFT.svelte";
+
+  const listSideBar = [
+    {
+      label: i18n("optionsPage.tab-title-accounts", "Accounts"),
+      value: "wallets",
+      type: "Wallets",
+    },
+    // {
+    //   label: i18n("optionsPage.tab-title-nft", "NFT"),
+    //   value: "nft",
+    //   type: "NFT",
+    // },
+    // {
+    //   label: i18n("optionsPage.tab-title-notification", "Notification"),
+    //   value: "notification",
+    //   type: "Notification",
+    // },
+    {
+      label: i18n("optionsPage.tab-title-settings", "Settings"),
+      value: "settings",
+      type: "Settings",
+    },
+  ];
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
+
+  let activeTabValue = "wallets";
+
+  $: {
+    browser.storage.onChanged.addListener((changes) => {
+      if (changes?.options?.newValue?.lang) {
+        window.location.reload();
+      }
+    });
+  }
+
+  onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParams = urlParams.get("tab");
+    if (tabParams) {
+      activeTabValue = tabParams;
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + `?tab=${tabParams}`
+      );
+    } else {
+      activeTabValue = "settings";
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + `?tab=settings`
+      );
+    }
+  });
+</script>
+
+<ErrorBoundary>
+  <Mixpanel>
+    <div
+      class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6"
+    >
+      <div class="col-span-1">
+        <SidebarTabs bind:activeTabValue {darkMode} {listSideBar} />
+      </div>
+      <div class="xl:col-span-5 col-span-1">
+        {#if activeTabValue === "wallets"}
+          <TabWallets />
+          <!-- {:else if activeTabValue === "nft"}
+          <TabNft />
+        {:else if activeTabValue === "notification"}
+          <TabNotification /> -->
+        {:else if activeTabValue === "settings"}
+          <TabSettings />
+        {/if}
+      </div>
+    </div>
+  </Mixpanel>
+</ErrorBoundary>
+
+<style windi:preflights:global windi:safelist:global>
+</style>

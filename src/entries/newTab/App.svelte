@@ -4,8 +4,7 @@
   import createHashSource from "./hashHistory";
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { onMount } from "svelte";
-  import { nimbus } from "~/lib/network";
-  import { selectedPackage, isDarkMode, user } from "~/store";
+  import { isDarkMode } from "~/store";
   import * as Sentry from "@sentry/svelte";
 
   import "flowbite/dist/flowbite.css";
@@ -30,6 +29,7 @@
   import PaymentSuccess from "~/layouts/PaymentSuccess.svelte";
   import PaymentFail from "~/layouts/PaymentFail.svelte";
   import Upgrade from "~/layouts/Upgrade.svelte";
+  import Options from "~/layouts/Options.svelte";
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -38,11 +38,6 @@
         staleTime: Infinity,
       },
     },
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
   });
 
   // TODO: Add Lazyload for each routes
@@ -56,33 +51,7 @@
     });
   }
 
-  const getUserInfo = async () => {
-    try {
-      const response = await nimbus.get("/users/me");
-      if (response && response.data) {
-        if (
-          response.data?.plan?.tier &&
-          response.data?.plan?.tier.length !== 0
-        ) {
-          selectedPackage.update(
-            // (n) => (n = response.data?.plan?.tier.toUpperCase())
-            () => "PROFESSIONAL" // TODO: Remove me after integration complete
-          );
-        }
-      } else {
-        selectedPackage.update(
-          () => "PROFESSIONAL" // TODO: Remove me after integration complete
-        );
-      }
-    } catch (e) {
-      console.error("e: ", e);
-    }
-  };
-
   onMount(() => {
-    if (userInfo && Object.keys(userInfo).length !== 0) {
-      getUserInfo();
-    }
     if (
       localStorage.theme === "dark" ||
       (!("theme" in localStorage) &&
@@ -103,6 +72,10 @@
       <Router history={undefined}>
         <div class="flex flex-col pb-14">
           <Header />
+
+          <Route path="options">
+            <Options />
+          </Route>
 
           <Route path="upgrade">
             <Upgrade />

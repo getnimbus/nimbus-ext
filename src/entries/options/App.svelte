@@ -6,18 +6,28 @@
   import { nimbus } from "~/lib/network";
   import { selectedPackage, isDarkMode, user } from "~/store";
   import { Router, Route, createHistory } from "svelte-navigator";
+  import { i18n } from "~/lib/i18n";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
-  import TabWallets from "~/UI/Option/TabWallets.svelte";
-  import TabDashboard from "~/UI/Option/TabDashboard.svelte";
   import TabHighlight from "~/UI/Option/TabHighlight.svelte";
-  import TabNotification from "~/UI/Option/TabNotification.svelte";
   import TabSettings from "~/UI/Option/TabSettings.svelte";
-  import TabNft from "~/UI/Option/TabNFT.svelte";
 
   import User from "~/assets/user.png";
+
+  const listSideBar = [
+    {
+      label: i18n("optionsPage.tab-title-highlight", "Highlight"),
+      value: "highlight",
+      type: "Highlight",
+    },
+    {
+      label: i18n("optionsPage.tab-title-settings", "Settings"),
+      value: "settings",
+      type: "Settings",
+    },
+  ];
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -116,19 +126,11 @@
           class="max-w-[2000px] m-auto w-[100%] flex gap-1 xl:flex-row flex-col"
         >
           <div class="xl:w-64 w-full px-4 py-3">
-            <SidebarTabs bind:activeTabValue {darkMode} />
+            <SidebarTabs bind:activeTabValue {darkMode} {listSideBar} />
           </div>
           <div class="flex-1 px-6 py-4">
-            {#if activeTabValue === "wallets"}
-              <TabWallets />
-              <!-- {:else if activeTabValue === "nft"}
-              <TabNft /> -->
-            {:else if activeTabValue === "dashboard"}
-              <TabDashboard />
-            {:else if activeTabValue === "highlight"}
+            {#if activeTabValue === "highlight"}
               <TabHighlight />
-            {:else if activeTabValue === "notification"}
-              <TabNotification />
             {:else if activeTabValue === "settings"}
               <TabSettings />
             {/if}

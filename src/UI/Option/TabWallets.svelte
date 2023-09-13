@@ -886,7 +886,7 @@
               >
             </div>
             <div
-              class="w-max flex gap-3 overflow-x-auto whitespace-nowrap"
+              class="w-max flex gap-3 overflow-x-auto whitespace-nowrap px-2"
               bind:this={scrollContainer}
               on:scroll={handleScroll}
             >
@@ -1719,7 +1719,7 @@
 </AppOverlay>
 
 {#if show}
-  <div class="fixed top-3 right-3 w-[300px] z-10">
+  <div class="fixed top-3 right-3 w-full z-10">
     <Toast
       transition={blur}
       params={{ amount: 10 }}
