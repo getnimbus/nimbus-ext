@@ -76,7 +76,7 @@
     <div
       class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 flex gap-6 xl:flex-row flex-col"
     >
-      <div class="xl:w-64 w-full">
+      <div class="xl:w-[167px] w-full">
         <SidebarTabs bind:activeTabValue {darkMode} {listSideBar} />
       </div>
       <div class="flex-1">
