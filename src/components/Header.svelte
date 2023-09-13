@@ -9,7 +9,9 @@
     isDarkMode,
     user,
     typeWallet,
+    isShowHeaderMobile,
   } from "~/store";
+  import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { Motion } from "svelte-motion";
   import { showChangeLogAnimationVariants } from "~/utils";
@@ -18,6 +20,7 @@
 
   import Auth from "~/UI/Auth/Auth.svelte";
   import AuthEvm from "~/UI/Auth/AuthEVM.svelte";
+  import DarkModeFooter from "./DarkModeFooter.svelte";
 
   import Logo from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
@@ -31,7 +34,6 @@
   import Search from "~/assets/search.svg";
   import Bell from "~/assets/bell.svg";
   import Crown from "~/assets/crown.svg";
-  import MenuBar from "~/assets/menu-bar.svg";
   import Close from "~/assets/close-menu-bar.svg";
 
   const MultipleLang = {
@@ -44,6 +46,8 @@
   };
 
   const navigate = useNavigate();
+  const absoluteMatch = useMatch("/:page");
+  const queryClient = useQueryClient();
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -65,9 +69,18 @@
     selectedChain = value;
   });
 
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
+
+  let showHeaderMobile = false;
+  isShowHeaderMobile.subscribe((value) => {
+    showHeaderMobile = value;
+  });
+
   let timerDebounce;
   let search = "";
-  let isShowHeaderMobile = false;
 
   const debounceSearch = (value) => {
     clearTimeout(timerDebounce);
@@ -75,10 +88,6 @@
       search = value;
     }, 300);
   };
-
-  const absoluteMatch = useMatch("/:page");
-
-  const queryClient = useQueryClient();
 
   const validateAddress = async (address: string) => {
     try {
@@ -88,6 +97,14 @@
       console.error(e);
       return undefined;
     }
+  };
+
+  const getUserInfo = async () => {
+    const response: any = await nimbus.get("/users/me");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response?.data;
   };
 
   $: queryUserInfo = createQuery({
@@ -104,14 +121,6 @@
       queryClient.invalidateQueries(["list-address"]);
     },
   });
-
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
-    return response?.data;
-  };
 
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
@@ -136,11 +145,13 @@
 
 <div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">
   <div class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]">
-    <Link to="/">
+    <Link
+      to={`/?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`}
+    >
       <img
         src={Logo}
         alt="logo"
-        class="-ml-8 xl:w-[177px] w-[197px] xl:h-[60px] h-[80px]"
+        class="-ml-8 xl:w-[177px] w-[220px] xl:h-[60px] h-[100px]"
       />
     </Link>
 
@@ -205,7 +216,9 @@
           </span>
         </div>
       {:else}
-        <Link to="/">
+        <Link
+          to={`/?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`}
+        >
           <div
             class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all ${
               darkMode
@@ -384,14 +397,16 @@
       </Link>
     </div>
 
-    <!-- Search -->
-    <div class="flex items-center justify-between gap-6 xl:gap-3">
+    <div
+      class="flex items-center justify-between gap-6 xl:gap-3 xl:-mr-0 -mr-8"
+    >
+      <!-- Search -->
       <div
-        class={`xl:pl-4 pl-3 flex items-center rounded-[1000px] ${
+        class={`pl-4 flex items-center rounded-[1000px] ${
           darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
         }`}
       >
-        <img src={Search} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+        <img src={Search} alt="" class="xl:w-5 xl:h-5 w-9 h-9" />
         <input
           on:keyup={({ target: { value } }) => debounceSearch(value)}
           on:keydown={async (event) => {
@@ -419,12 +434,13 @@
           value={search}
           placeholder={MultipleLang.search_placeholder}
           type="text"
-          class={`xl:w-full w-[400px] xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-xl placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0 ${
+          class={`xl:w-full w-[400px] xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-2xl placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0 ${
             darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
           }`}
         />
       </div>
 
+      <!-- Change log -->
       <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
         <div
           class={`rounded-full flex justify-center items-center w-full h-full ${
@@ -448,13 +464,8 @@
       </div> -->
 
       <!-- <Auth /> -->
-      <AuthEvm />
-
-      <div
-        class="block text-white xl:hidden"
-        on:click={() => (isShowHeaderMobile = true)}
-      >
-        <img src={MenuBar} alt="" class="w-10 h-10" />
+      <div class="xl:block hidden">
+        <AuthEvm />
       </div>
     </div>
   </div>
@@ -463,204 +474,88 @@
 <!-- Mobile header -->
 <div
   class={`fixed inset-0 h-screen w-full mobile mobile-container ${
-    isShowHeaderMobile
+    showHeaderMobile
       ? "opacity-100 transform translate-x-[0px]"
       : "opacity-0 transform translate-x-[-100vw]"
   }`}
 >
-  <div class="max-w-[100vw] m-auto w-[90%] h-full flex flex-col gap-10">
-    <div class="flex items-center justify-between py-3">
+  <div
+    class="max-w-[100vw] m-auto w-[90%] h-full flex flex-col gap-10 relative"
+  >
+    <div class="flex items-center justify-between py-3 border-b-[1px]">
       <img
         src={Logo}
         alt=""
-        class="-ml-8 xl:w-[177px] w-[197px] xl:h-[60px] h-[80px]"
+        class="-ml-6 xl:w-[177px] w-[220px] xl:h-[60px] h-[100px]"
       />
-      <div on:click={() => (isShowHeaderMobile = false)}>
+      <div
+        class="-mr-2"
+        on:click={() => {
+          isShowHeaderMobile.update((n) => (n = false));
+        }}
+      >
         <img src={Close} alt="" class="w-10 h-10" />
       </div>
     </div>
-    <div
-      class="flex flex-col justify-between gap-6 border-b-[0.5px] border-white pb-6"
-    >
-      <Link to="/">
-        <div
-          class={`flex items-center gap-3 text-white px-4 py-3
-            ${
-              darkMode
-                ? navActive === "portfolio"
-                  ? "bg-[#212121] rounded-[1000px] opacity-100"
-                  : "opacity-70"
-                : navActive === "portfolio"
-                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-                : "opacity-70"
-            }
-          `}
-          on:click={() => {
-            isShowHeaderMobile = false;
-            navActive = "portfolio";
-          }}
-        >
-          <img src={PortfolioIcon} alt="" width="32" height="32" />
-          <span class="text-4xl font-medium">
-            {MultipleLang.portfolio}
-          </span>
-        </div>
-      </Link>
 
-      {#if selectedWallet === "0xc02ad7b9a9121fc849196e844dc869d2250df3a6"}
+    <div class="flex justify-between items-center px-4 text-white">
+      <div class="text-3xl">
+        {#if userInfo && Object.keys(userInfo).length !== 0}
+          GM 👋, {shorterAddress(localStorage.getItem("evm_address") || "")}
+        {/if}
+      </div>
+      <DarkModeFooter />
+    </div>
+
+    <div class="flex flex-col gap-5">
+      <Link
+        to={`${
+          userInfo && Object.keys(userInfo).length !== 0 ? "upgrade" : "/"
+        }`}
+      >
         <div
-          class={`flex items-center gap-3 text-white px-4 py-3 ${
-            darkMode
-              ? navActive === "analytic"
-                ? "bg-[#212121] rounded-[1000px] opacity-100"
-                : "opacity-70"
-              : navActive === "analytic"
-              ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-              : "opacity-70"
-          }
-          `}
-          on:click={() => {
-            navigate(
-              `/analytic?type=EVM&chain=ALL&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
-            );
-            isShowHeaderMobile = false;
-          }}
-        >
-          <img src={AnalyticIcon} alt="" width="32" height="32" />
-          <span class="flex gap-[2px]">
-            <span class="text-4xl font-medium">
-              {MultipleLang.analytics}
-            </span>
-            <span class="flex items-center gap-[1px] -mt-2">
-              <img src={Crown} alt="" width="16" height="16" />
-              <span class="text-base font-medium text-[#FFB800] -mt-[1px]"
-                >Pro</span
-              >
-            </span>
-          </span>
-        </div>
-      {:else}
-        <Link
-          to={`${
-            userInfo && Object.keys(userInfo).length !== 0 ? "analytic" : "/"
-          }`}
-        >
-          <div
-            class={`flex items-center gap-3 text-white px-4 py-3 
+          class={`flex items-center gap-3 text-white px-5 py-6 
             ${
               darkMode
-                ? navActive === "analytic"
+                ? navActive === "upgrade"
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
-                : navActive === "analytic"
+                : navActive === "upgrade"
                 ? "bg-[#525B8C] rounded-[1000px] opacity-100"
                 : "opacity-70"
             }
           `}
-            on:click={() => {
-              if (userInfo && Object.keys(userInfo).length !== 0) {
-                navActive = "analytic";
-                queryClient.invalidateQueries(["users-me"]);
-              } else {
-                user.update((n) => (n = {}));
-                wallet.update((n) => (n = ""));
-                chain.update((n) => (n = ""));
-                typeWallet.update((n) => (n = ""));
-                queryClient.invalidateQueries(["list-address"]);
-              }
-              isShowHeaderMobile = false;
-            }}
-          >
-            <img src={AnalyticIcon} alt="" width="32" height="32" />
-            <span class="flex gap-[2px]">
-              <span class="text-4xl font-medium">
-                {MultipleLang.analytics}
-              </span>
-              <span class="flex items-center gap-[1px] -mt-2">
-                <img src={Crown} alt="" width="16" height="16" />
-                <span class="text-base font-medium text-[#FFB800] -mt-[1px]"
-                  >Pro</span
-                >
-              </span>
-            </span>
+          on:click={() => {
+            if (userInfo && Object.keys(userInfo).length !== 0) {
+              navActive = "upgrade";
+              queryClient.invalidateQueries(["users-me"]);
+            } else {
+              user.update((n) => (n = {}));
+              wallet.update((n) => (n = ""));
+              chain.update((n) => (n = ""));
+              typeWallet.update((n) => (n = ""));
+              queryClient.invalidateQueries(["list-address"]);
+            }
+            isShowHeaderMobile.update((n) => (n = false));
+          }}
+        >
+          <div class="flex items-center gap-2">
+            <span class="text-3xl font-medium">Upgrade</span>
+            <svg
+              width="26"
+              height="26"
+              viewBox="0 0 16 16"
+              fill="#ffb800"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M14.6629 3.5843C14.7217 3.57771 14.7811 3.58901 14.8339 3.61685C14.8867 3.64495 14.9305 3.68852 14.9599 3.74223C14.9893 3.79594 15.0031 3.85745 14.9994 3.91919L14.4836 12.7921H1.51642L1.00059 3.91919C0.996892 3.85745 1.01055 3.79592 1.0399 3.74216C1.06924 3.68841 1.11299 3.64476 1.16578 3.6166C1.21856 3.58843 1.27808 3.57697 1.33702 3.58362C1.39596 3.59026 1.45175 3.61473 1.49755 3.65401L4.60499 6.30708L7.76082 2.11502C7.79036 2.07895 7.82704 2.04999 7.86833 2.03014C7.90962 2.01028 7.95455 2 8.00001 2C8.04548 2 8.0904 2.01028 8.1317 2.03014C8.17299 2.04999 8.20967 2.07895 8.23921 2.11502L11.395 6.30708L14.5025 3.65401C14.5484 3.61511 14.6041 3.5909 14.6629 3.5843ZM1.55334 13.4273L1.55781 13.5041C1.577 13.827 1.71333 14.1301 1.93906 14.3518C2.1648 14.5735 2.46298 14.6971 2.77297 14.6976H13.2271C13.537 14.6971 13.8352 14.5735 14.061 14.3518C14.2867 14.1301 14.423 13.827 14.4422 13.5041L14.4467 13.4273H1.55334Z"
+                fill="#ffb800"
+              />
+            </svg>
           </div>
-        </Link>
-      {/if}
-
-      <Link
-        to={`${
-          userInfo && Object.keys(userInfo).length !== 0 ? "transactions" : "/"
-        }`}
-      >
-        <div
-          class={`flex items-center gap-3 text-white px-4 py-3
-             ${
-               darkMode
-                 ? navActive === "transactions"
-                   ? "bg-[#212121] rounded-[1000px] opacity-100"
-                   : "opacity-70"
-                 : navActive === "transactions"
-                 ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-                 : "opacity-70"
-             }
-          `}
-          on:click={() => {
-            if (userInfo && Object.keys(userInfo).length !== 0) {
-              navActive = "transactions";
-              chain.update((n) => (n = "ETH"));
-              queryClient.invalidateQueries(["users-me"]);
-            } else {
-              user.update((n) => (n = {}));
-              wallet.update((n) => (n = ""));
-              chain.update((n) => (n = ""));
-              typeWallet.update((n) => (n = ""));
-              queryClient.invalidateQueries(["list-address"]);
-            }
-            isShowHeaderMobile = false;
-          }}
-        >
-          <img src={TransactionsIcon} alt="" width="32" height="32" />
-          <span class="text-4xl font-medium">
-            {MultipleLang.transactions}
-          </span>
-        </div>
-      </Link>
-
-      <Link
-        to={`${
-          userInfo && Object.keys(userInfo).length !== 0 ? "whales" : "/"
-        }`}
-      >
-        <div
-          class={`flex items-center gap-3 text-white px-4 py-3
-             ${
-               darkMode
-                 ? navActive === "whales"
-                   ? "bg-[#212121] rounded-[1000px] opacity-100"
-                   : "opacity-70"
-                 : navActive === "whales"
-                 ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-                 : "opacity-70"
-             }
-          `}
-          on:click={() => {
-            if (userInfo && Object.keys(userInfo).length !== 0) {
-              navActive = "whales";
-              queryClient.invalidateQueries(["users-me"]);
-            } else {
-              user.update((n) => (n = {}));
-              wallet.update((n) => (n = ""));
-              chain.update((n) => (n = ""));
-              typeWallet.update((n) => (n = ""));
-              queryClient.invalidateQueries(["list-address"]);
-            }
-            isShowHeaderMobile = false;
-          }}
-        >
-          <img src={WhaleIcon} alt="" width="32" height="32" />
-          <span class="text-4xl font-medium">
-            {MultipleLang.whales}
-          </span>
         </div>
       </Link>
 
@@ -668,7 +563,7 @@
         to={`${userInfo && Object.keys(userInfo).length !== 0 ? "news" : "/"}`}
       >
         <div
-          class={`flex items-center gap-3 text-white px-4 py-3 
+          class={`flex items-center gap-3 text-white px-5 py-6 
             ${
               darkMode
                 ? navActive === "news"
@@ -690,28 +585,80 @@
               typeWallet.update((n) => (n = ""));
               queryClient.invalidateQueries(["list-address"]);
             }
-            isShowHeaderMobile = false;
+            isShowHeaderMobile.update((n) => (n = false));
           }}
         >
-          <img src={NewsIcon} alt="" width="32" height="32" />
-          <span class="text-4xl font-medium">
+          <img src={NewsIcon} alt="" width="40" height="40" />
+          <span class="text-3xl font-medium">
             {MultipleLang.news}
           </span>
         </div>
       </Link>
+
+      <Link
+        to={`${
+          userInfo && Object.keys(userInfo).length !== 0 ? "invitation" : "/"
+        }`}
+      >
+        <div
+          class={`flex items-center gap-3 text-white px-5 py-6 
+            ${
+              darkMode
+                ? navActive === "invitation"
+                  ? "bg-[#212121] rounded-[1000px] opacity-100"
+                  : "opacity-70"
+                : navActive === "invitation"
+                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                : "opacity-70"
+            }
+          `}
+          on:click={() => {
+            if (userInfo && Object.keys(userInfo).length !== 0) {
+              navActive = "invitation";
+              queryClient.invalidateQueries(["users-me"]);
+            } else {
+              user.update((n) => (n = {}));
+              wallet.update((n) => (n = ""));
+              chain.update((n) => (n = ""));
+              typeWallet.update((n) => (n = ""));
+              queryClient.invalidateQueries(["list-address"]);
+            }
+            isShowHeaderMobile.update((n) => (n = false));
+          }}
+        >
+          <span class="text-3xl font-medium">Invite</span>
+        </div>
+      </Link>
+
+      <Link to="options/?tab=wallets">
+        <div
+          class={`flex items-center gap-3 text-white px-5 py-6 
+            ${
+              darkMode
+                ? navActive === "options"
+                  ? "bg-[#212121] rounded-[1000px] opacity-100"
+                  : "opacity-70"
+                : navActive === "options"
+                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                : "opacity-70"
+            }
+          `}
+          on:click={() => {
+            navActive = "options";
+            isShowHeaderMobile.update((n) => (n = false));
+          }}
+        >
+          <img src={SettingsIcon} alt="" width="40" height="40" />
+          <span class="text-3xl font-medium">Settings</span>
+        </div>
+      </Link>
     </div>
 
-    <Link to="options/?tab=wallets">
-      <div
-        class="flex items-center gap-3 text-white px-4"
-        on:click={() => {
-          isShowHeaderMobile = false;
-        }}
-      >
-        <img src={SettingsIcon} alt="" width="32" height="32" />
-        <span class="text-4xl font-medium">Settings</span>
+    <div class="absolute bottom-[200px] left-0">
+      <div class="xl:hidden block px-4">
+        <AuthEvm />
       </div>
-    </Link>
+    </div>
   </div>
 </div>
 

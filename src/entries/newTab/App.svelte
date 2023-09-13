@@ -30,6 +30,7 @@
   import PaymentFail from "~/layouts/PaymentFail.svelte";
   import Upgrade from "~/layouts/Upgrade.svelte";
   import Options from "~/layouts/Options.svelte";
+  import MobileHeaderTab from "~/components/MobileHeaderTab.svelte";
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -70,7 +71,7 @@
   <QueryClientProvider client={queryClient}>
     <Mixpanel>
       <Router history={undefined}>
-        <div class="flex flex-col pb-14">
+        <div class="flex flex-col xl:pb-14 pb-40">
           <Header />
 
           <Route path="options">
@@ -141,10 +142,15 @@
             <Portfolio />
           </Route>
         </div>
+        <div class="footer xl:relative fixed bottom-0 left-0 z-30 w-full">
+          <div class="xl:block hidden">
+            <Footer />
+          </div>
+          <div class="xl:hidden block">
+            <MobileHeaderTab />
+          </div>
+        </div>
       </Router>
-      <div class="footer">
-        <Footer />
-      </div>
     </Mixpanel>
   </QueryClientProvider>
 </ErrorBoundary>
