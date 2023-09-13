@@ -116,12 +116,10 @@
         <a
           href="https://t.me/getnimbus"
           target="_blank"
-          class="transition-all xl:w-6 xl:h-6 w-12 h-12"
+          class="transition-all xl:w-5 xl:h-5 w-11 h-11"
         >
           <svg
             fill={darkMode ? "#fff" : "#000"}
-            width="24px"
-            height="24px"
             viewBox="0 0 20 20"
             class="hover:fill-[#3b82f6]"
             xmlns="http://www.w3.org/2000/svg"
