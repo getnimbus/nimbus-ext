@@ -141,7 +141,6 @@
   }
 
   $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
-  $: console.log("selectedWallet: ", selectedWallet);
 </script>
 
 <div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">
@@ -499,7 +498,6 @@
       </div>
     </div>
 
-<<<<<<< HEAD
     <div class="flex justify-between items-center px-4 text-white">
       <div class="text-3xl">
         {#if userInfo && Object.keys(userInfo).length !== 0}
@@ -517,48 +515,6 @@
       >
         <div
           class={`flex items-center gap-3 text-white px-5 py-6 
-=======
-      {#if selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
-        <div
-          class={`flex items-center gap-3 text-white px-4 py-3 ${
-            darkMode
-              ? navActive === "analytic"
-                ? "bg-[#212121] rounded-[1000px] opacity-100"
-                : "opacity-70"
-              : navActive === "analytic"
-              ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-              : "opacity-70"
-          }
-          `}
-          on:click={() => {
-            navigate(
-              `/analytic?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
-            );
-            isShowHeaderMobile = false;
-          }}
-        >
-          <img src={AnalyticIcon} alt="" width="32" height="32" />
-          <span class="flex gap-[2px]">
-            <span class="text-4xl font-medium">
-              {MultipleLang.analytics}
-            </span>
-            <span class="flex items-center gap-[1px] -mt-2">
-              <img src={Crown} alt="" width="16" height="16" />
-              <span class="text-base font-medium text-[#FFB800] -mt-[1px]"
-                >Pro</span
-              >
-            </span>
-          </span>
-        </div>
-      {:else}
-        <Link
-          to={`${
-            userInfo && Object.keys(userInfo).length !== 0 ? "analytic" : "/"
-          }`}
-        >
-          <div
-            class={`flex items-center gap-3 text-white px-4 py-3 
->>>>>>> main
             ${
               darkMode
                 ? navActive === "upgrade"

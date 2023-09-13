@@ -85,7 +85,7 @@
 </script>
 
 <div class="flex items-center justify-evenly py-2">
-  {#if selectedWallet === "0xc02ad7b9a9121fc849196e844dc869d2250df3a6"}
+  {#if selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
     <div
       class={`flex items-center gap-2 cursor-pointer hover:opacity-100 transition-all ${
         darkMode
@@ -101,7 +101,7 @@
         navigate(
           `/?type=EVM&chain=${
             selectedChain || "All"
-          }&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
+          }&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
         );
       }}
     >
@@ -155,7 +155,7 @@
         navigate(
           `/analytic?type=EVM&chain=${
             selectedChain || "All"
-          }&address=0xc02ad7b9a9121fc849196e844dc869d2250df3a6`
+          }&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
         );
       }}
     >
