@@ -15,6 +15,7 @@
   import Logo from "~/assets/logo-1.svg";
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -65,7 +66,6 @@
     staleTime: Infinity,
   });
 
-  const queryClient = useQueryClient();
   $: queryUserInfo = createQuery({
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
