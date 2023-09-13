@@ -42,11 +42,13 @@
 
   let activeTabValue = "wallets";
 
-  browser.storage.onChanged.addListener((changes) => {
-    if (changes?.options?.newValue?.lang) {
-      window.location.reload();
-    }
-  });
+  $: {
+    browser.storage.onChanged.addListener((changes) => {
+      if (changes?.options?.newValue?.lang) {
+        window.location.reload();
+      }
+    });
+  }
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
