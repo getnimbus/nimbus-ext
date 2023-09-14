@@ -273,7 +273,7 @@
         </div>
       {:else}
         <div
-          class={`flex flex-col gap-4 relative ${
+          class={`flex flex-col gap-4 relative xl:pb-0 pb-6 ${
             $query.isError ? "h-[200px]" : ""
           }`}
         >
