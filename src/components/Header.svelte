@@ -35,6 +35,7 @@
   import Bell from "~/assets/bell.svg";
   import Crown from "~/assets/crown.svg";
   import Close from "~/assets/close-menu-bar.svg";
+  import Chat from "~/assets/chat.svg";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -708,6 +709,21 @@
             <span class="text-3xl font-medium">Invite</span>
           </div>
         </Link>
+      </div>
+
+      <div
+        on:click={() => {
+          isShowHeaderMobile.update((n) => (n = false));
+        }}
+      >
+        <a
+          href="https://nimbus.featurebase.app/"
+          target="_blank"
+          class="flex items-center gap-3 text-white px-5 py-6 opacity-70"
+        >
+          <img src={Chat} alt="" width="40" height="40" />
+          <span class="text-3xl font-medium">Feedback</span>
+        </a>
       </div>
 
       <div
