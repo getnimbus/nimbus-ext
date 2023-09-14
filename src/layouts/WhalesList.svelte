@@ -156,7 +156,7 @@
         }`}
       >
         {#if isLoading}
-          <table class="table-auto xl:w-full w-[1800px]">
+          <table class="table-auto xl:w-full w-[2200px]">
             <thead>
               <tr class="bg_f4f5f8">
                 <th
@@ -262,7 +262,7 @@
             <loading-icon />
           </div>
         {:else}
-          <table class="table-auto xl:w-full w-[1800px]">
+          <table class="table-auto xl:w-full w-[2200px]">
             <thead
               class={isSticky ? "sticky top-0 z-10" : ""}
               bind:this={tableHeader}
