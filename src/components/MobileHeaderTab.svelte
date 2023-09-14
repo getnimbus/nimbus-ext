@@ -84,7 +84,7 @@
   $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
 </script>
 
-<div class="grid grid-cols-4 justify-center items-center pt-4 pb-6">
+<div class="grid grid-cols-4 justify-center items-center pt-4 pb-8">
   {#if selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
     <div
       class={`flex flex-col items-center gap-2 cursor-pointer hover:opacity-100 transition-all ${
