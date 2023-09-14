@@ -255,7 +255,7 @@
       <img src={userInfo.picture} alt="" class="object-cover w-full h-full" />
     </div>
 
-    <div class="mb-7">
+    <div class="mb-7 xl:hidden">
       <DarkModeFooter />
     </div>
 
