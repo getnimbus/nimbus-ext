@@ -1388,7 +1388,7 @@
                     </div>
                   {/if}
                 </div>
-                {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX"}
+                {#if typeWalletAddress === "EVM"}
                   <Select
                     type="chain"
                     positionSelectList="right-0"

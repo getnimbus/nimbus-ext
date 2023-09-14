@@ -170,6 +170,8 @@
   }
 
   $: withinLast24Hours = dayjs().diff(dayjs(data?.last_transferred_at), "hour");
+
+  $: console.log("typeWalletAddress: ", typeWalletAddress);
 </script>
 
 <tr
@@ -252,7 +254,7 @@
           height="30"
           class="rounded-full"
         />
-        {#if typeWalletAddress !== "BTC"}
+        {#if typeWalletAddress === "EVM"}
           <div class="absolute -top-2 -right-1">
             <img
               src={detectedChain(data.chain)}
