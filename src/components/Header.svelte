@@ -697,7 +697,7 @@
           <a
             href="https://github.com/getnimbus"
             target="_blank"
-            class="hover:text-[#3b82f6] transition-all w-15 h-15"
+            class="hover:text-[#3b82f6] transition-all w-14 h-14"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
               ><path
@@ -709,7 +709,7 @@
           <a
             href="https://twitter.com/get_nimbus"
             target="_blank"
-            class="hover:text-[#3b82f6] transition-all w-12 h-12"
+            class="hover:text-[#3b82f6] transition-all w-13 h-13"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
               ><path
