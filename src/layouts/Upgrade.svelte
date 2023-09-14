@@ -73,7 +73,7 @@
 
 <ErrorBoundary>
   <div
-    class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] py-8 flex flex-col gap-2"
+    class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-2"
   >
     <div class="xl:text-5xl text-7xl font-medium text-center">Upgrade Plan</div>
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}

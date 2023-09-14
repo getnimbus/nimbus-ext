@@ -10,6 +10,7 @@
     user,
     isFirstTimeLogin,
     isDarkMode,
+    isShowHeaderMobile,
   } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
@@ -247,10 +248,31 @@
 {#if Object.keys(userInfo).length !== 0}
   <div class="relative">
     <div
-      class="xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden cursor-pointer"
+      class="xl:block hidden xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden cursor-pointer"
       on:click={() => (showPopover = !showPopover)}
     >
-      <img src={userInfo.picture} alt="" class="object-cover w-full h-full" />
+      <img src={userInfo?.picture} alt="" class="object-cover w-full h-full" />
+    </div>
+
+    <div class="xl:hidden flex items-center gap-5">
+      <div
+        class="xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden"
+      >
+        <img
+          src={userInfo?.picture}
+          alt=""
+          class="object-cover w-full h-full"
+        />
+      </div>
+      <div
+        class="text-3xl font-medium text-white"
+        on:click={() => {
+          handleSignOut();
+          isShowHeaderMobile.update((n) => (n = false));
+        }}
+      >
+        Log out
+      </div>
     </div>
 
     {#if showPopover}
@@ -329,7 +351,7 @@
           }`}
           on:click={handleSignOut}
         >
-          Logout
+          Log out
         </div>
       </div>
     {/if}
@@ -339,8 +361,9 @@
     on:click={() => {
       connect();
       mixpanel.track("user_connect_wallet");
+      isShowHeaderMobile.update((n) => (n = false));
     }}
-    class="text-2xl font-semibold text-white cursor-pointer xl:text-base"
+    class="text-3xl font-semibold text-white cursor-pointer xl:text-base"
   >
     Connect Wallet
   </div>

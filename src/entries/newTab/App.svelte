@@ -52,7 +52,7 @@
   <QueryClientProvider client={queryClient}>
     <Mixpanel>
       <Router history={undefined}>
-        <div class="flex flex-col pb-14">
+        <div class="flex flex-col xl:pb-14 pb-40">
           <Header />
 
           <Route path="options">
@@ -293,10 +293,15 @@
             {/await}
           </Route>
         </div>
+        <div class="footer xl:relative fixed bottom-0 left-0 z-30 w-full">
+          <div class="xl:block hidden">
+            <Footer />
+          </div>
+          <div class="xl:hidden block">
+            <MobileHeaderTab />
+          </div>
+        </div>
       </Router>
-      <div class="footer">
-        <Footer />
-      </div>
     </Mixpanel>
   </QueryClientProvider>
 </ErrorBoundary>
@@ -317,7 +322,7 @@
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 40px;
   }
   :global(body.dark) .footer {
-    background: #080808;
+    background: #202020;
     box-shadow: rgba(0, 0, 0, 1) 0px 0px 5px;
   }
 

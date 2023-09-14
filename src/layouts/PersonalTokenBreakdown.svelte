@@ -547,7 +547,7 @@
     </div>
   </div>
 
-  <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
+  <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-26">
     <div
       class="custom_token_breakdown_container rounded-[20px] xl:p-8 p-6 xl:shadow-md"
     >
