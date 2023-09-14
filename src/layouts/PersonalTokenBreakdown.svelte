@@ -1133,7 +1133,7 @@
                                     height="30"
                                     class="rounded-full"
                                   />
-                                  {#if typeWalletAddress !== "BTC"}
+                                  {#if typeWalletAddress === "EVM"}
                                     <div class="absolute -top-2 -right-1">
                                       <img
                                         src={detectedChain(data.chain)}
