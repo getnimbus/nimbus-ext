@@ -1031,7 +1031,9 @@
                                   variant="disabled"
                                 >
                                   <div
-                                    class={`${darkMode ? "text-gray-400" : ""}`}
+                                    class={`text-base ${
+                                      darkMode ? "text-gray-400" : ""
+                                    }`}
                                   >
                                     {suggestion.name}
                                   </div>
