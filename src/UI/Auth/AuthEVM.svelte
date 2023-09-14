@@ -254,30 +254,25 @@
     >
       <img src={userInfo.picture} alt="" class="object-cover w-full h-full" />
     </div>
-
-    <div class="xl:hidden flex items-center gap-10">
-      <div class="flex items-center gap-5">
-        <div
-          class="xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden"
-        >
-          <img
-            src={userInfo.picture}
-            alt=""
-            class="object-cover w-full h-full"
-          />
-        </div>
-        <div
-          class="text-3xl font-medium text-white"
-          on:click={() => {
-            handleSignOut();
-            isShowHeaderMobile.update((n) => (n = false));
-          }}
-        >
-          Log out
-        </div>
-      </div>
-
+    <div class="mb-7">
       <DarkModeFooter />
+    </div>
+
+    <div class="xl:hidden flex items-center gap-5">
+      <div
+        class="xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden"
+      >
+        <img src={userInfo.picture} alt="" class="object-cover w-full h-full" />
+      </div>
+      <div
+        class="text-3xl font-medium text-white"
+        on:click={() => {
+          handleSignOut();
+          isShowHeaderMobile.update((n) => (n = false));
+        }}
+      >
+        Log out
+      </div>
     </div>
 
     {#if showPopover}
