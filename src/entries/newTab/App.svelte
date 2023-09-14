@@ -11,6 +11,7 @@
   import Footer from "~/components/Footer.svelte";
   import Header from "~/components/Header.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
+  import "~/components/Loading.custom.svelte";
 
   const queryClient = new QueryClient({
     defaultOptions: {

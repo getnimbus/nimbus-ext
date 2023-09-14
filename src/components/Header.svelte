@@ -132,7 +132,6 @@
   }
 
   $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
-  $: console.log("selectedWallet: ", selectedWallet);
 </script>
 
 <div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">
