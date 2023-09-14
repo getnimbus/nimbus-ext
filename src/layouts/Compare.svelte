@@ -31,6 +31,7 @@
   import LeftArrowBlack from "~/assets/left-arrow-black.svg";
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
+  import LoadingPremium from "~/components/LoadingPremium.svelte";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -858,7 +859,7 @@
             </div>
             {#if $query.isFetching && $queryPersonalTag.isFetching}
               <div class="flex items-center justify-center h-[465px]">
-                <loading-icon />
+                <LoadingPremium />
               </div>
             {:else}
               <div class="h-full">
@@ -935,7 +936,7 @@
                 <div class="h-full flex flex-col gap-5 mt-3">
                   {#if $query.isFetching}
                     <div class="flex items-center justify-center h-[433px]">
-                      <loading-icon />
+                      <LoadingPremium />
                     </div>
                   {:else}
                     <div class="h-full">
@@ -983,7 +984,7 @@
                     Compare with
                   </div>
                   <div class="flex items-center justify-center h-full">
-                    <loading-icon />
+                    <LoadingPremium />
                   </div>
                 {:else}
                   <div class="h-full">
@@ -1141,7 +1142,7 @@
       <div class="xl:text-2xl text-4xl font-medium mb-3">Performance</div>
       {#if $query.isFetching}
         <div class="flex items-center justify-center h-[433px]">
-          <loading-icon />
+          <LoadingPremium />
         </div>
       {:else}
         <div class="h-full">
@@ -1200,7 +1201,7 @@
       </div>
       {#if $query.isFetching}
         <div class="flex items-center justify-center h-[465px]">
-          <loading-icon />
+          <LoadingPremium />
         </div>
       {:else}
         <div class="h-full">

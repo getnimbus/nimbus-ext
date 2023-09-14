@@ -170,8 +170,6 @@
   }
 
   $: withinLast24Hours = dayjs().diff(dayjs(data?.last_transferred_at), "hour");
-
-  $: console.log("typeWalletAddress: ", typeWalletAddress);
 </script>
 
 <tr

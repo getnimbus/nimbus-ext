@@ -1,35 +1,17 @@
 <script lang="ts">
-  import { Router, Route, createHistory } from "svelte-navigator";
-  import * as browser from "webextension-polyfill";
-  import createHashSource from "./hashHistory";
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { onMount } from "svelte";
+  import { Route, Router } from "svelte-navigator";
+  import * as browser from "webextension-polyfill";
   import { isDarkMode } from "~/store";
-  import * as Sentry from "@sentry/svelte";
 
   import "flowbite/dist/flowbite.css";
 
-  import Header from "~/components/Header.svelte";
-  import Footer from "~/components/Footer.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Footer from "~/components/Footer.svelte";
+  import Header from "~/components/Header.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
-  import WhalesList from "~/layouts/WhalesList.svelte";
-  import Portfolio from "~/layouts/Portfolio.svelte";
-  import News from "~/layouts/News.svelte";
-  import Analytic from "~/layouts/Analytic.svelte";
-  import Transactions from "~/layouts/Transactions.svelte";
-  import TokenDetail from "~/layouts/TokenDetail.svelte";
-  import NftDetail from "~/layouts/NFTDetail.svelte";
-  import PositionDetail from "~/layouts/PositionDetail.svelte";
-  import PersonalTokenBreakdown from "~/layouts/PersonalTokenBreakdown.svelte";
-  import CustomVirtualPortfolio from "~/layouts/CustomVirtualPortfolio.svelte";
-  import VirtualPortfolio from "~/layouts/VirtualPortfolio.svelte";
-  import Compare from "~/layouts/Compare.svelte";
-  import Invitation from "~/layouts/Invitation.svelte";
-  import PaymentSuccess from "~/layouts/PaymentSuccess.svelte";
-  import PaymentFail from "~/layouts/PaymentFail.svelte";
-  import Upgrade from "~/layouts/Upgrade.svelte";
-  import Options from "~/layouts/Options.svelte";
+  import "~/components/Loading.custom.svelte";
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -74,71 +56,241 @@
           <Header />
 
           <Route path="options">
-            <Options />
+            {#await import("~/layouts/Options.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="upgrade">
-            <Upgrade />
+            {#await import("~/layouts/Upgrade.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="payments/success">
-            <PaymentSuccess />
+            {#await import("~/layouts/PaymentSuccess.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="payments/fail">
-            <PaymentFail />
+            {#await import("~/layouts/PaymentFail.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="personal-token-breakdown">
-            <PersonalTokenBreakdown />
+            {#await import("~/layouts/PersonalTokenBreakdown.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="custom-virtual-portfolio">
-            <CustomVirtualPortfolio />
+            {#await import("~/layouts/CustomVirtualPortfolio.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="virtual-portfolio">
-            <VirtualPortfolio />
+            {#await import("~/layouts/VirtualPortfolio.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="compare">
-            <Compare />
+            {#await import("~/layouts/Compare.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="news">
-            <News />
+            {#await import("~/layouts/News.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="invitation">
-            <Invitation />
+            {#await import("~/layouts/Invitation.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="whales">
-            <WhalesList />
+            {#await import("~/layouts/WhalesList.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="position-detail">
-            <TokenDetail />
+            {#await import("~/layouts/TokenDetail.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="nft-detail">
-            <NftDetail />
+            {#await import("~/layouts/NFTDetail.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="test-detail">
-            <PositionDetail />
+            {#await import("~/layouts/PositionDetail.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="analytic">
-            <Analytic />
+            {#await import("~/layouts/Analytic.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="transactions">
-            <Transactions />
+            {#await import("~/layouts/Transactions.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
 
           <Route path="*">
-            <Portfolio />
+            {#await import("~/layouts/Portfolio.svelte")}
+              <div class="h-screen flex justify-center items-center">
+                <loading-icon />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="h-screen flex justify-center items-center">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
           </Route>
         </div>
       </Router>
