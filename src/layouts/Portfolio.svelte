@@ -957,7 +957,7 @@
     {/if}
   </span>
   <span slot="body">
-    <div class="max-w-[2000px] m-auto xl:w-[90%] w-[96%] -mt-26">
+    <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-26">
       {#if isLoadingSync}
         <div
           class="portfolio_container text-xl font-medium flex flex-col gap-5 justify-center items-center rounded-[20px] p-6 h-screen"

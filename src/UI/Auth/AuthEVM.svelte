@@ -22,7 +22,6 @@
   import DarkMode from "~/components/DarkMode.svelte";
 
   import User from "~/assets/user.png";
-  import DarkModeFooter from "~/components/DarkModeFooter.svelte";
 
   const wallets$ = onboard.state.select("wallets");
   const navigate = useNavigate();
@@ -252,10 +251,28 @@
       class="xl:block hidden xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden cursor-pointer"
       on:click={() => (showPopover = !showPopover)}
     >
-      <img src={userInfo.picture} alt="" class="object-cover w-full h-full" />
+      <img src={userInfo?.picture} alt="" class="object-cover w-full h-full" />
     </div>
-    <div class="mb-7">
-      <DarkModeFooter />
+
+    <div class="xl:hidden flex items-center gap-5">
+      <div
+        class="xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden"
+      >
+        <img
+          src={userInfo?.picture}
+          alt=""
+          class="object-cover w-full h-full"
+        />
+      </div>
+      <div
+        class="text-3xl font-medium text-white"
+        on:click={() => {
+          handleSignOut();
+          isShowHeaderMobile.update((n) => (n = false));
+        }}
+      >
+        Log out
+      </div>
     </div>
 
     <div class="xl:hidden flex items-center gap-5">

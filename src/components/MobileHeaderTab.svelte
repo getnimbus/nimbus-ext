@@ -84,7 +84,7 @@
   $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
 </script>
 
-<div class="grid grid-cols-4 justify-center items-center py-2">
+<div class="grid grid-cols-4 justify-center items-center pt-2 pb-6">
   {#if selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
     <div
       class={`flex flex-col items-center gap-2 cursor-pointer hover:opacity-100 transition-all ${
@@ -106,8 +106,8 @@
       }}
     >
       <svg
-        width="40"
-        height="40"
+        width="45"
+        height="45"
         viewBox="0 0 20 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +134,7 @@
           stroke-linejoin="round"
         />
       </svg>
-      <span class="font-medium text-xl">
+      <span class="font-medium text-2xl">
         {MultipleLang.portfolio}
       </span>
     </div>
@@ -160,8 +160,8 @@
       }}
     >
       <svg
-        width="40"
-        height="40"
+        width="45"
+        height="45"
         viewBox="0 0 20 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -189,11 +189,11 @@
         </defs>
       </svg>
       <span class="flex gap-[1px]">
-        <span class="font-medium text-xl">
+        <span class="font-medium text-2xl">
           {MultipleLang.analytics}
         </span>
         <span class="flex items-center gap-[1px] -mt-2">
-          <img src={Crown} alt="" width="17" height="16" />
+          <img src={Crown} alt="" width="19" height="18" />
         </span>
       </span>
     </div>
@@ -217,8 +217,8 @@
         }}
       >
         <svg
-          width="40"
-          height="40"
+          width="45"
+          height="45"
           viewBox="0 0 20 20"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -245,7 +245,7 @@
             stroke-linejoin="round"
           />
         </svg>
-        <span class="font-medium text-xl">
+        <span class="font-medium text-2xl">
           {MultipleLang.portfolio}
         </span>
       </div>
@@ -281,8 +281,8 @@
         }}
       >
         <svg
-          width="40"
-          height="40"
+          width="45"
+          height="45"
           viewBox="0 0 20 20"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -310,11 +310,11 @@
           </defs>
         </svg>
         <span class="flex gap-[1px]">
-          <span class="font-medium text-xl">
+          <span class="font-medium text-2xl">
             {MultipleLang.analytics}
           </span>
           <span class="flex items-center gap-[1px] -mt-2">
-            <img src={Crown} alt="" width="17" height="16" />
+            <img src={Crown} alt="" width="19" height="18" />
           </span>
         </span>
       </div>
@@ -353,8 +353,8 @@
       }}
     >
       <svg
-        width="40"
-        height="40"
+        width="45"
+        height="45"
         viewBox="0 0 20 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -409,7 +409,7 @@
           </clipPath>
         </defs>
       </svg>
-      <span class="font-medium text-xl">
+      <span class="font-medium text-2xl">
         {MultipleLang.transactions}
       </span>
     </div>
@@ -433,8 +433,8 @@
     }}
   >
     <svg
-      width="40"
-      height="40"
+      width="45"
+      height="45"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -449,7 +449,7 @@
       <circle cx="12.0025" cy="12.0025" r="1.40871" fill="currentColor" />
       <circle cx="7.38527" cy="12.0025" r="1.40871" fill="currentColor" />
     </svg>
-    <span class="font-medium text-xl"> More </span>
+    <span class="font-medium text-2xl">More</span>
   </div>
 </div>
 

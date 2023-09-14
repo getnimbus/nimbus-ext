@@ -323,7 +323,7 @@
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 40px;
   }
   :global(body.dark) .footer {
-    background: #080808;
+    background: #202020;
     box-shadow: rgba(0, 0, 0, 1) 0px 0px 5px;
   }
 

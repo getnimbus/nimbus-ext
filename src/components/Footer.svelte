@@ -13,7 +13,7 @@
 </script>
 
 <div
-  class="flex justify-between xl:items-center max-w-[2000px] m-auto xl:w-[88%] w-[96%] xl:flex-row flex-col gap-1 xl:py-2 py-5"
+  class="flex justify-between xl:items-center max-w-[2000px] m-auto xl:w-[88%] w-[90%] xl:flex-row flex-col gap-1 xl:py-2 py-5"
 >
   <div class="xl:-ml-10 -ml-8 flex items-center">
     <img
