@@ -56,7 +56,7 @@
   $: networth = totalAssets + totalPositions;
 
   $: totalProfit =
-    typeWalletAddress === "SOL" || typeWalletAddress === "CEX"
+    typeWalletAddress === "SOL"
       ? 0
       : networth +
         Number(data?.overview?.cumulativeOutflow || 0) -
@@ -83,7 +83,7 @@
     changeLast24hNetWorth;
 
   $: last24hTotalProfitPercent =
-    typeWalletAddress === "SOL" || typeWalletAddress === "CEX"
+    typeWalletAddress === "SOL"
       ? 0
       : getChangePercent(totalProfit, changeLast24hTotalProfit);
 </script>
@@ -151,9 +151,7 @@
         </div>
         <div
           class={`flex items-center gap-3 ${
-            typeWalletAddress === "CEX" ||
-            typeWalletAddress === "BTC" ||
-            typeWalletAddress === "SOL"
+            typeWalletAddress === "BTC" || typeWalletAddress === "SOL"
               ? "opacity-50"
               : ""
           }`}
