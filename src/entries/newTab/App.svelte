@@ -179,7 +179,7 @@
           </Route>
 
           <Route path="nft-detail">
-            {#await import("~/layouts/NftDetail.svelte")}
+            {#await import("~/layouts/NFTDetail.svelte")}
               <loading-icon />
             {:then { default: component }}
               <svelte:component this={component} />
