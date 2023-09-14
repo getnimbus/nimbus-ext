@@ -275,23 +275,6 @@
       </div>
     </div>
 
-    <div class="xl:hidden flex items-center gap-5">
-      <div
-        class="xl:w-[40px] xl:h-[40px] w-16 h-16 rounded-full overflow-hidden"
-      >
-        <img src={userInfo.picture} alt="" class="object-cover w-full h-full" />
-      </div>
-      <div
-        class="text-3xl font-medium text-white"
-        on:click={() => {
-          handleSignOut();
-          isShowHeaderMobile.update((n) => (n = false));
-        }}
-      >
-        Log out
-      </div>
-    </div>
-
     {#if showPopover}
       <div
         class="select_content absolute right-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg xl:top-12 top-20 w-max"
