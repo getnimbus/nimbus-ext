@@ -1,35 +1,16 @@
 <script lang="ts">
-  import { Router, Route, createHistory } from "svelte-navigator";
-  import * as browser from "webextension-polyfill";
-  import createHashSource from "./hashHistory";
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { onMount } from "svelte";
+  import { Route, Router } from "svelte-navigator";
+  import * as browser from "webextension-polyfill";
   import { isDarkMode } from "~/store";
-  import * as Sentry from "@sentry/svelte";
 
   import "flowbite/dist/flowbite.css";
 
-  import Header from "~/components/Header.svelte";
-  import Footer from "~/components/Footer.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+  import Footer from "~/components/Footer.svelte";
+  import Header from "~/components/Header.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
-  import WhalesList from "~/layouts/WhalesList.svelte";
-  import Portfolio from "~/layouts/Portfolio.svelte";
-  import News from "~/layouts/News.svelte";
-  import Analytic from "~/layouts/Analytic.svelte";
-  import Transactions from "~/layouts/Transactions.svelte";
-  import TokenDetail from "~/layouts/TokenDetail.svelte";
-  import NftDetail from "~/layouts/NFTDetail.svelte";
-  import PositionDetail from "~/layouts/PositionDetail.svelte";
-  import PersonalTokenBreakdown from "~/layouts/PersonalTokenBreakdown.svelte";
-  import CustomVirtualPortfolio from "~/layouts/CustomVirtualPortfolio.svelte";
-  import VirtualPortfolio from "~/layouts/VirtualPortfolio.svelte";
-  import Compare from "~/layouts/Compare.svelte";
-  import Invitation from "~/layouts/Invitation.svelte";
-  import PaymentSuccess from "~/layouts/PaymentSuccess.svelte";
-  import PaymentFail from "~/layouts/PaymentFail.svelte";
-  import Upgrade from "~/layouts/Upgrade.svelte";
-  import Options from "~/layouts/Options.svelte";
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -74,71 +55,182 @@
           <Header />
 
           <Route path="options">
-            <Options />
+            {#await import("~/layouts/Options.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load component
+            {/await}
+            <!-- <Options /> -->
           </Route>
 
           <Route path="upgrade">
-            <Upgrade />
+            {#await import("~/layouts/Upgrade.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load component
+            {/await}
           </Route>
 
           <Route path="payments/success">
-            <PaymentSuccess />
+            {#await import("~/layouts/PaymentSuccess.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load component
+            {/await}
           </Route>
 
           <Route path="payments/fail">
-            <PaymentFail />
+            {#await import("~/layouts/PaymentFail.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load component
+            {/await}
           </Route>
 
           <Route path="personal-token-breakdown">
-            <PersonalTokenBreakdown />
+            {#await import("~/layouts/PersonalTokenBreakdown.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load component
+            {/await}
           </Route>
 
           <Route path="custom-virtual-portfolio">
-            <CustomVirtualPortfolio />
+            {#await import("~/layouts/CustomVirtualPortfolio.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load component
+            {/await}
           </Route>
 
           <Route path="virtual-portfolio">
-            <VirtualPortfolio />
+            {#await import("~/layouts/VirtualPortfolio.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load component
+            {/await}
           </Route>
 
           <Route path="compare">
-            <Compare />
+            {#await import("~/layouts/Compare.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load
+            {/await}
           </Route>
 
           <Route path="news">
-            <News />
+            {#await import("~/layouts/News.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load component
+            {/await}
           </Route>
 
           <Route path="invitation">
-            <Invitation />
+            {#await import("~/layouts/Invitation.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load
+            {/await}
+            <!-- <Invitation /> -->
           </Route>
 
           <Route path="whales">
-            <WhalesList />
+            {#await import("~/layouts/WhalesList.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load
+            {/await}
+            <!-- <WhalesList /> -->
           </Route>
 
           <Route path="position-detail">
-            <TokenDetail />
+            {#await import("~/layouts/TokenDetail.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load
+            {/await}
+            <!-- <TokenDetail /> -->
           </Route>
 
           <Route path="nft-detail">
-            <NftDetail />
+            {#await import("~/layouts/NftDetail.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load
+            {/await}
+            <!-- <NftDetail /> -->
           </Route>
 
           <Route path="test-detail">
-            <PositionDetail />
+            {#await import("~/layouts/PositionDetail.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load
+            {/await}
+            <!-- <PositionDetail /> -->
           </Route>
 
           <Route path="analytic">
-            <Analytic />
+            {#await import("~/layouts/Analytic.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load
+            {/await}
+            <!-- <Analytic /> -->
           </Route>
 
           <Route path="transactions">
-            <Transactions />
+            {#await import("~/layouts/Transactions.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load
+            {/await}
+            <!-- <Transactions /> -->
           </Route>
 
           <Route path="*">
-            <Portfolio />
+            {#await import("~/layouts/Portfolio.svelte")}
+              <loading-icon />
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              Failed to load
+            {/await}
+            <!-- <Portfolio /> -->
           </Route>
         </div>
       </Router>
