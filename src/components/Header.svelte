@@ -151,7 +151,7 @@
       <img
         src={Logo}
         alt="logo"
-        class="-ml-8 xl:w-[177px] w-[220px] xl:h-[60px] h-[100px]"
+        class="-ml-6 xl:w-[177px] w-[220px] xl:h-[60px] h-[100px]"
       />
     </Link>
 
@@ -410,9 +410,7 @@
       </div>
     </div>
 
-    <div
-      class="flex items-center justify-between gap-6 xl:gap-3 xl:-mr-0 -mr-8"
-    >
+    <div class="flex items-center justify-between gap-6 xl:gap-3">
       <!-- Search -->
       <div
         class={`pl-4 flex items-center rounded-[1000px] ${

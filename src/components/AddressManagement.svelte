@@ -871,7 +871,7 @@
       </div>
     {:else}
       <div class="header header-container">
-        <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[96%]">
+        <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
           <div class="flex flex-col mb-5 gap-14">
             <div class="flex items-center justify-between gap-6">
               <!-- desktop list address wallet -->
@@ -1168,7 +1168,9 @@
                     {title}
                   </div>
                   {#if type === "portfolio"}
-                    <slot name="reload" />
+                    <div class="xl:block hidden">
+                      <slot name="reload" />
+                    </div>
                   {/if}
                 </div>
                 <div class="flex items-center gap-4">
