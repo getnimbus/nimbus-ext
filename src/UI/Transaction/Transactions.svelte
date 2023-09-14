@@ -312,7 +312,6 @@
                 on:keyup={({ target: { value } }) => debounceSearch(value)}
                 on:keydown={(event) => {
                   if (event.which == 13 || event.keyCode == 13) {
-                    console.log("HELLO");
                   }
                 }}
                 value={searchValue}
