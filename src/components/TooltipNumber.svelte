@@ -19,6 +19,27 @@
     numberFormat = number_format;
     numberSize = number_size;
   }
+
+  const convertMiniumNumber = (number) => {
+    if (number.toString().includes("e-")) {
+      const numStr = number.toString();
+      const eIndex = numStr.indexOf("e");
+      if (eIndex !== -1) {
+        const exponent = parseInt(numStr.slice(eIndex + 2), 10);
+        const significand = parseFloat(
+          numStr
+            .slice(0, 4)
+            .split("")
+            .filter((e) => e != ".")
+            .join("")
+        );
+
+        return `0.0<sub>${exponent - 1}</sub>${significand}`;
+      }
+    } else {
+      return number;
+    }
+  };
 </script>
 
 {#if type === "percent"}
@@ -37,11 +58,11 @@
         class="flex items-center"
       >
         <span>
-          {#if type === "value"}${/if}{numeral(numberFormat).format(
-            "0,0.00"
-          ) === "NaN"
-            ? numberFormat
-            : numeral(numberFormat).format("0,0.00")}
+          {#if type === "value"}${/if}{#if numeral(numberFormat).format("0,0.00") === "NaN"}
+            {@html convertMiniumNumber(numberFormat)}
+          {:else}
+            {numeral(numberFormat).format("0,0.00")}
+          {/if}
         </span>
         <span>
           {numberSize}
