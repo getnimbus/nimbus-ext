@@ -58,8 +58,7 @@
         class="flex items-center"
       >
         <span>
-          {#if type === "value"}${/if}
-          {#if numeral(numberFormat).format("0,0.00") === "NaN"}
+          {#if type === "value"}${/if}{#if numeral(numberFormat).format("0,0.00") === "NaN"}
             {@html convertMiniumNumber(numberFormat)}
           {:else}
             {numeral(numberFormat).format("0,0.00")}
