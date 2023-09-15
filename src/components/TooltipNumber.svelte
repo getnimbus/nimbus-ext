@@ -34,7 +34,7 @@
             .join("")
         );
 
-        return `0.0<sub>${exponent}</sub>${significand}`;
+        return `0.0<sub>${exponent - 1}</sub>${significand}`;
       }
     } else {
       return number;
