@@ -13,11 +13,36 @@
 
   let numberFormat = 0;
   let numberSize = "";
+  let exponent;
+  let significand;
 
   $: {
     const { number_format, number_size } = formatBigBalance(number);
     numberFormat = number_format;
     numberSize = number_size;
+  }
+
+  const convertDecimal = (number) => {
+    const numStr = number.toString();
+    const eIndex = numStr.indexOf("e");
+    if (eIndex !== -1) {
+      exponent = parseInt(numStr.slice(eIndex + 2), 10);
+      significand = parseFloat(
+        numStr
+          .slice(0, 4)
+          .split("")
+          .filter((e) => e != ".")
+          .join("")
+      );
+      console.log({ significand, exponent });
+      // return `0.0(${exponent})${significand}`;
+    }
+  };
+
+  $: {
+    if (numberFormat.toString().includes("e-")) {
+      convertDecimal(numberFormat);
+    }
   }
 </script>
 
@@ -37,11 +62,17 @@
         class="flex items-center"
       >
         <span>
-          {#if type === "value"}${/if}{numeral(numberFormat).format(
+          {#if type === "value"}${/if}
+          <!-- {numeral(numberFormat).format(
             "0,0.00"
           ) === "NaN"
             ? numberFormat
-            : numeral(numberFormat).format("0,0.00")}
+            : numeral(numberFormat).format("0,0.00")} -->
+          {#if numeral(numberFormat).format("0,0.00") === "NaN"}
+            0.0<sub>{exponent}</sub>{significand}
+          {:else}
+            {numeral(numberFormat).format("0,0.00")}
+          {/if}
         </span>
         <span>
           {numberSize}
