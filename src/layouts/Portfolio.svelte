@@ -6,7 +6,6 @@
   dayjs.extend(relativeTime);
   import { groupBy, isEmpty, flatten } from "lodash";
   import { onDestroy, onMount } from "svelte";
-  import { sendMessage } from "webext-bridge";
   import { i18n } from "~/lib/i18n";
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import { chainList } from "~/utils";
@@ -292,6 +291,17 @@
     };
   };
 
+  // compare
+  const getAnalyticCompare = async (address) => {
+    const response: any = await nimbus.get(
+      `/v2/analysis/${address}/compare?compareAddress=${""}`
+    );
+    if (response?.error) {
+      throw new Error(response?.error);
+    }
+    return response?.data || [];
+  };
+
   // token holding
   const getVaults = async (address, chain) => {
     const response = await nimbus.get(
@@ -419,6 +429,7 @@
     queryClient.invalidateQueries(["vaults"]);
     queryClient.invalidateQueries(["token-holding"]);
     queryClient.invalidateQueries(["nft-holding"]);
+    queryClient.invalidateQueries(["compare"]);
   };
 
   const handleGetAllData = async (type: string) => {
@@ -463,7 +474,8 @@
             !$queryOverview.isError &&
             !$queryTokenHolding.isError &&
             !$queryVaults.isError &&
-            !$queryNftHolding.isError
+            !$queryNftHolding.isError &&
+            !$queryCompare.isError
           ) {
             syncMsg = "";
             isLoadingSync = false;
@@ -510,7 +522,8 @@
                 !$queryOverview.isError &&
                 !$queryTokenHolding.isError &&
                 !$queryVaults.isError &&
-                !$queryNftHolding.isError
+                !$queryNftHolding.isError &&
+                !$queryCompare.isError
               ) {
                 syncMsg = "";
                 isLoadingSync = false;
@@ -605,6 +618,14 @@
       formatDataHoldingToken($queryTokenHolding.data, $queryVaults.data);
     }
   }
+
+  // query compare
+  $: queryCompare = createQuery({
+    queryKey: ["compare", selectedWallet, selectedChain],
+    queryFn: () => getAnalyticCompare(selectedWallet),
+    staleTime: Infinity,
+    enabled: enabledFetchAllData,
+  });
 
   // query nft holding
   $: queryNftHolding = createQuery({
@@ -997,7 +1018,11 @@
               />
 
               {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX" || typeWalletAddress === "BUNDLE"}
-                <RiskReturn />
+                <RiskReturn
+                  isLoading={$queryCompare.isFetching}
+                  isError={$queryCompare.isError}
+                  data={$queryCompare.data}
+                />
               {/if}
 
               <Holding
