@@ -678,7 +678,7 @@
     return response.data;
   };
 
-  const queryListBundle = createQuery({
+  $: queryListBundle = createQuery({
     queryKey: ["list-bundle"],
     queryFn: () => getListBundle(),
     staleTime: Infinity,
@@ -736,12 +736,13 @@
           formData
         );
 
+        queryClient.invalidateQueries(["list-bundle"]);
         queryClient.invalidateQueries(["overview"]);
         queryClient.invalidateQueries(["vaults"]);
         queryClient.invalidateQueries(["token-holding"]);
         queryClient.invalidateQueries(["nft-holding"]);
         queryClient.invalidateQueries(["personalize-tag"]);
-        // queryClient.invalidateQueries(["compare"]);
+        queryClient.invalidateQueries(["compare"]);
         queryClient.invalidateQueries(["historical"]);
         queryClient.invalidateQueries(["inflow-outflow"]);
 
@@ -751,6 +752,8 @@
           "/address/personalize/bundle",
           formData
         );
+
+        queryClient.invalidateQueries(["list-bundle"]);
         listBundle = response?.data.map((item) => {
           return {
             name: item?.name,
@@ -762,9 +765,10 @@
         selectedBundle = listBundle[listBundle.length - 1];
         selectedAddresses = listBundle[listBundle.length - 1].addresses;
         nameBundle = listBundle[listBundle.length - 1].name;
+
         toastMsg = "Successfully create your bundle!";
       }
-      queryClient.invalidateQueries(["list-bundle"]);
+
       isSuccess = true;
       trigger();
       isLoadingBundle = false;
