@@ -241,7 +241,7 @@
   <ErrorBoundary>
     <div class="flex items-end gap-3">
       <TooltipTitle
-        tooltipText="Closed positions for BNB and AVAX might no accuracy, we're working to fix it"
+        tooltipText="Closed positions for BNB and AVAX might not accuracy, we're working to fix it"
         type="warning"
       >
         <div class="xl:text-2xl text-4xl font-medium">
