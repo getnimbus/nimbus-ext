@@ -34,9 +34,8 @@
   import Holding from "~/UI/Portfolio/Holding.svelte";
   import ClosedTokenPosition from "~/UI/Portfolio/ClosedTokenPosition.svelte";
   import News from "~/UI/Portfolio/News.svelte";
-  import Button from "~/components/Button.svelte";
   import Positions from "~/UI/Portfolio/Positions.svelte";
-  import Compare from "~/UI/Portfolio/Compare.svelte";
+  import Button from "~/components/Button.svelte";
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";

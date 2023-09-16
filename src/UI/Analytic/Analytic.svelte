@@ -16,7 +16,6 @@
   import CorrelationsMatrix from "./CorrelationsMatrix.svelte";
   import ClosedHoldingToken from "./ClosedHoldingToken.svelte";
   import Personality from "./Personality.svelte";
-  import Compare from "../Portfolio/Compare.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
 
   const navigate = useNavigate();
