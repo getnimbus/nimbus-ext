@@ -233,7 +233,7 @@
 
 <AddressManagement type="order" title="Transactions">
   <span slot="body">
-    <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-32">
+    <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-32 relative">
       <div class="trx_container flex flex-col gap-7 rounded-[20px] xl:p-8 p-6">
         {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX"}
           <div
@@ -329,6 +329,16 @@
           />
         </div>
       </div>
+
+      {#if typeWalletAddress === "BUNDLE" || typeWalletAddress === "SOL"}
+        <div
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 justify-center ${
+            darkMode ? "bg-[#222222e6]" : "bg-white/90"
+          } z-30 backdrop-blur-md`}
+        >
+          <div class="text-lg">Coming soon 🚀</div>
+        </div>
+      {/if}
     </div>
   </span>
 </AddressManagement>
