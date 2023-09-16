@@ -9,6 +9,7 @@
     isFirstTimeLogin,
     selectedPackage,
     isDarkMode,
+    selectedBundle,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
@@ -144,6 +145,11 @@
     packageSelected = value;
   });
 
+  let selectBundle = {};
+  selectedBundle.subscribe((value) => {
+    selectBundle = value;
+  });
+
   let toastMsg = "";
   let isSuccessToast = false;
   let counter = 3;
@@ -188,7 +194,6 @@
 
   let isDisabled = false;
   let tooltipDisableAddBtn = "";
-  let selectBundle;
   let showPopover = false;
 
   const isRequiredFieldValid = (value) => {
@@ -774,7 +779,9 @@
 
   $: {
     if (selectedWallet) {
-      selectBundle = listAddress.find((item) => item.value === selectedWallet);
+      selectedBundle.update(
+        (n) => (n = listAddress.find((item) => item.value === selectedWallet))
+      );
     }
   }
 </script>
