@@ -6,7 +6,7 @@
   import { Progressbar } from "flowbite-svelte";
 
   import "~/components/Tooltip.custom.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
 
@@ -118,7 +118,7 @@
         <tr>
           <td colspan={6}>
             <div class="flex justify-center items-center py-3 px-3">
-              <loading-icon />
+              <Loading />
             </div>
           </td>
         </tr>

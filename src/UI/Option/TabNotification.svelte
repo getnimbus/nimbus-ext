@@ -8,7 +8,7 @@
   import { useNavigate } from "svelte-navigator";
   import { isDarkMode, user } from "~/store";
 
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import Copy from "~/components/Copy.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
@@ -116,7 +116,7 @@
           <tr>
             <td colspan="3">
               <div class="flex justify-center items-center py-4 px-3">
-                <loading-icon />
+                <Loading />
               </div>
             </td>
           </tr>

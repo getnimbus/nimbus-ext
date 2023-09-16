@@ -19,7 +19,7 @@
   import AddressManagement from "~/components/AddressManagement.svelte";
   import CalendarChart from "~/components/CalendarChart.svelte";
   import HistoricalTransactions from "./HistoricalTransactions.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -243,7 +243,7 @@
           >
             {#if $query.isFetching}
               <div class="flex items-center justify-center h-[152px]">
-                <loading-icon />
+                <Loading />
               </div>
             {:else}
               <div>

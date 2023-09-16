@@ -10,7 +10,7 @@
 
   import Table from "~/UI/PositionTable/Table.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   const MultipleLang = {
     positions: i18n("newtabPage.positions", "Positions"),
@@ -871,7 +871,7 @@
 
     {#if isLoading}
       <div class="flex items-center justify-center pt-6">
-        <loading-icon />
+        <Loading />
       </div>
     {:else}
       <div class="flex flex-col gap-7">

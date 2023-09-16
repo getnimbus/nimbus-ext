@@ -15,7 +15,7 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   let filteredHoldingToken = true;
   let filteredHoldingDataToken = [];
@@ -336,7 +336,7 @@
                 <tr>
                   <td {colspan}>
                     <div class="flex justify-center items-center py-3 px-3">
-                      <loading-icon />
+                      <Loading />
                     </div>
                   </td>
                 </tr>
@@ -465,7 +465,7 @@
                 <tr>
                   <td {colspan}>
                     <div class="flex justify-center items-center py-3 px-3">
-                      <loading-icon />
+                      <Loading />
                     </div>
                   </td>
                 </tr>

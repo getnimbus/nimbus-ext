@@ -25,7 +25,7 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
@@ -1120,7 +1120,7 @@
               <tr>
                 <td colspan="3">
                   <div class="flex justify-center items-center py-4 px-3">
-                    <loading-icon />
+                    <Loading />
                   </div>
                 </td>
               </tr>
@@ -1307,7 +1307,7 @@
             <tr>
               <td colspan="3">
                 <div class="flex justify-center items-center py-4 px-3">
-                  <loading-icon />
+                  <Loading />
                 </div>
               </td>
             </tr>

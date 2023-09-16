@@ -27,7 +27,7 @@
   export let isEmptyDataPie;
 
   import EChart from "~/components/EChart.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TokenAllocation from "~/components/TokenAllocation.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
@@ -768,7 +768,7 @@
       </div>
       {#if isLoadingBreakdown}
         <div class="flex items-center justify-center h-[465px]">
-          <loading-icon />
+          <Loading />
         </div>
       {:else}
         <div class="h-full">
@@ -858,7 +858,7 @@
       {/if}
       {#if isLoading}
         <div class="flex items-center justify-center h-[465px]">
-          <loading-icon />
+          <Loading />
         </div>
       {:else}
         <div>

@@ -38,7 +38,7 @@
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
 
-  import "~/components/Loading.custom.svelte";
+  import Loading from "./Loading.svelte";
   import Button from "~/components/Button.svelte";
   import Select from "~/components/Select.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -791,7 +791,7 @@
 
 {#if $query.isFetching}
   <div class="flex items-center justify-center h-screen">
-    <loading-icon />
+    <Loading />
   </div>
 {:else}
   <div>

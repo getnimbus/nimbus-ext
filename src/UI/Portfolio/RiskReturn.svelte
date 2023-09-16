@@ -13,6 +13,7 @@
   import VolatilityExplain from "~/assets/explain/volatility-explain.mp4";
   import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
   import MaxDrawdownExplain from "~/assets/explain/max-drawdown-explain.mp4";
+  import Loading from "~/components/Loading.svelte";
 
   export let isLoading;
   export let isError;
@@ -60,7 +61,7 @@
     >
       {#if isLoading}
         <div class="flex items-center justify-center h-[200px] p-6">
-          <loading-icon />
+          <Loading />
         </div>
       {:else}
         <div
@@ -242,7 +243,7 @@
     >
       {#if isLoading}
         <div class="flex items-center justify-center h-[200px] p-6">
-          <loading-icon />
+          <Loading />
         </div>
       {:else}
         <div

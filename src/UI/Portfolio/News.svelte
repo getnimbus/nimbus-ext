@@ -1,11 +1,10 @@
 <script lang="ts">
   import { i18n } from "~/lib/i18n";
-  import * as browser from "webextension-polyfill";
 
   export let data;
   export let isLoading;
 
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import NewsCard from "~/components/NewsCard.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
@@ -27,7 +26,7 @@
     </div>
     {#if isLoading}
       <div class="flex items-center justify-center">
-        <loading-icon />
+        <Loading />
       </div>
     {:else}
       <div>

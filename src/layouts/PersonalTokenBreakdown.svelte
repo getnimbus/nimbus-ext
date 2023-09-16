@@ -22,7 +22,7 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TokenHoldingTable from "~/UI/PersonalTokenBreakdown/TokenHoldingTable.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import "~/components/Tooltip.custom.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
@@ -1078,7 +1078,7 @@
                           <div
                             class="flex justify-center items-center py-3 px-3"
                           >
-                            <loading-icon />
+                            <Loading />
                           </div>
                         </td>
                       </tr>

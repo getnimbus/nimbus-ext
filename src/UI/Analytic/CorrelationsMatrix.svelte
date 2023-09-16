@@ -20,7 +20,7 @@
 
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import Button from "~/components/Button.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
 
@@ -626,7 +626,7 @@
   </div>
   {#if $queryHoldingToken.isFetching}
     <div class="flex items-center justify-center h-[465px]">
-      <loading-icon />
+      <Loading />
     </div>
   {:else}
     <div>
