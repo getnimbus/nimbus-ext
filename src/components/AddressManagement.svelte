@@ -915,7 +915,7 @@
                         {/each}
                       </AnimateSharedLayout>
                       <div class="relative">
-                        <div class="relative z-10">
+                        <div class="relative z-40">
                           <Select
                             type="wallet"
                             positionSelectList="right-0"
