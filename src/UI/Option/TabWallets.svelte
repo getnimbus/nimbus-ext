@@ -761,6 +761,7 @@
         selectedLastBundle(response.data);
         toastMsg = "Successfully create your bundle!";
       }
+      queryClient.invalidateQueries(["list-bundle"]);
       isSuccess = true;
       trigger();
       isLoadingBundle = false;
@@ -791,6 +792,7 @@
         (item) => item.name !== selectedBundle?.name
       );
       handleResetBundleState();
+      queryClient.invalidateQueries(["list-bundle"]);
       selectedAddresses = [];
       isAddBundle = false;
     } catch (e) {
