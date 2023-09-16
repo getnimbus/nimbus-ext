@@ -688,15 +688,12 @@
     if (
       !$queryListBundle.isError &&
       $queryListBundle.data &&
-      Object.keys($queryListBundle.data).length !== 0
+      $queryListBundle?.data?.length !== 0
     ) {
-      const bundleData = Object.getOwnPropertyNames($queryListBundle.data);
-      listBundle = bundleData.map((item) => {
+      listBundle = $queryListBundle?.data.map((item) => {
         return {
-          name: item,
-          addresses: $queryListBundle.data[item]?.map(
-            (eachItem) => eachItem.address
-          ),
+          name: item?.name,
+          addresses: item?.accounts?.map((eachAccount) => eachAccount.address),
         };
       });
     }
@@ -705,19 +702,6 @@
   const handleResetBundleState = () => {
     nameBundle = "";
     selectedBundle = {};
-  };
-
-  const selectedLastBundle = (data) => {
-    const bundleData = Object.getOwnPropertyNames(data);
-    listBundle = bundleData.map((item) => {
-      return {
-        name: item,
-        addresses: data[item]?.map((eachItem) => eachItem.address),
-      };
-    });
-    selectedBundle = listBundle[listBundle.length - 1];
-    selectedAddresses = listBundle[listBundle.length - 1].addresses;
-    nameBundle = listBundle[listBundle.length - 1].name;
   };
 
   // handle submit (create and edit) bundle
@@ -751,14 +735,33 @@
           `/address/personalize/bundle?name=${selectedBundle?.name}`,
           formData
         );
-        selectedLastBundle(response.data);
+
+        queryClient.invalidateQueries(["overview"]);
+        queryClient.invalidateQueries(["vaults"]);
+        queryClient.invalidateQueries(["token-holding"]);
+        queryClient.invalidateQueries(["nft-holding"]);
+        queryClient.invalidateQueries(["personalize-tag"]);
+        // queryClient.invalidateQueries(["compare"]);
+        queryClient.invalidateQueries(["historical"]);
+        queryClient.invalidateQueries(["inflow-outflow"]);
+
         toastMsg = "Successfully edit your bundle!";
       } else {
         const response = await nimbus.post(
           "/address/personalize/bundle",
           formData
         );
-        selectedLastBundle(response.data);
+        listBundle = response?.data.map((item) => {
+          return {
+            name: item?.name,
+            addresses: item?.accounts?.map(
+              (eachAccount) => eachAccount.address
+            ),
+          };
+        });
+        selectedBundle = listBundle[listBundle.length - 1];
+        selectedAddresses = listBundle[listBundle.length - 1].addresses;
+        nameBundle = listBundle[listBundle.length - 1].name;
         toastMsg = "Successfully create your bundle!";
       }
       queryClient.invalidateQueries(["list-bundle"]);
@@ -791,8 +794,8 @@
       listBundle = listBundle.filter(
         (item) => item.name !== selectedBundle?.name
       );
-      handleResetBundleState();
       queryClient.invalidateQueries(["list-bundle"]);
+      handleResetBundleState();
       selectedAddresses = [];
       isAddBundle = false;
     } catch (e) {
@@ -912,7 +915,7 @@
                     >
                       {item.name}
                     </div>
-                    {#if item === selectedBundle}
+                    {#if selectedBundle === item}
                       <Motion
                         let:motion
                         layoutId="active-pill"
