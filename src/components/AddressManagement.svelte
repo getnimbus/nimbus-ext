@@ -1214,7 +1214,7 @@
                       </div>
                       {#if showPopover}
                         <div
-                          class="select_content absolute left-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 xl:w-[200px] w-[300px] xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
+                          class="select_content absolute left-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
                           style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
                           use:clickOutside
                           on:click_outside={() => (showPopover = false)}
