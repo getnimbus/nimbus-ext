@@ -13,25 +13,34 @@
   export let totalPositions;
   export let totalAssets;
 
-  $: realizedProfit = (dataTokenHolding || [])
-    .map((item) => {
-      return {
-        ...item,
-        realized_profit: item?.profit?.realizedProfit || 0,
-      };
-    })
-    .reduce((prev, item) => prev + Number(item.realized_profit), 0);
+  $: realizedProfit =
+    typeWalletAddress === "CEX"
+      ? 0
+      : (dataTokenHolding || [])
+          .map((item) => {
+            return {
+              ...item,
+              realized_profit: item?.profit?.realizedProfit || 0,
+            };
+          })
+          .reduce((prev, item) => prev + Number(item.realized_profit), 0);
 
-  $: unrealizedProfit = (dataTokenHolding || [])
-    ?.filter((item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0)
-    ?.map((item) => {
-      return {
-        ...item,
-        unrealized_profit:
-          Number(item?.amount) * Number(item?.price?.price) + item?.avgCost,
-      };
-    })
-    .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
+  $: unrealizedProfit =
+    typeWalletAddress === "CEX"
+      ? 0
+      : (dataTokenHolding || [])
+          ?.filter(
+            (item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0
+          )
+          ?.map((item) => {
+            return {
+              ...item,
+              unrealized_profit:
+                Number(item?.amount) * Number(item?.price?.price) +
+                item?.avgCost,
+            };
+          })
+          .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
 
   const MultipleLang = {
     networth: i18n("newtabPage.networth", "Net Worth"),
@@ -56,7 +65,7 @@
   $: networth = totalAssets + totalPositions;
 
   $: totalProfit =
-    typeWalletAddress === "SOL"
+    typeWalletAddress === "SOL" || typeWalletAddress === "CEX"
       ? 0
       : networth +
         Number(data?.overview?.cumulativeOutflow || 0) -
@@ -83,7 +92,7 @@
     changeLast24hNetWorth;
 
   $: last24hTotalProfitPercent =
-    typeWalletAddress === "SOL"
+    typeWalletAddress === "SOL" || typeWalletAddress === "CEX"
       ? 0
       : getChangePercent(totalProfit, changeLast24hTotalProfit);
 </script>
@@ -151,7 +160,9 @@
         </div>
         <div
           class={`flex items-center gap-3 ${
-            typeWalletAddress === "BTC" || typeWalletAddress === "SOL"
+            typeWalletAddress === "BTC" ||
+            typeWalletAddress === "SOL" ||
+            typeWalletAddress === "CEX"
               ? "opacity-50"
               : ""
           }`}
