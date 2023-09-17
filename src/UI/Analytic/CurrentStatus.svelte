@@ -969,7 +969,7 @@
           darkMode ? "bg-[#222222e6]" : "bg-white/90"
         } z-30 backdrop-blur-md`}
       >
-        <div class="text-xl xl:text-lg">Coming soon 🚀</div>
+        <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
       </div>
     {/if}
     {#if $queryCompare.isFetching}

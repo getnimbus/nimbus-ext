@@ -596,7 +596,7 @@
               <div class="flex flex-col gap-1">
                 <div class="text-[#00000099] text-sm">Net Worth</div>
                 <div class="flex items-end gap-4">
-                  <div class="text-2xl font-medium text-black">
+                  <div class="text-2xl font-medium text-black flex">
                     $<TooltipNumber
                       number={addressInfo.networth}
                       type="balance"

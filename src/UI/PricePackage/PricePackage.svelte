@@ -81,8 +81,8 @@
   };
 </script>
 
-<div class="flex flex-col gap-4 mt-2">
-  <div class="text-3xl text-center text-gray-500 xl:text-xl">
+<div class="flex flex-col xl:gap-4 gap-8 mt-2">
+  <div class="text-center text-gray-500 text-3xl xl:text-xl">
     Use Nimbus at its full potential. Tracking your portfolio, reduce risk,
     maximize return.
   </div>
@@ -144,21 +144,21 @@
           false ? "border-[#1e96fc]" : "border_0000001a"
         }`}
       >
-        <div class="text-4xl font-medium xl:text-3xl">
-          0$<span class="xl:text-xl text-2xl ml-1 text-gray-400 mb-[2px]"
+        <div class="font-medium text-4xl xl:text-3xl">
+          0$<span class="text-2xl xl:text-xl ml-1 text-gray-400 mb-[2px]"
             >/month</span
           >
         </div>
         <div>
           <div class="flex flex-col border-b-[1px] border_0000001a pb-4">
-            <div class="text-2xl font-medium xl:text-xl">FREE</div>
-            <div class="text-xl text-gray-500 xl:text-lg">
+            <div class="font-medium text-3xl xl:text-xl">FREE</div>
+            <div class="text-gray-500 text-2xl xl:text-lg">
               For those who starting to invest
             </div>
           </div>
           <div class="flex flex-col items-start gap-2 mt-4">
             <div
-              class="text-lg underline cursor-pointer xl:text-base decoration-dotted"
+              class="underline cursor-pointer text-xl xl:text-base decoration-dotted"
               use:tooltip={{
                 content: getTooltipContent(
                   "Get latest market information and real-time market update",
@@ -173,14 +173,14 @@
             >
               Real-time market update
             </div>
-            <div class="text-lg xl:text-base">
+            <div class="text-xl xl:text-base">
               <span class="font-bold">3</span> tracked Wallets
             </div>
-            <div class="text-lg xl:text-base">
+            <div class="text-xl xl:text-base">
               <span class="font-bold">$2 000</span> total net worth
             </div>
             <div
-              class="text-lg underline cursor-pointer xl:text-base decoration-dotted"
+              class="underline cursor-pointer text-xl xl:text-base decoration-dotted"
               use:tooltip={{
                 content: getTooltipContent(
                   "Get up to 1000+ yield farming opportunities to boost your earning",
@@ -195,24 +195,24 @@
             >
               Yield farming opportunities (Limited)
             </div>
-            <div class="text-lg xl:text-base">Whales screeners</div>
-            <div class="text-lg text-gray-400 xl:text-base">
+            <div class="text-xl xl:text-base">Whales screeners</div>
+            <div class="text-gray-400 text-xl xl:text-base">
               Custom token category
             </div>
-            <div class="text-lg text-gray-400 xl:text-base">Risks analysis</div>
-            <div class="text-lg text-gray-400 xl:text-base">
+            <div class="text-gray-400 text-xl xl:text-base">Risks analysis</div>
+            <div class="text-gray-400 text-xl xl:text-base">
               Returns analysis
             </div>
-            <div class="text-lg text-gray-400 xl:text-base">
+            <div class="text-gray-400 text-xl xl:text-base">
               Risks & Returns analysis
             </div>
-            <div class="text-lg text-gray-400 xl:text-base">
+            <div class="text-gray-400 text-xl xl:text-base">
               Rebalance Strategy
             </div>
-            <div class="text-lg text-gray-400 xl:text-base">
+            <div class="text-gray-400 text-xl xl:text-base">
               Token Correlations matrix (soon)
             </div>
-            <div class="text-lg text-gray-400 xl:text-base">
+            <div class="text-gray-400 text-xl xl:text-base">
               Professional community
             </div>
             <!-- <div
@@ -271,7 +271,7 @@
           }`}
         >
           <div
-            class="absolute top-6 right-0 rounded-tl-full rounded-bl-full bg-[#1E96FC] font-medium text-white xl:text-xs text-base uppercase py-1 px-3"
+            class="absolute top-6 right-0 rounded-tl-full rounded-bl-full bg-[#1E96FC] font-medium text-white xl:text-xs text-xl uppercase py-1 px-3"
           >
             popular
           </div>
@@ -601,7 +601,7 @@
           }`}
         >
           <div
-            class="absolute top-6 right-0 rounded-tl-full rounded-bl-full bg-[#1E96FC] font-medium text-white xl:text-xs text-base uppercase py-1 px-3"
+            class="absolute top-6 right-0 rounded-tl-full rounded-bl-full bg-[#1E96FC] font-medium text-white xl:text-xs text-xl uppercase py-1 px-3"
           >
             popular
           </div>
@@ -913,38 +913,44 @@
   </div>
 </div>
 
-<!-- Modal confirm delete account -->
+<!-- Modal confirm cancel package -->
 <AppOverlay
   clickOutSideToClose
   isOpen={isOpenConfirmCancel}
   on:close={() => (isOpenConfirmCancel = false)}
 >
-  <div class="flex flex-col gap-1 items-start">
-    <div class="xl:title-3 title-1 font-medium mt-5">Are you sure?</div>
-    <div class="xl:text-sm text-lg text-gray-500">
-      Your <span class=" uppercase font-medium">{buyPackage}</span>
-      Plan have
-      <span class=" font-medium"
-        >{dateDiffInDays(new Date(), new Date(endDatePackage))} days left</span
-      >
-      . Do you really want to cancel? This process cannot revert
+  <div class="flex flex-col xl:gap-4 gap-10">
+    <div class="flex flex-col gap-1 items-start">
+      <div class="xl:title-3 title-1 font-semibold">Are you sure?</div>
+      <div class="xl:text-sm text-2xl text-gray-500">
+        Your <span class="uppercase font-medium">{buyPackage}</span>
+        Plan have
+        <span class="font-medium"
+          >{dateDiffInDays(new Date(), new Date(endDatePackage))} days left</span
+        >
+        . Do you really want to cancel? This process cannot revert
+      </div>
     </div>
-  </div>
-  <div class="flex justify-end lg:gap-2 gap-6 mt-4">
-    <div class="lg:w-[120px] w-full">
-      <Button
-        variant="secondary"
-        on:click={() => {
-          isOpenConfirmCancel = false;
-        }}
-      >
-        Cancel
-      </Button>
-    </div>
-    <div class="lg:w-[120px] w-full">
-      <Button isLoading={isLoadingCancel} on:click={handleCancelSubscription}>
-        Submit
-      </Button>
+    <div class="flex justify-end lg:gap-2 gap-6">
+      <div class="lg:w-[120px] w-full">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            isOpenConfirmCancel = false;
+          }}
+        >
+          Cancel
+        </Button>
+      </div>
+      <div class="lg:w-[120px] w-full">
+        <Button
+          variant="delete"
+          isLoading={isLoadingCancel}
+          on:click={handleCancelSubscription}
+        >
+          Submit
+        </Button>
+      </div>
     </div>
   </div>
 </AppOverlay>

@@ -267,7 +267,7 @@
       <div class="flex flex-col gap-1">
         <div class="flex items-start gap-2">
           <div
-            class="xl:text-sm text-xl font-medium relative"
+            class="xl:text-sm text-2xl font-medium relative"
             on:mouseover={() => {
               isShowTooltipName = true;
             }}
@@ -314,22 +314,25 @@
           </div>
           {#if selectedHighestVault !== undefined}
             <div
-              class="flex items-center justyfy-center px-2 py-1 text_27326F text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
+              class="flex items-center justyfy-center px-2 py-1 text_27326F xl:text-[10px] text-base font-medium bg-[#1e96fc33] rounded-[1000px] cursor-pointer"
               on:click={() => {
                 showTableVaults = true;
                 selectedVaults = data.vaults;
               }}
             >
-              {`Farm up to ${numeral(selectedHighestVault.apy * 100).format(
-                "0,0.00"
-              )}% APY`}
+              <div class="xl:block hidden">
+                {`Farm up to ${numeral(selectedHighestVault.apy * 100).format(
+                  "0,0.00"
+                )}% APY`}
+              </div>
+              <div class="xl:hidden block">Farm</div>
             </div>
           {/if}
         </div>
 
         <div class="flex items-center gap-2">
           <div
-            class="text_00000080 text-xs font-medium relative"
+            class="text_00000080 xl:text-xs text-lg font-medium relative"
             on:mouseover={() => {
               isShowTooltipSymbol = true;
             }}
@@ -597,7 +600,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
+    <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
       $<TooltipNumber number={data.market_price} type="balance" />
     </div>
   </td>
@@ -608,7 +611,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-xl text_00000099 font-medium flex items-center gap-1 justify-end"
+      class="xl:text-sm text-2xl text_00000099 font-medium flex items-center gap-1 justify-end"
     >
       {#if withinLast24Hours < 24}
         <span
@@ -634,13 +637,13 @@
   >
     <div class="flex flex-col gap-1">
       <div
-        class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+        class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
       >
         <TooltipNumber number={value} type="value" />
       </div>
       <div class="flex flex-col gap-1 justify-end items-end">
         <div
-          class="xl:text-sm text-xl text-gray-400 font-medium flex justify-end"
+          class="xl:text-sm text-2xl text-gray-400 font-medium flex justify-end"
         >
           <TooltipNumber number={ratio} type="percent" />%
         </div>
@@ -656,7 +659,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
+    <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
       {#if data?.profit}
         $<TooltipNumber number={data?.profit?.averageCost} type="balance" />
       {:else}
@@ -671,7 +674,7 @@
     }`}
   >
     <div
-      class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
+      class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
     >
       {#if typeWalletAddress === "BTC" || typeWalletAddress === "SOL" || typeWalletAddress === "CEX"}
         N/A
@@ -723,7 +726,7 @@
     }`}
   >
     <div
-      class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
+      class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
     >
       {#if typeWalletAddress === "BTC" || typeWalletAddress === "SOL" || typeWalletAddress === "CEX"}
         N/A
@@ -801,7 +804,7 @@
   <VaultTable data={selectedVaults} />
 </AppOverlay>
 
-<!-- show form report  -->
+<!-- Modal report spam/trash token  -->
 <AppOverlay
   clickOutSideToClose
   isOpen={isShowReportTable}
@@ -810,16 +813,19 @@
     isOldToken = false;
   }}
 >
-  <form on:submit|preventDefault={handleReportTrashCoin}>
-    <div class="flex flex-col gap-4">
-      <div class="font-medium xl:title-3 title-1">Blacklist Token</div>
-      <div class="flex flex-col gap-3">
+  <div class="flex flex-col gap-4">
+    <div class="font-medium xl:title-3 title-1">Blacklist Token</div>
+    <form
+      on:submit|preventDefault={handleReportTrashCoin}
+      class="flex flex-col xl:gap-3 gap-10"
+    >
+      <div class="flex flex-col xl:gap-3 gap-6">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
             !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
-          <div class="xl:text-base text-xl text-[#666666] font-medium">
+          <div class="xl:text-base text-2xl text-[#666666] font-medium">
             Chain
           </div>
           <input
@@ -827,7 +833,7 @@
             id="chain"
             name="chain"
             value={data.chain}
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
               !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }`}
             disabled
@@ -839,7 +845,7 @@
             !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
-          <div class="xl:text-base text-xl text-[#666666] font-medium">
+          <div class="xl:text-base text-2xl text-[#666666] font-medium">
             Contract Address
           </div>
           <input
@@ -847,7 +853,7 @@
             id="contract_address"
             name="contract_address"
             value={data.contractAddress}
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
               !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }`}
             disabled
@@ -859,7 +865,7 @@
             darkMode && "bg-transparent"
           }`}
         >
-          <div class="xl:text-base text-xl text-[#666666] font-medium">
+          <div class="xl:text-base text-2xl text-[#666666] font-medium">
             Reason
           </div>
 
@@ -873,7 +879,7 @@
               />
               <label
                 for={item.id}
-                class="xl:text-sm text-lg font-normal text-[#5E656B] cursor-pointer"
+                class="xl:text-sm text-2xl font-normal text-[#5E656B] cursor-pointer"
               >
                 {item.content}
               </label>
@@ -892,7 +898,7 @@
             />
             <label
               for="outdated"
-              class="xl:text-sm text-lg font-normal text-[#5E656B] cursor-pointer"
+              class="xl:text-sm text-2xl font-normal text-[#5E656B] cursor-pointer"
             >
               The token is outdate
             </label>
@@ -904,14 +910,14 @@
               rows="5"
               id="reason"
               name="reason"
-              class={`mb-2 p-0 input-2 input-border w-full py-[6px] px-3 focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              class={`mb-2 p-0 input-2 input-border w-full py-[6px] px-3 focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
                 !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               }`}
             />
           {/if}
         </div>
 
-        <div class="flex justify-end gap-6 lg:gap-2">
+        <div class="flex justify-end lg:gap-2 gap-6">
           <div class="xl:w-[120px] w-full">
             <Button
               variant="secondary"
@@ -930,8 +936,8 @@
           </div>
         </div>
       </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </AppOverlay>
 
 {#if showToast}

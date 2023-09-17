@@ -4,16 +4,15 @@
   import dayjs, { unix } from "dayjs";
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
 
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import tooltip from "~/entries/contentScript/views/tooltip";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import VolatilityExplain from "~/assets/explain/volatility-explain.mp4";
   import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
   import MaxDrawdownExplain from "~/assets/explain/max-drawdown-explain.mp4";
-  import Loading from "~/components/Loading.svelte";
 
   export let isLoading;
   export let isError;
@@ -65,7 +64,7 @@
         </div>
       {:else}
         <div
-          class={`flex flex-col gap-4 relative ${isError ? "h-[200px]" : ""}`}
+          class={`flex flex-col gap-5 relative ${isError ? "h-[200px]" : ""}`}
         >
           <div class="xl:text-2xl text-4xl font-medium px-6 pt-6">Risks</div>
           {#if isError}
@@ -309,9 +308,9 @@
                     class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
                     style="z-index: 2"
                   >
-                    <div class="xl:text-base text-xl">1D</div>
+                    <div class="xl:text-base text-2xl">1D</div>
                     <div
-                      class={`xl:text-base text-xl ${
+                      class={`xl:text-base text-2xl ${
                         data?.base?.netWorthChange?.networth1D < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
@@ -330,9 +329,9 @@
                     class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
                     style="z-index: 2"
                   >
-                    <div class="xl:text-base text-xl">7D</div>
+                    <div class="xl:text-base text-2xl">7D</div>
                     <div
-                      class={`xl:text-base text-xl ${
+                      class={`xl:text-base text-2xl ${
                         data?.base?.netWorthChange?.networth7D < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
@@ -351,9 +350,9 @@
                     class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
                     style="z-index: 2"
                   >
-                    <div class="xl:text-base text-xl">30D</div>
+                    <div class="xl:text-base text-2xl">30D</div>
                     <div
-                      class={`xl:text-base text-xl ${
+                      class={`xl:text-base text-2xl ${
                         data?.base?.netWorthChange?.networth30D < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
@@ -372,9 +371,9 @@
                     class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
                     style="z-index: 2"
                   >
-                    <div class="xl:text-base text-xl">1Y</div>
+                    <div class="xl:text-base text-2xl">1Y</div>
                     <div
-                      class={`xl:text-base text-xl ${
+                      class={`xl:text-base text-2xl ${
                         data?.base?.netWorthChange?.networth1Y < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
@@ -393,9 +392,9 @@
                     class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
                     style="z-index: 2"
                   >
-                    <div class="xl:text-base text-xl">Lifetime</div>
+                    <div class="xl:text-base text-2xl">Lifetime</div>
                     <div
-                      class={`xl:text-base text-xl ${
+                      class={`xl:text-base text-2xl ${
                         data?.base?.changeLF?.portfolioChange < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
@@ -447,11 +446,11 @@
                           class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
                           style="z-index: 2"
                         >
-                          <div class="xl:text-base text-xl">
+                          <div class="xl:text-base text-2xl">
                             {dayjs.unix(item.timestamp).format("MMM YYYY")}
                           </div>
                           <div
-                            class={`xl:text-base text-xl ${
+                            class={`xl:text-base text-2xl ${
                               item.percentChange < 0
                                 ? "text-red-500"
                                 : "text-[#00A878]"

@@ -4,7 +4,6 @@
   import { Link } from "svelte-navigator";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
-  import "~/components/Loading.custom.svelte";
   import EChart from "~/components/EChart.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";

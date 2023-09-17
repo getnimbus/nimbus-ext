@@ -410,18 +410,18 @@
   </div>
 
   <div
-    class={`xl:text-sm text-lg ${
+    class={`flex flex-col gap-1 xl:text-sm text-xl ${
       darkMode ? "text-[#ebebeb]" : "text-gray-700"
     } `}
   >
-    <div class="flex items-center xl:gap-1 gap-2">
+    <div class="flex items-start xl:gap-1 gap-5">
       <div class="w-max">🟩</div>
       <div class="flex-1">
         Positive Value A positive value indicates a positive correlation between
         two variables
       </div>
     </div>
-    <div class="flex items-center xl:gap-1 gap-2">
+    <div class="flex items-start xl:gap-1 gap-5">
       <div class="w-max">🟥</div>
       <div class="flex-1">
         Negative Value A negative value indicates a negative correlation between
@@ -511,7 +511,7 @@
                   isOpenModal = true;
                 }}
               >
-                <div class="xl:text-sm text-xl">Compare more</div>
+                <div class="xl:text-sm text-2xl">Compare more</div>
               </Button>
             </div>
           </div>
@@ -616,70 +616,78 @@
   isOpen={isOpenModal}
   on:close={() => (isOpenModal = false)}
 >
-  <div class="font-medium xl:title-3 title-1">Search market token</div>
-  <div
-    class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg mt-2 ${
-      searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-    }`}
-  >
-    <input
-      on:keyup={({ target: { value } }) => debounceSearch(value)}
-      value={searchValue}
-      placeholder={"Find by token name"}
-      class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-        searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-      }`}
-    />
-  </div>
-  {#if $queryHoldingToken.isFetching}
-    <div class="flex items-center justify-center h-[465px]">
-      <Loading />
-    </div>
-  {:else}
-    <div>
-      {#if $queryHoldingToken.isError}
-        <div
-          class="flex justify-center items-center p-[6px] text-lg text-gray-400"
-        >
-          Empty
+  <div class="flex flex-col gap-4">
+    <div class="font-medium xl:title-3 title-1">Search market token</div>
+    <div class="flex flex-col">
+      <div
+        class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
+          searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+        }`}
+      >
+        <input
+          on:keyup={({ target: { value } }) => debounceSearch(value)}
+          value={searchValue}
+          placeholder={"Find by token name"}
+          class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+          }`}
+        />
+      </div>
+      {#if $queryHoldingToken.isFetching}
+        <div class="flex items-center justify-center h-[465px]">
+          <Loading />
         </div>
       {:else}
-        <div class="mt-2 flex flex-col max-h-[500px] h-[500px] overflow-y-auto">
-          {#if searchDataResult.length === 0}
+        <div>
+          {#if $queryHoldingToken.isError}
             <div
               class="flex justify-center items-center p-[6px] text-lg text-gray-400"
             >
-              No result
+              Empty
             </div>
           {:else}
-            {#each searchDataResult || [] as item}
-              <div
-                class={`border-b last:border-none py-3 px-1 w-full text-center flex items-center justify-start gap-2 cursor-pointer ${
-                  darkMode ? "border-[#222222]" : "border-gray-200"
-                }`}
-                on:click={handleSelectToken(item)}
-              >
-                <div class="w-7 h-7 rounded-full overflow-hidden">
-                  <img
-                    src={item.logo}
-                    alt="Coin Icon"
-                    class="w-full h-full object-contain"
-                  />
+            <div
+              class="mt-2 flex flex-col max-h-[500px] h-[500px] overflow-y-auto"
+            >
+              {#if searchDataResult.length === 0}
+                <div
+                  class="flex justify-center items-center p-[6px] text-lg text-gray-400"
+                >
+                  No result
                 </div>
-                <div class="2xl:text-sm text-lg">
-                  {item.full_name}
-                  <span
-                    class={`${darkMode ? "text-gray-600" : "text-gray-400"}`}
-                    >{item.name.toLocaleUpperCase()}
-                  </span>
-                </div>
-              </div>
-            {/each}
+              {:else}
+                {#each searchDataResult || [] as item}
+                  <div
+                    class={`border-b last:border-none py-3 px-1 w-full text-center flex items-center justify-start gap-2 cursor-pointer ${
+                      darkMode ? "border-[#222222]" : "border-gray-200"
+                    }`}
+                    on:click={handleSelectToken(item)}
+                  >
+                    <div class="w-7 h-7 rounded-full overflow-hidden">
+                      <img
+                        src={item.logo}
+                        alt="Coin Icon"
+                        class="w-full h-full object-contain"
+                      />
+                    </div>
+                    <div class="xl:text-sm text-2xl">
+                      {item.full_name}
+                      <span
+                        class={`${
+                          darkMode ? "text-gray-600" : "text-gray-400"
+                        }`}
+                        >{item.name.toLocaleUpperCase()}
+                      </span>
+                    </div>
+                  </div>
+                {/each}
+              {/if}
+            </div>
           {/if}
         </div>
       {/if}
     </div>
-  {/if}
+  </div>
 </AppOverlay>
 
 <style global windi:preflights:global windi:safelist:global>

@@ -45,7 +45,7 @@
       {/if}
     </div>
     {#if sum !== 0}
-      <div class="xl:text-lg text-2xl font-medium">
+      <div class="xl:text-lg text-2xl font-medium flex">
         $<TooltipNumber number={sum} type="balance" />
       </div>
     {/if}

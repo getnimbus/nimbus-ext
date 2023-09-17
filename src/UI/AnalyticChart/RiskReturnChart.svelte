@@ -553,7 +553,7 @@
                   </div>
                 </div>
                 {#if data?.base?.sharpeRatio < 1}
-                  <div>
+                  <div class="text-2xl xl:text-base">
                     <CtaIcon isGood={false} />
                     <span class="text-red-500"
                       >Your portfolio is not "balance" between risk and return:</span
@@ -570,7 +570,7 @@
               <div class="flex items-center gap-3">
                 {#if badPerf}
                   <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
-                    <div class="xl:text-base text-lg text-[#6E7787FF] relative">
+                    <div class="xl:text-base text-xl text-[#6E7787FF] relative">
                       <div
                         class="border border-red-500 absolute -top-1 left-0 w-[40px]"
                       />
@@ -604,7 +604,7 @@
 
                 {#if goodPerf}
                   <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
-                    <div class="xl:text-base text-lg text-[#6E7787FF] relative">
+                    <div class="xl:text-base text-xl text-[#6E7787FF] relative">
                       <div
                         class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
                       />

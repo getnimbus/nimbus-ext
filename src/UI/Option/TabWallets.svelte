@@ -149,6 +149,8 @@
   let showDisableAddWallet = false;
   let showDisableBundle = false;
   let selectedHoverBundle;
+  let isLoadingDeleteBundles = false;
+  let isOpenConfirmDeleteBundles = false;
 
   let show = false;
   let counter = 3;
@@ -787,6 +789,7 @@
 
   // handle delete bundle
   const handleDeleteBundle = async () => {
+    isLoadingDeleteBundles = true;
     try {
       const response = await nimbus.delete(
         `/address/personalize/bundle?name=${selectedBundle?.name}`,
@@ -802,10 +805,14 @@
       handleResetBundleState();
       selectedAddresses = [];
       isAddBundle = false;
+      isLoadingDeleteBundles = false;
+      isOpenConfirmDeleteBundles = false;
     } catch (e) {
       toastMsg = "Something wrong when delete your bundle. Please try again!";
       isSuccess = false;
       trigger();
+      isLoadingDeleteBundles = false;
+      isOpenConfirmDeleteBundles = false;
       console.error("e: ", e);
     }
   };
@@ -865,7 +872,7 @@
       <div class="xl:title-3 title-1">{MultipleLang.title}</div>
       <div class="flex justify-between items-center gap-10">
         {#if listBundle && listBundle.length === 0}
-          <div class="text-base">
+          <div class="xl:text-base text-xl">
             Create your bundle with up to 7 addresses per bundle!
           </div>
         {:else}
@@ -969,7 +976,7 @@
             {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0}
               <div
                 class="text-red-500 font-semibold w-max cursor-pointer xl:text-base text-2xl"
-                on:click={handleDeleteBundle}
+                on:click={() => (isOpenConfirmDeleteBundles = true)}
               >
                 Delete
               </div>
@@ -1075,13 +1082,13 @@
           nameBundle && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
         }`}
       >
-        <div class="xl:text-base text-xl text-[#666666] font-medium">
+        <div class="xl:text-base text-2xl text-[#666666] font-medium">
           Bundle
         </div>
         <input
           type="text"
           placeholder="Your bundle name"
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
             nameBundle && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
           required
@@ -1089,26 +1096,26 @@
         />
       </div>
       <div class="border border_0000000d rounded-[10px] overflow-x-auto">
-        <table class="table-auto xl:w-full w-[1200px]">
+        <table class="table-auto xl:w-full w-[1800px]">
           <thead>
             <tr class="bg_f4f5f8">
               <th class="pl-3 py-3">
                 <div
-                  class="text-left xl:text-sm text-base uppercase font-semibold"
+                  class="text-left xl:text-xs text-xl uppercase font-semibold"
                 >
                   {MultipleLang.content.address_header_table}
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-left xl:text-sm text-base uppercase font-semibold"
+                  class="text-left xl:text-xs text-xl uppercase font-semibold"
                 >
                   {MultipleLang.content.label_header_table}
                 </div>
               </th>
               <th class="pr-3 py-3">
                 <div
-                  class="text-right xl:text-sm text-base uppercase font-semibold"
+                  class="text-right xl:text-xs text-xl uppercase font-semibold"
                 >
                   {MultipleLang.content.action_header_table}
                 </div>
@@ -1146,7 +1153,7 @@
                       }`}
                     >
                       <div
-                        class="text-left flex items-center gap-3 xl:text-base text-xl"
+                        class="text-left flex items-center gap-3 xl:text-base text-2xl"
                       >
                         <div
                           class="flex justify-center relative"
@@ -1208,7 +1215,7 @@
                       }`}
                     >
                       <div
-                        class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-xl"
+                        class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
                       >
                         {item.label}
                       </div>
@@ -1276,26 +1283,22 @@
         darkMode ? "bg-[#131313]" : "bg-[#fff]"
       }`}
     >
-      <table class="table-auto xl:w-full w-[1200px]">
+      <table class="table-auto xl:w-full w-[1800px]">
         <thead>
           <tr class="bg_f4f5f8">
             <th class="pl-3 py-3">
-              <div
-                class="text-left xl:text-sm text-base uppercase font-semibold"
-              >
+              <div class="text-left xl:text-xs text-xl uppercase font-semibold">
                 {MultipleLang.content.address_header_table}
               </div>
             </th>
             <th class="py-3">
-              <div
-                class="text-left xl:text-sm text-base uppercase font-semibold"
-              >
+              <div class="text-left xl:text-xs text-xl uppercase font-semibold">
                 {MultipleLang.content.label_header_table}
               </div>
             </th>
             <th class="pr-3 py-3">
               <div
-                class="text-right xl:text-sm text-base uppercase font-semibold"
+                class="text-right xl:text-xs text-xl uppercase font-semibold"
               >
                 {MultipleLang.content.action_header_table}
               </div>
@@ -1334,7 +1337,7 @@
               <tr>
                 <td colspan="3">
                   <div
-                    class="flex justify-center items-center py-4 px-3 xl:text-base text-xl"
+                    class="flex justify-center items-center py-4 px-3 xl:text-base text-2xl"
                   >
                     No address
                   </div>
@@ -1351,7 +1354,7 @@
                     }`}
                   >
                     <div
-                      class="text-left flex items-center gap-3 xl:text-base text-xl"
+                      class="text-left flex items-center gap-3 xl:text-base text-2xl"
                     >
                       <svg
                         width="18"
@@ -1381,7 +1384,7 @@
                     }`}
                   >
                     <div
-                      class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-xl"
+                      class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
                     >
                       {item.label}
                     </div>
@@ -1422,227 +1425,250 @@
   {/if}
 </div>
 
-<!-- Modal edit account -->
-<AppOverlay
-  clickOutSideToClose
-  isOpen={isOpenEditModal}
-  on:close={() => (isOpenEditModal = false)}
->
-  <div class="xl:title-3 title-1 font-semibold">
-    {MultipleLang.content.modal_edit_title}
-  </div>
-  <form
-    on:submit|preventDefault={onSubmitEdit}
-    class="flex flex-col gap-3 mt-4"
-  >
-    <div class="flex flex-col gap-1">
-      <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-        }`}
-        class:input-border-error={errorsEdit.address &&
-          errorsEdit.address.required}
-      >
-        <div class="xl:text-base text-xl font-semibold text-[#666666]">
-          {MultipleLang.content.modal_address_label}
-        </div>
-        <input
-          disabled={selectedItemEdit.type === "CEX"}
-          type="text"
-          id="address"
-          name="address"
-          placeholder={MultipleLang.content.modal_address_label}
-          bind:value={selectedItemEdit.address}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-          }`}
-          on:keyup={({ target: { value } }) => (address = value)}
-        />
-      </div>
-      {#if errorsEdit.address && errorsEdit.address.required}
-        <div class="text-red-500">
-          {errorsEdit.address.msg}
-        </div>
-      {/if}
-    </div>
-    <div class="flex flex-col gap-1">
-      <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-        }`}
-        class:input-border-error={errorsEdit.label && errorsEdit.label.required}
-      >
-        <div class="xl:text-base text-xl font-semibold text-[#666666]">
-          {MultipleLang.content.modal_label_label}
-        </div>
-        <input
-          type="text"
-          id="label"
-          name="label"
-          placeholder={MultipleLang.content.modal_label_label}
-          bind:value={selectedItemEdit.label}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-          }`}
-          on:keyup={({ target: { value } }) => (label = value)}
-        />
-      </div>
-      {#if errorsEdit.label && errorsEdit.label.required}
-        <div class="text-red-500">
-          {errorsEdit.label.msg}
-        </div>
-      {/if}
-    </div>
-    <div class="flex justify-end lg:gap-2 gap-6">
-      <div class="lg:w-[120px] w-full">
-        <Button
-          variant="secondary"
-          on:click={() => {
-            errorsEdit = {};
-            isOpenEditModal = false;
-          }}
-        >
-          {MultipleLang.content.modal_cancel}</Button
-        >
-      </div>
-      <div class="lg:w-[120px] w-full">
-        <Button type="submit" variant="tertiary">
-          {MultipleLang.content.modal_edit}</Button
-        >
-      </div>
-    </div>
-  </form>
-</AppOverlay>
-
 <!-- Modal add DEX account -->
 <AppOverlay
   clickOutSideToClose
   isOpen={isOpenAddModal}
   on:close={() => (isOpenAddModal = false)}
 >
-  <div class="xl:title-3 title-1 font-semibold">
-    {MultipleLang.content.modal_add_title}
-  </div>
-  <div class="flex flex-col mt-4 gap-7">
-    <div class="flex flex-col gap-3">
-      <div class="flex justify-center">
-        <div class="w-max">
-          <Button
-            variant="tertiary"
-            isLoading={isLoadingConnectCEX}
-            on:click={onSubmitCEX}
+  <div class="flex flex-col gap-4">
+    <div class="xl:title-3 title-1 font-semibold">
+      {MultipleLang.content.modal_add_title}
+    </div>
+    <div class="flex flex-col gap-7">
+      <div class="flex flex-col gap-3">
+        <div class="flex justify-center">
+          <div class="w-max">
+            <Button
+              variant="tertiary"
+              isLoading={isLoadingConnectCEX}
+              on:click={onSubmitCEX}
+            >
+              <div class="font-medium text-white xl:text-base text-2xl">
+                Connect Exchange
+              </div>
+            </Button>
+          </div>
+        </div>
+        <div
+          class="flex items-center justify-center gap-1 xl:text-base text-2xl"
+        >
+          <img src={Success} alt="" />
+          Bank-level security/encryption.
+          <a
+            href="https://vezgo.com/security"
+            class="text-blue-500 cursor-pointer"
+            target="_blank">Learn more</a
           >
-            <div class="xl:text-base text-2xl font-medium text-white">
-              Connect Exchange
+        </div>
+        <div
+          class="flex justify-center items-center gap-6 my-3 xl:text-base text-2xl"
+        >
+          {#each listLogoCEX as logo}
+            <div
+              class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
+            >
+              <img src={logo} alt="" class="w-full h-full object-contain" />
             </div>
-          </Button>
+          {/each}
+          <div class="text-gray-400">+22 More</div>
         </div>
       </div>
-      <div class="xl:text-base text-xl flex items-center justify-center gap-1">
-        <img src={Success} alt="" />
-        Bank-level security/encryption.
-        <a
-          href="https://vezgo.com/security"
-          class="text-blue-500 cursor-pointer"
-          target="_blank">Learn more</a
+      <div class="border-t-[1px] relative">
+        <div
+          class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
+            darkMode ? "bg-[#0f0f0f]" : "bg-white"
+          } xl:text-sm text-xl px-2`}
         >
+          Or
+        </div>
       </div>
-      <div class="flex justify-center items-center gap-6 my-3">
-        {#each listLogoCEX as logo}
-          <div
-            class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
-          >
-            <img src={logo} alt="" class="w-full h-full object-contain" />
-          </div>
-        {/each}
-        <div class="text-gray-400">+22 More</div>
-      </div>
-    </div>
-    <div class="border-t-[1px] relative">
-      <div
-        class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
-          darkMode ? "bg-[#0f0f0f]" : "bg-white"
-        }  text-sm px-2`}
+      <form
+        on:submit|preventDefault={onSubmit}
+        class="flex flex-col gap-3 mt-2"
       >
-        Or
-      </div>
+        <div class="flex flex-col xl:gap-3 gap-6">
+          <div class="flex flex-col gap-1">
+            <div
+              class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+                address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+              }`}
+              class:input-border-error={errors.address &&
+                errors.address.required}
+            >
+              <div class="xl:text-base text-2xl text-[#666666] font-medium">
+                Address
+              </div>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                placeholder="Your wallet address"
+                value=""
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                  address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                }
+              `}
+                on:keyup={({ target: { value } }) => (address = value)}
+              />
+            </div>
+            {#if errors.address && errors.address.required}
+              <div class="text-red-500">
+                {errors.address.msg}
+              </div>
+            {/if}
+          </div>
+          <div class="flex flex-col gap-1">
+            <div
+              class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+                label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+              }`}
+              class:input-border-error={errors.label && errors.label.required}
+            >
+              <div class="xl:text-base text-2xl text-[#666666] font-medium">
+                {MultipleLang.content.modal_label_label}
+              </div>
+              <input
+                type="text"
+                id="label"
+                name="label"
+                placeholder={MultipleLang.content.modal_label_label}
+                value=""
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                  label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                }
+              `}
+                on:keyup={({ target: { value } }) => (label = value)}
+              />
+            </div>
+            {#if errors.label && errors.label.required}
+              <div class="text-red-500">
+                {errors.label.msg}
+              </div>
+            {/if}
+          </div>
+        </div>
+        <div
+          class="flex justify-center items-center gap-6 my-3 xl:text-base text-2xl"
+        >
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
+            <div
+              class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
+            >
+              <img
+                src={item.logo}
+                alt=""
+                class="w-full h-full object-contain"
+              />
+            </div>
+          {/each}
+          <div class="text-gray-400">More soon</div>
+        </div>
+        <div class="flex justify-end lg:gap-2 gap-6">
+          <div class="lg:w-[120px] w-full">
+            <Button
+              variant="secondary"
+              on:click={() => {
+                errors = {};
+                isOpenAddModal = false;
+              }}
+            >
+              {MultipleLang.content.modal_cancel}</Button
+            >
+          </div>
+          <div class="lg:w-[120px] w-full">
+            <Button type="submit" variant="tertiary">
+              {MultipleLang.content.modal_add}</Button
+            >
+          </div>
+        </div>
+      </form>
     </div>
-    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-2">
-      <div class="flex flex-col gap-1">
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-          }`}
-          class:input-border-error={errors.address && errors.address.required}
-        >
-          <div class="xl:text-base text-xl text-[#666666] font-medium">
-            Address
-          </div>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            placeholder="Your wallet address"
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-            }
-              `}
-            on:keyup={({ target: { value } }) => (address = value)}
-          />
-        </div>
-        {#if errors.address && errors.address.required}
-          <div class="text-red-500">
-            {errors.address.msg}
-          </div>
-        {/if}
-      </div>
-      <div class="flex flex-col gap-1">
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-          }`}
-          class:input-border-error={errors.label && errors.label.required}
-        >
-          <div class="xl:text-base text-xl text-[#666666] font-medium">
-            {MultipleLang.content.modal_label_label}
-          </div>
-          <input
-            type="text"
-            id="label"
-            name="label"
-            placeholder={MultipleLang.content.modal_label_label}
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-            }
-              `}
-            on:keyup={({ target: { value } }) => (label = value)}
-          />
-        </div>
-        {#if errors.label && errors.label.required}
-          <div class="text-red-500">
-            {errors.label.msg}
-          </div>
-        {/if}
-      </div>
-      <div class="flex justify-center items-center gap-6 my-3">
-        {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
+  </div>
+</AppOverlay>
+
+<!-- Modal edit account -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenEditModal}
+  on:close={() => (isOpenEditModal = false)}
+>
+  <div class="flex flex-col gap-4">
+    <div class="xl:title-3 title-1 font-semibold">
+      {MultipleLang.content.modal_edit_title}
+    </div>
+    <form
+      on:submit|preventDefault={onSubmitEdit}
+      class="flex flex-col xl:gap-3 gap-10"
+    >
+      <div class="flex flex-col xl:gap-3 gap-6">
+        <div class="flex flex-col gap-1">
           <div
-            class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
+            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+              address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+            }`}
+            class:input-border-error={errorsEdit.address &&
+              errorsEdit.address.required}
           >
-            <img src={item.logo} alt="" class="w-full h-full object-contain" />
+            <div class="xl:text-base text-2xl font-semibold text-[#666666]">
+              {MultipleLang.content.modal_address_label}
+            </div>
+            <input
+              disabled={selectedItemEdit.type === "CEX"}
+              type="text"
+              id="address"
+              name="address"
+              placeholder={MultipleLang.content.modal_address_label}
+              bind:value={selectedItemEdit.address}
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              }`}
+              on:keyup={({ target: { value } }) => (address = value)}
+            />
           </div>
-        {/each}
-        <div class="text-gray-400">More soon</div>
+          {#if errorsEdit.address && errorsEdit.address.required}
+            <div class="text-red-500">
+              {errorsEdit.address.msg}
+            </div>
+          {/if}
+        </div>
+        <div class="flex flex-col gap-1">
+          <div
+            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+              label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+            }`}
+            class:input-border-error={errorsEdit.label &&
+              errorsEdit.label.required}
+          >
+            <div class="xl:text-base text-2xl font-semibold text-[#666666]">
+              {MultipleLang.content.modal_label_label}
+            </div>
+            <input
+              type="text"
+              id="label"
+              name="label"
+              placeholder={MultipleLang.content.modal_label_label}
+              bind:value={selectedItemEdit.label}
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              }`}
+              on:keyup={({ target: { value } }) => (label = value)}
+            />
+          </div>
+          {#if errorsEdit.label && errorsEdit.label.required}
+            <div class="text-red-500">
+              {errorsEdit.label.msg}
+            </div>
+          {/if}
+        </div>
       </div>
       <div class="flex justify-end lg:gap-2 gap-6">
         <div class="lg:w-[120px] w-full">
           <Button
             variant="secondary"
             on:click={() => {
-              errors = {};
-              isOpenAddModal = false;
+              errorsEdit = {};
+              isOpenEditModal = false;
             }}
           >
             {MultipleLang.content.modal_cancel}</Button
@@ -1650,7 +1676,7 @@
         </div>
         <div class="lg:w-[120px] w-full">
           <Button type="submit" variant="tertiary">
-            {MultipleLang.content.modal_add}</Button
+            {MultipleLang.content.modal_edit}</Button
           >
         </div>
       </div>
@@ -1664,36 +1690,77 @@
   isOpen={isOpenConfirmDelete}
   on:close={() => (isOpenConfirmDelete = false)}
 >
-  <div class="flex flex-col gap-1 items-start">
-    <div class="xl:title-3 title-1 font-semibold">
-      {MultipleLang.content.modal_delete_title}
+  <div class="flex flex-col xl:gap-4 gap-10">
+    <div class="flex flex-col gap-1 items-start">
+      <div class="xl:title-3 title-1 font-semibold">
+        {MultipleLang.content.modal_delete_title}
+      </div>
+      <div class="xl:text-sm text-2xl text-gray-500">
+        {MultipleLang.content.modal_delete_sub_title}
+      </div>
     </div>
-    <div class="xl:text-sm text-lg text-gray-500">
-      {MultipleLang.content.modal_delete_sub_title}
+    <div class="flex justify-end lg:gap-2 gap-6">
+      <div class="lg:w-[120px] w-full">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            isOpenConfirmDelete = false;
+            selectedWallet = {};
+          }}
+        >
+          {MultipleLang.content.modal_cancel}
+        </Button>
+      </div>
+      <div class="lg:w-[120px] w-full">
+        <Button
+          variant="delete"
+          isLoading={isLoadingDelete}
+          on:click={() => {
+            handleDelete(selectedWallet);
+          }}
+        >
+          {MultipleLang.content.modal_delete}
+        </Button>
+      </div>
     </div>
   </div>
-  <div class="flex justify-end lg:gap-2 gap-6 mt-4">
-    <div class="lg:w-[120px] w-full">
-      <Button
-        variant="secondary"
-        on:click={() => {
-          isOpenConfirmDelete = false;
-          selectedWallet = {};
-        }}
-      >
-        {MultipleLang.content.modal_cancel}
-      </Button>
+</AppOverlay>
+
+<!-- Modal confirm delete bundles -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenConfirmDeleteBundles}
+  on:close={() => (isOpenConfirmDeleteBundles = false)}
+>
+  <div class="flex flex-col xl:gap-4 gap-10">
+    <div class="flex flex-col gap-1 items-start">
+      <div class="xl:title-3 title-1 font-semibold">
+        {MultipleLang.content.modal_delete_title}
+      </div>
+      <div class="xl:text-sm text-2xl text-gray-500">
+        Do you really want to delete this bundles? This process cannot revert
+      </div>
     </div>
-    <div class="lg:w-[120px] w-full">
-      <Button
-        variant="delete"
-        isLoading={isLoadingDelete}
-        on:click={() => {
-          handleDelete(selectedWallet);
-        }}
-      >
-        {MultipleLang.content.modal_delete}
-      </Button>
+    <div class="flex justify-end lg:gap-2 gap-6">
+      <div class="lg:w-[120px] w-full">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            isOpenConfirmDeleteBundles = false;
+          }}
+        >
+          {MultipleLang.content.modal_cancel}
+        </Button>
+      </div>
+      <div class="lg:w-[120px] w-full">
+        <Button
+          variant="delete"
+          isLoading={isLoadingDeleteBundles}
+          on:click={handleDeleteBundle}
+        >
+          {MultipleLang.content.modal_delete}
+        </Button>
+      </div>
     </div>
   </div>
 </AppOverlay>
@@ -1706,42 +1773,43 @@
     isOpenModal = false;
   }}
 >
-  <div class="xl:title-3 title-1 text-center font-semibold">
-    Let's us know your email
-  </div>
-  <div class="mt-2">
-    <div class="xl:text-base text-lg text-gray-500 text-center">
-      Add your email to get updates from us and receive exclusive benefits soon.
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1 items-start">
+      <div class="xl:title-3 title-1 font-semibold">
+        Let's us know your email
+      </div>
+      <div class="xl:text-sm text-2xl text-gray-500">
+        Add your email to get updates from us and receive exclusive benefits
+        soon.
+      </div>
     </div>
     <form
       on:submit|preventDefault={onSubmitGetEmail}
-      class="flex flex-col gap-3 mt-4"
+      class="flex flex-col xl:gap-3 gap-10"
     >
-      <div class="flex flex-col gap-1">
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-          }`}
-        >
-          <div class="xl:text-base text-xl text-[#666666] font-medium">
-            Email
-          </div>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            required
-            placeholder="Your email"
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-            }
-              `}
-            on:keyup={({ target: { value } }) => (email = value)}
-          />
+      <div
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+          email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+        }`}
+      >
+        <div class="xl:text-base text-2xl text-[#666666] font-medium">
+          Email
         </div>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="Your email"
+          value=""
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+          }
+              `}
+          on:keyup={({ target: { value } }) => (email = value)}
+        />
       </div>
-      <div class="flex justify-end gap-2">
+      <div class="flex justify-end lg:gap-2 gap-6">
         <div class="xl:w-[120px] w-full">
           <Button
             variant="secondary"

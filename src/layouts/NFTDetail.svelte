@@ -101,7 +101,7 @@
           <Link to="/" class="cusor-pointer">
             <div class="text-white flex items-center gap-1">
               <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="xl:text-sm text-xl font-semibold">
+              <div class="xl:text-sm text-2xl font-semibold">
                 Back to Portfolio
               </div>
             </div>

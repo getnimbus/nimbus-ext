@@ -42,7 +42,7 @@
         />
       {/each}
       <div class="flex flex-col gap-1">
-        <div class=" xl:text-sm text-xl font-medium">{data.name}</div>
+        <div class="xl:text-sm text-2xl font-medium">{data.name}</div>
         {#if data.tokens && data.tokens.length}
           <div class="flex items-center gap-1">
             {#each data.tokens as token, index}
@@ -68,7 +68,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="flex justify-end xl:text-sm text-xl text_00000099 font-medium">
+    <div class="flex justify-end xl:text-sm text-2xl text_00000099 font-medium">
       <TooltipNumber number={Math.abs(data.amount)} type="balance" />
     </div>
   </td>
@@ -78,7 +78,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="flex justify-end xl:text-sm text-xl text_00000099 font-medium">
+    <div class="flex justify-end xl:text-sm text-2xl text_00000099 font-medium">
       $<TooltipNumber number={Math.abs(data.inputValue)} type="balance" />
     </div>
   </td>
@@ -88,7 +88,7 @@
                     ? "group-hover:bg-[#000]"
                     : "group-hover:bg-gray-100"
                 }`}>
-    <div class="text-right xl:text-sm text-xl text_00000099 font-medium">
+    <div class="text-right xl:text-sm text-2xl text_00000099 font-medium">
       {dayjs(data.inputTime).format("YYYY-MM-DD, hh:mm A")}
     </div>
   </td>
@@ -98,7 +98,7 @@
                     ? "group-hover:bg-[#000]"
                     : "group-hover:bg-gray-100"
                 }`}>
-    <div class="text-right xl:text-sm text-xl text_00000099 font-medium">
+    <div class="text-right xl:text-sm text-2xl text_00000099 font-medium">
       {formatBalance(data.apy)}
     </div>
   </td> -->
@@ -108,7 +108,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="flex justify-end xl:text-sm text-xl text_00000099 font-medium">
+    <div class="flex justify-end xl:text-sm text-2xl text_00000099 font-medium">
       $<TooltipNumber number={Math.abs(value)} type="balance" />
     </div>
   </td>
@@ -118,7 +118,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl font-medium flex flex-col">
+    <div class="xl:text-sm text-2xl font-medium flex flex-col">
       <div
         class={`flex justify-end ${
           profit >= 0 ? "text-[#00A878]" : "text-red-500"

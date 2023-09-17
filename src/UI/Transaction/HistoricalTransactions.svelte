@@ -55,29 +55,29 @@
         <th
           class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-9 bg_f4f5f8"
         >
-          <div class="text-left xl:text-xs text-base uppercase font-medium">
+          <div class="text-left xl:text-xs text-xl uppercase font-medium">
             Transaction
           </div>
         </th>
         <th class="py-3">
-          <div class="text-left xl:text-xs text-base uppercase font-medium">
+          <div class="text-left xl:text-xs text-xl uppercase font-medium">
             From
           </div>
         </th>
         <th class="py-3">
-          <div class="text-left xl:text-xs text-base uppercase font-medium">
+          <div class="text-left xl:text-xs text-xl uppercase font-medium">
             To
           </div>
         </th>
         <th class="py-3">
           <div
-            class="text-left xl:text-xs text-base uppercase font-medium min-w-[100px]"
+            class="text-left xl:text-xs text-xl uppercase font-medium min-w-[100px]"
           >
             Type
           </div>
         </th>
         <th class="pr-3 py-3 rounded-tr-[10px]">
-          <div class="text-left xl:text-xs text-base uppercase font-medium">
+          <div class="text-left xl:text-xs text-xl uppercase font-medium">
             Token change
           </div>
         </th>
@@ -119,7 +119,7 @@
               >
                 <div class="text-left flex items-start gap-2 w-max">
                   <div class="flex flex-col">
-                    <div class="xl:text-sm text-xl">
+                    <div class="xl:text-sm text-2xl">
                       {#if typeWalletAddress === "DEX"}
                         <Copy
                           address={item?.transaction_hash}
@@ -158,7 +158,7 @@
                 }`}
               >
                 {#if item?.detail?.from}
-                  <div class="w-max xl:text-sm text-xl">
+                  <div class="w-max xl:text-sm text-2xl">
                     {#if typeWalletAddress === "DEX"}
                       <Copy
                         address={item?.detail?.from}
@@ -190,7 +190,7 @@
                 }`}
               >
                 {#if item?.detail?.to}
-                  <div class="w-max xl:text-sm text-xl">
+                  <div class="w-max xl:text-sm text-2xl">
                     {#if typeWalletAddress === "DEX"}
                       <Copy
                         address={item?.detail?.to}
@@ -222,7 +222,7 @@
                 }`}
               >
                 <div
-                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-start"
+                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-start"
                 >
                   {#if item?.type}
                     <div
@@ -240,7 +240,7 @@
                 }`}
               >
                 <div
-                  class="xl:text-sm text-xl font-medium flex flex-col items-start gap-2"
+                  class="xl:text-sm text-2xl font-medium flex flex-col items-start gap-2"
                 >
                   {#each item.changes as change}
                     <div class="flex items-center gap-2">

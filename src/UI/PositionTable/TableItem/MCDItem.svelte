@@ -39,7 +39,7 @@
         class="rounded-full"
       />
       <div class="flex flex-col gap-1">
-        <div class=" xl:text-sm text-xl font-medium">
+        <div class=" xl:text-sm text-2xl font-medium">
           {data.token.name}
         </div>
         <div class="text_00000080 xl:text-xs text-sm font-medium">
@@ -55,7 +55,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-xl text_00000099 font-medium flex flex-col items-start"
+      class="xl:text-sm text-2xl text_00000099 font-medium flex flex-col items-start"
     >
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
@@ -89,7 +89,7 @@
         class="rounded-full"
       />
       <div class="flex flex-col gap-1">
-        <div class=" xl:text-sm text-xl font-medium">DAI</div>
+        <div class="xl:text-sm text-2xl font-medium">DAI</div>
         <div class="text_00000080 text-xs font-medium">DAI</div>
       </div>
     </div>
@@ -101,7 +101,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-xl text_00000099 font-medium flex flex-col items-start"
+      class="xl:text-sm text-2xl text_00000099 font-medium flex flex-col items-start"
     >
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
@@ -121,7 +121,7 @@
     }`}
   >
     <div
-      class="flex justify-start items-center gap-1 xl:text-sm text-xl text-[#000000] font-medium"
+      class="flex justify-start items-center gap-1 xl:text-sm text-2xl text-[#000000] font-medium"
     >
       {#if data.healthRate < 2}
         <span class="text-yellow-300">
@@ -138,7 +138,9 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="flex justify-end xl:text-sm text-xl text-[#000000] font-medium">
+    <div
+      class="flex justify-end xl:text-sm text-2xl text-[#000000] font-medium"
+    >
       $<TooltipNumber
         number={Number(
           data?.collateralAmount * data?.market_price - data?.debtAmount * 1

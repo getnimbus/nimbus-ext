@@ -659,35 +659,35 @@
                       class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg_f4f5f8"
                     >
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         Transaction
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         From
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         To
                       </div>
                     </th>
                     <th class="py-3 min-w-[100px]">
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         Type
                       </div>
                     </th>
                     <th class="py-3 pr-3">
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         Token change
                       </div>
@@ -800,7 +800,7 @@
                             }`}
                           >
                             <div
-                              class="xl:text-sm text-xl text_00000099 font-medium flex justify-start"
+                              class="xl:text-sm text-2xl text_00000099 font-medium flex justify-start"
                             >
                               {#if change?.type}
                                 <div
@@ -872,21 +872,21 @@
                   <tr class="bg_f4f5f8">
                     <th class="py-3 pl-3">
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         Transaction
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         Type
                       </div>
                     </th>
                     <th class="py-3 pr-3">
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         Token Change
                       </div>
@@ -1009,7 +1009,7 @@
                                           {change?.metadata?.btcPrice?.symbol}
                                         </div>
                                       </div>
-                                      <div class="text-gray-500">
+                                      <div class="text-gray-500 flex">
                                         | $<TooltipNumber
                                           number={Math.abs(
                                             change?.metadata?.btcChange
@@ -1043,7 +1043,7 @@
                                         {change?.metadata?.info?.tokenName}
                                       </div>
                                     </div>
-                                    <div class="text-gray-500">
+                                    <div class="text-gray-500 flex">
                                       | $<TooltipNumber
                                         number={Math.abs(
                                           change?.metadata?.info?.total *

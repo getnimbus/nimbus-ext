@@ -52,7 +52,7 @@
       let:motion
     >
       <div
-        class={`relative ${
+        class={`relative border border-red-500 ${
           isTableContent ? "xl:min-w-7xl min-w-4xl" : "xl:min-w-2xl min-w-4xl"
         }`}
         style="box-shadow: 0px 4px 20px 0px #00000026;"

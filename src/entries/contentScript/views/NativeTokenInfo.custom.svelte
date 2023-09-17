@@ -407,7 +407,7 @@ z"
             <div class="flex items-start gap-1">
               <div class="flex flex-col items-end gap-1">
                 <div class="relative">
-                  <div class="text-base font-medium text-black">
+                  <div class="text-base font-medium text-black flex">
                     {#if price}
                       $<TooltipNumber number={price} type="balance" />
                     {:else}
@@ -511,7 +511,7 @@ z"
                   </div>
                 {/if}
               </div>
-              <div class="text-xs text-[#000000B2] font-medium uppercase">
+              <div class="text-xs text-[#000000B2] font-medium uppercase flex">
                 $<TooltipNumber number={currentMarketcap} type="balance" />
               </div>
             </div>
@@ -523,10 +523,14 @@ z"
                 />
               </div>
               <div class="flex justify-between">
-                <div class="text-[#000000B2] text-xs font-medium uppercase">
+                <div
+                  class="text-[#000000B2] text-xs font-medium uppercase flex"
+                >
                   $<TooltipNumber number={min} type="balance" />
                 </div>
-                <div class="text-[#000000B2] text-xs font-medium uppercase">
+                <div
+                  class="text-[#000000B2] text-xs font-medium uppercase flex"
+                >
                   $<TooltipNumber number={max} type="balance" />
                 </div>
               </div>

@@ -162,17 +162,17 @@
       <thead>
         <tr class="bg_f4f5f8">
           <th class="pl-3 py-3">
-            <div class="text-left xl:text-sm text-lg uppercase font-semibold">
+            <div class="text-left xl:text-sm text-2xl uppercase font-semibold">
               {MultipleLang.content.address_header_table}
             </div>
           </th>
           <th class="py-3">
-            <div class="text-left xl:text-sm text-lg uppercase font-semibold">
+            <div class="text-left xl:text-sm text-2xl uppercase font-semibold">
               {MultipleLang.content.label_header_table}
             </div>
           </th>
           <th class="pr-3 py-3">
-            <div class="text-right xl:text-sm text-lg uppercase font-semibold">
+            <div class="text-right xl:text-sm text-2xl uppercase font-semibold">
               {MultipleLang.content.action_header_table}
             </div>
           </th>
@@ -194,7 +194,7 @@
             <tr>
               <td colspan="3">
                 <div
-                  class="flex justify-center items-center py-4 px-3 xl:text-base text-xl"
+                  class="flex justify-center items-center py-4 px-3 xl:text-base text-2xl"
                 >
                   No highlight
                 </div>
@@ -205,7 +205,7 @@
               <tr class="hover:bg-gray-100 transition-all">
                 <td class="pl-3 py-4">
                   <div
-                    class="text-left xl:text-base text-xl flex items-start gap-2"
+                    class="text-left xl:text-base text-2xl flex items-start gap-2"
                   >
                     <Copy
                       address={item.address}
@@ -216,7 +216,7 @@
                 </td>
                 <td class="py-4">
                   <div
-                    class="bg-[#6AC7F533] text_27326F xl:text-base text-xl w-max px-3 py-1 rounded-[5px]"
+                    class="bg-[#6AC7F533] text_27326F xl:text-base text-2xl w-max px-3 py-1 rounded-[5px]"
                   >
                     {item.label}
                   </div>
@@ -265,7 +265,7 @@
       <div
         class="flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 bg-[#F0F2F7]"
       >
-        <div class="xl:text-base text-xl font-semibold text-gray-700">
+        <div class="xl:text-base text-2xl font-semibold text-gray-700">
           {MultipleLang.content.modal_address_label}
         </div>
         <input
@@ -275,7 +275,7 @@
           placeholder={MultipleLang.content.modal_address_label}
           value={selectedHighlight.address}
           disabled
-          class="p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] bg-[#F0F2F7]"
+          class="p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] bg-[#F0F2F7]"
         />
       </div>
     </div>
@@ -286,7 +286,7 @@
         }`}
         class:input-border-error={errorsEdit.label && errorsEdit.label.required}
       >
-        <div class="xl:text-base text-xl font-semibold text-gray-700">
+        <div class="xl:text-base text-2xl font-semibold text-gray-700">
           {MultipleLang.content.label_header_table}
         </div>
         <input
@@ -295,7 +295,7 @@
           name="label"
           placeholder={MultipleLang.content.label_header_table}
           bind:value={selectedHighlight.label}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
             label ? "bg-[#F0F2F7]" : ""
           }`}
           on:keyup={({ target: { value } }) => (label = value)}
@@ -337,7 +337,7 @@
     <div class="xl:title-3 title-1 font-semibold">
       {MultipleLang.content.modal_delete_title}
     </div>
-    <div class="xl:text-sm text-lg text-gray-500">
+    <div class="xl:text-sm text-2xl text-gray-500">
       {MultipleLang.content.modal_delete_sub_title}
     </div>
   </div>

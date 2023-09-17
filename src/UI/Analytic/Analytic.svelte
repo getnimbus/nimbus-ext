@@ -101,49 +101,26 @@
 
           <section class="overflow-hidden">
             <div
-              class={`mx-auto max-w-c-1390 px-4 py-4 rounded-[20px] bg-gradient-to-t ${
+              class={`mx-auto max-w-c-1390 px-6 py-7 rounded-[20px] bg-gradient-to-t flex justify-between gap-10 ${
                 darkMode
                   ? "from-[#0f0f0f] to-[#222222]"
                   : "from-[#F8F9FF] to-[#DEE7FF]"
               }`}
             >
-              <div
-                class="flex flex-wrap gap-8 md:flex-nowrap md:items-center md:justify-between md:gap-0"
-              >
-                <div
-                  class="animate_left"
-                  data-sr-id="39"
-                  style="visibility: visible; opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: opacity 2.8s cubic-bezier(0.5, 0, 0, 1) 0s, transform 2.8s cubic-bezier(0.5, 0, 0, 1) 0s;"
+              <div class="text-2xl xl:text-xl font-medium">
+                Minimize risk & maximize return by rebalance your portfolio 🚀
+              </div>
+              <div class="xl:w-[164px] w-[284px]">
+                <Button
+                  on:click={() => {
+                    navigate(
+                      `/compare?address=${encodeURIComponent(selectedWallet)}`
+                    );
+                    mixpanel.track("user_compare");
+                  }}
                 >
-                  <h2
-                    class="px-2 py-3 text-xl font-medium xl:text-sectiontitle4"
-                  >
-                    Minimize risk & maximize return by rebalance your portfolio
-                    🚀
-                  </h2>
-                </div>
-                <div
-                  class="animate_right lg:w-[45%]"
-                  data-sr-id="43"
-                  style="visibility: visible; opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); transition: opacity 2.8s cubic-bezier(0.5, 0, 0, 1) 0s, transform 2.8s cubic-bezier(0.5, 0, 0, 1) 0s;"
-                >
-                  <div class="flex items-center justify-end">
-                    <div class="xl:w-[164px] w-max">
-                      <Button
-                        on:click={() => {
-                          navigate(
-                            `/compare?address=${encodeURIComponent(
-                              selectedWallet
-                            )}`
-                          );
-                          mixpanel.track("user_compare");
-                        }}
-                      >
-                        <div class="xl:text-base text-2xl">Get suggestion</div>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
+                  <div class="xl:text-base text-2xl">Get suggestion</div>
+                </Button>
               </div>
             </div>
           </section>

@@ -429,7 +429,7 @@
             <div class="flex items-center gap-3">
               {#if worseLose && Object.keys(worseLose).length !== 0}
                 <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
-                  <div class="xl:text-base text-lg text-[#6E7787FF] relative">
+                  <div class="xl:text-base text-xl text-[#6E7787FF] relative">
                     <div
                       class="border border-red-500 absolute -top-1 left-0 w-[40px]"
                     />
@@ -447,7 +447,7 @@
 
               {#if biggestWin && Object.keys(biggestWin).length !== 0}
                 <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
-                  <div class="xl:text-base text-lg text-[#6E7787FF] relative">
+                  <div class="xl:text-base text-xl text-[#6E7787FF] relative">
                     <div
                       class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
                     />
