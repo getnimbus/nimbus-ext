@@ -264,21 +264,23 @@
     isOpenModal = false;
   };
 
-  const handleGetPriceEachToken = (data) => {
-    Promise.all(
+  const handleGetPriceEachToken = async (data) => {
+    const formatData = await Promise.all(
       data.map(async (item) => {
         const res = await getCoinPrice(item.value);
         return res.coins[`coingecko:${item.value}`];
       })
-    ).then((res) => {
-      const formatListCoinPrice = res.map((item) => {
-        return {
-          symbol: item?.symbol,
-          prices: item?.prices.map((price) => price.price),
-        };
-      });
-      listCoinPrice = formatListCoinPrice;
+    );
+    console.log("formatData: ", formatData);
+
+    listCoinPrice = formatData.map((item) => {
+      console.log("item: ", item);
+      return {
+        symbol: item?.symbol,
+        prices: item?.prices.map((dataPrice) => dataPrice.price),
+      };
     });
+    console.log("listCoinPrice: ", listCoinPrice);
   };
 
   $: {
