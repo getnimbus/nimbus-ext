@@ -8,6 +8,7 @@
     isDarkMode,
   } from "~/store";
   import {
+    autoFontSize,
     formatCurrency,
     formatPercent,
     formatValue,
@@ -83,7 +84,6 @@
     tooltip: {
       trigger: "item",
       extraCssText: "z-index: 9997",
-      // valueFormatter: (value) => `${value}%`,
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
@@ -133,6 +133,9 @@
         type: "value",
         axisTick: { show: false },
         name: "Risk",
+        axisLabel: {
+          fontSize: autoFontSize(),
+        },
       },
     ],
     yAxis: [
@@ -142,6 +145,7 @@
         axisTick: { show: false },
         axisLabel: {
           formatter: "{value}%",
+          fontSize: autoFontSize(),
         },
       },
     ],
@@ -713,15 +717,23 @@
             </AnimateSharedLayout>
           </div>
           <div class="relative">
-            <EChart
-              id="risk-return-chart-analytic"
-              {theme}
-              notMerge={true}
-              option={selectedTypeChart === "overview"
-                ? optionBar
-                : riskBreakdownChartOption}
-              height={465}
-            />
+            {#if selectedTypeChart === "overview"}
+              <EChart
+                id="risk-return-chart-analytic"
+                {theme}
+                notMerge={true}
+                option={optionBar}
+                height={465}
+              />
+            {:else}
+              <EChart
+                id="risk-return-chart-analytic"
+                {theme}
+                notMerge={true}
+                option={riskBreakdownChartOption}
+                height={465}
+              />
+            {/if}
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >

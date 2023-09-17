@@ -81,7 +81,6 @@
                 },
               },
             }}
-            type="full-width"
             notMerge={true}
           />
           <div

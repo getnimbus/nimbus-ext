@@ -837,3 +837,22 @@ export const equalizeArrayLengths = (arrA, arrB) => {
 
   return [newArrayA, newArrayB];
 }
+
+export const autoFontSize = () => {
+  const windowWidth =
+    window.innerWidth ||
+    document.documentElement.clientWidth ||
+    document.body.clientWidth;
+  if (windowWidth) {
+    if (windowWidth < 768) {
+      // mobile
+      return 20;
+    } else if (windowWidth >= 768 && windowWidth < 1024) {
+      // tablet
+      return 16;
+    } else {
+      // pc
+      return 14;
+    }
+  }
+};

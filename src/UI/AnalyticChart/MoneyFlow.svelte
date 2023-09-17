@@ -1,7 +1,7 @@
 <script lang="ts">
   import { groupBy, intersection, flatten, sumBy } from "lodash";
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
-  import { formatCurrency, formatValue } from "~/utils";
+  import { autoFontSize, formatCurrency, formatValue } from "~/utils";
   import dayjs from "dayjs";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
@@ -99,6 +99,9 @@
     },
     xAxis: {
       type: "time",
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: {
       type: "value",
@@ -109,6 +112,7 @@
             numeral(Math.abs(value)).format("0.00a")
           );
         },
+        fontSize: autoFontSize(),
       },
     },
     grid: [{ right: "5%" }],
@@ -348,6 +352,9 @@
         },
         xAxis: {
           type: "time",
+          axisLabel: {
+            fontSize: autoFontSize(),
+          },
         },
         yAxis: {
           type: "value",
@@ -358,6 +365,7 @@
                 numeral(Math.abs(value)).format("0.00a")
               );
             },
+            fontSize: autoFontSize(),
           },
         },
         grid: [{ right: "5%" }],
@@ -487,7 +495,6 @@
               {option}
               height={465}
               notMerge={true}
-              type="full-width"
             />
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"

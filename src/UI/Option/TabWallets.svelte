@@ -1254,7 +1254,7 @@
         </table>
       </div>
       <div class="flex justify-end lg:gap-2 gap-6">
-        <div class="lg:w-[120px] w-full">
+        <div class="w-[120px]">
           <Button
             variant="secondary"
             on:click={() => {
@@ -1266,7 +1266,7 @@
             {MultipleLang.content.modal_cancel}</Button
           >
         </div>
-        <div class="lg:w-[120px] w-full">
+        <div class="w-[120px]">
           <Button type="submit" variant="tertiary" isLoading={isLoadingBundle}>
             {#if selectedBundle && Object.keys(selectedBundle).length !== 0}
               {MultipleLang.content.modal_edit}

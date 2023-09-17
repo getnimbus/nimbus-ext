@@ -3,7 +3,12 @@
   import { nimbus } from "~/lib/network";
   import { Link } from "svelte-navigator";
   import dayjs from "dayjs";
-  import { shorterAddress, formatCurrency, formatBalance } from "~/utils";
+  import {
+    shorterAddress,
+    formatCurrency,
+    formatBalance,
+    autoFontSize,
+  } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { isDarkMode } from "~/store";
 
@@ -88,6 +93,9 @@
       type: "category",
       boundaryGap: false,
       data: [],
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: [
       {
@@ -98,6 +106,7 @@
         alignTicks: true,
         axisLabel: {
           formatter: "${value}",
+          fontSize: autoFontSize(),
         },
       },
       {
@@ -107,6 +116,7 @@
         alignTicks: true,
         axisLabel: {
           formatter: "{value}",
+          fontSize: autoFontSize(),
         },
       },
     ],

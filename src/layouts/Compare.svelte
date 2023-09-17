@@ -4,7 +4,12 @@
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
-  import { formatCurrency, formatPercent, typeList } from "~/utils";
+  import {
+    autoFontSize,
+    formatCurrency,
+    formatPercent,
+    typeList,
+  } from "~/utils";
   import { groupBy } from "lodash";
   import { getChangePercent } from "~/chart-utils";
   import { useNavigate } from "svelte-navigator";
@@ -155,11 +160,17 @@
         type: "category",
         axisTick: { show: false },
         data: ["Sharpe Ratio", "Volatility", "Drawdown"],
+        axisLabel: {
+          fontSize: autoFontSize(),
+        },
       },
     ],
     yAxis: [
       {
         type: "value",
+        axisLabel: {
+          fontSize: autoFontSize(),
+        },
       },
     ],
     series: [],
@@ -228,11 +239,15 @@
     },
     xAxis: {
       type: "time",
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: {
       type: "value",
       axisLabel: {
         formatter: "{value}%",
+        fontSize: autoFontSize(),
       },
     },
     series: [],

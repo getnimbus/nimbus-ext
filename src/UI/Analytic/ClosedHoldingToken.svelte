@@ -4,7 +4,12 @@
   import { isDarkMode, typeWallet, wallet, chain } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import numeral from "numeral";
-  import { formatPercent, formatValue, shorterName } from "~/utils";
+  import {
+    autoFontSize,
+    formatPercent,
+    formatValue,
+    shorterName,
+  } from "~/utils";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -129,6 +134,9 @@
       axisTick: { show: false },
       show: false,
       data: [],
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: {
       type: "value",
@@ -139,6 +147,7 @@
             numeral(Math.abs(value)).format("0.00a")
           );
         },
+        fontSize: autoFontSize(),
       },
     },
     series: [],
@@ -216,11 +225,15 @@
       axisTick: { show: false },
       show: false,
       data: [],
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: {
       type: "value",
       axisLabel: {
         formatter: "{value}%",
+        fontSize: autoFontSize(),
       },
     },
     series: [],
@@ -527,7 +540,7 @@
               Empty
             </div>
           {:else}
-            <div class="relative">
+            <div class="relative pl-4">
               <EChart
                 id="closed-holding-token"
                 {theme}

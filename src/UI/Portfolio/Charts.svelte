@@ -14,6 +14,7 @@
     typePieChart,
     formatPercent,
     formatValue,
+    autoFontSize,
   } from "~/utils";
   import dayjs from "dayjs";
   import numeral from "numeral";
@@ -226,9 +227,15 @@
       type: "category",
       boundaryGap: false,
       data: [],
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: {
       type: "value",
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     series: [],
   };
@@ -374,9 +381,15 @@
           type: "category",
           boundaryGap: false,
           data: [],
+          axisLabel: {
+            fontSize: autoFontSize(),
+          },
         },
         yAxis: {
           type: "value",
+          axisLabel: {
+            fontSize: autoFontSize(),
+          },
         },
         series: [],
       };
@@ -459,6 +472,7 @@
             ...optionLine.yAxis,
             axisLabel: {
               formatter: "{value}%",
+              fontSize: autoFontSize(),
             },
           },
           series: [
@@ -557,6 +571,7 @@
                   numeral(Math.abs(value)).format("0.00a")
                 );
               },
+              fontSize: autoFontSize(),
             },
           },
           series: [

@@ -10,6 +10,7 @@
     formatPercent,
     performanceTypeChartPortfolio,
     formatValue,
+    autoFontSize,
   } from "~/utils";
   import { i18n } from "~/lib/i18n";
   import { useNavigate } from "svelte-navigator";
@@ -239,11 +240,15 @@
     },
     xAxis: {
       type: "time",
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: {
       type: "value",
       axisLabel: {
         formatter: "{value}%",
+        fontSize: autoFontSize(),
       },
     },
     series: [],
@@ -308,6 +313,9 @@
     },
     xAxis: {
       type: "time",
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: {
       type: "value",
@@ -318,6 +326,7 @@
             numeral(Math.abs(value)).format("0.00a")
           );
         },
+        fontSize: autoFontSize(),
       },
     },
     series: [],
@@ -753,7 +762,7 @@
       {MultipleLang.token_allocation}
     </div>
 
-    <div class="flex justify-end w-full gap-5">
+    <div class="flex justify-end w-full gap-5 xl:mt-0 mt-4">
       <div
         class="relative flex items-center justify-between w-full gap-3 overflow-hidden"
         bind:this={container}
@@ -888,7 +897,6 @@
                 option={optionPie}
                 height={475}
                 notMerge={true}
-                type="full-width"
               />
               <div
                 class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
