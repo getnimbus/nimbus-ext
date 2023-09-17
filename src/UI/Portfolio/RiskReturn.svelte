@@ -2,20 +2,22 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { formatPercent, getTooltipContent, returnType } from "~/utils";
   import dayjs, { unix } from "dayjs";
-  import { nimbus } from "~/lib/network";
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
-  import { createQuery } from "@tanstack/svelte-query";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import "~/components/Loading.custom.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
+  import "~/components/Loading.custom.svelte";
 
   import VolatilityExplain from "~/assets/explain/volatility-explain.mp4";
   import SharpeRatioExplain from "~/assets/explain/sharpe-ratio-explain.mp4";
   import MaxDrawdownExplain from "~/assets/explain/max-drawdown-explain.mp4";
-  import Error from "~/components/Error.svelte";
+  import Loading from "~/components/Loading.svelte";
+
+  export let isLoading;
+  export let isError;
+  export let data;
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -48,30 +50,6 @@
     isScrollStart = scrollLeft === 0;
     isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
   };
-
-  const getAnalyticCompare = async (address) => {
-    const response: any = await nimbus.get(
-      `/v2/analysis/${address}/compare?compareAddress=${""}`
-    );
-    if (response?.error) {
-      throw new Error(response?.error);
-    }
-    return response?.data || [];
-  };
-
-  $: query = createQuery({
-    queryKey: ["compare", selectedWallet, selectedChain],
-    enabled: enabledQuery,
-    queryFn: () => getAnalyticCompare(selectedWallet),
-    staleTime: Infinity,
-  });
-
-  $: enabledQuery = Boolean(
-    (typeWalletAddress === "EVM" ||
-      typeWalletAddress === "CEX" ||
-      typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0
-  );
 </script>
 
 <ErrorBoundary>
@@ -81,18 +59,16 @@
         darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      {#if $query.isFetching}
+      {#if isLoading}
         <div class="flex items-center justify-center h-[200px] p-6">
-          <loading-icon />
+          <Loading />
         </div>
       {:else}
         <div
-          class={`flex flex-col gap-4 relative ${
-            $query.isError ? "h-[200px]" : ""
-          }`}
+          class={`flex flex-col gap-4 relative ${isError ? "h-[200px]" : ""}`}
         >
           <div class="xl:text-2xl text-4xl font-medium px-6 pt-6">Risks</div>
-          {#if $query.isError}
+          {#if isError}
             <div
               class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
                 darkMode ? "bg-[#222222e6]" : "bg-white/90"
@@ -129,14 +105,13 @@
                   <div class="xl:text-base text-2xl">
                     <span
                       class={`${
-                        $query.data?.base?.sharpeRatio <
-                        $query.data?.btc?.sharpeRatio
+                        data?.base?.sharpeRatio < data?.btc?.sharpeRatio
                           ? "text-red-500"
                           : "text-[#00A878]"
                       }`}
                     >
                       <TooltipNumber
-                        number={$query.data?.base?.sharpeRatio}
+                        number={data?.base?.sharpeRatio}
                         type="percent"
                       />
                     </span> <span class="text-gray-400">/</span>
@@ -149,7 +124,7 @@
                       }}
                     >
                       <TooltipNumber
-                        number={$query.data?.btc?.sharpeRatio}
+                        number={data?.btc?.sharpeRatio}
                         type="percent"
                       />
                     </span>
@@ -179,14 +154,13 @@
                   <div class="xl:text-base text-2xl">
                     <span
                       class={`${
-                        $query.data?.base?.volatility >
-                        $query.data?.btc?.volatility
+                        data?.base?.volatility > data?.btc?.volatility
                           ? "text-red-500"
                           : "text-[#00A878]"
                       }`}
                     >
                       <TooltipNumber
-                        number={$query.data?.base?.volatility}
+                        number={data?.base?.volatility}
                         type="percent"
                       />%</span
                     > <span class="text-gray-400">/</span>
@@ -199,7 +173,7 @@
                       }}
                     >
                       <TooltipNumber
-                        number={$query.data?.btc?.volatility}
+                        number={data?.btc?.volatility}
                         type="percent"
                       />%
                     </span>
@@ -229,13 +203,13 @@
                   <div class="xl:text-base text-2xl">
                     <span
                       class={`${
-                        $query.data?.base?.drawDown > $query.data?.btc?.drawDown
+                        data?.base?.drawDown > data?.btc?.drawDown
                           ? "text-red-500"
                           : "text-[#00A878]"
                       }`}
                     >
                       <TooltipNumber
-                        number={$query.data?.base?.drawDown}
+                        number={data?.base?.drawDown}
                         type="percent"
                       />%
                     </span>
@@ -249,7 +223,7 @@
                       }}
                     >
                       <TooltipNumber
-                        number={$query.data?.btc?.drawDown}
+                        number={data?.btc?.drawDown}
                         type="percent"
                       />%
                     </span>
@@ -267,21 +241,21 @@
         darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      {#if $query.isFetching}
+      {#if isLoading}
         <div class="flex items-center justify-center h-[200px] p-6">
-          <loading-icon />
+          <Loading />
         </div>
       {:else}
         <div
           class={`flex flex-col gap-4 relative xl:pb-0 pb-6 ${
-            $query.isError ? "h-[200px]" : ""
+            isError ? "h-[200px]" : ""
           }`}
         >
           <div class="flex justify-between">
             <div class="xl:text-2xl text-4xl font-medium px-6 pt-6">
               Returns
             </div>
-            {#if !$query.isError}
+            {#if !isError}
               <div class="flex items-center gap-2 pt-6 pr-6">
                 <AnimateSharedLayout>
                   {#each returnType as type}
@@ -314,7 +288,7 @@
               </div>
             {/if}
           </div>
-          {#if $query.isError}
+          {#if isError}
             <div
               class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
                 darkMode ? "bg-[#222222e6]" : "bg-white/90"
@@ -338,14 +312,14 @@
                     <div class="xl:text-base text-xl">1D</div>
                     <div
                       class={`xl:text-base text-xl ${
-                        $query.data?.base?.netWorthChange?.networth1D < 0
+                        data?.base?.netWorthChange?.networth1D < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
                       }`}
                     >
                       <TooltipNumber
                         number={Math.abs(
-                          $query.data?.base?.netWorthChange?.networth1D
+                          data?.base?.netWorthChange?.networth1D
                         )}
                         type="percent"
                       />%
@@ -359,14 +333,14 @@
                     <div class="xl:text-base text-xl">7D</div>
                     <div
                       class={`xl:text-base text-xl ${
-                        $query.data?.base?.netWorthChange?.networth7D < 0
+                        data?.base?.netWorthChange?.networth7D < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
                       }`}
                     >
                       <TooltipNumber
                         number={Math.abs(
-                          $query.data?.base?.netWorthChange?.networth7D
+                          data?.base?.netWorthChange?.networth7D
                         )}
                         type="percent"
                       />%
@@ -380,14 +354,14 @@
                     <div class="xl:text-base text-xl">30D</div>
                     <div
                       class={`xl:text-base text-xl ${
-                        $query.data?.base?.netWorthChange?.networth30D < 0
+                        data?.base?.netWorthChange?.networth30D < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
                       }`}
                     >
                       <TooltipNumber
                         number={Math.abs(
-                          $query.data?.base?.netWorthChange?.networth30D
+                          data?.base?.netWorthChange?.networth30D
                         )}
                         type="percent"
                       />%
@@ -401,14 +375,14 @@
                     <div class="xl:text-base text-xl">1Y</div>
                     <div
                       class={`xl:text-base text-xl ${
-                        $query.data?.base?.netWorthChange?.networth1Y < 0
+                        data?.base?.netWorthChange?.networth1Y < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
                       }`}
                     >
                       <TooltipNumber
                         number={Math.abs(
-                          $query.data?.base?.netWorthChange?.networth1Y
+                          data?.base?.netWorthChange?.networth1Y
                         )}
                         type="percent"
                       />%
@@ -422,15 +396,13 @@
                     <div class="xl:text-base text-xl">Lifetime</div>
                     <div
                       class={`xl:text-base text-xl ${
-                        $query.data?.base?.changeLF?.portfolioChange < 0
+                        data?.base?.changeLF?.portfolioChange < 0
                           ? "text-red-500"
                           : "text-[#00A878]"
                       }`}
                     >
                       <TooltipNumber
-                        number={Math.abs(
-                          $query.data?.base?.changeLF?.portfolioChange
-                        )}
+                        number={Math.abs(data?.base?.changeLF?.portfolioChange)}
                         type="percent"
                       />%
                     </div>
@@ -470,7 +442,7 @@
                       bind:this={scrollContainer}
                       on:scroll={handleScroll}
                     >
-                      {#each $query.data?.base?.monthlyPerformance.sort((a, b) => a.timestamp - b.timestamp) || [] as item}
+                      {#each data?.base?.monthlyPerformance.sort((a, b) => a.timestamp - b.timestamp) || [] as item}
                         <div
                           class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
                           style="z-index: 2"

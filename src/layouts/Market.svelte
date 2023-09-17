@@ -4,7 +4,7 @@
   import { i18n } from "~/lib/i18n";
   import mixpanel from "mixpanel-browser";
 
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import MarketItem from "~/components/MarketItem.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
@@ -210,7 +210,7 @@
             <tr>
               <td colspan="6">
                 <div class="flex justify-center items-center py-4 px-3">
-                  <loading-icon />
+                  <Loading />
                 </div>
               </td>
             </tr>

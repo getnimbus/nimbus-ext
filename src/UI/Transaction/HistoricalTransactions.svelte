@@ -6,12 +6,12 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { typeWallet, isDarkMode } from "~/store";
+  import { linkExplorer } from "~/utils";
 
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import "~/components/Loading.custom.svelte";
-  import { linkExplorer } from "~/utils";
+  import Loading from "~/components/Loading.svelte";
 
   export let data;
   export let isLoading;
@@ -88,7 +88,7 @@
         <tr>
           <td colspan={5}>
             <div class="flex justify-center items-center py-4 px-3">
-              <loading-icon />
+              <Loading />
             </div>
           </td>
         </tr>

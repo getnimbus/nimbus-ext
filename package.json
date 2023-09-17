@@ -80,6 +80,7 @@
     "sass": "^1.59.2",
     "svelte-copy-to-clipboard": "^0.2.5",
     "svelte-dnd-action": "^0.9.22",
+    "svelte-loading-spinners": "^0.3.4",
     "svelte-motion": "^0.11.5",
     "svelte-navigator": "^3.2.2",
     "svelte-spark": "^1.0.4",

@@ -16,7 +16,7 @@
   export let type;
 
   import LoadingPremium from "./LoadingPremium.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "./Loading.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
@@ -55,7 +55,7 @@
       {#if type === "primary"}
         <LoadingPremium />
       {:else}
-        <loading-icon />
+        <Loading />
       {/if}
     </div>
   {:else}

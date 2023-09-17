@@ -11,7 +11,7 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Analytic from "~/UI/Analytic/Analytic.svelte";
   import Button from "~/components/Button.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import Crown from "~/assets/crown.svg";
 
@@ -150,7 +150,7 @@
           <div
             class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
           >
-            <loading-icon />
+            <Loading />
           </div>
         </div>
       {:else}

@@ -5,7 +5,7 @@
   import mixpanel from "mixpanel-browser";
   import { isDarkMode } from "~/store";
 
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import PublicPortfolioItem from "~/components/PublicPortfolioItem.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
@@ -259,7 +259,7 @@
           <div
             class="flex justify-center items-center py-4 px-3 text-lg text-gray-400 h-full"
           >
-            <loading-icon />
+            <Loading />
           </div>
         {:else}
           <table class="table-auto xl:w-full w-[2200px]">

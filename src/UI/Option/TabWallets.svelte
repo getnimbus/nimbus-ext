@@ -25,7 +25,7 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
@@ -147,6 +147,8 @@
   let isLoadingDelete = false;
   let isLoadingConnectCEX = false;
   let showDisableAddWallet = false;
+  let showDisableBundle = false;
+  let selectedHoverBundle;
 
   let show = false;
   let counter = 3;
@@ -676,7 +678,7 @@
     return response.data;
   };
 
-  const queryListBundle = createQuery({
+  $: queryListBundle = createQuery({
     queryKey: ["list-bundle"],
     queryFn: () => getListBundle(),
     staleTime: Infinity,
@@ -686,15 +688,12 @@
     if (
       !$queryListBundle.isError &&
       $queryListBundle.data &&
-      Object.keys($queryListBundle.data).length !== 0
+      $queryListBundle?.data?.length !== 0
     ) {
-      const bundleData = Object.getOwnPropertyNames($queryListBundle.data);
-      listBundle = bundleData.map((item) => {
+      listBundle = $queryListBundle?.data.map((item) => {
         return {
-          name: item,
-          addresses: $queryListBundle.data[item]?.map(
-            (eachItem) => eachItem.address
-          ),
+          name: item?.name,
+          addresses: item?.accounts?.map((eachAccount) => eachAccount.address),
         };
       });
     }
@@ -703,19 +702,6 @@
   const handleResetBundleState = () => {
     nameBundle = "";
     selectedBundle = {};
-  };
-
-  const selectedLastBundle = (data) => {
-    const bundleData = Object.getOwnPropertyNames(data);
-    listBundle = bundleData.map((item) => {
-      return {
-        name: item,
-        addresses: data[item]?.map((eachItem) => eachItem.address),
-      };
-    });
-    selectedBundle = listBundle[listBundle.length - 1];
-    selectedAddresses = listBundle[listBundle.length - 1].addresses;
-    nameBundle = listBundle[listBundle.length - 1].name;
   };
 
   // handle submit (create and edit) bundle
@@ -749,16 +735,40 @@
           `/address/personalize/bundle?name=${selectedBundle?.name}`,
           formData
         );
-        selectedLastBundle(response.data);
+
+        queryClient.invalidateQueries(["list-bundle"]);
+        queryClient.invalidateQueries(["overview"]);
+        queryClient.invalidateQueries(["vaults"]);
+        queryClient.invalidateQueries(["token-holding"]);
+        queryClient.invalidateQueries(["nft-holding"]);
+        queryClient.invalidateQueries(["personalize-tag"]);
+        queryClient.invalidateQueries(["compare"]);
+        queryClient.invalidateQueries(["historical"]);
+        queryClient.invalidateQueries(["inflow-outflow"]);
+
         toastMsg = "Successfully edit your bundle!";
       } else {
         const response = await nimbus.post(
           "/address/personalize/bundle",
           formData
         );
-        selectedLastBundle(response.data);
+
+        queryClient.invalidateQueries(["list-bundle"]);
+        listBundle = response?.data.map((item) => {
+          return {
+            name: item?.name,
+            addresses: item?.accounts?.map(
+              (eachAccount) => eachAccount.address
+            ),
+          };
+        });
+        selectedBundle = listBundle[listBundle.length - 1];
+        selectedAddresses = listBundle[listBundle.length - 1].addresses;
+        nameBundle = listBundle[listBundle.length - 1].name;
+
         toastMsg = "Successfully create your bundle!";
       }
+
       isSuccess = true;
       trigger();
       isLoadingBundle = false;
@@ -788,6 +798,7 @@
       listBundle = listBundle.filter(
         (item) => item.name !== selectedBundle?.name
       );
+      queryClient.invalidateQueries(["list-bundle"]);
       handleResetBundleState();
       selectedAddresses = [];
       isAddBundle = false;
@@ -851,9 +862,9 @@
     </div>
   {:else}
     <div class="flex flex-col gap-4">
-      <!-- <div class="xl:title-3 title-1">{MultipleLang.title}</div> -->
+      <div class="xl:title-3 title-1">{MultipleLang.title}</div>
       <div class="flex justify-between items-center gap-10">
-        <!-- {#if listBundle && listBundle.length === 0}
+        {#if listBundle && listBundle.length === 0}
           <div class="text-base">
             Create your bundle with up to 7 addresses per bundle!
           </div>
@@ -908,7 +919,7 @@
                     >
                       {item.name}
                     </div>
-                    {#if item === selectedBundle}
+                    {#if selectedBundle === item}
                       <Motion
                         let:motion
                         layoutId="active-pill"
@@ -951,11 +962,10 @@
               </div>
             {/if}
           </div>
-        {/if} -->
-        <div class="xl:title-3 title-1">{MultipleLang.title}</div>
+        {/if}
         <div class="flex gap-4 justify-end flex-1">
           <!-- add bundle -->
-          <!-- <div class="flex items-center gap-4">
+          <div class="flex items-center gap-4">
             {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0}
               <div
                 class="text-red-500 font-semibold w-max cursor-pointer xl:text-base text-2xl"
@@ -979,7 +989,7 @@
                 </div>
               </Button>
             </div>
-          </div> -->
+          </div>
 
           <!-- add account -->
           <div
@@ -1110,7 +1120,7 @@
               <tr>
                 <td colspan="3">
                   <div class="flex justify-center items-center py-4 px-3">
-                    <loading-icon />
+                    <Loading />
                   </div>
                 </td>
               </tr>
@@ -1138,13 +1148,49 @@
                       <div
                         class="text-left flex items-center gap-3 xl:text-base text-xl"
                       >
-                        <div class="flex justify-center">
+                        <div
+                          class="flex justify-center relative"
+                          on:mouseenter={() => {
+                            if (item.type === "BTC" || item.type === "SOL") {
+                              showDisableBundle = true;
+                              selectedHoverBundle = item;
+                            }
+                          }}
+                          on:mouseleave={() => {
+                            if (item.type === "BTC" || item.type === "SOL") {
+                              showDisableBundle = false;
+                              selectedHoverBundle = {};
+                            }
+                          }}
+                        >
                           <input
                             type="checkbox"
                             value={item.address}
                             bind:group={selectedAddresses}
-                            class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                            disabled={item.type === "BTC" ||
+                              item.type === "SOL"}
+                            class={`${
+                              item.type === "BTC" || item.type === "SOL"
+                                ? "bg-gray-300 border-none"
+                                : ""
+                            } cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]`}
                           />
+                          {#if showDisableBundle && selectedHoverBundle.address === item.address}
+                            <div
+                              class="absolute transform -top-8 left-0"
+                              style="z-index: 2147483648;"
+                            >
+                              <div
+                                class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
+                              >
+                                {#if selectedHoverBundle.type === "BTC"}
+                                  We don't support bundle BTC account
+                                {:else}
+                                  Coming soon!
+                                {/if}
+                              </div>
+                            </div>
+                          {/if}
                         </div>
                         <Copy
                           address={item.address}
@@ -1261,7 +1307,7 @@
             <tr>
               <td colspan="3">
                 <div class="flex justify-center items-center py-4 px-3">
-                  <loading-icon />
+                  <Loading />
                 </div>
               </td>
             </tr>

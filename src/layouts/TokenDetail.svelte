@@ -8,7 +8,7 @@
   import { isDarkMode } from "~/store";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import EChart from "~/components/EChart.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -584,7 +584,7 @@
           </div>
           {#if isLoadingPositionDetailPrice}
             <div class="flex justify-center items-center h-[504px]">
-              <loading-icon />
+              <Loading />
             </div>
           {:else}
             <div>
@@ -612,7 +612,7 @@
           </div>
           {#if isLoadingPositionDetailPrice}
             <div class="flex justify-center items-center h-[504px]">
-              <loading-icon />
+              <Loading />
             </div>
           {:else}
             <div>
@@ -699,7 +699,7 @@
                     <tr>
                       <td colspan={5}>
                         <div class="flex items-center justify-center px-3 py-4">
-                          <loading-icon />
+                          <Loading />
                         </div>
                       </td>
                     </tr>
@@ -898,7 +898,7 @@
                     <tr>
                       <td colspan="3">
                         <div class="flex items-center justify-center px-3 py-4">
-                          <loading-icon />
+                          <Loading />
                         </div>
                       </td>
                     </tr>

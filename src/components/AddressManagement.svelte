@@ -9,6 +9,7 @@
     isFirstTimeLogin,
     selectedPackage,
     isDarkMode,
+    selectedBundle,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
@@ -37,7 +38,7 @@
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
 
-  import "~/components/Loading.custom.svelte";
+  import Loading from "./Loading.svelte";
   import Button from "~/components/Button.svelte";
   import Select from "~/components/Select.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -144,6 +145,11 @@
     packageSelected = value;
   });
 
+  let selectBundle = {};
+  selectedBundle.subscribe((value) => {
+    selectBundle = value;
+  });
+
   let toastMsg = "";
   let isSuccessToast = false;
   let counter = 3;
@@ -188,7 +194,6 @@
 
   let isDisabled = false;
   let tooltipDisableAddBtn = "";
-  let selectBundle;
   let showPopover = false;
 
   const isRequiredFieldValid = (value) => {
@@ -623,6 +628,7 @@
           ) {
             typeWallet.update((n) => (n = "CEX"));
             browser.storage.sync.set({ typeWalletAddress: "CEX" });
+            chain.update((n) => (n = "ALL"));
             window.history.replaceState(
               null,
               "",
@@ -638,6 +644,7 @@
           ) {
             typeWallet.update((n) => (n = "BUNDLE"));
             browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
+            chain.update((n) => (n = "ALL"));
             window.history.replaceState(
               null,
               "",
@@ -653,6 +660,11 @@
           ) {
             typeWallet.update((n) => (n = "EVM"));
             browser.storage.sync.set({ typeWalletAddress: "EVM" });
+            if (selectedChain) {
+              chain.update((n) => (n = selectedChain));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
             window.history.replaceState(
               null,
               "",
@@ -668,6 +680,7 @@
           ) {
             typeWallet.update((n) => (n = "SOL"));
             browser.storage.sync.set({ typeWalletAddress: "SOL" });
+            chain.update((n) => (n = "ALL"));
             window.history.replaceState(
               null,
               "",
@@ -683,18 +696,13 @@
           ) {
             typeWallet.update((n) => (n = "BTC"));
             browser.storage.sync.set({ typeWalletAddress: "BTC" });
+            chain.update((n) => (n = "ALL"));
             window.history.replaceState(
               null,
               "",
               window.location.pathname +
                 `?type=${typeWalletAddress}&address=${selectedWallet}`
             );
-          }
-
-          if (selectedChain) {
-            chain.update((n) => (n = selectedChain));
-          } else {
-            chain.update((n) => (n = "ALL"));
           }
         }
       }
@@ -774,14 +782,16 @@
 
   $: {
     if (selectedWallet) {
-      selectBundle = listAddress.find((item) => item.value === selectedWallet);
+      selectedBundle.update(
+        (n) => (n = listAddress.find((item) => item.value === selectedWallet))
+      );
     }
   }
 </script>
 
 {#if $query.isFetching}
   <div class="flex items-center justify-center h-screen">
-    <loading-icon />
+    <Loading />
   </div>
 {:else}
   <div>
@@ -915,7 +925,7 @@
                         {/each}
                       </AnimateSharedLayout>
                       <div class="relative">
-                        <div class="relative z-10">
+                        <div class="relative z-40">
                           <Select
                             type="wallet"
                             positionSelectList="right-0"
@@ -1214,7 +1224,7 @@
                       </div>
                       {#if showPopover}
                         <div
-                          class="select_content absolute left-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 xl:w-[200px] w-[300px] xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
+                          class="select_content absolute left-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
                           style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
                           use:clickOutside
                           on:click_outside={() => (showPopover = false)}

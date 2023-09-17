@@ -6,7 +6,7 @@
   import { isDarkMode } from "~/store";
 
   import Button from "~/components/Button.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   export let handleSubmit = (data, type) => {};
   export let isLoadingSubmit;
@@ -244,7 +244,7 @@
               <tr>
                 <td colspan={2}>
                   <div class="flex justify-center items-center py-3 px-3">
-                    <loading-icon />
+                    <Loading />
                   </div>
                 </td>
               </tr>

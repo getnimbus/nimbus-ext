@@ -1,7 +1,13 @@
 <script lang="ts">
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { i18n } from "~/lib/i18n";
-  import { chain, wallet, typeWallet, isDarkMode } from "~/store";
+  import {
+    chain,
+    wallet,
+    typeWallet,
+    isDarkMode,
+    selectedBundle,
+  } from "~/store";
   import {
     formatCurrency,
     performanceTypeChartPortfolio,
@@ -21,7 +27,7 @@
   export let isEmptyDataPie;
 
   import EChart from "~/components/EChart.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TokenAllocation from "~/components/TokenAllocation.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
@@ -56,6 +62,11 @@
   let typeWalletAddress: string = "";
   typeWallet.subscribe((value) => {
     typeWalletAddress = value;
+  });
+
+  let selectBundle = {};
+  selectedBundle.subscribe((value) => {
+    selectBundle = value;
   });
 
   let selectedType: "token" | "nft" = "token";
@@ -757,7 +768,7 @@
       </div>
       {#if isLoadingBreakdown}
         <div class="flex items-center justify-center h-[465px]">
-          <loading-icon />
+          <Loading />
         </div>
       {:else}
         <div class="h-full">
@@ -789,7 +800,7 @@
       }`}
     >
       <div class="flex justify-between mb-6">
-        {#if typeWalletAddress === "CEX"}
+        {#if typeWalletAddress === "CEX" || selectBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
           <TooltipTitle
             tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
             type="warning"
@@ -847,7 +858,7 @@
       {/if}
       {#if isLoading}
         <div class="flex items-center justify-center h-[465px]">
-          <loading-icon />
+          <Loading />
         </div>
       {:else}
         <div>

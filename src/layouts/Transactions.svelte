@@ -5,7 +5,7 @@
   import mixpanel from "mixpanel-browser";
 
   // import Button from "~/components/Button.svelte";
-  // import "~/components/Loading.custom.svelte";
+  // import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Transactions from "~/UI/Transaction/Transactions.svelte";
 
@@ -77,7 +77,7 @@
           <div
             class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
           >
-            <loading-icon />
+            <Loading />
           </div>
         </div>
       {:else}

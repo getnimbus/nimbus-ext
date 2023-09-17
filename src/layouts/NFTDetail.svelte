@@ -11,7 +11,7 @@
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import NftCard from "~/components/NFTCard.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
 
@@ -245,7 +245,7 @@
             <div
               class="min-h-[320px] flex justify-center items-center col-span-4"
             >
-              <loading-icon />
+              <Loading />
             </div>
           {:else if !isLoadingListNFT && tokens.length === 0}
             <div
