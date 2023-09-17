@@ -19,7 +19,7 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   let filteredHoldingToken = true;
   let filteredHoldingDataToken = [];
@@ -280,7 +280,7 @@
       <!-- <a
         href="https://forms.gle/HfmvSTzd5frPPYDz8"
         target="_blank"
-        class="xl:text-sm text-xl font-normal text-blue-500 mb-[2px] hover:text-blue-700 transition-all"
+        class="xl:text-sm text-2xl font-normal text-blue-500 mb-[2px] hover:text-blue-700 transition-all"
       >
         Get investment opportunities notification
       </a> -->
@@ -320,7 +320,7 @@
       <div class="flex flex-col gap-2">
         <div class="flex items-center justify-end gap-2">
           <label
-            class="xl:text-sm text-lg font-regular text-gray-400"
+            class="xl:text-sm text-2xl font-regular text-gray-400"
             for="filter-value"
             >{MultipleLang.hide}
           </label>
@@ -346,49 +346,49 @@
                   class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
                 >
                   <div
-                    class="text-left xl:text-xs text-base uppercase font-medium"
+                    class="text-left xl:text-xs text-xl uppercase font-medium"
                   >
                     {MultipleLang.assets}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
+                    class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
                     {MultipleLang.price}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
+                    class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
                     {MultipleLang.amount}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
+                    class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
                     {MultipleLang.value}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
+                    class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
                     Avg Cost
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
+                    class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
                     Realized PnL
                   </div>
                 </th>
                 <th class="py-3 pr-3 rounded-tr-[10px]">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
+                    class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
                     Unrealized PnL
                   </div>
@@ -410,7 +410,7 @@
                 <tr>
                   <td {colspan}>
                     <div class="flex justify-center items-center py-3 px-3">
-                      <loading-icon />
+                      <Loading />
                     </div>
                   </td>
                 </tr>
@@ -463,7 +463,7 @@
                   class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[220px]"
                 >
                   <div
-                    class="text-left xl:text-xs text-base uppercase font-medium"
+                    class="text-left xl:text-xs text-xl uppercase font-medium"
                   >
                     {MultipleLang.collection}
                   </div>
@@ -472,14 +472,14 @@
                   class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg_f4f5f8 w-[160px]"
                 >
                   <div
-                    class="text-left xl:text-xs text-base uppercase font-medium"
+                    class="text-left xl:text-xs text-xl uppercase font-medium"
                   >
                     {MultipleLang.Balance}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
+                    class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
                     <TooltipTitle
                       tooltipText={typeWalletAddress === "BTC"
@@ -495,14 +495,14 @@
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
+                    class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
                     {MultipleLang.total_spent}
                   </div>
                 </th>
                 <th class="py-3">
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
+                    class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
                     {MultipleLang.current_value}
                   </div>
@@ -513,7 +513,7 @@
                   }`}
                 >
                   <div
-                    class="text-right xl:text-xs text-base uppercase font-medium"
+                    class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
                     <TooltipTitle
                       tooltipText="Price NFTs now - Price NFTs at time you spent"
@@ -532,7 +532,7 @@
                 <tr>
                   <td {colspan}>
                     <div class="flex justify-center items-center py-3 px-3">
-                      <loading-icon />
+                      <Loading />
                     </div>
                   </td>
                 </tr>

@@ -4,7 +4,12 @@
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
-  import { formatCurrency, formatPercent, typeList } from "~/utils";
+  import {
+    autoFontSize,
+    formatCurrency,
+    formatPercent,
+    typeList,
+  } from "~/utils";
   import { groupBy } from "lodash";
   import { getChangePercent } from "~/chart-utils";
   import { useNavigate } from "svelte-navigator";
@@ -17,7 +22,7 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Copy from "~/components/Copy.svelte";
   import TokenAllocation from "~/components/TokenAllocation.svelte";
-  import "~/components/Loading.custom.svelte";
+  import LoadingPremium from "~/components/LoadingPremium.svelte";
   import Button from "~/components/Button.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import EChart from "~/components/EChart.svelte";
@@ -31,7 +36,6 @@
   import LeftArrowBlack from "~/assets/left-arrow-black.svg";
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
-  import LoadingPremium from "~/components/LoadingPremium.svelte";
 
   const MultipleLang = {
     token_allocation: i18n("newtabPage.token-allocation", "Token Allocation"),
@@ -156,11 +160,17 @@
         type: "category",
         axisTick: { show: false },
         data: ["Sharpe Ratio", "Volatility", "Drawdown"],
+        axisLabel: {
+          fontSize: autoFontSize(),
+        },
       },
     ],
     yAxis: [
       {
         type: "value",
+        axisLabel: {
+          fontSize: autoFontSize(),
+        },
       },
     ],
     series: [],
@@ -229,11 +239,15 @@
     },
     xAxis: {
       type: "time",
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: {
       type: "value",
       axisLabel: {
         formatter: "{value}%",
+        fontSize: autoFontSize(),
       },
     },
     series: [],
@@ -847,7 +861,7 @@
         />
       </div>
 
-      <div class="flex justify-between items-center gap-6">
+      <div class="flex xl:flex-row flex-col justify-between items-center gap-6">
         <div class="grid xl:grid-cols-2 grid-cols-1 gap-6 flex-1 w-full">
           <div
             class={`rounded-[20px] p-6 min-h-[535px] relative ${
@@ -1073,14 +1087,14 @@
                                 value={search}
                                 placeholder={"Search address to compare"}
                                 type="text"
-                                class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] h-7 ${
+                                class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-xl font-normal text-[#5E656B] placeholder-[#5E656B] h-7 ${
                                   searchCompare && !darkMode
                                     ? "bg-[#F0F2F7]"
                                     : "bg-transparent"
                                 }`}
                               />
                             </div>
-                            <div class="xl:text-sm text-lg flex justify-end">
+                            <div class="xl:text-sm text-xl flex justify-end">
                               <div
                                 on:click={() =>
                                   (showCompareWhalesSuggest = true)}
@@ -1298,7 +1312,7 @@
         copyAddress={handleCopyAddress}
         closeModal={handleCloseWhalesListModal}
       />
-      <div class="xl:text-base text-xl text-right mt-3">
+      <div class="xl:text-base text-2xl text-right mt-3">
         <a
           class="text-blue-500 cursor-pointer"
           href="/whales"

@@ -44,7 +44,7 @@
           label={item.label}
           on:click={(e) => handleClick(e, item.value)}
           active={activeTabValue === item.value}
-          spanClass={`text-lg pl-2 ${
+          spanClass={`text-xl pl-2 ${
             activeTabValue === item.value ? "text-blue-500" : ""
           }`}
         >

@@ -3,12 +3,17 @@
   import { nimbus } from "~/lib/network";
   import { Link } from "svelte-navigator";
   import dayjs from "dayjs";
-  import { shorterAddress, formatCurrency, formatBalance } from "~/utils";
+  import {
+    shorterAddress,
+    formatCurrency,
+    formatBalance,
+    autoFontSize,
+  } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { isDarkMode } from "~/store";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import EChart from "~/components/EChart.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -88,6 +93,9 @@
       type: "category",
       boundaryGap: false,
       data: [],
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: [
       {
@@ -98,6 +106,7 @@
         alignTicks: true,
         axisLabel: {
           formatter: "${value}",
+          fontSize: autoFontSize(),
         },
       },
       {
@@ -107,6 +116,7 @@
         alignTicks: true,
         axisLabel: {
           formatter: "{value}",
+          fontSize: autoFontSize(),
         },
       },
     ],
@@ -584,7 +594,7 @@
           </div>
           {#if isLoadingPositionDetailPrice}
             <div class="flex justify-center items-center h-[504px]">
-              <loading-icon />
+              <Loading />
             </div>
           {:else}
             <div>
@@ -612,7 +622,7 @@
           </div>
           {#if isLoadingPositionDetailPrice}
             <div class="flex justify-center items-center h-[504px]">
-              <loading-icon />
+              <Loading />
             </div>
           {:else}
             <div>
@@ -659,35 +669,35 @@
                       class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg_f4f5f8"
                     >
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         Transaction
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         From
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         To
                       </div>
                     </th>
                     <th class="py-3 min-w-[100px]">
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         Type
                       </div>
                     </th>
                     <th class="py-3 pr-3">
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         Token change
                       </div>
@@ -699,7 +709,7 @@
                     <tr>
                       <td colspan={5}>
                         <div class="flex items-center justify-center px-3 py-4">
-                          <loading-icon />
+                          <Loading />
                         </div>
                       </td>
                     </tr>
@@ -800,7 +810,7 @@
                             }`}
                           >
                             <div
-                              class="xl:text-sm text-xl text_00000099 font-medium flex justify-start"
+                              class="xl:text-sm text-2xl text_00000099 font-medium flex justify-start"
                             >
                               {#if change?.type}
                                 <div
@@ -872,21 +882,21 @@
                   <tr class="bg_f4f5f8">
                     <th class="py-3 pl-3">
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         Transaction
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         Type
                       </div>
                     </th>
                     <th class="py-3 pr-3">
                       <div
-                        class="text-base font-medium text-left uppercase xl:text-xs"
+                        class="font-medium text-left uppercase xl:text-xs text-xl"
                       >
                         Token Change
                       </div>
@@ -898,7 +908,7 @@
                     <tr>
                       <td colspan="3">
                         <div class="flex items-center justify-center px-3 py-4">
-                          <loading-icon />
+                          <Loading />
                         </div>
                       </td>
                     </tr>
@@ -1009,7 +1019,7 @@
                                           {change?.metadata?.btcPrice?.symbol}
                                         </div>
                                       </div>
-                                      <div class="text-gray-500">
+                                      <div class="text-gray-500 flex">
                                         | $<TooltipNumber
                                           number={Math.abs(
                                             change?.metadata?.btcChange
@@ -1043,7 +1053,7 @@
                                         {change?.metadata?.info?.tokenName}
                                       </div>
                                     </div>
-                                    <div class="text-gray-500">
+                                    <div class="text-gray-500 flex">
                                       | $<TooltipNumber
                                         number={Math.abs(
                                           change?.metadata?.info?.total *

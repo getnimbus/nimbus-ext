@@ -188,27 +188,27 @@
           <th
             class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
           >
-            <div class="text-left xl:text-xs text-base uppercase font-medium">
+            <div class="text-left xl:text-xs text-xl uppercase font-medium">
               {MultipleLang.assets}
             </div>
           </th>
           <th class="py-3">
-            <div class="text-right xl:text-xs text-base uppercase font-medium">
+            <div class="text-right xl:text-xs text-xl uppercase font-medium">
               {MultipleLang.price}
             </div>
           </th>
           <th class="py-3">
-            <div class="text-right xl:text-xs text-base uppercase font-medium">
+            <div class="text-right xl:text-xs text-xl uppercase font-medium">
               Amount change
             </div>
           </th>
           <th class="py-3">
-            <div class="text-right xl:text-xs text-base uppercase font-medium">
+            <div class="text-right xl:text-xs text-xl uppercase font-medium">
               Value change
             </div>
           </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
-            <div class="text-right xl:text-xs text-base uppercase font-medium">
+            <div class="text-right xl:text-xs text-xl uppercase font-medium">
               <TooltipTitle tooltipText="Ratio based on total token holding">
                 Ratio
               </TooltipTitle>

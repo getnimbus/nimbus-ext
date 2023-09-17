@@ -2,9 +2,9 @@
   import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
   import { Link } from "svelte-navigator";
+  import { autoFontSize } from "~/utils";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
-  import "~/components/Loading.custom.svelte";
   import EChart from "~/components/EChart.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
@@ -25,11 +25,15 @@
       type: "category",
       boundaryGap: false,
       data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: {
       type: "value",
       axisLabel: {
         formatter: "${value}",
+        fontSize: autoFontSize(),
       },
     },
     series: [
@@ -318,7 +322,6 @@
             theme="white"
             {option}
             height={420}
-            type="full-width"
             notMerge={true}
           />
 

@@ -9,6 +9,7 @@
     isFirstTimeLogin,
     selectedPackage,
     isDarkMode,
+    selectedBundle,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
@@ -37,7 +38,7 @@
   export let type: "portfolio" | "order" = "portfolio";
   export let title;
 
-  import "~/components/Loading.custom.svelte";
+  import Loading from "./Loading.svelte";
   import Button from "~/components/Button.svelte";
   import Select from "~/components/Select.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -144,6 +145,11 @@
     packageSelected = value;
   });
 
+  let selectBundle = {};
+  selectedBundle.subscribe((value) => {
+    selectBundle = value;
+  });
+
   let toastMsg = "";
   let isSuccessToast = false;
   let counter = 3;
@@ -188,7 +194,6 @@
 
   let isDisabled = false;
   let tooltipDisableAddBtn = "";
-  let selectBundle;
   let showPopover = false;
 
   const isRequiredFieldValid = (value) => {
@@ -623,6 +628,7 @@
           ) {
             typeWallet.update((n) => (n = "CEX"));
             browser.storage.sync.set({ typeWalletAddress: "CEX" });
+            chain.update((n) => (n = "ALL"));
             window.history.replaceState(
               null,
               "",
@@ -638,6 +644,7 @@
           ) {
             typeWallet.update((n) => (n = "BUNDLE"));
             browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
+            chain.update((n) => (n = "ALL"));
             window.history.replaceState(
               null,
               "",
@@ -653,6 +660,11 @@
           ) {
             typeWallet.update((n) => (n = "EVM"));
             browser.storage.sync.set({ typeWalletAddress: "EVM" });
+            if (selectedChain) {
+              chain.update((n) => (n = selectedChain));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
             window.history.replaceState(
               null,
               "",
@@ -668,6 +680,7 @@
           ) {
             typeWallet.update((n) => (n = "SOL"));
             browser.storage.sync.set({ typeWalletAddress: "SOL" });
+            chain.update((n) => (n = "ALL"));
             window.history.replaceState(
               null,
               "",
@@ -683,18 +696,13 @@
           ) {
             typeWallet.update((n) => (n = "BTC"));
             browser.storage.sync.set({ typeWalletAddress: "BTC" });
+            chain.update((n) => (n = "ALL"));
             window.history.replaceState(
               null,
               "",
               window.location.pathname +
                 `?type=${typeWalletAddress}&address=${selectedWallet}`
             );
-          }
-
-          if (selectedChain) {
-            chain.update((n) => (n = selectedChain));
-          } else {
-            chain.update((n) => (n = "ALL"));
           }
         }
       }
@@ -774,14 +782,16 @@
 
   $: {
     if (selectedWallet) {
-      selectBundle = listAddress.find((item) => item.value === selectedWallet);
+      selectedBundle.update(
+        (n) => (n = listAddress.find((item) => item.value === selectedWallet))
+      );
     }
   }
 </script>
 
 {#if $query.isFetching}
   <div class="flex items-center justify-center h-screen">
-    <loading-icon />
+    <Loading />
   </div>
 {:else}
   <div>
@@ -915,7 +925,7 @@
                         {/each}
                       </AnimateSharedLayout>
                       <div class="relative">
-                        <div class="relative z-10">
+                        <div class="relative z-40">
                           <Select
                             type="wallet"
                             positionSelectList="right-0"
@@ -1214,7 +1224,7 @@
                       </div>
                       {#if showPopover}
                         <div
-                          class="select_content absolute left-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 xl:w-[200px] w-[300px] xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
+                          class="select_content absolute left-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
                           style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
                           use:clickOutside
                           on:click_outside={() => (showPopover = false)}
@@ -1425,140 +1435,158 @@
   isOpen={isOpenAddModal}
   on:close={() => (isOpenAddModal = false)}
 >
-  <div class="font-medium xl:title-3 title-1">
-    {MultipleLang.content.modal_add_title}
-  </div>
-  <div class="flex flex-col mt-4 gap-7">
-    <div class="flex flex-col gap-3">
-      <div class="flex justify-center">
-        <div class="w-max">
-          <Button
-            variant="tertiary"
-            isLoading={isLoadingConnectCEX}
-            on:click={onSubmitCEX}
+  <div class="flex flex-col gap-4">
+    <div class="font-medium xl:title-3 title-1">
+      {MultipleLang.content.modal_add_title}
+    </div>
+    <div class="flex flex-col gap-7">
+      <div class="flex flex-col gap-3">
+        <div class="flex justify-center">
+          <div class="w-max">
+            <Button
+              variant="tertiary"
+              isLoading={isLoadingConnectCEX}
+              on:click={onSubmitCEX}
+            >
+              <div class="font-medium text-white xl:text-base text-2xl">
+                Connect Exchange
+              </div>
+            </Button>
+          </div>
+        </div>
+        <div
+          class="flex items-center justify-center gap-1 xl:text-base text-2xl"
+        >
+          <img src={Success} alt="" />
+          Bank-level security/encryption.
+          <a
+            href="https://vezgo.com/security"
+            class="text-blue-500 cursor-pointer"
+            target="_blank">Learn more</a
           >
-            <div class="text-2xl font-medium text-white xl:text-base">
-              Connect Exchange
+        </div>
+        <div
+          class="flex items-center justify-center gap-6 my-3 xl:text-base text-2xl"
+        >
+          {#each listLogoCEX as logo}
+            <div
+              class="flex items-center justify-center w-8 h-8 overflow-hidden rounded-full"
+            >
+              <img src={logo} alt="" class="object-contain w-full h-full" />
             </div>
-          </Button>
+          {/each}
+          <div class="text-gray-400">+22 More</div>
         </div>
       </div>
-      <div class="flex items-center justify-center gap-1 text-xl xl:text-base">
-        <img src={Success} alt="" />
-        Bank-level security/encryption.
-        <a
-          href="https://vezgo.com/security"
-          class="text-blue-500 cursor-pointer"
-          target="_blank">Learn more</a
+      <div class="border-t-[1px] relative">
+        <div
+          class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
+            darkMode ? "bg-[#0f0f0f]" : "bg-white"
+          } xl:text-sm text-xl px-2`}
         >
+          Or
+        </div>
       </div>
-      <div class="flex items-center justify-center gap-6 my-3">
-        {#each listLogoCEX as logo}
-          <div
-            class="flex items-center justify-center w-8 h-8 overflow-hidden rounded-full"
-          >
-            <img src={logo} alt="" class="object-contain w-full h-full" />
-          </div>
-        {/each}
-        <div class="text-gray-400">+22 More</div>
-      </div>
-    </div>
-    <div class="border-t-[1px] relative">
-      <div
-        class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
-          darkMode ? "bg-[#0f0f0f]" : "bg-white"
-        } text-sm px-2`}
+      <form
+        on:submit|preventDefault={onSubmit}
+        class="flex flex-col gap-3 mt-2"
       >
-        Or
-      </div>
-    </div>
-    <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-2">
-      <div class="flex flex-col gap-1">
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-          }`}
-          class:input-border-error={errors.address && errors.address.required}
-        >
-          <div class="xl:text-base text-xl text-[#666666] font-medium">
-            Address
+        <div class="flex flex-col xl:gap-3 gap-6">
+          <div class="flex flex-col gap-1">
+            <div
+              class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+                address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+              }`}
+              class:input-border-error={errors.address &&
+                errors.address.required}
+            >
+              <div class="xl:text-base text-2xl text-[#666666] font-medium">
+                Address
+              </div>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                placeholder={"Your wallet address"}
+                value=""
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                  address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                } `}
+                on:keyup={({ target: { value } }) => (address = value)}
+              />
+            </div>
+            {#if errors.address && errors.address.required}
+              <div class="text-red-500">
+                {errors.address.msg}
+              </div>
+            {/if}
           </div>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            placeholder={"Your wallet address"}
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-            } `}
-            on:keyup={({ target: { value } }) => (address = value)}
-          />
-        </div>
-        {#if errors.address && errors.address.required}
-          <div class="text-red-500">
-            {errors.address.msg}
-          </div>
-        {/if}
-      </div>
-      <div class="flex flex-col gap-1">
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-          }`}
-          class:input-border-error={errors.label && errors.label.required}
-        >
-          <div class="xl:text-base text-xl text-[#666666] font-medium">
-            {MultipleLang.content.modal_label_label}
-          </div>
-          <input
-            type="text"
-            id="label"
-            name="label"
-            placeholder={MultipleLang.content.modal_label_label}
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-            }
+          <div class="flex flex-col gap-1">
+            <div
+              class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+                label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+              }`}
+              class:input-border-error={errors.label && errors.label.required}
+            >
+              <div class="xl:text-base text-2xl text-[#666666] font-medium">
+                {MultipleLang.content.modal_label_label}
+              </div>
+              <input
+                type="text"
+                id="label"
+                name="label"
+                placeholder={MultipleLang.content.modal_label_label}
+                value=""
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                  label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                }
               `}
-            on:keyup={({ target: { value } }) => (label = value)}
-          />
-        </div>
-        {#if errors.label && errors.label.required}
-          <div class="text-red-500">
-            {errors.label.msg}
+                on:keyup={({ target: { value } }) => (label = value)}
+              />
+            </div>
+            {#if errors.label && errors.label.required}
+              <div class="text-red-500">
+                {errors.label.msg}
+              </div>
+            {/if}
           </div>
-        {/if}
-      </div>
-      <div class="flex items-center justify-center gap-6 my-3">
-        {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
-          <div
-            class="flex items-center justify-center w-8 h-8 overflow-hidden rounded-full"
-          >
-            <img src={item.logo} alt="" class="object-contain w-full h-full" />
+        </div>
+        <div
+          class="flex items-center justify-center gap-6 my-3 xl:text-base text-xl"
+        >
+          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
+            <div
+              class="flex items-center justify-center w-8 h-8 overflow-hidden rounded-full"
+            >
+              <img
+                src={item.logo}
+                alt=""
+                class="object-contain w-full h-full"
+              />
+            </div>
+          {/each}
+          <div class="text-gray-400">More soon</div>
+        </div>
+        <div class="flex justify-end gap-6 lg:gap-2">
+          <div class="lg:w-[120px] w-full">
+            <Button
+              variant="secondary"
+              on:click={() => {
+                errors = {};
+                isOpenAddModal = false;
+              }}
+            >
+              {MultipleLang.content.modal_cancel}</Button
+            >
           </div>
-        {/each}
-        <div class="text-gray-400">More soon</div>
-      </div>
-      <div class="flex justify-end gap-6 lg:gap-2">
-        <div class="lg:w-[120px] w-full">
-          <Button
-            variant="secondary"
-            on:click={() => {
-              errors = {};
-              isOpenAddModal = false;
-            }}
-          >
-            {MultipleLang.content.modal_cancel}</Button
-          >
+          <div class="lg:w-[120px] w-full">
+            <Button type="submit" variant="tertiary">
+              {MultipleLang.content.modal_add}</Button
+            >
+          </div>
         </div>
-        <div class="lg:w-[120px] w-full">
-          <Button type="submit" variant="tertiary">
-            {MultipleLang.content.modal_add}</Button
-          >
-        </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </AppOverlay>
 
@@ -1634,41 +1662,42 @@
     isOpenModal = false;
   }}
 >
-  <div class="font-medium text-center xl:title-3 title-1">
-    Let's us know your email
-  </div>
-  <div class="mt-2">
-    <div class="text-lg text-center text-gray-500 xl:text-base">
-      Add your email to get updates from us and receive exclusive benefits soon.
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1 items-start">
+      <div class="xl:title-3 title-1 font-semibold">
+        Let's us know your email
+      </div>
+      <div class="xl:text-sm text-2xl text-gray-500">
+        Add your email to get updates from us and receive exclusive benefits
+        soon.
+      </div>
     </div>
     <form
       on:submit|preventDefault={onSubmitGetEmail}
-      class="flex flex-col gap-3 mt-4"
+      class="flex flex-col xl:gap-3 gap-10"
     >
-      <div class="flex flex-col gap-1">
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-          }`}
-        >
-          <div class="xl:text-base text-xl text-[#666666] font-medium">
-            Email
-          </div>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            required
-            placeholder="Your email"
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-            }`}
-            on:keyup={({ target: { value } }) => (email = value)}
-          />
+      <div
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+          email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+        }`}
+      >
+        <div class="xl:text-base text-2xl text-[#666666] font-medium">
+          Email
         </div>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="Your email"
+          value=""
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+          }`}
+          on:keyup={({ target: { value } }) => (email = value)}
+        />
       </div>
-      <div class="flex justify-end gap-2">
+      <div class="flex justify-end lg:gap-2 gap-6">
         <div class="xl:w-[120px] w-full">
           <Button
             variant="secondary"

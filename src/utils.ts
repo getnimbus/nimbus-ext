@@ -789,15 +789,12 @@ export const sharpeRatioColorChart = (value: number) => {
   return color
 }
 
-export const getTooltipContent = (text: string, videoUrl: string, isMaxWidth: boolean, darkMode: boolean, width?: string,) => {
+export const getTooltipContent = (text: string, videoUrl: string, isMaxWidth: boolean, darkMode: boolean, width?: string) => {
   return `
       <div style="padding: 8px; border-radius: 8px; background: ${darkMode ? "#0f0f0f" : "#000"}; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
-        ${text
-      ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 16px; color: #fff;">${text}</div>`
-      : ""
-    } 
+        ${text ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>` : ""} 
         <div style="border-radius: 6px; width: ${width ? width : "100%"}; overflow: hidden">
-          <video autoplay muted playsinline control disablepictureinpicture loop>
+          <video autoplay muted playsinline disablepictureinpicture loop>
             <source type="video/mp4" src="${videoUrl}" />
           </video>
         </div>
@@ -831,11 +828,31 @@ export const clickOutside = (node) => {
 };
 
 export const equalizeArrayLengths = (arrA, arrB) => {
-  while (arrA.length > arrB.length) {
-    arrA.pop(); // Remove the last element from array A
-  }
+  // Calculate the minimum length of the two arrays
+  const minLength = Math.min(arrA.length, arrB.length);
 
-  while (arrB.length > arrA.length) {
-    arrB.pop(); // Remove the last element from array B
-  }
+  // Slice both arrays to the minimum length
+  const newArrayA = arrA.slice(0, minLength);
+  const newArrayB = arrB.slice(0, minLength);
+
+  return [newArrayA, newArrayB];
 }
+
+export const autoFontSize = () => {
+  const windowWidth =
+    window.innerWidth ||
+    document.documentElement.clientWidth ||
+    document.body.clientWidth;
+  if (windowWidth) {
+    if (windowWidth < 768) {
+      // mobile
+      return 20;
+    } else if (windowWidth >= 768 && windowWidth < 1024) {
+      // tablet
+      return 16;
+    } else {
+      // pc
+      return 14;
+    }
+  }
+};

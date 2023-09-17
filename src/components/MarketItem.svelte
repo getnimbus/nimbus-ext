@@ -39,7 +39,7 @@ via @get_nimbus`;
         : "bg-white group-hover:bg-gray-100"
     }`}
   >
-    <div class="text-left xl:text-sm text-xl font-medium">
+    <div class="text-left xl:text-sm text-2xl font-medium">
       <div class="flex space-x-3">
         <img
           src={data?.from_token_logo}
@@ -54,7 +54,7 @@ via @get_nimbus`;
           height="30"
         />
       </div>
-      <div class="text_00000080 xl:text-xs text-base mt-1">
+      <div class="text_00000080 xl:text-xs text-xl mt-1">
         {data?.price_from?.symbol} - {data?.price_to?.symbol}
       </div>
     </div>
@@ -65,7 +65,7 @@ via @get_nimbus`;
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="text-left xl:text-sm text-xl font-medium">
+    <div class="text-left xl:text-sm text-2xl font-medium">
       {dayjs(data?.timestamp).format("YYYY-MM-DD, hh:mm A")}
       <br />
       <span class="text_00000080">
@@ -80,13 +80,13 @@ via @get_nimbus`;
     }`}
   >
     <div
-      class="xl:text-sm text-xl text-red-500 font-medium flex flex-col justify-start gap-1"
+      class="xl:text-sm text-2xl text-red-500 font-medium flex flex-col justify-start gap-1"
     >
-      <div>
+      <div class="flex items-center gap-1">
         <TooltipNumber number={data?.amountIn} type="balance" />
         {data?.price_from?.symbol}
       </div>
-      <div>
+      <div class="flex items-center">
         $<TooltipNumber
           number={data?.amountIn * data?.price_from?.price}
           type="balance"
@@ -101,13 +101,13 @@ via @get_nimbus`;
     }`}
   >
     <div
-      class="xl:text-sm text-xl text-[#00A878] font-medium flex flex-col justify-start gap-1"
+      class="xl:text-sm text-2xl text-[#00A878] font-medium flex flex-col justify-start gap-1"
     >
-      <div>
+      <div class="flex items-center gap-1">
         <TooltipNumber number={data?.amountOut} type="balance" />
         {data?.price_to?.symbol}
       </div>
-      <div>
+      <div class="flex items-center">
         $<TooltipNumber
           number={data?.amountOut * data?.price_to?.price}
           type="balance"
@@ -122,7 +122,7 @@ via @get_nimbus`;
     }`}
   >
     <div
-      class="xl:text-sm text-xl text-blue-500 hover:text-[#0d6efd] cursor-pointer font-medium flex justify-center"
+      class="xl:text-sm text-2xl text-blue-500 hover:text-[#0d6efd] cursor-pointer font-medium flex justify-center"
     >
       <a
         href={`https://app.getnimbus.io/?address=${data?.sender}`}

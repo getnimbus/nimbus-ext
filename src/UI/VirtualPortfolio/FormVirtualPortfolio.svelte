@@ -6,7 +6,7 @@
   import { isDarkMode } from "~/store";
 
   import Button from "~/components/Button.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   export let handleSubmit = (data, type) => {};
   export let isLoadingSubmit;
@@ -166,7 +166,7 @@
 <div class="flex flex-col gap-5">
   <div class="flex lg:flex-row flex-col justify-between gap-4">
     <div class="flex-1 flex flex-col gap-1 input-2 w-full p-4">
-      <div class="xl:text-base text-xl text-[#666666] font-medium">
+      <div class="xl:text-base text-2xl text-[#666666] font-medium">
         Virtual portfolio name
       </div>
       <input
@@ -180,7 +180,7 @@
     </div>
 
     <div class="flex-1 flex flex-col gap-1 input-2 w-full p-4">
-      <div class="xl:text-base text-xl text-[#666666] font-medium">
+      <div class="xl:text-base text-2xl text-[#666666] font-medium">
         {#if defaultData && Object.keys(defaultData).length !== 0}
           Initial Time
         {:else}
@@ -221,7 +221,7 @@
             value={searchValue}
             placeholder={"Find by token name"}
             type="text"
-            class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
               searchValue ? "bg-[#F0F2F7]" : ""
             }`}
           />
@@ -244,7 +244,7 @@
               <tr>
                 <td colspan={2}>
                   <div class="flex justify-center items-center py-3 px-3">
-                    <loading-icon />
+                    <Loading />
                   </div>
                 </td>
               </tr>
@@ -293,7 +293,7 @@
                           class="rounded-full"
                         />
                         <div class="flex flex-col gap-1">
-                          <div class=" xl:text-sm text-xl font-medium relative">
+                          <div class="xl:text-sm text-2xl font-medium relative">
                             {#if data?.name === undefined}
                               N/A
                             {:else}
@@ -301,7 +301,7 @@
                             {/if}
                           </div>
                           <div
-                            class="text_00000080 text-xs font-medium relative"
+                            class="text_00000080 xl:text-xs text-lg font-medium relative"
                           >
                             {#if data?.symbol === undefined}
                               N/A
@@ -316,7 +316,7 @@
                               <a
                                 href={item.url}
                                 target="_blank"
-                                class="flex items-center justyfy-center px-2 py-1 text_27326F text-[10px] font-medium bg-[#1e96fc33] rounded-[1000px]"
+                                class="flex items-center justyfy-center px-2 py-1 text_27326F xl:text-[10px] text-base font-medium bg-[#1e96fc33] rounded-[1000px]"
                               >
                                 {item.tile}
                               </a>
@@ -396,14 +396,16 @@
                   class="rounded-full"
                 />
                 <div class="flex flex-col gap-1">
-                  <div class=" xl:text-sm text-xl font-medium relative">
+                  <div class="xl:text-sm text-2xl font-medium relative">
                     {#if data.name === undefined}
                       N/A
                     {:else}
                       {data.name}
                     {/if}
                   </div>
-                  <div class="text_00000080 text-xs font-medium relative">
+                  <div
+                    class="text_00000080 xl:text-xs text-lg font-medium relative"
+                  >
                     {#if data.symbol === undefined}
                       N/A
                     {:else}

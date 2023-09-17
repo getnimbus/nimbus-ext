@@ -22,7 +22,7 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
   import TokenHoldingTable from "~/UI/PersonalTokenBreakdown/TokenHoldingTable.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import "~/components/Tooltip.custom.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
@@ -523,7 +523,7 @@
           <Link to="/analytic" class="cusor-pointer">
             <div class="flex items-center gap-1 text-white">
               <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="xl:text-sm text-xl font-medium">
+              <div class="xl:text-sm text-2xl font-medium">
                 Back to Analytics
               </div>
             </div>
@@ -561,8 +561,8 @@
         </div>
 
         {#if listCustom.length === 0}
-          <div class="flex justify-between items-center">
-            <div class="text-lg flex-1">
+          <div class="flex justify-between items-center gap-10">
+            <div class="xl:text-lg text-2xl flex-1">
               Add your custom token breakdown to keep track of investments by
               your way.
             </div>
@@ -754,14 +754,14 @@
                 formData.category && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
               }`}
             >
-              <div class="xl:text-base text-xl text-[#666666] font-medium">
+              <div class="xl:text-base text-2xl text-[#666666] font-medium">
                 Category
               </div>
               <input
                 type="text"
                 placeholder="Your category name"
                 required
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
                   formData.category && !darkMode
                     ? "bg-[#F0F2F7]"
                     : "bg-transparent"
@@ -781,11 +781,11 @@
               />
             </div>
 
-            <div class="flex flex-col gap-2">
-              <div class="flex justify-between items-center">
+            <div class="flex flex-col gap-6">
+              <div class="flex justify-between items-center gap-8">
                 {#if selectedTokenList?.length !== 0}
                   {#if showSetTag}
-                    <div class="w-[600px] h-10">
+                    <div class="w-[600px]">
                       <div
                         class={`flex justify-between gap-1 border bg-white focus:outline-none w-full py-[6px] px-3 rounded-t-lg ${
                           query && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
@@ -796,7 +796,7 @@
                         <input
                           type="text"
                           placeholder="Your tag name"
-                          class={`flex-1 p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                          class={`flex-1 p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
                             query && !darkMode
                               ? "bg-[#F0F2F7]"
                               : "bg-transparent"
@@ -815,7 +815,7 @@
                         {#if query && !showSuggestListTag}
                           <button
                             type="submit"
-                            class="xl:text-sm text-lg font-medium w-max text-[#1e96fc] cursor-pointer"
+                            class="xl:text-sm text-2xl font-medium w-max text-[#1e96fc] cursor-pointer"
                           >
                             Add Tag
                           </button>
@@ -823,7 +823,7 @@
 
                         {#if showSuggestListTag}
                           <button
-                            class="xl:text-sm text-lg font-medium w-max text-red-500 cursor-pointer"
+                            class="xl:text-sm text-2xl font-medium w-max text-red-500 cursor-pointer"
                             on:click={() => {
                               showSuggestListTag = false;
                               query = "";
@@ -843,7 +843,7 @@
                               darkMode ? "bg-[#212121]" : "bg-white"
                             } text-[#5E656B] rounded-b-lg py-2 px-3 z-50`}
                           >
-                            <div class="xl:text-xs text-base">
+                            <div class="xl:text-xs text-xl">
                               Select an option or create one
                             </div>
                             <div class="flex flex-col gap-2">
@@ -858,7 +858,7 @@
                                   }`}
                                 >
                                   <div
-                                    class={`xl:text-sm text-lg px-2 py-1 rounded-lg cursor-pointer flex justify-between ${
+                                    class={`xl:text-sm text-2xl px-2 py-1 rounded-lg cursor-pointer flex justify-between ${
                                       darkMode
                                         ? "hover:bg-[#00000033]"
                                         : "hover:bg-[#F0F2F7]"
@@ -870,7 +870,7 @@
                                           <input
                                             type="text"
                                             placeholder="Your category name"
-                                            class={`bg-transparent p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] w-full`}
+                                            class={`bg-transparent p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] w-full`}
                                             bind:value={tag}
                                             on:keyup={({ target: { value } }) =>
                                               (tag = value)}
@@ -931,7 +931,7 @@
 
                               {#if filteredListTag.length === 0}
                                 <div
-                                  class="flex items-center gap-2 xl:text-sm text-lg"
+                                  class="flex items-center gap-2 xl:text-sm text-2xl"
                                 >
                                   <div
                                     class="cursor-pointer text-[#1e96fc]"
@@ -966,14 +966,14 @@
                           showSetTag = true;
                         }}
                       >
-                        <div class=" text-white">Set Tag</div>
+                        <div class="text-white">Set Tag</div>
                       </Button>
                     </div>
                   {/if}
                 {:else}
-                  <div class="w-10 h-10" />
+                  <div class="w-10" />
                 {/if}
-                <div class="text-right">
+                <div class="w-max">
                   <div
                     class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
                       searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
@@ -983,7 +983,7 @@
                       bind:value={searchValue}
                       placeholder={"Find by token name"}
                       type="text"
-                      class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                      class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
                         searchValue && !darkMode
                           ? "bg-[#F0F2F7]"
                           : "bg-transparent"
@@ -1011,35 +1011,35 @@
                         class="py-3 xl:static xl:bg-transparent sticky left-10 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
                       >
                         <div
-                          class="text-left xl:text-xs text-base uppercase font-medium"
+                          class="text-left xl:text-xs text-xl uppercase font-medium"
                         >
                           {MultipleLang.assets}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium"
+                          class="text-right xl:text-xs text-xl uppercase font-medium"
                         >
                           {MultipleLang.price}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium"
+                          class="text-right xl:text-xs text-xl uppercase font-medium"
                         >
                           {MultipleLang.amount}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium"
+                          class="text-right xl:text-xs text-xl uppercase font-medium"
                         >
                           {MultipleLang.value}
                         </div>
                       </th>
                       <th class="py-3">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium"
+                          class="text-right xl:text-xs text-xl uppercase font-medium"
                         >
                           <TooltipTitle
                             tooltipText="Ratio based on total token holding"
@@ -1050,7 +1050,7 @@
                       </th>
                       <th class="py-3 pr-3 rounded-tr-[10px]">
                         <div
-                          class="text-right xl:text-xs text-base uppercase font-medium flex items-center justify-end gap-2"
+                          class="text-right xl:text-xs text-xl uppercase font-medium flex items-center justify-end gap-2"
                         >
                           Tag
                           <div
@@ -1078,7 +1078,7 @@
                           <div
                             class="flex justify-center items-center py-3 px-3"
                           >
-                            <loading-icon />
+                            <Loading />
                           </div>
                         </td>
                       </tr>
@@ -1147,7 +1147,7 @@
                                 </div>
                                 <div class="flex flex-col gap-1">
                                   <div
-                                    class=" xl:text-sm text-xl font-medium relative"
+                                    class="xl:text-sm text-2xl font-medium relative"
                                     on:mouseover={() => {
                                       if (data?.name?.length > 20) {
                                         selectedHover = data.name;
@@ -1178,7 +1178,7 @@
                                     {/if}
                                   </div>
                                   <div
-                                    class="text_00000080 text-xs font-medium relative"
+                                    class="text_00000080 xl:text-xs text-lg font-medium relative"
                                     on:mouseover={() => {
                                       if (data?.symbol?.length > 20) {
                                         selectedHover = data.symbol;
@@ -1218,7 +1218,7 @@
                               }`}
                             >
                               <div
-                                class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                                class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
                               >
                                 $<TooltipNumber
                                   number={data.market_price}
@@ -1235,7 +1235,7 @@
                               }`}
                             >
                               <div
-                                class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                                class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
                               >
                                 <TooltipNumber
                                   number={data.amount}
@@ -1252,7 +1252,7 @@
                               }`}
                             >
                               <div
-                                class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                                class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
                               >
                                 <TooltipNumber
                                   number={data?.amount * data?.market_price}
@@ -1272,7 +1272,7 @@
                                 class="flex flex-col gap-1 justify-end items-end"
                               >
                                 <div
-                                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
                                 >
                                   <TooltipNumber
                                     number={((data?.amount *
@@ -1304,7 +1304,7 @@
                             >
                               <div class="flex justify-end">
                                 <div
-                                  class="bg-[#6AC7F533] text_27326F xl:text-sm text-xl w-max px-3 py-1 rounded-[5px]"
+                                  class="bg-[#6AC7F533] text_27326F xl:text-sm text-2xl w-max px-3 py-1 rounded-[5px]"
                                 >
                                   {data.tag}
                                 </div>
@@ -1331,21 +1331,23 @@
       </div>
     </div>
   </div>
+</ErrorBoundary>
 
-  <!-- Modal confirm delete account -->
-  <AppOverlay
-    clickOutSideToClose
-    isOpen={isOpenConfirmDelete}
-    on:close={() => (isOpenConfirmDelete = false)}
-  >
+<!-- Modal confirm delete custom token breakdown -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenConfirmDelete}
+  on:close={() => (isOpenConfirmDelete = false)}
+>
+  <div class="flex flex-col xl:gap-4 gap-10">
     <div class="flex flex-col gap-1 items-start">
       <div class="xl:title-3 title-1 font-semibold">Are you sure?</div>
-      <div class="xl:text-sm text-lg text-gray-500">
-        "Do you really want to delete this custom token breakdown? This process
+      <div class="xl:text-sm text-2xl text-gray-500">
+        Do you really want to delete this custom token breakdown? This process
         cannot revert
       </div>
     </div>
-    <div class="flex justify-end lg:gap-2 gap-6 mt-4">
+    <div class="flex justify-end lg:gap-2 gap-6">
       <div class="lg:w-[120px] w-full">
         <Button
           variant="secondary"
@@ -1368,8 +1370,8 @@
         </Button>
       </div>
     </div>
-  </AppOverlay>
-</ErrorBoundary>
+  </div>
+</AppOverlay>
 
 {#if showToast}
   <div class="fixed top-3 right-3 w-full z-10">

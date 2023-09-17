@@ -7,7 +7,7 @@
     selectedPackage,
     isDarkMode,
   } from "~/store";
-  import { formatPercent } from "~/utils";
+  import { autoFontSize, formatPercent } from "~/utils";
   import dayjs from "dayjs";
   import { calculateVolatility, getChangePercent } from "~/chart-utils";
   import { createQuery } from "@tanstack/svelte-query";
@@ -112,11 +112,15 @@
     },
     xAxis: {
       type: "time",
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: {
       type: "value",
       axisLabel: {
         formatter: "{value}%",
+        fontSize: autoFontSize(),
       },
     },
     series: [],

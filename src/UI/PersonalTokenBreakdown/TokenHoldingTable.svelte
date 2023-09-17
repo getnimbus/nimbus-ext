@@ -6,7 +6,7 @@
   import { Progressbar } from "flowbite-svelte";
 
   import "~/components/Tooltip.custom.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
 
@@ -67,27 +67,27 @@
         <th
           class="rounded-tl-[10px] py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
         >
-          <div class="text-left xl:text-xs text-base uppercase font-semibold">
+          <div class="text-left xl:text-xs text-xl uppercase font-semibold">
             {MultipleLang.assets}
           </div>
         </th>
         <th class="py-3">
-          <div class="text-right xl:text-xs text-base uppercase font-semibold">
+          <div class="text-right xl:text-xs text-xl uppercase font-semibold">
             {MultipleLang.price}
           </div>
         </th>
         <th class="py-3">
-          <div class="text-right xl:text-xs text-base uppercase font-semibold">
+          <div class="text-right xl:text-xs text-xl uppercase font-semibold">
             {MultipleLang.amount}
           </div>
         </th>
         <th class="py-3">
-          <div class="text-right xl:text-xs text-base uppercase font-semibold">
+          <div class="text-right xl:text-xs text-xl uppercase font-semibold">
             {MultipleLang.value}
           </div>
         </th>
         <th class="py-3">
-          <div class="text-right xl:text-xs text-base uppercase font-semibold">
+          <div class="text-right xl:text-xs text-xl uppercase font-semibold">
             <TooltipTitle tooltipText="Ratio based on total token holding">
               Ratio
             </TooltipTitle>
@@ -95,7 +95,7 @@
         </th>
         <th class="rounded-tr-[10px] py-3 pr-3">
           <div
-            class="text-right xl:text-xs text-base uppercase font-semibold flex items-center justify-end gap-2"
+            class="text-right xl:text-xs text-xl uppercase font-semibold flex items-center justify-end gap-2"
           >
             Tag
             <div on:click={toggleSortOrderTag} class="cursor-pointer">
@@ -118,7 +118,7 @@
         <tr>
           <td colspan={6}>
             <div class="flex justify-center items-center py-3 px-3">
-              <loading-icon />
+              <Loading />
             </div>
           </td>
         </tr>
@@ -168,7 +168,7 @@
                   </div>
                   <div class="flex flex-col gap-1">
                     <div
-                      class=" xl:text-sm text-xl font-medium relative"
+                      class="xl:text-sm text-2xl font-medium relative"
                       on:mouseover={() => {
                         if (data?.name?.length > 20) {
                           selectedHover = data.name;
@@ -199,7 +199,7 @@
                       {/if}
                     </div>
                     <div
-                      class="text_00000080 text-xs font-medium relative"
+                      class="text_00000080 xl:text-xs text-lg font-medium relative"
                       on:mouseover={() => {
                         if (data?.symbol?.length > 20) {
                           selectedHover = data.symbol;
@@ -237,7 +237,7 @@
                 }`}
               >
                 <div
-                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
                 >
                   $<TooltipNumber number={data.market_price} type="balance" />
                 </div>
@@ -249,7 +249,7 @@
                 }`}
               >
                 <div
-                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
                 >
                   <TooltipNumber number={data.amount} type="balance" />
                 </div>
@@ -261,7 +261,7 @@
                 }`}
               >
                 <div
-                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
                 >
                   <TooltipNumber
                     number={data?.amount * data?.market_price}
@@ -277,7 +277,7 @@
               >
                 <div class="flex flex-col gap-1 justify-end items-end">
                   <div
-                    class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                    class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
                   >
                     <TooltipNumber
                       number={((data?.amount * data?.market_price) /
@@ -304,7 +304,7 @@
               >
                 <div class="flex justify-end">
                   <div
-                    class="bg-[#6AC7F533] text_27326F xl:text-sm text-xl w-max px-3 py-1 rounded-[5px]"
+                    class="bg-[#6AC7F533] text_27326F xl:text-sm text-2xl w-max px-3 py-1 rounded-[5px]"
                   >
                     {data.tag}
                   </div>

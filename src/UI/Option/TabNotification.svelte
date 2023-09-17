@@ -8,7 +8,7 @@
   import { useNavigate } from "svelte-navigator";
   import { isDarkMode, user } from "~/store";
 
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import Copy from "~/components/Copy.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
@@ -95,17 +95,17 @@
       <thead>
         <tr class="bg_f4f5f8">
           <th class="pl-3 py-3">
-            <div class="text-left xl:text-sm text-lg uppercase font-semibold">
+            <div class="text-left xl:text-sm text-2xl uppercase font-semibold">
               {MultipleLang.content.address_header_table}
             </div>
           </th>
           <th class="py-3">
-            <div class="text-left xl:text-sm text-lg uppercase font-semibold">
+            <div class="text-left xl:text-sm text-2xl uppercase font-semibold">
               {MultipleLang.content.label_header_table}
             </div>
           </th>
           <th class="pr-3 py-3">
-            <div class="text-right xl:text-sm text-lg uppercase font-semibold">
+            <div class="text-right xl:text-sm text-2xl uppercase font-semibold">
               {MultipleLang.content.action_header_table}
             </div>
           </th>
@@ -116,7 +116,7 @@
           <tr>
             <td colspan="3">
               <div class="flex justify-center items-center py-4 px-3">
-                <loading-icon />
+                <Loading />
               </div>
             </td>
           </tr>
@@ -127,7 +127,7 @@
             <tr>
               <td colspan="3">
                 <div
-                  class="flex justify-center items-center py-4 px-3 xl:text-base text-xl"
+                  class="flex justify-center items-center py-4 px-3 xl:text-base text-2xl"
                 >
                   No address
                 </div>
@@ -143,7 +143,7 @@
                       : "group-hover:bg-gray-100"
                   }`}
                 >
-                  <div class="text-left xl:text-base text-xl">
+                  <div class="text-left xl:text-base text-2xl">
                     <Copy
                       address={item.address}
                       iconColor={`${darkMode ? "#fff" : "#000"}`}
@@ -160,7 +160,7 @@
                   }`}
                 >
                   <div
-                    class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-xl"
+                    class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
                   >
                     {item.label}
                   </div>

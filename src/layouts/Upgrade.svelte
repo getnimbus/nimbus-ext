@@ -79,12 +79,15 @@
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
       <div class="flex flex-col justify-center min-h-[70vh]">
         <!-- remove me -->
-        <div class="text-lg mb-3">Please follow this payment steps:</div>
-        <ul class="text-lg flex flex-col gap-5">
+        <div class="xl:text-lg text-2xl mb-3">
+          Please follow this payment steps:
+        </div>
+        <ul class="xl:text-lg text-2xl flex flex-col gap-5">
           <li>
-            <span class="text-xl font-medium">Step 1:</span> Send
-            <span>{selectedPackage.price}</span><span
-              class="xl:text-base text-lg text-gray-400 mb-[2px]">/month</span
+            <span class="xl:text-xl text-3xl font-medium">Step 1:</span> Send
+            <span class="xl:text-lg text-2xl">{selectedPackage.price}</span
+            ><span class="xl:text-base text-xl text-gray-400 mb-[2px]"
+              >/month</span
             >
 
             USDT or USDC to this address
@@ -92,9 +95,10 @@
               >0x6aedbe81435bbd67e2223eadd256992dc64fc90b
             </i>on Ethereum, BNB or Polygon.
           </li>
+
           <li>
-            <span class="text-xl font-medium">Step 2:</span> After transfer
-            success, Dm TG
+            <span class="xl:text-xl text-3xl font-medium">Step 2:</span> After
+            transfer success, Dm TG
             <a
               href="https://t.me/thanhle27"
               target="_blank"
@@ -111,13 +115,14 @@
             including your wallet address you want to upgrade, the transaction hash
             and the coupon code you want to apply.
           </li>
+
           <li>
-            <span class="text-xl font-medium">Step 3:</span> We will check and upgrade
-            your account after we receive your information.
+            <span class="xl:text-xl text-3xl font-medium">Step 3:</span> We will
+            check and upgrade your account after we receive your information.
           </li>
         </ul>
         <div
-          class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 xl:text-base text-xl"
+          class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 xl:text-base text-2xl"
           on:click={() => {
             selectedPackage = undefined;
           }}
@@ -181,7 +186,7 @@
             </div>
           {/each}
           <div
-            class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 xl:text-base text-xl"
+            class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 xl:text-base text-2xl"
             on:click={() => {
               selectedPackage = undefined;
             }}
@@ -202,7 +207,7 @@
             Choose other Plan
           </div>
         </div>
-        <div class="text-center text-gray-500 xl:text-sm text-lg mt-8">
+        <div class="text-center text-gray-500 xl:text-sm text-2xl mt-8">
           If missing your prefer payment method, please contact Telegram
           <strong>@thanhle27</strong> for support
         </div> -->

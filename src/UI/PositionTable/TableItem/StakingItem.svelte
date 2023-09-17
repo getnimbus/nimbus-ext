@@ -38,7 +38,7 @@
         class="rounded-full"
       />
       <div class="flex flex-col gap-1">
-        <div class=" xl:text-sm text-xl font-medium">{data.name}</div>
+        <div class="xl:text-sm text-2xl font-medium">{data.name}</div>
         <div class="text_00000080 xl:text-xs text-sm font-medium">
           {data.symbol}
         </div>
@@ -51,7 +51,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="flex justify-end xl:text-sm text-xl text_00000099 font-medium">
+    <div class="flex justify-end xl:text-sm text-2xl text_00000099 font-medium">
       $<TooltipNumber number={Math.abs(data.avgCost)} type="balance" />
     </div>
   </td>
@@ -59,7 +59,7 @@
   <!-- <td    class={`py-3  ${
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}>
-    <div class="text-right xl:text-sm text-xl text_00000099 font-medium">
+    <div class="text-right xl:text-sm text-2xl text_00000099 font-medium">
       {dayjs(data.inputTime).format("YYYY-MM-DD, hh:mm A")}
     </div>
   </td> -->
@@ -69,7 +69,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="flex justify-end xl:text-sm text-xl text_00000099 font-medium">
+    <div class="flex justify-end xl:text-sm text-2xl text_00000099 font-medium">
       <TooltipNumber number={data.claimable} type="balance" />
     </div>
   </td>
@@ -79,7 +79,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="flex justify-end xl:text-sm text-xl text_00000099 font-medium">
+    <div class="flex justify-end xl:text-sm text-2xl text_00000099 font-medium">
       $<TooltipNumber number={value} type="balance" />
     </div>
   </td>
@@ -89,7 +89,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl font-medium flex flex-col">
+    <div class="xl:text-sm text-2xl font-medium flex flex-col">
       <div
         class={`flex justify-end ${
           profit >= 0 ? "text-[#00A878]" : "text-red-500"

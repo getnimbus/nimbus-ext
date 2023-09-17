@@ -111,7 +111,7 @@
       <div class="flex flex-col gap-1">
         <div class="flex items-start gap-2">
           <div
-            class="xl:text-sm text-xl font-medium relative"
+            class="xl:text-sm text-2xl font-medium relative"
             on:mouseover={() => {
               isShowTooltipName = true;
             }}
@@ -132,7 +132,7 @@
 
         <div class="flex items-center gap-2">
           <div
-            class="text_00000080 text-xs font-medium relative"
+            class="text_00000080 xl:text-xs text-lg font-medium relative"
             on:mouseover={() => {
               isShowTooltipSymbol = true;
             }}
@@ -400,7 +400,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
+    <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
       $<TooltipNumber number={data.market_price} type="balance" />
     </div>
   </td>
@@ -410,7 +410,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
+    <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
       $<TooltipNumber number={data.profit.averageCost} type="balance" />
     </div>
   </td>
@@ -421,7 +421,7 @@
     }`}
   >
     <div
-      class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
+      class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
     >
       {#if typeWalletAddress === "CEX" || typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
         N/A

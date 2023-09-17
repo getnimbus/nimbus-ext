@@ -152,23 +152,23 @@
           <th
             class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[550px]"
           >
-            <div class="text-base font-medium text-left uppercase xl:text-xs">
+            <div class="font-medium text-left uppercase xl:text-xs text-xl">
               Name
             </div>
           </th>
           <th class="py-3">
-            <div class="text-base font-medium text-right uppercase xl:text-xs">
+            <div class="font-medium text-right uppercase xl:text-xs text-xl">
               Chain
             </div>
           </th>
           <th class="py-3">
-            <div class="text-base font-medium text-right uppercase xl:text-xs">
+            <div class="font-medium text-right uppercase xl:text-xs text-xl">
               Protocol
             </div>
           </th>
           <th class="py-3">
             <div
-              class="flex items-center justify-end gap-2 text-base font-medium text-right uppercase xl:text-xs"
+              class="flex items-center justify-end gap-2 font-medium text-right uppercase xl:text-xs text-xl"
             >
               APY
               <div on:click={toggleSortAPY} class="cursor-pointer">
@@ -186,7 +186,7 @@
           </th>
           <th class="py-3 pr-3 rounded-tr-[10px]">
             <div
-              class="flex items-center justify-end gap-2 text-base font-medium text-right uppercase xl:text-xs"
+              class="flex items-center justify-end gap-2 font-medium text-right uppercase xl:text-xs text-xl"
             >
               <TooltipTitle
                 tooltipText={"Total value locked in this protocol"}
@@ -212,7 +212,7 @@
           <tr>
             <td colspan="5">
               <div
-                class="flex items-center justify-center px-3 py-3 text-xl text-gray-400 xl:text-lg"
+                class="flex items-center justify-center px-3 py-3 text-gray-400 xl:text-lg text-xl"
               >
                 Empty
               </div>
@@ -233,7 +233,7 @@
                     : "bg-white group-hover:bg-gray-100"
                 }`}
               >
-                <div class="text-xl font-medium text-left xl:text-sm">
+                <div class="font-medium text-left xl:text-sm text-2xl">
                   {#if item.name === undefined}
                     N/A
                   {:else}
@@ -247,7 +247,7 @@
                   darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
                 }`}
               >
-                <div class="flex justify-end text-xl font-medium xl:text-sm">
+                <div class="flex justify-end font-medium xl:text-sm text-2xl">
                   {item.chain}
                 </div>
               </td>
@@ -258,32 +258,30 @@
                 }`}
               >
                 <div
-                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
                 >
-                  <div class="text-left">
-                    <div
-                      class="relative text-xl font-medium xl:text-sm"
-                      on:mouseover={() => {
-                        isShowTooltipProtocol = true;
-                      }}
-                      on:mouseleave={() => (isShowTooltipProtocol = false)}
-                    >
-                      {#if item.protocol === undefined}
-                        N/A
-                      {:else}
-                        {item?.protocol?.length > 20
-                          ? shorterName(item.protocol, 20)
-                          : item.protocol}
-                      {/if}
-                      {#if isShowTooltipProtocol && item?.protocol?.length > 20}
-                        <div
-                          class="absolute left-0 -top-8"
-                          style="z-index: 2147483648;"
-                        >
-                          <tooltip-detail text={item.protocol} />
-                        </div>
-                      {/if}
-                    </div>
+                  <div
+                    class="relative"
+                    on:mouseover={() => {
+                      isShowTooltipProtocol = true;
+                    }}
+                    on:mouseleave={() => (isShowTooltipProtocol = false)}
+                  >
+                    {#if item.protocol === undefined}
+                      N/A
+                    {:else}
+                      {item?.protocol?.length > 20
+                        ? shorterName(item.protocol, 20)
+                        : item.protocol}
+                    {/if}
+                    {#if isShowTooltipProtocol && item?.protocol?.length > 20}
+                      <div
+                        class="absolute left-0 -top-8"
+                        style="z-index: 2147483648;"
+                      >
+                        <tooltip-detail text={item.protocol} />
+                      </div>
+                    {/if}
                   </div>
                 </div>
               </td>
@@ -294,7 +292,7 @@
                 }`}
               >
                 <div
-                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
                 >
                   <TooltipNumber number={item.apy} type="percent" />%
                 </div>
@@ -306,7 +304,7 @@
                 }`}
               >
                 <div
-                  class="xl:text-sm text-xl text_00000099 font-medium flex justify-end"
+                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
                 >
                   $<TooltipNumber number={item.tvl} type="balance" />
                 </div>
