@@ -271,16 +271,13 @@
         return res.coins[`coingecko:${item.value}`];
       })
     );
-    console.log("formatData: ", formatData);
 
     listCoinPrice = formatData.map((item) => {
-      console.log("item: ", item);
       return {
         symbol: item?.symbol,
         prices: item?.prices.map((dataPrice) => dataPrice.price),
       };
     });
-    console.log("listCoinPrice: ", listCoinPrice);
   };
 
   $: {
