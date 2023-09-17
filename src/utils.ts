@@ -831,11 +831,12 @@ export const clickOutside = (node) => {
 };
 
 export const equalizeArrayLengths = (arrA, arrB) => {
-  while (arrA.length > arrB.length) {
-    arrA.pop(); // Remove the last element from array A
-  }
+  // Calculate the minimum length of the two arrays
+  const minLength = Math.min(arrA.length, arrB.length);
 
-  while (arrB.length > arrA.length) {
-    arrB.pop(); // Remove the last element from array B
-  }
+  // Slice both arrays to the minimum length
+  const newArrayA = arrA.slice(0, minLength);
+  const newArrayB = arrB.slice(0, minLength);
+
+  return [newArrayA, newArrayB];
 }

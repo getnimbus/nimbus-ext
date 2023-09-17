@@ -268,116 +268,122 @@
     const formatData = await Promise.all(
       data.map(async (item) => {
         const res = await getCoinPrice(item.value);
-        return res.coins[`coingecko:${item.value}`];
+        return {
+          symbol: res?.coins[`coingecko:${item.value}`]?.symbol || undefined,
+          prices:
+            res?.coins[`coingecko:${item.value}`]?.prices.map((dataPrice) => {
+              return dataPrice?.price;
+            }) || undefined,
+        };
       })
     );
 
-    listCoinPrice = formatData.map((item) => {
+    let formatFilterListCoinPrice = [];
+
+    const structListCoinPrice = formatData.map((item, index) => {
       return {
-        symbol: item?.symbol,
-        prices: item?.prices.map((dataPrice) => dataPrice.price),
+        symbol:
+          item.symbol !== undefined
+            ? item.symbol
+            : listTokenHolding[index]?.name.toUpperCase(),
+        prices: item.prices !== undefined ? item.prices : [],
       };
+    });
+
+    const filterListCoinPrice = listTokenHolding.map((item) => {
+      const selectedToken = structListCoinPrice.find(
+        (eachToken) =>
+          eachToken.symbol.toLowerCase() === item.name.toLowerCase()
+      );
+      return {
+        symbol: `${selectedToken?.symbol}(${item?.chain})`,
+        logo: item?.logo || "",
+        chain: item?.chain || "",
+        prices: selectedToken?.prices || [],
+      };
+    });
+
+    for (let i = 0; i < filterListCoinPrice.length; i++) {
+      for (let l = i; l < filterListCoinPrice.length; l++) {
+        let value: any = "N/A";
+
+        if (filterListCoinPrice[i].symbol === filterListCoinPrice[l].symbol) {
+          value = null;
+        } else {
+          if (
+            filterListCoinPrice[i].prices.length !== 0 &&
+            filterListCoinPrice[l].prices.length !== 0
+          ) {
+            if (
+              filterListCoinPrice[i].prices.length ===
+              filterListCoinPrice[l].prices.length
+            ) {
+              value = calculateCorrelation(
+                filterListCoinPrice[i].prices,
+                filterListCoinPrice[l].prices
+              );
+            }
+
+            if (
+              filterListCoinPrice[i].prices.length !==
+              filterListCoinPrice[l].prices.length
+            ) {
+              if (
+                filterListCoinPrice[i].prices.length < 7 ||
+                filterListCoinPrice[l].prices.length < 7
+              ) {
+                value = "N/A";
+              }
+
+              if (
+                filterListCoinPrice[i].prices.length > 7 &&
+                filterListCoinPrice[l].prices.length > 7
+              ) {
+                const [newArrayA, newArrayB] = equalizeArrayLengths(
+                  filterListCoinPrice[i].prices,
+                  filterListCoinPrice[l].prices
+                );
+                value = calculateCorrelation(newArrayA, newArrayB);
+              }
+            }
+          }
+
+          if (
+            filterListCoinPrice[i].prices.length === 0 ||
+            filterListCoinPrice[l].prices.length === 0
+          ) {
+            value = "N/A";
+          }
+        }
+
+        formatFilterListCoinPrice.push({
+          chain: filterListCoinPrice[i].chain,
+          logo: filterListCoinPrice[i].logo,
+          pair: `${filterListCoinPrice[i].symbol} - ${filterListCoinPrice[l].symbol}`,
+          value,
+        });
+      }
+    }
+
+    matrix = filterListCoinPrice.map((item) => {
+      return filterListCoinPrice.map((tokenPair) => {
+        const pairData = formatFilterListCoinPrice.find(
+          (row) =>
+            row.pair === `${item.symbol} - ${tokenPair.symbol}` ||
+            row.pair === `${tokenPair.symbol} - ${item.symbol}`
+        );
+        return {
+          chain: tokenPair.chain,
+          pair: `${item.symbol} - ${tokenPair.symbol}`,
+          value: item.symbol === tokenPair.symbol ? item.logo : pairData?.value,
+        };
+      });
     });
   };
 
   $: {
     if (listTokenHolding && listTokenHolding.length !== 0) {
       handleGetPriceEachToken(listTokenHolding);
-    }
-  }
-
-  $: {
-    if (listCoinPrice && listCoinPrice.length !== 0) {
-      let formatFilterListCoinPrice = [];
-
-      const structListCoinPrice = listCoinPrice.map((item, index) => {
-        return {
-          symbol:
-            item.symbol !== undefined
-              ? item.symbol
-              : listTokenHolding[index]?.name.toUpperCase(),
-          prices: item.prices !== undefined ? item.prices : [],
-        };
-      });
-
-      const filterListCoinPrice = listTokenHolding.map((item) => {
-        const selectedToken = structListCoinPrice.find(
-          (eachToken) =>
-            eachToken.symbol.toLowerCase() === item.name.toLowerCase()
-        );
-        return {
-          symbol: `${selectedToken?.symbol}(${item?.chain})`,
-          logo: item?.logo || "",
-          chain: item?.chain || "",
-          prices: selectedToken?.prices || [],
-        };
-      });
-
-      for (let i = 0; i < filterListCoinPrice.length; i++) {
-        for (let l = i; l < filterListCoinPrice.length; l++) {
-          let value: any = "N/A";
-
-          if (filterListCoinPrice[i].symbol === filterListCoinPrice[l].symbol) {
-            value = null;
-          } else {
-            if (
-              filterListCoinPrice[i].prices.length !== 0 &&
-              filterListCoinPrice[l].prices.length !== 0 &&
-              filterListCoinPrice[i].prices.length !==
-                filterListCoinPrice[l].prices.length
-            ) {
-              equalizeArrayLengths(
-                filterListCoinPrice[i].prices,
-                filterListCoinPrice[l].prices
-              );
-              value = calculateCorrelation(
-                filterListCoinPrice[i].prices,
-                filterListCoinPrice[l].prices
-              );
-            }
-            if (
-              filterListCoinPrice[i].prices.length !== 0 &&
-              filterListCoinPrice[l].prices.length !== 0 &&
-              filterListCoinPrice[i].prices.length ===
-                filterListCoinPrice[l].prices.length
-            ) {
-              value = calculateCorrelation(
-                filterListCoinPrice[i].prices,
-                filterListCoinPrice[l].prices
-              );
-            }
-            if (
-              filterListCoinPrice[i].prices.length === 0 ||
-              filterListCoinPrice[l].prices.length === 0
-            ) {
-              value = "N/A";
-            }
-          }
-
-          formatFilterListCoinPrice.push({
-            chain: filterListCoinPrice[i].chain,
-            logo: filterListCoinPrice[i].logo,
-            pair: `${filterListCoinPrice[i].symbol} - ${filterListCoinPrice[l].symbol}`,
-            value,
-          });
-        }
-      }
-
-      matrix = filterListCoinPrice.map((item) => {
-        return filterListCoinPrice.map((tokenPair) => {
-          const pairData = formatFilterListCoinPrice.find(
-            (row) =>
-              row.pair === `${item.symbol} - ${tokenPair.symbol}` ||
-              row.pair === `${tokenPair.symbol} - ${item.symbol}`
-          );
-          return {
-            chain: tokenPair.chain,
-            pair: `${item.symbol} - ${tokenPair.symbol}`,
-            value:
-              item.symbol === tokenPair.symbol ? item.logo : pairData?.value,
-          };
-        });
-      });
     }
   }
 
