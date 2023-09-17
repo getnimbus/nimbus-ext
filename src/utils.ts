@@ -511,7 +511,7 @@ export const formatValue = (input: number) => {
 
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.000000") === "NaN"
-    ? formatSupperSmallNumber(input)
+    ? formatNumberSmall(input)
     : input < 0.01 ? numeral(input).format("0,0.000000") : numeral(input).format("0,0.0000");
 };
 
@@ -548,6 +548,16 @@ export const formatBigBalance = (input: number) => {
       }
     }
   }
+}
+
+const formatNumberSmall = (scientificNotation) => {
+  const num = parseFloat(scientificNotation);
+  const eIndex = num.toString().indexOf("e");
+  if (isNaN(num)) {
+    return "NaN";
+  }
+  const formattedNum = num.toFixed(eIndex)
+  return formattedNum;
 }
 
 export const shorterAddress = (string: string) => {
