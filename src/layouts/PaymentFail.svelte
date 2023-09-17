@@ -73,7 +73,7 @@
               placeholder="Your email"
               required
               value=""
-              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
                 email ? "bg-[#F0F2F7]" : ""
               }
               `}

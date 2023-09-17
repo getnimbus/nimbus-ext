@@ -39,7 +39,7 @@
   </div>
   <div class="flex flex-col gap-1">
     <div
-      class="xl:text-sm text-xl font-semibold relative"
+      class="xl:text-sm text-2xl font-semibold relative"
       on:mouseenter={() => (showTooltipName = true)}
       on:mouseleave={() => (showTooltipName = false)}
     >
@@ -51,16 +51,16 @@
       {/if}
     </div>
     <div class="flex gap-1 items-center">
-      <div class="xl:text-sm text-xl font-semibold">
+      <div class="xl:text-sm text-2xl font-semibold">
         {typeWalletAddress === "EVM" ? "Token ID" : "Inscription"}
       </div>
-      <div class="xl:text-sm text-xl font-semibold">
+      <div class="xl:text-sm text-2xl font-semibold">
         #{data?.inscription_number}
       </div>
     </div>
     <div class="xl:text-xs text-lg font-normal text-[#616b84] flex gap-1">
       <div>Est. value</div>
-      <div>
+      <div class="flex items-center gap-1">
         <TooltipNumber number={data?.est_valueBTC} type="balance" />
         {typeWalletAddress === "EVM" ? "ETH" : "BTC"} | $<TooltipNumber
           number={data?.est_valueBTC * marketPrice}

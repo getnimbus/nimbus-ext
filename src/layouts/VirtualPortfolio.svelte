@@ -88,7 +88,7 @@
           <Link to="/analytic" class="cursor-pointer">
             <div class="flex items-center gap-1 text-white">
               <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="xl:text-sm text-xl font-medium">
+              <div class="xl:text-sm text-2xl font-medium">
                 Back to Analytics
               </div>
             </div>

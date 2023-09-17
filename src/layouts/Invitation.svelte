@@ -165,7 +165,7 @@
           darkMode ? "bg-[#0f0f0f]" : "bg-white"
         }`}
       >
-        <div class="xl:text-base text-xl text-center text_00000066 mb-2">
+        <div class="xl:text-base text-2xl text-center text_00000066 mb-2">
           Your code has been used by <span class=" font-medium"
             >{referrals}</span
           >

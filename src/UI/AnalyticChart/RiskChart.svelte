@@ -8,6 +8,7 @@
     isDarkMode,
   } from "~/store";
   import {
+    autoFontSize,
     formatCurrency,
     formatValue,
     getTooltipContent,
@@ -130,11 +131,17 @@
         type: "category",
         axisTick: { show: false },
         data: ["Sharpe Ratio", "Volatility", "Max drawdown"],
+        axisLabel: {
+          fontSize: autoFontSize(),
+        },
       },
     ],
     yAxis: [
       {
         type: "value",
+        axisLabel: {
+          fontSize: autoFontSize(),
+        },
       },
     ],
     series: [],
@@ -734,15 +741,23 @@
             </AnimateSharedLayout>
           </div>
           <div class="relative mt-3">
-            <EChart
-              id="bar-chart-compare-analytic"
-              {theme}
-              notMerge={true}
-              option={selectedTypeChart === "overview"
-                ? optionBar
-                : riskBreakdownChartOption}
-              height={465}
-            />
+            {#if selectedTypeChart === "overview"}
+              <EChart
+                id="bar-chart-compare-analytic"
+                {theme}
+                notMerge={true}
+                option={optionBar}
+                height={465}
+              />
+            {:else}
+              <EChart
+                id="bar-chart-compare-analytic"
+                {theme}
+                notMerge={true}
+                option={riskBreakdownChartOption}
+                height={465}
+              />
+            {/if}
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >

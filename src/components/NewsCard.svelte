@@ -33,21 +33,21 @@
         <a
           href={data.link}
           target="_blank"
-          class="xl:text-xl text-2xl font-medium cursor-pointer"
+          class="xl:text-xl text-3xl font-medium cursor-pointer"
         >
           {data.title}
         </a>
         <div class="flex items-end gap-2">
-          <div class="xl:text-sm text-lg font-medium">
+          <div class="xl:text-sm text-2xl font-medium">
             By
             <span class="font-medium">{data?.source}</span>
           </div>
-          <div class="xl:text-sm text-lg text_00000080">
+          <div class="xl:text-sm text-2xl text_00000080">
             {dayjs(new Date((Number(data?.feedDate) / 1000) * 1000)).fromNow()}
           </div>
         </div>
       </div>
-      <div class="xl:text-sm text-lg font-normal text_00000099">
+      <div class="xl:text-sm text-2xl font-normal text_00000099">
         {add3Dots(data.description || "", 150)}
       </div>
     </div>

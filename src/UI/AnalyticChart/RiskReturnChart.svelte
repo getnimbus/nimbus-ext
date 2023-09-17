@@ -8,6 +8,7 @@
     isDarkMode,
   } from "~/store";
   import {
+    autoFontSize,
     formatCurrency,
     formatPercent,
     formatValue,
@@ -83,7 +84,6 @@
     tooltip: {
       trigger: "item",
       extraCssText: "z-index: 9997",
-      // valueFormatter: (value) => `${value}%`,
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
@@ -133,6 +133,9 @@
         type: "value",
         axisTick: { show: false },
         name: "Risk",
+        axisLabel: {
+          fontSize: autoFontSize(),
+        },
       },
     ],
     yAxis: [
@@ -142,6 +145,7 @@
         axisTick: { show: false },
         axisLabel: {
           formatter: "{value}%",
+          fontSize: autoFontSize(),
         },
       },
     ],
@@ -553,7 +557,7 @@
                   </div>
                 </div>
                 {#if data?.base?.sharpeRatio < 1}
-                  <div>
+                  <div class="text-2xl xl:text-base">
                     <CtaIcon isGood={false} />
                     <span class="text-red-500"
                       >Your portfolio is not "balance" between risk and return:</span
@@ -570,7 +574,7 @@
               <div class="flex items-center gap-3">
                 {#if badPerf}
                   <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
-                    <div class="xl:text-base text-lg text-[#6E7787FF] relative">
+                    <div class="xl:text-base text-xl text-[#6E7787FF] relative">
                       <div
                         class="border border-red-500 absolute -top-1 left-0 w-[40px]"
                       />
@@ -604,7 +608,7 @@
 
                 {#if goodPerf}
                   <div class="rounded-[20px] flex-1 bg_fafafbff px-4 pb-3 pt-5">
-                    <div class="xl:text-base text-lg text-[#6E7787FF] relative">
+                    <div class="xl:text-base text-xl text-[#6E7787FF] relative">
                       <div
                         class="border border-[#00A878] absolute -top-1 left-0 w-[40px]"
                       />
@@ -713,15 +717,23 @@
             </AnimateSharedLayout>
           </div>
           <div class="relative">
-            <EChart
-              id="risk-return-chart-analytic"
-              {theme}
-              notMerge={true}
-              option={selectedTypeChart === "overview"
-                ? optionBar
-                : riskBreakdownChartOption}
-              height={465}
-            />
+            {#if selectedTypeChart === "overview"}
+              <EChart
+                id="risk-return-chart-analytic"
+                {theme}
+                notMerge={true}
+                option={optionBar}
+                height={465}
+              />
+            {:else}
+              <EChart
+                id="risk-return-chart-analytic"
+                {theme}
+                notMerge={true}
+                option={riskBreakdownChartOption}
+                height={465}
+              />
+            {/if}
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >

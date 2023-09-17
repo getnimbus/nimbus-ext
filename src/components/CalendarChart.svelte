@@ -16,7 +16,7 @@
   export let type;
 
   import LoadingPremium from "./LoadingPremium.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "./Loading.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
@@ -45,7 +45,7 @@
       {/if}
     </div>
     {#if sum !== 0}
-      <div class="xl:text-lg text-2xl font-medium">
+      <div class="xl:text-lg text-2xl font-medium flex">
         $<TooltipNumber number={sum} type="balance" />
       </div>
     {/if}
@@ -55,7 +55,7 @@
       {#if type === "primary"}
         <LoadingPremium />
       {:else}
-        <loading-icon />
+        <Loading />
       {/if}
     </div>
   {:else}
@@ -81,7 +81,6 @@
                 },
               },
             }}
-            type="full-width"
             notMerge={true}
           />
           <div

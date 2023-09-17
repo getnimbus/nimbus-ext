@@ -20,21 +20,21 @@
   });
 </script>
 
-<div class="flex items-end gap-2 text-4xl font-semibold xl:text-3xl">
+<div class="flex items-end gap-2 font-semibold text-4xl xl:text-3xl">
   <span>{selectedTypePackage === "month" ? "$99" : "$82.5"}</span><span
-    class="xl:text-xl text-2xl text-gray-400 mb-[2px]">/month</span
+    class="text-2xl xl:text-xl text-gray-400 mb-[2px]">/month</span
   >
 </div>
 <div>
   <div class="flex flex-col border-b-[1px] border_0000001a pb-4">
-    <div class="text-2xl font-medium xl:text-xl">PROFESSIONAL</div>
-    <div class="text-xl text-gray-500 xl:text-lg">
+    <div class="font-medium text-3xl xl:text-xl">PROFESSIONAL</div>
+    <div class="text-gray-500 text-2xl xl:text-lg">
       Enjoy all the features without any limited
     </div>
   </div>
   <div class="flex flex-col items-start gap-2 mt-4">
     <div
-      class="text-lg underline cursor-pointer xl:text-base decoration-dotted"
+      class="underline cursor-pointer text-xl xl:text-base decoration-dotted"
       use:tooltip={{
         content: getTooltipContent(
           "Get latest market information and real-time market update",
@@ -49,10 +49,10 @@
     >
       Real-time market update
     </div>
-    <div class="text-lg xl:text-base">
+    <div class="text-xl xl:text-base">
       <span class="font-bold">Unlimited</span> tracked Wallets
     </div>
-    <div class="text-lg xl:text-base">
+    <div class="text-xl xl:text-base">
       <span class="font-bold">Unlimited</span> total net worth
     </div>
     <div
@@ -67,11 +67,11 @@
         placement: "top",
         interactive: true,
       }}
-      class="text-lg underline cursor-pointer xl:text-base decoration-dotted"
+      class="underline cursor-pointer text-xl xl:text-base decoration-dotted"
     >
       Yield farming opportunities
     </div>
-    <div class="text-lg xl:text-base">Whales screeners</div>
+    <div class="text-xl xl:text-base">Whales screeners</div>
     <div
       use:tooltip={{
         content: getTooltipContent(
@@ -84,7 +84,7 @@
         placement: "top",
         interactive: true,
       }}
-      class="text-lg underline cursor-pointer xl:text-base decoration-dotted"
+      class="underline cursor-pointer text-xl xl:text-base decoration-dotted"
     >
       Custom token category
     </div>
@@ -100,12 +100,12 @@
         placement: "top",
         interactive: true,
       }}
-      class="text-lg underline cursor-pointer xl:text-base decoration-dotted"
+      class="underline cursor-pointer text-xl xl:text-base decoration-dotted"
     >
       Risks analysis
     </div>
     <div
-      class="text-lg underline cursor-pointer xl:text-base decoration-dotted"
+      class="underline cursor-pointer text-xl xl:text-base decoration-dotted"
       use:tooltip={{
         content: getTooltipContent("", ReturnVideo, false, darkMode),
         allowHTML: true,
@@ -116,7 +116,7 @@
       Returns analysis
     </div>
     <div
-      class="text-lg underline cursor-pointer xl:text-base decoration-dotted"
+      class="underline cursor-pointer text-xl xl:text-base decoration-dotted"
       use:tooltip={{
         content: getTooltipContent("", RiskReturnVideo, false, darkMode),
         allowHTML: true,
@@ -127,7 +127,7 @@
       Risks & Returns analysis
     </div>
     <div
-      class="text-lg underline cursor-pointer xl:text-base decoration-dotted"
+      class="underline cursor-pointer text-xl xl:text-base decoration-dotted"
       use:tooltip={{
         content: getTooltipContent(
           "We suggest you how to optimize your portfolio to minimize the risk while maximizing the return",
@@ -142,8 +142,8 @@
     >
       Rebalance Strategy
     </div>
-    <div class="text-lg xl:text-base">Token Correlations matrix (Soon)</div>
-    <div class="text-lg xl:text-base">Professional community</div>
+    <div class="text-xl xl:text-base">Token Correlations matrix (Soon)</div>
+    <div class="text-xl xl:text-base">Professional community</div>
     <slot name="button" />
   </div>
 </div>

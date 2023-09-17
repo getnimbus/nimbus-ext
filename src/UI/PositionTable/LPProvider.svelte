@@ -40,45 +40,37 @@
           <th
             class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
           >
-            <div class="xl:text-xs text-base font-semibold uppercase text-left">
+            <div class="xl:text-xs text-xl font-semibold uppercase text-left">
               Pool
             </div>
           </th>
 
           <th class="py-3 w-[150px]">
-            <div class="text-left xl:text-xs text-base font-semibold uppercase">
+            <div class="text-left xl:text-xs text-xl font-semibold uppercase">
               Liquidity Range
             </div>
           </th>
 
           <th class="py-3">
-            <div
-              class="text-right xl:text-xs text-base font-semibold uppercase"
-            >
+            <div class="text-right xl:text-xs text-xl font-semibold uppercase">
               Balance
             </div>
           </th>
 
           <th class="py-3">
-            <div
-              class="text-right xl:text-xs text-base font-semibold uppercase"
-            >
+            <div class="text-right xl:text-xs text-xl font-semibold uppercase">
               Claimable
             </div>
           </th>
 
           <th class="py-3">
-            <div
-              class="xl:text-xs text-base font-semibold uppercase text-right"
-            >
+            <div class="xl:text-xs text-xl font-semibold uppercase text-right">
               Value
             </div>
           </th>
 
           <th class="py-3">
-            <div
-              class="xl:text-xs text-base font-semibold uppercase text-right"
-            >
+            <div class="xl:text-xs text-xl font-semibold uppercase text-right">
               <TooltipTitle
                 link="https://docs.getnimbus.io/metrics/impermanent_loss/"
                 >Impermanent Loss</TooltipTitle
@@ -87,9 +79,7 @@
           </th>
 
           <th class="py-3 pr-3">
-            <div
-              class="xl:text-xs text-base font-semibold uppercase text-right"
-            >
+            <div class="xl:text-xs text-xl font-semibold uppercase text-right">
               <TooltipTitle
                 tooltipText="Profit and loss is calculated by buying & hold on every time you
             add/remove liquidity">Profit & Loss</TooltipTitle

@@ -3,7 +3,6 @@
   import * as echarts from "echarts";
   import { isDarkMode } from "~/store";
 
-  export let type = "default";
   export let id;
   export let theme;
   export let width = 200;
@@ -22,14 +21,22 @@
   let chart; // our chart instance
 
   const autoFontSize = () => {
-    let element = document.getElementById(id);
-    if (element) {
-      let newFontSize = Math.round(element.offsetWidth / 48);
-      return type === "default"
-        ? newFontSize
-        : element.offsetWidth > 1024
-        ? 12
-        : newFontSize;
+    const windowWidth =
+      window.innerWidth ||
+      document.documentElement.clientWidth ||
+      document.body.clientWidth;
+    const element = document.getElementById(id);
+    if (element && windowWidth) {
+      if (windowWidth < 768) {
+        // mobile
+        return 20;
+      } else if (windowWidth >= 768 && windowWidth < 1024) {
+        // tablet
+        return 16;
+      } else {
+        // pc
+        return 14;
+      }
     }
   };
 
@@ -46,7 +53,9 @@
           textStyle: {
             fontFamily: "Golos Text",
             fontSize:
-              id === "total-gasfee-paid" || "historical-activities-personality"
+              id === "total-gasfee-paid" ||
+              id === "historical-activities-analytic" ||
+              id === "historical-activities"
                 ? 14
                 : autoFontSize(),
           },
@@ -101,7 +110,8 @@
             textStyle: {
               fontSize:
                 id === "total-gasfee-paid" ||
-                "historical-activities-personality"
+                id === "historical-activities-analytic" ||
+                id === "historical-activities"
                   ? 14
                   : autoFontSize(),
             },

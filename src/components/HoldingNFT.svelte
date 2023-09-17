@@ -60,7 +60,7 @@
   >
     <div class="relative">
       <div
-        class="xl:text-sm text-xl font-medium flex justify-start relative"
+        class="xl:text-sm text-2xl font-medium flex justify-start relative"
         on:mouseover={() => {
           isShowTooltipName = true;
         }}
@@ -143,7 +143,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
+    <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
       <TooltipNumber number={data?.floorPriceBTC} type="balance" /><span
         class="mx-1">{typeWalletAddress === "EVM" ? "ETH" : "BTC"}</span
       >
@@ -159,7 +159,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
+    <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
       <TooltipNumber number={data?.totalCostBTC} type="balance" /><span
         class="mx-1"
       >
@@ -174,7 +174,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl text_00000099 font-medium flex justify-end">
+    <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
       $<TooltipNumber number={data?.current_value} type="balance" />
     </div>
   </td>
@@ -185,7 +185,7 @@
     }`}
   >
     <div
-      class="flex items-center justify-end gap-1 xl:text-sm text-xl font-medium"
+      class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
     >
       <div class="flex flex-col">
         <div

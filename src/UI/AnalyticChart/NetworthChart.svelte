@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import dayjs from "dayjs";
-  import { formatCurrency } from "~/utils";
+  import { autoFontSize, formatCurrency } from "~/utils";
   import { sendMessage } from "webext-bridge";
   import { chain, wallet } from "~/store";
   import type { EChartsOption } from "echarts";
@@ -133,11 +133,15 @@
         xAxis: {
           name: "Time",
           type: "time",
+          axisLabel: {
+            fontSize: autoFontSize(),
+          },
         },
         yAxis: {
           name: "Value",
           axisLabel: {
             formatter: "{value}%",
+            fontSize: autoFontSize(),
           },
         },
         series: [portfolioSeries, ...seriesList],
@@ -169,7 +173,6 @@
               notMerge={true}
               option={chartOption}
               height={415}
-              type="full-width"
             />
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"

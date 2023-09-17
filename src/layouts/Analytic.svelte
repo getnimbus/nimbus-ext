@@ -11,7 +11,7 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Analytic from "~/UI/Analytic/Analytic.svelte";
   import Button from "~/components/Button.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import Crown from "~/assets/crown.svg";
 
@@ -150,7 +150,7 @@
           <div
             class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center"
           >
-            <loading-icon />
+            <Loading />
           </div>
         </div>
       {:else}
@@ -208,7 +208,7 @@
                 email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
               }`}
             >
-              <div class="xl:text-base text-xl text-[#666666] font-medium">
+              <div class="xl:text-base text-2xl text-[#666666] font-medium">
                 Email
               </div>
               <input
@@ -217,7 +217,7 @@
                 name="email"
                 placeholder="Your email"
                 value=""
-                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-lg font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
                   email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                 }
               `}

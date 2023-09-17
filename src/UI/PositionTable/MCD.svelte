@@ -43,32 +43,32 @@
           <th
             class="pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
           >
-            <div class="xl:text-xs text-base font-semibold uppercase text-left">
+            <div class="xl:text-xs text-xl font-semibold uppercase text-left">
               Supply
             </div>
           </th>
 
           <th class="py-3">
-            <div class="text-left xl:text-xs text-base font-semibold uppercase">
+            <div class="text-left xl:text-xs text-xl font-semibold uppercase">
               Supply Balance
             </div>
           </th>
 
           <th class="py-3">
-            <div class="xl:text-xs text-base font-semibold uppercase text-left">
+            <div class="xl:text-xs text-xl font-semibold uppercase text-left">
               Borrow
             </div>
           </th>
 
           <th class="py-3">
-            <div class="text-left xl:text-xs text-base font-semibold uppercase">
+            <div class="text-left xl:text-xs text-xl font-semibold uppercase">
               Borrow Balance
             </div>
           </th>
 
           <th class="py-3">
             <div
-              class="text-left flex items-center gap-1 xl:text-xs text-base font-semibold uppercase"
+              class="text-left flex items-center gap-1 xl:text-xs text-xl font-semibold uppercase"
             >
               Health
               <span
@@ -115,9 +115,7 @@
           </th>
 
           <th class="pr-3 py-3">
-            <div
-              class="xl:text-xs text-base font-semibold uppercase text-right"
-            >
+            <div class="xl:text-xs text-xl font-semibold uppercase text-right">
               Value
             </div>
           </th>

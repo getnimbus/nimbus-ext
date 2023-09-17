@@ -12,7 +12,7 @@
   import Header from "~/components/Header.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
   import MobileHeaderTab from "~/components/MobileHeaderTab.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -59,7 +59,7 @@
           <Route path="options">
             {#await import("~/layouts/Options.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -73,7 +73,7 @@
           <Route path="upgrade">
             {#await import("~/layouts/Upgrade.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -87,7 +87,7 @@
           <Route path="payments/success">
             {#await import("~/layouts/PaymentSuccess.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -101,7 +101,7 @@
           <Route path="payments/fail">
             {#await import("~/layouts/PaymentFail.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -115,7 +115,7 @@
           <Route path="personal-token-breakdown">
             {#await import("~/layouts/PersonalTokenBreakdown.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -129,7 +129,7 @@
           <Route path="custom-virtual-portfolio">
             {#await import("~/layouts/CustomVirtualPortfolio.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -143,7 +143,7 @@
           <Route path="virtual-portfolio">
             {#await import("~/layouts/VirtualPortfolio.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -157,7 +157,7 @@
           <Route path="compare">
             {#await import("~/layouts/Compare.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -171,7 +171,7 @@
           <Route path="news">
             {#await import("~/layouts/News.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -185,7 +185,7 @@
           <Route path="invitation">
             {#await import("~/layouts/Invitation.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -199,7 +199,7 @@
           <Route path="whales">
             {#await import("~/layouts/WhalesList.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -213,7 +213,7 @@
           <Route path="position-detail">
             {#await import("~/layouts/TokenDetail.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -227,7 +227,7 @@
           <Route path="nft-detail">
             {#await import("~/layouts/NFTDetail.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -241,7 +241,7 @@
           <Route path="test-detail">
             {#await import("~/layouts/PositionDetail.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -255,7 +255,7 @@
           <Route path="analytic">
             {#await import("~/layouts/Analytic.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -269,7 +269,7 @@
           <Route path="transactions">
             {#await import("~/layouts/Transactions.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
@@ -283,7 +283,7 @@
           <Route path="*">
             {#await import("~/layouts/Portfolio.svelte")}
               <div class="h-screen flex justify-center items-center">
-                <loading-icon />
+                <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />

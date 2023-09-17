@@ -28,7 +28,7 @@
         : "bg-white group-hover:bg-gray-100"
     }`}
   >
-    <div class="text-left xl:text-sm text-xl font-medium">
+    <div class="text-left xl:text-sm text-2xl font-medium">
       {shorterAddress(data?.address)}
     </div>
   </td>
@@ -38,7 +38,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="text-right xl:text-sm text-xl font-medium">
+    <div class="xl:text-sm text-2xl font-medium flex justify-end">
       $<TooltipNumber number={Number(data?.networth)} type="balance" />
     </div>
   </td>
@@ -49,7 +49,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-right text-xl text-[#00A878] font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-2xl text-right text-[#00A878] font-medium flex flex-col items-end gap-1"
     >
       <div
         class={`flex items-center ${
@@ -76,7 +76,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-right text-xl text-[#00A878] font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-2xl text-right text-[#00A878] font-medium flex flex-col items-end gap-1"
     >
       <div
         class={`flex items-center ${
@@ -103,7 +103,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-right text-xl text-[#00A878] font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-2xl text-right text-[#00A878] font-medium flex flex-col items-end gap-1"
     >
       <div
         class={`flex items-center ${
@@ -130,7 +130,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-right text-xl text-[#00A878] font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-2xl text-right text-[#00A878] font-medium flex flex-col items-end gap-1"
     >
       <div
         class={`flex items-center ${
@@ -157,7 +157,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-right text-xl font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-2xl text-right font-medium flex flex-col items-end gap-1"
     >
       {Number(data?.volatility).toFixed(2)}
     </div>
@@ -169,7 +169,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-right text-xl font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-2xl text-right font-medium flex flex-col items-end gap-1"
     >
       {Number(data?.drawDown).toFixed(2)}%
     </div>
@@ -181,7 +181,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-right text-xl font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-2xl text-right font-medium flex flex-col items-end gap-1"
     >
       {Number(data?.sharpeRatio).toFixed(2)}
     </div>

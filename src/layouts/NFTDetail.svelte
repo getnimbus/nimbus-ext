@@ -11,7 +11,7 @@
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import NftCard from "~/components/NFTCard.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
 
@@ -101,7 +101,7 @@
           <Link to="/" class="cusor-pointer">
             <div class="text-white flex items-center gap-1">
               <img src={LeftArrow} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
-              <div class="xl:text-sm text-xl font-semibold">
+              <div class="xl:text-sm text-2xl font-semibold">
                 Back to Portfolio
               </div>
             </div>
@@ -245,7 +245,7 @@
             <div
               class="min-h-[320px] flex justify-center items-center col-span-4"
             >
-              <loading-icon />
+              <Loading />
             </div>
           {:else if !isLoadingListNFT && tokens.length === 0}
             <div

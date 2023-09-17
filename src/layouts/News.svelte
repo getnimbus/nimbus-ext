@@ -5,7 +5,7 @@
   import mixpanel from "mixpanel-browser";
 
   import NewsCard from "~/components/NewsCard.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
 
@@ -56,7 +56,7 @@
     <div class="flex flex-col gap-4">
       {#if isLoading && pageValue === 1}
         <div class="w-full h-screen flex justify-center items-center">
-          <loading-icon />
+          <Loading />
         </div>
       {:else}
         <div

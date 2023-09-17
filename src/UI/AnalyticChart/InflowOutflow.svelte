@@ -3,7 +3,7 @@
   import { wallet, chain, typeWallet, selectedPackage } from "~/store";
   import { groupBy, intersection, flatten } from "lodash";
   import dayjs from "dayjs";
-  import { formatCurrency } from "~/utils";
+  import { autoFontSize, formatCurrency } from "~/utils";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
 
@@ -94,11 +94,15 @@
     },
     xAxis: {
       data: [],
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: {
       type: "value",
       axisLabel: {
         formatter: "${value}",
+        fontSize: autoFontSize(),
       },
     },
     grid: [{ right: "5%" }],
@@ -335,12 +339,16 @@
           left: "center",
         },
         xAxis: {
+          axisLabel: {
+            fontSize: autoFontSize(),
+          },
           data: [],
         },
         yAxis: {
           type: "value",
           axisLabel: {
             formatter: "${value}",
+            fontSize: autoFontSize(),
           },
         },
         grid: [{ right: "5%" }],
@@ -392,7 +400,6 @@
             {option}
             height={415}
             notMerge={true}
-            type="full-width"
           />
           <div
             class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"

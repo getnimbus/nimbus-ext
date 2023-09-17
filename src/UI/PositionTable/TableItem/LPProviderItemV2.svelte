@@ -49,7 +49,7 @@
         {/each}
       </div>
       <div class="flex flex-col gap-1">
-        <div class=" xl:text-sm text-xl font-medium">{data.name}</div>
+        <div class="xl:text-sm text-2xl font-medium">{data.name}</div>
         {#if data.tokens && data.tokens.length}
           <div class="flex items-center gap-1">
             {#each data.tokens as token, index}
@@ -76,7 +76,7 @@
     }`}
   >
     <div
-      class="xl:text-sm text-xl text_00000099 font-medium flex flex-col items-end"
+      class="xl:text-sm text-2xl text_00000099 font-medium flex flex-col items-end"
     >
       <div class="flex items-center gap-1">
         <div class="flex items-center gap-1">
@@ -104,7 +104,9 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="flex justify-end xl:text-sm text-xl text-[#000000] font-medium">
+    <div
+      class="flex justify-end xl:text-sm text-2xl text-[#000000] font-medium"
+    >
       $<TooltipNumber number={value} type="balance" />
     </div>
   </td>
@@ -114,7 +116,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl font-medium flex flex-col">
+    <div class="xl:text-sm text-2xl font-medium flex flex-col">
       <div
         class={`flex justify-end ${
           data?.ipLoss?.loss >= 0 ? "text-red-500" : "text-[#00A878]"
@@ -148,7 +150,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl font-medium flex flex-col">
+    <div class="xl:text-sm text-2xl font-medium flex flex-col">
       <div
         class={`flex justify-end items-center gap-1 ${
           profit >= 0 ? "text-[#00A878]" : "text-red-500"

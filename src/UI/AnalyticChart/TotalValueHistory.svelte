@@ -1,7 +1,7 @@
 <script lang="ts">
   import dayjs from "dayjs";
   import numeral from "numeral";
-  import { formatBigBalance, formatCurrency } from "~/utils";
+  import { autoFontSize, formatBigBalance, formatCurrency } from "~/utils";
 
   import EChart from "~/components/EChart.svelte";
 
@@ -82,11 +82,15 @@
       type: "category",
       boundaryGap: false,
       data: [],
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: {
       type: "value",
       axisLabel: {
         formatter: "${value}",
+        fontSize: autoFontSize(),
       },
     },
     series: [],
@@ -184,7 +188,6 @@
               option={optionLine}
               height={415}
               notMerge={true}
-              type="full-width"
             />
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2"

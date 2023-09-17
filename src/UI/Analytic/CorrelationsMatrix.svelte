@@ -20,9 +20,11 @@
 
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import Button from "~/components/Button.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
+
+  import All from "~/assets/all.svg";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -216,7 +218,7 @@
             chain: item.chain,
             name: item?.symbol,
             value: item?.cg_id,
-            logo: item?.logo,
+            logo: item?.logo || All,
           };
         });
     }
@@ -262,121 +264,126 @@
     isOpenModal = false;
   };
 
-  const handleGetPriceEachToken = (data) => {
-    Promise.all(
+  const handleGetPriceEachToken = async (data) => {
+    const formatData = await Promise.all(
       data.map(async (item) => {
         const res = await getCoinPrice(item.value);
-        return res.coins[`coingecko:${item.value}`];
-      })
-    ).then((res) => {
-      const formatListCoinPrice = res.map((item) => {
         return {
-          symbol: item?.symbol,
-          prices: item?.prices.map((price) => price.price),
+          symbol: res?.coins[`coingecko:${item.value}`]?.symbol || undefined,
+          prices:
+            res?.coins[`coingecko:${item.value}`]?.prices.map((dataPrice) => {
+              return dataPrice?.price;
+            }) || undefined,
+        };
+      })
+    );
+
+    let formatFilterListCoinPrice = [];
+
+    const structListCoinPrice = formatData.map((item, index) => {
+      return {
+        symbol:
+          item.symbol !== undefined
+            ? item.symbol
+            : listTokenHolding[index]?.name.toUpperCase(),
+        prices: item.prices !== undefined ? item.prices : [],
+      };
+    });
+
+    const filterListCoinPrice = listTokenHolding.map((item) => {
+      const selectedToken = structListCoinPrice.find(
+        (eachToken) =>
+          eachToken.symbol.toLowerCase() === item.name.toLowerCase()
+      );
+      return {
+        symbol: `${selectedToken?.symbol}(${item?.chain})`,
+        logo: item?.logo || "",
+        chain: item?.chain || "",
+        prices: selectedToken?.prices || [],
+      };
+    });
+
+    for (let i = 0; i < filterListCoinPrice.length; i++) {
+      for (let l = i; l < filterListCoinPrice.length; l++) {
+        let value: any = "N/A";
+
+        if (filterListCoinPrice[i].symbol === filterListCoinPrice[l].symbol) {
+          value = null;
+        } else {
+          if (
+            filterListCoinPrice[i].prices.length !== 0 &&
+            filterListCoinPrice[l].prices.length !== 0
+          ) {
+            if (
+              filterListCoinPrice[i].prices.length ===
+              filterListCoinPrice[l].prices.length
+            ) {
+              value = calculateCorrelation(
+                filterListCoinPrice[i].prices,
+                filterListCoinPrice[l].prices
+              );
+            }
+
+            if (
+              filterListCoinPrice[i].prices.length !==
+              filterListCoinPrice[l].prices.length
+            ) {
+              if (
+                filterListCoinPrice[i].prices.length < 7 ||
+                filterListCoinPrice[l].prices.length < 7
+              ) {
+                value = "N/A";
+              }
+
+              if (
+                filterListCoinPrice[i].prices.length > 7 &&
+                filterListCoinPrice[l].prices.length > 7
+              ) {
+                const [newArrayA, newArrayB] = equalizeArrayLengths(
+                  filterListCoinPrice[i].prices,
+                  filterListCoinPrice[l].prices
+                );
+                value = calculateCorrelation(newArrayA, newArrayB);
+              }
+            }
+          }
+
+          if (
+            filterListCoinPrice[i].prices.length === 0 ||
+            filterListCoinPrice[l].prices.length === 0
+          ) {
+            value = "N/A";
+          }
+        }
+
+        formatFilterListCoinPrice.push({
+          chain: filterListCoinPrice[i].chain,
+          logo: filterListCoinPrice[i].logo,
+          pair: `${filterListCoinPrice[i].symbol} - ${filterListCoinPrice[l].symbol}`,
+          value,
+        });
+      }
+    }
+
+    matrix = filterListCoinPrice.map((item) => {
+      return filterListCoinPrice.map((tokenPair) => {
+        const pairData = formatFilterListCoinPrice.find(
+          (row) =>
+            row.pair === `${item.symbol} - ${tokenPair.symbol}` ||
+            row.pair === `${tokenPair.symbol} - ${item.symbol}`
+        );
+        return {
+          chain: tokenPair.chain,
+          pair: `${item.symbol} - ${tokenPair.symbol}`,
+          value: item.symbol === tokenPair.symbol ? item.logo : pairData?.value,
         };
       });
-      listCoinPrice = formatListCoinPrice;
     });
   };
 
   $: {
     if (listTokenHolding && listTokenHolding.length !== 0) {
       handleGetPriceEachToken(listTokenHolding);
-    }
-  }
-
-  $: {
-    if (listCoinPrice && listCoinPrice.length !== 0) {
-      let formatFilterListCoinPrice = [];
-
-      const structListCoinPrice = listCoinPrice.map((item, index) => {
-        return {
-          symbol:
-            item.symbol !== undefined
-              ? item.symbol
-              : listTokenHolding[index]?.name.toUpperCase(),
-          prices: item.prices !== undefined ? item.prices : [],
-        };
-      });
-
-      const filterListCoinPrice = listTokenHolding.map((item) => {
-        const selectedToken = structListCoinPrice.find(
-          (eachToken) =>
-            eachToken.symbol.toLowerCase() === item.name.toLowerCase()
-        );
-        return {
-          symbol: `${selectedToken?.symbol}(${item?.chain})`,
-          logo: item?.logo || "",
-          chain: item?.chain || "",
-          prices: selectedToken?.prices || [],
-        };
-      });
-
-      for (let i = 0; i < filterListCoinPrice.length; i++) {
-        for (let l = i; l < filterListCoinPrice.length; l++) {
-          let value: any = "N/A";
-
-          if (filterListCoinPrice[i].symbol === filterListCoinPrice[l].symbol) {
-            value = null;
-          } else {
-            if (
-              filterListCoinPrice[i].prices.length !== 0 &&
-              filterListCoinPrice[l].prices.length !== 0 &&
-              filterListCoinPrice[i].prices.length !==
-                filterListCoinPrice[l].prices.length
-            ) {
-              equalizeArrayLengths(
-                filterListCoinPrice[i].prices,
-                filterListCoinPrice[l].prices
-              );
-              value = calculateCorrelation(
-                filterListCoinPrice[i].prices,
-                filterListCoinPrice[l].prices
-              );
-            }
-            if (
-              filterListCoinPrice[i].prices.length !== 0 &&
-              filterListCoinPrice[l].prices.length !== 0 &&
-              filterListCoinPrice[i].prices.length ===
-                filterListCoinPrice[l].prices.length
-            ) {
-              value = calculateCorrelation(
-                filterListCoinPrice[i].prices,
-                filterListCoinPrice[l].prices
-              );
-            }
-            if (
-              filterListCoinPrice[i].prices.length === 0 ||
-              filterListCoinPrice[l].prices.length === 0
-            ) {
-              value = "N/A";
-            }
-          }
-
-          formatFilterListCoinPrice.push({
-            chain: filterListCoinPrice[i].chain,
-            logo: filterListCoinPrice[i].logo,
-            pair: `${filterListCoinPrice[i].symbol} - ${filterListCoinPrice[l].symbol}`,
-            value,
-          });
-        }
-      }
-
-      matrix = filterListCoinPrice.map((item) => {
-        return filterListCoinPrice.map((tokenPair) => {
-          const pairData = formatFilterListCoinPrice.find(
-            (row) =>
-              row.pair === `${item.symbol} - ${tokenPair.symbol}` ||
-              row.pair === `${tokenPair.symbol} - ${item.symbol}`
-          );
-          return {
-            chain: tokenPair.chain,
-            pair: `${item.symbol} - ${tokenPair.symbol}`,
-            value:
-              item.symbol === tokenPair.symbol ? item.logo : pairData?.value,
-          };
-        });
-      });
     }
   }
 
@@ -403,18 +410,18 @@
   </div>
 
   <div
-    class={`xl:text-sm text-lg ${
+    class={`flex flex-col gap-1 xl:text-sm text-xl ${
       darkMode ? "text-[#ebebeb]" : "text-gray-700"
     } `}
   >
-    <div class="flex items-center xl:gap-1 gap-2">
+    <div class="flex items-start xl:gap-1 gap-5">
       <div class="w-max">🟩</div>
       <div class="flex-1">
         Positive Value A positive value indicates a positive correlation between
         two variables
       </div>
     </div>
-    <div class="flex items-center xl:gap-1 gap-2">
+    <div class="flex items-start xl:gap-1 gap-5">
       <div class="w-max">🟥</div>
       <div class="flex-1">
         Negative Value A negative value indicates a negative correlation between
@@ -504,7 +511,7 @@
                   isOpenModal = true;
                 }}
               >
-                <div class="xl:text-sm text-xl">Compare more</div>
+                <div class="xl:text-sm text-2xl">Compare more</div>
               </Button>
             </div>
           </div>
@@ -609,70 +616,78 @@
   isOpen={isOpenModal}
   on:close={() => (isOpenModal = false)}
 >
-  <div class="font-medium xl:title-3 title-1">Search market token</div>
-  <div
-    class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg mt-2 ${
-      searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-    }`}
-  >
-    <input
-      on:keyup={({ target: { value } }) => debounceSearch(value)}
-      value={searchValue}
-      placeholder={"Find by token name"}
-      class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-        searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-      }`}
-    />
-  </div>
-  {#if $queryHoldingToken.isFetching}
-    <div class="flex items-center justify-center h-[465px]">
-      <loading-icon />
-    </div>
-  {:else}
-    <div>
-      {#if $queryHoldingToken.isError}
-        <div
-          class="flex justify-center items-center p-[6px] text-lg text-gray-400"
-        >
-          Empty
+  <div class="flex flex-col gap-4">
+    <div class="font-medium xl:title-3 title-1">Search market token</div>
+    <div class="flex flex-col">
+      <div
+        class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
+          searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+        }`}
+      >
+        <input
+          on:keyup={({ target: { value } }) => debounceSearch(value)}
+          value={searchValue}
+          placeholder={"Find by token name"}
+          class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+          }`}
+        />
+      </div>
+      {#if $queryHoldingToken.isFetching}
+        <div class="flex items-center justify-center h-[465px]">
+          <Loading />
         </div>
       {:else}
-        <div class="mt-2 flex flex-col max-h-[500px] h-[500px] overflow-y-auto">
-          {#if searchDataResult.length === 0}
+        <div>
+          {#if $queryHoldingToken.isError}
             <div
               class="flex justify-center items-center p-[6px] text-lg text-gray-400"
             >
-              No result
+              Empty
             </div>
           {:else}
-            {#each searchDataResult || [] as item}
-              <div
-                class={`border-b last:border-none py-3 px-1 w-full text-center flex items-center justify-start gap-2 cursor-pointer ${
-                  darkMode ? "border-[#222222]" : "border-gray-200"
-                }`}
-                on:click={handleSelectToken(item)}
-              >
-                <div class="w-7 h-7 rounded-full overflow-hidden">
-                  <img
-                    src={item.logo}
-                    alt="Coin Icon"
-                    class="w-full h-full object-contain"
-                  />
+            <div
+              class="mt-2 flex flex-col max-h-[500px] h-[500px] overflow-y-auto"
+            >
+              {#if searchDataResult.length === 0}
+                <div
+                  class="flex justify-center items-center p-[6px] text-lg text-gray-400"
+                >
+                  No result
                 </div>
-                <div class="2xl:text-sm text-lg">
-                  {item.full_name}
-                  <span
-                    class={`${darkMode ? "text-gray-600" : "text-gray-400"}`}
-                    >{item.name.toLocaleUpperCase()}
-                  </span>
-                </div>
-              </div>
-            {/each}
+              {:else}
+                {#each searchDataResult || [] as item}
+                  <div
+                    class={`border-b last:border-none py-3 px-1 w-full text-center flex items-center justify-start gap-2 cursor-pointer ${
+                      darkMode ? "border-[#222222]" : "border-gray-200"
+                    }`}
+                    on:click={handleSelectToken(item)}
+                  >
+                    <div class="w-7 h-7 rounded-full overflow-hidden">
+                      <img
+                        src={item.logo}
+                        alt="Coin Icon"
+                        class="w-full h-full object-contain"
+                      />
+                    </div>
+                    <div class="xl:text-sm text-2xl">
+                      {item.full_name}
+                      <span
+                        class={`${
+                          darkMode ? "text-gray-600" : "text-gray-400"
+                        }`}
+                        >{item.name.toLocaleUpperCase()}
+                      </span>
+                    </div>
+                  </div>
+                {/each}
+              {/if}
+            </div>
           {/if}
         </div>
       {/if}
     </div>
-  {/if}
+  </div>
 </AppOverlay>
 
 <style global windi:preflights:global windi:safelist:global>

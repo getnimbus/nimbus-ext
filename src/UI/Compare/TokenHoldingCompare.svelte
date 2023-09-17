@@ -65,7 +65,7 @@
       </div>
       <div class="flex flex-col gap-1">
         <div
-          class=" xl:text-sm text-xl font-medium relative"
+          class=" xl:text-sm text-2xl font-medium relative"
           on:mouseover={() => {
             isShowTooltipName = true;
           }}
@@ -83,7 +83,7 @@
           {/if}
         </div>
         <div
-          class="text_00000080 text-xs font-medium relative"
+          class="text_00000080 xl:text-xs text-lg font-medium relative"
           on:mouseover={() => {
             isShowTooltipSymbol = true;
           }}
@@ -109,7 +109,9 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-xl ttext_00000099 font-medium flex justify-end">
+    <div
+      class="xl:text-sm text-2xl ttext_00000099 font-medium flex justify-end"
+    >
       $<TooltipNumber number={data?.price?.price} type="balance" />
     </div>
   </td>
@@ -121,7 +123,7 @@
   >
     <div class="flex justify-end">
       <div
-        class={`xl:text-sm text-xl font-medium w-max ${
+        class={`xl:text-sm text-2xl font-medium w-max flex ${
           amountChange === 0
             ? "text_00000099"
             : amountChange > 0
@@ -152,7 +154,7 @@
   >
     <div class="flex justify-end">
       <div
-        class={`xl:text-sm text-xl font-medium flex ${
+        class={`xl:text-sm text-2xl font-medium flex ${
           valueChange === 0
             ? "text_00000099"
             : valueChange > 0
@@ -183,7 +185,7 @@
   >
     <div class="flex justify-end">
       <div
-        class={`xl:text-sm text-xl w-max ${
+        class={`xl:text-sm text-2xl w-max ${
           data?.ratio === 0
             ? "text_00000099"
             : data?.ratio > 0

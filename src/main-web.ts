@@ -2,6 +2,9 @@ import "@webcomponents/webcomponentsjs/webcomponents-bundle.js";
 import App from "./entries/newTab/App.svelte";
 import "./entries/background/main";
 import * as Sentry from "@sentry/svelte";
+import WebApp from '@twa-dev/sdk'
+
+WebApp.ready();
 
 // Sentry.init({
 //   dsn: "https://eaa14b85aa9332aadeacfb759857a387@o4505729367801856.ingest.sentry.io/4505729426391040",

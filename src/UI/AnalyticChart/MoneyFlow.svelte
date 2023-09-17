@@ -1,7 +1,7 @@
 <script lang="ts">
   import { groupBy, intersection, flatten, sumBy } from "lodash";
   import { wallet, chain, typeWallet, isDarkMode } from "~/store";
-  import { formatCurrency, formatValue } from "~/utils";
+  import { autoFontSize, formatCurrency, formatValue } from "~/utils";
   import dayjs from "dayjs";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
@@ -99,6 +99,9 @@
     },
     xAxis: {
       type: "time",
+      axisLabel: {
+        fontSize: autoFontSize(),
+      },
     },
     yAxis: {
       type: "value",
@@ -109,6 +112,7 @@
             numeral(Math.abs(value)).format("0.00a")
           );
         },
+        fontSize: autoFontSize(),
       },
     },
     grid: [{ right: "5%" }],
@@ -348,6 +352,9 @@
         },
         xAxis: {
           type: "time",
+          axisLabel: {
+            fontSize: autoFontSize(),
+          },
         },
         yAxis: {
           type: "value",
@@ -358,6 +365,7 @@
                 numeral(Math.abs(value)).format("0.00a")
               );
             },
+            fontSize: autoFontSize(),
           },
         },
         grid: [{ right: "5%" }],
@@ -417,39 +425,36 @@
         <div class="flex flex-col gap-4 px-6 pb-6">
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start">
+              <div class="flex justify-start text-2xl xl:text-base">
                 {selectedTimeFrame} Money Inflow
               </div>
             </div>
-            <div class="flex items-center justify-end col-span-1 gap-1">
-              <div>
-                <TooltipNumber number={Math.abs(sumData.inflow)} type="value" />
-              </div>
+            <div
+              class="flex items-center justify-end col-span-1 gap-1 xl:text-base text-2xl"
+            >
+              <TooltipNumber number={Math.abs(sumData.inflow)} type="value" />
             </div>
           </div>
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start">
+              <div class="flex justify-start text-2xl xl:text-base">
                 {selectedTimeFrame} Money Outflow
               </div>
             </div>
-            <div class="flex items-center justify-end col-span-1 gap-1">
-              <div>
-                <TooltipNumber
-                  number={Math.abs(sumData.outflow)}
-                  type="value"
-                />
-              </div>
+            <div
+              class="flex items-center justify-end col-span-1 gap-1 xl:text-base text-2xl"
+            >
+              <TooltipNumber number={Math.abs(sumData.outflow)} type="value" />
             </div>
           </div>
           <div class="grid grid-cols-2">
             <div class="col-span-1">
-              <div class="flex justify-start">
+              <div class="flex justify-start text-2xl xl:text-base">
                 {selectedTimeFrame} Money Netflow
               </div>
             </div>
             <div
-              class={`flex items-center justify-end col-span-1 ${
+              class={`flex items-center justify-end col-span-1 xl:text-base text-2xl ${
                 sumData.inflow + sumData.outflow >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
@@ -490,7 +495,6 @@
               {option}
               height={465}
               notMerge={true}
-              type="full-width"
             />
             <div
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"

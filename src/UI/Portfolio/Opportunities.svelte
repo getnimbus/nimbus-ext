@@ -4,7 +4,7 @@
   export let data;
   export let isLoading;
 
-  import "~/components/Loading.custom.svelte";
+  import Loading from "~/components/Loading.svelte";
   import OpportunityCard from "~/components/OpportunityCard.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Button from "~/components/Button.svelte";
@@ -33,7 +33,7 @@
     </div>
     {#if isLoading}
       <div class="flex items-center justify-center h-full">
-        <loading-icon />
+        <Loading />
       </div>
     {:else}
       <div class="h-full">
