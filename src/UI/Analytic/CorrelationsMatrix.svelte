@@ -24,6 +24,8 @@
   import Button from "~/components/Button.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
 
+  import All from "~/assets/all.svg";
+
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
@@ -216,7 +218,7 @@
             chain: item.chain,
             name: item?.symbol,
             value: item?.cg_id,
-            logo: item?.logo,
+            logo: item?.logo || All,
           };
         });
     }
