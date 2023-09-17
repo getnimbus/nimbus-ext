@@ -36,7 +36,7 @@
         color={darkMode ? "#fff" : "#000"}
         isShorten={true}
         isLink={true}
-        link={`/?chain=ALL&address=${data?.address}`}
+        link={`/?type=EVM&chain=ALL&address=${data?.address}`}
       />
     </div>
   </td>
