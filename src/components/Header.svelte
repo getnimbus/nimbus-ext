@@ -480,12 +480,12 @@
         class="-ml-6 xl:w-[177px] w-[220px] xl:h-[60px] h-[100px]"
       />
       <div
-        class="-mr-2"
+        class="-mr-1 text-6xl text-white"
         on:click={() => {
           isShowHeaderMobile.update((n) => (n = false));
         }}
       >
-        <img src={Close} alt="" class="w-10 h-10" />
+        &times;
       </div>
     </div>
 

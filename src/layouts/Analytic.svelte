@@ -186,20 +186,22 @@
       isOpenModal = false;
     }}
   >
-    <div class="mt-2">
-      <div
-        class="xl:text-base text-lg text-gray-500 text-center xl:w-[600px] w-[700px]"
-      >
-        Our analysis is
-        <span class="font-medium">Premium</span>
-        <img src={Crown} alt="" width="13" height="12" class="inline-block" />
-        feature is under beta<br /> which you can access for free now. <br />Add
-        your email to get updates from us and receive exclusive benefits in the
-        future.
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col">
+        <div class="xl:text-base text-2xl text-gray-500 text-center">
+          Our analysis is
+          <span class="font-medium text-[#ffb800]">Premium</span>
+          <img src={Crown} alt="" width="13" height="12" class="inline-block" />
+          feature is under beta<br /> which you can access for free now.
+        </div>
+        <div class="xl:text-base text-2xl text-gray-500">
+          Add your email to get updates from us and receive exclusive benefits
+          in the future.
+        </div>
       </div>
       <form
         on:submit|preventDefault={onSubmit}
-        class="flex flex-col gap-3 mt-4"
+        class="flex flex-col xl:gap-3 gap-10"
       >
         <div class="flex flex-col gap-1">
           <div class="flex flex-col gap-1">
@@ -226,7 +228,7 @@
             </div>
           </div>
         </div>
-        <div class="flex justify-end gap-2">
+        <div class="flex justify-end lg:gap-2 gap-6">
           <div class="lg:w-[120px] w-full">
             <Button
               variant="secondary"

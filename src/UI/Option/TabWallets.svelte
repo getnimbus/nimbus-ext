@@ -1466,7 +1466,7 @@
         >
           {#each listLogoCEX as logo}
             <div
-              class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
+              class="xl:w-8 xl:h-8 w-10 h-10 rounded-full overflow-hidden flex justify-center items-center"
             >
               <img src={logo} alt="" class="w-full h-full object-contain" />
             </div>
@@ -1553,7 +1553,7 @@
         >
           {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
             <div
-              class="w-8 h-8 rounded-full overflow-hidden flex justify-center items-center"
+              class="xl:w-8 xl:h-8 w-10 h-10 rounded-full overflow-hidden flex justify-center items-center"
             >
               <img
                 src={item.logo}
