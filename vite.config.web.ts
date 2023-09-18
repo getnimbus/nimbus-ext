@@ -7,6 +7,7 @@ import { windi } from "svelte-windicss-preprocess";
 import sveltePreprocess from "svelte-preprocess";
 import AutoImport from "unplugin-auto-import/vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
 /** @type {import('vite').UserConfig} */
@@ -37,6 +38,42 @@ export default defineConfig(({ mode }) => {
           },
         ],
       }),
+      VitePWA({
+          workbox: {
+              globPatterns: ['**/*.{js,css,html,svelte,ts,gif,svg,png,woff2}'],
+          },
+          devOptions: {
+            enabled: true
+          },
+          registerType: "autoUpdate",
+          manifest: {
+              "background_color": "#ffffff",
+              "theme_color": "#27326f",
+              "name": "getnimbus.io",
+              "short_name": "Nimbus",
+              "start_url": "/",
+              "display": "standalone",
+              "icons": [
+                  {
+                      "src": "/assets/logo-2.png",
+                      "sizes": "533x248",
+                      "type": "image/png",
+                      "purpose": "any",
+                  },
+                  {
+                    "src": "/assets/logo-icon-1.svg",
+                    "sizes": "508x542",
+                    "type": "image/svg+xml",
+                    "purpose": "any",
+                },{
+                  "src": "/assets/logo-icon-1.svg",
+                  "sizes": "508x542",
+                  "type": "image/svg+xml",
+                  "purpose": "any",
+              }
+              ]
+          }
+      })
     ],
     resolve: {
       alias: {
