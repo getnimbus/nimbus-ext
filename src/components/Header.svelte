@@ -142,6 +142,13 @@
   }
 
   $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
+
+  // Prevent layout flick
+  $: if (showHeaderMobile) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "unset";
+  }
 </script>
 
 <div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">

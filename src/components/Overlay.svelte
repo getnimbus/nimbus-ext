@@ -18,13 +18,6 @@
     dispatch("close");
   };
 
-  // Prevent layout flick
-  // $: if (isOpen) {
-  //   document.body.style.overflow = "hidden";
-  // } else {
-  //   document.body.style.overflow = "unset";
-  // }
-
   const handleKeyDown = (event) => {
     if (event.key === "Escape") {
       handleClose();
@@ -37,6 +30,13 @@
       window.removeEventListener("keydown", handleKeyDown);
     };
   });
+
+  // Prevent layout flick
+  $: if (isOpen) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "unset";
+  }
 </script>
 
 {#if isOpen}

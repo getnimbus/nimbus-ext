@@ -505,7 +505,7 @@ export const formatSupperSmallNumber = (number: number) => {
 
 export const formatValue = (input: number) => {
   return numeral(input).format("0,0.00") === "NaN"
-    ? formatSupperSmallNumber(input)
+    ? formatNumberSmall(input)
     : input !== 0 && input > 0 && input < 0.01 ? "<$0.01" : numeral(input).format("$0,0.00");
 };
 
@@ -559,7 +559,7 @@ const formatNumberSmall = (scientificNotation) => {
       .slice(0, eIndex)
       .slice(0, 4)
       .split("")
-      .filter((e) =>{
+      .filter((e) => {
         return e !== "."
       })
       .join("")
@@ -570,10 +570,10 @@ const formatNumberSmall = (scientificNotation) => {
   }
 
   let formatarr = ["0", '.'];
-  for (let i=0;i<exponent-1;i++){
+  for (let i = 0; i < exponent - 1; i++) {
     formatarr.push("0")
   }
-  const formatString =  formatarr.join("").toString()
+  const formatString = formatarr.join("").toString()
   const formattedNum = formatString + significand
   return formattedNum;
 }
