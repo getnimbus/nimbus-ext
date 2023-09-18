@@ -47,30 +47,26 @@ export default defineConfig(({ mode }) => {
           },
           registerType: "autoUpdate",
           manifest: {
-              "background_color": "#ffffff",
-              "theme_color": "#27326f",
-              "name": "getnimbus.io",
+              "name": "Nimbus",
               "short_name": "Nimbus",
               "start_url": "/",
               "display": "standalone",
+              "description": "https://getnimbus.io",
               "icons": [
+                  {
+                      "src": "/assets/logo-square1.svg",
+                      "type": "image/svg+xml",
+                      "sizes": "509x509",
+                      "purpose": "any",
+                  },
                   {
                       "src": "/assets/logo-2.png",
                       "sizes": "533x248",
-                      "type": "image/png",
-                      "purpose": "any",
                   },
                   {
                     "src": "/assets/logo-icon-1.svg",
                     "sizes": "508x542",
-                    "type": "image/svg+xml",
-                    "purpose": "any",
-                },{
-                  "src": "/assets/logo-icon-1.svg",
-                  "sizes": "508x542",
-                  "type": "image/svg+xml",
-                  "purpose": "any",
-              }
+                  },
               ]
           }
       })
