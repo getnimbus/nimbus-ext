@@ -51,6 +51,7 @@ export default defineConfig(({ mode }) => {
               "short_name": "Nimbus",
               "start_url": "/",
               "display": "standalone",
+              "description": "https://getnimbus.io",
               "icons": [
                   {
                       "src": "/assets/logo-square1.svg",
