@@ -553,10 +553,28 @@ export const formatBigBalance = (input: number) => {
 const formatNumberSmall = (scientificNotation) => {
   const num = parseFloat(scientificNotation);
   const eIndex = num.toString().indexOf("e");
+  const exponent = parseInt(num.toString().slice(eIndex + 2), 10);
+  const significand = parseFloat(
+    num.toString()
+      .slice(0, eIndex)
+      .slice(0, 4)
+      .split("")
+      .filter((e) =>{
+        return e !== "."
+      })
+      .join("")
+  );
+
   if (isNaN(num)) {
     return "NaN";
   }
-  const formattedNum = num.toFixed(eIndex)
+
+  let formatarr = ["0", '.', "0"];
+  for (let i=0;i<exponent;i++){
+    formatarr.push("0")
+  }
+  const formatString =  formatarr.join("").toString()
+  const formattedNum = formatString + significand
   return formattedNum;
 }
 
