@@ -254,78 +254,83 @@
   isOpen={isOpenEditModal}
   on:close={() => (isOpenEditModal = false)}
 >
-  <div class="xl:title-3 title-1 font-semibold">
-    {MultipleLang.content.modal_edit_title}
+  <div class="flex flex-col gap-4">
+    <div class="xl:title-3 title-1 font-semibold">
+      {MultipleLang.content.modal_edit_title}
+    </div>
+    <form
+      on:submit|preventDefault={onSubmitEdit}
+      class="flex flex-col xl:gap-3 gap-10"
+    >
+      <div class="flex flex-col xl:gap-3 gap-6">
+        <div class="flex flex-col gap-1">
+          <div
+            class="flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 bg-[#F0F2F7]"
+          >
+            <div class="xl:text-base text-2xl font-semibold text-gray-700">
+              {MultipleLang.content.modal_address_label}
+            </div>
+            <input
+              type="text"
+              id="address"
+              name="address"
+              placeholder={MultipleLang.content.modal_address_label}
+              value={selectedHighlight.address}
+              disabled
+              class="p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] bg-[#F0F2F7]"
+            />
+          </div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <div
+            class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+              label ? "bg-[#F0F2F7]" : ""
+            }`}
+            class:input-border-error={errorsEdit.label &&
+              errorsEdit.label.required}
+          >
+            <div class="xl:text-base text-2xl font-semibold text-gray-700">
+              {MultipleLang.content.label_header_table}
+            </div>
+            <input
+              type="text"
+              id="label"
+              name="label"
+              placeholder={MultipleLang.content.label_header_table}
+              bind:value={selectedHighlight.label}
+              class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+                label ? "bg-[#F0F2F7]" : ""
+              }`}
+              on:keyup={({ target: { value } }) => (label = value)}
+            />
+          </div>
+          {#if errorsEdit.label && errorsEdit.label.required}
+            <div class="text-red-500 font-medium">
+              {errorsEdit.label.msg}
+            </div>
+          {/if}
+        </div>
+      </div>
+      <div class="flex justify-end lg:gap-2 gap-6">
+        <div class="lg:w-[100px] w-full">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              errorsEdit = {};
+              isOpenEditModal = false;
+            }}
+          >
+            {MultipleLang.content.modal_cancel}</Button
+          >
+        </div>
+        <div class="lg:w-[100px] w-full">
+          <Button type="submit">
+            {MultipleLang.content.modal_edit}</Button
+          >
+        </div>
+      </div>
+    </form>
   </div>
-  <form
-    on:submit|preventDefault={onSubmitEdit}
-    class="flex flex-col gap-3 mt-4"
-  >
-    <div class="flex flex-col gap-1 w-[530px]">
-      <div
-        class="flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 bg-[#F0F2F7]"
-      >
-        <div class="xl:text-base text-2xl font-semibold text-gray-700">
-          {MultipleLang.content.modal_address_label}
-        </div>
-        <input
-          type="text"
-          id="address"
-          name="address"
-          placeholder={MultipleLang.content.modal_address_label}
-          value={selectedHighlight.address}
-          disabled
-          class="p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] bg-[#F0F2F7]"
-        />
-      </div>
-    </div>
-    <div class="flex flex-col gap-1 w-[530px]">
-      <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          label ? "bg-[#F0F2F7]" : ""
-        }`}
-        class:input-border-error={errorsEdit.label && errorsEdit.label.required}
-      >
-        <div class="xl:text-base text-2xl font-semibold text-gray-700">
-          {MultipleLang.content.label_header_table}
-        </div>
-        <input
-          type="text"
-          id="label"
-          name="label"
-          placeholder={MultipleLang.content.label_header_table}
-          bind:value={selectedHighlight.label}
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            label ? "bg-[#F0F2F7]" : ""
-          }`}
-          on:keyup={({ target: { value } }) => (label = value)}
-        />
-      </div>
-      {#if errorsEdit.label && errorsEdit.label.required}
-        <div class="text-red-500 font-medium">
-          {errorsEdit.label.msg}
-        </div>
-      {/if}
-    </div>
-    <div class="flex justify-end gap-2">
-      <div class="lg:w-[100px] w-full">
-        <Button
-          variant="secondary"
-          on:click={() => {
-            errorsEdit = {};
-            isOpenEditModal = false;
-          }}
-        >
-          {MultipleLang.content.modal_cancel}</Button
-        >
-      </div>
-      <div class="lg:w-[100px] w-full">
-        <Button type="submit">
-          {MultipleLang.content.modal_edit}</Button
-        >
-      </div>
-    </div>
-  </form>
 </AppOverlay>
 
 <AppOverlay
@@ -333,35 +338,37 @@
   isOpen={isOpenConfirmDelete}
   on:close={() => (isOpenConfirmDelete = false)}
 >
-  <div class="flex flex-col gap-1 items-start max-w-[530px]">
-    <div class="xl:title-3 title-1 font-semibold">
-      {MultipleLang.content.modal_delete_title}
+  <div class="flex flex-col xl:gap-4 gap-10">
+    <div class="flex flex-col gap-1 items-start">
+      <div class="xl:title-3 title-1 font-semibold">
+        {MultipleLang.content.modal_delete_title}
+      </div>
+      <div class="xl:text-sm text-2xl text-gray-500">
+        {MultipleLang.content.modal_delete_sub_title}
+      </div>
     </div>
-    <div class="xl:text-sm text-2xl text-gray-500">
-      {MultipleLang.content.modal_delete_sub_title}
-    </div>
-  </div>
-  <div class="flex justify-end gap-2 mt-4">
-    <div class="lg:w-[100px] w-full">
-      <Button
-        variant="secondary"
-        on:click={() => {
-          isOpenConfirmDelete = false;
-          selectedHighlight = {};
-        }}
-      >
-        {MultipleLang.content.modal_cancel}
-      </Button>
-    </div>
-    <div class="lg:w-[100px] w-full">
-      <Button
-        variant="delete"
-        on:click={() => {
-          handleDelete(selectedHighlight);
-        }}
-      >
-        {MultipleLang.content.modal_delete}
-      </Button>
+    <div class="flex justify-end lg:gap-2 gap-6">
+      <div class="lg:w-[100px] w-full">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            isOpenConfirmDelete = false;
+            selectedHighlight = {};
+          }}
+        >
+          {MultipleLang.content.modal_cancel}
+        </Button>
+      </div>
+      <div class="lg:w-[100px] w-full">
+        <Button
+          variant="delete"
+          on:click={() => {
+            handleDelete(selectedHighlight);
+          }}
+        >
+          {MultipleLang.content.modal_delete}
+        </Button>
+      </div>
     </div>
   </div>
 </AppOverlay>

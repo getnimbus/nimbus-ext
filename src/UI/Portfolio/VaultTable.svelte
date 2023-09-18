@@ -25,7 +25,7 @@
   let sortTVL = "default";
   let sortAPY = "default";
 
-  $: formatData = data.map((item) => {
+  $: formatData = data?.map((item) => {
     return {
       ...item,
       tvl: Number(item.tvl),
@@ -219,7 +219,7 @@
             </td>
           </tr>
         {:else}
-          {#each formatData.slice(0, packageSelected === "FREE" ? 10 : undefined) as item}
+          {#each (formatData || [])?.slice(0, packageSelected === "FREE" ? 10 : undefined) as item}
             <tr
               class="transition-all cursor-pointer group"
               on:click={() => {

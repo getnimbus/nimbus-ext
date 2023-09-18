@@ -110,7 +110,7 @@
         <a
           href="https://t.me/getnimbus"
           target="_blank"
-          class="transition-all xl:w-6 xl:h-6 w-12 h-12"
+          class="transition-all hover:text-[#3b82f6] xl:w-6 xl:h-6 w-12 h-12"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
