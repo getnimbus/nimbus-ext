@@ -569,8 +569,8 @@ const formatNumberSmall = (scientificNotation) => {
     return "NaN";
   }
 
-  let formatarr = ["0", '.', "0"];
-  for (let i=0;i<exponent;i++){
+  let formatarr = ["0", '.'];
+  for (let i=0;i<exponent-1;i++){
     formatarr.push("0")
   }
   const formatString =  formatarr.join("").toString()
