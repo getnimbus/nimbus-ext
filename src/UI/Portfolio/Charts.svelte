@@ -866,7 +866,7 @@
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center ${
             darkMode ? "bg-[#222222e6]" : "bg-white/90"
-          } z-30 backdrop-blur-md`}
+          } z-10 backdrop-blur-md`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
         </div>
