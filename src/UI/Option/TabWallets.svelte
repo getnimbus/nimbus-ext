@@ -680,6 +680,8 @@
     return response.data;
   };
 
+  $: formatListAddress = listAddress.filter((item) => item.type !== "BUNDLE");
+
   $: queryListBundle = createQuery({
     queryKey: ["list-bundle"],
     queryFn: () => getListBundle(),
@@ -708,8 +710,6 @@
 
   // handle submit (create and edit) bundle
   const onSubmitBundle = async () => {
-    console.log("selectedAddresses: ", selectedAddresses);
-
     if (selectedAddresses.length === 7) {
       toastMsg =
         "You can create your bundle with maximum is 7 addresses. Please try again!";
@@ -727,66 +727,66 @@
       return;
     }
 
-    // isLoadingBundle = true;
-    // try {
-    //   const formData = {
-    //     name: nameBundle,
-    //     addresses: selectedAddresses,
-    //   };
+    isLoadingBundle = true;
+    try {
+      const formData = {
+        name: nameBundle,
+        addresses: selectedAddresses,
+      };
 
-    //   if (selectedBundle && Object.keys(selectedBundle).length !== 0) {
-    //     const response = await nimbus.put(
-    //       `/address/personalize/bundle?name=${selectedBundle?.name}`,
-    //       formData
-    //     );
+      if (selectedBundle && Object.keys(selectedBundle).length !== 0) {
+        const response = await nimbus.put(
+          `/address/personalize/bundle?name=${selectedBundle?.name}`,
+          formData
+        );
 
-    //     queryClient.invalidateQueries(["list-bundle"]);
-    //     queryClient.invalidateQueries(["overview"]);
-    //     queryClient.invalidateQueries(["vaults"]);
-    //     queryClient.invalidateQueries(["token-holding"]);
-    //     queryClient.invalidateQueries(["nft-holding"]);
-    //     queryClient.invalidateQueries(["personalize-tag"]);
-    //     queryClient.invalidateQueries(["compare"]);
-    //     queryClient.invalidateQueries(["historical"]);
-    //     queryClient.invalidateQueries(["inflow-outflow"]);
+        queryClient.invalidateQueries(["list-bundle"]);
+        queryClient.invalidateQueries(["overview"]);
+        queryClient.invalidateQueries(["vaults"]);
+        queryClient.invalidateQueries(["token-holding"]);
+        queryClient.invalidateQueries(["nft-holding"]);
+        queryClient.invalidateQueries(["personalize-tag"]);
+        queryClient.invalidateQueries(["compare"]);
+        queryClient.invalidateQueries(["historical"]);
+        queryClient.invalidateQueries(["inflow-outflow"]);
 
-    //     toastMsg = "Successfully edit your bundle!";
-    //   } else {
-    //     const response = await nimbus.post(
-    //       "/address/personalize/bundle",
-    //       formData
-    //     );
+        toastMsg = "Successfully edit your bundle!";
+      } else {
+        const response = await nimbus.post(
+          "/address/personalize/bundle",
+          formData
+        );
 
-    //     queryClient.invalidateQueries(["list-bundle"]);
-    //     listBundle = response?.data.map((item) => {
-    //       return {
-    //         name: item?.name,
-    //         addresses: item?.accounts?.map(
-    //           (eachAccount) => eachAccount.address
-    //         ),
-    //       };
-    //     });
-    //     selectedBundle = listBundle[listBundle.length - 1];
-    //     selectedAddresses = listBundle[listBundle.length - 1].addresses;
-    //     nameBundle = listBundle[listBundle.length - 1].name;
+        queryClient.invalidateQueries(["list-bundle"]);
+        listBundle = response?.data.map((item) => {
+          return {
+            name: item?.name,
+            addresses: item?.accounts?.map(
+              (eachAccount) => eachAccount.address
+            ),
+          };
+        });
+        selectedBundle = listBundle[listBundle.length - 1];
+        selectedAddresses = listBundle[listBundle.length - 1].addresses;
+        nameBundle = listBundle[listBundle.length - 1].name;
 
-    //     toastMsg = "Successfully create your bundle!";
-    //   }
+        toastMsg = "Successfully create your bundle!";
+      }
 
-    //   isSuccess = true;
-    //   trigger();
-    //   isLoadingBundle = false;
-    // } catch (e) {
-    //   toastMsg = `Something wrong when ${
-    //     selectedBundle && Object.keys(selectedBundle).length !== 0
-    //       ? "edit"
-    //       : "create"
-    //   } your bundle. Please try again!`;
-    //   isSuccess = false;
-    //   trigger();
-    //   isLoadingBundle = false;
-    //   console.error("e: ", e);
-    // }
+      isSuccess = true;
+      trigger();
+      isLoadingBundle = false;
+    } catch (e) {
+      toastMsg = `Something wrong when ${
+        selectedBundle && Object.keys(selectedBundle).length !== 0
+          ? "edit"
+          : "create"
+      } your bundle. Please try again!`;
+      isSuccess = false;
+      trigger();
+      isLoadingBundle = false;
+      console.error("e: ", e);
+    }
   };
 
   // handle delete bundle
@@ -816,23 +816,6 @@
       isLoadingDeleteBundles = false;
       isOpenConfirmDeleteBundles = false;
       console.error("e: ", e);
-    }
-  };
-
-  $: formatListAddress = listAddress.filter((item) => item.type !== "BUNDLE");
-
-  $: console.log({
-    listAddress,
-    formatListAddress,
-  });
-
-  const handleToggleAccount = (e, item) => {
-    if (e.target.checked) {
-      selectedAddresses.push(item.address);
-    } else {
-      selectedAddresses = selectedAddresses.filter(
-        (address) => address !== item.address
-      );
     }
   };
 
@@ -1124,24 +1107,23 @@
           bind:value={nameBundle}
         />
       </div>
-      <div>
-        <input
-          type="checkbox"
-          checked={selectedAddresses.length === formatListAddress.length
-            ? true
-            : false}
-          on:change={handleToggleCheckAll}
-        />
-        Check/Uncheck All
-      </div>
       <div class="border border_0000000d rounded-[10px] overflow-x-auto">
         <table class="table-auto xl:w-full w-[1800px]">
           <thead>
             <tr class="bg_f4f5f8">
-              <th class="pl-3 py-3">
-                <div
-                  class="text-left xl:text-xs text-xl uppercase font-semibold"
-                >
+              <th class="pl-3 py-3 flex justify-start items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={selectedAddresses.length ===
+                  formatListAddress.filter(
+                    (item) => item.type !== "BTC" && item.type !== "SOL"
+                  ).length
+                    ? true
+                    : false}
+                  on:change={handleToggleCheckAll}
+                  class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                />
+                <div class="xl:text-xs text-xl uppercase font-semibold">
                   {MultipleLang.content.address_header_table}
                 </div>
               </th>
@@ -1185,7 +1167,7 @@
                 {#each formatListAddress as item (item.id)}
                   <tr class="group transition-all">
                     <td
-                      class={`pl-3 py-3  ${
+                      class={`pl-3 py-3 ${
                         darkMode
                           ? "group-hover:bg-[#000]"
                           : "group-hover:bg-gray-100"
@@ -1212,7 +1194,7 @@
                           <input
                             type="checkbox"
                             value={item.address}
-                            on:change={(e) => handleToggleAccount(e, item)}
+                            bind:group={selectedAddresses}
                             checked={selectedAddresses.length ===
                               formatListAddress.filter(
                                 (item) =>
