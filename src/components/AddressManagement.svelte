@@ -351,7 +351,7 @@
   };
 
   const updateStateFromParams = async () => {
-    await wait(1000);
+    // await wait(1000);
 
     const urlParams = new URLSearchParams(window.location.search);
     const addressParams = urlParams.get("address");
