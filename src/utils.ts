@@ -13,6 +13,7 @@ import Avax from "~/assets/avax.png";
 import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
+import Base from "~/assets/base.svg"
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
@@ -271,6 +272,9 @@ export const detectedChain = (type) => {
     case "ARB":
       chain = Arbitrum
       break;
+    case "BASE":
+      chain = Base
+      break;
     case "SOL":
       chain = Solana
       break;
@@ -423,6 +427,11 @@ export const chainList = [
     logo: Arbitrum,
     label: "Arbitrum",
     value: "ARB",
+  },
+  {
+    logo: Base,
+    label: "Base",
+    value: "BASE",
   },
   {
     logo: Gnosis,
