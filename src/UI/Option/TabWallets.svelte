@@ -708,6 +708,8 @@
 
   // handle submit (create and edit) bundle
   const onSubmitBundle = async () => {
+    console.log("selectedAddresses: ", selectedAddresses);
+
     if (selectedAddresses.length === 7) {
       toastMsg =
         "You can create your bundle with maximum is 7 addresses. Please try again!";
@@ -725,66 +727,66 @@
       return;
     }
 
-    isLoadingBundle = true;
-    try {
-      const formData = {
-        name: nameBundle,
-        addresses: selectedAddresses,
-      };
+    // isLoadingBundle = true;
+    // try {
+    //   const formData = {
+    //     name: nameBundle,
+    //     addresses: selectedAddresses,
+    //   };
 
-      if (selectedBundle && Object.keys(selectedBundle).length !== 0) {
-        const response = await nimbus.put(
-          `/address/personalize/bundle?name=${selectedBundle?.name}`,
-          formData
-        );
+    //   if (selectedBundle && Object.keys(selectedBundle).length !== 0) {
+    //     const response = await nimbus.put(
+    //       `/address/personalize/bundle?name=${selectedBundle?.name}`,
+    //       formData
+    //     );
 
-        queryClient.invalidateQueries(["list-bundle"]);
-        queryClient.invalidateQueries(["overview"]);
-        queryClient.invalidateQueries(["vaults"]);
-        queryClient.invalidateQueries(["token-holding"]);
-        queryClient.invalidateQueries(["nft-holding"]);
-        queryClient.invalidateQueries(["personalize-tag"]);
-        queryClient.invalidateQueries(["compare"]);
-        queryClient.invalidateQueries(["historical"]);
-        queryClient.invalidateQueries(["inflow-outflow"]);
+    //     queryClient.invalidateQueries(["list-bundle"]);
+    //     queryClient.invalidateQueries(["overview"]);
+    //     queryClient.invalidateQueries(["vaults"]);
+    //     queryClient.invalidateQueries(["token-holding"]);
+    //     queryClient.invalidateQueries(["nft-holding"]);
+    //     queryClient.invalidateQueries(["personalize-tag"]);
+    //     queryClient.invalidateQueries(["compare"]);
+    //     queryClient.invalidateQueries(["historical"]);
+    //     queryClient.invalidateQueries(["inflow-outflow"]);
 
-        toastMsg = "Successfully edit your bundle!";
-      } else {
-        const response = await nimbus.post(
-          "/address/personalize/bundle",
-          formData
-        );
+    //     toastMsg = "Successfully edit your bundle!";
+    //   } else {
+    //     const response = await nimbus.post(
+    //       "/address/personalize/bundle",
+    //       formData
+    //     );
 
-        queryClient.invalidateQueries(["list-bundle"]);
-        listBundle = response?.data.map((item) => {
-          return {
-            name: item?.name,
-            addresses: item?.accounts?.map(
-              (eachAccount) => eachAccount.address
-            ),
-          };
-        });
-        selectedBundle = listBundle[listBundle.length - 1];
-        selectedAddresses = listBundle[listBundle.length - 1].addresses;
-        nameBundle = listBundle[listBundle.length - 1].name;
+    //     queryClient.invalidateQueries(["list-bundle"]);
+    //     listBundle = response?.data.map((item) => {
+    //       return {
+    //         name: item?.name,
+    //         addresses: item?.accounts?.map(
+    //           (eachAccount) => eachAccount.address
+    //         ),
+    //       };
+    //     });
+    //     selectedBundle = listBundle[listBundle.length - 1];
+    //     selectedAddresses = listBundle[listBundle.length - 1].addresses;
+    //     nameBundle = listBundle[listBundle.length - 1].name;
 
-        toastMsg = "Successfully create your bundle!";
-      }
+    //     toastMsg = "Successfully create your bundle!";
+    //   }
 
-      isSuccess = true;
-      trigger();
-      isLoadingBundle = false;
-    } catch (e) {
-      toastMsg = `Something wrong when ${
-        selectedBundle && Object.keys(selectedBundle).length !== 0
-          ? "edit"
-          : "create"
-      } your bundle. Please try again!`;
-      isSuccess = false;
-      trigger();
-      isLoadingBundle = false;
-      console.error("e: ", e);
-    }
+    //   isSuccess = true;
+    //   trigger();
+    //   isLoadingBundle = false;
+    // } catch (e) {
+    //   toastMsg = `Something wrong when ${
+    //     selectedBundle && Object.keys(selectedBundle).length !== 0
+    //       ? "edit"
+    //       : "create"
+    //   } your bundle. Please try again!`;
+    //   isSuccess = false;
+    //   trigger();
+    //   isLoadingBundle = false;
+    //   console.error("e: ", e);
+    // }
   };
 
   // handle delete bundle
@@ -814,6 +816,33 @@
       isLoadingDeleteBundles = false;
       isOpenConfirmDeleteBundles = false;
       console.error("e: ", e);
+    }
+  };
+
+  $: formatListAddress = listAddress.filter((item) => item.type !== "BUNDLE");
+
+  $: console.log({
+    listAddress,
+    formatListAddress,
+  });
+
+  const handleToggleAccount = (e, item) => {
+    if (e.target.checked) {
+      selectedAddresses.push(item.address);
+    } else {
+      selectedAddresses = selectedAddresses.filter(
+        (address) => address !== item.address
+      );
+    }
+  };
+
+  const handleToggleCheckAll = (e) => {
+    if (e.target.checked) {
+      selectedAddresses = formatListAddress
+        .filter((item) => item.type !== "BTC" && item.type !== "SOL")
+        .map((item) => item.address);
+    } else {
+      selectedAddresses = [];
     }
   };
 </script>
@@ -1095,6 +1124,16 @@
           bind:value={nameBundle}
         />
       </div>
+      <div>
+        <input
+          type="checkbox"
+          checked={selectedAddresses.length === formatListAddress.length
+            ? true
+            : false}
+          on:change={handleToggleCheckAll}
+        />
+        Check/Uncheck All
+      </div>
       <div class="border border_0000000d rounded-[10px] overflow-x-auto">
         <table class="table-auto xl:w-full w-[1800px]">
           <thead>
@@ -1143,7 +1182,7 @@
                   </td>
                 </tr>
               {:else}
-                {#each listAddress.filter((item) => item.type !== "BUNDLE") as item (item.id)}
+                {#each formatListAddress as item (item.id)}
                   <tr class="group transition-all">
                     <td
                       class={`pl-3 py-3  ${
@@ -1173,7 +1212,16 @@
                           <input
                             type="checkbox"
                             value={item.address}
-                            bind:group={selectedAddresses}
+                            on:change={(e) => handleToggleAccount(e, item)}
+                            checked={selectedAddresses.length ===
+                              formatListAddress.filter(
+                                (item) =>
+                                  item.type !== "BTC" && item.type !== "SOL"
+                              ).length &&
+                            item.type !== "BTC" &&
+                            item.type !== "SOL"
+                              ? true
+                              : false}
                             disabled={item.type === "BTC" ||
                               item.type === "SOL"}
                             class={`${
