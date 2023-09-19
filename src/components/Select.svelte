@@ -88,7 +88,8 @@
                 item.value !== "MATIC" &&
                 item.value !== "OP" &&
                 item.value !== "AVAX" &&
-                item.value !== "ARB"
+                item.value !== "ARB" &&
+                item.value !== "BASE"
               ) {
                 open = false;
               } else {
