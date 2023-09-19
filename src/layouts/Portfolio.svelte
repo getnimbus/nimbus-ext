@@ -359,8 +359,6 @@
 
     holdingTokenData = formatData;
 
-    console.log("holdingTokenData: ", holdingTokenData);
-
     closedHoldingPosition = formatData
       .filter((item) => item?.profit?.realizedProfit)
       .filter((item) => Number(item.amount) === 0);

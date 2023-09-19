@@ -709,11 +709,11 @@
     }
   }
 
-  $: {
-    if (checkFirstTimeLogin) {
-      queryClient.invalidateQueries(["list-address"]);
-    }
-  }
+  // $: {
+  //   if (checkFirstTimeLogin) {
+  //     queryClient.invalidateQueries(["list-address"]);
+  //   }
+  // }
 
   $: {
     if (
