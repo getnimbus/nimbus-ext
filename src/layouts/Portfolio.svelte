@@ -143,7 +143,8 @@
 
   const formatTokenBreakdown = (overviewData) => {
     if (
-      overviewData?.breakdownToken?.length === 0
+      overviewData?.breakdownToken?.filter((item) => item?.value !== 0)
+        .length === 0
       // || overviewData?.breakdownNft?.length === 0
     ) {
       isEmptyDataPie = true;
@@ -357,6 +358,8 @@
       });
 
     holdingTokenData = formatData;
+
+    console.log("holdingTokenData: ", holdingTokenData);
 
     closedHoldingPosition = formatData
       .filter((item) => item?.profit?.realizedProfit)
