@@ -23,6 +23,9 @@
     },
   });
 
+  let isTouchDevice = false;
+  let isPwaInstalled = false;
+
   // TODO: Add Lazyload for each routes
   // const hash = createHistory(createHashSource());
 
@@ -46,6 +49,17 @@
       window.document.body.classList.remove("dark");
       isDarkMode.update((n) => (n = false));
     }
+
+    // Check for touch device
+    if ("ontouchstart" in window || navigator.maxTouchPoints) {
+      isTouchDevice = true;
+    }
+
+    // Check for PWA installation
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault(); // Prevent the default browser install prompt
+      isPwaInstalled = true;
+    });
   });
 </script>
 
