@@ -6,7 +6,6 @@
     chain,
     typeWallet,
     user,
-    isFirstTimeLogin,
     selectedPackage,
     isDarkMode,
     selectedBundle,
@@ -133,11 +132,6 @@
   let userInfo = {};
   user.subscribe((value) => {
     userInfo = value;
-  });
-
-  let checkFirstTimeLogin = false;
-  isFirstTimeLogin.subscribe((value) => {
-    checkFirstTimeLogin = value;
   });
 
   let packageSelected = "";
@@ -273,6 +267,11 @@
       selectedWallet = "";
     },
     enabled: selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0",
+    onSuccess(data) {
+      if (data.length === 0) {
+        handleCreateUser();
+      }
+    },
   });
 
   $: {
@@ -344,14 +343,14 @@
     if (selectedWalletRes?.selectedWallet !== null) {
       wallet.update((n) => (n = selectedWalletRes.selectedWallet));
     } else {
-      wallet.update((n) => (n = listAddress[0].value));
+      wallet.update((n) => (n = listAddress[0]?.value));
     }
 
     updateStateFromParams();
   };
 
   const updateStateFromParams = async () => {
-    await wait(1000);
+    // await wait(1000);
 
     const urlParams = new URLSearchParams(window.location.search);
     const addressParams = urlParams.get("address");
@@ -448,6 +447,23 @@
             `?type=${typeWalletAddress}&address=${selectedWallet}`
         );
       }
+    }
+  };
+
+  const handleCreateUser = async () => {
+    const evmAddress = localStorage.getItem("evm_address");
+    try {
+      await nimbus.post("/accounts", {
+        type: "DEX",
+        publicAddress: evmAddress,
+        accountId: evmAddress,
+        label: "My address",
+      });
+      queryClient.invalidateQueries(["list-address"]);
+      wallet.update((n) => (n = evmAddress));
+      mixpanel.track("user_add_address");
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -709,12 +725,6 @@
     }
   }
 
-  // $: {
-  //   if (checkFirstTimeLogin) {
-  //     queryClient.invalidateQueries(["list-address"]);
-  //   }
-  // }
-
   $: {
     if (
       address &&
@@ -773,10 +783,9 @@
 
   $: {
     const evmToken = localStorage.getItem("evm_token");
-    if (Object.keys(userInfo).length !== 0 && evmToken) {
-      queryClient.invalidateQueries(["list-address"]);
-    } else {
+    if (Object.keys(userInfo).length === 0 && !evmToken) {
       listAddress = [];
+      window.history.replaceState(null, "", "/");
     }
   }
 
