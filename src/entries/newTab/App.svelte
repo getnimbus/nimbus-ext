@@ -23,9 +23,6 @@
     },
   });
 
-  let isTouchDevice = false;
-  let isPwaInstalled = false;
-
   // TODO: Add Lazyload for each routes
   // const hash = createHistory(createHashSource());
 
@@ -48,22 +45,6 @@
     } else {
       window.document.body.classList.remove("dark");
       isDarkMode.update((n) => (n = false));
-    }
-
-    // Check for touch device
-    if ("ontouchstart" in window || navigator.maxTouchPoints) {
-      isTouchDevice = true;
-    }
-
-    // not run!!!!!
-    // window.addEventListener("beforeinstallprompt", (event) => {
-    //   event.preventDefault(); // Prevent the default browser install prompt
-    //   console.log("PWA is installed", event);
-    //   isPwaInstalled = true;
-    // });
-
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      localStorage.setItem("no-introduce-app", "true");
     }
   });
 </script>
