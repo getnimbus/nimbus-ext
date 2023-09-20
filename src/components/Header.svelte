@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { Link, useMatch, useNavigate } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
   import { i18n } from "~/lib/i18n";
@@ -21,6 +22,7 @@
   import Auth from "~/UI/Auth/Auth.svelte";
   import AuthEvm from "~/UI/Auth/AuthEVM.svelte";
   import DarkModeFooter from "./DarkModeFooter.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
 
   import Logo from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
@@ -36,6 +38,7 @@
   import Crown from "~/assets/crown.svg";
   import Close from "~/assets/close-menu-bar.svg";
   import Chat from "~/assets/chat.svg";
+  import User from "~/assets/user.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -83,6 +86,8 @@
   let timerDebounce;
   let search = "";
 
+  let isOpenModalSync = false;
+
   const debounceSearch = (value) => {
     clearTimeout(timerDebounce);
     timerDebounce = setTimeout(() => {
@@ -99,6 +104,39 @@
       return undefined;
     }
   };
+
+  // Handle mobile sign in
+  const handleMobileSignIn = async (code, address) => {
+    try {
+      console.log("code: ", code);
+      const res = await nimbus.post("/auth/access-code", {
+        code: code,
+      });
+      console.log("res: ", res);
+      if (res?.data?.result) {
+        localStorage.setItem("evm_address", address);
+        localStorage.setItem("evm_token", res?.data?.result);
+        user.update(
+          (n) =>
+            (n = {
+              picture: User,
+            })
+        );
+        queryClient.invalidateQueries(["list-address"]);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const syncCodeParams = urlParams.get("code");
+    const addressParams = urlParams.get("address");
+    if (syncCodeParams) {
+      handleMobileSignIn(syncCodeParams, addressParams);
+    }
+  });
 
   const getUserInfo = async () => {
     const response: any = await nimbus.get("/users/me");
@@ -696,8 +734,16 @@
       <div class="flex flex-col gap-30 w-full pb-16">
         <div class="flex flex-col gap-7 px-4">
           <DarkModeFooter />
-          <div class="w-max">
+          <div class="w-max flex flex-col gap-6">
             <AuthEvm />
+            <div
+              class="text-3xl font-semibold text-white cursor-pointer xl:text-base"
+              on:click={() => {
+                isOpenModalSync = true;
+              }}
+            >
+              Sync from Desktop
+            </div>
           </div>
         </div>
         <div class="w-full flex justify-center gap-16 text-white">
@@ -765,6 +811,17 @@
     </div>
   </div>
 </div>
+
+<!-- Modal sync user from desktop -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenModalSync}
+  on:close={() => {
+    isOpenModalSync = false;
+  }}
+>
+  <div>hello</div>
+</AppOverlay>
 
 <style>
   .mobile {

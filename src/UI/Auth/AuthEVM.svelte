@@ -18,13 +18,13 @@
   import { useQueryClient } from "@tanstack/svelte-query";
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
+  import { wait } from "~/entries/background/utils";
 
   import DarkMode from "~/components/DarkMode.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
 
   import User from "~/assets/user.png";
   import Logo from "~/assets/logo-1.svg";
-  import { wait } from "~/entries/background/utils";
 
   const wallets$ = onboard.state.select("wallets");
 
@@ -67,7 +67,7 @@
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    let invitationParams = urlParams.get("invitation");
+    const invitationParams = urlParams.get("invitation");
     if (invitationParams) {
       invitation = invitationParams;
     }
@@ -206,9 +206,10 @@
 
   $: {
     if (syncMobileCode) {
-      console.log("syncMobileCode: ", syncMobileCode);
       const qrcode = QRCode(0, "L");
-      qrcode.addData(`https://app.getnimbus.io/?code=${syncMobileCode}`);
+      qrcode.addData(
+        `https://beta.getnimbus.io/?code=${syncMobileCode}&&address=${addressWallet}`
+      );
       qrcode.make();
       qrImageDataUrl = qrcode.createDataURL(6);
     }
