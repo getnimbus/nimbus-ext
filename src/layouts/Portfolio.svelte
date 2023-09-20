@@ -39,6 +39,7 @@
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";
+  import OpenAppIntroduce from "~/components/OpenAppIntroduce.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -1070,6 +1071,8 @@
     </div>
   </span>
 </AddressManagement>
+
+<OpenAppIntroduce />
 
 <style>
   .loading {
