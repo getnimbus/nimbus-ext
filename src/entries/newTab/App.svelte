@@ -61,6 +61,10 @@
     //   console.log("PWA is installed", event);
     //   isPwaInstalled = true;
     // });
+
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      localStorage.setItem("no-introduce-app", "true");
+    }
   });
 </script>
 
