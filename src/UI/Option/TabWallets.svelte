@@ -136,6 +136,7 @@
   let errors: any = {};
   let errorsEdit: any = {};
   let listAddress = [];
+  let listAddressWithoutBundle = [];
   let selectedItemEdit: any = {};
   let isOpenEditModal = false;
   let isOpenAddModal = false;
@@ -305,6 +306,9 @@
     });
 
     listAddress = structWalletData;
+    listAddressWithoutBundle = structWalletData.filter(
+      (item) => item.type !== "BUNDLE"
+    );
 
     if (structWalletData && structWalletData?.length === 1) {
       browser.storage.sync.set({
@@ -816,6 +820,16 @@
       console.error("e: ", e);
     }
   };
+
+  const handleToggleCheckAll = (e) => {
+    if (e.target.checked) {
+      selectedAddresses = listAddressWithoutBundle
+        .filter((item) => item.type !== "BTC" && item.type !== "SOL")
+        .map((item) => item.address);
+    } else {
+      selectedAddresses = [];
+    }
+  };
 </script>
 
 <div class="flex flex-col gap-4">
@@ -1099,10 +1113,19 @@
         <table class="table-auto xl:w-full w-[1800px]">
           <thead>
             <tr class="bg_f4f5f8">
-              <th class="pl-3 py-3">
-                <div
-                  class="text-left xl:text-xs text-xl uppercase font-semibold"
-                >
+              <th class="pl-3 py-3 flex justify-start items-center gap-6">
+                <input
+                  type="checkbox"
+                  checked={selectedAddresses.length ===
+                  listAddressWithoutBundle.filter(
+                    (item) => item.type !== "BTC" && item.type !== "SOL"
+                  ).length
+                    ? true
+                    : false}
+                  on:change={handleToggleCheckAll}
+                  class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                />
+                <div class="xl:text-xs text-xl uppercase font-semibold">
                   {MultipleLang.content.address_header_table}
                 </div>
               </th>
@@ -1143,17 +1166,17 @@
                   </td>
                 </tr>
               {:else}
-                {#each listAddress.filter((item) => item.type !== "BUNDLE") as item (item.id)}
+                {#each listAddressWithoutBundle as item (item.id)}
                   <tr class="group transition-all">
                     <td
-                      class={`pl-3 py-3  ${
+                      class={`pl-3 py-3 ${
                         darkMode
                           ? "group-hover:bg-[#000]"
                           : "group-hover:bg-gray-100"
                       }`}
                     >
                       <div
-                        class="text-left flex items-center gap-3 xl:text-base text-2xl"
+                        class="text-left flex items-center gap-6 xl:text-base text-2xl"
                       >
                         <div
                           class="flex justify-center relative"
@@ -1174,13 +1197,22 @@
                             type="checkbox"
                             value={item.address}
                             bind:group={selectedAddresses}
+                            checked={selectedAddresses.length ===
+                              listAddressWithoutBundle.filter(
+                                (item) =>
+                                  item.type !== "BTC" && item.type !== "SOL"
+                              ).length &&
+                            item.type !== "BTC" &&
+                            item.type !== "SOL"
+                              ? true
+                              : false}
                             disabled={item.type === "BTC" ||
                               item.type === "SOL"}
                             class={`${
                               item.type === "BTC" || item.type === "SOL"
                                 ? "bg-gray-300 border-none"
                                 : ""
-                            } cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]`}
+                            } cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]`}
                           />
                           {#if showDisableBundle && selectedHoverBundle.address === item.address}
                             <div
@@ -1318,7 +1350,7 @@
         {:else}
           <tbody
             use:dndzone={{
-              items: listAddress,
+              items: listAddressWithoutBundle,
               flipDurationMs: 300,
               dropTargetStyle: { outline: "none" },
               transformDraggedElement: (draggedEl, data, index) => {
@@ -1326,14 +1358,14 @@
               },
             }}
             on:consider={(e) => {
-              listAddress = e.detail.items;
+              listAddressWithoutBundle = e.detail.items;
             }}
             on:finalize={(e) => {
-              listAddress = e.detail.items;
+              listAddressWithoutBundle = e.detail.items;
               handleSortListAddress(e.detail.items);
             }}
           >
-            {#if listAddress && listAddress.length === 0}
+            {#if listAddressWithoutBundle && listAddressWithoutBundle.length === 0}
               <tr>
                 <td colspan="3">
                   <div
@@ -1344,7 +1376,7 @@
                 </td>
               </tr>
             {:else}
-              {#each listAddress.filter((item) => item.type !== "BUNDLE") as item (item.id)}
+              {#each listAddressWithoutBundle as item (item.id)}
                 <tr class="group transition-all">
                   <td
                     class={`pl-3 py-3  ${
