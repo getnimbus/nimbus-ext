@@ -37,9 +37,6 @@
   };
 
   const data = getMobileOperatingSystem();
-  console.log("safafasf", data);
-
-  console.log("is mobileOperationSystem : ", mobileOperationSystem);
 </script>
 
 <div class="xl:hidden">
