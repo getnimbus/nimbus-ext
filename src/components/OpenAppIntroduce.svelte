@@ -4,7 +4,7 @@
   import installicon from "~/assets/install-app-icon.svg";
   import { nimbus } from "~/lib/network";
 
-  let isShow = false;
+  let isShow = true;
   let mobileOperationSystem;
 
   $: {
@@ -56,6 +56,7 @@
           xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink"
           version="1.1"
+          fill="currentColor"
           x="0px"
           y="0px"
           height="128"
