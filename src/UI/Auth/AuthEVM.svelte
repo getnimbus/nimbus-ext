@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import dayjs from "dayjs";
   import { Link } from "svelte-navigator";
   import onboard from "~/lib/web3-onboard";
   import { ethers } from "ethers";
@@ -55,7 +56,7 @@
   const queryClient = useQueryClient();
 
   let isOpenModalSync = false;
-  let expiredTimeSyncCode = "";
+  let syncMobileCode = "";
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -174,7 +175,23 @@
   const handleGetCodeSyncMobile = async () => {
     try {
       const res = await nimbus.get("/users/cross-login");
-      console.log("res: ", res);
+      if (res?.data) {
+        syncMobileCode = res?.data?.code;
+        const expiredAt = dayjs.unix(res?.data?.expiredAt);
+        const currentTime = dayjs();
+
+        // Check if the time difference is more than 1 minute
+        if (currentTime.diff(expiredAt, "second") > 60) {
+          // Make another API call to get a new sync code
+          const newResponse = await nimbus.get("/users/cross-login");
+          if (newResponse) {
+            syncMobileCode = res?.data?.code;
+          }
+        } else {
+          // Schedule the next check after 1 minute
+          setTimeout(handleGetCodeSyncMobile, 60000); // 60000 milliseconds = 1 minute
+        }
+      }
     } catch (e) {
       console.error("error: ", e);
     }
@@ -185,6 +202,8 @@
       handleGetCodeSyncMobile();
     }
   }
+
+  $: console.log("syncMobileCode: ", syncMobileCode);
 </script>
 
 {#if Object.keys(userInfo).length !== 0}
