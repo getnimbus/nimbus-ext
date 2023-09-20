@@ -136,6 +136,7 @@
   let errors: any = {};
   let errorsEdit: any = {};
   let listAddress = [];
+  let listAddressWithoutBundle = [];
   let selectedItemEdit: any = {};
   let isOpenEditModal = false;
   let isOpenAddModal = false;
@@ -305,6 +306,9 @@
     });
 
     listAddress = structWalletData;
+    listAddressWithoutBundle = structWalletData.filter(
+      (item) => item.type !== "BUNDLE"
+    );
 
     if (structWalletData && structWalletData?.length === 1) {
       browser.storage.sync.set({
@@ -1348,7 +1352,7 @@
         {:else}
           <tbody
             use:dndzone={{
-              items: listAddress,
+              items: listAddressWithoutBundle,
               flipDurationMs: 300,
               dropTargetStyle: { outline: "none" },
               transformDraggedElement: (draggedEl, data, index) => {
@@ -1356,14 +1360,14 @@
               },
             }}
             on:consider={(e) => {
-              listAddress = e.detail.items;
+              listAddressWithoutBundle = e.detail.items;
             }}
             on:finalize={(e) => {
-              listAddress = e.detail.items;
+              listAddressWithoutBundle = e.detail.items;
               handleSortListAddress(e.detail.items);
             }}
           >
-            {#if listAddress && listAddress.length === 0}
+            {#if listAddressWithoutBundle && listAddressWithoutBundle.length === 0}
               <tr>
                 <td colspan="3">
                   <div
@@ -1374,7 +1378,7 @@
                 </td>
               </tr>
             {:else}
-              {#each listAddress.filter((item) => item.type !== "BUNDLE") as item (item.id)}
+              {#each listAddressWithoutBundle as item (item.id)}
                 <tr class="group transition-all">
                   <td
                     class={`pl-3 py-3  ${
