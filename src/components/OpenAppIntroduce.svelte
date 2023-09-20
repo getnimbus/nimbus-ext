@@ -2,8 +2,10 @@
   import Button from "./Button.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import installicon from "~/assets/install-app-icon.svg";
+  import { nimbus } from "~/lib/network";
 
   let isShow = false;
+  let mobileOperationSystem;
 
   $: {
     const introduce = localStorage.getItem("no-introduce-app");
@@ -13,6 +15,31 @@
       isShow = true;
     }
   }
+
+  const getMobileOperatingSystem = () => {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+    // Windows Phone must come first because its UA also contains "Android"
+    if (/windows phone/i.test(userAgent)) {
+      return (mobileOperationSystem = "Windows Phone");
+    }
+
+    if (/android/i.test(userAgent)) {
+      return (mobileOperationSystem = "Android");
+    }
+
+    // iOS detection from: http://stackoverflow.com/a/9039885/177710
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+      return (mobileOperationSystem = "iOS");
+    }
+
+    return (mobileOperationSystem = "unknown");
+  };
+
+  const data = getMobileOperatingSystem();
+  console.log("safafasf", data);
+
+  console.log("is mobileOperationSystem : ", mobileOperationSystem);
 </script>
 
 <div class="xl:hidden">
@@ -25,7 +52,7 @@
     }}
   >
     <div
-      class="w-full h-[30vh] flex flex-col gap-10 items-center justify-center"
+      class="w-full min-h-[30vh] flex flex-col gap-10 items-center justify-center"
     >
       <div>
         <svg
@@ -51,12 +78,21 @@
           />
         </svg>
       </div>
-      <div class="lg:text-2xl text-3xl text-center leading-snug">
-        Please open Nimbus app in your browser to install this app Click on
-        <span class="font-medium">Three Vertical Dots</span>
-        ->
-        <span class="font-medium">Install App </span>
-      </div>
+      {#if mobileOperationSystem === "Android"}
+        <div class="lg:text-2xl text-3xl text-center leading-snug">
+          Please open Nimbus app in your browser to install this app Click on
+          <span class="font-medium">Three Vertical Dots</span>
+          ->
+          <span class="font-medium">Install App </span>
+        </div>
+      {:else if mobileOperationSystem === "iOS"}
+        <div class="lg:text-2xl text-3xl text-center leading-snug">
+          In your Safari browser menu , tap the Share icon and choose <span
+            class="font-medium">Add to Home Screen</span
+          > in the options. Then open Nimbus.app in your home screen
+        </div>
+      {/if}
+
       <div class="w-max mx-auto w-[300px]">
         <Button
           variant="tertiary"
