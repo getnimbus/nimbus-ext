@@ -814,55 +814,10 @@
         darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      <div class="flex justify-between mb-6">
-        {#if typeWalletAddress === "CEX" || selectBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
-          <TooltipTitle
-            tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
-            type="warning"
-          >
-            <div class="pl-4 text-4xl font-medium xl:text-2xl">
-              {MultipleLang.performance}
-            </div>
-          </TooltipTitle>
-        {:else}
-          <div class="pl-4 text-4xl font-medium xl:text-2xl">
-            {MultipleLang.performance}
-          </div>
-        {/if}
-        {#if overviewDataPerformance?.performance?.length !== 0 || overviewDataPerformance?.portfolioChart?.length !== 0}
-          <div class="flex items-center gap-2">
-            <AnimateSharedLayout>
-              {#each performanceTypeChartPortfolio as type}
-                <div
-                  class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                  on:click={() => (selectedTypePerformance = type.value)}
-                >
-                  <div
-                    class={`relative z-20 ${
-                      selectedTypePerformance === type.value && "text-white"
-                    }`}
-                  >
-                    {type.label}
-                  </div>
-                  {#if type.value === selectedTypePerformance}
-                    <Motion
-                      let:motion
-                      layoutId="active-pill"
-                      transition={{ type: "spring", duration: 0.6 }}
-                    >
-                      <div
-                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                        use:motion
-                      />
-                    </Motion>
-                  {/if}
-                </div>
-              {/each}
-            </AnimateSharedLayout>
-          </div>
-        {/if}
-      </div>
       {#if selectedChain === "XDAI" || typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
+        <div class="pl-4 text-4xl font-medium xl:text-2xl">
+          {MultipleLang.performance}
+        </div>
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center ${
             darkMode ? "bg-[#222222e6]" : "bg-white/90"
@@ -870,29 +825,78 @@
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
         </div>
-      {/if}
-      {#if isLoading}
-        <div class="flex items-center justify-center h-[465px]">
-          <Loading />
-        </div>
       {:else}
-        <div>
-          {#if overviewDataPerformance?.performance?.length === 0 || overviewDataPerformance?.portfolioChart?.length === 0}
-            <div
-              class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+        <div class="flex justify-between mb-6">
+          {#if typeWalletAddress === "CEX" || selectBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
+            <TooltipTitle
+              tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
+              type="warning"
             >
-              Empty
-            </div>
+              <div class="pl-4 text-4xl font-medium xl:text-2xl">
+                {MultipleLang.performance}
+              </div>
+            </TooltipTitle>
           {:else}
-            <EChart
-              id="line-chart"
-              {theme}
-              notMerge={true}
-              option={optionLine}
-              height={465}
-            />
+            <div class="pl-4 text-4xl font-medium xl:text-2xl">
+              {MultipleLang.performance}
+            </div>
+          {/if}
+          {#if overviewDataPerformance?.performance?.length !== 0 || overviewDataPerformance?.portfolioChart?.length !== 0}
+            <div class="flex items-center gap-2">
+              <AnimateSharedLayout>
+                {#each performanceTypeChartPortfolio as type}
+                  <div
+                    class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                    on:click={() => (selectedTypePerformance = type.value)}
+                  >
+                    <div
+                      class={`relative z-20 ${
+                        selectedTypePerformance === type.value && "text-white"
+                      }`}
+                    >
+                      {type.label}
+                    </div>
+                    {#if type.value === selectedTypePerformance}
+                      <Motion
+                        let:motion
+                        layoutId="active-pill"
+                        transition={{ type: "spring", duration: 0.6 }}
+                      >
+                        <div
+                          class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                          use:motion
+                        />
+                      </Motion>
+                    {/if}
+                  </div>
+                {/each}
+              </AnimateSharedLayout>
+            </div>
           {/if}
         </div>
+        {#if isLoading}
+          <div class="flex items-center justify-center h-[465px]">
+            <Loading />
+          </div>
+        {:else}
+          <div>
+            {#if overviewDataPerformance?.performance?.length === 0 || overviewDataPerformance?.portfolioChart?.length === 0}
+              <div
+                class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+              >
+                Empty
+              </div>
+            {:else}
+              <EChart
+                id="line-chart"
+                {theme}
+                notMerge={true}
+                option={optionLine}
+                height={465}
+              />
+            {/if}
+          </div>
+        {/if}
       {/if}
     </div>
   </div>
