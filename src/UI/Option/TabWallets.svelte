@@ -684,8 +684,6 @@
     return response.data;
   };
 
-  $: formatListAddress = listAddress.filter((item) => item.type !== "BUNDLE");
-
   $: queryListBundle = createQuery({
     queryKey: ["list-bundle"],
     queryFn: () => getListBundle(),
@@ -825,7 +823,7 @@
 
   const handleToggleCheckAll = (e) => {
     if (e.target.checked) {
-      selectedAddresses = formatListAddress
+      selectedAddresses = listAddressWithoutBundle
         .filter((item) => item.type !== "BTC" && item.type !== "SOL")
         .map((item) => item.address);
     } else {
@@ -1115,11 +1113,11 @@
         <table class="table-auto xl:w-full w-[1800px]">
           <thead>
             <tr class="bg_f4f5f8">
-              <th class="pl-3 py-3 flex justify-start items-center gap-3">
+              <th class="pl-3 py-3 flex justify-start items-center gap-6">
                 <input
                   type="checkbox"
                   checked={selectedAddresses.length ===
-                  formatListAddress.filter(
+                  listAddressWithoutBundle.filter(
                     (item) => item.type !== "BTC" && item.type !== "SOL"
                   ).length
                     ? true
@@ -1168,7 +1166,7 @@
                   </td>
                 </tr>
               {:else}
-                {#each formatListAddress as item (item.id)}
+                {#each listAddressWithoutBundle as item (item.id)}
                   <tr class="group transition-all">
                     <td
                       class={`pl-3 py-3 ${
@@ -1178,7 +1176,7 @@
                       }`}
                     >
                       <div
-                        class="text-left flex items-center gap-3 xl:text-base text-2xl"
+                        class="text-left flex items-center gap-6 xl:text-base text-2xl"
                       >
                         <div
                           class="flex justify-center relative"
@@ -1200,7 +1198,7 @@
                             value={item.address}
                             bind:group={selectedAddresses}
                             checked={selectedAddresses.length ===
-                              formatListAddress.filter(
+                              listAddressWithoutBundle.filter(
                                 (item) =>
                                   item.type !== "BTC" && item.type !== "SOL"
                               ).length &&
