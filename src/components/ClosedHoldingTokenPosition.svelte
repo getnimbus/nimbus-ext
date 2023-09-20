@@ -46,6 +46,10 @@
     data.name !== "Bitcoin" &&
     data.name !== "Ethereum" &&
     selectedChain !== "XDAI";
+
+  $: logo =
+    data.logo ||
+    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
 </script>
 
 <tr
@@ -89,12 +93,15 @@
     <div class="text-left flex items-center gap-3">
       <div class="relative">
         <img
-          src={data.logo ||
-            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
+          src={logo}
           alt=""
           width="30"
           height="30"
           class="rounded-full"
+          on:error={() => {
+            logo =
+              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+          }}
         />
         {#if typeWalletAddress === "EVM"}
           <div class="absolute -top-2 -right-1">

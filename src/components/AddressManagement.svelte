@@ -263,8 +263,6 @@
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
-      listAddress = [];
-      selectedWallet = "";
     },
     enabled: selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0",
     onSuccess(data) {
@@ -608,6 +606,7 @@
   };
 
   onMount(() => {
+    updateStateFromParams();
     if (
       localStorage.getItem("isGetUserEmailYet") !== null &&
       localStorage.getItem("isGetUserEmailYet") === "true"
@@ -783,7 +782,11 @@
     const evmToken = localStorage.getItem("evm_token");
     if (Object.keys(userInfo).length === 0 && !evmToken) {
       listAddress = [];
-      window.history.replaceState(null, "", "/");
+      const urlParams = new URLSearchParams(window.location.search);
+      const addressParams = urlParams.get("address");
+      if (!addressParams) {
+        window.history.replaceState(null, "", "/");
+      }
     }
   }
 
