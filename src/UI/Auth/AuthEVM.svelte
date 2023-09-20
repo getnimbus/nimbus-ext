@@ -16,11 +16,15 @@
   import mixpanel from "mixpanel-browser";
   import { shorterAddress, clickOutside } from "~/utils";
   import { useQueryClient } from "@tanstack/svelte-query";
+  import QRCode from "qrcode-generator";
+  import CopyToClipboard from "svelte-copy-to-clipboard";
 
   import DarkMode from "~/components/DarkMode.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
 
   import User from "~/assets/user.png";
+  import Logo from "~/assets/logo-1.svg";
+  import { wait } from "~/entries/background/utils";
 
   const wallets$ = onboard.state.select("wallets");
 
@@ -56,7 +60,10 @@
   const queryClient = useQueryClient();
 
   let isOpenModalSync = false;
+  let isCopied = false;
+  let timer = null;
   let syncMobileCode = "";
+  let qrImageDataUrl = "";
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -189,7 +196,7 @@
           }
         } else {
           // Schedule the next check after 1 minute
-          setTimeout(handleGetCodeSyncMobile, 60000); // 60000 milliseconds = 1 minute
+          timer = setTimeout(handleGetCodeSyncMobile, 60000); // 60000 milliseconds = 1 minute
         }
       }
     } catch (e) {
@@ -198,12 +205,14 @@
   };
 
   $: {
-    if (isOpenModalSync) {
-      handleGetCodeSyncMobile();
+    if (syncMobileCode) {
+      console.log("syncMobileCode: ", syncMobileCode);
+      const qrcode = QRCode(0, "L");
+      qrcode.addData(`https://app.getnimbus.io/?code=${syncMobileCode}`);
+      qrcode.make();
+      qrImageDataUrl = qrcode.createDataURL(6);
     }
   }
-
-  $: console.log("syncMobileCode: ", syncMobileCode);
 </script>
 
 {#if Object.keys(userInfo).length !== 0}
@@ -288,6 +297,7 @@
           }`}
           on:click={() => {
             isOpenModalSync = true;
+            handleGetCodeSyncMobile();
             showPopover = false;
           }}
         >
@@ -348,6 +358,7 @@
   isOpen={isOpenModalSync}
   on:close={() => {
     isOpenModalSync = false;
+    clearTimeout(timer);
   }}
 >
   <div class="flex flex-col gap-4">
@@ -357,7 +368,88 @@
         More convenience in managing your portfolio anywhere, anytime
       </div>
     </div>
-    <div>hello world</div>
+    <div class="flex justify-center items-center">
+      <div class="border rounded-xl overflow-hidden bg-white w-[60%]">
+        <div class="bg-[#f3f4f6] py-2 px-4">
+          <img src={Logo} alt="Logo" class="h-12 w-auto -ml-3" />
+        </div>
+        <div class="flex justify-center">
+          <img src={qrImageDataUrl} alt="QR Code" />
+        </div>
+        <div class="text-xs text-center font-medium text-[#9ca3af] px-4 pb-3">
+          Investment in crypto more convenience with Nimbus
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col items-center mt-2 gap-4">
+      <div class="border-t-[1px] relative w-[60%]">
+        <div
+          class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 text-xs px-2 ${
+            darkMode ? "bg-[#0f0f0f]" : "bg-white"
+          }`}
+        >
+          Or enter the code manually
+        </div>
+      </div>
+      <div class="w-[60%]">
+        <CopyToClipboard
+          text={syncMobileCode}
+          let:copy
+          on:copy={async () => {
+            isCopied = true;
+            await wait(1000);
+            isCopied = false;
+          }}
+        >
+          <div class="flex items-center gap-2">
+            <div class="flex-1 border rounded-lg py-2 px-3 text-base">
+              {syncMobileCode}
+            </div>
+            <div
+              class="cursor-pointer border w-max p-2 rounded-lg"
+              on:click={copy}
+            >
+              {#if isCopied}
+                <svg
+                  width={21}
+                  height={21}
+                  id="Layer_1"
+                  data-name="Layer 1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 122.88 74.46"
+                  fill={darkMode ? "#fff" : "#000"}
+                  ><path
+                    fill-rule="evenodd"
+                    d="M1.87,47.2a6.33,6.33,0,1,1,8.92-9c8.88,8.85,17.53,17.66,26.53,26.45l-3.76,4.45-.35.37a6.33,6.33,0,0,1-8.95,0L1.87,47.2ZM30,43.55a6.33,6.33,0,1,1,8.82-9.07l25,24.38L111.64,2.29c5.37-6.35,15,1.84,9.66,8.18L69.07,72.22l-.3.33a6.33,6.33,0,0,1-8.95.12L30,43.55Zm28.76-4.21-.31.33-9.07-8.85L71.67,4.42c5.37-6.35,15,1.83,9.67,8.18L58.74,39.34Z"
+                  /></svg
+                >
+              {:else}
+                <svg
+                  width={21}
+                  height={21}
+                  viewBox="0 0 12 11"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                    stroke={darkMode ? "#fff" : "#000"}
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                    stroke={darkMode ? "#fff" : "#000"}
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              {/if}
+            </div>
+          </div>
+        </CopyToClipboard>
+      </div>
+    </div>
   </div>
 </AppOverlay>
 
