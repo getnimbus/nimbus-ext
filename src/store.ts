@@ -6,7 +6,6 @@ export const user = writable({});
 export const wallet = writable("");
 export const chain = writable("ALL");
 export const typeWallet = writable("");
-export const isFirstTimeLogin = writable(false);
 export const selectedPackage = writable("FREE");
 export const isDarkMode = writable(false);
 export const isShowHeaderMobile = writable(false);

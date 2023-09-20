@@ -8,23 +8,19 @@
     chain,
     typeWallet,
     user,
-    isFirstTimeLogin,
     isDarkMode,
     isShowHeaderMobile,
   } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
   import { shorterAddress, clickOutside } from "~/utils";
-  import { useNavigate } from "svelte-navigator";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import * as browser from "webextension-polyfill";
+  import { useQueryClient } from "@tanstack/svelte-query";
 
   import DarkMode from "~/components/DarkMode.svelte";
 
   import User from "~/assets/user.png";
 
   const wallets$ = onboard.state.select("wallets");
-  const navigate = useNavigate();
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -106,7 +102,6 @@
     localStorage.removeItem("evm_token");
     addressWallet = "";
     disconnect($wallets$?.[0]);
-    queryClient.invalidateQueries(["list-address"]);
   };
 
   const handleSignAddressMessage = async (provider, signatureString) => {
@@ -169,78 +164,6 @@
       }
     } catch (e) {
       console.error("error: ", e);
-    }
-  };
-
-  const getListAddress = async () => {
-    const response: any = await nimbus.get("/accounts/list");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
-    return response?.data;
-  };
-
-  const query = createQuery({
-    queryKey: ["list-address"],
-    queryFn: () => getListAddress(),
-    staleTime: Infinity,
-    retry: false,
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-      navigate("/");
-    },
-  });
-
-  $: {
-    if (!$query.isError && $query.data !== undefined) {
-      formatDataListAddress($query.data);
-    }
-  }
-
-  const formatDataListAddress = (data) => {
-    const structWalletData = data.map((item) => {
-      return {
-        id: item.id,
-        type: item.type,
-        label: item.label,
-        value: item.type === "CEX" ? item.id : item.accountId,
-        logo: item.logo,
-      };
-    });
-    if (structWalletData && structWalletData.length === 0) {
-      handleAddAccount(addressWallet);
-    } else {
-      isFirstTimeLogin.update((n) => (n = false));
-    }
-  };
-
-  // Add DEX address account
-  const handleAddAccount = async (publicAddress) => {
-    try {
-      await nimbus.post("/accounts", {
-        type: "DEX",
-        publicAddress: publicAddress,
-        accountId: publicAddress,
-        label: "My address",
-      });
-
-      chain.update((n) => (n = "ALL"));
-      wallet.update((n) => (n = publicAddress));
-      typeWallet.update((n) => (n = "DEX"));
-
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname +
-          `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
-      );
-
-      isFirstTimeLogin.update((n) => (n = true));
-
-      mixpanel.track("user_add_address");
-    } catch (e) {
-      console.error(e);
     }
   };
 </script>
