@@ -54,8 +54,7 @@ export default defineConfig(({ mode }) => {
               "description": "https://getnimbus.io",
               "icons": [
                   {
-                      "src": "/assets/logo-square1.svg",
-                      "type": "image/svg+xml",
+                      "src": "https://lh3.googleusercontent.com/pw/AIL4fc9zAqbIl3Vp_e2vUB6j5gv_UMoING2QAYbQLlJPA3UqayJCqxRzYDYHhzbszSaQmRvqQApZ9a3eBA1M6kIbHKu6bA3EsPmDJgnjK7HvkldSfQUCbT-bO6ZeLNgXcxDLT_xHVlEAQF4v7lnfuzRKv-t3=w509-h509-s-no?authuser=0",
                       "sizes": "509x509",
                       "purpose": "any",
                   },

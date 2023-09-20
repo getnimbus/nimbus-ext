@@ -69,7 +69,7 @@
               transform="translate(-100)"
             />
           </svg>
-        {:else if mobileOperationSystem === "Android"}
+        {:else}
           <!-- icon androids -->
           <svg
             xmlns:dc="http://purl.org/dc/elements/1.1/"
