@@ -49,6 +49,17 @@
     isScrollStart = scrollLeft === 0;
     isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
   };
+
+  let scrollOverviewContainer;
+  let isScrollOverviewStart = true;
+  let isScrollOverviewEnd = false;
+  let containerOverview;
+
+  const handleScrollOverview = () => {
+    const { scrollLeft, scrollWidth, clientWidth } = scrollOverviewContainer;
+    isScrollOverviewStart = scrollLeft === 0;
+    isScrollOverviewEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+  };
 </script>
 
 <ErrorBoundary>
@@ -303,108 +314,169 @@
           {:else}
             <div class="px-6">
               {#if selectedTypeReturn === "overview"}
-                <div class="flex gap-4">
+                <div class="w-full">
                   <div
-                    class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
-                    style="z-index: 2"
+                    class="relative overflow-hidden w-full flex gap-3 justify-between items-center"
+                    bind:this={containerOverview}
                   >
-                    <div class="xl:text-base text-2xl">1D</div>
                     <div
-                      class={`xl:text-base text-2xl ${
-                        data?.base?.netWorthChange?.networth1D < 0
-                          ? "text-red-500"
-                          : "text-[#00A878]"
+                      class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg z-10 ${
+                        isScrollOverviewStart ? "hidden" : "block"
                       }`}
+                      style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
                     >
-                      <TooltipNumber
-                        number={Math.abs(
-                          data?.base?.netWorthChange?.networth1D
-                        )}
-                        type="percent"
-                      />%
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        height="24px"
+                        width="24px"
+                        viewBox="0 0 24 24"
+                        class="sc-aef7b723-0 fKbUaI"
+                        ><path
+                          d="M15 6L9 12L15 18"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-miterlimit="10"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        /></svg
+                      >
                     </div>
-                  </div>
+                    <div
+                      class="w-max flex gap-4 overflow-x-auto whitespace-nowrap"
+                      bind:this={scrollOverviewContainer}
+                      on:scroll={handleScrollOverview}
+                    >
+                      <div
+                        class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
+                        style="z-index: 2"
+                      >
+                        <div class="xl:text-base text-2xl">1D</div>
+                        <div
+                          class={`xl:text-base text-2xl ${
+                            data?.base?.netWorthChange?.networth1D < 0
+                              ? "text-red-500"
+                              : "text-[#00A878]"
+                          }`}
+                        >
+                          <TooltipNumber
+                            number={Math.abs(
+                              data?.base?.netWorthChange?.networth1D
+                            )}
+                            type="percent"
+                          />%
+                        </div>
+                      </div>
 
-                  <div
-                    class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
-                    style="z-index: 2"
-                  >
-                    <div class="xl:text-base text-2xl">7D</div>
-                    <div
-                      class={`xl:text-base text-2xl ${
-                        data?.base?.netWorthChange?.networth7D < 0
-                          ? "text-red-500"
-                          : "text-[#00A878]"
-                      }`}
-                    >
-                      <TooltipNumber
-                        number={Math.abs(
-                          data?.base?.netWorthChange?.networth7D
-                        )}
-                        type="percent"
-                      />%
-                    </div>
-                  </div>
+                      <div
+                        class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
+                        style="z-index: 2"
+                      >
+                        <div class="xl:text-base text-2xl">7D</div>
+                        <div
+                          class={`xl:text-base text-2xl ${
+                            data?.base?.netWorthChange?.networth7D < 0
+                              ? "text-red-500"
+                              : "text-[#00A878]"
+                          }`}
+                        >
+                          <TooltipNumber
+                            number={Math.abs(
+                              data?.base?.netWorthChange?.networth7D
+                            )}
+                            type="percent"
+                          />%
+                        </div>
+                      </div>
 
-                  <div
-                    class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
-                    style="z-index: 2"
-                  >
-                    <div class="xl:text-base text-2xl">30D</div>
-                    <div
-                      class={`xl:text-base text-2xl ${
-                        data?.base?.netWorthChange?.networth30D < 0
-                          ? "text-red-500"
-                          : "text-[#00A878]"
-                      }`}
-                    >
-                      <TooltipNumber
-                        number={Math.abs(
-                          data?.base?.netWorthChange?.networth30D
-                        )}
-                        type="percent"
-                      />%
-                    </div>
-                  </div>
+                      <div
+                        class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
+                        style="z-index: 2"
+                      >
+                        <div class="xl:text-base text-2xl">30D</div>
+                        <div
+                          class={`xl:text-base text-2xl ${
+                            data?.base?.netWorthChange?.networth30D < 0
+                              ? "text-red-500"
+                              : "text-[#00A878]"
+                          }`}
+                        >
+                          <TooltipNumber
+                            number={Math.abs(
+                              data?.base?.netWorthChange?.networth30D
+                            )}
+                            type="percent"
+                          />%
+                        </div>
+                      </div>
 
-                  <div
-                    class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
-                    style="z-index: 2"
-                  >
-                    <div class="xl:text-base text-2xl">1Y</div>
-                    <div
-                      class={`xl:text-base text-2xl ${
-                        data?.base?.netWorthChange?.networth1Y < 0
-                          ? "text-red-500"
-                          : "text-[#00A878]"
-                      }`}
-                    >
-                      <TooltipNumber
-                        number={Math.abs(
-                          data?.base?.netWorthChange?.networth1Y
-                        )}
-                        type="percent"
-                      />%
-                    </div>
-                  </div>
+                      <div
+                        class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
+                        style="z-index: 2"
+                      >
+                        <div class="xl:text-base text-2xl">1Y</div>
+                        <div
+                          class={`xl:text-base text-2xl ${
+                            data?.base?.netWorthChange?.networth1Y < 0
+                              ? "text-red-500"
+                              : "text-[#00A878]"
+                          }`}
+                        >
+                          <TooltipNumber
+                            number={Math.abs(
+                              data?.base?.netWorthChange?.networth1Y
+                            )}
+                            type="percent"
+                          />%
+                        </div>
+                      </div>
 
-                  <div
-                    class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
-                    style="z-index: 2"
-                  >
-                    <div class="xl:text-base text-2xl">Lifetime</div>
-                    <div
-                      class={`xl:text-base text-2xl ${
-                        data?.base?.changeLF?.portfolioChange < 0
-                          ? "text-red-500"
-                          : "text-[#00A878]"
-                      }`}
-                    >
-                      <TooltipNumber
-                        number={Math.abs(data?.base?.changeLF?.portfolioChange)}
-                        type="percent"
-                      />%
+                      <div
+                        class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
+                        style="z-index: 2"
+                      >
+                        <div class="xl:text-base text-2xl">Lifetime</div>
+                        <div
+                          class={`xl:text-base text-2xl ${
+                            data?.base?.changeLF?.portfolioChange < 0
+                              ? "text-red-500"
+                              : "text-[#00A878]"
+                          }`}
+                        >
+                          <TooltipNumber
+                            number={Math.abs(
+                              data?.base?.changeLF?.portfolioChange
+                            )}
+                            type="percent"
+                          />%
+                        </div>
+                      </div>
                     </div>
+                    {#if scrollOverviewContainer?.scrollWidth >= containerOverview?.offsetWidth}
+                      <div
+                        class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg z-10 ${
+                          isScrollOverviewEnd ? "hidden" : "block"
+                        }`}
+                        style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          height="24px"
+                          width="24px"
+                          viewBox="0 0 24 24"
+                          class="sc-aef7b723-0 fKbUaI"
+                          ><path
+                            d="M9 6L15 12L9 18"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-miterlimit="10"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          /></svg
+                        >
+                      </div>
+                    {/if}
                   </div>
                 </div>
               {:else}
