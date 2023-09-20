@@ -68,7 +68,7 @@ export default defineConfig(({ mode }) => {
                     "sizes": "508x542",
                   },
               ]
-          }
+          }, 
       })
     ],
     resolve: {

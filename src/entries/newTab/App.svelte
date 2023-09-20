@@ -55,11 +55,12 @@
       isTouchDevice = true;
     }
 
-    // Check for PWA installation
-    window.addEventListener("beforeinstallprompt", (event) => {
-      event.preventDefault(); // Prevent the default browser install prompt
-      isPwaInstalled = true;
-    });
+    // not run!!!!!
+    // window.addEventListener("beforeinstallprompt", (event) => {
+    //   event.preventDefault(); // Prevent the default browser install prompt
+    //   console.log("PWA is installed", event);
+    //   isPwaInstalled = true;
+    // });
   });
 </script>
 
