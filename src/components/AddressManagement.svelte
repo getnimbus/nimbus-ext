@@ -349,9 +349,7 @@
     updateStateFromParams();
   };
 
-  const updateStateFromParams = async () => {
-    // await wait(1000);
-
+  const updateStateFromParams = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const addressParams = urlParams.get("address");
     const chainParams = urlParams.get("chain");
