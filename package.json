@@ -62,7 +62,6 @@
     "dayjs": "^1.11.4",
     "echarts": "^5.4.3",
     "ethers": "^6.6.4",
-    "firebase": "^10.4.0",
     "flowbite": "^1.5.3",
     "flowbite-svelte": "^0.27.1",
     "flowbite-svelte-icons": "^0.3.6",
@@ -96,7 +95,6 @@
     "url-pattern": "^1.0.3",
     "vezgo-sdk-js": "^1.0.9",
     "vite-imagetools": "^4.0.4",
-    "vite-plugin-pwa": "^0.16.5",
     "webext-bridge": "https://github.com/getnimbus/webext-bridge.git",
     "webextension-polyfill": "^0.9.0",
     "windicss": "^3.5.6"
