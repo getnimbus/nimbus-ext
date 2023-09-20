@@ -17,6 +17,7 @@
   import { useQueryClient } from "@tanstack/svelte-query";
 
   import DarkMode from "~/components/DarkMode.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
 
   import User from "~/assets/user.png";
 
@@ -52,6 +53,9 @@
   let invitation = "";
 
   const queryClient = useQueryClient();
+
+  let isOpenModalSync = false;
+  let expiredTimeSyncCode = "";
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -166,6 +170,21 @@
       console.error("error: ", e);
     }
   };
+
+  const handleGetCodeSyncMobile = async () => {
+    try {
+      const res = await nimbus.get("/users/cross-login");
+      console.log("res: ", res);
+    } catch (e) {
+      console.error("error: ", e);
+    }
+  };
+
+  $: {
+    if (isOpenModalSync) {
+      handleGetCodeSyncMobile();
+    }
+  }
 </script>
 
 {#if Object.keys(userInfo).length !== 0}
@@ -244,6 +263,18 @@
           </Link>
         </div>
 
+        <div
+          class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
+            darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+          }`}
+          on:click={() => {
+            isOpenModalSync = true;
+            showPopover = false;
+          }}
+        >
+          Sync to mobile
+        </div>
+
         <div on:click={() => (showPopover = false)}>
           <Link to="invitation">
             <div
@@ -291,6 +322,25 @@
     Connect Wallet
   </div>
 {/if}
+
+<!-- Modal sync user to mobile -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenModalSync}
+  on:close={() => {
+    isOpenModalSync = false;
+  }}
+>
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1 items-start">
+      <div class="xl:title-3 title-1 font-semibold">Sync app to mobile</div>
+      <div class="xl:text-sm text-2xl text-gray-500">
+        More convenience in managing your portfolio anywhere, anytime
+      </div>
+    </div>
+    <div>hello world</div>
+  </div>
+</AppOverlay>
 
 <style windi:preflights:global windi:safelist:global>
   :global(body) .select_content {
