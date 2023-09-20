@@ -28,11 +28,11 @@
     //   value: "notification",
     //   type: "Notification",
     // },
-    {
-      label: i18n("optionsPage.tab-title-settings", "Settings"),
-      value: "settings",
-      type: "Settings",
-    },
+    // {
+    //   label: i18n("optionsPage.tab-title-settings", "Settings"),
+    //   value: "settings",
+    //   type: "Settings",
+    // },
   ];
 
   let darkMode = false;
