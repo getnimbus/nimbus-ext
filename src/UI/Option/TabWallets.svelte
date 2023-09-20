@@ -712,9 +712,9 @@
 
   // handle submit (create and edit) bundle
   const onSubmitBundle = async () => {
-    if (selectedAddresses.length === 7) {
+    if (selectedAddresses.length > 100) {
       toastMsg =
-        "You can create your bundle with maximum is 7 addresses. Please try again!";
+        "You can create your bundle with maximum is 100 addresses. Please try again!";
       isSuccess = false;
       trigger();
       isLoadingBundle = false;
@@ -834,13 +834,13 @@
 
 <div class="flex flex-col gap-4">
   {#if listAddress && listAddress.length === 0}
-    <div class="flex justify-between items-center">
+    <div class="flex items-center justify-between">
       <div class="xl:title-3 title-1">{MultipleLang.title}</div>
       <div class="relative xl:w-max w-[200px]">
         {#if Object.keys(userInfo).length !== 0}
           <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
             <img src={Plus} alt="" width="12" height="12" />
-            <div class="xl:text-base text-2xl font-medium text-white">
+            <div class="text-2xl font-medium text-white xl:text-base">
               {MultipleLang.content.btn_text}
             </div>
           </Button>
@@ -884,14 +884,14 @@
   {:else}
     <div class="flex flex-col gap-4">
       <div class="xl:title-3 title-1">{MultipleLang.title}</div>
-      <div class="flex justify-between items-center gap-10">
+      <div class="flex items-center justify-between gap-10">
         {#if listBundle && listBundle.length === 0}
-          <div class="xl:text-base text-xl">
+          <div class="text-xl xl:text-base">
             Create your bundle with up to 7 addresses per bundle!
           </div>
         {:else}
           <div
-            class="relative overflow-hidden w-full flex gap-3 justify-between items-center"
+            class="relative flex items-center justify-between w-full gap-3 overflow-hidden"
             bind:this={container}
           >
             <div
@@ -918,7 +918,7 @@
               >
             </div>
             <div
-              class="w-max flex gap-3 overflow-x-auto whitespace-nowrap px-2"
+              class="flex gap-3 px-2 overflow-x-auto w-max whitespace-nowrap"
               bind:this={scrollContainer}
               on:scroll={handleScroll}
             >
@@ -984,12 +984,12 @@
             {/if}
           </div>
         {/if}
-        <div class="flex gap-4 justify-end flex-1">
+        <div class="flex justify-end flex-1 gap-4">
           <!-- add bundle -->
           <div class="flex items-center gap-4">
             {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0}
               <div
-                class="text-red-500 font-semibold w-max cursor-pointer xl:text-base text-2xl"
+                class="text-2xl font-semibold text-red-500 cursor-pointer w-max xl:text-base"
                 on:click={() => (isOpenConfirmDeleteBundles = true)}
               >
                 Delete
@@ -1004,8 +1004,8 @@
                   selectedAddresses = [];
                 }}
               >
-                <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-                <div class="xl:text-base text-2xl font-medium text-white">
+                <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
+                <div class="text-2xl font-medium text-white xl:text-base">
                   Add bundle
                 </div>
               </Button>
@@ -1040,8 +1040,8 @@
                       }
                     }}
                   >
-                    <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-                    <div class="xl:text-base text-2xl font-medium text-white">
+                    <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
+                    <div class="text-2xl font-medium text-white xl:text-base">
                       Add account
                     </div>
                   </Button>
@@ -1050,7 +1050,7 @@
                     <img
                       src={darkMode ? PlusBlack : Plus}
                       alt=""
-                      class="xl:w-3 xl:h-3 w-4 h-4"
+                      class="w-4 h-4 xl:w-3 xl:h-3"
                     />
                     <div
                       class={`text-2xl font-medium xl:text-base ${
@@ -1069,15 +1069,15 @@
                   isOpenAddModal = true;
                 }}
               >
-                <img src={Plus} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
-                <div class="xl:text-base text-2xl font-medium text-white">
+                <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
+                <div class="text-2xl font-medium text-white xl:text-base">
                   Add account
                 </div>
               </Button>
             {/if}
             {#if showDisableAddWallet}
               <div
-                class="absolute transform -top-12 right-0"
+                class="absolute right-0 transform -top-12"
                 style="z-index: 2147483648;"
               >
                 <tooltip-detail text={tooltipDisableAddBtn} />
@@ -1113,7 +1113,7 @@
         <table class="table-auto xl:w-full w-[1800px]">
           <thead>
             <tr class="bg_f4f5f8">
-              <th class="pl-3 py-3 flex justify-start items-center gap-6">
+              <th class="flex items-center justify-start gap-6 py-3 pl-3">
                 <input
                   type="checkbox"
                   checked={selectedAddresses.length ===
@@ -1125,20 +1125,20 @@
                   on:change={handleToggleCheckAll}
                   class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
                 />
-                <div class="xl:text-xs text-xl uppercase font-semibold">
+                <div class="text-xl font-semibold uppercase xl:text-xs">
                   {MultipleLang.content.address_header_table}
                 </div>
               </th>
               <th class="py-3">
                 <div
-                  class="text-left xl:text-xs text-xl uppercase font-semibold"
+                  class="text-xl font-semibold text-left uppercase xl:text-xs"
                 >
                   {MultipleLang.content.label_header_table}
                 </div>
               </th>
-              <th class="pr-3 py-3">
+              <th class="py-3 pr-3">
                 <div
-                  class="text-right xl:text-xs text-xl uppercase font-semibold"
+                  class="text-xl font-semibold text-right uppercase xl:text-xs"
                 >
                   {MultipleLang.content.action_header_table}
                 </div>
@@ -1149,7 +1149,7 @@
             <tbody>
               <tr>
                 <td colspan="3">
-                  <div class="flex justify-center items-center py-4 px-3">
+                  <div class="flex items-center justify-center px-3 py-4">
                     <Loading />
                   </div>
                 </td>
@@ -1160,14 +1160,14 @@
               {#if listAddress && listAddress.length === 0}
                 <tr>
                   <td colspan="3">
-                    <div class="flex justify-center items-center py-4 px-3">
+                    <div class="flex items-center justify-center px-3 py-4">
                       No address
                     </div>
                   </td>
                 </tr>
               {:else}
                 {#each listAddressWithoutBundle as item (item.id)}
-                  <tr class="group transition-all">
+                  <tr class="transition-all group">
                     <td
                       class={`pl-3 py-3 ${
                         darkMode
@@ -1176,10 +1176,10 @@
                       }`}
                     >
                       <div
-                        class="text-left flex items-center gap-6 xl:text-base text-2xl"
+                        class="flex items-center gap-6 text-2xl text-left xl:text-base"
                       >
                         <div
-                          class="flex justify-center relative"
+                          class="relative flex justify-center"
                           on:mouseenter={() => {
                             if (item.type === "BTC" || item.type === "SOL") {
                               showDisableBundle = true;
@@ -1216,7 +1216,7 @@
                           />
                           {#if showDisableBundle && selectedHoverBundle.address === item.address}
                             <div
-                              class="absolute transform -top-8 left-0"
+                              class="absolute left-0 transform -top-8"
                               style="z-index: 2147483648;"
                             >
                               <div
@@ -1262,7 +1262,7 @@
                     >
                       <div class="flex justify-end gap-6">
                         <div
-                          class="text-red-600 hover:underline dark:text-red-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
+                          class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base"
                           on:click={() => {
                             isOpenConfirmDelete = true;
                             selectedWallet = item;
@@ -1271,7 +1271,7 @@
                           {MultipleLang.content.modal_delete}
                         </div>
                         <div
-                          class="text-blue-600 hover:underline dark:text-blue-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
+                          class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline dark:text-blue-500 xl:text-base"
                           on:click={() => handleSelectedEdit(item)}
                         >
                           {MultipleLang.content.modal_edit}
@@ -1285,7 +1285,7 @@
           {/if}
         </table>
       </div>
-      <div class="flex justify-end lg:gap-2 gap-6">
+      <div class="flex justify-end gap-6 lg:gap-2">
         <div class="w-[120px]">
           <Button
             variant="secondary"
@@ -1318,19 +1318,19 @@
       <table class="table-auto xl:w-full w-[1800px]">
         <thead>
           <tr class="bg_f4f5f8">
-            <th class="pl-3 py-3">
-              <div class="text-left xl:text-xs text-xl uppercase font-semibold">
+            <th class="py-3 pl-3">
+              <div class="text-xl font-semibold text-left uppercase xl:text-xs">
                 {MultipleLang.content.address_header_table}
               </div>
             </th>
             <th class="py-3">
-              <div class="text-left xl:text-xs text-xl uppercase font-semibold">
+              <div class="text-xl font-semibold text-left uppercase xl:text-xs">
                 {MultipleLang.content.label_header_table}
               </div>
             </th>
-            <th class="pr-3 py-3">
+            <th class="py-3 pr-3">
               <div
-                class="text-right xl:text-xs text-xl uppercase font-semibold"
+                class="text-xl font-semibold text-right uppercase xl:text-xs"
               >
                 {MultipleLang.content.action_header_table}
               </div>
@@ -1341,7 +1341,7 @@
           <tbody>
             <tr>
               <td colspan="3">
-                <div class="flex justify-center items-center py-4 px-3">
+                <div class="flex items-center justify-center px-3 py-4">
                   <Loading />
                 </div>
               </td>
@@ -1369,7 +1369,7 @@
               <tr>
                 <td colspan="3">
                   <div
-                    class="flex justify-center items-center py-4 px-3 xl:text-base text-2xl"
+                    class="flex items-center justify-center px-3 py-4 text-2xl xl:text-base"
                   >
                     No address
                   </div>
@@ -1377,7 +1377,7 @@
               </tr>
             {:else}
               {#each listAddressWithoutBundle as item (item.id)}
-                <tr class="group transition-all">
+                <tr class="transition-all group">
                   <td
                     class={`pl-3 py-3  ${
                       darkMode
@@ -1386,7 +1386,7 @@
                     }`}
                   >
                     <div
-                      class="text-left flex items-center gap-3 xl:text-base text-2xl"
+                      class="flex items-center gap-3 text-2xl text-left xl:text-base"
                     >
                       <svg
                         width="18"
@@ -1431,7 +1431,7 @@
                   >
                     <div class="flex justify-end gap-6">
                       <div
-                        class="text-red-600 hover:underline dark:text-red-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
+                        class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base"
                         on:click={() => {
                           isOpenConfirmDelete = true;
                           selectedWallet = item;
@@ -1440,7 +1440,7 @@
                         {MultipleLang.content.modal_delete}
                       </div>
                       <div
-                        class="text-blue-600 hover:underline dark:text-blue-500 xl:text-base text-2xl transition-all cursor-pointer font-semibold"
+                        class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline dark:text-blue-500 xl:text-base"
                         on:click={() => handleSelectedEdit(item)}
                       >
                         {MultipleLang.content.modal_edit}
@@ -1464,7 +1464,7 @@
   on:close={() => (isOpenAddModal = false)}
 >
   <div class="flex flex-col gap-4">
-    <div class="xl:title-3 title-1 font-semibold">
+    <div class="font-semibold xl:title-3 title-1">
       {MultipleLang.content.modal_add_title}
     </div>
     <div class="flex flex-col gap-7">
@@ -1476,14 +1476,14 @@
               isLoading={isLoadingConnectCEX}
               on:click={onSubmitCEX}
             >
-              <div class="font-medium text-white xl:text-base text-2xl">
+              <div class="text-2xl font-medium text-white xl:text-base">
                 Connect Exchange
               </div>
             </Button>
           </div>
         </div>
         <div
-          class="flex items-center justify-center gap-1 xl:text-base text-2xl"
+          class="flex items-center justify-center gap-1 text-2xl xl:text-base"
         >
           <img src={Success} alt="" />
           Bank-level security/encryption.
@@ -1494,13 +1494,13 @@
           >
         </div>
         <div
-          class="flex justify-center items-center gap-6 my-3 xl:text-base text-2xl"
+          class="flex items-center justify-center gap-6 my-3 text-2xl xl:text-base"
         >
           {#each listLogoCEX as logo}
             <div
-              class="xl:w-8 xl:h-8 w-10 h-10 rounded-full overflow-hidden flex justify-center items-center"
+              class="flex items-center justify-center w-10 h-10 overflow-hidden rounded-full xl:w-8 xl:h-8"
             >
-              <img src={logo} alt="" class="w-full h-full object-contain" />
+              <img src={logo} alt="" class="object-contain w-full h-full" />
             </div>
           {/each}
           <div class="text-gray-400">+22 More</div>
@@ -1519,7 +1519,7 @@
         on:submit|preventDefault={onSubmit}
         class="flex flex-col gap-3 mt-2"
       >
-        <div class="flex flex-col xl:gap-3 gap-6">
+        <div class="flex flex-col gap-6 xl:gap-3">
           <div class="flex flex-col gap-1">
             <div
               class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -1581,22 +1581,22 @@
           </div>
         </div>
         <div
-          class="flex justify-center items-center gap-6 my-3 xl:text-base text-2xl"
+          class="flex items-center justify-center gap-6 my-3 text-2xl xl:text-base"
         >
           {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
             <div
-              class="xl:w-8 xl:h-8 w-10 h-10 rounded-full overflow-hidden flex justify-center items-center"
+              class="flex items-center justify-center w-10 h-10 overflow-hidden rounded-full xl:w-8 xl:h-8"
             >
               <img
                 src={item.logo}
                 alt=""
-                class="w-full h-full object-contain"
+                class="object-contain w-full h-full"
               />
             </div>
           {/each}
           <div class="text-gray-400">More soon</div>
         </div>
-        <div class="flex justify-end lg:gap-2 gap-6">
+        <div class="flex justify-end gap-6 lg:gap-2">
           <div class="lg:w-[120px] w-full">
             <Button
               variant="secondary"
@@ -1626,14 +1626,14 @@
   on:close={() => (isOpenEditModal = false)}
 >
   <div class="flex flex-col gap-4">
-    <div class="xl:title-3 title-1 font-semibold">
+    <div class="font-semibold xl:title-3 title-1">
       {MultipleLang.content.modal_edit_title}
     </div>
     <form
       on:submit|preventDefault={onSubmitEdit}
-      class="flex flex-col xl:gap-3 gap-10"
+      class="flex flex-col gap-10 xl:gap-3"
     >
-      <div class="flex flex-col xl:gap-3 gap-6">
+      <div class="flex flex-col gap-6 xl:gap-3">
         <div class="flex flex-col gap-1">
           <div
             class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -1694,7 +1694,7 @@
           {/if}
         </div>
       </div>
-      <div class="flex justify-end lg:gap-2 gap-6">
+      <div class="flex justify-end gap-6 lg:gap-2">
         <div class="lg:w-[120px] w-full">
           <Button
             variant="secondary"
@@ -1722,16 +1722,16 @@
   isOpen={isOpenConfirmDelete}
   on:close={() => (isOpenConfirmDelete = false)}
 >
-  <div class="flex flex-col xl:gap-4 gap-10">
-    <div class="flex flex-col gap-1 items-start">
-      <div class="xl:title-3 title-1 font-semibold">
+  <div class="flex flex-col gap-10 xl:gap-4">
+    <div class="flex flex-col items-start gap-1">
+      <div class="font-semibold xl:title-3 title-1">
         {MultipleLang.content.modal_delete_title}
       </div>
-      <div class="xl:text-sm text-2xl text-gray-500">
+      <div class="text-2xl text-gray-500 xl:text-sm">
         {MultipleLang.content.modal_delete_sub_title}
       </div>
     </div>
-    <div class="flex justify-end lg:gap-2 gap-6">
+    <div class="flex justify-end gap-6 lg:gap-2">
       <div class="lg:w-[120px] w-full">
         <Button
           variant="secondary"
@@ -1764,16 +1764,16 @@
   isOpen={isOpenConfirmDeleteBundles}
   on:close={() => (isOpenConfirmDeleteBundles = false)}
 >
-  <div class="flex flex-col xl:gap-4 gap-10">
-    <div class="flex flex-col gap-1 items-start">
-      <div class="xl:title-3 title-1 font-semibold">
+  <div class="flex flex-col gap-10 xl:gap-4">
+    <div class="flex flex-col items-start gap-1">
+      <div class="font-semibold xl:title-3 title-1">
         {MultipleLang.content.modal_delete_title}
       </div>
-      <div class="xl:text-sm text-2xl text-gray-500">
+      <div class="text-2xl text-gray-500 xl:text-sm">
         Do you really want to delete this bundles? This process cannot revert
       </div>
     </div>
-    <div class="flex justify-end lg:gap-2 gap-6">
+    <div class="flex justify-end gap-6 lg:gap-2">
       <div class="lg:w-[120px] w-full">
         <Button
           variant="secondary"
@@ -1806,18 +1806,18 @@
   }}
 >
   <div class="flex flex-col gap-4">
-    <div class="flex flex-col gap-1 items-start">
-      <div class="xl:title-3 title-1 font-semibold">
+    <div class="flex flex-col items-start gap-1">
+      <div class="font-semibold xl:title-3 title-1">
         Let's us know your email
       </div>
-      <div class="xl:text-sm text-2xl text-gray-500">
+      <div class="text-2xl text-gray-500 xl:text-sm">
         Add your email to get updates from us and receive exclusive benefits
         soon.
       </div>
     </div>
     <form
       on:submit|preventDefault={onSubmitGetEmail}
-      class="flex flex-col xl:gap-3 gap-10"
+      class="flex flex-col gap-10 xl:gap-3"
     >
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
@@ -1841,7 +1841,7 @@
           on:keyup={({ target: { value } }) => (email = value)}
         />
       </div>
-      <div class="flex justify-end lg:gap-2 gap-6">
+      <div class="flex justify-end gap-6 lg:gap-2">
         <div class="xl:w-[120px] w-full">
           <Button
             variant="secondary"
@@ -1865,7 +1865,7 @@
 </AppOverlay>
 
 {#if show}
-  <div class="fixed top-3 right-3 w-full z-10">
+  <div class="fixed z-10 w-full top-3 right-3">
     <Toast
       transition={blur}
       params={{ amount: 10 }}
