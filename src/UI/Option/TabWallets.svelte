@@ -760,6 +760,8 @@
         );
 
         queryClient.invalidateQueries(["list-bundle"]);
+        queryClient.invalidateQueries(["list-address"]);
+
         listBundle = response?.data.map((item) => {
           return {
             name: item?.name,
