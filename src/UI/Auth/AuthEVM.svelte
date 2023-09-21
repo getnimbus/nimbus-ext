@@ -206,7 +206,7 @@
       const qrcode = QRCode(0, "L");
       qrcode.addData(`https://beta.getnimbus.io/?code=${syncMobileCode}`);
       qrcode.make();
-      qrImageDataUrl = qrcode.createDataURL(6);
+      qrImageDataUrl = qrcode.createDataURL(7);
     }
   }
 </script>
@@ -365,7 +365,7 @@
       </div>
     </div>
     <div class="flex justify-center items-center">
-      <div class="border rounded-xl overflow-hidden bg-white w-[60%]">
+      <div class="border rounded-xl overflow-hidden bg-white w-[57%]">
         <div class="bg-[#f3f4f6] py-2 px-4">
           <img src={Logo} alt="Logo" class="h-12 w-auto -ml-3" />
         </div>
@@ -378,7 +378,7 @@
       </div>
     </div>
     <div class="flex flex-col items-center mt-2 gap-4">
-      <div class="border-t-[1px] relative w-[60%]">
+      <div class="border-t-[1px] relative w-[57%]">
         <div
           class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 text-xs px-2 ${
             darkMode ? "bg-[#0f0f0f]" : "bg-white"
@@ -387,7 +387,7 @@
           Or enter the code manually
         </div>
       </div>
-      <div class="w-[60%]">
+      <div class="w-[57%]">
         <CopyToClipboard
           text={syncMobileCode}
           let:copy
