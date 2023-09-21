@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";
@@ -20,6 +21,7 @@
   import CalendarChart from "~/components/CalendarChart.svelte";
   import HistoricalTransactions from "./HistoricalTransactions.svelte";
   import Loading from "~/components/Loading.svelte";
+  import { wait } from "~/entries/background/utils";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -199,10 +201,18 @@
   }
 
   const getListTransactions = async (page: string) => {
+    console.log("typeWalletAddress: ", typeWalletAddress);
     isLoading = true;
+
+    let chain =
+      typeWalletAddress === "CEX" || typeWalletAddress === "BTC"
+        ? "ALL"
+        : selectedChain;
+    console.log("chain: ", chain);
+
     try {
       const response: TrxHistoryDataRes = await nimbus.get(
-        `/v2/address/${selectedWallet}/history?chain=${selectedChain}&pageToken=${page}`
+        `/v2/address/${selectedWallet}/history?chain=${chain}&pageToken=${page}`
       );
       if (response && response?.data) {
         data = [...data, ...response?.data?.data];

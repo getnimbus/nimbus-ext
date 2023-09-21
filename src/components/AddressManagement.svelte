@@ -381,11 +381,7 @@
 
     // check type address and handle logic update global state
     if (typeParams === "CEX") {
-      if (window.location.pathname === "/transactions") {
-        chain.update((n) => (n = "ETH"));
-      } else {
-        chain.update((n) => (n = "ALL"));
-      }
+      chain.update((n) => (n = "ALL"));
       window.history.replaceState(
         null,
         "",
@@ -401,12 +397,6 @@
       addressParams &&
       typeParams
     ) {
-      if (window.location.pathname === "/transactions") {
-        chain.update((n) => (n = "ETH"));
-      } else {
-        chain.update((n) => (n = "ALL"));
-      }
-
       if (typeParams === "BTC" || typeParams === "SOL") {
         window.history.replaceState(
           null,
@@ -417,6 +407,11 @@
       }
 
       if (typeParams === "EVM") {
+        if (window.location.pathname === "/transactions") {
+          chain.update((n) => (n = "ETH"));
+        } else {
+          chain.update((n) => (n = "ALL"));
+        }
         window.history.replaceState(
           null,
           "",
@@ -795,6 +790,18 @@
       selectedBundle.update(
         (n) => (n = listAddress.find((item) => item.value === selectedWallet))
       );
+    }
+  }
+
+  $: {
+    if (selectedWallet) {
+      if (window.location.pathname === "/transactions") {
+        if (typeWalletAddress === "EVM") {
+          chain.update((n) => (n = "ETH"));
+        } else {
+          chain.update((n) => (n = "ALL"));
+        }
+      }
     }
   }
 </script>

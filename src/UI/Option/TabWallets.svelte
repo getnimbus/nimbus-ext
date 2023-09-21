@@ -306,9 +306,11 @@
     });
 
     listAddress = structWalletData;
+    console.log("listAddress: ", listAddress);
     listAddressWithoutBundle = structWalletData.filter(
       (item) => item.type !== "BUNDLE"
     );
+    console.log("listAddressWithoutBundle: ", listAddressWithoutBundle);
 
     if (structWalletData && structWalletData?.length === 1) {
       browser.storage.sync.set({
@@ -532,13 +534,16 @@
 
   // Sort list address
   const handleSortListAddress = async (listAddress) => {
+    console.log("listAddress after sort: ", listAddress);
     try {
       const formatListAddress = listAddress.map((item, index) => {
         return {
           id: item.id,
+          publicAddress: item.address,
           position: index,
         };
       });
+      console.log("listAddress after sort payload: ", formatListAddress);
       await nimbus.post(`/accounts/sorting`, formatListAddress);
     } catch (e) {
       console.error("e: ", e);
