@@ -106,7 +106,7 @@
   };
 
   // Handle mobile sign in
-  const handleMobileSignIn = async (code, address) => {
+  const handleMobileSignIn = async (code) => {
     try {
       console.log("code: ", code);
       const res = await nimbus.post("/auth/access-code", {
@@ -114,7 +114,6 @@
       });
       console.log("res: ", res);
       if (res?.data?.result) {
-        localStorage.setItem("evm_address", address);
         localStorage.setItem("evm_token", res?.data?.result);
         user.update(
           (n) =>
@@ -132,7 +131,6 @@
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const syncCodeParams = urlParams.get("code");
-    const addressParams = urlParams.get("address");
     if (syncCodeParams) {
       handleMobileSignIn(syncCodeParams, addressParams);
     }
@@ -833,7 +831,7 @@
       </div>
     </div>
   </div>
-  <form
+  <!-- <form
     on:submit|preventDefault={onSubmitGetEmail}
     class="flex flex-col xl:gap-3 gap-10"
   >
@@ -875,7 +873,7 @@
         >
       </div>
     </div>
-  </form>
+  </form> -->
 </AppOverlay>
 
 <style>
