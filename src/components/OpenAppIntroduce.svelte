@@ -93,14 +93,14 @@
         {/if}
       </div>
       {#if mobileOperationSystem === "Android"}
-        <div class="lg:text-2xl text-3xl text-center leading-snug">
+        <div class="lg:text-2xl text-4xl text-center leading-snug">
           Please open Nimbus app in your browser to install this app Click on
           <span class="font-medium">Three Vertical Dots</span>
           ->
           <span class="font-medium">Install App </span>
         </div>
       {:else if mobileOperationSystem === "iOS"}
-        <div class="lg:text-2xl text-3xl text-center leading-snug">
+        <div class="lg:text-2xl text-4xl text-center leading-snug">
           In your Safari browser menu , tap the Share icon and choose <span
             class="font-medium">Add to Home Screen</span
           > in the options. Then open Nimbus.app in your home screen
