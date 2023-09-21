@@ -14,8 +14,6 @@
   import TabHighlight from "~/UI/Option/TabHighlight.svelte";
   import TabSettings from "~/UI/Option/TabSettings.svelte";
 
-  import User from "~/assets/user.png";
-
   const listSideBar = [
     {
       label: i18n("optionsPage.tab-title-highlight", "Highlight"),
@@ -51,41 +49,7 @@
     }
   });
 
-  const getUserInfo = async () => {
-    try {
-      const response = await nimbus.get("/users/me");
-      if (response && response.data) {
-        if (
-          response.data?.plan?.tier &&
-          response.data?.plan?.tier.length !== 0
-        ) {
-          selectedPackage.update(
-            // (n) => (n = response.data?.plan?.tier.toUpperCase())
-            () => "PROFESSIONAL" // TODO: Remove me after integration complete
-          );
-        }
-      } else {
-        selectedPackage.update(
-          () => "PROFESSIONAL" // TODO: Remove me after integration complete
-        );
-      }
-    } catch (e) {
-      console.error("e: ", e);
-    }
-  };
-
   onMount(() => {
-    const evmToken = localStorage.getItem("evm_token");
-    const evmAddress = localStorage.getItem("evm_address");
-    if (evmToken && evmAddress) {
-      user.update(
-        (n) =>
-          (n = {
-            picture: User,
-          })
-      );
-      getUserInfo();
-    }
     const urlParams = new URLSearchParams(window.location.search);
     const tabParams = urlParams.get("tab");
     if (tabParams) {

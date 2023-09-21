@@ -9,6 +9,7 @@
     typeWallet,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
+  import { useQueryClient } from "@tanstack/svelte-query";
 
   import Crown from "~/assets/crown.svg";
 
@@ -313,8 +314,8 @@
           `}
       on:click={() => {
         if (userInfo && Object.keys(userInfo).length !== 0) {
-          navActive = "transactions";
           chain.update((n) => (n = "ETH"));
+          navActive = "transactions";
           queryClient.invalidateQueries(["users-me"]);
         } else {
           user.update((n) => (n = {}));

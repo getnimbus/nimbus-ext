@@ -163,6 +163,7 @@
 
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
+      localStorage.setItem("evm_address", $queryUserInfo.data.publicAddress);
       if (
         $queryUserInfo.data?.plan?.tier &&
         $queryUserInfo.data?.plan?.tier.length !== 0
@@ -335,8 +336,8 @@
       <div
         on:click={() => {
           if (userInfo && Object.keys(userInfo).length !== 0) {
-            navActive = "transactions";
             chain.update((n) => (n = "ETH"));
+            navActive = "transactions";
             queryClient.invalidateQueries(["users-me"]);
           } else {
             user.update((n) => (n = {}));
