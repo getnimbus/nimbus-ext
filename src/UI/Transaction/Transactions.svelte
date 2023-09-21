@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import dayjs from "dayjs";
   import "dayjs/locale/en";
   import "dayjs/locale/vi";
@@ -220,7 +221,7 @@
   };
 
   $: {
-    if (selectedWallet || selectedChain) {
+    if (selectedWallet) {
       data = [];
       pageToken = "";
       isLoading = false;
@@ -241,30 +242,16 @@
               darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
             }`}
           >
-            {#if $query.isFetching}
-              <div class="flex items-center justify-center h-[152px]">
-                <Loading />
-              </div>
-            {:else}
-              <div>
-                {#if $query.isError}
-                  <div class="flex items-center justify-center h-[152px]">
-                    <div class="xl:text-lg text-xl text-gray-400">Empty</div>
-                  </div>
-                {:else}
-                  <CalendarChart
-                    {option}
-                    isEmptyDataChart={$query.isError}
-                    isLoadingChart={$query.isFetching}
-                    isTrxPage
-                    title="Historical Activities"
-                    tooltipTitle="The chart shows only activities made by this wallet"
-                    id="historical-activities"
-                    type="normal"
-                  />
-                {/if}
-              </div>
-            {/if}
+            <CalendarChart
+              {option}
+              isEmptyDataChart={$query.isError}
+              isLoadingChart={$query.isFetching}
+              isTrxPage
+              title="Historical Activities"
+              tooltipTitle="The chart shows only activities made by this wallet"
+              id="historical-activities"
+              type="normal"
+            />
           </div>
         {/if}
 

@@ -183,6 +183,8 @@
   let isAddBundle = false;
   let isLoadingBundle = false;
 
+  let timerDebounceSort;
+
   const queryClient = useQueryClient();
 
   const trigger = () => {
@@ -306,9 +308,11 @@
     });
 
     listAddress = structWalletData;
+    console.log("listAddress: ", listAddress);
     listAddressWithoutBundle = structWalletData.filter(
       (item) => item.type !== "BUNDLE"
     );
+    console.log("listAddressWithoutBundle: ", listAddressWithoutBundle);
 
     if (structWalletData && structWalletData?.length === 1) {
       browser.storage.sync.set({
@@ -530,12 +534,20 @@
     }
   };
 
+  const debounceSort = (listAddress) => {
+    clearTimeout(timerDebounceSort);
+    timerDebounceSort = setTimeout(() => {
+      handleSortListAddress(listAddress);
+    }, 300);
+  };
+
   // Sort list address
   const handleSortListAddress = async (listAddress) => {
     try {
       const formatListAddress = listAddress.map((item, index) => {
         return {
           id: item.id,
+          publicAddress: item.address,
           position: index,
         };
       });
@@ -1364,7 +1376,7 @@
             }}
             on:finalize={(e) => {
               listAddressWithoutBundle = e.detail.items;
-              handleSortListAddress(e.detail.items);
+              debounceSort(e.detail.items);
             }}
           >
             {#if listAddressWithoutBundle && listAddressWithoutBundle.length === 0}

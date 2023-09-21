@@ -12,6 +12,7 @@
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import { handleGetAccessToken } from "~/utils";
+  import { useQueryClient } from "@tanstack/svelte-query";
 
   import AppOverlay from "~/components/Overlay.svelte";
   import GoogleAuth from "~/components/GoogleAuth.svelte";
@@ -28,6 +29,7 @@
 
   const signatureString = "Hello Nimbus";
   const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
+  const queryClient = useQueryClient();
 
   let isOpenAuthModal = false;
   let userInfo = {};
@@ -102,6 +104,8 @@
     addressWallet = "";
     signMessageAddress = "";
     $walletStore.disconnect();
+    queryClient.invalidateQueries(["list-address"]);
+    queryClient.invalidateQueries(["users-me"]);
   };
 
   $: {

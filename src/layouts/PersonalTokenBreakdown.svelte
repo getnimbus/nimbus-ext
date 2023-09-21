@@ -10,8 +10,8 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { Toast, Progressbar } from "flowbite-svelte";
   import { blur } from "svelte/transition";
-  import { isDarkMode, typeWallet } from "~/store";
-  import { createQuery } from "@tanstack/svelte-query";
+  import { isDarkMode, typeWallet, wallet, chain } from "~/store";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
   import type { TokenData, HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -39,8 +39,27 @@
     empty: i18n("newtabPage.empty", "Empty"),
   };
 
+  const queryClient = useQueryClient();
+
   let selectedWallet: string = "";
+  wallet.subscribe((value) => {
+    selectedWallet = value;
+  });
+
   let selectedChain: string = "";
+  chain.subscribe((value) => {
+    selectedChain = value;
+  });
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
 
   let holdingTokenData: TokenData = [];
   let marketPriceToken;
@@ -64,16 +83,6 @@
 
   let isOpenConfirmDelete = false;
   let isLoadingDelete = false;
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
 
   const handleScroll = () => {
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
@@ -117,6 +126,85 @@
   let searchValue = "";
   let sortTag = "default";
 
+  const getPersonalizeTag = async (address) => {
+    const response = await nimbus
+      .get(`/address/${address}/personalize/tag`)
+      .then((response) => response.data);
+    return response;
+  };
+
+  const formatDataTag = (data) => {
+    const categoriesData = Object.getOwnPropertyNames(data);
+    const categoriesDataList = categoriesData.map((item) => {
+      return {
+        category: item,
+        dataTag: groupBy(data[item], "tag"),
+      };
+    });
+    const formatDataCategory = categoriesDataList.map((item) => {
+      return {
+        category: item.category,
+        dataTag: Object.getOwnPropertyNames(item.dataTag).map((tag) => {
+          return {
+            name: tag,
+            tokens: item.dataTag[tag],
+          };
+        }),
+      };
+    });
+
+    if (formatDataCategory.length !== 0) {
+      listCustom = formatDataCategory;
+
+      if (listCustom.length === 1) {
+        selectedCustom = listCustom[0];
+        handleSelectCategory(listCustom[0]);
+      }
+      if (listCustom.length > 1) {
+        if (
+          selectedCustom &&
+          selectedCustom !== null &&
+          Object.keys(selectedCustom).length !== 0
+        ) {
+          const selected = listCustom.filter(
+            (item) => item.category === selectedCustom.category
+          );
+          selectedCustom = selected[0];
+          handleSelectCategory(selected[0]);
+        } else {
+          selectedCustom = listCustom[listCustom.length - 1];
+          handleSelectCategory(listCustom[listCustom.length - 1]);
+        }
+      }
+    }
+  };
+
+  const getHoldingToken = async (address, chain) => {
+    const response: HoldingTokenRes = await nimbus
+      .get(`/v2/address/${address}/holding?chain=${chain}`)
+      .then((response) => response.data);
+    return response;
+  };
+
+  const formatDataHoldingToken = (data) => {
+    const formatData = data.map((item) => {
+      return {
+        ...item,
+        tag: "Other",
+        value: item.amount * item.rate,
+      };
+    });
+    holdingTokenData = formatData.sort((a, b) => {
+      if (a.value < b.value) {
+        return 1;
+      }
+      if (a.value > b.value) {
+        return -1;
+      }
+      return 0;
+    });
+  };
+
   const onSubmit = async () => {
     formData = {
       ...formData,
@@ -142,7 +230,7 @@
         showSuggestListTag = false;
         selectedTokenList = [];
         isAddCustom = false;
-        getPersonalizeTag(selectedWallet);
+        queryClient.invalidateQueries(["personalize-tag"]);
 
         toastMsg = "Successfully add tag to your custom category!";
         isSuccessToast = true;
@@ -154,59 +242,6 @@
         "Something wrong when add tag to your custom category. Please try again!";
       isSuccessToast = false;
       trigger();
-    }
-  };
-
-  const getPersonalizeTag = async (address: string) => {
-    try {
-      const response = await nimbus.get(`/address/${address}/personalize/tag`);
-      if (response && response.data) {
-        const categoriesData = Object.getOwnPropertyNames(response.data);
-        const categoriesDataList = categoriesData.map((item) => {
-          return {
-            category: item,
-            dataTag: groupBy(response.data[item], "tag"),
-          };
-        });
-        const formatDataCategory = categoriesDataList.map((item) => {
-          return {
-            category: item.category,
-            dataTag: Object.getOwnPropertyNames(item.dataTag).map((tag) => {
-              return {
-                name: tag,
-                tokens: item.dataTag[tag],
-              };
-            }),
-          };
-        });
-
-        if (formatDataCategory.length !== 0) {
-          listCustom = formatDataCategory;
-
-          if (listCustom.length === 1) {
-            selectedCustom = listCustom[0];
-            handleSelectCategory(listCustom[0]);
-          }
-          if (listCustom.length > 1) {
-            if (
-              selectedCustom &&
-              selectedCustom !== null &&
-              Object.keys(selectedCustom).length !== 0
-            ) {
-              const selected = listCustom.filter(
-                (item) => item.category === selectedCustom.category
-              );
-              selectedCustom = selected[0];
-              handleSelectCategory(selected[0]);
-            } else {
-              selectedCustom = listCustom[listCustom.length - 1];
-              handleSelectCategory(listCustom[listCustom.length - 1]);
-            }
-          }
-        }
-      }
-    } catch (e) {
-      console.error("e: ", e);
     }
   };
 
@@ -233,7 +268,7 @@
       );
 
       editTag = "";
-      getPersonalizeTag(address);
+      queryClient.invalidateQueries(["personalize-tag"]);
 
       if (!body.hasOwnProperty("tagName")) {
         selectedCustom = {
@@ -306,7 +341,7 @@
       listCustom = [];
       selectedTokenList = [];
       handleResetState();
-      getPersonalizeTag(selectedWallet);
+      queryClient.invalidateQueries(["personalize-tag"]);
 
       toastMsg = "Successfully delete your custom category!";
       isSuccessToast = true;
@@ -322,35 +357,10 @@
     }
   };
 
-  const getHoldingToken = async (address, chain) => {
-    const response: HoldingTokenRes = await nimbus
-      .get(`/v2/address/${address}/holding?chain=${chain}`)
-      .then((response) => response.data);
-    return response;
-  };
-
-  const formatDataHoldingToken = (data) => {
-    const formatData = data.map((item) => {
-      return {
-        ...item,
-        tag: "Other",
-        value: item.amount * item.rate,
-      };
-    });
-    holdingTokenData = formatData.sort((a, b) => {
-      if (a.value < b.value) {
-        return 1;
-      }
-      if (a.value > b.value) {
-        return -1;
-      }
-      return 0;
-    });
-  };
-
   // query token holding
   $: queryTokenHolding = createQuery({
-    queryKey: ["token-holding", selectedWallet, selectedChain],
+    queryKey: ["holding-token", selectedWallet, selectedChain],
+    enabled: enabledQuery,
     queryFn: () => getHoldingToken(selectedWallet, selectedChain),
     staleTime: Infinity,
   });
@@ -361,15 +371,35 @@
     }
   }
 
+  // query tag
+  $: queryTag = createQuery({
+    queryKey: ["personalize-tag", selectedWallet],
+    enabled: enabledQuery,
+    queryFn: () => getPersonalizeTag(selectedWallet),
+    staleTime: Infinity,
+  });
+
+  $: {
+    if (!$queryTag.isError && $queryTag.data !== undefined) {
+      formatDataTag($queryTag.data);
+    }
+  }
+
+  $: enabledQuery = Boolean(
+    (typeWalletAddress === "EVM" ||
+      typeWalletAddress === "CEX" ||
+      typeWalletAddress === "BUNDLE") &&
+      selectedWallet.length !== 0
+  );
+
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     let chainParams = urlParams.get("chain");
     let addressParams = urlParams.get("address");
 
     if (chainParams && addressParams) {
-      selectedWallet = addressParams;
-      selectedChain = chainParams;
-      getPersonalizeTag(addressParams);
+      wallet.update((n) => (n = addressParams));
+      chain.update((n) => (n = chainParams));
     }
 
     const handleScroll = () => {
