@@ -736,14 +736,16 @@
           <DarkModeFooter />
           <div class="w-max flex flex-col gap-6">
             <AuthEvm />
-            <div
-              class="text-3xl font-semibold text-white cursor-pointer xl:text-base"
-              on:click={() => {
-                isOpenModalSync = true;
-              }}
-            >
-              Sync from Desktop
-            </div>
+            {#if Object.keys(userInfo).length === 0}
+              <div
+                class="text-3xl font-semibold text-white cursor-pointer xl:text-base"
+                on:click={() => {
+                  isOpenModalSync = true;
+                }}
+              >
+                Sync from Desktop
+              </div>
+            {/if}
           </div>
         </div>
         <div class="w-full flex justify-center gap-16 text-white">
@@ -820,7 +822,59 @@
     isOpenModalSync = false;
   }}
 >
-  <div>hello</div>
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1 items-start">
+      <div class="xl:title-3 title-1 font-semibold">
+        Input your code from desktop
+      </div>
+      <div class="xl:text-sm text-2xl text-gray-500">
+        Investment in crypto more convenience with Nimbus anywhere, anytime
+      </div>
+    </div>
+  </div>
+  <form
+    on:submit|preventDefault={onSubmitGetEmail}
+    class="flex flex-col xl:gap-3 gap-10"
+  >
+    <div
+      class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+        email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+      }`}
+    >
+      <div class="xl:text-base text-2xl text-[#666666] font-medium">Email</div>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        required
+        placeholder="Your email"
+        value=""
+        class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+          email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+        }`}
+        on:keyup={({ target: { value } }) => (email = value)}
+      />
+    </div>
+    <div class="flex justify-end lg:gap-2 gap-6">
+      <div class="xl:w-[120px] w-full">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            isOpenModal = false;
+          }}
+        >
+          {MultipleLang.content.modal_cancel}</Button
+        >
+      </div>
+      <div class="xl:w-[120px] w-full">
+        <Button
+          type="submit"
+          isLoading={isLoadingSendMail}
+          disabled={isLoadingSendMail}>Submit</Button
+        >
+      </div>
+    </div>
+  </form>
 </AppOverlay>
 
 <style>
