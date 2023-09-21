@@ -359,9 +359,9 @@
 >
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1 items-start">
-      <div class="xl:title-3 title-1 font-semibold">Sync app to mobile</div>
+      <div class="xl:title-3 title-1 font-semibold">Sync session to mobile</div>
       <div class="xl:text-sm text-2xl text-gray-500">
-        More convenience in managing your portfolio anywhere, anytime
+        More convenience in managing your portfolio on mobile devices
       </div>
     </div>
     <div class="flex justify-center items-center">

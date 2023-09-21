@@ -90,6 +90,7 @@
   let isOpenModalSync = false;
   let isLoadingSyncMobile = false;
   let code = 0;
+  let errors: any = {};
 
   const debounceSearch = (value) => {
     clearTimeout(timerDebounce);
@@ -112,11 +113,9 @@
   const handleMobileSignIn = async (code) => {
     isLoadingSyncMobile = true;
     try {
-      console.log("code: ", code);
       const res = await nimbus.post("/auth/access-code", {
         code: code,
       });
-      console.log("res: ", res);
       if (res?.data?.result) {
         localStorage.setItem("evm_token", res?.data?.result);
         user.update(
@@ -127,12 +126,21 @@
         );
         queryClient.invalidateQueries(["list-address"]);
         queryClient.invalidateQueries(["users-me"]);
+        isOpenModalSync = false;
       }
+      errors["code"] = {
+        ...errors["code"],
+        required: true,
+        msg: "Your code is expired",
+      };
       isLoadingSyncMobile = false;
-      isOpenModalSync = false;
     } catch (e) {
       isLoadingSyncMobile = false;
-      isOpenModalSync = false;
+      errors["code"] = {
+        ...errors["code"],
+        required: true,
+        msg: "Your code is expired",
+      };
       console.error(e);
     }
   };
@@ -143,6 +151,14 @@
     for (let field of formData) {
       const [key, value] = field;
       data[key] = value;
+    }
+    if (data.code.length !== 6) {
+      errors["code"] = {
+        ...errors["code"],
+        required: true,
+        msg: "Invalid code",
+      };
+      return;
     }
     handleMobileSignIn(data.code);
   };
@@ -853,24 +869,34 @@
       on:submit|preventDefault={onSubmitGetCode}
       class="flex flex-col xl:gap-3 gap-10"
     >
-      <div
-        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          code && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-        }`}
-      >
-        <div class="xl:text-base text-2xl text-[#666666] font-medium">Code</div>
-        <input
-          type="number"
-          id="code"
-          name="code"
-          required
-          placeholder="Your code"
-          value=""
-          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            code && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+      <div class="flex flex-col gap-1">
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            code && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
-          on:keyup={({ target: { value } }) => (code = value)}
-        />
+          class:input-border-error={errors.code && errors.code.required}
+        >
+          <div class="xl:text-base text-2xl text-[#666666] font-medium">
+            Code
+          </div>
+          <input
+            type="number"
+            id="code"
+            name="code"
+            required
+            placeholder="Your code"
+            value=""
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              code && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            }`}
+            on:keyup={({ target: { value } }) => (code = value)}
+          />
+        </div>
+        {#if errors.code && errors.code.required}
+          <div class="text-red-500">
+            {errors.code.msg}
+          </div>
+        {/if}
       </div>
       <div class="flex justify-end lg:gap-2 gap-6">
         <div class="xl:w-[120px] w-full">
@@ -911,6 +937,10 @@
       0 8px 10px -6px var(--tw-shadow-color);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
       var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
+  .input-border-error {
+    border: 1px solid red;
   }
 
   :global(body) .mobile-container {
