@@ -448,18 +448,20 @@
 
   const handleCreateUser = async () => {
     const evmAddress = localStorage.getItem("evm_address");
-    try {
-      await nimbus.post("/accounts", {
-        type: "DEX",
-        publicAddress: evmAddress,
-        accountId: evmAddress,
-        label: "My address",
-      });
-      queryClient.invalidateQueries(["list-address"]);
-      wallet.update((n) => (n = evmAddress));
-      mixpanel.track("user_add_address");
-    } catch (e) {
-      console.error(e);
+    if (evmAddress) {
+      try {
+        await nimbus.post("/accounts", {
+          type: "DEX",
+          publicAddress: evmAddress,
+          accountId: evmAddress,
+          label: "My address",
+        });
+        queryClient.invalidateQueries(["list-address"]);
+        wallet.update((n) => (n = evmAddress));
+        mixpanel.track("user_add_address");
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
 
