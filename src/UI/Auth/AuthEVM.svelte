@@ -65,7 +65,6 @@
   let qrImageDataUrl = "";
 
   onMount(() => {
-    console.log("HI WORLD");
     const urlParams = new URLSearchParams(window.location.search);
     const invitationParams = urlParams.get("invitation");
     if (invitationParams) {

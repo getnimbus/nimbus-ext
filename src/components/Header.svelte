@@ -23,6 +23,7 @@
   import AuthEvm from "~/UI/Auth/AuthEVM.svelte";
   import DarkModeFooter from "./DarkModeFooter.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
+  import Button from "~/components/Button.svelte";
 
   import Logo from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
@@ -87,6 +88,8 @@
   let search = "";
 
   let isOpenModalSync = false;
+  let isLoadingSyncMobile = false;
+  let code = 0;
 
   const debounceSearch = (value) => {
     clearTimeout(timerDebounce);
@@ -107,6 +110,7 @@
 
   // Handle mobile sign in
   const handleMobileSignIn = async (code) => {
+    isLoadingSyncMobile = true;
     try {
       console.log("code: ", code);
       const res = await nimbus.post("/auth/access-code", {
@@ -122,17 +126,32 @@
             })
         );
         queryClient.invalidateQueries(["list-address"]);
+        queryClient.invalidateQueries(["users-me"]);
       }
+      isLoadingSyncMobile = false;
+      isOpenModalSync = false;
     } catch (e) {
+      isLoadingSyncMobile = false;
+      isOpenModalSync = false;
       console.error(e);
     }
+  };
+
+  const onSubmitGetCode = async (e) => {
+    const formData = new FormData(e.target);
+    const data: any = {};
+    for (let field of formData) {
+      const [key, value] = field;
+      data[key] = value;
+    }
+    handleMobileSignIn(data.code);
   };
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const syncCodeParams = urlParams.get("code");
     if (syncCodeParams) {
-      handleMobileSignIn(syncCodeParams, addressParams);
+      handleMobileSignIn(syncCodeParams);
     }
   });
 
@@ -830,50 +849,50 @@
         Investment in crypto more convenience with Nimbus anywhere, anytime
       </div>
     </div>
-  </div>
-  <!-- <form
-    on:submit|preventDefault={onSubmitGetEmail}
-    class="flex flex-col xl:gap-3 gap-10"
-  >
-    <div
-      class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-        email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-      }`}
+    <form
+      on:submit|preventDefault={onSubmitGetCode}
+      class="flex flex-col xl:gap-3 gap-10"
     >
-      <div class="xl:text-base text-2xl text-[#666666] font-medium">Email</div>
-      <input
-        type="email"
-        id="email"
-        name="email"
-        required
-        placeholder="Your email"
-        value=""
-        class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-          email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+      <div
+        class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+          code && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
         }`}
-        on:keyup={({ target: { value } }) => (email = value)}
-      />
-    </div>
-    <div class="flex justify-end lg:gap-2 gap-6">
-      <div class="xl:w-[120px] w-full">
-        <Button
-          variant="secondary"
-          on:click={() => {
-            isOpenModal = false;
-          }}
-        >
-          {MultipleLang.content.modal_cancel}</Button
-        >
+      >
+        <div class="xl:text-base text-2xl text-[#666666] font-medium">Code</div>
+        <input
+          type="number"
+          id="code"
+          name="code"
+          required
+          placeholder="Your code"
+          value=""
+          class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+            code && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+          }`}
+          on:keyup={({ target: { value } }) => (code = value)}
+        />
       </div>
-      <div class="xl:w-[120px] w-full">
-        <Button
-          type="submit"
-          isLoading={isLoadingSendMail}
-          disabled={isLoadingSendMail}>Submit</Button
-        >
+      <div class="flex justify-end lg:gap-2 gap-6">
+        <div class="xl:w-[120px] w-full">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              isOpenModalSync = false;
+            }}
+          >
+            Cancel
+          </Button>
+        </div>
+        <div class="xl:w-[120px] w-full">
+          <Button
+            type="submit"
+            isLoading={isLoadingSyncMobile}
+            disabled={isLoadingSyncMobile}>Submit</Button
+          >
+        </div>
       </div>
-    </div>
-  </form> -->
+    </form>
+  </div>
 </AppOverlay>
 
 <style>
