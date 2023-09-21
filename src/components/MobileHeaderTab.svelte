@@ -9,8 +9,7 @@
     typeWallet,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
-  import { nimbus } from "~/lib/network";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { useQueryClient } from "@tanstack/svelte-query";
 
   import Crown from "~/assets/crown.svg";
 
@@ -56,29 +55,6 @@
   let showHeaderMobile = false;
   isShowHeaderMobile.subscribe((value) => {
     showHeaderMobile = value;
-  });
-
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
-    return response?.data;
-  };
-
-  $: queryUserInfo = createQuery({
-    queryKey: ["users-me"],
-    queryFn: () => getUserInfo(),
-    staleTime: Infinity,
-    retry: false,
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-      wallet.update((n) => (n = ""));
-      chain.update((n) => (n = ""));
-      typeWallet.update((n) => (n = ""));
-      queryClient.invalidateQueries(["list-address"]);
-    },
   });
 
   $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
@@ -340,8 +316,8 @@
           `}
       on:click={() => {
         if (userInfo && Object.keys(userInfo).length !== 0) {
-          navActive = "transactions";
           chain.update((n) => (n = "ETH"));
+          navActive = "transactions";
           queryClient.invalidateQueries(["users-me"]);
         } else {
           user.update((n) => (n = {}));

@@ -630,7 +630,8 @@
     queryKey: ["compare", selectedWallet, selectedChain],
     queryFn: () => getAnalyticCompare(selectedWallet),
     staleTime: Infinity,
-    enabled: enabledFetchAllData && selectedWallet.length !== 0,
+    // enabled: enabledFetchAllData && selectedWallet.length !== 0,
+    enabled: false,
   });
 
   // query nft holding
@@ -961,9 +962,9 @@
           mixpanel.track("user_reload");
         }}
       >
-        <img src={Reload} alt="" class="xl:w-3 xl:h-3 w-4 h-4" />
+        <img src={Reload} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
       </div>
-      <div class="xl:text-xs text-lg text-white font-medium">
+      <div class="text-lg font-medium text-white xl:text-xs">
         {#if loading}
           {MultipleLang.updating_data}
         {:else}
@@ -1023,13 +1024,13 @@
                 {isEmptyDataPie}
               />
 
-              {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX" || typeWalletAddress === "BUNDLE"}
+              <!-- {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX" || typeWalletAddress === "BUNDLE"}
                 <RiskReturn
                   isLoading={$queryCompare.isFetching}
                   isError={$queryCompare.isError}
                   data={$queryCompare.data}
                 />
-              {/if}
+              {/if} -->
 
               <Holding
                 {selectedWallet}

@@ -448,18 +448,20 @@
 
   const handleCreateUser = async () => {
     const evmAddress = localStorage.getItem("evm_address");
-    try {
-      await nimbus.post("/accounts", {
-        type: "DEX",
-        publicAddress: evmAddress,
-        accountId: evmAddress,
-        label: "My address",
-      });
-      queryClient.invalidateQueries(["list-address"]);
-      wallet.update((n) => (n = evmAddress));
-      mixpanel.track("user_add_address");
-    } catch (e) {
-      console.error(e);
+    if (evmAddress) {
+      try {
+        await nimbus.post("/accounts", {
+          type: "DEX",
+          publicAddress: evmAddress,
+          accountId: evmAddress,
+          label: "My address",
+        });
+        queryClient.invalidateQueries(["list-address"]);
+        wallet.update((n) => (n = evmAddress));
+        mixpanel.track("user_add_address");
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
 
@@ -637,11 +639,15 @@
           if (
             selected &&
             Object.keys(selected).length !== 0 &&
-            selected.type === "CEX"
+            selected.type === "BUNDLE"
           ) {
-            typeWallet.update((n) => (n = "CEX"));
-            browser.storage.sync.set({ typeWalletAddress: "CEX" });
-            chain.update((n) => (n = "ALL"));
+            typeWallet.update((n) => (n = "BUNDLE"));
+            browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
+            if (window.location.pathname === "/transactions") {
+              chain.update((n) => (n = "ETH"));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
             window.history.replaceState(
               null,
               "",
@@ -653,11 +659,15 @@
           if (
             selected &&
             Object.keys(selected).length !== 0 &&
-            selected.type === "BUNDLE"
+            selected.type === "CEX"
           ) {
-            typeWallet.update((n) => (n = "BUNDLE"));
-            browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
-            chain.update((n) => (n = "ALL"));
+            typeWallet.update((n) => (n = "CEX"));
+            browser.storage.sync.set({ typeWalletAddress: "CEX" });
+            if (window.location.pathname === "/transactions") {
+              chain.update((n) => (n = "ETH"));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
             window.history.replaceState(
               null,
               "",
@@ -693,7 +703,11 @@
           ) {
             typeWallet.update((n) => (n = "SOL"));
             browser.storage.sync.set({ typeWalletAddress: "SOL" });
-            chain.update((n) => (n = "ALL"));
+            if (window.location.pathname === "/transactions") {
+              chain.update((n) => (n = "ETH"));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
             window.history.replaceState(
               null,
               "",
@@ -709,7 +723,11 @@
           ) {
             typeWallet.update((n) => (n = "BTC"));
             browser.storage.sync.set({ typeWalletAddress: "BTC" });
-            chain.update((n) => (n = "ALL"));
+            if (window.location.pathname === "/transactions") {
+              chain.update((n) => (n = "ETH"));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
             window.history.replaceState(
               null,
               "",

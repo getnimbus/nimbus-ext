@@ -50,7 +50,47 @@
       </div>
     {/if}
   </div>
-  {#if isLoadingChart}
+
+  {#if isTrxPage}
+    <div class="h-full">
+      {#if isEmptyDataChart}
+        <div
+          class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[152px]"
+        >
+          Empty
+        </div>
+      {:else}
+        <div class="relative xl:-mt-12">
+          <EChart
+            {id}
+            {theme}
+            option={{
+              ...option,
+              calendar: {
+                ...option.calendar,
+                itemStyle: {
+                  ...option.calendar.itemStyle,
+                  color: "transparent",
+                },
+              },
+            }}
+            notMerge={true}
+          />
+
+          <div
+            class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-2/3 left-1/2 pointer-events-none"
+          >
+            <img
+              src={darkMode ? LogoWhite : Logo}
+              alt=""
+              width="140"
+              height="140"
+            />
+          </div>
+        </div>
+      {/if}
+    </div>
+  {:else if isLoadingChart}
     <div class="flex items-center justify-center h-[152px]">
       {#if type === "primary"}
         <LoadingPremium />
@@ -83,6 +123,7 @@
             }}
             notMerge={true}
           />
+
           <div
             class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-2/3 left-1/2 pointer-events-none"
           >
