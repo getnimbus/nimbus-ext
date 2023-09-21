@@ -59,24 +59,24 @@ export default defineConfig(({ mode }) => {
                       "sizes": "512x512",
                       "purpose": "any",
                   },
-                  {
-                  "src": "/assets/logo/256.png", 
-                  "type": "image/png",
-                  "sizes": "256x256",
-                  "purpose": "any",
-                  },
-                  {
-                    "src": "/assets/logo/144.png", 
-                    "type": "image/png",
-                    "sizes": "144x144",
-                    "purpose": "any",
-                  },
-                  {
-                  "src": "/assets/logo/48.png", 
-                  "type": "image/png",
-                  "sizes": "48x48",
-                  "purpose": "any",
-                  },
+                  // {
+                  // "src": "/assets/logo/256.png", 
+                  // "type": "image/png",
+                  // "sizes": "256x256",
+                  // "purpose": "any",
+                  // },
+                  // {
+                  //   "src": "/assets/logo/144.png", 
+                  //   "type": "image/png",
+                  //   "sizes": "144x144",
+                  //   "purpose": "any",
+                  // },
+                  // {
+                  // "src": "/assets/logo/48.png", 
+                  // "type": "image/png",
+                  // "sizes": "48x48",
+                  // "purpose": "any",
+                  // },
               ]
           }, 
       })
