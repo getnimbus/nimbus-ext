@@ -101,7 +101,6 @@
   };
 
   const getUserInfo = async () => {
-    console.log("HELLO WORLD");
     const response: any = await nimbus.get("/users/me");
     if (response?.status === 401) {
       throw new Error(response?.response?.error);
@@ -126,6 +125,7 @@
 
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
+      localStorage.setItem("evm_address", $queryUserInfo.data.publicAddress);
       if (
         $queryUserInfo.data?.plan?.tier &&
         $queryUserInfo.data?.plan?.tier.length !== 0

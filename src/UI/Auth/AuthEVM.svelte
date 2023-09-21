@@ -48,7 +48,6 @@
   });
 
   let showPopover = false;
-  let addressWallet = "";
   let invitation = "";
 
   const queryClient = useQueryClient();
@@ -61,9 +60,7 @@
     }
 
     const evmToken = localStorage.getItem("evm_token");
-    const evmAddress = localStorage.getItem("evm_address");
-    if (evmToken && evmAddress) {
-      addressWallet = evmAddress;
+    if (evmToken) {
       user.update(
         (n) =>
           (n = {
@@ -100,7 +97,6 @@
     showPopover = false;
     localStorage.removeItem("evm_address");
     localStorage.removeItem("evm_token");
-    addressWallet = "";
     disconnect($wallets$?.[0]);
     queryClient.invalidateQueries(["list-address"]);
     queryClient.invalidateQueries(["users-me"]);
@@ -153,8 +149,6 @@
     try {
       const res = await nimbus.post("/auth/evm", data);
       if (res?.data?.result) {
-        addressWallet = data.publicAddress;
-        localStorage.setItem("evm_address", data.publicAddress);
         localStorage.setItem("evm_token", res?.data?.result);
         user.update(
           (n) =>
@@ -212,7 +206,7 @@
           class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border_0000001a"
         >
           <div class="text-2xl xl:text-base">
-            GM 👋, {shorterAddress(addressWallet)}
+            GM 👋, {shorterAddress(localStorage.getItem("evm_address") || "")}
           </div>
           <DarkMode />
         </div>
