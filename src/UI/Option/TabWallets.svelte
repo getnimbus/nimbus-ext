@@ -183,6 +183,8 @@
   let isAddBundle = false;
   let isLoadingBundle = false;
 
+  let timerDebounceSort;
+
   const queryClient = useQueryClient();
 
   const trigger = () => {
@@ -532,9 +534,15 @@
     }
   };
 
+  const debounceSort = (listAddress) => {
+    clearTimeout(timerDebounceSort);
+    timerDebounceSort = setTimeout(() => {
+      handleSortListAddress(listAddress);
+    }, 300);
+  };
+
   // Sort list address
   const handleSortListAddress = async (listAddress) => {
-    console.log("listAddress after sort: ", listAddress);
     try {
       const formatListAddress = listAddress.map((item, index) => {
         return {
@@ -543,7 +551,6 @@
           position: index,
         };
       });
-      console.log("listAddress after sort payload: ", formatListAddress);
       await nimbus.post(`/accounts/sorting`, formatListAddress);
     } catch (e) {
       console.error("e: ", e);
@@ -1369,7 +1376,7 @@
             }}
             on:finalize={(e) => {
               listAddressWithoutBundle = e.detail.items;
-              handleSortListAddress(e.detail.items);
+              debounceSort(e.detail.items);
             }}
           >
             {#if listAddressWithoutBundle && listAddressWithoutBundle.length === 0}

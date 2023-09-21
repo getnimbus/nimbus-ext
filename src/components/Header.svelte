@@ -297,11 +297,7 @@
       <div
         on:click={() => {
           if (userInfo && Object.keys(userInfo).length !== 0) {
-            if (typeWalletAddress === "EVM") {
-              chain.update((n) => (n = "ETH"));
-            } else {
-              chain.update((n) => (n = "ALL"));
-            }
+            chain.update((n) => (n = "ETH"));
             navActive = "transactions";
             queryClient.invalidateQueries(["users-me"]);
           } else {

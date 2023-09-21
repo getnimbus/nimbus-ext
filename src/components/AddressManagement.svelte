@@ -381,7 +381,11 @@
 
     // check type address and handle logic update global state
     if (typeParams === "CEX") {
-      chain.update((n) => (n = "ALL"));
+      if (window.location.pathname === "/transactions") {
+        chain.update((n) => (n = "ETH"));
+      } else {
+        chain.update((n) => (n = "ALL"));
+      }
       window.history.replaceState(
         null,
         "",
@@ -397,6 +401,12 @@
       addressParams &&
       typeParams
     ) {
+      if (window.location.pathname === "/transactions") {
+        chain.update((n) => (n = "ETH"));
+      } else {
+        chain.update((n) => (n = "ALL"));
+      }
+
       if (typeParams === "BTC" || typeParams === "SOL") {
         window.history.replaceState(
           null,
@@ -407,11 +417,6 @@
       }
 
       if (typeParams === "EVM") {
-        if (window.location.pathname === "/transactions") {
-          chain.update((n) => (n = "ETH"));
-        } else {
-          chain.update((n) => (n = "ALL"));
-        }
         window.history.replaceState(
           null,
           "",
@@ -632,11 +637,15 @@
           if (
             selected &&
             Object.keys(selected).length !== 0 &&
-            selected.type === "CEX"
+            selected.type === "BUNDLE"
           ) {
-            typeWallet.update((n) => (n = "CEX"));
-            browser.storage.sync.set({ typeWalletAddress: "CEX" });
-            chain.update((n) => (n = "ALL"));
+            typeWallet.update((n) => (n = "BUNDLE"));
+            browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
+            if (window.location.pathname === "/transactions") {
+              chain.update((n) => (n = "ETH"));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
             window.history.replaceState(
               null,
               "",
@@ -648,11 +657,15 @@
           if (
             selected &&
             Object.keys(selected).length !== 0 &&
-            selected.type === "BUNDLE"
+            selected.type === "CEX"
           ) {
-            typeWallet.update((n) => (n = "BUNDLE"));
-            browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
-            chain.update((n) => (n = "ALL"));
+            typeWallet.update((n) => (n = "CEX"));
+            browser.storage.sync.set({ typeWalletAddress: "CEX" });
+            if (window.location.pathname === "/transactions") {
+              chain.update((n) => (n = "ETH"));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
             window.history.replaceState(
               null,
               "",
@@ -688,7 +701,11 @@
           ) {
             typeWallet.update((n) => (n = "SOL"));
             browser.storage.sync.set({ typeWalletAddress: "SOL" });
-            chain.update((n) => (n = "ALL"));
+            if (window.location.pathname === "/transactions") {
+              chain.update((n) => (n = "ETH"));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
             window.history.replaceState(
               null,
               "",
@@ -704,7 +721,11 @@
           ) {
             typeWallet.update((n) => (n = "BTC"));
             browser.storage.sync.set({ typeWalletAddress: "BTC" });
-            chain.update((n) => (n = "ALL"));
+            if (window.location.pathname === "/transactions") {
+              chain.update((n) => (n = "ETH"));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
             window.history.replaceState(
               null,
               "",
@@ -790,18 +811,6 @@
       selectedBundle.update(
         (n) => (n = listAddress.find((item) => item.value === selectedWallet))
       );
-    }
-  }
-
-  $: {
-    if (selectedWallet) {
-      if (window.location.pathname === "/transactions") {
-        if (typeWalletAddress === "EVM") {
-          chain.update((n) => (n = "ETH"));
-        } else {
-          chain.update((n) => (n = "ALL"));
-        }
-      }
     }
   }
 </script>
