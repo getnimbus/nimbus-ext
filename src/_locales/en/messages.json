@@ -23,6 +23,7 @@
   "optionsPage": {
     "message": "Options page languages",
     "tab-title-accounts": "Accounts",
+    "tab-title-listtoken": "List Tokens",
     "tab-title-dashboard": "Dashboard",
     "tab-title-highlight": "Highlight",
     "tab-title-notification": "Notification",

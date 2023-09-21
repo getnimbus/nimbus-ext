@@ -8,6 +8,7 @@
   import Mixpanel from "~/components/Mixpanel.svelte";
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
   import TabWallets from "~/UI/Option/TabWallets.svelte";
+  import TabListToken from "~/UI/Option/TabListToken.svelte";
   import TabSettings from "~/UI/Option/TabSettings.svelte";
   import TabNotification from "~/UI/Option/TabNotification.svelte";
   import TabNft from "~/UI/Option/TabNFT.svelte";
@@ -17,6 +18,11 @@
       label: i18n("optionsPage.tab-title-accounts", "Accounts"),
       value: "wallets",
       type: "Wallets",
+    },
+    {
+      label: i18n("optionsPage.tab-title-listtoken", "List Tokens"),
+      value: "tokens",
+      type: "Tokens",
     },
     // {
     //   label: i18n("optionsPage.tab-title-nft", "NFT"),
@@ -86,6 +92,8 @@
           <TabNft />
         {:else if activeTabValue === "notification"}
           <TabNotification /> -->
+        {:else if activeTabValue === "tokens"}
+          <TabListToken />
         {:else if activeTabValue === "settings"}
           <TabSettings />
         {/if}
