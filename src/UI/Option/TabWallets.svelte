@@ -308,11 +308,9 @@
     });
 
     listAddress = structWalletData;
-    console.log("listAddress: ", listAddress);
     listAddressWithoutBundle = structWalletData.filter(
       (item) => item.type !== "BUNDLE"
     );
-    console.log("listAddressWithoutBundle: ", listAddressWithoutBundle);
 
     if (structWalletData && structWalletData?.length === 1) {
       browser.storage.sync.set({
@@ -322,6 +320,9 @@
       browser.storage.sync.set({
         typeWalletAddress: structWalletData[0]?.type,
       });
+      chain.update((n) => (n = "ALL"));
+      typeWallet.update((n) => (n = structWalletData[0]?.type));
+      wallet.update((n) => (n = structWalletData[0]?.address));
     }
     if (
       structWalletData &&
@@ -336,6 +337,13 @@
       browser.storage.sync.set({
         typeWalletAddress: structWalletData[structWalletData.length - 1]?.type,
       });
+      chain.update((n) => (n = "ALL"));
+      typeWallet.update(
+        (n) => (n = structWalletData[structWalletData.length - 1]?.type)
+      );
+      wallet.update(
+        (n) => (n = structWalletData[structWalletData.length - 1]?.address)
+      );
     }
   };
 

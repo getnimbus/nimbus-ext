@@ -496,6 +496,12 @@
 
         queryClient.invalidateQueries(["list-address"]);
         wallet.update((n) => (n = dataFormat.value));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=EVM&chain=ALL&address=${dataFormat.value}`
+        );
 
         e.target.reset();
         errors = {};
