@@ -126,9 +126,9 @@
     }
   }
 
-  let logo =
-    dataTokenReport.logoUrl ||
-    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+  // let logo =
+  //   dataTokenReport.logoUrl ||
+  //   "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
 
   $: console.log("dataTokenReport : ", dataTokenReport);
 </script>
@@ -169,12 +169,12 @@
     <table class="table-auto xl:w-full w-[1800px]">
       <thead>
         <tr class="bg_f4f5f8">
-          <th class="py-3 pl-3 fixed z-10 w-[180px]">
+          <th class="py-3 pl-3">
             <div class="text-xl font-semibold uppercase xl:text-xs text-left">
               {MultipleLang.content.assets_header_table}
             </div>
           </th>
-          <th class="py-3 font-semibold uppercase xl:text-xs text-right">
+          <th class="py-3 font-semibold uppercase xl:text-xs text-left">
             <div>
               {MultipleLang.content.contract_address_header_table}
             </div>
@@ -208,33 +208,35 @@
             <tr
               class="cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px]"
             >
-              <td class={`pl-3 py-3 fixed z-1 w-[180px]`}>
-                <img
-                  src={logo}
-                  alt=""
-                  width="30"
-                  height="30"
-                  class="rounded-full"
-                  on:error={() => {
-                    logo =
-                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-                  }}
-                />
-                <div>
-                  <!-- {item.} -->
+              <td class={`pl-3 py-4`}>
+                <div class="flex items-center justify-start">
+                  <img
+                    src={item.logoUrl}
+                    alt=""
+                    width="40"
+                    height="40"
+                    class="rounded-full mr-4"
+                    on:error={(e) => {
+                      e.target.src =
+                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+                    }}
+                  />
+                  <div>
+                    {item.contractName}
+                  </div>
                 </div>
               </td>
-              <td class="py-3 text-right font-medium">
+              <td class="py-4 text-left font-medium">
                 <div>
                   {item.contractAddress}
                 </div>
               </td>
-              <td class="py-3">
+              <td class="py-4">
                 <div class="text-right font-medium">
                   {item.chain}
                 </div>
               </td>
-              <td class="py-3 pr-3 flex justify-end items-center">
+              <td class="py-4 pr-3 flex justify-end items-center">
                 <div
                   class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base"
                   on:click={() => {
