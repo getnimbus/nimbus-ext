@@ -89,8 +89,11 @@
   const queryClient = useQueryClient();
 
   const handleDataReportToken = async () => {
-    const data = await nimbus.get("/holding/trash");
-    return data.data;
+    const response = await nimbus.get("/holding/trash");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response.data;
   };
 
   const query = createQuery({
@@ -98,6 +101,10 @@
     queryFn: () => handleDataReportToken(),
     staleTime: Infinity,
     retry: false,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
   });
 
   const handleDeleteReportToken = async () => {
@@ -126,44 +133,13 @@
     }
   }
 
-  // let logo =
-  //   dataTokenReport.logoUrl ||
-  //   "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-
-  $: console.log("dataTokenReport : ", dataTokenReport);
+  // $: console.log("dataTokenReport : ", dataTokenReport);
 </script>
 
 <div class="flex flex-col gap-4">
   <div class="flex items-center justify-between">
     <div class="xl:title-3 title-1">List Token</div>
-    <div class="relative xl:w-max w-[200px]">
-      {#if Object.keys(userInfo).length !== 0}
-        <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
-          <img src={Plus} alt="" width="12" height="12" />
-          <div class="text-2xl font-medium text-white xl:text-base">
-            Button text
-          </div>
-        </Button>
-      {:else}
-        <div class="relative">
-          <Button variant="disabled">
-            <img
-              src={darkMode ? PlusBlack : Plus}
-              alt=""
-              width="12"
-              height="12"
-            />
-            <div
-              class={`text-2xl font-medium xl:text-base ${
-                darkMode ? "text-gray-400" : "text-white"
-              }`}
-            >
-              Button text
-            </div>
-          </Button>
-        </div>
-      {/if}
-    </div>
+    <div class="relative xl:w-max w-[200px]" />
   </div>
   <div class="border border_0000000d rounded-[10px] overflow-x-auto">
     <table class="table-auto xl:w-full w-[1800px]">
@@ -206,7 +182,7 @@
         {#each dataTokenReport as item}
           <tbody>
             <tr
-              class="cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px]"
+              class="cursor-pointer xl:text-base text-2xl py-1 px-3 rounded-[100px]"
             >
               <td class={`pl-3 py-4`}>
                 <div class="flex items-center justify-start">
@@ -221,12 +197,12 @@
                         "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
                     }}
                   />
-                  <div>
+                  <div class="font-medium">
                     {item.contractName}
                   </div>
                 </div>
               </td>
-              <td class="py-4 text-left font-medium">
+              <td class="py-4">
                 <div>
                   {item.contractAddress}
                 </div>
@@ -236,9 +212,9 @@
                   {item.chain}
                 </div>
               </td>
-              <td class="py-4 pr-3 flex justify-end items-center">
+              <td class="py-4 pr-3 flex justify-end">
                 <div
-                  class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base"
+                  class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base py-2"
                   on:click={() => {
                     selectedItemDelete = item;
                     isOpenConfirmDelete = true;
