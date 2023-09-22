@@ -112,7 +112,7 @@
     isLoadingDelete = true;
     try {
       await nimbus.delete("/holding/trash/revert", selectedItemDelete);
-      queryClient.invalidateQueries(["token-report"]);
+      queryClient.refetchQueries(["token-report"]);
       isLoadingDelete = false;
       isOpenConfirmDelete = false;
       toastMsg = "Successfully delete your token report!";
@@ -131,7 +131,7 @@
   $: {
     if (!$query.isError && $query.data !== undefined) {
       dataTokenReport = $query.data;
-      console.log("query data : ", $query.data);
+      // console.log("query data : ", $query.data);
     }
   }
 
@@ -170,7 +170,7 @@
         </tr>
       </thead>
 
-      {#if $query.isFetching}
+      {#if $query.isLoading}
         <tbody>
           <tr>
             <td colspan="3">
