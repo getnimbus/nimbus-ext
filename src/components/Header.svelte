@@ -11,6 +11,7 @@
     user,
     typeWallet,
     isShowHeaderMobile,
+    openModalSync,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -39,7 +40,6 @@
   import Crown from "~/assets/crown.svg";
   import Close from "~/assets/close-menu-bar.svg";
   import Chat from "~/assets/chat.svg";
-  import User from "~/assets/user.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -87,11 +87,6 @@
   let timerDebounce;
   let search = "";
 
-  let isOpenModalSync = false;
-  let isLoadingSyncMobile = false;
-  let code = 0;
-  let errors: any = {};
-
   const debounceSearch = (value) => {
     clearTimeout(timerDebounce);
     timerDebounce = setTimeout(() => {
@@ -108,70 +103,6 @@
       return undefined;
     }
   };
-
-  // Handle mobile sign in
-  const handleMobileSignIn = async (code) => {
-    isLoadingSyncMobile = true;
-    try {
-      const res = await nimbus.post("/auth/access-code", {
-        code: code,
-      });
-      console.log("code: ", code);
-      console.log("res: ", res);
-      if (res?.data?.result) {
-        localStorage.setItem("evm_token", res?.data?.result);
-        user.update(
-          (n) =>
-            (n = {
-              picture: User,
-            })
-        );
-        queryClient.invalidateQueries(["list-address"]);
-        queryClient.invalidateQueries(["users-me"]);
-        isOpenModalSync = false;
-      }
-      errors["code"] = {
-        ...errors["code"],
-        required: true,
-        msg: "Your code is expired",
-      };
-      isLoadingSyncMobile = false;
-    } catch (e) {
-      isLoadingSyncMobile = false;
-      errors["code"] = {
-        ...errors["code"],
-        required: true,
-        msg: "Your code is expired",
-      };
-      console.error(e);
-    }
-  };
-
-  const onSubmitGetCode = async (e) => {
-    const formData = new FormData(e.target);
-    const data: any = {};
-    for (let field of formData) {
-      const [key, value] = field;
-      data[key] = value;
-    }
-    if (data.code.length !== 6) {
-      errors["code"] = {
-        ...errors["code"],
-        required: true,
-        msg: "Invalid code",
-      };
-      return;
-    }
-    handleMobileSignIn(data.code);
-  };
-
-  onMount(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const syncCodeParams = urlParams.get("code");
-    if (syncCodeParams) {
-      handleMobileSignIn(syncCodeParams);
-    }
-  });
 
   const getUserInfo = async () => {
     const response: any = await nimbus.get("/users/me");
@@ -776,7 +707,7 @@
               <div
                 class="text-3xl font-semibold text-white cursor-pointer xl:text-base"
                 on:click={() => {
-                  isOpenModalSync = true;
+                  openModalSync.update((n) => (n = true));
                 }}
               >
                 Sync from Desktop
@@ -849,79 +780,6 @@
     </div>
   </div>
 </div>
-
-<!-- Modal sync user from desktop -->
-<AppOverlay
-  clickOutSideToClose
-  isOpen={isOpenModalSync}
-  on:close={() => {
-    isOpenModalSync = false;
-  }}
->
-  <div class="flex flex-col gap-4">
-    <div class="flex flex-col gap-1 items-start">
-      <div class="xl:title-3 title-1 font-semibold">
-        Input your code from desktop
-      </div>
-      <div class="xl:text-sm text-2xl text-gray-500">
-        Investment in crypto more convenience with Nimbus anywhere, anytime
-      </div>
-    </div>
-    <form
-      on:submit|preventDefault={onSubmitGetCode}
-      class="flex flex-col xl:gap-3 gap-10"
-    >
-      <div class="flex flex-col gap-1">
-        <div
-          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            code && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
-          }`}
-          class:input-border-error={errors.code && errors.code.required}
-        >
-          <div class="xl:text-base text-2xl text-[#666666] font-medium">
-            Code
-          </div>
-          <input
-            type="number"
-            id="code"
-            name="code"
-            required
-            placeholder="Your code"
-            value=""
-            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              code && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
-            }`}
-            on:keyup={({ target: { value } }) => (code = value)}
-          />
-        </div>
-        {#if errors.code && errors.code.required}
-          <div class="text-red-500">
-            {errors.code.msg}
-          </div>
-        {/if}
-      </div>
-      <div class="flex justify-end lg:gap-2 gap-6">
-        <div class="xl:w-[120px] w-full">
-          <Button
-            variant="secondary"
-            on:click={() => {
-              isOpenModalSync = false;
-            }}
-          >
-            Cancel
-          </Button>
-        </div>
-        <div class="xl:w-[120px] w-full">
-          <Button
-            type="submit"
-            isLoading={isLoadingSyncMobile}
-            disabled={isLoadingSyncMobile}>Submit</Button
-          >
-        </div>
-      </div>
-    </form>
-  </div>
-</AppOverlay>
 
 <style>
   .mobile {
