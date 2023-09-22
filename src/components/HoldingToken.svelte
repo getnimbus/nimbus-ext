@@ -123,6 +123,9 @@
         chain: document.getElementById("chain").value,
         contractAddress: document.getElementById("contract_address").value,
         reason: reason,
+        contractName: data.name,
+        contractTickerSymbol: data.symbol,
+        logoUrl: data.logo,
       };
       const response = await nimbus.post("/holding/trash/report", formData);
       toastMsg = "We will update after 2 minutes.";

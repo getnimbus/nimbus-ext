@@ -24,24 +24,28 @@
         "optionsPage.contract-address-tab-content.contract-address-header-table",
         "Contract Address"
       ),
+      assets_header_table: i18n(
+        "optionsPage.assets-page-content.assets-header-table",
+        "Assets"
+      ),
       action_header_table: i18n(
-        "optionsPage.accounts-page-content.action-header-table",
+        "optionsPage.assets-page-content.action-header-table",
         "Action"
       ),
       modal_cancel: i18n(
-        "optionsPage.accounts-page-content.modal-cancel",
+        "optionsPage.assets-page-content.modal-cancel",
         "Cancel"
       ),
       modal_delete: i18n(
-        "optionsPage.accounts-page-content.modal-delete",
+        "optionsPage.assets-page-content.modal-delete",
         "Delete"
       ),
       modal_delete_title: i18n(
-        "optionsPage.accounts-page-content.modal-delete-title",
+        "optionsPage.assets-page-content.modal-delete-title",
         "Are you sure?"
       ),
       modal_delete_sub_title: i18n(
-        "optionsPage.accounts-page-content.modal-token-delete-sub-title",
+        "optionsPage.assets-page-content.modal-token-delete-sub-title",
         "Do you really want to delete this token report?"
       ),
     },
@@ -122,6 +126,10 @@
     }
   }
 
+  let logo =
+    dataTokenReport.logoUrl ||
+    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+
   $: console.log("dataTokenReport : ", dataTokenReport);
 </script>
 
@@ -158,11 +166,16 @@
     </div>
   </div>
   <div class="border border_0000000d rounded-[10px] overflow-x-auto">
-    <table class="table-auto w-full">
+    <table class="table-auto xl:w-full w-[1800px]">
       <thead>
         <tr class="bg_f4f5f8">
-          <th class="py-3 pl-3">
+          <th class="py-3 pl-3 fixed z-10 w-[180px]">
             <div class="text-xl font-semibold uppercase xl:text-xs text-left">
+              {MultipleLang.content.assets_header_table}
+            </div>
+          </th>
+          <th class="py-3 font-semibold uppercase xl:text-xs text-right">
+            <div>
               {MultipleLang.content.contract_address_header_table}
             </div>
           </th>
@@ -195,7 +208,23 @@
             <tr
               class="cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px]"
             >
-              <td class="pl-3 py-3">
+              <td class={`pl-3 py-3 fixed z-1 w-[180px]`}>
+                <img
+                  src={logo}
+                  alt=""
+                  width="30"
+                  height="30"
+                  class="rounded-full"
+                  on:error={() => {
+                    logo =
+                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+                  }}
+                />
+                <div>
+                  <!-- {item.} -->
+                </div>
+              </td>
+              <td class="py-3 text-right font-medium">
                 <div>
                   {item.contractAddress}
                 </div>
