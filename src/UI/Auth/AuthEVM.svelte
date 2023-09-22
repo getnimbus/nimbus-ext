@@ -64,6 +64,9 @@
   let syncMobileCode = "";
   let qrImageDataUrl = "";
 
+  let timeCountdown = 59;
+  let timerCountdown;
+
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const invitationParams = urlParams.get("invitation");
@@ -194,9 +197,21 @@
         } else {
           // Schedule the next check after 1 minute
           timer = setTimeout(handleGetCodeSyncMobile, 60000);
+
+          timerCountdown = setInterval(() => {
+            timeCountdown -= 1;
+            if (timeCountdown < 0) {
+              timeCountdown = 59;
+              clearInterval(timerCountdown);
+            }
+          }, 1000);
         }
       }
     } catch (e) {
+      syncMobileCode = undefined;
+      timeCountdown = 59;
+      clearTimeout(timer);
+      clearInterval(timerCountdown);
       console.error("error: ", e);
     }
   };
@@ -354,7 +369,9 @@
   isOpen={isOpenModalSync}
   on:close={() => {
     isOpenModalSync = false;
+    timeCountdown = 59;
     clearTimeout(timer);
+    clearInterval(timerCountdown);
   }}
 >
   <div class="flex flex-col gap-4">
@@ -364,13 +381,30 @@
         More convenience in managing your portfolio on mobile devices
       </div>
     </div>
-    <div class="flex justify-center items-center">
+    <div class="text-center text-sm">
+      The code is expired in {timeCountdown}s
+    </div>
+    <div class="flex justify-center items-center -mt-2">
       <div class="border rounded-xl overflow-hidden bg-white w-[57%]">
         <div class="bg-[#f3f4f6] py-2 px-4">
           <img src={Logo} alt="Logo" class="h-12 w-auto -ml-3" />
         </div>
         <div class="flex justify-center">
-          <img src={qrImageDataUrl} alt="QR Code" />
+          {#if qrImageDataUrl !== undefined}
+            <img src={qrImageDataUrl} alt="QR Code" />
+          {:else}
+            <div class="flex flex-col items-center gap-1 text-sm py-30">
+              <div>Something wrong when generate QR code.</div>
+              <div
+                class="text-blue-500 cursor-pointer"
+                on:click={() => {
+                  handleGetCodeSyncMobile();
+                }}
+              >
+                Try again
+              </div>
+            </div>
+          {/if}
         </div>
         <div class="text-xs text-center font-medium text-[#9ca3af] px-4 pb-3">
           Investment in crypto more convenience with Nimbus
