@@ -116,6 +116,8 @@
       const res = await nimbus.post("/auth/access-code", {
         code: code,
       });
+      console.log("code: ", code);
+      console.log("res: ", res);
       if (res?.data?.result) {
         localStorage.setItem("evm_token", res?.data?.result);
         user.update(

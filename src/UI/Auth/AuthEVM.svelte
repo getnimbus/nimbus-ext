@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
+  import { onMount } from "svelte";
   import dayjs from "dayjs";
   import { Link } from "svelte-navigator";
   import onboard from "~/lib/web3-onboard";
@@ -185,7 +185,7 @@
         const currentTime = dayjs();
 
         // Check if the time difference is more than 1 minute
-        if (currentTime.diff(expiredAt, "second") > 50) {
+        if (currentTime.diff(expiredAt, "second") > 60) {
           // Make another API call to get a new sync code
           const newResponse = await nimbus.get("/users/cross-login");
           if (newResponse) {
@@ -193,23 +193,13 @@
           }
         } else {
           // Schedule the next check after 1 minute
-          timer = setTimeout(handleGetCodeSyncMobile, 50000); // 60000 milliseconds = 1 minute
+          timer = setTimeout(handleGetCodeSyncMobile, 60000);
         }
       }
     } catch (e) {
       console.error("error: ", e);
     }
   };
-
-  onMount(() => {
-    if (isOpenModalSync) {
-      handleGetCodeSyncMobile();
-    }
-  });
-
-  onDestroy(() => {
-    clearTimeout(timer);
-  });
 
   $: {
     if (syncMobileCode) {
