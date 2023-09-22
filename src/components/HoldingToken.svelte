@@ -174,6 +174,8 @@
 
   $: withinLast24Hours = dayjs().diff(dayjs(data?.last_transferred_at), "hour");
 
+  // $: console.log("withinLast24Hours : ", data?.last_transferred_at);
+
   $: logo =
     data.logo ||
     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
@@ -626,7 +628,7 @@
       {#if withinLast24Hours < 24}
         <span
           use:tooltip={{
-            content: `<tooltip-detail text="Changed recently" />`,
+            content: `<tooltip-detail text="Changed Recently" />`,
             allowHTML: true,
             placement: "top",
             interactive: true,

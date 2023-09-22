@@ -90,13 +90,14 @@
 
   const handleDataReportToken = async () => {
     const response = await nimbus.get("/holding/trash");
+    // console.log("res: ", response);
     if (response?.status === 401) {
       throw new Error(response?.response?.error);
     }
     return response.data;
   };
 
-  const query = createQuery({
+  $: query = createQuery({
     queryKey: ["token-report"],
     queryFn: () => handleDataReportToken(),
     staleTime: Infinity,
@@ -130,6 +131,7 @@
   $: {
     if (!$query.isError && $query.data !== undefined) {
       dataTokenReport = $query.data;
+      console.log("query data : ", $query.data);
     }
   }
 
@@ -184,13 +186,13 @@
             <tr
               class="cursor-pointer xl:text-base text-2xl py-1 px-3 rounded-[100px]"
             >
-              <td class={`pl-3 py-4`}>
+              <td class="pl-3 py-4">
                 <div class="flex items-center justify-start">
                   <img
                     src={item.logoUrl}
                     alt=""
-                    width="40"
-                    height="40"
+                    width="35"
+                    height="35"
                     class="rounded-full mr-4"
                     on:error={(e) => {
                       e.target.src =
@@ -212,11 +214,14 @@
                   {item.chain}
                 </div>
               </td>
-              <td class="py-4 pr-3 flex justify-end">
+              <td class="py-4 pr-3 ml-3 flex justify-end">
                 <div
                   class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base py-2"
                   on:click={() => {
-                    selectedItemDelete = item;
+                    selectedItemDelete = {
+                      chain: item.chain,
+                      contractAddress: item.contractAddress,
+                    };
                     isOpenConfirmDelete = true;
                   }}
                 >
