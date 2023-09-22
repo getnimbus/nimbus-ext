@@ -9,7 +9,6 @@ export const typeWallet = writable("");
 export const selectedPackage = writable("FREE");
 export const isDarkMode = writable(false);
 export const isShowHeaderMobile = writable(false);
-export const openModalSync = writable(false);
 export const selectedBundle = writable({});
 
 // let isFirstTime = true;
