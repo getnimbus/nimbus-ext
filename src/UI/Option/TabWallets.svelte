@@ -347,11 +347,12 @@
     }
   };
 
-  const query = createQuery({
+  $: query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
+    enabled: Object.keys(userInfo).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));

@@ -182,6 +182,7 @@
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
     staleTime: Infinity,
+    enabled: Object.keys(userInfo).length !== 0,
     retry: false,
     onError(err) {
       localStorage.removeItem("evm_token");
@@ -191,15 +192,11 @@
       typeWallet.update((n) => (n = ""));
       queryClient.invalidateQueries(["list-address"]);
     },
-    onSuccess(data) {
-      queryClient.invalidateQueries(["list-address"]);
-    },
   });
 
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
       localStorage.setItem("evm_address", $queryUserInfo.data.publicAddress);
-      queryClient.invalidateQueries(["list-address"]);
       if (
         $queryUserInfo.data?.plan?.tier &&
         $queryUserInfo.data?.plan?.tier.length !== 0

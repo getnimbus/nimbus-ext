@@ -255,16 +255,18 @@
     return response?.data;
   };
 
-  const query = createQuery({
+  $: query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
+    enabled:
+      Object.keys(userInfo).length !== 0 &&
+      selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0",
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
-    enabled: selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0",
     onSuccess(data) {
       if (data.length === 0) {
         handleCreateUser();
