@@ -116,8 +116,6 @@
       const res = await nimbus.post("/auth/access-code", {
         code: code,
       });
-      console.log("code: ", code);
-      console.log("res: ", res);
       if (res?.data?.result) {
         localStorage.setItem("evm_token", res?.data?.result);
         user.update(
@@ -126,7 +124,6 @@
               picture: User,
             })
         );
-        queryClient.invalidateQueries(["list-address"]);
         queryClient.invalidateQueries(["users-me"]);
         isOpenModalSync = false;
       }
@@ -192,6 +189,9 @@
       wallet.update((n) => (n = ""));
       chain.update((n) => (n = ""));
       typeWallet.update((n) => (n = ""));
+      queryClient.invalidateQueries(["list-address"]);
+    },
+    onSuccess(data) {
       queryClient.invalidateQueries(["list-address"]);
     },
   });
