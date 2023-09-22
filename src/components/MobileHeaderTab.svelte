@@ -24,6 +24,7 @@
 
   const navigate = useNavigate();
   const absoluteMatch = useMatch("/:page");
+  const queryClient = useQueryClient();
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
