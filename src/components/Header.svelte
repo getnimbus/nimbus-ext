@@ -538,7 +538,7 @@
 
 <!-- Mobile header -->
 <div
-  class={`fixed inset-0 h-screen w-full mobile mobile-container ${
+  class={`fixed inset-0 w-full mobile mobile-container ${
     showHeaderMobile
       ? "opacity-100 transform translate-x-[0px]"
       : "opacity-0 transform translate-x-[-100vw]"
@@ -561,7 +561,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col justify-between h-full">
+    <div class="flex flex-col justify-between h-full border-2 border-blue-500">
       <div class="flex flex-col gap-8">
         {#if userInfo && Object.keys(userInfo).length !== 0}
           <div class="flex justify-between items-center px-4 text-white">
@@ -765,7 +765,7 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-30 w-full pb-16">
+      <div class="flex flex-col gap-30 w-full pb-16 border border-red-500">
         <div class="flex flex-col gap-7 px-4">
           <DarkModeFooter />
           <div class="w-max flex flex-col gap-6">
@@ -923,6 +923,7 @@
 
 <style>
   .mobile {
+    height: 100vh;
     z-index: 2147483649;
     backdrop-filter: blur(12px);
 
@@ -937,6 +938,12 @@
       0 8px 10px -6px var(--tw-shadow-color);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
       var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
+  @supports (height: 100dvh) {
+    .mobile {
+      height: 100dvh;
+    }
   }
 
   .input-border-error {
