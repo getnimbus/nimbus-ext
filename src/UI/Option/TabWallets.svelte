@@ -308,11 +308,11 @@
     });
 
     listAddress = structWalletData;
-    console.log("listAddress: ", listAddress);
+    // console.log("listAddress: ", listAddress);
     listAddressWithoutBundle = structWalletData.filter(
       (item) => item.type !== "BUNDLE"
     );
-    console.log("listAddressWithoutBundle: ", listAddressWithoutBundle);
+    // console.log("listAddressWithoutBundle: ", listAddressWithoutBundle);
 
     if (structWalletData && structWalletData?.length === 1) {
       browser.storage.sync.set({
