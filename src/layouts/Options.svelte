@@ -94,8 +94,8 @@
           <TabNotification /> -->
         {:else if activeTabValue === "tokens"}
           <TabListToken />
-        {:else if activeTabValue === "settings"}
-          <TabSettings />
+          <!-- {:else if activeTabValue === "settings"}
+          <TabSettings /> -->
         {/if}
       </div>
     </div>

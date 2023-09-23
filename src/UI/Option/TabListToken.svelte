@@ -71,6 +71,8 @@
   let toastMsg = "";
   let isSuccess = false;
 
+  const queryClient = useQueryClient();
+
   const trigger = () => {
     show = true;
     counter = 3;
@@ -86,11 +88,8 @@
 
   let isLoadingDelete = false;
 
-  const queryClient = useQueryClient();
-
   const handleDataReportToken = async () => {
     const response = await nimbus.get("/holding/trash");
-    // console.log("res: ", response);
     if (response?.status === 401) {
       throw new Error(response?.response?.error);
     }
@@ -102,6 +101,7 @@
     queryFn: () => handleDataReportToken(),
     staleTime: Infinity,
     retry: false,
+    enabled: Object.keys(userInfo).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -131,11 +131,8 @@
   $: {
     if (!$query.isError && $query.data !== undefined) {
       dataTokenReport = $query.data;
-      // console.log("query data : ", $query.data);
     }
   }
-
-  // $: console.log("dataTokenReport : ", dataTokenReport);
 </script>
 
 <div class="flex flex-col gap-4">
