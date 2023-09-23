@@ -59,6 +59,9 @@
   let counter = 3;
   let showToast = false;
 
+  let isOpenTokenInformation = false;
+  let selectWalletAccount = {};
+
   const trigger = () => {
     showToast = true;
     counter = 3;
@@ -182,11 +185,19 @@
   $: logo =
     data.logo ||
     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+
+  $: console.log("selectWalletAccount: ", selectWalletAccount);
 </script>
 
 <tr
   key={data?.symbol}
-  class={`group transition-all`}
+  class={`group transition-all ${
+    isOpenTokenInformation
+      ? darkMode
+        ? "bg-[#000] border-t last:border-none first:border-none border_0000000d"
+        : "bg-gray-100 border-t last:border-none first:border-none border_0000000d"
+      : ""
+  }`}
   on:click={() => {
     // if (clickable) {
     //   navigate(
@@ -197,6 +208,7 @@
     //     )}&address=${encodeURIComponent(selectedWallet)}`
     //   );
     // }
+    selectWalletAccount = data;
   }}
   on:mouseover={() => {
     if (userInfo && Object.keys(userInfo).length !== 0) {
@@ -787,26 +799,65 @@
     </div>
   </td>
 
-  <!-- <td
-    class={`py-3 w-10 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    {#if clickable}
+  {#if typeWalletAddress === "BUNDLE"}
+    <td
+      class={`py-3 w-10 ${
+        darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      }`}
+    >
+      <!-- {#if clickable}
+        <div class="flex justify-center">
+          <div
+            use:tooltip={{
+              content: `<tooltip-detail text="Show detail" />`,
+              allowHTML: true,
+              placement: "top",
+            }}
+          >
+            <img src={Chart} alt="" width={14} height={14} />
+          </div>
+        </div>
+      {/if} -->
+
       <div class="flex justify-center">
         <div
-          use:tooltip={{
-            content: `<tooltip-detail text="Show detail" />`,
-            allowHTML: true,
-            placement: "top",
-          }}
+          class="cursor-pointer transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
+          class:rotate-0={isOpenTokenInformation}
+          on:click={() => (isOpenTokenInformation = !isOpenTokenInformation)}
         >
-          <img src={Chart} alt="" width={14} height={14} />
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 8.36365L6 4.00001L2 8.36365"
+              stroke={darkMode ? "white" : "black"}
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
         </div>
       </div>
-    {/if}
-  </td> -->
+    </td>
+  {/if}
 </tr>
+
+{#if isOpenTokenInformation}
+  <tr>
+    <td
+      colspan={8}
+      class={`border-t-[0.5px] border-b border_0000000d -mt-1 p-3 ${
+        darkMode ? "bg-[#000]" : "bg-gray-100"
+      }`}
+    >
+      <div class="text-sm">Token Information</div>
+    </td>
+  </tr>
+{/if}
 
 <AppOverlay
   clickOutSideToClose
