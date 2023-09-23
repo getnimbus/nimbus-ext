@@ -763,12 +763,13 @@
       };
 
       if (selectedBundle && Object.keys(selectedBundle).length !== 0) {
-        const response = await nimbus.put(
+        await nimbus.put(
           `/address/personalize/bundle?name=${selectedBundle?.name}`,
           formData
         );
 
         queryClient.invalidateQueries(["list-bundle"]);
+        queryClient.invalidateQueries(["list-address"]);
         queryClient.invalidateQueries(["overview"]);
         queryClient.invalidateQueries(["vaults"]);
         queryClient.invalidateQueries(["token-holding"]);
@@ -785,8 +786,8 @@
           formData
         );
 
-        queryClient.invalidateQueries(["list-bundle"]);
-        queryClient.refetchQueries(["list-address"]);
+        queryClient.refetchQueries(["list-bundle"]);
+        queryClient.invalidateQueries(["list-address"]);
 
         listBundle = response?.data.map((item) => {
           return {
@@ -833,7 +834,8 @@
       listBundle = listBundle.filter(
         (item) => item.name !== selectedBundle?.name
       );
-      queryClient.invalidateQueries(["list-bundle"]);
+      queryClient.refetchQueries(["list-bundle"]);
+      queryClient.invalidateQueries(["list-address"]);
       handleResetBundleState();
       selectedAddresses = [];
       isAddBundle = false;
@@ -1420,7 +1422,7 @@
               {#each listAddressWithoutBundle as item (item.id)}
                 <tr class="transition-all group">
                   <td
-                    class={`pl-3 py-3  ${
+                    class={`pl-3 py-3 ${
                       darkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
@@ -1450,7 +1452,7 @@
                   </td>
 
                   <td
-                    class={`py-3  ${
+                    class={`py-3 ${
                       darkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
