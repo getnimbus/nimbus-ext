@@ -143,14 +143,19 @@
   $: value = Number(data?.amount) * Number(data?.market_price);
 
   $: realizedProfit = data?.profit?.realizedProfit
-    ? data?.profit?.realizedProfit
+    ? Number(data?.profit?.realizedProfit)
     : 0;
   $: percentRealizedProfit =
-    data?.avgCost === 0 ? 0 : realizedProfit / Math.abs(data?.avgCost);
+    Number(data?.avgCost) === 0
+      ? 0
+      : realizedProfit / Math.abs(Number(data?.avgCost));
 
-  $: unrealizedProfit = data?.avgCost === 0 ? 0 : value + data?.avgCost;
+  $: unrealizedProfit =
+    Number(data?.avgCost) === 0 ? 0 : value + Number(data?.avgCost);
   $: percentUnrealizedProfit =
-    data?.avgCost === 0 ? 0 : unrealizedProfit / Math.abs(data?.avgCost);
+    Number(data?.avgCost) === 0
+      ? 0
+      : unrealizedProfit / Math.abs(Number(data?.avgCost));
 
   $: clickable =
     data.name !== "Bitcoin" &&
@@ -177,6 +182,8 @@
   $: logo =
     data.logo ||
     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+
+  $: console.log("data: ", data);
 </script>
 
 <tr
