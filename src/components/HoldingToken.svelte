@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
-  import { chain, typeWallet, isDarkMode, user } from "~/store";
+  import { chain, typeWallet, isDarkMode, user, selectedBundle } from "~/store";
   import { detectedChain, shorterName } from "~/utils";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
@@ -28,6 +28,11 @@
 
   const navigate = useNavigate();
 
+  let selectBundle = {};
+  selectedBundle.subscribe((value) => {
+    selectBundle = value;
+  });
+
   let typeWalletAddress = "";
   typeWallet.subscribe((value) => {
     typeWalletAddress = value;
@@ -54,10 +59,11 @@
   let showTableVaults = false;
   let isOldToken = false;
 
-  let toastMsg = "Report Success";
+  let toastMsg = "";
   let isSuccessToast = false;
   let counter = 3;
   let showToast = false;
+  let isLoadingReportTrashCoin = false;
 
   let isOpenTokenInformation = false;
   let selectWalletAccount = {};
@@ -103,6 +109,7 @@
   ];
 
   const handleReportTrashCoin = async () => {
+    isLoadingReportTrashCoin = true;
     try {
       let reason = "";
 
@@ -130,10 +137,12 @@
         contractTickerSymbol: data.symbol,
         logoUrl: data.logo,
       };
-      const response = await nimbus.post("/holding/trash/report", formData);
+      await nimbus.post("/holding/trash/report", formData);
+      isLoadingReportTrashCoin = false;
       toastMsg = "We will update after 2 minutes.";
       isSuccessToast = true;
     } catch (error) {
+      isLoadingReportTrashCoin = false;
       toastMsg = "Something wrong when report token. Please try again!";
       isSuccessToast = false;
       console.error("error:", error);
@@ -279,7 +288,7 @@
               "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
           }}
         />
-        {#if typeWalletAddress === "EVM"}
+        {#if typeWalletAddress === "EVM" || selectBundle.accounts.find((item) => item?.type === "CEX") === undefined}
           <div class="absolute -top-2 -right-1">
             <img
               src={detectedChain(data.chain)}
@@ -996,7 +1005,12 @@
             >
           </div>
           <div class="xl:w-[120px] w-full">
-            <Button type="submit" variant="tertiary">
+            <Button
+              type="submit"
+              variant="tertiary"
+              isLoading={isLoadingReportTrashCoin}
+              disabled={isLoadingReportTrashCoin}
+            >
               {MultipleLang.content.modal_submitreport}</Button
             >
           </div>
