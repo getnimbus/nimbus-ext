@@ -59,6 +59,7 @@
 
   let selectedItemDelete;
   let isOpenConfirmDelete = false;
+  let isLoadingDelete = false;
 
   let show = false;
   let counter = 3;
@@ -79,8 +80,6 @@
     toastMsg = "";
     isSuccess = false;
   };
-
-  let isLoadingDelete = false;
 
   const handleDataReportToken = async () => {
     const response = await nimbus.get("/holding/trash");
@@ -129,13 +128,14 @@
 </script>
 
 <div class="flex flex-col gap-4">
-  <div class="flex items-center justify-between">
-    <div class="xl:title-3 title-1">
-      {MultipleLang.title}
-    </div>
-    <div class="relative xl:w-max w-[200px]" />
+  <div class="xl:title-3 title-1">
+    {MultipleLang.title}
   </div>
-  <div class="border border_0000000d rounded-[10px] overflow-x-auto">
+  <div
+    class={`border border_0000000d rounded-[10px] overflow-x-auto ${
+      darkMode ? "bg-[#131313]" : "bg-[#fff]"
+    }`}
+  >
     <table class="table-auto xl:w-full w-[1800px]">
       <thead>
         <tr class="bg_f4f5f8">
@@ -144,13 +144,13 @@
               {MultipleLang.content.assets_header_table}
             </div>
           </th>
-          <th class="py-3 font-semibold uppercase xl:text-xs text-left">
-            <div>
+          <th class="py-3">
+            <div class="text-xl font-semibold uppercase xl:text-xs text-left">
               {MultipleLang.content.contract_address_header_table}
             </div>
           </th>
           <th class="py-3">
-            <div class="text-xl font-semibold uppercase xl:text-xs text-right">
+            <div class="text-xl font-semibold text-right uppercase xl:text-xs">
               {MultipleLang.content.chain_header_table}
             </div>
           </th>
@@ -162,10 +162,20 @@
         </tr>
       </thead>
 
-      {#if $query.isLoading}
+      {#if $query.isError}
         <tbody>
           <tr>
             <td colspan="3">
+              <div class="flex items-center justify-center px-3 py-4">
+                Please connect wallet
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      {:else if $query.isLoading}
+        <tbody>
+          <tr>
+            <td colspan="4">
               <div class="flex items-center justify-center px-3 py-4">
                 <Loading />
               </div>
@@ -173,56 +183,68 @@
           </tr>
         </tbody>
       {:else}
-        {#each $query.data as item}
-          <tbody>
-            <tr
-              class="cursor-pointer xl:text-base text-2xl py-1 px-3 rounded-[100px]"
-            >
-              <td class="pl-3 py-4">
-                <div class="flex items-center justify-start">
-                  <img
-                    src={item.logoUrl}
-                    alt=""
-                    width="35"
-                    height="35"
-                    class="rounded-full mr-4"
-                    on:error={(e) => {
-                      e.target.src =
-                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-                    }}
-                  />
-                  <div class="font-medium">
-                    {item.contractName}
-                  </div>
-                </div>
-              </td>
-              <td class="py-4">
-                <div>
-                  {item.contractAddress}
-                </div>
-              </td>
-              <td class="py-4">
-                <div class="text-right font-medium">
-                  {item.chain}
-                </div>
-              </td>
-              <td class="py-4 pr-3 ml-3 flex justify-end">
+        <tbody>
+          {#if ($query.data && $query.data.length === 0) || $query.isError}
+            <tr>
+              <td colspan="3">
                 <div
-                  class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base py-2"
-                  on:click={() => {
-                    selectedItemDelete = {
-                      chain: item.chain,
-                      contractAddress: item.contractAddress,
-                    };
-                    isOpenConfirmDelete = true;
-                  }}
+                  class="flex items-center justify-center px-3 py-4 text-2xl xl:text-base"
                 >
-                  {MultipleLang.content.modal_delete}
+                  No report tokens
                 </div>
               </td>
             </tr>
-          </tbody>
-        {/each}
+          {:else}
+            {#each $query.data as item}
+              <tr
+                class="cursor-pointer xl:text-base text-2xl py-1 px-3 rounded-[100px]"
+              >
+                <td class="pl-3 py-4">
+                  <div class="flex items-center justify-start">
+                    <img
+                      src={item.logoUrl}
+                      alt=""
+                      width="35"
+                      height="35"
+                      class="rounded-full mr-4"
+                      on:error={(e) => {
+                        e.target.src =
+                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+                      }}
+                    />
+                    <div class="font-medium">
+                      {item.contractName}
+                    </div>
+                  </div>
+                </td>
+                <td class="py-4">
+                  <div>
+                    {item.contractAddress}
+                  </div>
+                </td>
+                <td class="py-4">
+                  <div class="text-right font-medium">
+                    {item.chain}
+                  </div>
+                </td>
+                <td class="py-4 pr-3 ml-3 flex justify-end">
+                  <div
+                    class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base py-2"
+                    on:click={() => {
+                      selectedItemDelete = {
+                        chain: item.chain,
+                        contractAddress: item.contractAddress,
+                      };
+                      isOpenConfirmDelete = true;
+                    }}
+                  >
+                    {MultipleLang.content.modal_delete}
+                  </div>
+                </td>
+              </tr>
+            {/each}
+          {/if}
+        </tbody>
       {/if}
     </table>
   </div>
@@ -256,11 +278,9 @@
       <div class="lg:w-[120px] w-full">
         <Button
           isLoading={isLoadingDelete}
+          disabled={isLoadingDelete}
           variant="delete"
-          on:click={() => {
-            handleDeleteReportToken();
-            isOpenConfirmDelete = false;
-          }}
+          on:click={handleDeleteReportToken}
         >
           {MultipleLang.content.modal_delete}
         </Button>

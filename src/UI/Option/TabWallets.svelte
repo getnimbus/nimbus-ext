@@ -1783,6 +1783,7 @@
         <Button
           variant="delete"
           isLoading={isLoadingDelete}
+          disabled={isLoadingDelete}
           on:click={() => {
             handleDelete(selectedWallet);
           }}
@@ -1824,6 +1825,7 @@
         <Button
           variant="delete"
           isLoading={isLoadingDeleteBundles}
+          disabled={isLoadingDeleteBundles}
           on:click={handleDeleteBundle}
         >
           {MultipleLang.content.modal_delete}
