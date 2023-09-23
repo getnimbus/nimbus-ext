@@ -123,8 +123,11 @@
         chain: document.getElementById("chain").value,
         contractAddress: document.getElementById("contract_address").value,
         reason: reason,
+        contractName: data.name,
+        contractTickerSymbol: data.symbol,
+        logoUrl: data.logo,
       };
-      const response = await nimbus.post("/tokens/report-trash", formData);
+      const response = await nimbus.post("/holding/trash/report", formData);
       toastMsg = "We will update after 2 minutes.";
       isSuccessToast = true;
     } catch (error) {
@@ -630,7 +633,7 @@
       {#if withinLast24Hours < 24}
         <span
           use:tooltip={{
-            content: `<tooltip-detail text="Changed recently" />`,
+            content: `<tooltip-detail text="Change ${withinLast24Hours} hrs ago" />`,
             allowHTML: true,
             placement: "top",
             interactive: true,

@@ -175,6 +175,7 @@
   let address = "";
   let label = "";
   let errors: any = {};
+  let isLoadingAddDEX = false;
   let isOpenAddModal = false;
   let isOpenFollowWhaleModal = false;
   let isOpenModal = false;
@@ -469,6 +470,7 @@
 
   // Add DEX address account
   const onSubmit = async (e) => {
+    isLoadingAddDEX = true;
     try {
       const formData = new FormData(e.target);
 
@@ -508,6 +510,7 @@
         e.target.reset();
         errors = {};
         isOpenAddModal = false;
+        isLoadingAddDEX = false;
 
         toastMsg = "Successfully add On-Chain account!";
         isSuccessToast = true;
@@ -518,11 +521,13 @@
         errors["label"] = { ...errors["label"], required: false, msg: "" };
       } else {
         console.error("Invalid Form");
+        isLoadingAddDEX = false;
       }
     } catch (e) {
       console.error(e);
       toastMsg = "Something wrong when add DEX account. Please try again!";
       isSuccessToast = false;
+      isLoadingAddDEX = false;
       trigger();
     }
   };
@@ -1482,6 +1487,7 @@
             <Button
               variant="tertiary"
               isLoading={isLoadingConnectCEX}
+              disabled={isLoadingConnectCEX}
               on:click={onSubmitCEX}
             >
               <div class="font-medium text-white xl:text-base text-2xl">
@@ -1616,7 +1622,12 @@
             >
           </div>
           <div class="lg:w-[120px] w-full">
-            <Button type="submit" variant="tertiary">
+            <Button
+              type="submit"
+              variant="tertiary"
+              isLoading={isLoadingAddDEX}
+              disabled={isLoadingAddDEX}
+            >
               {MultipleLang.content.modal_add}</Button
             >
           </div>

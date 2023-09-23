@@ -144,8 +144,9 @@
   let selectedWallet = {};
   let address = "";
   let label = "";
-  let isLoadingEdit = false;
+  let isLoadingAddDEX = false;
   let isLoadingDelete = false;
+  let isLoadingEditDEX = false;
   let isLoadingConnectCEX = false;
   let showDisableAddWallet = false;
   let showDisableBundle = false;
@@ -346,6 +347,7 @@
 
   // Add DEX address account
   const onSubmit = async (e) => {
+    isLoadingAddDEX = true;
     try {
       const formData = new FormData(e.target);
 
@@ -370,6 +372,7 @@
         });
 
         e.target.reset();
+        isLoadingAddDEX = false;
         isOpenAddModal = false;
         queryClient.refetchQueries(["list-address"]);
 
@@ -393,9 +396,11 @@
         errors["label"] = { ...errors["label"], required: false, msg: "" };
       } else {
         console.error("Invalid Form");
+        isLoadingAddDEX = false;
       }
     } catch (e) {
       console.error(e);
+      isLoadingAddDEX = false;
       toastMsg = "Something wrong when add DEX account. Please try again!";
       isSuccess = false;
       trigger();
@@ -453,7 +458,7 @@
 
   // Edit account
   const onSubmitEdit = async (e) => {
-    isLoadingEdit = true;
+    isLoadingEditDEX = true;
     try {
       const formData = new FormData(e.target);
 
@@ -472,7 +477,7 @@
         queryClient.refetchQueries(["list-address"]);
         e.target.reset();
         isOpenEditModal = false;
-        isLoadingEdit = false;
+        isLoadingEditDEX = false;
         toastMsg = "Successfully edit your wallet!";
         isSuccess = true;
         trigger();
@@ -494,21 +499,21 @@
           queryClient.refetchQueries(["list-address"]);
           e.target.reset();
           isOpenEditModal = false;
-          isLoadingEdit = false;
+          isLoadingEditDEX = false;
           toastMsg = "Successfully edit your wallet!";
           isSuccess = true;
           trigger();
           mixpanel.track("user_edit_address");
         } else {
           console.error("Invalid Form");
-          isLoadingEdit = false;
+          isLoadingEditDEX = false;
         }
       }
     } catch (e) {
       console.error(e);
       toastMsg = "Something wrong when edit your wallet. Please try again!";
       isSuccess = false;
-      isLoadingEdit = false;
+      isLoadingEditDEX = false;
       trigger();
     }
   };
@@ -564,22 +569,6 @@
     label = item.label;
     isOpenEditModal = true;
   };
-
-  onMount(() => {
-    const evmToken = localStorage.getItem("evm_token");
-    if (evmToken) {
-      userInfo = {
-        picture: User,
-      };
-    }
-    if (
-      localStorage.getItem("isGetUserEmailYet") !== null &&
-      localStorage.getItem("isGetUserEmailYet") === "true"
-    ) {
-      return;
-    }
-    localStorage.setItem("isGetUserEmailYet", "false");
-  });
 
   $: {
     if (
@@ -692,8 +681,27 @@
     }
   }
 
+  onMount(() => {
+    const evmToken = localStorage.getItem("evm_token");
+    if (evmToken) {
+      userInfo = {
+        picture: User,
+      };
+    }
+    if (
+      localStorage.getItem("isGetUserEmailYet") !== null &&
+      localStorage.getItem("isGetUserEmailYet") === "true"
+    ) {
+      return;
+    }
+    localStorage.setItem("isGetUserEmailYet", "false");
+  });
+
   const getListBundle = async () => {
     const response: any = await nimbus.get("/address/personalize/bundle");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
     return response.data;
   };
 
@@ -701,6 +709,11 @@
     queryKey: ["list-bundle"],
     queryFn: () => getListBundle(),
     staleTime: Infinity,
+    enabled: Object.keys(userInfo).length !== 0,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
   });
 
   $: {
@@ -750,12 +763,13 @@
       };
 
       if (selectedBundle && Object.keys(selectedBundle).length !== 0) {
-        const response = await nimbus.put(
+        await nimbus.put(
           `/address/personalize/bundle?name=${selectedBundle?.name}`,
           formData
         );
 
         queryClient.invalidateQueries(["list-bundle"]);
+        queryClient.invalidateQueries(["list-address"]);
         queryClient.invalidateQueries(["overview"]);
         queryClient.invalidateQueries(["vaults"]);
         queryClient.invalidateQueries(["token-holding"]);
@@ -772,7 +786,7 @@
           formData
         );
 
-        queryClient.invalidateQueries(["list-bundle"]);
+        queryClient.refetchQueries(["list-bundle"]);
         queryClient.invalidateQueries(["list-address"]);
 
         listBundle = response?.data.map((item) => {
@@ -820,7 +834,8 @@
       listBundle = listBundle.filter(
         (item) => item.name !== selectedBundle?.name
       );
-      queryClient.invalidateQueries(["list-bundle"]);
+      queryClient.refetchQueries(["list-bundle"]);
+      queryClient.invalidateQueries(["list-address"]);
       handleResetBundleState();
       selectedAddresses = [];
       isAddBundle = false;
@@ -848,7 +863,7 @@
 </script>
 
 <div class="flex flex-col gap-4">
-  {#if listAddress && listAddress.length === 0}
+  {#if (listAddress && listAddress.length === 0) || $query.isError}
     <div class="flex items-center justify-between">
       <div class="xl:title-3 title-1">{MultipleLang.title}</div>
       <div class="relative xl:w-max w-[200px]">
@@ -899,85 +914,22 @@
   {:else}
     <div class="flex flex-col gap-4">
       <div class="xl:title-3 title-1">{MultipleLang.title}</div>
-      <div class="flex items-center justify-between gap-10">
-        {#if listBundle && listBundle.length === 0}
-          <div class="text-xl xl:text-base">
-            Create your bundle with up to 7 addresses per bundle!
-          </div>
-        {:else}
-          <div
-            class="relative flex items-center justify-between w-full gap-3 overflow-hidden"
-            bind:this={container}
-          >
-            <div
-              class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
-                isScrollStart ? "hidden" : "block"
-              }`}
-              style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                height="24px"
-                width="24px"
-                viewBox="0 0 24 24"
-                class="sc-aef7b723-0 fKbUaI"
-                ><path
-                  d="M15 6L9 12L15 18"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-miterlimit="10"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                /></svg
-              >
+      {#if !$query.isError}
+        <div class="flex items-center justify-between gap-10">
+          {#if listBundle && listBundle.length === 0}
+            <div class="text-xl xl:text-base">
+              Create your bundle with up to 7 addresses per bundle!
             </div>
+          {:else}
             <div
-              class="flex gap-3 px-2 overflow-x-auto w-max whitespace-nowrap"
-              bind:this={scrollContainer}
-              on:scroll={handleScroll}
+              class="relative flex items-center justify-between w-full gap-3 overflow-hidden"
+              bind:this={container}
             >
-              <AnimateSharedLayout>
-                {#each listBundle as item}
-                  <div
-                    class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                    on:click={() => {
-                      selectedBundle = item;
-                      selectedAddresses = item.addresses;
-                      nameBundle = item.name;
-                    }}
-                  >
-                    <div
-                      class={`relative ${
-                        selectedBundle === item && "text-white"
-                      }`}
-                      style="z-index: 2"
-                    >
-                      {item.name}
-                    </div>
-                    {#if selectedBundle === item}
-                      <Motion
-                        let:motion
-                        layoutId="active-pill"
-                        transition={{ type: "spring", duration: 0.6 }}
-                      >
-                        <div
-                          class="absolute inset-0 rounded-full bg-[#1E96FC]"
-                          style="z-index: 1"
-                          use:motion
-                        />
-                      </Motion>
-                    {/if}
-                  </div>
-                {/each}
-              </AnimateSharedLayout>
-            </div>
-            {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
               <div
-                class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
-                  isScrollEnd ? "hidden" : "block"
+                class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
+                  isScrollStart ? "hidden" : "block"
                 }`}
-                style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
+                style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -987,7 +939,7 @@
                   viewBox="0 0 24 24"
                   class="sc-aef7b723-0 fKbUaI"
                   ><path
-                    d="M9 6L15 12L9 18"
+                    d="M15 6L9 12L15 18"
                     stroke="currentColor"
                     stroke-width="2"
                     stroke-miterlimit="10"
@@ -996,114 +948,180 @@
                   /></svg
                 >
               </div>
-            {/if}
-          </div>
-        {/if}
-        <div class="flex justify-end flex-1 gap-4">
-          <!-- add bundle -->
-          <div class="flex items-center gap-4">
-            {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0}
               <div
-                class="text-2xl font-semibold text-red-500 cursor-pointer w-max xl:text-base"
-                on:click={() => (isOpenConfirmDeleteBundles = true)}
+                class="flex gap-3 px-2 overflow-x-auto w-max whitespace-nowrap"
+                bind:this={scrollContainer}
+                on:scroll={handleScroll}
               >
-                Delete
+                <AnimateSharedLayout>
+                  {#each listBundle as item}
+                    <div
+                      class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                      on:click={() => {
+                        selectedBundle = item;
+                        selectedAddresses = item.addresses;
+                        nameBundle = item.name;
+                      }}
+                    >
+                      <div
+                        class={`relative ${
+                          selectedBundle === item && "text-white"
+                        }`}
+                        style="z-index: 2"
+                      >
+                        {item.name}
+                      </div>
+                      {#if selectedBundle === item}
+                        <Motion
+                          let:motion
+                          layoutId="active-pill"
+                          transition={{ type: "spring", duration: 0.6 }}
+                        >
+                          <div
+                            class="absolute inset-0 rounded-full bg-[#1E96FC]"
+                            style="z-index: 1"
+                            use:motion
+                          />
+                        </Motion>
+                      {/if}
+                    </div>
+                  {/each}
+                </AnimateSharedLayout>
               </div>
-            {/if}
-            <div class="xl:w-max w-[200px]">
-              <Button
-                variant="tertiary"
-                on:click={() => {
-                  isAddBundle = true;
-                  handleResetBundleState();
-                  selectedAddresses = [];
-                }}
-              >
-                <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                <div class="text-2xl font-medium text-white xl:text-base">
-                  Add bundle
+              {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
+                <div
+                  class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
+                    isScrollEnd ? "hidden" : "block"
+                  }`}
+                  style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    height="24px"
+                    width="24px"
+                    viewBox="0 0 24 24"
+                    class="sc-aef7b723-0 fKbUaI"
+                    ><path
+                      d="M9 6L15 12L9 18"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-miterlimit="10"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    /></svg
+                  >
                 </div>
-              </Button>
+              {/if}
+            </div>
+          {/if}
+          <div class="flex justify-end flex-1 gap-4">
+            <!-- add bundle -->
+            <div class="flex items-center gap-4">
+              {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0}
+                <div
+                  class="text-2xl font-semibold text-red-500 cursor-pointer w-max xl:text-base"
+                  on:click={() => (isOpenConfirmDeleteBundles = true)}
+                >
+                  Delete
+                </div>
+              {/if}
+              <div class="xl:w-max w-[200px]">
+                <Button
+                  variant="tertiary"
+                  on:click={() => {
+                    isAddBundle = true;
+                    handleResetBundleState();
+                    selectedAddresses = [];
+                  }}
+                >
+                  <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
+                  <div class="text-2xl font-medium text-white xl:text-base">
+                    Add bundle
+                  </div>
+                </Button>
+              </div>
+            </div>
+
+            <!-- add account -->
+            <div
+              class="relative xl:w-max w-[200px]"
+              on:mouseenter={() => {
+                if (isDisabled || Object.keys(userInfo).length === 0) {
+                  showDisableAddWallet = true;
+                }
+              }}
+              on:mouseleave={() => {
+                if (isDisabled || Object.keys(userInfo).length === 0) {
+                  showDisableAddWallet = false;
+                }
+              }}
+            >
+              {#if isDisabled || Object.keys(userInfo).length === 0}
+                <div>
+                  {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
+                    <Button
+                      variant="tertiary"
+                      on:click={() => {
+                        if (
+                          localStorage.getItem("isGetUserEmailYet") !== null &&
+                          localStorage.getItem("isGetUserEmailYet") === "false"
+                        ) {
+                          isOpenModal = true;
+                        }
+                      }}
+                    >
+                      <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
+                      <div class="text-2xl font-medium text-white xl:text-base">
+                        Add account
+                      </div>
+                    </Button>
+                  {:else}
+                    <Button variant="disabled" disabled>
+                      <img
+                        src={darkMode ? PlusBlack : Plus}
+                        alt=""
+                        class="w-4 h-4 xl:w-3 xl:h-3"
+                      />
+                      <div
+                        class={`text-2xl font-medium xl:text-base ${
+                          darkMode ? "text-gray-400" : "text-white"
+                        }`}
+                      >
+                        Add account
+                      </div>
+                    </Button>
+                  {/if}
+                </div>
+              {:else}
+                <Button
+                  variant="tertiary"
+                  on:click={() => {
+                    isOpenAddModal = true;
+                  }}
+                >
+                  <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
+                  <div class="text-2xl font-medium text-white xl:text-base">
+                    Add account
+                  </div>
+                </Button>
+              {/if}
+              {#if showDisableAddWallet}
+                <div
+                  class="absolute right-0 transform -top-12"
+                  style="z-index: 2147483648;"
+                >
+                  <tooltip-detail text={tooltipDisableAddBtn} />
+                </div>
+              {/if}
             </div>
           </div>
-
-          <!-- add account -->
-          <div
-            class="relative xl:w-max w-[200px]"
-            on:mouseenter={() => {
-              if (isDisabled || Object.keys(userInfo).length === 0) {
-                showDisableAddWallet = true;
-              }
-            }}
-            on:mouseleave={() => {
-              if (isDisabled || Object.keys(userInfo).length === 0) {
-                showDisableAddWallet = false;
-              }
-            }}
-          >
-            {#if isDisabled || Object.keys(userInfo).length === 0}
-              <div>
-                {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
-                  <Button
-                    variant="tertiary"
-                    on:click={() => {
-                      if (
-                        localStorage.getItem("isGetUserEmailYet") !== null &&
-                        localStorage.getItem("isGetUserEmailYet") === "false"
-                      ) {
-                        isOpenModal = true;
-                      }
-                    }}
-                  >
-                    <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                    <div class="text-2xl font-medium text-white xl:text-base">
-                      Add account
-                    </div>
-                  </Button>
-                {:else}
-                  <Button variant="disabled" disabled>
-                    <img
-                      src={darkMode ? PlusBlack : Plus}
-                      alt=""
-                      class="w-4 h-4 xl:w-3 xl:h-3"
-                    />
-                    <div
-                      class={`text-2xl font-medium xl:text-base ${
-                        darkMode ? "text-gray-400" : "text-white"
-                      }`}
-                    >
-                      Add account
-                    </div>
-                  </Button>
-                {/if}
-              </div>
-            {:else}
-              <Button
-                variant="tertiary"
-                on:click={() => {
-                  isOpenAddModal = true;
-                }}
-              >
-                <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                <div class="text-2xl font-medium text-white xl:text-base">
-                  Add account
-                </div>
-              </Button>
-            {/if}
-            {#if showDisableAddWallet}
-              <div
-                class="absolute right-0 transform -top-12"
-                style="z-index: 2147483648;"
-              >
-                <tooltip-detail text={tooltipDisableAddBtn} />
-              </div>
-            {/if}
-          </div>
         </div>
-      </div>
+      {/if}
     </div>
   {/if}
 
+  <!-- render table -->
   {#if isAddBundle || (selectedBundle && selectedBundle !== null && Object.keys(selectedBundle).length !== 0)}
     <form on:submit|preventDefault={onSubmitBundle} class="flex flex-col gap-4">
       <div
@@ -1352,7 +1370,17 @@
             </th>
           </tr>
         </thead>
-        {#if $query.isLoading}
+        {#if $query.isError}
+          <tbody>
+            <tr>
+              <td colspan="3">
+                <div class="flex items-center justify-center px-3 py-4">
+                  Please connect wallet
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        {:else if $query.isLoading}
           <tbody>
             <tr>
               <td colspan="3">
@@ -1380,7 +1408,7 @@
               debounceSort(e.detail.items);
             }}
           >
-            {#if listAddressWithoutBundle && listAddressWithoutBundle.length === 0}
+            {#if (listAddressWithoutBundle && listAddressWithoutBundle.length === 0) || $query.isError}
               <tr>
                 <td colspan="3">
                   <div
@@ -1394,7 +1422,7 @@
               {#each listAddressWithoutBundle as item (item.id)}
                 <tr class="transition-all group">
                   <td
-                    class={`pl-3 py-3  ${
+                    class={`pl-3 py-3 ${
                       darkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
@@ -1424,7 +1452,7 @@
                   </td>
 
                   <td
-                    class={`py-3  ${
+                    class={`py-3 ${
                       darkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
@@ -1489,6 +1517,7 @@
             <Button
               variant="tertiary"
               isLoading={isLoadingConnectCEX}
+              disabled={isLoadingConnectCEX}
               on:click={onSubmitCEX}
             >
               <div class="text-2xl font-medium text-white xl:text-base">
@@ -1624,7 +1653,12 @@
             >
           </div>
           <div class="lg:w-[120px] w-full">
-            <Button type="submit" variant="tertiary">
+            <Button
+              type="submit"
+              variant="tertiary"
+              isLoading={isLoadingAddDEX}
+              disabled={isLoadingAddDEX}
+            >
               {MultipleLang.content.modal_add}</Button
             >
           </div>
@@ -1722,7 +1756,12 @@
           >
         </div>
         <div class="lg:w-[120px] w-full">
-          <Button type="submit" variant="tertiary">
+          <Button
+            type="submit"
+            variant="tertiary"
+            isLoading={isLoadingEditDEX}
+            disabled={isLoadingEditDEX}
+          >
             {MultipleLang.content.modal_edit}</Button
           >
         </div>
@@ -1762,6 +1801,7 @@
         <Button
           variant="delete"
           isLoading={isLoadingDelete}
+          disabled={isLoadingDelete}
           on:click={() => {
             handleDelete(selectedWallet);
           }}
@@ -1803,6 +1843,7 @@
         <Button
           variant="delete"
           isLoading={isLoadingDeleteBundles}
+          disabled={isLoadingDeleteBundles}
           on:click={handleDeleteBundle}
         >
           {MultipleLang.content.modal_delete}
