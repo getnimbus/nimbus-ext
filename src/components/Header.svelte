@@ -104,6 +104,7 @@
     }
   };
 
+  let publicAddress = "";
   let isOpenModalSync = false;
   let code = "";
   let isLoadingSyncMobile = false;
@@ -197,6 +198,7 @@
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
       localStorage.setItem("evm_address", $queryUserInfo.data.publicAddress);
+      publicAddress = $queryUserInfo.data.publicAddress;
       if (
         $queryUserInfo.data?.plan?.tier &&
         $queryUserInfo.data?.plan?.tier.length !== 0
@@ -566,7 +568,9 @@
         {#if userInfo && Object.keys(userInfo).length !== 0}
           <div class="flex justify-between items-center px-4 text-white">
             <div class="text-3xl">
-              GM 👋, {shorterAddress(localStorage.getItem("evm_address") || "")}
+              GM 👋, {shorterAddress(
+                localStorage.getItem("evm_address") || publicAddress
+              )}
             </div>
           </div>
         {/if}
