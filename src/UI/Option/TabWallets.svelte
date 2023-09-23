@@ -1114,6 +1114,7 @@
     </div>
   {/if}
 
+  <!-- render table -->
   {#if isAddBundle || (selectedBundle && selectedBundle !== null && Object.keys(selectedBundle).length !== 0)}
     <form on:submit|preventDefault={onSubmitBundle} class="flex flex-col gap-4">
       <div
