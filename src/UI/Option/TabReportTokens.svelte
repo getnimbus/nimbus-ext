@@ -3,18 +3,14 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import { i18n } from "~/lib/i18n";
   import { isDarkMode, user } from "~/store";
-
-  import Plus from "~/assets/plus.svg";
-  import PlusBlack from "~/assets/plus-black.svg";
-
   import { nimbus } from "~/lib/network";
-  import { detectedChain } from "~/utils";
   import { Toast } from "flowbite-svelte";
-  import Loading from "~/components/Loading.svelte";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
 
+  import Loading from "~/components/Loading.svelte";
+
   const MultipleLang = {
-    title: i18n("optionsPage.tab-title-listtoken"),
+    title: i18n("optionsPage.tab-title-report-token", "Report Tokens"),
     content: {
       chain_header_table: i18n(
         "optionsPage.token-tab-content.chain-header-table",
@@ -61,8 +57,6 @@
     userInfo = value;
   });
 
-  let dataTokenReport = [];
-  let isOpenAddModal;
   let selectedItemDelete;
   let isOpenConfirmDelete = false;
 
@@ -130,14 +124,15 @@
 
   $: {
     if (!$query.isError && $query.data !== undefined) {
-      dataTokenReport = $query.data;
     }
   }
 </script>
 
 <div class="flex flex-col gap-4">
   <div class="flex items-center justify-between">
-    <div class="xl:title-3 title-1">List Token</div>
+    <div class="xl:title-3 title-1">
+      {MultipleLang.title}
+    </div>
     <div class="relative xl:w-max w-[200px]" />
   </div>
   <div class="border border_0000000d rounded-[10px] overflow-x-auto">
@@ -178,7 +173,7 @@
           </tr>
         </tbody>
       {:else}
-        {#each dataTokenReport as item}
+        {#each $query.data as item}
           <tbody>
             <tr
               class="cursor-pointer xl:text-base text-2xl py-1 px-3 rounded-[100px]"
