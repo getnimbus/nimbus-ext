@@ -182,8 +182,6 @@
   $: logo =
     data.logo ||
     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-
-  $: console.log("data: ", data);
 </script>
 
 <tr
