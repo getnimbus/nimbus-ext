@@ -123,8 +123,11 @@
         chain: document.getElementById("chain").value,
         contractAddress: document.getElementById("contract_address").value,
         reason: reason,
+        contractName: data.name,
+        contractTickerSymbol: data.symbol,
+        logoUrl: data.logo,
       };
-      const response = await nimbus.post("/tokens/report-trash", formData);
+      const response = await nimbus.post("/holding/trash/report", formData);
       toastMsg = "We will update after 2 minutes.";
       isSuccessToast = true;
     } catch (error) {
@@ -140,14 +143,19 @@
   $: value = Number(data?.amount) * Number(data?.market_price);
 
   $: realizedProfit = data?.profit?.realizedProfit
-    ? data?.profit?.realizedProfit
+    ? Number(data?.profit?.realizedProfit)
     : 0;
   $: percentRealizedProfit =
-    data?.avgCost === 0 ? 0 : realizedProfit / Math.abs(data?.avgCost);
+    Number(data?.avgCost) === 0
+      ? 0
+      : realizedProfit / Math.abs(Number(data?.avgCost));
 
-  $: unrealizedProfit = data?.avgCost === 0 ? 0 : value + data?.avgCost;
+  $: unrealizedProfit =
+    Number(data?.avgCost) === 0 ? 0 : value + Number(data?.avgCost);
   $: percentUnrealizedProfit =
-    data?.avgCost === 0 ? 0 : unrealizedProfit / Math.abs(data?.avgCost);
+    Number(data?.avgCost) === 0
+      ? 0
+      : unrealizedProfit / Math.abs(Number(data?.avgCost));
 
   $: clickable =
     data.name !== "Bitcoin" &&
@@ -170,6 +178,12 @@
   }
 
   $: withinLast24Hours = dayjs().diff(dayjs(data?.last_transferred_at), "hour");
+
+  $: logo =
+    data.logo ||
+    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+
+  $: console.log("data: ", data);
 </script>
 
 <tr
@@ -245,12 +259,15 @@
       {/if}
       <div class="relative">
         <img
-          src={data.logo ||
-            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"}
+          src={logo}
           alt=""
           width="30"
           height="30"
           class="rounded-full"
+          on:error={() => {
+            logo =
+              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+          }}
         />
         {#if typeWalletAddress === "EVM"}
           <div class="absolute -top-2 -right-1">
@@ -616,7 +633,7 @@
       {#if withinLast24Hours < 24}
         <span
           use:tooltip={{
-            content: `<tooltip-detail text="Changed recently" />`,
+            content: `<tooltip-detail text="Change ${withinLast24Hours} hrs ago" />`,
             allowHTML: true,
             placement: "top",
             interactive: true,

@@ -72,18 +72,18 @@
   <QueryClientProvider client={queryClient}>
     <Mixpanel>
       <Router history={undefined}>
-        <div class="flex flex-col xl:pb-14 pb-40">
+        <div class="flex flex-col pb-40 xl:pb-14">
           <Header />
 
           <Route path="options">
             {#await import("~/layouts/Options.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -91,13 +91,13 @@
 
           <Route path="upgrade">
             {#await import("~/layouts/Upgrade.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -105,13 +105,13 @@
 
           <Route path="payments/success">
             {#await import("~/layouts/PaymentSuccess.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -119,13 +119,13 @@
 
           <Route path="payments/fail">
             {#await import("~/layouts/PaymentFail.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -133,13 +133,13 @@
 
           <Route path="personal-token-breakdown">
             {#await import("~/layouts/PersonalTokenBreakdown.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -147,13 +147,13 @@
 
           <Route path="custom-virtual-portfolio">
             {#await import("~/layouts/CustomVirtualPortfolio.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -161,13 +161,13 @@
 
           <Route path="virtual-portfolio">
             {#await import("~/layouts/VirtualPortfolio.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -175,13 +175,13 @@
 
           <Route path="compare">
             {#await import("~/layouts/Compare.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -189,13 +189,13 @@
 
           <Route path="news">
             {#await import("~/layouts/News.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -203,13 +203,13 @@
 
           <Route path="invitation">
             {#await import("~/layouts/Invitation.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -217,13 +217,13 @@
 
           <Route path="whales">
             {#await import("~/layouts/WhalesList.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -231,13 +231,13 @@
 
           <Route path="position-detail">
             {#await import("~/layouts/TokenDetail.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -245,13 +245,13 @@
 
           <Route path="nft-detail">
             {#await import("~/layouts/NFTDetail.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -259,13 +259,13 @@
 
           <Route path="test-detail">
             {#await import("~/layouts/PositionDetail.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -273,13 +273,13 @@
 
           <Route path="analytic">
             {#await import("~/layouts/Analytic.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -287,13 +287,13 @@
 
           <Route path="transactions">
             {#await import("~/layouts/Transactions.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
@@ -301,23 +301,23 @@
 
           <Route path="*">
             {#await import("~/layouts/Portfolio.svelte")}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
             {:then { default: component }}
               <svelte:component this={component} />
             {:catch error}
-              <div class="h-screen flex justify-center items-center">
+              <div class="flex items-center justify-center h-screen">
                 Something when wrong! Please reload your browser to try again
               </div>
             {/await}
           </Route>
         </div>
-        <div class="footer xl:relative fixed bottom-0 left-0 z-30 w-full">
-          <div class="xl:block hidden">
+        <div class="fixed bottom-0 left-0 z-30 w-full footer xl:relative">
+          <div class="hidden xl:block">
             <Footer />
           </div>
-          <div class="xl:hidden block">
+          <div class="block xl:hidden">
             <MobileHeaderTab />
           </div>
         </div>
@@ -415,8 +415,11 @@
   }
 
   @media (max-width: 1024px) {
-    .zsiq_floatmain,
-    .fb-feedback-widget-feedback-button {
+    #mava-button-iframe {
+      display: none !important;
+    }
+
+    .fb-feedback-widget-feedback-button-container {
       display: none !important;
     }
   }

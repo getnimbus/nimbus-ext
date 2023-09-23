@@ -23,6 +23,7 @@
   "optionsPage": {
     "message": "Options page languages",
     "tab-title-accounts": "Tài khoản",
+    "tab-title-report-token": "Báo cáo tokens",
     "tab-title-dashboard": "Bảng điều khiển",
     "tab-title-highlight": "Highlight",
     "tab-title-notification": "Thông báo",

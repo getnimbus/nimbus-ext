@@ -175,6 +175,7 @@
   let address = "";
   let label = "";
   let errors: any = {};
+  let isLoadingAddDEX = false;
   let isOpenAddModal = false;
   let isOpenFollowWhaleModal = false;
   let isOpenModal = false;
@@ -255,18 +256,18 @@
     return response?.data;
   };
 
-  const query = createQuery({
+  $: query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
+    enabled:
+      Object.keys(userInfo).length !== 0 &&
+      selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0",
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
-      listAddress = [];
-      selectedWallet = "";
     },
-    enabled: selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0",
     onSuccess(data) {
       if (data.length === 0) {
         handleCreateUser();
@@ -450,23 +451,26 @@
 
   const handleCreateUser = async () => {
     const evmAddress = localStorage.getItem("evm_address");
-    try {
-      await nimbus.post("/accounts", {
-        type: "DEX",
-        publicAddress: evmAddress,
-        accountId: evmAddress,
-        label: "My address",
-      });
-      queryClient.invalidateQueries(["list-address"]);
-      wallet.update((n) => (n = evmAddress));
-      mixpanel.track("user_add_address");
-    } catch (e) {
-      console.error(e);
+    if (evmAddress) {
+      try {
+        await nimbus.post("/accounts", {
+          type: "DEX",
+          publicAddress: evmAddress,
+          accountId: evmAddress,
+          label: "My address",
+        });
+        queryClient.invalidateQueries(["list-address"]);
+        wallet.update((n) => (n = evmAddress));
+        mixpanel.track("user_add_address");
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
 
   // Add DEX address account
   const onSubmit = async (e) => {
+    isLoadingAddDEX = true;
     try {
       const formData = new FormData(e.target);
 
@@ -496,10 +500,17 @@
 
         queryClient.invalidateQueries(["list-address"]);
         wallet.update((n) => (n = dataFormat.value));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=EVM&chain=ALL&address=${dataFormat.value}`
+        );
 
         e.target.reset();
         errors = {};
         isOpenAddModal = false;
+        isLoadingAddDEX = false;
 
         toastMsg = "Successfully add On-Chain account!";
         isSuccessToast = true;
@@ -510,11 +521,13 @@
         errors["label"] = { ...errors["label"], required: false, msg: "" };
       } else {
         console.error("Invalid Form");
+        isLoadingAddDEX = false;
       }
     } catch (e) {
       console.error(e);
       toastMsg = "Something wrong when add DEX account. Please try again!";
       isSuccessToast = false;
+      isLoadingAddDEX = false;
       trigger();
     }
   };
@@ -608,6 +621,7 @@
   };
 
   onMount(() => {
+    updateStateFromParams();
     if (
       localStorage.getItem("isGetUserEmailYet") !== null &&
       localStorage.getItem("isGetUserEmailYet") === "true"
@@ -638,11 +652,15 @@
           if (
             selected &&
             Object.keys(selected).length !== 0 &&
-            selected.type === "CEX"
+            selected.type === "BUNDLE"
           ) {
-            typeWallet.update((n) => (n = "CEX"));
-            browser.storage.sync.set({ typeWalletAddress: "CEX" });
-            chain.update((n) => (n = "ALL"));
+            typeWallet.update((n) => (n = "BUNDLE"));
+            browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
+            if (window.location.pathname === "/transactions") {
+              chain.update((n) => (n = "ETH"));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
             window.history.replaceState(
               null,
               "",
@@ -654,11 +672,15 @@
           if (
             selected &&
             Object.keys(selected).length !== 0 &&
-            selected.type === "BUNDLE"
+            selected.type === "CEX"
           ) {
-            typeWallet.update((n) => (n = "BUNDLE"));
-            browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
-            chain.update((n) => (n = "ALL"));
+            typeWallet.update((n) => (n = "CEX"));
+            browser.storage.sync.set({ typeWalletAddress: "CEX" });
+            if (window.location.pathname === "/transactions") {
+              chain.update((n) => (n = "ETH"));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
             window.history.replaceState(
               null,
               "",
@@ -694,7 +716,11 @@
           ) {
             typeWallet.update((n) => (n = "SOL"));
             browser.storage.sync.set({ typeWalletAddress: "SOL" });
-            chain.update((n) => (n = "ALL"));
+            if (window.location.pathname === "/transactions") {
+              chain.update((n) => (n = "ETH"));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
             window.history.replaceState(
               null,
               "",
@@ -710,7 +736,11 @@
           ) {
             typeWallet.update((n) => (n = "BTC"));
             browser.storage.sync.set({ typeWalletAddress: "BTC" });
-            chain.update((n) => (n = "ALL"));
+            if (window.location.pathname === "/transactions") {
+              chain.update((n) => (n = "ETH"));
+            } else {
+              chain.update((n) => (n = "ALL"));
+            }
             window.history.replaceState(
               null,
               "",
@@ -783,7 +813,11 @@
     const evmToken = localStorage.getItem("evm_token");
     if (Object.keys(userInfo).length === 0 && !evmToken) {
       listAddress = [];
-      window.history.replaceState(null, "", "/");
+      const urlParams = new URLSearchParams(window.location.search);
+      const addressParams = urlParams.get("address");
+      if (!addressParams) {
+        window.history.replaceState(null, "", "/");
+      }
     }
   }
 
@@ -806,11 +840,11 @@
       <div class="flex items-center justify-center h-screen">
         <div class="flex flex-col items-center justify-center w-2/3 gap-4 p-6">
           {#if $query.isError && Object.keys(userInfo).length !== 0}
-            <div class="text-lg">
+            <div class="xl:text-lg text-2xl">
               {$query.error}
             </div>
           {:else}
-            <div class="text-lg">
+            <div class="xl:text-lg text-2xl">
               {MultipleLang.addwallet}
             </div>
             {#if Object.keys(userInfo).length !== 0}
@@ -1453,6 +1487,7 @@
             <Button
               variant="tertiary"
               isLoading={isLoadingConnectCEX}
+              disabled={isLoadingConnectCEX}
               on:click={onSubmitCEX}
             >
               <div class="font-medium text-white xl:text-base text-2xl">
@@ -1587,7 +1622,12 @@
             >
           </div>
           <div class="lg:w-[120px] w-full">
-            <Button type="submit" variant="tertiary">
+            <Button
+              type="submit"
+              variant="tertiary"
+              isLoading={isLoadingAddDEX}
+              disabled={isLoadingAddDEX}
+            >
               {MultipleLang.content.modal_add}</Button
             >
           </div>

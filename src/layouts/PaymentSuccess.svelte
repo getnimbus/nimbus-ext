@@ -20,6 +20,7 @@
   let showToast = false;
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const trigger = () => {
     showToast = true;
@@ -67,12 +68,20 @@
     }
   };
 
-  const queryClient = useQueryClient();
+  const getUserInfo = async () => {
+    const response: any = await nimbus.get("/users/me");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response?.data;
+  };
+
   $: queryUserInfo = createQuery({
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
     staleTime: Infinity,
     retry: false,
+    enabled: Object.keys(userInfo).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -82,14 +91,6 @@
       queryClient.invalidateQueries(["list-address"]);
     },
   });
-
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
-    return response?.data;
-  };
 
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {

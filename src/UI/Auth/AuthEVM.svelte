@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import dayjs from "dayjs";
   import { Link } from "svelte-navigator";
   import onboard from "~/lib/web3-onboard";
   import { ethers } from "ethers";
@@ -15,10 +16,15 @@
   import mixpanel from "mixpanel-browser";
   import { shorterAddress, clickOutside } from "~/utils";
   import { useQueryClient } from "@tanstack/svelte-query";
+  import QRCode from "qrcode-generator";
+  import CopyToClipboard from "svelte-copy-to-clipboard";
+  import { wait } from "~/entries/background/utils";
 
   import DarkMode from "~/components/DarkMode.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
 
   import User from "~/assets/user.png";
+  import Logo from "~/assets/logo-1.svg";
 
   const wallets$ = onboard.state.select("wallets");
 
@@ -48,22 +54,28 @@
   });
 
   let showPopover = false;
-  let addressWallet = "";
   let invitation = "";
 
   const queryClient = useQueryClient();
 
+  let isOpenModalSync = false;
+  let isCopied = false;
+  let timer = null;
+  let syncMobileCode = "";
+  let qrImageDataUrl = "";
+
+  let timeCountdown = 59;
+  let timerCountdown;
+
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    let invitationParams = urlParams.get("invitation");
+    const invitationParams = urlParams.get("invitation");
     if (invitationParams) {
       invitation = invitationParams;
     }
 
     const evmToken = localStorage.getItem("evm_token");
-    const evmAddress = localStorage.getItem("evm_address");
-    if (evmToken && evmAddress) {
-      addressWallet = evmAddress;
+    if (evmToken) {
       user.update(
         (n) =>
           (n = {
@@ -100,8 +112,9 @@
     showPopover = false;
     localStorage.removeItem("evm_address");
     localStorage.removeItem("evm_token");
-    addressWallet = "";
     disconnect($wallets$?.[0]);
+    queryClient.invalidateQueries(["list-address"]);
+    queryClient.invalidateQueries(["users-me"]);
   };
 
   const handleSignAddressMessage = async (provider, signatureString) => {
@@ -151,8 +164,6 @@
     try {
       const res = await nimbus.post("/auth/evm", data);
       if (res?.data?.result) {
-        addressWallet = data.publicAddress;
-        localStorage.setItem("evm_address", data.publicAddress);
         localStorage.setItem("evm_token", res?.data?.result);
         user.update(
           (n) =>
@@ -161,11 +172,58 @@
             })
         );
         queryClient.invalidateQueries(["list-address"]);
+        queryClient.invalidateQueries(["users-me"]);
       }
     } catch (e) {
       console.error("error: ", e);
     }
   };
+
+  const handleGetCodeSyncMobile = async () => {
+    try {
+      const res = await nimbus.get("/users/cross-login");
+      if (res?.data) {
+        syncMobileCode = res?.data?.code;
+        const expiredAt = dayjs.unix(res?.data?.expiredAt);
+        const currentTime = dayjs();
+
+        // Check if the time difference is more than 1 minute
+        if (currentTime.diff(expiredAt, "second") > 60) {
+          // Make another API call to get a new sync code
+          const newResponse = await nimbus.get("/users/cross-login");
+          if (newResponse) {
+            syncMobileCode = res?.data?.code;
+          }
+        } else {
+          // Schedule the next check after 1 minute
+          timer = setTimeout(handleGetCodeSyncMobile, 60000);
+
+          timerCountdown = setInterval(() => {
+            timeCountdown -= 1;
+            if (timeCountdown < 0) {
+              timeCountdown = 59;
+              clearInterval(timerCountdown);
+            }
+          }, 1000);
+        }
+      }
+    } catch (e) {
+      syncMobileCode = undefined;
+      timeCountdown = 59;
+      clearTimeout(timer);
+      clearInterval(timerCountdown);
+      console.error("error: ", e);
+    }
+  };
+
+  $: {
+    if (syncMobileCode) {
+      const qrcode = QRCode(0, "L");
+      qrcode.addData(`https://beta.getnimbus.io/?code=${syncMobileCode}`);
+      qrcode.make();
+      qrImageDataUrl = qrcode.createDataURL(7);
+    }
+  }
 </script>
 
 {#if Object.keys(userInfo).length !== 0}
@@ -209,7 +267,7 @@
           class="flex flex-col gap-3 mx-2 pt-1 pb-2 border-b-[1px] border_0000001a"
         >
           <div class="text-2xl xl:text-base">
-            GM 👋, {shorterAddress(addressWallet)}
+            GM 👋, {shorterAddress(localStorage.getItem("evm_address") || "")}
           </div>
           <DarkMode />
         </div>
@@ -242,6 +300,19 @@
               </svg>
             </div>
           </Link>
+        </div>
+
+        <div
+          class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
+            darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+          }`}
+          on:click={() => {
+            isOpenModalSync = true;
+            handleGetCodeSyncMobile();
+            showPopover = false;
+          }}
+        >
+          Sync to mobile
         </div>
 
         <div on:click={() => (showPopover = false)}>
@@ -291,6 +362,126 @@
     Connect Wallet
   </div>
 {/if}
+
+<!-- Modal sync user to mobile -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenModalSync}
+  on:close={() => {
+    isOpenModalSync = false;
+    timeCountdown = 59;
+    clearTimeout(timer);
+    clearInterval(timerCountdown);
+  }}
+>
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1 items-start">
+      <div class="xl:title-3 title-1 font-semibold">Sync session to mobile</div>
+      <div class="xl:text-sm text-2xl text-gray-500">
+        More convenience in managing your portfolio on mobile devices
+      </div>
+    </div>
+    <div class="text-center text-sm">
+      The code is expired in {timeCountdown}s
+    </div>
+    <div class="flex justify-center items-center -mt-2">
+      <div class="border rounded-xl overflow-hidden bg-white w-[57%]">
+        <div class="bg-[#f3f4f6] py-2 px-4">
+          <img src={Logo} alt="Logo" class="h-12 w-auto -ml-3" />
+        </div>
+        <div class="flex justify-center">
+          {#if qrImageDataUrl !== undefined}
+            <img src={qrImageDataUrl} alt="QR Code" />
+          {:else}
+            <div class="flex flex-col items-center gap-1 text-sm py-30">
+              <div>Something wrong when generate QR code.</div>
+              <div
+                class="text-blue-500 cursor-pointer"
+                on:click={() => {
+                  handleGetCodeSyncMobile();
+                }}
+              >
+                Try again
+              </div>
+            </div>
+          {/if}
+        </div>
+        <div class="text-xs text-center font-medium text-[#9ca3af] px-4 pb-3">
+          Investment in crypto more convenience with Nimbus
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col items-center mt-2 gap-4">
+      <div class="border-t-[1px] relative w-[57%]">
+        <div
+          class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 text-xs px-2 ${
+            darkMode ? "bg-[#0f0f0f]" : "bg-white"
+          }`}
+        >
+          Or enter the code manually
+        </div>
+      </div>
+      <div class="w-[57%]">
+        <CopyToClipboard
+          text={syncMobileCode}
+          let:copy
+          on:copy={async () => {
+            isCopied = true;
+            await wait(1000);
+            isCopied = false;
+          }}
+        >
+          <div class="flex items-center gap-2">
+            <div class="flex-1 border rounded-lg py-2 px-3 text-base">
+              {syncMobileCode}
+            </div>
+            <div
+              class="cursor-pointer border w-max p-2 rounded-lg"
+              on:click={copy}
+            >
+              {#if isCopied}
+                <svg
+                  width={21}
+                  height={21}
+                  id="Layer_1"
+                  data-name="Layer 1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 122.88 74.46"
+                  fill={darkMode ? "#fff" : "#000"}
+                  ><path
+                    fill-rule="evenodd"
+                    d="M1.87,47.2a6.33,6.33,0,1,1,8.92-9c8.88,8.85,17.53,17.66,26.53,26.45l-3.76,4.45-.35.37a6.33,6.33,0,0,1-8.95,0L1.87,47.2ZM30,43.55a6.33,6.33,0,1,1,8.82-9.07l25,24.38L111.64,2.29c5.37-6.35,15,1.84,9.66,8.18L69.07,72.22l-.3.33a6.33,6.33,0,0,1-8.95.12L30,43.55Zm28.76-4.21-.31.33-9.07-8.85L71.67,4.42c5.37-6.35,15,1.83,9.67,8.18L58.74,39.34Z"
+                  /></svg
+                >
+              {:else}
+                <svg
+                  width={21}
+                  height={21}
+                  viewBox="0 0 12 11"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                    stroke={darkMode ? "#fff" : "#000"}
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                    stroke={darkMode ? "#fff" : "#000"}
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              {/if}
+            </div>
+          </div>
+        </CopyToClipboard>
+      </div>
+    </div>
+  </div>
+</AppOverlay>
 
 <style windi:preflights:global windi:safelist:global>
   :global(body) .select_content {

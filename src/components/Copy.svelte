@@ -1,6 +1,5 @@
 <script lang="ts">
   import CopyToClipboard from "svelte-copy-to-clipboard";
-
   import { wait } from "../entries/background/utils";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import { shorterAddress } from "~/utils";

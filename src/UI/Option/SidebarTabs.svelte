@@ -47,6 +47,7 @@
           spanClass={`text-xl pl-2 ${
             activeTabValue === item.value ? "text-blue-500" : ""
           }`}
+          class="mb-4"
         >
           <svelte:fragment slot="icon">
             <Icon

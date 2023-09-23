@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { Link, useMatch, useNavigate } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
   import { i18n } from "~/lib/i18n";
@@ -21,6 +22,8 @@
   import Auth from "~/UI/Auth/Auth.svelte";
   import AuthEvm from "~/UI/Auth/AuthEVM.svelte";
   import DarkModeFooter from "./DarkModeFooter.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+  import Button from "~/components/Button.svelte";
 
   import Logo from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
@@ -36,6 +39,7 @@
   import Crown from "~/assets/crown.svg";
   import Close from "~/assets/close-menu-bar.svg";
   import Chat from "~/assets/chat.svg";
+  import User from "~/assets/user.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -100,6 +104,73 @@
     }
   };
 
+  let publicAddress = "";
+  let isOpenModalSync = false;
+  let code = "";
+  let isLoadingSyncMobile = false;
+  let errors = {};
+
+  // Handle mobile sign in
+  const handleMobileSignIn = async (code) => {
+    isLoadingSyncMobile = true;
+    try {
+      const res = await nimbus.post("/auth/access-code", {
+        code: code,
+      });
+      if (res?.data?.result) {
+        localStorage.setItem("evm_token", res?.data?.result);
+        user.update(
+          (n) =>
+            (n = {
+              picture: User,
+            })
+        );
+        queryClient.invalidateQueries(["users-me"]);
+        isOpenModalSync = false;
+      }
+      errors["code"] = {
+        ...errors["code"],
+        required: true,
+        msg: "Your code is expired",
+      };
+      isLoadingSyncMobile = false;
+    } catch (e) {
+      isLoadingSyncMobile = false;
+      errors["code"] = {
+        ...errors["code"],
+        required: true,
+        msg: "Your code is expired",
+      };
+      console.error(e);
+    }
+  };
+
+  const onSubmitGetCode = async (e) => {
+    const formData = new FormData(e.target);
+    const data: any = {};
+    for (let field of formData) {
+      const [key, value] = field;
+      data[key] = value;
+    }
+    if (data.code.length !== 6) {
+      errors["code"] = {
+        ...errors["code"],
+        required: true,
+        msg: "Invalid code",
+      };
+      return;
+    }
+    handleMobileSignIn(data.code);
+  };
+
+  onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const syncCodeParams = urlParams.get("code");
+    if (syncCodeParams) {
+      handleMobileSignIn(syncCodeParams);
+    }
+  });
+
   const getUserInfo = async () => {
     const response: any = await nimbus.get("/users/me");
     if (response?.status === 401) {
@@ -112,6 +183,7 @@
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
     staleTime: Infinity,
+    enabled: Object.keys(userInfo).length !== 0,
     retry: false,
     onError(err) {
       localStorage.removeItem("evm_token");
@@ -125,6 +197,8 @@
 
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
+      localStorage.setItem("evm_address", $queryUserInfo.data.publicAddress);
+      publicAddress = $queryUserInfo.data.publicAddress;
       if (
         $queryUserInfo.data?.plan?.tier &&
         $queryUserInfo.data?.plan?.tier.length !== 0
@@ -297,8 +371,8 @@
       <div
         on:click={() => {
           if (userInfo && Object.keys(userInfo).length !== 0) {
-            navActive = "transactions";
             chain.update((n) => (n = "ETH"));
+            navActive = "transactions";
             queryClient.invalidateQueries(["users-me"]);
           } else {
             user.update((n) => (n = {}));
@@ -466,7 +540,7 @@
 
 <!-- Mobile header -->
 <div
-  class={`fixed inset-0 h-screen w-full mobile mobile-container ${
+  class={`fixed inset-0 w-full mobile mobile-container ${
     showHeaderMobile
       ? "opacity-100 transform translate-x-[0px]"
       : "opacity-0 transform translate-x-[-100vw]"
@@ -494,7 +568,9 @@
         {#if userInfo && Object.keys(userInfo).length !== 0}
           <div class="flex justify-between items-center px-4 text-white">
             <div class="text-3xl">
-              GM 👋, {shorterAddress(localStorage.getItem("evm_address") || "")}
+              GM 👋, {shorterAddress(
+                localStorage.getItem("evm_address") || publicAddress
+              )}
             </div>
           </div>
         {/if}
@@ -696,8 +772,18 @@
       <div class="flex flex-col gap-30 w-full pb-16">
         <div class="flex flex-col gap-7 px-4">
           <DarkModeFooter />
-          <div class="w-max">
+          <div class="w-max flex flex-col gap-6">
             <AuthEvm />
+            {#if Object.keys(userInfo).length === 0}
+              <div
+                class="text-3xl font-semibold text-white cursor-pointer xl:text-base"
+                on:click={() => {
+                  isOpenModalSync = true;
+                }}
+              >
+                Sync from Desktop
+              </div>
+            {/if}
           </div>
         </div>
         <div class="w-full flex justify-center gap-16 text-white">
@@ -766,8 +852,82 @@
   </div>
 </div>
 
+<!-- Modal sync user from desktop -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenModalSync}
+  on:close={() => {
+    isOpenModalSync = false;
+  }}
+>
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1 items-start">
+      <div class="xl:title-3 title-1 font-semibold">
+        Input your code from desktop
+      </div>
+      <div class="xl:text-sm text-2xl text-gray-500">
+        Investment in crypto more convenience with Nimbus anywhere, anytime
+      </div>
+    </div>
+    <form
+      on:submit|preventDefault={onSubmitGetCode}
+      class="flex flex-col xl:gap-3 gap-10"
+    >
+      <div class="flex flex-col gap-1">
+        <div
+          class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
+            code && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+          }`}
+          class:input-border-error={errors.code && errors.code.required}
+        >
+          <div class="xl:text-base text-2xl text-[#666666] font-medium">
+            Code
+          </div>
+          <input
+            type="number"
+            id="code"
+            name="code"
+            required
+            placeholder="Your code"
+            value=""
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              code && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            }`}
+            on:keyup={({ target: { value } }) => (code = value)}
+          />
+        </div>
+        {#if errors.code && errors.code.required}
+          <div class="text-red-500">
+            {errors.code.msg}
+          </div>
+        {/if}
+      </div>
+      <div class="flex justify-end lg:gap-2 gap-6">
+        <div class="xl:w-[120px] w-full">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              isOpenModalSync = false;
+            }}
+          >
+            Cancel
+          </Button>
+        </div>
+        <div class="xl:w-[120px] w-full">
+          <Button
+            type="submit"
+            isLoading={isLoadingSyncMobile}
+            disabled={isLoadingSyncMobile}>Submit</Button
+          >
+        </div>
+      </div>
+    </form>
+  </div>
+</AppOverlay>
+
 <style>
   .mobile {
+    height: 100vh;
     z-index: 2147483649;
     backdrop-filter: blur(12px);
 
@@ -782,6 +942,16 @@
       0 8px 10px -6px var(--tw-shadow-color);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
       var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
+  @supports (height: 100dvh) {
+    .mobile {
+      height: 100dvh;
+    }
+  }
+
+  .input-border-error {
+    border: 1px solid red;
   }
 
   :global(body) .mobile-container {
