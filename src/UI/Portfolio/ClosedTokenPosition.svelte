@@ -111,7 +111,7 @@
         ?.filter((item) => Number(item?.amount) === 0)
         ?.filter((item) => {
           if (item?.profit !== undefined) {
-            return item?.profit.realizedProfit !== 0;
+            return Number(item?.profit.realizedProfit) !== 0;
           }
         })
         ?.map((item) => {
@@ -120,15 +120,18 @@
             market_price: item?.rate || 0,
           };
         })
-        .sort((a, b) => b?.profit.realizedProfit - a?.profit.realizedProfit);
+        .sort(
+          (a, b) =>
+            Number(b?.profit.realizedProfit) - Number(a?.profit.realizedProfit)
+        );
 
       sumAllTokens = formatData.reduce(
-        (prev, item) => prev + item?.profit.realizedProfit,
+        (prev, item) => prev + Number(item?.profit.realizedProfit),
         0
       );
 
       filteredHoldingDataToken = formatData.filter(
-        (item) => Math.abs(item?.profit.realizedProfit) > 1
+        (item) => Math.abs(Number(item?.profit.realizedProfit)) > 1
       );
     }
     if (holdingNFTData) {
@@ -172,11 +175,11 @@
       formatData = formatDataWithMarketPrice;
 
       filteredHoldingDataToken = formatData.filter(
-        (item) => Math.abs(item?.profit.realizedProfit) > 1
+        (item) => Math.abs(Number(item?.profit.realizedProfit)) > 1
       );
 
       sumAllTokens = formatData.reduce(
-        (prev, item) => prev + item?.profit.realizedProfit,
+        (prev, item) => prev + Number(item?.profit.realizedProfit),
         0
       );
     }
@@ -197,7 +200,9 @@
   }
 
   $: filteredHoldingDataToken = filteredHoldingToken
-    ? formatData?.filter((item) => Math.abs(item?.profit.realizedProfit) > 1)
+    ? formatData?.filter(
+        (item) => Math.abs(Number(item?.profit.realizedProfit)) > 1
+      )
     : formatData;
 
   $: {
@@ -205,8 +210,8 @@
       sumAllTokens = 0;
       sumNFT = 0;
     } else {
-      sumAllTokens = (formatData || []).reduce(
-        (prev, item) => prev + item?.profit.realizedProfit,
+      sumAllTokens = formatData.reduce(
+        (prev, item) => prev + Number(item?.profit.realizedProfit),
         0
       );
       sumNFT = (formatDataNFT || []).reduce(

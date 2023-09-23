@@ -308,42 +308,30 @@
     });
 
     listAddress = structWalletData;
-    console.log("listAddress: ", listAddress);
     listAddressWithoutBundle = structWalletData.filter(
       (item) => item.type !== "BUNDLE"
     );
-    console.log("listAddressWithoutBundle: ", listAddressWithoutBundle);
 
-    if (structWalletData && structWalletData?.length === 1) {
+    if (listAddressWithoutBundle && listAddressWithoutBundle?.length === 1) {
       browser.storage.sync.set({
-        selectedWallet: structWalletData[0]?.address,
+        selectedWallet: listAddressWithoutBundle[0]?.address,
       });
       browser.storage.sync.set({ selectedChain: "ALL" });
       browser.storage.sync.set({
-        typeWalletAddress: structWalletData[0]?.type,
+        typeWalletAddress: "EVM",
       });
-    }
-    if (
-      structWalletData &&
-      structWalletData?.length !== 0 &&
-      structWalletData &&
-      structWalletData?.length > 1
-    ) {
-      browser.storage.sync.set({
-        selectedWallet: structWalletData[structWalletData.length - 1]?.address,
-      });
-      browser.storage.sync.set({ selectedChain: "ALL" });
-      browser.storage.sync.set({
-        typeWalletAddress: structWalletData[structWalletData.length - 1]?.type,
-      });
+      chain.update((n) => (n = "ALL"));
+      typeWallet.update((n) => (n = "EVM"));
+      wallet.update((n) => (n = listAddressWithoutBundle[0]?.address));
     }
   };
 
-  const query = createQuery({
+  $: query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
+    enabled: Object.keys(userInfo).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -374,7 +362,7 @@
       ) {
         Object.assign(data, { id: data.address });
 
-        await nimbus.post("/accounts", {
+        const response = await nimbus.post("/accounts", {
           type: "DEX",
           publicAddress: data.address,
           accountId: data.address,
@@ -383,7 +371,19 @@
 
         e.target.reset();
         isOpenAddModal = false;
-        queryClient.invalidateQueries(["list-address"]);
+        queryClient.refetchQueries(["list-address"]);
+
+        browser.storage.sync.set({
+          selectedWallet: response?.data?.accountId,
+        });
+        browser.storage.sync.set({ selectedChain: "ALL" });
+        browser.storage.sync.set({
+          typeWalletAddress: "EVM",
+        });
+        chain.update((n) => (n = "ALL"));
+        typeWallet.update((n) => (n = "EVM"));
+        wallet.update((n) => (n = response?.data?.accountId));
+
         toastMsg = "Successfully add On-chain account!";
         isSuccess = true;
         trigger();
@@ -423,7 +423,7 @@
           .onConnection(async function (account) {
             await nimbus.get("/accounts/sync");
 
-            queryClient.invalidateQueries(["list-address"]);
+            queryClient.refetchQueries(["list-address"]);
 
             await wait(1000);
 
@@ -438,7 +438,7 @@
           .onError(function (error) {
             console.error("connection vezgo error", error);
 
-            queryClient.invalidateQueries(["list-address"]);
+            queryClient.refetchQueries(["list-address"]);
             isLoadingConnectCEX = false;
             isOpenAddModal = false;
 
@@ -469,7 +469,7 @@
           label: data.label,
         });
 
-        queryClient.invalidateQueries(["list-address"]);
+        queryClient.refetchQueries(["list-address"]);
         e.target.reset();
         isOpenEditModal = false;
         isLoadingEdit = false;
@@ -491,7 +491,7 @@
             label: data.label,
           });
 
-          queryClient.invalidateQueries(["list-address"]);
+          queryClient.refetchQueries(["list-address"]);
           e.target.reset();
           isOpenEditModal = false;
           isLoadingEdit = false;
@@ -518,7 +518,7 @@
     isLoadingDelete = true;
     try {
       await nimbus.delete(`/accounts/${item.id}`, {});
-      queryClient.invalidateQueries(["list-address"]);
+      queryClient.refetchQueries(["list-address"]);
       isLoadingDelete = false;
       isOpenConfirmDelete = false;
       toastMsg = "Successfully delete your account!";
@@ -552,6 +552,7 @@
         };
       });
       await nimbus.post(`/accounts/sorting`, formatListAddress);
+      queryClient.refetchQueries(["list-address"]);
     } catch (e) {
       console.error("e: ", e);
     }
@@ -1159,7 +1160,7 @@
               </th>
             </tr>
           </thead>
-          {#if $query.isFetching}
+          {#if $query.isLoading}
             <tbody>
               <tr>
                 <td colspan="3">
@@ -1351,7 +1352,7 @@
             </th>
           </tr>
         </thead>
-        {#if $query.isFetching}
+        {#if $query.isLoading}
           <tbody>
             <tr>
               <td colspan="3">
