@@ -33,14 +33,16 @@
   let isShowCMC = false;
   let isShowCoingecko = false;
 
-  $: value = data?.amount * data?.market_price;
+  $: value = Number(data?.amount) * Number(data?.market_price);
 
   $: realizedProfit = data?.profit?.realizedProfit
-    ? data?.profit?.realizedProfit
+    ? Number(data?.profit?.realizedProfit)
     : 0;
 
   $: percentRealizedProfit =
-    (data?.avgCost || 0) === 0 ? 0 : realizedProfit / Math.abs(data?.avgCost);
+    Number(data?.avgCost) === 0
+      ? 0
+      : realizedProfit / Math.abs(Number(data?.avgCost));
 
   $: clickable =
     data.name !== "Bitcoin" &&
