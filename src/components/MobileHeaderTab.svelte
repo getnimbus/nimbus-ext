@@ -22,10 +22,9 @@
     search_placeholder: i18n("newtabPage.search-placeholder", "Search address"),
   };
 
-  const queryClient = useQueryClient();
-
   const navigate = useNavigate();
   const absoluteMatch = useMatch("/:page");
+  const queryClient = useQueryClient();
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {

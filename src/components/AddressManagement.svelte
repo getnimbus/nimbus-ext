@@ -255,16 +255,18 @@
     return response?.data;
   };
 
-  const query = createQuery({
+  $: query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
+    enabled:
+      Object.keys(userInfo).length !== 0 &&
+      selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0",
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
-    enabled: selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0",
     onSuccess(data) {
       if (data.length === 0) {
         handleCreateUser();
@@ -496,6 +498,12 @@
 
         queryClient.invalidateQueries(["list-address"]);
         wallet.update((n) => (n = dataFormat.value));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=EVM&chain=ALL&address=${dataFormat.value}`
+        );
 
         e.target.reset();
         errors = {};
@@ -827,11 +835,11 @@
       <div class="flex items-center justify-center h-screen">
         <div class="flex flex-col items-center justify-center w-2/3 gap-4 p-6">
           {#if $query.isError && Object.keys(userInfo).length !== 0}
-            <div class="text-lg">
+            <div class="xl:text-lg text-2xl">
               {$query.error}
             </div>
           {:else}
-            <div class="text-lg">
+            <div class="xl:text-lg text-2xl">
               {MultipleLang.addwallet}
             </div>
             {#if Object.keys(userInfo).length !== 0}
