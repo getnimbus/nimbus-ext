@@ -120,11 +120,6 @@
       trigger();
     }
   };
-
-  $: {
-    if (!$query.isError && $query.data !== undefined) {
-    }
-  }
 </script>
 
 <div class="flex flex-col gap-4">
