@@ -835,11 +835,11 @@
       <div class="flex items-center justify-center h-screen">
         <div class="flex flex-col items-center justify-center w-2/3 gap-4 p-6">
           {#if $query.isError && Object.keys(userInfo).length !== 0}
-            <div class="text-lg">
+            <div class="xl:text-lg text-2xl">
               {$query.error}
             </div>
           {:else}
-            <div class="text-lg">
+            <div class="xl:text-lg text-2xl">
               {MultipleLang.addwallet}
             </div>
             {#if Object.keys(userInfo).length !== 0}
