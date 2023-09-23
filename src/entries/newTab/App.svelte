@@ -399,5 +399,9 @@
     #mava-button-iframe {
       display: none !important;
     }
+
+    .fb-feedback-widget-feedback-button-container {
+      display: none !important;
+    }
   }
 </style>
