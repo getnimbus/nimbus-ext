@@ -144,8 +144,9 @@
   let selectedWallet = {};
   let address = "";
   let label = "";
-  let isLoadingEdit = false;
+  let isLoadingAddDEX = false;
   let isLoadingDelete = false;
+  let isLoadingEditDEX = false;
   let isLoadingConnectCEX = false;
   let showDisableAddWallet = false;
   let showDisableBundle = false;
@@ -346,6 +347,7 @@
 
   // Add DEX address account
   const onSubmit = async (e) => {
+    isLoadingAddDEX = true;
     try {
       const formData = new FormData(e.target);
 
@@ -370,6 +372,7 @@
         });
 
         e.target.reset();
+        isLoadingAddDEX = false;
         isOpenAddModal = false;
         queryClient.refetchQueries(["list-address"]);
 
@@ -393,9 +396,11 @@
         errors["label"] = { ...errors["label"], required: false, msg: "" };
       } else {
         console.error("Invalid Form");
+        isLoadingAddDEX = false;
       }
     } catch (e) {
       console.error(e);
+      isLoadingAddDEX = false;
       toastMsg = "Something wrong when add DEX account. Please try again!";
       isSuccess = false;
       trigger();
@@ -453,7 +458,7 @@
 
   // Edit account
   const onSubmitEdit = async (e) => {
-    isLoadingEdit = true;
+    isLoadingEditDEX = true;
     try {
       const formData = new FormData(e.target);
 
@@ -472,7 +477,7 @@
         queryClient.refetchQueries(["list-address"]);
         e.target.reset();
         isOpenEditModal = false;
-        isLoadingEdit = false;
+        isLoadingEditDEX = false;
         toastMsg = "Successfully edit your wallet!";
         isSuccess = true;
         trigger();
@@ -494,21 +499,21 @@
           queryClient.refetchQueries(["list-address"]);
           e.target.reset();
           isOpenEditModal = false;
-          isLoadingEdit = false;
+          isLoadingEditDEX = false;
           toastMsg = "Successfully edit your wallet!";
           isSuccess = true;
           trigger();
           mixpanel.track("user_edit_address");
         } else {
           console.error("Invalid Form");
-          isLoadingEdit = false;
+          isLoadingEditDEX = false;
         }
       }
     } catch (e) {
       console.error(e);
       toastMsg = "Something wrong when edit your wallet. Please try again!";
       isSuccess = false;
-      isLoadingEdit = false;
+      isLoadingEditDEX = false;
       trigger();
     }
   };
@@ -1510,6 +1515,7 @@
             <Button
               variant="tertiary"
               isLoading={isLoadingConnectCEX}
+              disabled={isLoadingConnectCEX}
               on:click={onSubmitCEX}
             >
               <div class="text-2xl font-medium text-white xl:text-base">
@@ -1645,7 +1651,12 @@
             >
           </div>
           <div class="lg:w-[120px] w-full">
-            <Button type="submit" variant="tertiary">
+            <Button
+              type="submit"
+              variant="tertiary"
+              isLoading={isLoadingAddDEX}
+              disabled={isLoadingAddDEX}
+            >
               {MultipleLang.content.modal_add}</Button
             >
           </div>
@@ -1743,7 +1754,12 @@
           >
         </div>
         <div class="lg:w-[120px] w-full">
-          <Button type="submit" variant="tertiary">
+          <Button
+            type="submit"
+            variant="tertiary"
+            isLoading={isLoadingEditDEX}
+            disabled={isLoadingEditDEX}
+          >
             {MultipleLang.content.modal_edit}</Button
           >
         </div>
