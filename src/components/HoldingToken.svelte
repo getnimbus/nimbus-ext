@@ -276,7 +276,7 @@
               "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
           }}
         />
-        {#if typeWalletAddress === "EVM" || selectBundle.accounts.find((item) => item?.type === "CEX") === undefined}
+        {#if typeWalletAddress !== "CEX" && typeWalletAddress !== "BTC" && typeWalletAddress !== "SOL" && (typeWalletAddress === "EVM" || selectBundle?.accounts.find((item) => item?.type === "CEX") === undefined)}
           <div class="absolute -top-2 -right-1">
             <img
               src={detectedChain(data.chain)}

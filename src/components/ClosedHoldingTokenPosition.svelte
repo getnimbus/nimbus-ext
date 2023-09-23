@@ -1,6 +1,6 @@
 <script>
   import { useNavigate } from "svelte-navigator";
-  import { chain, typeWallet, isDarkMode } from "~/store";
+  import { chain, typeWallet, isDarkMode, selectedBundle } from "~/store";
   import { detectedChain, shorterName } from "~/utils";
   import numeral from "numeral";
 
@@ -17,6 +17,11 @@
   $: selectedChain = $chain;
 
   const navigate = useNavigate();
+
+  let selectBundle = {};
+  selectedBundle.subscribe((value) => {
+    selectBundle = value;
+  });
 
   let typeWalletAddress = "";
   typeWallet.subscribe((value) => {
@@ -105,7 +110,7 @@
               "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
           }}
         />
-        {#if typeWalletAddress === "EVM"}
+        {#if typeWalletAddress !== "CEX" && typeWalletAddress !== "BTC" && typeWalletAddress !== "SOL" && (typeWalletAddress === "EVM" || selectBundle?.accounts.find((item) => item?.type === "CEX") === undefined)}
           <div class="absolute -top-2 -right-1">
             <img
               src={detectedChain(data.chain)}
