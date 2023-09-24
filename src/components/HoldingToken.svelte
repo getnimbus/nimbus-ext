@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
-  import { chain, typeWallet, isDarkMode, user } from "~/store";
+  import { chain, typeWallet, isDarkMode, user, selectedBundle } from "~/store";
   import { detectedChain, shorterName } from "~/utils";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
@@ -27,6 +27,11 @@
   $: selectedChain = $chain;
 
   const navigate = useNavigate();
+
+  let selectBundle = {};
+  selectedBundle.subscribe((value) => {
+    selectBundle = value;
+  });
 
   let typeWalletAddress = "";
   typeWallet.subscribe((value) => {
@@ -191,6 +196,7 @@
     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
 
   $: console.log("selectWalletAccount: ", selectWalletAccount);
+  $: console.log("selectBundle: ", selectBundle);
 </script>
 
 <tr
