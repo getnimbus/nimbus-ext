@@ -67,7 +67,8 @@
   let isLoadingReportTrashCoin = false;
 
   let isOpenTokenInformation = false;
-  let selectWalletAccount = data?.breakdown[0];
+  let selectWalletAccount =
+    data?.breakdown !== undefined ? data?.breakdown[0] : {};
 
   let scrollContainer;
   let isScrollStart = true;
@@ -207,7 +208,7 @@
     data.logo ||
     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
 
-  $: formatDataBreakdown = data?.breakdown.map((item) => {
+  $: formatDataBreakdown = (data?.breakdown || []).map((item) => {
     const selectedAddress = selectBundle?.accounts.find(
       (account) => account?.id === item?.owner || account?.value === item?.owner
     );
