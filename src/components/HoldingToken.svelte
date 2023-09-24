@@ -733,7 +733,7 @@
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
     >
-      {#if typeWalletAddress === "BTC" || typeWalletAddress === "SOL" || typeWalletAddress === "CEX"}
+      {#if typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
         N/A
       {:else}
         <div class="flex flex-col">
@@ -785,7 +785,7 @@
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
     >
-      {#if typeWalletAddress === "BTC" || typeWalletAddress === "SOL" || typeWalletAddress === "CEX"}
+      {#if typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
         N/A
       {:else}
         <div class="flex flex-col">
