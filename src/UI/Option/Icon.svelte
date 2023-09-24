@@ -3,7 +3,7 @@
   export let active;
   export let darkMode;
 
-  $: color = active ? "#3f83f8" : darkMode ? "#ffffff" : "#000000";
+  $: color = active ? "#3f83f8" : darkMode ? "#d1d5db" : "#9ca3af";
 </script>
 
 {#if type === "Wallets"}
