@@ -272,11 +272,11 @@
         : "bg-white group-hover:bg-gray-100"
     }`}
   >
-    <div class="text-left flex items-center gap-3 relative">
+    <div class="relative flex items-center gap-3 text-left">
       <!-- icon report -->
       {#if isShowReport}
         <div
-          class="absolute w-5 xl:-left-8 sm:-left-6 top-3 opacity-80 hover:opacity-60 hidden xl:block cursor-pointer"
+          class="absolute hidden w-5 cursor-pointer xl:-left-8 sm:-left-6 top-3 opacity-80 hover:opacity-60 xl:block"
           on:click={() => (isShowReportTable = true)}
         >
           <svg
@@ -324,7 +324,7 @@
       <div class="flex flex-col gap-1">
         <div class="flex items-start gap-2">
           <div
-            class="xl:text-sm text-2xl font-medium relative"
+            class="relative text-2xl font-medium xl:text-sm"
             on:mouseover={() => {
               isShowTooltipName = true;
             }}
@@ -340,7 +340,7 @@
                 <!-- icon report -->
                 {#if isShowReport}
                   <span
-                    class="opacity-80 hover:opacity-60 flex items-center justify-center ml-3 xl:hidden"
+                    class="flex items-center justify-center ml-3 opacity-80 hover:opacity-60 xl:hidden"
                     on:click={() => (isShowReportTable = true)}
                   >
                     <svg
@@ -364,7 +364,7 @@
               </div>
             {/if}
             {#if isShowTooltipName && data?.name?.length > 20}
-              <div class="absolute -top-8 left-0" style="z-index: 2147483648;">
+              <div class="absolute left-0 -top-8" style="z-index: 2147483648;">
                 <tooltip-detail text={data.name} />
               </div>
             {/if}
@@ -377,19 +377,19 @@
                 selectedVaults = data.vaults;
               }}
             >
-              <div class="xl:block hidden">
+              <div class="hidden xl:block">
                 {`Farm up to ${numeral(selectedHighestVault.apy * 100).format(
                   "0,0.00"
                 )}% APY`}
               </div>
-              <div class="xl:hidden block">Farm</div>
+              <div class="block xl:hidden">Farm</div>
             </div>
           {/if}
         </div>
 
         <div class="flex items-center gap-2">
           <div
-            class="text_00000080 xl:text-xs text-lg font-medium relative"
+            class="relative text-lg font-medium text_00000080 xl:text-xs"
             on:mouseover={() => {
               isShowTooltipSymbol = true;
             }}
@@ -401,7 +401,7 @@
               {shorterName(data.symbol, 20)}
             {/if}
             {#if isShowTooltipSymbol && data.symbol.length > 20}
-              <div class="absolute -top-8 left-0" style="z-index: 2147483648;">
+              <div class="absolute left-0 -top-8" style="z-index: 2147483648;">
                 <tooltip-detail text={data.symbol} />
               </div>
             {/if}
@@ -415,7 +415,7 @@
               <svg
                 viewBox="0 0 76.52 77.67"
                 xmlns="http://www.w3.org/2000/svg"
-                class="w-full h-full object-contain rounded-full"
+                class="object-contain w-full h-full rounded-full"
                 ><path
                   d="m66.54 46.41a4.09 4.09 0 0 1 -4.17.28c-1.54-.87-2.37-2.91-2.37-5.69v-8.52c0-4.09-1.62-7-4.33-7.79-4.58-1.34-8 4.27-9.32 6.38l-8.1 13.11v-16c-.09-3.69-1.29-5.9-3.56-6.56-1.5-.44-3.75-.26-5.94 3.08l-18.11 29.07a32 32 0 0 1 -3.64-14.94c0-17.52 14-31.77 31.25-31.77s31.3 14.25 31.3 31.77v.09s0 .06 0 .09c.17 3.39-.93 6.09-3 7.4zm10-7.57v-.17c-.14-21.35-17.26-38.67-38.29-38.67s-38.25 17.42-38.25 38.83 17.16 38.84 38.25 38.84a37.81 37.81 0 0 0 26-10.36 3.56 3.56 0 0 0 .18-5 3.43 3.43 0 0 0 -4.86-.23 30.93 30.93 0 0 1 -44.57-2.08l16.3-26.2v12.09c0 5.81 2.25 7.69 4.14 8.24s4.78.17 7.81-4.75l9-14.57c.28-.47.55-.87.79-1.22v7.41c0 5.43 2.18 9.77 6 11.91a11 11 0 0 0 11.21-.45c4.2-2.73 6.49-7.67 6.25-13.62z"
                   fill={`${darkMode ? "#d1d5db" : "#17181b"}`}
@@ -437,7 +437,7 @@
                 xmlns:xlink="http://www.w3.org/1999/xlink"
                 x="0px"
                 y="0px"
-                class="w-full h-full object-contain rounded-full"
+                class="object-contain w-full h-full rounded-full"
                 viewBox="0 0 130 130"
                 enable-background="new 0 0 130 130"
                 xml:space="preserve"
@@ -657,7 +657,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
+    <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
       $<TooltipNumber number={data.market_price} type="balance" />
     </div>
   </td>
@@ -668,19 +668,19 @@
     }`}
   >
     <div
-      class="xl:text-sm text-2xl text_00000099 font-medium flex items-center gap-1 justify-end"
+      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm text_00000099"
     >
       {#if withinLast24Hours < 24}
         <span
           use:tooltip={{
-            content: `<tooltip-detail text="Change ${withinLast24Hours} hrs ago" />`,
+            content: `<tooltip-detail text="Changed ${withinLast24Hours} hrs ago" />`,
             allowHTML: true,
             placement: "top",
             interactive: true,
           }}
           class="cursor-pointer"
         >
-          <div class="w-2 h-2 rounded-full bg-indigo-500" />
+          <div class="w-2 h-2 bg-indigo-500 rounded-full" />
         </span>
       {/if}
       <TooltipNumber number={data.amount} type="balance" />
@@ -694,13 +694,13 @@
   >
     <div class="flex flex-col gap-1">
       <div
-        class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
+        class="flex justify-end text-2xl font-medium xl:text-sm text_00000099"
       >
         <TooltipNumber number={value} type="value" />
       </div>
-      <div class="flex flex-col gap-1 justify-end items-end">
+      <div class="flex flex-col items-end justify-end gap-1">
         <div
-          class="xl:text-sm text-2xl text-gray-400 font-medium flex justify-end"
+          class="flex justify-end text-2xl font-medium text-gray-400 xl:text-sm"
         >
           <TooltipNumber number={ratio} type="percent" />%
         </div>
@@ -716,7 +716,7 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
+    <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
       {#if data?.profit}
         $<TooltipNumber number={data?.profit?.averageCost} type="balance" />
       {:else}
@@ -731,9 +731,9 @@
     }`}
   >
     <div
-      class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
+      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm"
     >
-      {#if typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
+      {#if ["BTC", "SOL"].includes(typeWalletAddress)}
         N/A
       {:else}
         <div class="flex flex-col">
@@ -751,8 +751,8 @@
           <div class="flex items-center justify-end gap-1">
             <div
               class={`flex items-center ${
-                percentRealizedProfit !== 0
-                  ? percentRealizedProfit >= 0
+                realizedProfit !== 0
+                  ? realizedProfit >= 0
                     ? "text-[#00A878]"
                     : "text-red-500"
                   : "text_00000099"
@@ -764,9 +764,9 @@
               />
               <span>%</span>
             </div>
-            {#if percentRealizedProfit !== 0}
+            {#if realizedProfit !== 0}
               <img
-                src={percentRealizedProfit >= 0 ? TrendUp : TrendDown}
+                src={realizedProfit >= 0 ? TrendUp : TrendDown}
                 alt="trend"
                 class="mb-1"
               />
@@ -783,9 +783,9 @@
     }`}
   >
     <div
-      class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
+      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm"
     >
-      {#if typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
+      {#if ["BTC", "SOL"].includes(typeWalletAddress)}
         N/A
       {:else}
         <div class="flex flex-col">
@@ -803,8 +803,8 @@
           <div class="flex items-center justify-end gap-1">
             <div
               class={`flex items-center ${
-                percentUnrealizedProfit !== 0
-                  ? percentUnrealizedProfit >= 0
+                unrealizedProfit !== 0
+                  ? unrealizedProfit >= 0
                     ? "text-[#00A878]"
                     : "text-red-500"
                   : "text_00000099"
@@ -816,9 +816,9 @@
               />
               <span>%</span>
             </div>
-            {#if percentUnrealizedProfit !== 0}
+            {#if unrealizedProfit !== 0}
               <img
-                src={percentUnrealizedProfit >= 0 ? TrendUp : TrendDown}
+                src={unrealizedProfit >= 0 ? TrendUp : TrendDown}
                 alt="trend"
                 class="mb-1"
               />
@@ -1040,9 +1040,9 @@
     <div class="font-medium xl:title-3 title-1">Blacklist Token</div>
     <form
       on:submit|preventDefault={handleReportTrashCoin}
-      class="flex flex-col xl:gap-3 gap-10"
+      class="flex flex-col gap-10 xl:gap-3"
     >
-      <div class="flex flex-col xl:gap-3 gap-6">
+      <div class="flex flex-col gap-6 xl:gap-3">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
             !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
@@ -1093,7 +1093,7 @@
           </div>
 
           {#each reasonReportData as item}
-            <div class="flex items-center gap-2 w-max cursor-pointer">
+            <div class="flex items-center gap-2 cursor-pointer w-max">
               <input
                 type="checkbox"
                 name={item.id}
@@ -1109,7 +1109,7 @@
             </div>
           {/each}
 
-          <div class="flex items-center gap-2 w-max cursor-pointer">
+          <div class="flex items-center gap-2 cursor-pointer w-max">
             <input
               type="checkbox"
               name="outdated"
@@ -1140,7 +1140,7 @@
           {/if}
         </div>
 
-        <div class="flex justify-end lg:gap-2 gap-6">
+        <div class="flex justify-end gap-6 lg:gap-2">
           <div class="xl:w-[120px] w-full">
             <Button
               variant="secondary"
@@ -1169,7 +1169,7 @@
 </AppOverlay>
 
 {#if showToast}
-  <div class="fixed top-3 right-3 w-full z-30">
+  <div class="fixed z-30 w-full top-3 right-3">
     <Toast
       transition={blur}
       params={{ amount: 10 }}

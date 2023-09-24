@@ -13,34 +13,25 @@
   export let totalPositions;
   export let totalAssets;
 
-  $: realizedProfit =
-    typeWalletAddress === "CEX"
-      ? 0
-      : (dataTokenHolding || [])
-          .map((item) => {
-            return {
-              ...item,
-              realized_profit: item?.profit?.realizedProfit || 0,
-            };
-          })
-          .reduce((prev, item) => prev + Number(item.realized_profit), 0);
+  $: realizedProfit = (dataTokenHolding || [])
+    .map((item) => {
+      return {
+        ...item,
+        realized_profit: item?.profit?.realizedProfit || 0,
+      };
+    })
+    .reduce((prev, item) => prev + Number(item.realized_profit), 0);
 
-  $: unrealizedProfit =
-    typeWalletAddress === "CEX"
-      ? 0
-      : (dataTokenHolding || [])
-          ?.filter(
-            (item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0
-          )
-          ?.map((item) => {
-            return {
-              ...item,
-              unrealized_profit:
-                Number(item?.amount) * Number(item?.price?.price) +
-                item?.avgCost,
-            };
-          })
-          .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
+  $: unrealizedProfit = (dataTokenHolding || [])
+    ?.filter((item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0)
+    ?.map((item) => {
+      return {
+        ...item,
+        unrealized_profit:
+          Number(item?.amount) * Number(item?.price?.price) + item?.avgCost,
+      };
+    })
+    .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
 
   const MultipleLang = {
     networth: i18n("newtabPage.networth", "Net Worth"),
@@ -65,7 +56,7 @@
   $: networth = totalAssets + totalPositions;
 
   $: totalProfit =
-    typeWalletAddress === "SOL" || typeWalletAddress === "CEX"
+    typeWalletAddress === "SOL"
       ? 0
       : networth +
         Number(data?.overview?.cumulativeOutflow || 0) -
@@ -98,10 +89,10 @@
 </script>
 
 <ErrorBoundary>
-  <div class="flex xl:flex-row flex-col justify-between gap-6">
-    <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
+  <div class="flex flex-col justify-between gap-6 xl:flex-row">
+    <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
       <OverviewCard title={MultipleLang.networth}>
-        <div class="xl:text-3xl text-5xl flex">
+        <div class="flex text-5xl xl:text-3xl">
           $<CountUpNumber id="networth" number={networth} type="balance" />
         </div>
         <div
@@ -129,7 +120,7 @@
               type="percent"
             />%
           </div>
-          <div class="text_00000066 xl:text-base text-2xl font-medium">24h</div>
+          <div class="text-2xl font-medium text_00000066 xl:text-base">24h</div>
         </div>
       </OverviewCard>
 
@@ -183,12 +174,12 @@
               type="percent"
             />%
           </div>
-          <div class="text_00000066 xl:text-base text-2xl font-medium">24h</div>
+          <div class="text-2xl font-medium text_00000066 xl:text-base">24h</div>
         </div>
       </OverviewCard>
     </div>
 
-    <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
+    <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
       <OverviewCard title={MultipleLang.realizedProfit}>
         <div
           class={`xl:text-3xl text-5xl flex ${
@@ -233,7 +224,7 @@
               type="percent"
             />%
           </div>
-          <div class="text_00000066 xl:text-base text-2xl font-medium">24h</div>
+          <div class="text-2xl font-medium text_00000066 xl:text-base">24h</div>
         </div> -->
       </OverviewCard>
 
@@ -281,7 +272,7 @@
               type="percent"
             />%
           </div>
-          <div class="text_00000066 xl:text-base text-2xl font-medium">24h</div>
+          <div class="text-2xl font-medium text_00000066 xl:text-base">24h</div>
         </div> -->
       </OverviewCard>
     </div>
