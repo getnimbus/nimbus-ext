@@ -3,7 +3,7 @@
   import { chain, typeWallet, isDarkMode, user, selectedBundle } from "~/store";
   import { detectedChain, shorterName } from "~/utils";
   import numeral from "numeral";
-  import { Progressbar, Toast } from "flowbite-svelte";
+  import { Progressbar, Toast, Avatar } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import dayjs from "dayjs";
   import { nimbus } from "~/lib/network";
@@ -15,6 +15,7 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
   import Button from "./Button.svelte";
+  import Copy from "~/components/Copy.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -66,7 +67,18 @@
   let isLoadingReportTrashCoin = false;
 
   let isOpenTokenInformation = false;
-  let selectWalletAccount = {};
+  let selectWalletAccount = data?.breakdown[0];
+
+  let scrollContainer;
+  let isScrollStart = true;
+  let isScrollEnd = false;
+  let container;
+
+  const handleScroll = () => {
+    const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
+    isScrollStart = scrollLeft === 0;
+    isScrollEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+  };
 
   const trigger = () => {
     showToast = true;
@@ -195,8 +207,16 @@
     data.logo ||
     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
 
-  $: console.log("selectWalletAccount: ", selectWalletAccount);
-  $: console.log("selectBundle: ", selectBundle);
+  $: formatDataBreakdown = data?.breakdown.map((item) => {
+    const selectedAddress = selectBundle?.accounts.find(
+      (account) => account?.id === item?.owner || account?.value === item?.owner
+    );
+    return {
+      ...item,
+      logo: selectedAddress?.logo,
+      type: selectedAddress?.type,
+    };
+  });
 </script>
 
 <tr
@@ -218,7 +238,6 @@
     //     )}&address=${encodeURIComponent(selectedWallet)}`
     //   );
     // }
-    selectWalletAccount = data;
   }}
   on:mouseover={() => {
     if (userInfo && Object.keys(userInfo).length !== 0) {
@@ -859,12 +878,139 @@
 {#if isOpenTokenInformation}
   <tr>
     <td
-      colspan={8}
-      class={`border-t-[0.5px] border-b border_0000000d -mt-1 p-3 ${
+      class={`border-t-[0.5px] border-b border_0000000d -mt-1 pl-3 xl:static sticky left-0 z-9 w-[450px] ${
         darkMode ? "bg-[#000]" : "bg-gray-100"
       }`}
     >
-      <div class="text-sm">Token Information</div>
+      <div class="grid grid-rows-3 xl:gap-0 gap-2">
+        <div class="xl:text-sm text-2xl flex items-center">
+          Token Information
+        </div>
+
+        <div
+          class="relative overflow-hidden w-full flex gap-3 justify-between items-center"
+          bind:this={container}
+        >
+          <div
+            class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
+              isScrollStart ? "hidden" : "block"
+            }`}
+            style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              height="24px"
+              width="24px"
+              viewBox="0 0 24 24"
+              class="sc-aef7b723-0 fKbUaI"
+              ><path
+                d="M15 6L9 12L15 18"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-miterlimit="10"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              /></svg
+            >
+          </div>
+          <div
+            class="w-max flex gap-3 overflow-x-auto whitespace-nowrap px-2"
+            bind:this={scrollContainer}
+            on:scroll={handleScroll}
+          >
+            {#each formatDataBreakdown as data}
+              <div
+                class={`relative cursor-pointer transition-all rounded-full border-2 p-1 bg-white ${
+                  selectWalletAccount?.owner === data?.owner
+                    ? "border-blue-500"
+                    : "border-black"
+                }`}
+                on:click={() => (selectWalletAccount = data)}
+              >
+                <img
+                  src={data?.logo}
+                  alt=""
+                  class="rounded-full xl:w-[20px] xl:h-[20px] w-[30px] h-[30px]"
+                  on:error={() => {
+                    logo =
+                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+                  }}
+                />
+              </div>
+            {/each}
+          </div>
+          {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
+            <div
+              class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
+                isScrollEnd ? "hidden" : "block"
+              }`}
+              style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                height="24px"
+                width="24px"
+                viewBox="0 0 24 24"
+                class="sc-aef7b723-0 fKbUaI"
+                ><path
+                  d="M9 6L15 12L9 18"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-miterlimit="10"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                /></svg
+              >
+            </div>
+          {/if}
+        </div>
+
+        <div class="flex items-center">
+          <div class="xl:text-sm text-2xl text_00000099">
+            <TooltipNumber
+              number={selectWalletAccount?.amount}
+              type="balance"
+            />
+            {#if data.symbol === undefined}
+              N/A
+            {:else}
+              {data.symbol}
+            {/if}
+          </div>
+        </div>
+      </div>
+    </td>
+
+    <td
+      colspan={8}
+      class={`border-t-[0.5px] border-b border_0000000d -mt-1 pr-3 ${
+        darkMode ? "bg-[#000]" : "bg-gray-100"
+      }`}
+    >
+      <div class="grid grid-rows-3 xl:gap-0 gap-2">
+        <div />
+
+        <div class="xl:text-sm text-2xl flex justify-end items-center py-[6px]">
+          <Copy
+            address={selectWalletAccount?.owner}
+            iconColor={darkMode ? "#fff" : "#000"}
+            color={darkMode ? "#fff" : "#000"}
+            isShorten
+          />
+        </div>
+
+        <div
+          class="xl:text-sm text-2xl text_00000099 flex justify-end items-center"
+        >
+          $<TooltipNumber
+            number={Number(selectWalletAccount?.amount) *
+              Number(data?.market_price)}
+            type="balance"
+          />
+        </div>
+      </div>
     </td>
   </tr>
 {/if}
