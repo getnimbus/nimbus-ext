@@ -640,7 +640,8 @@
     queryKey: ["nft-holding", selectedWallet, selectedChain],
     queryFn: () => getHoldingNFT(selectedWallet, selectedChain),
     staleTime: Infinity,
-    enabled: enabledFetchAllData && selectedWallet.length !== 0,
+    // enabled: enabledFetchAllData && selectedWallet.length !== 0,
+    enabled: false, // TODO: Enable later
   });
 
   $: {

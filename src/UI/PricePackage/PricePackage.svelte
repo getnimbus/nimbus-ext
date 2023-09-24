@@ -25,6 +25,11 @@
     darkMode = value;
   });
 
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
+
   let selectedTypePackage: "month" | "year" = "year";
   let buyPackage = "Professional";
   let interval = "month";
