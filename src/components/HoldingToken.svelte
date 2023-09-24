@@ -635,7 +635,7 @@
       {#if withinLast24Hours < 24}
         <span
           use:tooltip={{
-            content: `<tooltip-detail text="Change ${withinLast24Hours} hrs ago" />`,
+            content: `<tooltip-detail text="Changed ${withinLast24Hours} hrs ago" />`,
             allowHTML: true,
             placement: "top",
             interactive: true,
