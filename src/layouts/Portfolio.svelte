@@ -18,7 +18,6 @@
     createQueries,
     useQueryClient,
   } from "@tanstack/svelte-query";
-  import { getHoldingSOL, getOverviewSOL } from "~/solanaAPI";
 
   import type { NewData, NewDataRes } from "~/types/NewData";
   import type { OverviewData, OverviewDataRes } from "~/types/OverviewData";
@@ -448,42 +447,19 @@
       if (syncStatus?.data?.lastSync) {
         console.log("start load data (already sync)");
         enabledFetchAllData = true;
-        if (typeWalletAddress === "SOL") {
-          const [resOverview, resHoldingToken] = await Promise.all([
-            handleGetSolHolding().then((res) => {
-              return res;
-            }),
-            handleGetSolOverview().then((res) => {
-              return res;
-            }),
-          ]);
-
-          if (
-            (resOverview === undefined || resOverview) &&
-            (resHoldingToken === undefined || resHoldingToken)
-          ) {
-            syncMsg = "";
-            isLoadingSync = false;
-            isErrorAllData = false;
-            return "success";
-          } else {
-            isErrorAllData = true;
-          }
+        if (
+          !$queryOverview.isError &&
+          !$queryTokenHolding.isError &&
+          !$queryVaults.isError &&
+          !$queryNftHolding.isError &&
+          !$queryCompare.isError
+        ) {
+          syncMsg = "";
+          isLoadingSync = false;
+          isErrorAllData = false;
+          return "success";
         } else {
-          if (
-            !$queryOverview.isError &&
-            !$queryTokenHolding.isError &&
-            !$queryVaults.isError &&
-            !$queryNftHolding.isError &&
-            !$queryCompare.isError
-          ) {
-            syncMsg = "";
-            isLoadingSync = false;
-            isErrorAllData = false;
-            return "success";
-          } else {
-            isErrorAllData = true;
-          }
+          isErrorAllData = true;
         }
       }
 
@@ -496,42 +472,19 @@
           if (syncStatus?.data?.lastSync) {
             console.log("start load data (newest sync)");
             enabledFetchAllData = true;
-            if (typeWalletAddress === "SOL") {
-              const [resOverview, resHoldingToken] = await Promise.all([
-                handleGetSolHolding().then((res) => {
-                  return res;
-                }),
-                handleGetSolOverview().then((res) => {
-                  return res;
-                }),
-              ]);
-
-              if (
-                (resOverview === undefined || resOverview) &&
-                (resHoldingToken === undefined || resHoldingToken)
-              ) {
-                syncMsg = "";
-                isLoadingSync = false;
-                isErrorAllData = false;
-                return "success";
-              } else {
-                isErrorAllData = true;
-              }
+            if (
+              !$queryOverview.isError &&
+              !$queryTokenHolding.isError &&
+              !$queryVaults.isError &&
+              !$queryNftHolding.isError &&
+              !$queryCompare.isError
+            ) {
+              syncMsg = "";
+              isLoadingSync = false;
+              isErrorAllData = false;
+              return "success";
             } else {
-              if (
-                !$queryOverview.isError &&
-                !$queryTokenHolding.isError &&
-                !$queryVaults.isError &&
-                !$queryNftHolding.isError &&
-                !$queryCompare.isError
-              ) {
-                syncMsg = "";
-                isLoadingSync = false;
-                isErrorAllData = false;
-                return "success";
-              } else {
-                isErrorAllData = true;
-              }
+              isErrorAllData = true;
             }
             break;
           } else {
@@ -664,219 +617,6 @@
     if (data.data && data.data.length !== 0) {
       selectedTokenHolding = data;
       selectedDataPieChart = selectDatPieChart;
-    }
-  };
-
-  // SOLANA data holding and overview
-  const handleGetSolHolding = async () => {
-    try {
-      const response = await getHoldingSOL(selectedWallet);
-      if (response !== undefined) {
-        const responseVaults = await nimbus.get(
-          `/v2/investment/${selectedWallet}/vaults?chain=SOL`
-        );
-
-        const formatDataTokenHolding = response?.map((item) => {
-          try {
-            const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
-            const filteredVaults = responseVaults?.data?.filter((data) =>
-              data.name.match(regex)
-            );
-            return {
-              ...item,
-              vaults: filteredVaults,
-            };
-          } catch (error) {
-            return {
-              ...item,
-              vaults: [],
-            };
-          }
-        });
-
-        const formatData = formatDataTokenHolding?.map((item) => {
-          return {
-            ...item,
-            value:
-              Number(item?.amount) * Number(item?.price?.price || item?.rate),
-          };
-        });
-
-        holdingTokenData = formatData?.sort((a, b) => {
-          if (a.value < b.value) {
-            return 1;
-          }
-          if (a.value > b.value) {
-            return -1;
-          }
-          return 0;
-        });
-
-        return {
-          ...response,
-          result: formatDataTokenHolding,
-        };
-      } else {
-        handleGetAllData("reload");
-      }
-    } catch (e) {
-      console.error("error: ", e);
-      return undefined;
-    }
-  };
-
-  const handleGetSolOverview = async () => {
-    try {
-      const response = await getOverviewSOL(selectedWallet);
-
-      overviewData = response;
-
-      if (overviewData?.breakdownToken?.length === 0) {
-        isEmptyDataPie = true;
-      }
-
-      // pie chart format data Token holding
-      const sumToken = (overviewData?.breakdownToken || []).reduce(
-        (prev, item) => prev + Number(item.value),
-        0
-      );
-
-      const sortBreakdownToken = overviewData?.breakdownToken?.sort((a, b) => {
-        if (a.value < b.value) {
-          return 1;
-        }
-        if (a.value > b.value) {
-          return -1;
-        }
-        return 0;
-      });
-
-      const topFiveBreakdownToken = sortBreakdownToken
-        ?.slice(0, 5)
-        ?.map((item) => {
-          return {
-            ...item,
-            id: item.id || "N/A",
-            symbol: item.symbol || "N/A",
-            name: item.name || "N/A",
-          };
-        });
-
-      const orderBreakdownToken = sortBreakdownToken?.slice(
-        5,
-        sortBreakdownToken.length
-      );
-
-      const sumOrderBreakdownToken = (orderBreakdownToken || []).reduce(
-        (prev, item) => prev + Number(item.value),
-        0
-      );
-
-      const dataPieChartOrderBreakdownToken = [
-        {
-          logo: "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
-          name: "Other tokens",
-          symbol: "",
-          name_ratio: "Ratio",
-          value: (sumOrderBreakdownToken / sumToken) * 100,
-          name_value: "Value",
-          value_value: sumOrderBreakdownToken,
-          name_balance: "",
-          value_balance: 0,
-        },
-      ];
-
-      const formatDataPieChartTopFiveToken = topFiveBreakdownToken?.map(
-        (item) => {
-          return {
-            logo: item.logo,
-            name: item.name || item.symbol,
-            symbol: item.symbol,
-            name_ratio: "Ratio",
-            value: (Number(item.value) / sumToken) * 100,
-            name_value: "Value",
-            value_value: Number(item.value),
-            name_balance: "Balance",
-            value_balance: Number(item.amount || item.balance),
-          };
-        }
-      );
-
-      // pie chart format data NFT holding
-      const sumNft = (overviewData?.breakdownNft || []).reduce(
-        (prev, item) => prev + Number(item.value),
-        0
-      );
-
-      const sortBreakdownNft = overviewData?.breakdownNft?.sort((a, b) => {
-        if (a.value < b.value) {
-          return 1;
-        }
-        if (a.value > b.value) {
-          return -1;
-        }
-        return 0;
-      });
-
-      const topFiveBreakdownNft = sortBreakdownNft?.slice(0, 5).map((item) => {
-        return {
-          ...item,
-          id: item.id || "N/A",
-          name: item.collection.name || "N/A",
-        };
-      });
-
-      const orderBreakdownNft = sortBreakdownNft?.slice(
-        5,
-        sortBreakdownNft.length
-      );
-
-      const sumOrderBreakdownNft = (orderBreakdownNft || []).reduce(
-        (prev, item) => prev + Number(item.value),
-        0
-      );
-
-      const dataPieChartOrderBreakdownNft = [
-        {
-          name: "Other NFT Collection",
-          name_ratio: "Ratio",
-          value: (sumOrderBreakdownNft / sumNft) * 100 || 0,
-          name_value: "Value",
-          value_value: sumOrderBreakdownNft,
-          name_balance: "",
-          value_balance: 0,
-        },
-      ];
-
-      const formatDataPieChartTopFiveNft = topFiveBreakdownNft?.map((item) => {
-        return {
-          name: item.collection.name || item.collection.symbol,
-          name_ratio: "Ratio",
-          value: (Number(item.value) / sumNft) * 100 || 0,
-          name_value: "Value",
-          value_value: Number(item.value),
-          name_balance: "Balance",
-          value_balance: Number(item.amount || item.balance),
-        };
-      });
-
-      dataPieChart = {
-        token: {
-          sumOrderBreakdownToken,
-          formatDataPieChartTopFiveToken,
-          dataPieChartOrderBreakdownToken,
-        },
-        nft: {
-          sumOrderBreakdownNft,
-          formatDataPieChartTopFiveNft,
-          dataPieChartOrderBreakdownNft,
-        },
-      };
-
-      return response;
-    } catch (e) {
-      console.error("e: ", e);
-      return undefined;
     }
   };
 
