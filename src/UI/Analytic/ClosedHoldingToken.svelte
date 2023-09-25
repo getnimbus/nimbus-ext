@@ -537,7 +537,8 @@
             <div
               class="flex justify-center items-center h-[465px] xl:text-xs text-lg"
             >
-              Empty
+              <!-- Empty -->
+              Coming soon
             </div>
           {:else}
             <div class="relative pl-4">
