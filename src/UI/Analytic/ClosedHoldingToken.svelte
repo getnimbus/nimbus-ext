@@ -383,9 +383,7 @@
   }
 
   $: enabledQuery = Boolean(
-    (typeWalletAddress === "EVM" ||
-      typeWalletAddress === "CEX" ||
-      typeWalletAddress === "BUNDLE") &&
+    (typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE") &&
       selectedWallet.length !== 0
   );
 
@@ -399,7 +397,7 @@
     </div>
   </span>
 
-  <span slot="overview">
+  <span slot="overview" class="relative">
     {#if !$queryTokenHolding.isFetching && !$queryTokenHolding.isError}
       <div class="mb-4 text-3xl font-medium xl:text-xl px-6 pt-6">Overview</div>
     {/if}
@@ -478,6 +476,15 @@
             </div>
           </div>
         {/if}
+      </div>
+    {/if}
+    {#if typeWalletAddress === "CEX"}
+      <div
+        class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
+          darkMode ? "bg-[#222222e6]" : "bg-white/90"
+        } z-10 backdrop-blur-md`}
+      >
+        <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
       </div>
     {/if}
   </span>
@@ -565,13 +572,15 @@
         {/if}
       </div>
     {/if}
-    <div
-      class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
-        darkMode ? "bg-[#222222e6]" : "bg-white/90"
-      } z-10 backdrop-blur-md`}
-    >
-      <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
-    </div>
+    {#if typeWalletAddress === "CEX"}
+      <div
+        class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
+          darkMode ? "bg-[#222222e6]" : "bg-white/90"
+        } z-10 backdrop-blur-md`}
+      >
+        <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+      </div>
+    {/if}
   </span>
 </AnalyticSection>
 
