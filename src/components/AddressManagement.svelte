@@ -1271,7 +1271,12 @@
                           on:click_outside={() => (showPopover = false)}
                         >
                           {#each selectBundle?.accounts as item}
-                            <div class="hidden text-3xl xl:text-base xl:block">
+                            <div class="hidden text-3xl xl:text-base xl:flex">
+                              <span
+                                class="text_00000099 text-3xl xl:text-base mr-2"
+                              >
+                                {item.label}
+                              </span>
                               <Copy
                                 address={item?.value}
                                 iconColor={darkMode ? "#fff" : "#000"}

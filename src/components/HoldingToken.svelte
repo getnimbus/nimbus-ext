@@ -203,6 +203,7 @@
       ...item,
       logo: selectedAddress?.logo,
       type: selectedAddress?.type,
+      label: selectedAddress?.label,
     };
   });
 </script>
@@ -890,6 +891,39 @@
         class={`xl:py-0 py-2 pr-3 ${darkMode ? "bg-[#000]" : "bg-gray-100"}`}
       />
     </tr>
+    <tr
+      class={`w-full xl:w-full w-[1800px] ${
+        darkMode ? "bg-[#000]" : "bg-gray-100"
+      }`}
+    >
+      <!-- <th
+        class="py-2 pl-3 xl:static sticky top-0 left-0 z-9 w-[450px] text-left"
+      >
+        Account
+      </th>
+      <th class="py-2 flex-1" colspan={4}>Amount</th>
+      <th class="py-2 pr-3 flex-1 text-right" colspan={4}>Value</th> -->
+
+      <td colspan={8}>
+        <div class="flex items-center font-medium text-xl">
+          <div
+            class={`py-2 pl-3 xl:static sticky top-0 left-0 z-9 w-[450px] text-left xl:text-xs text-xl font-medium -mb-2 ${
+              darkMode ? "bg-[#000]" : "bg-gray-100"
+            }`}
+          >
+            Account
+          </div>
+          <div class="py-2 flex-1 text-right xl:text-xs text-xl font-medium">
+            Amount
+          </div>
+          <div
+            class="py-2 pr-3 flex-1 text-right xl:text-xs text-xl font-medium"
+          >
+            Value
+          </div>
+        </div>
+      </td>
+    </tr>
     <tr>
       <td colspan={9}>
         <div class="max-h-[500px] overflow-y-auto">
@@ -902,7 +936,7 @@
               <div
                 class="py-2 pl-3 xl:static sticky top-0 left-0 z-9 w-[450px]"
               >
-                <div class="flex gap-3">
+                <div class="flex items-center gap-3">
                   <img
                     src={item?.logo}
                     alt=""
@@ -912,6 +946,9 @@
                         "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
                     }}
                   />
+                  <span class="font-medium xl:text-sm text-2xl text_00000099">
+                    {item.label}
+                  </span>
                   <div
                     class="xl:text-sm text-2xl flex justify-end items-center"
                   >
@@ -929,7 +966,9 @@
                 <div
                   class="xl:text-sm text-2xl text_00000099 flex justify-end items-center gap-4"
                 >
-                  <div class="flex justify-end items-center gap-1">
+                  <div
+                    class="flex justify-end items-center gap-1 text-2xl font-medium xl:text-sm text_00000099"
+                  >
                     <TooltipNumber number={item?.amount} type="balance" />
                     {#if data.symbol === undefined}
                       N/A
@@ -938,7 +977,9 @@
                     {/if}
                   </div>
 
-                  <div class="flex items-center">
+                  <div
+                    class="flex items-center text-2xl font-medium xl:text-sm text_00000099"
+                  >
                     (<TooltipNumber
                       number={Math.abs(item.amount / data.amount) * 100}
                       type="percent"
@@ -949,7 +990,7 @@
 
               <div class="py-2 pr-3 flex-1">
                 <div
-                  class="xl:text-sm text-2xl text_00000099 flex justify-end items-center"
+                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end items-center"
                 >
                   $<TooltipNumber
                     number={Number(item?.amount) * Number(data?.market_price)}
