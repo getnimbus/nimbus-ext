@@ -219,7 +219,7 @@
   $: {
     if (syncMobileCode) {
       const qrcode = QRCode(0, "L");
-      qrcode.addData(`https://beta.getnimbus.io/?code=${syncMobileCode}`);
+      qrcode.addData(`https://app.getnimbus.io/?code=${syncMobileCode}`);
       qrcode.make();
       qrImageDataUrl = qrcode.createDataURL(7);
     }

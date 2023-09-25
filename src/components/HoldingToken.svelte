@@ -163,11 +163,16 @@
       : realizedProfit / Math.abs(Number(data?.avgCost));
 
   $: unrealizedProfit =
-    Number(data?.avgCost) === 0 ? 0 : value + Number(data?.avgCost);
-  $: percentUnrealizedProfit =
-    Number(data?.avgCost) === 0
+    Number(data?.profit?.averageCost || 0) === 0
       ? 0
-      : unrealizedProfit / Math.abs(Number(data?.avgCost));
+      : Number(data?.amount) *
+        (Number(data?.market_price) - Number(data?.profit.averageCost));
+
+  $: percentUnrealizedProfit =
+    Number(data?.profit?.averageCost || 0) === 0
+      ? 0
+      : (Number(data?.market_price) - Number(data?.profit?.averageCost)) /
+        Number(data?.profit?.averageCost || 0);
 
   $: clickable =
     data.name !== "Bitcoin" &&
