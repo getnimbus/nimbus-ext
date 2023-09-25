@@ -556,9 +556,24 @@
   };
 
   const formatDataOverviewBundlePieChart = (data) => {
-    const blabla = groupBy(data, "owner");
-    console.log("blabla: ", blabla);
-    const listAddressBundle = Object.keys(blabla);
+    const dataOverviewBundle = groupBy(data, "owner");
+    console.log("dataOverviewBundle: ", dataOverviewBundle);
+    const listAddressBundle = Object.keys(dataOverviewBundle).map((item) => {
+      return {
+        logo: "",
+        name: item,
+        name_balance: "",
+        name_ratio: "Ratio",
+        name_value: "Value",
+        symbol: "",
+        value: 0,
+        value_balance: 0,
+        value_value: (dataOverviewBundle[item] || []).reduce(
+          (prev, eachData) => prev + Number(eachData.value),
+          0
+        ),
+      };
+    });
     console.log("listAddressBundle: ", listAddressBundle);
   };
 

@@ -144,17 +144,35 @@
     ],
   };
 
-  let typeListCategory = [
-    {
-      label: "All",
-      value: "All",
-    },
-    {
-      label: "Chain",
-      value: "Chain",
-    },
-    ...typeList,
-  ];
+  $: typeListCategory =
+    typeWalletAddress === "BUNDLE"
+      ? [
+          {
+            label: "All",
+            value: "All",
+          },
+          {
+            label: "Accounts",
+            value: "Accounts",
+          },
+          {
+            label: "Chain",
+            value: "Chain",
+          },
+          ...typeList,
+        ]
+      : [
+          {
+            label: "All",
+            value: "All",
+          },
+          {
+            label: "Chain",
+            value: "Chain",
+          },
+          ...typeList,
+        ];
+
   let dataPersonalizeTag = [];
   let selectedType = {
     label: "All",
@@ -205,9 +223,16 @@
       select: [],
     },
   };
-  let dataAddress = {
+  let dataAccounts = {
     value: "",
     dataPie: [],
+    dataTable: {
+      data: {
+        name: "All",
+        data: [],
+      },
+      select: [],
+    },
   };
 
   const formatDataPie = (data) => {
@@ -341,15 +366,22 @@
         },
       };
 
+      dataAccounts = {
+        value: "Accounts",
+        dataPie: [],
+        dataTable: {
+          data: {
+            name: "All",
+            data: holdingTokenData,
+          },
+          select: [],
+        },
+      };
+
       tokenDataChain = {
         value: "Chain",
         dataPie: handleFormatDataPieChart(holdingTokenData, "chain"),
         dataTable: handleFormatDataTable(holdingTokenData, "chain"),
-      };
-
-      dataAddress = {
-        value: "address",
-        dataPie: [],
       };
 
       tokenDataRank = {
@@ -391,17 +423,35 @@
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        typeListCategory = [
-          {
-            label: "All",
-            value: "All",
-          },
-          {
-            label: "Chain",
-            value: "Chain",
-          },
-          ...typeList,
-        ];
+        typeListCategory =
+          typeWalletAddress === "BUNDLE"
+            ? [
+                {
+                  label: "All",
+                  value: "All",
+                },
+                {
+                  label: "Accounts",
+                  value: "Accounts",
+                },
+                {
+                  label: "Chain",
+                  value: "Chain",
+                },
+                ...typeList,
+              ]
+            : [
+                {
+                  label: "All",
+                  value: "All",
+                },
+                {
+                  label: "Chain",
+                  value: "Chain",
+                },
+                ...typeList,
+              ];
+
         dataPersonalizeTag = [];
         selectedType = {
           label: "",
@@ -517,6 +567,7 @@
             },
           ],
         };
+        console.log(tokenDataHolding.dataPie);
         handleSelectedTableTokenHolding(tokenDataHolding.dataTable, optionPie);
       } else if (selectedType.value === "Chain") {
         optionPie = {
