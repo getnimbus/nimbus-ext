@@ -911,6 +911,7 @@
                       listOptionTypeCategory={typeListCategory}
                       selectedOption={selectedType}
                       id="pie-chart-token-allocation"
+                      isComparePage={true}
                     />
                   </div>
                 {/if}
@@ -987,6 +988,7 @@
                           listOptionTypeCategory={typeListCategory}
                           selectedOption={selectedType}
                           id="pie-chart-token-allocation-compare"
+                          isComparePage={true}
                         />
                       {/if}
                     </div>

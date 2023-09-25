@@ -10,7 +10,7 @@
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import { chainList } from "~/utils";
   import { wait } from "../entries/background/utils";
-  import { wallet, chain, typeWallet } from "~/store";
+  import { wallet, chain, typeWallet, selectedBundle } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
   import {
@@ -77,6 +77,11 @@
     typeWalletAddress = value;
   });
 
+  let selectBundle = {};
+  selectedBundle.subscribe((value) => {
+    selectBundle = value;
+  });
+
   let enabledFetchAllData = false;
   let isErrorAllData = false;
   let isLoadingSync = false;
@@ -110,6 +115,7 @@
     performance: [],
     portfolioChart: [],
   };
+  let dataOverviewBundlePieChart = [];
   let dataUpdatedTime;
   let totalPositions = 0;
   let totalAssets = 0;
@@ -556,25 +562,29 @@
   };
 
   const formatDataOverviewBundlePieChart = (data) => {
-    const dataOverviewBundle = groupBy(data, "owner");
-    console.log("dataOverviewBundle: ", dataOverviewBundle);
-    const listAddressBundle = Object.keys(dataOverviewBundle).map((item) => {
-      return {
-        logo: "",
-        name: item,
-        name_balance: "",
-        name_ratio: "Ratio",
-        name_value: "Value",
-        symbol: "",
-        value: 0,
-        value_balance: 0,
-        value_value: (dataOverviewBundle[item] || []).reduce(
-          (prev, eachData) => prev + Number(eachData.value),
-          0
-        ),
-      };
-    });
-    console.log("listAddressBundle: ", listAddressBundle);
+    dataOverviewBundlePieChart = data
+      .map((item) => {
+        const selectAccount = selectBundle?.accounts.find(
+          (data) => data.id === item.owner || data.value === item.owner
+        );
+        return {
+          ...item,
+          ...selectAccount,
+        };
+      })
+      .map((item) => {
+        return {
+          logo: item?.logo,
+          name: item?.label,
+          name_balance: "",
+          name_ratio: "Ratio",
+          name_value: "Value",
+          symbol: item?.type,
+          value: 0,
+          value_balance: 0,
+          value_value: item?.networth,
+        };
+      });
   };
 
   // query overview
@@ -592,16 +602,12 @@
         performance: $queryOverview?.data?.performance,
         portfolioChart: $queryOverview?.data?.portfolioChart,
       };
-      console.log(
-        "$queryOverview?.data?.breakdownToken: ",
-        $queryOverview?.data?.breakdownToken
-      );
 
       if (
-        $queryOverview?.data?.breakdownToken &&
-        $queryOverview?.data?.breakdownToken.length !== 0
+        $queryOverview?.data?.accounts &&
+        $queryOverview?.data?.accounts?.length !== 0
       ) {
-        formatDataOverviewBundlePieChart($queryOverview?.data?.breakdownToken);
+        formatDataOverviewBundlePieChart($queryOverview?.data?.accounts);
       }
     }
   }
@@ -1053,6 +1059,7 @@
                 holdingTokenData={holdingTokenData.filter(
                   (item) => Number(item.amount) > 0
                 )}
+                {dataOverviewBundlePieChart}
                 {overviewDataPerformance}
                 {dataPieChart}
                 {isEmptyDataPie}

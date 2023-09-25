@@ -19,6 +19,8 @@
   export let listOptionTypeCategory;
   export let selectedOption;
   export let id;
+  export let isComparePage = false;
+  export let dataOverviewBundlePieChart = [];
 
   import Select from "~/components/Select.svelte";
   import EChart from "~/components/EChart.svelte";
@@ -145,7 +147,7 @@
   };
 
   $: typeListCategory =
-    typeWalletAddress === "BUNDLE"
+    typeWalletAddress === "BUNDLE" && !isComparePage
       ? [
           {
             label: "All",
@@ -234,6 +236,26 @@
       select: [],
     },
   };
+
+  $: {
+    if (
+      dataOverviewBundlePieChart.length !== 0 &&
+      holdingTokenData &&
+      typeWalletAddress === "BUNDLE"
+    ) {
+      dataAccounts = {
+        value: "Accounts",
+        dataPie: dataOverviewBundlePieChart,
+        dataTable: {
+          data: {
+            name: "All",
+            data: holdingTokenData,
+          },
+          select: [],
+        },
+      };
+    }
+  }
 
   const formatDataPie = (data) => {
     return data?.map((item) => {
@@ -366,18 +388,6 @@
         },
       };
 
-      dataAccounts = {
-        value: "Accounts",
-        dataPie: [],
-        dataTable: {
-          data: {
-            name: "All",
-            data: holdingTokenData,
-          },
-          select: [],
-        },
-      };
-
       tokenDataChain = {
         value: "Chain",
         dataPie: handleFormatDataPieChart(holdingTokenData, "chain"),
@@ -424,7 +434,7 @@
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
         typeListCategory =
-          typeWalletAddress === "BUNDLE"
+          typeWalletAddress === "BUNDLE" && !isComparePage
             ? [
                 {
                   label: "All",
@@ -567,8 +577,18 @@
             },
           ],
         };
-        console.log(tokenDataHolding.dataPie);
         handleSelectedTableTokenHolding(tokenDataHolding.dataTable, optionPie);
+      } else if (selectedType.value === "Accounts") {
+        optionPie = {
+          ...optionPie,
+          series: [
+            {
+              ...optionPie.series[0],
+              data: formatDataPie(dataAccounts.dataPie),
+            },
+          ],
+        };
+        handleSelectedTableTokenHolding(dataAccounts.dataTable, optionPie);
       } else if (selectedType.value === "Chain") {
         optionPie = {
           ...optionPie,
