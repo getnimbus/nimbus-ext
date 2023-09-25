@@ -205,6 +205,10 @@
       select: [],
     },
   };
+  let dataAddress = {
+    value: "",
+    dataPie: [],
+  };
 
   const formatDataPie = (data) => {
     return data?.map((item) => {
@@ -341,6 +345,11 @@
         value: "Chain",
         dataPie: handleFormatDataPieChart(holdingTokenData, "chain"),
         dataTable: handleFormatDataTable(holdingTokenData, "chain"),
+      };
+
+      dataAddress = {
+        value: "address",
+        dataPie: [],
       };
 
       tokenDataRank = {

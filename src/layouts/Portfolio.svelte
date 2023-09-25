@@ -555,6 +555,13 @@
     }
   };
 
+  const formatDataOverviewBundlePieChart = (data) => {
+    const blabla = groupBy(data, "owner");
+    console.log("blabla: ", blabla);
+    const listAddressBundle = Object.keys(blabla);
+    console.log("listAddressBundle: ", listAddressBundle);
+  };
+
   // query overview
   $: queryOverview = createQuery({
     queryKey: ["overview", selectedWallet, selectedChain],
@@ -570,6 +577,17 @@
         performance: $queryOverview?.data?.performance,
         portfolioChart: $queryOverview?.data?.portfolioChart,
       };
+      console.log(
+        "$queryOverview?.data?.breakdownToken: ",
+        $queryOverview?.data?.breakdownToken
+      );
+
+      if (
+        $queryOverview?.data?.breakdownToken &&
+        $queryOverview?.data?.breakdownToken.length !== 0
+      ) {
+        formatDataOverviewBundlePieChart($queryOverview?.data?.breakdownToken);
+      }
     }
   }
 
