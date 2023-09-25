@@ -22,6 +22,11 @@
     darkMode = value;
   });
 
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
+
   const qrcode = QRCode(0, "L");
 
   let link = "";

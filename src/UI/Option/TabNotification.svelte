@@ -40,6 +40,11 @@
     darkMode = value;
   });
 
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
+
   let listAddress = [];
   let isOpenFollowWhaleModal = false;
   let showCommandTooltip = false;

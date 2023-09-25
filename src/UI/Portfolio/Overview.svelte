@@ -16,7 +16,6 @@
   $: realizedProfit = (dataTokenHolding || [])
     .map((item) => {
       return {
-        ...item,
         realized_profit: item?.profit?.realizedProfit || 0,
       };
     })
@@ -26,9 +25,9 @@
     ?.filter((item) => Number(item?.amount) > 0 && Number(item?.avgCost) !== 0)
     ?.map((item) => {
       return {
-        ...item,
         unrealized_profit:
-          Number(item?.amount) * Number(item?.price?.price) + item?.avgCost,
+          Number(item?.amount) *
+          (Number(item?.price?.price) - Number(item?.profit?.averageCost)), // TODO: Use price from realtime
       };
     })
     .reduce((prev, item) => prev + Number(item.unrealized_profit), 0);
