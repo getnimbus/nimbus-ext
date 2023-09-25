@@ -1265,18 +1265,18 @@
                       </div>
                       {#if showPopover}
                         <div
-                          class="select_content absolute left-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
+                          class="select_content absolute left-0 z-50 flex flex-col xl:gap-3 gap-6 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
                           style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
                           use:clickOutside
                           on:click_outside={() => (showPopover = false)}
                         >
                           {#each selectBundle?.accounts as item}
-                            <div class="hidden text-3xl xl:text-base xl:flex">
-                              <span
-                                class="text_00000099 text-3xl xl:text-base mr-2"
-                              >
+                            <div
+                              class="hidden text-3xl xl:text-sm xl:flex xl:flex-col"
+                            >
+                              <div class="text_00000099">
                                 {item.label}
-                              </span>
+                              </div>
                               <Copy
                                 address={item?.value}
                                 iconColor={darkMode ? "#fff" : "#000"}
@@ -1284,7 +1284,12 @@
                                 isShorten
                               />
                             </div>
-                            <div class="block text-3xl xl:text-base xl:hidden">
+                            <div
+                              class="flex flex-col text-3xl xl:text-sm xl:hidden"
+                            >
+                              <div class="text_00000099">
+                                {item.label}
+                              </div>
                               <Copy
                                 address={item?.value}
                                 iconColor={darkMode ? "#fff" : "#000"}

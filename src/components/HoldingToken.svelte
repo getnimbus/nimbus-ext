@@ -874,10 +874,8 @@
       </td>
     {/if}
   </tr>
-</tbody>
 
-{#if isOpenTokenBreakdown}
-  <tbody>
+  {#if isOpenTokenBreakdown}
     <tr>
       <td
         class={`xl:py-0 py-2 pl-3 xl:static sticky left-0 z-9 w-[450px] ${
@@ -891,50 +889,42 @@
         class={`xl:py-0 py-2 pr-3 ${darkMode ? "bg-[#000]" : "bg-gray-100"}`}
       />
     </tr>
-    <tr
-      class={`w-full xl:w-full w-[1800px] ${
-        darkMode ? "bg-[#000]" : "bg-gray-100"
-      }`}
-    >
-      <!-- <th
-        class="py-2 pl-3 xl:static sticky top-0 left-0 z-9 w-[450px] text-left"
-      >
-        Account
-      </th>
-      <th class="py-2 flex-1" colspan={4}>Amount</th>
-      <th class="py-2 pr-3 flex-1 text-right" colspan={4}>Value</th> -->
 
+    <tr>
       <td colspan={8}>
-        <div class="flex items-center font-medium text-xl">
+        <div
+          class={`flex items-center ${darkMode ? "bg-[#000]" : "bg-gray-100"}`}
+        >
           <div
-            class={`py-2 pl-3 xl:static sticky top-0 left-0 z-9 w-[450px] text-left xl:text-xs text-xl font-medium -mb-2 ${
+            class={`py-2 pl-3 xl:static sticky top-0 left-0 z-9 w-[450px] ${
               darkMode ? "bg-[#000]" : "bg-gray-100"
             }`}
           >
-            Account
+            <div class="text-left xl:text-sm text-xl font-medium">Account</div>
           </div>
-          <div class="py-2 flex-1 text-right xl:text-xs text-xl font-medium">
-            Amount
+          <div class="py-2 flex-1">
+            <div class="text-right xl:text-sm text-xl font-medium">Amount</div>
           </div>
-          <div
-            class="py-2 pr-3 flex-1 text-right xl:text-xs text-xl font-medium"
-          >
-            Value
+          <div class="py-2 pr-3 flex-1">
+            <div class="text-right xl:text-sm text-xl font-medium">Value</div>
           </div>
         </div>
       </td>
     </tr>
+
     <tr>
-      <td colspan={9}>
-        <div class="max-h-[500px] overflow-y-auto">
+      <td colspan={8}>
+        <div
+          class={`max-h-[500px] overflow-y-auto ${
+            darkMode ? "bg-[#000]" : "bg-gray-100"
+          }`}
+        >
           {#each formatDataBreakdown as item}
-            <div
-              class={`flex items-center xl:w-full w-[1800px] overflow-x-auto ${
-                darkMode ? "bg-[#000]" : "bg-gray-100"
-              }`}
-            >
+            <div class="flex items-center">
               <div
-                class="py-2 pl-3 xl:static sticky top-0 left-0 z-9 w-[450px]"
+                class={`py-2 pl-3 xl:static sticky top-0 left-0 z-9 w-[450px] ${
+                  darkMode ? "bg-[#000]" : "bg-gray-100"
+                }`}
               >
                 <div class="flex items-center gap-3">
                   <img
@@ -946,18 +936,20 @@
                         "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
                     }}
                   />
-                  <span class="font-medium xl:text-sm text-2xl text_00000099">
-                    {item.label}
-                  </span>
-                  <div
-                    class="xl:text-sm text-2xl flex justify-end items-center"
-                  >
-                    <Copy
-                      address={item?.owner}
-                      iconColor={darkMode ? "#fff" : "#000"}
-                      color={darkMode ? "#fff" : "#000"}
-                      isShorten
-                    />
+                  <div class="flex flex-col items-start">
+                    <div class="font-medium xl:text-sm text-2xl text_00000099">
+                      {item.label}
+                    </div>
+                    <div
+                      class="xl:text-sm text-2xl flex justify-end items-center"
+                    >
+                      <Copy
+                        address={item?.owner}
+                        iconColor={darkMode ? "#fff" : "#000"}
+                        color={darkMode ? "#fff" : "#000"}
+                        isShorten
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1003,8 +995,8 @@
         </div>
       </td>
     </tr>
-  </tbody>
-{/if}
+  {/if}
+</tbody>
 
 <AppOverlay
   clickOutSideToClose
