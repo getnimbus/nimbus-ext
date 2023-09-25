@@ -192,15 +192,16 @@
   key={data?.symbol}
   class={`group transition-all`}
   on:click={() => {
-    // if (clickable) {
-    //   navigate(
-    //     `/position-detail?id=${encodeURIComponent(
-    //       data.positionId
-    //     )}&type=${encodeURIComponent(
-    //       data.positionType
-    //     )}&address=${encodeURIComponent(selectedWallet)}`
-    //   );
-    // }
+    if (clickable) {
+      navigate(
+        `/position-detail?id=${encodeURIComponent(
+          data.positionId
+        )}&type=${encodeURIComponent(
+          data.positionType
+        )}&address=${encodeURIComponent(selectedWallet)}`
+      );
+    }
+    selectWalletAccount = data;
   }}
   on:mouseover={() => {
     if (userInfo && Object.keys(userInfo).length !== 0) {
@@ -799,11 +800,29 @@
     {#if clickable}
       <div class="flex justify-center">
         <div
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+          class="w-5 h-5 transform rotate-180 cursor-pointer xl:w-3 xl:h-3"
+          class:rotate-0={isOpenTokenInformation}
+          on:click={() => (isOpenTokenInformation = !isOpenTokenInformation)}
+=======
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
           use:tooltip={{
             content: `<tooltip-detail text="Show detail" />`,
             allowHTML: true,
             placement: "top",
           }}
+<<<<<<< Updated upstream
+=======
+=======
+          class="w-5 h-5 transform rotate-180 cursor-pointer xl:w-3 xl:h-3"
+          class:rotate-0={isOpenTokenInformation}
+          on:click={() => (isOpenTokenInformation = !isOpenTokenInformation)}
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         >
           <img src={Chart} alt="" width={14} height={14} />
         </div>

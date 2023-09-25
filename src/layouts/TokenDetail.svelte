@@ -477,7 +477,33 @@
             </div>
           </OverviewCard>
           <OverviewCard
-            title={"Profit & Loss"}
+            title={"Average Cost"}
+            link="https://docs.getnimbus.io/metrics/average_cost/"
+            isTooltip
+          >
+            <div class="flex text-5xl xl:text-3xl">
+              {#if (positionDetail?.overview?.averageCost)
+                .toString()
+                .toLowerCase()
+                .includes("e-")}
+                $<TooltipNumber
+                  number={positionDetail?.overview?.averageCost}
+                  type="balance"
+                />
+              {:else}
+                $<CountUpNumber
+                  id="AverageCost"
+                  number={positionDetail?.overview?.averageCost}
+                  format={8}
+                  type="balance"
+                />
+              {/if}
+            </div>
+          </OverviewCard>
+        </div>
+        <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
+          <OverviewCard
+            title={"Realized PnL"}
             link="https://docs.getnimbus.io/metrics/holding_profit_loss/"
             tooltipText="Profit and loss is calculated by transactions that swap the tokens. "
             isTooltip
@@ -518,33 +544,7 @@
               />%
             </div>
           </OverviewCard>
-        </div>
-        <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
-          <OverviewCard
-            title={"Average Cost"}
-            link="https://docs.getnimbus.io/metrics/average_cost/"
-            isTooltip
-          >
-            <div class="flex text-5xl xl:text-3xl">
-              {#if (positionDetail?.overview?.averageCost)
-                .toString()
-                .toLowerCase()
-                .includes("e-")}
-                $<TooltipNumber
-                  number={positionDetail?.overview?.averageCost}
-                  type="balance"
-                />
-              {:else}
-                $<CountUpNumber
-                  id="AverageCost"
-                  number={positionDetail?.overview?.averageCost}
-                  format={8}
-                  type="balance"
-                />
-              {/if}
-            </div>
-          </OverviewCard>
-          <OverviewCard title={"24-hour Return"}>
+          <OverviewCard title={"Unrealized PnL"}>
             <div
               class={`xl:text-3xl text-5xl flex ${
                 positionDetail?.overview?.return24h?.percent >= 0
@@ -645,6 +645,10 @@
           {/if}
         </div>
       </div>
+
+      <div>
+        
+      </div>
       <div class="border border_0000001a rounded-[20px] p-6">
         <div class="flex flex-col gap-6">
           <div class="flex items-center justify-between">
@@ -666,38 +670,38 @@
                 <thead>
                   <tr class="bg_f4f5f8">
                     <th
-                      class="py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 bg_f4f5f8"
+                      class="sticky left-0 py-3 pl-3 xl:static xl:bg-transparent z-9 bg_f4f5f8"
                     >
                       <div
-                        class="font-medium text-left uppercase xl:text-xs text-xl"
+                        class="text-xl font-medium text-left uppercase xl:text-xs"
                       >
                         Transaction
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="font-medium text-left uppercase xl:text-xs text-xl"
+                        class="text-xl font-medium text-left uppercase xl:text-xs"
                       >
                         From
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="font-medium text-left uppercase xl:text-xs text-xl"
+                        class="text-xl font-medium text-left uppercase xl:text-xs"
                       >
                         To
                       </div>
                     </th>
                     <th class="py-3 min-w-[100px]">
                       <div
-                        class="font-medium text-left uppercase xl:text-xs text-xl"
+                        class="text-xl font-medium text-left uppercase xl:text-xs"
                       >
                         Type
                       </div>
                     </th>
                     <th class="py-3 pr-3">
                       <div
-                        class="font-medium text-left uppercase xl:text-xs text-xl"
+                        class="text-xl font-medium text-left uppercase xl:text-xs"
                       >
                         Token change
                       </div>
@@ -810,7 +814,7 @@
                             }`}
                           >
                             <div
-                              class="xl:text-sm text-2xl text_00000099 font-medium flex justify-start"
+                              class="flex justify-start text-2xl font-medium xl:text-sm text_00000099"
                             >
                               {#if change?.type}
                                 <div
@@ -882,21 +886,21 @@
                   <tr class="bg_f4f5f8">
                     <th class="py-3 pl-3">
                       <div
-                        class="font-medium text-left uppercase xl:text-xs text-xl"
+                        class="text-xl font-medium text-left uppercase xl:text-xs"
                       >
                         Transaction
                       </div>
                     </th>
                     <th class="py-3">
                       <div
-                        class="font-medium text-left uppercase xl:text-xs text-xl"
+                        class="text-xl font-medium text-left uppercase xl:text-xs"
                       >
                         Type
                       </div>
                     </th>
                     <th class="py-3 pr-3">
                       <div
-                        class="font-medium text-left uppercase xl:text-xs text-xl"
+                        class="text-xl font-medium text-left uppercase xl:text-xs"
                       >
                         Token Change
                       </div>
@@ -1019,7 +1023,7 @@
                                           {change?.metadata?.btcPrice?.symbol}
                                         </div>
                                       </div>
-                                      <div class="text-gray-500 flex">
+                                      <div class="flex text-gray-500">
                                         | $<TooltipNumber
                                           number={Math.abs(
                                             change?.metadata?.btcChange
@@ -1053,7 +1057,7 @@
                                         {change?.metadata?.info?.tokenName}
                                       </div>
                                     </div>
-                                    <div class="text-gray-500 flex">
+                                    <div class="flex text-gray-500">
                                       | $<TooltipNumber
                                         number={Math.abs(
                                           change?.metadata?.info?.total *
