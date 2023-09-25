@@ -398,15 +398,15 @@
                 {/if}
               </tr>
             </thead>
-            <tbody>
-              {#each filteredHoldingDataToken as holding}
-                <HoldingToken
-                  data={holding}
-                  {selectedWallet}
-                  sumAllTokens={totalAssets - sumNFT}
-                />
-              {/each}
-            </tbody>
+
+            {#each filteredHoldingDataToken as holding}
+              <HoldingToken
+                data={holding}
+                {selectedWallet}
+                sumAllTokens={totalAssets - sumNFT}
+              />
+            {/each}
+
             {#if isLoadingToken}
               <tbody>
                 <tr>
