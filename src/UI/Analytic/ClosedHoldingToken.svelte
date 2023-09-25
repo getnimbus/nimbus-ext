@@ -482,7 +482,7 @@
     {/if}
   </span>
 
-  <span slot="chart">
+  <span slot="chart" class="relative">
     {#if $queryTokenHolding.isFetching}
       <div class="flex items-center justify-center h-[465px] p-6">
         <LoadingPremium />
@@ -537,8 +537,7 @@
             <div
               class="flex justify-center items-center h-[465px] xl:text-xs text-lg"
             >
-              <!-- Empty -->
-              Coming soon
+              Empty
             </div>
           {:else}
             <div class="relative pl-4">
@@ -566,6 +565,13 @@
         {/if}
       </div>
     {/if}
+    <div
+      class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
+        darkMode ? "bg-[#222222e6]" : "bg-white/90"
+      } z-10 backdrop-blur-md`}
+    >
+      <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+    </div>
   </span>
 </AnalyticSection>
 
