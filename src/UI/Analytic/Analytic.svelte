@@ -45,11 +45,7 @@
 
   $: {
     if (selectedWallet) {
-      if (
-        typeWalletAddress === "BTC" ||
-        typeWalletAddress === "SOL" ||
-        packageSelected === "FREE"
-      ) {
+      if (typeWalletAddress === "BTC" || packageSelected === "FREE") {
         isShowSoon = true;
       } else {
         isShowSoon = false;
@@ -164,7 +160,7 @@
               >
             </div>
           {/if}
-          {#if packageSelected !== "FREE" && (typeWalletAddress === "BTC" || typeWalletAddress === "SOL")}
+          {#if packageSelected !== "FREE" && typeWalletAddress === "BTC"}
             <div class="text-lg">Coming soon 🚀</div>
             <div class="w-max">
               <button

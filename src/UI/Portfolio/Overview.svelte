@@ -97,9 +97,7 @@
         </div>
         <div
           class={`flex items-center gap-3 ${
-            typeWalletAddress === "BTC" || typeWalletAddress === "SOL"
-              ? "opacity-50"
-              : ""
+            typeWalletAddress === "BTC" ? "opacity-50" : ""
           }`}
         >
           <div

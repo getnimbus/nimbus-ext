@@ -1338,7 +1338,7 @@
                   </div> -->
 
                   <div class="hidden xl:block">
-                    {#if typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
+                    {#if typeWalletAddress === "BTC"}
                       <div
                         use:tooltip={{
                           content: `<tooltip-detail text="Coming soon!" />`,
@@ -1393,7 +1393,7 @@
 
               <div class="flex flex-col gap-6">
                 <div class="block xl:hidden">
-                  {#if typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
+                  {#if typeWalletAddress === "BTC"}
                     <div
                       use:tooltip={{
                         content: `<tooltip-detail text="Coming soon!" />`,
