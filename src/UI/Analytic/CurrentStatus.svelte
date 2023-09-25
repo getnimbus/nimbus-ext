@@ -924,7 +924,7 @@
   >
     <div class="flex justify-between items-start mb-6">
       <div class="flex justify-start">
-        {#if typeWalletAddress === "CEX"}
+        {#if typeWalletAddress === "CEX" || typeWalletAddress === "SOL"}
           <TooltipTitle
             tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
             type="warning"
