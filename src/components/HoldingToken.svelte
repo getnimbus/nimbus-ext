@@ -961,7 +961,7 @@
 
             <div class="py-2 flex-1">
               <div
-                class="xl:text-sm text-2xl text_00000099 flex justify-end items-center gap-4"
+                class="xl:text-sm text-2xl text_00000099 flex flex-col justify-end items-end gap-1"
               >
                 <div
                   class="flex justify-end items-center gap-1 text-2xl font-medium xl:text-sm text_00000099"
@@ -974,13 +974,21 @@
                   {/if}
                 </div>
 
-                <div
-                  class="flex items-center text-2xl font-medium xl:text-sm text_00000099"
-                >
-                  (<TooltipNumber
-                    number={Math.abs(item.amount / data.amount) * 100}
-                    type="percent"
-                  /><span>%</span>)
+                <div class="flex flex-col items-end justify-end gap-1 w-full">
+                  <div
+                    class="flex justify-end text-2xl font-medium text-gray-400 xl:text-sm"
+                  >
+                    <TooltipNumber
+                      number={Math.abs(item.amount / data.amount) * 100}
+                      type="percent"
+                    />%
+                  </div>
+                  <div class="w-3/4 max-w-20">
+                    <Progressbar
+                      progress={Math.abs(item.amount / data.amount) * 100}
+                      size="h-1"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -1097,7 +1105,7 @@
                   }`}
                 >
                   <div
-                    class="xl:text-sm text-2xl text_00000099 flex justify-end items-center gap-4"
+                    class="xl:text-sm text-2xl text_00000099 flex flex-col justify-end items-end gap-4"
                   >
                     <div
                       class="flex justify-end items-center gap-1 text-2xl font-medium xl:text-sm text_00000099"
@@ -1111,12 +1119,22 @@
                     </div>
 
                     <div
-                      class="flex items-center text-2xl font-medium xl:text-sm text_00000099"
+                      class="flex flex-col items-end justify-end gap-1 w-full"
                     >
-                      (<TooltipNumber
-                        number={Math.abs(item.amount / data.amount) * 100}
-                        type="percent"
-                      /><span>%</span>)
+                      <div
+                        class="flex justify-end text-2xl font-medium text-gray-400 xl:text-sm"
+                      >
+                        <TooltipNumber
+                          number={Math.abs(item.amount / data.amount) * 100}
+                          type="percent"
+                        />%
+                      </div>
+                      <div class="w-3/4 max-w-30">
+                        <Progressbar
+                          progress={Math.abs(item.amount / data.amount) * 100}
+                          size="h-1"
+                        />
+                      </div>
                     </div>
                   </div>
                 </td>
