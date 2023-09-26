@@ -276,7 +276,11 @@
   });
 
   $: {
-    if (!$query.isError && $query.data !== undefined) {
+    if (
+      !$query.isError &&
+      $query.data !== undefined &&
+      $query.data.length !== 0
+    ) {
       formatDataListAddress($query.data);
     }
   }
