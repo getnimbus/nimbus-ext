@@ -5,7 +5,7 @@
 
 interface IOption {
   baseURL: string;
-  getHeaderAuthorize: () => void
+  getHeaderAuthorize: () => void;
 }
 
 const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
@@ -23,16 +23,16 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          ...authorization
+          ...authorization,
         },
       }).then(async (response) => {
         if (response.status === 401) {
           return {
             response: await response.json(),
-            status: response.status
-          }
+            status: response.status,
+          };
         }
-        return await response.json()
+        return await response.json();
       });
     },
     post<T>(url: string, body: any, config?: any): Promise<T> {
@@ -48,7 +48,7 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          ...authorization
+          ...authorization,
         },
         body: JSON.stringify(body),
       }).then((response) => response.json());
@@ -66,7 +66,7 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          ...authorization
+          ...authorization,
         },
         body: JSON.stringify(body),
       }).then((response) => response.json());
@@ -84,7 +84,7 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          ...authorization
+          ...authorization,
         },
         body: JSON.stringify(body),
       }).then((response) => response.json());
@@ -94,12 +94,12 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
 
 export const messari = createAxiosInterface({
   baseURL: "https://data.messari.io/api/v1",
-  getHeaderAuthorize: () => { }
+  getHeaderAuthorize: () => {},
 });
 
 export const coinGeko = createAxiosInterface({
   baseURL: "https://api.coingecko.com/api/v3",
-  getHeaderAuthorize: () => { }
+  getHeaderAuthorize: () => {},
 });
 
 export const nimbus = createAxiosInterface({
@@ -111,37 +111,37 @@ export const nimbus = createAxiosInterface({
     if (evmToken) {
       return {
         Authorization: `${evmToken}`,
-      }
+      };
     }
-  }
+  },
 });
 
 export const defillama = createAxiosInterface({
   baseURL: "https://coins.llama.fi",
-  getHeaderAuthorize: () => { }
+  getHeaderAuthorize: () => {},
 });
 
 export const coinmarketcap = createAxiosInterface({
   baseURL: "https://s3.coinmarketcap.com",
-  getHeaderAuthorize: () => { }
-})
+  getHeaderAuthorize: () => {},
+});
 
 export const mixpanel = createAxiosInterface({
   baseURL: "https://api.mixpanel.com",
-  getHeaderAuthorize: () => { }
+  getHeaderAuthorize: () => {},
 });
 
 export const goplus = createAxiosInterface({
   baseURL: "https://api.gopluslabs.io/api/v1",
-  getHeaderAuthorize: () => { }
+  getHeaderAuthorize: () => {},
 });
 
 export const nimbusApi = createAxiosInterface({
   baseURL: "https://nimbus-api-production.up.railway.app/api",
-  getHeaderAuthorize: () => { }
+  getHeaderAuthorize: () => {},
 });
 
 export const aptos = createAxiosInterface({
   baseURL: "https://aptos-celebtron-api.getnimbus.io/api/v1",
-  getHeaderAuthorize: () => { }
+  getHeaderAuthorize: () => {},
 });

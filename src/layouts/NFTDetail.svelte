@@ -46,12 +46,14 @@
           current_value:
             response?.floorPriceBTC * response?.btcPrice * response?.balance,
         };
-        priceSubscribe([response?.cmc_id], (data) => {
-          marketPriceNFT = {
-            id: data.id,
-            market_price: data.p,
-          };
-        });
+        if (response?.cmc_id) {
+          priceSubscribe([response?.cmc_id], (data) => {
+            marketPriceNFT = {
+              id: data.id,
+              market_price: data.p,
+            };
+          });
+        }
       }
     } catch (e) {
       console.error("error: ", e);

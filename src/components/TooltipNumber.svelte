@@ -17,7 +17,7 @@
   let numberSize = "";
 
   let hiddenValue = false;
-  isHidePortfolio.subscribe((e) => (hiddenValue = e));
+  isHidePortfolio.subscribe((value) => (hiddenValue = value));
 
   $: {
     const { number_format, number_size } = formatBigBalance(number);

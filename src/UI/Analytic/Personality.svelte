@@ -205,6 +205,7 @@
   $: enabledQuery = Boolean(
     (typeWalletAddress === "EVM" ||
       typeWalletAddress === "CEX" ||
+      typeWalletAddress === "SOL" ||
       typeWalletAddress === "BUNDLE") &&
       selectedWallet.length !== 0
   );

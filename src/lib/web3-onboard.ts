@@ -7,34 +7,34 @@ const injected = injectedModule();
 const coinbaseWallet = coinbaseModule();
 const ledger = ledgerModule({ chainId: 1, walletConnectVersion: 1 });
 
-const wallets = [
-  injected,
-  coinbaseWallet,
-  ledger
-]
+const wallets = [injected, coinbaseWallet, ledger];
 
 const chains = [
   {
-    id: '0x1',
-    token: 'ETH',
-    label: 'Ethereum Mainnet',
-  }
-]
+    id: 1,
+    token: "ETH",
+    label: "Ethereum Mainnet",
+    rpcUrl: "https://rpc.ankr.com/eth",
+  },
+];
 
 const onboard = Onboard({
   wallets,
   chains,
+  appMetadata: {
+    name: "Nimbus",
+    description: "A personalized portfolio for Web3 investors",
+  },
   accountCenter: {
     desktop: {
       enabled: false,
-      position: 'bottomLeft'
+      position: "bottomLeft",
     },
     mobile: {
       enabled: false,
-      position: 'bottomLeft'
-    }
-  }
-})
+      position: "bottomLeft",
+    },
+  },
+});
 
-export default onboard
-
+export default onboard;

@@ -171,8 +171,6 @@
               picture: User,
             })
         );
-        queryClient.invalidateQueries(["list-address"]);
-        queryClient.invalidateQueries(["users-me"]);
       }
     } catch (e) {
       console.error("error: ", e);

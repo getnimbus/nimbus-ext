@@ -7,6 +7,7 @@ import { windi } from "svelte-windicss-preprocess";
 import sveltePreprocess from "svelte-preprocess";
 import AutoImport from "unplugin-auto-import/vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 /** @type {import('vite').UserConfig} */
@@ -37,18 +38,69 @@ export default defineConfig(({ mode }) => {
           },
         ],
       }),
+      VitePWA({
+        workbox: {
+          globPatterns: ["**/*.{css,html,svelte,ts,gif,svg,png,woff2}"],
+        },
+        devOptions: {
+          enabled: true,
+        },
+        registerType: "autoUpdate",
+        manifest: {
+          name: "Nimbus",
+          short_name: "Nimbus",
+          start_url: "/",
+          display: "standalone",
+          description: "https://getnimbus.io",
+          icons: [
+            {
+              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/512.png",
+              type: "image/png",
+              sizes: "512x512",
+              purpose: "any",
+            },
+            {
+              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/256.png",
+              type: "image/png",
+              sizes: "256x256",
+              purpose: "any",
+            },
+            {
+              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/144.png",
+              type: "image/png",
+              sizes: "144x144",
+              purpose: "any",
+            },
+            {
+              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/48.png",
+              type: "image/png",
+              sizes: "48x48",
+              purpose: "any",
+            },
+            {
+              src: "https://raw.githubusercontent.com/getnimbus/nimbus-ext/revert-105-revert-100-feat/mobile-app/src/assets/logo/152.png",
+              type: "image/png",
+              sizes: "152x152",
+              purpose: "any",
+            },
+          ],
+        },
+      }),
     ],
     resolve: {
       alias: {
         "~": path.resolve(__dirname, "./src"),
         "webext-bridge": path.resolve(__dirname, "./src/lib/web-bridge"),
-        "webextension-polyfill": path.resolve(__dirname, "./src/lib/web-chrome"),
+        "webextension-polyfill": path.resolve(
+          __dirname,
+          "./src/lib/web-chrome"
+        ),
       },
     },
     define: {
       APP_TYPE: {
-        TYPE: 'WEB'
-      }
+        TYPE: "WEB",
+      },
     },
     server: {
       port: 5173,
@@ -56,11 +108,11 @@ export default defineConfig(({ mode }) => {
     root: path.resolve(__dirname, "./src"),
     optimizeDeps: {
       esbuildOptions: {
-        target: 'es2020'
-      }
+        target: "es2020",
+      },
     },
     build: {
-      target: ['es2020'],
+      target: ["es2020"],
       rollupOptions: {
         input: {
           app: path.resolve(__dirname, "./src/index.html"),

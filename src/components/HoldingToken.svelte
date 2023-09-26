@@ -5,6 +5,7 @@
     typeWallet,
     isDarkMode,
     user,
+    selectedBundle,
     isHidePortfolio,
   } from "~/store";
   import { detectedChain, shorterName } from "~/utils";
@@ -21,10 +22,12 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
   import Button from "./Button.svelte";
+  import Copy from "~/components/Copy.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import Chart from "~/assets/chart.svg";
+  import Detail from "~/assets/detail.svg";
 
   export let data;
   export let selectedWallet;
@@ -33,6 +36,11 @@
   $: selectedChain = $chain;
 
   const navigate = useNavigate();
+
+  let selectBundle = {};
+  selectedBundle.subscribe((value) => {
+    selectBundle = value;
+  });
 
   let typeWalletAddress = "";
   typeWallet.subscribe((value) => {
@@ -48,6 +56,9 @@
   user.subscribe((value) => {
     userInfo = value;
   });
+
+  let hiddenPortfolio = false;
+  isHidePortfolio.subscribe((value) => (hiddenPortfolio = value));
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
@@ -66,8 +77,8 @@
   let showToast = false;
   let isLoadingReportTrashCoin = false;
 
-  let hiddenPortfolio = false;
-  isHidePortfolio.subscribe((e) => (hiddenPortfolio = e));
+  let isOpenTokenInfoBundle = false;
+  let showTokenInfoBundle = false;
 
   const trigger = () => {
     showToast = true;
@@ -200,11 +211,28 @@
   $: logo =
     data.logo ||
     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+
+  $: formatDataBreakdown = (data?.breakdown || [])
+    .map((item) => {
+      const selectedAddress = selectBundle?.accounts.find(
+        (account) =>
+          account?.id === item?.owner || account?.value === item?.owner
+      );
+      return {
+        ...item,
+        logo: selectedAddress?.logo,
+        type: selectedAddress?.type,
+        label: selectedAddress?.label,
+      };
+    })
+    .filter((item) => Number(item?.amount) !== 0);
 </script>
 
 <tr
   key={data?.symbol}
-  class={`group transition-all`}
+  class={`group transition-all ${
+    isOpenTokenInfoBundle ? (darkMode ? "bg-[#000]" : "bg-gray-100") : ""
+  }`}
   on:click={() => {
     // if (clickable) {
     //   navigate(
@@ -242,8 +270,12 @@
   }}
 >
   <td
-    class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[450px] ${
-      darkMode
+    class={`pl-3 py-3 xl:static sticky left-0 z-9 w-[450px] ${
+      isOpenTokenInfoBundle
+        ? darkMode
+          ? "bg-[#000]"
+          : "bg-gray-100"
+        : darkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
@@ -682,7 +714,7 @@
         </div>
 
         <div class="w-3/4 max-w-20">
-          <Progressbar progress={ratio} size="h-1" />
+          <Progressbar progress={ratio} animate size="h-1" />
         </div>
       </div>
     </div>
@@ -820,27 +852,338 @@
     </div>
   </td>
 
-  <!-- <td
-    class={`py-3 w-10 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    {#if clickable}
+  {#if typeWalletAddress === "BUNDLE"}
+    <td
+      class={`py-3 w-10 ${
+        darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      }`}
+    >
+      <!-- {#if clickable}
+        <div class="flex justify-center">
+          <div
+            use:tooltip={{
+              content: `<tooltip-detail text="Show detail" />`,
+              allowHTML: true,
+              placement: "top",
+            }}
+          >
+            <img src={Chart} alt="" width={14} height={14} />
+          </div>
+        </div>
+      {/if} -->
       <div class="flex justify-center">
         <div
-          use:tooltip={{
-            content: `<tooltip-detail text="Show detail" />`,
-            allowHTML: true,
-            placement: "top",
-          }}
+          class="xl:block hidden cursor-pointer transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
+          class:rotate-0={isOpenTokenInfoBundle}
+          on:click={() => (isOpenTokenInfoBundle = !isOpenTokenInfoBundle)}
         >
-          <img src={Chart} alt="" width={14} height={14} />
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 8.36365L6 4.00001L2 8.36365"
+              stroke={darkMode ? "white" : "black"}
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <div
+          class="xl:hidden block"
+          on:click={() => (showTokenInfoBundle = true)}
+        >
+          <svg
+            width="34"
+            height="34"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill={darkMode ? "white" : "black"}
+              d="M3.5 4A1.5 1.5 0 0 0 2 5.5v2A1.5 1.5 0 0 0 3.5 9h2A1.5 1.5 0 0 0 7 7.5v-2A1.5 1.5 0 0 0 5.5 4h-2ZM3 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2ZM9.5 5a.5.5 0 0 0 0 1h8a.5.5 0 0 0 0-1h-8Zm0 2a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6Zm-6 4A1.5 1.5 0 0 0 2 12.5v2A1.5 1.5 0 0 0 3.5 16h2A1.5 1.5 0 0 0 7 14.5v-2A1.5 1.5 0 0 0 5.5 11h-2ZM3 12.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2Zm6.5-.5a.5.5 0 0 0 0 1h8a.5.5 0 0 0 0-1h-8Zm0 2a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6Z"
+            />
+          </svg>
         </div>
       </div>
-    {/if}
-  </td> -->
+    </td>
+  {/if}
 </tr>
 
+{#if isOpenTokenInfoBundle}
+  <tr class="border-t-[1px] border_0000000d">
+    <td class={`xl:pt-2 py-2 pl-3 ${darkMode ? "bg-[#000]" : "bg-gray-100"}`}>
+      <div class="xl:text-sm text-2xl">Token breakdown</div>
+    </td>
+    <td
+      colspan={8}
+      class={`xl:py-0 py-2 pr-3 ${darkMode ? "bg-[#000]" : "bg-gray-100"}`}
+    />
+  </tr>
+
+  <tr>
+    <td colspan={8} class={`${darkMode ? "bg-[#000]" : "bg-gray-100"}`}>
+      <div class="-mt-1 flex items-center">
+        <div class="py-2 pl-3 flex-1">
+          <div class="text-left xl:text-sm text-xl font-medium">Account</div>
+        </div>
+        <div class="py-2 flex-1">
+          <div class="text-right xl:text-sm text-xl font-medium">Amount</div>
+        </div>
+        <div class="py-2 pr-3 flex-1">
+          <div class="text-right xl:text-sm text-xl font-medium">Value</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+
+  <tr>
+    <td colspan={8}>
+      <div
+        class={`-mt-2 -mx-[1px] max-h-[500px] overflow-y-auto ${
+          darkMode ? "bg-[#000]" : "bg-gray-100"
+        }`}
+      >
+        {#each formatDataBreakdown as item}
+          <div class="flex items-center">
+            <div class="py-2 pl-3 flex-1">
+              <div class="flex items-center gap-3">
+                <img
+                  src={item?.logo}
+                  alt=""
+                  class="rounded-full w-[30px] h-[30px]"
+                  on:error={() => {
+                    logo =
+                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+                  }}
+                />
+                <div class="flex flex-col items-start">
+                  <div class="font-medium xl:text-sm text-xl text_00000099">
+                    {item.label}
+                  </div>
+                  <div
+                    class="xl:text-sm text-2xl flex justify-end items-center"
+                  >
+                    <Copy
+                      address={item?.owner}
+                      iconColor={darkMode ? "#fff" : "#000"}
+                      color={darkMode ? "#fff" : "#000"}
+                      isShorten
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="py-2 flex-1">
+              <div
+                class="xl:text-sm text-2xl text_00000099 flex flex-col justify-end items-end gap-1"
+              >
+                <div
+                  class="flex justify-end items-center gap-1 text-2xl font-medium xl:text-sm text_00000099"
+                >
+                  <TooltipNumber number={item?.amount} type="balance" />
+                  {#if data.symbol === undefined}
+                    N/A
+                  {:else}
+                    {data.symbol}
+                  {/if}
+                </div>
+
+                <div class="flex flex-col items-end justify-end gap-1 w-full">
+                  <div
+                    class="flex justify-end text-2xl font-medium text-gray-400 xl:text-sm"
+                  >
+                    <TooltipNumber
+                      number={Math.abs(item.amount / data.amount) * 100}
+                      type="percent"
+                    />%
+                  </div>
+                  <div class="w-3/4 max-w-20">
+                    <Progressbar
+                      progress={Math.abs(item.amount / data.amount) * 100}
+                      animate
+                      size="h-1"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="py-2 pr-3 flex-1">
+              <div
+                class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end items-center"
+              >
+                $<TooltipNumber
+                  number={Number(item?.amount) * Number(data?.market_price)}
+                  type="balance"
+                />
+              </div>
+            </div>
+          </div>
+        {/each}
+      </div>
+    </td>
+  </tr>
+{/if}
+
+<!-- Modal token holding information when bundle -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={showTokenInfoBundle}
+  isTableContent
+  on:close={() => {
+    showTokenInfoBundle = false;
+  }}
+>
+  <div class="h-[563px] flex flex-col gap-4">
+    <div class="text-4xl font-medium xl:text-2xl">Token breakdown</div>
+    <div
+      class={`rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative ${
+        darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+      }`}
+    >
+      <table class="table-auto xl:w-full w-[1200px]">
+        <thead>
+          <tr class="bg_f4f5f8">
+            <th class="pl-3 py-3 rounded-tl-[10px]">
+              <div class="font-medium text-left uppercase xl:text-xs text-xl">
+                Account
+              </div>
+            </th>
+            <th class="py-3">
+              <div class="font-medium text-right uppercase xl:text-xs text-xl">
+                Amount
+              </div>
+            </th>
+            <th class="py-3 pr-3 rounded-tr-[10px]">
+              <div class="font-medium text-right uppercase xl:text-xs text-xl">
+                Value
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {#if formatDataBreakdown && formatDataBreakdown.length === 0}
+            <tr>
+              <td colspan="3">
+                <div
+                  class="flex items-center justify-center px-3 py-3 text-gray-400 xl:text-lg text-xl"
+                >
+                  Empty
+                </div>
+              </td>
+            </tr>
+          {:else}
+            {#each formatDataBreakdown as item}
+              <tr class="transition-all cursor-pointer group">
+                <td
+                  class={`pl-3 py-3 ${
+                    darkMode
+                      ? "group-hover:bg-[#000]"
+                      : "group-hover:bg-gray-100"
+                  }`}
+                >
+                  <div class="flex items-center gap-3">
+                    <img
+                      src={item?.logo}
+                      alt=""
+                      class="rounded-full w-[30px] h-[30px]"
+                      on:error={() => {
+                        logo =
+                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+                      }}
+                    />
+                    <div class="flex flex-col items-start">
+                      <div class="font-medium xl:text-sm text-xl text_00000099">
+                        {item.label}
+                      </div>
+                      <div
+                        class="xl:text-sm text-2xl flex justify-end items-center"
+                      >
+                        <Copy
+                          address={item?.owner}
+                          iconColor={darkMode ? "#fff" : "#000"}
+                          color={darkMode ? "#fff" : "#000"}
+                          isShorten
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </td>
+
+                <td
+                  class={`py-3 ${
+                    darkMode
+                      ? "group-hover:bg-[#000]"
+                      : "group-hover:bg-gray-100"
+                  }`}
+                >
+                  <div
+                    class="xl:text-sm text-2xl text_00000099 flex flex-col justify-end items-end gap-4"
+                  >
+                    <div
+                      class="flex justify-end items-center gap-1 text-2xl font-medium xl:text-sm text_00000099"
+                    >
+                      <TooltipNumber number={item?.amount} type="balance" />
+                      {#if data.symbol === undefined}
+                        N/A
+                      {:else}
+                        {data.symbol}
+                      {/if}
+                    </div>
+
+                    <div
+                      class="flex flex-col items-end justify-end gap-1 w-full"
+                    >
+                      <div
+                        class="flex justify-end text-2xl font-medium text-gray-400 xl:text-sm"
+                      >
+                        <TooltipNumber
+                          number={Math.abs(item.amount / data.amount) * 100}
+                          type="percent"
+                        />%
+                      </div>
+                      <div class="w-3/4 max-w-30">
+                        <Progressbar
+                          progress={Math.abs(item.amount / data.amount) * 100}
+                          size="h-1"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </td>
+
+                <td
+                  class={`py-3 pr-3 ${
+                    darkMode
+                      ? "group-hover:bg-[#000]"
+                      : "group-hover:bg-gray-100"
+                  }`}
+                >
+                  <div
+                    class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end items-center"
+                  >
+                    $<TooltipNumber
+                      number={Number(item?.amount) * Number(data?.market_price)}
+                      type="balance"
+                    />
+                  </div>
+                </td>
+              </tr>
+            {/each}
+          {/if}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</AppOverlay>
+
+<!-- Modal vault -->
 <AppOverlay
   clickOutSideToClose
   isOpen={showTableVaults}

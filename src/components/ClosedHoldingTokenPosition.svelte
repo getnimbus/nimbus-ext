@@ -439,51 +439,43 @@
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
     >
-      {#if typeWalletAddress === "CEX" || typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
-        N/A
-      {:else}
-        <div class="flex flex-col">
+      <div class="flex flex-col">
+        <div
+          class={`flex justify-end ${
+            realizedProfit !== 0
+              ? realizedProfit >= 0
+                ? "text-[#00A878]"
+                : "text-red-500"
+              : "text_00000099"
+          }`}
+        >
+          <TooltipNumber number={Math.abs(realizedProfit)} type="value" />
+        </div>
+        <div class="flex items-center justify-end gap-1">
           <div
-            class={`flex justify-end ${
-              realizedProfit !== 0
-                ? realizedProfit >= 0
+            class={`flex items-center ${
+              percentRealizedProfit !== 0
+                ? percentRealizedProfit >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
                 : "text_00000099"
             }`}
           >
             <TooltipNumber
-              number={Math.abs(realizedProfit)}
-              type="value"
-              personalValue
+              number={Math.abs(percentRealizedProfit) * 100}
+              type="percent"
             />
+            <span>%</span>
           </div>
-          <div class="flex items-center justify-end gap-1">
-            <div
-              class={`flex items-center ${
-                percentRealizedProfit !== 0
-                  ? percentRealizedProfit >= 0
-                    ? "text-[#00A878]"
-                    : "text-red-500"
-                  : "text_00000099"
-              }`}
-            >
-              <TooltipNumber
-                number={Math.abs(percentRealizedProfit) * 100}
-                type="percent"
-              />
-              <span>%</span>
-            </div>
-            {#if percentRealizedProfit !== 0}
-              <img
-                src={percentRealizedProfit >= 0 ? TrendUp : TrendDown}
-                alt="trend"
-                class="mb-1"
-              />
-            {/if}
-          </div>
+          {#if percentRealizedProfit !== 0}
+            <img
+              src={percentRealizedProfit >= 0 ? TrendUp : TrendDown}
+              alt="trend"
+              class="mb-1"
+            />
+          {/if}
         </div>
-      {/if}
+      </div>
     </div>
   </td>
 
