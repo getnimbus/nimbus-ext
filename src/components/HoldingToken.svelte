@@ -202,17 +202,20 @@
     data.logo ||
     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
 
-  $: formatDataBreakdown = (data?.breakdown || []).map((item) => {
-    const selectedAddress = selectBundle?.accounts.find(
-      (account) => account?.id === item?.owner || account?.value === item?.owner
-    );
-    return {
-      ...item,
-      logo: selectedAddress?.logo,
-      type: selectedAddress?.type,
-      label: selectedAddress?.label,
-    };
-  });
+  $: formatDataBreakdown = (data?.breakdown || [])
+    .map((item) => {
+      const selectedAddress = selectBundle?.accounts.find(
+        (account) =>
+          account?.id === item?.owner || account?.value === item?.owner
+      );
+      return {
+        ...item,
+        logo: selectedAddress?.logo,
+        type: selectedAddress?.type,
+        label: selectedAddress?.label,
+      };
+    })
+    .filter((item) => Number(item?.amount) !== 0);
 </script>
 
 <tr
