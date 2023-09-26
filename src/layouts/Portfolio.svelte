@@ -562,14 +562,20 @@
   };
 
   const formatDataOverviewBundlePieChart = (data) => {
+    const networth = (data || []).reduce(
+      (prev, item) => prev + Number(item.value),
+      0
+    );
     dataOverviewBundlePieChart = data
       .map((item) => {
         const selectAccount = selectBundle?.accounts.find(
           (data) => data.id === item.owner || data.value === item.owner
         );
         return {
-          ...item,
-          ...selectAccount,
+          logo: selectAccount?.logo,
+          label: selectAccount?.label,
+          type: selectAccount?.type,
+          value: item?.value,
         };
       })
       .map((item) => {
@@ -580,9 +586,9 @@
           name_ratio: "Ratio",
           name_value: "Value",
           symbol: item?.type,
-          value: 0,
+          value: (Number(item?.value || 0) / Number(networth || 0)) * 100,
           value_balance: 0,
-          value_value: item?.networth,
+          value_value: Number(item?.value || 0),
         };
       });
   };
