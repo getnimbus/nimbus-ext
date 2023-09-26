@@ -19,7 +19,7 @@
   };
 </script>
 
-<div class="cursor-pointer" on:click={handleHiddenPortfolio}>
+<div class="cursor-pointer hover:opacity-70" on:click={handleHiddenPortfolio}>
   {#if hiddenPortfolio == false}
     <svg
       xmlns="http://www.w3.org/2000/svg"
