@@ -397,20 +397,8 @@
     border-color: #cdcdcd26;
   }
 
-  .zsiq_floatmain.siq_bR {
-    bottom: 40px !important;
-    right: 20px !important;
-  }
-
-  @media (max-width: 1280px) {
-    .zsiq_floatmain,
-    .fb-feedback-widget-feedback-button {
-      display: block !important;
-    }
-  }
-
   @media (max-width: 1024px) {
-    #mava-button-iframe {
+    #mava {
       display: none !important;
     }
 

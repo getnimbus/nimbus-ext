@@ -260,7 +260,7 @@
   }}
 >
   <td
-    class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[450px] ${
+    class={`pl-3 py-3 xl:static sticky left-0 z-9 w-[450px] ${
       isOpenTokenInfoBundle
         ? darkMode
           ? "bg-[#000]"
