@@ -700,7 +700,7 @@
           <TooltipNumber number={ratio} type="percent" />%
         </div>
         <div class="w-3/4 max-w-20">
-          <Progressbar progress={ratio} size="h-1" />
+          <Progressbar progress={ratio} animate size="h-1" />
         </div>
       </div>
     </div>
@@ -887,13 +887,9 @@
 </tr>
 
 {#if isOpenTokenInfoBundle}
-  <tr>
-    <td
-      class={`-mt-1 xl:py-0 py-2 pl-3 ${
-        darkMode ? "bg-[#000]" : "bg-gray-100"
-      }`}
-    >
-      <div class="xl:text-sm text-2xl">Token breakdown</div>
+  <tr class=" border-t border-gray-300">
+    <td class={`xl:py-0 py-2 pl-3 ${darkMode ? "bg-[#000]" : "bg-gray-100"}`}>
+      <div class="xl:text-sm text-2xl mt-2">Token breakdown</div>
     </td>
     <td
       colspan={8}
@@ -982,6 +978,7 @@
                   <div class="w-3/4 max-w-20">
                     <Progressbar
                       progress={Math.abs(item.amount / data.amount) * 100}
+                      animate
                       size="h-1"
                     />
                   </div>
