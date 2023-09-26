@@ -933,7 +933,7 @@
                   }}
                 />
                 <div class="flex flex-col items-start">
-                  <div class="font-medium xl:text-sm text-2xl text_00000099">
+                  <div class="font-medium xl:text-sm text-xl text_00000099">
                     {item.label}
                   </div>
                   <div
