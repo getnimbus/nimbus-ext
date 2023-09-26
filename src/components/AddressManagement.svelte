@@ -261,6 +261,9 @@
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
+    enabled: false,
+    placeholder: [],
+    // enabled: Object.keys(userInfo).length !== 0,
     enabled:
       Object.keys(userInfo).length !== 0 &&
       selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0",
