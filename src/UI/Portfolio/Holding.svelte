@@ -390,7 +390,11 @@
                     Realized PnL
                   </div>
                 </th>
-                <th class="py-3 pr-3 rounded-tr-[10px]">
+                <th
+                  class={`py-3 pr-3 ${
+                    typeWalletAddress !== "BUNDLE" ? "rounded-tr-[10px]" : ""
+                  }`}
+                >
                   <div
                     class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
