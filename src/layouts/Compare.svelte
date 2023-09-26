@@ -895,8 +895,6 @@
                 {:else}
                   <div class="-mt-2">
                     <TokenAllocation
-                      {dataPieChart}
-                      {holdingTokenData}
                       handleSelectedTableTokenHolding={(
                         data,
                         selectDatPieChart
@@ -908,9 +906,12 @@
                           // });
                         }
                       }}
+                      {holdingTokenData}
+                      {dataPieChart}
                       listOptionTypeCategory={typeListCategory}
                       selectedOption={selectedType}
                       id="pie-chart-token-allocation"
+                      isComparePage={true}
                     />
                   </div>
                 {/if}
@@ -971,8 +972,6 @@
                         </div>
                       {:else}
                         <TokenAllocation
-                          dataPieChart={dataPieChartCompare}
-                          holdingTokenData={holdingTokenDataCompare}
                           handleSelectedTableTokenHolding={(
                             data,
                             selectDatPieChart
@@ -984,9 +983,12 @@
                               // });
                             }
                           }}
+                          holdingTokenData={holdingTokenDataCompare}
+                          dataPieChart={dataPieChartCompare}
                           listOptionTypeCategory={typeListCategory}
                           selectedOption={selectedType}
                           id="pie-chart-token-allocation-compare"
+                          isComparePage={true}
                         />
                       {/if}
                     </div>
