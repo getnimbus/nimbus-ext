@@ -469,8 +469,10 @@
     </div>
 
     <div class="flex items-center justify-between gap-6 xl:gap-3">
-      <!-- hidden portfolio -->
-      <HiddenPortfolio />
+      <!-- hide portfolio -->
+      <!-- <span class="xl:block hidden">
+        <HiddenPortfolio />
+      </span> -->
       <!-- Search -->
       <div
         class={`pl-4 flex items-center rounded-[1000px] ${
