@@ -797,9 +797,9 @@
           {:else}
             <div class={`${typeWalletAddress !== "BTC" ? "-mt-14" : ""}`}>
               <TokenAllocation
-                {dataPieChart}
-                {holdingTokenData}
                 {handleSelectedTableTokenHolding}
+                {holdingTokenData}
+                {dataPieChart}
                 listOptionTypeCategory={[]}
                 selectedOption={{}}
                 id="pie-chart-token-allocation"
