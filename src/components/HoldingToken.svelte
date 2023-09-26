@@ -902,12 +902,8 @@
   </tr>
 
   <tr>
-    <td colspan={8}>
-      <div
-        class={`-mt-1 flex items-center ${
-          darkMode ? "bg-[#000]" : "bg-gray-100"
-        }`}
-      >
+    <td colspan={8} class={`${darkMode ? "bg-[#000]" : "bg-gray-100"}`}>
+      <div class="-mt-1 flex items-center">
         <div class="py-2 pl-3 flex-1">
           <div class="text-left xl:text-sm text-xl font-medium">Account</div>
         </div>
@@ -924,7 +920,7 @@
   <tr>
     <td colspan={8}>
       <div
-        class={`-mt-2 max-h-[500px] overflow-y-auto ${
+        class={`-mt-2 -mx-[1px] max-h-[500px] overflow-y-auto ${
           darkMode ? "bg-[#000]" : "bg-gray-100"
         }`}
       >

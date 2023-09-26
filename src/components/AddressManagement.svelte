@@ -1272,7 +1272,9 @@
                         >
                           {#each selectBundle?.accounts as item}
                             <div class="hidden xl:flex xl:flex-col">
-                              <div class="text-2xl xl:text-xs text_00000099">
+                              <div
+                                class="text-2xl xl:text-xs font-medium text_00000099"
+                              >
                                 {item.label}
                               </div>
                               <div class="text-3xl xl:text-sm">
@@ -1285,7 +1287,9 @@
                               </div>
                             </div>
                             <div class="flex flex-col xl:hidden">
-                              <div class="text-2xl xl:text-xs text_00000099">
+                              <div
+                                class="text-2xl xl:text-xs font-medium text_00000099"
+                              >
                                 {item.label}
                               </div>
                               <div class="text-3xl xl:text-sm">
