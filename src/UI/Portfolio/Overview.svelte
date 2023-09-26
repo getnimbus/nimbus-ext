@@ -63,17 +63,17 @@
 
   $: changeLast24hNetWorth = getChangeFromPercent(
     networth,
-    data?.overview.networthChange
+    data?.overview?.networthChange
   );
 
   $: changeLast24hTotalInflow = getChangeFromPercent(
     data?.overview?.cumulativeInflow,
-    data?.overview.cumulativeInflowChange
+    data?.overview?.cumulativeInflowChange
   );
 
   $: changeLast24hTotalOutflow = getChangeFromPercent(
     data?.overview?.cumulativeOutflow,
-    data?.overview.cumulativeOutflowChange
+    data?.overview?.cumulativeOutflowChange
   );
 
   $: changeLast24hTotalProfit =
@@ -101,19 +101,19 @@
         >
           <div
             class={`flex xl:text-lg text-3xl font-medium ${
-              data?.overview.networthChange < 0
+              data?.overview?.networthChange < 0
                 ? "text-red-500"
                 : "text-[#00A878]"
             }`}
           >
-            {#if data?.overview.networthChange < 0}
+            {#if data?.overview?.networthChange < 0}
               ↓
             {:else}
               ↑
             {/if}
             <CountUpNumber
               id="networth_grouth"
-              number={Math.abs(data?.overview.networthChange)}
+              number={Math.abs(data?.overview?.networthChange)}
               type="percent"
             />%
           </div>
@@ -210,14 +210,14 @@
                 : "text-[#00A878]"
             }`}
           >
-            {#if data?.overview.cumulativeInflowChange < 0}
+            {#if data?.overview?.cumulativeInflowChange < 0}
               ↓
             {:else}
               ↑
             {/if}
             <CountUpNumber
               id="total_assets_grouth"
-              number={Math.abs(data?.overview.cumulativeInflowChange)}
+              number={Math.abs(data?.overview?.cumulativeInflowChange)}
               type="percent"
             />%
           </div>
