@@ -26,6 +26,7 @@
   export let overviewDataPerformance;
   export let dataPieChart;
   export let isEmptyDataPie;
+  export let dataOverviewBundlePieChart;
 
   import EChart from "~/components/EChart.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -745,7 +746,7 @@
       <div class="relative w-full mb-6">
         <div class="w-full text-4xl font-medium xl:text-2xl">
           {#if selectedType === "token"}
-            {MultipleLang.token_allocation}
+            Allocation
           {:else}
             {MultipleLang.nft_allocation}
           {/if}
@@ -796,12 +797,14 @@
           {:else}
             <div class={`${typeWalletAddress !== "BTC" ? "-mt-14" : ""}`}>
               <TokenAllocation
-                {dataPieChart}
-                {holdingTokenData}
                 {handleSelectedTableTokenHolding}
+                {holdingTokenData}
+                {dataPieChart}
                 listOptionTypeCategory={[]}
                 selectedOption={{}}
                 id="pie-chart-token-allocation"
+                isComparePage={false}
+                {dataOverviewBundlePieChart}
               />
             </div>
           {/if}
