@@ -817,7 +817,7 @@
         darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      {#if selectedChain === "XDAI" || typeWalletAddress === "BTC" || typeWalletAddress === "SOL"}
+      {#if selectedChain === "XDAI" || typeWalletAddress === "BTC"}
         <div class="pl-4 text-4xl font-medium xl:text-2xl">
           {MultipleLang.performance}
         </div>
@@ -830,7 +830,7 @@
         </div>
       {:else}
         <div class="flex justify-between mb-6">
-          {#if typeWalletAddress === "CEX" || selectBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
+          {#if typeWalletAddress === "CEX" || typeWalletAddress === "SOL" || selectBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
             <TooltipTitle
               tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
               type="warning"
