@@ -887,9 +887,9 @@
 </tr>
 
 {#if isOpenTokenInfoBundle}
-  <tr class=" border-t border-gray-300">
-    <td class={`xl:py-0 py-2 pl-3 ${darkMode ? "bg-[#000]" : "bg-gray-100"}`}>
-      <div class="xl:text-sm text-2xl mt-2">Token breakdown</div>
+  <tr class="border-t-[1px] border_0000000d">
+    <td class={`xl:pt-2 py-2 pl-3 ${darkMode ? "bg-[#000]" : "bg-gray-100"}`}>
+      <div class="xl:text-sm text-2xl">Token breakdown</div>
     </td>
     <td
       colspan={8}
@@ -1019,12 +1019,10 @@
         darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
       }`}
     >
-      <table class="table-auto xl:w-full w-[1800px]">
+      <table class="table-auto xl:w-full w-[1200px]">
         <thead>
           <tr class="bg_f4f5f8">
-            <th
-              class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[450px]"
-            >
+            <th class="pl-3 py-3 rounded-tl-[10px]">
               <div class="font-medium text-left uppercase xl:text-xs text-xl">
                 Account
               </div>
@@ -1056,10 +1054,10 @@
             {#each formatDataBreakdown as item}
               <tr class="transition-all cursor-pointer group">
                 <td
-                  class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[450px] ${
+                  class={`pl-3 py-3 ${
                     darkMode
-                      ? "bg-[#131313] group-hover:bg-[#000]"
-                      : "bg-white group-hover:bg-gray-100"
+                      ? "group-hover:bg-[#000]"
+                      : "group-hover:bg-gray-100"
                   }`}
                 >
                   <div class="flex items-center gap-3">
