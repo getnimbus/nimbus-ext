@@ -414,14 +414,16 @@
 
   $: {
     if (holdingTokenData) {
-      holdingTokenData.map((item: any) => {
-        priceSubscribe([item?.cmc_id], (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.p,
-          };
+      holdingTokenData
+        ?.filter((item) => item?.cmc_id)
+        ?.map((item: any) => {
+          priceSubscribe([item?.cmc_id], (data) => {
+            marketPriceToken = {
+              id: data.id,
+              market_price: data.p,
+            };
+          });
         });
-      });
     }
   }
 

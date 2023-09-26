@@ -83,24 +83,28 @@
   // subscribe to ws
   $: {
     if (holdingTokenData?.length !== 0) {
-      holdingTokenData?.map((item) => {
-        priceSubscribe([item?.cmc_id], (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.p,
-          };
+      holdingTokenData
+        ?.filter((item) => item?.cmc_id)
+        ?.map((item) => {
+          priceSubscribe([item?.cmc_id], (data) => {
+            marketPriceToken = {
+              id: data.id,
+              market_price: data.p,
+            };
+          });
         });
-      });
     }
     if (holdingNFTData) {
-      holdingNFTData?.map((item) => {
-        priceSubscribe([item?.cmc_id], (data) => {
-          marketPriceNFT = {
-            id: data.id,
-            market_price: data.p,
-          };
+      holdingNFTData
+        ?.filter((item) => item?.cmc_id)
+        ?.map((item) => {
+          priceSubscribe([item?.cmc_id], (data) => {
+            marketPriceNFT = {
+              id: data.id,
+              market_price: data.p,
+            };
+          });
         });
-      });
     }
   }
 
