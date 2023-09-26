@@ -88,28 +88,32 @@
 
   $: {
     if (selectedTokenHolding && holdingTokenData?.length !== 0) {
-      holdingTokenData?.map((item) => {
-        priceSubscribe([item?.cmc_id], (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.p,
-          };
+      holdingTokenData
+        ?.filter((item) => item?.cmc_id)
+        ?.map((item) => {
+          priceSubscribe([item?.cmc_id], (data) => {
+            marketPriceToken = {
+              id: data.id,
+              market_price: data.p,
+            };
+          });
         });
-      });
       sumAllTokens = holdingTokenData?.reduce(
         (prev, item) => prev + item.value,
         0
       );
     }
     if (holdingNFTData) {
-      holdingNFTData?.map((item) => {
-        priceSubscribe([item?.cmc_id], (data) => {
-          marketPriceNFT = {
-            id: data.id,
-            market_price: data.p,
-          };
+      holdingNFTData
+        ?.filter((item) => item?.cmc_id)
+        ?.map((item) => {
+          priceSubscribe([item?.cmc_id], (data) => {
+            marketPriceNFT = {
+              id: data.id,
+              market_price: data.p,
+            };
+          });
         });
-      });
     }
   }
 
@@ -386,25 +390,23 @@
                     Realized PnL
                   </div>
                 </th>
-                <th class="py-3 pr-3 rounded-tr-[10px]">
+                <th
+                  class={`py-3 pr-3 ${
+                    typeWalletAddress !== "BUNDLE" ? "rounded-tr-[10px]" : ""
+                  }`}
+                >
                   <div
                     class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
                     Unrealized PnL
                   </div>
                 </th>
-                <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
+                {#if typeWalletAddress === "BUNDLE"}
+                  <th class="py-3 w-10 rounded-tr-[10px]" />
+                {/if}
               </tr>
             </thead>
-            <tbody>
-              {#each filteredHoldingDataToken as holding}
-                <HoldingToken
-                  data={holding}
-                  {selectedWallet}
-                  sumAllTokens={totalAssets - sumNFT}
-                />
-              {/each}
-            </tbody>
+
             {#if isLoadingToken}
               <tbody>
                 <tr>
@@ -431,6 +433,14 @@
                       </div>
                     </td>
                   </tr>
+                {:else}
+                  {#each filteredHoldingDataToken as holding}
+                    <HoldingToken
+                      data={holding}
+                      {selectedWallet}
+                      sumAllTokens={totalAssets - sumNFT}
+                    />
+                  {/each}
                 {/if}
               </tbody>
             {/if}

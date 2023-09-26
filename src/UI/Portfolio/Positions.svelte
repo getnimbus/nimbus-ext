@@ -27,84 +27,110 @@
         let types = Object.getOwnPropertyNames(eachData.positions);
         types.map((type) => {
           if (type === "LP-Provider") {
-            eachData.positions?.["LP-Provider"].map((item) => {
-              const token0 = Number(item?.token0Info?.info?.cmc_id);
-              const token1 = Number(item?.token1Info?.info?.cmc_id);
-              priceSubscribe([token0, token1], (data) => {
-                marketPrice = {
-                  id: data.id,
-                  market_price: data.p,
-                };
+            eachData.positions?.["LP-Provider"]
+              ?.filter(
+                (item) =>
+                  Number(item?.token0Info?.info?.cmc_id) ||
+                  Number(item?.token1Info?.info?.cmc_id)
+              )
+              ?.map((item) => {
+                const token0 = Number(item?.token0Info?.info?.cmc_id);
+                const token1 = Number(item?.token1Info?.info?.cmc_id);
+                priceSubscribe([token0, token1], (data) => {
+                  marketPrice = {
+                    id: data.id,
+                    market_price: data.p,
+                  };
+                });
               });
-            });
           }
           if (type === "LP-Provider v2") {
-            eachData.positions?.["LP-Provider v2"].map((item) => {
-              const token0 = Number(item?.token0Info?.info?.cmc_id);
-              const token1 = Number(item?.token1Info?.info?.cmc_id);
-              priceSubscribe([token0, token1], (data) => {
-                marketPrice = {
-                  id: data.id,
-                  market_price: data.p,
-                };
+            eachData.positions?.["LP-Provider v2"]
+              ?.filter(
+                (item) =>
+                  Number(item?.token0Info?.info?.cmc_id) ||
+                  Number(item?.token1Info?.info?.cmc_id)
+              )
+              ?.map((item) => {
+                const token0 = Number(item?.token0Info?.info?.cmc_id);
+                const token1 = Number(item?.token1Info?.info?.cmc_id);
+                priceSubscribe([token0, token1], (data) => {
+                  marketPrice = {
+                    id: data.id,
+                    market_price: data.p,
+                  };
+                });
               });
-            });
           }
           if (type === "LP Staking") {
-            eachData.positions?.["LP Staking"].map((item) => {
-              const token0 = Number(item?.token0Info?.info?.cmc_id);
-              const token1 = Number(item?.token1Info?.info?.cmc_id);
-              const rewardToken0 = Number(
-                item?.rewardTokens[0]?.info?.info?.cmc_id
-              );
-              priceSubscribe([token0, token1, rewardToken0], (data) => {
-                marketPrice = {
-                  id: data.id,
-                  market_price: data.p,
-                };
+            eachData.positions?.["LP Staking"]
+              ?.filter(
+                (item) =>
+                  Number(item?.token0Info?.info?.cmc_id) ||
+                  Number(item?.token1Info?.info?.cmc_id)
+              )
+              ?.map((item) => {
+                const token0 = Number(item?.token0Info?.info?.cmc_id);
+                const token1 = Number(item?.token1Info?.info?.cmc_id);
+                const rewardToken0 = Number(
+                  item?.rewardTokens[0]?.info?.info?.cmc_id
+                );
+                priceSubscribe([token0, token1, rewardToken0], (data) => {
+                  marketPrice = {
+                    id: data.id,
+                    market_price: data.p,
+                  };
+                });
               });
-            });
           }
           if (type === "Staking") {
-            eachData.positions?.["Staking"].map((item) => {
-              priceSubscribe([item?.cmc_id], (data) => {
-                marketPrice = {
-                  id: data.id,
-                  market_price: data.p,
-                };
+            eachData.positions?.["Staking"]
+              ?.filter((item) => item?.cmc_id)
+              ?.map((item) => {
+                priceSubscribe([item?.cmc_id], (data) => {
+                  marketPrice = {
+                    id: data.id,
+                    market_price: data.p,
+                  };
+                });
               });
-            });
           }
           if (type === "Lending") {
-            eachData.positions?.["Lending"].map((item) => {
-              priceSubscribe([item?.cmc_id], (data) => {
-                marketPrice = {
-                  id: data.id,
-                  market_price: data.p,
-                };
+            eachData.positions?.["Lending"]
+              ?.filter((item) => item?.cmc_id)
+              ?.map((item) => {
+                priceSubscribe([item?.cmc_id], (data) => {
+                  marketPrice = {
+                    id: data.id,
+                    market_price: data.p,
+                  };
+                });
               });
-            });
           }
           if (type === "Borrow") {
-            eachData.positions?.["Borrow"].map((item) => {
-              priceSubscribe([item?.cmc_id], (data) => {
-                marketPrice = {
-                  id: data.id,
-                  market_price: data.p,
-                };
+            eachData.positions?.["Borrow"]
+              ?.filter((item) => item?.cmc_id)
+              ?.map((item) => {
+                priceSubscribe([item?.cmc_id], (data) => {
+                  marketPrice = {
+                    id: data.id,
+                    market_price: data.p,
+                  };
+                });
               });
-            });
           }
           if (type === "MCD") {
-            eachData.positions?.["MCD"].map((item) => {
-              const token = Number(item?.token?.cmc_id);
-              priceSubscribe([token], (data) => {
-                marketPrice = {
-                  id: data.id,
-                  market_price: data.p,
-                };
+            eachData.positions?.["MCD"]
+              ?.filter((item) => item?.cmc_id)
+              ?.map((item) => {
+                const token = Number(item?.token?.cmc_id);
+                priceSubscribe([token], (data) => {
+                  marketPrice = {
+                    id: data.id,
+                    market_price: data.p,
+                  };
+                });
               });
-            });
           }
         });
       });
