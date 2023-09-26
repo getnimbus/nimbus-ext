@@ -13,6 +13,7 @@
   import Mixpanel from "~/components/Mixpanel.svelte";
   import MobileHeaderTab from "~/components/MobileHeaderTab.svelte";
   import Loading from "~/components/Loading.svelte";
+  import OpenAppIntroduce from "~/components/OpenAppIntroduce.svelte";
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -54,18 +55,17 @@
     if ("ontouchstart" in window || navigator.maxTouchPoints) {
       isTouchDevice = true;
     }
-
-    // not run!!!!!
-    // window.addEventListener("beforeinstallprompt", (event) => {
-    //   event.preventDefault(); // Prevent the default browser install prompt
-    //   console.log("PWA is installed", event);
-    //   isPwaInstalled = true;
-    // });
-
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      localStorage.setItem("no-introduce-app", "true");
-    }
   });
+
+  $: {
+    if (isTouchDevice) {
+      console.log({
+        hello: window.matchMedia("(display-mode: standalone)"),
+      });
+    }
+  }
+
+  $: console.log("isPwaInstalled: ", isPwaInstalled);
 </script>
 
 <ErrorBoundary>
@@ -321,6 +321,9 @@
             <MobileHeaderTab />
           </div>
         </div>
+        {#if isTouchDevice}
+          <OpenAppIntroduce />
+        {/if}
       </Router>
     </Mixpanel>
   </QueryClientProvider>
