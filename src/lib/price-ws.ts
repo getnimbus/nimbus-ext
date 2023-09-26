@@ -4,7 +4,7 @@ export const initWS = (cb?: () => void) => {
   socket = new WebSocket("wss://ws.getnimbus.io/ws");
 
   socket.onopen = () => {
-    console.log("WebSocket connection established");
+    console.log("WS connection established");
     cb && cb();
   };
 
@@ -34,20 +34,19 @@ export const priceSubscribe = (cmc_id: number[] | string[], callback: (any) => v
     if (!socket) {
       console.log('WS is not initiated');
       initWS(() => priceSubscribe(cmc_id, callback));
-      return;
-    }
+    } else {
+      socket.send(JSON.stringify({ "ids": cmc_id.join(',') }));
 
-    socket.send(JSON.stringify({ "ids": cmc_id.join(',') }));
-
-    socket.addEventListener('message', (ev) => {
-      const data = decodeEvent(ev);
-      if (data?.d?.id) {
-        if (cmc_id.includes(data.d.id)) {
-          callback(data.d)
+      socket.addEventListener('message', (ev) => {
+        const data = decodeEvent(ev);
+        if (data?.d?.id) {
+          if (cmc_id.includes(data.d.id)) {
+            callback(data.d)
+          }
         }
-      }
-    })
+      })
+    }
   } catch (error) {
-    console.log("Socket error", error);
+    console.error("Socket error", error);
   }
 }

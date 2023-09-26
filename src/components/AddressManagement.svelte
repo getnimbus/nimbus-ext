@@ -1225,7 +1225,7 @@
                   {/if}
                 </div>
                 <div class="flex items-center gap-4">
-                  {#if selectBundle && Object.keys(selectBundle).length !== 0 && selectBundle.type === "BUNDLE"}
+                  {#if selectBundle && Object.keys(selectBundle).length !== 0 && selectBundle?.type === "BUNDLE"}
                     <div
                       class="relative"
                       on:click={() => (showPopover = !showPopover)}
@@ -1265,28 +1265,42 @@
                       </div>
                       {#if showPopover}
                         <div
-                          class="select_content absolute left-0 z-50 flex flex-col gap-1 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
+                          class="select_content absolute left-0 z-50 flex flex-col xl:gap-3 gap-6 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
                           style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
                           use:clickOutside
                           on:click_outside={() => (showPopover = false)}
                         >
                           {#each selectBundle?.accounts as item}
-                            <div class="hidden text-3xl xl:text-base xl:block">
-                              <Copy
-                                address={item?.value}
-                                iconColor={darkMode ? "#fff" : "#000"}
-                                color={darkMode ? "#fff" : "#000"}
-                                isShorten
-                              />
+                            <div class="hidden xl:flex xl:flex-col">
+                              <div
+                                class="text-2xl xl:text-xs font-medium text_00000099"
+                              >
+                                {item.label}
+                              </div>
+                              <div class="text-3xl xl:text-sm">
+                                <Copy
+                                  address={item?.value}
+                                  iconColor={darkMode ? "#fff" : "#000"}
+                                  color={darkMode ? "#fff" : "#000"}
+                                  isShorten
+                                />
+                              </div>
                             </div>
-                            <div class="block text-3xl xl:text-base xl:hidden">
-                              <Copy
-                                address={item?.value}
-                                iconColor={darkMode ? "#fff" : "#000"}
-                                color={darkMode ? "#fff" : "#000"}
-                                isShorten
-                                iconSize={24}
-                              />
+                            <div class="flex flex-col xl:hidden">
+                              <div
+                                class="text-2xl xl:text-xs font-medium text_00000099"
+                              >
+                                {item.label}
+                              </div>
+                              <div class="text-3xl xl:text-sm">
+                                <Copy
+                                  address={item?.value}
+                                  iconColor={darkMode ? "#fff" : "#000"}
+                                  color={darkMode ? "#fff" : "#000"}
+                                  isShorten
+                                  iconSize={24}
+                                />
+                              </div>
                             </div>
                           {/each}
                         </div>
