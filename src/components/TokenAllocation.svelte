@@ -19,6 +19,8 @@
   export let listOptionTypeCategory;
   export let selectedOption;
   export let id;
+  export let isComparePage = false;
+  export let dataOverviewBundlePieChart = [];
 
   import Select from "~/components/Select.svelte";
   import EChart from "~/components/EChart.svelte";
@@ -144,17 +146,35 @@
     ],
   };
 
-  let typeListCategory = [
-    {
-      label: "All",
-      value: "All",
-    },
-    {
-      label: "Chain",
-      value: "Chain",
-    },
-    ...typeList,
-  ];
+  $: typeListCategory =
+    typeWalletAddress === "BUNDLE" && !isComparePage
+      ? [
+          {
+            label: "All",
+            value: "All",
+          },
+          {
+            label: "Accounts",
+            value: "Accounts",
+          },
+          {
+            label: "Chain",
+            value: "Chain",
+          },
+          ...typeList,
+        ]
+      : [
+          {
+            label: "All",
+            value: "All",
+          },
+          {
+            label: "Chain",
+            value: "Chain",
+          },
+          ...typeList,
+        ];
+
   let dataPersonalizeTag = [];
   let selectedType = {
     label: "All",
@@ -205,6 +225,37 @@
       select: [],
     },
   };
+  let dataAccounts = {
+    value: "",
+    dataPie: [],
+    dataTable: {
+      data: {
+        name: "All",
+        data: [],
+      },
+      select: [],
+    },
+  };
+
+  $: {
+    if (
+      dataOverviewBundlePieChart.length !== 0 &&
+      holdingTokenData &&
+      typeWalletAddress === "BUNDLE"
+    ) {
+      dataAccounts = {
+        value: "Accounts",
+        dataPie: dataOverviewBundlePieChart,
+        dataTable: {
+          data: {
+            name: "All",
+            data: holdingTokenData,
+          },
+          select: [],
+        },
+      };
+    }
+  }
 
   const formatDataPie = (data) => {
     return data?.map((item) => {
@@ -382,17 +433,35 @@
   $: {
     if (selectedWallet || selectedChain) {
       if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        typeListCategory = [
-          {
-            label: "All",
-            value: "All",
-          },
-          {
-            label: "Chain",
-            value: "Chain",
-          },
-          ...typeList,
-        ];
+        typeListCategory =
+          typeWalletAddress === "BUNDLE" && !isComparePage
+            ? [
+                {
+                  label: "All",
+                  value: "All",
+                },
+                {
+                  label: "Accounts",
+                  value: "Accounts",
+                },
+                {
+                  label: "Chain",
+                  value: "Chain",
+                },
+                ...typeList,
+              ]
+            : [
+                {
+                  label: "All",
+                  value: "All",
+                },
+                {
+                  label: "Chain",
+                  value: "Chain",
+                },
+                ...typeList,
+              ];
+
         dataPersonalizeTag = [];
         selectedType = {
           label: "",
@@ -509,6 +578,17 @@
           ],
         };
         handleSelectedTableTokenHolding(tokenDataHolding.dataTable, optionPie);
+      } else if (selectedType.value === "Accounts") {
+        optionPie = {
+          ...optionPie,
+          series: [
+            {
+              ...optionPie.series[0],
+              data: formatDataPie(dataAccounts.dataPie),
+            },
+          ],
+        };
+        handleSelectedTableTokenHolding(dataAccounts.dataTable, optionPie);
       } else if (selectedType.value === "Chain") {
         optionPie = {
           ...optionPie,

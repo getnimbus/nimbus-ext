@@ -10,7 +10,7 @@
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import { chainList } from "~/utils";
   import { wait } from "../entries/background/utils";
-  import { wallet, chain, typeWallet } from "~/store";
+  import { wallet, chain, typeWallet, selectedBundle } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
   import {
@@ -77,6 +77,11 @@
     typeWalletAddress = value;
   });
 
+  let selectBundle = {};
+  selectedBundle.subscribe((value) => {
+    selectBundle = value;
+  });
+
   let enabledFetchAllData = false;
   let isErrorAllData = false;
   let isLoadingSync = false;
@@ -110,6 +115,7 @@
     performance: [],
     portfolioChart: [],
   };
+  let dataOverviewBundlePieChart = [];
   let dataUpdatedTime;
   let totalPositions = 0;
   let totalAssets = 0;
@@ -555,6 +561,38 @@
     }
   };
 
+  const formatDataOverviewBundlePieChart = (data) => {
+    const networth = (data || []).reduce(
+      (prev, item) => prev + Number(item.value),
+      0
+    );
+    dataOverviewBundlePieChart = data
+      .map((item) => {
+        const selectAccount = selectBundle?.accounts.find(
+          (data) => data.id === item.owner || data.value === item.owner
+        );
+        return {
+          logo: selectAccount?.logo,
+          label: selectAccount?.label,
+          type: selectAccount?.type,
+          value: item?.value,
+        };
+      })
+      .map((item) => {
+        return {
+          logo: item?.logo,
+          name: item?.label,
+          name_balance: "",
+          name_ratio: "Ratio",
+          name_value: "Value",
+          symbol: item?.type,
+          value: (Number(item?.value || 0) / Number(networth || 0)) * 100,
+          value_balance: 0,
+          value_value: Number(item?.value || 0),
+        };
+      });
+  };
+
   // query overview
   $: queryOverview = createQuery({
     queryKey: ["overview", selectedWallet, selectedChain],
@@ -570,6 +608,13 @@
         performance: $queryOverview?.data?.performance,
         portfolioChart: $queryOverview?.data?.portfolioChart,
       };
+
+      if (
+        $queryOverview?.data?.accounts &&
+        $queryOverview?.data?.accounts?.length !== 0
+      ) {
+        formatDataOverviewBundlePieChart($queryOverview?.data?.accounts);
+      }
     }
   }
 
@@ -1020,6 +1065,7 @@
                 holdingTokenData={holdingTokenData.filter(
                   (item) => Number(item.amount) > 0
                 )}
+                {dataOverviewBundlePieChart}
                 {overviewDataPerformance}
                 {dataPieChart}
                 {isEmptyDataPie}
