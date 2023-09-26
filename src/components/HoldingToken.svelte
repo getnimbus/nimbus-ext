@@ -678,7 +678,7 @@
         <div
           class="flex justify-end text-2xl font-medium text-gray-400 xl:text-sm"
         >
-          <TooltipNumber number={ratio} type="percent" personalValue />%
+          <TooltipNumber number={ratio} type="percent" />%
         </div>
 
         <div class="w-3/4 max-w-20">
@@ -746,7 +746,6 @@
               }`}
             >
               <TooltipNumber
-                personalValue
                 number={Math.abs(percentRealizedProfit) * 100}
                 type="percent"
               />
@@ -805,7 +804,6 @@
               <TooltipNumber
                 number={Math.abs(percentUnrealizedProfit) * 100}
                 type="percent"
-                personalValue
               />
               <span>%</span>
             </div>

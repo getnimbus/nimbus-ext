@@ -471,7 +471,6 @@
               <TooltipNumber
                 number={Math.abs(percentRealizedProfit) * 100}
                 type="percent"
-                personalValue
               />
               <span>%</span>
             </div>

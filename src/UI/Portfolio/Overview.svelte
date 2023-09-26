@@ -119,7 +119,6 @@
               ↑
             {/if}
             <CountUpNumber
-              personalValue
               id="networth_grouth"
               number={Math.abs(data?.overview.networthChange)}
               type="percent"
@@ -175,7 +174,6 @@
               ↑
             {/if}
             <CountUpNumber
-              personalValue
               id="claimable_grouth"
               number={Math.abs(last24hTotalProfitPercent)}
               type="percent"

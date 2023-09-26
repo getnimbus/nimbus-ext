@@ -61,7 +61,7 @@
   }
 </script>
 
-{#if hiddenPortfolio === true && personalValue === true}
+{#if hiddenPortfolio && personalValue === true}
   <span>******</span>
 {:else}
   <span class="relative">
