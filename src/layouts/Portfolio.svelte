@@ -860,7 +860,7 @@
   </span>
 </AddressManagement>
 
-<OpenAppIntroduce />
+<!-- <OpenAppIntroduce /> -->
 
 <style>
   .loading {
