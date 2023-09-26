@@ -680,11 +680,10 @@
         >
           <TooltipNumber number={ratio} type="percent" personalValue />%
         </div>
-        {#if hiddenPortfolio === false}
-          <div class="w-3/4 max-w-20">
-            <Progressbar progress={ratio} size="h-1" />
-          </div>
-        {/if}
+
+        <div class="w-3/4 max-w-20">
+          <Progressbar progress={ratio} size="h-1" />
+        </div>
       </div>
     </div>
   </td>
@@ -695,14 +694,16 @@
     }`}
   >
     <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
-      {#if data?.profit}
-        $<TooltipNumber
+      ${#if hiddenPortfolio}
+        ******
+      {:else if data?.profit}
+        <TooltipNumber
           number={data?.profit?.averageCost}
           type="balance"
           personalValue
         />
       {:else}
-        $0
+        0
       {/if}
     </div>
   </td>
@@ -745,9 +746,9 @@
               }`}
             >
               <TooltipNumber
+                personalValue
                 number={Math.abs(percentRealizedProfit) * 100}
                 type="percent"
-                personalValue
               />
               <span>%</span>
             </div>

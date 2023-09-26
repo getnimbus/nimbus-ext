@@ -1,6 +1,6 @@
 <script>
   import { useNavigate } from "svelte-navigator";
-  import { chain, typeWallet, isDarkMode } from "~/store";
+  import { chain, typeWallet, isDarkMode, isHidePortfolio } from "~/store";
   import { detectedChain, shorterName } from "~/utils";
   import numeral from "numeral";
 
@@ -32,6 +32,9 @@
   let isShowTooltipSymbol = false;
   let isShowCMC = false;
   let isShowCoingecko = false;
+
+  let hiddenPortfolio = false;
+  isHidePortfolio.subscribe((e) => (hiddenPortfolio = e));
 
   $: value = Number(data?.amount) * Number(data?.market_price);
 
