@@ -273,7 +273,11 @@
               : "text-black"
           }`}
         >
-          <TooltipNumber number={Math.abs(sumAllTokens)} type="value" />
+          <TooltipNumber
+            number={Math.abs(sumAllTokens)}
+            type="value"
+            personalValue
+          />
         </div>
       </div>
 

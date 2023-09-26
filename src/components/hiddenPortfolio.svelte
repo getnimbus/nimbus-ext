@@ -6,13 +6,20 @@
     hiddenPortfolio = e;
   });
 
+  if (localStorage.getItem("hide_portfolio")) {
+    hiddenPortfolio =
+      localStorage.getItem("hide_portfolio") == "true" ? true : false;
+    isHidePortfolio.update((e) => (e = hiddenPortfolio));
+  }
+
   const handleHiddenPortfolio = () => {
     hiddenPortfolio = !hiddenPortfolio;
     isHidePortfolio.update((e) => (e = hiddenPortfolio));
+    localStorage.setItem("hide_portfolio", hiddenPortfolio ? "true" : "false");
   };
 </script>
 
-<div class="cursor-pointer" on:click={() => handleHiddenPortfolio()}>
+<div class="cursor-pointer" on:click={handleHiddenPortfolio}>
   {#if hiddenPortfolio == false}
     <svg
       xmlns="http://www.w3.org/2000/svg"

@@ -41,7 +41,7 @@
   import Close from "~/assets/close-menu-bar.svg";
   import Chat from "~/assets/chat.svg";
   import User from "~/assets/user.png";
-  import HiddenPortfolio from "./hiddenPortfolio.svelte";
+  import HiddenPortfolio from "./HiddenPortfolio.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
