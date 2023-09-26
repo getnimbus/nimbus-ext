@@ -7,12 +7,17 @@
   } from "~/utils";
   import numeral from "numeral";
   import tooltip from "~/entries/contentScript/views/tooltip";
+  import { isHidePortfolio } from "~/store";
 
   export let number;
   export let type: "amount" | "balance" | "percent" | "value" = "value";
+  export let personalValue: boolean = false;
 
   let numberFormat = 0;
   let numberSize = "";
+
+  let hiddenValue = false;
+  isHidePortfolio.subscribe((e) => (hiddenValue = e));
 
   $: {
     const { number_format, number_size } = formatBigBalance(number);
@@ -42,7 +47,9 @@
   };
 </script>
 
-{#if type === "percent"}
+{#if personalValue && hiddenValue === true}
+  <span class="w-max">*******</span>
+{:else if type === "percent"}
   <span class="w-max">
     {formatPercent(number) === "NaN" ? 0 : formatPercent(number)}
   </span>

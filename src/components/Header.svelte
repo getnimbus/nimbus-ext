@@ -11,6 +11,7 @@
     user,
     typeWallet,
     isShowHeaderMobile,
+    isHidePortfolio,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -40,6 +41,7 @@
   import Close from "~/assets/close-menu-bar.svg";
   import Chat from "~/assets/chat.svg";
   import User from "~/assets/user.png";
+  import HiddenPortfolio from "./hiddenPortfolio.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -467,6 +469,8 @@
     </div>
 
     <div class="flex items-center justify-between gap-6 xl:gap-3">
+      <!-- hidden portfolio -->
+      <HiddenPortfolio />
       <!-- Search -->
       <div
         class={`pl-4 flex items-center rounded-[1000px] ${

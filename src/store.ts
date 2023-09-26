@@ -10,6 +10,7 @@ export const selectedPackage = writable("FREE");
 export const isDarkMode = writable(false);
 export const isShowHeaderMobile = writable(false);
 export const selectedBundle = writable({});
+export const isHidePortfolio = writable(false);
 
 // let isFirstTime = true;
 // isOpenReport.subscribe((value) => {
