@@ -1,17 +1,19 @@
 <script>
-  import { onMount } from "svelte";
   import { isHidePortfolio } from "~/store";
 
   let hiddenPortfolio = false;
-  isHidePortfolio.subscribe((e) => {
-    hiddenPortfolio = e;
+  isHidePortfolio.subscribe((value) => {
+    hiddenPortfolio = value;
   });
 
-  onMount(() => {
+  $: {
     const hidePortfolioStorage = localStorage.getItem("hide_portfolio");
-    hiddenPortfolio = !!hidePortfolioStorage;
-    isHidePortfolio.update((e) => (e = !!hiddenPortfolio));
-  });
+    if (hidePortfolioStorage) {
+      hiddenPortfolio =
+        localStorage.getItem("hide_portfolio") === "true" ? true : false;
+      isHidePortfolio.update((e) => (e = hiddenPortfolio));
+    }
+  }
 
   const handleHiddenPortfolio = () => {
     hiddenPortfolio = !hiddenPortfolio;

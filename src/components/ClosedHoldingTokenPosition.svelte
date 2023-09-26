@@ -28,13 +28,13 @@
     darkMode = value;
   });
 
+  let hiddenPortfolio = false;
+  isHidePortfolio.subscribe((value) => (hiddenPortfolio = value));
+
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
   let isShowCMC = false;
   let isShowCoingecko = false;
-
-  let hiddenPortfolio = false;
-  isHidePortfolio.subscribe((e) => (hiddenPortfolio = e));
 
   $: value = Number(data?.amount) * Number(data?.market_price);
 

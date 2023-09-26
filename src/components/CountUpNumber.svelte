@@ -23,7 +23,7 @@
   let numberToCount = 0;
 
   let hiddenPortfolio = false;
-  isHidePortfolio.subscribe((e) => (hiddenPortfolio = e));
+  isHidePortfolio.subscribe((value) => (hiddenPortfolio = value));
 
   onMount(() => {
     countUp = new CountUp(id, numberToCount, options);
