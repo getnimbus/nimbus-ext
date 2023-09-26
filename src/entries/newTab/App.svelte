@@ -13,6 +13,7 @@
   import Mixpanel from "~/components/Mixpanel.svelte";
   import MobileHeaderTab from "~/components/MobileHeaderTab.svelte";
   import Loading from "~/components/Loading.svelte";
+  import MobileAppIntroduce from "~/components/MobileAppIntroduce.svelte";
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -24,7 +25,6 @@
   });
 
   let isTouchDevice = false;
-  let isPwaInstalled = false;
 
   // TODO: Add Lazyload for each routes
   // const hash = createHistory(createHashSource());
@@ -54,17 +54,7 @@
     if ("ontouchstart" in window || navigator.maxTouchPoints) {
       isTouchDevice = true;
     }
-
-    // not run!!!!!
-    // window.addEventListener("beforeinstallprompt", (event) => {
-    //   event.preventDefault(); // Prevent the default browser install prompt
-    //   console.log("PWA is installed", event);
-    //   isPwaInstalled = true;
-    // });
-
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      localStorage.setItem("no-introduce-app", "true");
-    }
+    localStorage.setItem("blockShowMobileIntro", "false");
   });
 </script>
 
@@ -75,8 +65,94 @@
         <div class="flex flex-col pb-40 xl:pb-14">
           <Header />
 
+          <!-- Main page -->
+          <Route path="*">
+            {#await import("~/layouts/Portfolio.svelte")}
+              <div class="flex items-center justify-center h-screen">
+                <Loading />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="flex items-center justify-center h-screen">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
+          </Route>
+
+          <Route path="analytic">
+            {#await import("~/layouts/Analytic.svelte")}
+              <div class="flex items-center justify-center h-screen">
+                <Loading />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="flex items-center justify-center h-screen">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
+          </Route>
+
+          <Route path="transactions">
+            {#await import("~/layouts/Transactions.svelte")}
+              <div class="flex items-center justify-center h-screen">
+                <Loading />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="flex items-center justify-center h-screen">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
+          </Route>
+
+          <Route path="whales">
+            {#await import("~/layouts/WhalesList.svelte")}
+              <div class="flex items-center justify-center h-screen">
+                <Loading />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="flex items-center justify-center h-screen">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
+          </Route>
+
+          <Route path="news">
+            {#await import("~/layouts/News.svelte")}
+              <div class="flex items-center justify-center h-screen">
+                <Loading />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="flex items-center justify-center h-screen">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
+          </Route>
+
+          <!-- Other page -->
           <Route path="options">
             {#await import("~/layouts/Options.svelte")}
+              <div class="flex items-center justify-center h-screen">
+                <Loading />
+              </div>
+            {:then { default: component }}
+              <svelte:component this={component} />
+            {:catch error}
+              <div class="flex items-center justify-center h-screen">
+                Something when wrong! Please reload your browser to try again
+              </div>
+            {/await}
+          </Route>
+
+          <Route path="invitation">
+            {#await import("~/layouts/Invitation.svelte")}
               <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
@@ -187,48 +263,6 @@
             {/await}
           </Route>
 
-          <Route path="news">
-            {#await import("~/layouts/News.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              <div class="flex items-center justify-center h-screen">
-                Something when wrong! Please reload your browser to try again
-              </div>
-            {/await}
-          </Route>
-
-          <Route path="invitation">
-            {#await import("~/layouts/Invitation.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              <div class="flex items-center justify-center h-screen">
-                Something when wrong! Please reload your browser to try again
-              </div>
-            {/await}
-          </Route>
-
-          <Route path="whales">
-            {#await import("~/layouts/WhalesList.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              <div class="flex items-center justify-center h-screen">
-                Something when wrong! Please reload your browser to try again
-              </div>
-            {/await}
-          </Route>
-
           <Route path="position-detail">
             {#await import("~/layouts/TokenDetail.svelte")}
               <div class="flex items-center justify-center h-screen">
@@ -270,48 +304,6 @@
               </div>
             {/await}
           </Route>
-
-          <Route path="analytic">
-            {#await import("~/layouts/Analytic.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              <div class="flex items-center justify-center h-screen">
-                Something when wrong! Please reload your browser to try again
-              </div>
-            {/await}
-          </Route>
-
-          <Route path="transactions">
-            {#await import("~/layouts/Transactions.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              <div class="flex items-center justify-center h-screen">
-                Something when wrong! Please reload your browser to try again
-              </div>
-            {/await}
-          </Route>
-
-          <Route path="*">
-            {#await import("~/layouts/Portfolio.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              <div class="flex items-center justify-center h-screen">
-                Something when wrong! Please reload your browser to try again
-              </div>
-            {/await}
-          </Route>
         </div>
         <div class="fixed bottom-0 left-0 z-30 w-full footer xl:relative">
           <div class="hidden xl:block">
@@ -321,6 +313,9 @@
             <MobileHeaderTab />
           </div>
         </div>
+        {#if isTouchDevice}
+          <MobileAppIntroduce />
+        {/if}
       </Router>
     </Mixpanel>
   </QueryClientProvider>
