@@ -872,7 +872,7 @@
 {#if isOpenTokenBreakdown}
   <tr>
     <td
-      class={`xl:py-0 py-2 pl-3 xl:static sticky left-0 z-9 w-[450px] ${
+      class={`-mt-1 xl:py-0 py-2 pl-3 xl:static sticky left-0 z-9 w-[450px] ${
         darkMode ? "bg-[#000]" : "bg-gray-100"
       }`}
     >
@@ -887,7 +887,9 @@
   <tr>
     <td colspan={8}>
       <div
-        class={`flex items-center ${darkMode ? "bg-[#000]" : "bg-gray-100"}`}
+        class={`-mt-1 flex items-center ${
+          darkMode ? "bg-[#000]" : "bg-gray-100"
+        }`}
       >
         <div
           class={`py-2 pl-3 xl:static sticky top-0 left-0 z-9 w-[450px] ${
@@ -909,7 +911,7 @@
   <tr>
     <td colspan={8}>
       <div
-        class={`max-h-[500px] overflow-y-auto ${
+        class={`-mt-2 max-h-[500px] overflow-y-auto ${
           darkMode ? "bg-[#000]" : "bg-gray-100"
         }`}
       >
