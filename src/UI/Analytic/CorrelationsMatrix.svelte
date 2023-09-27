@@ -528,7 +528,7 @@
               Empty
             </div>
           {:else}
-            <div class="2xl:overflow-visible overflow-x-auto w-full flex-1">
+            <div class="overflow-x-auto w-full flex-1">
               <table class="rounded-[10px] lg:w-full w-[1800px]">
                 <tbody on:mouseleave={() => (colIndex = undefined)}>
                   {#each listTokenHolding as tokenItem, index}
