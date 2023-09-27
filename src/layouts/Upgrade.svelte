@@ -69,6 +69,8 @@
       isLoadingBuy = false;
     }
   };
+
+  $: console.log(selectedPackage);
 </script>
 
 <ErrorBoundary>
@@ -85,9 +87,12 @@
         <ul class="xl:text-lg text-2xl flex flex-col gap-5">
           <li>
             <span class="xl:text-xl text-3xl font-medium">Step 1:</span> Send
-            <span class="xl:text-lg text-2xl">{selectedPackage.price}</span
-            ><span class="xl:text-base text-xl text-gray-400 mb-[2px]"
-              >/month</span
+            <span class="xl:text-lg text-2xl font-medium"
+              >{selectedPackage.selectedTypePackage === "year"
+                ? selectedPackage.plan === "Professional"
+                  ? `$990`
+                  : "$300"
+                : selectedPackage.price}</span
             >
 
             USDT or USDC to this address
