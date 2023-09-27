@@ -5,6 +5,8 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { isDarkMode, user, wallet, chain, typeWallet } from "~/store";
   import { useNavigate } from "svelte-navigator";
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
 
   import tooltip from "~/entries/contentScript/views/tooltip";
   import ExplorerPlan from "./ExplorerPlan.svelte";
@@ -85,10 +87,58 @@
       isLoadingCancel = false;
     }
   };
+
+  let toastMsg = "";
+  let isSuccessToast = false;
+  let counter = 3;
+  let showToast = false;
+
+  const trigger = () => {
+    showToast = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    showToast = false;
+    toastMsg = "";
+    isSuccessToast = false;
+  };
+
+  let isLoadingSubmitCoupleCode = false;
+  let code = "";
+
+  const onSubmitCoupleCode = async (e) => {
+    isLoadingSubmitCoupleCode = true;
+    const formData = new FormData(e.target);
+    const data: any = {};
+    for (let field of formData) {
+      const [key, value] = field;
+      data[key] = value;
+    }
+    try {
+      await nimbus.post("/v2/payments/redeem-code", {
+        code: data.code,
+      });
+
+      isLoadingSubmitCoupleCode = false;
+      toastMsg = "Apply your couple code success!";
+      isSuccessToast = true;
+      trigger();
+    } catch (e) {
+      console.error(e);
+      isLoadingSubmitCoupleCode = false;
+      toastMsg =
+        "There are some error when apply your couple code. Please try again!";
+      isSuccessToast = true;
+      trigger();
+    }
+  };
 </script>
 
-<div class="flex flex-col xl:gap-4 gap-8 mt-2">
-  <div class="text-center text-gray-500 text-3xl xl:text-xl">
+<div class="flex flex-col xl:gap-4 gap-8 mt-3">
+  <div class="text-center text-gray-500 text-3xl xl:text-xl mb-6">
     Use Nimbus at its full potential. Tracking your portfolio, reduce risk,
     maximize return.
   </div>
@@ -912,10 +962,50 @@
     {/if}
   </div>
 
-  <div class="px-4 my-4 text-lg text-center text-gray-500 xl:text-sm">
+  <div class="px-4 mb-4 mt-2 text-lg text-center text-gray-500 xl:text-sm">
     Price in USDC. Subscription is tied to <strong>one</strong> wallet address.
     It will be transferable soon
     <br /> Unsubscribe anytime. No questions asked.
+  </div>
+
+  <div class="flex flex-col gap-2 justify-center items-center">
+    <div class="xl:text-base text-2xl font-normal">
+      Enter your couple code to redeem exclusive access
+    </div>
+    <div>
+      <form
+        on:submit|preventDefault={onSubmitCoupleCode}
+        class="flex items-center gap-3"
+      >
+        <div
+          class={`input-2 input-border w-full xl:py-[6px] py-3 px-3 ${
+            code && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+          }`}
+        >
+          <input
+            type="text"
+            id="code"
+            name="code"
+            required
+            placeholder="Couple code"
+            value=""
+            class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
+              code && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            }`}
+            on:keyup={({ target: { value } }) => (code = value)}
+          />
+        </div>
+        <div class="w-[120px]">
+          <Button
+            type="submit"
+            isLoading={isLoadingSubmitCoupleCode}
+            disabled={isLoadingSubmitCoupleCode}
+          >
+            Apply
+          </Button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -960,6 +1050,51 @@
     </div>
   </div>
 </AppOverlay>
+
+{#if showToast}
+  <div class="fixed top-3 right-3 w-full z-10">
+    <Toast
+      transition={blur}
+      params={{ amount: 10 }}
+      position="top-right"
+      color={isSuccessToast ? "green" : "red"}
+      bind:open={showToast}
+    >
+      <svelte:fragment slot="icon">
+        {#if isSuccessToast}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Check icon</span>
+        {:else}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Error icon</span>
+        {/if}
+      </svelte:fragment>
+      {toastMsg}
+    </Toast>
+  </div>
+{/if}
 
 <style windi:preflights:global windi:safelist:global>
 </style>
