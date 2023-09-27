@@ -162,13 +162,6 @@
           {/if}
           {#if packageSelected !== "FREE" && typeWalletAddress === "BTC"}
             <div class="text-lg">Coming soon 🚀</div>
-            <div class="w-max">
-              <button
-                data-featurebase-feedback
-                class="button btn-container secondary small"
-                >Request analytics</button
-              >
-            </div>
           {/if}
         </div>
       {/if}
