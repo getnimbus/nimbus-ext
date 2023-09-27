@@ -42,6 +42,7 @@
   import Select from "~/components/Select.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Copy from "~/components/Copy.svelte";
+  import HiddenPortfolio from "./HiddenPortfolio.svelte";
 
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
@@ -51,7 +52,6 @@
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
   import Bundles from "~/assets/bundles.png";
-  import HiddenPortfolio from "./HiddenPortfolio.svelte";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -1223,11 +1223,10 @@
                   <div class="font-medium text-white xl:text-5xl text-7xl">
                     {title}
                   </div>
-                  <!-- hiddenPortfolio  -->
-                  <span class="xl:pb-0 pb-3 xl:-ml-2">
-                    <HiddenPortfolio />
-                  </span>
                   {#if type === "portfolio"}
+                    <span class="xl:pb-0 pb-3 xl:-ml-2">
+                      <HiddenPortfolio />
+                    </span>
                     <div class="xl:block hidden">
                       <slot name="reload" />
                     </div>

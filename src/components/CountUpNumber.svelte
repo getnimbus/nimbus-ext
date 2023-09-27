@@ -11,6 +11,9 @@
   export let type: "amount" | "balance" | "percent" = "balance";
   export let personalValue: boolean = false;
 
+  let hiddenPortfolio = false;
+  isHidePortfolio.subscribe((value) => (hiddenPortfolio = value));
+
   let countUp = null;
   let options = {
     decimalPlaces: format,
@@ -21,9 +24,6 @@
   let numberSize = "";
   let showTooltip = false;
   let numberToCount = 0;
-
-  let hiddenPortfolio = false;
-  isHidePortfolio.subscribe((value) => (hiddenPortfolio = value));
 
   onMount(() => {
     countUp = new CountUp(id, numberToCount, options);

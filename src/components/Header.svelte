@@ -41,7 +41,6 @@
   import Close from "~/assets/close-menu-bar.svg";
   import Chat from "~/assets/chat.svg";
   import User from "~/assets/user.png";
-  import HiddenPortfolio from "./HiddenPortfolio.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -469,10 +468,6 @@
     </div>
 
     <div class="flex items-center justify-between gap-6 xl:gap-3">
-      <!-- hide portfolio -->
-      <!-- <span class="xl:block hidden">
-        <HiddenPortfolio />
-      </span> -->
       <!-- Search -->
       <div
         class={`pl-4 flex items-center rounded-[1000px] ${
