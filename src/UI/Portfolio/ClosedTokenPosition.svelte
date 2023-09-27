@@ -249,7 +249,7 @@
 >
   <ErrorBoundary>
     <div class="flex items-end gap-3">
-      {#if typeWalletAddress === "SOL"}
+      {#if typeWalletAddress !== "EVM"}
         <div class="xl:text-2xl text-4xl font-medium">
           {MultipleLang.token_position}
         </div>

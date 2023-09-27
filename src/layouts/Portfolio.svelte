@@ -836,7 +836,7 @@
                 bind:totalAssets
               />
 
-              {#if typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE" || typeWalletAddress === "SOL"}
+              {#if typeWalletAddress !== "BTC"}
                 <ClosedTokenPosition
                   {selectedWallet}
                   isLoadingNFT={$queryNftHolding.isFetching}
