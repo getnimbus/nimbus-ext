@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getChangeFromPercent, getChangePercent } from "~/chart-utils";
   import { i18n } from "~/lib/i18n";
-  import { wallet, typeWallet } from "~/store";
+  import { wallet, typeWallet, isHidePortfolio } from "~/store";
 
   import CountUpNumber from "~/components/CountUpNumber.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
@@ -92,7 +92,12 @@
     <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
       <OverviewCard title={MultipleLang.networth}>
         <div class="flex text-5xl xl:text-3xl">
-          $<CountUpNumber id="networth" number={networth} type="balance" />
+          $<CountUpNumber
+            id="networth"
+            number={networth}
+            type="balance"
+            personalValue
+          />
         </div>
         <div
           class={`flex items-center gap-3 ${
@@ -132,7 +137,7 @@
           }`}
         >
           {#if totalProfit.toString().toLowerCase().includes("e-")}
-            $<TooltipNumber number={totalProfit} type="balance" />
+            $<TooltipNumber number={totalProfit} type="balance" personalValue />
           {:else}
             <span>
               {#if totalProfit < 0}
@@ -140,6 +145,7 @@
               {/if}
             </span>
             $<CountUpNumber
+              personalValue
               id="claimable"
               number={Math.abs(totalProfit)}
               type="balance"
@@ -189,6 +195,7 @@
             {/if}
           </span>
           $<CountUpNumber
+            personalValue
             id="total_assets"
             number={Math.abs(realizedProfit)}
             type="balance"
@@ -237,6 +244,7 @@
             {/if}
           </span>
           $<CountUpNumber
+            personalValue
             id="total_positions"
             number={Math.abs(unrealizedProfit)}
             type="balance"

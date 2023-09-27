@@ -42,6 +42,7 @@
   import Select from "~/components/Select.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Copy from "~/components/Copy.svelte";
+  import HiddenPortfolio from "./HiddenPortfolio.svelte";
 
   import Plus from "~/assets/plus.svg";
   import PlusBlack from "~/assets/plus-black.svg";
@@ -1223,11 +1224,15 @@
                     {title}
                   </div>
                   {#if type === "portfolio"}
+                    <span class="xl:pb-0 pb-3 xl:-ml-2">
+                      <HiddenPortfolio />
+                    </span>
                     <div class="xl:block hidden">
                       <slot name="reload" />
                     </div>
                   {/if}
                 </div>
+
                 <div class="flex items-center gap-4">
                   {#if selectBundle && Object.keys(selectBundle).length !== 0 && selectBundle?.type === "BUNDLE"}
                     <div
@@ -1699,6 +1704,7 @@
               showCommandTooltip = false;
             }}>Copy command</Button
           >
+
           {#if showCommandTooltip}
             <div
               class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"

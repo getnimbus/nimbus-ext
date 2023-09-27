@@ -470,47 +470,67 @@
           </div>
         </div>
       {/if}
+      {#if typeWalletAddress === "SOL"}
+        <div
+          class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
+            darkMode ? "bg-[#222222e6]" : "bg-white/90"
+          } z-10 backdrop-blur-md`}
+        >
+          <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+        </div>
+      {/if}
     </div>
   </span>
 
   <span slot="chart">
-    {#if $query.isFetching}
-      <div class="flex items-center justify-center h-[465px] p-6">
-        <LoadingPremium />
-      </div>
-    {:else}
-      <div class="h-full relative">
-        {#if $query.isError || ($query.data && $query.data.length === 0)}
-          <div
-            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              darkMode ? "bg-[#222222e6]" : "bg-white/90"
-            }`}
-          >
-            Empty
-          </div>
-        {:else}
-          <div class="relative p-6">
-            <EChart
-              id="inflow-outflow"
-              {theme}
-              {option}
-              height={465}
-              notMerge={true}
-            />
+    <div class="relative">
+      {#if $query.isFetching}
+        <div class="flex items-center justify-center h-[465px] p-6">
+          <LoadingPremium />
+        </div>
+      {:else}
+        <div class="h-full relative min-h-[465px]">
+          {#if $query.isError || ($query.data && $query.data.length === 0)}
             <div
-              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
+              class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
+                darkMode ? "bg-[#222222e6]" : "bg-white/90"
+              }`}
             >
-              <img
-                src={darkMode ? LogoWhite : Logo}
-                alt=""
-                width="140"
-                height="140"
-              />
+              Empty
             </div>
-          </div>
-        {/if}
-      </div>
-    {/if}
+          {:else}
+            <div class="relative p-6">
+              <EChart
+                id="inflow-outflow"
+                {theme}
+                {option}
+                height={465}
+                notMerge={true}
+              />
+              <div
+                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
+              >
+                <img
+                  src={darkMode ? LogoWhite : Logo}
+                  alt=""
+                  width="140"
+                  height="140"
+                />
+              </div>
+            </div>
+          {/if}
+        </div>
+      {/if}
+      {#if typeWalletAddress === "SOL"}
+        <div
+          class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
+            darkMode ? "bg-[#222222e6]" : "bg-white/90"
+          } z-10 backdrop-blur-md`}
+        >
+          <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+        </div>
+      {/if}
+    </div>
   </span>
 </AnalyticSection>
 

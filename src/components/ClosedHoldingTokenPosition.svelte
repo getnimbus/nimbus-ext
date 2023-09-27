@@ -1,6 +1,6 @@
 <script>
   import { useNavigate } from "svelte-navigator";
-  import { chain, typeWallet, isDarkMode } from "~/store";
+  import { chain, typeWallet, isDarkMode, isHidePortfolio } from "~/store";
   import { detectedChain, shorterName } from "~/utils";
   import numeral from "numeral";
 
@@ -27,6 +27,9 @@
   isDarkMode.subscribe((value) => {
     darkMode = value;
   });
+
+  let hiddenPortfolio = false;
+  isHidePortfolio.subscribe((value) => (hiddenPortfolio = value));
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
@@ -420,7 +423,11 @@
     }`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
-      $<TooltipNumber number={data.profit.averageCost} type="balance" />
+      $<TooltipNumber
+        number={data.profit.averageCost}
+        type="balance"
+        personalValue
+      />
     </div>
   </td>
 

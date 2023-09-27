@@ -11,6 +11,7 @@
     user,
     typeWallet,
     isShowHeaderMobile,
+    isHidePortfolio,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";

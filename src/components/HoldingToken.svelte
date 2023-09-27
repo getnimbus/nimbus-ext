@@ -1,6 +1,13 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
-  import { chain, typeWallet, isDarkMode, user, selectedBundle } from "~/store";
+  import {
+    chain,
+    typeWallet,
+    isDarkMode,
+    user,
+    selectedBundle,
+    isHidePortfolio,
+  } from "~/store";
   import { detectedChain, shorterName } from "~/utils";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
@@ -49,6 +56,9 @@
   user.subscribe((value) => {
     userInfo = value;
   });
+
+  let hiddenPortfolio = false;
+  isHidePortfolio.subscribe((value) => (hiddenPortfolio = value));
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
@@ -681,7 +691,7 @@
           <div class="w-2 h-2 bg-indigo-500 rounded-full" />
         </span>
       {/if}
-      <TooltipNumber number={data.amount} type="balance" />
+      <TooltipNumber number={data.amount} type="balance" personalValue />
     </div>
   </td>
 
@@ -694,7 +704,7 @@
       <div
         class="flex justify-end text-2xl font-medium xl:text-sm text_00000099"
       >
-        <TooltipNumber number={value} type="value" />
+        <TooltipNumber number={value} type="value" personalValue />
       </div>
       <div class="flex flex-col items-end justify-end gap-1">
         <div
@@ -702,6 +712,7 @@
         >
           <TooltipNumber number={ratio} type="percent" />%
         </div>
+
         <div class="w-3/4 max-w-20">
           <Progressbar progress={ratio} animate size="h-1" />
         </div>
@@ -715,10 +726,16 @@
     }`}
   >
     <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
-      {#if data?.profit}
-        $<TooltipNumber number={data?.profit?.averageCost} type="balance" />
+      ${#if hiddenPortfolio}
+        ******
+      {:else if data?.profit}
+        <TooltipNumber
+          number={data?.profit?.averageCost}
+          type="balance"
+          personalValue
+        />
       {:else}
-        $0
+        0
       {/if}
     </div>
   </td>
@@ -744,7 +761,11 @@
                 : "text_00000099"
             }`}
           >
-            <TooltipNumber number={Math.abs(realizedProfit)} type="value" />
+            <TooltipNumber
+              number={Math.abs(realizedProfit)}
+              type="value"
+              personalValue
+            />
           </div>
           <div class="flex items-center justify-end gap-1">
             <div
@@ -796,7 +817,11 @@
                 : "text_00000099"
             }`}
           >
-            <TooltipNumber number={Math.abs(unrealizedProfit)} type="value" />
+            <TooltipNumber
+              number={Math.abs(unrealizedProfit)}
+              type="value"
+              personalValue
+            />
           </div>
           <div class="flex items-center justify-end gap-1">
             <div
