@@ -154,8 +154,8 @@
             value: "All",
           },
           {
-            label: "Accounts",
-            value: "Accounts",
+            label: "Account",
+            value: "Account",
           },
           {
             label: "Chain",
@@ -244,7 +244,7 @@
       typeWalletAddress === "BUNDLE"
     ) {
       dataAccounts = {
-        value: "Accounts",
+        value: "Account",
         dataPie: dataOverviewBundlePieChart,
         dataTable: {
           data: {
@@ -441,8 +441,8 @@
                   value: "All",
                 },
                 {
-                  label: "Accounts",
-                  value: "Accounts",
+                  label: "Account",
+                  value: "Account",
                 },
                 {
                   label: "Chain",
@@ -578,7 +578,7 @@
           ],
         };
         handleSelectedTableTokenHolding(tokenDataHolding.dataTable, optionPie);
-      } else if (selectedType.value === "Accounts") {
+      } else if (selectedType.value === "Account") {
         optionPie = {
           ...optionPie,
           series: [
