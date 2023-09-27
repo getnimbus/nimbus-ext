@@ -182,7 +182,6 @@
   $: enabledQuery = Boolean(
     (typeWalletAddress === "EVM" ||
       typeWalletAddress === "CEX" ||
-      typeWalletAddress === "SOL" ||
       typeWalletAddress === "BUNDLE") &&
       selectedWallet.length !== 0
   );
@@ -226,7 +225,11 @@
       data = [];
       pageToken = "";
       isLoading = false;
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
+      if (
+        selectedWallet?.length !== 0 &&
+        selectedChain?.length !== 0 &&
+        typeWalletAddress !== "SOL"
+      ) {
         getListTransactions("");
       }
     }
@@ -235,7 +238,9 @@
 
 <AddressManagement type="order" title="Transactions">
   <span slot="body">
-    <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-32 relative">
+    <div
+      class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-32 relative min-h-screen"
+    >
       <div class="trx_container flex flex-col gap-7 rounded-[20px] xl:p-8 p-6">
         {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX"}
           <div

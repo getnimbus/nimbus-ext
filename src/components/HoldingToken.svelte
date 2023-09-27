@@ -216,7 +216,8 @@
     .map((item) => {
       const selectedAddress = selectBundle?.accounts.find(
         (account) =>
-          account?.id === item?.owner || account?.value === item?.owner
+          account?.id.toLowerCase() === item?.owner.toLowerCase() ||
+          account?.value.toLowerCase() === item?.owner.toLowerCase()
       );
       return {
         ...item,

@@ -51,7 +51,6 @@
   $: enabledQuery = Boolean(
     (typeWalletAddress === "EVM" ||
       typeWalletAddress === "CEX" ||
-      typeWalletAddress === "SOL" ||
       typeWalletAddress === "BUNDLE") &&
       selectedWallet.length !== 0
   );
@@ -70,7 +69,7 @@
     <div class="xl:text-2xl text-4xl font-medium">Historical Activities</div>
     <!-- <DateRangePicker onChange={handleGetDateRange} /> -->
   </div>
-  <div class="flex flex-col gap-6">
+  <div class="flex flex-col gap-6 relative">
     <!-- <ProfitGrows isLoading={$query.isFetching} isEmpty={$query.isError} dataTotalValueHistory={$query.data.holdingHistory} />
     <TotalValueHistory isLoading={$query.isFetching} isEmpty={$query.isError} dataTotalValueHistory={$query.data.holdingHistory} />
     <DailyPnL isLoading={$query.isFetching} isEmpty={$query.isError} dataDailyPnL={$query.data.returnsChange} />
@@ -79,6 +78,15 @@
       <TotalGasFee {packageSelected} {darkMode} />
     {:else}
       <HistoricalActivities {packageSelected} {darkMode} />
+    {/if}
+    {#if typeWalletAddress === "SOL"}
+      <div
+        class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
+          darkMode ? "bg-[#222222e6]" : "bg-white/90"
+        } z-10 backdrop-blur-md`}
+      >
+        <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+      </div>
     {/if}
   </div>
 </div>
