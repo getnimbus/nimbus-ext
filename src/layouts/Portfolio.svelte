@@ -522,7 +522,9 @@
     dataOverviewBundlePieChart = data
       .map((item) => {
         const selectAccount = selectBundle?.accounts.find(
-          (data) => data.id === item.owner || data.value === item.owner
+          (data) =>
+            data?.id.toLowerCase() === item?.owner.toLowerCase() ||
+            data?.value.toLowerCase() === item?.owner.toLowerCase()
         );
         return {
           logo: selectAccount?.logo,
