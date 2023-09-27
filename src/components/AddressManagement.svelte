@@ -51,6 +51,7 @@
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
   import Bundles from "~/assets/bundles.png";
+  import HiddenPortfolio from "./HiddenPortfolio.svelte";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -1222,12 +1223,17 @@
                   <div class="font-medium text-white xl:text-5xl text-7xl">
                     {title}
                   </div>
+                  <!-- hiddenPortfolio  -->
+                  <span class="xl:pb-0 pb-3 xl:-ml-2">
+                    <HiddenPortfolio />
+                  </span>
                   {#if type === "portfolio"}
                     <div class="xl:block hidden">
                       <slot name="reload" />
                     </div>
                   {/if}
                 </div>
+
                 <div class="flex items-center gap-4">
                   {#if selectBundle && Object.keys(selectBundle).length !== 0 && selectBundle?.type === "BUNDLE"}
                     <div
@@ -1699,6 +1705,7 @@
               showCommandTooltip = false;
             }}>Copy command</Button
           >
+
           {#if showCommandTooltip}
             <div
               class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
