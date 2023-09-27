@@ -11,6 +11,14 @@
         <span class="text-gray-400">title</span>
         <span>content</span>
       </span>
+      <span class="flex justify-between">
+        <span class="text-gray-400">title</span>
+        <span>content</span>
+      </span>
+      <span class="flex justify-between">
+        <span class="text-gray-400">title</span>
+        <span>content</span>
+      </span>
     </div>
   </div>
 </div>
