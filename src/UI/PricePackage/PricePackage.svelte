@@ -118,10 +118,9 @@
       data[key] = value;
     }
     try {
-      const response = await nimbus.post("/v2/payments/redeem-code", {
+      await nimbus.post("/v2/payments/redeem-code", {
         code: data.code,
       });
-      console.log("response: ", response);
 
       isLoadingSubmitCoupleCode = false;
       toastMsg = "Apply your couple code success!";
@@ -971,9 +970,7 @@
 
   <div class="flex flex-col gap-2 justify-center items-center">
     <div class="xl:text-base text-2xl font-normal">
-      Enter your couple code to redeem <span class="font-semibold uppercase"
-        >Alpha</span
-      > plan
+      Enter your couple code to redeem exclusive access
     </div>
     <div>
       <form
