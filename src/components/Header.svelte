@@ -575,6 +575,11 @@
           </div>
         {/if}
 
+        <!-- this is for mobile -->
+        <!-- <div>
+          <Link to="profile">My Profile</Link>
+        </div> -->
+
         <div class="flex flex-col gap-3">
           {#if userInfo && Object.keys(userInfo).length !== 0}
             <div
