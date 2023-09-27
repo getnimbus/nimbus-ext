@@ -522,7 +522,9 @@
     dataOverviewBundlePieChart = data
       .map((item) => {
         const selectAccount = selectBundle?.accounts.find(
-          (data) => data.id === item.owner || data.value === item.owner
+          (data) =>
+            data?.id.toLowerCase() === item?.owner.toLowerCase() ||
+            data?.value.toLowerCase() === item?.owner.toLowerCase()
         );
         return {
           logo: selectAccount?.logo,
@@ -543,6 +545,15 @@
           value_balance: 0,
           value_value: Number(item?.value || 0),
         };
+      })
+      .sort((a, b) => {
+        if (a.value_value < b.value_value) {
+          return 1;
+        }
+        if (a.value_value > b.value_value) {
+          return -1;
+        }
+        return 0;
       });
   };
 
