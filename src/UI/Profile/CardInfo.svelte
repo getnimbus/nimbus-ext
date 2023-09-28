@@ -1,6 +1,8 @@
 <script></script>
 
-<div class="col-span-2 flex gap-5 border rounded-xl p-2">
+<div
+  class="col-span-2 flex gap-5 border rounded-xl p-2 shadow shadow-light-700"
+>
   <div class="w-2/5">
     <img src="/assets/stacy_muur.jpeg" alt="NFT_Image" class=" rounded-xl" />
   </div>
