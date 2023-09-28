@@ -8,17 +8,17 @@
     {
       id: "5%",
       value: 5,
-      content: "5%",
+      content: "5% Ratio",
     },
     {
       id: "7%",
       value: 7,
-      content: "7%",
+      content: "7% Ratio",
     },
     {
       id: "10%",
       value: 10,
-      content: "10%",
+      content: "10% Ratio",
     },
   ];
 
@@ -132,7 +132,7 @@
     <div class="flex flex-col gap-3">
       <div class="flex justify-between items-center gap-6">
         <div class="flex flex-col">
-          <div class="xl:text-base text-xl">Price percent notification</div>
+          <div class="xl:text-base text-xl">Price change notification</div>
           <div class="xl:text-sm text-base text-gray-400">
             Receive notification whenever your price percent change
           </div>
@@ -210,7 +210,7 @@
         <div class="flex flex-col">
           <div class="xl:text-base text-xl">Transaction notification</div>
           <div class="xl:text-sm text-base text-gray-400">
-            Receive notification whenever transaction change
+            Receive notification whenever you have transaction
           </div>
         </div>
         <label class="switch">
