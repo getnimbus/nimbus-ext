@@ -123,8 +123,13 @@
 </script>
 
 <div class="flex flex-col gap-4">
-  <div class="xl:title-3 title-1">
-    {MultipleLang.title}
+  <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
+    <div class="xl:title-3 title-1">
+      {MultipleLang.title}
+    </div>
+    <div class="xl:text-base text-xl text-gray-500">
+      Management your report spam or trash tokens
+    </div>
   </div>
   <div
     class={`border border_0000000d rounded-[10px] overflow-x-auto ${
