@@ -1,9 +1,8 @@
 <script lang="ts">
-  let percent = false;
-  let summary = false;
-  let transaction = false;
+  import { Toast } from "flowbite-svelte";
+  import { blur } from "svelte/transition";
 
-  let filterSpamTrx = false;
+  import Button from "~/components/Button.svelte";
 
   const percentList = [
     {
@@ -41,8 +40,33 @@
     },
   ];
 
+  let show = false;
+  let counter = 3;
+  let toastMsg = "";
+  let isSuccess = false;
+
+  let percent = false;
+  let summary = false;
+  let transaction = false;
+
+  let filterSpamTrx = false;
   let selectedPercent = [];
   let selectedSummary = [];
+
+  let isLoadingSave = false;
+
+  const trigger = () => {
+    show = true;
+    counter = 3;
+    timeout();
+  };
+
+  const timeout = () => {
+    if (--counter > 0) return setTimeout(timeout, 1000);
+    show = false;
+    toastMsg = "";
+    isSuccess = false;
+  };
 
   $: {
     if (!transaction) {
@@ -55,6 +79,43 @@
       selectedSummary = [];
     }
   }
+
+  const onSubmitSettingAlert = async () => {
+    if (percent && selectedPercent.length === 0) {
+      toastMsg =
+        "Please select at least one price percent to receive notification";
+      isSuccess = false;
+      trigger();
+      return;
+    }
+
+    if (summary && selectedSummary.length === 0) {
+      toastMsg =
+        "Please select at least one frequency of portfolio summary to receive notification";
+      isSuccess = false;
+      trigger();
+      return;
+    }
+
+    isLoadingSave = true;
+
+    try {
+      isLoadingSave = false;
+      console.log({
+        selectedPercent,
+        selectedSummary,
+        transaction,
+        filterSpamTrx,
+      });
+    } catch (e) {
+      console.error(e);
+      isLoadingSave = false;
+      toastMsg =
+        "There are some problem when save you settings. Please try again!";
+      isSuccess = false;
+      trigger();
+    }
+  };
 </script>
 
 <div class="flex flex-col gap-4">
@@ -64,7 +125,10 @@
       Management your setup alerts
     </div>
   </div>
-  <div class="flex flex-col gap-8 pt-4">
+  <form
+    on:submit|preventDefault={onSubmitSettingAlert}
+    class="flex flex-col gap-8 pt-4"
+  >
     <div class="flex flex-col gap-3">
       <div class="flex justify-between items-center gap-6">
         <div class="flex flex-col">
@@ -168,8 +232,73 @@
         </label>
       </div>
     </div>
-  </div>
+
+    <div class="flex justify-start gap-6 lg:gap-2 mt-6">
+      <div class="w-[120px]">
+        <Button
+          variant="secondary"
+          on:click={() => {
+            transaction = false;
+            percent = false;
+            summary = false;
+          }}
+        >
+          Cancel</Button
+        >
+      </div>
+      <div class="w-[120px]">
+        <Button type="submit" variant="tertiary" isLoading={isLoadingSave}>
+          Save
+        </Button>
+      </div>
+    </div>
+  </form>
 </div>
+
+{#if show}
+  <div class="fixed z-10 w-full top-3 right-3">
+    <Toast
+      transition={blur}
+      params={{ amount: 10 }}
+      position="top-right"
+      color={isSuccess ? "green" : "red"}
+      bind:open={show}
+    >
+      <svelte:fragment slot="icon">
+        {#if isSuccess}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Check icon</span>
+        {:else}
+          <svg
+            aria-hidden="true"
+            class="w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            ><path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            /></svg
+          >
+          <span class="sr-only">Error icon</span>
+        {/if}
+      </svelte:fragment>
+      {toastMsg}
+    </Toast>
+  </div>
+{/if}
 
 <style>
   :global(body) .bg_fafafbff {
