@@ -34,7 +34,7 @@
   import SolanaLogo from "~/assets/solana.png";
 
   const MultipleLang = {
-    title: i18n("optionsPage.accounts-page-title", "My wallets"),
+    title: i18n("optionsPage.accounts-page-title", "Account Settings"),
     content: {
       btn_text: i18n(
         "optionsPage.accounts-page-content.address-btn-text",

@@ -10,7 +10,7 @@
   import Loading from "~/components/Loading.svelte";
 
   const MultipleLang = {
-    title: i18n("optionsPage.tab-title-report-token", "Report Tokens"),
+    title: i18n("optionsPage.report-token-page-title", "Report Token Settings"),
     content: {
       chain_header_table: i18n(
         "optionsPage.token-tab-content.chain-header-table",

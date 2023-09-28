@@ -9,6 +9,7 @@
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
   import TabWallets from "~/UI/Option/TabWallets.svelte";
   import TabReportTokens from "~/UI/Option/TabReportTokens.svelte";
+  import TabAlerts from "~/UI/Option/TabAlerts.svelte";
   import TabSettings from "~/UI/Option/TabSettings.svelte";
   import TabNotification from "~/UI/Option/TabNotification.svelte";
   import TabNft from "~/UI/Option/TabNFT.svelte";
@@ -16,8 +17,13 @@
   const listSideBar = [
     {
       label: i18n("optionsPage.tab-title-accounts", "Accounts"),
-      value: "wallets",
-      type: "Wallets",
+      value: "accounts",
+      type: "Accounts",
+    },
+    {
+      label: i18n("optionsPage.tab-title-alerts", "Alerts"),
+      value: "alerts",
+      type: "Alerts",
     },
     {
       label: i18n("optionsPage.tab-title-report-token", "Report Tokens"),
@@ -46,7 +52,7 @@
     darkMode = value;
   });
 
-  let activeTabValue = "wallets";
+  let activeTabValue = "accounts";
 
   $: {
     browser.storage.onChanged.addListener((changes) => {
@@ -86,7 +92,7 @@
         <SidebarTabs bind:activeTabValue {darkMode} {listSideBar} />
       </div>
       <div class="xl:col-span-5 col-span-1">
-        {#if activeTabValue === "wallets"}
+        {#if activeTabValue === "accounts"}
           <TabWallets />
           <!-- {:else if activeTabValue === "nft"}
           <TabNft />
@@ -94,6 +100,8 @@
           <TabNotification /> -->
         {:else if activeTabValue === "report-tokens"}
           <TabReportTokens />
+        {:else if activeTabValue === "alerts"}
+          <TabAlerts />
           <!-- {:else if activeTabValue === "settings"}
           <TabSettings /> -->
         {/if}
