@@ -113,15 +113,11 @@
   >
     <div class="flex justify-between items-end">
       <div class="flex flex-col gap-2">
-        <div class="xl:text-5xl text-7xl font-medium">
+        <div class="xl:text-5xl text-7xl font-semibold">
           {MultipleLang.whale}
         </div>
-        <div
-          class="flex justify-between xl:items-center xl:gap-11 xl:flex-row flex-col gap-6"
-        >
-          <div class="xl:text-xl text-3xl font-medium w-max">
-            {MultipleLang.whales_page_title}
-          </div>
+        <div class="xl:text-xl text-3xl w-max">
+          {MultipleLang.whales_page_title}
         </div>
       </div>
       <div class="w-[140px]">

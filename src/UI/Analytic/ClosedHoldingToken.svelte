@@ -391,6 +391,8 @@
   );
 
   $: theme = darkMode ? "dark" : "white";
+
+  $: console.log("sumRealizedProfit: ", sumRealizedProfit);
 </script>
 
 <AnalyticSection>
@@ -439,7 +441,10 @@
                     sumRealizedProfit >= 0 ? "" : "text-[#f25f5d]"
                   }`}
                 >
-                  <TooltipNumber number={sumRealizedProfit} type="value" />
+                  <TooltipNumber
+                    number={Math.abs(sumRealizedProfit)}
+                    type="value"
+                  />
                 </div>
               </div>
 

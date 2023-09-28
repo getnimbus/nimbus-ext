@@ -841,7 +841,7 @@
     class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10 relative"
   >
     <div class="flex flex-col gap-2 justify-center">
-      <div class="xl:text-5xl text-7xl font-medium">
+      <div class="xl:text-5xl text-7xl font-semibold">
         Optimize your portfolio
       </div>
       <div class="xl:font-normal xl:text-base text-2xl font-medium">

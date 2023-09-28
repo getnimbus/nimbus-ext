@@ -748,19 +748,19 @@
           {#if userInfo && Object.keys(userInfo).length !== 0}
             <div
               on:click={() => {
-                navActive = "options";
+                navActive = "settings";
                 isShowHeaderMobile.update((n) => (n = false));
               }}
             >
-              <Link to="options/?tab=wallets">
+              <Link to="settings/?tab=accounts">
                 <div
                   class={`flex items-center gap-3 text-white px-5 py-6 
             ${
               darkMode
-                ? navActive === "options"
+                ? navActive === "settings"
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
-                : navActive === "options"
+                : navActive === "settings"
                 ? "bg-[#525B8C] rounded-[1000px] opacity-100"
                 : "opacity-70"
             }

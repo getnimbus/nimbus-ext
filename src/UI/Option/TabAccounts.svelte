@@ -34,7 +34,7 @@
   import SolanaLogo from "~/assets/solana.png";
 
   const MultipleLang = {
-    title: i18n("optionsPage.accounts-page-title", "My wallets"),
+    title: i18n("optionsPage.accounts-page-title", "Account Settings"),
     content: {
       btn_text: i18n(
         "optionsPage.accounts-page-content.address-btn-text",
@@ -865,7 +865,14 @@
 <div class="flex flex-col gap-4">
   {#if (listAddress && listAddress.length === 0) || $query.isError}
     <div class="flex items-center justify-between">
-      <div class="xl:title-3 title-1">{MultipleLang.title}</div>
+      <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
+        <div class="xl:title-3 title-1">
+          {MultipleLang.title}
+        </div>
+        <div class="xl:text-base text-xl text-gray-500">
+          Management your wallet address and bundles
+        </div>
+      </div>
       <div class="relative xl:w-max w-[200px]">
         {#if Object.keys(userInfo).length !== 0}
           <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
@@ -913,7 +920,14 @@
     </div>
   {:else}
     <div class="flex flex-col gap-4">
-      <div class="xl:title-3 title-1">{MultipleLang.title}</div>
+      <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
+        <div class="xl:title-3 title-1">
+          {MultipleLang.title}
+        </div>
+        <div class="xl:text-base text-xl text-gray-500">
+          Management your wallet address and bundles
+        </div>
+      </div>
       {#if !$query.isError}
         <div class="flex items-center justify-between gap-10">
           {#if listBundle && listBundle.length === 0}

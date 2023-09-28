@@ -20,11 +20,11 @@
       value: "highlight",
       type: "Highlight",
     },
-    {
-      label: i18n("optionsPage.tab-title-settings", "Settings"),
-      value: "settings",
-      type: "Settings",
-    },
+    // {
+    //   label: i18n("optionsPage.tab-title-settings", "Settings"),
+    //   value: "settings",
+    //   type: "Settings",
+    // },
   ];
 
   const queryClient = new QueryClient({
@@ -95,8 +95,8 @@
           <div class="flex-1 px-6 py-4">
             {#if activeTabValue === "highlight"}
               <TabHighlight />
-            {:else if activeTabValue === "settings"}
-              <TabSettings />
+              <!-- {:else if activeTabValue === "settings"}
+              <TabSettings /> -->
             {/if}
           </div>
         </div>

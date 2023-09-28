@@ -49,7 +49,7 @@
       <div class="xl:text-5xl text-7xl font-semibold">
         {MultipleLang.news}
       </div>
-      <div class="xl:text-xl text-3xl font-medium">
+      <div class="xl:text-xl text-3xl">
         {MultipleLang.news_page_title}
       </div>
     </div>
