@@ -138,7 +138,7 @@
 </script>
 
 <div class="flex flex-col xl:gap-4 gap-8 mt-3">
-  <div class="text-center text-gray-500 text-3xl xl:text-xl mb-6">
+  <div class="xl:text-xl text-3xl text-center mb-6">
     Use Nimbus at its full potential. Tracking your portfolio, reduce risk,
     maximize return.
   </div>
