@@ -7,7 +7,7 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
-  import TabWallets from "~/UI/Option/TabWallets.svelte";
+  import TabAccounts from "~/UI/Option/TabAccounts.svelte";
   import TabReportTokens from "~/UI/Option/TabReportTokens.svelte";
   import TabAlerts from "~/UI/Option/TabAlerts.svelte";
   import TabSettings from "~/UI/Option/TabSettings.svelte";
@@ -93,7 +93,7 @@
       </div>
       <div class="xl:col-span-5 col-span-1">
         {#if activeTabValue === "accounts"}
-          <TabWallets />
+          <TabAccounts />
           <!-- {:else if activeTabValue === "nft"}
           <TabNft />
         {:else if activeTabValue === "notification"}

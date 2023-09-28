@@ -326,7 +326,7 @@
         </div>
 
         <div on:click={() => (showPopover = false)}>
-          <Link to="options/?tab=wallets">
+          <Link to="settings/?tab=accounts">
             <div
               class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
                 darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"

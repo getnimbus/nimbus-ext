@@ -137,8 +137,8 @@
           </Route>
 
           <!-- Other page -->
-          <Route path="options">
-            {#await import("~/layouts/Options.svelte")}
+          <Route path="settings">
+            {#await import("~/layouts/Settings.svelte")}
               <div class="flex items-center justify-center h-screen">
                 <Loading />
               </div>
