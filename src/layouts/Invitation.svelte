@@ -197,7 +197,7 @@
               <img src={qrImageDataUrl} alt="QR Code" />
             </div>
             <div class="footer_wrapper">
-              Investment in crypto in easy-mode with Nimbus
+              Track you investments in easy-mode with Nimbus
             </div>
           </div>
         </div>
