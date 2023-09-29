@@ -185,6 +185,25 @@ export const typePackage = [
   },
 ]
 
+export const filterTokenValueType = [
+  {
+    label: "$0",
+    value: 0,
+  },
+  {
+    label: "$1",
+    value: 1,
+  },
+  {
+    label: "$5",
+    value: 5,
+  },
+  {
+    label: "$10",
+    value: 10,
+  },
+];
+
 export const performanceTypeChartPortfolio = [
   {
     label: "Percent Change",
