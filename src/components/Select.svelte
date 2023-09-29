@@ -7,7 +7,7 @@
 
   export let listSelect;
   export let selected;
-  export let type: "chain" | "wallet" | "lang";
+  export let type: "chain" | "wallet" | "lang" | "filter";
   export let positionSelectList;
 
   let open = false;
@@ -15,6 +15,9 @@
   $: {
     if (listSelect && type === "lang") {
       selected = listSelect[0];
+    }
+    if (listSelect && type === "filter") {
+      selected = listSelect[1];
     }
   }
 
@@ -30,12 +33,14 @@
 
 <div class="wrapper" use:clickOutside on:click_outside={() => (open = false)}>
   <div
-    class={`button xl:text-sm text-2xl ${type === "lang" && "bg-[#1E96FC]"}`}
+    class={`button xl:text-sm text-2xl ${
+      type === "lang" || type === "filter" ? "bg-[#1E96FC]" : ""
+    }`}
     class:active={open}
     on:click={() => (open = !open)}
   >
     <div class="flex items-center gap-2">
-      {#if type === "chain" || type === "lang"}
+      {#if type === "chain" || type === "lang" || type === "filter"}
         {#if selected?.logo || selectedChain[0]?.logo}
           <img
             src={selected?.value === "ALL" || selectedChain[0]?.value === "ALL"
@@ -69,7 +74,7 @@
       {#each listSelect as item}
         <div
           class="content_item"
-          class:active={type !== "lang"
+          class:active={type !== "lang" || type !== "filter"
             ? item.value === selected
             : item.value === selected?.value}
           id={item.value}
@@ -98,7 +103,7 @@
                 open = false;
               }
             }
-            if (type === "lang") {
+            if (type === "lang" || type === "filter") {
               selected = item;
               open = false;
             }

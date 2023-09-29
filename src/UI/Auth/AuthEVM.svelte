@@ -150,7 +150,7 @@
         if (signatureString) {
           const payload = {
             signature: signatureString,
-            publicAddress: address,
+            publicAddress: address?.toLowerCase(),
           };
           handleGetEVMToken(payload);
         }
@@ -296,6 +296,18 @@
                   fill="#ffb800"
                 />
               </svg>
+            </div>
+          </Link>
+        </div>
+
+        <div on:click={() => (showPopover = false)}>
+          <Link to="profile">
+            <div
+              class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
+                darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+              }`}
+            >
+              My Profile
             </div>
           </Link>
         </div>

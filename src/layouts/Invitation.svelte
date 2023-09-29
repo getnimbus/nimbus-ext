@@ -158,8 +158,8 @@
     class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
   >
     <div class="flex flex-col gap-2 justify-center">
-      <div class="xl:text-5xl text-7xl font-medium">Invite Friends</div>
-      <div class="">
+      <div class="xl:text-5xl text-7xl font-semibold">Invite Friends</div>
+      <div class="xl:text-xl text-3xl">
         Tell your friends it’s fun and effective for portfolio management. <br
         /> Easy way to minimize risk while maximazing return.
       </div>
@@ -197,7 +197,7 @@
               <img src={qrImageDataUrl} alt="QR Code" />
             </div>
             <div class="footer_wrapper">
-              Investment in crypto in easy-mode with Nimbus
+              Track you investments in easy-mode with Nimbus
             </div>
           </div>
         </div>

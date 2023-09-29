@@ -69,13 +69,17 @@
       isLoadingBuy = false;
     }
   };
+
+  $: console.log(selectedPackage);
 </script>
 
 <ErrorBoundary>
   <div
     class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-2"
   >
-    <div class="xl:text-5xl text-7xl font-medium text-center">Upgrade Plan</div>
+    <div class="xl:text-5xl text-7xl font-semibold text-center">
+      Upgrade Plan
+    </div>
     {#if selectedPackage && Object.keys(selectedPackage).length !== 0}
       <div class="flex flex-col justify-center min-h-[70vh]">
         <!-- remove me -->
@@ -85,9 +89,12 @@
         <ul class="xl:text-lg text-2xl flex flex-col gap-5">
           <li>
             <span class="xl:text-xl text-3xl font-medium">Step 1:</span> Send
-            <span class="xl:text-lg text-2xl">{selectedPackage.price}</span
-            ><span class="xl:text-base text-xl text-gray-400 mb-[2px]"
-              >/month</span
+            <span class="xl:text-lg text-2xl font-medium"
+              >{selectedPackage.selectedTypePackage === "year"
+                ? selectedPackage.plan === "Professional"
+                  ? `$990`
+                  : "$300"
+                : selectedPackage.price}</span
             >
 
             USDT or USDC to this address
