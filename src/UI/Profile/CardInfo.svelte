@@ -1,4 +1,40 @@
-<script></script>
+<script lang="ts">
+  import { createQuery } from "@tanstack/svelte-query";
+  import { nimbus } from "~/lib/network";
+  import { user } from "~/store";
+
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
+
+  const getPreview = async () => {
+    const test = "0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb";
+    const response = await nimbus
+      .get(`/address/${test}/preview?chain=ALL`)
+      .then((response) => response.data);
+    return response;
+  };
+
+  $: queryPreview = createQuery({
+    queryKey: ["preview"],
+    queryFn: () => getPreview(),
+    staleTime: Infinity,
+    enabled: Object.keys(userInfo).length !== 0,
+  });
+
+  let dataListNFT = [];
+
+  $: {
+    if (
+      !$queryPreview.isError &&
+      $queryPreview.data &&
+      $queryPreview?.data !== undefined
+    ) {
+      console.log("queryPreview: ", $queryPreview.data.nfts);
+    }
+  }
+</script>
 
 <div
   class="col-span-2 flex gap-5 border rounded-xl p-2 shadow shadow-light-700"

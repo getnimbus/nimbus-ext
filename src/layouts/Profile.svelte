@@ -41,8 +41,8 @@
         <div class="xl:text-3xl text-4xl font-medium">My Story</div>
         <div class="grid xl:grid-cols-4 grid-cols-2 gap-10">
           <SummaryText />
-          <CardNft />
-          <CardNft />
+          <!-- <CardNft />
+          <CardNft /> -->
           <CustomText />
           <CardInfo />
           <SocialMedia />
