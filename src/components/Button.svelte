@@ -11,6 +11,8 @@
     | "underlined"
     | "delete"
     | "disabled"
+    | "Twitter"
+    | "Telegram"
     | "" = "primary";
   export let className: string = "";
   export let disabled: boolean = false;
@@ -30,6 +32,8 @@
     ["small"]: size === "small",
     ["supper-small"]: size === "supper-small",
     ["loading"]: isLoading,
+    ["twitter"]: variant === "Twitter",
+    ["telegram"]: variant === "Telegram",
   });
 
   let darkMode = false;
@@ -231,5 +235,22 @@
   .underlined[type="submit"],
   .underlined[type="button"] {
     background: #fff;
+  }
+
+  .twitter {
+    color: white;
+    border: none;
+  }
+  .twitter[type="button"] {
+    background-color: black;
+  }
+
+  .telegram {
+    color: white;
+    border: none;
+  }
+
+  .telegram[type="button"] {
+    background-color: #2aabee;
   }
 </style>

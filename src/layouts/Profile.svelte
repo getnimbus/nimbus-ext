@@ -35,6 +35,16 @@
   let showPopover = false;
 
   let selectProfileNFT = {};
+
+  let socialDataTwitter = {
+    title: "",
+    hashtag: "",
+  };
+  let socialDataTelegram = {
+    title: "",
+    hashtag: "",
+  };
+
   let description =
     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus odio perferendis dolorum repellat ex, dignissimos nisi velit ipsa tenetur nihil magnam earum corporis amet reiciendis est doloribus sint officia tempora impedit numquam ratione aliquid. Eligendi fuga sint repudiandae dicta necessitatibus pariatur minima similique, ipsa facilis esse mollitia ex sapiente inventore!";
 
@@ -42,6 +52,8 @@
     console.log("selectedAddress: ", selectedAddress);
     console.log("description: ", description);
     console.log("selectProfileNFT: ", selectProfileNFT);
+    console.log("socialDataTwitter: ", socialDataTwitter);
+    console.log("socialDataTelegram: ", socialDataTelegram);
   };
 
   const handleCancelEdit = () => {
@@ -184,7 +196,7 @@
             <Description {isEdit} bind:description />
             <NFTInfo {isEdit} bind:selectProfileNFT />
             <SocialMedia />
-            <ClosedPositionChart {selectedAddress} />
+            <ClosedPositionChart />
           </div>
         </div>
       </div>

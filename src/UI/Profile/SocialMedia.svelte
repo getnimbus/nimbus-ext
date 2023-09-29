@@ -1,244 +1,80 @@
-<script>
+<script lang="ts">
+  import Button from "~/components/Button.svelte";
+  import IconSocialMedia from "~/components/IconSocialMedia.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
 
-  // export const typeSocialMedia = "twitter" || "telegram";
+  export let typeSocialMedia: "Twitter" | "Telegram" = "Twitter";
+  let backgroundColor =
+    typeSocialMedia == "Twitter" ? "bg-black" : "bg-[#2AABEE]";
 
-  let socialTwitterData = {
-    title: "Twitter",
-    hashtag: "twitter",
+  export let isEdit;
+  export let socialData = {
+    title: "",
+    hashtag: "",
   };
 
-  let socialTelegramData = {
-    title: "Telegram",
-    hashtag: "telegram",
-  };
-
-  let openEdit = true;
-  let editTwitter = false;
-  let editTelegram = false;
-  let buttonhover = false;
-  let userOnBoarded = true;
-
-  const handleSubmitSocialMedia = (e) => {
-    socialTwitterData = {
-      // title: document.getElementById("titleTwitter").value,
-      title: "Twitter",
-      hashtag: document.getElementById("usernameTwitter").value,
-    };
-  };
+  let userTypedUsername = false;
+  let editTitle = false;
 </script>
 
 <div
   class={`${
-    openEdit ? "col-span-2" : "col-span-1"
+    isEdit ? "col-span-2" : "col-span-1"
   } w-full h-full rounded-xl border p-5`}
 >
   <div class="flex flex-col gap-3">
     <div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="40"
-        height="40"
-        viewBox="0 0 448 512"
-      >
-        <path
-          fill="currentColor"
-          d="M64 32C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm297.1 84L257.3 234.6L379.4 396h-95.6L209 298.1L123.3 396H75.8l111-126.9L69.7 116h98l67.7 89.5l78.2-89.5h47.5zm-37.8 251.6L153.4 142.9h-28.3l171.8 224.7h26.3z"
-        />
-      </svg>
+      <IconSocialMedia type={typeSocialMedia} />
     </div>
     <div class="relative">
-      {#if openEdit}
-        <form
-          on:submit|preventDefault={() => {
-            handleSubmitSocialMedia();
-            openEdit = false;
-          }}
-          class="flex flex-col gap-4"
-        >
-          <div>Add your social media</div>
-          <span class="flex items-center gap-1">
-            @ <input
-              type="text"
-              name="usernameTwitter"
-              id="usernameTwitter"
-              value=""
-              class="rounded-xl w-full"
-            />
-          </span>
-          <input type="submit" hidden />
-        </form>
-      {:else}
-        <div>
-          {#if editTwitter}
-            <input
-              type="text"
-              name="titleTwitter"
-              id="titleTwitter"
-              value=""
-              class="rounded-xl w-full"
-            />
-          {:else}
-            {socialTwitterData.title}
-          {/if}
-        </div>
-        <div>@{socialTwitterData.hashtag}</div>
-      {/if}
-    </div>
-    <div
-      class={`text-white bg-[#2AABEE] py-[7px] px-4 rounded-full w-32 text-center ${
-        openEdit ? "hidden" : "block"
-      }`}
-    >
-      Follow
-    </div>
-  </div>
-</div>
-<div
-  class={`${
-    openEdit ? "col-span-2" : "col-span-1"
-  } w-full h-full rounded-xl border p-5`}
->
-  <div class="flex flex-col gap-3">
-    <div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="40"
-        height="40"
-        viewBox="0 0 256 256"
-      >
-        <defs>
-          <linearGradient
-            id="logosTelegram0"
-            x1="50%"
-            x2="50%"
-            y1="0%"
-            y2="100%"
-          >
-            <stop offset="0%" stop-color="#2AABEE" /><stop
-              offset="100%"
-              stop-color="#229ED9"
-            />
-          </linearGradient>
-        </defs>
-        <path
-          fill="url(#logosTelegram0)"
-          d="M128 0C94.06 0 61.48 13.494 37.5 37.49A128.038 128.038 0 0 0 0 128c0 33.934 13.5 66.514 37.5 90.51C61.48 242.506 94.06 256 128 256s66.52-13.494 90.5-37.49c24-23.996 37.5-56.576 37.5-90.51c0-33.934-13.5-66.514-37.5-90.51C194.52 13.494 161.94 0 128 0Z"
-        />
-        <path
-          fill="#FFF"
-          d="M57.94 126.648c37.32-16.256 62.2-26.974 74.64-32.152c35.56-14.786 42.94-17.354 47.76-17.441c1.06-.017 3.42.245 4.96 1.49c1.28 1.05 1.64 2.47 1.82 3.467c.16.996.38 3.266.2 5.038c-1.92 20.24-10.26 69.356-14.5 92.026c-1.78 9.592-5.32 12.808-8.74 13.122c-7.44.684-13.08-4.912-20.28-9.63c-11.26-7.386-17.62-11.982-28.56-19.188c-12.64-8.328-4.44-12.906 2.76-20.386c1.88-1.958 34.64-31.748 35.26-34.45c.08-.338.16-1.598-.6-2.262c-.74-.666-1.84-.438-2.64-.258c-1.14.256-19.12 12.152-54 35.686c-5.1 3.508-9.72 5.218-13.88 5.128c-4.56-.098-13.36-2.584-19.9-4.708c-8-2.606-14.38-3.984-13.82-8.41c.28-2.304 3.46-4.662 9.52-7.072Z"
-        />
-      </svg>
-    </div>
-    <div class="relative">
-      {#if openEdit}
-        <form
-          on:submit|preventDefault={() => {
-            handleSubmitSocialMedia();
-            openEdit = false;
-          }}
-          class="flex flex-col gap-4"
-        >
-          <div>Add your social media</div>
-          <span class="flex items-center gap-1">
-            @ <input
-              type="text"
-              name="usernameTelegram"
-              id="usernameTelegram"
-              value=""
-              class="rounded-xl w-full"
-            />
-          </span>
-          <input type="submit" hidden />
-        </form>
-      {:else}
-        <div>
-          {#if editTelegram}
-            <input
-              type="text"
-              name="titleTelegram"
-              id="titleTelegram"
-              value=""
-              class="rounded-xl w-full"
-            />
-          {:else}
-            {socialTelegramData.title}
-          {/if}
-        </div>
-        <div>@{socialTelegramData.hashtag}</div>
-      {/if}
-    </div>
-
-    <div
-      class={`text-white bg-[#2AABEE] py-[7px] px-4 rounded-full w-32 text-center ${
-        openEdit ? "hidden" : "block"
-      }`}
-    >
-      Follow
-    </div>
-  </div>
-</div>
-
-<!-- <AppOverlay isOpen={userOnBoarded}>
-  <div class="flex flex-col gap-5">
-    <div>Now, let’s add your social media accounts to your page.</div>
-    <div class="flex items-center justify-start gap-4">
-      <div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="40"
-          height="40"
-          viewBox="0 0 448 512"
-        >
-          <path
-            fill="currentColor"
-            d="M64 32C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm297.1 84L257.3 234.6L379.4 396h-95.6L209 298.1L123.3 396H75.8l111-126.9L69.7 116h98l67.7 89.5l78.2-89.5h47.5zm-37.8 251.6L153.4 142.9h-28.3l171.8 224.7h26.3z"
-          />
-        </svg>
-      </div>
-      <form on:submit|preventDefault={() => {}}>
-        <input
-          type="text"
-          placeholder="@username"
-          class="rounded-lg border-0 bg-[#f7f7f7]"
-        />
-      </form>
-    </div>
-  </div>
-</AppOverlay> -->
-
-<!-- <AppOverlay
-  clickOutSideToClose
-  isOpen={openEdit}
-  isTableContent
-  on:close={() => {
-    openEdit = false;
-  }}
->
-  <div>
-    <form on:submit|preventDefault={handleSubmitSocialMedia}>
-      <div class="flex gap-5">
-        <input
-          type="text"
-          name="title"
-          id="title"
-          value={socialData.title}
-          class="rounded-xl"
-        />
-        <span>
+      {#if isEdit}
+        <div>Add your Username</div>
+        <span class="flex items-center pt-2 gap-1">
           @ <input
             type="text"
-            name="hashtag"
-            id="hashtag"
-            value={socialData.hashtag}
-            class="rounded-xl"
+            name="username"
+            id="username"
+            value=""
+            class="rounded-xl w-full"
+            placeholder="Your Username"
+            on:keyup={({ target: { value } }) => (socialData.hashtag = value)}
           />
         </span>
-        <button type="submit">Submit </button>
-      </div>
-    </form>
+      {:else}
+        <div
+          on:mouseenter={() => (editTitle = true)}
+          on:mouseleave={() => (editTitle = false)}
+        >
+          {#if editTitle}
+            <input
+              type="text"
+              name="title"
+              id="title"
+              value=""
+              class="rounded-xl w-full"
+            />
+          {:else}
+            {typeSocialMedia}
+          {/if}
+        </div>
+        <div>@ {socialData.hashtag}</div>
+      {/if}
+    </div>
+    {#if userTypedUsername}
+      <Button variant={typeSocialMedia}>
+        <div
+          class={`py-[7px] px-4 rounded-full w-32 text-center
+        ${isEdit ? "hidden" : "block"}
+      `}
+        >
+          Follow
+        </div>
+      </Button>
+    {/if}
   </div>
-</AppOverlay> -->
+</div>
 
-<style windi:preflights:global windi:safelist:global></style>
+<!-- ${typeSocialMedia == "twitter" ? "bg-black" : "bg-[#2AABEE]"} -->
+
+<style windi:preflights:global windi:safelist:global>
+</style>
