@@ -360,7 +360,7 @@
   $: theme = darkMode ? "dark" : "white";
 </script>
 
-<div class="xl:col-span-4 col-span-2 border shadow shadow-light-700 rounded-xl">
+<div class="xl:col-span-4 col-span-2 border border_0000001a rounded-xl">
   <div class="relative">
     {#if $queryTokenHolding.isFetching}
       <div class="flex items-center justify-center h-[465px] p-6">

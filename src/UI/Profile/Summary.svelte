@@ -2,20 +2,10 @@
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
   import { formatBalance } from "~/utils";
-  import { chain, typeWallet, user } from "~/store";
+  import { user } from "~/store";
 
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
 
   let userInfo = {};
   user.subscribe((value) => {
@@ -81,7 +71,7 @@
   }
 </script>
 
-<div class="col-span-2 border shadow-light-500 shadow rounded-xl">
+<div class="col-span-2 border border_0000001a rounded-xl">
   {#if $queryTokenHolding.isFetching}
     <div class="w-full h-full flex justify-center items-center p-6">
       <Loading />

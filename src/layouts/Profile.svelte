@@ -2,12 +2,25 @@
   import { shorterAddress } from "~/utils";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-  import CardInfo from "~/UI/Profile/CardInfo.svelte";
-  import CardNft from "~/UI/Profile/CardNFT.svelte";
-  import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
-  import CustomText from "~/UI/Profile/CustomText.svelte";
+
+  import Summary from "~/UI/Profile/Summary.svelte";
+  import Description from "~/UI/Profile/Description.svelte";
+  import NFTInfo from "~/UI/Profile/NFTInfo.svelte";
   import SocialMedia from "~/UI/Profile/SocialMedia.svelte";
-  import SummaryText from "~/UI/Profile/SummaryText.svelte";
+  import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
+  import Button from "~/components/Button.svelte";
+
+  let isEdit = false;
+
+  let selectProfileNFT = {};
+
+  let description =
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus odio perferendis dolorum repellat ex, dignissimos nisi velit ipsa tenetur nihil magnam earum corporis amet reiciendis est doloribus sint officia tempora impedit numquam ratione aliquid. Eligendi fuga sint repudiandae dicta necessitatibus pariatur minima similique, ipsa facilis esse mollitia ex sapiente inventore!";
+
+  const handleSubmitProfile = async () => {
+    console.log("description: ", description);
+    console.log("selectProfileNFT: ", selectProfileNFT);
+  };
 </script>
 
 <ErrorBoundary>
@@ -20,36 +33,55 @@
         One place that aggregates all your personal information
       </div>
     </div>
-    <div
-      class="w-full flex xl:flex-row flex-col border-2 rounded-xl shadow-light-600 shadow-xl min-h-screen py-10 px-10 gap-9"
+    <form
+      on:submit|preventDefault={handleSubmitProfile}
+      class="flex flex-col gap-4"
     >
+      <div class="flex items-center justify-end lg:gap-2 gap-6">
+        {#if isEdit}
+          <div class="xl:w-[120px] w-full">
+            <Button variant="secondary" on:click={() => (isEdit = false)}
+              >Cancel</Button
+            >
+          </div>
+          <div class="xl:w-[120px] w-full">
+            <Button type="submit">Save</Button>
+          </div>
+        {:else}
+          <div class="xl:w-[160px] w-full">
+            <Button on:click={() => (isEdit = true)}>Edit your profile</Button>
+          </div>
+        {/if}
+      </div>
       <div
-        class="xl:w-1/4 w-full flex flex-col gap-3 items-center justify-start"
+        class="w-full flex xl:flex-row flex-col rounded-xl py-10 px-10 gap-9 border-2 border_0000001a"
       >
-        <div class="xl:w-[80px] xl:h-[80px] w-32 h-32">
-          <img
-            src={`/assets/user.png`}
-            alt=""
-            class="object-cover w-full h-full"
-          />
+        <div
+          class="xl:w-1/4 w-full flex flex-col gap-3 items-center justify-start"
+        >
+          <div class="xl:w-[80px] xl:h-[80px] w-32 h-32">
+            <img
+              src={`/assets/user.png`}
+              alt=""
+              class="object-cover w-full h-full"
+            />
+          </div>
+          <div class="text-2xl xl:text-base font-medium">
+            {shorterAddress(localStorage.getItem("evm_address") || "")}
+          </div>
         </div>
-        <div class="text-2xl xl:text-base font-medium">
-          {shorterAddress(localStorage.getItem("evm_address") || "")}
+        <div class="flex-1 flex flex-col gap-4">
+          <div class="xl:text-3xl text-4xl font-medium">My Story</div>
+          <div class="grid xl:grid-cols-4 grid-cols-2 gap-10">
+            <Summary />
+            <Description {isEdit} bind:description />
+            <NFTInfo {isEdit} bind:selectProfileNFT />
+            <SocialMedia />
+            <ClosedPositionChart />
+          </div>
         </div>
       </div>
-      <div class="flex-1 flex flex-col gap-4">
-        <div class="xl:text-3xl text-4xl font-medium">My Story</div>
-        <div class="grid xl:grid-cols-4 grid-cols-2 gap-10">
-          <SummaryText />
-          <!-- <CardNft />
-          <CardNft /> -->
-          <CustomText />
-          <CardInfo />
-          <SocialMedia />
-          <ClosedPositionChart />
-        </div>
-      </div>
-    </div>
+    </form>
   </div>
 </ErrorBoundary>
 
