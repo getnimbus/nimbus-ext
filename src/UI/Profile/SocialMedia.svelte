@@ -21,10 +21,18 @@
     isEdit = true;
   }
 
-  const handleSubmitSocialMedia = () => {
+  const handleSubmitUsername = () => {
+    socialData = {
+      title: typeSocialMedia,
+      username: document.getElementById("username").value,
+    };
+    isEdit = false;
+  };
+
+  const handleSubmitTitle = () => {
     socialData = {
       title: document.getElementById("title").value,
-      username: document.getElementById("username").value,
+      username: socialData.username,
     };
     isEdit = false;
   };
@@ -44,10 +52,10 @@
         <div>Add your Username</div>
         <span class="pt-2">
           <form
-            on:submit|preventDefault={handleSubmitSocialMedia}
-            class="flex flex-col gap-3"
+            on:submit|preventDefault={handleSubmitUsername}
+            class="flex flex-col gap-3 relative"
           >
-            <input
+            <!-- <input
               type="text"
               name="title"
               id="title"
@@ -55,8 +63,8 @@
               class="rounded-xl w-full"
               placeholder="Your Username"
               on:keyup={({ target: { value } }) => (socialData.title = value)}
-            />
-            <span class="flex items-center gap-1">
+            /> -->
+            <span class="flex items-center gap-1 mt-1 relative">
               @<input
                 type="text"
                 name="username"
@@ -67,8 +75,12 @@
                 on:keyup={({ target: { value } }) =>
                   (socialData.username = value)}
               />
+              <input
+                type="submit"
+                class={`absolute right-2 top-2 cursor-pointer `}
+                value="Save"
+              />
             </span>
-            <input type="submit" hidden />
           </form>
         </span>
       {:else}
@@ -77,18 +89,21 @@
           on:mouseleave={() => (editTitle = false)}
         >
           {#if editTitle}
-            <input
-              type="text"
-              name="title"
-              id="title"
-              value=""
-              class="rounded-xl w-full"
-            />
+            <form on:submit|preventDefault={handleSubmitTitle}>
+              <input
+                type="text"
+                name="title"
+                id="title"
+                value={socialData.title}
+                class="rounded-xl w-full"
+              />
+              <input type="submit" hidden />
+            </form>
           {:else}
             {socialData.title == "" ? typeSocialMedia : socialData.title}
           {/if}
         </div>
-        <div>@ {socialData.username}</div>
+        <div>@{socialData.username}</div>
       {/if}
     </div>
     {#if userTypedUsername || !isEdit}
