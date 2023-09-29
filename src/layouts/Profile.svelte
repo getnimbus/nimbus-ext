@@ -39,16 +39,16 @@
     >
       <div class="flex items-center justify-end lg:gap-2 gap-6">
         {#if isEdit}
-          <div class="xl:w-[120px] w-full">
+          <div class="w-[120px]">
             <Button variant="secondary" on:click={() => (isEdit = false)}
               >Cancel</Button
             >
           </div>
-          <div class="xl:w-[120px] w-full">
+          <div class="w-[120px]">
             <Button type="submit">Save</Button>
           </div>
         {:else}
-          <div class="xl:w-[160px] w-full">
+          <div class="xl:w-[160px] w-[220px]">
             <Button on:click={() => (isEdit = true)}>Edit your profile</Button>
           </div>
         {/if}
