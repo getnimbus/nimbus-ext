@@ -4,13 +4,13 @@
 </script>
 
 <div
-  class="col-span-2 py-2 px-3 bg-dark-50 text-white xl:text-base text-xl rounded-xl flex items-center justify-center"
+  class="col-span-2 p-6 bg-dark-50 text-white xl:text-base text-xl rounded-xl flex items-center justify-center"
 >
   {#if isEdit}
     <textarea
       rows="5"
       value={description}
-      class="bg-dark-50 text-white rounded-lg border-0 outline-none w-full text-center"
+      class="bg-dark-50 text-white xl:text-base text-xl rounded-lg border-0 outline-none w-full text-center"
       on:keyup={({ target: { value } }) => (description = value)}
     />
   {:else}
