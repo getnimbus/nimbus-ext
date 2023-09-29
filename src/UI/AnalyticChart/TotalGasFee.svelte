@@ -230,7 +230,7 @@
 </script>
 
 <div
-  class={`rounded-[20px] py-6 ${
+  class={`rounded-[20px] py-6 relative ${
     darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
   }`}
 >
@@ -244,6 +244,15 @@
     {sum}
     type="primary"
   />
+  {#if typeWalletAddress === "SOL"}
+    <div
+      class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
+        darkMode ? "bg-[#222222e6]" : "bg-white/90"
+      } z-10 backdrop-blur-md`}
+    >
+      <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
+    </div>
+  {/if}
 </div>
 
 <style windi:preflights:global windi:safelist:global></style>
