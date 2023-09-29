@@ -391,8 +391,6 @@
   );
 
   $: theme = darkMode ? "dark" : "white";
-
-  $: console.log("sumRealizedProfit: ", sumRealizedProfit);
 </script>
 
 <AnalyticSection>
