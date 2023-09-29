@@ -7,23 +7,23 @@
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
+  export let selectedAddress;
+
   let userInfo = {};
   user.subscribe((value) => {
     userInfo = value;
   });
 
-  const getHoldingToken = async () => {
+  const getHoldingToken = async (address) => {
     const response = await nimbus
-      .get(
-        `/v2/address/${localStorage.getItem("evm_address")}/holding?chain=ALL`
-      )
+      .get(`/v2/address/${address}/holding?chain=ALL`)
       .then((response) => response.data);
     return response;
   };
 
   $: queryTokenHolding = createQuery({
-    queryKey: ["token-holding"],
-    queryFn: () => getHoldingToken(),
+    queryKey: ["token-holding", selectedAddress],
+    queryFn: () => getHoldingToken(selectedAddress),
     staleTime: Infinity,
     enabled: Object.keys(userInfo).length !== 0,
   });

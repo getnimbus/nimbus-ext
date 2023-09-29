@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
-  import { isDarkMode, typeWallet, wallet, chain, user } from "~/store";
+  import { isDarkMode, typeWallet, user } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import numeral from "numeral";
   import {
@@ -22,19 +22,11 @@
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
 
+  export let selectedAddress;
+
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
   });
 
   let userInfo = {};
@@ -236,11 +228,9 @@
     series: [],
   };
 
-  const getHoldingToken = async () => {
+  const getHoldingToken = async (address) => {
     const response: HoldingTokenRes = await nimbus
-      .get(
-        `/v2/address/${localStorage.getItem("evm_address")}/holding?chain=ALL`
-      )
+      .get(`/v2/address/${address}/holding?chain=ALL`)
       .then((response) => response.data);
     return response;
   };
@@ -341,8 +331,8 @@
   };
 
   $: queryTokenHolding = createQuery({
-    queryKey: ["token-holding"],
-    queryFn: () => getHoldingToken(),
+    queryKey: ["token-holding", selectedAddress],
+    queryFn: () => getHoldingToken(selectedAddress),
     staleTime: Infinity,
     enabled: Object.keys(userInfo).length !== 0,
   });
