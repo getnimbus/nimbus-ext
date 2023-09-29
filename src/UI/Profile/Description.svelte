@@ -10,7 +10,7 @@
     <textarea
       rows="5"
       value={description}
-      class="bg-dark-50 text-white xl:text-base text-xl rounded-lg border-0 outline-none w-full text-center"
+      class="bg-dark-50 text-white xl:text-base text-xl rounded-lg border-0 outline-none w-full"
       on:keyup={({ target: { value } }) => (description = value)}
     />
   {:else}

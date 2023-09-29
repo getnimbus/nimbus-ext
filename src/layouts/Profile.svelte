@@ -12,7 +12,6 @@
   import SocialMedia from "~/UI/Profile/SocialMedia.svelte";
   import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
   import Button from "~/components/Button.svelte";
-  import Copy from "~/components/Copy.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
