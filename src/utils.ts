@@ -163,6 +163,17 @@ export const typePieChart = [
   },
 ]
 
+export const typeClosedHoldingTokenChart = [
+  {
+    label: "Value",
+    value: "value",
+  },
+  {
+    label: "Percent",
+    value: "percent",
+  },
+]
+
 export const typePackage = [
   {
     label: "Monthly",

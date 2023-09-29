@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
-  import { isDarkMode, typeWallet, wallet, chain } from "~/store";
+  import { isDarkMode, typeWallet, wallet, chain, user } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import numeral from "numeral";
   import {
@@ -9,14 +9,13 @@
     formatPercent,
     formatValue,
     shorterName,
+    typeClosedHoldingTokenChart,
   } from "~/utils";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
-  import AnalyticSection from "~/components/AnalyticSection.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import EChart from "~/components/EChart.svelte";
-  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
@@ -38,26 +37,15 @@
     selectedChain = value;
   });
 
-  // this is user address
-  const userAddress = localStorage.getItem("evm_address");
-  // this address is for testing
-  const testAddress = "0x8980dbbe60d92b53b08ff95ea1aaaabb7f665bcb";
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
 
   let typeWalletAddress: string = "";
   typeWallet.subscribe((value) => {
     typeWalletAddress = value;
   });
-
-  const typeChart = [
-    {
-      label: "Value",
-      value: "value",
-    },
-    {
-      label: "Percent",
-      value: "percent",
-    },
-  ];
 
   let closedHoldingPosition = [];
   let selectedTypeChart: "value" | "percent" = "value";
@@ -247,13 +235,12 @@
     },
     series: [],
   };
-  let biggestWin = {};
-  let worseLose = {};
-  let sumRealizedProfit = 0;
 
-  const getHoldingToken = async (chain) => {
+  const getHoldingToken = async () => {
     const response: HoldingTokenRes = await nimbus
-      .get(`/v2/address/${testAddress}/holding?chain=${chain}`)
+      .get(
+        `/v2/address/${localStorage.getItem("evm_address")}/holding?chain=ALL`
+      )
       .then((response) => response.data);
     return response;
   };
@@ -294,31 +281,6 @@
       });
 
     if (closedHoldingPosition && closedHoldingPosition.length !== 0) {
-      sumRealizedProfit = (closedHoldingPosition || [])?.reduce(
-        (prev, item) => prev + Number(item.realizedProfit),
-        0
-      );
-
-      biggestWin = (closedHoldingPosition || [])?.reduce(
-        (maxObject, currentObject) => {
-          if (currentObject.realizedProfit > maxObject.realizedProfit) {
-            return currentObject;
-          } else {
-            return maxObject;
-          }
-        }
-      );
-
-      worseLose = (closedHoldingPosition || [])?.reduce(
-        (maxObject, currentObject) => {
-          if (currentObject.realizedProfit < maxObject.realizedProfit) {
-            return currentObject;
-          } else {
-            return maxObject;
-          }
-        }
-      );
-
       optionBarValue = {
         ...optionBarValue,
         xAxis: {
@@ -379,25 +341,21 @@
   };
 
   $: queryTokenHolding = createQuery({
-    queryKey: ["token-holding", selectedChain],
-    queryFn: () => getHoldingToken(selectedChain),
+    queryKey: ["token-holding"],
+    queryFn: () => getHoldingToken(),
     staleTime: Infinity,
-    enabled: enabledQuery,
+    enabled: Object.keys(userInfo).length !== 0,
   });
 
   $: {
-    if (!$queryTokenHolding.isError && $queryTokenHolding.data !== undefined) {
+    if (
+      !$queryTokenHolding.isError &&
+      $queryTokenHolding.data &&
+      $queryTokenHolding.data !== undefined
+    ) {
       formatDataHoldingToken($queryTokenHolding.data);
     }
   }
-
-  $: enabledQuery = Boolean(
-    (typeWalletAddress === "EVM" ||
-      typeWalletAddress === "CEX" ||
-      typeWalletAddress === "SOL" ||
-      typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0
-  );
 
   $: theme = darkMode ? "dark" : "white";
 </script>
@@ -412,21 +370,16 @@
       <div class="h-full relative">
         {#if $queryTokenHolding.isError}
           <div
-            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
+            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-base text-xl ${
               darkMode ? "bg-[#222222e6]" : "bg-white/90"
             }`}
           >
-            {#if typeWalletAddress === "CEX"}
-              Not enough data. CEX integration can only get data from the day
-              you connect
-            {:else}
-              Empty
-            {/if}
+            Empty
           </div>
         {:else}
           <div class="flex flex-row p-6">
             <AnimateSharedLayout>
-              {#each typeChart as type}
+              {#each typeClosedHoldingTokenChart as type}
                 <div
                   class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
                   on:click={() => (selectedTypeChart = type.value)}

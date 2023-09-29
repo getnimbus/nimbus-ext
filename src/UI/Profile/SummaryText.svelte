@@ -1,101 +1,126 @@
 <script lang="ts">
+  import { createQuery } from "@tanstack/svelte-query";
+  import { nimbus } from "~/lib/network";
+  import { formatBalance } from "~/utils";
+  import { chain, typeWallet, user } from "~/store";
+
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import { formatBalance } from "~/utils";
 
-  export let userData;
-  let ratioTop3Token = [];
-  let closedHoldingPosition;
+  let selectedChain: string = "";
+  chain.subscribe((value) => {
+    selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
+
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
+
+  const getHoldingToken = async () => {
+    const response = await nimbus
+      .get(
+        `/v2/address/${localStorage.getItem("evm_address")}/holding?chain=ALL`
+      )
+      .then((response) => response.data);
+    return response;
+  };
+
+  $: queryTokenHolding = createQuery({
+    queryKey: ["token-holding"],
+    queryFn: () => getHoldingToken(),
+    staleTime: Infinity,
+    enabled: Object.keys(userInfo).length !== 0,
+  });
+
+  let topThreeTokenHolding = [];
+  let closedHoldingPosition = [];
   let netWorth = 0;
 
-  const formatTokenUser = (data) => {
-    return data.filter((e) => Number(e.amount) !== 0 && e.price.price != 0);
-  };
-
-  const formatClosedToken = (data) => {
-    return data
-      .filter((e) => Number(e.amount) === 0)
-      .filter((item) => item?.profit?.realizedProfit)
-      .sort(
-        (a, b) =>
-          Number(b?.profit.realizedProfit) - Number(a?.profit.realizedProfit)
-      );
-  };
-
   $: {
-    if (userData !== undefined) {
-      try {
-        const formatTokenData = formatTokenUser(userData);
-        closedHoldingPosition = formatClosedToken(userData);
+    if (
+      !$queryTokenHolding.isError &&
+      $queryTokenHolding.data &&
+      $queryTokenHolding?.data !== undefined
+    ) {
+      const data = $queryTokenHolding?.data?.filter(
+        (item) => Number(item?.amount) !== 0 && Number(item.price.price) !== 0
+      );
 
-        netWorth = formatTokenData.reduce((a, b) => {
-          const value = Number(b.amount) * b.price.price;
-          return a + value;
-        }, 0);
+      const formatData = data.map((item) => {
+        return {
+          ...item,
+          value: Number(item.amount) * Number(item.price.price),
+        };
+      });
 
-        const sortFormatToken = formatTokenData.sort(
+      closedHoldingPosition = $queryTokenHolding?.data
+        ?.filter((item) => Number(item?.amount) === 0)
+        ?.filter((item) => item?.profit?.realizedProfit)
+        .sort(
           (a, b) =>
-            Number(b.amount) * b.price.price - Number(a.amount) * a.price.price
+            Number(b?.profit.realizedProfit) - Number(a?.profit.realizedProfit)
         );
 
-        for (let i = 0; i < 3; i++) {
-          ratioTop3Token[i] = {
-            ratio:
-              ((Number(sortFormatToken[i]?.amount) *
-                sortFormatToken[i]?.price?.price) /
-                netWorth) *
-              100,
-            name: sortFormatToken[i]?.name,
-          };
-        }
-      } catch (error) {
-        console.error("Error : ", error);
-      }
+      netWorth = formatData.reduce((prev, item) => prev + item.value, 0);
+
+      const sortFormatToken = formatData.sort((a, b) => b.value - a.value);
+
+      topThreeTokenHolding = sortFormatToken.slice(0, 3).map((item) => {
+        return {
+          ...item,
+          ratio: (item.value / netWorth) * 100,
+        };
+      });
     }
   }
-
-  // $: console.log("Networth : ", netWorth);
-  // $: console.log("ratio token data : ", ratioTop3Token);
 </script>
 
-{#if !userData}
-  <div class="flex items-center justify-center h-screen">
-    <Loading />
-  </div>
-{:else}
-  <div class="col-span-2 border shadow-light-500 shadow rounded-xl p-7">
-    <div class="font-extralight leading-7 flex flex-col gap-3">
-      <div>
-        Your Portfolio is value at
-        <span class="font-medium">
-          ${formatBalance(netWorth)}
-        </span>
-        , is diversified across
-        <span class="font-medium">
-          {ratioTop3Token[0]?.name}
-          (<TooltipNumber number={ratioTop3Token[0]?.ratio} type="percent" />%)
-        </span>,
-        <span class="font-medium">
-          {ratioTop3Token[1]?.name}
-          (<TooltipNumber number={ratioTop3Token[1]?.ratio} type="percent" />%)
-        </span>,
-        <span class="font-medium">
-          {ratioTop3Token[2]?.name}
-          (<TooltipNumber number={ratioTop3Token[2]?.ratio} type="percent" />%)
-        </span> and other assets.
-      </div>
-      <div>
-        The best trading is
-        <span class="font-medium">
-          {closedHoldingPosition[0]?.name}
-        </span>
-        with
-        <span class="font-medium text-green-400">
-          ${formatBalance(closedHoldingPosition[0]?.profit?.realizedProfit)} earning
-        </span>
-      </div>
+<div class="col-span-2 border shadow-light-500 shadow rounded-xl">
+  {#if $queryTokenHolding.isFetching}
+    <div class="w-full h-full flex justify-center items-center p-6">
+      <Loading />
     </div>
-  </div>
-{/if}
+  {:else}
+    <div class="flex flex-col gap-3 p-6">
+      {#if netWorth !== 0}
+        <div class="xl:text-base text-xl">
+          Your Portfolio is value at
+          <span class="font-medium">
+            ${formatBalance(netWorth)}
+          </span>, is diversified across
+          {#each topThreeTokenHolding as item}
+            <span class="font-medium">
+              {item.name}
+              (<TooltipNumber number={item.ratio} type="percent" />%),
+            </span>{" "}
+          {/each} and other assets.
+        </div>
+        <div class="xl:text-base text-xl">
+          The best trading is
+          <span class="font-medium">
+            {closedHoldingPosition[0]?.name}
+          </span>
+          with
+          <span class="font-medium text-green-400">
+            ${formatBalance(closedHoldingPosition[0]?.profit?.realizedProfit)} earning
+          </span>
+        </div>
+      {:else}
+        <div class="xl:text-base text-xl">
+          Your Portfolio is value at
+          <span class="font-medium">
+            ${formatBalance(netWorth)}
+          </span>
+        </div>
+      {/if}
+    </div>
+  {/if}
+</div>
 
 <style windi:preflights:global windi:safelist:global></style>

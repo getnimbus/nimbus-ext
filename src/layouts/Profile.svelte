@@ -1,47 +1,13 @@
 <script lang="ts">
-  import { createQuery } from "@tanstack/svelte-query";
-  import { nimbus } from "~/lib/network";
-  import { chain, typeWallet } from "~/store";
-  import type { HoldingTokenRes } from "~/types/HoldingTokenData";
   import { shorterAddress } from "~/utils";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
-
   import CardInfo from "~/UI/Profile/CardInfo.svelte";
   import CardNft from "~/UI/Profile/CardNFT.svelte";
   import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
   import CustomText from "~/UI/Profile/CustomText.svelte";
   import SocialMedia from "~/UI/Profile/SocialMedia.svelte";
   import SummaryText from "~/UI/Profile/SummaryText.svelte";
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  const getHoldingToken = async (chain) => {
-    const response: HoldingTokenRes = await nimbus
-      .get(
-        `/v2/address/${localStorage.getItem(
-          "evm_address"
-        )}/holding?chain=${chain}`
-      )
-      .then((response) => response.data);
-    return response;
-  };
-
-  // query token holding
-  $: queryTokenHolding = createQuery({
-    queryKey: ["token-holding", selectedChain],
-    queryFn: () => getHoldingToken(selectedChain),
-    staleTime: Infinity,
-    enabled: true,
-  });
 </script>
 
 <ErrorBoundary>
@@ -72,9 +38,9 @@
         </div>
       </div>
       <div class="flex-1 flex flex-col gap-4">
-        <div class="xl:text-3xl text-xl font-medium">My Story</div>
+        <div class="xl:text-3xl text-4xl font-medium">My Story</div>
         <div class="grid xl:grid-cols-4 grid-cols-2 gap-10">
-          <SummaryText userData={$queryTokenHolding.data} />
+          <SummaryText />
           <CardNft />
           <CardNft />
           <CustomText />
