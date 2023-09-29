@@ -55,11 +55,9 @@
   $: networth = totalAssets + totalPositions;
 
   $: totalProfit =
-    typeWalletAddress === "SOL"
-      ? 0
-      : networth +
-        Number(data?.overview?.cumulativeOutflow || 0) -
-        Number(data?.overview?.cumulativeInflow || 0);
+    networth +
+    Number(data?.overview?.cumulativeOutflow || 0) -
+    Number(data?.overview?.cumulativeInflow || 0);
 
   $: changeLast24hNetWorth = getChangeFromPercent(
     networth,
@@ -82,7 +80,7 @@
     changeLast24hNetWorth;
 
   $: last24hTotalProfitPercent =
-    typeWalletAddress === "SOL" || typeWalletAddress === "CEX"
+    typeWalletAddress === "CEX"
       ? 0
       : getChangePercent(totalProfit, changeLast24hTotalProfit);
 </script>
@@ -131,11 +129,7 @@
         isTooltip
         tooltipText="Net Flow = Total Outflow - Total Inflow + Net Worth"
       >
-        <div
-          class={`flex xl:text-3xl text-5xl ${
-            typeWalletAddress === "SOL" ? "opacity-50" : ""
-          }`}
-        >
+        <div class="flex xl:text-3xl text-5xl">
           {#if totalProfit.toString().toLowerCase().includes("e-")}
             $<TooltipNumber number={totalProfit} type="balance" personalValue />
           {:else}
@@ -154,9 +148,7 @@
         </div>
         <div
           class={`flex items-center gap-3 ${
-            typeWalletAddress === "BTC" ||
-            typeWalletAddress === "SOL" ||
-            typeWalletAddress === "CEX"
+            typeWalletAddress === "BTC" || typeWalletAddress === "CEX"
               ? "opacity-50"
               : ""
           }`}
@@ -184,11 +176,7 @@
 
     <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
       <OverviewCard title={MultipleLang.realizedProfit}>
-        <div
-          class={`xl:text-3xl text-5xl flex ${
-            typeWalletAddress === "SOL" ? "opacity-50" : ""
-          }`}
-        >
+        <div class="xl:text-3xl text-5xl flex">
           <span>
             {#if realizedProfit < 0}
               -
@@ -233,11 +221,7 @@
       </OverviewCard>
 
       <OverviewCard title={MultipleLang.unrealizedProfit}>
-        <div
-          class={`xl:text-3xl text-5xl flex ${
-            typeWalletAddress === "SOL" ? "opacity-50" : ""
-          }`}
-        >
+        <div class="xl:text-3xl text-5xl flex">
           <span>
             {#if unrealizedProfit < 0}
               -

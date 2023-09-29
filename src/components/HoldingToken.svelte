@@ -749,7 +749,7 @@
     <div
       class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm"
     >
-      {#if ["BTC", "SOL"].includes(typeWalletAddress)}
+      {#if ["BTC"].includes(typeWalletAddress)}
         N/A
       {:else}
         <div class="flex flex-col">
@@ -805,7 +805,7 @@
     <div
       class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm"
     >
-      {#if ["BTC", "SOL"].includes(typeWalletAddress)}
+      {#if ["BTC"].includes(typeWalletAddress)}
         N/A
       {:else}
         <div class="flex flex-col">
