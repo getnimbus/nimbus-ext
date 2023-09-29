@@ -38,11 +38,11 @@
 
   let socialDataTwitter = {
     title: "",
-    hashtag: "",
+    username: "",
   };
   let socialDataTelegram = {
     title: "",
-    hashtag: "",
+    username: "",
   };
 
   let description =
@@ -195,7 +195,18 @@
             <Summary {selectedAddress} />
             <Description {isEdit} bind:description />
             <NFTInfo {isEdit} bind:selectProfileNFT />
-            <SocialMedia />
+            <SocialMedia
+              newUser={true}
+              {isEdit}
+              bind:socialData={socialDataTwitter}
+              typeSocialMedia="Twitter"
+            />
+            <SocialMedia
+              newUser={true}
+              {isEdit}
+              bind:socialData={socialDataTelegram}
+              typeSocialMedia="Telegram"
+            />
             <ClosedPositionChart />
           </div>
         </div>

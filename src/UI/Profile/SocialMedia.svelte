@@ -1,20 +1,33 @@
 <script lang="ts">
   import Button from "~/components/Button.svelte";
   import IconSocialMedia from "~/components/IconSocialMedia.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
 
   export let typeSocialMedia: "Twitter" | "Telegram" = "Twitter";
-  let backgroundColor =
-    typeSocialMedia == "Twitter" ? "bg-black" : "bg-[#2AABEE]";
 
-  export let isEdit;
+  let linkHref =
+    typeSocialMedia === "Twitter" ? "https://twitter.com/" : "https://t.me/";
+
+  export let newUser: boolean;
+  export let isEdit = false;
   export let socialData = {
     title: "",
-    hashtag: "",
+    username: "",
   };
 
   let userTypedUsername = false;
   let editTitle = false;
+
+  if (newUser) {
+    isEdit = true;
+  }
+
+  const handleSubmitSocialMedia = () => {
+    socialData = {
+      title: document.getElementById("title").value,
+      username: document.getElementById("username").value,
+    };
+    isEdit = false;
+  };
 </script>
 
 <div
@@ -29,16 +42,34 @@
     <div class="relative">
       {#if isEdit}
         <div>Add your Username</div>
-        <span class="flex items-center pt-2 gap-1">
-          @ <input
-            type="text"
-            name="username"
-            id="username"
-            value=""
-            class="rounded-xl w-full"
-            placeholder="Your Username"
-            on:keyup={({ target: { value } }) => (socialData.hashtag = value)}
-          />
+        <span class="pt-2">
+          <form
+            on:submit|preventDefault={handleSubmitSocialMedia}
+            class="flex flex-col gap-3"
+          >
+            <input
+              type="text"
+              name="title"
+              id="title"
+              value=""
+              class="rounded-xl w-full"
+              placeholder="Your Username"
+              on:keyup={({ target: { value } }) => (socialData.title = value)}
+            />
+            <span class="flex items-center gap-1">
+              @<input
+                type="text"
+                name="username"
+                id="username"
+                value=""
+                class="rounded-xl w-full"
+                placeholder="Your Username"
+                on:keyup={({ target: { value } }) =>
+                  (socialData.username = value)}
+              />
+            </span>
+            <input type="submit" hidden />
+          </form>
         </span>
       {:else}
         <div
@@ -54,27 +85,27 @@
               class="rounded-xl w-full"
             />
           {:else}
-            {typeSocialMedia}
+            {socialData.title == "" ? typeSocialMedia : socialData.title}
           {/if}
         </div>
-        <div>@ {socialData.hashtag}</div>
+        <div>@ {socialData.username}</div>
       {/if}
     </div>
-    {#if userTypedUsername}
+    {#if userTypedUsername || !isEdit}
       <Button variant={typeSocialMedia}>
-        <div
+        <a
+          target="_blank"
+          href={linkHref + socialData.username}
           class={`py-[7px] px-4 rounded-full w-32 text-center
         ${isEdit ? "hidden" : "block"}
       `}
         >
           Follow
-        </div>
+        </a>
       </Button>
     {/if}
   </div>
 </div>
-
-<!-- ${typeSocialMedia == "twitter" ? "bg-black" : "bg-[#2AABEE]"} -->
 
 <style windi:preflights:global windi:safelist:global>
 </style>
