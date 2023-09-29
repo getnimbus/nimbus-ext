@@ -6,6 +6,7 @@
 
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import { text } from "svelte/internal";
 
   export let selectedAddress;
 

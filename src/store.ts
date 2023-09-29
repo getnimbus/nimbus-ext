@@ -12,6 +12,7 @@ export const isShowHeaderMobile = writable(false);
 export const selectedBundle = writable({});
 export const isHidePortfolio = writable(false);
 
+
 // let isFirstTime = true;
 // isOpenReport.subscribe((value) => {
 //   if (!isFirstTime && APP_TYPE.TYPE === 'WEB') {
