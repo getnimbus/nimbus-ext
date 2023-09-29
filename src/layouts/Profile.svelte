@@ -34,19 +34,16 @@
   let isEdit = false;
   let showPopover = false;
 
+  let description = "Your description";
   let selectProfileNFT = {};
-
   let socialDataTwitter = {
-    title: "",
+    label: "Twitter",
     username: "",
   };
   let socialDataTelegram = {
-    title: "",
+    label: "Telegram",
     username: "",
   };
-
-  let description =
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus odio perferendis dolorum repellat ex, dignissimos nisi velit ipsa tenetur nihil magnam earum corporis amet reiciendis est doloribus sint officia tempora impedit numquam ratione aliquid. Eligendi fuga sint repudiandae dicta necessitatibus pariatur minima similique, ipsa facilis esse mollitia ex sapiente inventore!";
 
   const handleSubmitProfile = async () => {
     console.log("selectedAddress: ", selectedAddress);
@@ -59,6 +56,14 @@
   const handleCancelEdit = () => {
     isEdit = false;
     selectedAddress = localStorage.getItem("evm_address");
+    socialDataTelegram = {
+      label: "Telegram",
+      username: "",
+    };
+    socialDataTwitter = {
+      label: "Twitter",
+      username: "",
+    };
   };
 
   const getListAddress = async () => {
@@ -119,22 +124,26 @@
       on:submit|preventDefault={handleSubmitProfile}
       class="flex flex-col gap-4"
     >
-      <div class="flex items-center justify-end lg:gap-2 gap-6">
-        {#if isEdit}
-          <div class="w-[120px]">
-            <Button variant="secondary" on:click={handleCancelEdit}
-              >Cancel</Button
-            >
-          </div>
-          <div class="w-[120px]">
-            <Button type="submit">Save</Button>
-          </div>
-        {:else}
-          <div class="xl:w-[160px] w-[220px]">
-            <Button on:click={() => (isEdit = true)}>Edit your profile</Button>
-          </div>
-        {/if}
-      </div>
+      {#if Object.keys(userInfo).length !== 0}
+        <div class="flex items-center justify-end lg:gap-2 gap-6">
+          {#if isEdit}
+            <div class="w-[120px]">
+              <Button variant="secondary" on:click={handleCancelEdit}
+                >Cancel</Button
+              >
+            </div>
+            <div class="w-[120px]">
+              <Button type="submit">Save</Button>
+            </div>
+          {:else}
+            <div class="xl:w-[160px] w-[220px]">
+              <Button on:click={() => (isEdit = true)}>Edit your profile</Button
+              >
+            </div>
+          {/if}
+        </div>
+      {/if}
+
       <div
         class="w-full flex xl:flex-row flex-col rounded-xl py-10 px-10 gap-9 border-2 border_0000001a"
       >
@@ -191,23 +200,23 @@
         </div>
         <div class="flex-1 flex flex-col gap-4">
           <div class="xl:text-3xl text-4xl font-medium">My Story</div>
-          <div class="grid xl:grid-cols-4 grid-cols-2 gap-10">
+          <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
             <Summary {selectedAddress} />
             <Description {isEdit} bind:description />
             <NFTInfo {isEdit} bind:selectProfileNFT />
-            <SocialMedia
-              newUser={true}
-              {isEdit}
-              bind:socialData={socialDataTwitter}
-              typeSocialMedia="Twitter"
-            />
-            <SocialMedia
-              newUser={true}
-              {isEdit}
-              bind:socialData={socialDataTelegram}
-              typeSocialMedia="Telegram"
-            />
-            <ClosedPositionChart />
+            <div class="col-span-2 grid grid-cols-2 gap-6">
+              <SocialMedia
+                {isEdit}
+                bind:socialData={socialDataTwitter}
+                typeSocialMedia="Twitter"
+              />
+              <SocialMedia
+                {isEdit}
+                bind:socialData={socialDataTelegram}
+                typeSocialMedia="Telegram"
+              />
+            </div>
+            <ClosedPositionChart {selectedAddress} />
           </div>
         </div>
       </div>

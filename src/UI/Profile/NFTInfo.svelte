@@ -92,11 +92,11 @@
     <div class="overflow-y-auto h-[563px] grid grid-cols-3 gap-6">
       {#each $queryPreview?.data?.nfts as item}
         <div
-          class="rounded-xl border border_0000001a overflow-hidden h-[260px]"
+          class="rounded-xl border border_0000001a overflow-hidden h-[260px] cursor-pointer"
           on:click={() => {
             selectedNFT = item;
             selectProfileNFT = item;
-            isOpenModalSelectNFT = true;
+            isOpenModalSelectNFT = false;
           }}
         >
           <img

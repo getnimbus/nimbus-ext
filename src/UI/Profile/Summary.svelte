@@ -83,8 +83,9 @@
         <div class="xl:text-base text-xl">
           Your Portfolio is value at
           <span class="font-medium">
-            ${formatBalance(netWorth)}
-          </span>, is diversified across
+            ${formatBalance(netWorth)},
+          </span>
+          is diversified across
           {#each topThreeTokenHolding as item}
             <span class="font-medium">
               {item.name}

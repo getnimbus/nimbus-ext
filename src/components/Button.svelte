@@ -28,12 +28,12 @@
     ["tertiary"]: variant === "tertiary",
     ["no_outlined"]: variant === "no-outlined",
     ["delete"]: variant === "delete",
+    ["twitter"]: variant === "Twitter",
+    ["telegram"]: variant === "Telegram",
     ["large"]: size === "large",
     ["small"]: size === "small",
     ["supper-small"]: size === "supper-small",
     ["loading"]: isLoading,
-    ["twitter"]: variant === "Twitter",
-    ["telegram"]: variant === "Telegram",
   });
 
   let darkMode = false;
@@ -213,6 +213,22 @@
     background: #fff;
   }
 
+  .twitter {
+    color: white;
+    border: none;
+  }
+  .twitter[type="button"] {
+    background-color: black;
+  }
+
+  .telegram {
+    color: white;
+    border: none;
+  }
+  .telegram[type="button"] {
+    background-color: #2aabee;
+  }
+
   .disabled {
     color: #fff;
     border: 1px solid transparent;
@@ -235,22 +251,5 @@
   .underlined[type="submit"],
   .underlined[type="button"] {
     background: #fff;
-  }
-
-  .twitter {
-    color: white;
-    border: none;
-  }
-  .twitter[type="button"] {
-    background-color: black;
-  }
-
-  .telegram {
-    color: white;
-    border: none;
-  }
-
-  .telegram[type="button"] {
-    background-color: #2aabee;
   }
 </style>
