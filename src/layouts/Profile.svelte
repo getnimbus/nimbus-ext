@@ -10,11 +10,12 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   import Summary from "~/UI/Profile/Summary.svelte";
-  import Description from "~/UI/Profile/Description.svelte";
-  import NFTInfo from "~/UI/Profile/NFTInfo.svelte";
   import SocialMedia from "~/UI/Profile/SocialMedia.svelte";
   import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
   import Button from "~/components/Button.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
+  import Loading from "~/components/Loading.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -53,6 +54,7 @@
   let showPopover = false;
   let isEdit = false;
   let isLoadingSaveProfile = false;
+  let isOpenModalSelectNFT = false;
 
   let userId = "";
   let selectedAddress = localStorage.getItem("evm_address") || "";
@@ -71,18 +73,46 @@
     const urlParams = new URLSearchParams(window.location.search);
     const userIdParam = urlParams.get("id");
     if (userIdParam) {
-      userId = userIdParam;
+      userId = "04362bf3-3661-46d1-b433-47e88bdb7bfe";
     }
   });
 
+  const submitSocialData = (data) => {
+    if (data.type === "Twitter") {
+      socialDataTwitter = {
+        label: data.label,
+        username: data.username,
+      };
+    }
+    if (data.type === "Telegram") {
+      socialDataTelegram = {
+        label: data.label,
+        username: data.username,
+      };
+    }
+  };
+
   const handleSubmitProfile = async () => {
-    console.log("selectedAddress: ", selectedAddress);
-    console.log("description: ", description);
     console.log("selectProfileNFT: ", selectProfileNFT);
-    console.log("socialDataTwitter: ", socialDataTwitter);
-    console.log("socialDataTelegram: ", socialDataTelegram);
 
     isLoadingSaveProfile = true;
+
+    const payload = {
+      intro: description,
+      publicAddress: selectedAddress,
+      social: {
+        twitter: {
+          id: socialDataTwitter.username,
+          status: socialDataTwitter.label,
+        },
+        telegram: {
+          id: socialDataTelegram.username,
+          status: socialDataTelegram.label,
+        },
+      },
+    };
+    console.log("payload: ", payload);
+
     try {
       isLoadingSaveProfile = false;
       toastMsg = "Your profile updated successfully!";
@@ -98,21 +128,24 @@
     }
   };
 
-  const handleCancelEdit = () => {
+  const handleCancelEditProfile = () => {
     isEdit = false;
-    selectedAddress = localStorage.getItem("evm_address");
+
+    selectedAddress = $queryUserProfile.data?.publicAddress;
+    selectProfileNFT = $queryUserProfile.data?.highlightNft;
+    description = $queryUserProfile.data?.intro;
     socialDataTelegram = {
-      label: "Telegram",
-      username: "",
+      label: $queryUserProfile.data.social?.telegram?.status || "Telegram",
+      username: $queryUserProfile.data.social?.telegram?.id || "",
     };
     socialDataTwitter = {
-      label: "Twitter",
-      username: "",
+      label: $queryUserProfile.data.social?.twitter?.status || "Twitter",
+      username: $queryUserProfile.data.social?.twitter?.id || "",
     };
   };
 
   const getUserProfile = async (id) => {
-    const response: any = await nimbus.get("/accounts/list");
+    const response: any = await nimbus.get(`/users/${id}/profile`);
     if (response?.status === 401) {
       throw new Error(response?.response?.error);
     }
@@ -127,6 +160,13 @@
     return response?.data;
   };
 
+  const getPreview = async (address) => {
+    const response = await nimbus
+      .get(`/address/${address}/preview?chain=ALL`)
+      .then((response) => response.data);
+    return response;
+  };
+
   $: queryUserProfile = createQuery({
     queryKey: ["user-profile", userId],
     queryFn: () => getUserProfile(userId),
@@ -139,7 +179,28 @@
     },
   });
 
-  $: console.log("queryUserProfile: ", $queryUserProfile);
+  $: {
+    if ($queryUserProfile && $queryUserProfile.data !== undefined) {
+      selectedAddress = $queryUserProfile.data?.publicAddress;
+      selectProfileNFT = $queryUserProfile.data?.highlightNft;
+      description = $queryUserProfile.data?.intro;
+      socialDataTelegram = {
+        label: $queryUserProfile.data.social?.telegram?.status || "Telegram",
+        username: $queryUserProfile.data.social?.telegram?.id || "",
+      };
+      socialDataTwitter = {
+        label: $queryUserProfile.data.social?.twitter?.status || "Twitter",
+        username: $queryUserProfile.data.social?.twitter?.id || "",
+      };
+    }
+  }
+
+  $: queryPreview = createQuery({
+    queryKey: ["preview", selectedAddress],
+    queryFn: () => getPreview(selectedAddress),
+    staleTime: Infinity,
+    enabled: Object.keys(userInfo).length !== 0,
+  });
 
   $: query = createQuery({
     queryKey: ["list-address"],
@@ -195,7 +256,7 @@
         <div class="flex items-center justify-end lg:gap-2 gap-6">
           {#if isEdit}
             <div class="w-[120px]">
-              <Button variant="secondary" on:click={handleCancelEdit}
+              <Button variant="secondary" on:click={handleCancelEditProfile}
                 >Cancel</Button
               >
             </div>
@@ -219,7 +280,7 @@
         >
           <div class="xl:w-[80px] xl:h-[80px] w-32 h-32">
             <img
-              src={`/assets/user.png`}
+              src="/assets/user.png"
               alt=""
               class="object-cover w-full h-full"
             />
@@ -269,20 +330,83 @@
           <div class="xl:text-3xl text-4xl font-medium">My Story</div>
           <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
             <Summary {selectedAddress} />
-            <Description {isEdit} bind:description />
-            <NFTInfo {isEdit} bind:selectProfileNFT />
+
+            <div
+              class="col-span-2 p-6 bg-dark-50 text-white xl:text-base text-xl rounded-xl"
+            >
+              {#if isEdit}
+                <textarea
+                  maxlength="300"
+                  rows="5"
+                  value={description}
+                  class="bg-dark-50 text-white xl:text-base text-xl rounded-lg border-0 outline-none w-full"
+                  on:keyup={({ target: { value } }) => (description = value)}
+                />
+              {:else}
+                <div>{description}</div>
+              {/if}
+            </div>
+
+            <div
+              class="col-span-2 flex items-center gap-2 p-5 rounded-xl border border_0000001a"
+            >
+              <div
+                class="w-2/5 flex flex-col gap-2 justify-center items-center"
+              >
+                <img
+                  src={selectProfileNFT?.image}
+                  alt="NFT_Image"
+                  class="rounded-xl"
+                />
+                {#if isEdit}
+                  <div class="w-max">
+                    <Button
+                      variant="secondary"
+                      on:click={() => (isOpenModalSelectNFT = true)}
+                      >Change</Button
+                    >
+                  </div>
+                {/if}
+              </div>
+              <div class="flex-1 flex flex-col gap-3">
+                <div class="font-medium xl:text-lg text-2xl">
+                  {selectProfileNFT?.title}
+                </div>
+                <div class="flex flex-col gap-2 xl:text-base text-xl">
+                  <div class="flex justify-between">
+                    <div class="text-gray-400">Collection</div>
+                    <div>{selectProfileNFT?.collection?.name}</div>
+                  </div>
+                  <div class="flex justify-between">
+                    <div class="text-gray-400">Rarity</div>
+                    <div>{selectProfileNFT?.rarity}</div>
+                  </div>
+                  <div class="flex justify-between">
+                    <div class="text-gray-400">Price</div>
+                    <TooltipNumber
+                      number={selectProfileNFT?.price}
+                      type="value"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="col-span-2 grid grid-cols-2 gap-6">
               <SocialMedia
                 {isEdit}
-                bind:socialData={socialDataTwitter}
                 typeSocialMedia="Twitter"
+                bind:socialData={socialDataTwitter}
+                {submitSocialData}
               />
               <SocialMedia
                 {isEdit}
-                bind:socialData={socialDataTelegram}
                 typeSocialMedia="Telegram"
+                bind:socialData={socialDataTelegram}
+                {submitSocialData}
               />
             </div>
+
             <ClosedPositionChart {selectedAddress} />
           </div>
         </div>
@@ -290,6 +414,55 @@
     </form>
   </div>
 </ErrorBoundary>
+
+<!-- Modal select NFT profile -->
+<AppOverlay
+  clickOutSideToClose
+  isOpen={isOpenModalSelectNFT}
+  on:close={() => {
+    isOpenModalSelectNFT = false;
+  }}
+>
+  <div class="flex flex-col gap-4">
+    <div class="xl:title-3 title-1 font-semibold">
+      Select your NFT to set your profile
+    </div>
+    {#if $queryPreview.isFetching}
+      <div class="flex items-center justify-center h-[465px]">
+        <Loading />
+      </div>
+    {:else}
+      <div>
+        {#if $queryPreview.isError || $queryPreview?.data?.nfts.length === 0}
+          <div
+            class="flex justify-center items-center p-[6px] text-lg text-gray-400 h-[465px]"
+          >
+            Empty
+          </div>
+        {:else}
+          <div class="overflow-y-auto h-[563px] grid grid-cols-3 gap-6">
+            {#each $queryPreview?.data?.nfts as item}
+              <div
+                class="rounded-xl border border_0000001a overflow-hidden h-[260px] cursor-pointer"
+                on:click={() => {
+                  selectProfileNFT = item;
+                  isOpenModalSelectNFT = false;
+                }}
+              >
+                <img
+                  src={item?.imageUrl ||
+                    "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
+                  alt=""
+                  class="w-full h-full object-contain"
+                />
+              </div>
+            {/each}
+          </div>
+        {/if}
+      </div>
+    {/if}
+  </div>
+</AppOverlay>
 
 {#if showToast}
   <div class="fixed top-3 right-3 w-full z-10">
