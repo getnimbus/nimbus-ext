@@ -356,7 +356,7 @@
       <LoadingPremium />
     </div>
   {:else}
-    <div class="h-full relative">
+    <div class="h-full">
       {#if $queryTokenHolding.isError}
         <div
           class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-base text-xl ${
@@ -366,65 +366,69 @@
           Empty
         </div>
       {:else}
-        <div class="flex flex-row p-6">
-          <AnimateSharedLayout>
-            {#each typeClosedHoldingTokenChart as type}
-              <div
-                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                on:click={() => (selectedTypeChart = type.value)}
-              >
-                <div
-                  class={`relative z-20 ${
-                    selectedTypeChart === type.value && "text-white"
-                  }`}
-                >
-                  {type.label}
-                </div>
-                {#if type.value === selectedTypeChart}
-                  <Motion
-                    let:motion
-                    layoutId="active-pill"
-                    transition={{ type: "spring", duration: 0.6 }}
+        <div>
+          {#if closedHoldingPosition && closedHoldingPosition.length !== 0}
+            <div class="flex flex-row p-6">
+              <AnimateSharedLayout>
+                {#each typeClosedHoldingTokenChart as type}
+                  <div
+                    class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                    on:click={() => (selectedTypeChart = type.value)}
                   >
                     <div
-                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                      use:motion
-                    />
-                  </Motion>
-                {/if}
-              </div>
-            {/each}
-          </AnimateSharedLayout>
-        </div>
-        {#if closedHoldingPosition && closedHoldingPosition.length === 0}
-          <div
-            class="flex justify-center items-center h-[465px] xl:text-xs text-lg"
-          >
-            Empty
-          </div>
-        {:else}
-          <div class="relative pl-4">
-            <EChart
-              id="closed-holding-token"
-              {theme}
-              option={selectedTypeChart === "value"
-                ? optionBarValue
-                : optionBarPercent}
-              notMerge={true}
-              height={465}
-            />
-            <div
-              class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
-            >
-              <img
-                src={darkMode ? LogoWhite : Logo}
-                alt=""
-                width="140"
-                height="140"
-              />
+                      class={`relative z-20 ${
+                        selectedTypeChart === type.value && "text-white"
+                      }`}
+                    >
+                      {type.label}
+                    </div>
+                    {#if type.value === selectedTypeChart}
+                      <Motion
+                        let:motion
+                        layoutId="active-pill"
+                        transition={{ type: "spring", duration: 0.6 }}
+                      >
+                        <div
+                          class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                          use:motion
+                        />
+                      </Motion>
+                    {/if}
+                  </div>
+                {/each}
+              </AnimateSharedLayout>
             </div>
-          </div>
-        {/if}
+          {/if}
+          {#if closedHoldingPosition && closedHoldingPosition.length === 0}
+            <div
+              class="flex justify-center items-center h-[465px] xl:text-base text-lg"
+            >
+              There are no closed holding position
+            </div>
+          {:else}
+            <div class="relative pl-4">
+              <EChart
+                id="closed-holding-token"
+                {theme}
+                option={selectedTypeChart === "value"
+                  ? optionBarValue
+                  : optionBarPercent}
+                notMerge={true}
+                height={465}
+              />
+              <div
+                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
+              >
+                <img
+                  src={darkMode ? LogoWhite : Logo}
+                  alt=""
+                  width="140"
+                  height="140"
+                />
+              </div>
+            </div>
+          {/if}
+        </div>
       {/if}
     </div>
   {/if}

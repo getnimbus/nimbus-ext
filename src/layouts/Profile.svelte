@@ -248,6 +248,7 @@
         One place that aggregates all your personal information
       </div>
     </div>
+
     <form
       on:submit|preventDefault={handleSubmitProfile}
       class="flex flex-col gap-4"
@@ -261,7 +262,11 @@
               >
             </div>
             <div class="w-[120px]">
-              <Button type="submit">Save</Button>
+              <Button
+                type="submit"
+                isLoading={isLoadingSaveProfile}
+                disabled={isLoadingSaveProfile}>Save</Button
+              >
             </div>
           {:else}
             <div class="xl:w-[160px] w-[220px]">
@@ -311,6 +316,18 @@
                     class="flex flex-col cursor-pointer"
                     on:click={() => {
                       selectedAddress = item.value;
+
+                      description = "Your description";
+                      selectProfileNFT = {};
+                      socialDataTwitter = {
+                        label: "Twitter",
+                        username: "",
+                      };
+                      socialDataTelegram = {
+                        label: "Telegram",
+                        username: "",
+                      };
+
                       showPopover = false;
                     }}
                   >
@@ -350,46 +367,64 @@
             <div
               class="col-span-2 flex items-center gap-2 p-5 rounded-xl border border_0000001a"
             >
-              <div
-                class="w-2/5 flex flex-col gap-2 justify-center items-center"
-              >
-                <img
-                  src={selectProfileNFT?.image}
-                  alt="NFT_Image"
-                  class="rounded-xl"
-                />
-                {#if isEdit}
+              {#if Object.keys(selectProfileNFT).length !== 0}
+                <div
+                  class="w-2/5 flex flex-col gap-2 justify-center items-center"
+                >
+                  <img
+                    src={selectProfileNFT?.image}
+                    alt="NFT_Image"
+                    class="rounded-xl"
+                  />
+                  {#if isEdit}
+                    <div class="w-max">
+                      <Button
+                        variant="secondary"
+                        on:click={() => (isOpenModalSelectNFT = true)}
+                        >Change</Button
+                      >
+                    </div>
+                  {/if}
+                </div>
+                <div class="flex-1 flex flex-col gap-3">
+                  <div class="font-medium xl:text-lg text-2xl">
+                    {selectProfileNFT?.title}
+                  </div>
+                  <div class="flex flex-col gap-2 xl:text-base text-xl">
+                    <div class="flex justify-between">
+                      <div class="text-gray-400">Collection</div>
+                      <div>{selectProfileNFT?.collection?.name}</div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div class="text-gray-400">Rarity</div>
+                      <div>{selectProfileNFT?.rarity}</div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div class="text-gray-400">Price</div>
+                      <TooltipNumber
+                        number={selectProfileNFT?.price}
+                        type="value"
+                      />
+                    </div>
+                  </div>
+                </div>
+              {:else}
+                <div
+                  class="flex flex-col justify-center items-center gap-2 w-full h-full"
+                >
+                  <div class="xl:text-base text-lg">
+                    Choose your NFT to set your profile
+                  </div>
                   <div class="w-max">
                     <Button
-                      variant="secondary"
+                      variant="tertiary"
                       on:click={() => (isOpenModalSelectNFT = true)}
-                      >Change</Button
                     >
-                  </div>
-                {/if}
-              </div>
-              <div class="flex-1 flex flex-col gap-3">
-                <div class="font-medium xl:text-lg text-2xl">
-                  {selectProfileNFT?.title}
-                </div>
-                <div class="flex flex-col gap-2 xl:text-base text-xl">
-                  <div class="flex justify-between">
-                    <div class="text-gray-400">Collection</div>
-                    <div>{selectProfileNFT?.collection?.name}</div>
-                  </div>
-                  <div class="flex justify-between">
-                    <div class="text-gray-400">Rarity</div>
-                    <div>{selectProfileNFT?.rarity}</div>
-                  </div>
-                  <div class="flex justify-between">
-                    <div class="text-gray-400">Price</div>
-                    <TooltipNumber
-                      number={selectProfileNFT?.price}
-                      type="value"
-                    />
+                      Add NFT
+                    </Button>
                   </div>
                 </div>
-              </div>
+              {/if}
             </div>
 
             <div class="col-span-2 grid grid-cols-2 gap-6">
