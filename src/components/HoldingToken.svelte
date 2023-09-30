@@ -318,7 +318,7 @@
               "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
           }}
         />
-        {#if (typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE") && data?.chain !== "CEX" && data?.chain !== "SOL" && data?.chain !== "BTC"}
+        {#if (typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE") && data?.chain !== "CEX" && data?.chain !== "BTC"}
           <div class="absolute -top-2 -right-1">
             <img
               src={detectedChain(data.chain)}
