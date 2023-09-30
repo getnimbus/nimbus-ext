@@ -1348,7 +1348,7 @@
         <div class="w-[120px]">
           <Button type="submit" variant="tertiary" isLoading={isLoadingBundle}>
             {#if selectedBundle && Object.keys(selectedBundle).length !== 0}
-              {MultipleLang.content.modal_edit}
+              Save
             {:else}
               {MultipleLang.content.modal_add}
             {/if}
