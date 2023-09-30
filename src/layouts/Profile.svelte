@@ -132,8 +132,8 @@
     isEdit = false;
 
     selectedAddress = $queryUserProfile.data?.publicAddress;
-    selectProfileNFT = $queryUserProfile.data?.highlightNft;
-    description = $queryUserProfile.data?.intro;
+    selectProfileNFT = $queryUserProfile.data?.highlightNft || {};
+    description = $queryUserProfile.data?.intro || "Your description";
     socialDataTelegram = {
       label: $queryUserProfile.data.social?.telegram?.status || "Telegram",
       username: $queryUserProfile.data.social?.telegram?.id || "",
@@ -182,8 +182,8 @@
   $: {
     if ($queryUserProfile && $queryUserProfile.data !== undefined) {
       selectedAddress = $queryUserProfile.data?.publicAddress;
-      selectProfileNFT = $queryUserProfile.data?.highlightNft;
-      description = $queryUserProfile.data?.intro;
+      selectProfileNFT = $queryUserProfile.data?.highlightNft || {};
+      description = $queryUserProfile.data?.intro || "Your description";
       socialDataTelegram = {
         label: $queryUserProfile.data.social?.telegram?.status || "Telegram",
         username: $queryUserProfile.data.social?.telegram?.id || "",
@@ -367,7 +367,7 @@
             <div
               class="col-span-2 flex items-center gap-2 p-5 rounded-xl border border_0000001a"
             >
-              {#if Object.keys(selectProfileNFT).length !== 0}
+              {#if selectProfileNFT && Object.keys(selectProfileNFT).length !== 0}
                 <div
                   class="w-2/5 flex flex-col gap-2 justify-center items-center"
                 >
@@ -413,16 +413,18 @@
                   class="flex flex-col justify-center items-center gap-2 w-full h-full"
                 >
                   <div class="xl:text-base text-lg">
-                    Choose your NFT to set your profile
+                    There is no NFT highlight yet in your profile
                   </div>
-                  <div class="w-max">
-                    <Button
-                      variant="tertiary"
-                      on:click={() => (isOpenModalSelectNFT = true)}
-                    >
-                      Add NFT
-                    </Button>
-                  </div>
+                  {#if Object.keys(userInfo).length !== 0}
+                    <div class="w-max">
+                      <Button
+                        variant="tertiary"
+                        on:click={() => (isOpenModalSelectNFT = true)}
+                      >
+                        Add NFT
+                      </Button>
+                    </div>
+                  {/if}
                 </div>
               {/if}
             </div>
