@@ -679,7 +679,7 @@
     <div
       class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm text_00000099"
     >
-      {#if withinLast24Hours < 24}
+      {#if withinLast24Hours < 24 && withinLast24Hours > 0}
         <span
           use:tooltip={{
             content: `<tooltip-detail text="Changed ${withinLast24Hours} hrs ago" />`,
