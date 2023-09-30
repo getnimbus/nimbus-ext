@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
 
@@ -108,6 +109,7 @@
         filter_spam_trx_notification: filterSpamTrx,
       };
       console.log(payload);
+      const response = await nimbus.post("/alert-notification", payload);
     } catch (e) {
       console.error(e);
       isLoadingSave = false;
