@@ -101,12 +101,13 @@
 
     try {
       isLoadingSave = false;
-      console.log({
-        selectedPercent,
-        selectedSummary,
-        transaction,
-        filterSpamTrx,
-      });
+      const payload = {
+        price_notification: selectedPercent,
+        summary_notification: selectedSummary,
+        transaction_notification: transaction,
+        filter_spam_transaction: filterSpamTrx,
+      };
+      console.log(payload);
     } catch (e) {
       console.error(e);
       isLoadingSave = false;
