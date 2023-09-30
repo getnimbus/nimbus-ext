@@ -150,7 +150,7 @@
         if (signatureString) {
           const payload = {
             signature: signatureString,
-            publicAddress: address,
+            publicAddress: address?.toLowerCase(),
           };
           handleGetEVMToken(payload);
         }
