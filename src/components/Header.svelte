@@ -199,6 +199,7 @@
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
       localStorage.setItem("evm_address", $queryUserInfo.data.publicAddress);
+      localStorage.setItem("user_id", $queryUserInfo.data.id);
       publicAddress = $queryUserInfo.data.publicAddress;
       if (
         $queryUserInfo.data?.plan?.tier &&
@@ -637,7 +638,7 @@
                 isShowHeaderMobile.update((n) => (n = false));
               }}
             >
-              <Link to="profile">
+              <Link to={`/profile?id=${localStorage.getItem("user_id")}`}>
                 <div
                   class={`flex items-center gap-3 text-white px-5 py-6 
             ${

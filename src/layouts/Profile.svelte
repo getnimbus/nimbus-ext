@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { shorterAddress, clickOutside } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
@@ -53,6 +54,7 @@
   let isEdit = false;
   let isLoadingSaveProfile = false;
 
+  let userId = "";
   let selectedAddress = localStorage.getItem("evm_address") || "";
   let description = "Your description";
   let selectProfileNFT = {};
@@ -64,6 +66,14 @@
     label: "Telegram",
     username: "",
   };
+
+  onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userIdParam = urlParams.get("id");
+    if (userIdParam) {
+      userId = userIdParam;
+    }
+  });
 
   const handleSubmitProfile = async () => {
     console.log("selectedAddress: ", selectedAddress);
@@ -101,6 +111,14 @@
     };
   };
 
+  const getUserProfile = async (id) => {
+    const response: any = await nimbus.get("/accounts/list");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response?.data;
+  };
+
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
     if (response?.status === 401) {
@@ -108,6 +126,20 @@
     }
     return response?.data;
   };
+
+  $: queryUserProfile = createQuery({
+    queryKey: ["user-profile", userId],
+    queryFn: () => getUserProfile(userId),
+    staleTime: Infinity,
+    retry: false,
+    enabled: userId.length !== 0,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
+  });
+
+  $: console.log("queryUserProfile: ", $queryUserProfile);
 
   $: query = createQuery({
     queryKey: ["list-address"],
