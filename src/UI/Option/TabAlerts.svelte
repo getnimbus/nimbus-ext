@@ -102,10 +102,10 @@
     try {
       isLoadingSave = false;
       const payload = {
-        price_notification: selectedPercent,
-        summary_notification: selectedSummary,
+        price_notification_setting: selectedPercent,
+        summary_notification_setting: selectedSummary,
         transaction_notification: transaction,
-        filter_spam_transaction: filterSpamTrx,
+        filter_spam_trx_notification: filterSpamTrx,
       };
       console.log(payload);
     } catch (e) {
