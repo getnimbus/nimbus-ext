@@ -643,10 +643,10 @@
   };
 
   $: {
-    if (listAddress.length === 3 && packageSelected === "FREE") {
+    if (listAddress.length > 3 && packageSelected === "FREE") {
       isDisabled = true;
     }
-    if (listAddress.length === 7 && packageSelected === "EXPLORER") {
+    if (listAddress.length > 7 && packageSelected === "EXPLORER") {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
         localStorage.getItem("isGetUserEmailYet") === "false"
