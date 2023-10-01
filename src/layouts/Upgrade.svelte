@@ -69,6 +69,8 @@
       isLoadingBuy = false;
     }
   };
+
+  $: console.log("selectedPackage: ", selectedPackage);
 </script>
 
 <ErrorBoundary>
@@ -90,8 +92,8 @@
             <span class="xl:text-lg text-2xl font-medium"
               >{selectedPackage.selectedTypePackage === "year"
                 ? selectedPackage.plan === "Professional"
-                  ? `$990`
-                  : "$300"
+                  ? "$990"
+                  : "$99"
                 : selectedPackage.price}</span
             >
 
