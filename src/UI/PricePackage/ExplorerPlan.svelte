@@ -21,7 +21,7 @@
 </script>
 
 <div class="flex items-end gap-2 font-semibold text-4xl xl:text-3xl">
-  <span>{selectedTypePackage === "month" ? "$30" : "$25"}</span><span
+  <span>{selectedTypePackage === "month" ? "$9.99" : "$8.25"}</span><span
     class="text-2xl xl:text-xl text-gray-400 mb-[2px]">/month</span
   >
 </div>
