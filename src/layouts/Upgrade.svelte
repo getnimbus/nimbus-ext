@@ -69,8 +69,6 @@
       isLoadingBuy = false;
     }
   };
-
-  $: console.log(selectedPackage);
 </script>
 
 <ErrorBoundary>
