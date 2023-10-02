@@ -123,12 +123,14 @@
         code: data.code,
       });
       if (response?.error) {
-        throw new Error(response?.error);
+        toastMsg = response?.error;
+        isSuccessToast = false;
+      } else {
+        queryClient.invalidateQueries(["users-me"]);
+        toastMsg = "Apply your couple code success!";
+        isSuccessToast = true;
       }
-      queryClient.invalidateQueries(["users-me"]);
       isLoadingSubmitCoupleCode = false;
-      toastMsg = "Apply your couple code success!";
-      isSuccessToast = true;
       trigger();
     } catch (e) {
       console.error(e);
