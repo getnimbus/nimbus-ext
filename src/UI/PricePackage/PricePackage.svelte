@@ -16,6 +16,7 @@
 
   import YieldFarmingVideo from "~/assets/pricing/Yield-Farming.mp4";
   import RealtimeVideo from "~/assets/pricing/Realtime.mp4";
+  import Error from "~/components/Error.svelte";
 
   export let selectedPackage = (item) => {};
 
@@ -118,20 +119,25 @@
       data[key] = value;
     }
     try {
-      await nimbus.post("/v2/payments/redeem-code", {
+      const response = await nimbus.post("/v2/payments/redeem-code", {
         code: data.code,
       });
-
+      if (response?.error) {
+        toastMsg = response?.error;
+        isSuccessToast = false;
+      } else {
+        queryClient.invalidateQueries(["users-me"]);
+        toastMsg = "Apply your couple code success!";
+        isSuccessToast = true;
+      }
       isLoadingSubmitCoupleCode = false;
-      toastMsg = "Apply your couple code success!";
-      isSuccessToast = true;
       trigger();
     } catch (e) {
       console.error(e);
       isLoadingSubmitCoupleCode = false;
       toastMsg =
         "There are some error when apply your couple code. Please try again!";
-      isSuccessToast = true;
+      isSuccessToast = false;
       trigger();
     }
   };
@@ -143,16 +149,16 @@
     maximize return.
   </div>
 
-  <!-- <div
+  <div
     class="p-4 mb-4 text-2xl text-green-600 rounded-lg xl:text-base bg-green-50"
     role="alert"
   >
     <span class="mr-2 xl:mr-1">⭐️</span> We're giving 1000 coupon codes
-    <span class="font-bold">OG-INVESTOR</span>
+    <span class="font-bold">EARLY-BIRD</span>
     which get <span class="font-bold">30%</span> off for the first-time payment
     and
     <span class="font-bold">10% off lifetime</span> payments.
-  </div> -->
+  </div>
 
   <div class="flex items-center justify-center gap-2">
     <AnimateSharedLayout>
