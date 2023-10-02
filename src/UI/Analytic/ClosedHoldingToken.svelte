@@ -245,7 +245,8 @@
   const getHoldingToken = async (address, chain) => {
     const response: HoldingTokenRes = await nimbus
       .get(`/v2/address/${address}/holding?chain=${chain}`)
-      .then((response) => response.data);
+      .then((response) => response?.data || []);
+
     return response;
   };
 
@@ -372,12 +373,13 @@
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", selectedWallet, selectedChain],
     queryFn: () => getHoldingToken(selectedWallet, selectedChain),
+    placeholderData: [],
     staleTime: Infinity,
     enabled: enabledQuery,
   });
 
   $: {
-    if (!$queryTokenHolding.isError && $queryTokenHolding.data !== undefined) {
+    if (!$queryTokenHolding.isError && $queryTokenHolding.data) {
       formatDataHoldingToken($queryTokenHolding.data);
     }
   }
