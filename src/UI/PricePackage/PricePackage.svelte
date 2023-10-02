@@ -34,7 +34,7 @@
   });
 
   let selectedTypePackage: "month" | "year" = "year";
-  let buyPackage = "Professional";
+  let buyPackage = "Free";
   let interval = "month";
   let isNewUser = false;
   let endDatePackage = "";
@@ -68,8 +68,8 @@
 
   $: {
     if (!$query.isError && $query.data !== undefined) {
-      // buyPackage = $query.data.plan?.tier;
-      // interval = $query.data.plan?.interval;
+      buyPackage = $query.data.plan?.tier;
+      interval = $query.data.plan?.interval;
       endDatePackage = $query.data.plan?.endDate;
       isSubscription = $query.data.plan?.subscription;
       isNewUser = $query.data.plan?.isNewUser;
@@ -123,12 +123,14 @@
         code: data.code,
       });
       if (response?.error) {
-        throw new Error(response?.error);
+        toastMsg = response?.error;
+        isSuccessToast = false;
+      } else {
+        queryClient.invalidateQueries(["users-me"]);
+        toastMsg = "Apply your couple code success!";
+        isSuccessToast = true;
       }
-      queryClient.invalidateQueries(["users-me"]);
       isLoadingSubmitCoupleCode = false;
-      toastMsg = "Apply your couple code success!";
-      isSuccessToast = true;
       trigger();
     } catch (e) {
       console.error(e);
@@ -147,16 +149,16 @@
     maximize return.
   </div>
 
-  <!-- <div
+  <div
     class="p-4 mb-4 text-2xl text-green-600 rounded-lg xl:text-base bg-green-50"
     role="alert"
   >
     <span class="mr-2 xl:mr-1">⭐️</span> We're giving 1000 coupon codes
-    <span class="font-bold">OG-INVESTOR</span>
+    <span class="font-bold">EARLY-BIRD</span>
     which get <span class="font-bold">30%</span> off for the first-time payment
     and
     <span class="font-bold">10% off lifetime</span> payments.
-  </div> -->
+  </div>
 
   <div class="flex items-center justify-center gap-2">
     <AnimateSharedLayout>
@@ -192,16 +194,16 @@
   <div class="grid grid-cols-1 gap-4 xl:grid-cols-3 xl:gap-7">
     <!-- Free -->
     <div class="flex flex-col gap-1">
-      <!-- <div
+      <div
         class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
           buyPackage === "Free" ? "opacity-100" : "opacity-0"
         }`}
       >
         Current Plan
-      </div> -->
+      </div>
       <div
         class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 ${
-          false ? "border-[#1e96fc]" : "border_0000001a"
+          buyPackage === "Free" ? "border-[#1e96fc]" : "border_0000001a"
         }`}
       >
         <div class="font-medium text-4xl xl:text-3xl">
@@ -303,11 +305,6 @@
                 /></svg
               >
             </div> -->
-
-            <!-- remove me -->
-            {#if isSubscription}
-              <div class="opacity-0">remove me</div>
-            {/if}
           </div>
         </div>
       </div>
@@ -316,7 +313,7 @@
     {#if selectedTypePackage === "month"}
       <!-- Explorer -->
       <div class="flex flex-col gap-1">
-        <!-- <div
+        <div
           class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
             buyPackage === "Explorer" && interval === "month"
               ? "opacity-100"
@@ -324,10 +321,12 @@
           }`}
         >
           Current Plan
-        </div> -->
+        </div>
         <div
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 relative ${
-            false ? "border-[#1e96fc]" : "border_0000001a"
+            buyPackage === "Explorer" && interval === "month"
+              ? "border-[#1e96fc]"
+              : "border_0000001a"
           }`}
         >
           <div
@@ -450,32 +449,34 @@
               {/if}
             </div> -->
 
-            <!-- remove me -->
+            <!-- remove me (flow manual) -->
             <div slot="button" class="font-medium mt-5 xl:text-lg text-xl">
-              <div
-                class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
-                on:click={() => {
-                  selectedPackage({
-                    plan: "Explorer",
-                    selectedTypePackage,
-                    price: "$30",
-                    isNewUser: undefined,
-                  });
-                }}
-              >
-                Upgrade
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="#1E96FC"
-                  xmlns="http://www.w3.org/2000/svg"
-                  ><path
-                    d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                    fill=""
-                  /></svg
+              {#if buyPackage === "Free"}
+                <div
+                  class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                  on:click={() => {
+                    selectedPackage({
+                      plan: "Explorer",
+                      selectedTypePackage,
+                      price: "$9.99",
+                      isNewUser: undefined,
+                    });
+                  }}
                 >
-              </div>
+                  Upgrade
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="#1E96FC"
+                    xmlns="http://www.w3.org/2000/svg"
+                    ><path
+                      d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                      fill=""
+                    /></svg
+                  >
+                </div>
+              {/if}
             </div>
           </ExplorerPlan>
         </div>
@@ -483,7 +484,7 @@
 
       <!-- Professional -->
       <div class="flex flex-col gap-1">
-        <!-- <div
+        <div
           class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
             buyPackage === "Professional" && interval === "month"
               ? "opacity-100"
@@ -491,10 +492,12 @@
           }`}
         >
           Current Plan
-        </div> -->
+        </div>
         <div
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 ${
-            false ? "border-[#1e96fc]" : "border_0000001a"
+            buyPackage === "Professional" && interval === "month"
+              ? "border-[#1e96fc]"
+              : "border_0000001a"
           }`}
         >
           <ProfessionalPlan {selectedTypePackage}>
@@ -611,32 +614,34 @@
               {/if}
             </div> -->
 
-            <!-- remove me -->
+            <!-- remove me (flow manual) -->
             <div slot="button" class="font-medium mt-5 xl:text-lg text-xl">
-              <div
-                class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
-                on:click={() => {
-                  selectedPackage({
-                    plan: "Professional",
-                    selectedTypePackage,
-                    price: "$99",
-                    isNewUser: undefined,
-                  });
-                }}
-              >
-                Upgrade
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="#1E96FC"
-                  xmlns="http://www.w3.org/2000/svg"
-                  ><path
-                    d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                    fill=""
-                  /></svg
+              {#if buyPackage === "Free"}
+                <div
+                  class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                  on:click={() => {
+                    selectedPackage({
+                      plan: "Professional",
+                      selectedTypePackage,
+                      price: "$99",
+                      isNewUser: undefined,
+                    });
+                  }}
                 >
-              </div>
+                  Upgrade
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="#1E96FC"
+                    xmlns="http://www.w3.org/2000/svg"
+                    ><path
+                      d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                      fill=""
+                    /></svg
+                  >
+                </div>
+              {/if}
             </div>
           </ProfessionalPlan>
         </div>
@@ -646,7 +651,7 @@
     {#if selectedTypePackage === "year"}
       <!-- Explorer -->
       <div class="flex flex-col gap-1">
-        <!-- <div
+        <div
           class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
             buyPackage === "Explorer" && interval === "year"
               ? "opacity-100"
@@ -654,10 +659,12 @@
           }`}
         >
           Current Plan
-        </div> -->
+        </div>
         <div
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 relative ${
-            false ? "border-[#1e96fc]" : "border_0000001a"
+            buyPackage === "Explorer" && interval === "year"
+              ? "border-[#1e96fc]"
+              : "border_0000001a"
           }`}
         >
           <div
@@ -780,32 +787,34 @@
               {/if}
             </div> -->
 
-            <!-- remove me -->
+            <!-- remove me (flow manual) -->
             <div slot="button" class="font-medium mt-5 xl:text-lg text-xl">
-              <div
-                class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
-                on:click={() => {
-                  selectedPackage({
-                    plan: "Explorer",
-                    selectedTypePackage,
-                    price: "$25",
-                    isNewUser: undefined,
-                  });
-                }}
-              >
-                Upgrade
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="#1E96FC"
-                  xmlns="http://www.w3.org/2000/svg"
-                  ><path
-                    d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                    fill=""
-                  /></svg
+              {#if (buyPackage === "Explorer" && interval === "month") || buyPackage === "Free"}
+                <div
+                  class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                  on:click={() => {
+                    selectedPackage({
+                      plan: "Explorer",
+                      selectedTypePackage,
+                      price: "$8.25",
+                      isNewUser: undefined,
+                    });
+                  }}
                 >
-              </div>
+                  Upgrade
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="#1E96FC"
+                    xmlns="http://www.w3.org/2000/svg"
+                    ><path
+                      d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                      fill=""
+                    /></svg
+                  >
+                </div>
+              {/if}
             </div>
           </ExplorerPlan>
         </div>
@@ -813,7 +822,7 @@
 
       <!-- Professional -->
       <div class="flex flex-col gap-1">
-        <!-- <div
+        <div
           class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
             buyPackage === "Professional" && interval === "year"
               ? "opacity-100"
@@ -821,10 +830,12 @@
           }`}
         >
           Current Plan
-        </div> -->
+        </div>
         <div
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 ${
-            false ? "border-[#1e96fc]" : "border_0000001a"
+            buyPackage === "Professional" && interval === "year"
+              ? "border-[#1e96fc]"
+              : "border_0000001a"
           }`}
         >
           <ProfessionalPlan {selectedTypePackage}>
@@ -933,32 +944,34 @@
               {/if}
             </div> -->
 
-            <!-- remove me -->
+            <!-- remove me (flow manual) -->
             <div slot="button" class="font-medium mt-5 xl:text-lg text-xl">
-              <div
-                class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
-                on:click={() => {
-                  selectedPackage({
-                    plan: "Professional",
-                    selectedTypePackage,
-                    price: "$82.5",
-                    isNewUser: undefined,
-                  });
-                }}
-              >
-                Upgrade
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="#1E96FC"
-                  xmlns="http://www.w3.org/2000/svg"
-                  ><path
-                    d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
-                    fill=""
-                  /></svg
+              {#if (buyPackage === "Professional" && interval === "month") || buyPackage === "Free"}
+                <div
+                  class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
+                  on:click={() => {
+                    selectedPackage({
+                      plan: "Professional",
+                      selectedTypePackage,
+                      price: "$82.5",
+                      isNewUser: undefined,
+                    });
+                  }}
                 >
-              </div>
+                  Upgrade
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="#1E96FC"
+                    xmlns="http://www.w3.org/2000/svg"
+                    ><path
+                      d="M10.4767 6.17348L6.00668 1.70348L7.18501 0.525146L13.6667 7.00681L7.18501 13.4885L6.00668 12.3101L10.4767 7.84015H0.333344V6.17348H10.4767Z"
+                      fill=""
+                    /></svg
+                  >
+                </div>
+              {/if}
             </div>
           </ProfessionalPlan>
         </div>
@@ -966,11 +979,11 @@
     {/if}
   </div>
 
-  <div class="px-4 mb-4 mt-2 text-lg text-center text-gray-500 xl:text-sm">
+  <!-- <div class="px-4 mb-4 mt-2 text-lg text-center text-gray-500 xl:text-sm">
     Price in USDC. Subscription is tied to <strong>one</strong> wallet address.
     It will be transferable soon
     <br /> Unsubscribe anytime. No questions asked.
-  </div>
+  </div> -->
 
   <div class="flex flex-col gap-2 justify-center items-center">
     <div class="xl:text-base text-2xl font-normal">
