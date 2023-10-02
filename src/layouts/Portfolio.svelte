@@ -373,9 +373,6 @@
 
   // nft holding
   const getHoldingNFT = async (address, chain) => {
-    if (typeWalletAddress === "CEX" || typeWalletAddress === "EVM") {
-      return [];
-    }
     const response: HoldingNFTRes = await nimbus
       .get(`/v2/address/${address}/nft-holding?chain=${chain}`)
       .then((response) => response?.data);
@@ -648,8 +645,7 @@
     queryKey: ["nft-holding", selectedWallet, selectedChain],
     queryFn: () => getHoldingNFT(selectedWallet, selectedChain),
     staleTime: Infinity,
-    // enabled: enabledFetchAllData && selectedWallet.length !== 0,
-    enabled: false, // TODO: Enable later
+    enabled: enabledFetchAllData && selectedWallet.length !== 0,
   });
 
   $: {
