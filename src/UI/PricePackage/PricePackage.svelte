@@ -16,6 +16,7 @@
 
   import YieldFarmingVideo from "~/assets/pricing/Yield-Farming.mp4";
   import RealtimeVideo from "~/assets/pricing/Realtime.mp4";
+  import Error from "~/components/Error.svelte";
 
   export let selectedPackage = (item) => {};
 
@@ -118,10 +119,13 @@
       data[key] = value;
     }
     try {
-      await nimbus.post("/v2/payments/redeem-code", {
+      const response = await nimbus.post("/v2/payments/redeem-code", {
         code: data.code,
       });
-
+      if (response?.error) {
+        throw new Error(response?.error);
+      }
+      queryClient.invalidateQueries(["users-me"]);
       isLoadingSubmitCoupleCode = false;
       toastMsg = "Apply your couple code success!";
       isSuccessToast = true;
@@ -131,7 +135,7 @@
       isLoadingSubmitCoupleCode = false;
       toastMsg =
         "There are some error when apply your couple code. Please try again!";
-      isSuccessToast = true;
+      isSuccessToast = false;
       trigger();
     }
   };
