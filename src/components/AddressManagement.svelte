@@ -876,11 +876,7 @@
                     triggerConnectWallet.update((n) => (n = true));
                   }}
                 >
-                  <div
-                    class={`text-2xl font-medium xl:text-base ${
-                      darkMode ? "text-gray-400" : "text-white"
-                    }`}
-                  >
+                  <div class="text-2xl font-medium xl:text-base">
                     Connect Wallet
                   </div>
                 </Button>
