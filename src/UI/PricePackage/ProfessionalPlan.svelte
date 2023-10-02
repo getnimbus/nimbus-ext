@@ -27,9 +27,7 @@
 </div>
 <div>
   <div class="flex flex-col border-b-[1px] border_0000001a pb-4">
-    <div class="font-medium text-3xl xl:text-xl">
-      <!-- PROFESSIONAL --> ALPHA
-    </div>
+    <div class="font-medium text-3xl xl:text-xl">ALPHA</div>
     <div class="text-gray-500 text-2xl xl:text-lg">
       Enjoy all the features without any limited
     </div>

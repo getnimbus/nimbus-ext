@@ -107,10 +107,6 @@
           (n) => (n = $queryUserInfo.data?.plan?.tier.toUpperCase())
         );
       }
-    } else {
-      selectedPackage.update(
-        () => "PROFESSIONAL" // TODO: Remove me after integration complete
-      );
     }
   }
 

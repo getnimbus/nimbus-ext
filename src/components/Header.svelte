@@ -206,14 +206,9 @@
         $queryUserInfo.data?.plan?.tier.length !== 0
       ) {
         selectedPackage.update(
-          // (n) => (n = $queryUserInfo.data?.plan?.tier.toUpperCase())
-          () => "PROFESSIONAL" // TODO: Remove me after integration complete
+          (n) => (n = $queryUserInfo.data?.plan?.tier.toUpperCase())
         );
       }
-    } else {
-      selectedPackage.update(
-        () => "PROFESSIONAL" // TODO: Remove me after integration complete
-      );
     }
   }
 
