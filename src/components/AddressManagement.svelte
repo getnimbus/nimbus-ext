@@ -9,6 +9,7 @@
     selectedPackage,
     isDarkMode,
     selectedBundle,
+    triggerConnectWallet,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
@@ -850,7 +851,11 @@
             </div>
           {:else}
             <div class="xl:text-lg text-2xl">
-              {MultipleLang.addwallet}
+              {#if Object.keys(userInfo).length !== 0}
+                {MultipleLang.addwallet}
+              {:else}
+                Connect wallet to start tracking your investments
+              {/if}
             </div>
             {#if Object.keys(userInfo).length !== 0}
               <div class="w-max">
@@ -866,44 +871,19 @@
               </div>
             {:else}
               <div class="flex flex-col gap-4">
-                <div
-                  class="relative"
-                  on:mouseenter={() => {
-                    if (Object.keys(userInfo).length === 0) {
-                      showDisableAddWallet = true;
-                    }
-                  }}
-                  on:mouseleave={() => {
-                    if (Object.keys(userInfo).length === 0) {
-                      showDisableAddWallet = false;
-                    }
+                <Button
+                  on:click={() => {
+                    triggerConnectWallet.update((n) => (n = true));
                   }}
                 >
-                  <Button variant="disabled">
-                    <img
-                      src={darkMode ? PlusBlack : Plus}
-                      alt=""
-                      width="12"
-                      height="12"
-                    />
-                    <div
-                      class={`text-2xl font-medium xl:text-base ${
-                        darkMode ? "text-gray-400" : "text-white"
-                      }`}
-                    >
-                      {MultipleLang.content.btn_text}
-                    </div>
-                  </Button>
-
-                  {#if showDisableAddWallet}
-                    <div
-                      class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
-                      style="z-index: 2147483648;"
-                    >
-                      <tooltip-detail text={"Connect wallet to add account"} />
-                    </div>
-                  {/if}
-                </div>
+                  <div
+                    class={`text-2xl font-medium xl:text-base ${
+                      darkMode ? "text-gray-400" : "text-white"
+                    }`}
+                  >
+                    Connect Wallet
+                  </div>
+                </Button>
                 <div
                   class="text-2xl font-medium xl:text-base mt-2 hover:underline text-[#1E96FC] cursor-pointer"
                   on:click={() => {
