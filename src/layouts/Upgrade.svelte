@@ -98,9 +98,9 @@
             >
 
             USDT or USDC to this address
-            <i class="font-medium"
+            <span class="font-medium"
               >0x6aedbe81435bbd67e2223eadd256992dc64fc90b
-            </i>on Ethereum, BNB or Polygon.
+            </span>on Ethereum, BNB or Polygon.
           </li>
 
           <li>
@@ -119,8 +119,10 @@
               class="font-medium text-[#1E96FC] hover:text-[#27326f]"
               >thanhle@getnimbus.io</a
             >
-            including your wallet address you want to upgrade, the transaction hash
-            and the coupon code you want to apply.
+            including your <span class="font-medium">wallet address</span> you
+            want to upgrade, the
+            <span class="font-medium">transaction hash</span>
+            and the <span class="font-medium">coupon code</span> you want to apply.
           </li>
 
           <li>
@@ -129,7 +131,7 @@
           </li>
         </ul>
         <div
-          class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 xl:text-base text-2xl"
+          class="text-[#1E96FC] cursor-pointer flex items-center gap-2 mt-2 xl:text-base text-2xl mt-6"
           on:click={() => {
             selectedPackage = undefined;
           }}

@@ -11,6 +11,7 @@ export const isDarkMode = writable(false);
 export const isShowHeaderMobile = writable(false);
 export const selectedBundle = writable({});
 export const isHidePortfolio = writable(false);
+export const triggerConnectWallet = writable(false);
 
 
 // let isFirstTime = true;

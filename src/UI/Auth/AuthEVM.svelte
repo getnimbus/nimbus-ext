@@ -11,6 +11,7 @@
     user,
     isDarkMode,
     isShowHeaderMobile,
+    triggerConnectWallet,
   } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
@@ -27,6 +28,11 @@
   import Logo from "~/assets/logo-1.svg";
 
   const wallets$ = onboard.state.select("wallets");
+
+  let isConnectWallet = false;
+  triggerConnectWallet.subscribe((value) => {
+    isConnectWallet = value;
+  });
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -220,6 +226,14 @@
       qrcode.addData(`https://app.getnimbus.io/?code=${syncMobileCode}`);
       qrcode.make();
       qrImageDataUrl = qrcode.createDataURL(7);
+    }
+  }
+
+  $: {
+    if (isConnectWallet) {
+      connect();
+      mixpanel.track("user_connect_wallet");
+      triggerConnectWallet.update((n) => (n = false));
     }
   }
 </script>

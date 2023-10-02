@@ -123,12 +123,14 @@
         code: data.code,
       });
       if (response?.error) {
-        throw new Error(response?.error);
+        toastMsg = response?.error;
+        isSuccessToast = false;
+      } else {
+        queryClient.invalidateQueries(["users-me"]);
+        toastMsg = "Apply your couple code success!";
+        isSuccessToast = true;
       }
-      queryClient.invalidateQueries(["users-me"]);
       isLoadingSubmitCoupleCode = false;
-      toastMsg = "Apply your couple code success!";
-      isSuccessToast = true;
       trigger();
     } catch (e) {
       console.error(e);
@@ -147,16 +149,16 @@
     maximize return.
   </div>
 
-  <!-- <div
+  <div
     class="p-4 mb-4 text-2xl text-green-600 rounded-lg xl:text-base bg-green-50"
     role="alert"
   >
     <span class="mr-2 xl:mr-1">⭐️</span> We're giving 1000 coupon codes
-    <span class="font-bold">OG-INVESTOR</span>
+    <span class="font-bold">EARLY-BIRD</span>
     which get <span class="font-bold">30%</span> off for the first-time payment
     and
     <span class="font-bold">10% off lifetime</span> payments.
-  </div> -->
+  </div>
 
   <div class="flex items-center justify-center gap-2">
     <AnimateSharedLayout>
