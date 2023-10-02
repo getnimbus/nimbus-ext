@@ -672,11 +672,11 @@
     if (isDisabled) {
       if (packageSelected === "FREE") {
         tooltipDisableAddBtn =
-          "Get the EXPLORER Plan to be able to add more accounts and experience our in-depth investment analysis";
+          "You've reached the maximum number of accounts. Upgrade to the EXPLORER Plan to add more";
       }
       if (packageSelected === "EXPLORER") {
         tooltipDisableAddBtn =
-          "Get the PROFESSIONAL Plan so you can add unlimited accounts and experience all our functions";
+          "You've reached the maximum number of accounts. Upgrade to the ALPHA Plan to add more";
       }
     }
   }
