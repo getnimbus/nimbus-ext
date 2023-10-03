@@ -523,8 +523,8 @@
       .map((item) => {
         const selectAccount = selectBundle?.accounts.find(
           (data) =>
-            data?.id.toLowerCase() === item?.owner.toLowerCase() ||
-            data?.value.toLowerCase() === item?.owner.toLowerCase()
+            data?.id?.toLowerCase() === item?.owner?.toLowerCase() ||
+            data?.value?.toLowerCase() === item?.owner?.toLowerCase()
         );
         return {
           logo: selectAccount?.logo,
