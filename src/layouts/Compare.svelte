@@ -257,9 +257,6 @@
   let search = "";
 
   const getAnalyticCompare = async (address, searchValue) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${searchValue}`
     );
@@ -267,22 +264,37 @@
   };
 
   const getPersonalizeTag = async (address) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
     const response = await nimbus.get(`/address/${address}/personalize/tag`);
     return response.data;
+  };
+
+  const getSimilarAddress = async (address: string) => {
+    const response = await nimbus
+      .get(`/v2/analysis/${address}/similar`)
+      .then((res) => res.data);
+
+    return response;
   };
 
   $: query = createQuery({
     queryKey: ["compare", selectedWallet, searchCompare],
     queryFn: () => getAnalyticCompare(selectedWallet, searchCompare),
+    enabled: packageSelected !== "FREE" && !!selectedWallet,
     staleTime: Infinity,
   });
 
   $: queryPersonalTag = createQuery({
     queryKey: ["personal-tag", selectedWallet],
     queryFn: () => getPersonalizeTag(selectedWallet),
+    enabled: packageSelected !== "FREE" && !!selectedWallet,
+    staleTime: Infinity,
+  });
+
+  $: querySimilar = createQuery({
+    queryKey: ["similar", selectedWallet],
+    queryFn: () => getSimilarAddress(selectedWallet),
+    enabled: showCompareWhalesSuggest && !!selectedWallet,
+    placeholderData: [],
     staleTime: Infinity,
   });
 
@@ -834,6 +846,8 @@
       search = value;
     }, 300);
   };
+
+  $: console.log($querySimilar.data);
 </script>
 
 <ErrorBoundary>
@@ -1310,12 +1324,18 @@
     }}
   >
     <div class="flex flex-col gap-2 mt-9">
-      <WhalesList
-        {darkMode}
-        data={compareData?.base?.similarPortfolio}
-        copyAddress={handleCopyAddress}
-        closeModal={handleCloseWhalesListModal}
-      />
+      {#if $querySimilar.isFetching}
+        <div class="mx-auto">
+          <LoadingPremium />
+        </div>
+      {:else}
+        <WhalesList
+          {darkMode}
+          data={$querySimilar.data}
+          copyAddress={handleCopyAddress}
+          closeModal={handleCloseWhalesListModal}
+        />
+      {/if}
       <div class="xl:text-base text-2xl text-right mt-3">
         <a
           class="text-blue-500 cursor-pointer"
