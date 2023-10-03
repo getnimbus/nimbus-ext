@@ -76,6 +76,8 @@
     }
   }
 
+  $: console.log("endDatePackage: ", endDatePackage);
+
   const handleCancelSubscription = async () => {
     isLoadingCancel = true;
     try {
@@ -195,7 +197,7 @@
     <!-- Free -->
     <div class="flex flex-col gap-1">
       <div
-        class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
+        class={`text-center xl:text-sm text-base font-medium text-[#1e96fc] ${
           buyPackage === "Free" ? "opacity-100" : "opacity-0"
         }`}
       >
@@ -314,13 +316,16 @@
       <!-- Explorer -->
       <div class="flex flex-col gap-1">
         <div
-          class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
+          class={`text-center xl:text-sm text-base font-medium text-[#1e96fc] ${
             buyPackage === "Explorer" && interval === "month"
               ? "opacity-100"
               : "opacity-0"
           }`}
         >
-          Current Plan
+          Current Plan have
+          <span class="font-medium"
+            >{dateDiffInDays(new Date(), new Date(endDatePackage))} days left</span
+          >
         </div>
         <div
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 relative ${
@@ -485,13 +490,16 @@
       <!-- Professional -->
       <div class="flex flex-col gap-1">
         <div
-          class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
+          class={`text-center xl:text-sm text-base font-medium text-[#1e96fc] ${
             buyPackage === "Professional" && interval === "month"
               ? "opacity-100"
               : "opacity-0"
           }`}
         >
-          Current Plan
+          Current Plan have
+          <span class="font-medium"
+            >{dateDiffInDays(new Date(), new Date(endDatePackage))} days left</span
+          >
         </div>
         <div
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 ${
@@ -616,7 +624,7 @@
 
             <!-- remove me (flow manual) -->
             <div slot="button" class="font-medium mt-5 xl:text-lg text-xl">
-              {#if buyPackage === "Free"}
+              {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "month")}
                 <div
                   class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
                   on:click={() => {
@@ -652,13 +660,16 @@
       <!-- Explorer -->
       <div class="flex flex-col gap-1">
         <div
-          class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
+          class={`text-center xl:text-sm text-base font-medium text-[#1e96fc] ${
             buyPackage === "Explorer" && interval === "year"
               ? "opacity-100"
               : "opacity-0"
           }`}
         >
-          Current Plan
+          Current Plan have
+          <span class="font-medium"
+            >{dateDiffInDays(new Date(), new Date(endDatePackage))} days left</span
+          >
         </div>
         <div
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 relative ${
@@ -789,7 +800,7 @@
 
             <!-- remove me (flow manual) -->
             <div slot="button" class="font-medium mt-5 xl:text-lg text-xl">
-              {#if (buyPackage === "Explorer" && interval === "month") || buyPackage === "Free"}
+              {#if buyPackage === "Free" || (buyPackage === "Explorer" && interval === "month") || (buyPackage === "Professional" && interval === "month")}
                 <div
                   class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
                   on:click={() => {
@@ -823,13 +834,16 @@
       <!-- Professional -->
       <div class="flex flex-col gap-1">
         <div
-          class={`text-center text-gray-400 xl:text-sm text-base font-medium text-[#1e96fc] ${
+          class={`text-center xl:text-sm text-base font-medium text-[#1e96fc] ${
             buyPackage === "Professional" && interval === "year"
               ? "opacity-100"
               : "opacity-0"
           }`}
         >
-          Current Plan
+          Current Plan have
+          <span class="font-medium"
+            >{dateDiffInDays(new Date(), new Date(endDatePackage))} days left</span
+          >
         </div>
         <div
           class={`flex-1 border rounded-xl flex flex-col gap-4 p-4 ${
@@ -946,7 +960,7 @@
 
             <!-- remove me (flow manual) -->
             <div slot="button" class="font-medium mt-5 xl:text-lg text-xl">
-              {#if (buyPackage === "Professional" && interval === "month") || buyPackage === "Free"}
+              {#if buyPackage === "Free" || (buyPackage === "Professional" && interval === "month") || (buyPackage === "Explorer" && interval === "month") || (buyPackage === "Explorer" && interval === "year")}
                 <div
                   class="flex items-center gap-2 cursor-pointer text-[#1E96FC]"
                   on:click={() => {
