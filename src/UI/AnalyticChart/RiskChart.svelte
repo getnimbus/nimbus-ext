@@ -92,7 +92,6 @@
         type: "shadow",
       },
       formatter: function (params) {
-        console.log("params: ", params);
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
