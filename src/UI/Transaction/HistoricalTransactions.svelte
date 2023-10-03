@@ -299,15 +299,15 @@
   </div>
 {/if}
 {#if typeWalletAddress !== "SOL" && typeWalletAddress !== "CEX"}
-  <div class="flex items-center gap-2 text-sm">
+  <div class="flex items-center gap-2">
     <a href="https://mobula.fi/" target="_blank">
       <img
         src={mobulaLogo}
         alt=""
-        class="w-6 h-6 rounded-full cursor-pointer"
+        class="xl:w-6 xl:h-6 w-10 h-10 rounded-full cursor-pointer"
       />
     </a>
-    <span>Data by Mobula</span>
+    <span class="xl:text-sm text-xl">Data by Mobula</span>
   </div>
 {/if}
 
