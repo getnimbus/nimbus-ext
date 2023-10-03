@@ -854,7 +854,7 @@
   const handleToggleCheckAll = (e) => {
     if (e.target.checked) {
       selectedAddresses = listAddressWithoutBundle
-        .filter((item) => item.type !== "BTC" && item.type !== "SOL")
+        .filter((item) => item.type !== "BTC")
         .map((item) => item.address);
     } else {
       selectedAddresses = [];
