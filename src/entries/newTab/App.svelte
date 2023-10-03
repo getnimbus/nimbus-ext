@@ -54,7 +54,11 @@
     if ("ontouchstart" in window || navigator.maxTouchPoints) {
       isTouchDevice = true;
     }
-    localStorage.setItem("blockShowMobileIntro", "false");
+
+    const introduce = localStorage.getItem("blockShowMobileIntro");
+    if (introduce === "false") {
+      localStorage.setItem("blockShowMobileIntro", "false");
+    }
   });
 </script>
 
