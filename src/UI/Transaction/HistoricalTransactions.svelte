@@ -7,7 +7,7 @@
   dayjs.extend(relativeTime);
   import { typeWallet, isDarkMode } from "~/store";
   import { linkExplorer } from "~/utils";
-  import mobulaLogo  from "~/assets/mobula-logo.png";
+  import mobulaLogo from "~/assets/mobula-logo.png";
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -55,17 +55,17 @@
         <th
           class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-9 bg_f4f5f8"
         >
-          <div class="text-left xl:text-xs text-xl uppercase font-medium">
+          <div class="text-xl font-medium text-left uppercase xl:text-xs">
             Transaction
           </div>
         </th>
         <th class="py-3">
-          <div class="text-left xl:text-xs text-xl uppercase font-medium">
+          <div class="text-xl font-medium text-left uppercase xl:text-xs">
             From
           </div>
         </th>
         <th class="py-3">
-          <div class="text-left xl:text-xs text-xl uppercase font-medium">
+          <div class="text-xl font-medium text-left uppercase xl:text-xs">
             To
           </div>
         </th>
@@ -77,7 +77,7 @@
           </div>
         </th>
         <th class="pr-3 py-3 rounded-tr-[10px]">
-          <div class="text-left xl:text-xs text-xl uppercase font-medium">
+          <div class="text-xl font-medium text-left uppercase xl:text-xs">
             Token change
           </div>
         </th>
@@ -87,7 +87,7 @@
       <tbody>
         <tr>
           <td colspan={5}>
-            <div class="flex justify-center items-center py-4 px-3">
+            <div class="flex items-center justify-center px-3 py-4">
               <Loading />
             </div>
           </td>
@@ -99,7 +99,7 @@
           <tr>
             <td colspan={5}>
               <div
-                class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
+                class="flex items-center justify-center px-3 py-4 text-lg text-gray-400"
               >
                 Empty
               </div>
@@ -117,9 +117,9 @@
                     : "bg-white group-hover:bg-gray-100"
                 }`}
               >
-                <div class="text-left flex items-start gap-2 w-max">
+                <div class="flex items-start gap-2 text-left w-max">
                   <div class="flex flex-col">
-                    <div class="xl:text-sm text-2xl">
+                    <div class="text-2xl xl:text-sm">
                       {#if typeWalletAddress === "DEX"}
                         <Copy
                           address={item?.transaction_hash}
@@ -143,7 +143,7 @@
                         />
                       {/if}
                     </div>
-                    <div class="text-gray-400 xl:text-xs text-lg">
+                    <div class="text-lg text-gray-400 xl:text-xs">
                       {dayjs(new Date(item?.detail.timestamp)).format(
                         "YYYY-MM-DD, hh:mm A"
                       )}
@@ -158,7 +158,7 @@
                 }`}
               >
                 {#if item?.detail?.from}
-                  <div class="w-max xl:text-sm text-2xl">
+                  <div class="text-2xl w-max xl:text-sm">
                     {#if typeWalletAddress === "DEX"}
                       <Copy
                         address={item?.detail?.from}
@@ -190,7 +190,7 @@
                 }`}
               >
                 {#if item?.detail?.to}
-                  <div class="w-max xl:text-sm text-2xl">
+                  <div class="text-2xl w-max xl:text-sm">
                     {#if typeWalletAddress === "DEX"}
                       <Copy
                         address={item?.detail?.to}
@@ -222,7 +222,7 @@
                 }`}
               >
                 <div
-                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-start"
+                  class="flex justify-start text-2xl font-medium xl:text-sm text_00000099"
                 >
                   {#if item?.type}
                     <div
@@ -240,14 +240,14 @@
                 }`}
               >
                 <div
-                  class="xl:text-sm text-2xl font-medium flex flex-col items-start gap-2"
+                  class="flex flex-col items-start gap-2 text-2xl font-medium xl:text-sm"
                 >
                   {#each item.changes as change}
                     <div class="flex items-center gap-2">
                       <img
                         src={change?.logo}
                         alt=""
-                        class="w-7 h-7 overflow-hidden rounded-full object-contain"
+                        class="object-contain overflow-hidden rounded-full w-7 h-7"
                       />
                       <div
                         class={`flex gap-1 ${
@@ -298,11 +298,15 @@
     </div>
   </div>
 {/if}
-{#if typeWalletAddress !== 'SOL' && typeWalletAddress !== 'CEX'}
-  <div class="flex gap-2 items-center">
-      <a href="https://mobula.fi/" target="_blank">    
-        <img src={mobulaLogo} alt="" class="w-10 h-10 rounded-full cursor-pointer" />
-      </a>
+{#if typeWalletAddress !== "SOL" && typeWalletAddress !== "CEX"}
+  <div class="flex items-center gap-2 text-sm">
+    <a href="https://mobula.fi/" target="_blank">
+      <img
+        src={mobulaLogo}
+        alt=""
+        class="w-6 h-6 rounded-full cursor-pointer"
+      />
+    </a>
     <span>Data by Mobula</span>
   </div>
 {/if}
