@@ -7,7 +7,7 @@
   dayjs.extend(relativeTime);
   import { typeWallet, isDarkMode } from "~/store";
   import { linkExplorer } from "~/utils";
-
+  import mobulaLogo  from "~/assets/mobula-logo.png";
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -296,6 +296,14 @@
         >Load more
       </Button>
     </div>
+  </div>
+{/if}
+{#if typeWalletAddress !== 'SOL' && typeWalletAddress !== 'CEX'}
+  <div class="flex gap-2 items-center">
+      <a href="https://mobula.fi/" target="_blank">    
+        <img src={mobulaLogo} alt="" class="w-10 h-10 rounded-full cursor-pointer" />
+      </a>
+    <span>Data by Mobula</span>
   </div>
 {/if}
 
