@@ -194,6 +194,7 @@
   let showPopover = false;
 
   let groupedToBundles = false;
+  let selectYourWalletsBundle = [];
 
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
@@ -329,6 +330,13 @@
 
     listAddress = structWalletData;
 
+    const selectYourBundle = listAddress.find(
+      (item) => item.type === "BUNDLE" && item.label === "Your wallets"
+    );
+    selectYourWalletsBundle = selectYourBundle?.accounts.map(
+      (item) => item.value
+    );
+
     // check type wallet
     const selectedTypeWalletRes = await browser.storage.sync.get(
       "typeWalletAddress"
@@ -455,8 +463,13 @@
           accountId: evmAddress,
           label: "My address",
         });
-        queryClient.invalidateQueries(["list-address"]);
         wallet.update((n) => (n = evmAddress));
+        await nimbus.post("/address/personalize/bundle", {
+          name: "Your wallets",
+          addresses: [evmAddress],
+        });
+        queryClient.invalidateQueries(["list-bundle"]);
+        queryClient.invalidateQueries(["list-address"]);
         mixpanel.track("user_add_address");
       } catch (e) {
         console.error(e);
@@ -486,6 +499,17 @@
           label: data.label,
           value: data.address,
         };
+
+        if (groupedToBundles) {
+          await nimbus.put(
+            `/address/personalize/bundle?name=${"Your wallets"}`,
+            {
+              name: "Your wallets",
+              addresses: selectYourWalletsBundle.concat([dataFormat.value]),
+            }
+          );
+          queryClient.invalidateQueries(["list-bundle"]);
+        }
 
         await nimbus.post("/accounts", {
           type: "DEX",
@@ -559,6 +583,17 @@
                 (n) => (n = listAddress[listAddress.length - 1]?.id)
               );
               typeWallet.update((n) => (n = "CEX"));
+
+              await nimbus.put(
+                `/address/personalize/bundle?name=${"Your wallets"}`,
+                {
+                  name: "Your wallets",
+                  addresses: selectYourWalletsBundle.concat([
+                    listAddress[listAddress.length - 1]?.id,
+                  ]),
+                }
+              );
+              queryClient.invalidateQueries(["list-bundle"]);
             }
 
             await wait(300);
@@ -886,7 +921,11 @@
                   <div class="flex items-center gap-5">
                     {#if listAddress.length > 5}
                       <AnimateSharedLayout>
-                        {#each listAddress.slice(0, 5) as item}
+                        {#each listAddress.slice(0, 5).sort((a, b) => {
+                          if (a.type === "BUNDLE" && a.label === "Your wallets") return -1;
+                          if (b.type === "BUNDLE" && b.label === "Your wallets") return 1;
+                          return 0;
+                        }) as item}
                           <div
                             id={item.value}
                             class="relative xl:text-base text-2xl text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
@@ -1019,7 +1058,11 @@
                     bind:this={scrollContainer}
                     on:scroll={handleScroll}
                   >
-                    {#each listAddress as item}
+                    {#each listAddress.sort((a, b) => {
+                      if (a.type === "BUNDLE" && a.label === "Your wallets") return -1;
+                      if (b.type === "BUNDLE" && b.label === "Your wallets") return 1;
+                      return 0;
+                    }) as item}
                       <div
                         id={item.value}
                         class="w-max flex-shrink-0 relative text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
