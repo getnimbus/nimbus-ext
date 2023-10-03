@@ -337,11 +337,10 @@
       (item) => item.value
     );
 
-    if (Object.keys(selectYourBundle).length === 0) {
-      const evmAddress = localStorage.getItem("evm_address");
+    if (selectYourBundle === undefined) {
       await nimbus.post("/address/personalize/bundle", {
         name: "Your wallets",
-        addresses: [evmAddress],
+        addresses: listAddress.map((item) => item.value),
       });
       queryClient.invalidateQueries(["list-bundle"]);
     }

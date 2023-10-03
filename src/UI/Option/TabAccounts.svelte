@@ -755,7 +755,11 @@
       return;
     }
 
-    if (listBundle.find((item) => item.name === nameBundle)) {
+    if (
+      listBundle.find((item) => item.name === nameBundle) &&
+      selectedBundle &&
+      Object.keys(selectedBundle).length === 0
+    ) {
       toastMsg = "Bundle already existed!";
       isSuccess = false;
       trigger();
