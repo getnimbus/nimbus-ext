@@ -39,9 +39,9 @@
   // };
 
   const getTotalValueHistoryAndDailyGain = async (address, chain) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
+    // if (packageSelected === "FREE") {
+    //   return undefined;
+    // }
     const response = await nimbus.get(
       `/v2/analysis/${address}/holding-history?chain=${chain}&fromDate=${""}&toDate=${""}`
     );
@@ -52,7 +52,8 @@
     (typeWalletAddress === "EVM" ||
       typeWalletAddress === "CEX" ||
       typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0
+      selectedWallet.length !== 0 &&
+      packageSelected !== "FREE"
   );
 
   $: query = createQuery({

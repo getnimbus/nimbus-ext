@@ -163,7 +163,7 @@
       0
     );
 
-    const sortBreakdownToken = overviewData?.breakdownToken.sort((a, b) => {
+    const sortBreakdownToken = overviewData?.breakdownToken?.sort((a, b) => {
       if (a.value < b.value) {
         return 1;
       }
@@ -325,10 +325,10 @@
   };
 
   const formatDataHoldingToken = (dataTokenHolding, dataVaults) => {
-    const formatDataTokenHolding = dataTokenHolding.map((item) => {
+    const formatDataTokenHolding = dataTokenHolding?.map((item) => {
       try {
         const regex = new RegExp(`(^${item?.symbol}|-${item?.symbol})`);
-        const filteredVaults = dataVaults.filter((data) =>
+        const filteredVaults = dataVaults?.filter((data) =>
           data.name.match(regex)
         );
 
@@ -345,7 +345,7 @@
     });
 
     const formatData = formatDataTokenHolding
-      .map((item) => {
+      ?.map((item) => {
         return {
           ...item,
           value:
@@ -365,8 +365,8 @@
     holdingTokenData = formatData;
 
     closedHoldingPosition = formatData
-      .filter((item) => item?.profit?.realizedProfit)
-      .filter((item) => Number(item.amount) === 0);
+      ?.filter((item) => item?.profit?.realizedProfit)
+      ?.filter((item) => Number(item.amount) === 0);
 
     formatTokenBreakdown({ breakdownToken: holdingTokenData });
   };
@@ -619,8 +619,8 @@
     if ($queryAllTokenHolding.length !== 0) {
       const allTokens = flatten(
         $queryAllTokenHolding
-          .filter((item) => Array.isArray(item.data))
-          .map((item) => item.data)
+          ?.filter((item) => Array.isArray(item.data))
+          ?.map((item) => item.data)
       );
       if (allTokens && allTokens.length !== 0) {
         formatDataHoldingToken(allTokens, $queryVaults.data);
@@ -813,7 +813,7 @@
                 isLoadingBreakdown={$queryAllTokenHolding.some(
                   (item) => item.isFetching === true
                 )}
-                holdingTokenData={holdingTokenData.filter(
+                holdingTokenData={holdingTokenData?.filter(
                   (item) => Number(item.amount) > 0
                 )}
                 {dataOverviewBundlePieChart}
@@ -838,7 +838,7 @@
                       (item) => item.isFetching === true
                     )
                   : $queryTokenHolding.isFetching}
-                holdingTokenData={holdingTokenData.filter(
+                holdingTokenData={holdingTokenData?.filter(
                   (item) => Number(item.amount) > 0
                 )}
                 {selectedTokenHolding}
