@@ -193,7 +193,7 @@
   let tooltipDisableAddBtn = "";
   let showPopover = false;
 
-  let groupedToBundles = false;
+  let groupedToBundles = true;
   let selectYourWalletsBundle = [];
 
   const isRequiredFieldValid = (value) => {
@@ -336,6 +336,15 @@
     selectYourWalletsBundle = selectYourBundle?.accounts.map(
       (item) => item.value
     );
+
+    if (Object.keys(selectYourBundle).length === 0) {
+      const evmAddress = localStorage.getItem("evm_address");
+      await nimbus.post("/address/personalize/bundle", {
+        name: "Your wallets",
+        addresses: [evmAddress],
+      });
+      queryClient.invalidateQueries(["list-bundle"]);
+    }
 
     // check type wallet
     const selectedTypeWalletRes = await browser.storage.sync.get(
@@ -1607,13 +1616,10 @@
             {/if}
           </div>
         </div>
-        <div class="flex items-center gap-2 text-[#666666] xl:mt-0 mt-3">
-          <div class="xl:text-sm text-2xl">
-            Group to <span
-              class={`font-medium ${darkMode ? "text-white" : "text-black"}`}
-              >Your wallets</span
-            > bundles
-          </div>
+        <div
+          class="flex items-center justify-end gap-2 text-[#666666] xl:mt-0 mt-3"
+        >
+          <div class="xl:text-sm text-2xl">Is it your wallet?</div>
           <label class="switch">
             <input type="checkbox" bind:checked={groupedToBundles} />
             <span class="slider" />
