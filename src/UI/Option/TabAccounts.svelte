@@ -755,6 +755,14 @@
       return;
     }
 
+    if (listBundle.find((item) => item.name === nameBundle)) {
+      toastMsg = "Bundle already existed!";
+      isSuccess = false;
+      trigger();
+      isLoadingBundle = false;
+      return;
+    }
+
     isLoadingBundle = true;
     try {
       const formData = {
@@ -1157,6 +1165,7 @@
             nameBundle && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
           required
+          disabled={selectedBundle?.name === "Your wallets" ? true : false}
           bind:value={nameBundle}
         />
       </div>
