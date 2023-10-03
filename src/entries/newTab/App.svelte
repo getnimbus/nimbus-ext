@@ -56,7 +56,7 @@
     }
 
     const introduce = localStorage.getItem("blockShowMobileIntro");
-    if (introduce === "false") {
+    if (introduce === "false" || introduce === null) {
       localStorage.setItem("blockShowMobileIntro", "false");
     }
   });
