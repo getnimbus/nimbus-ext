@@ -846,8 +846,6 @@
       search = value;
     }, 300);
   };
-
-  $: console.log($querySimilar.data);
 </script>
 
 <ErrorBoundary>

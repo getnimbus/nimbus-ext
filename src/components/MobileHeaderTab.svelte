@@ -315,7 +315,6 @@
           `}
       on:click={() => {
         if (userInfo && Object.keys(userInfo).length !== 0) {
-          chain.update((n) => (n = "ETH"));
           navActive = "transactions";
           queryClient.invalidateQueries(["users-me"]);
         } else {
