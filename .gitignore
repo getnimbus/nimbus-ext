@@ -9,3 +9,5 @@ web-build
 .retype
 # Sentry Auth Token
 .env.sentry-build-plugin
+
+dev-dist/sw.js
