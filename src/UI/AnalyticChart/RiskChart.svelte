@@ -91,6 +91,7 @@
         type: "shadow",
       },
       formatter: function (params) {
+        console.log("params: ", params);
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
@@ -113,7 +114,12 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.value >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${formatCurrency(Math.abs(item.value))}
+                      ${formatCurrency(Math.abs(item.value))}${
+                    params[0]?.axisValue === "Volatility" ||
+                    params[0]?.axisValue === "Max drawdown"
+                      ? "%"
+                      : ""
+                  }
                     </div>
                   </div>
                 </div>
