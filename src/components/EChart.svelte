@@ -74,16 +74,20 @@
   };
 
   const makeChart = () => {
-    destroyChart();
-    if (echarts) {
-      chart = echarts?.init(document.getElementById(id), theme);
-      if (!window.echarts) {
-        window.echarts = {
-          [id]: chart,
-        };
-      } else {
-        window.echarts[id] = chart;
+    try {
+      destroyChart();
+      if (echarts) {
+        chart = echarts?.init(document.getElementById(id), theme);
+        if (!window.echarts) {
+          window.echarts = {
+            [id]: chart,
+          };
+        } else {
+          window.echarts[id] = chart;
+        }
       }
+    } catch (e) {
+      console.error(e);
     }
   };
 

@@ -127,9 +127,6 @@
   };
 
   const getAnalyticCompare = async (address: string, timeFrame: string) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
@@ -144,7 +141,8 @@
       typeWalletAddress === "CEX" ||
       typeWalletAddress === "SOL" ||
       typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0
+      selectedWallet.length !== 0 &&
+      packageSelected !== "FREE"
   );
 
   $: query = createQuery({
@@ -445,7 +443,7 @@
                 </div>
               </div>
 
-              <div class="grid grid-cols-2">
+              <!-- <div class="grid grid-cols-2">
                 <div class="col-span-1">
                   <div class="flex justify-start text-2xl xl:text-base">
                     Return Lifetime
@@ -479,7 +477,7 @@
                     >
                   </div>
                 </div>
-              </div>
+              </div> -->
             </div>
             <div class="space-y-3">
               <div class="text-2xl xl:text-base">

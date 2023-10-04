@@ -1,6 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { wallet, selectedPackage, typeWallet, isDarkMode } from "~/store";
+  import {
+    wallet,
+    selectedPackage,
+    typeWallet,
+    isDarkMode,
+    selectedBundle,
+  } from "~/store";
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
@@ -9,13 +15,14 @@
     formatCurrency,
     formatPercent,
     typeList,
+    clickOutside,
   } from "~/utils";
   import { groupBy } from "lodash";
   import { getChangePercent } from "~/chart-utils";
   import { useNavigate } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
-  import * as Sentry from "@sentry/svelte";
+  import { Avatar } from "flowbite-svelte";
 
   import type { TokenData } from "~/types/HoldingTokenData";
 
@@ -63,6 +70,11 @@
     typeWalletAddress = value;
   });
 
+  let selectBundle = {};
+  selectedBundle.subscribe((value) => {
+    selectBundle = value;
+  });
+
   onMount(() => {
     mixpanel.track("user_compare");
     const urlParams = new URLSearchParams(window.location.search);
@@ -72,6 +84,8 @@
       selectedWallet = addressParams;
     }
   });
+
+  let showPopover = false;
 
   let typeListCategory = [
     {
@@ -140,9 +154,25 @@
 
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
+                      params[0]?.axisValue === "Sharpe Ratio"
+                        ? item.value >= 0
+                          ? "#05a878"
+                          : "#f25f5d"
+                        : darkMode
+                        ? "white"
+                        : "black"
                     };">
-                      ${formatCurrency(Math.abs(item.value))}
+                        ${
+                          params[0]?.axisValue === "Volatility" ||
+                          params[0]?.axisValue === "Max drawdown"
+                            ? formatPercent(Math.abs(item.value))
+                            : formatCurrency(Math.abs(item.value))
+                        }${
+                    params[0]?.axisValue === "Volatility" ||
+                    params[0]?.axisValue === "Max drawdown"
+                      ? "%"
+                      : ""
+                  }
                     </div>
                   </div>
                 </div>
@@ -159,7 +189,7 @@
       {
         type: "category",
         axisTick: { show: false },
-        data: ["Sharpe Ratio", "Volatility", "Drawdown"],
+        data: ["Sharpe Ratio", "Volatility", "Max drawdown"],
         axisLabel: {
           fontSize: autoFontSize(),
         },
@@ -257,32 +287,44 @@
   let search = "";
 
   const getAnalyticCompare = async (address, searchValue) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
     const response: any = await nimbus.get(
-      `/v2/analysis/${address}/compare?compareAddress=${searchValue}`
+      `/v2/analysis/${address}/compare?compareAddress=${searchValue}&timeRange=1Y`
     );
     return response.data;
   };
 
   const getPersonalizeTag = async (address) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
     const response = await nimbus.get(`/address/${address}/personalize/tag`);
     return response.data;
+  };
+
+  const getSimilarAddress = async (address: string) => {
+    const response = await nimbus
+      .get(`/v2/analysis/${address}/similar`)
+      .then((res) => res.data);
+
+    return response;
   };
 
   $: query = createQuery({
     queryKey: ["compare", selectedWallet, searchCompare],
     queryFn: () => getAnalyticCompare(selectedWallet, searchCompare),
+    enabled: packageSelected !== "FREE" && !!selectedWallet,
     staleTime: Infinity,
   });
 
   $: queryPersonalTag = createQuery({
     queryKey: ["personal-tag", selectedWallet],
     queryFn: () => getPersonalizeTag(selectedWallet),
+    enabled: packageSelected !== "FREE" && !!selectedWallet,
+    staleTime: Infinity,
+  });
+
+  $: querySimilar = createQuery({
+    queryKey: ["similar", selectedWallet],
+    queryFn: () => getSimilarAddress(selectedWallet),
+    enabled: showCompareWhalesSuggest && !!selectedWallet,
+    placeholderData: [],
     staleTime: Infinity,
   });
 
@@ -840,17 +882,101 @@
   <div
     class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10 relative"
   >
-    <div class="flex flex-col gap-2 justify-center">
-      <div class="xl:text-5xl text-7xl font-semibold">
+    <div class="flex flex-col justify-center gap-2">
+      <div class="font-semibold xl:text-5xl text-7xl">
         Optimize your portfolio
       </div>
-      <div class="xl:font-normal xl:text-base text-2xl font-medium">
-        <Copy
-          address={selectedWallet}
-          iconColor={`${darkMode ? "#fff" : "#000"}`}
-          color={`${darkMode ? "#fff" : "#000"}`}
-        />
-      </div>
+      {#if selectBundle && Object.keys(selectBundle).length !== 0 && selectBundle?.type === "BUNDLE"}
+        <div
+          class="relative w-max"
+          on:click={() => (showPopover = !showPopover)}
+        >
+          <div class="flex cursor-pointer">
+            {#if selectBundle && selectBundle?.accounts && selectBundle?.accounts?.length > 8}
+              {#each selectBundle?.accounts.slice(0, 7) as item, index}
+                <div class={`${index > 0 && "-ml-2"}`}>
+                  <div class="hidden xl:block">
+                    <Avatar src={item?.logo} stacked size="sm" />
+                  </div>
+                  <div class="block xl:hidden">
+                    <Avatar src={item?.logo} stacked size="md" />
+                  </div>
+                </div>
+              {/each}
+              <div class="-ml-2">
+                <div class="hidden xl:block">
+                  <Avatar stacked size="sm">...</Avatar>
+                </div>
+                <div class="block xl:hidden">
+                  <Avatar stacked size="md">...</Avatar>
+                </div>
+              </div>
+            {:else}
+              {#each selectBundle?.accounts as item, index}
+                <div class={`${index > 0 && "-ml-2"}`}>
+                  <div class="hidden xl:block">
+                    <Avatar src={item?.logo} stacked size="sm" />
+                  </div>
+                  <div class="block xl:hidden">
+                    <Avatar src={item?.logo} stacked size="md" />
+                  </div>
+                </div>
+              {/each}
+            {/if}
+          </div>
+          {#if showPopover}
+            <div
+              class="select_content absolute left-0 z-50 flex flex-col xl:gap-3 gap-6 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
+              style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
+              use:clickOutside
+              on:click_outside={() => (showPopover = false)}
+            >
+              {#each selectBundle?.accounts as item}
+                <div class="hidden xl:flex xl:flex-col">
+                  <div class="text-2xl xl:text-xs font-medium text_00000099">
+                    {item.label}
+                  </div>
+                  <div class="text-3xl xl:text-sm">
+                    <Copy
+                      address={item?.value}
+                      iconColor={darkMode ? "#fff" : "#000"}
+                      color={darkMode ? "#fff" : "#000"}
+                      isShorten
+                    />
+                  </div>
+                </div>
+                <div class="flex flex-col xl:hidden">
+                  <div class="text-2xl xl:text-xs font-medium text_00000099">
+                    {item.label}
+                  </div>
+                  <div class="text-3xl xl:text-sm">
+                    <Copy
+                      address={item?.value}
+                      iconColor={darkMode ? "#fff" : "#000"}
+                      color={darkMode ? "#fff" : "#000"}
+                      isShorten
+                      iconSize={24}
+                    />
+                  </div>
+                </div>
+              {/each}
+            </div>
+          {/if}
+        </div>
+      {:else}
+        <div class="hidden text-3xl xl:text-base xl:block">
+          <Copy address={selectedWallet} iconColor="#fff" color="#fff" />
+        </div>
+        <div class="block text-3xl xl:text-base xl:hidden">
+          <Copy
+            address={selectedWallet}
+            iconColor="#fff"
+            color="#fff"
+            isShorten
+            iconSize={24}
+          />
+        </div>
+      {/if}
     </div>
 
     <div class="flex flex-col gap-2">
@@ -863,14 +989,14 @@
         />
       </div>
 
-      <div class="flex xl:flex-row flex-col justify-between items-center gap-6">
-        <div class="grid xl:grid-cols-2 grid-cols-1 gap-6 flex-1 w-full">
+      <div class="flex flex-col items-center justify-between gap-6 xl:flex-row">
+        <div class="grid flex-1 w-full grid-cols-1 gap-6 xl:grid-cols-2">
           <div
             class={`rounded-[20px] p-6 min-h-[535px] relative ${
               darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
             }`}
           >
-            <div class="xl:text-2xl text-4xl font-medium w-full mb-6">
+            <div class="w-full mb-6 text-4xl font-medium xl:text-2xl">
               {MultipleLang.token_allocation}
             </div>
             {#if $query.isFetching && $queryPersonalTag.isFetching}
@@ -926,9 +1052,9 @@
           >
             {#if compareData && Object.keys(compareData).length !== 0 && compareData?.compare}
               <div class="flex flex-col">
-                <div class="flex justify-between items-center">
+                <div class="flex items-center justify-between">
                   <div class="flex items-end gap-3">
-                    <div class="xl:text-2xl text-4xl font-medium">
+                    <div class="text-4xl font-medium xl:text-2xl">
                       Comparing with
                     </div>
                     <div class="font-medium">
@@ -950,7 +1076,7 @@
                     >
                   </div>
                 </div>
-                <div class="h-full flex flex-col gap-5 mt-3">
+                <div class="flex flex-col h-full gap-5 mt-3">
                   {#if $query.isFetching}
                     <div class="flex items-center justify-center h-[433px]">
                       <LoadingPremium />
@@ -998,7 +1124,7 @@
             {:else}
               <div class="h-full">
                 {#if $query.isFetching}
-                  <div class="xl:text-2xl text-4xl font-medium w-full">
+                  <div class="w-full text-4xl font-medium xl:text-2xl">
                     Compare with
                   </div>
                   <div class="flex items-center justify-center h-full">
@@ -1007,7 +1133,7 @@
                 {:else}
                   <div class="h-full">
                     {#if compareData && Object.keys(compareData).length === 0}
-                      <div class="xl:text-2xl text-4xl font-medium w-full">
+                      <div class="w-full text-4xl font-medium xl:text-2xl">
                         Compare with
                       </div>
                       <div
@@ -1023,8 +1149,8 @@
                         {/if}
                       </div>
                     {:else}
-                      <div class="grid grid-rows-11 h-full">
-                        <div class="xl:text-2xl text-4xl font-medium w-full">
+                      <div class="grid h-full grid-rows-11">
+                        <div class="w-full text-4xl font-medium xl:text-2xl">
                           Compare with
                         </div>
                         <div
@@ -1098,7 +1224,7 @@
                                 }`}
                               />
                             </div>
-                            <div class="xl:text-sm text-xl flex justify-end">
+                            <div class="flex justify-end text-xl xl:text-sm">
                               <div
                                 on:click={() =>
                                   (showCompareWhalesSuggest = true)}
@@ -1140,7 +1266,7 @@
           {:else}
             <Button on:click={() => (showCompareTable = true)}>
               <div class="flex items-center gap-1">
-                <div class="xl:text-base text-2xl">Get re-balance action</div>
+                <div class="text-2xl xl:text-base">Get re-balance action</div>
                 <img
                   src={LeftArrow}
                   alt=""
@@ -1159,7 +1285,7 @@
         darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
       }`}
     >
-      <div class="xl:text-2xl text-4xl font-medium mb-3">Performance</div>
+      <div class="mb-3 text-4xl font-medium xl:text-2xl">Performance</div>
       {#if $query.isFetching}
         <div class="flex items-center justify-center h-[433px]">
           <LoadingPremium />
@@ -1191,7 +1317,7 @@
                 height={433}
               />
               <div
-                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
               >
                 <img
                   src={darkMode ? LogoWhite : Logo}
@@ -1212,8 +1338,8 @@
         darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
       }`}
     >
-      <div class="mb-1 w-full">
-        <div class="xl:text-2xl text-4xl font-medium flex justify-start">
+      <div class="w-full mb-1">
+        <div class="flex justify-start text-4xl font-medium xl:text-2xl">
           <TooltipTitle tooltipText={"The lower the better"} isBigIcon>
             Risks
           </TooltipTitle>
@@ -1250,7 +1376,7 @@
                 height={465}
               />
               <div
-                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 top-1/2 left-1/2 pointer-events-none"
+                class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
               >
                 <img
                   src={darkMode ? LogoWhite : Logo}
@@ -1275,11 +1401,11 @@
           <div class="text-lg font-medium">
             Use Nimbus at its full potential
           </div>
-          <div class="text-gray-500 text-base">
+          <div class="text-base text-gray-500">
             Upgrade to Premium to access Compare feature
           </div>
         </div>
-        <div class="w-max mt-2">
+        <div class="mt-2 w-max">
           <Button variant="premium" on:click={() => navigate("/upgrade")}
             >Start 30-day Trial</Button
           >
@@ -1296,7 +1422,7 @@
       showCompareTable = false;
     }}
   >
-    <div class="xl:mt-9 mt-12">
+    <div class="mt-12 xl:mt-9">
       <CompareResult {darkMode} {holdingTokenData} {holdingTokenDataCompare} />
     </div>
   </AppOverlay>
@@ -1310,13 +1436,19 @@
     }}
   >
     <div class="flex flex-col gap-2 mt-9">
-      <WhalesList
-        {darkMode}
-        data={compareData?.base?.similarPortfolio}
-        copyAddress={handleCopyAddress}
-        closeModal={handleCloseWhalesListModal}
-      />
-      <div class="xl:text-base text-2xl text-right mt-3">
+      {#if $querySimilar.isFetching}
+        <div class="mx-auto">
+          <LoadingPremium />
+        </div>
+      {:else}
+        <WhalesList
+          {darkMode}
+          data={$querySimilar.data}
+          copyAddress={handleCopyAddress}
+          closeModal={handleCloseWhalesListModal}
+        />
+      {/if}
+      <div class="mt-3 text-2xl text-right xl:text-base">
         <a
           class="text-blue-500 cursor-pointer"
           href="/whales"
@@ -1330,4 +1462,12 @@
 </ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global>
+  :global(body) .select_content {
+    background: #ffffff;
+    border: 0.5px solid transparent;
+  }
+  :global(body.dark) .select_content {
+    background: #131313;
+    border: 0.5px solid #cdcdcd59;
+  }
 </style>
