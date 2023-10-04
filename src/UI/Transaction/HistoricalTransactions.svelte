@@ -164,7 +164,7 @@
                         address={item?.detail?.from}
                         iconColor={`${darkMode ? "#fff" : "#000"}`}
                         color={`${darkMode ? "#fff" : "#000"}`}
-                        textTooltip="Copy address to clipboard"
+                        textTooltip="Copy address"
                         isShorten={true}
                         isLink={true}
                         link={`${
@@ -174,7 +174,7 @@
                     {:else}
                       <Copy
                         address={item?.detail?.from}
-                        textTooltip="Copy address to clipboard"
+                        textTooltip="Copy address"
                         iconColor={`${darkMode ? "#fff" : "#000"}`}
                         color={`${darkMode ? "#fff" : "#000"}`}
                         isShorten={true}
@@ -196,7 +196,7 @@
                         address={item?.detail?.to}
                         iconColor={`${darkMode ? "#fff" : "#000"}`}
                         color={`${darkMode ? "#fff" : "#000"}`}
-                        textTooltip="Copy address to clipboard"
+                        textTooltip="Copy address"
                         isShorten={true}
                         isLink={true}
                         link={`${
@@ -206,7 +206,7 @@
                     {:else}
                       <Copy
                         address={item?.detail?.to}
-                        textTooltip="Copy address to clipboard"
+                        textTooltip="Copy address"
                         iconColor={`${darkMode ? "#fff" : "#000"}`}
                         color={`${darkMode ? "#fff" : "#000"}`}
                         isShorten={true}
@@ -299,15 +299,15 @@
   </div>
 {/if}
 {#if typeWalletAddress !== "SOL" && typeWalletAddress !== "CEX"}
-  <div class="flex items-center gap-2 text-sm">
+  <div class="flex items-center gap-2">
     <a href="https://mobula.fi/" target="_blank">
       <img
         src={mobulaLogo}
         alt=""
-        class="w-6 h-6 rounded-full cursor-pointer"
+        class="xl:w-6 xl:h-6 w-10 h-10 rounded-full cursor-pointer"
       />
     </a>
-    <span>Data by Mobula</span>
+    <span class="xl:text-sm text-xl">Data by Mobula</span>
   </div>
 {/if}
 

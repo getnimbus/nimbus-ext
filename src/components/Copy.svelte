@@ -11,7 +11,7 @@
   export let color = "#000";
   export let isLink = false;
   export let link = "";
-  export let textTooltip = "Copy address to clipboard";
+  export let textTooltip = "Copy address";
 
   let isCopied = false;
 </script>
@@ -39,7 +39,7 @@
             <a
               href={link}
               target="_blank"
-              class="hover:text-blue-500 cursor-pointer"
+              class="cursor-pointer hover:text-blue-500"
             >
               {shorterAddress(address)}
             </a>
@@ -53,7 +53,7 @@
             <a
               href={link}
               target="_blank"
-              class="hover:text-blue-500 cursor-pointer"
+              class="cursor-pointer hover:text-blue-500"
             >
               {address}
             </a>
