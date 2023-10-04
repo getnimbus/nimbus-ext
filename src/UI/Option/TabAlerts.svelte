@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { wallet, user } from "~/store";
 
   import Button from "~/components/Button.svelte";
 
@@ -41,10 +43,29 @@
     },
   ];
 
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
+
+  let selectedWallet: string = "";
+  wallet.subscribe((value) => {
+    selectedWallet = value;
+  });
+
   let show = false;
   let counter = 3;
   let toastMsg = "";
   let isSuccess = false;
+
+  let userConfigs = {
+    filter_spam_tx_alert: false,
+    id: "",
+    owner: "",
+    price_alert: "",
+    summary_setting_alert: [],
+    transaction_alert: false,
+  };
 
   let percent = false;
   let summary = false;
@@ -98,27 +119,82 @@
       return;
     }
 
-    isLoadingSave = true;
+    const payload = {
+      price_alert: selectedPercent,
+      summary_setting_alert: selectedSummary,
+      transaction_alert: transaction,
+      filter_spam_tx_alert: filterSpamTrx,
+    };
 
+    isLoadingSave = true;
     try {
-      isLoadingSave = false;
-      const payload = {
-        price_alert: selectedPercent,
-        summary_setting_alert: selectedSummary,
-        transaction_alert: transaction,
-        filter_spam_tx_alert: filterSpamTrx,
-      };
-      console.log(payload);
-      // const response = await nimbus.post("/alert-notification", payload);
+      const res = await nimbus.put("/users/alert-notification", payload);
+
+      selectedPercent = Number(res.data.price_alert);
+      selectedSummary = res.data.summary_setting_alert;
+      transaction = res.data.transaction_alert;
+      filterSpamTrx = res.data.filter_spam_tx_alert;
+      if (res.data.price_alert !== "0") {
+        percent = true;
+      }
+      if (res.data.summary_setting_alert.length !== 0) {
+        summary = true;
+      }
+
+      toastMsg = "Your settings have been successfully saved!";
+      isSuccess = true;
     } catch (e) {
       console.error(e);
-      isLoadingSave = false;
       toastMsg =
         "There are some problem when save you settings. Please try again!";
       isSuccess = false;
+    } finally {
+      isLoadingSave = false;
       trigger();
     }
   };
+
+  const cancelSaveSetting = () => {
+    selectedPercent = Number(userConfigs.price_alert);
+    selectedSummary = userConfigs.summary_setting_alert;
+    transaction = userConfigs.transaction_alert;
+    filterSpamTrx = userConfigs.filter_spam_tx_alert;
+    if (userConfigs.price_alert !== "0") {
+      percent = true;
+    }
+    if (userConfigs.summary_setting_alert.length !== 0) {
+      summary = true;
+    }
+  };
+
+  const getUserConfigs = async () => {
+    try {
+      const response: any = await nimbus.get("/users/configs");
+      if (response?.status === 401) {
+        localStorage.removeItem("evm_token");
+        user.update((n) => (n = {}));
+        throw new Error(response?.response?.error);
+      }
+      userConfigs = response?.data;
+
+      selectedPercent = Number(response?.data.price_alert);
+      selectedSummary = response?.data.summary_setting_alert;
+      transaction = response?.data.transaction_alert;
+      filterSpamTrx = response?.data.filter_spam_tx_alert;
+      if (response?.data.price_alert !== "0") {
+        percent = true;
+      }
+      if (response?.data.summary_setting_alert.length !== 0) {
+        summary = true;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  onMount(() => {
+    getUserConfigs();
+  });
 </script>
 
 <div class="flex flex-col gap-4">
@@ -135,19 +211,25 @@
     <div class="flex flex-col gap-3">
       <div class="flex justify-between items-center gap-6">
         <div class="flex flex-col">
-          <div class="xl:text-base text-xl">Price change notification</div>
-          <div class="xl:text-sm text-base text-gray-400">
+          <div class="xl:text-base text-2xl">Price change notification</div>
+          <div class="xl:text-sm text-xl text-gray-400">
             Receive notification whenever your price percent change
           </div>
         </div>
         <label class="switch">
-          <input type="checkbox" bind:checked={percent} />
+          <input
+            type="checkbox"
+            checked={percent}
+            on:click={() => {
+              percent = !percent;
+            }}
+          />
           <span class="slider" />
         </label>
       </div>
       <div class="flex flex-col gap-3">
         {#each percentList as item}
-          <label class="flex items-center gap-2 cursor-pointer w-max">
+          <label class="flex items-center xl:gap-2 gap-6 cursor-pointer w-max">
             <input
               type="radio"
               disabled={!percent}
@@ -169,21 +251,27 @@
     <div class="flex flex-col gap-4">
       <div class="flex justify-between items-center gap-6">
         <div class="flex flex-col">
-          <div class="xl:text-base text-xl">
+          <div class="xl:text-base text-2xl">
             Frequency of portfolio summary notification
           </div>
-          <div class="xl:text-sm text-base text-gray-400">
+          <div class="xl:text-sm text-xl text-gray-400">
             Receive portfolio summary every daily, weekly or monthly
           </div>
         </div>
         <label class="switch">
-          <input type="checkbox" bind:checked={summary} />
+          <input
+            type="checkbox"
+            checked={summary}
+            on:click={() => {
+              summary = !summary;
+            }}
+          />
           <span class="slider" />
         </label>
       </div>
       <div class="flex flex-col gap-3">
         {#each summaryList as item}
-          <div class="flex items-center gap-2 cursor-pointer w-max">
+          <div class="flex items-center xl:gap-2 gap-6 cursor-pointer w-max">
             <input
               type="checkbox"
               disabled={!summary}
@@ -208,13 +296,19 @@
     <div class="flex flex-col gap-4">
       <div class="flex justify-between items-center gap-6">
         <div class="flex flex-col">
-          <div class="xl:text-base text-xl">Transaction notification</div>
-          <div class="xl:text-sm text-base text-gray-400">
+          <div class="xl:text-base text-2xl">Transaction notification</div>
+          <div class="xl:text-sm text-xl text-gray-400">
             Receive notification whenever you have transaction
           </div>
         </div>
         <label class="switch">
-          <input type="checkbox" bind:checked={transaction} />
+          <input
+            type="checkbox"
+            checked={transaction}
+            on:click={() => {
+              transaction = !transaction;
+            }}
+          />
           <span class="slider" />
         </label>
       </div>
@@ -226,7 +320,10 @@
           <input
             type="checkbox"
             disabled={!transaction}
-            bind:checked={filterSpamTrx}
+            checked={filterSpamTrx}
+            on:click={() => {
+              filterSpamTrx = !filterSpamTrx;
+            }}
           />
           <span class="slider" />
         </label>
@@ -235,16 +332,7 @@
 
     <div class="flex justify-start gap-6 lg:gap-2 mt-6">
       <div class="w-[120px]">
-        <Button
-          variant="secondary"
-          on:click={() => {
-            transaction = false;
-            percent = false;
-            summary = false;
-          }}
-        >
-          Cancel</Button
-        >
+        <Button variant="secondary" on:click={cancelSaveSetting}>Cancel</Button>
       </div>
       <div class="w-[120px]">
         <Button type="submit" variant="tertiary" isLoading={isLoadingSave}>
