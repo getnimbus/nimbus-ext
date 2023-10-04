@@ -342,9 +342,6 @@
 
   // query personalize tag
   const getPersonalizeTag = async (address) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
     const response = await nimbus.get(`/address/${address}/personalize/tag`);
     return response?.data || [];
   };
@@ -388,9 +385,6 @@
 
   // query holding token
   const getHoldingToken = async (address, chain) => {
-    if (packageSelected === "FREE") {
-      return null;
-    }
     const response: HoldingTokenRes = await nimbus
       .get(`/v2/address/${address}/holding?chain=${chain}`)
       .then((response) => response.data);
@@ -423,9 +417,6 @@
 
   // query compare
   const getAnalyticCompare = async (address: string, timeFrame: string) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
@@ -746,7 +737,8 @@
       typeWalletAddress === "CEX" ||
       typeWalletAddress === "SOL" ||
       typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0
+      selectedWallet.length !== 0 &&
+      packageSelected !== "FREE"
   );
 
   $: theme = darkMode ? "dark" : "white";

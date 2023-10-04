@@ -25,38 +25,55 @@
   let showTooltip = false;
   let numberToCount = 0;
 
+  $: console.log("number hello mấy cưng: ", number);
+
   onMount(() => {
     countUp = new CountUp(id, numberToCount, options);
-    countUp.start();
+    // countUp.start();
   });
 
-  $: {
-    const { number_format, number_size } = formatBigBalance(number);
-    numberFormat = number_format;
-    numberSize = number_size;
+  $: console.log({ numberToCount, countUp });
 
-    if (type === "amount") {
-      if (number < 100000) {
-        numberToCount =
-          numeral(number).format("0,0.0[000000]") === "NaN"
-            ? number
-            : numeral(number).format("0,0.0[000000]");
-      } else {
+  $: {
+    if (countUp) {
+      countUp.start();
+    }
+  }
+
+  $: {
+    console.log({ number });
+  }
+
+  $: {
+    if (number) {
+      const { number_format, number_size } = formatBigBalance(number);
+      numberFormat = number_format;
+      numberSize = number_size;
+
+      if (type === "amount") {
+        if (number < 100000) {
+          numberToCount =
+            numeral(number).format("0,0.0[000000]") === "NaN"
+              ? number
+              : numeral(number).format("0,0.0[000000]");
+        } else {
+          numberToCount = number_size === "K" ? number : number_format;
+        }
+      }
+
+      if (type === "balance" || type === "percent") {
+        // console.log("set number to count", type, numberToCount);
         numberToCount = number_size === "K" ? number : number_format;
       }
-    }
 
-    if (type === "balance" || type === "percent") {
-      numberToCount = number_size === "K" ? number : number_format;
-    }
+      options = {
+        ...options,
+        startVal: (Number(numberToCount) * 70) / 100,
+      };
 
-    options = {
-      ...options,
-      startVal: (Number(numberToCount) * 70) / 100,
-    };
-
-    if (countUp) {
-      countUp.update(Number(numberToCount));
+      if (countUp) {
+        countUp.update(Number(numberToCount));
+      }
     }
   }
 </script>

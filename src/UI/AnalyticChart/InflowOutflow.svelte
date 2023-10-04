@@ -172,9 +172,6 @@
   };
 
   const getInflowOutflow = async (address, chain) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
     const response = await nimbus.get(
       `/v2/analysis/${address}/inflow-outflow?chain=${chain}&fromDate=${""}&toDate=${""}`
     );
@@ -375,7 +372,8 @@
       typeWalletAddress === "CEX" ||
       typeWalletAddress === "SOL" ||
       typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0
+      selectedWallet.length !== 0 &&
+      packageSelected !== "FREE"
   );
 </script>
 

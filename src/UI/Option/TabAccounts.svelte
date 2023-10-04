@@ -755,6 +755,18 @@
       return;
     }
 
+    if (
+      listBundle.find((item) => item.name === nameBundle) &&
+      selectedBundle &&
+      Object.keys(selectedBundle).length === 0
+    ) {
+      toastMsg = "Bundle already existed!";
+      isSuccess = false;
+      trigger();
+      isLoadingBundle = false;
+      return;
+    }
+
     isLoadingBundle = true;
     try {
       const formData = {
@@ -966,7 +978,11 @@
                 on:scroll={handleScroll}
               >
                 <AnimateSharedLayout>
-                  {#each listBundle as item}
+                  {#each listBundle.sort((a, b) => {
+                    if (a.name === "Your wallets") return -1;
+                    if (b.name === "Your wallets") return 1;
+                    return 0;
+                  }) as item}
                     <div
                       class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
                       on:click={() => {
@@ -1030,7 +1046,7 @@
           <div class="flex justify-end flex-1 gap-4">
             <!-- add bundle -->
             <div class="flex items-center gap-4">
-              {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0}
+              {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0 && selectedBundle?.name !== "Your wallets"}
                 <div
                   class="text-2xl font-semibold text-red-500 cursor-pointer w-max xl:text-base"
                   on:click={() => (isOpenConfirmDeleteBundles = true)}
@@ -1151,6 +1167,7 @@
             nameBundle && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
           required
+          disabled={selectedBundle?.name === "Your wallets" ? true : false}
           bind:value={nameBundle}
         />
       </div>
