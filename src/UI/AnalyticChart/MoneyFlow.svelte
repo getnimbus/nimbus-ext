@@ -186,9 +186,6 @@
     chain: string,
     timeFrame: string
   ) => {
-    // if (packageSelected === "FREE") {
-    //   return undefined;
-    // }
     const response = await nimbus.get(
       `/v2/analysis/${address}/inflow-outflow?chain=${chain}&timeRange=${timeFrame}`
     );

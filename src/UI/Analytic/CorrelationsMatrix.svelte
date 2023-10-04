@@ -123,9 +123,6 @@
 
   // query token holding
   const getHoldingToken = async (address, chain) => {
-    // if (packageSelected === "FREE") {
-    //   return null;
-    // }
     const response: HoldingTokenRes = await nimbus
       .get(`/v2/address/${address}/holding?chain=${chain}`)
       .then((response) => response.data);

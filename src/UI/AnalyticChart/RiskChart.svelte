@@ -260,9 +260,6 @@
   };
 
   const getAnalyticCompare = async (address: string, timeFrame: string) => {
-    // if (packageSelected === "FREE") {
-    //   return undefined;
-    // }
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
@@ -273,9 +270,6 @@
   };
 
   const getRiskBreakdown = async (address: string, timeFrame: string) => {
-    // if (packageSelected === "FREE") {
-    //   return undefined;
-    // }
     const response = await nimbus.get(
       `/v2/analysis/${address}/risk-breakdown?timeRange=${timeFrame}`
     );

@@ -127,9 +127,6 @@
   };
 
   const getAnalyticCompare = async (address: string, timeFrame: string) => {
-    // if (packageSelected === "FREE") {
-    //   return undefined;
-    // }
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );

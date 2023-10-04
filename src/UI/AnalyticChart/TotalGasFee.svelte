@@ -96,9 +96,6 @@
   };
 
   const getAnalyticHistorical = async (address, chain) => {
-    // if (packageSelected === "FREE") {
-    //   return undefined;
-    // }
     const response = await nimbus.get(
       `/v2/analysis/${address}/historical?chain=${chain}`
     );
