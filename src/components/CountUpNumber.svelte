@@ -25,24 +25,10 @@
   let showTooltip = false;
   let numberToCount = 0;
 
-  $: console.log("number hello mấy cưng: ", number);
-
   onMount(() => {
     countUp = new CountUp(id, numberToCount, options);
-    // countUp.start();
+    countUp.start();
   });
-
-  $: console.log({ numberToCount, countUp });
-
-  $: {
-    if (countUp) {
-      countUp.start();
-    }
-  }
-
-  $: {
-    console.log({ number });
-  }
 
   $: {
     if (number) {
