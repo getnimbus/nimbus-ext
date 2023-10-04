@@ -431,7 +431,7 @@
                         </div>
                       </div>
 
-                      <div
+                      <!-- <div
                         class="rounded-[20px] bg_fafafbff px-4 py-3 flex flex-col gap-2"
                         style="z-index: 2"
                       >
@@ -450,7 +450,7 @@
                             type="percent"
                           />%
                         </div>
-                      </div>
+                      </div> -->
                     </div>
                     {#if scrollOverviewContainer?.scrollWidth >= containerOverview?.offsetWidth}
                       <div
