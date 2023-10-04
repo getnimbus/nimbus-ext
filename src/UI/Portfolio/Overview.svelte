@@ -89,6 +89,7 @@
   <div class="flex flex-col justify-between gap-6 xl:flex-row">
     <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
       <OverviewCard title={MultipleLang.networth}>
+        {networth}
         <div class="flex text-5xl xl:text-3xl">
           $<CountUpNumber
             id="networth"

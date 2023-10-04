@@ -258,9 +258,9 @@
   };
 
   const validateFormEdit = async (data) => {
-    const addressValidate = await validateAddress(data.address);
+    const addressValidate = await validateAddress(selectedItemEdit.address);
 
-    if (!isRequiredFieldValid(data.address)) {
+    if (!isRequiredFieldValid(selectedItemEdit.address)) {
       errorsEdit["address"] = {
         ...errorsEdit["address"],
         required: true,
@@ -492,7 +492,7 @@
           Object.assign(data, { id: data.address });
 
           await nimbus.put(`/accounts/${selectedItemEdit.id}`, {
-            accountId: data.address,
+            accountId: selectedItemEdit.address,
             label: data.label,
           });
 
@@ -755,6 +755,18 @@
       return;
     }
 
+    if (
+      listBundle.find((item) => item.name === nameBundle) &&
+      selectedBundle &&
+      Object.keys(selectedBundle).length === 0
+    ) {
+      toastMsg = "Bundle already existed!";
+      isSuccess = false;
+      trigger();
+      isLoadingBundle = false;
+      return;
+    }
+
     isLoadingBundle = true;
     try {
       const formData = {
@@ -853,9 +865,7 @@
 
   const handleToggleCheckAll = (e) => {
     if (e.target.checked) {
-      selectedAddresses = listAddressWithoutBundle
-        .filter((item) => item.type !== "BTC")
-        .map((item) => item.address);
+      selectedAddresses = listAddressWithoutBundle.map((item) => item.address);
     } else {
       selectedAddresses = [];
     }
@@ -968,7 +978,11 @@
                 on:scroll={handleScroll}
               >
                 <AnimateSharedLayout>
-                  {#each listBundle as item}
+                  {#each listBundle.sort((a, b) => {
+                    if (a.name === "Your wallets") return -1;
+                    if (b.name === "Your wallets") return 1;
+                    return 0;
+                  }) as item}
                     <div
                       class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
                       on:click={() => {
@@ -1032,7 +1046,7 @@
           <div class="flex justify-end flex-1 gap-4">
             <!-- add bundle -->
             <div class="flex items-center gap-4">
-              {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0}
+              {#if listBundle && listBundle.length !== 0 && selectedBundle && Object.keys(selectedBundle).length !== 0 && selectedBundle?.name !== "Your wallets"}
                 <div
                   class="text-2xl font-semibold text-red-500 cursor-pointer w-max xl:text-base"
                   on:click={() => (isOpenConfirmDeleteBundles = true)}
@@ -1153,6 +1167,7 @@
             nameBundle && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
           required
+          disabled={selectedBundle?.name === "Your wallets" ? true : false}
           bind:value={nameBundle}
         />
       </div>
@@ -1163,11 +1178,6 @@
               <th class="flex items-center justify-start gap-6 py-3 pl-3">
                 <input
                   type="checkbox"
-                  checked={selectedAddresses.length ===
-                  listAddressWithoutBundle.filter((item) => item.type !== "BTC")
-                    .length
-                    ? true
-                    : false}
                   on:change={handleToggleCheckAll}
                   class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
                 />
@@ -1224,50 +1234,13 @@
                       <div
                         class="flex items-center gap-6 text-2xl text-left xl:text-base"
                       >
-                        <div
-                          class="relative flex justify-center"
-                          on:mouseenter={() => {
-                            if (item.type === "BTC") {
-                              showDisableBundle = true;
-                              selectedHoverBundle = item;
-                            }
-                          }}
-                          on:mouseleave={() => {
-                            if (item.type === "BTC") {
-                              showDisableBundle = false;
-                              selectedHoverBundle = {};
-                            }
-                          }}
-                        >
+                        <div class="flex justify-center">
                           <input
                             type="checkbox"
                             value={item.address}
                             bind:group={selectedAddresses}
-                            checked={selectedAddresses.length ===
-                              listAddressWithoutBundle.filter(
-                                (item) => item.type !== "BTC"
-                              ).length && item.type !== "BTC"
-                              ? true
-                              : false}
-                            disabled={item.type === "BTC"}
-                            class={`${
-                              item.type === "BTC"
-                                ? "bg-gray-300 border-none"
-                                : ""
-                            } cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]`}
+                            class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
                           />
-                          {#if showDisableBundle && selectedHoverBundle.address === item.address}
-                            <div
-                              class="absolute left-0 transform -top-8"
-                              style="z-index: 2147483648;"
-                            >
-                              <div
-                                class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
-                              >
-                                We don't support bundle BTC account
-                              </div>
-                            </div>
-                          {/if}
                         </div>
                         {item.label}
                       </div>
@@ -1700,16 +1673,15 @@
               {MultipleLang.content.modal_address_label}
             </div>
             <input
-              disabled={selectedItemEdit.type === "CEX"}
+              disabled={true}
               type="text"
               id="address"
               name="address"
               placeholder={MultipleLang.content.modal_address_label}
-              bind:value={selectedItemEdit.address}
+              value={selectedItemEdit.address}
               class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
                 address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               }`}
-              on:keyup={({ target: { value } }) => (address = value)}
             />
           </div>
           {#if errorsEdit.address && errorsEdit.address.required}
