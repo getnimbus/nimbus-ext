@@ -154,7 +154,13 @@
 
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
+                      params[0]?.axisValue === "Sharpe Ratio"
+                        ? item.value >= 0
+                          ? "#05a878"
+                          : "#f25f5d"
+                        : darkMode
+                        ? "white"
+                        : "black"
                     };">
                         ${
                           params[0]?.axisValue === "Volatility" ||
