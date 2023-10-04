@@ -9,6 +9,7 @@
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
+  import InviterQr from "~/UI/Profile/InviterQR.svelte";
   import Summary from "~/UI/Profile/Summary.svelte";
   import SocialMedia from "~/UI/Profile/SocialMedia.svelte";
   import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
@@ -16,7 +17,6 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import InviterQr from "~/UI/Profile/InviterQR.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {

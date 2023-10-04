@@ -1,9 +1,5 @@
 <script lang="ts">
-  import {
-    QueryClient,
-    createQuery,
-    useQueryClient,
-  } from "@tanstack/svelte-query";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import QRCode from "qrcode-generator";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, user, wallet, chain, typeWallet } from "~/store";
@@ -58,18 +54,12 @@
       qrImageDataUrl = qrcode.createDataURL(6, 0);
     }
   }
-
-  //   $: console.log("userAddress : ", $queryUserInfo);
 </script>
 
-<!-- Modal sync user to mobile -->
-
-<div id="target-element" class="card">
-  <div class="body_container w-full">
-    <div class="text-center text-lg mb-3">Check your profit at Nimbus</div>
-    <div class="qr_wrapper w-32 h-32 mx-auto">
-      <img src={qrImageDataUrl} alt="QR Code" />
-    </div>
+<div class="flex flex-col justify-center items-center gap-3">
+  <div class="xl:text-lg text-xl">Check your profit at Nimbus</div>
+  <div class="xl:w-32 xl:h-32 w-42 h-42">
+    <img src={qrImageDataUrl} alt="QR Code" class="w-full h-full" />
   </div>
 </div>
 
