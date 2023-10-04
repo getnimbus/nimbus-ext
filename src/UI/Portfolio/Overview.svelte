@@ -83,8 +83,6 @@
     typeWalletAddress === "SOL" || typeWalletAddress === "CEX"
       ? 0
       : getChangePercent(totalProfit, changeLast24hTotalProfit);
-
-  $: console.log("networth: ", networth);
 </script>
 
 <ErrorBoundary>
