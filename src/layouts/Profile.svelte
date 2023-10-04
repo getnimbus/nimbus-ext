@@ -16,6 +16,7 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import InviterQr from "~/UI/Profile/InviterQR.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -281,67 +282,72 @@
         class="w-full flex xl:flex-row flex-col rounded-xl py-10 px-10 gap-9 border-2 border_0000001a"
       >
         <div
-          class="xl:w-1/4 w-full flex flex-col gap-3 items-center justify-start"
+          class="xl:w-1/4 w-full flex flex-col gap-3 items-center justify-between"
         >
-          <div class="xl:w-[80px] xl:h-[80px] w-32 h-32">
-            <img
-              src="/assets/user.png"
-              alt=""
-              class="object-cover w-full h-full"
-            />
-          </div>
-
-          <div class="relative">
-            <div
-              class={`text-2xl xl:text-base font-medium ${
-                isEdit ? "cursor-pointer" : ""
-              }`}
-              on:click={() => {
-                if (isEdit) {
-                  showPopover = !showPopover;
-                }
-              }}
-            >
-              {shorterAddress(selectedAddress)}
+          <div class="flex flex-col gap-3 items-center justify-start">
+            <div class="xl:w-[80px] xl:h-[80px] w-32 h-32">
+              <img
+                src="/assets/user.png"
+                alt=""
+                class="object-cover w-full h-full"
+              />
             </div>
-            {#if showPopover}
+
+            <div class="relative">
               <div
-                class="select_content absolute left-1/2 transform -translate-x-1/2 z-50 flex flex-col xl:gap-3 gap-6 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-8 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
-                style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
-                use:clickOutside
-                on:click_outside={() => (showPopover = false)}
+                class={`text-2xl xl:text-base font-medium ${
+                  isEdit ? "cursor-pointer" : ""
+                }`}
+                on:click={() => {
+                  if (isEdit) {
+                    showPopover = !showPopover;
+                  }
+                }}
               >
-                {#each listAddress as item}
-                  <div
-                    class="flex flex-col cursor-pointer"
-                    on:click={() => {
-                      selectedAddress = item.value;
-
-                      description = "Your description";
-                      selectProfileNFT = {};
-                      socialDataTwitter = {
-                        label: "Twitter",
-                        username: "",
-                      };
-                      socialDataTelegram = {
-                        label: "Telegram",
-                        username: "",
-                      };
-
-                      showPopover = false;
-                    }}
-                  >
-                    <div class="text-2xl xl:text-xs font-medium text_00000099">
-                      {item.label}
-                    </div>
-                    <div class="text-3xl xl:text-sm">
-                      {shorterAddress(item?.value)}
-                    </div>
-                  </div>
-                {/each}
+                {shorterAddress(selectedAddress)}
               </div>
-            {/if}
+              {#if showPopover}
+                <div
+                  class="select_content absolute left-1/2 transform -translate-x-1/2 z-50 flex flex-col xl:gap-3 gap-6 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-8 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
+                  style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
+                  use:clickOutside
+                  on:click_outside={() => (showPopover = false)}
+                >
+                  {#each listAddress as item}
+                    <div
+                      class="flex flex-col cursor-pointer"
+                      on:click={() => {
+                        selectedAddress = item.value;
+
+                        description = "Your description";
+                        selectProfileNFT = {};
+                        socialDataTwitter = {
+                          label: "Twitter",
+                          username: "",
+                        };
+                        socialDataTelegram = {
+                          label: "Telegram",
+                          username: "",
+                        };
+
+                        showPopover = false;
+                      }}
+                    >
+                      <div
+                        class="text-2xl xl:text-xs font-medium text_00000099"
+                      >
+                        {item.label}
+                      </div>
+                      <div class="text-3xl xl:text-sm">
+                        {shorterAddress(item?.value)}
+                      </div>
+                    </div>
+                  {/each}
+                </div>
+              {/if}
+            </div>
           </div>
+          <InviterQr />
         </div>
         <div class="flex-1 flex flex-col gap-4">
           <div class="xl:text-3xl text-4xl font-medium">My Story</div>
