@@ -94,17 +94,17 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
 
 export const messari = createAxiosInterface({
   baseURL: "https://data.messari.io/api/v1",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
 
 export const coinGeko = createAxiosInterface({
   baseURL: "https://api.coingecko.com/api/v3",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
 
 export const nimbus = createAxiosInterface({
-  baseURL: "https://api.getnimbus.io",
-  // baseURL: "https://api-staging.getnimbus.io",
+  // baseURL: "https://api.getnimbus.io",
+  baseURL: "https://api-staging.getnimbus.io",
   // baseURL: "http://localhost:3000",
   getHeaderAuthorize: () => {
     const evmToken = localStorage.getItem("evm_token");
@@ -118,30 +118,30 @@ export const nimbus = createAxiosInterface({
 
 export const defillama = createAxiosInterface({
   baseURL: "https://coins.llama.fi",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
 
 export const coinmarketcap = createAxiosInterface({
   baseURL: "https://s3.coinmarketcap.com",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
 
 export const mixpanel = createAxiosInterface({
   baseURL: "https://api.mixpanel.com",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
 
 export const goplus = createAxiosInterface({
   baseURL: "https://api.gopluslabs.io/api/v1",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
 
 export const nimbusApi = createAxiosInterface({
   baseURL: "https://nimbus-api-production.up.railway.app/api",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
 
 export const aptos = createAxiosInterface({
   baseURL: "https://aptos-celebtron-api.getnimbus.io/api/v1",
-  getHeaderAuthorize: () => {},
+  getHeaderAuthorize: () => { },
 });
