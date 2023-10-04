@@ -103,10 +103,10 @@
     try {
       isLoadingSave = false;
       const payload = {
-        price_notification_setting: selectedPercent,
-        summary_notification_setting: selectedSummary,
-        transaction_notification: transaction,
-        filter_spam_trx_notification: filterSpamTrx,
+        price_alert: selectedPercent,
+        summary_setting_alert: selectedSummary,
+        transaction_alert: transaction,
+        filter_spam_tx_alert: filterSpamTrx,
       };
       console.log(payload);
       // const response = await nimbus.post("/alert-notification", payload);
