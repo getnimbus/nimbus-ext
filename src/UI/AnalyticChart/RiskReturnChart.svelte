@@ -111,7 +111,7 @@
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
                   darkMode ? "white" : "black"
                 }">
-                  Risk 
+                  Volatility 
                 </div>
 
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">

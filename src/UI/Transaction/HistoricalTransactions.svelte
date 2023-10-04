@@ -164,7 +164,7 @@
                         address={item?.detail?.from}
                         iconColor={`${darkMode ? "#fff" : "#000"}`}
                         color={`${darkMode ? "#fff" : "#000"}`}
-                        textTooltip="Copy address to clipboard"
+                        textTooltip="Copy address"
                         isShorten={true}
                         isLink={true}
                         link={`${
@@ -174,7 +174,7 @@
                     {:else}
                       <Copy
                         address={item?.detail?.from}
-                        textTooltip="Copy address to clipboard"
+                        textTooltip="Copy address"
                         iconColor={`${darkMode ? "#fff" : "#000"}`}
                         color={`${darkMode ? "#fff" : "#000"}`}
                         isShorten={true}
@@ -196,7 +196,7 @@
                         address={item?.detail?.to}
                         iconColor={`${darkMode ? "#fff" : "#000"}`}
                         color={`${darkMode ? "#fff" : "#000"}`}
-                        textTooltip="Copy address to clipboard"
+                        textTooltip="Copy address"
                         isShorten={true}
                         isLink={true}
                         link={`${
@@ -206,7 +206,7 @@
                     {:else}
                       <Copy
                         address={item?.detail?.to}
-                        textTooltip="Copy address to clipboard"
+                        textTooltip="Copy address"
                         iconColor={`${darkMode ? "#fff" : "#000"}`}
                         color={`${darkMode ? "#fff" : "#000"}`}
                         isShorten={true}
