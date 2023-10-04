@@ -258,9 +258,9 @@
   };
 
   const validateFormEdit = async (data) => {
-    const addressValidate = await validateAddress(data.address);
+    const addressValidate = await validateAddress(selectedItemEdit.address);
 
-    if (!isRequiredFieldValid(data.address)) {
+    if (!isRequiredFieldValid(selectedItemEdit.address)) {
       errorsEdit["address"] = {
         ...errorsEdit["address"],
         required: true,
@@ -492,7 +492,7 @@
           Object.assign(data, { id: data.address });
 
           await nimbus.put(`/accounts/${selectedItemEdit.id}`, {
-            accountId: data.address,
+            accountId: selectedItemEdit.address,
             label: data.label,
           });
 
@@ -1656,16 +1656,15 @@
               {MultipleLang.content.modal_address_label}
             </div>
             <input
-              disabled={selectedItemEdit.type === "CEX"}
+              disabled={true}
               type="text"
               id="address"
               name="address"
               placeholder={MultipleLang.content.modal_address_label}
-              bind:value={selectedItemEdit.address}
+              value={selectedItemEdit.address}
               class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
                 address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               }`}
-              on:keyup={({ target: { value } }) => (address = value)}
             />
           </div>
           {#if errorsEdit.address && errorsEdit.address.required}
