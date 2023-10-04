@@ -183,7 +183,7 @@
       <div
         class="w-full flex xl:flex-row flex-col rounded-xl py-10 px-10 gap-9 border-2 border_0000001a"
       >
-        <div class="xl:w-1/4 w-full flex flex-col gap-3 justify-between">
+        <div class="xl:w-1/4 w-full flex flex-col gap-7 justify-between">
           <div class="flex flex-col gap-3 items-center justify-start">
             <div class="xl:w-[80px] xl:h-[80px] w-32 h-32">
               <img
@@ -235,7 +235,9 @@
               {/if}
             </div>
           </div>
-          <SyncMobile />
+          <div class="flex justify-center">
+            <SyncMobile />
+          </div>
         </div>
         <div class="flex-1 flex flex-col gap-4">
           <div class="xl:text-3xl text-4xl font-medium">My Story</div>

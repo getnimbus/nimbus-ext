@@ -1,97 +1,77 @@
-<script>
-  import Logo from "~/assets/logo-1.svg";
+<script lang="ts">
+  import {
+    QueryClient,
+    createQuery,
+    useQueryClient,
+  } from "@tanstack/svelte-query";
   import QRCode from "qrcode-generator";
   import { nimbus } from "~/lib/network";
-  import CopyToClipboard from "svelte-copy-to-clipboard";
-  import dayjs from "dayjs";
-  import { isDarkMode } from "~/store";
-  import { wait } from "~/entries/background/utils";
-  import AppOverlay from "~/components/Overlay.svelte";
+  import { isDarkMode, user, wallet, chain, typeWallet } from "~/store";
+  import { shorterAddress } from "~/utils";
 
-  let qrImageDataUrl = "";
-  let syncMobileCode = "";
-  let timer = null;
-  let isOpenModalSync = true;
-
-  let timeCountdown = 59;
-  let timerCountdown;
-  let isCopied = false;
+  let qrImageDataUrl = undefined;
+  let userAddress = "";
+  let link = "";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
   });
 
-  const handleGetCodeSyncMobile = async () => {
-    try {
-      const res = await nimbus.get("/users/cross-login");
-      if (res?.data) {
-        syncMobileCode = res?.data?.code;
-        const expiredAt = dayjs.unix(res?.data?.expiredAt);
-        const currentTime = dayjs();
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
 
-        // Check if the time difference is more than 1 minute
-        if (currentTime.diff(expiredAt, "second") > 60) {
-          // Make another API call to get a new sync code
-          const newResponse = await nimbus.get("/users/cross-login");
-          if (newResponse) {
-            syncMobileCode = res?.data?.code;
-          }
-        } else {
-          // Schedule the next check after 1 minute
-          timer = setTimeout(handleGetCodeSyncMobile, 60000);
+  const queryClient = useQueryClient();
+  const qrcode = QRCode(0, "L");
 
-          timerCountdown = setInterval(() => {
-            timeCountdown -= 1;
-            if (timeCountdown < 0) {
-              timeCountdown = 59;
-              clearInterval(timerCountdown);
-            }
-          }, 1000);
-        }
-      }
-    } catch (e) {
-      syncMobileCode = undefined;
-      timeCountdown = 59;
-      clearTimeout(timer);
-      clearInterval(timerCountdown);
-      console.error("error: ", e);
+  const getUserInfo = async () => {
+    const response: any = await nimbus.get("/users/me");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
     }
+    userAddress = response?.data;
   };
-  handleGetCodeSyncMobile();
+
+  $: queryUserInfo = createQuery({
+    queryKey: ["users-me"],
+    queryFn: () => getUserInfo(),
+    staleTime: Infinity,
+    retry: false,
+    enabled: Object.keys(userInfo).length !== 0,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+      wallet.update((n) => (n = ""));
+      chain.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ""));
+      queryClient.invalidateQueries(["list-address"]);
+    },
+  });
 
   $: {
-    if (syncMobileCode) {
-      const qrcode = QRCode(0, "L");
-      qrcode.addData(`https://app.getnimbus.io/?code=${syncMobileCode}`);
+    if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
+      userAddress = $queryUserInfo.data?.publicAddress;
+      link = `https://app.getnimbus.io/?invitation=${$queryUserInfo?.data.id}`;
+      qrcode.addData(link);
       qrcode.make();
-      qrImageDataUrl = qrcode.createDataURL(7);
+      qrImageDataUrl = qrcode.createDataURL(6, 0);
     }
   }
+
+  $: console.log("userAddress : ", $queryUserInfo);
 </script>
 
 <!-- Modal sync user to mobile -->
 
-<div class="flex flex-col gap-4">
-  <div class="flex justify-start self-start items-center -mt-2">
-    <div class="border rounded-xl overflow-hidden bg-white w-[200px]">
-      {#if qrImageDataUrl !== undefined}
-        <img src={qrImageDataUrl} alt="QR Code" />
-      {:else}
-        <div class="flex flex-col items-center gap-1 text-sm py-30">
-          <div>Something wrong when generate QR code.</div>
-          <div
-            class="text-blue-500 cursor-pointer"
-            on:click={() => {
-              handleGetCodeSyncMobile();
-            }}
-          >
-            Try again
-          </div>
-        </div>
-      {/if}
+<div id="target-element" class="card">
+  <div class="body_container w-full">
+    <div class="text-center text-lg mb-3">Check your profit at Nimbus</div>
+    <div class="qr_wrapper w-32 h-32 mx-auto">
+      <img src={qrImageDataUrl} alt="QR Code" />
     </div>
   </div>
 </div>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global></style>
