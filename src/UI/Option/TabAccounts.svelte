@@ -1477,7 +1477,7 @@
                     }`}
                   >
                     <div
-                      class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
+                      class="text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
                     >
                       <Copy
                         address={item.address}
