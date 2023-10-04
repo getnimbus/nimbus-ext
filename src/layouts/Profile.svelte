@@ -13,6 +13,7 @@
   import Summary from "~/UI/Profile/Summary.svelte";
   import SocialMedia from "~/UI/Profile/SocialMedia.svelte";
   import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
+  import TradingStats from "~/UI/Profile/TradingStats.svelte";
   import Button from "~/components/Button.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -450,6 +451,7 @@
               />
             </div>
 
+            <TradingStats {selectedAddress} />
             <ClosedPositionChart {selectedAddress} />
           </div>
         </div>
