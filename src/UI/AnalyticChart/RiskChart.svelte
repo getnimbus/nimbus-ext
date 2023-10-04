@@ -10,6 +10,7 @@
   import {
     autoFontSize,
     formatCurrency,
+    formatPercent,
     formatValue,
     getTooltipContent,
     volatilityColorChart,
@@ -74,7 +75,7 @@
       value: "overview",
     },
     {
-      label: "Risk breakdown",
+      label: "Volatility breakdown",
       value: "riskBreakdown",
     },
   ];
@@ -113,7 +114,17 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       item.value >= 0 ? "#05a878" : "#f25f5d"
                     };">
-                      ${formatCurrency(Math.abs(item.value))}
+                      ${
+                        params[0]?.axisValue === "Volatility" ||
+                        params[0]?.axisValue === "Max drawdown"
+                          ? formatPercent(Math.abs(item.value))
+                          : formatCurrency(Math.abs(item.value))
+                      }${
+                    params[0]?.axisValue === "Volatility" ||
+                    params[0]?.axisValue === "Max drawdown"
+                      ? "%"
+                      : ""
+                  }
                     </div>
                   </div>
                 </div>
@@ -520,12 +531,14 @@
 
 <AnalyticSection>
   <span slot="title">
-    <div class="flex justify-start text-4xl font-medium xl:text-2xl">Risks</div>
+    <div class="flex justify-start text-4xl font-medium xl:text-2xl">
+      Volatility
+    </div>
   </span>
 
   <span slot="overview">
     {#if !($query.isFetching || $queryBreakdown.isFetching) && !$query.isError}
-      <div class="mb-4 text-3xl font-medium xl:text-xl px-6 pt-6">Overview</div>
+      <div class="px-6 pt-6 mb-4 text-3xl font-medium xl:text-xl">Overview</div>
     {/if}
     {#if $query.isFetching || $queryBreakdown.isFetching}
       <div class="flex items-center justify-center h-[465px]">
@@ -697,7 +710,7 @@
         <LoadingPremium />
       </div>
     {:else}
-      <div class="h-full relative">
+      <div class="relative h-full">
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${

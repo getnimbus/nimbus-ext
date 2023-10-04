@@ -111,7 +111,7 @@
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
                   darkMode ? "white" : "black"
                 }">
-                  Risk 
+                  Volatility 
                 </div>
 
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
@@ -500,13 +500,13 @@
 <AnalyticSection>
   <span slot="title">
     <div class="flex justify-start text-4xl font-medium xl:text-2xl">
-      Risks & Returns
+      Volatility & Returns
     </div>
   </span>
 
   <span slot="overview">
     {#if !($query.isFetching || $queryBreakdown.isFetching) && !$query.isError}
-      <div class="mb-4 text-3xl font-medium xl:text-xl px-6 pt-6">Overview</div>
+      <div class="px-6 pt-6 mb-4 text-3xl font-medium xl:text-xl">Overview</div>
     {/if}
     {#if $query.isFetching || $queryBreakdown.isFetching}
       <div class="flex items-center justify-center h-[465px]">
@@ -673,7 +673,7 @@
         <LoadingPremium />
       </div>
     {:else}
-      <div class="h-full relative">
+      <div class="relative h-full">
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
@@ -688,7 +688,7 @@
             {/if}
           </div>
         {:else}
-          <div class="flex flex-row mb-2 p-6">
+          <div class="flex flex-row p-6 mb-2">
             <AnimateSharedLayout>
               {#each riskTypeChart as type}
                 <div
