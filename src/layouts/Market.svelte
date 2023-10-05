@@ -159,7 +159,7 @@
       </div>
     </div>
     <div
-      class="border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto"
+      class="border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto"
     >
       <table class="table-auto xl:w-full w-[1300px]">
         <thead
