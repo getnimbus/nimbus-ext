@@ -95,9 +95,7 @@
 
   <div
     class={`${
-      $query.isFetching || (listAddress && listAddress.length === 0)
-        ? "h-[800px]"
-        : ""
+      $query.isFetching || listAddress?.length === 0 ? "h-[800px]" : ""
     }`}
   >
     <div

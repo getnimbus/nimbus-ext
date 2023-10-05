@@ -160,11 +160,7 @@
   </div>
 
   <div
-    class={`${
-      isLoading || (listAddressLabel && listAddressLabel.length === 0)
-        ? "h-[800px]"
-        : ""
-    }`}
+    class={`${isLoading || listAddressLabel?.length === 0 ? "h-[800px]" : ""}`}
   >
     <div
       class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${

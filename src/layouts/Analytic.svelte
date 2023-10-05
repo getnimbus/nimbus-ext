@@ -260,7 +260,7 @@
   </AppOverlay>
 </ErrorBoundary>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .input-border {
     border: 1px solid rgb(229, 231, 235);
   }

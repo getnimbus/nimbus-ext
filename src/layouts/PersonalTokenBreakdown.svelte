@@ -1021,7 +1021,7 @@
               <div
                 class={`${
                   $queryTokenHolding.isFetching ||
-                  (searchDataResult && searchDataResult.length === 0)
+                  searchDataResult?.length === 0
                     ? "h-[800px]"
                     : ""
                 }`}

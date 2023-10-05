@@ -55,9 +55,7 @@
 
 <div
   class={`${
-    isLoadingToken || (searchDataResult && searchDataResult.length === 0)
-      ? "h-[800px]"
-      : ""
+    isLoadingToken || searchDataResult?.length === 0 ? "h-[800px]" : ""
   }`}
 >
   <div
