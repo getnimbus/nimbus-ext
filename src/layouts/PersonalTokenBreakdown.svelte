@@ -126,6 +126,26 @@
   let searchValue = "";
   let sortTag = "default";
 
+  onMount(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    let chainParams = urlParams.get("chain");
+    let addressParams = urlParams.get("address");
+
+    if (chainParams && addressParams) {
+      selectedWallet = addressParams;
+      selectedChain = chainParams;
+    }
+
+    const handleScroll = () => {
+      const clientRectTokenHeader = tableTokenHeader?.getBoundingClientRect();
+      isStickyTableToken = clientRectTokenHeader?.top <= 0;
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  });
+
   const getPersonalizeTag = async (address) => {
     const response = await nimbus
       .get(`/address/${address}/personalize/tag`)
@@ -360,7 +380,7 @@
   // query token holding
   $: queryTokenHolding = createQuery({
     queryKey: ["holding-token", selectedWallet, selectedChain],
-    enabled: enabledQuery,
+    enabled: !!selectedWallet,
     queryFn: () => getHoldingToken(selectedWallet, selectedChain),
     staleTime: Infinity,
   });
@@ -374,7 +394,7 @@
   // query tag
   $: queryTag = createQuery({
     queryKey: ["personalize-tag", selectedWallet],
-    enabled: enabledQuery,
+    enabled: !!selectedWallet,
     queryFn: () => getPersonalizeTag(selectedWallet),
     staleTime: Infinity,
   });
@@ -384,34 +404,6 @@
       formatDataTag($queryTag.data);
     }
   }
-
-  $: enabledQuery = Boolean(
-    (typeWalletAddress === "EVM" ||
-      typeWalletAddress === "CEX" ||
-      typeWalletAddress === "SOL" ||
-      typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0
-  );
-
-  onMount(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    let chainParams = urlParams.get("chain");
-    let addressParams = urlParams.get("address");
-
-    if (chainParams && addressParams) {
-      wallet.update((n) => (n = addressParams));
-      chain.update((n) => (n = chainParams));
-    }
-
-    const handleScroll = () => {
-      const clientRectTokenHeader = tableTokenHeader?.getBoundingClientRect();
-      isStickyTableToken = clientRectTokenHeader?.top <= 0;
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  });
 
   $: {
     if (holdingTokenData) {
@@ -1027,328 +1019,339 @@
               </div>
 
               <div
-                class={`rounded-[10px] xl:overflow-hidden overflow-x-auto min-h-[600px] ${
-                  darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+                class={`${
+                  $queryTokenHolding.isFetching ||
+                  (searchDataResult && searchDataResult.length === 0)
+                    ? "h-[800px]"
+                    : ""
                 }`}
               >
-                <table class="table-auto xl:w-full w-[1400px]">
-                  <thead
-                    class={isStickyTableToken ? "sticky top-0 z-10" : ""}
-                    bind:this={tableTokenHeader}
-                  >
-                    <tr class="bg_f4f5f8">
-                      <th
-                        class="py-3 w-10 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
-                      />
-                      <th
-                        class="py-3 xl:static xl:bg-transparent sticky left-10 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
-                      >
-                        <div
-                          class="text-left xl:text-xs text-xl uppercase font-medium"
+                <div
+                  class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+                    darkMode
+                      ? "bg-[#131313]"
+                      : "bg-[#fff] border border_0000000d"
+                  }`}
+                >
+                  <table class="table-auto xl:w-full w-[1400px] h-full">
+                    <thead
+                      class={isStickyTableToken ? "sticky top-0 z-10" : ""}
+                      bind:this={tableTokenHeader}
+                    >
+                      <tr class="bg_f4f5f8">
+                        <th
+                          class="py-3 w-10 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
+                        />
+                        <th
+                          class="py-3 xl:static xl:bg-transparent sticky left-10 z-10 bg_f4f5f8 xl:w-[230px] w-[280px]"
                         >
-                          {MultipleLang.assets}
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          {MultipleLang.price}
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          {MultipleLang.amount}
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          {MultipleLang.value}
-                        </div>
-                      </th>
-                      <th class="py-3">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium"
-                        >
-                          <TooltipTitle
-                            tooltipText="Ratio based on total token holding"
-                          >
-                            Ratio
-                          </TooltipTitle>
-                        </div>
-                      </th>
-                      <th class="py-3 pr-3 rounded-tr-[10px]">
-                        <div
-                          class="text-right xl:text-xs text-xl uppercase font-medium flex items-center justify-end gap-2"
-                        >
-                          Tag
                           <div
-                            on:click={toggleSortOrderTag}
-                            class="cursor-pointer"
+                            class="text-left xl:text-xs text-xl uppercase font-medium"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              height="1.2em"
-                              viewBox="0 0 320 512"
-                              fill={darkMode ? "#fff" : "#000"}
-                              ><path
-                                d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
-                              /></svg
+                            {MultipleLang.assets}
+                          </div>
+                        </th>
+                        <th class="py-3">
+                          <div
+                            class="text-right xl:text-xs text-xl uppercase font-medium"
+                          >
+                            {MultipleLang.price}
+                          </div>
+                        </th>
+                        <th class="py-3">
+                          <div
+                            class="text-right xl:text-xs text-xl uppercase font-medium"
+                          >
+                            {MultipleLang.amount}
+                          </div>
+                        </th>
+                        <th class="py-3">
+                          <div
+                            class="text-right xl:text-xs text-xl uppercase font-medium"
+                          >
+                            {MultipleLang.value}
+                          </div>
+                        </th>
+                        <th class="py-3">
+                          <div
+                            class="text-right xl:text-xs text-xl uppercase font-medium"
+                          >
+                            <TooltipTitle
+                              tooltipText="Ratio based on total token holding"
                             >
+                              Ratio
+                            </TooltipTitle>
                           </div>
-                        </div>
-                      </th>
-                    </tr>
-                  </thead>
-                  {#if $queryTokenHolding.isFetching}
-                    <tbody>
-                      <tr>
-                        <td colspan={7}>
+                        </th>
+                        <th class="py-3 pr-3 rounded-tr-[10px]">
                           <div
-                            class="flex justify-center items-center py-3 px-3"
+                            class="text-right xl:text-xs text-xl uppercase font-medium flex items-center justify-end gap-2"
                           >
-                            <Loading />
+                            Tag
+                            <div
+                              on:click={toggleSortOrderTag}
+                              class="cursor-pointer"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="1.2em"
+                                viewBox="0 0 320 512"
+                                fill={darkMode ? "#fff" : "#000"}
+                                ><path
+                                  d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
+                                /></svg
+                              >
+                            </div>
                           </div>
-                        </td>
+                        </th>
                       </tr>
-                    </tbody>
-                  {:else}
-                    <tbody>
-                      {#if searchDataResult && searchDataResult.length === 0}
+                    </thead>
+                    {#if $queryTokenHolding.isFetching}
+                      <tbody>
                         <tr>
                           <td colspan={7}>
                             <div
-                              class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
+                              class="flex justify-center items-center h-full py-3 px-3"
                             >
-                              {MultipleLang.empty}
+                              <Loading />
                             </div>
                           </td>
                         </tr>
-                      {:else}
-                        {#each searchDataResult as data}
-                          <tr class="group transition-all">
-                            <td
-                              class={`py-3 w-10 xl:static xl:bg-transparent sticky left-0 z-9 ${
-                                darkMode
-                                  ? "bg-[#131313] group-hover:bg-[#000]"
-                                  : "bg-white group-hover:bg-gray-100"
-                              }`}
-                            >
-                              <div class="flex justify-center">
-                                <input
-                                  type="checkbox"
-                                  value={data.chain +
-                                    "-" +
-                                    data.contractAddress}
-                                  bind:group={selectedTokenList}
-                                  class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                                />
+                      </tbody>
+                    {:else}
+                      <tbody>
+                        {#if searchDataResult && searchDataResult.length === 0}
+                          <tr>
+                            <td colspan={7}>
+                              <div
+                                class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                              >
+                                {MultipleLang.empty}
                               </div>
                             </td>
-
-                            <td
-                              class={`py-3 xl:static xl:bg-transparent sticky left-10 z-9 xl:w-[230px] w-[280px] ${
-                                darkMode
-                                  ? "bg-[#131313] group-hover:bg-[#000]"
-                                  : "bg-white group-hover:bg-gray-100"
-                              }`}
-                            >
-                              <div class="text-left flex items-center gap-3">
-                                <div class="relative">
-                                  <img
-                                    src={data.logo}
-                                    alt=""
-                                    width="30"
-                                    height="30"
-                                    class="rounded-full"
+                          </tr>
+                        {:else}
+                          {#each searchDataResult as data}
+                            <tr class="group transition-all">
+                              <td
+                                class={`py-3 w-10 xl:static xl:bg-transparent sticky left-0 z-9 ${
+                                  darkMode
+                                    ? "bg-[#131313] group-hover:bg-[#000]"
+                                    : "bg-white group-hover:bg-gray-100"
+                                }`}
+                              >
+                                <div class="flex justify-center">
+                                  <input
+                                    type="checkbox"
+                                    value={data.chain +
+                                      "-" +
+                                      data.contractAddress}
+                                    bind:group={selectedTokenList}
+                                    class="cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
                                   />
-                                  {#if typeWalletAddress === "EVM"}
-                                    <div class="absolute -top-2 -right-1">
-                                      <img
-                                        src={detectedChain(data.chain)}
-                                        alt=""
-                                        width="15"
-                                        height="15"
-                                        class="rounded-full"
-                                      />
+                                </div>
+                              </td>
+
+                              <td
+                                class={`py-3 xl:static xl:bg-transparent sticky left-10 z-9 xl:w-[230px] w-[280px] ${
+                                  darkMode
+                                    ? "bg-[#131313] group-hover:bg-[#000]"
+                                    : "bg-white group-hover:bg-gray-100"
+                                }`}
+                              >
+                                <div class="text-left flex items-center gap-3">
+                                  <div class="relative">
+                                    <img
+                                      src={data.logo}
+                                      alt=""
+                                      width="30"
+                                      height="30"
+                                      class="rounded-full"
+                                    />
+                                    {#if typeWalletAddress === "EVM"}
+                                      <div class="absolute -top-2 -right-1">
+                                        <img
+                                          src={detectedChain(data.chain)}
+                                          alt=""
+                                          width="15"
+                                          height="15"
+                                          class="rounded-full"
+                                        />
+                                      </div>
+                                    {/if}
+                                  </div>
+                                  <div class="flex flex-col gap-1">
+                                    <div
+                                      class="xl:text-sm text-2xl font-medium relative"
+                                      on:mouseover={() => {
+                                        if (data?.name?.length > 20) {
+                                          selectedHover = data.name;
+                                          isShowTooltipName = true;
+                                        }
+                                      }}
+                                      on:mouseleave={() => {
+                                        if (data?.name?.length > 20) {
+                                          selectedHover = "";
+                                          isShowTooltipName = false;
+                                        }
+                                      }}
+                                    >
+                                      {#if data.name === undefined}
+                                        N/A
+                                      {:else}
+                                        {data?.name?.length > 20
+                                          ? shorterName(data.name, 20)
+                                          : data.name}
+                                      {/if}
+                                      {#if isShowTooltipName && selectedHover === data?.name && data?.name?.length > 20}
+                                        <div
+                                          class="absolute -top-8 left-0"
+                                          style="z-index: 2147483648;"
+                                        >
+                                          <tooltip-detail text={data.name} />
+                                        </div>
+                                      {/if}
                                     </div>
-                                  {/if}
-                                </div>
-                                <div class="flex flex-col gap-1">
-                                  <div
-                                    class="xl:text-sm text-2xl font-medium relative"
-                                    on:mouseover={() => {
-                                      if (data?.name?.length > 20) {
-                                        selectedHover = data.name;
-                                        isShowTooltipName = true;
-                                      }
-                                    }}
-                                    on:mouseleave={() => {
-                                      if (data?.name?.length > 20) {
-                                        selectedHover = "";
-                                        isShowTooltipName = false;
-                                      }
-                                    }}
-                                  >
-                                    {#if data.name === undefined}
-                                      N/A
-                                    {:else}
-                                      {data?.name?.length > 20
-                                        ? shorterName(data.name, 20)
-                                        : data.name}
-                                    {/if}
-                                    {#if isShowTooltipName && selectedHover === data?.name && data?.name?.length > 20}
-                                      <div
-                                        class="absolute -top-8 left-0"
-                                        style="z-index: 2147483648;"
-                                      >
-                                        <tooltip-detail text={data.name} />
-                                      </div>
-                                    {/if}
-                                  </div>
-                                  <div
-                                    class="text_00000080 xl:text-xs text-lg font-medium relative"
-                                    on:mouseover={() => {
-                                      if (data?.symbol?.length > 20) {
-                                        selectedHover = data.symbol;
-                                        isShowTooltipSymbol = true;
-                                      }
-                                    }}
-                                    on:mouseleave={() => {
-                                      if (data?.symbol?.length > 20) {
-                                        selectedHover = "";
-                                        isShowTooltipSymbol = false;
-                                      }
-                                    }}
-                                  >
-                                    {#if data.symbol === undefined}
-                                      N/A
-                                    {:else}
-                                      {shorterName(data.symbol, 20)}
-                                    {/if}
-                                    {#if isShowTooltipSymbol && selectedHover === data?.symbol && data?.symbol?.length > 20}
-                                      <div
-                                        class="absolute -top-8 left-0"
-                                        style="z-index: 2147483648;"
-                                      >
-                                        <tooltip-detail text={data.symbol} />
-                                      </div>
-                                    {/if}
+                                    <div
+                                      class="text_00000080 xl:text-xs text-lg font-medium relative"
+                                      on:mouseover={() => {
+                                        if (data?.symbol?.length > 20) {
+                                          selectedHover = data.symbol;
+                                          isShowTooltipSymbol = true;
+                                        }
+                                      }}
+                                      on:mouseleave={() => {
+                                        if (data?.symbol?.length > 20) {
+                                          selectedHover = "";
+                                          isShowTooltipSymbol = false;
+                                        }
+                                      }}
+                                    >
+                                      {#if data.symbol === undefined}
+                                        N/A
+                                      {:else}
+                                        {shorterName(data.symbol, 20)}
+                                      {/if}
+                                      {#if isShowTooltipSymbol && selectedHover === data?.symbol && data?.symbol?.length > 20}
+                                        <div
+                                          class="absolute -top-8 left-0"
+                                          style="z-index: 2147483648;"
+                                        >
+                                          <tooltip-detail text={data.symbol} />
+                                        </div>
+                                      {/if}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </td>
+                              </td>
 
-                            <td
-                              class={`py-3 ${
-                                darkMode
-                                  ? "group-hover:bg-[#000]"
-                                  : "group-hover:bg-gray-100"
-                              }`}
-                            >
-                              <div
-                                class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
+                              <td
+                                class={`py-3 ${
+                                  darkMode
+                                    ? "group-hover:bg-[#000]"
+                                    : "group-hover:bg-gray-100"
+                                }`}
                               >
-                                $<TooltipNumber
-                                  number={data.market_price}
-                                  type="balance"
-                                />
-                              </div>
-                            </td>
+                                <div
+                                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
+                                >
+                                  $<TooltipNumber
+                                    number={data.market_price}
+                                    type="balance"
+                                  />
+                                </div>
+                              </td>
 
-                            <td
-                              class={`py-3 ${
-                                darkMode
-                                  ? "group-hover:bg-[#000]"
-                                  : "group-hover:bg-gray-100"
-                              }`}
-                            >
-                              <div
-                                class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
-                              >
-                                <TooltipNumber
-                                  number={data.amount}
-                                  type="balance"
-                                />
-                              </div>
-                            </td>
-
-                            <td
-                              class={`py-3 ${
-                                darkMode
-                                  ? "group-hover:bg-[#000]"
-                                  : "group-hover:bg-gray-100"
-                              }`}
-                            >
-                              <div
-                                class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
-                              >
-                                <TooltipNumber
-                                  number={data?.amount * data?.market_price}
-                                  type="value"
-                                />
-                              </div>
-                            </td>
-
-                            <td
-                              class={`py-3 ${
-                                darkMode
-                                  ? "group-hover:bg-[#000]"
-                                  : "group-hover:bg-gray-100"
-                              }`}
-                            >
-                              <div
-                                class="flex flex-col gap-1 justify-end items-end"
+                              <td
+                                class={`py-3 ${
+                                  darkMode
+                                    ? "group-hover:bg-[#000]"
+                                    : "group-hover:bg-gray-100"
+                                }`}
                               >
                                 <div
                                   class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
                                 >
                                   <TooltipNumber
-                                    number={((data?.amount *
-                                      data?.market_price) /
-                                      sumTokens) *
-                                      100}
-                                    type="percent"
-                                  />%
-                                </div>
-                                <div class="w-3/4 max-w-20">
-                                  <Progressbar
-                                    progress={Number(
-                                      ((data?.amount * data?.market_price) /
-                                        sumTokens) *
-                                        100
-                                    )}
-                                    size="h-1"
+                                    number={data.amount}
+                                    type="balance"
                                   />
                                 </div>
-                              </div>
-                            </td>
+                              </td>
 
-                            <td
-                              class={`pr-3 py-3 ${
-                                darkMode
-                                  ? "group-hover:bg-[#000]"
-                                  : "group-hover:bg-gray-100"
-                              }`}
-                            >
-                              <div class="flex justify-end">
+                              <td
+                                class={`py-3 ${
+                                  darkMode
+                                    ? "group-hover:bg-[#000]"
+                                    : "group-hover:bg-gray-100"
+                                }`}
+                              >
                                 <div
-                                  class="bg-[#6AC7F533] text_27326F xl:text-sm text-2xl w-max px-3 py-1 rounded-[5px]"
+                                  class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
                                 >
-                                  {data.tag}
+                                  <TooltipNumber
+                                    number={data?.amount * data?.market_price}
+                                    type="value"
+                                  />
                                 </div>
-                              </div>
-                            </td>
-                          </tr>
-                        {/each}
-                      {/if}
-                    </tbody>
-                  {/if}
-                </table>
+                              </td>
+
+                              <td
+                                class={`py-3 ${
+                                  darkMode
+                                    ? "group-hover:bg-[#000]"
+                                    : "group-hover:bg-gray-100"
+                                }`}
+                              >
+                                <div
+                                  class="flex flex-col gap-1 justify-end items-end"
+                                >
+                                  <div
+                                    class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end"
+                                  >
+                                    <TooltipNumber
+                                      number={((data?.amount *
+                                        data?.market_price) /
+                                        sumTokens) *
+                                        100}
+                                      type="percent"
+                                    />%
+                                  </div>
+                                  <div class="w-3/4 max-w-20">
+                                    <Progressbar
+                                      progress={Number(
+                                        ((data?.amount * data?.market_price) /
+                                          sumTokens) *
+                                          100
+                                      )}
+                                      size="h-1"
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+
+                              <td
+                                class={`pr-3 py-3 ${
+                                  darkMode
+                                    ? "group-hover:bg-[#000]"
+                                    : "group-hover:bg-gray-100"
+                                }`}
+                              >
+                                <div class="flex justify-end">
+                                  <div
+                                    class="bg-[#6AC7F533] text_27326F xl:text-sm text-2xl w-max px-3 py-1 rounded-[5px]"
+                                  >
+                                    {data.tag}
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          {/each}
+                        {/if}
+                      </tbody>
+                    {/if}
+                  </table>
+                </div>
               </div>
             </div>
           </form>

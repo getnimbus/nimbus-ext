@@ -80,7 +80,6 @@
       const clientRectNFTHeader = tableNFTHeader?.getBoundingClientRect();
       isStickyTableNFT = clientRectNFTHeader?.top <= 0;
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -314,87 +313,101 @@
             bind:selected={filterTokenType}
           />
         </div>
+
         <div
-          class={`rounded-[10px] xl:overflow-hidden overflow-x-auto ${
-            darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+          class={`${
+            isLoadingToken ||
+            (filteredHoldingDataToken && filteredHoldingDataToken.length === 0)
+              ? "h-[800px]"
+              : ""
           }`}
         >
-          <table class="table-auto xl:w-full w-[1400px]">
-            <thead
-              class={isStickyTableToken ? "sticky top-0 z-10" : ""}
-              bind:this={tableTokenHeader}
-            >
-              <tr class="bg_f4f5f8">
-                <th
-                  class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
-                >
-                  <div
-                    class="text-left xl:text-xs text-xl uppercase font-medium"
+          <div
+            class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+              darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+            }`}
+          >
+            <table class="table-auto xl:w-full w-[1400px] h-full">
+              <thead
+                class={isStickyTableToken ? "sticky top-0 z-10" : ""}
+                bind:this={tableTokenHeader}
+              >
+                <tr class="bg_f4f5f8">
+                  <th
+                    class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
                   >
-                    {MultipleLang.assets}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    {MultipleLang.price}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    Average Cost
-                  </div>
-                </th>
-                <th class="py-3 pr-3 rounded-tr-[10px] pr-3 rounded-tr-[10px]">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    ROI
-                  </div>
-                </th>
-                <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
-              </tr>
-            </thead>
-            {#if isLoadingToken}
-              <tbody>
-                <tr>
-                  <td {colspan}>
-                    <div class="flex justify-center items-center py-3 px-3">
-                      <Loading />
+                    <div
+                      class="text-left xl:text-xs text-xl uppercase font-medium"
+                    >
+                      {MultipleLang.assets}
                     </div>
-                  </td>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      {MultipleLang.price}
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      Average Cost
+                    </div>
+                  </th>
+                  <th
+                    class="py-3 pr-3 rounded-tr-[10px] pr-3 rounded-tr-[10px]"
+                  >
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      ROI
+                    </div>
+                  </th>
+                  <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
                 </tr>
-              </tbody>
-            {:else}
-              <tbody>
-                {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+              </thead>
+              {#if isLoadingToken}
+                <tbody>
                   <tr>
                     <td {colspan}>
                       <div
-                        class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
+                        class="flex justify-center items-center h-full py-3 px-3"
                       >
-                        {#if holdingTokenData && holdingTokenData.length === 0}
-                          {MultipleLang.empty}
-                        {:else}
-                          All tokens less than $1
-                        {/if}
+                        <Loading />
                       </div>
                     </td>
                   </tr>
-                {:else}
-                  {#each filteredHoldingDataToken as holding}
-                    <ClosedHoldingTokenPosition
-                      data={holding}
-                      {selectedWallet}
-                    />
-                  {/each}
-                {/if}
-              </tbody>
-            {/if}
-          </table>
+                </tbody>
+              {:else}
+                <tbody>
+                  {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+                    <tr>
+                      <td {colspan}>
+                        <div
+                          class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                        >
+                          {#if holdingTokenData && holdingTokenData.length === 0}
+                            {MultipleLang.empty}
+                          {:else}
+                            All tokens less than $1
+                          {/if}
+                        </div>
+                      </td>
+                    </tr>
+                  {:else}
+                    {#each filteredHoldingDataToken as holding}
+                      <ClosedHoldingTokenPosition
+                        data={holding}
+                        {selectedWallet}
+                      />
+                    {/each}
+                  {/if}
+                </tbody>
+              {/if}
+            </table>
+          </div>
         </div>
       </div>
     </div>
