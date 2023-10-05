@@ -302,7 +302,6 @@
     const response = await nimbus
       .get(`/v2/analysis/${address}/similar`)
       .then((res) => res.data);
-
     return response;
   };
 

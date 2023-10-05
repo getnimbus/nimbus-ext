@@ -92,111 +92,126 @@
 
 <div class="flex flex-col gap-2">
   <div class="xl:title-3 title-1 mb-2">{MultipleLang.title}</div>
+
   <div
-    class={`border border_0000000d rounded-[10px] overflow-x-auto bg-transparent ${
-      darkMode ? "bg-[#131313]" : "bg-[#fff]"
+    class={`${
+      $query.isFetching || (listAddress && listAddress.length === 0)
+        ? "h-[800px]"
+        : ""
     }`}
   >
-    <table class="table-auto xl:w-full w-[1200px]">
-      <thead>
-        <tr class="bg_f4f5f8">
-          <th class="pl-3 py-3">
-            <div class="text-left xl:text-sm text-2xl uppercase font-semibold">
-              {MultipleLang.content.address_header_table}
-            </div>
-          </th>
-          <th class="py-3">
-            <div class="text-left xl:text-sm text-2xl uppercase font-semibold">
-              {MultipleLang.content.label_header_table}
-            </div>
-          </th>
-          <th class="pr-3 py-3">
-            <div class="text-right xl:text-sm text-2xl uppercase font-semibold">
-              {MultipleLang.content.action_header_table}
-            </div>
-          </th>
-        </tr>
-      </thead>
-      {#if $query.isFetching}
-        <tbody>
-          <tr>
-            <td colspan="3">
-              <div class="flex justify-center items-center py-4 px-3">
-                <Loading />
+    <div
+      class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto ${
+        darkMode ? "bg-[#131313]" : "bg-[#fff]"
+      }`}
+    >
+      <table class="table-auto xl:w-full w-[1200px] h-full">
+        <thead>
+          <tr class="bg_f4f5f8">
+            <th class="pl-3 py-3">
+              <div
+                class="text-left xl:text-sm text-2xl uppercase font-semibold"
+              >
+                {MultipleLang.content.address_header_table}
               </div>
-            </td>
+            </th>
+            <th class="py-3">
+              <div
+                class="text-left xl:text-sm text-2xl uppercase font-semibold"
+              >
+                {MultipleLang.content.label_header_table}
+              </div>
+            </th>
+            <th class="pr-3 py-3">
+              <div
+                class="text-right xl:text-sm text-2xl uppercase font-semibold"
+              >
+                {MultipleLang.content.action_header_table}
+              </div>
+            </th>
           </tr>
-        </tbody>
-      {:else}
-        <tbody>
-          {#if listAddress && listAddress.length === 0}
+        </thead>
+        {#if $query.isFetching}
+          <tbody>
             <tr>
               <td colspan="3">
-                <div
-                  class="flex justify-center items-center py-4 px-3 xl:text-base text-2xl"
-                >
-                  No address
+                <div class="flex justify-center items-center h-full py-4 px-3">
+                  <Loading />
                 </div>
               </td>
             </tr>
-          {:else}
-            {#each listAddress as item (item.id)}
-              <tr class="group transition-all">
-                <td
-                  class={`pl-3 py-3  ${
-                    darkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  <div class="text-left xl:text-base text-2xl">
-                    <Copy
-                      address={item.address}
-                      iconColor={`${darkMode ? "#fff" : "#000"}`}
-                      color={`${darkMode ? "#fff" : "#000"}`}
-                    />
-                  </div>
-                </td>
-
-                <td
-                  class={`py-3  ${
-                    darkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
-                  }`}
-                >
+          </tbody>
+        {:else}
+          <tbody>
+            {#if listAddress && listAddress.length === 0}
+              <tr>
+                <td colspan="3">
                   <div
-                    class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
+                    class="flex justify-center items-center h-full py-4 px-3 xl:text-base text-2xl"
                   >
-                    {item.label}
-                  </div>
-                </td>
-
-                <td
-                  class={`py-3 pr-3 ${
-                    darkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  <div class="flex justify-end gap-6">
-                    <div
-                      class="text-blue-600 hover:underline xl:text-base text-2xl transition-all cursor-pointer font-semibold"
-                      on:click={() => {
-                        selectedWallet = item.address;
-                        isOpenFollowWhaleModal = true;
-                      }}
-                    >
-                      Get command
-                    </div>
+                    No address
                   </div>
                 </td>
               </tr>
-            {/each}
-          {/if}
-        </tbody>
-      {/if}
-    </table>
+            {:else}
+              {#each listAddress as item (item.id)}
+                <tr class="group transition-all">
+                  <td
+                    class={`pl-3 py-3  ${
+                      darkMode
+                        ? "group-hover:bg-[#000]"
+                        : "group-hover:bg-gray-100"
+                    }`}
+                  >
+                    <div class="text-left xl:text-base text-2xl">
+                      <Copy
+                        address={item.address}
+                        iconColor={`${darkMode ? "#fff" : "#000"}`}
+                        color={`${darkMode ? "#fff" : "#000"}`}
+                      />
+                    </div>
+                  </td>
+
+                  <td
+                    class={`py-3  ${
+                      darkMode
+                        ? "group-hover:bg-[#000]"
+                        : "group-hover:bg-gray-100"
+                    }`}
+                  >
+                    <div
+                      class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
+                    >
+                      {item.label}
+                    </div>
+                  </td>
+
+                  <td
+                    class={`py-3 pr-3 ${
+                      darkMode
+                        ? "group-hover:bg-[#000]"
+                        : "group-hover:bg-gray-100"
+                    }`}
+                  >
+                    <div class="flex justify-end gap-6">
+                      <div
+                        class="text-blue-600 hover:underline xl:text-base text-2xl transition-all cursor-pointer font-semibold"
+                        on:click={() => {
+                          selectedWallet = item.address;
+                          isOpenFollowWhaleModal = true;
+                        }}
+                      >
+                        Get command
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              {/each}
+            {/if}
+          </tbody>
+        {/if}
+      </table>
+    </div>
   </div>
 </div>
 

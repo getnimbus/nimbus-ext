@@ -4,6 +4,17 @@
   import numeral from "numeral";
   import { formatBigBalance, formatPercent, formatCurrency } from "~/utils";
   import { isHidePortfolio } from "~/store";
+  import { tweened } from "svelte/motion";
+  import { quintOut } from "svelte/easing";
+  import { derived } from "svelte/store";
+
+  let myNumber = tweened(0, { duration: 1200, easing: quintOut });
+  let formatted = derived(myNumber, ($myNumber) => $myNumber);
+
+  $: {
+    // Set the number
+    myNumber.set(number);
+  }
 
   export let id;
   export let number;
@@ -14,54 +25,12 @@
   let hiddenPortfolio = false;
   isHidePortfolio.subscribe((value) => (hiddenPortfolio = value));
 
-  let countUp = null;
-  let options = {
-    decimalPlaces: format,
-    duration: 1,
-    startVal: 0,
-  };
   let numberFormat = 0;
   let numberSize = "";
   let showTooltip = false;
-  let numberToCount = 0;
 
-  onMount(() => {
-    countUp = new CountUp(id, numberToCount, options);
-    countUp.start();
-  });
-
-  $: {
-    if (number) {
-      const { number_format, number_size } = formatBigBalance(number);
-      numberFormat = number_format;
-      numberSize = number_size;
-
-      if (type === "amount") {
-        if (number < 100000) {
-          numberToCount =
-            numeral(number).format("0,0.0[000000]") === "NaN"
-              ? number
-              : numeral(number).format("0,0.0[000000]");
-        } else {
-          numberToCount = number_size === "K" ? number : number_format;
-        }
-      }
-
-      if (type === "balance" || type === "percent") {
-        // console.log("set number to count", type, numberToCount);
-        numberToCount = number_size === "K" ? number : number_format;
-      }
-
-      options = {
-        ...options,
-        startVal: (Number(numberToCount) * 70) / 100,
-      };
-
-      if (countUp) {
-        countUp.update(Number(numberToCount));
-      }
-    }
-  }
+  $: numberSize = formatBigBalance($formatted).number_size;
+  $: numberFormat = formatBigBalance($formatted).number_format;
 </script>
 
 {#if hiddenPortfolio && personalValue === true}
@@ -70,14 +39,13 @@
   <span class="relative">
     <span class="flex">
       <span
-        {id}
         on:mouseenter={() => (showTooltip = true)}
         on:mouseleave={() => (showTooltip = false)}
       >
         {#if type === "balance" || type === "percent"}
           <span>
             {#if numberSize === "K"}
-              <span {id}>{formatCurrency(number)}</span>
+              <span {id}>{formatCurrency($formatted)}</span>
             {:else}
               <span {id}>{numberFormat}</span>
             {/if}
@@ -87,14 +55,14 @@
         {#if type === "amount"}
           <span>
             {#if numberSize === "K"}
-              <span>{formatCurrency(number)}</span>
+              <span>{formatCurrency($formatted)}</span>
             {:else}
               <span>
                 {#if number < 100000}
                   <span
-                    >{numeral(number).format("0,0.0[000000]") === "NaN"
-                      ? number
-                      : numeral(number).format("0,0.0[000000]")}</span
+                    >{numeral($formatted).format("0,0.0[000000]") === "NaN"
+                      ? $formatted
+                      : numeral($formatted).format("0,0.0[000000]")}</span
                   >
                 {:else}
                   <span>{numberFormat}</span>
@@ -107,9 +75,9 @@
       {#if numberSize !== "K"}
         <span>{numberSize}</span>
       {/if}
-      {#if showTooltip && ((numberSize && numberSize !== "K") || formatPercent(number) === "NaN")}
+      {#if showTooltip && ((numberSize && numberSize !== "K") || formatPercent($formatted) === "NaN")}
         <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
-          <tooltip-detail text={formatCurrency(number)} />
+          <tooltip-detail text={formatCurrency($formatted)} />
         </span>
       {/if}
     </span>

@@ -66,7 +66,6 @@
       const clientRectTokenHeader = tableHeader?.getBoundingClientRect();
       isSticky = clientRectTokenHeader?.top <= 0;
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -145,227 +144,135 @@
         </Button>
       </div>
     </div>
-    <div class={`${isLoading ? "h-[1200px]" : ""}`}>
+
+    <div
+      class={`${
+        isLoading || (whalesData && whalesData?.length === 0) ? "h-[800px]" : ""
+      }`}
+    >
       <div
-        class={`border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+        class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
           darkMode ? "bg-[#131313]" : "bg-[#fff]"
         }`}
       >
-        {#if isLoading}
-          <table class="table-auto xl:w-full w-[2800px]">
-            <thead>
-              <tr class="bg_f4f5f8">
-                <th
-                  class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
-                >
-                  <div
-                    class="text-left xl:text-xs text-xl uppercase font-medium"
-                  >
-                    Address
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-left xl:text-xs text-xl uppercase font-medium"
-                  >
-                    Tokens
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    Net Worth
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    1D
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    7D
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    30D
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    1Y
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    <TooltipTitle
-                      tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
-                      isBigIcon
-                    >
-                      Volatility
-                    </TooltipTitle>
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    <TooltipTitle
-                      tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
-                      isBigIcon
-                    >
-                      Max drawdown
-                    </TooltipTitle>
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    <TooltipTitle
-                      tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
-                      isBigIcon
-                    >
-                      Sharpe ratio
-                    </TooltipTitle>
-                  </div>
-                </th>
-                <th class="pr-3 py-3 rounded-tr-[10px]">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    Last 30D
-                  </div>
-                </th>
-              </tr>
-            </thead>
-          </table>
-          <div
-            class="flex justify-center items-center py-4 px-3 text-lg text-gray-400 h-full"
+        <table class="table-auto xl:w-full w-[2800px] h-full">
+          <thead
+            class={isSticky ? "sticky top-0 z-10" : ""}
+            bind:this={tableHeader}
           >
-            <Loading />
-          </div>
-        {:else}
-          <table class="table-auto xl:w-full w-[2800px]">
-            <thead
-              class={isSticky ? "sticky top-0 z-10" : ""}
-              bind:this={tableHeader}
-            >
-              <tr class="bg_f4f5f8">
-                <th
-                  class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
+            <tr class="bg_f4f5f8">
+              <th
+                class="pl-3 py-3 rounded-tl-[10px] 2xl:w-[250px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8"
+              >
+                <div class="text-left xl:text-xs text-xl uppercase font-medium">
+                  Address
+                </div>
+              </th>
+              <th class="py-3">
+                <div class="text-left xl:text-xs text-xl uppercase font-medium">
+                  Tokens
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
                 >
-                  <div
-                    class="text-left xl:text-xs text-xl uppercase font-medium"
+                  Net Worth
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  1D
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  7D
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  30D
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  1Y
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  <TooltipTitle
+                    tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
+                    isBigIcon
                   >
-                    Address
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-left xl:text-xs text-xl uppercase font-medium"
+                    Volatility
+                  </TooltipTitle>
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  <TooltipTitle
+                    tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
+                    isBigIcon
                   >
-                    Tokens
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
+                    Max drawdown
+                  </TooltipTitle>
+                </div>
+              </th>
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  <TooltipTitle
+                    tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
+                    isBigIcon
                   >
-                    Net Worth
-                  </div>
-                </th>
-                <th class="py-3">
+                    Sharpe ratio
+                  </TooltipTitle>
+                </div>
+              </th>
+              <th class="pr-3 py-3 rounded-tr-[10px]">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  Last 30D
+                </div>
+              </th>
+            </tr>
+          </thead>
+
+          {#if isLoading}
+            <tbody>
+              <tr>
+                <td colspan="11">
                   <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
+                    class="flex justify-center items-center h-full py-3 px-3"
                   >
-                    1D
+                    <Loading />
                   </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    7D
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    30D
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    1Y
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    <TooltipTitle
-                      tooltipText={"Volatility measures the extent of price fluctuations for an asset over time."}
-                      isBigIcon
-                    >
-                      Volatility
-                    </TooltipTitle>
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    <TooltipTitle
-                      tooltipText={"Max drawdown is the biggest loss experienced by an investment or portfolio."}
-                      isBigIcon
-                    >
-                      Max drawdown
-                    </TooltipTitle>
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    <TooltipTitle
-                      tooltipText={"The Sharpe ratio measures how well an investment performs relative to its risk."}
-                      isBigIcon
-                    >
-                      Sharpe ratio
-                    </TooltipTitle>
-                  </div>
-                </th>
-                <th class="pr-3 py-3 rounded-tr-[10px]">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    Last 30D
-                  </div>
-                </th>
+                </td>
               </tr>
-            </thead>
+            </tbody>
+          {:else}
             <tbody>
               {#if whalesData && whalesData?.length === 0}
                 <tr>
                   <td colspan="11">
                     <div
-                      class="flex justify-center items-center py-4 px-3 text-lg text-gray-400"
+                      class="flex justify-center items-center h-full py-4 px-3 text-lg text-gray-400"
                     >
                       Empty
                     </div>
@@ -377,8 +284,8 @@
                 {/each}
               {/if}
             </tbody>
-          </table>
-        {/if}
+          {/if}
+        </table>
       </div>
     </div>
     <div class="flex justify-center gap-3">
