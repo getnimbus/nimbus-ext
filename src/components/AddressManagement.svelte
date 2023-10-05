@@ -567,7 +567,7 @@
       isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
         clientId: "6st9c6s816su37qe8ld1d5iiq2",
-        authEndpoint: "https://api.getnimbus.io/auth/vezgo",
+        authEndpoint: `${import.meta.env.VITE_API_URL}/auth/vezgo`,
         auth: {
           headers: { Authorization: `${evmToken}` },
         },

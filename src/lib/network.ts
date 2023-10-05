@@ -103,7 +103,7 @@ export const coinGeko = createAxiosInterface({
 });
 
 export const nimbus = createAxiosInterface({
-  baseURL: "https://api.getnimbus.io",
+  baseURL: import.meta.env.VITE_API_URL,
   // baseURL: "https://api-staging.getnimbus.io",
   // baseURL: "http://localhost:3000",
   getHeaderAuthorize: () => {
