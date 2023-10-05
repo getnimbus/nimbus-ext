@@ -134,9 +134,7 @@
 
   <div
     class={`${
-      $query.isLoading ||
-      ($query.data && $query.data.length === 0) ||
-      $query.isError
+      $query.isLoading || $query?.data?.length === 0 || $query.isError
         ? "h-[800px]"
         : ""
     }`}

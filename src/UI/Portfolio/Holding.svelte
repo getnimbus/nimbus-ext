@@ -344,8 +344,7 @@
         </div>
         <div
           class={`${
-            isLoadingToken ||
-            (filteredHoldingDataToken && filteredHoldingDataToken.length === 0)
+            isLoadingToken || filteredHoldingDataToken?.length === 0
               ? "h-[800px]"
               : ""
           }`}
@@ -481,9 +480,7 @@
 
         <div
           class={`${
-            isLoadingToken || (formatDataNFT && formatDataNFT.length === 0)
-              ? "h-[800px]"
-              : ""
+            isLoadingToken || formatDataNFT?.length === 0 ? "h-[800px]" : ""
           }`}
         >
           <div
