@@ -37,18 +37,16 @@
 </script>
 
 <tr
-  class={`group transition-all ${
-    typeWalletAddress === "BTC" ? "cursor-pointer" : ""
-  }`}
+  class={`group transition-all`}
   on:click={() => {
-    if (typeWalletAddress === "EVM") {
-      return;
-    }
-    navigate(
-      `nft-detail?id=${encodeURIComponent(
-        data.collectionId
-      )}&address=${encodeURIComponent(selectedWallet)}`
-    );
+    // if (typeWalletAddress === "EVM") {
+    //   return;
+    // }
+    // navigate(
+    //   `nft-detail?id=${encodeURIComponent(
+    //     data.collectionId
+    //   )}&address=${encodeURIComponent(selectedWallet)}`
+    // );
   }}
 >
   <td
@@ -144,11 +142,11 @@
     }`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
-      <TooltipNumber number={data?.floorPriceBTC} type="balance" /><span
+      <TooltipNumber number={data?.floorPriceBase} type="balance" /><span
         class="mx-1">{typeWalletAddress === "EVM" ? "ETH" : "BTC"}</span
       >
       | $<TooltipNumber
-        number={data?.floorPriceBTC * data?.market_price}
+        number={data?.floorPriceBase * data?.market_price}
         type="balance"
       />
     </div>
@@ -217,7 +215,7 @@
     </div>
   </td>
 
-  {#if typeWalletAddress === "BTC"}
+  <!-- {#if typeWalletAddress === "BTC"}
     <td
       class={`py-3 w-10 ${
         darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
@@ -235,7 +233,7 @@
         </div>
       </div>
     </td>
-  {/if}
+  {/if} -->
 </tr>
 
 <style>

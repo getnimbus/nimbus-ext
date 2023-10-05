@@ -26,7 +26,6 @@
     if (response?.status === 401) {
       throw new Error(response?.response?.error);
     }
-    userAddress = response?.data;
   };
 
   $: queryUserInfo = createQuery({

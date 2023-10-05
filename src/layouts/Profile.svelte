@@ -6,6 +6,7 @@
   import { wallet, user, isDarkMode } from "~/store";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { flatMap } from "lodash";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
@@ -52,6 +53,8 @@
     isSuccessToast = false;
   };
 
+  let dataNftHighlight = {};
+  let dataNftHolding = [];
   let listAddress = [];
   let showPopover = false;
   let isEdit = false;
@@ -75,7 +78,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const userIdParam = urlParams.get("id");
     if (userIdParam) {
-      userId = "04362bf3-3661-46d1-b433-47e88bdb7bfe";
+      userId = userIdParam;
     }
   });
 
@@ -95,8 +98,6 @@
   };
 
   const handleSubmitProfile = async () => {
-    console.log("selectProfileNFT: ", selectProfileNFT);
-
     isLoadingSaveProfile = true;
 
     const payload = {
@@ -112,10 +113,17 @@
           status: socialDataTelegram.label,
         },
       },
+      highlightNft: {
+        chain: selectProfileNFT?.chain,
+        tokenId: selectProfileNFT?.tokenId.toString(),
+        contractAddress: selectProfileNFT?.contractAddress,
+      },
     };
-    console.log("payload: ", payload);
 
     try {
+      const response = await nimbus.put(`/users/${userId}/profile`, payload);
+      console.log("response: ", response);
+
       isLoadingSaveProfile = false;
       toastMsg = "Your profile updated successfully!";
       isSuccessToast = true;
@@ -134,7 +142,7 @@
     isEdit = false;
 
     selectedAddress = $queryUserProfile.data?.publicAddress;
-    selectProfileNFT = $queryUserProfile.data?.highlightNft || {};
+    selectProfileNFT = dataNftHighlight;
     description = $queryUserProfile.data?.intro || "Your description";
     socialDataTelegram = {
       label: $queryUserProfile.data.social?.telegram?.status || "Telegram",
@@ -162,13 +170,48 @@
     return response?.data;
   };
 
-  const getPreview = async (address) => {
+  const getHoldingNFT = async (address) => {
     const response = await nimbus
-      .get(`/address/${address}/preview?chain=ALL`)
-      .then((response) => response.data);
+      .get(`/v2/address/${address}/nft-holding?chain=ALL`)
+      .then((response) => response?.data);
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
     return response;
   };
 
+  // query nft holding
+  $: queryNftHolding = createQuery({
+    queryKey: ["nft-holding", selectedAddress],
+    queryFn: () => getHoldingNFT(selectedAddress),
+    staleTime: Infinity,
+    enabled: Object.keys(userInfo).length !== 0,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
+  });
+
+  $: {
+    if (!$queryNftHolding.isError && $queryNftHolding.data !== undefined) {
+      formatDataHoldingNFT($queryNftHolding.data);
+    }
+  }
+
+  // query list address
+  $: query = createQuery({
+    queryKey: ["list-address"],
+    queryFn: () => getListAddress(),
+    staleTime: Infinity,
+    retry: false,
+    enabled: Object.keys(userInfo).length !== 0,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
+  });
+
+  // query user profile
   $: queryUserProfile = createQuery({
     queryKey: ["user-profile", userId],
     queryFn: () => getUserProfile(userId),
@@ -181,10 +224,11 @@
     },
   });
 
+  $: console.log("queryUserProfile: ", $queryUserProfile.data);
+
   $: {
     if ($queryUserProfile && $queryUserProfile.data !== undefined) {
       selectedAddress = $queryUserProfile.data?.publicAddress;
-      selectProfileNFT = $queryUserProfile.data?.highlightNft || {};
       description = $queryUserProfile.data?.intro || "Your description";
       socialDataTelegram = {
         label: $queryUserProfile.data.social?.telegram?.status || "Telegram",
@@ -197,26 +241,45 @@
     }
   }
 
-  $: queryPreview = createQuery({
-    queryKey: ["preview", selectedAddress],
-    queryFn: () => getPreview(selectedAddress),
-    staleTime: Infinity,
-    enabled: Object.keys(userInfo).length !== 0,
-  });
+  const formatDataListAddress = (data) => {
+    listAddress = data.map((item) => {
+      return {
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        value: item.type === "CEX" ? item.id : item.accountId,
+      };
+    });
+  };
 
-  $: query = createQuery({
-    queryKey: ["list-address"],
-    queryFn: () => getListAddress(),
-    staleTime: Infinity,
-    retry: false,
-    enabled:
-      Object.keys(userInfo).length !== 0 &&
-      selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0",
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
-  });
+  const formatDataHoldingNFT = (data) => {
+    const flattenData = flatMap(data, (item) => {
+      return item.tokens.map((token) => ({
+        ...item,
+        ...token,
+      }));
+    });
+
+    dataNftHolding = flattenData.map((item) => {
+      return {
+        chain: item?.collection?.chain || "",
+        name: item?.name || "",
+        tokenId: item?.tokenId || "",
+        tokenUrl: item?.tokenUrl || "",
+        imageUrl:
+          item?.image_url ||
+          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384",
+        collectionName: item?.collection?.name || "",
+        symbol: item?.symbol || "",
+        contractType: item?.contractType || "",
+        contractAddress: item?.collectionId || "",
+        quantity: item?.balance || 0,
+        floorPrice: item?.floorPriceBase || 0,
+        rarityScore: item?.rarityScore || 0,
+        market_price: item?.btcPrice || 0,
+      };
+    });
+  };
 
   $: {
     if (
@@ -228,16 +291,23 @@
     }
   }
 
-  const formatDataListAddress = async (data) => {
-    listAddress = data.map((item) => {
-      return {
-        id: item.id,
-        type: item.type,
-        label: item.label,
-        value: item.type === "CEX" ? item.id : item.accountId,
-      };
-    });
-  };
+  $: {
+    if (
+      $queryUserProfile.data &&
+      $queryUserProfile.data?.highlightNft !== null &&
+      Object.keys($queryUserProfile.data?.highlightNft).length !== 0 &&
+      dataNftHolding.length !== 0
+    ) {
+      dataNftHighlight =
+        dataNftHolding.find(
+          (item) =>
+            item.contractAddress.toLowerCase() ===
+            $queryUserProfile.data?.highlightNft.contractAddress.toLowerCase()
+        ) || {};
+
+      selectProfileNFT = dataNftHighlight;
+    }
+  }
 </script>
 
 <ErrorBoundary>
@@ -283,7 +353,7 @@
         class="w-full flex xl:flex-row flex-col rounded-xl py-10 px-10 gap-9 border-2 border_0000001a"
       >
         <div
-          class="xl:w-1/4 w-full flex flex-col gap-3 items-center justify-between"
+          class="xl:w-[20%] w-full flex flex-col gap-3 items-center justify-between"
         >
           <div class="flex flex-col gap-3 items-center justify-start">
             <div class="xl:w-[80px] xl:h-[80px] w-32 h-32">
@@ -348,12 +418,86 @@
               {/if}
             </div>
           </div>
+
           <InviterQr />
         </div>
         <div class="flex-1 flex flex-col gap-4">
           <div class="xl:text-3xl text-4xl font-medium">My Story</div>
           <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
             <Summary {selectedAddress} />
+
+            <div
+              class="col-span-2 flex items-center gap-2 p-5 rounded-xl border border_0000001a"
+            >
+              {#if selectProfileNFT && Object.keys(selectProfileNFT).length !== 0}
+                <div
+                  class="w-2/5 flex flex-col gap-2 justify-center items-center"
+                >
+                  <img
+                    src={selectProfileNFT?.imageUrl}
+                    alt=""
+                    class="rounded-xl w-full h-full"
+                  />
+                  {#if isEdit}
+                    <div class="w-max">
+                      <Button
+                        variant="secondary"
+                        on:click={() => (isOpenModalSelectNFT = true)}
+                        >Change</Button
+                      >
+                    </div>
+                  {/if}
+                </div>
+                <div class="flex-1 flex flex-col gap-3">
+                  <div class="font-medium xl:text-lg text-2xl">
+                    {selectProfileNFT?.name}
+                  </div>
+                  <div class="flex flex-col gap-2 xl:text-base text-xl">
+                    <div class="flex justify-between">
+                      <div class="text-gray-400">Rarity</div>
+                      <div>{selectProfileNFT?.rarityScore}</div>
+                    </div>
+
+                    <div class="flex justify-between">
+                      <div class="text-gray-400">Floor Price</div>
+                      <TooltipNumber
+                        number={selectProfileNFT?.floorPrice *
+                          selectProfileNFT?.market_price || 0}
+                        type="value"
+                      />
+                    </div>
+
+                    <div class="flex justify-between">
+                      <div class="text-gray-400">Current Value</div>
+                      <TooltipNumber
+                        number={selectProfileNFT?.floorPrice *
+                          selectProfileNFT?.market_price *
+                          selectProfileNFT?.quantity || 0}
+                        type="value"
+                      />
+                    </div>
+                  </div>
+                </div>
+              {:else}
+                <div
+                  class="flex flex-col justify-center items-center gap-2 w-full h-full"
+                >
+                  <div class="xl:text-base text-lg">
+                    There is no NFT highlight yet in your profile
+                  </div>
+                  {#if Object.keys(userInfo).length !== 0 && isEdit}
+                    <div class="w-max">
+                      <Button
+                        variant="tertiary"
+                        on:click={() => (isOpenModalSelectNFT = true)}
+                      >
+                        Add NFT
+                      </Button>
+                    </div>
+                  {/if}
+                </div>
+              {/if}
+            </div>
 
             <div
               class="col-span-2 p-6 bg-dark-50 text-white xl:text-base text-xl rounded-xl"
@@ -368,71 +512,6 @@
                 />
               {:else}
                 <div>{description}</div>
-              {/if}
-            </div>
-
-            <div
-              class="col-span-2 flex items-center gap-2 p-5 rounded-xl border border_0000001a"
-            >
-              {#if selectProfileNFT && Object.keys(selectProfileNFT).length !== 0}
-                <div
-                  class="w-2/5 flex flex-col gap-2 justify-center items-center"
-                >
-                  <img
-                    src={selectProfileNFT?.image}
-                    alt="NFT_Image"
-                    class="rounded-xl"
-                  />
-                  {#if isEdit}
-                    <div class="w-max">
-                      <Button
-                        variant="secondary"
-                        on:click={() => (isOpenModalSelectNFT = true)}
-                        >Change</Button
-                      >
-                    </div>
-                  {/if}
-                </div>
-                <div class="flex-1 flex flex-col gap-3">
-                  <div class="font-medium xl:text-lg text-2xl">
-                    {selectProfileNFT?.title}
-                  </div>
-                  <div class="flex flex-col gap-2 xl:text-base text-xl">
-                    <div class="flex justify-between">
-                      <div class="text-gray-400">Collection</div>
-                      <div>{selectProfileNFT?.collection?.name}</div>
-                    </div>
-                    <div class="flex justify-between">
-                      <div class="text-gray-400">Rarity</div>
-                      <div>{selectProfileNFT?.rarity}</div>
-                    </div>
-                    <div class="flex justify-between">
-                      <div class="text-gray-400">Price</div>
-                      <TooltipNumber
-                        number={selectProfileNFT?.price}
-                        type="value"
-                      />
-                    </div>
-                  </div>
-                </div>
-              {:else}
-                <div
-                  class="flex flex-col justify-center items-center gap-2 w-full h-full"
-                >
-                  <div class="xl:text-base text-lg">
-                    There is no NFT highlight yet in your profile
-                  </div>
-                  {#if Object.keys(userInfo).length !== 0}
-                    <div class="w-max">
-                      <Button
-                        variant="tertiary"
-                        on:click={() => (isOpenModalSelectNFT = true)}
-                      >
-                        Add NFT
-                      </Button>
-                    </div>
-                  {/if}
-                </div>
               {/if}
             </div>
 
@@ -452,6 +531,7 @@
             </div>
 
             <TradingStats {selectedAddress} />
+
             <ClosedPositionChart {selectedAddress} />
           </div>
         </div>
@@ -472,13 +552,13 @@
     <div class="xl:title-3 title-1 font-semibold">
       Select your NFT to set your profile
     </div>
-    {#if $queryPreview.isFetching}
+    {#if $queryNftHolding.isFetching}
       <div class="flex items-center justify-center h-[465px]">
         <Loading />
       </div>
     {:else}
       <div>
-        {#if $queryPreview.isError || $queryPreview?.data?.nfts.length === 0}
+        {#if $queryNftHolding.isError || dataNftHolding.length === 0}
           <div
             class="flex justify-center items-center p-[6px] text-lg text-gray-400 h-[465px]"
           >
@@ -486,7 +566,7 @@
           </div>
         {:else}
           <div class="overflow-y-auto h-[563px] grid grid-cols-3 gap-6">
-            {#each $queryPreview?.data?.nfts as item}
+            {#each dataNftHolding as item}
               <div
                 class="rounded-xl border border_0000001a overflow-hidden h-[260px] cursor-pointer"
                 on:click={() => {
@@ -495,8 +575,7 @@
                 }}
               >
                 <img
-                  src={item?.imageUrl ||
-                    "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
+                  src={item?.imageUrl}
                   alt=""
                   class="w-full h-full object-contain"
                 />
@@ -554,4 +633,13 @@
   </div>
 {/if}
 
-<style windi:preflights:global windi:safelist:global></style>
+<style windi:preflights:global windi:safelist:global>
+  :global(body) .select_content {
+    background: #ffffff;
+    border: 0.5px solid transparent;
+  }
+  :global(body.dark) .select_content {
+    background: #131313;
+    border: 0.5px solid #cdcdcd59;
+  }
+</style>
