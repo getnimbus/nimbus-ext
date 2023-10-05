@@ -344,7 +344,7 @@
           />
         </div>
         <div
-          class={`rounded-[10px] xl:overflow-visible overflow-x-auto ${
+          class={`rounded-[10px] xl:overflow-hidden overflow-x-auto ${
             darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
           }`}
         >
@@ -469,7 +469,7 @@
           </div>
         </div>
         <div
-          class="border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto"
+          class="border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto"
         >
           <table class="table-auto xl:w-full w-[1400px]">
             <thead

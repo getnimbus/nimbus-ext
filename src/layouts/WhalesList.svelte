@@ -147,7 +147,7 @@
     </div>
     <div class={`${isLoading ? "h-[1200px]" : ""}`}>
       <div
-        class={`border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+        class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
           darkMode ? "bg-[#131313]" : "bg-[#fff]"
         }`}
       >

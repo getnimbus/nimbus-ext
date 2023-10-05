@@ -1027,7 +1027,7 @@
               </div>
 
               <div
-                class={`rounded-[10px] xl:overflow-visible overflow-x-auto min-h-[600px] ${
+                class={`rounded-[10px] xl:overflow-hidden overflow-x-auto min-h-[600px] ${
                   darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
                 }`}
               >

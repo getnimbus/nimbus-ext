@@ -45,7 +45,7 @@
 </script>
 
 <div
-  class={`rounded-[10px] xl:overflow-visible overflow-x-auto ${
+  class={`rounded-[10px] xl:overflow-hidden overflow-x-auto ${
     darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
