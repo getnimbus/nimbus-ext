@@ -14,7 +14,7 @@
     user,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
-  import { nimbus } from "~/lib/network";
+  import { API_URL, nimbus } from "~/lib/network";
   import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -414,7 +414,7 @@
       isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
         clientId: "6st9c6s816su37qe8ld1d5iiq2",
-        authEndpoint: "https://api.getnimbus.io/auth/vezgo",
+        authEndpoint: `${API_URL}/auth/vezgo`,
         auth: {
           headers: { Authorization: `${evmToken}` },
         },

@@ -11,3 +11,4 @@ web-build
 .env.sentry-build-plugin
 
 dev-dist/sw.js
+.env
