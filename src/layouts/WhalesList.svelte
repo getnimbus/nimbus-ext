@@ -145,13 +145,9 @@
       </div>
     </div>
 
-    <div
-      class={`${
-        isLoading || (whalesData && whalesData?.length === 0) ? "h-[800px]" : ""
-      }`}
-    >
+    <div class={`${isLoading || whalesData?.length === 0 ? "h-[800px]" : ""}`}>
       <div
-        class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+        class={`rounded-[10px] border border_0000000d xl:overflow-hidden overflow-x-auto h-full ${
           darkMode ? "bg-[#131313]" : "bg-[#fff]"
         }`}
       >
@@ -341,4 +337,4 @@
   <FilterModal {closeModal} submit={handleSubmitFilter} {resetFilter} />
 </AppOverlay>
 
-<style></style>
+<style windi:preflights:global windi:safelist:global></style>

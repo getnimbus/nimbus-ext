@@ -1180,9 +1180,7 @@
 
       <div
         class={`${
-          $query.isLoading || (listAddress && listAddress.length === 0)
-            ? "h-[800px]"
-            : ""
+          $query.isLoading || listAddress?.length === 0 ? "h-[800px]" : ""
         }`}
       >
         <div
@@ -1347,7 +1345,7 @@
     <div
       class={`${
         $query.isLoading ||
-        (listAddressWithoutBundle && listAddressWithoutBundle.length === 0) ||
+        listAddressWithoutBundle?.length === 0 ||
         $query.isError
           ? "h-[800px]"
           : ""
