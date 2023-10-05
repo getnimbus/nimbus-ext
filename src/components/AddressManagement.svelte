@@ -26,7 +26,7 @@
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import CopyToClipboard from "svelte-copy-to-clipboard";
-  import { nimbus } from "~/lib/network";
+  import { API_URL, nimbus } from "~/lib/network";
   import { Toast, Avatar } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
@@ -567,7 +567,7 @@
       isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
         clientId: "6st9c6s816su37qe8ld1d5iiq2",
-        authEndpoint: `${import.meta.env.VITE_API_URL}/auth/vezgo`,
+        authEndpoint: `${API_URL}/auth/vezgo`,
         auth: {
           headers: { Authorization: `${evmToken}` },
         },
