@@ -11,6 +11,11 @@
   let myNumber = tweened(0, { duration: 1200, easing: quintOut });
   let formatted = derived(myNumber, ($myNumber) => $myNumber);
 
+  $: {
+    // Set the number
+    myNumber.set(number);
+  }
+
   export let id;
   export let number;
   export let format = 2;
