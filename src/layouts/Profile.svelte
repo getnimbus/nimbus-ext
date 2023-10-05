@@ -53,6 +53,7 @@
     isSuccessToast = false;
   };
 
+  let userProfile = {};
   let dataNftHighlight = {};
   let dataNftHolding = [];
   let listAddress = [];
@@ -62,7 +63,7 @@
   let isOpenModalSelectNFT = false;
 
   let userId = "";
-  let selectedAddress = localStorage.getItem("evm_address") || "";
+  let selectedAddress = "";
   let description = "Your description";
   let selectProfileNFT = {};
   let socialDataTwitter = {
@@ -79,6 +80,7 @@
     const userIdParam = urlParams.get("id");
     if (userIdParam) {
       userId = userIdParam;
+      getUserProfile(userIdParam);
     }
   });
 
@@ -99,41 +101,38 @@
 
   const handleSubmitProfile = async () => {
     isLoadingSaveProfile = true;
-
-    const payload = {
-      intro: description,
-      publicAddress: selectedAddress,
-      social: {
-        twitter: {
-          id: socialDataTwitter.username,
-          status: socialDataTwitter.label,
-        },
-        telegram: {
-          id: socialDataTelegram.username,
-          status: socialDataTelegram.label,
-        },
-      },
-      highlightNft: {
-        chain: selectProfileNFT?.chain,
-        tokenId: selectProfileNFT?.tokenId.toString(),
-        contractAddress: selectProfileNFT?.contractAddress,
-      },
-    };
-
     try {
-      const response = await nimbus.put(`/users/${userId}/profile`, payload);
-      console.log("response: ", response);
+      const payload = {
+        intro: description,
+        profileAddress: selectedAddress,
+        social: {
+          twitter: {
+            id: socialDataTwitter.username,
+            status: socialDataTwitter.label,
+          },
+          telegram: {
+            id: socialDataTelegram.username,
+            status: socialDataTelegram.label,
+          },
+        },
+        highlightNft: {
+          chain: selectProfileNFT?.chain,
+          tokenId: selectProfileNFT?.tokenId?.toString(),
+          contractAddress: selectProfileNFT?.contractAddress,
+        },
+      };
 
-      isLoadingSaveProfile = false;
+      await nimbus.put(`/users/${userId}/profile`, payload);
       toastMsg = "Your profile updated successfully!";
       isSuccessToast = true;
-      trigger();
     } catch (e) {
       console.error(e);
-      isLoadingSaveProfile = false;
       toastMsg =
         "Something wrong when updating your profile. Please try again!";
       isSuccessToast = false;
+    } finally {
+      isLoadingSaveProfile = false;
+      isEdit = false;
       trigger();
     }
   };
@@ -141,25 +140,42 @@
   const handleCancelEditProfile = () => {
     isEdit = false;
 
-    selectedAddress = $queryUserProfile.data?.publicAddress;
+    selectedAddress =
+      userProfile?.profileAddress || localStorage.getItem("evm_address");
     selectProfileNFT = dataNftHighlight;
-    description = $queryUserProfile.data?.intro || "Your description";
+    description = userProfile?.intro || "Your description";
     socialDataTelegram = {
-      label: $queryUserProfile.data.social?.telegram?.status || "Telegram",
-      username: $queryUserProfile.data.social?.telegram?.id || "",
+      label: userProfile.social?.telegram?.status || "Telegram",
+      username: userProfile.social?.telegram?.id || "",
     };
     socialDataTwitter = {
-      label: $queryUserProfile.data.social?.twitter?.status || "Twitter",
-      username: $queryUserProfile.data.social?.twitter?.id || "",
+      label: userProfile.social?.twitter?.status || "Twitter",
+      username: userProfile.social?.twitter?.id || "",
     };
   };
 
   const getUserProfile = async (id) => {
-    const response: any = await nimbus.get(`/users/${id}/profile`);
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
+    try {
+      const response: any = await nimbus.get(`/users/${id}/profile`);
+      if (response?.status === 401) {
+        throw new Error(response?.response?.error);
+      }
+      userProfile = response?.data;
+
+      selectedAddress =
+        userProfile?.profileAddress || localStorage.getItem("evm_address");
+      description = userProfile?.intro || "Your description";
+      socialDataTelegram = {
+        label: userProfile.social?.telegram?.status || "Telegram",
+        username: userProfile.social?.telegram?.id || "",
+      };
+      socialDataTwitter = {
+        label: userProfile.social?.twitter?.status || "Twitter",
+        username: userProfile.social?.twitter?.id || "",
+      };
+    } catch (e) {
+      console.error(e);
     }
-    return response?.data;
   };
 
   const getListAddress = async () => {
@@ -185,7 +201,7 @@
     queryKey: ["nft-holding", selectedAddress],
     queryFn: () => getHoldingNFT(selectedAddress),
     staleTime: Infinity,
-    enabled: Object.keys(userInfo).length !== 0,
+    enabled: selectedAddress.length !== 0 && Object.keys(userInfo).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -210,36 +226,6 @@
       user.update((n) => (n = {}));
     },
   });
-
-  // query user profile
-  $: queryUserProfile = createQuery({
-    queryKey: ["user-profile", userId],
-    queryFn: () => getUserProfile(userId),
-    staleTime: Infinity,
-    retry: false,
-    enabled: userId.length !== 0,
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
-  });
-
-  $: console.log("queryUserProfile: ", $queryUserProfile.data);
-
-  $: {
-    if ($queryUserProfile && $queryUserProfile.data !== undefined) {
-      selectedAddress = $queryUserProfile.data?.publicAddress;
-      description = $queryUserProfile.data?.intro || "Your description";
-      socialDataTelegram = {
-        label: $queryUserProfile.data.social?.telegram?.status || "Telegram",
-        username: $queryUserProfile.data.social?.telegram?.id || "",
-      };
-      socialDataTwitter = {
-        label: $queryUserProfile.data.social?.twitter?.status || "Twitter",
-        username: $queryUserProfile.data.social?.twitter?.id || "",
-      };
-    }
-  }
 
   const formatDataListAddress = (data) => {
     listAddress = data.map((item) => {
@@ -293,16 +279,15 @@
 
   $: {
     if (
-      $queryUserProfile.data &&
-      $queryUserProfile.data?.highlightNft !== null &&
-      Object.keys($queryUserProfile.data?.highlightNft).length !== 0 &&
+      Object.keys(userProfile).length !== 0 &&
+      Object.keys(userProfile?.highlightNft).length !== 0 &&
       dataNftHolding.length !== 0
     ) {
       dataNftHighlight =
         dataNftHolding.find(
           (item) =>
             item.contractAddress.toLowerCase() ===
-            $queryUserProfile.data?.highlightNft.contractAddress.toLowerCase()
+            userProfile?.highlightNft.contractAddress.toLowerCase()
         ) || {};
 
       selectProfileNFT = dataNftHighlight;
@@ -519,13 +504,13 @@
               <SocialMedia
                 {isEdit}
                 typeSocialMedia="Twitter"
-                bind:socialData={socialDataTwitter}
+                socialData={socialDataTwitter}
                 {submitSocialData}
               />
               <SocialMedia
                 {isEdit}
                 typeSocialMedia="Telegram"
-                bind:socialData={socialDataTelegram}
+                socialData={socialDataTelegram}
                 {submitSocialData}
               />
             </div>

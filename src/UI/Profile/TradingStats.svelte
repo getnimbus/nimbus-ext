@@ -39,14 +39,12 @@
     queryFn: () => getTradingStats(selectedAddress),
     staleTime: Infinity,
     retry: false,
-    enabled: Object.keys(userInfo).length !== 0,
+    enabled: selectedAddress.length !== 0 && Object.keys(userInfo).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
   });
-
-  $: console.log("queryTradingStats: ", $queryTradingStats);
 
   $: profit =
     $queryTradingStats?.data !== undefined

@@ -25,7 +25,7 @@
     queryKey: ["token-holding", selectedAddress],
     queryFn: () => getHoldingToken(selectedAddress),
     staleTime: Infinity,
-    enabled: Object.keys(userInfo).length !== 0,
+    enabled: selectedAddress.length !== 0 && Object.keys(userInfo).length !== 0,
   });
 
   let topThreeTokenHolding = [];

@@ -468,8 +468,13 @@
 
     <!-- nft holding table -->
     <div class="flex flex-col gap-2">
-      <div class="xl:text-xl text-3xl font-medium">
-        {MultipleLang.nft}
+      <div class="flex justify-between items-center">
+        <div class="xl:text-xl text-3xl font-medium">
+          {MultipleLang.nft}
+        </div>
+        <div class="xl:text-3xl text-4xl font-medium text-right">
+          <TooltipNumber number={sumNFT} type="value" />
+        </div>
       </div>
 
       <div

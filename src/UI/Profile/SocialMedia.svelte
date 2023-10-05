@@ -43,6 +43,13 @@
     });
     isOpenModal = false;
   };
+
+  $: {
+    if (Object.keys(socialData).length !== 0) {
+      userName = socialData.username;
+      label = socialData.label;
+    }
+  }
 </script>
 
 <div class="w-full h-full rounded-xl border p-5 flex flex-col gap-2">
