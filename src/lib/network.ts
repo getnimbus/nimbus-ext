@@ -13,16 +13,14 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
     get<T>(url: string, config?: any): Promise<T> {
       const apiUrl = new URL(`${baseURL}${url}`);
       if (config?.params) {
-        Object.keys(config.params).forEach((key) =>
-          apiUrl.searchParams.append(key, config.params[key])
-        );
+        Object.keys(config.params).forEach((key) => apiUrl.searchParams.append(key, config.params[key]));
       }
       const authorization: any = getHeaderAuthorize();
       return fetch(apiUrl, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
           ...authorization,
         },
       }).then(async (response) => {
@@ -38,16 +36,14 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
     post<T>(url: string, body: any, config?: any): Promise<T> {
       const apiUrl = new URL(`${baseURL}${url}`);
       if (config?.params) {
-        Object.keys(config.params).forEach((key) =>
-          apiUrl.searchParams.append(key, config.params[key])
-        );
+        Object.keys(config.params).forEach((key) => apiUrl.searchParams.append(key, config.params[key]));
       }
       const authorization: any = getHeaderAuthorize();
       return fetch(apiUrl, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
           ...authorization,
         },
         body: JSON.stringify(body),
@@ -56,16 +52,14 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
     put(url: string, body: any, config?: any) {
       const apiUrl = new URL(`${baseURL}${url}`);
       if (config?.params) {
-        Object.keys(config.params).forEach((key) =>
-          apiUrl.searchParams.append(key, config.params[key])
-        );
+        Object.keys(config.params).forEach((key) => apiUrl.searchParams.append(key, config.params[key]));
       }
       const authorization: any = getHeaderAuthorize();
       return fetch(apiUrl, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
           ...authorization,
         },
         body: JSON.stringify(body),
@@ -74,16 +68,14 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
     delete(url: string, body: any, config?: any) {
       const apiUrl = new URL(`${baseURL}${url}`);
       if (config?.params) {
-        Object.keys(config.params).forEach((key) =>
-          apiUrl.searchParams.append(key, config.params[key])
-        );
+        Object.keys(config.params).forEach((key) => apiUrl.searchParams.append(key, config.params[key]));
       }
       const authorization: any = getHeaderAuthorize();
       return fetch(apiUrl, {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
           ...authorization,
         },
         body: JSON.stringify(body),
@@ -93,21 +85,19 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
 };
 
 export const messari = createAxiosInterface({
-  baseURL: "https://data.messari.io/api/v1",
+  baseURL: 'https://data.messari.io/api/v1',
   getHeaderAuthorize: () => {},
 });
 
 export const coinGeko = createAxiosInterface({
-  baseURL: "https://api.coingecko.com/api/v3",
+  baseURL: 'https://api.coingecko.com/api/v3',
   getHeaderAuthorize: () => {},
 });
 
 export const nimbus = createAxiosInterface({
-  baseURL: "https://api.getnimbus.io",
-  // baseURL: "https://api-staging.getnimbus.io",
-  // baseURL: "http://localhost:3000",
+  baseURL: import.meta.env.VITE_API_URL,
   getHeaderAuthorize: () => {
-    const evmToken = localStorage.getItem("evm_token");
+    const evmToken = localStorage.getItem('evm_token');
     if (evmToken) {
       return {
         Authorization: `${evmToken}`,
@@ -117,31 +107,31 @@ export const nimbus = createAxiosInterface({
 });
 
 export const defillama = createAxiosInterface({
-  baseURL: "https://coins.llama.fi",
+  baseURL: 'https://coins.llama.fi',
   getHeaderAuthorize: () => {},
 });
 
 export const coinmarketcap = createAxiosInterface({
-  baseURL: "https://s3.coinmarketcap.com",
+  baseURL: 'https://s3.coinmarketcap.com',
   getHeaderAuthorize: () => {},
 });
 
 export const mixpanel = createAxiosInterface({
-  baseURL: "https://api.mixpanel.com",
+  baseURL: 'https://api.mixpanel.com',
   getHeaderAuthorize: () => {},
 });
 
 export const goplus = createAxiosInterface({
-  baseURL: "https://api.gopluslabs.io/api/v1",
+  baseURL: 'https://api.gopluslabs.io/api/v1',
   getHeaderAuthorize: () => {},
 });
 
 export const nimbusApi = createAxiosInterface({
-  baseURL: "https://nimbus-api-production.up.railway.app/api",
+  baseURL: 'https://nimbus-api-production.up.railway.app/api',
   getHeaderAuthorize: () => {},
 });
 
 export const aptos = createAxiosInterface({
-  baseURL: "https://aptos-celebtron-api.getnimbus.io/api/v1",
+  baseURL: 'https://aptos-celebtron-api.getnimbus.io/api/v1',
   getHeaderAuthorize: () => {},
 });

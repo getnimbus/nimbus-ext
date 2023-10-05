@@ -1,108 +1,62 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import * as browser from "webextension-polyfill";
-  import {
-    wallet,
-    chain,
-    typeWallet,
-    user,
-    selectedPackage,
-    isDarkMode,
-    selectedBundle,
-  } from "~/store";
-  import { i18n } from "~/lib/i18n";
-  import dayjs from "dayjs";
-  import "dayjs/locale/en";
-  import "dayjs/locale/vi";
-  import relativeTime from "dayjs/plugin/relativeTime";
+  import { onMount } from 'svelte';
+  import * as browser from 'webextension-polyfill';
+  import { wallet, chain, typeWallet, user, selectedPackage, isDarkMode, selectedBundle } from '~/store';
+  import { i18n } from '~/lib/i18n';
+  import dayjs from 'dayjs';
+  import 'dayjs/locale/en';
+  import 'dayjs/locale/vi';
+  import relativeTime from 'dayjs/plugin/relativeTime';
   dayjs.extend(relativeTime);
-  import {
-    chainList,
-    listLogoCEX,
-    listProviderCEX,
-    clickOutside,
-  } from "~/utils";
-  import mixpanel from "mixpanel-browser";
-  import { AnimateSharedLayout, Motion } from "svelte-motion";
-  import CopyToClipboard from "svelte-copy-to-clipboard";
-  import { nimbus } from "~/lib/network";
-  import { Toast, Avatar } from "flowbite-svelte";
-  import { blur } from "svelte/transition";
-  import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
-  import { useNavigate } from "svelte-navigator";
-  import tooltip from "~/entries/contentScript/views/tooltip";
-  import { wait } from "~/entries/background/utils";
-  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { chainList, listLogoCEX, listProviderCEX, clickOutside } from '~/utils';
+  import mixpanel from 'mixpanel-browser';
+  import { AnimateSharedLayout, Motion } from 'svelte-motion';
+  import CopyToClipboard from 'svelte-copy-to-clipboard';
+  import { nimbus } from '~/lib/network';
+  import { Toast, Avatar } from 'flowbite-svelte';
+  import { blur } from 'svelte/transition';
+  import Vezgo from 'vezgo-sdk-js/dist/vezgo.es5.js';
+  import { useNavigate } from 'svelte-navigator';
+  import tooltip from '~/entries/contentScript/views/tooltip';
+  import { wait } from '~/entries/background/utils';
+  import { createQuery, useQueryClient } from '@tanstack/svelte-query';
 
-  export let type: "portfolio" | "order" = "portfolio";
+  export let type: 'portfolio' | 'order' = 'portfolio';
   export let title;
 
-  import Loading from "./Loading.svelte";
-  import Button from "~/components/Button.svelte";
-  import Select from "~/components/Select.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
-  import Copy from "~/components/Copy.svelte";
+  import Loading from './Loading.svelte';
+  import Button from '~/components/Button.svelte';
+  import Select from '~/components/Select.svelte';
+  import AppOverlay from '~/components/Overlay.svelte';
+  import Copy from '~/components/Copy.svelte';
 
-  import Plus from "~/assets/plus.svg";
-  import PlusBlack from "~/assets/plus-black.svg";
-  import All from "~/assets/all.svg";
-  import BitcoinLogo from "~/assets/bitcoin.png";
-  import SolanaLogo from "~/assets/solana.png";
-  import FollowWhale from "~/assets/whale-tracking.gif";
-  import Success from "~/assets/shield-done.svg";
-  import Bundles from "~/assets/bundles.png";
+  import Plus from '~/assets/plus.svg';
+  import PlusBlack from '~/assets/plus-black.svg';
+  import All from '~/assets/all.svg';
+  import BitcoinLogo from '~/assets/bitcoin.png';
+  import SolanaLogo from '~/assets/solana.png';
+  import FollowWhale from '~/assets/whale-tracking.gif';
+  import Success from '~/assets/shield-done.svg';
+  import Bundles from '~/assets/bundles.png';
 
   const MultipleLang = {
-    empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
-    addwallet: i18n(
-      "newtabPage.addwallet",
-      "Add your account to keep track of your investments."
-    ),
+    empty_wallet: i18n('newtabPage.empty-wallet', 'No account added yet.'),
+    addwallet: i18n('newtabPage.addwallet', 'Add your account to keep track of your investments.'),
     content: {
-      btn_text: i18n(
-        "optionsPage.accounts-page-content.address-btn-text",
-        "Add Wallet"
-      ),
-      modal_cancel: i18n(
-        "optionsPage.accounts-page-content.modal-cancel",
-        "Cancel"
-      ),
-      modal_add: i18n(
-        "optionsPage.accounts-page-content.modal-add-wallet",
-        "Add"
-      ),
-      modal_address_label: i18n(
-        "optionsPage.accounts-page-content.modal-address-label",
-        "Wallet"
-      ),
-      modal_label_label: i18n(
-        "optionsPage.accounts-page-content.modal-label-label",
-        "Label"
-      ),
-      modal_add_title: i18n(
-        "optionsPage.accounts-page-content.modal-add-title",
-        "Add your account"
-      ),
+      btn_text: i18n('optionsPage.accounts-page-content.address-btn-text', 'Add Wallet'),
+      modal_cancel: i18n('optionsPage.accounts-page-content.modal-cancel', 'Cancel'),
+      modal_add: i18n('optionsPage.accounts-page-content.modal-add-wallet', 'Add'),
+      modal_address_label: i18n('optionsPage.accounts-page-content.modal-address-label', 'Wallet'),
+      modal_label_label: i18n('optionsPage.accounts-page-content.modal-label-label', 'Label'),
+      modal_add_title: i18n('optionsPage.accounts-page-content.modal-add-title', 'Add your account'),
       modal_add_sub_title: i18n(
-        "optionsPage.accounts-page-content.modal-add-sub-title",
-        "Add your account will give you more option to see the information at page new tab"
+        'optionsPage.accounts-page-content.modal-add-sub-title',
+        'Add your account will give you more option to see the information at page new tab'
       ),
-      address_required: i18n(
-        "optionsPage.accounts-page-content.address-required",
-        "Account is required"
-      ),
-      label_required: i18n(
-        "optionsPage.accounts-page-content.label-required",
-        "Label is required"
-      ),
-      re_input_address: i18n(
-        "optionsPage.accounts-page-content.re-input-address",
-        "Please enter your account again!"
-      ),
-      duplicate_address: i18n(
-        "optionsPage.accounts-page-content.duplicate-address",
-        "This account is duplicated!"
-      ),
+      address_required: i18n('optionsPage.accounts-page-content.address-required', 'Account is required'),
+      label_required: i18n('optionsPage.accounts-page-content.label-required', 'Label is required'),
+      re_input_address: i18n('optionsPage.accounts-page-content.re-input-address', 'Please enter your account again!'),
+      duplicate_address: i18n('optionsPage.accounts-page-content.duplicate-address', 'This account is duplicated!'),
     },
   };
 
@@ -114,17 +68,17 @@
     darkMode = value;
   });
 
-  let selectedWallet: string = "";
+  let selectedWallet: string = '';
   wallet.subscribe((value) => {
     selectedWallet = value;
   });
 
-  let selectedChain: string = "";
+  let selectedChain: string = '';
   chain.subscribe((value) => {
     selectedChain = value;
   });
 
-  let typeWalletAddress: string = "";
+  let typeWalletAddress: string = '';
   typeWallet.subscribe((value) => {
     typeWalletAddress = value;
   });
@@ -134,7 +88,7 @@
     userInfo = value;
   });
 
-  let packageSelected = "";
+  let packageSelected = '';
   selectedPackage.subscribe((value) => {
     packageSelected = value;
   });
@@ -144,7 +98,7 @@
     selectBundle = value;
   });
 
-  let toastMsg = "";
+  let toastMsg = '';
   let isSuccessToast = false;
   let counter = 3;
   let showToast = false;
@@ -158,7 +112,7 @@
   const timeout = () => {
     if (--counter > 0) return setTimeout(timeout, 1000);
     showToast = false;
-    toastMsg = "";
+    toastMsg = '';
     isSuccessToast = false;
   };
 
@@ -172,15 +126,15 @@
   let showCommandTooltip = false;
   let showDisableAddWallet = false;
   let listAddress = [];
-  let address = "";
-  let label = "";
+  let address = '';
+  let label = '';
   let errors: any = {};
   let isLoadingAddDEX = false;
   let isOpenAddModal = false;
   let isOpenFollowWhaleModal = false;
   let isOpenModal = false;
   let isLoadingSendMail = false;
-  let email = "";
+  let email = '';
   let scrollContainer;
   let isScrollStart = true;
   let isScrollEnd = false;
@@ -188,11 +142,11 @@
   let isLoadingConnectCEX = false;
 
   let isDisabled = false;
-  let tooltipDisableAddBtn = "";
+  let tooltipDisableAddBtn = '';
   let showPopover = false;
 
   const isRequiredFieldValid = (value) => {
-    return value != null && value !== "";
+    return value != null && value !== '';
   };
 
   const validateAddress = async (address: string) => {
@@ -212,44 +166,44 @@
     const addressValidate = await validateAddress(data.address);
 
     if (!isRequiredFieldValid(data.address)) {
-      errors["address"] = {
-        ...errors["address"],
+      errors['address'] = {
+        ...errors['address'],
         required: true,
         msg: MultipleLang.content.address_required,
       };
     } else {
       if (data.address && !addressValidate) {
-        errors["address"] = {
-          ...errors["address"],
+        errors['address'] = {
+          ...errors['address'],
           required: true,
           msg: MultipleLang.content.re_input_address,
         };
         return;
       } else if (isDuplicatedAddress) {
-        errors["address"] = {
-          ...errors["address"],
+        errors['address'] = {
+          ...errors['address'],
           required: true,
           msg: MultipleLang.content.duplicate_address,
         };
         return;
       } else {
-        errors["address"] = { ...errors["address"], required: false };
+        errors['address'] = { ...errors['address'], required: false };
       }
     }
 
     if (!isRequiredFieldValid(data.label)) {
-      errors["label"] = {
-        ...errors["label"],
+      errors['label'] = {
+        ...errors['label'],
         required: true,
         msg: MultipleLang.content.label_required,
       };
     } else {
-      errors["label"] = { ...errors["label"], required: false };
+      errors['label'] = { ...errors['label'], required: false };
     }
   };
 
   const getListAddress = async () => {
-    const response: any = await nimbus.get("/accounts/list");
+    const response: any = await nimbus.get('/accounts/list');
     if (response?.status === 401) {
       throw new Error(response?.response?.error);
     }
@@ -257,15 +211,13 @@
   };
 
   $: query = createQuery({
-    queryKey: ["list-address"],
+    queryKey: ['list-address'],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
-    enabled:
-      Object.keys(userInfo).length !== 0 &&
-      selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0",
+    enabled: Object.keys(userInfo).length !== 0 && selectedWallet !== '0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0',
     onError(err) {
-      localStorage.removeItem("evm_token");
+      localStorage.removeItem('evm_token');
       user.update((n) => (n = {}));
     },
     onSuccess(data) {
@@ -276,11 +228,7 @@
   });
 
   $: {
-    if (
-      !$query.isError &&
-      $query.data !== undefined &&
-      $query.data.length !== 0
-    ) {
+    if (!$query.isError && $query.data !== undefined && $query.data.length !== 0) {
       formatDataListAddress($query.data);
     }
   }
@@ -288,36 +236,36 @@
   const formatDataListAddress = async (data) => {
     const structWalletData = data.map((item) => {
       let logo = All;
-      if (item?.type === "BTC") {
+      if (item?.type === 'BTC') {
         logo = BitcoinLogo;
       }
-      if (item?.type === "SOL") {
+      if (item?.type === 'SOL') {
         logo = SolanaLogo;
       }
-      if (item?.type === "BUNDLE") {
+      if (item?.type === 'BUNDLE') {
         logo = Bundles;
       }
       return {
         id: item.id,
         type: item.type,
         label: item.label,
-        value: item.type === "CEX" ? item.id : item.accountId,
-        logo: item.type === "CEX" ? item.logo : logo,
+        value: item.type === 'CEX' ? item.id : item.accountId,
+        logo: item.type === 'CEX' ? item.logo : logo,
         accounts:
           item?.accounts?.map((account) => {
             let logo = All;
-            if (account?.type === "BTC") {
+            if (account?.type === 'BTC') {
               logo = BitcoinLogo;
             }
-            if (account?.type === "SOL") {
+            if (account?.type === 'SOL') {
               logo = SolanaLogo;
             }
             return {
               id: account?.id,
               type: account?.type,
               label: account?.label,
-              value: account?.type === "CEX" ? account?.id : account?.accountId,
-              logo: account?.type === "CEX" ? account?.logo : logo,
+              value: account?.type === 'CEX' ? account?.id : account?.accountId,
+              logo: account?.type === 'CEX' ? account?.logo : logo,
             };
           }) || [],
       };
@@ -326,9 +274,7 @@
     listAddress = structWalletData;
 
     // check type wallet
-    const selectedTypeWalletRes = await browser.storage.sync.get(
-      "typeWalletAddress"
-    );
+    const selectedTypeWalletRes = await browser.storage.sync.get('typeWalletAddress');
     if (selectedTypeWalletRes?.typeWalletAddress !== null) {
       typeWallet.update((n) => (n = selectedTypeWalletRes.typeWalletAddress));
     } else {
@@ -336,15 +282,15 @@
     }
 
     // check chain wallet
-    const selectedChainRes = await browser.storage.sync.get("selectedChain");
+    const selectedChainRes = await browser.storage.sync.get('selectedChain');
     if (selectedChainRes?.selectedChain !== null) {
       chain.update((n) => (n = selectedChainRes.selectedChain));
     } else {
-      chain.update((n) => (n = "ALL"));
+      chain.update((n) => (n = 'ALL'));
     }
 
     // check wallet
-    const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
+    const selectedWalletRes = await browser.storage.sync.get('selectedWallet');
     if (selectedWalletRes?.selectedWallet !== null) {
       wallet.update((n) => (n = selectedWalletRes.selectedWallet));
     } else {
@@ -356,19 +302,19 @@
 
   const updateStateFromParams = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const addressParams = urlParams.get("address");
-    const chainParams = urlParams.get("chain");
-    const typeParams = urlParams.get("type");
+    const addressParams = urlParams.get('address');
+    const chainParams = urlParams.get('chain');
+    const typeParams = urlParams.get('type');
 
     // reset all global state if list address is empty
     if (!chainParams && listAddress.length === 0) {
-      chain.update((n) => (n = ""));
+      chain.update((n) => (n = ''));
     }
     if (!addressParams && listAddress.length === 0) {
-      wallet.update((n) => (n = ""));
+      wallet.update((n) => (n = ''));
     }
     if (!typeParams && listAddress.length === 0) {
-      typeWallet.update((n) => (n = ""));
+      typeWallet.update((n) => (n = ''));
     }
 
     // update global chain state
@@ -387,85 +333,76 @@
     }
 
     // check type address and handle logic update global state
-    if (typeParams === "CEX") {
-      if (window.location.pathname === "/transactions") {
-        chain.update((n) => (n = "ETH"));
+    if (typeParams === 'CEX') {
+      if (window.location.pathname === '/transactions') {
+        chain.update((n) => (n = 'ETH'));
       } else {
-        chain.update((n) => (n = "ALL"));
+        chain.update((n) => (n = 'ALL'));
       }
       window.history.replaceState(
         null,
-        "",
-        window.location.pathname +
-          `?type=${typeWalletAddress}&address=${selectedWallet}`
+        '',
+        window.location.pathname + `?type=${typeWalletAddress}&address=${selectedWallet}`
       );
     }
 
     // if list address is empty and no chain params and have address param
-    if (
-      !chainParams &&
-      listAddress.length === 0 &&
-      addressParams &&
-      typeParams
-    ) {
-      if (window.location.pathname === "/transactions") {
-        chain.update((n) => (n = "ETH"));
+    if (!chainParams && listAddress.length === 0 && addressParams && typeParams) {
+      if (window.location.pathname === '/transactions') {
+        chain.update((n) => (n = 'ETH'));
       } else {
-        chain.update((n) => (n = "ALL"));
+        chain.update((n) => (n = 'ALL'));
       }
 
-      if (typeParams === "BTC" || typeParams === "SOL") {
+      if (typeParams === 'BTC' || typeParams === 'SOL') {
         window.history.replaceState(
           null,
-          "",
-          window.location.pathname +
-            `?type=${typeWalletAddress}&address=${selectedWallet}`
+          '',
+          window.location.pathname + `?type=${typeWalletAddress}&address=${selectedWallet}`
         );
       }
 
-      if (typeParams === "EVM") {
+      if (typeParams === 'EVM') {
         window.history.replaceState(
           null,
-          "",
-          window.location.pathname +
-            `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
+          '',
+          window.location.pathname + `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
         );
       }
     }
 
     // if no chain params and list address is not empty
     if (!chainParams && listAddress.length !== 0 && typeParams) {
-      if (typeParams === "EVM") {
-        if (window.location.pathname === "/transactions") {
-          chain.update((n) => (n = "ETH"));
+      if (typeParams === 'EVM') {
+        if (window.location.pathname === '/transactions') {
+          chain.update((n) => (n = 'ETH'));
         } else {
-          chain.update((n) => (n = "ALL"));
+          chain.update((n) => (n = 'ALL'));
         }
       }
-      if (typeParams === "BTC" || typeParams === "SOL") {
+      if (typeParams === 'BTC' || typeParams === 'SOL') {
         window.history.replaceState(
           null,
-          "",
-          window.location.pathname +
-            `?type=${typeWalletAddress}&address=${selectedWallet}`
+          '',
+          window.location.pathname + `?type=${typeWalletAddress}&address=${selectedWallet}`
         );
       }
     }
   };
 
   const handleCreateUser = async () => {
-    const evmAddress = localStorage.getItem("evm_address");
+    const evmAddress = localStorage.getItem('evm_address');
     if (evmAddress) {
       try {
-        await nimbus.post("/accounts", {
-          type: "DEX",
+        await nimbus.post('/accounts', {
+          type: 'DEX',
           publicAddress: evmAddress,
           accountId: evmAddress,
-          label: "My address",
+          label: 'My address',
         });
-        queryClient.invalidateQueries(["list-address"]);
+        queryClient.invalidateQueries(['list-address']);
         wallet.update((n) => (n = evmAddress));
-        mixpanel.track("user_add_address");
+        mixpanel.track('user_add_address');
       } catch (e) {
         console.error(e);
       }
@@ -486,29 +423,26 @@
 
       await validateForm(data);
 
-      if (
-        !Object.keys(errors).some((inputName) => errors[inputName]["required"])
-      ) {
+      if (!Object.keys(errors).some((inputName) => errors[inputName]['required'])) {
         const dataFormat = {
           id: data.address,
           label: data.label,
           value: data.address,
         };
 
-        await nimbus.post("/accounts", {
-          type: "DEX",
+        await nimbus.post('/accounts', {
+          type: 'DEX',
           publicAddress: dataFormat.value,
           accountId: dataFormat.value,
           label: dataFormat.label,
         });
 
-        queryClient.invalidateQueries(["list-address"]);
+        queryClient.invalidateQueries(['list-address']);
         wallet.update((n) => (n = dataFormat.value));
         window.history.replaceState(
           null,
-          "",
-          window.location.pathname +
-            `?type=EVM&chain=ALL&address=${dataFormat.value}`
+          '',
+          window.location.pathname + `?type=EVM&chain=ALL&address=${dataFormat.value}`
         );
 
         e.target.reset();
@@ -516,20 +450,20 @@
         isOpenAddModal = false;
         isLoadingAddDEX = false;
 
-        toastMsg = "Successfully add On-Chain account!";
+        toastMsg = 'Successfully add On-Chain account!';
         isSuccessToast = true;
         trigger();
-        mixpanel.track("user_add_address");
+        mixpanel.track('user_add_address');
 
-        errors["address"] = { ...errors["address"], required: false, msg: "" };
-        errors["label"] = { ...errors["label"], required: false, msg: "" };
+        errors['address'] = { ...errors['address'], required: false, msg: '' };
+        errors['label'] = { ...errors['label'], required: false, msg: '' };
       } else {
-        console.error("Invalid Form");
+        console.error('Invalid Form');
         isLoadingAddDEX = false;
       }
     } catch (e) {
       console.error(e);
-      toastMsg = "Something wrong when add DEX account. Please try again!";
+      toastMsg = 'Something wrong when add DEX account. Please try again!';
       isSuccessToast = false;
       isLoadingAddDEX = false;
       trigger();
@@ -538,12 +472,12 @@
 
   // Add CEX address account
   const onSubmitCEX = () => {
-    const evmToken = localStorage.getItem("evm_token");
+    const evmToken = localStorage.getItem('evm_token');
     if (evmToken) {
       isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
-        clientId: "6st9c6s816su37qe8ld1d5iiq2",
-        authEndpoint: "https://api.getnimbus.io/auth/vezgo",
+        clientId: '6st9c6s816su37qe8ld1d5iiq2',
+        authEndpoint: `${import.meta.env.VITE_API_URL}/auth/vezgo`,
         auth: {
           headers: { Authorization: `${evmToken}` },
         },
@@ -555,39 +489,36 @@
             providers: listProviderCEX,
           })
           .onConnection(async function (account) {
-            await nimbus.get("/accounts/sync");
+            await nimbus.get('/accounts/sync');
 
-            queryClient.invalidateQueries(["list-address"]);
+            queryClient.invalidateQueries(['list-address']);
 
             await wait(1000);
 
-            if (listAddress[listAddress.length - 1]?.type === "CEX") {
-              chain.update((n) => (n = "ALL"));
-              wallet.update(
-                (n) => (n = listAddress[listAddress.length - 1]?.id)
-              );
-              typeWallet.update((n) => (n = "CEX"));
+            if (listAddress[listAddress.length - 1]?.type === 'CEX') {
+              chain.update((n) => (n = 'ALL'));
+              wallet.update((n) => (n = listAddress[listAddress.length - 1]?.id));
+              typeWallet.update((n) => (n = 'CEX'));
             }
 
             await wait(300);
 
-            queryClient.invalidateQueries(["list-address"]);
+            queryClient.invalidateQueries(['list-address']);
 
             isLoadingConnectCEX = false;
             isOpenAddModal = false;
 
-            toastMsg = "Successfully add CEX account!";
+            toastMsg = 'Successfully add CEX account!';
             isSuccessToast = true;
             trigger();
-            mixpanel.track("user_add_address");
+            mixpanel.track('user_add_address');
           })
           .onError(function (error) {
-            console.error("connection vezgo error", error);
-            queryClient.invalidateQueries(["list-address"]);
+            console.error('connection vezgo error', error);
+            queryClient.invalidateQueries(['list-address']);
             isLoadingConnectCEX = false;
             isOpenAddModal = false;
-            toastMsg =
-              "Something wrong when add CEX account. Please try again!";
+            toastMsg = 'Something wrong when add CEX account. Please try again!';
             isSuccessToast = false;
             trigger();
           });
@@ -605,18 +536,18 @@
       data[key] = value;
     }
     try {
-      await nimbus.post("/subscription/analysis", {
+      await nimbus.post('/subscription/analysis', {
         email: data.email,
         address: selectedWallet,
       });
       isLoadingSendMail = false;
-      localStorage.setItem("isGetUserEmailYet", "true");
-      toastMsg = "Ready to receive exclusive benefits soon!";
+      localStorage.setItem('isGetUserEmailYet', 'true');
+      toastMsg = 'Ready to receive exclusive benefits soon!';
       isSuccessToast = true;
       trigger();
     } catch (e) {
       isLoadingSendMail = false;
-      toastMsg = "Something wrong when sending email. Please try again!";
+      toastMsg = 'Something wrong when sending email. Please try again!';
       isSuccessToast = false;
       trigger();
     } finally {
@@ -626,13 +557,10 @@
 
   onMount(() => {
     updateStateFromParams();
-    if (
-      localStorage.getItem("isGetUserEmailYet") !== null &&
-      localStorage.getItem("isGetUserEmailYet") === "true"
-    ) {
+    if (localStorage.getItem('isGetUserEmailYet') !== null && localStorage.getItem('isGetUserEmailYet') === 'true') {
       return;
     }
-    localStorage.setItem("isGetUserEmailYet", "false");
+    localStorage.setItem('isGetUserEmailYet', 'false');
   });
 
   $: {
@@ -641,115 +569,89 @@
         browser.storage.sync.set({ selectedWallet: selectedWallet });
         browser.storage.sync.set({ selectedChain: selectedChain });
 
-        if (selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0") {
+        if (selectedWallet === '0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0') {
           window.history.replaceState(
             null,
-            "",
-            window.location.pathname +
-              `?type=EVM&chain=${selectedChain}&address=${selectedWallet}`
+            '',
+            window.location.pathname + `?type=EVM&chain=${selectedChain}&address=${selectedWallet}`
           );
         } else {
           const selected = listAddress.find((item) => {
             return item.value === selectedWallet;
           });
 
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "BUNDLE"
-          ) {
-            typeWallet.update((n) => (n = "BUNDLE"));
-            browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
-            if (window.location.pathname === "/transactions") {
-              chain.update((n) => (n = "ETH"));
+          if (selected && Object.keys(selected).length !== 0 && selected.type === 'BUNDLE') {
+            typeWallet.update((n) => (n = 'BUNDLE'));
+            browser.storage.sync.set({ typeWalletAddress: 'BUNDLE' });
+            if (window.location.pathname === '/transactions') {
+              chain.update((n) => (n = 'ETH'));
             } else {
-              chain.update((n) => (n = "ALL"));
+              chain.update((n) => (n = 'ALL'));
             }
             window.history.replaceState(
               null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&address=${selectedWallet}`
+              '',
+              window.location.pathname + `?type=${typeWalletAddress}&address=${selectedWallet}`
             );
           }
 
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "CEX"
-          ) {
-            typeWallet.update((n) => (n = "CEX"));
-            browser.storage.sync.set({ typeWalletAddress: "CEX" });
-            if (window.location.pathname === "/transactions") {
-              chain.update((n) => (n = "ETH"));
+          if (selected && Object.keys(selected).length !== 0 && selected.type === 'CEX') {
+            typeWallet.update((n) => (n = 'CEX'));
+            browser.storage.sync.set({ typeWalletAddress: 'CEX' });
+            if (window.location.pathname === '/transactions') {
+              chain.update((n) => (n = 'ETH'));
             } else {
-              chain.update((n) => (n = "ALL"));
+              chain.update((n) => (n = 'ALL'));
             }
             window.history.replaceState(
               null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&address=${selectedWallet}`
+              '',
+              window.location.pathname + `?type=${typeWalletAddress}&address=${selectedWallet}`
             );
           }
 
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "EVM"
-          ) {
-            typeWallet.update((n) => (n = "EVM"));
-            browser.storage.sync.set({ typeWalletAddress: "EVM" });
+          if (selected && Object.keys(selected).length !== 0 && selected.type === 'EVM') {
+            typeWallet.update((n) => (n = 'EVM'));
+            browser.storage.sync.set({ typeWalletAddress: 'EVM' });
             if (selectedChain) {
               chain.update((n) => (n = selectedChain));
             } else {
-              chain.update((n) => (n = "ALL"));
+              chain.update((n) => (n = 'ALL'));
             }
             window.history.replaceState(
               null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
+              '',
+              window.location.pathname + `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
             );
           }
 
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "SOL"
-          ) {
-            typeWallet.update((n) => (n = "SOL"));
-            browser.storage.sync.set({ typeWalletAddress: "SOL" });
-            if (window.location.pathname === "/transactions") {
-              chain.update((n) => (n = "ETH"));
+          if (selected && Object.keys(selected).length !== 0 && selected.type === 'SOL') {
+            typeWallet.update((n) => (n = 'SOL'));
+            browser.storage.sync.set({ typeWalletAddress: 'SOL' });
+            if (window.location.pathname === '/transactions') {
+              chain.update((n) => (n = 'ETH'));
             } else {
-              chain.update((n) => (n = "ALL"));
+              chain.update((n) => (n = 'ALL'));
             }
             window.history.replaceState(
               null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&address=${selectedWallet}`
+              '',
+              window.location.pathname + `?type=${typeWalletAddress}&address=${selectedWallet}`
             );
           }
 
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "BTC"
-          ) {
-            typeWallet.update((n) => (n = "BTC"));
-            browser.storage.sync.set({ typeWalletAddress: "BTC" });
-            if (window.location.pathname === "/transactions") {
-              chain.update((n) => (n = "ETH"));
+          if (selected && Object.keys(selected).length !== 0 && selected.type === 'BTC') {
+            typeWallet.update((n) => (n = 'BTC'));
+            browser.storage.sync.set({ typeWalletAddress: 'BTC' });
+            if (window.location.pathname === '/transactions') {
+              chain.update((n) => (n = 'ETH'));
             } else {
-              chain.update((n) => (n = "ALL"));
+              chain.update((n) => (n = 'ALL'));
             }
             window.history.replaceState(
               null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&address=${selectedWallet}`
+              '',
+              window.location.pathname + `?type=${typeWalletAddress}&address=${selectedWallet}`
             );
           }
         }
@@ -758,78 +660,62 @@
   }
 
   $: {
-    if (
-      address &&
-      errors.address &&
-      errors.address.msg === MultipleLang.content.address_required
-    ) {
-      errors["address"] = { ...errors["address"], required: false, msg: "" };
+    if (address && errors.address && errors.address.msg === MultipleLang.content.address_required) {
+      errors['address'] = { ...errors['address'], required: false, msg: '' };
     }
-    if (
-      label &&
-      errors.label &&
-      errors.label.msg === MultipleLang.content.label_required
-    ) {
-      errors["label"] = { ...errors["label"], required: false, msg: "" };
+    if (label && errors.label && errors.label.msg === MultipleLang.content.label_required) {
+      errors['label'] = { ...errors['label'], required: false, msg: '' };
     }
   }
 
   $: {
-    if (listAddress?.length === 3 && packageSelected === "FREE") {
+    if (listAddress?.length === 3 && packageSelected === 'FREE') {
       isDisabled = true;
     }
-    if (listAddress?.length === 7 && packageSelected === "EXPLORER") {
-      if (
-        localStorage.getItem("isGetUserEmailYet") !== null &&
-        localStorage.getItem("isGetUserEmailYet") === "false"
-      ) {
-        localStorage.setItem("isGetUserEmailYet", "true");
+    if (listAddress?.length === 7 && packageSelected === 'EXPLORER') {
+      if (localStorage.getItem('isGetUserEmailYet') !== null && localStorage.getItem('isGetUserEmailYet') === 'false') {
+        localStorage.setItem('isGetUserEmailYet', 'true');
       }
       isDisabled = true;
     }
-    if (packageSelected === "PROFESSIONAL") {
-      if (
-        localStorage.getItem("isGetUserEmailYet") !== null &&
-        localStorage.getItem("isGetUserEmailYet") === "false"
-      ) {
-        localStorage.setItem("isGetUserEmailYet", "true");
+    if (packageSelected === 'PROFESSIONAL') {
+      if (localStorage.getItem('isGetUserEmailYet') !== null && localStorage.getItem('isGetUserEmailYet') === 'false') {
+        localStorage.setItem('isGetUserEmailYet', 'true');
       }
     }
   }
 
   $: {
     if (Object.keys(userInfo).length === 0) {
-      tooltipDisableAddBtn = "Connect wallet to add account";
+      tooltipDisableAddBtn = 'Connect wallet to add account';
     }
     if (isDisabled) {
-      if (packageSelected === "FREE") {
+      if (packageSelected === 'FREE') {
         tooltipDisableAddBtn =
-          "Get the EXPLORER Plan to be able to add more accounts and experience our in-depth investment analysis";
+          'Get the EXPLORER Plan to be able to add more accounts and experience our in-depth investment analysis';
       }
-      if (packageSelected === "EXPLORER") {
+      if (packageSelected === 'EXPLORER') {
         tooltipDisableAddBtn =
-          "Get the PROFESSIONAL Plan so you can add unlimited accounts and experience all our functions";
+          'Get the PROFESSIONAL Plan so you can add unlimited accounts and experience all our functions';
       }
     }
   }
 
   $: {
-    const evmToken = localStorage.getItem("evm_token");
+    const evmToken = localStorage.getItem('evm_token');
     if (Object.keys(userInfo).length === 0 && !evmToken) {
       listAddress = [];
       const urlParams = new URLSearchParams(window.location.search);
-      const addressParams = urlParams.get("address");
+      const addressParams = urlParams.get('address');
       if (!addressParams) {
-        window.history.replaceState(null, "", "/");
+        window.history.replaceState(null, '', '/');
       }
     }
   }
 
   $: {
     if (selectedWallet) {
-      selectedBundle.update(
-        (n) => (n = listAddress.find((item) => item.value === selectedWallet))
-      );
+      selectedBundle.update((n) => (n = listAddress.find((item) => item.value === selectedWallet)));
     }
   }
 </script>
@@ -853,10 +739,7 @@
             </div>
             {#if Object.keys(userInfo).length !== 0}
               <div class="w-max">
-                <Button
-                  variant="tertiary"
-                  on:click={() => (isOpenAddModal = true)}
-                >
+                <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
                   <img src={Plus} alt="" width="12" height="12" />
                   <div class="text-2xl font-medium text-white xl:text-base">
                     {MultipleLang.content.btn_text}
@@ -879,42 +762,26 @@
                   }}
                 >
                   <Button variant="disabled">
-                    <img
-                      src={darkMode ? PlusBlack : Plus}
-                      alt=""
-                      width="12"
-                      height="12"
-                    />
-                    <div
-                      class={`text-2xl font-medium xl:text-base ${
-                        darkMode ? "text-gray-400" : "text-white"
-                      }`}
-                    >
+                    <img src={darkMode ? PlusBlack : Plus} alt="" width="12" height="12" />
+                    <div class={`text-2xl font-medium xl:text-base ${darkMode ? 'text-gray-400' : 'text-white'}`}>
                       {MultipleLang.content.btn_text}
                     </div>
                   </Button>
 
                   {#if showDisableAddWallet}
-                    <div
-                      class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
-                      style="z-index: 2147483648;"
-                    >
-                      <tooltip-detail text={"Connect wallet to add account"} />
+                    <div class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max" style="z-index: 2147483648;">
+                      <tooltip-detail text={'Connect wallet to add account'} />
                     </div>
                   {/if}
                 </div>
                 <div
                   class="text-2xl font-medium xl:text-base mt-2 hover:underline text-[#1E96FC] cursor-pointer"
                   on:click={() => {
-                    mixpanel.track("user_search");
-                    chain.update((n) => (n = "ALL"));
-                    wallet.update(
-                      (n) => (n = "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0")
-                    );
-                    typeWallet.update((n) => (n = "EVM"));
-                    navigate(
-                      `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
-                    );
+                    mixpanel.track('user_search');
+                    chain.update((n) => (n = 'ALL'));
+                    wallet.update((n) => (n = '0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0'));
+                    typeWallet.update((n) => (n = 'EVM'));
+                    navigate(`/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`);
                   }}
                 >
                   Try Demo account
@@ -939,31 +806,23 @@
                           <div
                             id={item.value}
                             class="relative xl:text-base text-2xl text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
-                            class:hover:no-underline={item.value ===
-                              selectedWallet}
+                            class:hover:no-underline={item.value === selectedWallet}
                             on:click={() => {
                               wallet.update((n) => (n = item.value));
                             }}
                           >
-                            <img
-                              src={item.logo}
-                              alt=""
-                              class="w-5 h-5 xl:w-4 xl:h-4"
-                            />
+                            <img src={item.logo} alt="" class="w-5 h-5 xl:w-4 xl:h-4" />
                             {item.label}
                             {#if item.value === selectedWallet}
                               <Motion
                                 let:motion
                                 layoutId="active-pill"
                                 transition={{
-                                  type: "spring",
+                                  type: 'spring',
                                   duration: 0.6,
                                 }}
                               >
-                                <div
-                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
-                                  use:motion
-                                />
+                                <div class="absolute inset-0 rounded-full bg-[#ffffff1c]" use:motion />
                               </Motion>
                             {/if}
                           </div>
@@ -974,19 +833,14 @@
                           <Select
                             type="wallet"
                             positionSelectList="right-0"
-                            listSelect={listAddress.slice(
-                              5,
-                              listAddress.length
-                            )}
+                            listSelect={listAddress.slice(5, listAddress.length)}
                             bind:selected={selectedWallet}
                           />
                         </div>
                         {#if listAddress
                           .slice(5, listAddress.length)
                           .find((item) => item.value === selectedWallet) !== undefined}
-                          <div
-                            class="absolute inset-0 rounded-full bg-[#ffffff1c] z-1"
-                          />
+                          <div class="absolute inset-0 rounded-full bg-[#ffffff1c] z-1" />
                         {/if}
                       </div>
                     {:else}
@@ -995,31 +849,23 @@
                           <div
                             id={item.value}
                             class="relative xl:text-base text-2xl text-white py-1 xl:pl-2 xl:pr-3 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
-                            class:hover:no-underline={item.value ===
-                              selectedWallet}
+                            class:hover:no-underline={item.value === selectedWallet}
                             on:click={() => {
                               wallet.update((n) => (n = item.value));
                             }}
                           >
-                            <img
-                              src={item.logo}
-                              alt=""
-                              class="w-5 h-5 xl:w-4 xl:h-4"
-                            />
+                            <img src={item.logo} alt="" class="w-5 h-5 xl:w-4 xl:h-4" />
                             {item.label}
                             {#if item.value === selectedWallet}
                               <Motion
                                 let:motion
                                 layoutId="active-pill"
                                 transition={{
-                                  type: "spring",
+                                  type: 'spring',
                                   duration: 0.6,
                                 }}
                               >
-                                <div
-                                  class="absolute inset-0 rounded-full bg-[#ffffff1c]"
-                                  use:motion
-                                />
+                                <div class="absolute inset-0 rounded-full bg-[#ffffff1c]" use:motion />
                               </Motion>
                             {/if}
                           </div>
@@ -1042,7 +888,7 @@
                 >
                   <div
                     class={`text-white absolute left-0 py-2 rounded-tl-lg rounded-bl-lg ${
-                      isScrollStart ? "hidden" : "block"
+                      isScrollStart ? 'hidden' : 'block'
                     }`}
                     style="background-image: linear-gradient(to right, rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100% );"
                   >
@@ -1077,22 +923,11 @@
                           wallet.update((n) => (n = item.value));
                         }}
                       >
-                        <img
-                          src={item.logo}
-                          alt=""
-                          class="w-5 h-5 rounded-full"
-                        />
+                        <img src={item.logo} alt="" class="w-5 h-5 rounded-full" />
                         {item.label}
                         {#if item.value === selectedWallet}
-                          <Motion
-                            let:motion
-                            layoutId="active-pill"
-                            transition={{ type: "spring", duration: 0.6 }}
-                          >
-                            <div
-                              class="absolute inset-0 rounded-full bg-[#ffffff1c]"
-                              use:motion
-                            />
+                          <Motion let:motion layoutId="active-pill" transition={{ type: 'spring', duration: 0.6 }}>
+                            <div class="absolute inset-0 rounded-full bg-[#ffffff1c]" use:motion />
                           </Motion>
                         {/if}
                       </div>
@@ -1101,7 +936,7 @@
                   {#if scrollContainer?.scrollWidth >= container?.offsetWidth}
                     <div
                       class={`text-white absolute right-0 py-2 rounded-tr-lg rounded-br-lg ${
-                        isScrollEnd ? "hidden" : "block"
+                        isScrollEnd ? 'hidden' : 'block'
                       }`}
                       style="background-image: linear-gradient(to left,rgba(156, 163, 175, 0.5) 0%, rgba(255,255,255,0) 100%);"
                     >
@@ -1125,9 +960,7 @@
                   {/if}
                 </div>
               {:else}
-                <div
-                  class="block text-2xl font-medium text-white xl:hidden xl:text-base"
-                >
+                <div class="block text-2xl font-medium text-white xl:hidden xl:text-base">
                   {MultipleLang.empty_wallet}
                 </div>
               {/if}
@@ -1148,39 +981,25 @@
               >
                 {#if isDisabled || Object.keys(userInfo).length === 0}
                   <div>
-                    {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
+                    {#if localStorage.getItem('isGetUserEmailYet') !== null && localStorage.getItem('isGetUserEmailYet') === 'false'}
                       <Button
                         variant="tertiary"
                         on:click={() => {
                           if (
-                            localStorage.getItem("isGetUserEmailYet") !==
-                              null &&
-                            localStorage.getItem("isGetUserEmailYet") ===
-                              "false"
+                            localStorage.getItem('isGetUserEmailYet') !== null &&
+                            localStorage.getItem('isGetUserEmailYet') === 'false'
                           ) {
                             isOpenModal = true;
                           }
                         }}
                       >
                         <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                        <div
-                          class="text-2xl font-medium text-white xl:text-base"
-                        >
-                          Add account
-                        </div>
+                        <div class="text-2xl font-medium text-white xl:text-base">Add account</div>
                       </Button>
                     {:else}
                       <Button variant="disabled" disabled>
-                        <img
-                          src={darkMode ? PlusBlack : Plus}
-                          alt=""
-                          class="w-4 h-4 xl:w-3 xl:h-3"
-                        />
-                        <div
-                          class={`text-2xl font-medium xl:text-base ${
-                            darkMode ? "text-gray-400" : "text-white"
-                          }`}
-                        >
+                        <img src={darkMode ? PlusBlack : Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
+                        <div class={`text-2xl font-medium xl:text-base ${darkMode ? 'text-gray-400' : 'text-white'}`}>
                           Add account
                         </div>
                       </Button>
@@ -1194,21 +1013,15 @@
                     }}
                   >
                     <img src={Plus} alt="" class="w-4 h-4 xl:w-3 xl:h-3" />
-                    <div class="text-2xl font-medium text-white xl:text-base">
-                      Add account
-                    </div>
+                    <div class="text-2xl font-medium text-white xl:text-base">Add account</div>
                   </Button>
                 {/if}
                 {#if showDisableAddWallet}
                   <div
-                    class={`absolute transform ${
-                      Object.keys(userInfo).length === 0 ? "-top-8" : "-top-12"
-                    } right-0`}
+                    class={`absolute transform ${Object.keys(userInfo).length === 0 ? '-top-8' : '-top-12'} right-0`}
                     style="z-index: 2147483648;"
                   >
-                    <div
-                      class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
-                    >
+                    <div class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case">
                       {tooltipDisableAddBtn}
                     </div>
                   </div>
@@ -1222,22 +1035,19 @@
                   <div class="font-medium text-white xl:text-5xl text-7xl">
                     {title}
                   </div>
-                  {#if type === "portfolio"}
+                  {#if type === 'portfolio'}
                     <div class="xl:block hidden">
                       <slot name="reload" />
                     </div>
                   {/if}
                 </div>
                 <div class="flex items-center gap-4">
-                  {#if selectBundle && Object.keys(selectBundle).length !== 0 && selectBundle?.type === "BUNDLE"}
-                    <div
-                      class="relative"
-                      on:click={() => (showPopover = !showPopover)}
-                    >
+                  {#if selectBundle && Object.keys(selectBundle).length !== 0 && selectBundle?.type === 'BUNDLE'}
+                    <div class="relative" on:click={() => (showPopover = !showPopover)}>
                       <div class="flex cursor-pointer">
                         {#if selectBundle && selectBundle?.accounts && selectBundle?.accounts?.length > 8}
                           {#each selectBundle?.accounts.slice(0, 7) as item, index}
-                            <div class={`${index > 0 && "-ml-2"}`}>
+                            <div class={`${index > 0 && '-ml-2'}`}>
                               <div class="hidden xl:block">
                                 <Avatar src={item?.logo} stacked size="sm" />
                               </div>
@@ -1256,7 +1066,7 @@
                           </div>
                         {:else}
                           {#each selectBundle?.accounts as item, index}
-                            <div class={`${index > 0 && "-ml-2"}`}>
+                            <div class={`${index > 0 && '-ml-2'}`}>
                               <div class="hidden xl:block">
                                 <Avatar src={item?.logo} stacked size="sm" />
                               </div>
@@ -1276,31 +1086,27 @@
                         >
                           {#each selectBundle?.accounts as item}
                             <div class="hidden xl:flex xl:flex-col">
-                              <div
-                                class="text-2xl xl:text-xs font-medium text_00000099"
-                              >
+                              <div class="text-2xl xl:text-xs font-medium text_00000099">
                                 {item.label}
                               </div>
                               <div class="text-3xl xl:text-sm">
                                 <Copy
                                   address={item?.value}
-                                  iconColor={darkMode ? "#fff" : "#000"}
-                                  color={darkMode ? "#fff" : "#000"}
+                                  iconColor={darkMode ? '#fff' : '#000'}
+                                  color={darkMode ? '#fff' : '#000'}
                                   isShorten
                                 />
                               </div>
                             </div>
                             <div class="flex flex-col xl:hidden">
-                              <div
-                                class="text-2xl xl:text-xs font-medium text_00000099"
-                              >
+                              <div class="text-2xl xl:text-xs font-medium text_00000099">
                                 {item.label}
                               </div>
                               <div class="text-3xl xl:text-sm">
                                 <Copy
                                   address={item?.value}
-                                  iconColor={darkMode ? "#fff" : "#000"}
-                                  color={darkMode ? "#fff" : "#000"}
+                                  iconColor={darkMode ? '#fff' : '#000'}
+                                  color={darkMode ? '#fff' : '#000'}
                                   isShorten
                                   iconSize={24}
                                 />
@@ -1312,20 +1118,10 @@
                     </div>
                   {:else}
                     <div class="hidden text-3xl xl:text-base xl:block">
-                      <Copy
-                        address={selectedWallet}
-                        iconColor="#fff"
-                        color="#fff"
-                      />
+                      <Copy address={selectedWallet} iconColor="#fff" color="#fff" />
                     </div>
                     <div class="block text-3xl xl:text-base xl:hidden">
-                      <Copy
-                        address={selectedWallet}
-                        iconColor="#fff"
-                        color="#fff"
-                        isShorten
-                        iconSize={24}
-                      />
+                      <Copy address={selectedWallet} iconColor="#fff" color="#fff" isShorten iconSize={24} />
                     </div>
                   {/if}
                   <!-- <div
@@ -1356,23 +1152,17 @@
                   </div> -->
 
                   <div class="hidden xl:block">
-                    {#if typeWalletAddress === "BTC"}
+                    {#if typeWalletAddress === 'BTC'}
                       <div
                         use:tooltip={{
                           content: `<tooltip-detail text="Coming soon!" />`,
                           allowHTML: true,
-                          placement: "top",
+                          placement: 'top',
                           interactive: true,
                         }}
                       >
                         <Button variant="premium" disabled>
-                          <div
-                            class={`${
-                              darkMode ? "text-gray-400" : "text-white"
-                            }`}
-                          >
-                            Optimize return
-                          </div>
+                          <div class={`${darkMode ? 'text-gray-400' : 'text-white'}`}>Optimize return</div>
                         </Button>
                       </div>
                     {:else}
@@ -1382,26 +1172,20 @@
                             use:tooltip={{
                               content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
                               allowHTML: true,
-                              placement: "top",
+                              placement: 'top',
                               interactive: true,
                             }}
                           >
                             <Button
                               variant="premium"
                               on:click={() => {
-                                navigate(
-                                  `/compare?address=${encodeURIComponent(
-                                    selectedWallet
-                                  )}`
-                                );
-                                mixpanel.track("user_compare");
+                                navigate(`/compare?address=${encodeURIComponent(selectedWallet)}`);
+                                mixpanel.track('user_compare');
                               }}>Optimize return</Button
                             >
                           </div>
                         {:else}
-                          <Button variant="premium" disabled
-                            >Optimize return</Button
-                          >
+                          <Button variant="premium" disabled>Optimize return</Button>
                         {/if}
                       </div>
                     {/if}
@@ -1411,21 +1195,17 @@
 
               <div class="flex flex-col gap-6">
                 <div class="block xl:hidden">
-                  {#if typeWalletAddress === "BTC"}
+                  {#if typeWalletAddress === 'BTC'}
                     <div
                       use:tooltip={{
                         content: `<tooltip-detail text="Coming soon!" />`,
                         allowHTML: true,
-                        placement: "top",
+                        placement: 'top',
                         interactive: true,
                       }}
                     >
                       <Button variant="premium" disabled>
-                        <div
-                          class={`${darkMode ? "text-gray-400" : "text-white"}`}
-                        >
-                          Optimize return
-                        </div>
+                        <div class={`${darkMode ? 'text-gray-400' : 'text-white'}`}>Optimize return</div>
                       </Button>
                     </div>
                   {:else}
@@ -1435,37 +1215,29 @@
                           use:tooltip={{
                             content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
                             allowHTML: true,
-                            placement: "top",
+                            placement: 'top',
                             interactive: true,
                           }}
                         >
                           <Button
                             variant="premium"
                             on:click={() => {
-                              navigate(
-                                `/compare?address=${encodeURIComponent(
-                                  selectedWallet
-                                )}`
-                              );
-                              mixpanel.track("user_compare");
+                              navigate(`/compare?address=${encodeURIComponent(selectedWallet)}`);
+                              mixpanel.track('user_compare');
                             }}>Optimize return</Button
                           >
                         </div>
                       {:else}
-                        <Button variant="premium" disabled
-                          >Optimize return</Button
-                        >
+                        <Button variant="premium" disabled>Optimize return</Button>
                       {/if}
                     </div>
                   {/if}
                 </div>
-                {#if typeWalletAddress === "EVM"}
+                {#if typeWalletAddress === 'EVM'}
                   <Select
                     type="chain"
                     positionSelectList="right-0"
-                    listSelect={window.location.pathname === "/transactions"
-                      ? chainList.slice(1, -1)
-                      : chainList}
+                    listSelect={window.location.pathname === '/transactions' ? chainList.slice(1, -1) : chainList}
                     bind:selected={selectedChain}
                   />
                 {/if}
@@ -1473,7 +1245,7 @@
             </div>
 
             {#key selectedWallet || selectedChain}
-              {#if type === "portfolio"}
+              {#if type === 'portfolio'}
                 <slot name="overview" />
               {/if}
             {/key}
@@ -1489,11 +1261,7 @@
 {/if}
 
 <!-- Modal add DEX account -->
-<AppOverlay
-  clickOutSideToClose
-  isOpen={isOpenAddModal}
-  on:close={() => (isOpenAddModal = false)}
->
+<AppOverlay clickOutSideToClose isOpen={isOpenAddModal} on:close={() => (isOpenAddModal = false)}>
   <div class="flex flex-col gap-4">
     <div class="font-medium xl:title-3 title-1">
       {MultipleLang.content.modal_add_title}
@@ -1508,30 +1276,18 @@
               disabled={isLoadingConnectCEX}
               on:click={onSubmitCEX}
             >
-              <div class="font-medium text-white xl:text-base text-2xl">
-                Connect Exchange
-              </div>
+              <div class="font-medium text-white xl:text-base text-2xl">Connect Exchange</div>
             </Button>
           </div>
         </div>
-        <div
-          class="flex items-center justify-center gap-1 xl:text-base text-2xl"
-        >
+        <div class="flex items-center justify-center gap-1 xl:text-base text-2xl">
           <img src={Success} alt="" />
           Bank-level security/encryption.
-          <a
-            href="https://vezgo.com/security"
-            class="text-blue-500 cursor-pointer"
-            target="_blank">Learn more</a
-          >
+          <a href="https://vezgo.com/security" class="text-blue-500 cursor-pointer" target="_blank">Learn more</a>
         </div>
-        <div
-          class="flex items-center justify-center gap-6 my-3 xl:text-base text-2xl"
-        >
+        <div class="flex items-center justify-center gap-6 my-3 xl:text-base text-2xl">
           {#each listLogoCEX as logo}
-            <div
-              class="flex items-center justify-center xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
-            >
+            <div class="flex items-center justify-center xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full">
               <img src={logo} alt="" class="object-contain w-full h-full" />
             </div>
           {/each}
@@ -1541,36 +1297,30 @@
       <div class="border-t-[1px] relative">
         <div
           class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
-            darkMode ? "bg-[#0f0f0f]" : "bg-white"
+            darkMode ? 'bg-[#0f0f0f]' : 'bg-white'
           } xl:text-sm text-xl px-2`}
         >
           Or
         </div>
       </div>
-      <form
-        on:submit|preventDefault={onSubmit}
-        class="flex flex-col gap-3 mt-2"
-      >
+      <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-3 mt-2">
         <div class="flex flex-col xl:gap-3 gap-6">
           <div class="flex flex-col gap-1">
             <div
               class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-                address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                address && !darkMode ? 'bg-[#F0F2F7]' : 'bg_fafafbff'
               }`}
-              class:input-border-error={errors.address &&
-                errors.address.required}
+              class:input-border-error={errors.address && errors.address.required}
             >
-              <div class="xl:text-base text-2xl text-[#666666] font-medium">
-                Address
-              </div>
+              <div class="xl:text-base text-2xl text-[#666666] font-medium">Address</div>
               <input
                 type="text"
                 id="address"
                 name="address"
-                placeholder={"Your wallet address"}
+                placeholder={'Your wallet address'}
                 value=""
                 class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                  address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                  address && !darkMode ? 'bg-[#F0F2F7]' : 'bg-transparent'
                 } `}
                 on:keyup={({ target: { value } }) => (address = value)}
               />
@@ -1584,7 +1334,7 @@
           <div class="flex flex-col gap-1">
             <div
               class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-                label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                label && !darkMode ? 'bg-[#F0F2F7]' : 'bg_fafafbff'
               }`}
               class:input-border-error={errors.label && errors.label.required}
             >
@@ -1598,7 +1348,7 @@
                 placeholder={MultipleLang.content.modal_label_label}
                 value=""
                 class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                  label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                  label && !darkMode ? 'bg-[#F0F2F7]' : 'bg-transparent'
                 }
               `}
                 on:keyup={({ target: { value } }) => (label = value)}
@@ -1611,18 +1361,10 @@
             {/if}
           </div>
         </div>
-        <div
-          class="flex items-center justify-center gap-6 my-3 xl:text-base text-xl"
-        >
-          {#each [{ logo: SolanaLogo, label: "Solana", value: "SOL" }].concat(chainList) as item}
-            <div
-              class="flex items-center justify-center xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full"
-            >
-              <img
-                src={item.logo}
-                alt=""
-                class="object-contain w-full h-full"
-              />
+        <div class="flex items-center justify-center gap-6 my-3 xl:text-base text-xl">
+          {#each [{ logo: SolanaLogo, label: 'Solana', value: 'SOL' }].concat(chainList) as item}
+            <div class="flex items-center justify-center xl:w-8 xl:h-8 w-10 h-10 overflow-hidden rounded-full">
+              <img src={item.logo} alt="" class="object-contain w-full h-full" />
             </div>
           {/each}
           <div class="text-gray-400">More soon</div>
@@ -1640,12 +1382,7 @@
             >
           </div>
           <div class="lg:w-[120px] w-full">
-            <Button
-              type="submit"
-              variant="tertiary"
-              isLoading={isLoadingAddDEX}
-              disabled={isLoadingAddDEX}
-            >
+            <Button type="submit" variant="tertiary" isLoading={isLoadingAddDEX} disabled={isLoadingAddDEX}>
               {MultipleLang.content.modal_add}</Button
             >
           </div>
@@ -1656,19 +1393,11 @@
 </AppOverlay>
 
 <!-- Modal follow Whales -->
-<AppOverlay
-  clickOutSideToClose
-  isOpen={isOpenFollowWhaleModal}
-  on:close={() => (isOpenFollowWhaleModal = false)}
->
+<AppOverlay clickOutSideToClose isOpen={isOpenFollowWhaleModal} on:close={() => (isOpenFollowWhaleModal = false)}>
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1">
       <div class="text-2xl xl:text-base">
-        Go to <a
-          href="https://t.me/GetNimbusBot"
-          target="_blank"
-          class="text-blue-500">https://t.me/GetNimbusBot</a
-        >
+        Go to <a href="https://t.me/GetNimbusBot" target="_blank" class="text-blue-500">https://t.me/GetNimbusBot</a>
       </div>
       <div class="text-2xl xl:text-base">Use the command as follow video</div>
     </div>
@@ -1678,8 +1407,7 @@
     <div class="flex justify-end w-full">
       <CopyToClipboard
         text={`/start ${selectedWallet} ${
-          listAddress.filter((item) => item.value === selectedWallet)?.[0]
-            ?.label || ""
+          listAddress.filter((item) => item.value === selectedWallet)?.[0]?.label || ''
         }`}
         let:copy
       >
@@ -1700,15 +1428,10 @@
             }}>Copy command</Button
           >
           {#if showCommandTooltip}
-            <div
-              class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max"
-              style="z-index: 2147483648;"
-            >
+            <div class="absolute transform -translate-x-1/2 -top-8 left-1/2 w-max" style="z-index: 2147483648;">
               <tooltip-detail
                 text={`/start ${selectedWallet} ${
-                  listAddress.filter(
-                    (item) => item.value === selectedWallet
-                  )?.[0]?.label || ""
+                  listAddress.filter((item) => item.value === selectedWallet)?.[0]?.label || ''
                 }`}
               />
             </div>
@@ -1729,26 +1452,18 @@
 >
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-1 items-start">
-      <div class="xl:title-3 title-1 font-semibold">
-        Let's us know your email
-      </div>
+      <div class="xl:title-3 title-1 font-semibold">Let's us know your email</div>
       <div class="xl:text-sm text-2xl text-gray-500">
-        Add your email to get updates from us and receive exclusive benefits
-        soon.
+        Add your email to get updates from us and receive exclusive benefits soon.
       </div>
     </div>
-    <form
-      on:submit|preventDefault={onSubmitGetEmail}
-      class="flex flex-col xl:gap-3 gap-10"
-    >
+    <form on:submit|preventDefault={onSubmitGetEmail} class="flex flex-col xl:gap-3 gap-10">
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+          email && !darkMode ? 'bg-[#F0F2F7]' : 'bg_fafafbff'
         }`}
       >
-        <div class="xl:text-base text-2xl text-[#666666] font-medium">
-          Email
-        </div>
+        <div class="xl:text-base text-2xl text-[#666666] font-medium">Email</div>
         <input
           type="email"
           id="email"
@@ -1757,7 +1472,7 @@
           placeholder="Your email"
           value=""
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            email && !darkMode ? 'bg-[#F0F2F7]' : 'bg-transparent'
           }`}
           on:keyup={({ target: { value } }) => (email = value)}
         />
@@ -1774,11 +1489,7 @@
           >
         </div>
         <div class="xl:w-[120px] w-full">
-          <Button
-            type="submit"
-            isLoading={isLoadingSendMail}
-            disabled={isLoadingSendMail}>Submit</Button
-          >
+          <Button type="submit" isLoading={isLoadingSendMail} disabled={isLoadingSendMail}>Submit</Button>
         </div>
       </div>
     </form>
@@ -1791,7 +1502,7 @@
       transition={blur}
       params={{ amount: 10 }}
       position="top-right"
-      color={isSuccessToast ? "green" : "red"}
+      color={isSuccessToast ? 'green' : 'red'}
       bind:open={showToast}
     >
       <svelte:fragment slot="icon">
@@ -1859,11 +1570,11 @@
 
   :global(body) .header-container {
     background-color: #27326f;
-    background-image: url("~/assets/capa.svg");
+    background-image: url('~/assets/capa.svg');
   }
   :global(body.dark) .header-container {
     background-color: #080808;
-    background-image: url("~/assets/capa-dark.svg");
+    background-image: url('~/assets/capa-dark.svg');
   }
 
   :global(body) .select_content {
