@@ -216,6 +216,10 @@
         return { ...item };
       });
       formatDataNFT = formatDataWithMarketPrice;
+      sumNFT = formatDataNFT.reduce(
+        (prev, item) => prev + item.current_value,
+        0
+      );
     }
   }
 
@@ -594,13 +598,17 @@
                   </tbody>
                 {:else}
                   <tbody>
-                    {#if formatDataNFT && formatDataNFT.length === 0}
+                    {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0}
                       <tr>
                         <td {colspan}>
                           <div
-                            class="flex justify-center items-center h-full py-3 px-3 text-lg text-gray-400"
+                            class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
                           >
-                            {MultipleLang.empty}
+                            {#if holdingTokenData && holdingTokenData.length === 0}
+                              {MultipleLang.empty}
+                            {:else}
+                              All NFT Collections less than $1
+                            {/if}
                           </div>
                         </td>
                       </tr>

@@ -33,6 +33,7 @@
     (prev, item) => prev + Number(item.cost),
     0
   );
+
   $: totalNativeTokenPrice = data?.tokens?.reduce(
     (prev, item) => prev + Number(item.price),
     0
@@ -203,7 +204,11 @@
       <div class="flex flex-col">
         <div
           class={`flex justify-end ${
-            profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
+            profitAndLoss !== 0
+              ? profitAndLoss >= 0
+                ? "text-[#00A878]"
+                : "text-red-500"
+              : "text_00000099"
           }`}
         >
           <TooltipNumber number={Math.abs(profitAndLoss)} type="value" />
@@ -211,20 +216,28 @@
         <div class="flex items-center justify-end gap-1">
           <div
             class={`flex items-center ${
-              profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+              profitAndLossPercent !== 0
+                ? profitAndLossPercent >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+                : "text_00000099"
             }`}
           >
             <TooltipNumber
               number={Math.abs(profitAndLossPercent) * 100}
-              type="percent"
+              type={Math.abs(Number(profitAndLossPercent)) > 100
+                ? "balance"
+                : "percent"}
             />
             <span>%</span>
           </div>
-          <img
-            src={profitAndLossPercent >= 0 ? TrendUp : TrendDown}
-            alt="trend"
-            class="mb-1"
-          />
+          {#if profitAndLossPercent !== 0}
+            <img
+              src={profitAndLossPercent >= 0 ? TrendUp : TrendDown}
+              alt="trend"
+              class="mb-1"
+            />
+          {/if}
         </div>
       </div>
     </div>
@@ -249,5 +262,5 @@
   </td>
 </tr>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
 </style>

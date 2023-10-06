@@ -21,12 +21,12 @@
     typeWalletAddress = value;
   });
 
-  let isLoadingListNFT = false;
   let tokens = [];
-  let data;
+  let data = {};
+  let nativeToken = {};
   let marketPriceNFT;
+
   let addressWallet = "";
-  let collectionName = "";
   let collectionId = "";
 
   // nft holding
@@ -37,38 +37,42 @@
     return response;
   };
 
-  const formatDataHoldingNFT = (data) => {
-    console.log("data: ", data);
-
-    const selectedCollection = data.find(
+  const formatDataHoldingNFT = (dataNftHolding) => {
+    const selectedCollection = dataNftHolding.find(
       (item) => item?.collectionId.toLowerCase() === collectionId.toLowerCase()
     );
-
-    console.log("selectedCollection: ", selectedCollection);
-
     if (selectedCollection) {
       tokens = selectedCollection?.tokens;
+
       marketPriceNFT = {
         id: -1,
         market_price: selectedCollection?.marketPrice || 0,
       };
+
       data = {
         ...selectedCollection,
-        market_price: selectedCollection?.marketPrice || 0,
         current_value:
           selectedCollection?.floorPrice *
           selectedCollection?.marketPrice *
           selectedCollection?.tokens?.length,
       };
 
-      // if (response?.cmc_id) {
-      //   priceSubscribe([response?.cmc_id], (data) => {
-      //     marketPriceNFT = {
-      //       id: data.id,
-      //       market_price: data.p,
-      //     };
-      //   });
-      // }
+      nativeToken = selectedCollection?.nativeToken;
+
+      if (
+        selectedCollection?.nativeToken?.cmc_id &&
+        Number(selectedCollection?.nativeToken?.cmc_id) !== 0
+      ) {
+        priceSubscribe(
+          [Number(selectedCollection?.nativeToken?.cmc_id)],
+          (item) => {
+            marketPriceNFT = {
+              id: item.id,
+              market_price: item.p,
+            };
+          }
+        );
+      }
     }
   };
 
@@ -86,41 +90,6 @@
     }
   }
 
-  // const getCollectionDetail = async (collectionId, address) => {
-  //   try {
-  //     isLoadingListNFT = true;
-  //     collectionName = collectionId;
-  //     const response = await nimbus
-  //       .get(`/address/${address}/nft-holding/${collectionId}`)
-  //       .then((res) => res.data);
-  //     if (response) {
-  //       tokens = response.tokens;
-  //       marketPriceNFT = {
-  //         id: -1,
-  //         market_price: response?.btcPrice || 0,
-  //       };
-  //       data = {
-  //         ...response,
-  //         market_price: response?.btcPrice || 0,
-  //         current_value:
-  //           response?.floorPriceBTC * response?.btcPrice * response?.balance,
-  //       };
-  //       if (response?.cmc_id) {
-  //         priceSubscribe([response?.cmc_id], (data) => {
-  //           marketPriceNFT = {
-  //             id: data.id,
-  //             market_price: data.p,
-  //           };
-  //         });
-  //       }
-  //     }
-  //   } catch (e) {
-  //     console.error("error: ", e);
-  //   } finally {
-  //     isLoadingListNFT = false;
-  //   }
-  // };
-
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
     let collectionIDParams = urlParams.get("id");
@@ -137,21 +106,30 @@
   });
 
   $: {
-    if (marketPriceNFT) {
+    if (marketPriceNFT && data) {
       data = {
         ...data,
-        market_price: marketPriceNFT.market_price,
+        marketPrice: marketPriceNFT.market_price,
         current_value:
-          data?.floorPriceBTC * marketPriceNFT.market_price * data?.balance,
+          data?.floorPrice * marketPriceNFT.market_price * data?.tokens?.length,
       };
     }
   }
 
-  $: profitAndLoss = data?.current_value - (data?.overview.totalCost || 0);
+  $: totalCost = data?.tokens?.reduce(
+    (prev, item) => prev + Number(item.cost),
+    0
+  );
+
+  $: totalNativeTokenPrice = data?.tokens?.reduce(
+    (prev, item) => prev + Number(item.price),
+    0
+  );
+
+  $: profitAndLoss = data?.current_value - (totalCost || 0);
+
   $: profitAndLossPercent =
-    Math.abs(data?.overview.totalCost || 0) === 0
-      ? 0
-      : profitAndLoss / Math.abs(data?.overview.totalCost);
+    Math.abs(totalCost || 0) === 0 ? 0 : profitAndLoss / Math.abs(totalCost);
 </script>
 
 <ErrorBoundary>
@@ -169,28 +147,22 @@
           </Link>
         </div>
         <div class="text-3xl font-semibold text-white">
-          {data?.collection_name || "-"}
+          {data?.collection?.name || "-"}
         </div>
       </div>
+
       <div class="flex xl:flex-row flex-col justify-between gap-6">
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard title={"Position Value"}>
             <div class="xl:text-3xl text-5xl flex">
-              {#if data?.current_value.toString().toLowerCase().includes("e-")}
-                $<TooltipNumber number={data?.current_value} type="balance" />
-              {:else}
-                $<CountUpNumber
-                  id="PositionValueHolding"
-                  number={data?.current_value}
-                  type="balance"
-                />
-              {/if}
+              <TooltipNumber number={data?.current_value} type="value" />
             </div>
             <div class="xl:text-lg text-3xl flex">
               {tokens.length}
               {tokens.length > 1 ? "NFTs" : "NFT"}
             </div>
           </OverviewCard>
+
           <OverviewCard
             title={"Profit & Loss"}
             tooltipText="Price NFTs now - Price NFTs at time you spent"
@@ -198,68 +170,58 @@
           >
             <div
               class={`xl:text-3xl text-5xl flex ${
-                profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+                profitAndLoss !== 0
+                  ? profitAndLoss >= 0
+                    ? "text-[#00A878]"
+                    : "text-red-500"
+                  : "text_00000099"
               }`}
             >
-              $<CountUpNumber
-                id="Profit&Loss"
-                number={Math.abs(profitAndLoss)}
-                type="balance"
-              />
+              <TooltipNumber number={Math.abs(profitAndLoss)} type="value" />
             </div>
             <div
               class={`xl:text-lg text-3xl flex ${
-                profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+                profitAndLossPercent !== 0
+                  ? profitAndLossPercent >= 0
+                    ? "text-[#00A878]"
+                    : "text-red-500"
+                  : "text_00000099"
               }`}
             >
-              {#if profitAndLossPercent < 0}
-                ↓
-              {:else}
-                ↑
+              {#if profitAndLossPercent !== 0}
+                {#if profitAndLossPercent < 0}
+                  ↓
+                {:else}
+                  ↑
+                {/if}
               {/if}
-              <CountUpNumber
-                id="Profit&LossPercent"
+              <TooltipNumber
                 number={Math.abs(profitAndLossPercent) * 100}
-                type="percent"
+                type={Math.abs(Number(profitAndLossPercent)) > 100
+                  ? "balance"
+                  : "percent"}
               />%
             </div>
           </OverviewCard>
         </div>
+
         <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
           <OverviewCard
-            title={"Average Cost"}
+            title={"Cost"}
             tooltipText="Learn more"
             link="https://docs.getnimbus.io/metrics/average_cost/"
           >
             <div class="xl:text-3xl text-5xl flex items-end gap-1">
-              <CountUpNumber
-                id="AverageCostBTC"
-                number={data?.overview?.avgCostBTC || 0}
-                format={8}
-                type="balance"
-              />
+              <TooltipNumber number={totalNativeTokenPrice} type="balance" />
               <span class="text-xl text-gray-500">
-                {typeWalletAddress === "EVM" ? "ETH" : "BTC"}
+                {data?.nativeToken?.symbol}
               </span>
             </div>
             <div class="xl:text-lg text-3xl flex">
-              {#if (data?.overview?.avgCost)
-                .toString()
-                .toLowerCase()
-                .includes("e-")}
-                $<TooltipNumber
-                  number={data?.overview?.avgCost}
-                  type="balance"
-                />
-              {:else}
-                $<CountUpNumber
-                  id="AverageCost"
-                  number={data?.overview?.avgCost}
-                  type="balance"
-                />
-              {/if}
+              <TooltipNumber number={totalCost} type="value" />
             </div>
           </OverviewCard>
+
           <OverviewCard
             title={"Floor Price"}
             tooltipText={typeWalletAddress === "EVM"
@@ -268,25 +230,22 @@
             isTooltip
             link={typeWalletAddress === "EVM"
               ? ""
-              : `https://magiceden.io/ordinals/marketplace/${collectionName}`}
+              : `https://magiceden.io/ordinals/marketplace/${collectionId}`}
           >
             <div class="xl:text-3xl text-5xl flex items-end gap-1">
-              <CountUpNumber
-                id="24-hourReturn"
-                number={data?.floorPriceBTC || 0}
-                format={8}
+              <TooltipNumber
+                number={Number(data?.floorPrice || 0)}
                 type="balance"
               />
               <span class="text-xl text-gray-500">
-                {typeWalletAddress === "EVM" ? "ETH" : "BTC"}
+                {data?.nativeToken?.symbol}
               </span>
             </div>
             <div class="xl:text-lg text-3xl flex">
-              $<CountUpNumber
-                id="24-hourReturnPercent"
-                number={(data?.floorPriceBTC || 0) *
+              <TooltipNumber
+                number={(data?.floorPrice || 0) *
                   (marketPriceNFT?.market_price || 0)}
-                type="balance"
+                type="value"
               />
             </div>
           </OverviewCard>
@@ -294,6 +253,7 @@
       </div>
     </div>
   </div>
+
   <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-26">
     <div
       class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 p-6 mt-6"
@@ -321,6 +281,8 @@
               {#each tokens as item}
                 <NftCard
                   data={item}
+                  {nativeToken}
+                  {totalCost}
                   marketPrice={marketPriceNFT?.market_price || 0}
                 />
               {/each}
@@ -332,7 +294,7 @@
   </div>
 </ErrorBoundary>
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .header-container {
     background-image: url("~/assets/capa.svg");
     background-color: #27326f;
