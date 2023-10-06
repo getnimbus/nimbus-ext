@@ -335,6 +335,19 @@
         series: [
           {
             type: "bar",
+            label: {
+              show: true,
+              position: "top",
+              formatter: function (value, index) {
+                const selectedItem = closedHoldingPosition.find(
+                  (item) =>
+                    item?.contractAddress?.toLowerCase() ===
+                    value?.name?.toLowerCase()
+                );
+                return selectedItem.symbol;
+              },
+              fontSize: autoFontSize(),
+            },
             data: closedHoldingPosition
               .sort((a, b) => a?.realizedProfit - b?.realizedProfit)
               .map((item) => {
@@ -362,6 +375,19 @@
         series: [
           {
             type: "bar",
+            label: {
+              show: true,
+              position: "top",
+              formatter: function (value, index) {
+                const selectedItem = closedHoldingPosition.find(
+                  (item) =>
+                    item?.contractAddress?.toLowerCase() ===
+                    value?.name?.toLowerCase()
+                );
+                return selectedItem.symbol;
+              },
+              fontSize: autoFontSize(),
+            },
             data: closedHoldingPosition
               .sort(
                 (a, b) => a?.percentRealizedProfit - b?.percentRealizedProfit
