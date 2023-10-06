@@ -211,10 +211,15 @@
 
   $: {
     if (filterTokenType) {
-      filteredHoldingDataToken = formatData?.filter(
-        (item) =>
-          Math.abs(Number(item?.profit.realizedProfit)) > filterTokenType.value
-      );
+      if (filterTokenType.value === 0) {
+        filteredHoldingDataToken = formatData;
+      } else {
+        filteredHoldingDataToken = formatData?.filter(
+          (item) =>
+            Math.abs(Number(item?.profit.realizedProfit)) >
+            filterTokenType.value
+        );
+      }
     }
   }
 
