@@ -577,7 +577,7 @@
                     >
                       {MultipleLang.empty}
                     </div>
-                  </th>
+                  </td>
                   <th
                     class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg_f4f5f8 w-[160px]"
                   >
