@@ -8,8 +8,8 @@
   const MultipleLang = {
     table_header_title: i18n("newTable.title", "Title"),
     table_header_all: i18n("newTable.all", "All"),
-    table_header_long: i18n("newTable.long", "Long"),
-    table_header_short: i18n("newTable.short", "Short"),
+    // table_header_long: i18n("newTable.long", "Long"),
+    // table_header_short: i18n("newTable.short", "Short"),
     content: {
       netProfit: i18n("newTable.content.netProfit", "Net Profit"),
       grossProfit: i18n("newTable.content.grossProfit", "Gross Profit"),
@@ -258,42 +258,28 @@
 </Button>
 
 <AppOverlay
-  isTableContent
   clickOutSideToClose
   isOpen={openUserPerformanceSummary}
   on:close={() => (openUserPerformanceSummary = false)}
 >
   <div class="w-full max-h-[90vh] overflow-auto">
-    <div class="xl:title-3 title-1 font-semibold mb-4">
-      BattleHunger Strategies
-    </div>
-    <div class="w-full overflow-y-auto xl:overscroll-x-none overflow-x-auto">
-      <table class="xl:w-full w-[1000px] xl:text-base text-2xl">
+    <div class="xl:title-3 font-semibold mb-5">BattleHunger Strategies</div>
+    <div class="w-full">
+      <table class="w-full xl:text-base text-2xl">
         <thead>
           <tr>
-            <th
-              class="text-left py-1 xl:static sticky top-0 left-0 w-[300px] bg-white"
-            >
+            <th class="text-left py-1">
               {MultipleLang.table_header_title}
             </th>
             <th class="text-right py-1 px-4">
               {MultipleLang.table_header_all}
-            </th>
-            <th class="text-right py-1 px-4">
-              {MultipleLang.table_header_long}
-            </th>
-            <th class="text-right py-1 px-4">
-              {MultipleLang.table_header_short}
             </th>
           </tr>
         </thead>
         <tbody>
           {#each dataTable as item}
             <tr class="border-y border-light-800">
-              <td
-                class="text-left py-1 xl:static sticky top-0 left-0 w-[300px] bg-white"
-                >{item.title}</td
-              >
+              <td class="py-1">{item.title}</td>
               <td class="text-right py-1 px-4">
                 <div class="flex flex-col">
                   <span
@@ -305,36 +291,6 @@
                         : ""
                     }`}
                     >{item.all} USD
-                  </span>
-                  <span class="xl:text-xs text-lg text-gray-400">20%</span>
-                </div>
-              </td>
-              <td class="text-right py-1 px-4">
-                <div class="flex flex-col">
-                  <span
-                    class={`${
-                      item.long > 0
-                        ? "text-[#00A878]"
-                        : item.long < 0
-                        ? "text-red-500"
-                        : ""
-                    }`}
-                    >{item.long} USD
-                  </span>
-                  <span class="xl:text-xs text-lg text-gray-400">20%</span>
-                </div>
-              </td>
-              <td class="text-right py-1 px-4">
-                <div class="flex flex-col">
-                  <span
-                    class={`${
-                      item.short > 0
-                        ? "text-[#00A878]"
-                        : item.short < 0
-                        ? "text-red-500"
-                        : ""
-                    }`}
-                    >{item.short} USD
                   </span>
                   <span class="xl:text-xs text-lg text-gray-400">20%</span>
                 </div>
@@ -361,15 +317,10 @@
               </span>
             </td>
             <td class="text-right py-1 px-4">0</td>
-            <td class="text-right py-1 px-4">0</td>
-            <td class="text-right py-1 px-4">0</td>
           </tr>
           {#each tableData2 as item}
             <tr class="border-y border-light-800">
-              <td
-                class="text-left py-1 tracking-wide flex xl:static sticky top-0 left-0 w-[300px] bg-white"
-                >{item.title}</td
-              >
+              <td class="py-1 tracking-wide">{item.title}</td>
               <td class="text-right py-1 px-4">
                 <div class="flex flex-col">
                   <span
@@ -381,36 +332,6 @@
                         : ""
                     }`}
                     >{item.all} USD
-                  </span>
-                  <span class="xl:text-xs text-lg text-gray-400">20%</span>
-                </div>
-              </td>
-              <td class="text-right py-1 px-4">
-                <div class="flex flex-col">
-                  <span
-                    class={`${
-                      item.long > 0
-                        ? "text-[#00A878]"
-                        : item.long < 0
-                        ? "text-red-500"
-                        : ""
-                    }`}
-                    >{item.long} USD
-                  </span>
-                  <span class="xl:text-xs text-lg text-gray-400">20%</span>
-                </div>
-              </td>
-              <td class="text-right py-1 px-4">
-                <div class="flex flex-col">
-                  <span
-                    class={`${
-                      item.short > 0
-                        ? "text-[#00A878]"
-                        : item.short < 0
-                        ? "text-red-500"
-                        : ""
-                    }`}
-                    >{item.short} USD
                   </span>
                   <span class="xl:text-xs text-lg text-gray-400">20%</span>
                 </div>
