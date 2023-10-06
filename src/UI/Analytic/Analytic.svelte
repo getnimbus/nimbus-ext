@@ -24,6 +24,7 @@
   import ClosedHoldingToken from "./ClosedHoldingToken.svelte";
   import Personality from "./Personality.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
+  import PerformanceSummary from "./PerformanceSummary.svelte";
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -60,38 +61,43 @@
   <span slot="body">
     <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[90%] relative">
       <div class="analytic_container rounded-[20px] xl:p-8 p-6 space-y-4">
-        <div class="flex items-center justify-end gap-1">
-          <div class="mr-1 xl:text-base text-2xl">Timeframe</div>
-          <AnimateSharedLayout>
-            {#each timeFrame as type}
-              <div
-                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                on:click={() => {
-                  selectedTimeFrame = type.value;
-                }}
-              >
+        <div class="flex justify-between items-center">
+          <div>
+            <PerformanceSummary />
+          </div>
+          <div class="flex items-center justify-end gap-1">
+            <div class="mr-1 xl:text-base text-2xl">Timeframe</div>
+            <AnimateSharedLayout>
+              {#each timeFrame as type}
                 <div
-                  class={`relative z-2 ${
-                    type.value === selectedTimeFrame && "text-white"
-                  }`}
+                  class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                  on:click={() => {
+                    selectedTimeFrame = type.value;
+                  }}
                 >
-                  {type.label}
-                </div>
-                {#if type.value === selectedTimeFrame}
-                  <Motion
-                    let:motion
-                    layoutId="active-pill"
-                    transition={{ type: "spring", duration: 0.6 }}
+                  <div
+                    class={`relative z-20 ${
+                      type.value === selectedTimeFrame && "text-white"
+                    }`}
                   >
-                    <div
-                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-1"
-                      use:motion
-                    />
-                  </Motion>
-                {/if}
-              </div>
-            {/each}
-          </AnimateSharedLayout>
+                    {type.label}
+                  </div>
+                  {#if type.value === selectedTimeFrame}
+                    <Motion
+                      let:motion
+                      layoutId="active-pill"
+                      transition={{ type: "spring", duration: 0.6 }}
+                    >
+                      <div
+                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                        use:motion
+                      />
+                    </Motion>
+                  {/if}
+                </div>
+              {/each}
+            </AnimateSharedLayout>
+          </div>
         </div>
 
         <div class="flex flex-col gap-7">
