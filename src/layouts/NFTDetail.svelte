@@ -130,8 +130,6 @@
 
   $: profitAndLossPercent =
     Math.abs(totalCost || 0) === 0 ? 0 : profitAndLoss / Math.abs(totalCost);
-
-  $: console.log("data: ", data);
 </script>
 
 <ErrorBoundary>
