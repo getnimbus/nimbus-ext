@@ -81,10 +81,18 @@
       }
     }
   }
+
+  $: winRate =
+    $queryTradingStats?.data?.lfStats?.totalTrade &&
+    Number($queryTradingStats?.data?.lfStats?.totalTrade) !== 0
+      ? (Number($queryTradingStats?.data?.lfStats?.winTrade) /
+          Number($queryTradingStats?.data?.lfStats?.totalTrade)) *
+        100
+      : 0;
 </script>
 
 <div
-  class="xl:col-span-4 col-span-2 border border_0000001a rounded-xl flex flex-col min-h-[465px]"
+  class="xl:col-span-4 col-span-2 border border_0000001a rounded-xl flex flex-col"
 >
   <div
     class="flex justify-start text-3xl font-medium xl:text-xl px-6 pb-3 pt-6"
@@ -93,14 +101,14 @@
   </div>
 
   {#if $queryTradingStats.isFetching}
-    <div class="flex items-center justify-center px-6 pb-6 flex-1">
+    <div class="flex items-center justify-center px-6 pb-6 flex-1 h-[365px]">
       <LoadingPremium />
     </div>
   {:else}
     <div class="h-full relative">
       {#if $queryTradingStats.isError}
         <div
-          class="h-full flex justify-center items-center xl:text-base text-lg"
+          class="h-full flex justify-center items-center xl:text-base text-lg h-[365px]"
         >
           Empty
         </div>
@@ -136,7 +144,7 @@
                 <div
                   class="flex items-center justify-end xl:text-lg text-2xl col-span-1"
                 >
-                  {$queryTradingStats?.data?.lfStats?.winTrade || 0}
+                  <TooltipNumber number={winRate} type="percent" />%
                 </div>
               </div>
 
