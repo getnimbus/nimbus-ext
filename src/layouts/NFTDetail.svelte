@@ -4,12 +4,11 @@
   import { Link } from "svelte-navigator";
   import { priceSubscribe } from "~/lib/price-ws";
   import mixpanel from "mixpanel-browser";
-  import { typeWallet } from "~/store";
+  import { typeWallet, isDarkMode } from "~/store";
   import { createQuery } from "@tanstack/svelte-query";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import CountUpNumber from "~/components/CountUpNumber.svelte";
   import NftCard from "~/components/NFTCard.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -19,6 +18,11 @@
   let typeWalletAddress: string = "";
   typeWallet.subscribe((value) => {
     typeWalletAddress = value;
+  });
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
   });
 
   let tokens = [];
@@ -133,7 +137,7 @@
 </script>
 
 <ErrorBoundary>
-  <div class="header-container">
+  <div class="header header-container">
     <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
       <div class="flex flex-col gap-14 mb-5">
         <div class="flex justify-between items-center">
@@ -224,13 +228,13 @@
 
           <OverviewCard
             title={"Floor Price"}
-            tooltipText={typeWalletAddress === "EVM"
-              ? "The Floor price of last 24h, if there is no volume, the floor price is 0"
-              : "The Floor price from Magic Eden marketplace. "}
+            tooltipText={false
+              ? "The Floor price from Magic Eden marketplace. "
+              : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
             isTooltip
-            link={typeWalletAddress === "EVM"
-              ? ""
-              : `https://magiceden.io/ordinals/marketplace/${collectionId}`}
+            link={false
+              ? `https://magiceden.io/ordinals/marketplace/${collectionId}`
+              : ""}
           >
             <div class="xl:text-3xl text-5xl flex items-end gap-1">
               <TooltipNumber
@@ -255,53 +259,68 @@
   </div>
 
   <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-26">
-    <div
-      class="flex flex-col gap-7 bg-white rounded-[20px] xl:p-8 p-6 mt-6"
-      style="box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.10);"
-    >
-      <div class="border border_0000001a rounded-[20px] p-6">
-        <div class="flex flex-col gap-6">
-          <div class="xl:text-2xl text-4xl font-medium">List NFT</div>
-          {#if $queryNftHolding.isFetching}
-            <div
-              class="min-h-[320px] flex justify-center items-center col-span-4"
-            >
-              <Loading />
-            </div>
-          {:else if !$queryNftHolding.isFetching && tokens.length === 0}
-            <div
-              class="min-h-[320px] flex justify-center items-center col-span-4 text-lg text-gray-400"
-            >
-              Empty
-            </div>
-          {:else}
-            <div
-              class="grid gid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-6"
-            >
-              {#each tokens as item}
-                <NftCard
-                  data={item}
-                  {nativeToken}
-                  {totalCost}
-                  marketPrice={marketPriceNFT?.market_price || 0}
-                />
-              {/each}
-            </div>
-          {/if}
-        </div>
+    <div class="nft_detail_container rounded-[20px] xl:p-8 p-6 xl:shadow-md">
+      <div
+        class={`rounded-[20px] p-6 flex flex-col gap-4 ${
+          darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+        }`}
+      >
+        <div class="xl:text-2xl text-4xl font-medium">List NFT</div>
+
+        {#if $queryNftHolding.isFetching}
+          <div
+            class="min-h-[320px] flex justify-center items-center col-span-4"
+          >
+            <Loading />
+          </div>
+        {:else if !$queryNftHolding.isFetching && tokens.length === 0}
+          <div
+            class="min-h-[320px] flex justify-center items-center col-span-4 xl:text-lg text-xl text-gray-400"
+          >
+            Empty
+          </div>
+        {:else}
+          <div
+            class="grid gid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-6"
+          >
+            {#each tokens as item}
+              <NftCard
+                data={item}
+                {nativeToken}
+                {totalCost}
+                marketPrice={marketPriceNFT?.market_price || 0}
+              />
+            {/each}
+          </div>
+        {/if}
       </div>
     </div>
   </div>
 </ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global>
-  .header-container {
-    background-image: url("~/assets/capa.svg");
-    background-color: #27326f;
+  .header {
     background-repeat: no-repeat;
     background-size: auto;
     background-position: top right;
     padding-bottom: 144px;
     padding-top: 24px;
+  }
+  :global(body) .header-container {
+    background-color: #27326f;
+    background-image: url("~/assets/capa.svg");
+  }
+  :global(body.dark) .header-container {
+    background-color: #080808;
+    background-image: url("~/assets/capa-dark.svg");
+  }
+
+  :global(body) .nft_detail_container {
+    background: #fff;
+    box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
+  }
+  :global(body.dark) .nft_detail_container {
+    background: #0f0f0f;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
   }
 </style>

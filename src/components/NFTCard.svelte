@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { wallet, typeWallet } from "~/store";
+  import { wallet, typeWallet, isDarkMode } from "~/store";
   import { shorterName } from "~/utils";
 
   import TooltipNumber from "./TooltipNumber.svelte";
@@ -21,6 +21,11 @@
     typeWalletAddress = value;
   });
 
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
+
   $: cost = Number(data?.price) * marketPrice;
 
   $: profitAndLoss = cost - (totalCost || 0);
@@ -30,7 +35,9 @@
 </script>
 
 <div
-  class="border border_0000000d rounded-[10px] px-1 pt-1 pb-3 flex flex-col gap-2"
+  class={`rounded-[10px] px-3 pt-2 pb-3 flex flex-col gap-2 ${
+    darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+  }`}
 >
   <div class="rounded-[10px] overflow-hidden xl:h-[270px] h-[470px]">
     <img

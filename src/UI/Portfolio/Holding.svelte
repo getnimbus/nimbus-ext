@@ -545,12 +545,10 @@
                         class="text-right xl:text-xs text-xl uppercase font-medium"
                       >
                         <TooltipTitle
-                          tooltipText={typeWalletAddress === "BTC"
+                          tooltipText={false
                             ? "The Floor price from Magic Eden marketplace. "
                             : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
-                          link={typeWalletAddress === "BTC"
-                            ? "https://magiceden.io/ordinals"
-                            : ""}
+                          link={false ? "https://magiceden.io/ordinals" : ""}
                         >
                           {MultipleLang.floor_price}
                         </TooltipTitle>
