@@ -3,7 +3,7 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import { i18n } from "~/lib/i18n";
 
-  let openUserPerformanceSummary = true;
+  let openUserPerformanceSummary = false;
 
   const MultipleLang = {
     table_header_title: i18n("newTable.title", "Title"),
@@ -89,6 +89,7 @@
     },
   };
 
+  // data expample
   const dataTable = [
     {
       title: MultipleLang.content.netProfit,
