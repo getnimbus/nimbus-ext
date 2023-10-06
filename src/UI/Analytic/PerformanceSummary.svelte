@@ -145,9 +145,6 @@
       long: 0.0,
       short: 12.0,
     },
-  ];
-
-  const tableData2 = [
     {
       title: MultipleLang.content.openPL,
       all: 0.0,
@@ -263,7 +260,7 @@
   on:close={() => (openUserPerformanceSummary = false)}
 >
   <div class="w-full max-h-[90vh] overflow-auto">
-    <div class="xl:title-3 font-semibold mb-5">BattleHunger Strategies</div>
+    <div class="xl:title-3 font-semibold mb-5">Summary Performance</div>
     <table class="w-full xl:text-base text-2xl">
       <thead>
         <tr>
@@ -279,47 +276,6 @@
         {#each dataTable as item}
           <tr class="border-y border-light-800">
             <td class="py-1">{item.title}</td>
-            <td class="text-right py-1 px-4">
-              <div class="flex flex-col">
-                <span
-                  class={`${
-                    item.all > 0
-                      ? "text-[#00A878]"
-                      : item.all < 0
-                      ? "text-red-500"
-                      : ""
-                  }`}
-                  >{item.all} USD
-                </span>
-                <span class="xl:text-xs text-lg text-gray-400">20%</span>
-              </div>
-            </td>
-          </tr>
-        {/each}
-        <tr class="bg-gray-200">
-          <td>
-            <div class="flex items-center gap-1">
-              <span>{MultipleLang.content.maxContractsHeld}</span>
-              <span class="pt-[2px]">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 28 28"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M14 2c6.627 0 12 5.373 12 12s-5.373 12-12 12S2 20.627 2 14S7.373 2 14 2Zm0 16.5a1.25 1.25 0 1 0 0 2.5a1.25 1.25 0 0 0 0-2.5Zm0-11.75c-1.963 0-3.75 1.725-3.75 3.75a.75.75 0 0 0 1.5 0c0-1.184 1.104-2.25 2.25-2.25s2.25 1.066 2.25 2.25c0 .88-.241 1.385-.932 2.075l-.155.152l-.57.528c-.945.903-1.343 1.596-1.343 2.745a.75.75 0 0 0 1.5 0c0-.648.213-1.028.889-1.67l.164-.153l.204-.187l.197-.184c1.08-1.032 1.546-1.874 1.546-3.306c0-2.025-1.787-3.75-3.75-3.75Z"
-                  />
-                </svg>
-              </span>
-            </div>
-          </td>
-          <td class="text-right py-1 px-4">0</td>
-        </tr>
-        {#each tableData2 as item}
-          <tr class="border-y border-light-800">
-            <td class="py-1 tracking-wide">{item.title}</td>
             <td class="text-right py-1 px-4">
               <div class="flex flex-col">
                 <span
