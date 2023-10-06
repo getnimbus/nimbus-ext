@@ -319,13 +319,7 @@
           />
         </div>
 
-        <div
-          class={`${
-            isLoadingToken || filteredHoldingDataToken?.length === 0
-              ? "h-[800px]"
-              : ""
-          }`}
-        >
+        <div class={`${isLoadingToken ? "h-[400px]" : ""}`}>
           <div
             class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
               darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"

@@ -1178,11 +1178,7 @@
         />
       </div>
 
-      <div
-        class={`${
-          $query.isLoading || listAddress?.length === 0 ? "h-[800px]" : ""
-        }`}
-      >
+      <div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
         <div
           class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
             darkMode ? "bg-[#131313]" : "bg-[#fff]"
@@ -1342,15 +1338,7 @@
       </div>
     </form>
   {:else}
-    <div
-      class={`${
-        $query.isLoading ||
-        listAddressWithoutBundle?.length === 0 ||
-        $query.isError
-          ? "h-[800px]"
-          : ""
-      }`}
-    >
+    <div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
       <div
         class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
           darkMode ? "bg-[#131313]" : "bg-[#fff]"

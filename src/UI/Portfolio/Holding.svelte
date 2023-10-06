@@ -345,13 +345,7 @@
             bind:selected={filterTokenType}
           />
         </div>
-        <div
-          class={`${
-            isLoadingToken || filteredHoldingDataToken?.length === 0
-              ? "h-[800px]"
-              : ""
-          }`}
-        >
+        <div class={`${isLoadingToken ? "h-[400px]" : ""}`}>
           <div
             class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
               darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
@@ -481,11 +475,7 @@
           </div>
         </div>
 
-        <div
-          class={`${
-            isLoadingNFT || formatDataNFT?.length === 0 ? "h-[800px]" : ""
-          }`}
-        >
+        <div class={`${isLoadingNFT ? "h-[400px]" : ""}`}>
           <div
             class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
               darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
