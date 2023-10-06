@@ -29,8 +29,6 @@
   let showTooltipListNFT = false;
   let isShowTooltipName = false;
 
-  $: console.log("data: ", data);
-
   $: totalCost = data?.tokens?.reduce(
     (prev, item) => prev + Number(item.cost),
     0
@@ -154,12 +152,12 @@
       class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end gap-1"
     >
       <span>
-        <TooltipNumber number={data?.floorPrice} type="balance" /><span
+        <TooltipNumber number={Number(data?.floorPrice)} type="balance" /><span
           class="mx-1">{data?.nativeToken?.symbol || ""}</span
         >
       </span>
       | <TooltipNumber
-        number={data?.floorPrice * data?.marketPrice}
+        number={Number(data?.floorPrice) * data?.marketPrice}
         type="value"
       />
     </div>
@@ -174,7 +172,7 @@
       class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end gap-1"
     >
       <span>
-        <TooltipNumber number={totalNativeTokenPrice} type="amount" /><span
+        <TooltipNumber number={totalNativeTokenPrice} type="balance" /><span
           class="mx-1"
         >
           {data?.nativeToken?.symbol || ""}
