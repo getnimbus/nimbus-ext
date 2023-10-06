@@ -218,7 +218,7 @@
             <div class="xl:text-3xl text-5xl flex items-end gap-1">
               <TooltipNumber number={totalNativeTokenPrice} type="balance" />
               <span class="text-xl text-gray-500">
-                {data?.nativeToken?.symbol}
+                {data?.nativeToken?.symbol || "-"}
               </span>
             </div>
             <div class="xl:text-lg text-3xl flex">
@@ -242,7 +242,7 @@
                 type="balance"
               />
               <span class="text-xl text-gray-500">
-                {data?.nativeToken?.symbol}
+                {data?.nativeToken?.symbol || "-"}
               </span>
             </div>
             <div class="xl:text-lg text-3xl flex">
