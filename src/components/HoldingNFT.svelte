@@ -67,7 +67,7 @@
         {data?.collection?.name && data?.collection?.name.length > 24
           ? shorterName(data?.collection?.name, 20)
           : data?.collection?.name}
-        {#if isShowTooltipName && data?.collection?.name.length > 24}
+        {#if isShowTooltipName && data?.collection?.name?.length > 24}
           <div class="absolute -top-8 left-0" style="z-index: 2147483648;">
             <tooltip-detail text={data?.collection?.name} />
           </div>
