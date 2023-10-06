@@ -264,43 +264,41 @@
 >
   <div class="w-full max-h-[90vh] overflow-auto">
     <div class="xl:title-3 font-semibold mb-5">BattleHunger Strategies</div>
-    <div class="w-full">
-      <table class="w-full xl:text-base text-2xl">
-        <thead>
-          <tr>
-            <th class="text-left py-1">
-              {MultipleLang.table_header_title}
-            </th>
-            <th class="text-right py-1 px-4">
-              {MultipleLang.table_header_all}
-            </th>
+    <table class="w-full xl:text-base text-2xl">
+      <thead>
+        <tr>
+          <th class="text-left py-1">
+            {MultipleLang.table_header_title}
+          </th>
+          <th class="text-right py-1 px-4">
+            {MultipleLang.table_header_all}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each dataTable as item}
+          <tr class="border-y border-light-800">
+            <td class="py-1">{item.title}</td>
+            <td class="text-right py-1 px-4">
+              <div class="flex flex-col">
+                <span
+                  class={`${
+                    item.all > 0
+                      ? "text-[#00A878]"
+                      : item.all < 0
+                      ? "text-red-500"
+                      : ""
+                  }`}
+                  >{item.all} USD
+                </span>
+                <span class="xl:text-xs text-lg text-gray-400">20%</span>
+              </div>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {#each dataTable as item}
-            <tr class="border-y border-light-800">
-              <td class="py-1">{item.title}</td>
-              <td class="text-right py-1 px-4">
-                <div class="flex flex-col">
-                  <span
-                    class={`${
-                      item.all > 0
-                        ? "text-[#00A878]"
-                        : item.all < 0
-                        ? "text-red-500"
-                        : ""
-                    }`}
-                    >{item.all} USD
-                  </span>
-                  <span class="xl:text-xs text-lg text-gray-400">20%</span>
-                </div>
-              </td>
-            </tr>
-          {/each}
-          <tr class="bg-gray-200">
-            <td
-              class="flex items-center gap-1 xl:static sticky top-0 left-0 w-[300px] bg-gray-200"
-            >
+        {/each}
+        <tr class="bg-gray-200">
+          <td>
+            <div class="flex items-center gap-1">
               <span>{MultipleLang.content.maxContractsHeld}</span>
               <span class="pt-[2px]">
                 <svg
@@ -315,32 +313,32 @@
                   />
                 </svg>
               </span>
+            </div>
+          </td>
+          <td class="text-right py-1 px-4">0</td>
+        </tr>
+        {#each tableData2 as item}
+          <tr class="border-y border-light-800">
+            <td class="py-1 tracking-wide">{item.title}</td>
+            <td class="text-right py-1 px-4">
+              <div class="flex flex-col">
+                <span
+                  class={`${
+                    item.all > 0
+                      ? "text-[#00A878]"
+                      : item.all < 0
+                      ? "text-red-500"
+                      : ""
+                  }`}
+                  >{item.all} USD
+                </span>
+                <span class="xl:text-xs text-lg text-gray-400">20%</span>
+              </div>
             </td>
-            <td class="text-right py-1 px-4">0</td>
           </tr>
-          {#each tableData2 as item}
-            <tr class="border-y border-light-800">
-              <td class="py-1 tracking-wide">{item.title}</td>
-              <td class="text-right py-1 px-4">
-                <div class="flex flex-col">
-                  <span
-                    class={`${
-                      item.all > 0
-                        ? "text-[#00A878]"
-                        : item.all < 0
-                        ? "text-red-500"
-                        : ""
-                    }`}
-                    >{item.all} USD
-                  </span>
-                  <span class="xl:text-xs text-lg text-gray-400">20%</span>
-                </div>
-              </td>
-            </tr>
-          {/each}
-        </tbody>
-      </table>
-    </div>
+        {/each}
+      </tbody>
+    </table>
   </div>
 </AppOverlay>
 
