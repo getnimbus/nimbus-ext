@@ -216,9 +216,13 @@
 
   $: {
     if (filterTokenType) {
-      filteredHoldingDataToken = formatData?.filter(
-        (item) => item?.amount * item.market_price > filterTokenType.value
-      );
+      if (filterTokenType.value === 0) {
+        filteredHoldingDataToken = formatData;
+      } else {
+        filteredHoldingDataToken = formatData?.filter(
+          (item) => item?.amount * item.market_price > filterTokenType.value
+        );
+      }
     }
   }
 
