@@ -95,7 +95,7 @@
       >
         <TooltipNumber
           number={Math.abs(Number(data?.change24H))}
-          type="percent"
+          type={Math.abs(Number(data?.change24H)) > 100 ? "balance" : "percent"}
         />
         <span>%</span>
         <img
@@ -122,7 +122,7 @@
       >
         <TooltipNumber
           number={Math.abs(Number(data?.change7D))}
-          type="percent"
+          type={Math.abs(Number(data?.change7D)) > 100 ? "balance" : "percent"}
         />
         <span>%</span>
         <img
@@ -149,7 +149,7 @@
       >
         <TooltipNumber
           number={Math.abs(Number(data?.change30D))}
-          type="percent"
+          type={Math.abs(Number(data?.change30D)) > 100 ? "balance" : "percent"}
         />
         <span>%</span>
         <img
@@ -176,7 +176,7 @@
       >
         <TooltipNumber
           number={Math.abs(Number(data?.change1Y))}
-          type="percent"
+          type={Math.abs(Number(data?.change1Y)) > 100 ? "balance" : "percent"}
         />
         <span>%</span>
         <img
@@ -196,7 +196,10 @@
     <div
       class="xl:text-sm text-2xl text-right font-medium flex flex-col items-end gap-1"
     >
-      {Number(data?.volatility).toFixed(2)}
+      <TooltipNumber
+        number={Number(data?.volatility)}
+        type={Number(data?.volatility) > 100 ? "balance" : "percent"}
+      />
     </div>
   </td>
 
@@ -206,9 +209,13 @@
     }`}
   >
     <div
-      class="xl:text-sm text-2xl text-right font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-2xl text-right font-medium flex justify-end items-center"
     >
-      {Number(data?.drawDown).toFixed(2)}%
+      <TooltipNumber
+        number={Number(data?.drawDown)}
+        type={Number(data?.drawDown) > 100 ? "balance" : "percent"}
+      />
+      <span>%</span>
     </div>
   </td>
 
@@ -218,9 +225,13 @@
     }`}
   >
     <div
-      class="xl:text-sm text-2xl text-right font-medium flex flex-col items-end gap-1"
+      class="xl:text-sm text-2xl text-right font-medium flex justify-end items-center"
     >
-      {Number(data?.sharpeRatio).toFixed(2)}
+      <TooltipNumber
+        number={Number(data?.sharpeRatio)}
+        type={Number(data?.sharpeRatio) > 100 ? "balance" : "percent"}
+      />
+      <span>%</span>
     </div>
   </td>
 

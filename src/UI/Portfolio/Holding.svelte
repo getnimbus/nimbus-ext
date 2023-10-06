@@ -85,7 +85,6 @@
       const clientRectNFTHeader = tableNFTHeader?.getBoundingClientRect();
       isStickyTableNFT = clientRectNFTHeader?.top <= 0;
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -221,9 +220,13 @@
 
   $: {
     if (filterTokenType) {
-      filteredHoldingDataToken = formatData?.filter(
-        (item) => item?.amount * item.market_price > filterTokenType.value
-      );
+      if (filterTokenType.value === 0) {
+        filteredHoldingDataToken = formatData;
+      } else {
+        filteredHoldingDataToken = formatData?.filter(
+          (item) => item?.amount * item.market_price > filterTokenType.value
+        );
+      }
     }
   }
 
@@ -348,115 +351,125 @@
           />
         </div>
         <div
-          class={`rounded-[10px] xl:overflow-visible overflow-x-auto ${
-            darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+          class={`${
+            isLoadingToken || filteredHoldingDataToken?.length === 0
+              ? "h-[800px]"
+              : ""
           }`}
         >
-          <table class="table-auto xl:w-full w-[1800px]">
-            <thead
-              class={isStickyTableToken ? "sticky top-0 z-10" : ""}
-              bind:this={tableTokenHeader}
-            >
-              <tr class="bg_f4f5f8">
-                <th
-                  class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
-                >
-                  <div
-                    class="text-left xl:text-xs text-xl uppercase font-medium"
+          <div
+            class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+              darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+            }`}
+          >
+            <table class="table-auto xl:w-full w-[1800px] h-full">
+              <thead
+                class={isStickyTableToken ? "sticky top-0 z-10" : ""}
+                bind:this={tableTokenHeader}
+              >
+                <tr class="bg_f4f5f8">
+                  <th
+                    class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
                   >
-                    {MultipleLang.assets}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    {MultipleLang.price}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    {MultipleLang.amount}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    {MultipleLang.value}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    Avg Cost
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    Realized PnL
-                  </div>
-                </th>
-                <th
-                  class={`py-3 pr-3 ${
-                    typeWalletAddress !== "BUNDLE" ? "rounded-tr-[10px]" : ""
-                  }`}
-                >
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    Unrealized PnL
-                  </div>
-                </th>
-                {#if typeWalletAddress === "BUNDLE"}
-                  <th class="py-3 w-10 rounded-tr-[10px]" />
-                {/if}
-              </tr>
-            </thead>
-
-            {#if isLoadingToken}
-              <tbody>
-                <tr>
-                  <td {colspan}>
-                    <div class="flex justify-center items-center py-3 px-3">
-                      <Loading />
+                    <div
+                      class="text-left xl:text-xs text-xl uppercase font-medium"
+                    >
+                      {MultipleLang.assets}
                     </div>
-                  </td>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      {MultipleLang.price}
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      {MultipleLang.amount}
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      {MultipleLang.value}
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      Avg Cost
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      Realized PnL
+                    </div>
+                  </th>
+                  <th
+                    class={`py-3 pr-3 ${
+                      typeWalletAddress !== "BUNDLE" ? "rounded-tr-[10px]" : ""
+                    }`}
+                  >
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      Unrealized PnL
+                    </div>
+                  </th>
+                  {#if typeWalletAddress === "BUNDLE"}
+                    <th class="py-3 w-10 rounded-tr-[10px]" />
+                  {/if}
                 </tr>
-              </tbody>
-            {:else}
-              <tbody>
-                {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+              </thead>
+
+              {#if isLoadingToken}
+                <tbody>
                   <tr>
                     <td {colspan}>
                       <div
-                        class="flex justify-center items-center py-3 px-3 xl:text-lg text-xl text-gray-400"
+                        class="flex justify-center items-center h-full py-3 px-3"
                       >
-                        {#if holdingTokenData && holdingTokenData.length === 0}
-                          {MultipleLang.empty}
-                        {:else}
-                          All tokens less than $1
-                        {/if}
+                        <Loading />
                       </div>
                     </td>
                   </tr>
-                {:else}
-                  {#each filteredHoldingDataToken as holding}
-                    <HoldingToken
-                      data={holding}
-                      {selectedWallet}
-                      sumAllTokens={totalAssets - sumNFT}
-                    />
-                  {/each}
-                {/if}
-              </tbody>
-            {/if}
-          </table>
+                </tbody>
+              {:else}
+                <tbody>
+                  {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+                    <tr>
+                      <td {colspan}>
+                        <div
+                          class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                        >
+                          {#if holdingTokenData && holdingTokenData.length === 0}
+                            {MultipleLang.empty}
+                          {:else}
+                            All tokens less than $1
+                          {/if}
+                        </div>
+                      </td>
+                    </tr>
+                  {:else}
+                    {#each filteredHoldingDataToken as holding}
+                      <HoldingToken
+                        data={holding}
+                        {selectedWallet}
+                        sumAllTokens={totalAssets - sumNFT}
+                      />
+                    {/each}
+                  {/if}
+                </tbody>
+              {/if}
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -564,7 +577,64 @@
                     >
                       {MultipleLang.empty}
                     </div>
-                  </td>
+                  </th>
+                  <th
+                    class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg_f4f5f8 w-[160px]"
+                  >
+                    <div
+                      class="text-left xl:text-xs text-xl uppercase font-medium"
+                    >
+                      {MultipleLang.Balance}
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      <TooltipTitle
+                        tooltipText={typeWalletAddress === "BTC"
+                          ? "The Floor price from Magic Eden marketplace. "
+                          : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
+                        link={typeWalletAddress === "BTC"
+                          ? "https://magiceden.io/ordinals"
+                          : ""}
+                      >
+                        {MultipleLang.floor_price}
+                      </TooltipTitle>
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      {MultipleLang.total_spent}
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      {MultipleLang.current_value}
+                    </div>
+                  </th>
+                  <th
+                    class={`py-3 pr-3 ${
+                      typeWalletAddress === "BTC" ? "" : "rounded-tr-[10px]"
+                    }`}
+                  >
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      <TooltipTitle
+                        tooltipText="Price NFTs now - Price NFTs at time you spent"
+                      >
+                        {MultipleLang.profit}
+                      </TooltipTitle>
+                    </div>
+                  </th>
+                  {#if typeWalletAddress === "BTC"}
+                    <th class="py-3 w-10 rounded-tr-[10px]" />
+                  {/if}
                 </tr>
               {:else}
                 {#each formatDataNFT as holding}

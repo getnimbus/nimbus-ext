@@ -14,7 +14,7 @@
     user,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
-  import { nimbus } from "~/lib/network";
+  import { API_URL, nimbus } from "~/lib/network";
   import Vezgo from "vezgo-sdk-js/dist/vezgo.es5.js";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -258,9 +258,9 @@
   };
 
   const validateFormEdit = async (data) => {
-    const addressValidate = await validateAddress(data.address);
+    const addressValidate = await validateAddress(selectedItemEdit.address);
 
-    if (!isRequiredFieldValid(data.address)) {
+    if (!isRequiredFieldValid(selectedItemEdit.address)) {
       errorsEdit["address"] = {
         ...errorsEdit["address"],
         required: true,
@@ -414,7 +414,7 @@
       isLoadingConnectCEX = true;
       const vezgo: any = Vezgo.init({
         clientId: "6st9c6s816su37qe8ld1d5iiq2",
-        authEndpoint: "https://api.getnimbus.io/auth/vezgo",
+        authEndpoint: `${API_URL}/auth/vezgo`,
         auth: {
           headers: { Authorization: `${evmToken}` },
         },
@@ -492,7 +492,7 @@
           Object.assign(data, { id: data.address });
 
           await nimbus.put(`/accounts/${selectedItemEdit.id}`, {
-            accountId: data.address,
+            accountId: selectedItemEdit.address,
             label: data.label,
           });
 
@@ -643,10 +643,16 @@
   };
 
   $: {
-    if (listAddress.length > 3 && packageSelected === "FREE") {
+    if (
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 3 &&
+      packageSelected === "FREE"
+    ) {
       isDisabled = true;
     }
-    if (listAddress.length > 7 && packageSelected === "EXPLORER") {
+    if (
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 7 &&
+      packageSelected === "EXPLORER"
+    ) {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
         localStorage.getItem("isGetUserEmailYet") === "false"
@@ -865,9 +871,7 @@
 
   const handleToggleCheckAll = (e) => {
     if (e.target.checked) {
-      selectedAddresses = listAddressWithoutBundle
-        .filter((item) => item.type !== "BTC")
-        .map((item) => item.address);
+      selectedAddresses = listAddressWithoutBundle.map((item) => item.address);
     } else {
       selectedAddresses = [];
     }
@@ -1173,22 +1177,192 @@
           bind:value={nameBundle}
         />
       </div>
-      <div class="border border_0000000d rounded-[10px] overflow-x-auto">
-        <table class="table-auto xl:w-full w-[1800px]">
+
+      <div
+        class={`${
+          $query.isLoading || listAddress?.length === 0 ? "h-[800px]" : ""
+        }`}
+      >
+        <div
+          class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+            darkMode ? "bg-[#131313]" : "bg-[#fff]"
+          }`}
+        >
+          <table class="table-auto xl:w-full w-[1800px] h-full">
+            <thead>
+              <tr class="bg_f4f5f8">
+                <th class="flex items-center justify-start gap-6 py-3 pl-3">
+                  <input
+                    type="checkbox"
+                    on:change={handleToggleCheckAll}
+                    class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                  />
+                  <div class="text-xl font-semibold uppercase xl:text-xs">
+                    {MultipleLang.content.label_header_table}
+                  </div>
+                </th>
+                <th class="py-3">
+                  <div
+                    class="text-xl font-semibold text-left uppercase xl:text-xs"
+                  >
+                    {MultipleLang.content.address_header_table}
+                  </div>
+                </th>
+                <th class="py-3 pr-3">
+                  <div
+                    class="text-xl font-semibold text-right uppercase xl:text-xs"
+                  >
+                    {MultipleLang.content.action_header_table}
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            {#if $query.isLoading}
+              <tbody>
+                <tr>
+                  <td colspan="3">
+                    <div
+                      class="flex items-center justify-center h-full px-3 py-4"
+                    >
+                      <Loading />
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            {:else}
+              <tbody>
+                {#if listAddress && listAddress.length === 0}
+                  <tr>
+                    <td colspan="3">
+                      <div
+                        class="flex items-center justify-center h-full px-3 py-4"
+                      >
+                        No address
+                      </div>
+                    </td>
+                  </tr>
+                {:else}
+                  {#each listAddressWithoutBundle as item (item.id)}
+                    <tr class="transition-all group">
+                      <td
+                        class={`pl-3 py-3 ${
+                          darkMode
+                            ? "group-hover:bg-[#000]"
+                            : "group-hover:bg-gray-100"
+                        }`}
+                      >
+                        <div
+                          class="flex items-center gap-6 text-2xl text-left xl:text-base"
+                        >
+                          <div class="flex justify-center">
+                            <input
+                              type="checkbox"
+                              value={item.address}
+                              bind:group={selectedAddresses}
+                              class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                            />
+                          </div>
+                          {item.label}
+                        </div>
+                      </td>
+
+                      <td
+                        class={`py-3  ${
+                          darkMode
+                            ? "group-hover:bg-[#000]"
+                            : "group-hover:bg-gray-100"
+                        }`}
+                      >
+                        <div
+                          class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
+                        >
+                          <Copy
+                            address={item.address}
+                            iconColor={`${darkMode ? "#fff" : "#000"}`}
+                            color={`${darkMode ? "#fff" : "#000"}`}
+                          />
+                        </div>
+                      </td>
+
+                      <td
+                        class={`py-3 pr-3 ${
+                          darkMode
+                            ? "group-hover:bg-[#000]"
+                            : "group-hover:bg-gray-100"
+                        }`}
+                      >
+                        <div class="flex justify-end gap-6">
+                          <div
+                            class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base"
+                            on:click={() => {
+                              isOpenConfirmDelete = true;
+                              selectedWallet = item;
+                            }}
+                          >
+                            {MultipleLang.content.modal_delete}
+                          </div>
+                          <div
+                            class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline dark:text-blue-500 xl:text-base"
+                            on:click={() => handleSelectedEdit(item)}
+                          >
+                            {MultipleLang.content.modal_edit}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  {/each}
+                {/if}
+              </tbody>
+            {/if}
+          </table>
+        </div>
+      </div>
+      <div class="flex justify-end gap-6 lg:gap-2">
+        <div class="w-[120px]">
+          <Button
+            variant="secondary"
+            on:click={() => {
+              selectedAddresses = selectedBundle.addresses;
+              isAddBundle = false;
+              handleResetBundleState();
+            }}
+          >
+            {MultipleLang.content.modal_cancel}</Button
+          >
+        </div>
+        <div class="w-[120px]">
+          <Button type="submit" variant="tertiary" isLoading={isLoadingBundle}>
+            {#if selectedBundle && Object.keys(selectedBundle).length !== 0}
+              Save
+            {:else}
+              {MultipleLang.content.modal_add}
+            {/if}
+          </Button>
+        </div>
+      </div>
+    </form>
+  {:else}
+    <div
+      class={`${
+        $query.isLoading ||
+        listAddressWithoutBundle?.length === 0 ||
+        $query.isError
+          ? "h-[800px]"
+          : ""
+      }`}
+    >
+      <div
+        class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+          darkMode ? "bg-[#131313]" : "bg-[#fff]"
+        }`}
+      >
+        <table class="table-auto xl:w-full w-[1800px] h-full">
           <thead>
             <tr class="bg_f4f5f8">
-              <th class="flex items-center justify-start gap-6 py-3 pl-3">
-                <input
-                  type="checkbox"
-                  checked={selectedAddresses.length ===
-                  listAddressWithoutBundle.filter((item) => item.type !== "BTC")
-                    .length
-                    ? true
-                    : false}
-                  on:change={handleToggleCheckAll}
-                  class="cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                />
-                <div class="text-xl font-semibold uppercase xl:text-xs">
+              <th class="py-3 pl-3">
+                <div
+                  class="text-xl font-semibold text-left uppercase xl:text-xs"
+                >
                   {MultipleLang.content.label_header_table}
                 </div>
               </th>
@@ -1208,22 +1382,54 @@
               </th>
             </tr>
           </thead>
-          {#if $query.isLoading}
+          {#if $query.isError}
             <tbody>
               <tr>
                 <td colspan="3">
-                  <div class="flex items-center justify-center px-3 py-4">
+                  <div
+                    class="flex items-center justify-center h-full px-3 py-4"
+                  >
+                    Please connect wallet
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          {:else if $query.isLoading}
+            <tbody>
+              <tr>
+                <td colspan="3">
+                  <div
+                    class="flex items-center justify-center h-full px-3 py-4"
+                  >
                     <Loading />
                   </div>
                 </td>
               </tr>
             </tbody>
           {:else}
-            <tbody>
-              {#if listAddress && listAddress.length === 0}
+            <tbody
+              use:dndzone={{
+                items: listAddressWithoutBundle,
+                flipDurationMs: 300,
+                dropTargetStyle: { outline: "none" },
+                transformDraggedElement: (draggedEl, data, index) => {
+                  draggedEl.classList.add("myStyle");
+                },
+              }}
+              on:consider={(e) => {
+                listAddressWithoutBundle = e.detail.items;
+              }}
+              on:finalize={(e) => {
+                listAddressWithoutBundle = e.detail.items;
+                debounceSort(e.detail.items);
+              }}
+            >
+              {#if (listAddressWithoutBundle && listAddressWithoutBundle.length === 0) || $query.isError}
                 <tr>
                   <td colspan="3">
-                    <div class="flex items-center justify-center px-3 py-4">
+                    <div
+                      class="flex items-center justify-center h-full px-3 py-4 text-2xl xl:text-base"
+                    >
                       No address
                     </div>
                   </td>
@@ -1239,66 +1445,33 @@
                       }`}
                     >
                       <div
-                        class="flex items-center gap-6 text-2xl text-left xl:text-base"
+                        class="flex items-center gap-3 text-2xl text-left xl:text-base"
                       >
-                        <div
-                          class="relative flex justify-center"
-                          on:mouseenter={() => {
-                            if (item.type === "BTC") {
-                              showDisableBundle = true;
-                              selectedHoverBundle = item;
-                            }
-                          }}
-                          on:mouseleave={() => {
-                            if (item.type === "BTC") {
-                              showDisableBundle = false;
-                              selectedHoverBundle = {};
-                            }
-                          }}
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
                         >
-                          <input
-                            type="checkbox"
-                            value={item.address}
-                            bind:group={selectedAddresses}
-                            checked={selectedAddresses.length ===
-                              listAddressWithoutBundle.filter(
-                                (item) => item.type !== "BTC"
-                              ).length && item.type !== "BTC"
-                              ? true
-                              : false}
-                            disabled={item.type === "BTC"}
-                            class={`${
-                              item.type === "BTC"
-                                ? "bg-gray-300 border-none"
-                                : ""
-                            } cursor-pointer relative w-5 h-5 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]`}
+                          <path
+                            d="M21 7.75H3C2.59 7.75 2.25 7.41 2.25 7C2.25 6.59 2.59 6.25 3 6.25H21C21.41 6.25 21.75 6.59 21.75 7C21.75 7.41 21.41 7.75 21 7.75ZM21 12.75H3C2.59 12.75 2.25 12.41 2.25 12C2.25 11.59 2.59 11.25 3 11.25H21C21.41 11.25 21.75 11.59 21.75 12C21.75 12.41 21.41 12.75 21 12.75ZM21 17.75H3C2.59 17.75 2.25 17.41 2.25 17C2.25 16.59 2.59 16.25 3 16.25H21C21.41 16.25 21.75 16.59 21.75 17C21.75 17.41 21.41 17.75 21 17.75Z"
+                            fill="#9ca3af"
                           />
-                          {#if showDisableBundle && selectedHoverBundle.address === item.address}
-                            <div
-                              class="absolute left-0 transform -top-8"
-                              style="z-index: 2147483648;"
-                            >
-                              <div
-                                class="max-w-[360px] text-white bg-black py-1 px-2 text-xs rounded relative w-max normal-case"
-                              >
-                                We don't support bundle BTC account
-                              </div>
-                            </div>
-                          {/if}
-                        </div>
+                        </svg>
                         {item.label}
                       </div>
                     </td>
 
                     <td
-                      class={`py-3  ${
+                      class={`py-3 ${
                         darkMode
                           ? "group-hover:bg-[#000]"
                           : "group-hover:bg-gray-100"
                       }`}
                     >
                       <div
-                        class="bg-[#6AC7F533] text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
+                        class="text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
                       >
                         <Copy
                           address={item.address}
@@ -1340,184 +1513,6 @@
           {/if}
         </table>
       </div>
-      <div class="flex justify-end gap-6 lg:gap-2">
-        <div class="w-[120px]">
-          <Button
-            variant="secondary"
-            on:click={() => {
-              selectedAddresses = selectedBundle.addresses;
-              isAddBundle = false;
-              handleResetBundleState();
-            }}
-          >
-            {MultipleLang.content.modal_cancel}</Button
-          >
-        </div>
-        <div class="w-[120px]">
-          <Button type="submit" variant="tertiary" isLoading={isLoadingBundle}>
-            {#if selectedBundle && Object.keys(selectedBundle).length !== 0}
-              Save
-            {:else}
-              {MultipleLang.content.modal_add}
-            {/if}
-          </Button>
-        </div>
-      </div>
-    </form>
-  {:else}
-    <div
-      class={`border border_0000000d rounded-[10px] overflow-x-auto ${
-        darkMode ? "bg-[#131313]" : "bg-[#fff]"
-      }`}
-    >
-      <table class="table-auto xl:w-full w-[1800px]">
-        <thead>
-          <tr class="bg_f4f5f8">
-            <th class="py-3 pl-3">
-              <div class="text-xl font-semibold text-left uppercase xl:text-xs">
-                {MultipleLang.content.label_header_table}
-              </div>
-            </th>
-            <th class="py-3">
-              <div class="text-xl font-semibold text-left uppercase xl:text-xs">
-                {MultipleLang.content.address_header_table}
-              </div>
-            </th>
-            <th class="py-3 pr-3">
-              <div
-                class="text-xl font-semibold text-right uppercase xl:text-xs"
-              >
-                {MultipleLang.content.action_header_table}
-              </div>
-            </th>
-          </tr>
-        </thead>
-        {#if $query.isError}
-          <tbody>
-            <tr>
-              <td colspan="3">
-                <div class="flex items-center justify-center px-3 py-4">
-                  Please connect wallet
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        {:else if $query.isLoading}
-          <tbody>
-            <tr>
-              <td colspan="3">
-                <div class="flex items-center justify-center px-3 py-4">
-                  <Loading />
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        {:else}
-          <tbody
-            use:dndzone={{
-              items: listAddressWithoutBundle,
-              flipDurationMs: 300,
-              dropTargetStyle: { outline: "none" },
-              transformDraggedElement: (draggedEl, data, index) => {
-                draggedEl.classList.add("myStyle");
-              },
-            }}
-            on:consider={(e) => {
-              listAddressWithoutBundle = e.detail.items;
-            }}
-            on:finalize={(e) => {
-              listAddressWithoutBundle = e.detail.items;
-              debounceSort(e.detail.items);
-            }}
-          >
-            {#if (listAddressWithoutBundle && listAddressWithoutBundle.length === 0) || $query.isError}
-              <tr>
-                <td colspan="3">
-                  <div
-                    class="flex items-center justify-center px-3 py-4 text-2xl xl:text-base"
-                  >
-                    No address
-                  </div>
-                </td>
-              </tr>
-            {:else}
-              {#each listAddressWithoutBundle as item (item.id)}
-                <tr class="transition-all group">
-                  <td
-                    class={`pl-3 py-3 ${
-                      darkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
-                    }`}
-                  >
-                    <div
-                      class="flex items-center gap-3 text-2xl text-left xl:text-base"
-                    >
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M21 7.75H3C2.59 7.75 2.25 7.41 2.25 7C2.25 6.59 2.59 6.25 3 6.25H21C21.41 6.25 21.75 6.59 21.75 7C21.75 7.41 21.41 7.75 21 7.75ZM21 12.75H3C2.59 12.75 2.25 12.41 2.25 12C2.25 11.59 2.59 11.25 3 11.25H21C21.41 11.25 21.75 11.59 21.75 12C21.75 12.41 21.41 12.75 21 12.75ZM21 17.75H3C2.59 17.75 2.25 17.41 2.25 17C2.25 16.59 2.59 16.25 3 16.25H21C21.41 16.25 21.75 16.59 21.75 17C21.75 17.41 21.41 17.75 21 17.75Z"
-                          fill="#9ca3af"
-                        />
-                      </svg>
-                      {item.label}
-                    </div>
-                  </td>
-
-                  <td
-                    class={`py-3 ${
-                      darkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
-                    }`}
-                  >
-                    <div
-                      class="text_27326F w-max px-3 py-1 rounded-[5px] xl:text-base text-2xl"
-                    >
-                      <Copy
-                        address={item.address}
-                        iconColor={`${darkMode ? "#fff" : "#000"}`}
-                        color={`${darkMode ? "#fff" : "#000"}`}
-                      />
-                    </div>
-                  </td>
-
-                  <td
-                    class={`py-3 pr-3 ${
-                      darkMode
-                        ? "group-hover:bg-[#000]"
-                        : "group-hover:bg-gray-100"
-                    }`}
-                  >
-                    <div class="flex justify-end gap-6">
-                      <div
-                        class="text-2xl font-semibold text-red-600 transition-all cursor-pointer hover:underline dark:text-red-500 xl:text-base"
-                        on:click={() => {
-                          isOpenConfirmDelete = true;
-                          selectedWallet = item;
-                        }}
-                      >
-                        {MultipleLang.content.modal_delete}
-                      </div>
-                      <div
-                        class="text-2xl font-semibold text-blue-600 transition-all cursor-pointer hover:underline dark:text-blue-500 xl:text-base"
-                        on:click={() => handleSelectedEdit(item)}
-                      >
-                        {MultipleLang.content.modal_edit}
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              {/each}
-            {/if}
-          </tbody>
-        {/if}
-      </table>
     </div>
   {/if}
 </div>
@@ -1717,16 +1712,15 @@
               {MultipleLang.content.modal_address_label}
             </div>
             <input
-              disabled={selectedItemEdit.type === "CEX"}
+              disabled={true}
               type="text"
               id="address"
               name="address"
               placeholder={MultipleLang.content.modal_address_label}
-              bind:value={selectedItemEdit.address}
+              value={selectedItemEdit.address}
               class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
                 address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               }`}
-              on:keyup={({ target: { value } }) => (address = value)}
             />
           </div>
           {#if errorsEdit.address && errorsEdit.address.required}

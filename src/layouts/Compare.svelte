@@ -1,6 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { wallet, selectedPackage, typeWallet, isDarkMode } from "~/store";
+  import {
+    wallet,
+    selectedPackage,
+    typeWallet,
+    isDarkMode,
+    selectedBundle,
+  } from "~/store";
   import { i18n } from "~/lib/i18n";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
@@ -9,13 +15,14 @@
     formatCurrency,
     formatPercent,
     typeList,
+    clickOutside,
   } from "~/utils";
   import { groupBy } from "lodash";
   import { getChangePercent } from "~/chart-utils";
   import { useNavigate } from "svelte-navigator";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import mixpanel from "mixpanel-browser";
-  import * as Sentry from "@sentry/svelte";
+  import { Avatar } from "flowbite-svelte";
 
   import type { TokenData } from "~/types/HoldingTokenData";
 
@@ -63,6 +70,11 @@
     typeWalletAddress = value;
   });
 
+  let selectBundle = {};
+  selectedBundle.subscribe((value) => {
+    selectBundle = value;
+  });
+
   onMount(() => {
     mixpanel.track("user_compare");
     const urlParams = new URLSearchParams(window.location.search);
@@ -72,6 +84,8 @@
       selectedWallet = addressParams;
     }
   });
+
+  let showPopover = false;
 
   let typeListCategory = [
     {
@@ -140,7 +154,13 @@
 
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
+                      params[0]?.axisValue === "Sharpe Ratio"
+                        ? item.value >= 0
+                          ? "#05a878"
+                          : "#f25f5d"
+                        : darkMode
+                        ? "white"
+                        : "black"
                     };">
                         ${
                           params[0]?.axisValue === "Volatility" ||
@@ -282,7 +302,6 @@
     const response = await nimbus
       .get(`/v2/analysis/${address}/similar`)
       .then((res) => res.data);
-
     return response;
   };
 
@@ -866,13 +885,97 @@
       <div class="font-semibold xl:text-5xl text-7xl">
         Optimize your portfolio
       </div>
-      <div class="text-2xl font-medium xl:font-normal xl:text-base">
-        <Copy
-          address={selectedWallet}
-          iconColor={`${darkMode ? "#fff" : "#000"}`}
-          color={`${darkMode ? "#fff" : "#000"}`}
-        />
-      </div>
+      {#if selectBundle && Object.keys(selectBundle).length !== 0 && selectBundle?.type === "BUNDLE"}
+        <div
+          class="relative w-max"
+          on:click={() => (showPopover = !showPopover)}
+        >
+          <div class="flex cursor-pointer">
+            {#if selectBundle && selectBundle?.accounts && selectBundle?.accounts?.length > 8}
+              {#each selectBundle?.accounts.slice(0, 7) as item, index}
+                <div class={`${index > 0 && "-ml-2"}`}>
+                  <div class="hidden xl:block">
+                    <Avatar src={item?.logo} stacked size="sm" />
+                  </div>
+                  <div class="block xl:hidden">
+                    <Avatar src={item?.logo} stacked size="md" />
+                  </div>
+                </div>
+              {/each}
+              <div class="-ml-2">
+                <div class="hidden xl:block">
+                  <Avatar stacked size="sm">...</Avatar>
+                </div>
+                <div class="block xl:hidden">
+                  <Avatar stacked size="md">...</Avatar>
+                </div>
+              </div>
+            {:else}
+              {#each selectBundle?.accounts as item, index}
+                <div class={`${index > 0 && "-ml-2"}`}>
+                  <div class="hidden xl:block">
+                    <Avatar src={item?.logo} stacked size="sm" />
+                  </div>
+                  <div class="block xl:hidden">
+                    <Avatar src={item?.logo} stacked size="md" />
+                  </div>
+                </div>
+              {/each}
+            {/if}
+          </div>
+          {#if showPopover}
+            <div
+              class="select_content absolute left-0 z-50 flex flex-col xl:gap-3 gap-6 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-12 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
+              style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
+              use:clickOutside
+              on:click_outside={() => (showPopover = false)}
+            >
+              {#each selectBundle?.accounts as item}
+                <div class="hidden xl:flex xl:flex-col">
+                  <div class="text-2xl xl:text-xs font-medium text_00000099">
+                    {item.label}
+                  </div>
+                  <div class="text-3xl xl:text-sm">
+                    <Copy
+                      address={item?.value}
+                      iconColor={darkMode ? "#fff" : "#000"}
+                      color={darkMode ? "#fff" : "#000"}
+                      isShorten
+                    />
+                  </div>
+                </div>
+                <div class="flex flex-col xl:hidden">
+                  <div class="text-2xl xl:text-xs font-medium text_00000099">
+                    {item.label}
+                  </div>
+                  <div class="text-3xl xl:text-sm">
+                    <Copy
+                      address={item?.value}
+                      iconColor={darkMode ? "#fff" : "#000"}
+                      color={darkMode ? "#fff" : "#000"}
+                      isShorten
+                      iconSize={24}
+                    />
+                  </div>
+                </div>
+              {/each}
+            </div>
+          {/if}
+        </div>
+      {:else}
+        <div class="hidden text-3xl xl:text-base xl:block">
+          <Copy address={selectedWallet} iconColor="#fff" color="#fff" />
+        </div>
+        <div class="block text-3xl xl:text-base xl:hidden">
+          <Copy
+            address={selectedWallet}
+            iconColor="#fff"
+            color="#fff"
+            isShorten
+            iconSize={24}
+          />
+        </div>
+      {/if}
     </div>
 
     <div class="flex flex-col gap-2">
@@ -1358,4 +1461,12 @@
 </ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global>
+  :global(body) .select_content {
+    background: #ffffff;
+    border: 0.5px solid transparent;
+  }
+  :global(body.dark) .select_content {
+    background: #131313;
+    border: 0.5px solid #cdcdcd59;
+  }
 </style>

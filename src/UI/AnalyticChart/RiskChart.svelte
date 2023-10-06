@@ -112,7 +112,13 @@
 
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      item.value >= 0 ? "#05a878" : "#f25f5d"
+                      params[0]?.axisValue === "Sharpe Ratio"
+                        ? item.value >= 0
+                          ? "#05a878"
+                          : "#f25f5d"
+                        : darkMode
+                        ? "white"
+                        : "black"
                     };">
                       ${
                         params[0]?.axisValue === "Volatility" ||
@@ -260,9 +266,6 @@
   };
 
   const getAnalyticCompare = async (address: string, timeFrame: string) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
@@ -273,9 +276,6 @@
   };
 
   const getRiskBreakdown = async (address: string, timeFrame: string) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
     const response = await nimbus.get(
       `/v2/analysis/${address}/risk-breakdown?timeRange=${timeFrame}`
     );
@@ -287,7 +287,8 @@
       typeWalletAddress === "CEX" ||
       typeWalletAddress === "SOL" ||
       typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0
+      selectedWallet.length !== 0 &&
+      packageSelected !== "FREE"
   );
 
   $: query = createQuery({

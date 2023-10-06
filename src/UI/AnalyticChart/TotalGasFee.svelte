@@ -96,9 +96,6 @@
   };
 
   const getAnalyticHistorical = async (address, chain) => {
-    if (packageSelected === "FREE") {
-      return undefined;
-    }
     const response = await nimbus.get(
       `/v2/analysis/${address}/historical?chain=${chain}`
     );
@@ -212,7 +209,8 @@
       typeWalletAddress === "CEX" ||
       typeWalletAddress === "SOL" ||
       typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0
+      selectedWallet.length !== 0 &&
+      packageSelected !== "FREE"
   );
 
   $: query = createQuery({

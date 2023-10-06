@@ -1,7 +1,13 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
-  import { isDarkMode, typeWallet, wallet, chain } from "~/store";
+  import {
+    isDarkMode,
+    typeWallet,
+    wallet,
+    chain,
+    selectedPackage,
+  } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import numeral from "numeral";
   import {
@@ -23,6 +29,11 @@
   import LogoWhite from "~/assets/logo-white.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
+
+  let packageSelected = "";
+  selectedPackage.subscribe((value) => {
+    packageSelected = value;
+  });
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -379,7 +390,8 @@
       typeWalletAddress === "CEX" ||
       typeWalletAddress === "SOL" ||
       typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0
+      selectedWallet.length !== 0 &&
+      packageSelected !== "FREE"
   );
 
   $: theme = darkMode ? "dark" : "white";

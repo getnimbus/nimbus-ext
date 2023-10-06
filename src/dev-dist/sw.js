@@ -23,15 +23,15 @@ if (!self.define) {
     if (t[r]) return;
     let s = {};
     const l = (e) => i(e, r),
-      c = { module: { uri: r }, exports: s, require: l };
-    t[r] = Promise.all(n.map((e) => c[e] || l(e))).then((e) => (o(...e), s));
+      u = { module: { uri: r }, exports: s, require: l };
+    t[r] = Promise.all(n.map((e) => u[e] || l(e))).then((e) => (o(...e), s));
   };
 }
 define(["./workbox-fa446783"], function (e) {
   "use strict";
   self.skipWaiting(),
     e.clientsClaim(),
-    e.precacheAndRoute([{ url: "index.html", revision: "0.bh1tihbnkc" }], {}),
+    e.precacheAndRoute([{ url: "index.html", revision: "0.t78vqar85h8" }], {}),
     e.cleanupOutdatedCaches(),
     e.registerRoute(
       new e.NavigationRoute(e.createHandlerBoundToURL("index.html"), {
