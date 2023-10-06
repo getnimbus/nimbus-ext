@@ -8,6 +8,7 @@
   export let isEdit;
   export let typeSocialMedia: "Twitter" | "Telegram";
   export let socialData;
+  export let submitSocialData = (data) => {};
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -16,7 +17,7 @@
 
   let isOpenModal = false;
   let linkHref = "";
-  let userName = "";
+  let userName = socialData.username;
   let label = socialData.label;
 
   $: {
@@ -35,10 +36,20 @@
   }
 
   const onSubmitGetSocialInfo = () => {
-    socialData.label = label;
-    socialData.username = userName;
+    submitSocialData({
+      label,
+      username: userName,
+      type: typeSocialMedia,
+    });
     isOpenModal = false;
   };
+
+  $: {
+    if (Object.keys(socialData).length !== 0) {
+      userName = socialData.username;
+      label = socialData.label;
+    }
+  }
 </script>
 
 <div class="w-full h-full rounded-xl border p-5 flex flex-col gap-2">
@@ -46,31 +57,39 @@
 
   <div class="flex flex-col mb-2">
     <div class="xl:text-base text-xl">
-      {socialData.label}
+      {socialData.label || typeSocialMedia}
     </div>
     <div class="xl:text-sm text-lg text-gray-400">
-      @{socialData.username || "username"}
+      @{socialData?.username || "username"}
     </div>
   </div>
 
-  {#if socialData.username.length !== 0}
+  {#if socialData?.username?.length !== 0}
     <div class="h-[40px]">
-      <Button variant={typeSocialMedia}>
-        <a
-          target="_blank"
-          href={linkHref + socialData.username}
-          class="xl:text-base text-xl">Follow</a
-        >
-      </Button>
+      {#if isEdit}
+        <Button variant={typeSocialMedia} on:click={() => (isOpenModal = true)}>
+          <div class="xl:text-base text-xl">Edit info</div>
+        </Button>
+      {:else}
+        <Button variant={typeSocialMedia}>
+          <a
+            target="_blank"
+            href={linkHref + socialData?.username}
+            class="xl:text-base text-xl">Follow</a
+          >
+        </Button>
+      {/if}
     </div>
   {:else}
     <div class="h-[40px]">
       {#if isEdit}
-        <Button variant={typeSocialMedia} on:click={() => (isOpenModal = true)}
-          >Add info</Button
-        >
+        <Button variant={typeSocialMedia} on:click={() => (isOpenModal = true)}>
+          <div class="xl:text-base text-xl">Add info</div>
+        </Button>
       {:else}
-        <Button variant={typeSocialMedia} disabled>Follow</Button>
+        <Button variant={typeSocialMedia} disabled>
+          <div class="xl:text-base text-xl">Follow</div>
+        </Button>
       {/if}
     </div>
   {/if}
@@ -112,6 +131,7 @@
           on:keyup={({ target: { value } }) => (label = value)}
         />
       </div>
+
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
           userName && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
@@ -126,21 +146,22 @@
           name="username"
           required
           placeholder="Your username"
-          value=""
+          value={userName}
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
             userName && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
           on:keyup={({ target: { value } }) => (userName = value)}
         />
       </div>
+
       <div class="flex justify-end lg:gap-2 gap-6">
         <div class="xl:w-[120px] w-full">
           <Button
             variant="secondary"
             on:click={() => {
               isOpenModal = false;
-              label = socialData.label;
-              userName = "";
+              label = socialData?.label || "";
+              userName = socialData?.username || "";
             }}
           >
             Cancel</Button

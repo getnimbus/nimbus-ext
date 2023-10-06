@@ -648,7 +648,7 @@
         <div>
           {#if $queryHoldingToken.isError}
             <div
-              class="flex justify-center items-center p-[6px] text-lg text-gray-400"
+              class="flex justify-center items-center p-[6px] text-lg text-gray-400 h-[465px]"
             >
               Empty
             </div>

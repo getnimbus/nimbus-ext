@@ -5,6 +5,7 @@
   import { priceSubscribe } from "~/lib/price-ws";
   import mixpanel from "mixpanel-browser";
   import { typeWallet } from "~/store";
+  import { createQuery } from "@tanstack/svelte-query";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -26,41 +27,99 @@
   let marketPriceNFT;
   let addressWallet = "";
   let collectionName = "";
+  let collectionId = "";
 
-  const getCollectionDetail = async (collectionId, address) => {
-    try {
-      isLoadingListNFT = true;
-      collectionName = collectionId;
-      const response = await nimbus
-        .get(`/address/${address}/nft-holding/${collectionId}`)
-        .then((res) => res.data);
-      if (response) {
-        tokens = response.tokens;
-        marketPriceNFT = {
-          id: -1,
-          market_price: response?.btcPrice || 0,
-        };
-        data = {
-          ...response,
-          market_price: response?.btcPrice || 0,
-          current_value:
-            response?.floorPriceBTC * response?.btcPrice * response?.balance,
-        };
-        if (response?.cmc_id) {
-          priceSubscribe([response?.cmc_id], (data) => {
-            marketPriceNFT = {
-              id: data.id,
-              market_price: data.p,
-            };
-          });
-        }
-      }
-    } catch (e) {
-      console.error("error: ", e);
-    } finally {
-      isLoadingListNFT = false;
+  // nft holding
+  const getHoldingNFT = async (address) => {
+    const response = await nimbus
+      .get(`/v2/address/${address}/nft-holding?chain=ALL`)
+      .then((response) => response?.data);
+    return response;
+  };
+
+  const formatDataHoldingNFT = (data) => {
+    console.log("data: ", data);
+
+    const selectedCollection = data.find(
+      (item) => item?.collectionId.toLowerCase() === collectionId.toLowerCase()
+    );
+
+    console.log("selectedCollection: ", selectedCollection);
+
+    if (selectedCollection) {
+      tokens = selectedCollection?.tokens;
+      marketPriceNFT = {
+        id: -1,
+        market_price: selectedCollection?.marketPrice || 0,
+      };
+      data = {
+        ...selectedCollection,
+        market_price: selectedCollection?.marketPrice || 0,
+        current_value:
+          selectedCollection?.floorPrice *
+          selectedCollection?.marketPrice *
+          selectedCollection?.tokens?.length,
+      };
+
+      // if (response?.cmc_id) {
+      //   priceSubscribe([response?.cmc_id], (data) => {
+      //     marketPriceNFT = {
+      //       id: data.id,
+      //       market_price: data.p,
+      //     };
+      //   });
+      // }
     }
   };
+
+  // query nft holding
+  $: queryNftHolding = createQuery({
+    queryKey: ["nft-holding", addressWallet],
+    queryFn: () => getHoldingNFT(addressWallet),
+    staleTime: Infinity,
+    enabled: addressWallet.length !== 0,
+  });
+
+  $: {
+    if (!$queryNftHolding.isError && $queryNftHolding.data !== undefined) {
+      formatDataHoldingNFT($queryNftHolding.data);
+    }
+  }
+
+  // const getCollectionDetail = async (collectionId, address) => {
+  //   try {
+  //     isLoadingListNFT = true;
+  //     collectionName = collectionId;
+  //     const response = await nimbus
+  //       .get(`/address/${address}/nft-holding/${collectionId}`)
+  //       .then((res) => res.data);
+  //     if (response) {
+  //       tokens = response.tokens;
+  //       marketPriceNFT = {
+  //         id: -1,
+  //         market_price: response?.btcPrice || 0,
+  //       };
+  //       data = {
+  //         ...response,
+  //         market_price: response?.btcPrice || 0,
+  //         current_value:
+  //           response?.floorPriceBTC * response?.btcPrice * response?.balance,
+  //       };
+  //       if (response?.cmc_id) {
+  //         priceSubscribe([response?.cmc_id], (data) => {
+  //           marketPriceNFT = {
+  //             id: data.id,
+  //             market_price: data.p,
+  //           };
+  //         });
+  //       }
+  //     }
+  //   } catch (e) {
+  //     console.error("error: ", e);
+  //   } finally {
+  //     isLoadingListNFT = false;
+  //   }
+  // };
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -72,8 +131,8 @@
         address: addressParams,
         collection_type: collectionIDParams,
       });
+      collectionId = collectionIDParams;
       addressWallet = addressParams;
-      getCollectionDetail(collectionIDParams, addressParams);
     }
   });
 
@@ -243,13 +302,13 @@
       <div class="border border_0000001a rounded-[20px] p-6">
         <div class="flex flex-col gap-6">
           <div class="xl:text-2xl text-4xl font-medium">List NFT</div>
-          {#if isLoadingListNFT}
+          {#if $queryNftHolding.isFetching}
             <div
               class="min-h-[320px] flex justify-center items-center col-span-4"
             >
               <Loading />
             </div>
-          {:else if !isLoadingListNFT && tokens.length === 0}
+          {:else if !$queryNftHolding.isFetching && tokens.length === 0}
             <div
               class="min-h-[320px] flex justify-center items-center col-span-4 text-lg text-gray-400"
             >

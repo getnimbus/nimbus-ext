@@ -22,6 +22,43 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
 
+  let filteredHoldingDataToken = [];
+  let marketPriceToken;
+  let marketPriceNFT;
+  let formatData = [];
+  let formatDataNFT = [];
+  let sumTokens = 0;
+  let sumAllTokens = 0;
+  let sumNFT = 0;
+  let tableTokenHeader;
+  let isStickyTableToken = false;
+  let tableNFTHeader;
+  let isStickyTableNFT = false;
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
+
+  let selectedChain: string = "";
+  chain.subscribe((value) => {
+    selectedChain = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
+  });
+
+  let selectedTypeTable = {
+    label: "",
+    value: "",
+  };
+
+  let filterTokenType = {
+    label: "$1",
+    value: 1,
+  };
+
   const MultipleLang = {
     holding: i18n("newtabPage.holding", "Holding"),
     token: i18n("newtabPage.token", "Tokens"),
@@ -108,7 +145,7 @@
         0
       );
     }
-    if (holdingNFTData) {
+    if (holdingNFTData?.length !== 0) {
       holdingNFTData
         ?.filter((item) => item?.cmc_id)
         ?.map((item) => {
@@ -155,9 +192,8 @@
         .map((item) => {
           return {
             ...item,
-            market_price: item?.btcPrice || 0,
             current_value:
-              item?.floorPriceBTC * item?.btcPrice * item?.balance || 0,
+              item?.floorPrice * item?.marketPrice * item?.tokens.length || 0,
           };
         })
         .sort((a, b) => {
@@ -203,9 +239,10 @@
         if (marketPriceNFT.id === item.cmc_id) {
           return {
             ...item,
-            market_price: marketPriceNFT.market_price,
             current_value:
-              item?.floorPriceBTC * marketPriceNFT.market_price * item?.balance,
+              item?.floorPrice *
+              marketPriceNFT.market_price *
+              item?.tokens.length,
           };
         }
         return { ...item };
@@ -350,13 +387,7 @@
             bind:selected={filterTokenType}
           />
         </div>
-        <div
-          class={`${
-            isLoadingToken || filteredHoldingDataToken?.length === 0
-              ? "h-[800px]"
-              : ""
-          }`}
-        >
+        <div class={`${isLoadingToken ? "h-[400px]" : ""}`}>
           <div
             class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
               darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
@@ -475,22 +506,22 @@
     </div>
 
     <!-- nft holding table -->
-    <div class="flex flex-col gap-2">
-      <div class="flex justify-between items-center">
-        <div class="xl:text-xl text-3xl font-medium">
-          {MultipleLang.nft}
+    {#if typeWalletAddress === "EVM" || typeWalletAddress === "SOL" || typeWalletAddress === "BUNDLE"}
+      <div class="flex flex-col gap-2">
+        <div class="flex justify-between items-center">
+          <div class="xl:text-xl text-3xl font-medium">
+            {MultipleLang.nft}
+          </div>
+          <div class="xl:text-3xl text-4xl font-medium text-right">
+            <TooltipNumber number={sumNFT} type="value" />
+          </div>
         </div>
-        <div class="xl:text-3xl text-4xl font-medium text-right">
-          <TooltipNumber number={sumNFT} type="value" />
-        </div>
-      </div>
-      <div
-        class="border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto"
-      >
-        <table class="table-auto xl:w-full w-[1400px]">
-          <thead
-            class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
-            bind:this={tableNFTHeader}
+
+        <div class={`${isLoadingNFT ? "h-[400px]" : ""}`}>
+          <div
+            class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+              darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+            }`}
           >
             <tr class="bg_f4f5f8">
               <th
@@ -607,7 +638,7 @@
                     <div
                       class="text-right xl:text-xs text-xl uppercase font-medium"
                     >
-                      {MultipleLang.total_spent}
+                      COST
                     </div>
                   </th>
                   <th class="py-3">
@@ -617,11 +648,7 @@
                       {MultipleLang.current_value}
                     </div>
                   </th>
-                  <th
-                    class={`py-3 pr-3 ${
-                      typeWalletAddress === "BTC" ? "" : "rounded-tr-[10px]"
-                    }`}
-                  >
+                  <th class="py-3 pr-3">
                     <div
                       class="text-right xl:text-xs text-xl uppercase font-medium"
                     >
@@ -632,9 +659,7 @@
                       </TooltipTitle>
                     </div>
                   </th>
-                  {#if typeWalletAddress === "BTC"}
-                    <th class="py-3 w-10 rounded-tr-[10px]" />
-                  {/if}
+                  <th class="py-3 w-10 rounded-tr-[10px]" />
                 </tr>
               {:else}
                 {#each formatDataNFT as holding}

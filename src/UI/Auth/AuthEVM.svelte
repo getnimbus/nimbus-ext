@@ -118,6 +118,7 @@
     showPopover = false;
     localStorage.removeItem("evm_address");
     localStorage.removeItem("evm_token");
+    localStorage.removeItem("user_id");
     disconnect($wallets$?.[0]);
     queryClient.invalidateQueries(["list-address"]);
     queryClient.invalidateQueries(["users-me"]);
@@ -315,7 +316,7 @@
         </div>
 
         <div on:click={() => (showPopover = false)}>
-          <Link to="profile">
+          <Link to={`/profile?id=${localStorage.getItem("user_id")}`}>
             <div
               class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
                 darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"

@@ -579,7 +579,7 @@
     }
   }
 
-  // query token holding
+  // query vaults token holding
   $: queryVaults = createQuery({
     queryKey: ["vaults", selectedWallet, selectedChain],
     queryFn: () => getVaults(selectedWallet, selectedChain),
@@ -588,6 +588,7 @@
     placeholderData: [],
   });
 
+  // query token holding
   $: queryTokenHolding = createQuery({
     queryKey: ["token-holding", selectedWallet, selectedChain],
     queryFn: () => getHoldingToken(selectedWallet, selectedChain),

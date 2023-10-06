@@ -334,7 +334,7 @@
     queryKey: ["token-holding", selectedAddress],
     queryFn: () => getHoldingToken(selectedAddress),
     staleTime: Infinity,
-    enabled: Object.keys(userInfo).length !== 0,
+    enabled: selectedAddress.length !== 0 && Object.keys(userInfo).length !== 0,
   });
 
   $: {
@@ -350,58 +350,66 @@
   $: theme = darkMode ? "dark" : "white";
 </script>
 
-<div class="xl:col-span-4 col-span-2 border border_0000001a rounded-xl">
-  <div class="relative">
-    {#if $queryTokenHolding.isFetching}
-      <div class="flex items-center justify-center h-[465px] p-6">
-        <LoadingPremium />
-      </div>
-    {:else}
-      <div class="h-full relative">
-        {#if $queryTokenHolding.isError}
-          <div
-            class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-base text-xl ${
-              darkMode ? "bg-[#222222e6]" : "bg-white/90"
-            }`}
-          >
-            Empty
-          </div>
-        {:else}
-          <div class="flex flex-row p-6">
-            <AnimateSharedLayout>
-              {#each typeClosedHoldingTokenChart as type}
-                <div
-                  class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                  on:click={() => (selectedTypeChart = type.value)}
-                >
+<div
+  class="xl:col-span-4 col-span-2 border border_0000001a rounded-xl flex flex-col min-h-[465px]"
+>
+  <div
+    class="flex justify-start text-3xl font-medium xl:text-xl px-6 pb-3 pt-6"
+  >
+    Closed Positions
+  </div>
+
+  {#if $queryTokenHolding.isFetching}
+    <div class="flex items-center justify-center px-6 pb-6 flex-1">
+      <LoadingPremium />
+    </div>
+  {:else}
+    <div class="h-full relative">
+      {#if $queryTokenHolding.isError}
+        <div
+          class="h-full flex justify-center items-center xl:text-base text-lg"
+        >
+          Empty
+        </div>
+      {:else}
+        <div class="h-full">
+          {#if closedHoldingPosition && closedHoldingPosition.length !== 0}
+            <div class="flex flex-row px-6">
+              <AnimateSharedLayout>
+                {#each typeClosedHoldingTokenChart as type}
                   <div
-                    class={`relative z-20 ${
-                      selectedTypeChart === type.value && "text-white"
-                    }`}
+                    class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                    on:click={() => (selectedTypeChart = type.value)}
                   >
-                    {type.label}
-                  </div>
-                  {#if type.value === selectedTypeChart}
-                    <Motion
-                      let:motion
-                      layoutId="active-pill"
-                      transition={{ type: "spring", duration: 0.6 }}
+                    <div
+                      class={`relative z-20 ${
+                        selectedTypeChart === type.value && "text-white"
+                      }`}
                     >
-                      <div
-                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                        use:motion
-                      />
-                    </Motion>
-                  {/if}
-                </div>
-              {/each}
-            </AnimateSharedLayout>
-          </div>
+                      {type.label}
+                    </div>
+                    {#if type.value === selectedTypeChart}
+                      <Motion
+                        let:motion
+                        layoutId="active-pill"
+                        transition={{ type: "spring", duration: 0.6 }}
+                      >
+                        <div
+                          class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                          use:motion
+                        />
+                      </Motion>
+                    {/if}
+                  </div>
+                {/each}
+              </AnimateSharedLayout>
+            </div>
+          {/if}
           {#if closedHoldingPosition && closedHoldingPosition.length === 0}
             <div
-              class="flex justify-center items-center h-[465px] xl:text-xs text-lg"
+              class="h-full flex justify-center items-center xl:text-base text-lg"
             >
-              Empty
+              There are no closed holding position
             </div>
           {:else}
             <div class="relative pl-4">
@@ -426,19 +434,10 @@
               </div>
             </div>
           {/if}
-        {/if}
-      </div>
-    {/if}
-    {#if typeWalletAddress === "CEX" || typeWalletAddress === "SOL"}
-      <div
-        class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
-          darkMode ? "bg-[#222222e6]" : "bg-white/90"
-        } z-10 backdrop-blur-md`}
-      >
-        <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
-      </div>
-    {/if}
-  </div>
+        </div>
+      {/if}
+    </div>
+  {/if}
 </div>
 
 <style windi:preflights:global windi:safelist:global>

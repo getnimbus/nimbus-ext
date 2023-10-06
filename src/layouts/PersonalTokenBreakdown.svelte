@@ -1019,12 +1019,7 @@
               </div>
 
               <div
-                class={`${
-                  $queryTokenHolding.isFetching ||
-                  searchDataResult?.length === 0
-                    ? "h-[800px]"
-                    : ""
-                }`}
+                class={`${$queryTokenHolding.isFetching ? "h-[400px]" : ""}`}
               >
                 <div
                   class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${

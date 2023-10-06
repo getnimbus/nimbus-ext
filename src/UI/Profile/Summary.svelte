@@ -6,7 +6,6 @@
 
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
-  import { text } from "svelte/internal";
 
   export let selectedAddress;
 
@@ -26,7 +25,7 @@
     queryKey: ["token-holding", selectedAddress],
     queryFn: () => getHoldingToken(selectedAddress),
     staleTime: Infinity,
-    enabled: Object.keys(userInfo).length !== 0,
+    enabled: selectedAddress.length !== 0 && Object.keys(userInfo).length !== 0,
   });
 
   let topThreeTokenHolding = [];
@@ -83,7 +82,7 @@
         <div class="xl:text-base text-xl">
           Your Portfolio is value at
           <span class="font-medium">
-            ${formatBalance(netWorth)},
+            ${formatBalance(netWorth)}
           </span>
           is diversified across
           {#each topThreeTokenHolding as item}
@@ -93,16 +92,19 @@
             </span>{" "}
           {/each} and other assets.
         </div>
-        <div class="xl:text-base text-xl">
-          The best trading is
-          <span class="font-medium">
-            {closedHoldingPosition[0]?.name}
-          </span>
-          with
-          <span class="font-medium text-green-400">
-            ${formatBalance(closedHoldingPosition[0]?.profit?.realizedProfit)} earning
-          </span>
-        </div>
+        {#if closedHoldingPosition.length !== 0}
+          <div class="xl:text-base text-xl">
+            The best trading is
+            <span class="font-medium">
+              {closedHoldingPosition[0]?.name}
+            </span>
+            with
+            <span class="font-medium text-green-400">
+              ${formatBalance(closedHoldingPosition[0]?.profit?.realizedProfit)}
+              earning
+            </span>
+          </div>
+        {/if}
       {:else}
         <div class="xl:text-base text-xl">
           Your Portfolio is value at

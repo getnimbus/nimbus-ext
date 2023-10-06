@@ -132,13 +132,7 @@
     </div>
   </div>
 
-  <div
-    class={`${
-      $query.isLoading || $query?.data?.length === 0 || $query.isError
-        ? "h-[800px]"
-        : ""
-    }`}
-  >
+  <div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
     <div
       class={`border border_0000000d rounded-[10px] overflow-x-auto h-full ${
         darkMode ? "bg-[#131313]" : "bg-[#fff]"
