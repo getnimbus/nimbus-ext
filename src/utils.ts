@@ -176,7 +176,7 @@ export const typePackage = [
 
 export const filterTokenValueType = [
   {
-    label: "$0",
+    label: "None",
     value: 0,
   },
   {
