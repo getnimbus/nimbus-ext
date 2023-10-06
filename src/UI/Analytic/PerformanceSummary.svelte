@@ -162,7 +162,7 @@
     },
     {
       title: MultipleLang.content.totalClosedTrades,
-      all: 0.0,
+      all: 30.0,
       long: 0,
       short: 0,
     },
@@ -174,15 +174,15 @@
     },
     {
       title: MultipleLang.content.numberWiningTrades,
-      all: 0.0,
+      all: 20.0,
       long: 0,
       short: 0,
     },
     {
       title: MultipleLang.content.numberLosingTrades,
-      all: 0.0,
+      all: 100.0,
       long: 0,
-      short: 0,
+      short: -10,
     },
     {
       title: MultipleLang.content.percentProfitable,
@@ -199,7 +199,7 @@
     {
       title: MultipleLang.content.avgWinningTrade,
       all: 0.0,
-      long: 0,
+      long: 1,
       short: 0,
     },
     {
@@ -267,11 +267,13 @@
     <div class="xl:title-3 title-1 font-semibold mb-4">
       BattleHunger Strategies
     </div>
-    <div class="w-full overflow-y-auto">
-      <table class="w-full">
+    <div class="w-full overflow-y-auto xl:overscroll-x-none overflow-x-auto">
+      <table class="xl:w-full w-[1000px] xl:text-base text-2xl">
         <thead>
           <tr>
-            <th class="text-left py-1 xl:w-[300px]">
+            <th
+              class="text-left py-1 xl:static sticky top-0 left-0 w-[300px] bg-white"
+            >
               {MultipleLang.table_header_title}
             </th>
             <th class="text-right py-1 px-4">
@@ -288,7 +290,10 @@
         <tbody>
           {#each dataTable as item}
             <tr class="border-y border-light-800">
-              <td class="text-left py-1">{item.title}</td>
+              <td
+                class="text-left py-1 xl:static sticky top-0 left-0 w-[300px] bg-white"
+                >{item.title}</td
+              >
               <td class="text-right py-1 px-4">
                 <div class="flex flex-col">
                   <span
@@ -301,7 +306,7 @@
                     }`}
                     >{item.all} USD
                   </span>
-                  <span class="text-xs text-gray-400">20%</span>
+                  <span class="xl:text-xs text-lg text-gray-400">20%</span>
                 </div>
               </td>
               <td class="text-right py-1 px-4">
@@ -316,7 +321,7 @@
                     }`}
                     >{item.long} USD
                   </span>
-                  <span class="text-xs text-gray-400">20%</span>
+                  <span class="xl:text-xs text-lg text-gray-400">20%</span>
                 </div>
               </td>
               <td class="text-right py-1 px-4">
@@ -331,13 +336,15 @@
                     }`}
                     >{item.short} USD
                   </span>
-                  <span class="text-xs text-gray-400">20%</span>
+                  <span class="xl:text-xs text-lg text-gray-400">20%</span>
                 </div>
               </td>
             </tr>
           {/each}
           <tr class="bg-gray-200">
-            <td class="flex items-center gap-1">
+            <td
+              class="flex items-center gap-1 xl:static sticky top-0 left-0 w-[300px] bg-gray-200"
+            >
               <span>{MultipleLang.content.maxContractsHeld}</span>
               <span class="pt-[2px]">
                 <svg
@@ -359,38 +366,53 @@
           </tr>
           {#each tableData2 as item}
             <tr class="border-y border-light-800">
-              <td class="text-left py-1 tracking-wide flex">{item.title}</td>
+              <td
+                class="text-left py-1 tracking-wide flex xl:static sticky top-0 left-0 w-[300px] bg-white"
+                >{item.title}</td
+              >
               <td class="text-right py-1 px-4">
                 <div class="flex flex-col">
                   <span
                     class={`${
-                      item.all >= 0 ? "text-[#00A878]" : "text-red-500"
+                      item.all > 0
+                        ? "text-[#00A878]"
+                        : item.all < 0
+                        ? "text-red-500"
+                        : ""
                     }`}
                     >{item.all} USD
                   </span>
-                  <span class="text-xs text-gray-400">20%</span>
+                  <span class="xl:text-xs text-lg text-gray-400">20%</span>
                 </div>
               </td>
               <td class="text-right py-1 px-4">
                 <div class="flex flex-col">
                   <span
                     class={`${
-                      item.long >= 0 ? "text-[#00A878]" : "text-red-500"
+                      item.long > 0
+                        ? "text-[#00A878]"
+                        : item.long < 0
+                        ? "text-red-500"
+                        : ""
                     }`}
                     >{item.long} USD
                   </span>
-                  <span class="text-xs text-gray-400">20%</span>
+                  <span class="xl:text-xs text-lg text-gray-400">20%</span>
                 </div>
               </td>
               <td class="text-right py-1 px-4">
                 <div class="flex flex-col">
                   <span
                     class={`${
-                      item.short >= 0 ? "text-[#00A878]" : "text-red-500"
+                      item.short > 0
+                        ? "text-[#00A878]"
+                        : item.short < 0
+                        ? "text-red-500"
+                        : ""
                     }`}
                     >{item.short} USD
                   </span>
-                  <span class="text-xs text-gray-400">20%</span>
+                  <span class="xl:text-xs text-lg text-gray-400">20%</span>
                 </div>
               </td>
             </tr>
