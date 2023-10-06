@@ -24,6 +24,8 @@
   import CorrelationsMatrix from "./CorrelationsMatrix.svelte";
   import ClosedHoldingToken from "./ClosedHoldingToken.svelte";
   import Personality from "./Personality.svelte";
+  import tooltip from "~/entries/contentScript/views/tooltip";
+  import PerformanceSummary from "./PerformanceSummary.svelte";
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -61,11 +63,9 @@
     <div class="max-w-[2000px] m-auto -mt-32 xl:w-[90%] w-[90%] relative">
       <div class="analytic_container rounded-[20px] xl:p-8 p-6 space-y-4">
         <div class="flex justify-between items-center">
-          <Link to={`/performance-summary?address=${$userPublicAddress}`}>
-            <Button>
-              <div class="w-full xl:w-[230px]">Performance Summary</div>
-            </Button>
-          </Link>
+          <div>
+            <PerformanceSummary />
+          </div>
           <div class="flex items-center justify-end gap-1">
             <div class="mr-1 xl:text-base text-2xl">Timeframe</div>
             <AnimateSharedLayout>
