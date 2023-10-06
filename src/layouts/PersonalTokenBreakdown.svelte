@@ -577,7 +577,7 @@
       class="custom_token_breakdown_container rounded-[20px] xl:p-8 p-6 xl:shadow-md"
     >
       <div
-        class={`rounded-[20px] p-6 flex flex-col gap-4 bg-red-500 ${
+        class={`rounded-[20px] p-6 flex flex-col gap-4 ${
           darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
         }`}
       >
@@ -1450,7 +1450,7 @@
   </div>
 {/if}
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .header {
     background-repeat: no-repeat;
     background-size: auto;

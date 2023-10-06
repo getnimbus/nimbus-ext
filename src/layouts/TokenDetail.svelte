@@ -396,7 +396,7 @@
 </script>
 
 <ErrorBoundary>
-  <div class="header-container">
+  <div class="header header-container">
     <div class="flex flex-col max-w-[2000px] m-auto xl:w-[82%] w-[90%]">
       <div class="flex flex-col mb-5 gap-14">
         <div class="flex items-center justify-between">
@@ -1083,14 +1083,20 @@
   </div>
 </ErrorBoundary>
 
-<style>
-  .header-container {
-    background-image: url("~/assets/capa.svg");
-    background-color: #27326f;
+<style windi:preflights:global windi:safelist:global>
+  .header {
     background-repeat: no-repeat;
     background-size: auto;
     background-position: top right;
     padding-bottom: 144px;
     padding-top: 24px;
+  }
+  :global(body) .header-container {
+    background-color: #27326f;
+    background-image: url("~/assets/capa.svg");
+  }
+  :global(body.dark) .header-container {
+    background-color: #080808;
+    background-image: url("~/assets/capa-dark.svg");
   }
 </style>
