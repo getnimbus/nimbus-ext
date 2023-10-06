@@ -116,7 +116,7 @@
         <div class="h-full">
           {#if $queryTradingStats.data && $queryTradingStats.data !== undefined && $queryTradingStats?.data?.metadata.length === 0}
             <div
-              class="h-full flex justify-center items-center xl:text-base text-lg"
+              class="h-full flex justify-center items-center xl:text-base text-lg h-[365px]"
             >
               There are no trading stats
             </div>
