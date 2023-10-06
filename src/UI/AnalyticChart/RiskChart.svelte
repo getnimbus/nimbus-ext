@@ -282,14 +282,17 @@
     return response?.data || [];
   };
 
-  $: enabledQuery = Boolean(
-    (typeWalletAddress === "EVM" ||
-      typeWalletAddress === "CEX" ||
-      typeWalletAddress === "SOL" ||
-      typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0 &&
-      packageSelected !== "FREE"
-  );
+  $: enabledQuery =
+    selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+      ? true
+      : Boolean(
+          (typeWalletAddress === "EVM" ||
+            typeWalletAddress === "CEX" ||
+            typeWalletAddress === "SOL" ||
+            typeWalletAddress === "BUNDLE") &&
+            selectedWallet.length !== 0 &&
+            packageSelected !== "FREE"
+        );
 
   $: query = createQuery({
     queryKey: ["compare", selectedWallet, selectedChain, selectedTimeFrame],
