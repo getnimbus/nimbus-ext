@@ -3,12 +3,10 @@
   import { shorterAddress, clickOutside } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
-  import { wallet, user, isDarkMode } from "~/store";
+  import { wallet, user, isDarkMode, typeWallet } from "~/store";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { flatMap } from "lodash";
-
-  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   import InviterQr from "~/UI/Profile/InviterQR.svelte";
   import Summary from "~/UI/Profile/Summary.svelte";
@@ -19,10 +17,16 @@
   import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
     selectedWallet = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let userInfo = {};
@@ -249,20 +253,20 @@
     dataNftHolding = flattenData.map((item) => {
       return {
         chain: item?.collection?.chain || "",
-        name: item?.name || "",
         tokenId: item?.tokenId || "",
-        tokenUrl: item?.tokenUrl || "",
+        contractAddress: item?.contractAddress || "",
+
         imageUrl:
-          item?.image_url ||
+          item?.imageUrl ||
           "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384",
-        collectionName: item?.collection?.name || "",
-        symbol: item?.symbol || "",
-        contractType: item?.contractType || "",
-        contractAddress: item?.collectionId || "",
-        quantity: item?.balance || 0,
-        floorPrice: item?.floorPriceBase || 0,
         rarityScore: item?.rarityScore || 0,
-        market_price: item?.btcPrice || 0,
+        name: item?.name || "",
+        collection: item?.collection || {},
+        nativeToken: item?.nativeToken || {},
+        marketPrice: item?.marketPrice || 0,
+        floorPrice: item?.floorPrice || 0,
+        price: item?.price || 0,
+        cost: item?.cost || 0,
       };
     });
   };
@@ -411,55 +415,65 @@
           <div class="grid xl:grid-cols-4 grid-cols-2 gap-6">
             <Summary {selectedAddress} />
 
-            <div
-              class="col-span-2 flex items-center gap-2 p-5 rounded-xl border border_0000001a"
-            >
+            <div class="col-span-2 p-5 rounded-xl border border_0000001a">
               {#if selectProfileNFT && Object.keys(selectProfileNFT).length !== 0}
-                <div
-                  class="w-2/5 flex flex-col gap-2 justify-center items-center"
-                >
-                  <img
-                    src={selectProfileNFT?.imageUrl}
-                    alt=""
-                    class="rounded-xl w-full h-full"
-                  />
-                  {#if isEdit}
-                    <div class="w-max">
-                      <Button
-                        variant="secondary"
-                        on:click={() => (isOpenModalSelectNFT = true)}
-                        >Change</Button
-                      >
-                    </div>
-                  {/if}
-                </div>
-                <div class="flex-1 flex flex-col gap-3">
-                  <div class="font-medium xl:text-lg text-2xl">
-                    {selectProfileNFT?.name}
+                <div class="h-full flex gap-3">
+                  <div
+                    class="w-2/5 flex flex-col gap-2 justify-center items-center"
+                  >
+                    <img
+                      src={selectProfileNFT?.imageUrl}
+                      alt=""
+                      class="rounded-xl w-full h-full object-contain"
+                    />
+                    {#if isEdit}
+                      <div class="w-max">
+                        <Button
+                          variant="secondary"
+                          on:click={() => (isOpenModalSelectNFT = true)}
+                          >Change</Button
+                        >
+                      </div>
+                    {/if}
                   </div>
-                  <div class="flex flex-col gap-2 xl:text-base text-xl">
-                    <div class="flex justify-between">
-                      <div class="text-gray-400">Rarity</div>
-                      <div>{selectProfileNFT?.rarityScore}</div>
+                  <div
+                    class="flex-1 w-full h-full flex flex-col justify-center gap-5"
+                  >
+                    <div class="flex flex-col">
+                      <div class="font-medium xl:text-lg text-2xl">
+                        {selectProfileNFT?.name}
+                      </div>
+                      <div
+                        class="flex items-center gap-2 xl:text-lg text-2xl font-medium"
+                      >
+                        <div>
+                          {typeWalletAddress === "EVM"
+                            ? "Token ID"
+                            : "Inscription"}
+                        </div>
+                        <div>
+                          #{selectProfileNFT?.tokenId}
+                        </div>
+                      </div>
                     </div>
 
-                    <div class="flex justify-between">
-                      <div class="text-gray-400">Floor Price</div>
-                      <TooltipNumber
-                        number={selectProfileNFT?.floorPrice *
-                          selectProfileNFT?.market_price || 0}
-                        type="value"
-                      />
-                    </div>
+                    <div class="flex flex-col gap-2 xl:text-base text-xl">
+                      <div class="flex justify-between">
+                        <div class="text-gray-400">Rarity</div>
+                        <div>{selectProfileNFT?.rarityScore}</div>
+                      </div>
 
-                    <div class="flex justify-between">
-                      <div class="text-gray-400">Current Value</div>
-                      <TooltipNumber
-                        number={selectProfileNFT?.floorPrice *
-                          selectProfileNFT?.market_price *
-                          selectProfileNFT?.quantity || 0}
-                        type="value"
-                      />
+                      <div class="flex justify-between">
+                        <div class="text-gray-400">Floor Price</div>
+                        <div class="flex items-center">
+                          <TooltipNumber
+                            number={Number(selectProfileNFT?.floorPrice)}
+                            type="balance"
+                          /><span class="ml-1">
+                            {selectProfileNFT?.nativeToken?.symbol || ""}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
