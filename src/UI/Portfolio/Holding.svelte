@@ -154,9 +154,8 @@
         .map((item) => {
           return {
             ...item,
-            market_price: item?.btcPrice || 0,
             current_value:
-              item?.floorPriceBTC * item?.btcPrice * item?.balance || 0,
+              item?.floorPrice * item?.marketPrice * item?.tokens.length || 0,
           };
         })
         .sort((a, b) => {
@@ -202,9 +201,10 @@
         if (marketPriceNFT.id === item.cmc_id) {
           return {
             ...item,
-            market_price: marketPriceNFT.market_price,
             current_value:
-              item?.floorPriceBTC * marketPriceNFT.market_price * item?.balance,
+              item?.floorPrice *
+              marketPriceNFT.market_price *
+              item?.tokens.length,
           };
         }
         return { ...item };
@@ -525,7 +525,7 @@
                     <div
                       class="text-right xl:text-xs text-xl uppercase font-medium"
                     >
-                      {MultipleLang.total_spent}
+                      COST
                     </div>
                   </th>
                   <th class="py-3">
@@ -535,11 +535,7 @@
                       {MultipleLang.current_value}
                     </div>
                   </th>
-                  <th
-                    class={`py-3 pr-3 ${
-                      typeWalletAddress === "BTC" ? "" : "rounded-tr-[10px]"
-                    }`}
-                  >
+                  <th class="py-3 pr-3">
                     <div
                       class="text-right xl:text-xs text-xl uppercase font-medium"
                     >
@@ -550,9 +546,7 @@
                       </TooltipTitle>
                     </div>
                   </th>
-                  {#if typeWalletAddress === "BTC"}
-                    <th class="py-3 w-10 rounded-tr-[10px]" />
-                  {/if}
+                  <th class="py-3 w-10 rounded-tr-[10px]" />
                 </tr>
               </thead>
               {#if isLoadingNFT}
