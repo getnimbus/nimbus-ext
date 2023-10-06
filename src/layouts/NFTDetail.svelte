@@ -228,13 +228,13 @@
 
           <OverviewCard
             title={"Floor Price"}
-            tooltipText={typeWalletAddress === "EVM"
-              ? "The Floor price of last 24h, if there is no volume, the floor price is 0"
-              : "The Floor price from Magic Eden marketplace. "}
+            tooltipText={false
+              ? "The Floor price from Magic Eden marketplace. "
+              : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
             isTooltip
-            link={typeWalletAddress === "EVM"
-              ? ""
-              : `https://magiceden.io/ordinals/marketplace/${collectionId}`}
+            link={false
+              ? `https://magiceden.io/ordinals/marketplace/${collectionId}`
+              : ""}
           >
             <div class="xl:text-3xl text-5xl flex items-end gap-1">
               <TooltipNumber
