@@ -196,6 +196,8 @@
   let groupedToBundles = true;
   let selectYourWalletsBundle = [];
 
+  let indexSelectedAddress = 0;
+
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
   };
@@ -290,91 +292,7 @@
     }
   }
 
-  const formatDataListAddress = async (data) => {
-    const structWalletData = data.map((item) => {
-      let logo = All;
-      if (item?.type === "BTC") {
-        logo = BitcoinLogo;
-      }
-      if (item?.type === "SOL") {
-        logo = SolanaLogo;
-      }
-      if (item?.type === "BUNDLE") {
-        logo = Bundles;
-      }
-      return {
-        id: item.id,
-        type: item.type,
-        label: item.label,
-        value: item.type === "CEX" ? item.id : item.accountId,
-        logo: item.type === "CEX" ? item.logo : logo,
-        accounts:
-          item?.accounts?.map((account) => {
-            let logo = All;
-            if (account?.type === "BTC") {
-              logo = BitcoinLogo;
-            }
-            if (account?.type === "SOL") {
-              logo = SolanaLogo;
-            }
-            return {
-              id: account?.id,
-              type: account?.type,
-              label: account?.label,
-              value: account?.type === "CEX" ? account?.id : account?.accountId,
-              logo: account?.type === "CEX" ? account?.logo : logo,
-            };
-          }) || [],
-      };
-    });
-
-    listAddress = structWalletData;
-
-    const selectYourBundle = listAddress.find(
-      (item) => item.type === "BUNDLE" && item.label === "Your wallets"
-    );
-    selectYourWalletsBundle = selectYourBundle?.accounts.map(
-      (item) => item.value
-    );
-
-    if (selectYourBundle === undefined) {
-      await nimbus.post("/address/personalize/bundle", {
-        name: "Your wallets",
-        addresses: listAddress.map((item) => item.value),
-      });
-      queryClient.invalidateQueries(["list-bundle"]);
-    }
-
-    // check type wallet
-    const selectedTypeWalletRes = await browser.storage.sync.get(
-      "typeWalletAddress"
-    );
-    if (selectedTypeWalletRes?.typeWalletAddress !== null) {
-      typeWallet.update((n) => (n = selectedTypeWalletRes.typeWalletAddress));
-    } else {
-      typeWallet.update((n) => (n = listAddress[0]?.type));
-    }
-
-    // check chain wallet
-    const selectedChainRes = await browser.storage.sync.get("selectedChain");
-    if (selectedChainRes?.selectedChain !== null) {
-      chain.update((n) => (n = selectedChainRes.selectedChain));
-    } else {
-      chain.update((n) => (n = "ALL"));
-    }
-
-    // check wallet
-    const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
-    if (selectedWalletRes?.selectedWallet !== null) {
-      wallet.update((n) => (n = selectedWalletRes.selectedWallet));
-    } else {
-      wallet.update((n) => (n = listAddress[0]?.value));
-    }
-
-    updateStateFromParams();
-  };
-
-  const updateStateFromParams = () => {
+  const initialUpdateStateFromParams = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const addressParams = urlParams.get("address");
     const chainParams = urlParams.get("chain");
@@ -459,6 +377,180 @@
         );
       }
     }
+  };
+
+  const handleUpdateParams = () => {
+    const selected = listAddress.find((item) => {
+      return item.value === selectedWallet;
+    });
+
+    if (
+      selected &&
+      Object.keys(selected).length !== 0 &&
+      selected.type === "BUNDLE"
+    ) {
+      typeWallet.update((n) => (n = "BUNDLE"));
+      browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
+      chain.update((n) => (n = "ALL"));
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?type=${typeWalletAddress}&address=${selectedWallet}`
+      );
+    }
+
+    if (
+      selected &&
+      Object.keys(selected).length !== 0 &&
+      selected.type === "CEX"
+    ) {
+      typeWallet.update((n) => (n = "CEX"));
+      browser.storage.sync.set({ typeWalletAddress: "CEX" });
+      chain.update((n) => (n = "ALL"));
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?type=${typeWalletAddress}&address=${selectedWallet}`
+      );
+    }
+
+    if (
+      selected &&
+      Object.keys(selected).length !== 0 &&
+      selected.type === "EVM"
+    ) {
+      typeWallet.update((n) => (n = "EVM"));
+      browser.storage.sync.set({ typeWalletAddress: "EVM" });
+      if (selectedChain) {
+        chain.update((n) => (n = selectedChain));
+      } else {
+        chain.update((n) => (n = "ALL"));
+      }
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
+      );
+    }
+
+    if (
+      selected &&
+      Object.keys(selected).length !== 0 &&
+      selected.type === "SOL"
+    ) {
+      typeWallet.update((n) => (n = "SOL"));
+      browser.storage.sync.set({ typeWalletAddress: "SOL" });
+      chain.update((n) => (n = "ALL"));
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?type=${typeWalletAddress}&address=${selectedWallet}`
+      );
+    }
+
+    if (
+      selected &&
+      Object.keys(selected).length !== 0 &&
+      selected.type === "BTC"
+    ) {
+      typeWallet.update((n) => (n = "BTC"));
+      browser.storage.sync.set({ typeWalletAddress: "BTC" });
+      chain.update((n) => (n = "ALL"));
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?type=${typeWalletAddress}&address=${selectedWallet}`
+      );
+    }
+  };
+
+  const formatDataListAddress = async (data) => {
+    const structWalletData = data.map((item) => {
+      let logo = All;
+      if (item?.type === "BTC") {
+        logo = BitcoinLogo;
+      }
+      if (item?.type === "SOL") {
+        logo = SolanaLogo;
+      }
+      if (item?.type === "BUNDLE") {
+        logo = Bundles;
+      }
+      return {
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        value: item.type === "CEX" ? item.id : item.accountId,
+        logo: item.type === "CEX" ? item.logo : logo,
+        accounts:
+          item?.accounts?.map((account) => {
+            let logo = All;
+            if (account?.type === "BTC") {
+              logo = BitcoinLogo;
+            }
+            if (account?.type === "SOL") {
+              logo = SolanaLogo;
+            }
+            return {
+              id: account?.id,
+              type: account?.type,
+              label: account?.label,
+              value: account?.type === "CEX" ? account?.id : account?.accountId,
+              logo: account?.type === "CEX" ? account?.logo : logo,
+            };
+          }) || [],
+      };
+    });
+
+    listAddress = structWalletData;
+
+    const selectYourBundle = listAddress.find(
+      (item) => item.type === "BUNDLE" && item.label === "Your wallets"
+    );
+    selectYourWalletsBundle = selectYourBundle?.accounts.map(
+      (item) => item.value
+    );
+
+    if (selectYourBundle === undefined) {
+      await nimbus.post("/address/personalize/bundle", {
+        name: "Your wallets",
+        addresses: listAddress.map((item) => item.value),
+      });
+      queryClient.invalidateQueries(["list-bundle"]);
+    }
+
+    // check type wallet
+    const selectedTypeWalletRes = await browser.storage.sync.get(
+      "typeWalletAddress"
+    );
+    if (selectedTypeWalletRes?.typeWalletAddress !== null) {
+      typeWallet.update((n) => (n = selectedTypeWalletRes.typeWalletAddress));
+    } else {
+      typeWallet.update((n) => (n = listAddress[0]?.type));
+    }
+
+    // check chain wallet
+    const selectedChainRes = await browser.storage.sync.get("selectedChain");
+    if (selectedChainRes?.selectedChain !== null) {
+      chain.update((n) => (n = selectedChainRes.selectedChain));
+    } else {
+      chain.update((n) => (n = "ALL"));
+    }
+
+    // check wallet
+    const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
+    if (selectedWalletRes?.selectedWallet !== null) {
+      wallet.update((n) => (n = selectedWalletRes.selectedWallet));
+    } else {
+      wallet.update((n) => (n = listAddress[0]?.value));
+    }
+
+    initialUpdateStateFromParams();
   };
 
   const handleCreateUser = async () => {
@@ -660,7 +752,7 @@
   };
 
   onMount(() => {
-    updateStateFromParams();
+    initialUpdateStateFromParams();
     if (
       localStorage.getItem("isGetUserEmailYet") !== null &&
       localStorage.getItem("isGetUserEmailYet") === "true"
@@ -684,93 +776,7 @@
               `?type=EVM&chain=${selectedChain}&address=${selectedWallet}`
           );
         } else {
-          const selected = listAddress.find((item) => {
-            return item.value === selectedWallet;
-          });
-
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "BUNDLE"
-          ) {
-            typeWallet.update((n) => (n = "BUNDLE"));
-            browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
-            chain.update((n) => (n = "ALL"));
-            window.history.replaceState(
-              null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&address=${selectedWallet}`
-            );
-          }
-
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "CEX"
-          ) {
-            typeWallet.update((n) => (n = "CEX"));
-            browser.storage.sync.set({ typeWalletAddress: "CEX" });
-            chain.update((n) => (n = "ALL"));
-            window.history.replaceState(
-              null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&address=${selectedWallet}`
-            );
-          }
-
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "EVM"
-          ) {
-            typeWallet.update((n) => (n = "EVM"));
-            browser.storage.sync.set({ typeWalletAddress: "EVM" });
-            if (selectedChain) {
-              chain.update((n) => (n = selectedChain));
-            } else {
-              chain.update((n) => (n = "ALL"));
-            }
-            window.history.replaceState(
-              null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
-            );
-          }
-
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "SOL"
-          ) {
-            typeWallet.update((n) => (n = "SOL"));
-            browser.storage.sync.set({ typeWalletAddress: "SOL" });
-            chain.update((n) => (n = "ALL"));
-            window.history.replaceState(
-              null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&address=${selectedWallet}`
-            );
-          }
-
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "BTC"
-          ) {
-            typeWallet.update((n) => (n = "BTC"));
-            browser.storage.sync.set({ typeWalletAddress: "BTC" });
-            chain.update((n) => (n = "ALL"));
-            window.history.replaceState(
-              null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&address=${selectedWallet}`
-            );
-          }
+          handleUpdateParams();
         }
       }
     }
@@ -857,6 +863,55 @@
       );
     }
   }
+
+  $: {
+    if (selectedWallet) {
+      const selectedAddress = listAddress
+        .sort((a, b) => {
+          if (a.type === "BUNDLE" && a.label === "Your wallets") return -1;
+          if (b.type === "BUNDLE" && b.label === "Your wallets") return 1;
+          return 0;
+        })
+        .find(
+          (item) => item.value.toLowerCase() === selectedWallet.toLowerCase()
+        );
+      indexSelectedAddress = listAddress.indexOf(selectedAddress);
+    }
+  }
+
+  const handleSelectNextAddress = () => {
+    if (indexSelectedAddress < listAddress.length - 1) {
+      indexSelectedAddress = indexSelectedAddress + 1;
+
+      const selectAddress = listAddress.sort((a, b) => {
+        if (a.type === "BUNDLE" && a.label === "Your wallets") return -1;
+        if (b.type === "BUNDLE" && b.label === "Your wallets") return 1;
+        return 0;
+      })[indexSelectedAddress];
+
+      wallet.update((n) => (n = selectAddress.value));
+      browser.storage.sync.set({ selectedWallet: selectedWallet });
+      browser.storage.sync.set({ selectedChain: selectedChain });
+      handleUpdateParams();
+    }
+  };
+
+  const handleSelectPrevAddress = () => {
+    if (indexSelectedAddress > 0) {
+      indexSelectedAddress = indexSelectedAddress - 1;
+
+      const selectAddress = listAddress.sort((a, b) => {
+        if (a.type === "BUNDLE" && a.label === "Your wallets") return -1;
+        if (b.type === "BUNDLE" && b.label === "Your wallets") return 1;
+        return 0;
+      })[indexSelectedAddress];
+
+      wallet.update((n) => (n = selectAddress.value));
+      browser.storage.sync.set({ selectedWallet: selectedWallet });
+      browser.storage.sync.set({ selectedChain: selectedChain });
+      handleUpdateParams();
+    }
+  };
 </script>
 
 {#if $query.isFetching}
@@ -993,6 +1048,56 @@
                           />
                         {/if}
                       </div>
+                      {#if listAddress.length > 10}
+                        <div class="flex items-center gap-3">
+                          <div
+                            class={`cursor-pointer overflow-hidden border border-white rounded-full ${
+                              indexSelectedAddress === 0 ? "opacity-50" : ""
+                            }`}
+                            on:click={handleSelectPrevAddress}
+                          >
+                            <div class="transform -translate-x-[1px]">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fill="#fff"
+                                  fill-rule="evenodd"
+                                  d="M12.79 5.23a.75.75 0 0 1-.02 1.06L8.832 10l3.938 3.71a.75.75 0 1 1-1.04 1.08l-4.5-4.25a.75.75 0 0 1 0-1.08l4.5-4.25a.75.75 0 0 1 1.06.02Z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                          <div
+                            class={`cursor-pointer overflow-hidden border border-white rounded-full ${
+                              indexSelectedAddress === listAddress.length - 1
+                                ? "opacity-50"
+                                : ""
+                            }`}
+                            on:click={handleSelectNextAddress}
+                          >
+                            <div class="transform translate-x-[1px]">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fill="#fff"
+                                  fill-rule="evenodd"
+                                  d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10L7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      {/if}
                     {:else}
                       <AnimateSharedLayout>
                         {#each listAddress as item}
