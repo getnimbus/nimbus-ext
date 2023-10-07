@@ -190,7 +190,18 @@
       darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
-    <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
+    <div
+      class="xl:text-sm text-2xl text_00000099 font-medium flex flex-col items-end gap-1"
+    >
+      <div class="w-max flex items-center gap-1">
+        <TooltipNumber
+          number={Number(data?.current_value) / data?.marketPrice}
+          type="balance"
+        />
+        <div>
+          {data?.nativeToken?.symbol || ""}
+        </div>
+      </div>
       <TooltipNumber number={data?.current_value} type="value" />
     </div>
   </td>
@@ -205,6 +216,24 @@
     >
       <div class="flex flex-col">
         <div
+          class={`flex justify-end gap-1 ${
+            profitAndLoss !== 0
+              ? profitAndLoss >= 0
+                ? "text-[#00A878]"
+                : "text-red-500"
+              : "text_00000099"
+          }`}
+        >
+          <TooltipNumber
+            number={Math.abs(profitAndLoss) / data?.marketPrice}
+            type="balance"
+          />
+          <div>
+            {data?.nativeToken?.symbol || ""}
+          </div>
+        </div>
+
+        <div
           class={`flex justify-end ${
             profitAndLoss !== 0
               ? profitAndLoss >= 0
@@ -215,6 +244,7 @@
         >
           <TooltipNumber number={Math.abs(profitAndLoss)} type="value" />
         </div>
+
         <div class="flex items-center justify-end gap-1">
           <div
             class={`flex items-center ${

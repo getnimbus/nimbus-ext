@@ -161,7 +161,7 @@
           return {
             ...item,
             current_value:
-              item?.floorPrice * item?.marketPrice * item?.tokens.length || 1,
+              item?.floorPrice * item?.marketPrice * item?.tokens?.length,
           };
         })
         .sort((a, b) => {
@@ -209,8 +209,8 @@
             ...item,
             current_value:
               item?.floorPrice *
-                marketPriceNFT.market_price *
-                item?.tokens.length || 1,
+              marketPriceNFT.market_price *
+              item?.tokens?.length,
           };
         }
         return { ...item };
