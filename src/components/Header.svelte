@@ -632,7 +632,7 @@
                 isShowHeaderMobile.update((n) => (n = false));
               }}
             >
-              <Link to={`/profile?id=${localStorage.getItem("user_id")}`}>
+              <Link to={`/profile/${localStorage.getItem("user_id")}`}>
                 <div
                   class={`flex items-center gap-3 text-white px-5 py-6 
             ${

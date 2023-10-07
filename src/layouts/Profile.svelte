@@ -7,6 +7,7 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { flatMap } from "lodash";
+  import { useNavigate, useParams } from "svelte-navigator";
 
   import InviterQr from "~/UI/Profile/InviterQR.svelte";
   import Summary from "~/UI/Profile/Summary.svelte";
@@ -18,6 +19,11 @@
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
+
+  import User from "~/assets/user.png";
+
+  const navigate = useNavigate();
+  const params = useParams();
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -66,6 +72,7 @@
   let isLoadingSaveProfile = false;
   let isOpenModalSelectNFT = false;
 
+  let userInfoId = "";
   let userId = "";
   let selectedAddress = "";
   let description = "Your description";
@@ -80,11 +87,9 @@
   };
 
   onMount(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const userIdParam = urlParams.get("id");
-    if (userIdParam) {
-      userId = userIdParam;
-      getUserProfile(userIdParam);
+    if ($params && $params.id) {
+      userId = $params.id;
+      getUserProfile($params.id);
     }
   });
 
@@ -182,6 +187,14 @@
     }
   };
 
+  const getUserInfo = async () => {
+    const response: any = await nimbus.get("/users/me");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response?.data;
+  };
+
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
     if (response?.status === 401) {
@@ -199,37 +212,6 @@
     }
     return response;
   };
-
-  // query nft holding
-  $: queryNftHolding = createQuery({
-    queryKey: ["nft-holding", selectedAddress],
-    queryFn: () => getHoldingNFT(selectedAddress),
-    staleTime: Infinity,
-    enabled: selectedAddress.length !== 0 && Object.keys(userInfo).length !== 0,
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
-  });
-
-  $: {
-    if (!$queryNftHolding.isError && $queryNftHolding.data !== undefined) {
-      formatDataHoldingNFT($queryNftHolding.data);
-    }
-  }
-
-  // query list address
-  $: query = createQuery({
-    queryKey: ["list-address"],
-    queryFn: () => getListAddress(),
-    staleTime: Infinity,
-    retry: false,
-    enabled: Object.keys(userInfo).length !== 0,
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
-  });
 
   const formatDataListAddress = (data) => {
     listAddress = data.map((item) => {
@@ -271,6 +253,54 @@
     });
   };
 
+  // query nft holding
+  $: queryNftHolding = createQuery({
+    queryKey: ["nft-holding", selectedAddress],
+    queryFn: () => getHoldingNFT(selectedAddress),
+    staleTime: Infinity,
+    enabled: selectedAddress.length !== 0 && Object.keys(userInfo).length !== 0,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
+  });
+
+  $: {
+    if (!$queryNftHolding.isError && $queryNftHolding.data !== undefined) {
+      formatDataHoldingNFT($queryNftHolding.data);
+    }
+  }
+
+  // query user info
+  $: queryUserInfo = createQuery({
+    queryKey: ["users-me"],
+    queryFn: () => getUserInfo(),
+    staleTime: Infinity,
+    enabled: Object.keys(userInfo).length !== 0,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
+  });
+
+  $: {
+    if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
+      userInfoId = $queryUserInfo.data.id;
+    }
+  }
+
+  // query list address
+  $: query = createQuery({
+    queryKey: ["list-address"],
+    queryFn: () => getListAddress(),
+    staleTime: Infinity,
+    enabled: Object.keys(userInfo).length !== 0,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
+  });
+
   $: {
     if (
       !$query.isError &&
@@ -278,6 +308,12 @@
       $query.data.length !== 0
     ) {
       formatDataListAddress($query.data);
+    }
+  }
+
+  $: {
+    if (Object.keys(userInfo).length === 0) {
+      navigate("/", { replace: true });
     }
   }
 
@@ -314,7 +350,7 @@
       on:submit|preventDefault={handleSubmitProfile}
       class="flex flex-col gap-4"
     >
-      {#if Object.keys(userInfo).length !== 0}
+      {#if Object.keys(userInfo).length !== 0 && userInfoId === userId}
         <div class="flex items-center justify-end lg:gap-2 gap-6">
           {#if isEdit}
             <div class="w-[120px]">
@@ -341,16 +377,10 @@
       <div
         class="w-full flex xl:flex-row flex-col rounded-xl py-10 px-10 gap-9 border-2 border_0000001a"
       >
-        <div
-          class="xl:w-[20%] w-full flex flex-col gap-3 items-center justify-between"
-        >
+        <div class="xl:w-[20%] w-full flex flex-col gap-3 items-center">
           <div class="flex flex-col gap-3 items-center justify-start">
             <div class="xl:w-[80px] xl:h-[80px] w-32 h-32">
-              <img
-                src="/assets/user.png"
-                alt=""
-                class="object-cover w-full h-full"
-              />
+              <img src={User} alt="" class="object-cover w-full h-full" />
             </div>
 
             <div class="relative">
