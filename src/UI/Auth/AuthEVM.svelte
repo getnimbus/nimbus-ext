@@ -316,7 +316,7 @@
         </div>
 
         <div on:click={() => (showPopover = false)}>
-          <Link to={`/profile?id=${localStorage.getItem("user_id")}`}>
+          <Link to={`/profile/${localStorage.getItem("user_id")}`}>
             <div
               class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
                 darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
