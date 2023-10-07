@@ -101,7 +101,6 @@
     localStorage.removeItem("token");
     localStorage.removeItem("solana_address");
     localStorage.removeItem("solana_token");
-    localStorage.removeItem("user_id");
     addressWallet = "";
     signMessageAddress = "";
     $walletStore.disconnect();

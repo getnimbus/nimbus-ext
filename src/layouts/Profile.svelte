@@ -3,11 +3,11 @@
   import { shorterAddress, clickOutside } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
-  import { wallet, user, isDarkMode, typeWallet } from "~/store";
+  import { wallet, user, isDarkMode, typeWallet, userId } from "~/store";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { flatMap } from "lodash";
-  import { useNavigate, useParams } from "svelte-navigator";
+  import { useParams } from "svelte-navigator";
 
   import InviterQr from "~/UI/Profile/InviterQR.svelte";
   import Summary from "~/UI/Profile/Summary.svelte";
@@ -22,8 +22,12 @@
 
   import User from "~/assets/user.png";
 
-  const navigate = useNavigate();
   const params = useParams();
+
+  let userID = "";
+  userId.subscribe((value) => {
+    userID = value;
+  });
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -72,8 +76,7 @@
   let isLoadingSaveProfile = false;
   let isOpenModalSelectNFT = false;
 
-  let userInfoId = "";
-  let userId = "";
+  let userIdParams = "";
   let selectedAddress = "";
   let description = "Your description";
   let selectProfileNFT = {};
@@ -88,7 +91,7 @@
 
   onMount(() => {
     if ($params && $params.id) {
-      userId = $params.id;
+      userIdParams = $params.id;
       getUserProfile($params.id);
     }
   });
@@ -131,7 +134,7 @@
         },
       };
 
-      await nimbus.put(`/users/${userId}/profile`, payload);
+      await nimbus.put(`/users/${userIdParams}/profile`, payload);
       toastMsg = "Your profile updated successfully!";
       isSuccessToast = true;
     } catch (e) {
@@ -258,7 +261,8 @@
     queryKey: ["nft-holding", selectedAddress],
     queryFn: () => getHoldingNFT(selectedAddress),
     staleTime: Infinity,
-    enabled: selectedAddress.length !== 0 && Object.keys(userInfo).length !== 0,
+    enabled:
+      selectedAddress?.length !== 0 && Object.keys(userInfo).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -268,24 +272,6 @@
   $: {
     if (!$queryNftHolding.isError && $queryNftHolding.data !== undefined) {
       formatDataHoldingNFT($queryNftHolding.data);
-    }
-  }
-
-  // query user info
-  $: queryUserInfo = createQuery({
-    queryKey: ["users-me"],
-    queryFn: () => getUserInfo(),
-    staleTime: Infinity,
-    enabled: Object.keys(userInfo).length !== 0,
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
-  });
-
-  $: {
-    if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
-      userInfoId = $queryUserInfo.data.id;
     }
   }
 
@@ -312,15 +298,10 @@
   }
 
   $: {
-    if (Object.keys(userInfo).length === 0) {
-      navigate("/", { replace: true });
-    }
-  }
-
-  $: {
     if (
-      Object.keys(userProfile).length !== 0 &&
-      Object.keys(userProfile?.highlightNft).length !== 0 &&
+      Object.keys(userProfile)?.length !== 0 &&
+      userProfile?.highlightNft !== null &&
+      Object.keys(userProfile?.highlightNft)?.length !== 0 &&
       dataNftHolding.length !== 0
     ) {
       dataNftHighlight =
@@ -350,7 +331,7 @@
       on:submit|preventDefault={handleSubmitProfile}
       class="flex flex-col gap-4"
     >
-      {#if Object.keys(userInfo).length !== 0 && userInfoId === userId}
+      {#if Object.keys(userInfo).length !== 0 && userID === userIdParams}
         <div class="flex items-center justify-end lg:gap-2 gap-6">
           {#if isEdit}
             <div class="w-[120px]">
