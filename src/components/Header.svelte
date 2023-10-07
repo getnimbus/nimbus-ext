@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { Link, useMatch, useNavigate } from "svelte-navigator";
-  import * as browser from "webextension-polyfill";
   import { i18n } from "~/lib/i18n";
   import {
     chain,
@@ -11,7 +10,7 @@
     user,
     typeWallet,
     isShowHeaderMobile,
-    isHidePortfolio,
+    userId,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -54,6 +53,8 @@
   const navigate = useNavigate();
   const absoluteMatch = useMatch("/:page");
   const queryClient = useQueryClient();
+
+  let userID = "";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -184,7 +185,6 @@
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
     staleTime: Infinity,
-    enabled: Object.keys(userInfo).length !== 0,
     retry: false,
     onError(err) {
       localStorage.removeItem("evm_token");
@@ -199,7 +199,8 @@
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
       localStorage.setItem("evm_address", $queryUserInfo.data.publicAddress);
-      localStorage.setItem("user_id", $queryUserInfo.data.id);
+      userId.update((n) => (n = $queryUserInfo.data.id));
+      userID = $queryUserInfo.data.id;
       publicAddress = $queryUserInfo.data.publicAddress;
       if (
         $queryUserInfo.data?.plan?.tier &&
@@ -632,7 +633,7 @@
                 isShowHeaderMobile.update((n) => (n = false));
               }}
             >
-              <Link to={`/profile/${localStorage.getItem("user_id")}`}>
+              <Link to={`/profile/${userID}`}>
                 <div
                   class={`flex items-center gap-3 text-white px-5 py-6 
             ${
