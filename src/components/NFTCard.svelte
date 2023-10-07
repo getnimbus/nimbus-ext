@@ -6,8 +6,8 @@
 
   export let data;
   export let nativeToken;
-  export let totalCost;
   export let marketPrice;
+  export let floorPrice;
 
   let showTooltipName = false;
 
@@ -26,12 +26,11 @@
     darkMode = value;
   });
 
-  $: cost = Number(data?.price) * marketPrice;
-
-  $: profitAndLoss = cost - (totalCost || 0);
+  $: profitAndLoss =
+    data?.cost === 0 ? 0 : Number(floorPrice) * marketPrice - (data?.cost || 0);
 
   $: profitAndLossPercent =
-    Math.abs(totalCost || 0) === 0 ? 0 : profitAndLoss / Math.abs(totalCost);
+    Math.abs(data?.cost || 0) === 0 ? 0 : profitAndLoss / Math.abs(data?.cost);
 </script>
 
 <div
@@ -49,36 +48,29 @@
   </div>
 
   <div class="flex flex-col gap-2">
-    <div class="flex flex-col">
-      <div
-        class="xl:text-base text-2xl font-semibold relative"
-        on:mouseenter={() => (showTooltipName = true)}
-        on:mouseleave={() => (showTooltipName = false)}
-      >
-        {shorterName(data?.name, 30)}
-        {#if showTooltipName && data?.name.length > 30}
-          <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
-            <tooltip-detail text={data?.name} />
-          </span>
-        {/if}
-      </div>
-
-      <div class="flex items-center gap-2 xl:text-base text-2xl font-semibold">
-        <div>
-          {typeWalletAddress === "EVM" ? "Token ID" : "Inscription"}
-        </div>
-        <div>
-          #{data?.tokenId}
-        </div>
-      </div>
+    <div
+      class="xl:text-base text-2xl font-semibold relative"
+      on:mouseenter={() => (showTooltipName = true)}
+      on:mouseleave={() => (showTooltipName = false)}
+    >
+      {shorterName(data?.name, 30)}
+      {#if showTooltipName && data?.name.length > 30}
+        <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
+          <tooltip-detail text={data?.name} />
+        </span>
+      {/if}
     </div>
 
-    <div class="xl:text-sm text-lg font-normal flex items-center gap-2">
+    <div
+      class="xl:text-sm text-lg font-normal flex items-center justify-between gap-2"
+    >
       <div class="text-[#616b84]">Rarity Score</div>
-      <div>{data?.rarityScore}</div>
+      <TooltipNumber number={data?.rarityScore} type="percent" />
     </div>
 
-    <div class="xl:text-sm text-lg font-normal flex gap-1">
+    <div
+      class="xl:text-sm text-lg font-normal flex items-center justify-between gap-1"
+    >
       <div class="text-[#616b84]">Cost</div>
       <div class="flex items-center gap-1">
         <span>
@@ -88,19 +80,38 @@
             {nativeToken?.symbol || ""}
           </span>
         </span>
-        | <TooltipNumber number={cost} type="value" />
+        | <TooltipNumber number={data?.cost} type="value" />
       </div>
     </div>
 
-    <div class="xl:text-sm text-lg font-normal flex gap-1">
-      <div class="text-[#616b84]">Profit & Loss</div>
-      <div class="flex gap-1">
-        <div
-          class={`flex ${
-            profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
-          }`}
-        >
-          <TooltipNumber number={Math.abs(profitAndLoss)} type="value" />
+    <div
+      class="xl:text-sm text-lg font-normal flex items-start justify-between gap-1"
+    >
+      <div class="text-[#616b84]">PnL</div>
+      <div class="flex flex-col items-end">
+        <div class="flex items-center gap-1">
+          <div
+            class={` ${
+              Number(profitAndLoss / marketPrice) >= 0
+                ? "text-[#00A878]"
+                : "text-red-500"
+            }`}
+          >
+            <TooltipNumber
+              number={Math.abs(Number(profitAndLoss / marketPrice))}
+              type="balance"
+            /><span class="ml-1">
+              {nativeToken?.symbol || ""}
+            </span>
+          </div>
+          |
+          <div
+            class={`flex ${
+              profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+            }`}
+          >
+            <TooltipNumber number={Math.abs(profitAndLoss)} type="value" />
+          </div>
         </div>
         <div
           class={`flex ${

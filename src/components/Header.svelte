@@ -261,6 +261,7 @@
             {MultipleLang.portfolio}
           </span>
         </div>
+
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
@@ -320,6 +321,7 @@
             </span>
           </div>
         </Link>
+
         <Link
           to={`${
             userInfo && Object.keys(userInfo).length !== 0 ? "analytic" : "/"
@@ -633,7 +635,7 @@
                 isShowHeaderMobile.update((n) => (n = false));
               }}
             >
-              <Link to={`/profile/${userID}`}>
+              <Link to={`profile?id=${userID}`}>
                 <div
                   class={`flex items-center gap-3 text-white px-5 py-6 
             ${

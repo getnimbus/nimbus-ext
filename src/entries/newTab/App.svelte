@@ -309,7 +309,7 @@
             {/await}
           </Route>
 
-          <Route path="profile/:id">
+          <Route path="profile">
             {#await import("~/layouts/Profile.svelte")}
               <div class="flex items-center justify-center h-screen">
                 <Loading />

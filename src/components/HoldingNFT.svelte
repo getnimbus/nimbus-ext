@@ -38,7 +38,8 @@
     0
   );
 
-  $: profitAndLoss = data?.current_value - (totalCost || 0);
+  $: profitAndLoss =
+    totalCost === 0 ? 0 : data?.current_value - (totalCost || 0);
 
   $: profitAndLossPercent =
     Math.abs(totalCost || 0) === 0 ? 0 : profitAndLoss / Math.abs(totalCost);

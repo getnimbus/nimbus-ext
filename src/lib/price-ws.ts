@@ -35,6 +35,7 @@ export const priceSubscribe = (cmc_id: number[] | string[], callback: (any) => v
       console.log('WS is not initiated');
       initWS(() => priceSubscribe(cmc_id, callback));
     } else {
+      // Todo: cook cmc_id prob is object[]
       socket.send(JSON.stringify({ "ids": cmc_id.join(',') }));
 
       socket.addEventListener('message', (ev) => {
