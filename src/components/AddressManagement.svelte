@@ -1045,46 +1045,50 @@
                       {#if listAddress.length > 10}
                         <div class="flex items-center gap-3">
                           <div
-                            class={`cursor-pointer border border-white rounded-md ${
+                            class={`cursor-pointer overflow-hidden border border-white rounded-full ${
                               indexSelectedAddress === 0 ? "opacity-50" : ""
                             }`}
                             on:click={handleSelectPrevAddress}
                           >
-                            <svg
-                              width="24"
-                              height="24"
-                              viewBox="0 0 20 20"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                fill="#fff"
-                                fill-rule="evenodd"
-                                d="M12.79 5.23a.75.75 0 0 1-.02 1.06L8.832 10l3.938 3.71a.75.75 0 1 1-1.04 1.08l-4.5-4.25a.75.75 0 0 1 0-1.08l4.5-4.25a.75.75 0 0 1 1.06.02Z"
-                                clip-rule="evenodd"
-                              />
-                            </svg>
+                            <div class="transform -translate-x-[1px]">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fill="#fff"
+                                  fill-rule="evenodd"
+                                  d="M12.79 5.23a.75.75 0 0 1-.02 1.06L8.832 10l3.938 3.71a.75.75 0 1 1-1.04 1.08l-4.5-4.25a.75.75 0 0 1 0-1.08l4.5-4.25a.75.75 0 0 1 1.06.02Z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </div>
                           </div>
                           <div
-                            class={`cursor-pointer border border-white rounded-md  ${
+                            class={`cursor-pointer overflow-hidden border border-white rounded-full ${
                               indexSelectedAddress === listAddress.length - 1
                                 ? "opacity-50"
                                 : ""
                             }`}
                             on:click={handleSelectNextAddress}
                           >
-                            <svg
-                              width="24"
-                              height="24"
-                              viewBox="0 0 20 20"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                fill="#fff"
-                                fill-rule="evenodd"
-                                d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10L7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z"
-                                clip-rule="evenodd"
-                              />
-                            </svg>
+                            <div class="transform translate-x-[1px]">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fill="#fff"
+                                  fill-rule="evenodd"
+                                  d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10L7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </div>
                           </div>
                         </div>
                       {/if}

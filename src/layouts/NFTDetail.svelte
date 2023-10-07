@@ -69,10 +69,11 @@
       ) {
         priceSubscribe(
           [Number(selectedCollection?.nativeToken?.cmc_id)],
+          false,
           (item) => {
             marketPriceNFT = {
               id: item.id,
-              market_price: item.p,
+              market_price: item.price,
             };
           }
         );
@@ -130,7 +131,8 @@
     0
   );
 
-  $: profitAndLoss = data?.current_value - (totalCost || 0);
+  $: profitAndLoss =
+    totalCost === 0 ? 0 : data?.current_value - (totalCost || 0);
 
   $: profitAndLossPercent =
     Math.abs(totalCost || 0) === 0 ? 0 : profitAndLoss / Math.abs(totalCost);
@@ -287,8 +289,8 @@
               <NftCard
                 data={item}
                 {nativeToken}
-                {totalCost}
                 marketPrice={marketPriceNFT?.market_price || 0}
+                floorPrice={data?.floorPrice || 0}
               />
             {/each}
           </div>

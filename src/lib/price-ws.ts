@@ -29,13 +29,17 @@ export const decodeEvent = (ev: MessageEvent) => {
   }
 }
 
-export const priceSubscribe = (cmc_id: number[] | string[], callback: (any) => void) => {
+export const priceSubscribe = (cmc_id: number[] | string[], isNullCmcId: boolean, callback: (any) => void) => {
   try {
     if (!socket) {
       console.log('WS is not initiated');
-      initWS(() => priceSubscribe(cmc_id, callback));
+      initWS(() => priceSubscribe(cmc_id, isNullCmcId, callback));
     } else {
-      socket.send(JSON.stringify({ "ids": cmc_id.join(',') }));
+      if (isNullCmcId) {
+        socket.send(JSON.stringify({ "ids": cmc_id.join(','), "type": "mobula" }));
+      } else {
+        socket.send(JSON.stringify({ "ids": cmc_id.join(',') }));
+      }
 
       socket.addEventListener('message', (ev) => {
         const data = decodeEvent(ev);

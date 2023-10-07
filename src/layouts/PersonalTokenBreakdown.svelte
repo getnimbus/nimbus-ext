@@ -407,16 +407,31 @@
 
   $: {
     if (holdingTokenData) {
-      holdingTokenData
-        ?.filter((item) => item?.cmc_id)
-        ?.map((item: any) => {
-          priceSubscribe([item?.cmc_id], (data) => {
-            marketPriceToken = {
-              id: data.id,
-              market_price: data.p,
-            };
-          });
+      const filteredHoldingTokenData = holdingTokenData?.filter(
+        (item) => item?.cmc_id
+      );
+
+      const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
+        (item) => item?.cmc_id === null
+      );
+
+      filteredHoldingTokenData?.map((item: any) => {
+        priceSubscribe([item?.cmc_id], false, (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
         });
+      });
+
+      filteredNullCmcHoldingTokenData?.map((item) => {
+        priceSubscribe([item?.contractAddress], true, (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
+        });
+      });
     }
   }
 

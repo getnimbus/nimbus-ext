@@ -7,7 +7,6 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { flatMap } from "lodash";
-  import { useParams } from "svelte-navigator";
 
   import InviterQr from "~/UI/Profile/InviterQR.svelte";
   import Summary from "~/UI/Profile/Summary.svelte";
@@ -21,8 +20,7 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   import User from "~/assets/user.png";
-
-  const params = useParams();
+  import UpArrow from "~/assets/up-arrow.svg";
 
   let userID = "";
   userId.subscribe((value) => {
@@ -78,7 +76,7 @@
 
   let userIdParams = "";
   let selectedAddress = "";
-  let description = "Your description";
+  let description = "What's on your mind?";
   let selectProfileNFT = {};
   let socialDataTwitter = {
     label: "Twitter",
@@ -90,9 +88,11 @@
   };
 
   onMount(() => {
-    if ($params && $params.id) {
-      userIdParams = $params.id;
-      getUserProfile($params.id);
+    const urlParams = new URLSearchParams(window.location.search);
+    let idParams = urlParams.get("id");
+    if (idParams) {
+      userIdParams = idParams;
+      getUserProfile(idParams);
     }
   });
 
@@ -155,7 +155,7 @@
     selectedAddress =
       userProfile?.profileAddress || localStorage.getItem("evm_address");
     selectProfileNFT = dataNftHighlight;
-    description = userProfile?.intro || "Your description";
+    description = userProfile?.intro || "What's on your mind?";
     socialDataTelegram = {
       label: userProfile.social?.telegram?.status || "Telegram",
       username: userProfile.social?.telegram?.id || "",
@@ -176,7 +176,7 @@
 
       selectedAddress =
         userProfile?.profileAddress || localStorage.getItem("evm_address");
-      description = userProfile?.intro || "Your description";
+      description = userProfile?.intro || "What's on your mind?";
       socialDataTelegram = {
         label: userProfile.social?.telegram?.status || "Telegram",
         username: userProfile.social?.telegram?.id || "",
@@ -358,28 +358,39 @@
       <div
         class="w-full flex xl:flex-row flex-col rounded-xl py-10 px-10 gap-9 border-2 border_0000001a"
       >
-        <div class="xl:w-[20%] w-full flex flex-col gap-3 items-center">
+        <div class="xl:w-[20%] w-full flex flex-col gap-5 items-center">
           <div class="flex flex-col gap-3 items-center justify-start">
             <div class="xl:w-[80px] xl:h-[80px] w-32 h-32">
               <img src={User} alt="" class="object-cover w-full h-full" />
             </div>
 
-            <div class="relative">
+            <div
+              class={`relative py-1 ${isEdit ? "button" : ""}`}
+              on:click={() => {
+                if (isEdit) {
+                  showPopover = !showPopover;
+                }
+              }}
+            >
               <div
-                class={`text-2xl xl:text-base font-medium ${
-                  isEdit ? "cursor-pointer" : ""
+                class={`text-2xl xl:text-base font-medium flex items-center gap-2 ${
+                  darkMode || isEdit ? "text-white" : "text-black"
                 }`}
-                on:click={() => {
-                  if (isEdit) {
-                    showPopover = !showPopover;
-                  }
-                }}
               >
                 {shorterAddress(selectedAddress)}
+                {#if isEdit}
+                  <img
+                    src={UpArrow}
+                    alt=""
+                    class="transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
+                    class:rotate-0={showPopover}
+                  />
+                {/if}
               </div>
+
               {#if showPopover}
                 <div
-                  class="select_content absolute left-1/2 transform -translate-x-1/2 z-50 flex flex-col xl:gap-3 gap-6 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-8 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
+                  class="select_content mt-2 absolute left-1/2 transform -translate-x-1/2 z-50 flex flex-col xl:gap-3 gap-6 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-8 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
                   style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
                   use:clickOutside
                   on:click_outside={() => (showPopover = false)}
@@ -390,7 +401,7 @@
                       on:click={() => {
                         selectedAddress = item.value;
 
-                        description = "Your description";
+                        description = "What's on your mind?";
                         selectProfileNFT = {};
                         socialDataTwitter = {
                           label: "Twitter",
@@ -409,7 +420,11 @@
                       >
                         {item.label}
                       </div>
-                      <div class="text-3xl xl:text-sm">
+                      <div
+                        class={`text-3xl xl:text-sm ${
+                          darkMode ? "text-white" : "text-black"
+                        }`}
+                      >
                         {shorterAddress(item?.value)}
                       </div>
                     </div>
@@ -435,7 +450,7 @@
                     <img
                       src={selectProfileNFT?.imageUrl}
                       alt=""
-                      class="rounded-xl w-full h-full object-contain"
+                      class="rounded-xl w-full h-[200px] object-contain"
                     />
                     {#if isEdit}
                       <div class="w-max">
@@ -644,6 +659,25 @@
 {/if}
 
 <style windi:preflights:global windi:safelist:global>
+  .button {
+    width: max-content;
+    border-radius: 1000px;
+    padding: 4px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  :global(body) .button {
+    background: #20295b;
+  }
+  :global(body.dark) .button {
+    background: #212121;
+  }
+
   :global(body) .select_content {
     background: #ffffff;
     border: 0.5px solid transparent;

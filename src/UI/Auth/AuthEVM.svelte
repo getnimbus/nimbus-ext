@@ -323,7 +323,7 @@
         </div>
 
         <div on:click={() => (showPopover = false)}>
-          <Link to={`/profile/${userID}`}>
+          <Link to={`profile?id=${userID}`}>
             <div
               class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
                 darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"

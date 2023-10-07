@@ -98,16 +98,32 @@
 
   $: {
     if (selectedTokenHolding && holdingTokenData?.length !== 0) {
-      holdingTokenData
-        ?.filter((item) => item?.cmc_id)
-        ?.map((item) => {
-          priceSubscribe([item?.cmc_id], (data) => {
-            marketPriceToken = {
-              id: data.id,
-              market_price: data.p,
-            };
-          });
+      const filteredHoldingTokenData = holdingTokenData?.filter(
+        (item) => item?.cmc_id
+      );
+
+      const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
+        (item) => item?.cmc_id === null
+      );
+
+      filteredNullCmcHoldingTokenData?.map((item) => {
+        priceSubscribe([item?.contractAddress], true, (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
         });
+      });
+
+      filteredHoldingTokenData?.map((item) => {
+        priceSubscribe([item?.cmc_id], false, (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
+        });
+      });
+
       sumAllTokens = holdingTokenData?.reduce(
         (prev, item) => prev + item.value,
         0
@@ -117,10 +133,10 @@
       holdingNFTData
         ?.filter((item) => item?.nativeToken?.cmc_id)
         ?.map((item) => {
-          priceSubscribe([Number(item?.nativeToken?.cmc_id)], (data) => {
+          priceSubscribe([Number(item?.nativeToken?.cmc_id)], false, (data) => {
             marketPriceNFT = {
               id: data.id,
-              market_price: data.p,
+              market_price: data.price,
             };
           });
         });
@@ -161,7 +177,7 @@
           return {
             ...item,
             current_value:
-              item?.floorPrice * item?.marketPrice * item?.tokens.length || 0,
+              item?.floorPrice * item?.marketPrice * item?.tokens?.length,
           };
         })
         .sort((a, b) => {
@@ -210,7 +226,7 @@
             current_value:
               item?.floorPrice *
               marketPriceNFT.market_price *
-              item?.tokens.length,
+              item?.tokens?.length,
           };
         }
         return { ...item };

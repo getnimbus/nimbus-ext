@@ -75,8 +75,6 @@
     }
   }
 
-  $: console.log("endDatePackage: ", endDatePackage);
-
   const handleCancelSubscription = async () => {
     isLoadingCancel = true;
     try {

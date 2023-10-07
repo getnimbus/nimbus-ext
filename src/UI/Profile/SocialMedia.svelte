@@ -144,7 +144,6 @@
           type="text"
           id="username"
           name="username"
-          required
           placeholder="Your username"
           value={userName}
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
