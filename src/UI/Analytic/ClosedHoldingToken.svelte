@@ -326,7 +326,7 @@
           {
             type: "bar",
             label: {
-              show: true,
+              show: Boolean(closedHoldingPosition.length < 12),
               position: "top",
               formatter: function (value, index) {
                 const selectedItem = closedHoldingPosition.find(
@@ -366,7 +366,7 @@
           {
             type: "bar",
             label: {
-              show: true,
+              show: Boolean(closedHoldingPosition.length < 12),
               position: "top",
               formatter: function (value, index) {
                 const selectedItem = closedHoldingPosition.find(
