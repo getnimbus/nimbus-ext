@@ -180,7 +180,7 @@
                   ? profitAndLoss >= 0
                     ? "text-[#00A878]"
                     : "text-red-500"
-                  : "text_00000099"
+                  : ""
               }`}
             >
               <TooltipNumber number={Math.abs(profitAndLoss)} type="value" />
@@ -191,7 +191,7 @@
                   ? profitAndLossPercent >= 0
                     ? "text-[#00A878]"
                     : "text-red-500"
-                  : "text_00000099"
+                  : ""
               }`}
             >
               {#if profitAndLossPercent !== 0}
