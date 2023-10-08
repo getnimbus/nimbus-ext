@@ -1,7 +1,7 @@
 export let socket: null | WebSocket;
 
 export const initWS = (cb?: () => void) => {
-  socket = new WebSocket("wss://ws.getnimbus.io/ws");
+  socket = new WebSocket("wss://ws-staging.getnimbus.io/ws");
 
   socket.onopen = () => {
     console.log("WS connection established");
