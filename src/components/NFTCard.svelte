@@ -27,10 +27,14 @@
   });
 
   $: profitAndLoss =
-    data?.cost === 0 ? 0 : Number(floorPrice) * marketPrice - (data?.cost || 0);
+    Number(data?.cost || 0) === 0
+      ? 0
+      : Number(floorPrice) * marketPrice - Number(data?.cost);
 
   $: profitAndLossPercent =
-    Math.abs(data?.cost || 0) === 0 ? 0 : profitAndLoss / Math.abs(data?.cost);
+    Math.abs(Number(data?.cost || 0)) === 0
+      ? 0
+      : profitAndLoss / Math.abs(Number(data?.cost));
 </script>
 
 <div
@@ -74,13 +78,14 @@
       <div class="text-[#616b84]">Cost</div>
       <div class="flex items-center gap-1">
         <span>
-          <TooltipNumber number={Number(data?.price)} type="balance" /><span
-            class="ml-1"
-          >
+          <TooltipNumber
+            number={Number(data?.price || 0)}
+            type="balance"
+          /><span class="ml-1">
             {nativeToken?.symbol || ""}
           </span>
         </span>
-        | <TooltipNumber number={data?.cost} type="value" />
+        | <TooltipNumber number={Number(data?.cost || 0)} type="value" />
       </div>
     </div>
 
@@ -91,10 +96,12 @@
       <div class="flex flex-col items-end">
         <div class="flex items-center gap-1">
           <div
-            class={` ${
-              Number(profitAndLoss / marketPrice) >= 0
-                ? "text-[#00A878]"
-                : "text-red-500"
+            class={`${
+              Number(profitAndLoss / marketPrice) !== 0
+                ? Number(profitAndLoss / marketPrice) >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+                : ""
             }`}
           >
             <TooltipNumber
@@ -107,7 +114,11 @@
           |
           <div
             class={`flex ${
-              profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+              profitAndLossPercent !== 0
+                ? profitAndLossPercent >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+                : ""
             }`}
           >
             <TooltipNumber number={Math.abs(profitAndLoss)} type="value" />
@@ -115,7 +126,11 @@
         </div>
         <div
           class={`flex ${
-            profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
+            profitAndLossPercent !== 0
+              ? profitAndLossPercent >= 0
+                ? "text-[#00A878]"
+                : "text-red-500"
+              : ""
           }`}
         >
           {#if profitAndLossPercent < 0}
