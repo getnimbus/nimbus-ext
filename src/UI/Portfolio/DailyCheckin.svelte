@@ -21,9 +21,9 @@
   });
 
   const handleDailyCheckin = async () => {
-    const demowallet = "0x098f6f171c7d4c0f31c07b8d511f40b2338347eb";
+    // const demowallet = "0x098f6f171c7d4c0f31c07b8d511f40b2338347eb";
     try {
-      const response = await nimbus.get(`/v2/checkin/${demowallet}`);
+      const response = await nimbus.get(`/v2/checkin/${selectedWallet}`);
       return response;
     } catch (error) {
       console.log("error : ", error);
