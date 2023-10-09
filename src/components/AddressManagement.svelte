@@ -1465,7 +1465,6 @@
                       </div>
                     {/if}
                   </div> -->
-
                   <div class="hidden xl:block">
                     {#if typeWalletAddress === "BTC"}
                       <div
@@ -1584,6 +1583,12 @@
             {#key selectedWallet || selectedChain}
               {#if type === "portfolio"}
                 <slot name="overview" />
+              {/if}
+            {/key}
+
+            {#key selectedWallet || selectedChain}
+              {#if type === "portfolio"}
+                <slot name="dailyCheckin" />
               {/if}
             {/key}
           </div>
