@@ -453,7 +453,12 @@
   $: {
     if (marketPriceToken) {
       formatData = formatData.map((item) => {
-        if (marketPriceToken.id === item.cmc_id) {
+        if (
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.cmc_id?.toString().toLowerCase() ||
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.contractAddress.toString().toLowerCase()
+        ) {
           return {
             ...item,
             market_price: marketPriceToken.market_price,

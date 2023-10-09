@@ -64,11 +64,11 @@
       nativeToken = selectedCollection?.nativeToken;
 
       if (
-        selectedCollection?.nativeToken?.cmc_id &&
-        Number(selectedCollection?.nativeToken?.cmc_id) !== 0
+        selectedCollection?.nativeToken?.cmcId &&
+        Number(selectedCollection?.nativeToken?.cmcId) !== 0
       ) {
         priceSubscribe(
-          [Number(selectedCollection?.nativeToken?.cmc_id)],
+          [Number(selectedCollection?.nativeToken?.cmcId)],
           false,
           (item) => {
             marketPriceNFT = {
