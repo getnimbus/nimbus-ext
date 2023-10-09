@@ -43,9 +43,9 @@ export const priceSubscribe = (cmc_id: number[] | string[], isNullCmcId: boolean
 
       socket.addEventListener('message', (ev) => {
         const data = decodeEvent(ev);
-        if (data?.d?.id) {
-          if (cmc_id.includes(data.d.id)) {
-            callback(data.d)
+        if (data?.id) {
+          if (cmc_id[0].toString().toLowerCase() === data?.id.toLowerCase()) {
+            callback(data)
           }
         }
       })

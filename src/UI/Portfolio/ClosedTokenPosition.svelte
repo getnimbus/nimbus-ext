@@ -117,9 +117,9 @@
     }
     if (holdingNFTData) {
       holdingNFTData
-        ?.filter((item) => item?.nativeToken?.cmc_id)
+        ?.filter((item) => item?.nativeToken?.cmcId)
         ?.map((item) => {
-          priceSubscribe([item?.cmc_id], false, (data) => {
+          priceSubscribe([Number(item?.nativeToken?.cmcId)], false, (data) => {
             marketPriceNFT = {
               id: data.id,
               market_price: data.price,
@@ -189,7 +189,12 @@
   $: {
     if (marketPriceToken) {
       const formatDataWithMarketPrice = formatData.map((item) => {
-        if (marketPriceToken.id === item.cmc_id) {
+        if (
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.cmc_id?.toString().toLowerCase() ||
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.contractAddress.toString().toLowerCase()
+        ) {
           return {
             ...item,
             market_price: marketPriceToken.market_price,
@@ -210,7 +215,10 @@
     }
     if (marketPriceNFT) {
       const formatDataWithMarketPrice = formatDataNFT.map((item) => {
-        if (marketPriceNFT.id === item.cmc_id) {
+        if (
+          marketPriceNFT?.id.toString().toLowerCase() ===
+          item?.nativeToken?.cmcId.toString().toLowerCase()
+        ) {
           return {
             ...item,
             market_price: marketPriceNFT.market_price,
