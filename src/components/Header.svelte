@@ -221,6 +221,9 @@
   } else {
     document.body.style.overflow = "unset";
   }
+
+  const goldImg =
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
 </script>
 
 <div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">
@@ -521,6 +524,18 @@
         />
       </div>
 
+      <!-- Daily Checkin -->
+      <Link to="dailyCheckin">
+        <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
+          <div
+            class={`rounded-full flex justify-center items-center w-full h-full ${
+              darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+            }`}
+          >
+            <img src={goldImg} alt="" class="w-[26px] h-[26px]" />
+          </div>
+        </div>
+      </Link>
       <!-- <div
         class={`cursor-pointer rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
           darkMode ? "bg-[#212121]" : "bg-[#525B8C]"

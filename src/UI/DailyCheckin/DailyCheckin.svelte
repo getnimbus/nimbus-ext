@@ -52,26 +52,20 @@
     }
   }
 
-  const goldImg = "./../assets/Gold4.svg";
+  const goldImg =
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
 </script>
 
 <div
-  class={`rounded-lg flex flex-col gap-10 p-5 ${
+  class={`rounded-lg flex flex-col gap-10 ${
     darkMode ? "bg-[#222222] text-white" : "bg-white text-black"
   } `}
 >
-  <div class="flex flex-col gap-3">
-    <div class="text-3xl font-medium mb-4">My Nimbus Golds</div>
-    <div class="text-gray-500">
-      Collect Nimbus Golds and redeem them for exclusive rewards and special
-      offers
-    </div>
-    <div
-      class="flex flex-col gap-5 bg-[#1589EB] text-white px-6 py-5 rounded-lg w-[400px]"
-    >
-      <span class="text-sm">My golds</span>
-      <span class="text-4xl font-medium">{dailyCheckinData?.totalPoint}</span>
-    </div>
+  <div
+    class="flex flex-col gap-5 bg-[#1589EB] text-white px-6 py-5 rounded-lg w-[400px]"
+  >
+    <span class="text-sm">My golds</span>
+    <span class="text-4xl font-medium">{dailyCheckinData?.totalPoint}</span>
   </div>
   <div>
     <div class="flex items-center gap-2 mb-2">
@@ -137,7 +131,7 @@
         </div>
         {#if selectedTypePerformance === "collectGold"}
           <div class="overflow-x-auto py-6">
-            <div class="grid grid-cols-7 xl:gap-5 gap-10 xl:w-full w-[1350px]">
+            <div class="grid grid-cols-7 gap-10 xl:w-full w-[1350px]">
               {#each dailyCheckinData.pointStreak as item, index}
                 <div
                   class={`flex flex-col gap-2 items-center rounded-xl py-10 px-6 ${
