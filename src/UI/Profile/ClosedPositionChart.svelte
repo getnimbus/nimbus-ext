@@ -357,7 +357,7 @@
   <div
     class="flex justify-start text-3xl font-medium xl:text-xl px-6 pb-3 pt-6"
   >
-    Closed Positions
+    Positions 30D
   </div>
 
   {#if $queryTokenHolding.isFetching}

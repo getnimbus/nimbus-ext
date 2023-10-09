@@ -49,9 +49,8 @@
 
   $: profit =
     $queryTradingStats?.data !== undefined
-      ? ($queryTradingStats?.data?.lfStats?.unrealizedProfit /
-          $queryTradingStats?.data?.lfStats?.totalRealizedProfit) *
-        100
+      ? $queryTradingStats?.data?.latestStats?.unrealizedProfit +
+        $queryTradingStats?.data?.latestStats?.totalRealizedProfit
       : 0;
 
   $: {
@@ -59,7 +58,7 @@
       const formatData = $queryTradingStats?.data.metadata.map((item) => {
         return {
           ...item,
-          profit: Number(item.realizedProfit) - Number(item.unrealizedProfit),
+          profit: Number(item.realizedProfit) + Number(item.unrealizedProfit),
         };
       });
 
@@ -90,6 +89,8 @@
           Number($queryTradingStats?.data?.lfStats?.totalTrade)) *
         100
       : 0;
+
+  $: totalToken = $queryTradingStats?.data?.metadata?.length || 0;
 </script>
 
 <div
@@ -98,7 +99,7 @@
   <div
     class="flex justify-start text-3xl font-medium xl:text-xl px-6 pb-3 pt-6"
   >
-    Trading Stats
+    Trading Stats 30D
   </div>
 
   {#if $queryTradingStats.isFetching}
@@ -125,12 +126,12 @@
             <div class="flex flex-col gap-3 mt-2 px-6 pb-6">
               <div class="grid grid-cols-2">
                 <div class="col-span-1">
-                  <div class="flex justify-start text-2xl xl:text-lg">
+                  <div class="flex justify-star text-2xl xl:text-base">
                     Trade make in last 30 days
                   </div>
                 </div>
                 <div
-                  class="flex items-center justify-end xl:text-lg text-2xl col-span-1"
+                  class="flex items-center justify-end xl:text-base text-2xl col-span-1"
                 >
                   {$queryTradingStats?.data?.lfStats?.totalTrade || 0}
                 </div>
@@ -138,12 +139,12 @@
 
               <div class="grid grid-cols-2">
                 <div class="col-span-1">
-                  <div class="flex justify-start text-2xl xl:text-lg">
+                  <div class="flex justify-start text-2xl xl:text-base">
                     Win rate
                   </div>
                 </div>
                 <div
-                  class="flex items-center justify-end xl:text-lg text-2xl col-span-1"
+                  class="flex items-center justify-end xl:text-base text-2xl col-span-1"
                 >
                   <TooltipNumber number={winRate} type="percent" />%
                 </div>
@@ -151,12 +152,25 @@
 
               <div class="grid grid-cols-2">
                 <div class="col-span-1">
-                  <div class="flex justify-start text-2xl xl:text-lg">
-                    Profit in last 30 days
+                  <div class="flex justify-start text-2xl xl:text-base">
+                    No. of Tokens
                   </div>
                 </div>
                 <div
-                  class={`flex items-center justify-end gap-1 xl:text-lg text-2xl col-span-1`}
+                  class={`flex items-center justify-end gap-1 xl:text-base text-2xl col-span-1`}
+                >
+                  {totalToken}
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2">
+                <div class="col-span-1">
+                  <div class="flex justify-start text-2xl xl:text-base">
+                    Total profit
+                  </div>
+                </div>
+                <div
+                  class={`flex items-center justify-end gap-1 xl:text-base text-2xl col-span-1`}
                 >
                   <div
                     class={`${
@@ -167,15 +181,8 @@
                         : "text_00000099"
                     }`}
                   >
-                    <TooltipNumber number={Math.abs(profit)} type="percent" />%
+                    <TooltipNumber number={Math.abs(profit)} type="value" />
                   </div>
-                  {#if profit !== 0}
-                    <img
-                      src={profit >= 0 ? TrendUp : TrendDown}
-                      alt="trend"
-                      class="mb-1"
-                    />
-                  {/if}
                 </div>
               </div>
 
