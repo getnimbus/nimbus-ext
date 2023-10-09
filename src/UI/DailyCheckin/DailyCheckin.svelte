@@ -11,10 +11,7 @@
 
   let dailyCheckinData;
 
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
+  let selectedWallet = localStorage.getItem("evm_address");
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -121,7 +118,7 @@
             </div>
           {/if}
           <div class="w-[230px] xl:h-auto h-12">
-            {#if dailyCheckinData.checkinable}
+            {#if !dailyCheckinData.checkinable}
               <Button variant="disabled" disabled>
                 <div class="py-1">Checked</div>
               </Button>
