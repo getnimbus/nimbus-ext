@@ -89,25 +89,40 @@
   // subscribe to ws
   $: {
     if (holdingTokenData?.length !== 0) {
-      holdingTokenData
-        ?.filter((item) => item?.cmc_id)
-        ?.map((item) => {
-          priceSubscribe([item?.cmc_id], (data) => {
-            marketPriceToken = {
-              id: data.id,
-              market_price: data.p,
-            };
-          });
+      const filteredHoldingTokenData = holdingTokenData?.filter(
+        (item) => item?.cmc_id
+      );
+
+      const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
+        (item) => item?.cmc_id === null
+      );
+
+      filteredNullCmcHoldingTokenData?.map((item) => {
+        priceSubscribe([item?.contractAddress], true, (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
         });
+      });
+
+      filteredHoldingTokenData?.map((item) => {
+        priceSubscribe([item?.cmc_id], false, (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
+        });
+      });
     }
     if (holdingNFTData) {
       holdingNFTData
-        ?.filter((item) => item?.cmc_id)
+        ?.filter((item) => item?.nativeToken?.cmcId)
         ?.map((item) => {
-          priceSubscribe([item?.cmc_id], (data) => {
+          priceSubscribe([Number(item?.nativeToken?.cmcId)], false, (data) => {
             marketPriceNFT = {
               id: data.id,
-              market_price: data.p,
+              market_price: data.price,
             };
           });
         });
@@ -174,15 +189,30 @@
   $: {
     if (marketPriceToken) {
       const formatDataWithMarketPrice = formatData.map((item) => {
-        if (marketPriceToken.id === item.cmc_id) {
+        if (
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.cmc_id?.toString().toLowerCase() ||
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.contractAddress.toString().toLowerCase()
+        ) {
           return {
             ...item,
             market_price: marketPriceToken.market_price,
+            value: Number(item?.amount) * Number(marketPriceToken.market_price),
           };
         }
         return { ...item };
       });
-      formatData = formatDataWithMarketPrice;
+
+      formatData = formatDataWithMarketPrice.sort((a, b) => {
+        if (a.value < b.value) {
+          return 1;
+        }
+        if (a.value > b.value) {
+          return -1;
+        }
+        return 0;
+      });
 
       filteredHoldingDataToken = formatData.filter(
         (item) => Math.abs(Number(item?.profit.realizedProfit)) > 1
@@ -194,8 +224,11 @@
       );
     }
     if (marketPriceNFT) {
-      const formatDataWithMarketPrice = formatDataNFT.map((item) => {
-        if (marketPriceNFT.id === item.cmc_id) {
+      const formatDataNFTWithMarketPrice = formatDataNFT.map((item) => {
+        if (
+          marketPriceNFT?.id.toString().toLowerCase() ===
+          item?.nativeToken?.cmcId.toString().toLowerCase()
+        ) {
           return {
             ...item,
             market_price: marketPriceNFT.market_price,
@@ -205,7 +238,15 @@
         }
         return { ...item };
       });
-      formatDataNFT = formatDataWithMarketPrice;
+      formatDataNFT = formatDataNFTWithMarketPrice.sort((a, b) => {
+        if (a.current_value < b.current_value) {
+          return 1;
+        }
+        if (a.current_value > b.current_value) {
+          return -1;
+        }
+        return 0;
+      });
     }
   }
 
@@ -319,13 +360,7 @@
           />
         </div>
 
-        <div
-          class={`${
-            isLoadingToken || filteredHoldingDataToken?.length === 0
-              ? "h-[800px]"
-              : ""
-          }`}
-        >
+        <div class={`${isLoadingToken ? "h-[400px]" : ""}`}>
           <div
             class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
               darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
@@ -428,7 +463,7 @@
           </div>
         </div>
         <div
-          class="border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto"
+          class="border border_0000000d rounded-[10px] xl:overflow-visible overflow-x-auto"
         >
           <table class="table-auto xl:w-full w-[1400px]">
             <thead

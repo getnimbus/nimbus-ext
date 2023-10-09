@@ -15,6 +15,7 @@
     formatPercent,
     formatValue,
     shorterName,
+    typeClosedHoldingTokenChart,
   } from "~/utils";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
@@ -53,17 +54,6 @@
   typeWallet.subscribe((value) => {
     typeWalletAddress = value;
   });
-
-  const typeChart = [
-    {
-      label: "Value",
-      value: "value",
-    },
-    {
-      label: "Percent",
-      value: "percent",
-    },
-  ];
 
   let closedHoldingPosition = [];
   let selectedTypeChart: "value" | "percent" = "value";
@@ -566,7 +556,7 @@
           {:else}
             <div class="flex flex-row p-6">
               <AnimateSharedLayout>
-                {#each typeChart as type}
+                {#each typeClosedHoldingTokenChart as type}
                   <div
                     class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
                     on:click={() => (selectedTypeChart = type.value)}
