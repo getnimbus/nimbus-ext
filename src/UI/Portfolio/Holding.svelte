@@ -208,23 +208,36 @@
           return {
             ...item,
             market_price: marketPriceToken.market_price,
+            value: Number(item?.amount) * Number(marketPriceToken.market_price),
           };
         }
         return { ...item };
       });
-      formatData = formatDataWithMarketPrice;
+
+      formatData = formatDataWithMarketPrice.sort((a, b) => {
+        if (a.value < b.value) {
+          return 1;
+        }
+        if (a.value > b.value) {
+          return -1;
+        }
+        return 0;
+      });
+
       filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
+
       sumTokens = formatDataWithMarketPrice.reduce(
         (prev, item) => prev + item.value,
         0
       );
+
       sumAllTokens = formatDataWithMarketPrice.reduce(
         (prev, item) => prev + item.value,
         0
       );
     }
     if (marketPriceNFT) {
-      const formatDataWithMarketPrice = formatDataNFT.map((item) => {
+      const formatDataNFTWithMarketPrice = formatDataNFT.map((item) => {
         if (
           marketPriceNFT?.id.toString().toLowerCase() ===
           item?.nativeToken?.cmcId.toString().toLowerCase()
@@ -239,8 +252,16 @@
         }
         return { ...item };
       });
-      formatDataNFT = formatDataWithMarketPrice;
-      sumNFT = formatDataNFT.reduce(
+      formatDataNFT = formatDataNFTWithMarketPrice.sort((a, b) => {
+        if (a.current_value < b.current_value) {
+          return 1;
+        }
+        if (a.current_value > b.current_value) {
+          return -1;
+        }
+        return 0;
+      });
+      sumNFT = formatDataNFTWithMarketPrice.reduce(
         (prev, item) => prev + item.current_value,
         0
       );
@@ -536,7 +557,7 @@
 
           <div class={`${isLoadingNFT ? "h-[400px]" : ""}`}>
             <div
-              class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+              class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
                 darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
               }`}
             >
