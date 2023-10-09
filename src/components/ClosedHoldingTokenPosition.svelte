@@ -28,9 +28,6 @@
     darkMode = value;
   });
 
-  let hiddenPortfolio = false;
-  isHidePortfolio.subscribe((value) => (hiddenPortfolio = value));
-
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
   let isShowCMC = false;
@@ -449,7 +446,11 @@
               : "text_00000099"
           }`}
         >
-          <TooltipNumber number={Math.abs(realizedProfit)} type="value" />
+          <TooltipNumber
+            number={Math.abs(realizedProfit)}
+            type="value"
+            personalValue
+          />
         </div>
         <div class="flex items-center justify-end gap-1">
           <div

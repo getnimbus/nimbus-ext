@@ -1,7 +1,7 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
-  import { shorterName } from "~/utils";
-  import { typeWallet, isDarkMode } from "~/store";
+  import { flattenArray, shorterName } from "~/utils";
+  import { typeWallet, isDarkMode, isHidePortfolio } from "~/store";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -144,12 +144,16 @@
     }`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
-      <TooltipNumber number={data?.floorPriceBTC} type="balance" /><span
-        class="mx-1">{typeWalletAddress === "EVM" ? "ETH" : "BTC"}</span
-      >
+      <TooltipNumber
+        number={data?.floorPriceBTC}
+        type="balance"
+        personalValue
+      />
+      <span class="mx-1">{typeWalletAddress === "EVM" ? "ETH" : "BTC"} </span>
       | $<TooltipNumber
         number={data?.floorPriceBTC * data?.market_price}
         type="balance"
+        personalValue
       />
     </div>
   </td>
@@ -160,12 +164,12 @@
     }`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
-      <TooltipNumber number={data?.totalCostBTC} type="balance" /><span
-        class="mx-1"
-      >
+      <TooltipNumber number={data?.totalCostBTC} type="balance" personalValue />
+      <span class="mx-1">
         {typeWalletAddress === "EVM" ? "ETH" : "BTC"}
       </span>
-      | $<TooltipNumber number={data?.totalCost} type="balance" />
+
+      | $<TooltipNumber number={data?.totalCost} type="balance" personalValue />
     </div>
   </td>
 
@@ -175,7 +179,11 @@
     }`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
-      $<TooltipNumber number={data?.current_value} type="balance" />
+      $<TooltipNumber
+        number={data?.current_value}
+        type="balance"
+        personalValue
+      />
     </div>
   </td>
 
@@ -193,7 +201,11 @@
             profitAndLoss >= 0 ? "text-[#00A878]" : "text-red-500"
           }`}
         >
-          $<TooltipNumber number={Math.abs(profitAndLoss)} type="balance" />
+          $<TooltipNumber
+            number={Math.abs(profitAndLoss)}
+            type="balance"
+            personalValue
+          />
         </div>
         <div class="flex items-center justify-end gap-1">
           <div
