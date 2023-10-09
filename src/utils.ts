@@ -163,6 +163,17 @@ export const typePieChart = [
   },
 ]
 
+export const typeClosedHoldingTokenChart = [
+  {
+    label: "Value",
+    value: "value",
+  },
+  {
+    label: "Percent",
+    value: "percent",
+  },
+]
+
 export const typePackage = [
   {
     label: "Monthly",
@@ -551,7 +562,7 @@ export const formatValue = (input: number) => {
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.000000") === "NaN"
     ? formatNumberSmall(input)
-    : input < 0.01 ? numeral(input).format("0,0.000000") : numeral(input).format("0,0.0000");
+    : input !== 0 && input > 0 && input < 0.01 ? numeral(input).format("0,0.000000") : numeral(input).format("0,0.0000");
 };
 
 export const formatBalance = (input: number) => {

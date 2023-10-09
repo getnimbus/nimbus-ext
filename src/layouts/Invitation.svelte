@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
   import QRCode from "qrcode-generator";
   import CopyToClipboard from "svelte-copy-to-clipboard";
@@ -7,14 +8,12 @@
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
-  import { isDarkMode, user, wallet, chain, typeWallet } from "~/store";
-  import { useNavigate } from "svelte-navigator";
+  import { isDarkMode, user, wallet, chain, typeWallet, userId } from "~/store";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
 
   import Logo from "~/assets/logo-1.svg";
 
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   let darkMode = false;
@@ -25,6 +24,11 @@
   let userInfo = {};
   user.subscribe((value) => {
     userInfo = value;
+  });
+
+  let userID = "";
+  userId.subscribe((value) => {
+    userID = value;
   });
 
   const qrcode = QRCode(0, "L");
@@ -52,31 +56,19 @@
     isSuccessToast = false;
   };
 
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
+  const getReferrals = async () => {
+    const response: any = await nimbus.get("/referrals");
     if (response?.status === 401) {
       throw new Error(response?.response?.error);
     }
-    return response?.data;
-  };
-
-  const getReferrals = async () => {
-    const response = await nimbus.get("/referrals");
     return response.data;
   };
 
-  const queryReferrals = createQuery({
+  // query referrals
+  $: queryReferrals = createQuery({
     queryKey: ["referrals"],
     queryFn: () => getReferrals(),
     staleTime: Infinity,
-  });
-
-  $: queryUserInfo = createQuery({
-    queryKey: ["users-me"],
-    queryFn: () => getUserInfo(),
-    staleTime: Infinity,
-    retry: false,
-    enabled: Object.keys(userInfo).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -93,15 +85,14 @@
     }
   }
 
-  $: {
-    if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
-      userAddress = $queryUserInfo.data?.publicAddress;
-      link = `https://app.getnimbus.io/?invitation=${$queryUserInfo.data?.id}`;
-      qrcode.addData(link);
-      qrcode.make();
-      qrImageDataUrl = qrcode.createDataURL(6, 0);
-    }
-  }
+  onMount(() => {
+    const evmAddress = localStorage.getItem("evm_address");
+    userAddress = evmAddress;
+    link = `https://app.getnimbus.io/?invitation=${userID}`;
+    qrcode.addData(link);
+    qrcode.make();
+    qrImageDataUrl = qrcode.createDataURL(6, 0);
+  });
 
   const downloadQRCode = async () => {
     const targetElement = document.getElementById("target-element");
