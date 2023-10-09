@@ -7,7 +7,7 @@
   import { isDarkMode, wallet } from "~/store";
   import { dailyCheckinTypePortfolio } from "~/utils";
 
-  let selectedTypePerformance: "collectDiamond" | "history" = "collectDiamond";
+  let selectedTypePerformance: "collectGold" | "history" = "collectGold";
 
   let selectedWallet: string = "";
   let dailyCheckinData;
@@ -52,7 +52,7 @@
     }
   }
 
-  const diamondImg = "./../assets/Diamond4.svg";
+  const goldImg = "./../assets/Gold4.svg";
 </script>
 
 <div
@@ -61,15 +61,15 @@
   } `}
 >
   <div class="flex flex-col gap-3">
-    <div class="text-3xl font-medium mb-4">My Nimbus Diamonds</div>
+    <div class="text-3xl font-medium mb-4">My Nimbus Golds</div>
     <div class="text-gray-500">
-      Collect Nimbus Diamonds and redeem them for exclusive rewards and special
+      Collect Nimbus Golds and redeem them for exclusive rewards and special
       offers
     </div>
     <div
       class="flex flex-col gap-5 bg-[#1589EB] text-white px-6 py-5 rounded-lg w-[400px]"
     >
-      <span class="text-sm">My diamonds</span>
+      <span class="text-sm">My golds</span>
       <span class="text-4xl font-medium">{dailyCheckinData?.totalPoint}</span>
     </div>
   </div>
@@ -111,10 +111,10 @@
     {:else}
       <div class="flex flex-col gap-5 py-3">
         <div class="flex items-center justify-between">
-          {#if selectedTypePerformance === "collectDiamond"}
+          {#if selectedTypePerformance === "collectGold"}
             <div class="flex flex-col gap-2">
               <span class="font-medium text-2xl">
-                Collect your diamonds every day
+                Collect your golds every day
               </span>
               <span>Check in 7 days in a row, your rewards will grow </span>
             </div>
@@ -135,7 +135,7 @@
             {/if}
           </div>
         </div>
-        {#if selectedTypePerformance === "collectDiamond"}
+        {#if selectedTypePerformance === "collectGold"}
           <div class="overflow-x-auto py-6">
             <div class="grid grid-cols-7 xl:gap-5 gap-10 xl:w-full w-[1350px]">
               {#each dailyCheckinData.pointStreak as item, index}
@@ -149,7 +149,7 @@
                   }`}
                 >
                   <span> Day {index + 1}</span>
-                  <img src={diamondImg} alt="" class="w-12" />
+                  <img src={goldImg} alt="" class="w-12" />
                   <span class="text-3xl">+ {item}</span>
                 </div>
               {/each}
