@@ -11,6 +11,8 @@
     | "underlined"
     | "delete"
     | "disabled"
+    | "Twitter"
+    | "Telegram"
     | "" = "primary";
   export let className: string = "";
   export let disabled: boolean = false;
@@ -26,6 +28,8 @@
     ["tertiary"]: variant === "tertiary",
     ["no_outlined"]: variant === "no-outlined",
     ["delete"]: variant === "delete",
+    ["twitter"]: variant === "Twitter",
+    ["telegram"]: variant === "Telegram",
     ["large"]: size === "large",
     ["small"]: size === "small",
     ["supper-small"]: size === "supper-small",
@@ -207,6 +211,22 @@
   .no_outlined[type="submit"],
   .no_outlined[type="button"] {
     background: #fff;
+  }
+
+  .twitter {
+    color: white;
+    border: none;
+  }
+  .twitter[type="button"] {
+    background-color: black;
+  }
+
+  .telegram {
+    color: white;
+    border: none;
+  }
+  .telegram[type="button"] {
+    background-color: #2aabee;
   }
 
   .disabled {

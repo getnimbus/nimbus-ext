@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { Link, useMatch, useNavigate } from "svelte-navigator";
-  import * as browser from "webextension-polyfill";
   import { i18n } from "~/lib/i18n";
   import {
     chain,
@@ -11,7 +10,7 @@
     user,
     typeWallet,
     isShowHeaderMobile,
-    isHidePortfolio,
+    userId,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -54,6 +53,8 @@
   const navigate = useNavigate();
   const absoluteMatch = useMatch("/:page");
   const queryClient = useQueryClient();
+
+  let userID = "";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -184,7 +185,6 @@
     queryKey: ["users-me"],
     queryFn: () => getUserInfo(),
     staleTime: Infinity,
-    enabled: Object.keys(userInfo).length !== 0,
     retry: false,
     onError(err) {
       localStorage.removeItem("evm_token");
@@ -199,6 +199,8 @@
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
       localStorage.setItem("evm_address", $queryUserInfo.data.publicAddress);
+      userId.update((n) => (n = $queryUserInfo.data.id));
+      userID = $queryUserInfo.data.id;
       publicAddress = $queryUserInfo.data.publicAddress;
       if (
         $queryUserInfo.data?.plan?.tier &&
@@ -259,6 +261,7 @@
             {MultipleLang.portfolio}
           </span>
         </div>
+
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
@@ -318,6 +321,7 @@
             </span>
           </div>
         </Link>
+
         <Link
           to={`${
             userInfo && Object.keys(userInfo).length !== 0 ? "analytic" : "/"
@@ -620,6 +624,45 @@
                       />
                     </svg>
                   </div>
+                </div>
+              </Link>
+            </div>
+
+            <div
+              on:click={() => {
+                navActive = "profile";
+                queryClient.invalidateQueries(["users-me"]);
+                isShowHeaderMobile.update((n) => (n = false));
+              }}
+            >
+              <Link to={`profile?id=${userID}`}>
+                <div
+                  class={`flex items-center gap-3 text-white px-5 py-6 
+            ${
+              darkMode
+                ? navActive === "profile"
+                  ? "bg-[#212121] rounded-[1000px] opacity-100"
+                  : "opacity-70"
+                : navActive === "profile"
+                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                : "opacity-70"
+            }
+          `}
+                >
+                  <svg
+                    width="35"
+                    height="35"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill="currentColor"
+                      fill-rule="evenodd"
+                      d="M7.5 6a4.5 4.5 0 1 1 9 0a4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0a.75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  <span class="text-3xl font-medium">My Profile</span>
                 </div>
               </Link>
             </div>

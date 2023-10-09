@@ -43,7 +43,7 @@
   });
 </script>
 
-<div class={`${isLoading ? "h-[800px]" : ""}`}>
+<div class={`${isLoading ? "h-[400px]" : ""}`}>
   <div
     class={`rounded-[10px] border border_0000000d xl:overflow-hidden overflow-x-auto h-full ${
       darkMode ? "bg-[#131313]" : "bg-[#fff]"

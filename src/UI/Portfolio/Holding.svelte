@@ -22,8 +22,8 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
 
-  let filteredHoldingToken = true;
   let filteredHoldingDataToken = [];
+  let filteredHoldingDataNFT = [];
   let marketPriceToken;
   let marketPriceNFT;
   let formatData = [];
@@ -56,6 +56,11 @@
   };
 
   let filterTokenType = {
+    label: "$1",
+    value: 1,
+  };
+
+  let filterNFTType = {
     label: "$1",
     value: 1,
   };
@@ -93,29 +98,45 @@
 
   $: {
     if (selectedTokenHolding && holdingTokenData?.length !== 0) {
-      holdingTokenData
-        ?.filter((item) => item?.cmc_id)
-        ?.map((item) => {
-          priceSubscribe([item?.cmc_id], (data) => {
-            marketPriceToken = {
-              id: data.id,
-              market_price: data.p,
-            };
-          });
+      const filteredHoldingTokenData = holdingTokenData?.filter(
+        (item) => item?.cmc_id
+      );
+
+      const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
+        (item) => item?.cmc_id === null
+      );
+
+      filteredNullCmcHoldingTokenData?.map((item) => {
+        priceSubscribe([item?.contractAddress], true, (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
         });
+      });
+
+      filteredHoldingTokenData?.map((item) => {
+        priceSubscribe([item?.cmc_id], false, (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
+        });
+      });
+
       sumAllTokens = holdingTokenData?.reduce(
         (prev, item) => prev + item.value,
         0
       );
     }
-    if (holdingNFTData) {
+    if (holdingNFTData?.length !== 0) {
       holdingNFTData
-        ?.filter((item) => item?.cmc_id)
+        ?.filter((item) => item?.nativeToken?.cmcId)
         ?.map((item) => {
-          priceSubscribe([item?.cmc_id], (data) => {
+          priceSubscribe([Number(item?.nativeToken?.cmcId)], false, (data) => {
             marketPriceNFT = {
               id: data.id,
-              market_price: data.p,
+              market_price: data.price,
             };
           });
         });
@@ -155,9 +176,8 @@
         .map((item) => {
           return {
             ...item,
-            market_price: item?.btcPrice || 0,
             current_value:
-              item?.floorPriceBTC * item?.btcPrice * item?.balance || 0,
+              item?.floorPrice * item?.marketPrice * item?.tokens?.length,
           };
         })
         .sort((a, b) => {
@@ -179,38 +199,72 @@
   $: {
     if (marketPriceToken) {
       const formatDataWithMarketPrice = formatData.map((item) => {
-        if (marketPriceToken.id === item.cmc_id) {
+        if (
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.cmc_id?.toString().toLowerCase() ||
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.contractAddress.toString().toLowerCase()
+        ) {
           return {
             ...item,
             market_price: marketPriceToken.market_price,
+            value: Number(item?.amount) * Number(marketPriceToken.market_price),
           };
         }
         return { ...item };
       });
-      formatData = formatDataWithMarketPrice;
+
+      formatData = formatDataWithMarketPrice.sort((a, b) => {
+        if (a.value < b.value) {
+          return 1;
+        }
+        if (a.value > b.value) {
+          return -1;
+        }
+        return 0;
+      });
+
       filteredHoldingDataToken = formatData.filter((item) => item.value > 1);
+
       sumTokens = formatDataWithMarketPrice.reduce(
         (prev, item) => prev + item.value,
         0
       );
+
       sumAllTokens = formatDataWithMarketPrice.reduce(
         (prev, item) => prev + item.value,
         0
       );
     }
     if (marketPriceNFT) {
-      const formatDataWithMarketPrice = formatDataNFT.map((item) => {
-        if (marketPriceNFT.id === item.cmc_id) {
+      const formatDataNFTWithMarketPrice = formatDataNFT.map((item) => {
+        if (
+          marketPriceNFT?.id.toString().toLowerCase() ===
+          item?.nativeToken?.cmcId.toString().toLowerCase()
+        ) {
           return {
             ...item,
-            market_price: marketPriceNFT.market_price,
             current_value:
-              item?.floorPriceBTC * marketPriceNFT.market_price * item?.balance,
+              item?.floorPrice *
+              marketPriceNFT.market_price *
+              item?.tokens?.length,
           };
         }
         return { ...item };
       });
-      formatDataNFT = formatDataWithMarketPrice;
+      formatDataNFT = formatDataNFTWithMarketPrice.sort((a, b) => {
+        if (a.current_value < b.current_value) {
+          return 1;
+        }
+        if (a.current_value > b.current_value) {
+          return -1;
+        }
+        return 0;
+      });
+      sumNFT = formatDataNFTWithMarketPrice.reduce(
+        (prev, item) => prev + item.current_value,
+        0
+      );
     }
   }
 
@@ -221,6 +275,18 @@
       } else {
         filteredHoldingDataToken = formatData?.filter(
           (item) => item?.amount * item.market_price > filterTokenType.value
+        );
+      }
+    }
+  }
+
+  $: {
+    if (filterNFTType) {
+      if (filterNFTType.value === 0) {
+        filteredHoldingDataNFT = formatDataNFT;
+      } else {
+        filteredHoldingDataNFT = formatDataNFT?.filter(
+          (item) => item?.current_value > filterNFTType.value
         );
       }
     }
@@ -265,6 +331,7 @@
         formatData = [];
         formatDataNFT = [];
         filteredHoldingDataToken = [];
+        filteredHoldingDataNFT = [];
         marketPriceToken = undefined;
         marketPriceNFT = undefined;
       }
@@ -303,6 +370,7 @@
       </a> -->
     </div>
 
+    <!-- token holding table -->
     <div class="flex flex-col gap-2">
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-4">
@@ -332,8 +400,6 @@
           {/if}
         </div>
       </div>
-
-      <!-- token holding table -->
       <div class="flex flex-col gap-2">
         <div class="flex items-center justify-end gap-2">
           <div class="xl:text-sm text-2xl font-regular text-gray-400">
@@ -346,13 +412,8 @@
             bind:selected={filterTokenType}
           />
         </div>
-        <div
-          class={`${
-            isLoadingToken || filteredHoldingDataToken?.length === 0
-              ? "h-[800px]"
-              : ""
-          }`}
-        >
+
+        <div class={`${isLoadingToken ? "h-[400px]" : ""}`}>
           <div
             class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
               darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
@@ -471,7 +532,7 @@
     </div>
 
     <!-- nft holding table -->
-    {#if typeWalletAddress === "BTC"}
+    {#if typeWalletAddress === "EVM" || typeWalletAddress === "SOL" || typeWalletAddress === "BUNDLE"}
       <div class="flex flex-col gap-2">
         <div class="flex justify-between items-center">
           <div class="xl:text-xl text-3xl font-medium">
@@ -481,123 +542,128 @@
             <TooltipNumber number={sumNFT} type="value" />
           </div>
         </div>
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-end gap-2">
+            <div class="xl:text-sm text-2xl font-regular text-gray-400">
+              Hide NFT Collections less than
+            </div>
+            <Select
+              type="filter"
+              positionSelectList="right-0"
+              listSelect={filterTokenValueType}
+              bind:selected={filterNFTType}
+            />
+          </div>
 
-        <div
-          class={`${
-            isLoadingToken || formatDataNFT?.length === 0 ? "h-[800px]" : ""
-          }`}
-        >
-          <div
-            class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
-              darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
-            }`}
-          >
-            <table class="table-auto xl:w-full w-[1400px] h-full">
-              <thead
-                class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
-                bind:this={tableNFTHeader}
-              >
-                <tr class="bg_f4f5f8">
-                  <th
-                    class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[220px]"
-                  >
-                    <div
-                      class="text-left xl:text-xs text-xl uppercase font-medium"
+          <div class={`${isLoadingNFT ? "h-[400px]" : ""}`}>
+            <div
+              class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+                darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+              }`}
+            >
+              <table class="table-auto xl:w-full w-[1400px] h-full">
+                <thead
+                  class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
+                  bind:this={tableNFTHeader}
+                >
+                  <tr class="bg_f4f5f8">
+                    <th
+                      class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[220px]"
                     >
-                      {MultipleLang.collection}
-                    </div>
-                  </th>
-                  <th
-                    class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg_f4f5f8 w-[160px]"
-                  >
-                    <div
-                      class="text-left xl:text-xs text-xl uppercase font-medium"
-                    >
-                      {MultipleLang.Balance}
-                    </div>
-                  </th>
-                  <th class="py-3">
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
-                    >
-                      <TooltipTitle
-                        tooltipText={typeWalletAddress === "BTC"
-                          ? "The Floor price from Magic Eden marketplace. "
-                          : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
-                        link={typeWalletAddress === "BTC"
-                          ? "https://magiceden.io/ordinals"
-                          : ""}
-                      >
-                        {MultipleLang.floor_price}
-                      </TooltipTitle>
-                    </div>
-                  </th>
-                  <th class="py-3">
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
-                    >
-                      {MultipleLang.total_spent}
-                    </div>
-                  </th>
-                  <th class="py-3">
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
-                    >
-                      {MultipleLang.current_value}
-                    </div>
-                  </th>
-                  <th
-                    class={`py-3 pr-3 ${
-                      typeWalletAddress === "BTC" ? "" : "rounded-tr-[10px]"
-                    }`}
-                  >
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
-                    >
-                      <TooltipTitle
-                        tooltipText="Price NFTs now - Price NFTs at time you spent"
-                      >
-                        {MultipleLang.profit}
-                      </TooltipTitle>
-                    </div>
-                  </th>
-                  {#if typeWalletAddress === "BTC"}
-                    <th class="py-3 w-10 rounded-tr-[10px]" />
-                  {/if}
-                </tr>
-              </thead>
-              {#if isLoadingNFT}
-                <tbody>
-                  <tr>
-                    <td {colspan}>
                       <div
-                        class="flex justify-center items-center h-full py-3 px-3"
+                        class="text-left xl:text-xs text-xl uppercase font-medium"
                       >
-                        <Loading />
+                        {MultipleLang.collection}
                       </div>
-                    </td>
+                    </th>
+                    <th
+                      class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg_f4f5f8 w-[160px]"
+                    >
+                      <div
+                        class="text-left xl:text-xs text-xl uppercase font-medium"
+                      >
+                        {MultipleLang.Balance}
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        <TooltipTitle
+                          tooltipText={false
+                            ? "The Floor price from Magic Eden marketplace. "
+                            : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
+                          link={false ? "https://magiceden.io/ordinals" : ""}
+                        >
+                          {MultipleLang.floor_price}
+                        </TooltipTitle>
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        COST
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        {MultipleLang.current_value}
+                      </div>
+                    </th>
+                    <th class="py-3 pr-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        <TooltipTitle
+                          tooltipText="Price NFTs now - Price NFTs at time you spent"
+                        >
+                          {MultipleLang.profit}
+                        </TooltipTitle>
+                      </div>
+                    </th>
+                    <th class="py-3 w-10 rounded-tr-[10px]" />
                   </tr>
-                </tbody>
-              {:else}
-                <tbody>
-                  {#if formatDataNFT && formatDataNFT.length === 0}
+                </thead>
+                {#if isLoadingNFT}
+                  <tbody>
                     <tr>
                       <td {colspan}>
                         <div
-                          class="flex justify-center items-center h-full py-3 px-3 text-lg text-gray-400"
+                          class="flex justify-center items-center h-full py-3 px-3"
                         >
-                          {MultipleLang.empty}
+                          <Loading />
                         </div>
                       </td>
                     </tr>
-                  {:else}
-                    {#each formatDataNFT as holding}
-                      <HoldingNFT data={holding} {selectedWallet} />
-                    {/each}
-                  {/if}
-                </tbody>
-              {/if}
-            </table>
+                  </tbody>
+                {:else}
+                  <tbody>
+                    {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0}
+                      <tr>
+                        <td {colspan}>
+                          <div
+                            class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                          >
+                            {#if holdingTokenData && holdingTokenData.length === 0}
+                              {MultipleLang.empty}
+                            {:else}
+                              All NFT Collections less than $1
+                            {/if}
+                          </div>
+                        </td>
+                      </tr>
+                    {:else}
+                      {#each filteredHoldingDataNFT as holding}
+                        <HoldingNFT data={holding} {selectedWallet} />
+                      {/each}
+                    {/if}
+                  </tbody>
+                {/if}
+              </table>
+            </div>
           </div>
         </div>
       </div>
