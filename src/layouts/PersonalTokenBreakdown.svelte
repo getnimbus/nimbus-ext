@@ -452,7 +452,7 @@
 
   $: {
     if (marketPriceToken) {
-      formatData = formatData.map((item) => {
+      const formatDataWithMarketPrice = formatData.map((item) => {
         if (
           marketPriceToken?.id.toString().toLowerCase() ===
             item?.cmc_id?.toString().toLowerCase() ||
@@ -462,11 +462,26 @@
           return {
             ...item,
             market_price: marketPriceToken.market_price,
+            value: Number(item?.amount) * Number(marketPriceToken.market_price),
           };
         }
         return { ...item };
       });
-      sumTokens = formatData.reduce((prev, item: any) => prev + item.value, 0);
+
+      formatData = formatDataWithMarketPrice.sort((a, b) => {
+        if (a.value < b.value) {
+          return 1;
+        }
+        if (a.value > b.value) {
+          return -1;
+        }
+        return 0;
+      });
+
+      sumTokens = formatDataWithMarketPrice.reduce(
+        (prev, item: any) => prev + item.value,
+        0
+      );
     }
   }
 
@@ -1042,7 +1057,7 @@
                 class={`${$queryTokenHolding.isFetching ? "h-[400px]" : ""}`}
               >
                 <div
-                  class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+                  class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
                     darkMode
                       ? "bg-[#131313]"
                       : "bg-[#fff] border border_0000000d"
