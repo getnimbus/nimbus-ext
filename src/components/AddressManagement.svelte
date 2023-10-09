@@ -1588,13 +1588,13 @@
 
             {#key selectedWallet || selectedChain}
               {#if type === "portfolio"}
-                <slot name="dailyCheckin" />
+                <slot name="overview" />
               {/if}
             {/key}
 
             {#key selectedWallet || selectedChain}
               {#if type === "portfolio"}
-                <slot name="overview" />
+                <slot name="dailyCheckin" />
               {/if}
             {/key}
           </div>

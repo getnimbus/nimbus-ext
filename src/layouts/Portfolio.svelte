@@ -774,12 +774,6 @@
     </div>
   </span>
 
-  <span slot="dailyCheckin">
-    {#if !isLoadingSync}
-      <DailyCheckin />
-    {/if}
-  </span>
-
   <span slot="overview">
     {#if !isLoadingSync}
       <Overview
@@ -790,6 +784,13 @@
       />
     {/if}
   </span>
+
+  <span slot="dailyCheckin">
+    {#if !isLoadingSync}
+      <DailyCheckin />
+    {/if}
+  </span>
+
   <span slot="body">
     <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-26">
       {#if isLoadingSync}
