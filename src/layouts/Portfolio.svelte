@@ -38,6 +38,7 @@
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";
+  import DailyCheckin from "~/UI/Portfolio/DailyCheckin.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -47,6 +48,7 @@
     market: i18n("newtabPage.market", "Market"),
     settings: i18n("newtabPage.settings", "Settings"),
     overview: i18n("newtabPage.overview", "Overview"),
+    dailyCheckin: i18n("newtabPage.dailyCheckin", "Daily Checkin"),
     Balance: i18n("newtabPage.Balance", "Balance"),
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
@@ -771,6 +773,13 @@
       </div>
     </div>
   </span>
+
+  <span slot="dailyCheckin">
+    {#if !isLoadingSync}
+      <DailyCheckin />
+    {/if}
+  </span>
+
   <span slot="overview">
     {#if !isLoadingSync}
       <Overview

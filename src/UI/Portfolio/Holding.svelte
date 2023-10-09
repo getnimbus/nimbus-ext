@@ -22,7 +22,6 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
 
-  let filteredHoldingToken = true;
   let filteredHoldingDataToken = [];
   let marketPriceToken;
   let marketPriceNFT;

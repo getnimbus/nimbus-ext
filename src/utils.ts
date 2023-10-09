@@ -204,6 +204,17 @@ export const performanceTypeChartPortfolio = [
   },
 ]
 
+export const dailyCheckinTypePortfolio = [
+  {
+    label: "Collect Diamonds",
+    value: "amount",
+  },
+  {
+    label: "History",
+    value: "history",
+  },
+]
+
 export const returnType = [
   {
     label: "Overview",
