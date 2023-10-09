@@ -525,7 +525,7 @@
       </div>
 
       <!-- Daily Checkin -->
-      <Link to="dailyCheckin">
+      <Link to="daily-checkin">
         <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
           <div
             class={`rounded-full flex justify-center items-center w-full h-full ${

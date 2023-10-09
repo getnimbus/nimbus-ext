@@ -323,7 +323,7 @@
             {/await}
           </Route>
 
-          <Route path="dailyCheckin">
+          <Route path="daily-checkin">
             {#await import("~/layouts/DailyCheckin.svelte")}
               <div class="flex items-center justify-center h-screen">
                 <Loading />

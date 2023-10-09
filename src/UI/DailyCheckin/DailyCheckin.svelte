@@ -7,10 +7,11 @@
   import { isDarkMode, wallet } from "~/store";
   import { dailyCheckinTypePortfolio } from "~/utils";
 
-  let selectedTypePerformance: "collectGold" | "history" = "collectGold";
+  let selectedTypePerformance: "collectGMPoint" | "history" = "collectGMPoint";
+
+  let dailyCheckinData;
 
   let selectedWallet: string = "";
-  let dailyCheckinData;
   wallet.subscribe((value) => {
     selectedWallet = value;
   });
@@ -21,7 +22,7 @@
   });
 
   const handleDailyCheckin = async () => {
-    // const demowallet = "0x098f6f171c7d4c0f31c07b8d511f40b2338347eb";
+    const demowallet = "0x098f6f171c7d4c0f31c07b8d511f40b2338347eb";
     try {
       const response = await nimbus.get(`/v2/checkin/${selectedWallet}`);
       return response;
@@ -52,19 +53,21 @@
     }
   }
 
+  $: console.log("this is bal bla selectedWallet : ", selectedWallet);
+
   const goldImg =
     "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
 </script>
 
 <div
   class={`rounded-lg flex flex-col gap-10 ${
-    darkMode ? "bg-[#222222] text-white" : "bg-white text-black"
+    darkMode ? "text-white" : "text-black"
   } `}
 >
   <div
     class="flex flex-col gap-5 bg-[#1589EB] text-white px-6 py-5 rounded-lg w-[400px]"
   >
-    <span class="text-sm">My golds</span>
+    <span class="text-sm">My GM Point</span>
     <span class="text-4xl font-medium">{dailyCheckinData?.totalPoint}</span>
   </div>
   <div>
@@ -105,10 +108,10 @@
     {:else}
       <div class="flex flex-col gap-5 py-3">
         <div class="flex items-center justify-between">
-          {#if selectedTypePerformance === "collectGold"}
+          {#if selectedTypePerformance === "collectGMPoint"}
             <div class="flex flex-col gap-2">
               <span class="font-medium text-2xl">
-                Collect your golds every day
+                Collect your GM Point every day
               </span>
               <span>Check in 7 days in a row, your rewards will grow </span>
             </div>
@@ -129,7 +132,7 @@
             {/if}
           </div>
         </div>
-        {#if selectedTypePerformance === "collectGold"}
+        {#if selectedTypePerformance === "collectGMPoint"}
           <div class="overflow-x-auto py-6">
             <div class="grid grid-cols-7 gap-10 xl:w-full w-[1350px]">
               {#each dailyCheckinData.pointStreak as item, index}

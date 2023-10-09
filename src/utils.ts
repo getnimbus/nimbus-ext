@@ -217,8 +217,8 @@ export const performanceTypeChartPortfolio = [
 
 export const dailyCheckinTypePortfolio = [
   {
-    label: "Collect Gold",
-    value: "collectGold",
+    label: "Collect GM Point",
+    value: "collectGMPoint",
   },
   {
     label: "History",
