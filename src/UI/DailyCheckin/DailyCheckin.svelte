@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { createQuery } from "@tanstack/svelte-query";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import Button from "~/components/Button.svelte";
+  import FireWork from "~/components/FireWork.svelte";
   import Loading from "~/components/Loading.svelte";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, wallet } from "~/store";
-  import { dailyCheckinTypePortfolio } from "~/utils";
+  import { dailyCheckinTypePortfolio, triggerFirework } from "~/utils";
 
   let selectedTypePerformance: "collectGMPoint" | "history" = "collectGMPoint";
   let dailyCheckinData;
@@ -16,13 +17,35 @@
     darkMode = value;
   });
 
+  let buttonDisable = false;
+
+  const queryClient = useQueryClient();
+
+  // address for demo
+  const demowallet = "0a4a66ef-3340-40f8-89da-205fedfd0a2d";
+
   const handleDailyCheckin = async () => {
-    const demowallet = "0x098f6f171c7d4c0f31c07b8d511f40b2338347eb";
+    console.log("It run !!!!!!!");
     try {
-      const response = await nimbus.get(`/v2/checkin/${demowallet}`);
+      const response = await nimbus.get(`/v2/checkin/${selectedWallet}`);
       return response;
     } catch (error) {
       console.log("error : ", error);
+    }
+  };
+
+  const handleCheckin = async () => {
+    try {
+      const response = await nimbus.post(`/v2/checkin`, {});
+      if (response?.data !== undefined) {
+        triggerFirework();
+        buttonDisable = true;
+      }
+      queryClient.invalidateQueries({ queryKey: ["daily-checkin"] });
+      return response;
+    } catch (error) {
+      console.log("this err : ", error);
+      return undefined;
     }
   };
 
@@ -31,16 +54,16 @@
   };
 
   $: queryDailyCheckin = createQuery({
-    queryKey: ["dailyCheckin"],
+    queryKey: ["daily-checkin"],
     queryFn: () => handleDailyCheckin(),
     staleTime: Infinity,
     enabled: true,
   });
 
-  $: console.log(
-    "This is the daily checkin api : ",
-    $queryDailyCheckin?.data?.data
-  );
+  // $: console.log(
+  //   "This is the daily checkin api : ",
+  //   $queryDailyCheckin?.data?.data
+  // );
 
   $: {
     if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
@@ -115,16 +138,22 @@
             </div>
           {/if}
           <div class="w-[230px] xl:h-auto h-12">
-            {#if !dailyCheckinData.checkinable}
+            {#if !dailyCheckinData.checkinable || buttonDisable}
               <Button variant="disabled" disabled>
                 <div class="py-1">Checked</div>
               </Button>
             {:else}
-              <Button variant="primary">
+              <Button
+                variant="primary"
+                on:click={() => {
+                  handleCheckin();
+                }}
+              >
                 <div class="py-1">👋 GM</div>
               </Button>
             {/if}
           </div>
+          <FireWork />
         </div>
         {#if selectedTypePerformance === "collectGMPoint"}
           <div class="overflow-x-auto py-6">
