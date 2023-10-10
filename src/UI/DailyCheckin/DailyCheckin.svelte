@@ -52,7 +52,7 @@
   };
 
   $: queryDailyCheckin = createQuery({
-    queryKey: ["daily-checkin"],
+    queryKey: ["daily-checkin", selectedWallet],
     queryFn: () => handleDailyCheckin(),
     staleTime: Infinity,
     enabled: true,
