@@ -2,7 +2,6 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import Button from "~/components/Button.svelte";
-  import FireWork from "~/components/FireWork.svelte";
   import Loading from "~/components/Loading.svelte";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, wallet } from "~/store";
@@ -25,7 +24,6 @@
   const demowallet = "0a4a66ef-3340-40f8-89da-205fedfd0a2d";
 
   const handleDailyCheckin = async () => {
-    console.log("It run !!!!!!!");
     try {
       const response = await nimbus.get(`/v2/checkin/${selectedWallet}`);
       return response;
@@ -153,11 +151,10 @@
               </Button>
             {/if}
           </div>
-          <FireWork />
         </div>
         {#if selectedTypePerformance === "collectGMPoint"}
           <div class="overflow-x-auto py-6">
-            <div class="grid grid-cols-7 gap-10 xl:w-full w-[1350px]">
+            <div class="grid grid-cols-7 gap-10 w-[1350px]">
               {#each dailyCheckinData.pointStreak as item, index}
                 <div
                   class={`flex flex-col gap-2 items-center rounded-xl py-10 px-6 ${
