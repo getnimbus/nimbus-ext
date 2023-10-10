@@ -38,7 +38,6 @@
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";
-  import DailyCheckin from "~/UI/Portfolio/DailyCheckin.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -779,12 +778,6 @@
         {totalPositions}
         {totalAssets}
       />
-    {/if}
-  </span>
-
-  <span slot="dailyCheckin">
-    {#if !isLoadingSync}
-      <DailyCheckin />
     {/if}
   </span>
 
