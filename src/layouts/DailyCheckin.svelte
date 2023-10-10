@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import DailyCheckin from "~/UI/DailyCheckin/DailyCheckin.svelte";
+  import LeaderBoard from "~/UI/DailyCheckin/LeaderBoard.svelte";
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
@@ -9,7 +10,7 @@
 
   const listSideBar = [
     {
-      label: i18n("checkinPage.tab-daily-checkin", "DailyCheckin"),
+      label: i18n("checkinPage.tab-daily-checkin", "Daily Checkin"),
       value: "daily-checkin",
       type: "Daily Checkin",
     },
@@ -71,10 +72,12 @@
             <DailyCheckin />
           </div>
         {:else if activeTabValue === "leader-board"}
-          <!-- {:else if activeTabValue === "alerts"}
-            <TabAlerts /> -->
-          <!-- {:else if activeTabValue === "settings"}
-            <TabSettings /> -->
+          <div class="w-full flex flex-col gap-10">
+            <div class="flex flex-col gap-2 justify-center">
+              <div class="xl:text-5xl text-7xl font-semibold">Leaderboard</div>
+            </div>
+            <LeaderBoard />
+          </div>
         {/if}
       </div>
     </div>
