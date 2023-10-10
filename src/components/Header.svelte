@@ -510,7 +510,7 @@
       </div>
 
       <!-- Change log -->
-      <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
+      <!-- <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
         <div
           class={`rounded-full flex justify-center items-center w-full h-full ${
             darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
@@ -522,7 +522,7 @@
           data-featurebase-changelog
           class="w-full h-full absolute inset-0 z-10"
         />
-      </div>
+      </div> -->
 
       <!-- Daily Checkin -->
       <Link to="daily-checkin">

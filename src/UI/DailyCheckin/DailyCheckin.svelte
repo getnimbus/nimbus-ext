@@ -60,7 +60,7 @@
   <div
     class="flex flex-col gap-5 bg-[#1589EB] text-white px-6 py-5 rounded-lg w-[400px]"
   >
-    <span class="text-sm">My GM Point</span>
+    <span class="text-sm">My GM Points</span>
     <span class="text-4xl font-medium">{dailyCheckinData?.totalPoint}</span>
   </div>
 
@@ -105,7 +105,7 @@
           {#if selectedTypePerformance === "collectGMPoint"}
             <div class="flex flex-col gap-2">
               <span class="font-medium text-2xl">
-                Collect your GM Point every day
+                Collect your GM Points every day
               </span>
               <span>Check in 7 days in a row, your rewards will grow </span>
             </div>
