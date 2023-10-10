@@ -510,7 +510,7 @@
       </div>
 
       <!-- Change log -->
-      <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
+      <!-- <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
         <div
           class={`rounded-full flex justify-center items-center w-full h-full ${
             darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
@@ -522,7 +522,7 @@
           data-featurebase-changelog
           class="w-full h-full absolute inset-0 z-10"
         />
-      </div>
+      </div> -->
 
       <!-- Daily Checkin -->
       <Link to="daily-checkin">
@@ -536,6 +536,7 @@
           </div>
         </div>
       </Link>
+
       <!-- <div
         class={`cursor-pointer rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
           darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
@@ -832,10 +833,10 @@
                   class={`flex items-center gap-3 text-white px-5 py-6 
               ${
                 darkMode
-                  ? navActive === "settings"
+                  ? navActive === "daily-checkin"
                     ? "bg-[#212121] rounded-[1000px] opacity-100"
                     : "opacity-70"
-                  : navActive === "settings"
+                  : navActive === "daily-checkin"
                   ? "bg-[#525B8C] rounded-[1000px] opacity-100"
                   : "opacity-70"
               }`}
@@ -856,6 +857,48 @@
                       /><path d="M10 12L8 9.8l.6-1" /></g
                     ></svg
                   >
+                  <span class="text-3xl font-medium">Daily Checkin</span>
+                </div>
+              </Link>
+            </div>
+          {/if}
+          {#if userInfo && Object.keys(userInfo).length !== 0}
+            <div
+              on:click={() => {
+                navActive = "daily-checkin";
+                isShowHeaderMobile.update((n) => (n = false));
+              }}
+            >
+              <Link to="daily-checkin">
+                <div
+                  class={`flex items-center gap-3 text-white px-5 py-6 
+            ${
+              darkMode
+                ? navActive === "settings"
+                  ? "bg-[#212121] rounded-[1000px] opacity-100"
+                  : "opacity-70"
+                : navActive === "settings"
+                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                : "opacity-70"
+            }`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="40"
+                    height="40"
+                    viewBox="0 0 24 24"
+                  >
+                    <g
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    >
+                      <path d="M6 5h12l3 5l-8.5 9.5a.7.7 0 0 1-1 0L3 10l3-5" />
+                      <path d="M10 12L8 9.8l.6-1" />
+                    </g>
+                  </svg>
                   <span class="text-3xl font-medium">Daily Checkin</span>
                 </div>
               </Link>

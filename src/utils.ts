@@ -14,6 +14,7 @@ import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
 import Base from "~/assets/base.svg"
+import confetti from "canvas-confetti";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
@@ -933,3 +934,43 @@ export const autoFontSize = () => {
     }
   }
 };
+
+
+
+  let countFirework = 200;
+  let defaultsFirework = {
+    origin: { y: 0.7 },
+  };
+
+  function fire(particleRatio, opts) {
+    confetti({
+      ...defaultsFirework,
+      ...opts,
+      particleCount: Math.floor(countFirework * particleRatio),
+    });
+  }
+
+  export const triggerFirework = () => {
+    fire(0.25, {
+      spread: 26,
+      startVelocity: 55,
+    });
+    fire(0.2, {
+      spread: 60,
+    });
+    fire(0.35, {
+      spread: 100,
+      decay: 0.91,
+      scalar: 0.8,
+    });
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 25,
+      decay: 0.92,
+      scalar: 1.2,
+    });
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 45,
+    });
+  };

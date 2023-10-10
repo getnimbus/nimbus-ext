@@ -38,7 +38,6 @@
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";
-  import DailyCheckin from "~/UI/DailyCheckin/DailyCheckin.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
