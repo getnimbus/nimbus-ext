@@ -17,9 +17,9 @@
   });
 
   const handleDailyCheckin = async () => {
-    // const demowallet = "0x098f6f171c7d4c0f31c07b8d511f40b2338347eb";
+    const demowallet = "0x098f6f171c7d4c0f31c07b8d511f40b2338347eb";
     try {
-      const response = await nimbus.get(`/v2/checkin/${selectedWallet}`);
+      const response = await nimbus.get(`/v2/checkin/${demowallet}`);
       return response;
     } catch (error) {
       console.log("error : ", error);
@@ -62,119 +62,116 @@
   >
     <span class="text-sm">My GM Point</span>
     <span class="text-4xl font-medium">{dailyCheckinData?.totalPoint}</span>
-    <div>
-      <div class="flex items-center gap-2 mb-2">
-        <AnimateSharedLayout>
-          {#each dailyCheckinTypePortfolio as type}
+  </div>
+
+  <div>
+    <div class="flex items-center gap-2 mb-2">
+      <AnimateSharedLayout>
+        {#each dailyCheckinTypePortfolio as type}
+          <div
+            class="relative cursor-pointer xl:text-base text-2xl font-medium py-2 px-3 rounded-xl transition-all"
+            on:click={() => (selectedTypePerformance = type.value)}
+          >
             <div
-              class="relative cursor-pointer xl:text-base text-2xl font-medium py-2 px-3 rounded-xl transition-all"
-              on:click={() => (selectedTypePerformance = type.value)}
+              class={`relative z-20 ${
+                selectedTypePerformance === type.value && "text-white"
+              }`}
             >
-              <div
-                class={`relative z-20 ${
-                  selectedTypePerformance === type.value && "text-white"
-                }`}
+              {type.label}
+            </div>
+            {#if type.value === selectedTypePerformance}
+              <Motion
+                let:motion
+                layoutId="active-pill"
+                transition={{ type: "spring", duration: 0.6 }}
               >
-                {type.label}
-              </div>
-              {#if type.value === selectedTypePerformance}
-                <Motion
-                  let:motion
-                  layoutId="active-pill"
-                  transition={{ type: "spring", duration: 0.6 }}
-                >
-                  <div
-                    class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                    use:motion
-                  />
-                </Motion>
-              {/if}
-            </div>
-          {/each}
-        </AnimateSharedLayout>
-      </div>
-      {#if $queryDailyCheckin.isLoading}
-        <div class="flex items-center justify-center h-full px-3 py-4">
-          <Loading />
-        </div>
-      {:else}
-        <div class="flex flex-col gap-5 py-3">
-          <div class="flex items-center justify-between">
-            {#if selectedTypePerformance === "collectGMPoint"}
-              <div class="flex flex-col gap-2">
-                <span class="font-medium text-2xl">
-                  Collect your GM Point every day
-                </span>
-                <span>Check in 7 days in a row, your rewards will grow </span>
-              </div>
-            {:else}
-              <div class="py-4">
-                <span class="font-medium text-2xl">Checkin History</span>
-              </div>
+                <div
+                  class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                  use:motion
+                />
+              </Motion>
             {/if}
-            <div class="w-[230px] xl:h-auto h-12">
-              {#if !dailyCheckinData.checkinable}
-                <Button variant="disabled" disabled>
-                  <div class="py-1">Checked</div>
-                </Button>
-              {:else}
-                <Button variant="primary">
-                  <div class="py-1">👋 GM</div>
-                </Button>
-              {/if}
-            </div>
           </div>
+        {/each}
+      </AnimateSharedLayout>
+    </div>
+    {#if $queryDailyCheckin.isLoading}
+      <div class="flex items-center justify-center h-full px-3 py-4">
+        <Loading />
+      </div>
+    {:else}
+      <div class="flex flex-col gap-5 py-3">
+        <div class="flex items-center justify-between">
           {#if selectedTypePerformance === "collectGMPoint"}
-            <div class="overflow-x-auto py-6">
-              <div class="grid grid-cols-7 gap-10 xl:w-full w-[1350px]">
-                {#each dailyCheckinData.pointStreak as item, index}
-                  <div
-                    class={`flex flex-col gap-2 items-center rounded-xl py-10 px-6 ${
-                      dailyCheckinData?.steak === index
-                        ? "bg-black text-white"
-                        : darkMode
-                        ? "bg-gray-700"
-                        : "bg-gray-100"
-                    }`}
-                  >
-                    <span> Day {index + 1}</span>
-                    <img src={goldImg} alt="" class="w-12" />
-                    <span class="text-3xl">+ {item}</span>
-                  </div>
-                {/each}
-              </div>
+            <div class="flex flex-col gap-2">
+              <span class="font-medium text-2xl">
+                Collect your GM Point every day
+              </span>
+              <span>Check in 7 days in a row, your rewards will grow </span>
             </div>
           {:else}
-            <div class="w-full max-h-[250px] overflow-y-auto rounded-lg">
-              <table class="table-auto w-full">
-                <thead>
-                  <tr
-                    class={`sticky top-0 ${
-                      darkMode ? "bg-gray-700" : "bg-gray-100"
-                    } `}
-                  >
-                    <th class="py-2 pl-3 text-left">Owner</th>
-                    <th class="py-2 text-right">Point</th>
-                    <th class="py-2 pr-3 text-right">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {#each dailyCheckinData?.checkinLogs as { owner, point, createdAt }}
-                    <tr>
-                      <td class="py-2 pl-3">{owner}</td>
-                      <td class="py-2 text-right text-green-500">{point}</td>
-                      <td class="py-2 pr-3 text-right"
-                        >{shortDate(createdAt)}</td
-                      >
-                    </tr>
-                  {/each}
-                </tbody>
-              </table>
+            <div class="py-4">
+              <span class="font-medium text-2xl">Checkin History</span>
             </div>
           {/if}
+          <div class="w-[230px] xl:h-auto h-12">
+            {#if !dailyCheckinData.checkinable}
+              <Button variant="disabled" disabled>
+                <div class="py-1">Checked</div>
+              </Button>
+            {:else}
+              <Button variant="primary">
+                <div class="py-1">👋 GM</div>
+              </Button>
+            {/if}
+          </div>
         </div>
-      {/if}
-    </div>
+        {#if selectedTypePerformance === "collectGMPoint"}
+          <div class="overflow-x-auto py-6">
+            <div class="grid grid-cols-7 gap-10 xl:w-full w-[1350px]">
+              {#each dailyCheckinData.pointStreak as item, index}
+                <div
+                  class={`flex flex-col gap-2 items-center rounded-xl py-10 px-6 ${
+                    dailyCheckinData?.steak === index
+                      ? "bg-black text-white"
+                      : darkMode
+                      ? "bg-gray-700"
+                      : "bg-gray-100"
+                  }`}
+                >
+                  <span> Day {index + 1}</span>
+                  <img src={goldImg} alt="" class="w-12" />
+                  <span class="text-3xl">+ {item}</span>
+                </div>
+              {/each}
+            </div>
+          </div>
+        {:else}
+          <div class="w-full max-h-[250px] overflow-y-auto rounded-lg">
+            <table class="table-auto w-full">
+              <thead>
+                <tr
+                  class={`sticky top-0 ${
+                    darkMode ? "bg-gray-700" : "bg-gray-100"
+                  } `}
+                >
+                  <th class="py-2 pl-3 text-left">Date</th>
+                  <th class="py-2 pr-3 text-right">Point</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each dailyCheckinData?.checkinLogs as { point, createdAt }}
+                  <tr>
+                    <td class="py-2 pl-3 text-left">{shortDate(createdAt)}</td>
+                    <td class="py-2 pr-3 text-right text-green-500">{point}</td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+          </div>
+        {/if}
+      </div>
+    {/if}
   </div>
 </div>
 
