@@ -141,7 +141,7 @@
                 >
                   <span> Day {index + 1}</span>
                   <img src={goldImg} alt="" class="w-12" />
-                  <span class="text-3xl">+ {item}</span>
+                  <span class="text-3xl">+{item}</span>
                 </div>
               {/each}
             </div>
