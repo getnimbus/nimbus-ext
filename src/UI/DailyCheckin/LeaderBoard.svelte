@@ -4,11 +4,16 @@
   import { nimbus } from "~/lib/network";
 
   const img = {
-    leaderboardFrame: "./../assets/leaderboard/frameLeaderboard.png",
-    rank1: "./../assets/leaderboard/Rank1.svg",
-    rank2: "./../assets/leaderboard/Rank2.svg",
-    rank3: "./../assets/leaderboard/Rank3.svg",
-    rankstatus: "./../assets/leaderboard/Rankstatus.png",
+    leaderboardFrame:
+      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/beta/src/assets/leaderboard/frameLeaderboard.png",
+    rank1:
+      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/8a2c618aa211964a0863fa4826ed3e9af08ba396/src/assets/leaderboard/Rank1.svg",
+    rank2:
+      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/8a2c618aa211964a0863fa4826ed3e9af08ba396/src/assets/leaderboard/Rank2.svg",
+    rank3:
+      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/8a2c618aa211964a0863fa4826ed3e9af08ba396/src/assets/leaderboard/Rank3.svg",
+    rankstatus:
+      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/beta/src/assets/leaderboard/Rankstatus.png",
   };
 
   let dailyCheckinData;
@@ -143,9 +148,10 @@
                 <td class="px-3 py-2 text-left">{index + 1}</td>
                 <td class="py-2 text-left">{item.owner}</td>
                 <td class="pr-3 py-2 text-right">
-                  <span class="text-yellow-400 font-medium"
-                    >{item._sum.point}</span
-                  > point
+                  <span class="text-yellow-400 font-medium">
+                    {item._sum.point}
+                  </span>
+                  point
                 </td>
               </tr>
             {/each}
