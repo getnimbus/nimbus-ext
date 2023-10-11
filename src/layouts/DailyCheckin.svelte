@@ -3,6 +3,7 @@
   import * as browser from "webextension-polyfill";
   import DailyCheckin from "~/UI/DailyCheckin/TabDailyCheckin.svelte";
   import LeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";
+  import TabReward from "~/UI/DailyCheckin/TabReward.svelte";
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
@@ -19,6 +20,11 @@
       label: i18n("checkinPage.tab-leaderboard", "Leaderboard"),
       value: "leaderboard",
       type: "Leaderboard",
+    },
+    {
+      label: i18n("checkinPage.tab-rewards", "Rewards"),
+      value: "rewards",
+      type: "Rewards",
     },
   ];
 
@@ -86,6 +92,13 @@
               <div class="xl:text-5xl text-7xl font-semibold">Leaderboard</div>
             </div>
             <LeaderBoard />
+          </div>
+        {:else if activeTabValue === "rewards"}
+          <div class="w-full flex flex-col gap-10">
+            <div class="flex flex-col gap-2 justify-center">
+              <div class="xl:text-5xl text-7xl font-semibold">Rewards</div>
+            </div>
+            <TabReward />
           </div>
         {/if}
       </div>

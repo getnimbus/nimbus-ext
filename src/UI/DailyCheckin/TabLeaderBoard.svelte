@@ -2,7 +2,7 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import Loading from "~/components/Loading.svelte";
   import { nimbus } from "~/lib/network";
-  import { user } from "~/store";
+  import { isDarkMode, user } from "~/store";
 
   const img = {
     leaderboardFrame:
@@ -16,6 +16,11 @@
     rankstatus:
       "https://raw.githubusercontent.com/getnimbus/nimbus-ext/beta/src/assets/leaderboard/Rankstatus.png",
   };
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let userInfo = {};
   user.subscribe((value) => {
@@ -53,8 +58,6 @@
       top3Wallet = $queryDailyCheckin?.data?.checkinLeaderboard.slice(0, 3);
     }
   }
-
-  $: console.log("this is sum : ", $queryDailyCheckin?.data);
 </script>
 
 <div class="flex flex-col items-center">
@@ -147,8 +150,8 @@
 
     <!-- the table  -->
 
-    <div class="w-full rounded-xl max-h-[600px] overflow-y-auto">
-      <table class="w-full table-auto rounded-xl">
+    <div class={`w-full rounded-xl max-h-[600px] overflow-y-auto `}>
+      <table class={`w-full table-auto rounded-xl`}>
         <thead class="sticky top-0">
           <tr class="bg-[#FFB800]">
             <td colspan="3" class="text-left text-sm rounded-t-xl pt-2 px-3">

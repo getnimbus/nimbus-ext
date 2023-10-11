@@ -227,6 +227,17 @@ export const dailyCheckinTypePortfolio = [
   },
 ]
 
+export const dailyCheckinRewardsTypePortfolio = [
+  {
+    label: "Redeem Gift",
+    value: "redeemGift",
+  },
+  {
+    label: "Your gift",
+    value: "yourGift",
+  },
+]
+
 export const returnType = [
   {
     label: "Overview",
