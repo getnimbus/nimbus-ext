@@ -1,7 +1,8 @@
 <script>
   import { onMount } from "svelte";
-  import DailyCheckin from "~/UI/DailyCheckin/DailyCheckin.svelte";
-  import LeaderBoard from "~/UI/DailyCheckin/LeaderBoard.svelte";
+  import * as browser from "webextension-polyfill";
+  import DailyCheckin from "~/UI/DailyCheckin/TabDailyCheckin.svelte";
+  import LeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
@@ -15,9 +16,9 @@
       type: "Daily Checkin",
     },
     {
-      label: i18n("checkinPage.tab-leader-board", "Leader Board"),
-      value: "leader-board",
-      type: "Leader Board",
+      label: i18n("checkinPage.tab-leaderboard", "Leaderboard"),
+      value: "leaderboard",
+      type: "Leaderboard",
     },
   ];
 
@@ -27,6 +28,14 @@
   });
 
   let activeTabValue = "daily-checkin";
+
+  $: {
+    browser.storage.onChanged.addListener((changes) => {
+      if (changes?.options?.newValue?.lang) {
+        window.location.reload();
+      }
+    });
+  }
 
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -52,7 +61,7 @@
 <ErrorBoundary>
   <Mixpanel>
     <div
-      class="max-w-[2000px] xl:min-h-screen m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6"
+      class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6"
     >
       <div class="col-span-1">
         <SidebarTabs bind:activeTabValue {darkMode} {listSideBar} />
@@ -71,7 +80,7 @@
             </div>
             <DailyCheckin />
           </div>
-        {:else if activeTabValue === "leader-board"}
+        {:else if activeTabValue === "leaderboard"}
           <div class="w-full flex flex-col gap-10">
             <div class="flex flex-col gap-2 justify-center">
               <div class="xl:text-5xl text-7xl font-semibold">Leaderboard</div>
