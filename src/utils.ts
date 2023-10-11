@@ -957,6 +957,7 @@ export const autoFontSize = () => {
     confetti({
       ...defaultsFirework,
       ...opts,
+      zIndex: 100, 
       particleCount: Math.floor(countFirework * particleRatio),
     });
   }

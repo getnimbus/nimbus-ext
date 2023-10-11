@@ -151,7 +151,11 @@
     <!-- the table  -->
 
     <div class="w-full rounded-xl max-h-[600px] overflow-y-auto">
-      <table class="w-full table-auto rounded-xl">
+      <table
+        class={`w-full table-auto rounded-xl ${
+          darkMode ? "bg-[#161616]" : "bg-white"
+        }`}
+      >
         <thead class="sticky top-0">
           <tr class="bg-[#FFB800]">
             <td colspan="3" class="text-left text-sm rounded-t-xl pt-2 px-3">
@@ -172,7 +176,7 @@
         </thead>
         <tbody>
           <tr>
-            <td colspan="3" class="px-3 py-2 text-left font-medium bg-black">
+            <td colspan="3" class="px-3 py-2 text-left font-medium">
               Runners up
             </td>
           </tr>

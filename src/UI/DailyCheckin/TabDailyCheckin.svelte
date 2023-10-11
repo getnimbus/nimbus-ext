@@ -10,6 +10,8 @@
   let selectedTypePerformance: "collectGMPoint" | "history" = "collectGMPoint";
   let selectedWallet = localStorage.getItem("evm_address");
 
+  let openScreenSuccess = false;
+
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
@@ -31,11 +33,25 @@
     return response.data;
   };
 
+  const onClose = () => {
+    setTimeout(() => {
+      openScreenSuccess = false;
+    }, 500);
+  };
+
+  const triggerCheckinSuccess = () => {
+    openScreenSuccess = true;
+    triggerFirework();
+    setTimeout(() => {
+      openScreenSuccess = false;
+    }, 2000);
+  };
+
   const handleCheckin = async () => {
     try {
       const response = await nimbus.post(`/v2/checkin`, {});
       if (response?.data !== undefined) {
-        triggerFirework();
+        // triggerCheckinSuccess();
         queryClient.invalidateQueries(["daily-checkin"]);
       }
     } catch (error) {
@@ -52,6 +68,9 @@
       user.update((n) => (n = {}));
     },
   });
+
+  const imgGold =
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
 </script>
 
 {#if $queryDailyCheckin.isError}
@@ -126,8 +145,8 @@
             </div>
           {/if}
           <div class="w-[230px] xl:h-auto h-12">
-            {#if $queryDailyCheckin?.data.checkinable}
-              <Button variant="primary" on:click={handleCheckin}>
+            {#if !$queryDailyCheckin?.data.checkinable}
+              <Button variant="primary" on:click={triggerCheckinSuccess}>
                 <div class="py-1">👋 GM</div>
               </Button>
             {:else}
@@ -151,11 +170,7 @@
                   }`}
                 >
                   <span> Day {index + 1}</span>
-                  <img
-                    src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
-                    alt=""
-                    class="w-12"
-                  />
+                  <img src={imgGold} alt="" class="w-12" />
                   <span class="text-3xl">+{item}</span>
                 </div>
               {/each}
@@ -185,6 +200,25 @@
             </table>
           </div>
         {/if}
+      </div>
+    </div>
+  </div>
+{/if}
+
+{#if openScreenSuccess}
+  <div
+    class="fixed h-screen w-screen top-0 left-0 z-20 flex items-center justify-center bg-[#000000cc]"
+    on:click={onClose}
+  >
+    <div class="flex flex-col items-center justify-center gap-10">
+      <span>Received successfully</span>
+      <div>
+        <img src={imgGold} alt="" class="w-40 h-40" />
+      </div>
+      <div class="text-5xl">
+        +{$queryDailyCheckin?.data?.pointStreak[
+          $queryDailyCheckin?.data?.steak
+        ]} Points
       </div>
     </div>
   </div>
