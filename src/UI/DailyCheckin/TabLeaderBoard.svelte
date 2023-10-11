@@ -67,7 +67,7 @@
     </div>
   {:else}
     <!-- leader board -->
-    <div class="relative">
+    <div class="relative -z-10">
       <div class="relative pb-40">
         <img
           src={img.leaderboardFrame}
@@ -123,7 +123,7 @@
             </div>
           </div>
           <span
-            class="absolute bottom-0 left-[50%] absolute-center flex items-center gap-1"
+            class="absolute bottom-0 left-[50%] text-black absolute-center flex items-center gap-1"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -150,8 +150,8 @@
 
     <!-- the table  -->
 
-    <div class={`w-full rounded-xl max-h-[600px] overflow-y-auto `}>
-      <table class={`w-full table-auto rounded-xl`}>
+    <div class="w-full rounded-xl max-h-[600px] overflow-y-auto">
+      <table class="w-full table-auto rounded-xl">
         <thead class="sticky top-0">
           <tr class="bg-[#FFB800]">
             <td colspan="3" class="text-left text-sm rounded-t-xl pt-2 px-3">
@@ -172,7 +172,7 @@
         </thead>
         <tbody>
           <tr>
-            <td colspan="3" class="px-3 py-2 text-left font-medium">
+            <td colspan="3" class="px-3 py-2 text-left font-medium bg-black">
               Runners up
             </td>
           </tr>
