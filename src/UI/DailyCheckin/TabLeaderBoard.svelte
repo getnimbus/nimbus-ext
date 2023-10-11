@@ -64,7 +64,7 @@
     </div>
   {:else}
     <!-- leader board -->
-    <div class="relative border border-green-500">
+    <div class="relative">
       <div class="relative pb-40">
         <img
           src={img.leaderboardFrame}
