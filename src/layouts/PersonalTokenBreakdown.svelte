@@ -415,17 +415,26 @@
         (item) => item?.cmc_id === null
       );
 
-      filteredHoldingTokenData?.map((item: any) => {
-        priceSubscribe([item?.cmc_id], false, (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
+      const groupFilteredNullCmcHoldingTokenData = groupBy(
+        filteredNullCmcHoldingTokenData,
+        "chain"
+      );
+
+      const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+
+      chainList.map((chain) => {
+        groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
+          priceSubscribe([item?.contractAddress], true, chain, (data) => {
+            marketPriceToken = {
+              id: data.id,
+              market_price: data.price,
+            };
+          });
         });
       });
 
       filteredNullCmcHoldingTokenData?.map((item) => {
-        priceSubscribe([item?.contractAddress], true, (data) => {
+        priceSubscribe([item?.contractAddress], true, "", (data) => {
           marketPriceToken = {
             id: data.id,
             market_price: data.price,
