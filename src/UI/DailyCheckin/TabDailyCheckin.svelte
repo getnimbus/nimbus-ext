@@ -4,14 +4,20 @@
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, wallet } from "~/store";
+  import { isDarkMode, user } from "~/store";
   import { dailyCheckinTypePortfolio, triggerFirework } from "~/utils";
 
   let selectedTypePerformance: "collectGMPoint" | "history" = "collectGMPoint";
+  let selectedWallet = localStorage.getItem("evm_address");
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
+  });
+
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
   });
 
   const queryClient = useQueryClient();
@@ -21,10 +27,7 @@
   };
 
   const handleDailyCheckin = async () => {
-    console.log("it runnnn !!!!!");
-    const response = await nimbus.get(
-      `/v2/checkin/${localStorage.getItem("evm_address")}`
-    );
+    const response = await nimbus.get(`/v2/checkin/${selectedWallet}`);
     return response.data;
   };
 
@@ -41,16 +44,21 @@
   };
 
   $: queryDailyCheckin = createQuery({
-    queryKey: ["daily-checkin", localStorage.getItem("evm_address")],
+    queryKey: ["daily-checkin", selectedWallet, userInfo],
     queryFn: () => handleDailyCheckin(),
     staleTime: Infinity,
-    retry: false,
+    enabled: Object.keys(userInfo).length !== 0,
+    onError(err) {
+      user.update((n) => (n = {}));
+    },
   });
-
-  $: console.log("query : ", $queryDailyCheckin);
 </script>
 
-{#if $queryDailyCheckin.isLoading}
+{#if $queryDailyCheckin.isError}
+  <div class="flex items-center justify-center h-full px-3 py-4">
+    Please connect wallet
+  </div>
+{:else if $queryDailyCheckin.isLoading}
   <div class="flex items-center justify-center h-screen">
     <Loading />
   </div>

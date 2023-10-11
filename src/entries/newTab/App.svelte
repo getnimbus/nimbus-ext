@@ -66,6 +66,7 @@
   <QueryClientProvider client={queryClient}>
     <Mixpanel>
       <Router history={undefined}>
+        <!-- flex flex-col pb-40 xl:pb-14  -->
         <div class="flex flex-col pb-40 xl:pb-14">
           <Header />
 
@@ -337,7 +338,7 @@
             {/await}
           </Route>
         </div>
-        <div class="fixed bottom-0 left-0 z-30 w-full footer xl:relative">
+        <div class="fixed bottom-0 left-0 z-10 w-full footer xl:relative">
           <div class="hidden xl:block">
             <Footer />
           </div>

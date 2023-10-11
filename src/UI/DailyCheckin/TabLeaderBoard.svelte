@@ -2,6 +2,7 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import Loading from "~/components/Loading.svelte";
   import { nimbus } from "~/lib/network";
+  import { user } from "~/store";
 
   const img = {
     leaderboardFrame:
@@ -16,47 +17,44 @@
       "https://raw.githubusercontent.com/getnimbus/nimbus-ext/beta/src/assets/leaderboard/Rankstatus.png",
   };
 
-  let dailyCheckinData;
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
+
   let userCurrentRank;
   let selectedWallet = localStorage.getItem("evm_address");
   let top3Wallet = [];
-  // address for demo
-  const demowallet = "0a4a66ef-3340-40f8-89da-205fedfd0a2d";
 
   const handleDailyCheckin = async () => {
-    try {
-      const response = await nimbus.get(`/v2/checkin/${selectedWallet}`);
-      return response;
-    } catch (error) {
-      console.log("error : ", error);
-    }
+    const response = await nimbus.get(`/v2/checkin/${selectedWallet}`);
+    return response.data;
   };
 
   $: queryDailyCheckin = createQuery({
     queryKey: ["daily-checkin", selectedWallet],
     queryFn: () => handleDailyCheckin(),
+    enabled: Object.keys(userInfo).length !== 0,
     staleTime: Infinity,
-    enabled: true,
   });
 
   const handleThing = () => {
-    return dailyCheckinData.checkinLeaderboard.indexOf(userCurrentRank) + 1;
+    return (
+      $queryDailyCheckin?.data.checkinLeaderboard.indexOf(userCurrentRank) + 1
+    );
   };
 
   $: {
     if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
-      dailyCheckinData = $queryDailyCheckin?.data?.data;
+      userCurrentRank = $queryDailyCheckin?.data?.checkinLeaderboard.find(
+        (item) => item.owner === selectedWallet
+      );
+
+      top3Wallet = $queryDailyCheckin?.data?.checkinLeaderboard.slice(0, 3);
     }
   }
 
-  $: {
-    if (dailyCheckinData !== undefined) {
-      userCurrentRank = dailyCheckinData?.checkinLeaderboard.find(
-        (e) => e.owner === selectedWallet
-      );
-      top3Wallet = dailyCheckinData?.checkinLeaderboard.slice(0, 3);
-    }
-  }
+  $: console.log("this is sum : ", $queryDailyCheckin?.data);
 </script>
 
 <div class="flex flex-col items-center">
@@ -66,7 +64,7 @@
     </div>
   {:else}
     <!-- leader board -->
-    <div class="relative border border-green-600">
+    <div class="relative">
       <div class="relative">
         <img
           src={img.leaderboardFrame}
@@ -87,7 +85,7 @@
               <div class="text-lg font-medium">Alfonso Bator</div>
               <div>
                 <span class="text-yellow-400 font-medium text-lg">
-                  {top3Wallet[0]._sum.point}
+                  {top3Wallet[0]?._sum.point}
                 </span> GM point
               </div>
             </div>
@@ -175,7 +173,7 @@
               Runners up
             </td>
           </tr>
-          {#each dailyCheckinData.checkinLeaderboard as item, index}
+          {#each $queryDailyCheckin?.data?.checkinLeaderboard as item, index}
             <tr>
               <td class="px-3 py-2 text-left">{index + 1}</td>
               <td class="py-2 text-left">{item.owner}</td>

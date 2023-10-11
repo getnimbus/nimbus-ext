@@ -525,18 +525,19 @@
       </div> -->
 
       <!-- Daily Checkin -->
-      <Link to="daily-checkin">
-        <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
-          <div
-            class={`rounded-full flex justify-center items-center w-full h-full ${
-              darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
-            }`}
-          >
-            <img src={goldImg} alt="" class="w-[26px] h-[26px]" />
+      {#if userInfo && Object.keys(userInfo).length !== 0}
+        <Link to="daily-checkin">
+          <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
+            <div
+              class={`rounded-full flex justify-center items-center w-full h-full ${
+                darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+              }`}
+            >
+              <img src={goldImg} alt="" class="w-[26px] h-[26px]" />
+            </div>
           </div>
-        </div>
-      </Link>
-
+        </Link>
+      {/if}
       <!-- <div
         class={`cursor-pointer rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
           darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
@@ -846,17 +847,18 @@
                     width="40"
                     height="40"
                     viewBox="0 0 24 24"
-                    ><g
+                  >
+                    <g
                       fill="none"
                       stroke="currentColor"
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      ><path
-                        d="M6 5h12l3 5l-8.5 9.5a.7.7 0 0 1-1 0L3 10l3-5"
-                      /><path d="M10 12L8 9.8l.6-1" /></g
-                    ></svg
-                  >
+                    >
+                      <path d="M6 5h12l3 5l-8.5 9.5a.7.7 0 0 1-1 0L3 10l3-5" />
+                      <path d="M10 12L8 9.8l.6-1" />
+                    </g>
+                  </svg>
                   <span class="text-3xl font-medium">Daily Checkin</span>
                 </div>
               </Link>
