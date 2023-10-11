@@ -64,12 +64,12 @@
     </div>
   {:else}
     <!-- leader board -->
-    <div class="relative">
-      <div class="relative">
+    <div class="relative border border-green-500">
+      <div class="relative pb-40">
         <img
           src={img.leaderboardFrame}
           alt="Leaderboard frame"
-          class="opacity-50 w-[700px]"
+          class="opacity-50 w-[650px]"
         />
         <div class="absolute bottom-0 left-0 w-full h-full">
           <img
@@ -78,9 +78,9 @@
             class="absolute left-[10%] -bottom-24 w-[80%]"
           />
           <div
-            class="absolute top-[40%] left-[50%] absolute-center flex flex-col items-center justify-center"
+            class="absolute top-[38%] left-[50%] absolute-center flex flex-col items-center justify-center"
           >
-            <img src={img.rank1} alt="" class="w-36 h-32" />
+            <img src={img.rank1} alt="" class="w-40 h-36" />
             <div class="flex flex-col gap-2 text-center">
               <div class="text-lg font-medium">Alfonso Bator</div>
               <div>
@@ -91,9 +91,9 @@
             </div>
           </div>
           <div
-            class="absolute top-[29%] left-6 flex flex-col items-center justify-center"
+            class="absolute top-[34.5%] left-12 flex flex-col items-center justify-center"
           >
-            <img src={img.rank2} alt="" class="w-36 h-32" />
+            <img src={img.rank2} alt="" class="w-40 h-36" />
             <div class="flex flex-col gap-2 text-center">
               <div class="text-lg font-medium">Alfonso Bator</div>
               <div>
@@ -104,9 +104,9 @@
             </div>
           </div>
           <div
-            class="absolute top-[32%] right-6 flex flex-col items-center justify-center"
+            class="absolute top-[37%] right-12 flex flex-col items-center justify-center"
           >
-            <img src={img.rank3} alt="" class="w-32 h-28" />
+            <img src={img.rank3} alt="" class="w-36 h-32" />
             <div class="flex flex-col gap-2 text-center">
               <div class="text-lg font-medium">
                 <!-- <span class="text-yellow-400 font-medium text-xl">3.</span> -->
