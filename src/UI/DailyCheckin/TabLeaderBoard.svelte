@@ -54,29 +54,33 @@
       userCurrentRank = dailyCheckinData?.checkinLeaderboard.find(
         (e) => e.owner === selectedWallet
       );
-
       top3Wallet = dailyCheckinData?.checkinLeaderboard.slice(0, 3);
     }
   }
 </script>
 
-<div class="grid xl:grid-cols-12 grid-cols-1 gap-10">
-  <div class="col-span-5">
-    <div class="h-[700px] relative">
-      <div class="relative h-[620px]">
+<div class="flex flex-col items-center">
+  {#if $queryDailyCheckin.isLoading}
+    <div class="flex items-center justify-center h-full px-3 py-4">
+      <Loading />
+    </div>
+  {:else}
+    <!-- leader board -->
+    <div class="relative border border-green-600">
+      <div class="relative">
         <img
           src={img.leaderboardFrame}
           alt="Leaderboard frame"
-          class="absolute opacity-50"
+          class="opacity-50 w-[700px]"
         />
-        <div class="absolute bottom-0 left-0 w-full h-[500px]">
-          <!-- <img
+        <div class="absolute bottom-0 left-0 w-full h-full">
+          <img
             src={img.rankstatus}
             alt=""
-            class="absolute left-[10%] bottom-0 w-[80%]"
-          /> -->
+            class="absolute left-[10%] -bottom-24 w-[80%]"
+          />
           <div
-            class="absolute top-[19%] left-[50%] absolute-center flex flex-col items-center justify-center"
+            class="absolute top-[40%] left-[50%] absolute-center flex flex-col items-center justify-center"
           >
             <img src={img.rank1} alt="" class="w-36 h-32" />
             <div class="flex flex-col gap-2 text-center">
@@ -89,7 +93,7 @@
             </div>
           </div>
           <div
-            class="absolute top-[8%] left-6 flex flex-col items-center justify-center"
+            class="absolute top-[29%] left-6 flex flex-col items-center justify-center"
           >
             <img src={img.rank2} alt="" class="w-36 h-32" />
             <div class="flex flex-col gap-2 text-center">
@@ -102,11 +106,14 @@
             </div>
           </div>
           <div
-            class="absolute top-[11%] right-6 flex flex-col items-center justify-center"
+            class="absolute top-[32%] right-6 flex flex-col items-center justify-center"
           >
             <img src={img.rank3} alt="" class="w-32 h-28" />
             <div class="flex flex-col gap-2 text-center">
-              <div class="text-lg font-medium">Alfonso Bator</div>
+              <div class="text-lg font-medium">
+                <!-- <span class="text-yellow-400 font-medium text-xl">3.</span> -->
+                Alfonso Bator
+              </div>
               <div>
                 <span class="text-yellow-400 font-medium text-lg">
                   {top3Wallet[2]._sum.point}
@@ -114,49 +121,73 @@
               </div>
             </div>
           </div>
+          <span
+            class="absolute bottom-0 left-[50%] absolute-center flex items-center gap-1"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 50 50"
+            >
+              <path
+                fill="currentColor"
+                d="M25 42c-9.4 0-17-7.6-17-17S15.6 8 25 8s17 7.6 17 17s-7.6 17-17 17zm0-32c-8.3 0-15 6.7-15 15s6.7 15 15 15s15-6.7 15-15s-6.7-15-15-15z"
+              />
+              <path
+                fill="currentColor"
+                d="M24 32h2v2h-2zm1.6-2h-1.2l-.4-8v-6h2v6z"
+              />
+            </svg>
+            <span class="whitespace-nowrap">
+              This rank will reset every month
+            </span>
+          </span>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- the table  -->
-  {#if $queryDailyCheckin.isLoading}
-    <div class="flex items-center justify-center h-full px-3 py-4">
-      <Loading />
-    </div>
-  {:else}
-    <div class="col-span-7">
-      <div class="w-full rounded-xl">
-        <table class="w-full table-auto rounded-xl">
-          <thead>
-            <tr class="bg-[#FFB800]">
-              <td colspan="3" class="text-left text-sm rounded-t-xl pt-2 px-3">
-                Your current rank
+    <!-- the table  -->
+
+    <div class="w-full rounded-xl max-h-[600px] overflow-y-auto">
+      <table class="w-full table-auto rounded-xl">
+        <thead class="sticky top-0">
+          <tr class="bg-[#FFB800]">
+            <td colspan="3" class="text-left text-sm rounded-t-xl pt-2 px-3">
+              Your current rank
+            </td>
+          </tr>
+          <tr class="bg-[#FFB800]">
+            <th class="px-3 pb-3 pt-1 text-left">
+              {handleThing()}
+            </th>
+            <th class="pb-3 pt-1 text-left">
+              {userCurrentRank.owner}
+            </th>
+            <th class="pr-3 pb-3 pt-1 text-right">
+              {userCurrentRank._sum.point} point
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="3" class="px-3 py-2 text-left font-medium">
+              Runners up
+            </td>
+          </tr>
+          {#each dailyCheckinData.checkinLeaderboard as item, index}
+            <tr>
+              <td class="px-3 py-2 text-left">{index + 1}</td>
+              <td class="py-2 text-left">{item.owner}</td>
+              <td class="pr-3 py-2 text-right">
+                <span class="text-yellow-400 font-medium">
+                  {item._sum.point}
+                </span> point
               </td>
             </tr>
-            <tr class="bg-[#FFB800] border border-[#FFB800]">
-              <th class="px-3 pb-3 pt-1 text-left">{handleThing()}</th>
-              <th class="pb-3 pt-1 text-left">{userCurrentRank.owner}</th>
-              <th class="pr-3 pb-3 pt-1 text-right">
-                {userCurrentRank._sum.point} point
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each dailyCheckinData.checkinLeaderboard as item, index}
-              <tr>
-                <td class="px-3 py-2 text-left">{index + 1}</td>
-                <td class="py-2 text-left">{item.owner}</td>
-                <td class="pr-3 py-2 text-right">
-                  <span class="text-yellow-400 font-medium">
-                    {item._sum.point}
-                  </span> point
-                </td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
+          {/each}
+        </tbody>
+      </table>
     </div>
   {/if}
 </div>
