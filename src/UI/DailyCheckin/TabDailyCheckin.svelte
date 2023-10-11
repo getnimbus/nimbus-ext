@@ -51,7 +51,7 @@
     try {
       const response = await nimbus.post(`/v2/checkin`, {});
       if (response?.data !== undefined) {
-        // triggerCheckinSuccess();
+        triggerCheckinSuccess();
         queryClient.invalidateQueries(["daily-checkin"]);
       }
     } catch (error) {
@@ -145,8 +145,8 @@
             </div>
           {/if}
           <div class="w-[230px] xl:h-auto h-12">
-            {#if !$queryDailyCheckin?.data.checkinable}
-              <Button variant="primary" on:click={triggerCheckinSuccess}>
+            {#if $queryDailyCheckin?.data.checkinable}
+              <Button variant="primary" on:click={handleCheckin}>
                 <div class="py-1">👋 GM</div>
               </Button>
             {:else}

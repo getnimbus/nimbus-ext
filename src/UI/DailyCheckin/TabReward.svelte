@@ -109,9 +109,15 @@
               } `}
             >
               <div
-                class="grid grid-cols-3 items-center gap-10 px-8 py-5 border-b-2 border-dashed"
+                class="grid grid-cols-3 items-center gap-5 px-8 py-5 border-b-2 border-dashed"
               >
-                <img src={item.logo} alt="" class="object-contain col-span-1" />
+                <div
+                  class={`h-full w-full col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
+                    darkMode ? "bg-gray-200" : "bg-white"
+                  }`}
+                >
+                  <img src={item.logo} alt="" class="object-contain m-auto" />
+                </div>
                 <div class="flex flex-col gap-2 col-span-2">
                   <div
                     class="flex gap-1 items-center font-medium text-2xl text-[#ffb800]"
@@ -141,7 +147,7 @@
                 <div
                   class="col-span-2 px-4 py-[10px] bg-[#1e96fc] rounded-xl text-white"
                 >
-                  <div class="flex justify-between items-center">
+                  <div class="flex justify-center items-center gap-5">
                     <span class="flex items-center gap-1">
                       <img src={imgGold} alt="" />
                       <span>{item.cost}</span>
@@ -162,9 +168,15 @@
               } `}
             >
               <div
-                class="grid grid-cols-3 items-center gap-10 px-8 py-5 border-b-2 border-dashed"
+                class="grid grid-cols-3 items-center gap-5 px-8 py-5 border-b-2 border-dashed"
               >
-                <img src={item.logo} alt="" class="object-contain col-span-1" />
+                <div
+                  class={`h-full w-full col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
+                    darkMode ? "bg-gray-200" : "bg-white"
+                  }`}
+                >
+                  <img src={item.logo} alt="" class="object-contain m-auto" />
+                </div>
                 <div class="flex flex-col gap-2 col-span-2">
                   <div
                     class="flex gap-1 items-center font-medium text-2xl text-[#ffb800]"
@@ -194,7 +206,7 @@
                 <div
                   class="col-span-2 px-4 py-[10px] bg-[#1e96fc] rounded-xl text-white"
                 >
-                  <div class="flex justify-between items-center">
+                  <div class="flex justify-center items-center gap-5">
                     <span class="flex items-center gap-1">
                       <img src={imgGold} alt="" />
                       <span>{item.cost}</span>
