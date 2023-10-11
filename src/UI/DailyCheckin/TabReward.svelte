@@ -101,7 +101,7 @@
       <div class="grid grid-cols-3 gap-10">
         {#if selectedTypePerformance === "redeemGift"}
           <!-- Redeem gift  -->
-          {#each $queryReward?.data.redeemable as item}
+          {#each $queryReward?.data?.redeemable || [] as item}
             <!-- a card  -->
             <div
               class={`flex flex-col rounded-2xl ${
@@ -160,7 +160,7 @@
           {/each}
         {:else if selectedTypePerformance === "yourGift"}
           <!-- Your gift -->
-          {#each $queryReward?.data.ownRewards as item}
+          {#each $queryReward?.data?.ownRewards || [] as item}
             <!-- a card  -->
             <div
               class={`flex flex-col rounded-2xl ${
