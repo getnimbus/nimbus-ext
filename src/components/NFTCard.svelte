@@ -58,7 +58,7 @@
       on:mouseenter={() => (showTooltipName = true)}
       on:mouseleave={() => (showTooltipName = false)}
     >
-      {shorterName(data?.name, 30)}
+      {shorterName(data?.name, 30)} #{data?.tokenId}
       {#if showTooltipName && data?.name.length > 30}
         <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
           <tooltip-detail text={data?.name} />
@@ -66,12 +66,12 @@
       {/if}
     </div>
 
-    <div
+    <!-- <div
       class="xl:text-sm text-lg font-normal flex items-center justify-between gap-2"
     >
       <div class="text-[#616b84]">Rarity Score</div>
       <TooltipNumber number={data?.rarityScore} type="percent" />
-    </div>
+    </div> -->
 
     <div
       class="xl:text-sm text-lg font-normal flex items-center justify-between gap-1"
