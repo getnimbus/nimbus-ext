@@ -227,6 +227,17 @@ export const dailyCheckinTypePortfolio = [
   },
 ]
 
+export const dailyCheckinRewardsTypePortfolio = [
+  {
+    label: "Redeem Gift",
+    value: "redeemGift",
+  },
+  {
+    label: "Your gift",
+    value: "yourGift",
+  },
+]
+
 export const returnType = [
   {
     label: "Overview",
@@ -946,6 +957,7 @@ export const autoFontSize = () => {
     confetti({
       ...defaultsFirework,
       ...opts,
+      zIndex: 100, 
       particleCount: Math.floor(countFirework * particleRatio),
     });
   }

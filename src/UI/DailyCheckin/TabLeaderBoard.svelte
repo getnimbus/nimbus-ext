@@ -2,7 +2,7 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import Loading from "~/components/Loading.svelte";
   import { nimbus } from "~/lib/network";
-  import { user } from "~/store";
+  import { isDarkMode, user } from "~/store";
 
   const img = {
     leaderboardFrame:
@@ -16,6 +16,11 @@
     rankstatus:
       "https://raw.githubusercontent.com/getnimbus/nimbus-ext/beta/src/assets/leaderboard/Rankstatus.png",
   };
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
 
   let userInfo = {};
   user.subscribe((value) => {
@@ -53,8 +58,6 @@
       top3Wallet = $queryDailyCheckin?.data?.checkinLeaderboard.slice(0, 3);
     }
   }
-
-  $: console.log("this is sum : ", $queryDailyCheckin?.data);
 </script>
 
 <div class="flex flex-col items-center">
@@ -64,7 +67,7 @@
     </div>
   {:else}
     <!-- leader board -->
-    <div class="relative">
+    <div class="relative -z-10">
       <div class="relative pb-40">
         <img
           src={img.leaderboardFrame}
@@ -120,7 +123,7 @@
             </div>
           </div>
           <span
-            class="absolute bottom-0 left-[50%] absolute-center flex items-center gap-1"
+            class="absolute bottom-0 left-[50%] text-black absolute-center flex items-center gap-1"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +151,11 @@
     <!-- the table  -->
 
     <div class="w-full rounded-xl max-h-[600px] overflow-y-auto">
-      <table class="w-full table-auto rounded-xl">
+      <table
+        class={`w-full table-auto rounded-xl ${
+          darkMode ? "bg-[#161616]" : "bg-white"
+        }`}
+      >
         <thead class="sticky top-0">
           <tr class="bg-[#FFB800]">
             <td colspan="3" class="text-left text-sm rounded-t-xl pt-2 px-3">
