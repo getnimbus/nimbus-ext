@@ -174,16 +174,24 @@
             tooltipText="Price NFTs now - Price NFTs at time you spent"
             isTooltip
           >
-            <div
-              class={`xl:text-3xl text-5xl flex ${
-                profitAndLoss !== 0
-                  ? profitAndLoss >= 0
-                    ? "text-[#00A878]"
-                    : "text-red-500"
-                  : ""
-              }`}
-            >
-              <TooltipNumber number={Math.abs(profitAndLoss)} type="value" />
+            <div class="flex items-end gap-1">
+              <div
+                class={`xl:text-3xl text-5xl ${
+                  profitAndLoss !== 0
+                    ? profitAndLoss >= 0
+                      ? "text-[#00A878]"
+                      : "text-red-500"
+                    : ""
+                }`}
+              >
+                <TooltipNumber
+                  number={Math.abs(profitAndLoss) / data?.marketPrice}
+                  type="balance"
+                />
+              </div>
+              <span class="text-xl text-gray-500">
+                {data?.nativeToken?.symbol || "-"}
+              </span>
             </div>
             <div
               class={`xl:text-lg text-3xl flex ${
