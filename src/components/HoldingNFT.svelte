@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
-  import { shorterName } from "~/utils";
+  import { shorterName, detectedChain } from "~/utils";
   import { typeWallet, isDarkMode } from "~/store";
 
   import "~/components/Tooltip.custom.svelte";
@@ -12,6 +12,8 @@
 
   export let data;
   export let selectedWallet;
+
+  $: console.log("data: ", data);
 
   const navigate = useNavigate();
 
@@ -62,7 +64,7 @@
         : "bg-white group-hover:bg-gray-100"
     }`}
   >
-    <div class="relative">
+    <div class="relative flex flex-col gap-1">
       <div
         class="xl:text-sm text-2xl font-medium flex justify-start relative"
         on:mouseover={() => {
@@ -81,6 +83,15 @@
           </div>
         {/if}
       </div>
+      {#if typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE"}
+        <img
+          src={detectedChain(data.nativeToken.symbol)}
+          alt=""
+          width="20"
+          height="20"
+          class="rounded-full"
+        />
+      {/if}
     </div>
   </td>
 
