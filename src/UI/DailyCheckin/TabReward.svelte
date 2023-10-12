@@ -111,7 +111,7 @@
           {/each}
         </AnimateSharedLayout>
       </div>
-      <div class="grid xl:grid-cols-3 grid-cols-1 xl:h-auto gap-10">
+      <div class="grid xl:grid-cols-2 grid-cols-1 xl:h-auto gap-10">
         {#if selectedTypePerformance === "redeemGift"}
           <!-- Redeem gift  -->
           {#each $queryReward?.data?.redeemable || [] as item}
@@ -177,7 +177,7 @@
                 <div class="semi-circle" />
               </div>
               <div
-                class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-5 py-5"
+                class="grid grid-cols-3 items-center xl:gap-5 gap-20 xl:px-12 px-28 py-5"
               >
                 <div class="col-span-1 xl:text-base text-xl px-7">
                   {item.remains} left
@@ -267,9 +267,9 @@
                 />
                 <div class="semi-circle" />
               </div>
-              <div class="px-5 py-5">
+              <div class="xl:px-16 px-32 py-5">
                 <div
-                  class="bg-gray-200 text-black flex justify-between items-center xl:gap-5 gap-20 px-3 py-3 rounded-xl"
+                  class="bg-gray-200 text-black flex justify-between items-center xl:gap-5 gap-20 xl:px-3 px-5 py-3 rounded-xl"
                 >
                   <span class="xl:text-sm text-base">Your gift code</span>
                   <span

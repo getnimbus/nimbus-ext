@@ -159,7 +159,7 @@
     </div>
 
     <!-- the table  -->
-    <div class="w-full rounded-xl border border-[#ffb800]">
+    <div class="xl:w-3/5 w-full rounded-xl border border-[#ffb800]">
       <table
         class={`w-full table-auto rounded-xl ${
           darkMode ? "bg-[#161616]" : "bg-white"
@@ -175,7 +175,7 @@
             </td>
           </tr>
           <tr class="bg-[#FFB800] xl:text-base text-xl font-medium">
-            <td class="px-3 pb-3 pt-1 text-left w-4">
+            <td class="px-3 pb-3 pt-1 text-left text-2xl font-normal w-4">
               {handleThing()}
             </td>
             <td class="pb-3 pt-1 text-left">
@@ -196,8 +196,14 @@
             </td>
           </tr>
           {#each $queryDailyCheckin?.data?.checkinLeaderboard.slice(0, 20) as item, index}
-            <tr class="xl:text-base text-xl">
-              <td class="px-3 py-2 text-left">{index + 1}</td>
+            <tr
+              class={`xl:text-base text-xl hover:${
+                darkMode ? "bg-gray-800" : "bg-gray-100"
+              }`}
+            >
+              <td class="px-3 py-2 text-3xl font-light text-left"
+                >{index + 1}</td
+              >
               <td class="py-2 text-left">{shortAddress(item.owner)}</td>
               <td class="pr-3 py-2 text-right">
                 <span class="text-yellow-400 font-medium">
