@@ -4,6 +4,7 @@
   import { i18n } from "~/lib/i18n";
   import { chain, typeWallet, isDarkMode } from "~/store";
   import { filterTokenValueType } from "~/utils";
+  import { groupBy } from "lodash";
 
   export let selectedTokenHolding;
   export let selectedDataPieChart;
@@ -106,17 +107,26 @@
         (item) => item?.cmc_id === null
       );
 
-      filteredNullCmcHoldingTokenData?.map((item) => {
-        priceSubscribe([item?.contractAddress], true, (data) => {
-          marketPriceToken = {
-            id: data.id,
-            market_price: data.price,
-          };
+      const groupFilteredNullCmcHoldingTokenData = groupBy(
+        filteredNullCmcHoldingTokenData,
+        "chain"
+      );
+
+      const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+
+      chainList.map((chain) => {
+        groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
+          priceSubscribe([item?.contractAddress], true, chain, (data) => {
+            marketPriceToken = {
+              id: data.id,
+              market_price: data.price,
+            };
+          });
         });
       });
 
       filteredHoldingTokenData?.map((item) => {
-        priceSubscribe([item?.cmc_id], false, (data) => {
+        priceSubscribe([item?.cmc_id], false, "", (data) => {
           marketPriceToken = {
             id: data.id,
             market_price: data.price,
@@ -133,12 +143,17 @@
       holdingNFTData
         ?.filter((item) => item?.nativeToken?.cmcId)
         ?.map((item) => {
-          priceSubscribe([Number(item?.nativeToken?.cmcId)], false, (data) => {
-            marketPriceNFT = {
-              id: data.id,
-              market_price: data.price,
-            };
-          });
+          priceSubscribe(
+            [Number(item?.nativeToken?.cmcId)],
+            false,
+            "",
+            (data) => {
+              marketPriceNFT = {
+                id: data.id,
+                market_price: data.price,
+              };
+            }
+          );
         });
     }
   }
