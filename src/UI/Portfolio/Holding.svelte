@@ -613,7 +613,7 @@
                         {MultipleLang.current_value}
                       </div>
                     </th>
-                    <th class="py-3 pr-3">
+                    <th class="py-3">
                       <div
                         class="text-right xl:text-xs text-xl uppercase font-medium"
                       >
