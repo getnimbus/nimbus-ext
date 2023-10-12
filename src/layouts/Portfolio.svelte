@@ -862,7 +862,9 @@
 
               <Holding
                 {selectedWallet}
-                isLoadingNFT={$queryNftHolding.isFetching}
+                isLoadingNFT={selectedChain === "ALL"
+                  ? $queryAllNftHolding.some((item) => item.isFetching === true)
+                  : $queryNftHolding.isFetching}
                 isLoadingToken={selectedChain === "ALL"
                   ? $queryAllTokenHolding.some(
                       (item) => item.isFetching === true
