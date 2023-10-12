@@ -11,6 +11,7 @@
     typeWallet,
     isShowHeaderMobile,
     userId,
+    publicEvmAddress,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -199,6 +200,7 @@
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
       localStorage.setItem("evm_address", $queryUserInfo.data.publicAddress);
+      publicEvmAddress.update((n) => (n = $queryUserInfo.data.publicAddress));
       userId.update((n) => (n = $queryUserInfo.data.id));
       userID = $queryUserInfo.data.id;
       publicAddress = $queryUserInfo.data.publicAddress;

@@ -13,6 +13,7 @@
     isShowHeaderMobile,
     triggerConnectWallet,
     userId,
+    publicEvmAddress,
   } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
@@ -121,6 +122,7 @@
     wallet.update((n) => (n = ""));
     chain.update((n) => (n = ""));
     typeWallet.update((n) => (n = ""));
+    publicEvmAddress.update((n) => (n = ""));
     showPopover = false;
     localStorage.removeItem("evm_address");
     localStorage.removeItem("evm_token");

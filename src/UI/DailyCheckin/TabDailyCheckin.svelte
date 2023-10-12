@@ -4,11 +4,10 @@
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, user } from "~/store";
+  import { isDarkMode, user, userId, wallet, publicEvmAddress } from "~/store";
   import { dailyCheckinTypePortfolio, triggerFirework } from "~/utils";
 
   let selectedTypePerformance: "collectGMPoint" | "history" = "collectGMPoint";
-  let selectedWallet = localStorage.getItem("evm_address");
 
   let openScreenSuccess = false;
 
@@ -29,7 +28,8 @@
   };
 
   const handleDailyCheckin = async () => {
-    const response = await nimbus.get(`/v2/checkin/${selectedWallet}`);
+    console.log("it query !!!!");
+    const response = await nimbus.get(`/v2/checkin/${$publicEvmAddress}`);
     return response.data;
   };
 
@@ -60,7 +60,7 @@
   };
 
   $: queryDailyCheckin = createQuery({
-    queryKey: ["daily-checkin"],
+    queryKey: [$publicEvmAddress, "daily-checkin"],
     queryFn: () => handleDailyCheckin(),
     staleTime: Infinity,
     enabled: Object.keys(userInfo).length !== 0,
@@ -69,7 +69,7 @@
     },
   });
 
-  $: console.log("queryDailyCheckin : ", $queryDailyCheckin);
+  $: console.log("queryDailyCheckin : ", $queryDailyCheckin?.data);
 
   const imgGold =
     "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";

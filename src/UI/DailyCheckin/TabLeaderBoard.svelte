@@ -2,7 +2,7 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import Loading from "~/components/Loading.svelte";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, user } from "~/store";
+  import { isDarkMode, user, publicEvmAddress } from "~/store";
 
   const img = {
     leaderboardFrame:
@@ -28,16 +28,15 @@
   });
 
   let userCurrentRank;
-  let selectedWallet = localStorage.getItem("evm_address");
   let top3Wallet = [];
 
   const handleDailyCheckin = async () => {
-    const response = await nimbus.get(`/v2/checkin/${selectedWallet}`);
+    const response = await nimbus.get(`/v2/checkin/${$publicEvmAddress}`);
     return response.data;
   };
 
   $: queryDailyCheckin = createQuery({
-    queryKey: ["daily-checkin", selectedWallet],
+    queryKey: [$publicEvmAddress, "daily-checkin"],
     queryFn: () => handleDailyCheckin(),
     enabled: Object.keys(userInfo).length !== 0,
     staleTime: Infinity,
@@ -52,7 +51,7 @@
   $: {
     if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
       userCurrentRank = $queryDailyCheckin?.data?.checkinLeaderboard.find(
-        (item) => item.owner === selectedWallet
+        (item) => item.owner === $publicEvmAddress
       );
 
       top3Wallet = $queryDailyCheckin?.data?.checkinLeaderboard.slice(0, 3);
@@ -61,7 +60,11 @@
 </script>
 
 <div class="flex flex-col items-center">
-  {#if $queryDailyCheckin.isLoading}
+  {#if $queryDailyCheckin.isError}
+    <div class="flex items-center justify-center h-full px-3 py-4">
+      Please connect wallet
+    </div>
+  {:else if $queryDailyCheckin.isLoading}
     <div class="flex items-center justify-center h-full px-3 py-4">
       <Loading />
     </div>
@@ -150,7 +153,9 @@
 
     <!-- the table  -->
 
-    <div class="w-full rounded-xl max-h-[600px] overflow-y-auto">
+    <div
+      class="w-full rounded-xl max-h-[600px] overflow-y-auto border border-[#ffb800]"
+    >
       <table
         class={`w-full table-auto rounded-xl ${
           darkMode ? "bg-[#161616]" : "bg-white"
