@@ -136,10 +136,12 @@
         <div class="flex items-center justify-between">
           {#if selectedTypePerformance === "collectGMPoint"}
             <div class="flex flex-col gap-2">
-              <span class="font-medium text-2xl">
+              <span class="font-medium text-3xl xl:text-2xl">
                 Collect your GM Points every day
               </span>
-              <span>Check in 7 days in a row, your rewards will grow </span>
+              <span class="xl:text-base text-xl"
+                >Check in 7 days in a row, your rewards will grow
+              </span>
             </div>
           {:else}
             <div class="py-4">
