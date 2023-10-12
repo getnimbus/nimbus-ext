@@ -642,8 +642,6 @@
     }
   };
 
-  $: console.log("listAddress: ", listAddress);
-
   $: {
     if (
       listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2 &&
