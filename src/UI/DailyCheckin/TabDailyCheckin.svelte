@@ -21,6 +21,8 @@
     userInfo = value;
   });
 
+  let isLoadingCheckin = false;
+
   const queryClient = useQueryClient();
 
   const shortDate = (date: string) => {
@@ -28,7 +30,6 @@
   };
 
   const handleDailyCheckin = async () => {
-    console.log("it query !!!!");
     const response = await nimbus.get(`/v2/checkin/${$publicEvmAddress}`);
     return response.data;
   };
@@ -48,6 +49,7 @@
   };
 
   const handleCheckin = async () => {
+    isLoadingCheckin = true;
     try {
       const response = await nimbus.post(`/v2/checkin`, {});
       if (response?.data !== undefined) {
@@ -57,6 +59,7 @@
     } catch (error) {
       console.log("this err : ", error);
     }
+    isLoadingCheckin = false;
   };
 
   $: queryDailyCheckin = createQuery({
@@ -150,7 +153,11 @@
           {/if}
           <div class="w-[230px] xl:h-auto h-12">
             {#if $queryDailyCheckin?.data?.checkinable}
-              <Button variant="primary" on:click={handleCheckin}>
+              <Button
+                variant="primary"
+                on:click={handleCheckin}
+                isLoading={isLoadingCheckin}
+              >
                 <div class="py-1">👋 GM</div>
               </Button>
             {:else}
@@ -227,10 +234,10 @@
       <div>
         <img src={imgGold} alt="" class="w-40 h-40" />
       </div>
-      <div class="text-5xl">
+      <div class="text-5xl text-white">
         +{$queryDailyCheckin?.data?.pointStreak[
           $queryDailyCheckin?.data?.steak
-        ]} Points
+        ]} GM Points
       </div>
     </div>
   </div>
