@@ -301,13 +301,11 @@
                 on:click={() => (selectedTypeDisplay = "grid")}
               >
                 <div
-                  class={`relative z-20 ${
+                  class={`relative z-20 xl:w-[20px] xl:h-[20px] w-[32px] h-[32px] ${
                     selectedTypeDisplay === "grid" && "text-white"
                   }`}
                 >
                   <svg
-                    width="24"
-                    height="24"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                     xmlns="http://www.w3.org/2000/svg"
@@ -350,13 +348,11 @@
                 on:click={() => (selectedTypeDisplay = "table")}
               >
                 <div
-                  class={`relative z-20 ${
+                  class={`relative z-20 xl:w-[20px] xl:h-[20px] w-[32px] h-[32px] ${
                     selectedTypeDisplay === "table" && "text-white"
                   }`}
                 >
                   <svg
-                    width="24"
-                    height="24"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                     xmlns="http://www.w3.org/2000/svg"
