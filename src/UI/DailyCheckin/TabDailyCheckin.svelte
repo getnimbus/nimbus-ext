@@ -181,7 +181,7 @@
             </div>
           </div>
         {:else}
-          <div class="w-full max-h-[250px] overflow-y-auto rounded-lg">
+          <div class="w-full h-[250px] overflow-y-auto rounded-lg">
             <table class="table-auto w-full">
               <thead>
                 <tr
@@ -204,6 +204,14 @@
             </table>
           </div>
         {/if}
+      </div>
+      <div class="flex flex-col gap-5">
+        <span class="font-medium text-3xl xl:text-2xl">This month reward</span>
+        <div class="flex gap-5">
+          <div><img src="/assets/top1.png" alt="" class="h-[250px]" /></div>
+          <div><img src="/assets/top2.png" alt="" class="h-[250px]" /></div>
+          <div><img src="/assets/top3.png" alt="" class="h-[250px]" /></div>
+        </div>
       </div>
     </div>
   </div>

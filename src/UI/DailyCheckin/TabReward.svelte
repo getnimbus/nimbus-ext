@@ -112,18 +112,22 @@
               } `}
             >
               <div
-                class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-5 pt-5 pb-7 border-b-2 border-dashed relative"
+                class="grid grid-cols-3 items-center px-5 pt-5 pb-7 border-b-2 border-dashed relative"
               >
                 <div
-                  class={`xl:h-full h-[200px] col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
+                  class={`xl:h-[150px] h-[250px] col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
                     darkMode ? "bg-gray-200" : "bg-white"
                   }`}
                 >
-                  <img src={item.logo} alt="" class="object-contain m-auto" />
+                  <img
+                    src={item.logo}
+                    alt=""
+                    class="object-contain m-auto w-16 h-16"
+                  />
                 </div>
-                <div class="flex flex-col gap-2 col-span-2 px-5">
+                <div class="flex flex-col gap-2 col-span-2 px-10">
                   <div
-                    class="flex gap-1 items-center font-medium xl:text-2xl text-3xl text-[#ffb800]"
+                    class="flex gap-1 items-center font-medium xl:text-lg text-xl text-[#ffb800]"
                   >
                     <svg
                       width="26"
@@ -142,17 +146,19 @@
                     {item.campaignName}
                   </div>
                   <div class="xl:text-3xl text-4xl uppercase">{item.title}</div>
-                  <div class="xl:text-base text-xl">{item.description}</div>
+                  <div class="xl:text-sm text-lg">{item.description}</div>
                 </div>
+
+                <!-- circle  -->
                 <div
-                  class={`w-7 h-14  rounded-l-none rounded-r-full absolute -left-[1px] -bottom-7 ${
+                  class={`w-5 h-10  rounded-l-none rounded-r-full absolute -left-[1px] -bottom-5 ${
                     darkMode
                       ? "bg-[#161616]"
                       : "bg-white border-r border-t border-b"
                   }`}
                 />
                 <div
-                  class={`w-7 h-14 rounded-r-none rounded-l-full bg-white absolute -right-[1px] -bottom-7 ${
+                  class={`w-5 h-10 rounded-r-none rounded-l-full bg-white absolute -right-[1px] -bottom-5 ${
                     darkMode
                       ? "bg-[#161616]"
                       : "bg-white border-l border-t border-b"
@@ -163,20 +169,22 @@
               <div
                 class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-5 py-5"
               >
-                <div class="col-span-1 xl:text-base text-xl">
+                <div class="col-span-1 xl:text-base text-xl px-7">
                   {item.remains} left
                 </div>
                 <div
-                  class="col-span-2 py-[10px] bg-[#1e96fc] rounded-xl text-white"
+                  class="col-span-2 py-[10px] bg-[#1e96fc] rounded-xl text-white w-[200px] mx-auto cursor-pointer"
                 >
                   <div
-                    class="flex justify-center items-center gap-5 xl:text-base text-xl"
+                    class="grid grid-cols-3 xl:text-base text-xl font-medium"
                   >
-                    <span class="flex items-center gap-1">
+                    <span
+                      class="flex items-center justify-center gap-1 col-span-1"
+                    >
                       <img src={imgGold} alt="" />
                       <span>{item.cost}</span>
                     </span>
-                    <span class="text-left">Redeem</span>
+                    <span class="text-center col-span-2">Redeem</span>
                   </div>
                 </div>
               </div>
@@ -184,7 +192,8 @@
           {/each}
         {:else if selectedTypePerformance === "yourGift"}
           <!-- Your gift - ownRewards -->
-          {#each $queryReward?.data?.ownRewards || [] as item}
+
+          {#each $queryReward?.data?.redeemable || [] as item}
             <!-- a card  -->
             <div
               class={`flex flex-col rounded-2xl ${
@@ -192,22 +201,22 @@
               } `}
             >
               <div
-                class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-8 py-5 border-b-2 border-dashed"
+                class="grid grid-cols-3 items-center px-5 pt-5 pb-7 border-b-2 border-dashed relative"
               >
                 <div
-                  class={`xl:w-auto xl:h-auto h-[200px] col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
+                  class={`xl:h-[150px] h-[250px] col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
                     darkMode ? "bg-gray-200" : "bg-white"
                   }`}
                 >
                   <img
                     src={item.logo}
                     alt=""
-                    class="xl:object-contain m-auto"
+                    class="object-contain m-auto w-16 h-16"
                   />
                 </div>
-                <div class="flex flex-col gap-2 col-span-2">
+                <div class="flex flex-col gap-2 col-span-2 px-10">
                   <div
-                    class="flex gap-1 items-center font-medium xl:text-2xl text-3xl text-[#ffb800]"
+                    class="flex gap-1 items-center font-medium xl:text-lg text-xl text-[#ffb800]"
                   >
                     <svg
                       width="26"
@@ -226,26 +235,45 @@
                     {item.campaignName}
                   </div>
                   <div class="xl:text-3xl text-4xl uppercase">{item.title}</div>
-                  <div class="xl:text-base text-xl">{item.description}</div>
+                  <div class="xl:text-sm text-lg">{item.description}</div>
                 </div>
+
+                <!-- circle  -->
+                <div
+                  class={`w-5 h-10  rounded-l-none rounded-r-full absolute -left-[1px] -bottom-5 ${
+                    darkMode
+                      ? "bg-[#161616]"
+                      : "bg-white border-r border-t border-b"
+                  }`}
+                />
+                <div
+                  class={`w-5 h-10 rounded-r-none rounded-l-full bg-white absolute -right-[1px] -bottom-5 ${
+                    darkMode
+                      ? "bg-[#161616]"
+                      : "bg-white border-l border-t border-b"
+                  } `}
+                />
+                <div class="semi-circle" />
               </div>
               <div
-                class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-8 py-5"
+                class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-5 py-5"
               >
-                <div class="col-span-1 xl:text-base text-xl">
+                <div class="col-span-1 xl:text-base text-xl px-7">
                   {item.remains} left
                 </div>
                 <div
-                  class="col-span-2 py-[10px] bg-[#1e96fc] rounded-xl text-white"
+                  class="col-span-2 py-[10px] bg-[#1e96fc] rounded-xl text-white w-[200px] mx-auto cursor-pointer"
                 >
                   <div
-                    class="flex justify-center items-center gap-5 xl:text-base text-xl"
+                    class="grid grid-cols-3 xl:text-base text-xl font-medium"
                   >
-                    <span class="flex items-center gap-1">
+                    <span
+                      class="flex items-center justify-center gap-1 col-span-1"
+                    >
                       <img src={imgGold} alt="" />
                       <span>{item.cost}</span>
                     </span>
-                    <span class="text-left">Redeem</span>
+                    <span class="text-center col-span-2">Redeem</span>
                   </div>
                 </div>
               </div>
