@@ -3,6 +3,7 @@
   import Loading from "~/components/Loading.svelte";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, user, publicEvmAddress } from "~/store";
+  import { shorterAddress } from "~/utils";
 
   const img = {
     leaderboardFrame:
@@ -29,14 +30,6 @@
 
   let userCurrentRank;
   let top3Wallet = [];
-
-  const shortAddress = (address: string) => {
-    return (
-      address.slice(0, 6) +
-      "..." +
-      address.slice(address.length - 4, address.length)
-    );
-  };
 
   const handleDailyCheckin = async () => {
     const response = await nimbus.get(`/v2/checkin/${$publicEvmAddress}`);
@@ -111,7 +104,7 @@
               <div class="text-lg font-medium">Alfonso Bator</div>
               <div>
                 <span class="text-yellow-400 font-medium text-lg">
-                  {top3Wallet[1]._sum.point}
+                  {top3Wallet[1]?._sum.point}
                 </span> GM point
               </div>
             </div>
@@ -127,7 +120,7 @@
               </div>
               <div>
                 <span class="text-yellow-400 font-medium text-lg">
-                  {top3Wallet[2]._sum.point}
+                  {top3Wallet[2]?._sum.point}
                 </span> GM point
               </div>
             </div>
@@ -179,10 +172,10 @@
               {handleThing()}
             </td>
             <td class="pb-3 pt-1 text-left">
-              {shortAddress(userCurrentRank.owner)}
+              {shorterAddress(userCurrentRank?.owner)}
             </td>
             <td class="pr-3 pb-3 pt-1 text-right">
-              {userCurrentRank._sum.point} GM point
+              {userCurrentRank?._sum?.point || 0} GM point
             </td>
           </tr>
         </thead>
@@ -204,10 +197,10 @@
               <td class="px-3 py-2 text-3xl font-light text-left"
                 >{index + 1}</td
               >
-              <td class="py-2 text-left">{shortAddress(item.owner)}</td>
+              <td class="py-2 text-left">{shorterAddress(item.owner)}</td>
               <td class="pr-3 py-2 text-right">
                 <span class="text-yellow-400 font-medium">
-                  {item._sum.point}
+                  {item?._sum.point}
                 </span> GM point
               </td>
             </tr>
