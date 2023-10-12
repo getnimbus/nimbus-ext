@@ -52,9 +52,9 @@
     />
   </div>
 
-  <div class="flex flex-col gap-2">
+  <div class="flex flex-col xl:gap-2 gap-4">
     <div
-      class="xl:text-base text-2xl font-semibold relative"
+      class="xl:text-base text-3xl font-semibold relative"
       on:mouseenter={() => (showTooltipName = true)}
       on:mouseleave={() => (showTooltipName = false)}
     >
@@ -77,10 +77,10 @@
     </div> -->
 
     <div
-      class="xl:text-sm text-lg font-normal flex items-center justify-between gap-1"
+      class="xl:text-sm text-2xl font-normal flex xl:items-center items-start justify-between gap-1"
     >
       <div class="text-[#616b84]">Cost</div>
-      <div class="flex items-center gap-1">
+      <div class="flex xl:flex-row flex-col xl:items-center items-end gap-1">
         <span>
           <TooltipNumber
             number={Number(data?.price || 0)}
@@ -89,16 +89,17 @@
             {nativeToken?.symbol || ""}
           </span>
         </span>
-        | <TooltipNumber number={Number(data?.cost || 0)} type="value" />
+        <span class="xl:block hidden">|</span>
+        <TooltipNumber number={Number(data?.cost || 0)} type="value" />
       </div>
     </div>
 
     <div
-      class="xl:text-sm text-lg font-normal flex items-start justify-between gap-1"
+      class="xl:text-sm text-2xl font-normal flex items-start justify-between gap-1"
     >
       <div class="text-[#616b84]">PnL</div>
       <div class="flex flex-col items-end">
-        <div class="flex items-center gap-1">
+        <div class="flex xl:flex-row flex-col xl:items-center items-end gap-1">
           <div
             class={`${
               Number(profitAndLoss / marketPrice) !== 0
@@ -115,7 +116,7 @@
               {nativeToken?.symbol || ""}
             </span>
           </div>
-          |
+          <div class="xl:block hidden">|</div>
           <div
             class={`flex ${
               profitAndLossPercent !== 0
