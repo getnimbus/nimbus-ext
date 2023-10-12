@@ -4,6 +4,7 @@
   import { i18n } from "~/lib/i18n";
   import { chain, typeWallet, isDarkMode } from "~/store";
   import { filterTokenValueType } from "~/utils";
+  import { groupBy } from "lodash";
 
   export let holdingTokenData;
   export let holdingNFTData;

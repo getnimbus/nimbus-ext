@@ -6,14 +6,17 @@
   import mixpanel from "mixpanel-browser";
   import { typeWallet, isDarkMode } from "~/store";
   import { createQuery } from "@tanstack/svelte-query";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import NftCard from "~/components/NFTCard.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
   import Loading from "~/components/Loading.svelte";
+  import TooltipTitle from "~/components/TooltipTitle.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
+  import NftDetailItem from "~/UI/NFTDetail/NFTDetailItem.svelte";
 
   let typeWalletAddress: string = "";
   typeWallet.subscribe((value) => {
@@ -32,6 +35,10 @@
 
   let addressWallet = "";
   let collectionId = "";
+
+  let selectedTypeDisplay: "grid" | "table" = "grid";
+  let tableNFTHeader;
+  let isStickyTableNFT = false;
 
   // nft holding
   const getHoldingNFT = async (address) => {
@@ -109,6 +116,15 @@
       collectionId = collectionIDParams;
       addressWallet = addressParams;
     }
+
+    const handleScroll = () => {
+      const clientRectNFTHeader = tableNFTHeader?.getBoundingClientRect();
+      isStickyTableNFT = clientRectNFTHeader?.top <= 0;
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   });
 
   $: {
@@ -276,7 +292,105 @@
           darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
         }`}
       >
-        <div class="xl:text-2xl text-4xl font-medium">List NFT</div>
+        <div class="flex justify-between items-center">
+          <div class="xl:text-2xl text-4xl font-medium">List NFT</div>
+          <div class="flex items-center gap-2">
+            <AnimateSharedLayout>
+              <div
+                class="relative cursor-pointer py-2 px-3 rounded-[10px] transition-all"
+                on:click={() => (selectedTypeDisplay = "grid")}
+              >
+                <div
+                  class={`relative z-20 ${
+                    selectedTypeDisplay === "grid" && "text-white"
+                  }`}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
+                    ><path
+                      d="M4.44444 0H0.888889C0.397969 0 0 0.397969 0 0.888889V4.44444C0 4.93536 0.397969 5.33333 0.888889 5.33333H4.44444C4.93536 5.33333 5.33333 4.93536 5.33333 4.44444V0.888889C5.33333 0.397969 4.93536 0 4.44444 0Z"
+                    /><path
+                      d="M11.7778 0H8.22222C7.7313 0 7.33333 0.397969 7.33333 0.888889V4.44444C7.33333 4.93536 7.7313 5.33333 8.22222 5.33333H11.7778C12.2687 5.33333 12.6667 4.93536 12.6667 4.44444V0.888889C12.6667 0.397969 12.2687 0 11.7778 0Z"
+                    /><path
+                      d="M19.1111 0H15.5556C15.0646 0 14.6667 0.397969 14.6667 0.888889V4.44444C14.6667 4.93536 15.0646 5.33333 15.5556 5.33333H19.1111C19.602 5.33333 20 4.93536 20 4.44444V0.888889C20 0.397969 19.602 0 19.1111 0Z"
+                    /><path
+                      d="M4.44444 7.33333H0.888889C0.397969 7.33333 0 7.7313 0 8.22222V11.7778C0 12.2687 0.397969 12.6667 0.888889 12.6667H4.44444C4.93536 12.6667 5.33333 12.2687 5.33333 11.7778V8.22222C5.33333 7.7313 4.93536 7.33333 4.44444 7.33333Z"
+                    /><path
+                      d="M11.7778 7.33333H8.22222C7.7313 7.33333 7.33333 7.7313 7.33333 8.22222V11.7778C7.33333 12.2687 7.7313 12.6667 8.22222 12.6667H11.7778C12.2687 12.6667 12.6667 12.2687 12.6667 11.7778V8.22222C12.6667 7.7313 12.2687 7.33333 11.7778 7.33333Z"
+                    /><path
+                      d="M19.1111 7.33333H15.5556C15.0646 7.33333 14.6667 7.7313 14.6667 8.22222V11.7778C14.6667 12.2687 15.0646 12.6667 15.5556 12.6667H19.1111C19.602 12.6667 20 12.2687 20 11.7778V8.22222C20 7.7313 19.602 7.33333 19.1111 7.33333Z"
+                    /><path
+                      d="M4.44444 14.6667H0.888889C0.397969 14.6667 0 15.0646 0 15.5556V19.1111C0 19.602 0.397969 20 0.888889 20H4.44444C4.93536 20 5.33333 19.602 5.33333 19.1111V15.5556C5.33333 15.0646 4.93536 14.6667 4.44444 14.6667Z"
+                    /><path
+                      d="M11.7778 14.6667H8.22222C7.7313 14.6667 7.33333 15.0646 7.33333 15.5556V19.1111C7.33333 19.602 7.7313 20 8.22222 20H11.7778C12.2687 20 12.6667 19.602 12.6667 19.1111V15.5556C12.6667 15.0646 12.2687 14.6667 11.7778 14.6667Z"
+                    /><path
+                      d="M19.1111 14.6667H15.5556C15.0646 14.6667 14.6667 15.0646 14.6667 15.5556V19.1111C14.6667 19.602 15.0646 20 15.5556 20H19.1111C19.602 20 20 19.602 20 19.1111V15.5556C20 15.0646 19.602 14.6667 19.1111 14.6667Z"
+                    /></svg
+                  >
+                </div>
+                {#if selectedTypeDisplay === "grid"}
+                  <Motion
+                    let:motion
+                    layoutId="active-pill"
+                    transition={{ type: "spring", duration: 0.6 }}
+                  >
+                    <div
+                      class="absolute inset-0 rounded-[10px] bg-[#1E96FC] z-10"
+                      use:motion
+                    />
+                  </Motion>
+                {/if}
+              </div>
+              <div
+                class="relative cursor-pointer py-2 px-3 rounded-[10px] transition-all"
+                on:click={() => (selectedTypeDisplay = "table")}
+              >
+                <div
+                  class={`relative z-20 ${
+                    selectedTypeDisplay === "table" && "text-white"
+                  }`}
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
+                    ><path
+                      d="M4.44444 0H0.888889C0.397969 0 0 0.397969 0 0.888889V4.44444C0 4.93536 0.397969 5.33333 0.888889 5.33333H4.44444C4.93536 5.33333 5.33333 4.93536 5.33333 4.44444V0.888889C5.33333 0.397969 4.93536 0 4.44444 0Z"
+                    /><path
+                      d="M19.11 1.5H8.22222C7.7313 1.5 7.33333 1.89797 7.33333 2.38889V2.94444C7.33333 3.43536 7.7313 3.83333 8.22222 3.83333H19.11C19.6009 3.83333 20 3.43536 20 2.94444V2.38889C20 1.89797 19.6009 1.5 19.11 1.5Z"
+                    /><path
+                      d="M4.44444 7.33333H0.888889C0.397969 7.33333 0 7.7313 0 8.22222V11.7778C0 12.2687 0.397969 12.6667 0.888889 12.6667H4.44444C4.93536 12.6667 5.33333 12.2687 5.33333 11.7778V8.22222C5.33333 7.7313 4.93536 7.33333 4.44444 7.33333Z"
+                    /><path
+                      d="M19.11 8.83333H8.22222C7.7313 8.83333 7.33333 9.2313 7.33333 9.72222V10.2778C7.33333 10.7687 7.7313 11.1667 8.22222 11.1667H19.11C19.6009 11.1667 20 10.7687 20 10.2778V9.72222C20 9.2313 19.6009 8.83333 19.11 8.83333Z"
+                    /><path
+                      d="M4.44444 14.6667H0.888889C0.397969 14.6667 0 15.0646 0 15.5556V19.1111C0 19.602 0.397969 20 0.888889 20H4.44444C4.93536 20 5.33333 19.602 5.33333 19.1111V15.5556C5.33333 15.0646 4.93536 14.6667 4.44444 14.6667Z"
+                    /><path
+                      d="M19.11 16.1667H8.22222C7.7313 16.1667 7.33333 16.5646 7.33333 17.0556V17.6111C7.33333 18.102 7.7313 18.5 8.22222 18.5H19.11C19.6009 18.5 20 18.102 20 17.6111V17.0556C20 16.5646 19.6009 16.1667 19.11 16.1667Z"
+                    /></svg
+                  >
+                </div>
+                {#if selectedTypeDisplay === "table"}
+                  <Motion
+                    let:motion
+                    layoutId="active-pill"
+                    transition={{ type: "spring", duration: 0.6 }}
+                  >
+                    <div
+                      class="absolute inset-0 rounded-[10px] bg-[#1E96FC] z-10"
+                      use:motion
+                    />
+                  </Motion>
+                {/if}
+              </div>
+            </AnimateSharedLayout>
+          </div>
+        </div>
 
         {#if $queryNftHolding.isFetching}
           <div
@@ -291,17 +405,76 @@
             Empty
           </div>
         {:else}
-          <div
-            class="grid gid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-6"
-          >
-            {#each tokens as item}
-              <NftCard
-                data={item}
-                {nativeToken}
-                marketPrice={marketPriceNFT?.market_price || 0}
-                floorPrice={data?.floorPrice || 0}
-              />
-            {/each}
+          <div>
+            {#if selectedTypeDisplay === "grid"}
+              <div
+                class="grid gid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-6"
+              >
+                {#each tokens as item}
+                  <NftCard
+                    data={item}
+                    {nativeToken}
+                    marketPrice={marketPriceNFT?.market_price || 0}
+                    floorPrice={data?.floorPrice || 0}
+                  />
+                {/each}
+              </div>
+            {:else}
+              <div
+                class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+                  darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+                }`}
+              >
+                <table class="table-auto xl:w-full w-[1400px] h-full">
+                  <thead
+                    class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
+                    bind:this={tableNFTHeader}
+                  >
+                    <tr class="bg_f4f5f8">
+                      <th
+                        class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[220px]"
+                      >
+                        <div
+                          class="text-left xl:text-xs text-xl uppercase font-medium"
+                        >
+                          Name
+                        </div>
+                      </th>
+
+                      <th class="py-3">
+                        <div
+                          class="text-right xl:text-xs text-xl uppercase font-medium"
+                        >
+                          Cost
+                        </div>
+                      </th>
+
+                      <th class="py-3 pr-3">
+                        <div
+                          class="text-right xl:text-xs text-xl uppercase font-medium"
+                        >
+                          <TooltipTitle
+                            tooltipText="Price NFTs now - Price NFTs at time you spent"
+                          >
+                            Profit & Loss
+                          </TooltipTitle>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {#each tokens as item}
+                      <NftDetailItem
+                        {item}
+                        {nativeToken}
+                        marketPrice={marketPriceNFT?.market_price || 0}
+                        floorPrice={item?.floorPrice || 0}
+                      />
+                    {/each}
+                  </tbody>
+                </table>
+              </div>
+            {/if}
           </div>
         {/if}
       </div>

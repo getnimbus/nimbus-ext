@@ -618,7 +618,7 @@
                       <div
                         class="text-right xl:text-xs text-xl uppercase font-medium"
                       >
-                        COST
+                        Cost
                       </div>
                     </th>
                     <th class="py-3">
