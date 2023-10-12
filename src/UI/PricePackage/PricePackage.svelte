@@ -55,7 +55,6 @@
     queryFn: () => getUserInfo(),
     staleTime: Infinity,
     retry: false,
-    enabled: Object.keys(userInfo).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -75,8 +74,6 @@
       isNewUser = $query.data.plan?.isNewUser;
     }
   }
-
-  $: console.log("endDatePackage: ", endDatePackage);
 
   const handleCancelSubscription = async () => {
     isLoadingCancel = true;

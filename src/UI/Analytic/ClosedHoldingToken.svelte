@@ -15,6 +15,7 @@
     formatPercent,
     formatValue,
     shorterName,
+    typeClosedHoldingTokenChart,
   } from "~/utils";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
@@ -53,17 +54,6 @@
   typeWallet.subscribe((value) => {
     typeWalletAddress = value;
   });
-
-  const typeChart = [
-    {
-      label: "Value",
-      value: "value",
-    },
-    {
-      label: "Percent",
-      value: "percent",
-    },
-  ];
 
   let closedHoldingPosition = [];
   let selectedTypeChart: "value" | "percent" = "value";
@@ -336,7 +326,7 @@
           {
             type: "bar",
             label: {
-              show: true,
+              show: Boolean(closedHoldingPosition.length < 12),
               position: "top",
               formatter: function (value, index) {
                 const selectedItem = closedHoldingPosition.find(
@@ -376,7 +366,7 @@
           {
             type: "bar",
             label: {
-              show: true,
+              show: Boolean(closedHoldingPosition.length < 12),
               position: "top",
               formatter: function (value, index) {
                 const selectedItem = closedHoldingPosition.find(
@@ -421,14 +411,17 @@
     }
   }
 
-  $: enabledQuery = Boolean(
-    (typeWalletAddress === "EVM" ||
-      typeWalletAddress === "CEX" ||
-      typeWalletAddress === "SOL" ||
-      typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0 &&
-      packageSelected !== "FREE"
-  );
+  $: enabledQuery =
+    selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+      ? true
+      : Boolean(
+          (typeWalletAddress === "EVM" ||
+            typeWalletAddress === "CEX" ||
+            typeWalletAddress === "SOL" ||
+            typeWalletAddress === "BUNDLE") &&
+            selectedWallet.length !== 0 &&
+            packageSelected !== "FREE"
+        );
 
   $: theme = darkMode ? "dark" : "white";
 </script>
@@ -563,7 +556,7 @@
           {:else}
             <div class="flex flex-row p-6">
               <AnimateSharedLayout>
-                {#each typeChart as type}
+                {#each typeClosedHoldingTokenChart as type}
                   <div
                     class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
                     on:click={() => (selectedTypeChart = type.value)}
