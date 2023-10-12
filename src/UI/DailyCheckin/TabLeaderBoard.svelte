@@ -53,7 +53,6 @@
       userCurrentRank = $queryDailyCheckin?.data?.checkinLeaderboard.find(
         (item) => item.owner === $publicEvmAddress
       );
-
       top3Wallet = $queryDailyCheckin?.data?.checkinLeaderboard.slice(0, 3);
     }
   }
@@ -163,11 +162,14 @@
       >
         <thead class="sticky top-0">
           <tr class="bg-[#FFB800]">
-            <td colspan="3" class="text-left text-sm rounded-t-xl pt-2 px-3">
+            <td
+              colspan="3"
+              class="text-left xl:text-sm text-base rounded-t-xl pt-2 px-3"
+            >
               Your current rank
             </td>
           </tr>
-          <tr class="bg-[#FFB800]">
+          <tr class="bg-[#FFB800] xl:text-base text-xl">
             <th class="px-3 pb-3 pt-1 text-left">
               {handleThing()}
             </th>
@@ -181,12 +183,15 @@
         </thead>
         <tbody>
           <tr>
-            <td colspan="3" class="px-3 py-2 text-left font-medium">
+            <td
+              colspan="3"
+              class="px-3 py-2 text-left font-medium xl:text-base text-xl"
+            >
               Runners up
             </td>
           </tr>
           {#each $queryDailyCheckin?.data?.checkinLeaderboard as item, index}
-            <tr>
+            <tr class="xl:text-base text-xl">
               <td class="px-3 py-2 text-left">{index + 1}</td>
               <td class="py-2 text-left">{item.owner}</td>
               <td class="pr-3 py-2 text-right">
