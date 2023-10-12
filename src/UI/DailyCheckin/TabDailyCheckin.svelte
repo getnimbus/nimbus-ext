@@ -4,11 +4,10 @@
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, user } from "~/store";
+  import { isDarkMode, user, userId, wallet, publicEvmAddress } from "~/store";
   import { dailyCheckinTypePortfolio, triggerFirework } from "~/utils";
 
   let selectedTypePerformance: "collectGMPoint" | "history" = "collectGMPoint";
-  let selectedWallet = localStorage.getItem("evm_address");
 
   let openScreenSuccess = false;
 
@@ -29,7 +28,8 @@
   };
 
   const handleDailyCheckin = async () => {
-    const response = await nimbus.get(`/v2/checkin/${selectedWallet}`);
+    console.log("it query !!!!");
+    const response = await nimbus.get(`/v2/checkin/${$publicEvmAddress}`);
     return response.data;
   };
 
@@ -60,7 +60,7 @@
   };
 
   $: queryDailyCheckin = createQuery({
-    queryKey: ["daily-checkin", selectedWallet, userInfo],
+    queryKey: [$publicEvmAddress, "daily-checkin"],
     queryFn: () => handleDailyCheckin(),
     staleTime: Infinity,
     enabled: Object.keys(userInfo).length !== 0,
@@ -68,6 +68,8 @@
       user.update((n) => (n = {}));
     },
   });
+
+  $: console.log("queryDailyCheckin : ", $queryDailyCheckin?.data);
 
   const imgGold =
     "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
@@ -77,7 +79,7 @@
   <div class="flex items-center justify-center h-full px-3 py-4">
     Please connect wallet
   </div>
-{:else if $queryDailyCheckin.isLoading}
+{:else if $queryDailyCheckin.isFetching}
   <div class="flex items-center justify-center h-screen">
     <Loading />
   </div>
@@ -92,10 +94,10 @@
     >
       <span class="text-sm">My GM Points</span>
       <span class="text-4xl font-medium">
-        {#if $queryDailyCheckin.isLoading}
+        {#if $queryDailyCheckin.isFetching}
           <Loading />
         {:else}
-          {$queryDailyCheckin?.data?.totalPoint}
+          {$queryDailyCheckin?.data?.totalPoint || 0}
         {/if}
       </span>
     </div>
@@ -145,7 +147,7 @@
             </div>
           {/if}
           <div class="w-[230px] xl:h-auto h-12">
-            {#if $queryDailyCheckin?.data.checkinable}
+            {#if $queryDailyCheckin?.data?.checkinable}
               <Button variant="primary" on:click={handleCheckin}>
                 <div class="py-1">👋 GM</div>
               </Button>
@@ -159,7 +161,7 @@
         {#if selectedTypePerformance === "collectGMPoint"}
           <div class="overflow-x-auto py-6">
             <div class="grid grid-cols-7 gap-10 w-[1350px]">
-              {#each $queryDailyCheckin?.data.pointStreak as item, index}
+              {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
                 <div
                   class={`flex flex-col gap-2 items-center rounded-xl py-10 px-6 ${
                     $queryDailyCheckin?.data?.steak === index
@@ -190,7 +192,7 @@
                 </tr>
               </thead>
               <tbody>
-                {#each $queryDailyCheckin?.data?.checkinLogs as { point, createdAt }}
+                {#each $queryDailyCheckin?.data?.checkinLogs || [] as { point, createdAt }}
                   <tr>
                     <td class="py-2 pl-3 text-left">{shortDate(createdAt)}</td>
                     <td class="py-2 pr-3 text-right text-green-500">{point}</td>

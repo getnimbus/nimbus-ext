@@ -3,13 +3,12 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import Loading from "~/components/Loading.svelte";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, user } from "~/store";
+  import { isDarkMode, user, publicEvmAddress } from "~/store";
   import { dailyCheckinRewardsTypePortfolio } from "~/utils";
 
   const imgGold =
     "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
 
-  let selectedWallet = localStorage.getItem("evm_address");
   let selectedTypePerformance: "redeemGift" | "yourGift" = "redeemGift";
 
   //   demo address
@@ -26,37 +25,41 @@
   });
 
   const handleDailyCheckin = async () => {
-    const response = await nimbus.get(`/v2/checkin/${selectedWallet}`);
+    const response = await nimbus.get(`/v2/checkin/${$publicEvmAddress}`);
     return response?.data;
   };
 
   const handleRewards = async () => {
     const response = await nimbus.post(`/v2/reward`, {
-      address: selectedWallet,
+      address: $publicEvmAddress,
     });
     console.log("response bla bla : ", response.data);
     return response.data;
   };
 
   $: queryDailyCheckin = createQuery({
-    queryKey: ["daily-checkin", selectedWallet],
+    queryKey: [$publicEvmAddress, "daily-checkin"],
     queryFn: () => handleDailyCheckin(),
     enabled: Object.keys(userInfo).length !== 0,
     staleTime: Infinity,
   });
 
   $: queryReward = createQuery({
-    queryKey: ["rewards", selectedWallet],
+    queryKey: [$publicEvmAddress, "rewards"],
     queryFn: () => handleRewards(),
     enabled: Object.keys(userInfo).length !== 0,
     staleTime: Infinity,
   });
 
-  $: console.log("thi is a fasf : ", $queryReward);
+  $: console.log("this is $ $publicEvmAddress : ", $publicEvmAddress);
 </script>
 
 <div class="flex flex-col gap-10">
-  {#if $queryDailyCheckin.isLoading}
+  {#if $queryDailyCheckin.isError}
+    <div class="flex items-center justify-center h-full px-3 py-4">
+      Please connect wallet
+    </div>
+  {:else if $queryDailyCheckin.isLoading}
     <div class="flex items-center justify-center h-full px-3 py-4">
       <Loading />
     </div>
@@ -101,7 +104,7 @@
       <div class="grid grid-cols-3 gap-10">
         {#if selectedTypePerformance === "redeemGift"}
           <!-- Redeem gift  -->
-          {#each $queryReward?.data.redeemable as item}
+          {#each $queryReward?.data?.redeemable || [] as item}
             <!-- a card  -->
             <div
               class={`flex flex-col rounded-2xl ${
@@ -160,7 +163,7 @@
           {/each}
         {:else if selectedTypePerformance === "yourGift"}
           <!-- Your gift -->
-          {#each $queryReward?.data.ownRewards as item}
+          {#each $queryReward?.data?.ownRewards || [] as item}
             <!-- a card  -->
             <div
               class={`flex flex-col rounded-2xl ${
