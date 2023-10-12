@@ -13,8 +13,6 @@
   export let data;
   export let selectedWallet;
 
-  $: console.log("data: ", data);
-
   const navigate = useNavigate();
 
   let typeWalletAddress = "";
