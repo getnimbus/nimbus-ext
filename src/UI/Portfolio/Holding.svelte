@@ -662,7 +662,7 @@
                           <div
                             class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
                           >
-                            {#if holdingTokenData && holdingTokenData.length === 0}
+                            {#if formatDataNFT && formatDataNFT.length === 0}
                               {MultipleLang.empty}
                             {:else}
                               All NFT Collections less than $1
