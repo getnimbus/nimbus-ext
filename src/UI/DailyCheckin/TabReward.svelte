@@ -112,20 +112,16 @@
               } `}
             >
               <div
-                class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-8 py-5 border-b-2 border-dashed"
+                class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-5 pt-5 pb-7 border-b-2 border-dashed relative"
               >
                 <div
-                  class={`xl:w-auto xl:h-auto h-[200px] col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
+                  class={`xl:h-full h-[200px] col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
                     darkMode ? "bg-gray-200" : "bg-white"
                   }`}
                 >
-                  <img
-                    src={item.logo}
-                    alt=""
-                    class="xl:object-contain m-auto"
-                  />
+                  <img src={item.logo} alt="" class="object-contain m-auto" />
                 </div>
-                <div class="flex flex-col gap-2 col-span-2">
+                <div class="flex flex-col gap-2 col-span-2 px-5">
                   <div
                     class="flex gap-1 items-center font-medium xl:text-2xl text-3xl text-[#ffb800]"
                   >
@@ -148,9 +144,24 @@
                   <div class="xl:text-3xl text-4xl uppercase">{item.title}</div>
                   <div class="xl:text-base text-xl">{item.description}</div>
                 </div>
+                <div
+                  class={`w-7 h-14  rounded-l-none rounded-r-full absolute -left-[1px] -bottom-7 ${
+                    darkMode
+                      ? "bg-[#161616]"
+                      : "bg-white border-r border-t border-b"
+                  }`}
+                />
+                <div
+                  class={`w-7 h-14 rounded-r-none rounded-l-full bg-white absolute -right-[1px] -bottom-7 ${
+                    darkMode
+                      ? "bg-[#161616]"
+                      : "bg-white border-l border-t border-b"
+                  } `}
+                />
+                <div class="semi-circle" />
               </div>
               <div
-                class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-8 py-5"
+                class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-5 py-5"
               >
                 <div class="col-span-1 xl:text-base text-xl">
                   {item.remains} left
@@ -246,4 +257,5 @@
   {/if}
 </div>
 
-<style windi:preflights:global windi:safelist:global></style>
+<style windi:preflights:global windi:safelist:global>
+</style>
