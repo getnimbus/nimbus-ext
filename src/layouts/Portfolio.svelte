@@ -579,6 +579,50 @@
     }
   }
 
+  // query nft holding
+  $: queryNftHolding = createQuery({
+    queryKey: ["nft-holding", selectedWallet, selectedChain],
+    queryFn: () => getHoldingNFT(selectedWallet, selectedChain),
+    staleTime: Infinity,
+    enabled:
+      enabledFetchAllData &&
+      selectedWallet.length !== 0 &&
+      selectedChain !== "ALL",
+  });
+
+  $: queryAllNftHolding = createQueries(
+    chainListQueries.map((item) => {
+      return {
+        queryKey: ["nft-holding", selectedWallet, selectedChain, item],
+        queryFn: () => getHoldingNFT(selectedWallet, item),
+        staleTime: Infinity,
+        enabled:
+          enabledFetchAllData &&
+          selectedWallet.length !== 0 &&
+          selectedChain === "ALL",
+      };
+    })
+  );
+
+  $: {
+    if ($queryAllNftHolding.length !== 0) {
+      const allNfts = flatten(
+        $queryAllNftHolding
+          ?.filter((item) => Array.isArray(item.data))
+          ?.map((item) => item.data)
+      );
+      if (allNfts && allNfts.length !== 0) {
+        formatDataHoldingNFT(allNfts);
+      }
+    }
+  }
+
+  $: {
+    if (!$queryNftHolding.isError && $queryNftHolding.data !== undefined) {
+      formatDataHoldingNFT($queryNftHolding.data);
+    }
+  }
+
   // query vaults token holding
   $: queryVaults = createQuery({
     queryKey: ["vaults", selectedWallet, selectedChain],
@@ -640,20 +684,6 @@
     // enabled: enabledFetchAllData && selectedWallet.length !== 0,
     enabled: false,
   });
-
-  // query nft holding
-  $: queryNftHolding = createQuery({
-    queryKey: ["nft-holding", selectedWallet, selectedChain],
-    queryFn: () => getHoldingNFT(selectedWallet, selectedChain),
-    staleTime: Infinity,
-    enabled: enabledFetchAllData && selectedWallet.length !== 0,
-  });
-
-  $: {
-    if (!$queryNftHolding.isError && $queryNftHolding.data !== undefined) {
-      formatDataHoldingNFT($queryNftHolding.data);
-    }
-  }
 
   onMount(() => {
     initWS();
