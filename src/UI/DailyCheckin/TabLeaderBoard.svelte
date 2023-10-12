@@ -159,7 +159,7 @@
     </div>
 
     <!-- the table  -->
-    <div class="w-full rounded-xl border border-[#ffb800]">
+    <div class="w-2/3 rounded-xl border border-[#ffb800]">
       <table
         class={`w-full table-auto rounded-xl ${
           darkMode ? "bg-[#161616]" : "bg-white"
