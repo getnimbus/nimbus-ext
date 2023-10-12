@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import Loading from "~/components/Loading.svelte";
   import { nimbus } from "~/lib/network";
@@ -29,6 +29,14 @@
 
   let userCurrentRank;
   let top3Wallet = [];
+
+  const shortAddress = (address: string) => {
+    return (
+      address.slice(0, 6) +
+      "..." +
+      address.slice(address.length - 4, address.length)
+    );
+  };
 
   const handleDailyCheckin = async () => {
     const response = await nimbus.get(`/v2/checkin/${$publicEvmAddress}`);
@@ -125,7 +133,7 @@
             </div>
           </div>
           <span
-            class="absolute bottom-0 left-[50%] text-black absolute-center flex items-center gap-1"
+            class="absolute bottom-0 left-[50%] text-black absolute-center flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -151,16 +159,13 @@
     </div>
 
     <!-- the table  -->
-
-    <div
-      class="w-full rounded-xl max-h-[600px] overflow-y-auto border border-[#ffb800]"
-    >
+    <div class="w-full rounded-xl border border-[#ffb800]">
       <table
         class={`w-full table-auto rounded-xl ${
           darkMode ? "bg-[#161616]" : "bg-white"
         }`}
       >
-        <thead class="sticky top-0">
+        <thead>
           <tr class="bg-[#FFB800]">
             <td
               colspan="3"
@@ -169,16 +174,16 @@
               Your current rank
             </td>
           </tr>
-          <tr class="bg-[#FFB800] xl:text-base text-xl">
-            <th class="px-3 pb-3 pt-1 text-left">
+          <tr class="bg-[#FFB800] xl:text-base text-xl font-medium">
+            <td class="px-3 pb-3 pt-1 text-left w-4">
               {handleThing()}
-            </th>
-            <th class="pb-3 pt-1 text-left">
-              {userCurrentRank.owner}
-            </th>
-            <th class="pr-3 pb-3 pt-1 text-right">
-              {userCurrentRank._sum.point} point
-            </th>
+            </td>
+            <td class="pb-3 pt-1 text-left">
+              {shortAddress(userCurrentRank.owner)}
+            </td>
+            <td class="pr-3 pb-3 pt-1 text-right">
+              {userCurrentRank._sum.point} GM point
+            </td>
           </tr>
         </thead>
         <tbody>
@@ -190,14 +195,14 @@
               Runners up
             </td>
           </tr>
-          {#each $queryDailyCheckin?.data?.checkinLeaderboard as item, index}
+          {#each $queryDailyCheckin?.data?.checkinLeaderboard.slice(0, 20) as item, index}
             <tr class="xl:text-base text-xl">
               <td class="px-3 py-2 text-left">{index + 1}</td>
-              <td class="py-2 text-left">{item.owner}</td>
+              <td class="py-2 text-left">{shortAddress(item.owner)}</td>
               <td class="pr-3 py-2 text-right">
                 <span class="text-yellow-400 font-medium">
                   {item._sum.point}
-                </span> point
+                </span> GM point
               </td>
             </tr>
           {/each}

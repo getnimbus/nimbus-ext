@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { createQuery } from "@tanstack/svelte-query";
+  import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import Button from "~/components/Button.svelte";
+  import Copy from "~/components/Copy.svelte";
   import Loading from "~/components/Loading.svelte";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, user, publicEvmAddress } from "~/store";
@@ -37,6 +39,14 @@
     return response.data;
   };
 
+  const handleRedeem = async (campain) => {
+    const response = await nimbus.post("/v2/reward/redeem", {
+      address: $publicEvmAddress,
+      campaignName: campain,
+    });
+    useQueryClient().invalidateQueries(["rewards"]);
+  };
+
   $: queryDailyCheckin = createQuery({
     queryKey: [$publicEvmAddress, "daily-checkin"],
     queryFn: () => handleDailyCheckin(),
@@ -51,7 +61,7 @@
     staleTime: Infinity,
   });
 
-  $: console.log("this is $ $publicEvmAddress : ", $publicEvmAddress);
+  $: console.log("this is $ $publicEvmAddress : ", $queryReward?.data);
 </script>
 
 <div class="flex flex-col gap-10">
@@ -112,18 +122,22 @@
               } `}
             >
               <div
-                class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-5 pt-5 pb-7 border-b-2 border-dashed relative"
+                class="grid grid-cols-3 items-center px-5 pt-5 pb-7 border-b-2 border-dashed relative"
               >
                 <div
-                  class={`xl:h-full h-[200px] col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
+                  class={`xl:h-[150px] h-[250px] col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
                     darkMode ? "bg-gray-200" : "bg-white"
                   }`}
                 >
-                  <img src={item.logo} alt="" class="object-contain m-auto" />
+                  <img
+                    src={item.logo}
+                    alt=""
+                    class="object-contain m-auto w-16 h-16"
+                  />
                 </div>
-                <div class="flex flex-col gap-2 col-span-2 px-5">
+                <div class="flex flex-col gap-2 col-span-2 px-10">
                   <div
-                    class="flex gap-1 items-center font-medium xl:text-2xl text-3xl text-[#ffb800]"
+                    class="flex gap-1 items-center font-medium xl:text-lg text-xl text-[#ffb800]"
                   >
                     <svg
                       width="26"
@@ -139,20 +153,22 @@
                         fill="#ffb800"
                       />
                     </svg>
-                    {item.campaignName}
+                    PREMIUM
                   </div>
                   <div class="xl:text-3xl text-4xl uppercase">{item.title}</div>
-                  <div class="xl:text-base text-xl">{item.description}</div>
+                  <div class="xl:text-sm text-lg">{item.description}</div>
                 </div>
+
+                <!-- circle  -->
                 <div
-                  class={`w-7 h-14  rounded-l-none rounded-r-full absolute -left-[1px] -bottom-7 ${
+                  class={`w-5 h-10  rounded-l-none rounded-r-full absolute -left-[1px] -bottom-5 ${
                     darkMode
                       ? "bg-[#161616]"
                       : "bg-white border-r border-t border-b"
                   }`}
                 />
                 <div
-                  class={`w-7 h-14 rounded-r-none rounded-l-full bg-white absolute -right-[1px] -bottom-7 ${
+                  class={`w-5 h-10 rounded-r-none rounded-l-full bg-white absolute -right-[1px] -bottom-5 ${
                     darkMode
                       ? "bg-[#161616]"
                       : "bg-white border-l border-t border-b"
@@ -163,21 +179,28 @@
               <div
                 class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-5 py-5"
               >
-                <div class="col-span-1 xl:text-base text-xl">
+                <div class="col-span-1 xl:text-base text-xl px-7">
                   {item.remains} left
                 </div>
                 <div
-                  class="col-span-2 py-[10px] bg-[#1e96fc] rounded-xl text-white"
+                  class="col-span-2 py-2 xl:w-[200px] w-[300px] rounded-xl text-white mx-auto cursor-pointer"
                 >
-                  <div
-                    class="flex justify-center items-center gap-5 xl:text-base text-xl"
+                  <Button
+                    on:click={() => handleRedeem(item.campaignName)}
+                    variant="primary"
                   >
-                    <span class="flex items-center gap-1">
-                      <img src={imgGold} alt="" />
-                      <span>{item.cost}</span>
-                    </span>
-                    <span class="text-left">Redeem</span>
-                  </div>
+                    <div
+                      class="grid grid-cols-3 h-8 xl:text-base text-xl font-medium"
+                    >
+                      <span
+                        class="flex items-center justify-center gap-1 col-span-1"
+                      >
+                        <img src={imgGold} alt="" />
+                        <span>{item.cost}</span>
+                      </span>
+                      <span class="text-center col-span-2 my-auto">Redeem</span>
+                    </div>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -185,29 +208,28 @@
         {:else if selectedTypePerformance === "yourGift"}
           <!-- Your gift - ownRewards -->
           {#each $queryReward?.data?.ownRewards || [] as item}
-            <!-- a card  -->
             <div
               class={`flex flex-col rounded-2xl ${
                 darkMode ? "bg-[#212121]" : "border"
               } `}
             >
               <div
-                class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-8 py-5 border-b-2 border-dashed"
+                class="grid grid-cols-3 items-center px-5 pt-5 pb-7 border-b-2 border-dashed relative"
               >
                 <div
-                  class={`xl:w-auto xl:h-auto h-[200px] col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
+                  class={`xl:h-[150px] h-[250px] col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
                     darkMode ? "bg-gray-200" : "bg-white"
                   }`}
                 >
                   <img
                     src={item.logo}
                     alt=""
-                    class="xl:object-contain m-auto"
+                    class="object-contain m-auto w-16 h-16"
                   />
                 </div>
-                <div class="flex flex-col gap-2 col-span-2">
+                <div class="flex flex-col gap-2 col-span-2 px-10">
                   <div
-                    class="flex gap-1 items-center font-medium xl:text-2xl text-3xl text-[#ffb800]"
+                    class="flex gap-1 items-center font-medium xl:text-lg text-xl text-[#ffb800]"
                   >
                     <svg
                       width="26"
@@ -223,30 +245,43 @@
                         fill="#ffb800"
                       />
                     </svg>
-                    {item.campaignName}
+                    PREMIUM
                   </div>
                   <div class="xl:text-3xl text-4xl uppercase">{item.title}</div>
-                  <div class="xl:text-base text-xl">{item.description}</div>
+                  <div class="xl:text-sm text-lg">{item.description}</div>
                 </div>
-              </div>
-              <div
-                class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-8 py-5"
-              >
-                <div class="col-span-1 xl:text-base text-xl">
-                  {item.remains} left
-                </div>
+
                 <div
-                  class="col-span-2 py-[10px] bg-[#1e96fc] rounded-xl text-white"
+                  class={`w-5 h-10  rounded-l-none rounded-r-full absolute -left-[1px] -bottom-5 ${
+                    darkMode
+                      ? "bg-[#161616]"
+                      : "bg-white border-r border-t border-b"
+                  }`}
+                />
+                <div
+                  class={`w-5 h-10 rounded-r-none rounded-l-full bg-white absolute -right-[1px] -bottom-5 ${
+                    darkMode
+                      ? "bg-[#161616]"
+                      : "bg-white border-l border-t border-b"
+                  } `}
+                />
+                <div class="semi-circle" />
+              </div>
+              <div class="px-5 py-5">
+                <div
+                  class="bg-gray-200 text-black flex justify-between items-center xl:gap-5 gap-20 px-3 py-3 rounded-xl"
                 >
-                  <div
-                    class="flex justify-center items-center gap-5 xl:text-base text-xl"
+                  <span class="xl:text-sm text-base">Your gift code</span>
+                  <span
+                    class="flex items-center gap-1 font-medium xl:text-lg text-xl py-1"
                   >
-                    <span class="flex items-center gap-1">
-                      <img src={imgGold} alt="" />
-                      <span>{item.cost}</span>
-                    </span>
-                    <span class="text-left">Redeem</span>
-                  </div>
+                    <Copy
+                      address={item?.code}
+                      iconColor="#000"
+                      color="#000"
+                      isShorten
+                    />
+                  </span>
                 </div>
               </div>
             </div>
