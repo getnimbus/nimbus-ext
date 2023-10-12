@@ -58,7 +58,10 @@
       on:mouseenter={() => (showTooltipName = true)}
       on:mouseleave={() => (showTooltipName = false)}
     >
-      {shorterName(data?.name, 30)} #{data?.tokenId}
+      {shorterName(data?.name, 30)}
+      {data?.tokenId && nativeToken?.symbol !== "SOL"
+        ? `#${data?.tokenId}`
+        : ""}
       {#if showTooltipName && data?.name.length > 30}
         <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
           <tooltip-detail text={data?.name} />
