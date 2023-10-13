@@ -381,88 +381,70 @@
       return item.value === selectedWallet;
     });
 
-    if (
-      selected &&
-      Object.keys(selected).length !== 0 &&
-      selected.type === "BUNDLE"
-    ) {
-      typeWallet.update((n) => (n = "BUNDLE"));
-      browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
-      chain.update((n) => (n = "ALL"));
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname +
-          `?type=${typeWalletAddress}&address=${selectedWallet}`
-      );
-    }
-
-    if (
-      selected &&
-      Object.keys(selected).length !== 0 &&
-      selected.type === "CEX"
-    ) {
-      typeWallet.update((n) => (n = "CEX"));
-      browser.storage.sync.set({ typeWalletAddress: "CEX" });
-      chain.update((n) => (n = "ALL"));
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname +
-          `?type=${typeWalletAddress}&address=${selectedWallet}`
-      );
-    }
-
-    if (
-      selected &&
-      Object.keys(selected).length !== 0 &&
-      selected.type === "EVM"
-    ) {
-      typeWallet.update((n) => (n = "EVM"));
-      browser.storage.sync.set({ typeWalletAddress: "EVM" });
-      if (selectedChain) {
-        chain.update((n) => (n = selectedChain));
-      } else {
+    if (selected && Object.keys(selected).length !== 0) {
+      if (selected.type === "BUNDLE") {
+        typeWallet.update((n) => (n = "BUNDLE"));
+        browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
         chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&address=${selectedWallet}`
+        );
       }
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname +
-          `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
-      );
-    }
 
-    if (
-      selected &&
-      Object.keys(selected).length !== 0 &&
-      selected.type === "SOL"
-    ) {
-      typeWallet.update((n) => (n = "SOL"));
-      browser.storage.sync.set({ typeWalletAddress: "SOL" });
-      chain.update((n) => (n = "ALL"));
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname +
-          `?type=${typeWalletAddress}&address=${selectedWallet}`
-      );
-    }
+      if (selected.type === "CEX") {
+        typeWallet.update((n) => (n = "CEX"));
+        browser.storage.sync.set({ typeWalletAddress: "CEX" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&address=${selectedWallet}`
+        );
+      }
 
-    if (
-      selected &&
-      Object.keys(selected).length !== 0 &&
-      selected.type === "BTC"
-    ) {
-      typeWallet.update((n) => (n = "BTC"));
-      browser.storage.sync.set({ typeWalletAddress: "BTC" });
-      chain.update((n) => (n = "ALL"));
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname +
-          `?type=${typeWalletAddress}&address=${selectedWallet}`
-      );
+      if (selected.type === "EVM") {
+        typeWallet.update((n) => (n = "EVM"));
+        browser.storage.sync.set({ typeWalletAddress: "EVM" });
+        if (selectedChain) {
+          chain.update((n) => (n = selectedChain));
+        } else {
+          chain.update((n) => (n = "ALL"));
+        }
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
+        );
+      }
+
+      if (selected.type === "SOL") {
+        typeWallet.update((n) => (n = "SOL"));
+        browser.storage.sync.set({ typeWalletAddress: "SOL" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&address=${selectedWallet}`
+        );
+      }
+
+      if (selected.type === "BTC") {
+        typeWallet.update((n) => (n = "BTC"));
+        browser.storage.sync.set({ typeWalletAddress: "BTC" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&address=${selectedWallet}`
+        );
+      }
     }
   };
 
@@ -615,14 +597,36 @@
           label: dataFormat.label,
         });
 
+        const searchAccountType = await validateAddress(dataFormat.value);
         queryClient.invalidateQueries(["list-address"]);
         wallet.update((n) => (n = dataFormat.value));
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname +
-            `?type=EVM&chain=ALL&address=${dataFormat.value}`
-        );
+        chain.update((n) => (n = "ALL"));
+        typeWallet.update((n) => (n = searchAccountType));
+
+        browser.storage.sync.set({ selectedChain: "ALL" });
+        browser.storage.sync.set({
+          typeWalletAddress: searchAccountType,
+        });
+        browser.storage.sync.set({
+          selectedWallet: dataFormat.value,
+        });
+
+        if (searchAccountType === "EVM") {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname +
+              `?type=${searchAccountType}&chain=ALL&address=${dataFormat.value}`
+          );
+        }
+        if (searchAccountType === "BTC" || searchAccountType === "SOL") {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname +
+              `?type=${searchAccountType}&address=${dataFormat.value}`
+          );
+        }
 
         e.target.reset();
         errors = {};

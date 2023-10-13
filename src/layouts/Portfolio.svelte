@@ -771,9 +771,9 @@
         !$queryNftHolding.isFetching;
 
   $: chainListQueries =
-    typeWalletAddress === "EVM"
-      ? chainList.slice(1).map((item) => item.value)
-      : [chainList[0].value];
+    typeWalletAddress?.length !== 0 && typeWalletAddress !== "EVM"
+      ? [chainList[0].value]
+      : chainList.slice(1).map((item) => item.value);
 </script>
 
 <AddressManagement title={MultipleLang.overview}>
