@@ -220,10 +220,19 @@
     wallet.update((n) => (n = value));
     typeWallet.update((n) => (n = searchAccountType));
     if (searchAccountType === "EVM") {
-      navigate(`/?type=${searchAccountType}&chain=ALL&address=${value}`);
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?type=${searchAccountType}&chain=ALL&address=${value}`
+      );
     }
     if (searchAccountType === "BTC" || searchAccountType === "SOL") {
-      navigate(`/?type=${searchAccountType}&address=${value}`);
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + `?type=${searchAccountType}&address=${value}`
+      );
     }
     handleSaveSuggest(value);
   };
@@ -255,9 +264,11 @@
     });
 
     Mousetrap.bindGlobal(["enter"], async function () {
-      const selectedAddress = listAddress[selectedIndexAddress].value;
-      handleSearchAddress(selectedAddress);
-      showPopoverSearch = false;
+      if (selectedIndexAddress !== -1) {
+        const selectedAddress = listAddress[selectedIndexAddress]?.value;
+        handleSearchAddress(selectedAddress);
+        showPopoverSearch = false;
+      }
     });
   });
 
@@ -385,7 +396,7 @@
   const goldImg =
     "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
   $: {
-    if (search.length !== 0) {
+    if (search && search?.length !== 0) {
       selectedIndexAddress = -1;
     } else {
       selectedIndexAddress = 0;
@@ -1199,9 +1210,10 @@
       />
       <input
         on:keyup={({ target: { value } }) => debounceSearch(value)}
-        on:keydown={async (event) => {
+        on:keydown={(event) => {
           if (
-            search.length !== 0 &&
+            search &&
+            search?.length !== 0 &&
             (event.which == 13 || event.keyCode == 13)
           ) {
             handleSearchAddress(search);
@@ -1238,9 +1250,11 @@
                 darkMode ? "hover:bg-[#343434]" : "hover:bg-[#eff0f4]"
               }`}
               class:selected={index === selectedIndexAddress}
-              on:click={async () => {
-                handleSearchAddress(item.value);
-                showPopoverSearch = false;
+              on:click={() => {
+                if (selectedIndexAddress !== -1) {
+                  handleSearchAddress(item.value);
+                  showPopoverSearch = false;
+                }
               }}
             >
               <img src={item.logo} alt="" class="w-6 h-6 rounded-full" />
@@ -1287,12 +1301,12 @@
         {#each suggestList as suggest}
           <div
             class="xl:text-sm text-xl cursor-pointer py-1"
-            on:click={async () => {
+            on:click={() => {
               handleSearchAddress(suggest);
               showPopoverSearch = false;
             }}
           >
-            {suggest.length > 9 ? shorterAddress(suggest) : suggest}
+            {suggest && suggest?.length > 9 ? shorterAddress(suggest) : suggest}
           </div>
         {/each}
       </div>
