@@ -91,6 +91,17 @@
 
   const imgGold =
     "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
+
+  const rankFrameImg = [
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/1stframe.png",
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/2ndframe.png",
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/3rdframe.png",
+  ];
+  const rankImg = [
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/1st.png",
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/2nd.png",
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/3rd.png",
+  ];
 </script>
 
 {#if $publicEvmAddress === ""}
@@ -154,13 +165,13 @@
       <div class="flex flex-col gap-5 py-3">
         <div class="flex items-center justify-between">
           {#if selectedTypePerformance === "collectGMPoint"}
-            <div class="flex flex-col gap-2">
-              <span class="font-medium text-3xl xl:text-2xl">
+            <div class="flex flex-col gap-1">
+              <div class="xl:title-3 title-1">
                 Collect your GM Points every day
-              </span>
-              <span class="xl:text-base text-xl"
-                >Check in 7 days in a row, your rewards will grow
-              </span>
+              </div>
+              <div class="xl:text-base text-xl text-gray-500">
+                Check in 7 days in a row, your rewards will grow
+              </div>
             </div>
           {:else}
             <div class="py-4">
@@ -208,9 +219,9 @@
             </div>
           </div>
           <div class="flex flex-col gap-5">
-            <span class="font-medium text-3xl xl:text-2xl">
-              This month reward
-            </span>
+            <div class="xl:title-3 title-1">
+              Collect your GM Points every day
+            </div>
             <div class="flex gap-5">
               {#each $queryReward?.data?.monthRewards as item, index}
                 <div>
@@ -218,19 +229,11 @@
                     class="relative h-[250px] w-[185px] flex flex-col items-center justify-center gap-3 text-white"
                   >
                     <img
-                      src={`/assets/dailycheckin/${index + 1}${
-                        index === 0 ? "st" : index == 1 ? "nd" : "rd"
-                      }frame.png`}
+                      src={rankFrameImg[index]}
                       alt=""
                       class="absolute top-0 left-0 -z-99"
                     />
-                    <img
-                      src={`/assets/dailycheckin/${index + 1}${
-                        index === 0 ? "st" : index == 1 ? "nd" : "rd"
-                      }.png`}
-                      alt=""
-                      class="h-[70px] mb-2"
-                    />
+                    <img src={rankImg[index]} alt="" class="h-[70px] mb-2" />
                     <div class="text-3xl text-center">${item.amount}</div>
                     <div class="text-center">
                       {index + 1}{index === 0 ? "st" : index == 1 ? "nd" : "rd"}
@@ -255,6 +258,13 @@
                 </tr>
               </thead>
               <tbody>
+                {#if $queryDailyCheckin?.data?.checkinLogs.length === 0}
+                  <tr>
+                    <td class="text-center py-2" colspan="2"
+                      >You didn't checkin before</td
+                    >
+                  </tr>
+                {/if}
                 {#each $queryDailyCheckin?.data?.checkinLogs || [] as { point, createdAt }}
                   <tr>
                     <td class="py-2 pl-3 text-left">{shortDate(createdAt)}</td>

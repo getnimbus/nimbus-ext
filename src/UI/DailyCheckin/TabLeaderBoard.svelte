@@ -7,15 +7,15 @@
 
   const img = {
     leaderboardFrame:
-      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/beta/src/assets/leaderboard/frameLeaderboard.png",
+      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/frameLeaderboard.png",
     rank1:
-      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/8a2c618aa211964a0863fa4826ed3e9af08ba396/src/assets/leaderboard/Rank1.svg",
+      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank1.svg",
     rank2:
-      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/8a2c618aa211964a0863fa4826ed3e9af08ba396/src/assets/leaderboard/Rank2.svg",
+      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank2.svg",
     rank3:
-      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/8a2c618aa211964a0863fa4826ed3e9af08ba396/src/assets/leaderboard/Rank3.svg",
+      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank3.svg",
     rankstatus:
-      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/beta/src/assets/leaderboard/Rankstatus.png",
+      "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/Rankstatus.png",
   };
 
   let darkMode = false;
