@@ -105,7 +105,7 @@
           <div
             class="absolute top-[26.5%] left-8 flex flex-col items-center justify-center"
           >
-            <img src={img.rank2} alt="" class="w-52 h-48" />
+            <img src={img.rank2} alt="" class="w-48 h-44" />
             {#if top3Wallet.length < 2}
               <div class="text-lg font-medium">N/a</div>
             {:else}

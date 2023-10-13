@@ -64,9 +64,14 @@
   $: console.log("this is $ $publicEvmAddress : ", $queryReward?.data);
 </script>
 
-<div class="w-full flex flex-col gap-10">
-  <div class="xl:title-3 title-1 flex justify-between items-center">
-    <div class="xl:title-3 title-1 py-2">Rewards</div>
+<div class="w-full flex flex-col gap-3">
+  <div class="flex justify-between items-center">
+    <div class="flex flex-col gap-1">
+      <div class="xl:title-3 title-1 py-2">Rewards</div>
+      <div class="xl:text-base text-xl text-gray-500">
+        Use GM Points to redeem gifts
+      </div>
+    </div>
     <div
       class="py-2 px-4 w-[100px] rounded-full bg-[#27326F] text-white xl:text-base text-xl font-medium flex gap-1 justify-center items-center"
     >
