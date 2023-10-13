@@ -74,14 +74,24 @@
       </div>
       <div class="xl:col-span-5 col-span-1">
         {#if activeTabValue === "daily-checkin"}
-          <div class="w-full flex flex-col gap-10">
-            <div class="xl:title-3 title-1 py-2">My Nimbus GM Points</div>
-
+          <div class="w-full flex flex-col gap-3">
+            <div class="flex flex-col gap-1">
+              <div class="xl:title-3 title-1 py-2">My Nimbus GM Points</div>
+              <div class="xl:text-base text-xl text-gray-500">
+                Collect GM Points and redeem them to exclusive rewards and
+                special offers
+              </div>
+            </div>
             <DailyCheckin />
           </div>
         {:else if activeTabValue === "leaderboard"}
-          <div class="w-full flex flex-col gap-10">
-            <div class="xl:title-3 title-1 py-2">Leaderboard</div>
+          <div class="w-full flex flex-col gap-3">
+            <div class="flex flex-col gap-1">
+              <div class="xl:title-3 title-1 py-2">Leaderboard</div>
+              <div class="xl:text-base text-xl text-gray-500">
+                Take a look at leaderboard to see how rank are you
+              </div>
+            </div>
             <LeaderBoard />
           </div>
         {:else if activeTabValue === "rewards"}
