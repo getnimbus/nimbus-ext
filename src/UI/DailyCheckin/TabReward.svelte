@@ -122,7 +122,7 @@
               } `}
             >
               <div
-                class="grid grid-cols-3 items-center px-5 pt-5 pb-7 border-b-2 border-dashed relative"
+                class="grid grid-cols-3 items-center px-4 pt-5 pb-7 border-b-2 border-dashed relative"
               >
                 <div
                   class={`xl:h-[150px] h-[250px] col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
@@ -183,11 +183,12 @@
                   {item.remains} left
                 </div>
                 <div
-                  class="col-span-2 py-2 xl:w-[200px] w-[300px] rounded-xl text-white mx-auto cursor-pointer"
+                  class="col-span-2 py-2 xl:w-[200px] w-[300px] rounded-xl text-white mx-auto"
                 >
                   <Button
                     on:click={() => handleRedeem(item.campaignName)}
-                    variant="primary"
+                    variant={item.remains == 0 ? "disabled" : "primary"}
+                    disabled={item.remains == 0 ? true : false}
                   >
                     <div
                       class="grid grid-cols-3 h-8 xl:text-base text-xl font-medium"
@@ -227,7 +228,7 @@
                     class="object-contain m-auto w-16 h-16"
                   />
                 </div>
-                <div class="flex flex-col gap-2 col-span-2 px-10">
+                <div class="flex flex-col gap-2 col-span-2">
                   <div
                     class="flex gap-1 items-center font-medium xl:text-lg text-xl text-[#ffb800]"
                   >
