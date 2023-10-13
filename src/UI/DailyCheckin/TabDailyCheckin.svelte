@@ -96,12 +96,13 @@
       class="flex flex-col gap-5 bg-[#1589EB] text-white px-6 py-5 rounded-lg w-[400px]"
     >
       <span class="text-sm">My GM Points</span>
-      <span class="text-4xl font-medium">
+      <span class="text-4xl font-medium flex gap-2">
         {#if $queryDailyCheckin.isFetching}
           <Loading />
         {:else}
           {$queryDailyCheckin?.data?.totalPoint || 0}
         {/if}
+        <img src={imgGold} alt="" class="w-12" />
       </span>
     </div>
     <div>
@@ -187,6 +188,16 @@
               {/each}
             </div>
           </div>
+          <div class="flex flex-col gap-5">
+            <span class="font-medium text-3xl xl:text-2xl"
+              >This month reward</span
+            >
+            <div class="flex gap-5">
+              <div><img src="/assets/top1.png" alt="" class="h-[250px]" /></div>
+              <div><img src="/assets/top2.png" alt="" class="h-[250px]" /></div>
+              <div><img src="/assets/top3.png" alt="" class="h-[250px]" /></div>
+            </div>
+          </div>
         {:else}
           <div class="w-full h-[250px] overflow-y-auto rounded-lg">
             <table class="table-auto w-full">
@@ -211,14 +222,6 @@
             </table>
           </div>
         {/if}
-      </div>
-      <div class="flex flex-col gap-5">
-        <span class="font-medium text-3xl xl:text-2xl">This month reward</span>
-        <div class="flex gap-5">
-          <div><img src="/assets/top1.png" alt="" class="h-[250px]" /></div>
-          <div><img src="/assets/top2.png" alt="" class="h-[250px]" /></div>
-          <div><img src="/assets/top3.png" alt="" class="h-[250px]" /></div>
-        </div>
       </div>
     </div>
   </div>

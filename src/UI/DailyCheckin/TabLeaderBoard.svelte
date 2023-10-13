@@ -3,6 +3,7 @@
   import Loading from "~/components/Loading.svelte";
   import { nimbus } from "~/lib/network";
   import { isDarkMode, user, publicEvmAddress } from "~/store";
+  import { shorterAddress } from "~/utils";
 
   const img = {
     leaderboardFrame:
@@ -29,14 +30,6 @@
 
   let userCurrentRank;
   let top3Wallet = [];
-
-  const shortAddress = (address: string) => {
-    return (
-      address.slice(0, 6) +
-      "..." +
-      address.slice(address.length - 4, address.length)
-    );
-  };
 
   const handleDailyCheckin = async () => {
     const response = await nimbus.get(`/v2/checkin/${$publicEvmAddress}`);
@@ -82,7 +75,7 @@
         <img
           src={img.leaderboardFrame}
           alt="Leaderboard frame"
-          class="opacity-50 w-[650px]"
+          class="opacity-50 w-[600px]"
         />
         <div class="absolute bottom-0 left-0 w-full h-full">
           <img
@@ -91,11 +84,13 @@
             class="absolute left-[10%] -bottom-24 w-[80%]"
           />
           <div
-            class="absolute top-[38%] left-[50%] absolute-center flex flex-col items-center justify-center"
+            class="absolute top-[34%] left-[50%] absolute-center flex flex-col items-center justify-center"
           >
-            <img src={img.rank1} alt="" class="w-40 h-36" />
+            <img src={img.rank1} alt="" class="w-52 h-48" />
             <div class="flex flex-col gap-2 text-center">
-              <div class="text-lg font-medium">Alfonso Bator</div>
+              <div class="text-lg font-medium">
+                {shorterAddress(top3Wallet[0]?.owner)}
+              </div>
               <div>
                 <span class="text-yellow-400 font-medium text-lg">
                   {top3Wallet[0]?._sum.point}
@@ -104,36 +99,38 @@
             </div>
           </div>
           <div
-            class="absolute top-[34.5%] left-12 flex flex-col items-center justify-center"
+            class="absolute top-[26.5%] left-8 flex flex-col items-center justify-center"
           >
-            <img src={img.rank2} alt="" class="w-40 h-36" />
+            <img src={img.rank2} alt="" class="w-52 h-48" />
             <div class="flex flex-col gap-2 text-center">
-              <div class="text-lg font-medium">Alfonso Bator</div>
+              <div class="text-lg font-medium">
+                {shorterAddress(top3Wallet[1]?.owner)}
+              </div>
               <div>
                 <span class="text-yellow-400 font-medium text-lg">
-                  {top3Wallet[1]._sum.point}
+                  {top3Wallet[1]?._sum.point}
                 </span> GM point
               </div>
             </div>
           </div>
           <div
-            class="absolute top-[37%] right-12 flex flex-col items-center justify-center"
+            class="absolute top-[30%] right-8 flex flex-col items-center justify-center"
           >
-            <img src={img.rank3} alt="" class="w-36 h-32" />
+            <img src={img.rank3} alt="" class="w-44 h-40" />
             <div class="flex flex-col gap-2 text-center">
               <div class="text-lg font-medium">
                 <!-- <span class="text-yellow-400 font-medium text-xl">3.</span> -->
-                Alfonso Bator
+                {shorterAddress(top3Wallet[2]?.owner)}
               </div>
               <div>
                 <span class="text-yellow-400 font-medium text-lg">
-                  {top3Wallet[2]._sum.point}
+                  {top3Wallet[2]?._sum.point}
                 </span> GM point
               </div>
             </div>
           </div>
           <span
-            class="absolute bottom-0 left-[50%] text-black absolute-center flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg"
+            class="absolute bottom-0 left-[50%] text-black absolute-center flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg opacity-50 shadow shadow-dark-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -159,9 +156,11 @@
     </div>
 
     <!-- the table  -->
-    <div class="xl:w-3/5 w-full rounded-xl border border-[#ffb800]">
+    <div
+      class="xl:w-3/5 w-full rounded-xl border border-[#ffb800] shadow-top shadow-dark-700"
+    >
       <table
-        class={`w-full table-auto rounded-xl ${
+        class={`w-full table-auto rounded-xl  ${
           darkMode ? "bg-[#161616]" : "bg-white"
         }`}
       >
@@ -179,39 +178,54 @@
               {handleThing()}
             </td>
             <td class="pb-3 pt-1 text-left">
-              {shortAddress(userCurrentRank.owner)}
+              {shorterAddress(userCurrentRank?.owner)}
             </td>
             <td class="pr-3 pb-3 pt-1 text-right">
-              {userCurrentRank._sum.point} GM point
+              <span class="text-lg">{userCurrentRank?._sum?.point || 0}</span>
+              GM point
             </td>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td
-              colspan="3"
-              class="px-3 py-2 text-left font-medium xl:text-base text-xl"
-            >
-              Runners up
+            <td colspan="3" class="px-3">
+              <table class="w-full table-auto">
+                <tbody>
+                  <tr>
+                    <td
+                      colspan="3"
+                      class="px-3 py-2 text-left font-medium xl:text-base text-xl"
+                    >
+                      Runners up
+                    </td>
+                  </tr>
+                  {#each $queryDailyCheckin?.data?.checkinLeaderboard.slice(3, 20) as item, index}
+                    <tr
+                      class={`xl:text-base text-xl border-b hover:${
+                        darkMode ? "bg-gray-800" : "bg-gray-100"
+                      }`}
+                    >
+                      <td
+                        class={`pl-3 py-2 text-3xl font-light text-left ${
+                          !darkMode && "text-[#27326F]"
+                        }`}
+                      >
+                        {index + 4}
+                      </td>
+                      <td class="py-2 text-left"
+                        >{shorterAddress(item.owner)}</td
+                      >
+                      <td class="pr-3 py-2 text-right text-sm">
+                        <span class="text-yellow-400 text-lg font-medium">
+                          {item?._sum.point}
+                        </span> GM point
+                      </td>
+                    </tr>
+                  {/each}
+                </tbody>
+              </table>
             </td>
           </tr>
-          {#each $queryDailyCheckin?.data?.checkinLeaderboard.slice(0, 20) as item, index}
-            <tr
-              class={`xl:text-base text-xl hover:${
-                darkMode ? "bg-gray-800" : "bg-gray-100"
-              }`}
-            >
-              <td class="px-3 py-2 text-3xl font-light text-left"
-                >{index + 1}</td
-              >
-              <td class="py-2 text-left">{shortAddress(item.owner)}</td>
-              <td class="pr-3 py-2 text-right">
-                <span class="text-yellow-400 font-medium">
-                  {item._sum.point}
-                </span> GM point
-              </td>
-            </tr>
-          {/each}
         </tbody>
       </table>
     </div>
@@ -225,5 +239,9 @@
     -ms-transform: translate(-50%, -50%);
     -o-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+  }
+
+  .shadow-top {
+    box-shadow: 0px -10px 20px #c3c3c3;
   }
 </style>
