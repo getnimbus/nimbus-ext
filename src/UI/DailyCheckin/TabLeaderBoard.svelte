@@ -59,7 +59,7 @@
   }
 </script>
 
-<div class="flex flex-col items-center">
+<div class="flex flex-col items-center border-t-[1.5px] border_0000000d pt-4">
   {#if $publicEvmAddress === ""}
     <div class="flex items-center justify-center h-full px-3 py-4">
       Please connect wallet
