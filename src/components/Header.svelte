@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { Link, useMatch, useNavigate } from "svelte-navigator";
   import { i18n } from "~/lib/i18n";
   import {
@@ -210,12 +210,51 @@
     }
   }
 
-  Mousetrap.bindGlobal(["/"], function () {
-    showPopoverSearch = true;
-  });
+  let selectedIndexAddress = 0;
 
   onMount(() => {
     getSuggestList();
+    Mousetrap.bindGlobal(["up", "down"], (event) => {
+      if (event.key === "ArrowUp" && selectedIndexAddress > 0) {
+        selectedIndexAddress -= 1;
+      } else if (
+        event.key === "ArrowDown" &&
+        selectedIndexAddress < listAddress.length - 1
+      ) {
+        selectedIndexAddress += 1;
+      }
+    });
+    Mousetrap.bindGlobal(["/"], function () {
+      showPopoverSearch = true;
+    });
+    Mousetrap.bindGlobal(["esc"], function () {
+      showPopoverSearch = false;
+      search = "";
+    });
+
+    Mousetrap.bindGlobal(["enter"], async function () {
+      const selectedAddress = listAddress[selectedIndexAddress].value;
+      search = selectedAddress;
+      mixpanel.track("user_search");
+      const searchAccountType = await validateAddress(selectedAddress);
+      chain.update((n) => (n = "ALL"));
+      wallet.update((n) => (n = selectedAddress));
+      typeWallet.update((n) => (n = searchAccountType));
+      if (searchAccountType === "EVM") {
+        navigate(
+          `/?type=${searchAccountType}&chain=ALL&address=${selectedAddress}`
+        );
+      }
+      if (searchAccountType === "BTC" || searchAccountType === "SOL") {
+        navigate(`/?type=${searchAccountType}&address=${selectedAddress}`);
+      }
+      showPopoverSearch = false;
+      search = "";
+    });
+  });
+
+  onDestroy(() => {
+    Mousetrap.reset();
   });
 
   let publicAddress = "";
@@ -597,7 +636,7 @@
           {MultipleLang.search_placeholder}
         </div>
         <div
-          class="xl:flex hidden rounded-md w-[20px] h-[20px] p-2 justify-center items-center bg-[#a6b0c3] text-white text-sm"
+          class="xl:flex hidden rounded-md w-[24px] h-[24px] p-2 justify-center items-center bg-[#a6b0c3] text-white text-sm"
           use:tooltip={{
             content: `<tooltip-detail text="Use to trigger search" />`,
             allowHTML: true,
@@ -1119,16 +1158,17 @@
             darkMode ? "text-gray-200" : "text-gray-400"
           }`}
         >
-          List account
+          List addresses
         </div>
         <div
           class="xl:max-h-[310px] max-h-[380px] w-full flex flex-col gap-2"
           style="overflow-y: overlay;"
         >
-          {#each listAddress as item}
+          {#each listAddress as item, index}
             <div
               id={item.value}
-              class="relative xl:text-sm text-xl flex items-center gap-3 cursor-pointer"
+              class="relative xl:text-sm text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md"
+              class:selected={index === selectedIndexAddress}
               on:click={async () => {
                 search = item.value;
                 mixpanel.track("user_search");
@@ -1154,7 +1194,23 @@
               <div class="flex-1 flex justify-between items-center">
                 <div class="hover:underline">{item.label}</div>
                 <div
-                  class={`xl:text-sm text-base ${
+                  class={`xl:text-sm text-base xl:flex hidden items-center gap-2 ${
+                    darkMode ? "text-gray-300" : "text-gray-500"
+                  }`}
+                >
+                  {#if index === selectedIndexAddress}
+                    <div class="text-[#a6b0c3]">Select</div>
+                    <div
+                      class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
+                    >
+                      ↵
+                    </div>
+                  {:else}
+                    {shorterAddress(item.value)}
+                  {/if}
+                </div>
+                <div
+                  class={`xl:text-sm text-base xl:hidden block ${
                     darkMode ? "text-gray-300" : "text-gray-500"
                   }`}
                 >
@@ -1177,7 +1233,7 @@
       <div class="flex flex-col gap-2">
         {#each suggestList as suggest}
           <div
-            class="xl:text-sm text-xl cursor-pointer"
+            class="xl:text-sm text-xl cursor-pointer py-1"
             on:click={async () => {
               mixpanel.track("user_search");
               const searchAccountType = await validateAddress(suggest);
@@ -1200,6 +1256,37 @@
         {/each}
       </div>
     </div>
+    <div class="border-t-[1px] pt-4 border-gray-200 flex justify-between">
+      <div class="flex items-center gap-1">
+        <div
+          class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
+        >
+          ↑
+        </div>
+        <div
+          class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
+        >
+          ↓
+        </div>
+        <div class="text-sm text-gray-500">To Navigate</div>
+      </div>
+      <div class="flex items-center gap-1">
+        <div
+          class="rounded-md p-1 flex justify-center items-center bg-[#a6b0c3] text-white text-xs"
+        >
+          ESC
+        </div>
+        <div class="text-sm text-gray-500">To Cancel</div>
+      </div>
+      <div class="flex items-center gap-1">
+        <div
+          class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
+        >
+          ↵
+        </div>
+        <div class="text-sm text-gray-500">To Select</div>
+      </div>
+    </div>
   </div>
 </AppOverlay>
 
@@ -1220,6 +1307,13 @@
       0 8px 10px -6px var(--tw-shadow-color);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
       var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
+  :global(body) .selected {
+    background: #eff0f4;
+  }
+  :global(body.dark) .selected {
+    background: #343434;
   }
 
   @supports (height: 100dvh) {
