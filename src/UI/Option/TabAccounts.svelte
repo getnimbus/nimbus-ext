@@ -376,15 +376,20 @@
         isOpenAddModal = false;
         queryClient.refetchQueries(["list-address"]);
 
+        const searchAccountType = await validateAddress(
+          response?.data?.accountId
+        );
+
+        browser.storage.sync.set({ selectedChain: "ALL" });
+        browser.storage.sync.set({
+          typeWalletAddress: searchAccountType,
+        });
         browser.storage.sync.set({
           selectedWallet: response?.data?.accountId,
         });
-        browser.storage.sync.set({ selectedChain: "ALL" });
-        browser.storage.sync.set({
-          typeWalletAddress: "EVM",
-        });
+
         chain.update((n) => (n = "ALL"));
-        typeWallet.update((n) => (n = "EVM"));
+        typeWallet.update((n) => (n = searchAccountType));
         wallet.update((n) => (n = response?.data?.accountId));
 
         toastMsg = "Successfully add On-chain account!";

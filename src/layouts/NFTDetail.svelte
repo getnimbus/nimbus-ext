@@ -57,14 +57,14 @@
 
       marketPriceNFT = {
         id: -1,
-        market_price: selectedCollection?.marketPrice || 0,
+        market_price: Number(selectedCollection?.marketPrice || 0),
       };
 
       data = {
         ...selectedCollection,
         current_value:
-          selectedCollection?.floorPrice *
-          selectedCollection?.marketPrice *
+          Number(selectedCollection?.floorPrice) *
+          Number(selectedCollection?.marketPrice) *
           selectedCollection?.tokens?.length,
       };
 
@@ -133,7 +133,9 @@
         ...data,
         marketPrice: marketPriceNFT.market_price,
         current_value:
-          data?.floorPrice * marketPriceNFT.market_price * data?.tokens?.length,
+          Number(data?.floorPrice) *
+          Number(marketPriceNFT.market_price) *
+          data?.tokens?.length,
       };
     }
   }
@@ -149,10 +151,12 @@
   );
 
   $: profitAndLoss =
-    totalCost === 0 ? 0 : data?.current_value - (totalCost || 0);
+    totalCost === 0 ? 0 : Number(data?.current_value) - Number(totalCost || 0);
 
   $: profitAndLossPercent =
-    Math.abs(totalCost || 0) === 0 ? 0 : profitAndLoss / Math.abs(totalCost);
+    Math.abs(Number(totalCost || 0)) === 0
+      ? 0
+      : profitAndLoss / Math.abs(Number(totalCost));
 </script>
 
 <ErrorBoundary>
@@ -274,7 +278,7 @@
             </div>
             <div class="xl:text-lg text-3xl flex">
               <TooltipNumber
-                number={(data?.floorPrice || 0) *
+                number={Number(data?.floorPrice || 0) *
                   (marketPriceNFT?.market_price || 0)}
                 type="value"
               />
@@ -411,7 +415,7 @@
                     data={item}
                     {nativeToken}
                     marketPrice={marketPriceNFT?.market_price || 0}
-                    floorPrice={data?.floorPrice || 0}
+                    floorPrice={Number(data?.floorPrice || 0)}
                   />
                 {/each}
               </div>
@@ -464,7 +468,7 @@
                         {item}
                         {nativeToken}
                         marketPrice={marketPriceNFT?.market_price || 0}
-                        floorPrice={item?.floorPrice || 0}
+                        floorPrice={Number(data?.floorPrice || 0)}
                       />
                     {/each}
                   </tbody>
