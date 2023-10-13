@@ -90,10 +90,10 @@
     <div class="flex flex-col justify-between flex-1 gap-6 md:flex-row">
       <OverviewCard title={MultipleLang.networth}>
         <div class="flex text-5xl xl:text-3xl">
-          $<CountUpNumber
+          <CountUpNumber
             id="networth"
             number={networth}
-            type="balance"
+            type="value"
             personalValue
           />
         </div>
@@ -138,11 +138,11 @@
                 -
               {/if}
             </span>
-            $<CountUpNumber
+            <CountUpNumber
               personalValue
               id="claimable"
               number={Math.abs(totalProfit)}
-              type="balance"
+              type="value"
             />
           {/if}
         </div>
@@ -184,11 +184,11 @@
               -
             {/if}
           </span>
-          $<CountUpNumber
+          <CountUpNumber
             personalValue
             id="total_assets"
             number={Math.abs(realizedProfit)}
-            type="balance"
+            type="value"
           />
         </div>
         <!-- <div
@@ -229,11 +229,11 @@
               -
             {/if}
           </span>
-          $<CountUpNumber
+          <CountUpNumber
             personalValue
             id="total_positions"
             number={Math.abs(unrealizedProfit)}
-            type="balance"
+            type="value"
           />
         </div>
         <!-- <div

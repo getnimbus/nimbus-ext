@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { Link, useMatch, useNavigate } from "svelte-navigator";
   import { i18n } from "~/lib/i18n";
   import {
@@ -19,12 +19,16 @@
   import { showChangeLogAnimationVariants } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import Mousetrap from "mousetrap";
+  import addGlobalBinds from "bind-mousetrap-global";
+  addGlobalBinds(Mousetrap);
 
   import Auth from "~/UI/Auth/Auth.svelte";
   import AuthEvm from "~/UI/Auth/AuthEVM.svelte";
   import DarkModeFooter from "./DarkModeFooter.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Button from "~/components/Button.svelte";
+  import tooltip from "~/entries/contentScript/views/tooltip";
 
   import Logo from "~/assets/logo-white.svg";
   import PortfolioIcon from "~/assets/portfolio.svg";
@@ -36,11 +40,15 @@
   import SettingsIcon from "~/assets/settings.svg";
   import ChangeLogIcon from "~/assets/change-log.svg";
   import Search from "~/assets/search.svg";
+  import SearchBlack from "~/assets/search-black.svg";
   import Bell from "~/assets/bell.svg";
   import Crown from "~/assets/crown.svg";
   import Close from "~/assets/close-menu-bar.svg";
   import Chat from "~/assets/chat.svg";
   import User from "~/assets/user.png";
+  import All from "~/assets/all.svg";
+  import BitcoinLogo from "~/assets/bitcoin.png";
+  import SolanaLogo from "~/assets/solana.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -89,12 +97,87 @@
 
   let timerDebounce;
   let search = "";
+  let showPopoverSearch = false;
+  let listAddress = [];
+  let suggestList = [];
+  let selectedIndexAddress = 0;
+  let listAddressElement;
 
   const debounceSearch = (value) => {
     clearTimeout(timerDebounce);
     timerDebounce = setTimeout(() => {
       search = value;
     }, 300);
+  };
+
+  const getListAddress = async () => {
+    const response: any = await nimbus.get("/accounts/list");
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response?.data;
+  };
+
+  // query list address
+  $: query = createQuery({
+    queryKey: ["list-address"],
+    queryFn: () => getListAddress(),
+    staleTime: Infinity,
+    enabled: Object.keys(userInfo).length !== 0,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
+  });
+
+  $: {
+    if (
+      !$query.isError &&
+      $query.data !== undefined &&
+      $query.data.length !== 0
+    ) {
+      formatDataListAddress($query.data);
+    }
+  }
+
+  const formatDataListAddress = (data) => {
+    const structWalletData = data
+      .filter((item) => item.type !== "BUNDLE")
+      .map((item) => {
+        let logo = All;
+        if (item?.type === "BTC") {
+          logo = BitcoinLogo;
+        }
+        if (item?.type === "SOL") {
+          logo = SolanaLogo;
+        }
+        return {
+          id: item.id,
+          type: item.type,
+          label: item.label,
+          value: item.type === "CEX" ? item.id : item.accountId,
+          logo: item.type === "CEX" ? item.logo : logo,
+          accounts:
+            item?.accounts?.map((account) => {
+              let logo = All;
+              if (account?.type === "BTC") {
+                logo = BitcoinLogo;
+              }
+              if (account?.type === "SOL") {
+                logo = SolanaLogo;
+              }
+              return {
+                id: account?.id,
+                type: account?.type,
+                label: account?.label,
+                value:
+                  account?.type === "CEX" ? account?.id : account?.accountId,
+                logo: account?.type === "CEX" ? account?.logo : logo,
+              };
+            }) || [],
+        };
+      });
+    listAddress = structWalletData;
   };
 
   const validateAddress = async (address: string) => {
@@ -106,6 +189,81 @@
       return undefined;
     }
   };
+
+  const getSuggestList = async () => {
+    const suggestListRes = localStorage.getItem("SearchSuggestList");
+    if (suggestListRes) {
+      suggestList = JSON.parse(suggestListRes);
+    }
+  };
+
+  const handleSaveSuggest = (value: string) => {
+    if (!suggestList.includes(value)) {
+      if (suggestList.length < 3) {
+        suggestList = [...suggestList, value];
+      } else {
+        suggestList = [...suggestList.slice(1), value];
+      }
+    }
+  };
+
+  $: {
+    if (suggestList.length !== 0) {
+      localStorage.setItem("SearchSuggestList", JSON.stringify(suggestList));
+    }
+  }
+
+  const handleSearchAddress = async (value: string) => {
+    mixpanel.track("user_search");
+    const searchAccountType = await validateAddress(value);
+    chain.update((n) => (n = "ALL"));
+    wallet.update((n) => (n = value));
+    typeWallet.update((n) => (n = searchAccountType));
+    if (searchAccountType === "EVM") {
+      navigate(`/?type=${searchAccountType}&chain=ALL&address=${value}`);
+    }
+    if (searchAccountType === "BTC" || searchAccountType === "SOL") {
+      navigate(`/?type=${searchAccountType}&address=${value}`);
+    }
+    handleSaveSuggest(value);
+  };
+
+  onMount(() => {
+    getSuggestList();
+    Mousetrap.bindGlobal(["up", "down"], (event) => {
+      if (event.key === "ArrowUp" && selectedIndexAddress > 0) {
+        selectedIndexAddress -= 1;
+      } else if (
+        event.key === "ArrowDown" &&
+        selectedIndexAddress < listAddress.length - 1
+      ) {
+        selectedIndexAddress += 1;
+      }
+      const itemElement = listAddressElement.querySelector(
+        `div:nth-child(${selectedIndexAddress + 1})`
+      );
+      if (itemElement) {
+        itemElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    });
+    Mousetrap.bindGlobal(["/"], function () {
+      showPopoverSearch = true;
+    });
+    Mousetrap.bindGlobal(["esc"], function () {
+      showPopoverSearch = false;
+      search = "";
+    });
+
+    Mousetrap.bindGlobal(["enter"], async function () {
+      const selectedAddress = listAddress[selectedIndexAddress].value;
+      handleSearchAddress(selectedAddress);
+      showPopoverSearch = false;
+    });
+  });
+
+  onDestroy(() => {
+    Mousetrap.reset();
+  });
 
   let publicAddress = "";
   let isOpenModalSync = false;
@@ -226,6 +384,13 @@
 
   const goldImg =
     "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
+  $: {
+    if (search.length !== 0) {
+      selectedIndexAddress = -1;
+    } else {
+      selectedIndexAddress = 0;
+    }
+  }
 </script>
 
 <div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">
@@ -473,42 +638,33 @@
     <div class="flex items-center justify-between gap-6 xl:gap-3">
       <!-- Search -->
       <div
-        class={`pl-4 flex items-center rounded-[1000px] ${
+        class={`px-4 xl:w-[220px] w-[400px] flex items-center gap-1 rounded-[1000px] cursor-pointer ${
           darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
         }`}
       >
         <img src={Search} alt="" class="xl:w-5 xl:h-5 w-9 h-9" />
-        <input
-          on:keyup={({ target: { value } }) => debounceSearch(value)}
-          on:keydown={async (event) => {
-            if (
-              search.length !== 0 &&
-              (event.which == 13 || event.keyCode == 13)
-            ) {
-              mixpanel.track("user_search");
-              const searchAccountType = await validateAddress(search);
-              chain.update((n) => (n = "ALL"));
-              wallet.update((n) => (n = search));
-              typeWallet.update((n) => (n = searchAccountType));
-              if (searchAccountType === "EVM") {
-                navigate(
-                  `/?type=${searchAccountType}&chain=ALL&address=${search}`
-                );
-              }
-              if (searchAccountType === "BTC" || searchAccountType === "SOL") {
-                navigate(
-                  `/?type=${searchAccountType}&address=${selectedWallet}`
-                );
-              }
-            }
+        <div
+          on:click={() => {
+            showPopoverSearch = true;
+            search = "";
           }}
-          value={search}
-          placeholder={MultipleLang.search_placeholder}
-          type="text"
-          class={`xl:w-full w-[400px] xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-2xl placeholder-[#ffffff80] border-none focus:outline-none focus:ring-0 ${
+          class={`flex-1 xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-2xl ${
             darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
           }`}
-        />
+        >
+          {MultipleLang.search_placeholder}
+        </div>
+        <div
+          class="xl:flex hidden rounded-md w-[24px] h-[24px] p-2 justify-center items-center bg-[#a6b0c3] text-white text-sm"
+          use:tooltip={{
+            content: `<tooltip-detail text="Use to trigger search" />`,
+            allowHTML: true,
+            placement: "bottom",
+            interactive: true,
+          }}
+        >
+          /
+        </div>
       </div>
 
       <!-- Change log -->
@@ -648,7 +804,7 @@
               </Link>
             </div>
 
-            <div
+            <!-- <div
               on:click={() => {
                 navActive = "profile";
                 queryClient.invalidateQueries(["users-me"]);
@@ -685,7 +841,7 @@
                   <span class="text-3xl font-medium">My Profile</span>
                 </div>
               </Link>
-            </div>
+            </div> -->
           {/if}
 
           <div
@@ -1026,6 +1182,155 @@
   </div>
 </AppOverlay>
 
+<AppOverlay
+  clickOutSideToClose
+  isOpen={showPopoverSearch}
+  on:close={() => {
+    search = "";
+    showPopoverSearch = false;
+  }}
+>
+  <div class="-mt-6 flex flex-col xl:gap-3 gap-6 text-sm">
+    <div class="flex items-center">
+      <img
+        src={darkMode ? Search : SearchBlack}
+        alt=""
+        class="xl:w-5 xl:h-5 w-9 h-9"
+      />
+      <input
+        on:keyup={({ target: { value } }) => debounceSearch(value)}
+        on:keydown={async (event) => {
+          if (
+            search.length !== 0 &&
+            (event.which == 13 || event.keyCode == 13)
+          ) {
+            handleSearchAddress(search);
+            showPopoverSearch = false;
+          }
+        }}
+        autofocus
+        value={search}
+        placeholder={MultipleLang.search_placeholder}
+        type="text"
+        class={`flex-1 xl:py-2 py-3 xl:text-sm text-2xl border-none focus:outline-none focus:ring-0 ${
+          darkMode ? "bg-[#131313]" : "bg-[#fff]"
+        }`}
+      />
+    </div>
+    {#if Object.keys(userInfo).length !== 0}
+      <div class="flex flex-col gap-2 mb-2">
+        <div
+          class={`xl:text-xs text-sm ${
+            darkMode ? "text-gray-200" : "text-gray-400"
+          }`}
+        >
+          List addresses
+        </div>
+        <div
+          class="xl:max-h-[310px] max-h-[380px] w-full flex flex-col gap-2"
+          style="overflow-y: scroll;"
+          bind:this={listAddressElement}
+        >
+          {#each listAddress as item, index}
+            <div
+              id={item.value}
+              class={`address-item relative xl:text-sm text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md ${
+                darkMode ? "hover:bg-[#343434]" : "hover:bg-[#eff0f4]"
+              }`}
+              class:selected={index === selectedIndexAddress}
+              on:click={async () => {
+                handleSearchAddress(item.value);
+                showPopoverSearch = false;
+              }}
+            >
+              <img src={item.logo} alt="" class="w-6 h-6 rounded-full" />
+              <div class="flex-1 flex justify-between items-center">
+                <div class="hover:underline">{item.label}</div>
+                <div
+                  class={`xl:text-sm text-base xl:flex hidden items-center gap-2 ${
+                    darkMode ? "text-gray-300" : "text-gray-500"
+                  }`}
+                >
+                  {#if index === selectedIndexAddress}
+                    <div class="text-[#a6b0c3]">Select</div>
+                    <div
+                      class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
+                    >
+                      ↵
+                    </div>
+                  {:else}
+                    {shorterAddress(item.value)}
+                  {/if}
+                </div>
+                <div
+                  class={`xl:text-sm text-base xl:hidden block ${
+                    darkMode ? "text-gray-300" : "text-gray-500"
+                  }`}
+                >
+                  {shorterAddress(item.value)}
+                </div>
+              </div>
+            </div>
+          {/each}
+        </div>
+      </div>
+    {/if}
+    <div class="flex flex-col gap-2">
+      <div
+        class={`xl:text-xs text-sm ${
+          darkMode ? "text-gray-200" : "text-gray-400"
+        }`}
+      >
+        Recent searches
+      </div>
+      <div class="flex flex-col gap-2">
+        {#each suggestList as suggest}
+          <div
+            class="xl:text-sm text-xl cursor-pointer py-1"
+            on:click={async () => {
+              handleSearchAddress(suggest);
+              showPopoverSearch = false;
+            }}
+          >
+            {suggest.length > 9 ? shorterAddress(suggest) : suggest}
+          </div>
+        {/each}
+      </div>
+    </div>
+    <div class="border-t-[1px] pt-4 border-gray-200 flex justify-between">
+      <div class="flex items-center gap-1">
+        <div
+          class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
+        >
+          ↑
+        </div>
+        <div
+          class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
+        >
+          ↓
+        </div>
+        <div class="text-sm text-gray-500">To Navigate</div>
+      </div>
+      <div class="flex items-center gap-1">
+        <div
+          class="rounded-md p-1 flex justify-center items-center bg-[#a6b0c3] text-white text-xs"
+        >
+          ESC
+        </div>
+        <div class="text-sm text-gray-500">To Cancel</div>
+      </div>
+      <div class="flex items-center gap-1">
+        <div
+          class="rounded-md w-[24px] h-[24px] p-2 flex justify-center items-center bg-[#a6b0c3] text-white text-sm"
+        >
+          ↵
+        </div>
+        <div class="text-sm text-gray-500">To Select</div>
+      </div>
+    </div>
+  </div>
+</AppOverlay>
+
 <style>
   .mobile {
     height: 100vh;
@@ -1043,6 +1348,13 @@
       0 8px 10px -6px var(--tw-shadow-color);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
       var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
+  :global(body) .selected {
+    background: #eff0f4;
+  }
+  :global(body.dark) .selected {
+    background: #343434;
   }
 
   @supports (height: 100dvh) {
@@ -1067,5 +1379,14 @@
   }
   :global(body.dark) .mobile-header-container {
     background: #080808;
+  }
+
+  :global(body) .select_content {
+    background: #ffffff;
+    border: 0.5px solid transparent;
+  }
+  :global(body.dark) .select_content {
+    background: #131313;
+    border: 0.5px solid #cdcdcd59;
   }
 </style>
