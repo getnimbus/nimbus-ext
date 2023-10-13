@@ -11,7 +11,7 @@
     typeWallet,
     isShowHeaderMobile,
     userId,
-    publicEvmAddress,
+    userPublicAddress,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -369,7 +369,7 @@
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
       localStorage.setItem("evm_address", $queryUserInfo.data.publicAddress);
-      publicEvmAddress.update((n) => (n = $queryUserInfo.data.publicAddress));
+      userPublicAddress.update((n) => (n = $queryUserInfo.data.publicAddress));
       userId.update((n) => (n = $queryUserInfo.data.id));
       userID = $queryUserInfo.data.id;
       publicAddress = $queryUserInfo.data.publicAddress;
@@ -695,18 +695,19 @@
 
       <!-- Daily Checkin -->
       {#if userInfo && Object.keys(userInfo).length !== 0}
-        <Link to="daily-checkin">
-          <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
+        <div class="xl:block hidden">
+          <Link to="daily-checkin">
             <div
-              class={`rounded-full flex justify-center items-center w-full h-full ${
+              class={`rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
                 darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
               }`}
             >
               <img src={goldImg} alt="" class="w-[26px] h-[26px]" />
             </div>
-          </div>
-        </Link>
+          </Link>
+        </div>
       {/if}
+
       <!-- <div
         class={`cursor-pointer rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
           darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
@@ -967,34 +968,6 @@
           {#if userInfo && Object.keys(userInfo).length !== 0}
             <div
               on:click={() => {
-                navActive = "settings";
-                isShowHeaderMobile.update((n) => (n = false));
-              }}
-            >
-              <Link to="settings/?tab=accounts">
-                <div
-                  class={`flex items-center gap-3 text-white px-5 py-6 
-            ${
-              darkMode
-                ? navActive === "settings"
-                  ? "bg-[#212121] rounded-[1000px] opacity-100"
-                  : "opacity-70"
-                : navActive === "settings"
-                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-                : "opacity-70"
-            }
-          `}
-                >
-                  <img src={SettingsIcon} alt="" width="40" height="40" />
-                  <span class="text-3xl font-medium">Settings</span>
-                </div>
-              </Link>
-            </div>
-          {/if}
-
-          {#if userInfo && Object.keys(userInfo).length !== 0}
-            <div
-              on:click={() => {
                 navActive = "daily-checkin";
                 isShowHeaderMobile.update((n) => (n = false));
               }}
@@ -1030,6 +1003,32 @@
                     </g>
                   </svg>
                   <span class="text-3xl font-medium">Daily Checkin</span>
+                </div>
+              </Link>
+            </div>
+
+            <div
+              on:click={() => {
+                navActive = "settings";
+                isShowHeaderMobile.update((n) => (n = false));
+              }}
+            >
+              <Link to="settings/?tab=accounts">
+                <div
+                  class={`flex items-center gap-3 text-white px-5 py-6 
+            ${
+              darkMode
+                ? navActive === "settings"
+                  ? "bg-[#212121] rounded-[1000px] opacity-100"
+                  : "opacity-70"
+                : navActive === "settings"
+                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                : "opacity-70"
+            }
+          `}
+                >
+                  <img src={SettingsIcon} alt="" width="40" height="40" />
+                  <span class="text-3xl font-medium">Settings</span>
                 </div>
               </Link>
             </div>

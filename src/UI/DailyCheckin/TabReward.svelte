@@ -1,20 +1,15 @@
 <script lang="ts">
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { nimbus } from "~/lib/network";
+  import { isDarkMode, user, userPublicAddress } from "~/store";
+  import { dailyCheckinRewardsTypePortfolio } from "~/utils";
+
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
   import Loading from "~/components/Loading.svelte";
-  import { nimbus } from "~/lib/network";
-  import { isDarkMode, user, publicEvmAddress } from "~/store";
-  import { dailyCheckinRewardsTypePortfolio } from "~/utils";
-
-  const imgGold =
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
 
   let selectedTypePerformance: "redeemGift" | "yourGift" = "redeemGift";
-
-  //   demo address
-  const demoAddress = "0x098f6f171c7d4c0f31c07b8d511f40b2338347eb";
 
   let userInfo = {};
   user.subscribe((value) => {
@@ -27,64 +22,76 @@
   });
 
   const handleDailyCheckin = async () => {
-    const response = await nimbus.get(`/v2/checkin/${$publicEvmAddress}`);
-    return response?.data;
+    const response = await nimbus.get(`/v2/checkin/${$userPublicAddress}`);
+    return response.data;
   };
 
   const handleRewards = async () => {
     const response = await nimbus.post(`/v2/reward`, {
-      address: $publicEvmAddress,
+      address: $userPublicAddress,
     });
-    console.log("response bla bla : ", response.data);
     return response.data;
   };
 
   const handleRedeem = async (campain) => {
     const response = await nimbus.post("/v2/reward/redeem", {
-      address: $publicEvmAddress,
+      address: $userPublicAddress,
       campaignName: campain,
     });
     useQueryClient().invalidateQueries(["rewards"]);
   };
 
   $: queryDailyCheckin = createQuery({
-    queryKey: [$publicEvmAddress, "daily-checkin"],
+    queryKey: [$userPublicAddress, "daily-checkin"],
     queryFn: () => handleDailyCheckin(),
-    enabled: Object.keys(userInfo).length !== 0,
     staleTime: Infinity,
+    enabled:
+      Object.keys(userInfo).length !== 0 && $userPublicAddress.length !== 0,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
   });
 
   $: queryReward = createQuery({
-    queryKey: [$publicEvmAddress, "rewards"],
+    queryKey: [$userPublicAddress, "rewards"],
     queryFn: () => handleRewards(),
-    enabled: Object.keys(userInfo).length !== 0,
     staleTime: Infinity,
+    enabled:
+      Object.keys(userInfo).length !== 0 && $userPublicAddress.length !== 0,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
   });
-
-  $: console.log("this is $ $publicEvmAddress : ", $queryReward?.data);
 </script>
 
-<div class="w-full flex flex-col gap-3">
-  <div class="flex justify-between items-center">
+<div class="flex flex-col gap-4 min-h-screen">
+  <div
+    class="flex justify-between items-center border-b-[1.5px] border_0000000d pb-4"
+  >
     <div class="flex flex-col gap-1">
-      <div class="xl:title-3 title-1 py-2">Rewards</div>
+      <div class="xl:title-3 title-1">Rewards</div>
       <div class="xl:text-base text-xl text-gray-500">
         Use GM Points to redeem gifts
       </div>
     </div>
     <div
-      class="py-2 px-4 w-[100px] rounded-full bg-[#27326F] text-white xl:text-base text-xl font-medium flex gap-1 justify-center items-center"
+      class="py-2 px-3 min-w-[100px] rounded-full bg-[#27326F] flex justify-center items-center gap-2"
     >
-      <img src={imgGold} alt="" />
-      {$queryDailyCheckin?.data.totalPoint}
+      <img
+        src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
+        alt=""
+        class="w-8"
+      />
+      <div class="text-white xl:text-xl text-2xl font-medium">
+        {$queryDailyCheckin?.data?.totalPoint || 0}
+      </div>
     </div>
   </div>
-  <div class="flex flex-col gap-10 border-t-[1.5px] border_0000000d pt-4">
-    {#if $publicEvmAddress === ""}
-      <div class="flex items-center justify-center h-full px-3 py-4">
-        Please connect wallet
-      </div>
-    {:else if $queryDailyCheckin.isLoading}
+
+  <div class="flex flex-col gap-10">
+    {#if $queryDailyCheckin.isFetching && $queryReward.isFetching}
       <div class="flex items-center justify-center h-full px-3 py-4">
         <Loading />
       </div>
@@ -98,7 +105,7 @@
                 on:click={() => (selectedTypePerformance = type.value)}
               >
                 <div
-                  class={`relative z-20 ${
+                  class={`relative z-[19] ${
                     selectedTypePerformance === type.value && "text-white"
                   }`}
                 >
@@ -111,7 +118,7 @@
                     transition={{ type: "spring", duration: 0.6 }}
                   >
                     <div
-                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                      class="absolute inset-0 rounded-full bg-[#1E96FC] -z-10"
                       use:motion
                     />
                   </Motion>
@@ -120,14 +127,13 @@
             {/each}
           </AnimateSharedLayout>
         </div>
+
         <div class="grid grid-cols-2 xl:h-auto gap-10">
           {#if selectedTypePerformance === "redeemGift"}
-            <!-- Redeem gift  -->
             {#if $queryReward?.data?.redeemable.length === 0}
-              <div class="px-4">There is no gift to redeem right now</div>
+              <div class="">There is no gift to redeem right now</div>
             {/if}
             {#each $queryReward?.data?.redeemable || [] as item}
-              <!-- a card  -->
               <div
                 class={`flex flex-col rounded-2xl w-[438px] min-h-[280px]  ${
                   darkMode ? "bg-[#212121]" : "border"
@@ -173,7 +179,6 @@
                     <div class="xl:text-sm text-lg">{item.description}</div>
                   </div>
 
-                  <!-- circle  -->
                   <div
                     class={`w-4 h-10 rounded-l-none rounded-full absolute -left-[1px] -bottom-5 ${
                       darkMode
@@ -188,8 +193,8 @@
                         : "bg-white border-l border-t border-b"
                     } `}
                   />
-                  <!-- circle  -->
                 </div>
+
                 <div
                   class="grid grid-cols-3 items-center h-full gap-5 px-4 py-3"
                 >
@@ -207,7 +212,10 @@
                           class="grid grid-cols-3 h-8 xl:text-base text-xl font-medium"
                         >
                           <span class="flex items-center justify-center gap-1">
-                            <img src={imgGold} alt="" />
+                            <img
+                              src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
+                              alt=""
+                            />
                             <span>{item.cost}</span>
                           </span>
                           <span class="text-center col-span-2 my-auto">
@@ -220,13 +228,13 @@
                 </div>
               </div>
             {/each}
-          {:else if selectedTypePerformance === "yourGift"}
-            <!-- Your gift - ownRewards -->
+          {/if}
+
+          {#if selectedTypePerformance === "yourGift"}
             {#if $queryReward?.data?.ownRewards.length === 0}
-              <div class="px-4">You don't have any gift</div>
+              <div class="">You don't have any gift</div>
             {/if}
             {#each $queryReward?.data?.ownRewards || [] as item}
-              <!-- a card  -->
               <div
                 class={`flex flex-col rounded-2xl w-[438px] min-h-[280px]  ${
                   darkMode ? "bg-[#212121]" : "border"
@@ -313,24 +321,6 @@
     {/if}
   </div>
 </div>
-
-<!-- <div class="xl:px-16 px-32 py-5">
-  <div
-    class="bg-gray-200 text-black flex justify-between items-center xl:gap-5 gap-20 xl:px-3 px-5 py-3 rounded-xl"
-  >
-    <span class="xl:text-sm text-base">Your gift code</span>
-    <span
-      class="flex items-center gap-1 font-medium xl:text-lg text-xl py-1"
-    >
-      <Copy
-        address={item?.code}
-        iconColor="#000"
-        color="#000"
-        isShorten
-      />
-    </span>
-  </div>
-</div> -->
 
 <style windi:preflights:global windi:safelist:global>
 </style>
