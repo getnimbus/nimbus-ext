@@ -99,6 +99,8 @@
   let showPopoverSearch = false;
   let listAddress = [];
   let suggestList = [];
+  let selectedIndexAddress = 0;
+  let listAddressElement;
 
   const debounceSearch = (value) => {
     clearTimeout(timerDebounce);
@@ -194,23 +196,21 @@
     }
   };
 
-  $: {
-    if (search && !suggestList.includes(search)) {
+  const handleSaveSuggest = (value: string) => {
+    if (!suggestList.includes(value)) {
       if (suggestList.length < 3) {
-        suggestList = [...suggestList, search];
+        suggestList = [...suggestList, value];
       } else {
-        suggestList = [...suggestList.slice(1), search];
+        suggestList = [...suggestList.slice(1), value];
       }
     }
-  }
+  };
 
   $: {
     if (suggestList.length !== 0) {
       localStorage.setItem("SearchSuggestList", JSON.stringify(suggestList));
     }
   }
-
-  let selectedIndexAddress = 0;
 
   onMount(() => {
     getSuggestList();
@@ -222,6 +222,12 @@
         selectedIndexAddress < listAddress.length - 1
       ) {
         selectedIndexAddress += 1;
+      }
+      const itemElement = listAddressElement.querySelector(
+        `div:nth-child(${selectedIndexAddress + 1})`
+      );
+      if (itemElement) {
+        itemElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
     });
     Mousetrap.bindGlobal(["/"], function () {
@@ -248,6 +254,7 @@
       if (searchAccountType === "BTC" || searchAccountType === "SOL") {
         navigate(`/?type=${searchAccountType}&address=${selectedAddress}`);
       }
+      handleSaveSuggest(selectedAddress);
       showPopoverSearch = false;
       search = "";
     });
@@ -1140,9 +1147,11 @@
             if (searchAccountType === "BTC" || searchAccountType === "SOL") {
               navigate(`/?type=${searchAccountType}&address=${search}`);
             }
+            handleSaveSuggest(search);
             showPopoverSearch = false;
           }
         }}
+        autofocus
         value={search}
         placeholder={MultipleLang.search_placeholder}
         type="text"
@@ -1161,13 +1170,16 @@
           List addresses
         </div>
         <div
-          class="xl:max-h-[310px] max-h-[380px] w-full flex flex-col gap-2"
-          style="overflow-y: overlay;"
+          class="xl:max-h-[310px] max-h-[380px] w-full flex flex-col gap-2 -mx-[9px]"
+          style="overflow-y: scroll;"
+          bind:this={listAddressElement}
         >
           {#each listAddress as item, index}
             <div
               id={item.value}
-              class="relative xl:text-sm text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md"
+              class={`address-item relative xl:text-sm text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md ${
+                darkMode ? "hover:bg-[#343434]" : "hover:bg-[#eff0f4]"
+              }`}
               class:selected={index === selectedIndexAddress}
               on:click={async () => {
                 search = item.value;
@@ -1187,6 +1199,7 @@
                 ) {
                   navigate(`/?type=${searchAccountType}&address=${item.value}`);
                 }
+                handleSaveSuggest(item.value);
                 showPopoverSearch = false;
               }}
             >
@@ -1248,6 +1261,7 @@
               if (searchAccountType === "BTC" || searchAccountType === "SOL") {
                 navigate(`/?type=${searchAccountType}&address=${suggest}`);
               }
+              handleSaveSuggest(suggest);
               showPopoverSearch = false;
             }}
           >
