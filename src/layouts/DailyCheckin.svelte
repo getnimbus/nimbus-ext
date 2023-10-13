@@ -78,7 +78,7 @@
             <div class="flex flex-col gap-1">
               <div class="xl:title-3 title-1 py-2">My Nimbus GM Points</div>
               <div class="xl:text-base text-xl text-gray-500">
-                Collect GM Points and redeem them to exclusive rewards and
+                Collect GM Points and redeem them for exclusive rewards and
                 special offers
               </div>
             </div>
@@ -89,7 +89,7 @@
             <div class="flex flex-col gap-1">
               <div class="xl:title-3 title-1 py-2">Leaderboard</div>
               <div class="xl:text-base text-xl text-gray-500">
-                Take a look at leaderboard to see how rank are you
+                Take a look at the leaderboard to see how ranked you are
               </div>
             </div>
             <LeaderBoard />

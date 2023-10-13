@@ -213,6 +213,21 @@
     }
   }
 
+  const handleSearchAddress = async (value: string) => {
+    mixpanel.track("user_search");
+    const searchAccountType = await validateAddress(value);
+    chain.update((n) => (n = "ALL"));
+    wallet.update((n) => (n = value));
+    typeWallet.update((n) => (n = searchAccountType));
+    if (searchAccountType === "EVM") {
+      navigate(`/?type=${searchAccountType}&chain=ALL&address=${value}`);
+    }
+    if (searchAccountType === "BTC" || searchAccountType === "SOL") {
+      navigate(`/?type=${searchAccountType}&address=${value}`);
+    }
+    handleSaveSuggest(value);
+  };
+
   onMount(() => {
     getSuggestList();
     Mousetrap.bindGlobal(["up", "down"], (event) => {
@@ -241,23 +256,8 @@
 
     Mousetrap.bindGlobal(["enter"], async function () {
       const selectedAddress = listAddress[selectedIndexAddress].value;
-      search = selectedAddress;
-      mixpanel.track("user_search");
-      const searchAccountType = await validateAddress(selectedAddress);
-      chain.update((n) => (n = "ALL"));
-      wallet.update((n) => (n = selectedAddress));
-      typeWallet.update((n) => (n = searchAccountType));
-      if (searchAccountType === "EVM") {
-        navigate(
-          `/?type=${searchAccountType}&chain=ALL&address=${selectedAddress}`
-        );
-      }
-      if (searchAccountType === "BTC" || searchAccountType === "SOL") {
-        navigate(`/?type=${searchAccountType}&address=${selectedAddress}`);
-      }
-      handleSaveSuggest(selectedAddress);
+      handleSearchAddress(selectedAddress);
       showPopoverSearch = false;
-      search = "";
     });
   });
 
@@ -384,6 +384,13 @@
 
   const goldImg =
     "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
+  $: {
+    if (search.length !== 0) {
+      selectedIndexAddress = -1;
+    } else {
+      selectedIndexAddress = 0;
+    }
+  }
 </script>
 
 <div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">
@@ -1197,20 +1204,7 @@
             search.length !== 0 &&
             (event.which == 13 || event.keyCode == 13)
           ) {
-            mixpanel.track("user_search");
-            const searchAccountType = await validateAddress(search);
-            chain.update((n) => (n = "ALL"));
-            wallet.update((n) => (n = search));
-            typeWallet.update((n) => (n = searchAccountType));
-            if (searchAccountType === "EVM") {
-              navigate(
-                `/?type=${searchAccountType}&chain=ALL&address=${search}`
-              );
-            }
-            if (searchAccountType === "BTC" || searchAccountType === "SOL") {
-              navigate(`/?type=${searchAccountType}&address=${search}`);
-            }
-            handleSaveSuggest(search);
+            handleSearchAddress(search);
             showPopoverSearch = false;
           }
         }}
@@ -1233,7 +1227,7 @@
           List addresses
         </div>
         <div
-          class="xl:max-h-[310px] max-h-[380px] w-full flex flex-col gap-2 -mx-[9px]"
+          class="xl:max-h-[310px] max-h-[380px] w-full flex flex-col gap-2"
           style="overflow-y: scroll;"
           bind:this={listAddressElement}
         >
@@ -1245,24 +1239,7 @@
               }`}
               class:selected={index === selectedIndexAddress}
               on:click={async () => {
-                search = item.value;
-                mixpanel.track("user_search");
-                const searchAccountType = await validateAddress(item.value);
-                chain.update((n) => (n = "ALL"));
-                wallet.update((n) => (n = item.value));
-                typeWallet.update((n) => (n = searchAccountType));
-                if (searchAccountType === "EVM") {
-                  navigate(
-                    `/?type=${searchAccountType}&chain=ALL&address=${item.value}`
-                  );
-                }
-                if (
-                  searchAccountType === "BTC" ||
-                  searchAccountType === "SOL"
-                ) {
-                  navigate(`/?type=${searchAccountType}&address=${item.value}`);
-                }
-                handleSaveSuggest(item.value);
+                handleSearchAddress(item.value);
                 showPopoverSearch = false;
               }}
             >
@@ -1311,20 +1288,7 @@
           <div
             class="xl:text-sm text-xl cursor-pointer py-1"
             on:click={async () => {
-              mixpanel.track("user_search");
-              const searchAccountType = await validateAddress(suggest);
-              chain.update((n) => (n = "ALL"));
-              wallet.update((n) => (n = suggest));
-              typeWallet.update((n) => (n = searchAccountType));
-              if (searchAccountType === "EVM") {
-                navigate(
-                  `/?type=${searchAccountType}&chain=ALL&address=${suggest}`
-                );
-              }
-              if (searchAccountType === "BTC" || searchAccountType === "SOL") {
-                navigate(`/?type=${searchAccountType}&address=${suggest}`);
-              }
-              handleSaveSuggest(suggest);
+              handleSearchAddress(suggest);
               showPopoverSearch = false;
             }}
           >
