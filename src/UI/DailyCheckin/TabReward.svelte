@@ -65,7 +65,7 @@
 </script>
 
 <div class="flex flex-col gap-10">
-  {#if $queryDailyCheckin.isError}
+  {#if $publicEvmAddress === ""}
     <div class="flex items-center justify-center h-full px-3 py-4">
       Please connect wallet
     </div>
@@ -114,6 +114,9 @@
       <div class="grid xl:grid-cols-2 grid-cols-1 xl:h-auto gap-10">
         {#if selectedTypePerformance === "redeemGift"}
           <!-- Redeem gift  -->
+          {#if $queryReward?.data?.redeemable.length === 0}
+            <div class="px-4">There is no gift to redeem right now</div>
+          {/if}
           {#each $queryReward?.data?.redeemable || [] as item}
             <!-- a card  -->
             <div
@@ -200,9 +203,9 @@
                           <img src={imgGold} alt="" />
                           <span>{item.cost}</span>
                         </span>
-                        <span class="text-center col-span-2 my-auto"
-                          >Redeem</span
-                        >
+                        <span class="text-center col-span-2 my-auto">
+                          Redeem
+                        </span>
                       </div>
                     </Button>
                   </div>
@@ -212,6 +215,9 @@
           {/each}
         {:else if selectedTypePerformance === "yourGift"}
           <!-- Your gift - ownRewards -->
+          {#if $queryReward?.data?.ownRewards.length === 0}
+            <div class="px-4">You don't have any gift</div>
+          {/if}
           {#each $queryReward?.data?.ownRewards || [] as item}
             <!-- a card  -->
             <div

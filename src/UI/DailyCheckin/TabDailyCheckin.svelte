@@ -48,6 +48,14 @@
     }, 2000);
   };
 
+  const handleRewards = async () => {
+    const response = await nimbus.post(`/v2/reward`, {
+      address: $publicEvmAddress,
+    });
+    console.log("response bla bla : ", response.data);
+    return response.data;
+  };
+
   const handleCheckin = async () => {
     isLoadingCheckin = true;
     try {
@@ -61,6 +69,13 @@
     }
     isLoadingCheckin = false;
   };
+
+  $: queryReward = createQuery({
+    queryKey: [$publicEvmAddress, "rewards"],
+    queryFn: () => handleRewards(),
+    enabled: Object.keys(userInfo).length !== 0,
+    staleTime: Infinity,
+  });
 
   $: queryDailyCheckin = createQuery({
     queryKey: [$publicEvmAddress, "daily-checkin"],
@@ -78,7 +93,7 @@
     "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
 </script>
 
-{#if $queryDailyCheckin.isError}
+{#if $publicEvmAddress === ""}
   <div class="flex items-center justify-center h-full px-3 py-4">
     Please connect wallet
   </div>
@@ -95,7 +110,7 @@
     <div
       class="flex flex-col gap-5 bg-[#1589EB] text-white px-6 py-5 rounded-lg w-[400px]"
     >
-      <span class="text-sm">My GM Points</span>
+      <span>My GM Points</span>
       <span class="text-4xl font-medium flex gap-2">
         {#if $queryDailyCheckin.isFetching}
           <Loading />
@@ -173,8 +188,12 @@
             <div class="grid grid-cols-7 gap-10 w-[1350px]">
               {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
                 <div
-                  class={`flex flex-col gap-2 items-center rounded-xl py-10 px-6 ${
-                    $queryDailyCheckin?.data?.steak === index
+                  class={`flex flex-col gap-1 items-center rounded-xl py-10 px-6 ${
+                    $queryDailyCheckin?.data?.steak > index && darkMode
+                      ? "grayscale bg-gray-700"
+                      : $queryDailyCheckin?.data?.steak > index && !darkMode
+                      ? "grayscale bg-gray-100"
+                      : $queryDailyCheckin?.data?.steak === index
                       ? "bg-black text-white"
                       : darkMode
                       ? "bg-gray-700"
@@ -183,19 +202,43 @@
                 >
                   <span> Day {index + 1}</span>
                   <img src={imgGold} alt="" class="w-12" />
-                  <span class="text-3xl">+{item}</span>
+                  <span class="text-2xl">+{item}</span>
                 </div>
               {/each}
             </div>
           </div>
           <div class="flex flex-col gap-5">
-            <span class="font-medium text-3xl xl:text-2xl"
-              >This month reward</span
-            >
+            <span class="font-medium text-3xl xl:text-2xl">
+              This month reward
+            </span>
             <div class="flex gap-5">
-              <div><img src="/assets/top1.png" alt="" class="h-[250px]" /></div>
-              <div><img src="/assets/top2.png" alt="" class="h-[250px]" /></div>
-              <div><img src="/assets/top3.png" alt="" class="h-[250px]" /></div>
+              {#each $queryReward?.data?.monthRewards as item, index}
+                <div>
+                  <div
+                    class="relative h-[250px] w-[185px] flex flex-col items-center justify-center gap-3 text-white"
+                  >
+                    <img
+                      src={`/assets/dailycheckin/${index + 1}${
+                        index === 0 ? "st" : index == 1 ? "nd" : "rd"
+                      }frame.png`}
+                      alt=""
+                      class="absolute top-0 left-0 -z-99"
+                    />
+                    <img
+                      src={`/assets/dailycheckin/${index + 1}${
+                        index === 0 ? "st" : index == 1 ? "nd" : "rd"
+                      }.png`}
+                      alt=""
+                      class="h-[70px] mb-2"
+                    />
+                    <div class="text-3xl text-center">${item.amount}</div>
+                    <div class="text-center">
+                      {index + 1}{index === 0 ? "st" : index == 1 ? "nd" : "rd"}
+                      Rank
+                    </div>
+                  </div>
+                </div>
+              {/each}
             </div>
           </div>
         {:else}
