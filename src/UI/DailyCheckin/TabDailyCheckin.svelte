@@ -114,7 +114,7 @@
   </div>
 {:else}
   <div
-    class={`rounded-lg flex flex-col gap-10 ${
+    class={`flex flex-col gap-10 border-t-[1.5px] border_0000000dp pt-4 ${
       darkMode ? "text-white" : "text-black"
     } `}
   >
