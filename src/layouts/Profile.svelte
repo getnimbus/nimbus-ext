@@ -190,14 +190,6 @@
     }
   };
 
-  const getUserInfo = async () => {
-    const response: any = await nimbus.get("/users/me");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
-    return response?.data;
-  };
-
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
     if (response?.status === 401) {
@@ -390,7 +382,7 @@
 
               {#if showPopover}
                 <div
-                  class="select_content mt-2 absolute left-1/2 transform -translate-x-1/2 z-50 flex flex-col xl:gap-3 gap-6 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-8 w-max xl:max-h-[300px] xl:max-h-[310px] max-h-[380px]"
+                  class="select_content mt-2 absolute left-1/2 transform -translate-x-1/2 z-50 flex flex-col xl:gap-3 gap-6 px-3 xl:py-2 py-3 text-sm transform rounded-lg top-8 w-max xl:max-h-[310px] max-h-[380px]"
                   style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15); overflow-y: overlay;"
                   use:clickOutside
                   on:click_outside={() => (showPopover = false)}
