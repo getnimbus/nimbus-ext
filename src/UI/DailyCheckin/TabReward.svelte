@@ -111,7 +111,7 @@
           {/each}
         </AnimateSharedLayout>
       </div>
-      <div class="grid xl:grid-cols-2 grid-cols-1 xl:h-auto gap-10">
+      <div class="flex items-center xl:h-auto gap-10">
         {#if selectedTypePerformance === "redeemGift"}
           <!-- Redeem gift  -->
           {#if $queryReward?.data?.redeemable.length === 0}
@@ -120,12 +120,12 @@
           {#each $queryReward?.data?.redeemable || [] as item}
             <!-- a card  -->
             <div
-              class={`flex flex-col rounded-2xl ${
+              class={`flex flex-col rounded-2xl w-[438px] min-h-[280px] ${
                 darkMode ? "bg-[#212121]" : "border"
               } `}
             >
               <div
-                class="grid xl:grid-cols-5 grid-cols-3 items-center px-4 pt-5 pb-7 border-b-2 border-dashed relative"
+                class="grid grid-cols-3 items-center px-4 pt-5 pb-7 border-b-2 border-dashed relative"
               >
                 <div
                   class={`xl:h-[100px] h-[200px] col-span-1 rounded-2xl px-2 flex items-center justify-center ${
@@ -138,7 +138,7 @@
                     class="object-contain xl:m-0 m-auto w-20 h-20"
                   />
                 </div>
-                <div class="flex flex-col gap-2 xl:col-span-4 col-span-2 px-10">
+                <div class="flex flex-col gap-2 col-span-2 px-10">
                   <div
                     class="flex gap-1 items-center font-medium xl:text-lg text-xl text-[#ffb800]"
                   >
@@ -164,14 +164,14 @@
 
                 <!-- circle  -->
                 <div
-                  class={`w-4 h-10  rounded-l-none rounded-r-full absolute -left-[1px] -bottom-4 ${
+                  class={`w-4 h-10 rounded-l-none rounded-full absolute -left-[1px] -bottom-5 ${
                     darkMode
                       ? "bg-[#161616]"
                       : "bg-white border-r border-t border-b"
                   }`}
                 />
                 <div
-                  class={`w-4 h-10 rounded-r-none rounded-l-full bg-white absolute -right-[1px] -bottom-4 ${
+                  class={`w-4 h-10 rounded-r-none rounded-full bg-white absolute -right-[1px] -bottom-5 ${
                     darkMode
                       ? "bg-[#161616]"
                       : "bg-white border-l border-t border-b"
@@ -179,16 +179,12 @@
                 />
                 <div class="semi-circle" />
               </div>
-              <div
-                class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-4 py-5"
-              >
+              <div class="grid grid-cols-3 items-center gap-5 px-4 py-3">
                 <div class="col-span-1 xl:text-base text-xl px-4">
                   {item.remains} left
                 </div>
-                <div class="col-span-2 flex justify-end items-center">
-                  <div
-                    class="py-2 xl:w-[200px] w-[300px] rounded-xl text-white"
-                  >
+                <div class="col-span-2">
+                  <div class="w-full rounded-xl text-white">
                     <Button
                       on:click={() => handleRedeem(item.campaignName)}
                       variant={item.remains == 0 ? "disabled" : "primary"}
@@ -197,9 +193,7 @@
                       <div
                         class="grid grid-cols-3 h-8 xl:text-base text-xl font-medium"
                       >
-                        <span
-                          class="flex items-center justify-center gap-1 col-span-1"
-                        >
+                        <span class="flex items-center justify-center gap-1">
                           <img src={imgGold} alt="" />
                           <span>{item.cost}</span>
                         </span>
@@ -221,12 +215,12 @@
           {#each $queryReward?.data?.ownRewards || [] as item}
             <!-- a card  -->
             <div
-              class={`flex flex-col rounded-2xl ${
+              class={`flex flex-col rounded-2xl w-[438px] min-h-[280px] ${
                 darkMode ? "bg-[#212121]" : "border"
               } `}
             >
               <div
-                class="grid xl:grid-cols-5 grid-cols-3 items-center px-4 pt-5 pb-7 border-b-2 border-dashed relative"
+                class="grid grid-cols-3 items-center px-4 pt-5 pb-7 border-b-2 border-dashed relative"
               >
                 <div
                   class={`xl:h-[100px] h-[200px] col-span-1 rounded-2xl px-2 flex items-center justify-center ${
@@ -239,7 +233,7 @@
                     class="object-contain xl:m-0 m-auto w-20 h-20"
                   />
                 </div>
-                <div class="flex flex-col gap-2 xl:col-span-4 col-span-2 px-10">
+                <div class="flex flex-col gap-2 col-span-2 px-10">
                   <div
                     class="flex gap-1 items-center font-medium xl:text-lg text-xl text-[#ffb800]"
                   >
@@ -265,14 +259,14 @@
 
                 <!-- circle  -->
                 <div
-                  class={`w-4 h-10  rounded-l-none rounded-r-full absolute -left-[1px] -bottom-4 ${
+                  class={`w-4 h-10 rounded-l-none rounded-full absolute -left-[1px] -bottom-5 ${
                     darkMode
                       ? "bg-[#161616]"
                       : "bg-white border-r border-t border-b"
                   }`}
                 />
                 <div
-                  class={`w-4 h-10 rounded-r-none rounded-l-full bg-white absolute -right-[1px] -bottom-4 ${
+                  class={`w-4 h-10 rounded-r-none rounded-full bg-white absolute -right-[1px] -bottom-5 ${
                     darkMode
                       ? "bg-[#161616]"
                       : "bg-white border-l border-t border-b"
@@ -280,9 +274,9 @@
                 />
                 <div class="semi-circle" />
               </div>
-              <div class="px-4 py-5">
+              <div class="px-4 py-3 h-full flex items-center">
                 <div
-                  class="bg-gray-200 text-black flex justify-between items-center xl:gap-5 gap-20 xl:px-3 px-5 py-3 rounded-xl"
+                  class="bg-gray-200 text-black flex justify-between items-center w-full py-2 px-3 rounded-xl"
                 >
                   <span class="xl:text-sm text-base">Your gift code</span>
                   <span
