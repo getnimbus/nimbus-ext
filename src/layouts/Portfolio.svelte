@@ -762,7 +762,8 @@
 
   $: loading =
     selectedChain === "ALL"
-      ? $queryAllTokenHolding.some((item) => item.isFetching === true)
+      ? $queryAllTokenHolding.some((item) => item.isFetching === true) &&
+        $queryAllNftHolding.some((item) => item.isFetching === true)
       : !isErrorAllData &&
         $queryTokenHolding.isFetching &&
         $queryVaults.isFetching &&
@@ -879,7 +880,11 @@
               {#if typeWalletAddress !== "BTC"}
                 <ClosedTokenPosition
                   {selectedWallet}
-                  isLoadingNFT={$queryNftHolding.isFetching}
+                  isLoadingNFT={selectedChain === "ALL"
+                    ? $queryAllNftHolding.some(
+                        (item) => item.isFetching === true
+                      )
+                    : $queryNftHolding.isFetching}
                   isLoadingToken={selectedChain === "ALL"
                     ? $queryAllTokenHolding.some(
                         (item) => item.isFetching === true
