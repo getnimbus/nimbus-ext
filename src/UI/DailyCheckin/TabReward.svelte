@@ -122,20 +122,20 @@
               } `}
             >
               <div
-                class="grid grid-cols-3 items-center px-4 pt-5 pb-7 border-b-2 border-dashed relative"
+                class="grid xl:grid-cols-5 grid-cols-3 items-center px-4 pt-5 pb-7 border-b-2 border-dashed relative"
               >
                 <div
-                  class={`xl:h-[150px] h-[250px] col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
+                  class={`xl:h-[100px] h-[200px] col-span-1 rounded-2xl px-2 flex items-center justify-center ${
                     darkMode ? "bg-gray-200" : "bg-white"
                   }`}
                 >
                   <img
                     src={item.logo}
                     alt=""
-                    class="object-contain m-auto w-16 h-16"
+                    class="object-contain xl:m-0 m-auto w-20 h-20"
                   />
                 </div>
-                <div class="flex flex-col gap-2 col-span-2 px-10">
+                <div class="flex flex-col gap-2 xl:col-span-4 col-span-2 px-10">
                   <div
                     class="flex gap-1 items-center font-medium xl:text-lg text-xl text-[#ffb800]"
                   >
@@ -161,14 +161,14 @@
 
                 <!-- circle  -->
                 <div
-                  class={`w-5 h-10  rounded-l-none rounded-r-full absolute -left-[1px] -bottom-5 ${
+                  class={`w-4 h-10  rounded-l-none rounded-r-full absolute -left-[1px] -bottom-4 ${
                     darkMode
                       ? "bg-[#161616]"
                       : "bg-white border-r border-t border-b"
                   }`}
                 />
                 <div
-                  class={`w-5 h-10 rounded-r-none rounded-l-full bg-white absolute -right-[1px] -bottom-5 ${
+                  class={`w-4 h-10 rounded-r-none rounded-l-full bg-white absolute -right-[1px] -bottom-4 ${
                     darkMode
                       ? "bg-[#161616]"
                       : "bg-white border-l border-t border-b"
@@ -177,58 +177,64 @@
                 <div class="semi-circle" />
               </div>
               <div
-                class="grid grid-cols-3 items-center xl:gap-5 gap-20 xl:px-12 px-28 py-5"
+                class="grid grid-cols-3 items-center xl:gap-5 gap-20 px-4 py-5"
               >
-                <div class="col-span-1 xl:text-base text-xl px-7">
+                <div class="col-span-1 xl:text-base text-xl px-4">
                   {item.remains} left
                 </div>
-                <div
-                  class="col-span-2 py-2 xl:w-[200px] w-[300px] rounded-xl text-white mx-auto"
-                >
-                  <Button
-                    on:click={() => handleRedeem(item.campaignName)}
-                    variant={item.remains == 0 ? "disabled" : "primary"}
-                    disabled={item.remains == 0 ? true : false}
+                <div class="col-span-2 flex justify-end items-center">
+                  <div
+                    class="py-2 xl:w-[200px] w-[300px] rounded-xl text-white"
                   >
-                    <div
-                      class="grid grid-cols-3 h-8 xl:text-base text-xl font-medium"
+                    <Button
+                      on:click={() => handleRedeem(item.campaignName)}
+                      variant={item.remains == 0 ? "disabled" : "primary"}
+                      disabled={item.remains == 0 ? true : false}
                     >
-                      <span
-                        class="flex items-center justify-center gap-1 col-span-1"
+                      <div
+                        class="grid grid-cols-3 h-8 xl:text-base text-xl font-medium"
                       >
-                        <img src={imgGold} alt="" />
-                        <span>{item.cost}</span>
-                      </span>
-                      <span class="text-center col-span-2 my-auto">Redeem</span>
-                    </div>
-                  </Button>
+                        <span
+                          class="flex items-center justify-center gap-1 col-span-1"
+                        >
+                          <img src={imgGold} alt="" />
+                          <span>{item.cost}</span>
+                        </span>
+                        <span class="text-center col-span-2 my-auto"
+                          >Redeem</span
+                        >
+                      </div>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
           {/each}
         {:else if selectedTypePerformance === "yourGift"}
           <!-- Your gift - ownRewards -->
+
           {#each $queryReward?.data?.ownRewards || [] as item}
+            <!-- a card  -->
             <div
               class={`flex flex-col rounded-2xl ${
                 darkMode ? "bg-[#212121]" : "border"
               } `}
             >
               <div
-                class="grid grid-cols-3 items-center px-5 pt-5 pb-7 border-b-2 border-dashed relative"
+                class="grid xl:grid-cols-5 grid-cols-3 items-center px-4 pt-5 pb-7 border-b-2 border-dashed relative"
               >
                 <div
-                  class={`xl:h-[150px] h-[250px] col-span-1 rounded-2xl px-2 flex flex-col items-center justify-center ${
+                  class={`xl:h-[100px] h-[200px] col-span-1 rounded-2xl px-2 flex items-center justify-center ${
                     darkMode ? "bg-gray-200" : "bg-white"
                   }`}
                 >
                   <img
                     src={item.logo}
                     alt=""
-                    class="object-contain m-auto w-16 h-16"
+                    class="object-contain xl:m-0 m-auto w-20 h-20"
                   />
                 </div>
-                <div class="flex flex-col gap-2 col-span-2">
+                <div class="flex flex-col gap-2 xl:col-span-4 col-span-2 px-10">
                   <div
                     class="flex gap-1 items-center font-medium xl:text-lg text-xl text-[#ffb800]"
                   >
@@ -252,15 +258,16 @@
                   <div class="xl:text-sm text-lg">{item.description}</div>
                 </div>
 
+                <!-- circle  -->
                 <div
-                  class={`w-5 h-10  rounded-l-none rounded-r-full absolute -left-[1px] -bottom-5 ${
+                  class={`w-4 h-10  rounded-l-none rounded-r-full absolute -left-[1px] -bottom-4 ${
                     darkMode
                       ? "bg-[#161616]"
                       : "bg-white border-r border-t border-b"
                   }`}
                 />
                 <div
-                  class={`w-5 h-10 rounded-r-none rounded-l-full bg-white absolute -right-[1px] -bottom-5 ${
+                  class={`w-4 h-10 rounded-r-none rounded-l-full bg-white absolute -right-[1px] -bottom-4 ${
                     darkMode
                       ? "bg-[#161616]"
                       : "bg-white border-l border-t border-b"
@@ -268,7 +275,7 @@
                 />
                 <div class="semi-circle" />
               </div>
-              <div class="xl:px-16 px-32 py-5">
+              <div class="px-4 py-5">
                 <div
                   class="bg-gray-200 text-black flex justify-between items-center xl:gap-5 gap-20 xl:px-3 px-5 py-3 rounded-xl"
                 >
@@ -292,6 +299,24 @@
     </div>
   {/if}
 </div>
+
+<!-- <div class="xl:px-16 px-32 py-5">
+  <div
+    class="bg-gray-200 text-black flex justify-between items-center xl:gap-5 gap-20 xl:px-3 px-5 py-3 rounded-xl"
+  >
+    <span class="xl:text-sm text-base">Your gift code</span>
+    <span
+      class="flex items-center gap-1 font-medium xl:text-lg text-xl py-1"
+    >
+      <Copy
+        address={item?.code}
+        iconColor="#000"
+        color="#000"
+        isShorten
+      />
+    </span>
+  </div>
+</div> -->
 
 <style windi:preflights:global windi:safelist:global>
 </style>
