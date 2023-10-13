@@ -228,9 +228,9 @@
                   {/if}
                   {#each $queryDailyCheckin?.data?.checkinLeaderboard.slice(3, 20) as item, index}
                     <tr
-                      class={`xl:text-base text-xl border-b hover:${
-                        darkMode ? "bg-gray-800" : "bg-gray-100"
-                      }`}
+                      class={`xl:text-base text-xl ${
+                        index !== 16 && "border-b"
+                      } hover:${darkMode ? "bg-gray-800" : "bg-gray-100"}`}
                     >
                       <td
                         class={`px-3 py-2 text-3xl font-light text-left w-6 ${

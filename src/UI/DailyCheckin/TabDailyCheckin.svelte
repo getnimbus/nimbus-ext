@@ -22,6 +22,7 @@
   });
 
   let isLoadingCheckin = false;
+  let disableBtn = false;
 
   const queryClient = useQueryClient();
 
@@ -62,7 +63,8 @@
       const response = await nimbus.post(`/v2/checkin`, {});
       if (response?.data !== undefined) {
         triggerCheckinSuccess();
-        queryClient.invalidateQueries(["daily-checkin"]);
+        queryClient.invalidateQueries([$publicEvmAddress, "daily-checkin"]);
+        disableBtn = true;
       }
     } catch (error) {
       console.log("this err : ", error);
@@ -87,7 +89,7 @@
     },
   });
 
-  $: console.log("queryDailyCheckin : ", $queryDailyCheckin?.data);
+  $: console.log("queryDailyCheckin : ", $queryDailyCheckin);
 
   const imgGold =
     "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
@@ -179,17 +181,17 @@
             </div>
           {/if}
           <div class="w-[230px] xl:h-auto h-12">
-            {#if $queryDailyCheckin?.data?.checkinable}
+            {#if !$queryDailyCheckin?.data?.checkinable || disableBtn}
+              <Button variant="disabled" disabled>
+                <div class="py-1">Checked</div>
+              </Button>
+            {:else}
               <Button
                 variant="primary"
                 on:click={handleCheckin}
                 isLoading={isLoadingCheckin}
               >
                 <div class="py-1">👋 GM</div>
-              </Button>
-            {:else}
-              <Button variant="disabled" disabled>
-                <div class="py-1">Checked</div>
               </Button>
             {/if}
           </div>
@@ -219,9 +221,7 @@
             </div>
           </div>
           <div class="flex flex-col gap-5">
-            <div class="xl:title-3 title-1">
-              Collect your GM Points every day
-            </div>
+            <div class="xl:title-3 title-1">This month reward</div>
             <div class="flex gap-5">
               {#each $queryReward?.data?.monthRewards as item, index}
                 <div>
