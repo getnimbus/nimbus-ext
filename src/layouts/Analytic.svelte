@@ -5,7 +5,7 @@
   import isBetween from "dayjs/plugin/isBetween";
   dayjs.extend(isBetween);
   import { nimbus } from "~/lib/network";
-  import { wallet, user, isDarkMode } from "~/store";
+  import { wallet, user, isDarkMode, selectedPackage } from "~/store";
 
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -21,6 +21,11 @@
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
+  });
+
+  let packageSelected = "";
+  selectedPackage.subscribe((value) => {
+    packageSelected = value;
   });
 
   // let userInfo = {};
@@ -117,20 +122,22 @@
     const next7DaysStorage = localStorage.getItem("next7Days");
     const isSubmitStorage = localStorage.getItem("isShowFormAnalytic");
 
-    if (currentDayStorage && next7DaysStorage) {
-      const isTodayBetween = currentDate.isBetween(
-        currentDayStorage,
-        next7DaysStorage,
-        "day",
-        "[]"
-      );
-      if (!isTodayBetween && isSubmitStorage === null) {
-        isOpenModal = true;
+    if (packageSelected === "FREE") {
+      if (currentDayStorage && next7DaysStorage) {
+        const isTodayBetween = currentDate.isBetween(
+          currentDayStorage,
+          next7DaysStorage,
+          "day",
+          "[]"
+        );
+        if (!isTodayBetween && isSubmitStorage === null) {
+          isOpenModal = true;
+        } else {
+        }
       } else {
-      }
-    } else {
-      if (isSubmitStorage === null) {
-        isOpenModal = true;
+        if (isSubmitStorage === null) {
+          isOpenModal = true;
+        }
       }
     }
   });

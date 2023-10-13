@@ -798,13 +798,16 @@
 
   $: {
     if (
-      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 3 &&
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2 &&
       packageSelected === "FREE"
     ) {
       isDisabled = true;
+    } else {
+      isDisabled = false;
     }
+
     if (
-      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 7 &&
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6 &&
       packageSelected === "EXPLORER"
     ) {
       if (
@@ -814,7 +817,10 @@
         localStorage.setItem("isGetUserEmailYet", "true");
       }
       isDisabled = true;
+    } else {
+      isDisabled = false;
     }
+
     if (packageSelected === "PROFESSIONAL") {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
@@ -1001,7 +1007,7 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class="w-5 h-5 xl:w-4 xl:h-4"
+                              class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
                             />
                             {item.label}
                             {#if item.value === selectedWallet}
@@ -1107,7 +1113,7 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class="w-5 h-5 xl:w-4 xl:h-4"
+                              class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
                             />
                             {item.label}
                             {#if item.value === selectedWallet}
