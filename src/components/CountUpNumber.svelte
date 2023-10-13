@@ -1,8 +1,11 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { CountUp } from "countup.js";
   import numeral from "numeral";
-  import { formatBigBalance, formatPercent, formatCurrency } from "~/utils";
+  import {
+    formatBigBalance,
+    formatPercent,
+    formatCurrency,
+    formatValue,
+  } from "~/utils";
   import { isHidePortfolio } from "~/store";
   import { tweened } from "svelte/motion";
   import { quintOut } from "svelte/easing";
@@ -19,7 +22,7 @@
   export let id;
   export let number;
   export let format = 2;
-  export let type: "amount" | "balance" | "percent" = "balance";
+  export let type: "amount" | "balance" | "percent" | "value" = "balance";
   export let personalValue: boolean = false;
 
   let hiddenPortfolio = false;
@@ -48,6 +51,16 @@
               <span {id}>{formatCurrency($formatted)}</span>
             {:else}
               <span {id}>{numberFormat}</span>
+            {/if}
+          </span>
+        {/if}
+
+        {#if type === "value"}
+          <span>
+            {#if numberSize === "K"}
+              <span {id}>{formatValue($formatted)}</span>
+            {:else}
+              <span {id}>${numberFormat}</span>
             {/if}
           </span>
         {/if}
