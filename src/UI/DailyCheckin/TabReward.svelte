@@ -212,7 +212,6 @@
           {/each}
         {:else if selectedTypePerformance === "yourGift"}
           <!-- Your gift - ownRewards -->
-
           {#each $queryReward?.data?.ownRewards || [] as item}
             <!-- a card  -->
             <div
