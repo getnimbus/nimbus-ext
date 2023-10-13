@@ -130,7 +130,7 @@
             </div>
           </div>
           <span
-            class="absolute bottom-0 left-[50%] text-black absolute-center flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg opacity-50 shadow shadow-dark-50"
+            class="absolute bottom-0 left-[50%] text-black absolute-center flex items-center gap-1 px-2 py-1 rounded-lg opacity-50 shadow-dark-50 shadow"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -168,19 +168,19 @@
           <tr class="bg-[#FFB800]">
             <td
               colspan="3"
-              class="text-left xl:text-sm text-base rounded-t-xl pt-2 px-3"
+              class="text-left xl:text-sm text-base rounded-t-xl pt-2 px-6"
             >
               Your current rank
             </td>
           </tr>
           <tr class="bg-[#FFB800] xl:text-base text-xl font-medium">
-            <td class="px-3 pb-3 pt-1 text-left text-2xl font-normal w-4">
+            <td class="px-6 pb-3 pt-1 text-left text-2xl font-normal w-6">
               {handleThing()}
             </td>
             <td class="pb-3 pt-1 text-left">
               {shorterAddress(userCurrentRank?.owner)}
             </td>
-            <td class="pr-3 pb-3 pt-1 text-right">
+            <td class="pr-6 pb-3 pt-1 text-right">
               <span class="text-lg">{userCurrentRank?._sum?.point || 0}</span>
               GM point
             </td>
@@ -206,15 +206,15 @@
                       }`}
                     >
                       <td
-                        class={`pl-3 py-2 text-3xl font-light text-left ${
+                        class={`pl-3 py-2 text-3xl font-light text-left w-6 ${
                           !darkMode && "text-[#27326F]"
                         }`}
                       >
                         {index + 4}
                       </td>
-                      <td class="py-2 text-left"
-                        >{shorterAddress(item.owner)}</td
-                      >
+                      <td class="py-2 text-left">
+                        {shorterAddress(item.owner)}
+                      </td>
                       <td class="pr-3 py-2 text-right text-sm">
                         <span class="text-yellow-400 text-lg font-medium">
                           {item?._sum.point}
