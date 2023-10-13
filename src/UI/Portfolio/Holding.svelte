@@ -589,7 +589,7 @@
     </div>
 
     <!-- nft holding table -->
-    {#if typeWalletAddress === "EVM" || typeWalletAddress === "SOL" || typeWalletAddress === "BUNDLE"}
+    {#if typeWalletAddress !== "CEX"}
       <div class="flex flex-col gap-2">
         <div class="flex justify-between items-center">
           <div class="xl:text-xl text-3xl font-medium">
