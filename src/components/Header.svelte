@@ -18,6 +18,9 @@
   import { showChangeLogAnimationVariants } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import Mousetrap from "mousetrap";
+  import addGlobalBinds from "bind-mousetrap-global";
+  addGlobalBinds(Mousetrap);
 
   import Auth from "~/UI/Auth/Auth.svelte";
   import AuthEvm from "~/UI/Auth/AuthEVM.svelte";
@@ -206,6 +209,10 @@
       localStorage.setItem("SearchSuggestList", JSON.stringify(suggestList));
     }
   }
+
+  Mousetrap.bindGlobal(["/"], function () {
+    showPopoverSearch = true;
+  });
 
   onMount(() => {
     getSuggestList();
