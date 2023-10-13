@@ -60,7 +60,7 @@
 </script>
 
 <div class="flex flex-col items-center">
-  {#if $queryDailyCheckin.isError}
+  {#if $publicEvmAddress === ""}
     <div class="flex items-center justify-center h-full px-3 py-4">
       Please connect wallet
     </div>
@@ -87,50 +87,62 @@
             class="absolute top-[34%] left-[50%] absolute-center flex flex-col items-center justify-center"
           >
             <img src={img.rank1} alt="" class="w-52 h-48" />
-            <div class="flex flex-col gap-2 text-center">
-              <div class="text-lg font-medium">
-                {shorterAddress(top3Wallet[0]?.owner)}
+            {#if top3Wallet.length < 1}
+              <div class="text-lg font-medium">N/a</div>
+            {:else}
+              <div class="flex flex-col gap-2 text-center">
+                <div class="text-lg font-medium">
+                  {shorterAddress(top3Wallet[0]?.owner)}
+                </div>
+                <div>
+                  <span class="text-yellow-400 font-medium text-lg">
+                    {top3Wallet[0]?._sum.point}
+                  </span> GM point
+                </div>
               </div>
-              <div>
-                <span class="text-yellow-400 font-medium text-lg">
-                  {top3Wallet[0]?._sum.point}
-                </span> GM point
-              </div>
-            </div>
+            {/if}
           </div>
           <div
             class="absolute top-[26.5%] left-8 flex flex-col items-center justify-center"
           >
             <img src={img.rank2} alt="" class="w-52 h-48" />
-            <div class="flex flex-col gap-2 text-center">
-              <div class="text-lg font-medium">
-                {shorterAddress(top3Wallet[1]?.owner)}
+            {#if top3Wallet.length < 2}
+              <div class="text-lg font-medium">N/a</div>
+            {:else}
+              <div class="flex flex-col gap-2 text-center -mt-4">
+                <div class="text-lg font-medium">
+                  {shorterAddress(top3Wallet[1]?.owner)}
+                </div>
+                <div>
+                  <span class="text-yellow-400 font-medium text-lg">
+                    {top3Wallet[1]?._sum.point}
+                  </span> GM point
+                </div>
               </div>
-              <div>
-                <span class="text-yellow-400 font-medium text-lg">
-                  {top3Wallet[1]?._sum.point}
-                </span> GM point
-              </div>
-            </div>
+            {/if}
           </div>
           <div
             class="absolute top-[30%] right-8 flex flex-col items-center justify-center"
           >
-            <img src={img.rank3} alt="" class="w-44 h-40" />
-            <div class="flex flex-col gap-2 text-center">
-              <div class="text-lg font-medium">
-                <!-- <span class="text-yellow-400 font-medium text-xl">3.</span> -->
-                {shorterAddress(top3Wallet[2]?.owner)}
+            <img src={img.rank3} alt="" class="w-40 h-36" />
+            {#if top3Wallet.length < 3}
+              <div class="text-lg font-medium">N/a</div>
+            {:else}
+              <div class="flex flex-col gap-2 text-center">
+                <div class="text-lg font-medium">
+                  <!-- <span class="text-yellow-400 font-medium text-xl">3.</span> -->
+                  {shorterAddress(top3Wallet[2]?.owner)}
+                </div>
+                <div>
+                  <span class="text-yellow-400 font-medium text-lg">
+                    {top3Wallet[2]?._sum.point}
+                  </span> GM point
+                </div>
               </div>
-              <div>
-                <span class="text-yellow-400 font-medium text-lg">
-                  {top3Wallet[2]?._sum.point}
-                </span> GM point
-              </div>
-            </div>
+            {/if}
           </div>
           <span
-            class="absolute bottom-0 left-[50%] text-black absolute-center flex items-center gap-1 px-2 py-1 rounded-lg opacity-50 shadow-dark-50 shadow"
+            class="absolute bottom-8 left-[50%] text-black absolute-center flex items-center gap-1 px-2 py-1 rounded-lg opacity-50 shadow-dark-50 shadow"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -157,7 +169,7 @@
 
     <!-- the table  -->
     <div
-      class="xl:w-3/5 w-full rounded-xl border border-[#ffb800] shadow-top shadow-dark-700"
+      class="xl:w-3/5 w-full rounded-xl border border-[#ffb800] shadow-top shadow-dark-700 -mt-8"
     >
       <table
         class={`w-full table-auto rounded-xl  ${
@@ -174,11 +186,17 @@
             </td>
           </tr>
           <tr class="bg-[#FFB800] xl:text-base text-xl font-medium">
-            <td class="px-6 pb-3 pt-1 text-left text-2xl font-normal w-6">
+            <td
+              class={`px-6 pb-3 pt-1 text-left text-3xl font-normal w-6 ${
+                !darkMode && "text-[#27326F]"
+              }`}
+            >
               {handleThing()}
             </td>
             <td class="pb-3 pt-1 text-left">
-              {shorterAddress(userCurrentRank?.owner)}
+              {userCurrentRank?.owner
+                ? shorterAddress(userCurrentRank?.owner)
+                : "You are not checkin yet!!!"}
             </td>
             <td class="pr-6 pb-3 pt-1 text-right">
               <span class="text-lg">{userCurrentRank?._sum?.point || 0}</span>
@@ -199,6 +217,15 @@
                       Runners up
                     </td>
                   </tr>
+                  {#if $queryDailyCheckin?.data?.checkinLeaderboard.length === 0}
+                    <tr>
+                      <td>There is no one checkin yet</td>
+                    </tr>
+                  {:else if $queryDailyCheckin?.data?.checkinLeaderboard < 3}
+                    <tr>
+                      <td>Currently, no one has left the top 3 yet.</td>
+                    </tr>
+                  {/if}
                   {#each $queryDailyCheckin?.data?.checkinLeaderboard.slice(3, 20) as item, index}
                     <tr
                       class={`xl:text-base text-xl border-b hover:${
@@ -206,7 +233,7 @@
                       }`}
                     >
                       <td
-                        class={`pl-3 py-2 text-3xl font-light text-left w-6 ${
+                        class={`px-3 py-2 text-3xl font-light text-left w-6 ${
                           !darkMode && "text-[#27326F]"
                         }`}
                       >
