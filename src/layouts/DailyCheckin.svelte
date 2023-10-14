@@ -4,7 +4,7 @@
   import { i18n } from "~/lib/i18n";
   import { isDarkMode } from "~/store";
 
-  import DailyCheckin from "~/UI/DailyCheckin/TabDailyCheckin.svelte";
+  import TabDailyCheckin from "~/UI/DailyCheckin/TabDailyCheckin.svelte";
   import LeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";
   import TabReward from "~/UI/DailyCheckin/TabReward.svelte";
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
@@ -75,7 +75,7 @@
       </div>
       <div class="xl:col-span-5 col-span-1">
         {#if activeTabValue === "daily-checkin"}
-          <DailyCheckin />
+          <TabDailyCheckin />
         {:else if activeTabValue === "leaderboard"}
           <div class="w-full flex flex-col gap-3">
             <div class="flex flex-col gap-1">

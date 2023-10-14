@@ -198,75 +198,85 @@
                 {/if}
               </div>
             </div>
-            <div class="overflow-x-auto py-5 px-4">
-              <div class="grid grid-cols-7 gap-4 w-[1350px]">
-                {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
-                  <div
-                    class={`flex flex-col gap-2 items-center rounded-lg py-8 ${
-                      $queryDailyCheckin?.data?.steak > index && darkMode
-                        ? "grayscale bg-gray-700"
-                        : $queryDailyCheckin?.data?.steak > index && !darkMode
-                        ? "grayscale bg-gray-100"
-                        : $queryDailyCheckin?.data?.steak === index
-                        ? "bg-black text-white transform scale-110 duration-100 transition"
-                        : darkMode
-                        ? "bg-gray-700"
-                        : "bg-gray-100"
-                    }`}
-                  >
-                    <div class="xl:text-lg text-xl font-medium">
-                      Day {index + 1}
-                    </div>
-                    <img
-                      src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
-                      alt=""
-                      class="w-13"
-                    />
-                    <div class="xl:text-2xl text-3xl font-medium">+ {item}</div>
-                  </div>
-                {/each}
+
+            {#if $queryDailyCheckin?.data === undefined}
+              <div
+                class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[152px]"
+              >
+                Empty
               </div>
-            </div>
+            {:else}
+              <div class="overflow-x-auto py-5 px-4">
+                <div class="grid grid-cols-7 gap-4 w-[1350px]">
+                  {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
+                    <div
+                      class={`flex flex-col gap-2 items-center rounded-lg py-8 transform scale-95 transition-all ${
+                        $queryDailyCheckin?.data?.steak > index && darkMode
+                          ? "grayscale bg-gray-700"
+                          : $queryDailyCheckin?.data?.steak > index && !darkMode
+                          ? "grayscale bg-gray-100"
+                          : $queryDailyCheckin?.data?.steak === index
+                          ? "bg-black text-white scale-100"
+                          : darkMode
+                          ? "bg-gray-700"
+                          : "bg-gray-100"
+                      }`}
+                    >
+                      <div class="xl:text-lg text-xl font-medium">
+                        Day {index + 1}
+                      </div>
+                      <img
+                        src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
+                        alt=""
+                        class="w-13"
+                      />
+                      <div class="xl:text-2xl text-3xl font-medium">
+                        + {item}
+                      </div>
+                    </div>
+                  {/each}
+                </div>
+              </div>
+            {/if}
+
             <div class="flex flex-col gap-4">
-              {#if $userPublicAddress == ""}
-                <div class="xl:text-lg text-xl">
-                  Please connect your wallet.
+              <div class="xl:text-base text-lg font-medium">
+                This month reward
+              </div>
+              {#if $queryReward.data === undefined}
+                <div
+                  class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[152px]"
+                >
+                  Empty
                 </div>
               {:else}
-                <div class="xl:text-base text-lg font-medium">
-                  This month reward
-                </div>
-                {#if $queryReward.data === undefined}
-                  <div class="text-white">Empty</div>
-                {:else}
-                  <div class="flex gap-4">
-                    {#each $queryReward?.data?.monthRewards || [] as item, index}
-                      <div>
-                        <div
-                          class="relative h-[250px] w-[185px] flex flex-col items-center justify-center gap-3 text-white"
-                        >
-                          <img
-                            src={rankBackground[index]}
-                            alt=""
-                            class="absolute top-0 left-0 -z-99"
-                          />
-                          <img src={rank[index]} alt="" class="h-[70px] mb-2" />
-                          <div class="text-4xl font-medium text-center">
-                            ${item.amount}
-                          </div>
-                          <div class="xl:text-base text-lg text-center">
-                            {index + 1}{index === 0
-                              ? "st"
-                              : index == 1
-                              ? "nd"
-                              : "rd"}
-                            Rank
-                          </div>
+                <div class="flex gap-6">
+                  {#each $queryReward?.data?.monthRewards || [] as item, index}
+                    <div>
+                      <div
+                        class="relative h-[250px] w-[185px] flex flex-col items-center justify-center gap-3 text-white"
+                      >
+                        <img
+                          src={rankBackground[index]}
+                          alt=""
+                          class="absolute top-0 left-0 -z-99"
+                        />
+                        <img src={rank[index]} alt="" class="h-[70px] mb-2" />
+                        <div class="text-4xl font-medium text-center">
+                          ${item.amount}
+                        </div>
+                        <div class="xl:text-base text-lg text-center">
+                          {index + 1}{index === 0
+                            ? "st"
+                            : index == 1
+                            ? "nd"
+                            : "rd"}
+                          Rank
                         </div>
                       </div>
-                    {/each}
-                  </div>
-                {/if}
+                    </div>
+                  {/each}
+                </div>
               {/if}
             </div>
           {:else}
@@ -287,12 +297,18 @@
                     <th class="py-2 pr-3 text-right">Point</th>
                   </tr>
                 </thead>
-                {#if $userPublicAddress == ""}
-                  <tr>
-                    <td class="xl:text-lg text-xl py-2 px-3" colspan="2">
-                      Please connect your wallet.
-                    </td>
-                  </tr>
+                {#if $queryDailyCheckin?.data === undefined}
+                  <tbody>
+                    <tr>
+                      <td colspan="2">
+                        <div
+                          class="flex items-center justify-center h-full px-3 py-4"
+                        >
+                          Please connect wallet
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
                 {:else}
                   <tbody>
                     {#if $queryDailyCheckin?.data?.checkinLogs.length === 0}
