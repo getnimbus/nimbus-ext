@@ -1,15 +1,25 @@
 <script lang="ts">
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
+  import { nimbus } from "~/lib/network";
+  import { isDarkMode, user, userPublicAddress } from "~/store";
+  import { dailyCheckinTypePortfolio, triggerFirework } from "~/utils";
+  import dayjs from "dayjs";
+
   import Button from "~/components/Button.svelte";
   import Loading from "~/components/Loading.svelte";
-  import { nimbus } from "~/lib/network";
-  import { isDarkMode, user, userId, wallet, publicEvmAddress } from "~/store";
-  import { dailyCheckinTypePortfolio, triggerFirework } from "~/utils";
 
-  let selectedTypePerformance: "collectGMPoint" | "history" = "collectGMPoint";
+  const rankBackground = [
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/1stframe.png",
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/2ndframe.png",
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/3rdframe.png",
+  ];
 
-  let openScreenSuccess = false;
+  const rank = [
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/1st.png",
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/2nd.png",
+    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/3rd.png",
+  ];
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -21,24 +31,23 @@
     userInfo = value;
   });
 
-  let isLoadingCheckin = false;
-  let disableBtn = false;
+  let selectedType: "collectGMPoint" | "history" = "collectGMPoint";
+  let openScreenSuccess: boolean = false;
+  let isLoadingCheckin: boolean = false;
+  let disableBtn: boolean = false;
 
   const queryClient = useQueryClient();
 
-  const shortDate = (date: string) => {
-    return date.split("").slice(0, date.indexOf("T")).join("");
-  };
-
   const handleDailyCheckin = async () => {
-    const response = await nimbus.get(`/v2/checkin/${$publicEvmAddress}`);
+    const response = await nimbus.get(`/v2/checkin/${$userPublicAddress}`);
     return response.data;
   };
 
-  const onClose = () => {
-    setTimeout(() => {
-      openScreenSuccess = false;
-    }, 500);
+  const handleRewards = async () => {
+    const response = await nimbus.post(`/v2/reward`, {
+      address: $userPublicAddress,
+    });
+    return response.data;
   };
 
   const triggerCheckinSuccess = () => {
@@ -49,248 +58,306 @@
     }, 2000);
   };
 
-  const handleRewards = async () => {
-    const response = await nimbus.post(`/v2/reward`, {
-      address: $publicEvmAddress,
-    });
-    console.log("response bla bla : ", response.data);
-    return response.data;
-  };
-
   const handleCheckin = async () => {
     isLoadingCheckin = true;
     try {
       const response = await nimbus.post(`/v2/checkin`, {});
       if (response?.data !== undefined) {
         triggerCheckinSuccess();
-        queryClient.invalidateQueries([$publicEvmAddress, "daily-checkin"]);
+        queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
         disableBtn = true;
       }
     } catch (error) {
-      console.log("this err : ", error);
+      console.error("this err : ", error);
+    } finally {
+      isLoadingCheckin = false;
     }
-    isLoadingCheckin = false;
   };
 
   $: queryReward = createQuery({
-    queryKey: [$publicEvmAddress, "rewards"],
+    queryKey: [$userPublicAddress, "rewards"],
     queryFn: () => handleRewards(),
-    enabled: Object.keys(userInfo).length !== 0,
     staleTime: Infinity,
-  });
-
-  $: queryDailyCheckin = createQuery({
-    queryKey: [$publicEvmAddress, "daily-checkin"],
-    queryFn: () => handleDailyCheckin(),
-    staleTime: Infinity,
-    enabled: Object.keys(userInfo).length !== 0,
+    enabled:
+      Object.keys(userInfo).length !== 0 && $userPublicAddress.length !== 0,
     onError(err) {
+      localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
     },
   });
 
-  $: console.log("queryDailyCheckin : ", $queryDailyCheckin);
-
-  const imgGold =
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
-
-  const rankFrameImg = [
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/1stframe.png",
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/2ndframe.png",
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/3rdframe.png",
-  ];
-  const rankImg = [
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/1st.png",
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/2nd.png",
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/3rd.png",
-  ];
+  $: queryDailyCheckin = createQuery({
+    queryKey: [$userPublicAddress, "daily-checkin"],
+    queryFn: () => handleDailyCheckin(),
+    staleTime: Infinity,
+    enabled:
+      Object.keys(userInfo).length !== 0 && $userPublicAddress.length !== 0,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
+  });
 </script>
 
-{#if $publicEvmAddress === ""}
-  <div class="flex items-center justify-center h-full px-3 py-4">
-    Please connect wallet
-  </div>
-{:else if $queryDailyCheckin.isFetching}
-  <div class="flex items-center justify-center h-screen">
-    <Loading />
-  </div>
-{:else}
-  <div
-    class={`flex flex-col gap-10 border-t-[1.5px] border_0000000dp pt-4 ${
-      darkMode ? "text-white" : "text-black"
-    } `}
-  >
-    <div
-      class="flex flex-col gap-5 bg-[#1589EB] text-white px-6 py-5 rounded-lg w-[400px]"
-    >
-      <span>My GM Points</span>
-      <span class="text-4xl font-medium flex gap-2">
-        {#if $queryDailyCheckin.isFetching}
-          <Loading />
-        {:else}
-          {$queryDailyCheckin?.data?.totalPoint || 0}
-        {/if}
-        <img src={imgGold} alt="" class="w-12" />
-      </span>
+<div class="flex flex-col gap-4 min-h-screen">
+  <div class="flex flex-col gap-1 border-b-[1.5px] border_0000000d pb-4">
+    <div class="xl:title-3 title-1">My Nimbus GM Points</div>
+    <div class="xl:text-base text-xl text-gray-500">
+      Collect GM Points and redeem them for exclusive rewards and special offers
     </div>
-    <div>
-      <div class="flex items-center gap-2 mb-2">
-        <AnimateSharedLayout>
-          {#each dailyCheckinTypePortfolio as type}
-            <div
-              class="relative cursor-pointer xl:text-base text-2xl font-medium py-2 px-3 rounded-xl transition-all"
-              on:click={() => (selectedTypePerformance = type.value)}
-            >
-              <div
-                class={`relative z-20 ${
-                  selectedTypePerformance === type.value && "text-white"
-                }`}
-              >
-                {type.label}
-              </div>
-              {#if type.value === selectedTypePerformance}
-                <Motion
-                  let:motion
-                  layoutId="active-pill"
-                  transition={{ type: "spring", duration: 0.6 }}
-                >
-                  <div
-                    class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                    use:motion
-                  />
-                </Motion>
-              {/if}
-            </div>
-          {/each}
-        </AnimateSharedLayout>
-      </div>
-      <div class="flex flex-col gap-5 py-3">
-        <div class="flex items-center justify-between">
-          {#if selectedTypePerformance === "collectGMPoint"}
-            <div class="flex flex-col gap-1">
-              <div class="xl:title-3 title-1">
-                Collect your GM Points every day
-              </div>
-              <div class="xl:text-base text-xl text-gray-500">
-                Check in 7 days in a row, your rewards will grow
-              </div>
-            </div>
+  </div>
+
+  {#if $queryDailyCheckin.isFetching && $queryReward.isFetching}
+    <div class="flex items-center justify-center h-screen">
+      <Loading />
+    </div>
+  {:else}
+    <div class="flex flex-col gap-7 mt-2">
+      <div
+        class="flex flex-col gap-3 bg-[#1589EB] py-4 px-6 rounded-lg min-w-[250px] w-max"
+      >
+        <div class="text-2xl font-medium">My GM Points</div>
+        <div class="text-4xl font-semibold flex items-center gap-2">
+          {#if $queryDailyCheckin.isFetching}
+            <Loading />
           {:else}
-            <div class="py-4">
-              <span class="font-medium text-2xl">Checkin History</span>
-            </div>
+            {$queryDailyCheckin?.data?.totalPoint || 0}
+            <img
+              src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
+              alt=""
+              class="w-13"
+            />
           {/if}
-          <div class="w-[230px] xl:h-auto h-12">
-            {#if !$queryDailyCheckin?.data?.checkinable || disableBtn}
-              <Button variant="disabled" disabled>
-                <div class="py-1">Checked</div>
-              </Button>
-            {:else}
-              <Button
-                variant="primary"
-                on:click={handleCheckin}
-                isLoading={isLoadingCheckin}
-              >
-                <div class="py-1">👋 GM</div>
-              </Button>
-            {/if}
-          </div>
         </div>
-        {#if selectedTypePerformance === "collectGMPoint"}
-          <div class="overflow-x-auto py-6">
-            <div class="grid grid-cols-7 gap-10 w-[1350px]">
-              {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div class="-ml-3 flex items-center gap-2">
+          <AnimateSharedLayout>
+            {#each dailyCheckinTypePortfolio as type}
+              <div
+                class="relative cursor-pointer xl:text-base text-xl font-medium py-2 px-3 rounded-xl transition-all"
+                on:click={() => (selectedType = type.value)}
+              >
                 <div
-                  class={`flex flex-col gap-1 items-center rounded-xl py-10 px-6 ${
-                    $queryDailyCheckin?.data?.steak > index && darkMode
-                      ? "grayscale bg-gray-700"
-                      : $queryDailyCheckin?.data?.steak > index && !darkMode
-                      ? "grayscale bg-gray-100"
-                      : $queryDailyCheckin?.data?.steak === index
-                      ? "bg-black text-white"
-                      : darkMode
-                      ? "bg-gray-700"
-                      : "bg-gray-100"
+                  class={`relative z-[19] ${
+                    selectedType === type.value && "text-white"
                   }`}
                 >
-                  <span> Day {index + 1}</span>
-                  <img src={imgGold} alt="" class="w-12" />
-                  <span class="text-2xl">+{item}</span>
+                  {type.label}
                 </div>
-              {/each}
-            </div>
-          </div>
-          <div class="flex flex-col gap-5">
-            <div class="xl:title-3 title-1">This month reward</div>
-            <div class="flex gap-5">
-              {#each $queryReward?.data?.monthRewards as item, index}
-                <div>
-                  <div
-                    class="relative h-[250px] w-[185px] flex flex-col items-center justify-center gap-3 text-white"
+                {#if type.value === selectedType}
+                  <Motion
+                    let:motion
+                    layoutId="active-pill"
+                    transition={{ type: "spring", duration: 0.6 }}
                   >
-                    <img
-                      src={rankFrameImg[index]}
-                      alt=""
-                      class="absolute top-0 left-0 -z-99"
+                    <div
+                      class="absolute inset-0 rounded-full bg-[#1E96FC] -z-10"
+                      use:motion
                     />
-                    <img src={rankImg[index]} alt="" class="h-[70px] mb-2" />
-                    <div class="text-3xl text-center">${item.amount}</div>
-                    <div class="text-center">
-                      {index + 1}{index === 0 ? "st" : index == 1 ? "nd" : "rd"}
-                      Rank
-                    </div>
-                  </div>
-                </div>
-              {/each}
-            </div>
-          </div>
-        {:else}
-          <div class="w-full h-[250px] overflow-y-auto rounded-lg">
-            <table class="table-auto w-full">
-              <thead>
-                <tr
-                  class={`sticky top-0 ${
-                    darkMode ? "bg-gray-700" : "bg-gray-100"
-                  } `}
-                >
-                  <th class="py-2 pl-3 text-left">Date</th>
-                  <th class="py-2 pr-3 text-right">Point</th>
-                </tr>
-              </thead>
-              <tbody>
-                {#if $queryDailyCheckin?.data?.checkinLogs.length === 0}
-                  <tr>
-                    <td class="text-center py-2" colspan="2"
-                      >You didn't checkin before</td
-                    >
-                  </tr>
+                  </Motion>
                 {/if}
-                {#each $queryDailyCheckin?.data?.checkinLogs || [] as { point, createdAt }}
-                  <tr>
-                    <td class="py-2 pl-3 text-left">{shortDate(createdAt)}</td>
-                    <td class="py-2 pr-3 text-right text-green-500">{point}</td>
+              </div>
+            {/each}
+          </AnimateSharedLayout>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          {#if selectedType === "collectGMPoint"}
+            <div class="flex items-center justify-between">
+              <div class="flex flex-col gap-1">
+                <div class="xl:text-lg text-xl font-medium">
+                  Collect your GM Points every day
+                </div>
+                <div class="xl:text-base text-lg text-gray-500">
+                  Check in 7 days in a row, your rewards will grow
+                </div>
+              </div>
+              <div class="w-[200px]">
+                {#if !$queryDailyCheckin?.data?.checkinable || disableBtn}
+                  <Button disabled>
+                    <div
+                      class="py-1 text-2xl font-medium text-white xl:text-base"
+                    >
+                      Checked
+                    </div>
+                  </Button>
+                {:else}
+                  <Button
+                    variant="primary"
+                    on:click={handleCheckin}
+                    isLoading={isLoadingCheckin}
+                  >
+                    <div
+                      class="py-1 text-2xl font-medium text-white xl:text-base"
+                    >
+                      👋 GM
+                    </div>
+                  </Button>
+                {/if}
+              </div>
+            </div>
+
+            {#if $queryDailyCheckin?.data === undefined}
+              <div
+                class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[152px]"
+              >
+                Empty
+              </div>
+            {:else}
+              <div class="overflow-x-auto py-5 px-4">
+                <div class="grid grid-cols-7 gap-4 w-[1350px]">
+                  {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
+                    <div
+                      class={`flex flex-col gap-2 items-center rounded-lg py-8 transform scale-95 transition-all ${
+                        $queryDailyCheckin?.data?.steak > index && darkMode
+                          ? "grayscale bg-gray-700"
+                          : $queryDailyCheckin?.data?.steak > index && !darkMode
+                          ? "grayscale bg-gray-100"
+                          : $queryDailyCheckin?.data?.steak === index
+                          ? "bg-black text-white scale-100"
+                          : darkMode
+                          ? "bg-gray-700"
+                          : "bg-gray-100"
+                      }`}
+                    >
+                      <div class="xl:text-lg text-xl font-medium">
+                        Day {index + 1}
+                      </div>
+                      <img
+                        src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
+                        alt=""
+                        class="w-13"
+                      />
+                      <div class="xl:text-2xl text-3xl font-medium">
+                        + {item}
+                      </div>
+                    </div>
+                  {/each}
+                </div>
+              </div>
+            {/if}
+
+            <div class="flex flex-col gap-4">
+              <div class="xl:text-base text-lg font-medium">
+                This month reward
+              </div>
+              {#if $queryReward.data === undefined}
+                <div
+                  class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[152px]"
+                >
+                  Empty
+                </div>
+              {:else}
+                <div class="flex gap-6">
+                  {#each $queryReward?.data?.monthRewards || [] as item, index}
+                    <div>
+                      <div
+                        class="relative h-[250px] w-[185px] flex flex-col items-center justify-center gap-3 text-white"
+                      >
+                        <img
+                          src={rankBackground[index]}
+                          alt=""
+                          class="absolute top-0 left-0 -z-99"
+                        />
+                        <img src={rank[index]} alt="" class="h-[70px] mb-2" />
+                        <div class="text-4xl font-medium text-center">
+                          ${item.amount}
+                        </div>
+                        <div class="xl:text-base text-lg text-center">
+                          {index + 1}{index === 0
+                            ? "st"
+                            : index == 1
+                            ? "nd"
+                            : "rd"}
+                          Rank
+                        </div>
+                      </div>
+                    </div>
+                  {/each}
+                </div>
+              {/if}
+            </div>
+          {:else}
+            <div class="xl:text-lg text-xl font-medium">Checkin History</div>
+            <div
+              class={`border border_0000000d rounded-[10px] w-full max-h-[600px] overflow-y-auto ${
+                darkMode ? "bg-[#131313]" : "bg-[#fff]"
+              }`}
+            >
+              <table class="table-auto w-full h-full">
+                <thead>
+                  <tr
+                    class={`sticky top-0 ${
+                      darkMode ? "bg-gray-700" : "bg-gray-100"
+                    } `}
+                  >
+                    <th class="py-2 pl-3 text-left">Date</th>
+                    <th class="py-2 pr-3 text-right">Point</th>
                   </tr>
-                {/each}
-              </tbody>
-            </table>
-          </div>
-        {/if}
+                </thead>
+                {#if $queryDailyCheckin?.data === undefined}
+                  <tbody>
+                    <tr>
+                      <td colspan="2">
+                        <div
+                          class="flex items-center justify-center h-full px-3 py-4"
+                        >
+                          Please connect wallet
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                {:else}
+                  <tbody>
+                    {#if $queryDailyCheckin?.data?.checkinLogs.length === 0}
+                      <tr>
+                        <td class="text-center py-2" colspan="2"
+                          >You didn't checkin before</td
+                        >
+                      </tr>
+                    {/if}
+                    {#each $queryDailyCheckin?.data?.checkinLogs || [] as { point, createdAt }}
+                      <tr>
+                        <td class="py-2 pl-3 text-left"
+                          >{dayjs(createdAt).format("YYYY-MM-DD")}</td
+                        >
+                        <td class="py-2 pr-3 text-right text-green-500"
+                          >{point}</td
+                        >
+                      </tr>
+                    {/each}
+                  </tbody>
+                {/if}
+              </table>
+            </div>
+          {/if}
+        </div>
       </div>
     </div>
-  </div>
-{/if}
+  {/if}
+</div>
 
 {#if openScreenSuccess}
   <div
-    class="fixed h-screen w-screen top-0 left-0 z-20 flex items-center justify-center bg-[#000000cc]"
-    on:click={onClose}
+    class="fixed h-screen w-screen top-0 left-0 z-[19] flex items-center justify-center bg-[#000000cc]"
+    on:click={() => {
+      setTimeout(() => {
+        openScreenSuccess = false;
+      }, 500);
+    }}
   >
     <div class="flex flex-col items-center justify-center gap-10">
-      <span>Received successfully</span>
-      <div>
-        <img src={imgGold} alt="" class="w-40 h-40" />
+      <div class="xl:text-2xl text-4xl text-white font-bold">
+        Received successfully
       </div>
-      <div class="text-5xl text-white">
+      <img
+        src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
+        alt=""
+        class="w-40 h-40"
+      />
+      <div class="xl:text-2xl text-4xl text-white font-bold">
         +{$queryDailyCheckin?.data?.pointStreak[
           $queryDailyCheckin?.data?.steak
         ]} GM Points

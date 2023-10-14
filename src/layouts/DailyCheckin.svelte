@@ -1,14 +1,15 @@
 <script>
   import { onMount } from "svelte";
   import * as browser from "webextension-polyfill";
-  import DailyCheckin from "~/UI/DailyCheckin/TabDailyCheckin.svelte";
-  import LeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";
+  import { i18n } from "~/lib/i18n";
+  import { isDarkMode } from "~/store";
+
+  import TabDailyCheckin from "~/UI/DailyCheckin/TabDailyCheckin.svelte";
+  import TabLeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";
   import TabReward from "~/UI/DailyCheckin/TabReward.svelte";
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Mixpanel from "~/components/Mixpanel.svelte";
-  import { i18n } from "~/lib/i18n";
-  import { isDarkMode } from "~/store";
 
   const listSideBar = [
     {
@@ -74,26 +75,9 @@
       </div>
       <div class="xl:col-span-5 col-span-1">
         {#if activeTabValue === "daily-checkin"}
-          <div class="w-full flex flex-col gap-3">
-            <div class="flex flex-col gap-1">
-              <div class="xl:title-3 title-1 py-2">My Nimbus GM Points</div>
-              <div class="xl:text-base text-xl text-gray-500">
-                Collect GM Points and redeem them for exclusive rewards and
-                special offers
-              </div>
-            </div>
-            <DailyCheckin />
-          </div>
+          <TabDailyCheckin />
         {:else if activeTabValue === "leaderboard"}
-          <div class="w-full flex flex-col gap-3">
-            <div class="flex flex-col gap-1">
-              <div class="xl:title-3 title-1 py-2">Leaderboard</div>
-              <div class="xl:text-base text-xl text-gray-500">
-                Take a look at the leaderboard to see how ranked you are
-              </div>
-            </div>
-            <LeaderBoard />
-          </div>
+          <TabLeaderBoard />
         {:else if activeTabValue === "rewards"}
           <TabReward />
         {/if}
