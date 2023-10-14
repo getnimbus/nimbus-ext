@@ -1238,7 +1238,7 @@
       <div class="flex flex-col gap-2">
         {#each suggestList as suggest}
           <div
-            class="xl:text-sm text-xl cursor-pointer py-1"
+            class="xl:text-sm text-xl cursor-pointer py-1 w-max"
             on:click={() => {
               handleSearchAddress(suggest);
               showPopoverSearch = false;
