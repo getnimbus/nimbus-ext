@@ -198,7 +198,7 @@
                 {/if}
               </div>
             </div>
-            <div class="overflow-x-auto py-2">
+            <div class="overflow-x-auto py-5 px-4">
               <div class="grid grid-cols-7 gap-4 w-[1350px]">
                 {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
                   <div
