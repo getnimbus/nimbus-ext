@@ -85,10 +85,10 @@
               {shorterAddress(formatDataLeaderboard[1]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="xl:text-xl text-2xl text-[#FFCB59] font-bold">
+              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-semibold">
                 {formatDataLeaderboard[1]?.point || 0}
               </div>
-              <div class="font-medium xl:text-base text-lg">GM Point</div>
+              <div class="font-normal xl:text-base text-lg">GM Point</div>
             </div>
           </div>
         </div>
@@ -106,10 +106,10 @@
               {shorterAddress(formatDataLeaderboard[0]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="xl:text-xl text-2xl text-[#FFCB59] font-bold">
+              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-semibold">
                 {formatDataLeaderboard[0]?.point || 0}
               </div>
-              <div class="font-medium xl:text-base text-lg">GM Point</div>
+              <div class="font-normal xl:text-base text-lg">GM Point</div>
             </div>
           </div>
         </div>
@@ -127,10 +127,10 @@
               {shorterAddress(formatDataLeaderboard[2]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="xl:text-xl text-2xl text-[#FFCB59] font-bold">
+              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-semibold">
                 {formatDataLeaderboard[2]?.point || 0}
               </div>
-              <div class="font-medium xl:text-base text-lg">GM Point</div>
+              <div class="font-normal xl:text-base text-lg">GM Point</div>
             </div>
           </div>
         </div>
@@ -145,7 +145,7 @@
       </div>
     </div>
     <div
-      class="absolute -top-58 left-1/2 transform -translate-x-1/2 -z-20 xl:w-3/5 w-full h-full opacity-80"
+      class="absolute -top-58 left-1/2 transform -translate-x-1/2 -z-20 xl:w-3/5 w-full h-full opacity-60"
     >
       <img
         src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/frameLeaderboard.png"
@@ -157,7 +157,7 @@
 
   <div class="relative flex flex-col gap-4 justify-center items-center -mt-60">
     <div
-      class="flex items-center gap-1 px-2 py-1 rounded-lg opacity-50 shadow-dark-50 shadow"
+      class="flex items-center gap-1 px-2 py-1 rounded-lg text-gray-500 shadow"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -171,7 +171,7 @@
         />
         <path fill="currentColor" d="M24 32h2v2h-2zm1.6-2h-1.2l-.4-8v-6h2v6z" />
       </svg>
-      <div class="whitespace-nowrap">This rank will reset every month</div>
+      <div class="text-sm">This rank will reset every month</div>
     </div>
     <div
       class={`mx-auto xl:w-3/5 w-full max-h-[600px] overflow-y-auto border border_0000000d rounded-[10px] ${
@@ -214,7 +214,7 @@
                 <div class="xl:text-2xl text-4xl">
                   {formatDataLeaderboard[currentUserRank]?.point || 0}
                 </div>
-                <div class="xl:text-xl text-2xl">GM point</div>
+                <div class="xl:text-xl text-2xl font-light">GM point</div>
               </div>
             </th>
           </tr>
