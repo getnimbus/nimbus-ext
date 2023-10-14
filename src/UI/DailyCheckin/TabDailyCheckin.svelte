@@ -34,7 +34,7 @@
   let selectedType: "collectGMPoint" | "history" = "collectGMPoint";
   let openScreenSuccess: boolean = false;
   let isLoadingCheckin: boolean = false;
-  let disableBtn: boolean = false;
+  let selectedCheckinIndex = 0;
 
   const queryClient = useQueryClient();
 
@@ -65,7 +65,6 @@
       if (response?.data !== undefined) {
         triggerCheckinSuccess();
         queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
-        disableBtn = true;
       }
     } catch (error) {
       console.error("this err : ", error);
@@ -97,6 +96,12 @@
       user.update((n) => (n = {}));
     },
   });
+
+  $: {
+    if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
+      selectedCheckinIndex = $queryDailyCheckin?.data?.steak;
+    }
+  }
 </script>
 
 <div class="flex flex-col gap-4 min-h-screen">
@@ -116,8 +121,8 @@
       <div
         class="flex flex-col gap-3 bg-[#1589EB] py-4 px-6 rounded-lg min-w-[250px] w-max"
       >
-        <div class="text-2xl font-medium">My GM Points</div>
-        <div class="text-4xl font-semibold flex items-center gap-2">
+        <div class="text-2xl font-medium text-white">My GM Points</div>
+        <div class="text-4xl font-semibold flex items-center gap-2 text-white">
           {#if $queryDailyCheckin.isFetching}
             <Loading />
           {:else}
@@ -175,15 +180,7 @@
                 </div>
               </div>
               <div class="w-[200px]">
-                {#if !$queryDailyCheckin?.data?.checkinable || disableBtn}
-                  <Button disabled>
-                    <div
-                      class="py-1 text-2xl font-medium text-white xl:text-base"
-                    >
-                      Checked
-                    </div>
-                  </Button>
-                {:else}
+                {#if $queryDailyCheckin?.data?.checkinable}
                   <Button
                     variant="primary"
                     on:click={handleCheckin}
@@ -193,6 +190,14 @@
                       class="py-1 text-2xl font-medium text-white xl:text-base"
                     >
                       👋 GM
+                    </div>
+                  </Button>
+                {:else}
+                  <Button disabled>
+                    <div
+                      class="py-1 text-2xl font-medium text-white xl:text-base"
+                    >
+                      Checked
                     </div>
                   </Button>
                 {/if}
@@ -211,11 +216,11 @@
                   {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
                     <div
                       class={`flex flex-col gap-2 items-center rounded-lg py-8 transform scale-95 transition-all ${
-                        $queryDailyCheckin?.data?.steak > index && darkMode
+                        selectedCheckinIndex > index && darkMode
                           ? "grayscale bg-gray-700"
-                          : $queryDailyCheckin?.data?.steak > index && !darkMode
+                          : selectedCheckinIndex > index && !darkMode
                           ? "grayscale bg-gray-100"
-                          : $queryDailyCheckin?.data?.steak === index
+                          : selectedCheckinIndex === index
                           ? "bg-black text-white scale-100"
                           : darkMode
                           ? "bg-gray-700"
@@ -358,9 +363,7 @@
         class="w-40 h-40"
       />
       <div class="xl:text-2xl text-4xl text-white font-bold">
-        +{$queryDailyCheckin?.data?.pointStreak[
-          $queryDailyCheckin?.data?.steak
-        ]} GM Points
+        +{$queryDailyCheckin?.data?.pointStreak[selectedCheckinIndex]} GM Points
       </div>
     </div>
   </div>

@@ -17,7 +17,7 @@
 </script>
 
 <div
-  class={`py-[16px] w-[438px] min-h-[280px] rounded-[16px] flex flex-col gap-[30px] ${
+  class={`py-[16px] w-[438px] min-h-[280px] rounded-[16px] border border_0000000d flex flex-col gap-[30px] ${
     darkMode ? "bg-[#212121]" : "bg-white"
   }`}
 >
@@ -27,12 +27,12 @@
         darkMode ? "bg-gray-200" : "bg-white"
       }`}
     >
-      <img src={redeemData?.logo} class="w-20 h-20 object-contain" />
+      <img src={redeemData?.logo} alt="" class="w-20 h-20 object-contain" />
     </div>
 
     <div class="flex-1 flex flex-col gap-2">
       <div class="flex items-center gap-2">
-        <img src={Crown} class="w-[26px] h-[26px]" />
+        <img src={Crown} alt="" class="w-[26px] h-[26px]" />
         <div class="text-[#FFB800] xl:text-lg text-xl font-medium uppercase">
           Premium
         </div>
@@ -48,14 +48,14 @@
 
   <div class="relative border-b-2 border-dashed">
     <div
-      class={`absolute rounded-full w-10 h-10 -top-[18px] -left-6 ${
-        darkMode ? "bg-[#161616]" : "bg-white"
+      class={`w-4 h-10 rounded-l-none rounded-full absolute -left-[1px] -bottom-5 border-r border-t border-b border_0000000d ${
+        darkMode ? "bg-[#161616]" : "bg-[#fff]"
       }`}
     />
     <div
-      class={`absolute rounded-full w-10 h-10 -top-[18px] -right-6 ${
-        darkMode ? "bg-[#161616]" : "bg-white"
-      }`}
+      class={`w-4 h-10 rounded-r-none rounded-full absolute -right-[1px] -bottom-5 border-l border-t border-b border_0000000d ${
+        darkMode ? "bg-[#161616]" : "bg-[#fff]"
+      } `}
     />
   </div>
 
