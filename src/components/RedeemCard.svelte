@@ -62,12 +62,12 @@
   <div class="px-[16px]">
     {#if isRedeem}
       <div class="flex items-center gap-[47px]">
-        <div class="w-[55px] xl:text-base text-xl font-normal">
+        <div class="w-[100px] xl:text-base text-xl font-normal">
           {redeemData?.remains} left
         </div>
 
         {#if redeemData?.remains === 0}
-          <Button variant="tertiary" disabled>
+          <Button disabled>
             <div class="flex items-center gap-1">
               <img
                 src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
@@ -112,7 +112,7 @@
           <Copy
             address={redeemData?.code || "N/A"}
             iconColor="#000"
-            iconSize="20"
+            iconSize={20}
             color="#000"
             isShorten
           />

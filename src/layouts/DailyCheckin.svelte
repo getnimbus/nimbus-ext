@@ -5,7 +5,7 @@
   import { isDarkMode } from "~/store";
 
   import TabDailyCheckin from "~/UI/DailyCheckin/TabDailyCheckin.svelte";
-  import LeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";
+  import TabLeaderBoard from "~/UI/DailyCheckin/TabLeaderBoard.svelte";
   import TabReward from "~/UI/DailyCheckin/TabReward.svelte";
   import SidebarTabs from "~/UI/Option/SidebarTabs.svelte";
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
@@ -77,15 +77,7 @@
         {#if activeTabValue === "daily-checkin"}
           <TabDailyCheckin />
         {:else if activeTabValue === "leaderboard"}
-          <div class="w-full flex flex-col gap-3">
-            <div class="flex flex-col gap-1">
-              <div class="xl:title-3 title-1 py-2">Leaderboard</div>
-              <div class="xl:text-base text-xl text-gray-500">
-                Take a look at the leaderboard to see how ranked you are
-              </div>
-            </div>
-            <LeaderBoard />
-          </div>
+          <TabLeaderBoard />
         {:else if activeTabValue === "rewards"}
           <TabReward />
         {/if}

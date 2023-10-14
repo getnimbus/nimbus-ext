@@ -8,8 +8,6 @@
   import Loading from "~/components/Loading.svelte";
   import RedeemCard from "~/components/RedeemCard.svelte";
 
-  let selectedTypePerformance: "redeemGift" | "yourGift" = "redeemGift";
-
   let userInfo = {};
   user.subscribe((value) => {
     userInfo = value;
@@ -19,6 +17,8 @@
   isDarkMode.subscribe((value) => {
     darkMode = value;
   });
+
+  let selectedType: "redeemGift" | "yourGift" = "redeemGift";
 
   const queryClient = useQueryClient();
 
@@ -44,7 +44,7 @@
         .then(() => {
           queryClient.invalidateQueries(["rewards"]);
           queryClient.invalidateQueries(["daily-checkin"]);
-          selectedTypePerformance = "yourGift";
+          selectedType = "yourGift";
         });
     } catch (e) {
       console.error(e);
@@ -107,21 +107,21 @@
       </div>
     {:else}
       <div class="flex flex-col gap-3">
-        <div class="flex items-center gap-2 mb-2">
+        <div class="flex items-center gap-2">
           <AnimateSharedLayout>
             {#each dailyCheckinRewardsTypePortfolio as type}
               <div
                 class="relative cursor-pointer xl:text-base text-2xl font-medium py-2 px-3 rounded-xl transition-all"
-                on:click={() => (selectedTypePerformance = type.value)}
+                on:click={() => (selectedType = type.value)}
               >
                 <div
                   class={`relative z-[19] ${
-                    selectedTypePerformance === type.value && "text-white"
+                    selectedType === type.value && "text-white"
                   }`}
                 >
                   {type.label}
                 </div>
-                {#if type.value === selectedTypePerformance}
+                {#if type.value === selectedType}
                   <Motion
                     let:motion
                     layoutId="active-pill"
@@ -138,37 +138,45 @@
           </AnimateSharedLayout>
         </div>
 
-        {#if selectedTypePerformance === "redeemGift"}
-          <div class="flex items-center justify-center h-full w-full px-3 py-4">
-            {#if $queryReward?.data?.redeemable.length === 0}
-              There are no redeems
-            {/if}
-            {#if $queryReward?.data === undefined}
-              Please connect wallet
-            {/if}
-          </div>
+        {#if selectedType === "redeemGift"}
+          <div class="flex flex-col gap-4">
+            <div
+              class="flex justify-center items-center h-full w-full xl:text-lg text-xl text-gray-400"
+            >
+              {#if $queryReward?.data?.redeemable.length === 0}
+                There are no redeems
+              {/if}
+              {#if $queryReward?.data === undefined}
+                Please connect wallet
+              {/if}
+            </div>
 
-          <div class="grid grid-cols-2 xl:h-auto gap-10">
-            {#each $queryReward?.data?.redeemable || [] as item}
-              <RedeemCard isRedeem redeemData={item} {handleRedeem} />
-            {/each}
+            <div class="grid grid-cols-2 gap-10">
+              {#each $queryReward?.data?.redeemable || [] as item}
+                <RedeemCard isRedeem redeemData={item} {handleRedeem} />
+              {/each}
+            </div>
           </div>
         {/if}
 
-        {#if selectedTypePerformance === "yourGift"}
-          <div class="flex items-center justify-center h-full w-full px-3 py-4">
-            {#if $queryReward?.data === undefined}
-              Please connect wallet
-            {/if}
-            {#if $queryReward?.data?.ownRewards.length === 0}
-              There are no gifts
-            {/if}
-          </div>
+        {#if selectedType === "yourGift"}
+          <div class="flex flex-col gap-4">
+            <div
+              class="flex justify-center items-center h-full w-full xl:text-lg text-xl text-gray-400"
+            >
+              {#if $queryReward?.data === undefined}
+                Please connect wallet
+              {/if}
+              {#if $queryReward?.data?.ownRewards.length === 0}
+                There are no gifts
+              {/if}
+            </div>
 
-          <div class="grid grid-cols-2 xl:h-auto gap-10">
-            {#each $queryReward?.data?.ownRewards || [] as item}
-              <RedeemCard redeemData={item} handleRedeem={() => {}} />
-            {/each}
+            <div class="grid grid-cols-2 gap-10">
+              {#each $queryReward?.data?.ownRewards || [] as item}
+                <RedeemCard redeemData={item} handleRedeem={() => {}} />
+              {/each}
+            </div>
           </div>
         {/if}
       </div>

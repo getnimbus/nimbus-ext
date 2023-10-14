@@ -31,7 +31,7 @@
     userInfo = value;
   });
 
-  let selectedTypePerformance: "collectGMPoint" | "history" = "collectGMPoint";
+  let selectedType: "collectGMPoint" | "history" = "collectGMPoint";
   let openScreenSuccess: boolean = false;
   let isLoadingCheckin: boolean = false;
   let disableBtn: boolean = false;
@@ -137,16 +137,16 @@
             {#each dailyCheckinTypePortfolio as type}
               <div
                 class="relative cursor-pointer xl:text-base text-xl font-medium py-2 px-3 rounded-xl transition-all"
-                on:click={() => (selectedTypePerformance = type.value)}
+                on:click={() => (selectedType = type.value)}
               >
                 <div
                   class={`relative z-[19] ${
-                    selectedTypePerformance === type.value && "text-white"
+                    selectedType === type.value && "text-white"
                   }`}
                 >
                   {type.label}
                 </div>
-                {#if type.value === selectedTypePerformance}
+                {#if type.value === selectedType}
                   <Motion
                     let:motion
                     layoutId="active-pill"
@@ -164,7 +164,7 @@
         </div>
 
         <div class="flex flex-col gap-4">
-          {#if selectedTypePerformance === "collectGMPoint"}
+          {#if selectedType === "collectGMPoint"}
             <div class="flex items-center justify-between">
               <div class="flex flex-col gap-1">
                 <div class="xl:text-lg text-xl font-medium">
