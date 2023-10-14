@@ -202,7 +202,7 @@
               <div class="grid grid-cols-7 gap-4 w-[1350px]">
                 {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
                   <div
-                    class={`flex flex-col gap-2 items-center rounded-lg py-8 ${
+                    class={`flex flex-col gap-2 items-center rounded-lg py-8 transition transform duration-100 hover:scale-105 ${
                       $queryDailyCheckin?.data?.steak > index && darkMode
                         ? "grayscale bg-gray-700"
                         : $queryDailyCheckin?.data?.steak > index && !darkMode
