@@ -228,39 +228,45 @@
               </div>
             </div>
             <div class="flex flex-col gap-4">
-              <div class="xl:text-lg text-xl font-medium">
-                This month reward
-              </div>
-              {#if $queryReward.data === undefined}
-                <div class="text-white">Empty</div>
+              {#if $userPublicAddress == ""}
+                <div class="xl:text-lg text-xl">
+                  Please connect your wallet.
+                </div>
               {:else}
-                <div class="flex gap-4">
-                  {#each $queryReward?.data?.monthRewards || [] as item, index}
-                    <div>
-                      <div
-                        class="relative h-[250px] w-[185px] flex flex-col items-center justify-center gap-3 text-white"
-                      >
-                        <img
-                          src={rankBackground[index]}
-                          alt=""
-                          class="absolute top-0 left-0 -z-99"
-                        />
-                        <img src={rank[index]} alt="" class="h-[70px] mb-2" />
-                        <div class="text-4xl font-medium text-center">
-                          ${item.amount}
-                        </div>
-                        <div class="xl:text-base text-lg text-center">
-                          {index + 1}{index === 0
-                            ? "st"
-                            : index == 1
-                            ? "nd"
-                            : "rd"}
-                          Rank
+                <div class="xl:text-base text-lg font-medium">
+                  This month reward
+                </div>
+                {#if $queryReward.data === undefined}
+                  <div class="text-white">Empty</div>
+                {:else}
+                  <div class="flex gap-4">
+                    {#each $queryReward?.data?.monthRewards || [] as item, index}
+                      <div>
+                        <div
+                          class="relative h-[250px] w-[185px] flex flex-col items-center justify-center gap-3 text-white"
+                        >
+                          <img
+                            src={rankBackground[index]}
+                            alt=""
+                            class="absolute top-0 left-0 -z-99"
+                          />
+                          <img src={rank[index]} alt="" class="h-[70px] mb-2" />
+                          <div class="text-4xl font-medium text-center">
+                            ${item.amount}
+                          </div>
+                          <div class="xl:text-base text-lg text-center">
+                            {index + 1}{index === 0
+                              ? "st"
+                              : index == 1
+                              ? "nd"
+                              : "rd"}
+                            Rank
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  {/each}
-                </div>
+                    {/each}
+                  </div>
+                {/if}
               {/if}
             </div>
           {:else}
@@ -281,25 +287,33 @@
                     <th class="py-2 pr-3 text-right">Point</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {#if $queryDailyCheckin?.data?.checkinLogs.length === 0}
-                    <tr>
-                      <td class="text-center py-2" colspan="2"
-                        >You didn't checkin before</td
-                      >
-                    </tr>
-                  {/if}
-                  {#each $queryDailyCheckin?.data?.checkinLogs || [] as { point, createdAt }}
-                    <tr>
-                      <td class="py-2 pl-3 text-left"
-                        >{dayjs(createdAt).format("YYYY-MM-DD")}</td
-                      >
-                      <td class="py-2 pr-3 text-right text-green-500"
-                        >{point}</td
-                      >
-                    </tr>
-                  {/each}
-                </tbody>
+                {#if $userPublicAddress == ""}
+                  <tr>
+                    <td class="xl:text-lg text-xl py-2 px-3" colspan="2">
+                      Please connect your wallet.
+                    </td>
+                  </tr>
+                {:else}
+                  <tbody>
+                    {#if $queryDailyCheckin?.data?.checkinLogs.length === 0}
+                      <tr>
+                        <td class="text-center py-2" colspan="2"
+                          >You didn't checkin before</td
+                        >
+                      </tr>
+                    {/if}
+                    {#each $queryDailyCheckin?.data?.checkinLogs || [] as { point, createdAt }}
+                      <tr>
+                        <td class="py-2 pl-3 text-left"
+                          >{dayjs(createdAt).format("YYYY-MM-DD")}</td
+                        >
+                        <td class="py-2 pr-3 text-right text-green-500"
+                          >{point}</td
+                        >
+                      </tr>
+                    {/each}
+                  </tbody>
+                {/if}
               </table>
             </div>
           {/if}
