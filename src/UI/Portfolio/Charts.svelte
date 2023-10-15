@@ -729,36 +729,38 @@
     >
       <div class="w-full flex items-center gap-4 mb-6">
         <div class="text-4xl font-medium xl:text-2xl">Allocation</div>
-        <div class="flex items-center gap-1">
-          <AnimateSharedLayout>
-            {#each typePieChart as type}
-              <div
-                class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
-                on:click={() => (selectedType = type.value)}
-              >
+        {#if typeWalletAddress !== "CEX"}
+          <div class="flex items-center gap-1">
+            <AnimateSharedLayout>
+              {#each typePieChart as type}
                 <div
-                  class={`relative z-20 ${
-                    selectedType === type.value && "text-white"
-                  }`}
+                  class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
+                  on:click={() => (selectedType = type.value)}
                 >
-                  {type.label}
-                </div>
-                {#if type.value === selectedType}
-                  <Motion
-                    let:motion
-                    layoutId="active-pill"
-                    transition={{ type: "spring", duration: 0.6 }}
+                  <div
+                    class={`relative z-20 ${
+                      selectedType === type.value && "text-white"
+                    }`}
                   >
-                    <div
-                      class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
-                      use:motion
-                    />
-                  </Motion>
-                {/if}
-              </div>
-            {/each}
-          </AnimateSharedLayout>
-        </div>
+                    {type.label}
+                  </div>
+                  {#if type.value === selectedType}
+                    <Motion
+                      let:motion
+                      layoutId="active-pill"
+                      transition={{ type: "spring", duration: 0.6 }}
+                    >
+                      <div
+                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                        use:motion
+                      />
+                    </Motion>
+                  {/if}
+                </div>
+              {/each}
+            </AnimateSharedLayout>
+          </div>
+        {/if}
       </div>
 
       {#if isLoadingBreakdownTokens && isLoadingBreakdownNfts}
