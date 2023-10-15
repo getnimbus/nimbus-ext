@@ -269,7 +269,9 @@
                 <td
                   class={`py-2 pl-6 ${
                     item?.rank === formatDataLeaderboard[currentUserRank]?.rank
-                      ? "bg-gray-100"
+                      ? darkMode
+                        ? "bg-[#000]"
+                        : "bg-gray-100"
                       : darkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
@@ -287,7 +289,9 @@
                 <td
                   class={`py-2 ${
                     item?.rank === formatDataLeaderboard[currentUserRank]?.rank
-                      ? "bg-gray-100"
+                      ? darkMode
+                        ? "bg-[#000]"
+                        : "bg-gray-100"
                       : darkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
@@ -303,7 +307,9 @@
                 <td
                   class={`py-2 pr-6 ${
                     item?.rank === formatDataLeaderboard[currentUserRank]?.rank
-                      ? "bg-gray-100"
+                      ? darkMode
+                        ? "bg-[#000]"
+                        : "bg-gray-100"
                       : darkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
