@@ -257,27 +257,7 @@
     }
   };
 
-  const validateFormEdit = async (data) => {
-    const addressValidate = await validateAddress(selectedItemEdit.address);
-
-    if (!isRequiredFieldValid(selectedItemEdit.address)) {
-      errorsEdit["address"] = {
-        ...errorsEdit["address"],
-        required: true,
-        msg: MultipleLang.content.address_required,
-      };
-    } else {
-      if (!addressValidate) {
-        errorsEdit["address"] = {
-          ...errorsEdit["address"],
-          required: true,
-          msg: MultipleLang.content.re_input_address,
-        };
-      } else {
-        errorsEdit["address"] = { ...errorsEdit["address"], required: false };
-      }
-    }
-
+  const validateFormEdit = (data) => {
     if (!isRequiredFieldValid(data.label)) {
       errorsEdit["label"] = {
         ...errorsEdit["label"],
@@ -1710,13 +1690,11 @@
       class="flex flex-col gap-10 xl:gap-3"
     >
       <div class="flex flex-col gap-6 xl:gap-3">
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1 opacity-50">
           <div
             class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
               address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
             }`}
-            class:input-border-error={errorsEdit.address &&
-              errorsEdit.address.required}
           >
             <div class="xl:text-base text-2xl font-semibold text-[#666666]">
               {MultipleLang.content.modal_address_label}
@@ -1727,17 +1705,12 @@
               id="address"
               name="address"
               placeholder={MultipleLang.content.modal_address_label}
-              value={selectedItemEdit.address}
+              value={address}
               class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
                 address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               }`}
             />
           </div>
-          {#if errorsEdit.address && errorsEdit.address.required}
-            <div class="text-red-500">
-              {errorsEdit.address.msg}
-            </div>
-          {/if}
         </div>
         <div class="flex flex-col gap-1">
           <div
@@ -1755,7 +1728,7 @@
               id="label"
               name="label"
               placeholder={MultipleLang.content.modal_label_label}
-              bind:value={selectedItemEdit.label}
+              bind:value={label}
               class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
                 label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               }`}
