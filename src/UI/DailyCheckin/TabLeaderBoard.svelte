@@ -264,11 +264,13 @@
               </tr>
             {/if}
 
-            {#each formatDataLeaderboard as item}
+            {#each formatDataLeaderboard.slice(3) as item}
               <tr class="group transition-all">
                 <td
                   class={`py-2 pl-6 ${
-                    darkMode
+                    item?.rank === formatDataLeaderboard[currentUserRank]?.rank
+                      ? "bg-gray-100"
+                      : darkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}
@@ -284,7 +286,9 @@
 
                 <td
                   class={`py-2 ${
-                    darkMode
+                    item?.rank === formatDataLeaderboard[currentUserRank]?.rank
+                      ? "bg-gray-100"
+                      : darkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}
@@ -298,7 +302,9 @@
 
                 <td
                   class={`py-2 pr-6 ${
-                    darkMode
+                    item?.rank === formatDataLeaderboard[currentUserRank]?.rank
+                      ? "bg-gray-100"
+                      : darkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}

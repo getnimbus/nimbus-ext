@@ -35,6 +35,7 @@
   let openScreenSuccess: boolean = false;
   let isLoadingCheckin: boolean = false;
   let selectedCheckinIndex = 0;
+  let isDisabledCheckin = false;
 
   const queryClient = useQueryClient();
 
@@ -64,6 +65,7 @@
       const response = await nimbus.post(`/v2/checkin`, {});
       if (response?.data !== undefined) {
         triggerCheckinSuccess();
+        isDisabledCheckin = true;
         queryClient.invalidateQueries([$userPublicAddress, "daily-checkin"]);
       }
     } catch (error) {
@@ -100,6 +102,7 @@
   $: {
     if (!$queryDailyCheckin.isError && $queryDailyCheckin.data !== undefined) {
       selectedCheckinIndex = $queryDailyCheckin?.data?.steak;
+      isDisabledCheckin = $queryDailyCheckin?.data?.checkinable;
     }
   }
 </script>
@@ -180,7 +183,7 @@
                 </div>
               </div>
               <div class="w-[200px]">
-                {#if $queryDailyCheckin?.data?.checkinable}
+                {#if isDisabledCheckin}
                   <Button
                     variant="primary"
                     on:click={handleCheckin}

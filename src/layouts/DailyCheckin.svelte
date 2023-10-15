@@ -14,7 +14,7 @@
   const listSideBar = [
     {
       label: i18n("checkinPage.tab-daily-checkin", "Daily Checkin"),
-      value: "daily-checkin",
+      value: "checkin",
       type: "Daily Checkin",
     },
     {
@@ -55,11 +55,11 @@
         window.location.pathname + `?tab=${tabParams}`
       );
     } else {
-      activeTabValue = "daily-checkin";
+      activeTabValue = "checkin";
       window.history.replaceState(
         null,
         "",
-        window.location.pathname + `?tab=daily-checkin`
+        window.location.pathname + `?tab=checkin`
       );
     }
   });
@@ -74,7 +74,7 @@
         <SidebarTabs bind:activeTabValue {darkMode} {listSideBar} />
       </div>
       <div class="xl:col-span-5 col-span-1">
-        {#if activeTabValue === "daily-checkin"}
+        {#if activeTabValue === "checkin"}
           <TabDailyCheckin />
         {:else if activeTabValue === "leaderboard"}
           <TabLeaderBoard />
