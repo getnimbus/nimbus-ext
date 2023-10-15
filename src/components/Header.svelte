@@ -398,6 +398,15 @@
       selectedIndexAddress = 0;
     }
   }
+
+  $: searchListAddressResult = search
+    ? listAddress?.filter(
+        (item) =>
+          item.label.toLowerCase() === search.toLowerCase() ||
+          item.label.toLowerCase().includes(search.toLowerCase()) ||
+          item.value.toLowerCase().includes(search.toLowerCase())
+      )
+    : listAddress;
 </script>
 
 <div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">
@@ -1177,11 +1186,11 @@
           List addresses
         </div>
         <div
-          class="xl:max-h-[310px] max-h-[380px] w-full flex flex-col gap-2"
+          class="xl:max-h-[310px] xl:h-[310px] max-h-[380px] h-[380px] w-full flex flex-col gap-2"
           style="overflow-y: scroll;"
           bind:this={listAddressElement}
         >
-          {#each listAddress as item, index}
+          {#each searchListAddressResult as item, index}
             <div
               id={item.value}
               class={`address-item relative xl:text-sm text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md ${
