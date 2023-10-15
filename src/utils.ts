@@ -14,6 +14,7 @@ import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
 import Base from "~/assets/base.svg"
+import confetti from "canvas-confetti";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
@@ -212,6 +213,28 @@ export const performanceTypeChartPortfolio = [
   {
     label: "Net Worth",
     value: "networth",
+  },
+]
+
+export const dailyCheckinTypePortfolio = [
+  {
+    label: "Collect GM Point",
+    value: "collectGMPoint",
+  },
+  {
+    label: "History",
+    value: "history",
+  },
+]
+
+export const dailyCheckinRewardsTypePortfolio = [
+  {
+    label: "Redeem Gift",
+    value: "redeemGift",
+  },
+  {
+    label: "Your gift",
+    value: "yourGift",
   },
 ]
 
@@ -921,4 +944,38 @@ export const autoFontSize = () => {
       return 14;
     }
   }
+};
+
+const fire = (particleRatio, opts) => {
+  confetti({
+    ...opts,
+    origin: { y: 0.7 },
+    zIndex: 100,
+    particleCount: Math.floor(200 * particleRatio),
+  });
+}
+
+export const triggerFirework = () => {
+  fire(0.25, {
+    spread: 26,
+    startVelocity: 55,
+  });
+  fire(0.2, {
+    spread: 60,
+  });
+  fire(0.35, {
+    spread: 100,
+    decay: 0.91,
+    scalar: 0.8,
+  });
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 25,
+    decay: 0.92,
+    scalar: 1.2,
+  });
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 45,
+  });
 };

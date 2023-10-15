@@ -17,14 +17,14 @@
   });
 
   $: profitAndLoss =
-    Number(item?.cost || 0) === 0
+    Number(item?.price || 0) === 0
       ? 0
-      : Number(floorPrice) * marketPrice - Number(item?.cost);
+      : Number(floorPrice) - Number(item?.price);
 
   $: profitAndLossPercent =
-    Math.abs(Number(item?.cost || 0)) === 0
+    Math.abs(Number(item?.price || 0)) === 0
       ? 0
-      : profitAndLoss / Math.abs(Number(item?.cost));
+      : (profitAndLoss * marketPrice) / Math.abs(Number(item?.cost));
 </script>
 
 <tr class="group transition-all">
@@ -85,12 +85,9 @@
               : "text_00000099"
           }`}
         >
-          <TooltipNumber
-            number={Math.abs(profitAndLoss) / item?.marketPrice}
-            type="balance"
-          />
+          <TooltipNumber number={Math.abs(profitAndLoss)} type="balance" />
           <div>
-            {item?.nativeToken?.symbol || ""}
+            {nativeToken?.symbol || ""}
           </div>
         </div>
 
@@ -103,7 +100,10 @@
               : "text_00000099"
           }`}
         >
-          <TooltipNumber number={Math.abs(profitAndLoss)} type="value" />
+          <TooltipNumber
+            number={Math.abs(profitAndLoss) * marketPrice}
+            type="value"
+          />
         </div>
 
         <div class="flex items-center justify-end gap-1">

@@ -501,21 +501,9 @@
                 </tr>
               </thead>
 
-              {#if isLoadingToken}
+              {#if selectedChain === "ALL"}
                 <tbody>
-                  <tr>
-                    <td {colspan}>
-                      <div
-                        class="flex justify-center items-center h-full py-3 px-3"
-                      >
-                        <Loading />
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              {:else}
-                <tbody>
-                  {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+                  {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
                     <tr>
                       <td {colspan}>
                         <div
@@ -529,16 +517,70 @@
                         </div>
                       </td>
                     </tr>
-                  {:else}
-                    {#each filteredHoldingDataToken as holding}
-                      <HoldingToken
-                        data={holding}
-                        {selectedWallet}
-                        sumAllTokens={totalAssets - sumNFT}
-                      />
-                    {/each}
                   {/if}
+                  {#each filteredHoldingDataToken as holding}
+                    <HoldingToken
+                      data={holding}
+                      {selectedWallet}
+                      sumAllTokens={totalAssets - sumNFT}
+                    />
+                  {/each}
                 </tbody>
+                {#if isLoadingToken}
+                  <tbody>
+                    <tr>
+                      <td {colspan}>
+                        <div
+                          class="flex justify-center items-center h-full py-3 px-3"
+                        >
+                          <Loading />
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                {/if}
+              {/if}
+
+              {#if selectedChain !== "ALL"}
+                {#if isLoadingToken}
+                  <tbody>
+                    <tr>
+                      <td {colspan}>
+                        <div
+                          class="flex justify-center items-center h-full py-3 px-3"
+                        >
+                          <Loading />
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                {:else}
+                  <tbody>
+                    {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+                      <tr>
+                        <td {colspan}>
+                          <div
+                            class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                          >
+                            {#if holdingTokenData && holdingTokenData.length === 0}
+                              {MultipleLang.empty}
+                            {:else}
+                              All tokens less than $1
+                            {/if}
+                          </div>
+                        </td>
+                      </tr>
+                    {:else}
+                      {#each filteredHoldingDataToken as holding}
+                        <HoldingToken
+                          data={holding}
+                          {selectedWallet}
+                          sumAllTokens={totalAssets - sumNFT}
+                        />
+                      {/each}
+                    {/if}
+                  </tbody>
+                {/if}
               {/if}
             </table>
           </div>
@@ -642,21 +684,10 @@
                     <th class="py-3 w-10 rounded-tr-[10px]" />
                   </tr>
                 </thead>
-                {#if isLoadingNFT}
+
+                {#if selectedChain === "ALL"}
                   <tbody>
-                    <tr>
-                      <td {colspan}>
-                        <div
-                          class="flex justify-center items-center h-full py-3 px-3"
-                        >
-                          <Loading />
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                {:else}
-                  <tbody>
-                    {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0}
+                    {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0 && !isLoadingNFT}
                       <tr>
                         <td {colspan}>
                           <div
@@ -670,12 +701,62 @@
                           </div>
                         </td>
                       </tr>
-                    {:else}
-                      {#each filteredHoldingDataNFT as holding}
-                        <HoldingNFT data={holding} {selectedWallet} />
-                      {/each}
                     {/if}
+                    {#each filteredHoldingDataNFT as holding}
+                      <HoldingNFT data={holding} {selectedWallet} />
+                    {/each}
                   </tbody>
+                  {#if isLoadingNFT}
+                    <tbody>
+                      <tr>
+                        <td {colspan}>
+                          <div
+                            class="flex justify-center items-center h-full py-3 px-3"
+                          >
+                            <Loading />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  {/if}
+                {/if}
+
+                {#if selectedChain !== "ALL"}
+                  {#if isLoadingNFT}
+                    <tbody>
+                      <tr>
+                        <td {colspan}>
+                          <div
+                            class="flex justify-center items-center h-full py-3 px-3"
+                          >
+                            <Loading />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  {:else}
+                    <tbody>
+                      {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0}
+                        <tr>
+                          <td {colspan}>
+                            <div
+                              class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                            >
+                              {#if formatDataNFT && formatDataNFT.length === 0}
+                                {MultipleLang.empty}
+                              {:else}
+                                All NFT Collections less than $1
+                              {/if}
+                            </div>
+                          </td>
+                        </tr>
+                      {:else}
+                        {#each filteredHoldingDataNFT as holding}
+                          <HoldingNFT data={holding} {selectedWallet} />
+                        {/each}
+                      {/if}
+                    </tbody>
+                  {/if}
                 {/if}
               </table>
             </div>

@@ -257,27 +257,7 @@
     }
   };
 
-  const validateFormEdit = async (data) => {
-    const addressValidate = await validateAddress(selectedItemEdit.address);
-
-    if (!isRequiredFieldValid(selectedItemEdit.address)) {
-      errorsEdit["address"] = {
-        ...errorsEdit["address"],
-        required: true,
-        msg: MultipleLang.content.address_required,
-      };
-    } else {
-      if (!addressValidate) {
-        errorsEdit["address"] = {
-          ...errorsEdit["address"],
-          required: true,
-          msg: MultipleLang.content.re_input_address,
-        };
-      } else {
-        errorsEdit["address"] = { ...errorsEdit["address"], required: false };
-      }
-    }
-
+  const validateFormEdit = (data) => {
     if (!isRequiredFieldValid(data.label)) {
       errorsEdit["label"] = {
         ...errorsEdit["label"],
@@ -376,15 +356,20 @@
         isOpenAddModal = false;
         queryClient.refetchQueries(["list-address"]);
 
+        const searchAccountType = await validateAddress(
+          response?.data?.accountId
+        );
+
+        browser.storage.sync.set({ selectedChain: "ALL" });
+        browser.storage.sync.set({
+          typeWalletAddress: searchAccountType,
+        });
         browser.storage.sync.set({
           selectedWallet: response?.data?.accountId,
         });
-        browser.storage.sync.set({ selectedChain: "ALL" });
-        browser.storage.sync.set({
-          typeWalletAddress: "EVM",
-        });
+
         chain.update((n) => (n = "ALL"));
-        typeWallet.update((n) => (n = "EVM"));
+        typeWallet.update((n) => (n = searchAccountType));
         wallet.update((n) => (n = response?.data?.accountId));
 
         toastMsg = "Successfully add On-chain account!";
@@ -974,15 +959,16 @@
                   width="24px"
                   viewBox="0 0 24 24"
                   class="sc-aef7b723-0 fKbUaI"
-                  ><path
+                >
+                  <path
                     d="M15 6L9 12L15 18"
                     stroke="currentColor"
                     stroke-width="2"
                     stroke-miterlimit="10"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                  /></svg
-                >
+                  />
+                </svg>
               </div>
               <div
                 class="flex gap-3 px-2 overflow-x-auto w-max whitespace-nowrap"
@@ -1042,15 +1028,16 @@
                     width="24px"
                     viewBox="0 0 24 24"
                     class="sc-aef7b723-0 fKbUaI"
-                    ><path
+                  >
+                    <path
                       d="M9 6L15 12L9 18"
                       stroke="currentColor"
                       stroke-width="2"
                       stroke-miterlimit="10"
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                    /></svg
-                  >
+                    />
+                  </svg>
                 </div>
               {/if}
             </div>
@@ -1703,13 +1690,11 @@
       class="flex flex-col gap-10 xl:gap-3"
     >
       <div class="flex flex-col gap-6 xl:gap-3">
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1 opacity-50">
           <div
             class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
               address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
             }`}
-            class:input-border-error={errorsEdit.address &&
-              errorsEdit.address.required}
           >
             <div class="xl:text-base text-2xl font-semibold text-[#666666]">
               {MultipleLang.content.modal_address_label}
@@ -1720,17 +1705,12 @@
               id="address"
               name="address"
               placeholder={MultipleLang.content.modal_address_label}
-              value={selectedItemEdit.address}
+              value={address}
               class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
                 address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               }`}
             />
           </div>
-          {#if errorsEdit.address && errorsEdit.address.required}
-            <div class="text-red-500">
-              {errorsEdit.address.msg}
-            </div>
-          {/if}
         </div>
         <div class="flex flex-col gap-1">
           <div
@@ -1748,7 +1728,7 @@
               id="label"
               name="label"
               placeholder={MultipleLang.content.modal_label_label}
-              bind:value={selectedItemEdit.label}
+              bind:value={label}
               class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
                 label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               }`}

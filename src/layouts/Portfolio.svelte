@@ -47,6 +47,7 @@
     market: i18n("newtabPage.market", "Market"),
     settings: i18n("newtabPage.settings", "Settings"),
     overview: i18n("newtabPage.overview", "Overview"),
+    dailyCheckin: i18n("newtabPage.dailyCheckin", "Daily Checkin"),
     Balance: i18n("newtabPage.Balance", "Balance"),
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
@@ -762,7 +763,8 @@
 
   $: loading =
     selectedChain === "ALL"
-      ? $queryAllTokenHolding.some((item) => item.isFetching === true)
+      ? $queryAllTokenHolding.some((item) => item.isFetching === true) &&
+        $queryAllNftHolding.some((item) => item.isFetching === true)
       : !isErrorAllData &&
         $queryTokenHolding.isFetching &&
         $queryVaults.isFetching &&
@@ -770,9 +772,9 @@
         !$queryNftHolding.isFetching;
 
   $: chainListQueries =
-    typeWalletAddress === "EVM"
-      ? chainList.slice(1).map((item) => item.value)
-      : [chainList[0].value];
+    typeWalletAddress?.length !== 0 && typeWalletAddress !== "EVM"
+      ? [chainList[0].value]
+      : chainList.slice(1).map((item) => item.value);
 </script>
 
 <AddressManagement title={MultipleLang.overview}>
@@ -798,6 +800,7 @@
       </div>
     </div>
   </span>
+
   <span slot="overview">
     {#if !isLoadingSync}
       <Overview
@@ -808,6 +811,7 @@
       />
     {/if}
   </span>
+
   <span slot="body">
     <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-26">
       {#if isLoadingSync}
@@ -879,7 +883,11 @@
               {#if typeWalletAddress !== "BTC"}
                 <ClosedTokenPosition
                   {selectedWallet}
-                  isLoadingNFT={$queryNftHolding.isFetching}
+                  isLoadingNFT={selectedChain === "ALL"
+                    ? $queryAllNftHolding.some(
+                        (item) => item.isFetching === true
+                      )
+                    : $queryNftHolding.isFetching}
                   isLoadingToken={selectedChain === "ALL"
                     ? $queryAllTokenHolding.some(
                         (item) => item.isFetching === true
