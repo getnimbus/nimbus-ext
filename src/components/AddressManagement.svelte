@@ -1475,7 +1475,6 @@
                       </div>
                     {/if}
                   </div> -->
-
                   <div class="hidden xl:block">
                     {#if typeWalletAddress === "BTC"}
                       <div

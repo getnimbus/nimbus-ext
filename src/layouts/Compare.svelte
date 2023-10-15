@@ -101,12 +101,10 @@
   let selectedType;
 
   let holdingTokenData: TokenData = [];
-  let dataPieChart = {
-    token: {
-      sumOrderBreakdownToken: 0,
-      formatDataPieChartTopFiveToken: [],
-      dataPieChartOrderBreakdownToken: [],
-    },
+  let dataPieChartToken = {
+    sumOrderBreakdownToken: 0,
+    formatDataPieChartTopFiveToken: [],
+    dataPieChartOrderBreakdownToken: [],
   };
   let isEmptyDataPie = false;
   let showCompareTable = false;
@@ -117,11 +115,9 @@
 
   let holdingTokenDataCompare: TokenData = [];
   let dataPieChartCompare = {
-    token: {
-      sumOrderBreakdownToken: 0,
-      formatDataPieChartTopFiveToken: [],
-      dataPieChartOrderBreakdownToken: [],
-    },
+    sumOrderBreakdownToken: 0,
+    formatDataPieChartTopFiveToken: [],
+    dataPieChartOrderBreakdownToken: [],
   };
 
   let listSuggestion = [];
@@ -433,15 +429,11 @@
       };
     });
 
-    const formatDataPie = {
-      token: {
-        sumOrderBreakdownToken,
-        formatDataPieChartTopFiveToken,
-        dataPieChartOrderBreakdownToken,
-      },
+    dataPieChartToken = {
+      sumOrderBreakdownToken,
+      formatDataPieChartTopFiveToken,
+      dataPieChartOrderBreakdownToken,
     };
-
-    dataPieChart = formatDataPie;
   };
 
   const formatDataPersonalTag = (data) => {
@@ -847,15 +839,11 @@
         }
       );
 
-      const formatDataPie = {
-        token: {
-          sumOrderBreakdownToken,
-          formatDataPieChartTopFiveToken,
-          dataPieChartOrderBreakdownToken,
-        },
+      dataPieChartCompare = {
+        sumOrderBreakdownToken,
+        formatDataPieChartTopFiveToken,
+        dataPieChartOrderBreakdownToken,
       };
-
-      dataPieChartCompare = formatDataPie;
     }
   }
 
@@ -1032,7 +1020,7 @@
                         }
                       }}
                       {holdingTokenData}
-                      {dataPieChart}
+                      {dataPieChartToken}
                       listOptionTypeCategory={typeListCategory}
                       selectedOption={selectedType}
                       id="pie-chart-token-allocation"
@@ -1109,7 +1097,7 @@
                             }
                           }}
                           holdingTokenData={holdingTokenDataCompare}
-                          dataPieChart={dataPieChartCompare}
+                          dataPieChartToken={dataPieChartCompare}
                           listOptionTypeCategory={typeListCategory}
                           selectedOption={selectedType}
                           id="pie-chart-token-allocation-compare"

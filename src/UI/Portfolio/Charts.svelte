@@ -9,7 +9,6 @@
     selectedBundle,
   } from "~/store";
   import {
-    formatCurrency,
     performanceTypeChartPortfolio,
     typePieChart,
     formatPercent,
@@ -21,11 +20,14 @@
 
   export let handleSelectedTableTokenHolding = (data, selectDataPieChart) => {};
   export let isLoading;
-  export let isLoadingBreakdown;
-  export let holdingTokenData;
+  export let isLoadingBreakdownTokens;
+  export let isLoadingBreakdownNfts;
   export let overviewDataPerformance;
-  export let dataPieChart;
-  export let isEmptyDataPie;
+  export let holdingTokenData;
+  export let dataPieChartToken;
+  export let dataPieChartNft;
+  export let isEmptyDataPieTokens;
+  export let isEmptyDataPieNfts;
   export let dataOverviewBundlePieChart;
 
   import EChart from "~/components/EChart.svelte";
@@ -84,10 +86,9 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="display: flex; align-items: centers; gap: 4px">
-                <img src=${
-                  params?.data?.logo ||
-                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                } alt="" width=20 height=20 style="border-radius: 100%" />
+                <img src="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                onerror="this.onerror=null;this.src='https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384';"
+                alt="" width=20 height=20 style="border-radius: 100%" />
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                   darkMode ? "white" : "black"
                 }">
@@ -107,7 +108,7 @@
                     ${MultipleLang[params?.data?.name_balance]}
                   </div>
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
-                    ${formatCurrency(params?.data?.value_balance)}
+                    ${params?.data?.value_balance}
                   </div>
                 </div>
               `
@@ -601,23 +602,7 @@
 
   $: {
     if (selectedType) {
-      if (Object.keys(dataPieChart).length !== 0) {
-        if (selectedType === "token") {
-          optionPie = {
-            ...optionPie,
-            series: [
-              {
-                ...optionPie.series[0],
-                data:
-                  dataPieChart.token.sumOrderBreakdownToken > 0
-                    ? dataPieChart.token.formatDataPieChartTopFiveToken.concat(
-                        dataPieChart.token.dataPieChartOrderBreakdownToken
-                      )
-                    : dataPieChart.token.formatDataPieChartTopFiveToken,
-              },
-            ],
-          };
-        }
+      if (Object.keys(dataPieChartNft).length !== 0) {
         if (selectedType === "nft") {
           optionPie = {
             ...optionPie,
@@ -625,11 +610,11 @@
               {
                 ...optionPie.series[0],
                 data:
-                  dataPieChart.nft.sumOrderBreakdownNft > 0
-                    ? dataPieChart.nft.formatDataPieChartTopFiveNft.concat(
-                        dataPieChart.nft.dataPieChartOrderBreakdownNft
+                  dataPieChartNft.sumOrderBreakdownNft > 0
+                    ? dataPieChartNft.formatDataPieChartTopFiveNft.concat(
+                        dataPieChartNft.dataPieChartOrderBreakdownNft
                       )
-                    : dataPieChart.nft.formatDataPieChartTopFiveNft,
+                    : dataPieChartNft.formatDataPieChartTopFiveNft,
               },
             ],
           };
@@ -646,10 +631,9 @@
               return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="display: flex; align-items: centers; gap: 4px">
-                <img src=${
-                  params?.data?.logo ||
-                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                } alt="" width=20 height=20 style="border-radius: 100%" />
+                <img src="https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                onerror="this.onerror=null;this.src='https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384';"
+                alt="" width=20 height=20 style="border-radius: 100%" />
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                   darkMode ? "white" : "black"
                 }">
@@ -669,7 +653,7 @@
                     ${MultipleLang[params?.data?.name_balance]}
                   </div>
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
-                    ${formatCurrency(params?.data?.value_balance)}
+                    ${params?.data?.value_balance}
                   </div>
                 </div>
               `
@@ -683,7 +667,7 @@
                   ${MultipleLang[params?.data?.name_value]}
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
-                  $${formatCurrency(params?.data?.value_value)}
+                  ${formatValue(params?.data?.value_value)}
                 </div>
               </div>
               
@@ -693,8 +677,8 @@
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   ${MultipleLang[params?.data?.name_ratio]}
                 </div>
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px; color: rgba(0, 0, 0, 0.7);">
-                  ${formatCurrency(params?.value)}%
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
+                  ${formatPercent(params?.value)}%
                 </div>
               </div>
             </div>`;
@@ -743,16 +727,10 @@
         darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      <div class="relative w-full mb-6">
-        <div class="w-full text-4xl font-medium xl:text-2xl">
-          {#if selectedType === "token"}
-            Allocation
-          {:else}
-            {MultipleLang.nft_allocation}
-          {/if}
-        </div>
-        <div class="absolute top-0 right-0 flex items-center gap-1">
-          <!-- <AnimateSharedLayout>
+      <div class="w-full flex items-center gap-4 mb-6">
+        <div class="text-4xl font-medium xl:text-2xl">Allocation</div>
+        <div class="flex items-center gap-1">
+          <AnimateSharedLayout>
             {#each typePieChart as type}
               <div
                 class="relative cursor-pointer xl:text-base text-2xl font-medium py-1 px-3 rounded-[100px] transition-all"
@@ -779,34 +757,55 @@
                 {/if}
               </div>
             {/each}
-          </AnimateSharedLayout> -->
+          </AnimateSharedLayout>
         </div>
       </div>
-      {#if isLoadingBreakdown}
+
+      {#if isLoadingBreakdownTokens && isLoadingBreakdownNfts}
         <div class="flex items-center justify-center h-[465px]">
           <Loading />
         </div>
       {:else}
         <div class="h-full">
-          {#if isEmptyDataPie}
-            <div
-              class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
-            >
-              Empty
-            </div>
-          {:else}
-            <div class={`${typeWalletAddress !== "BTC" ? "-mt-14" : ""}`}>
-              <TokenAllocation
-                {handleSelectedTableTokenHolding}
-                {holdingTokenData}
-                {dataPieChart}
-                listOptionTypeCategory={[]}
-                selectedOption={{}}
-                id="pie-chart-token-allocation"
-                isComparePage={false}
-                {dataOverviewBundlePieChart}
+          {#if selectedType === "token"}
+            {#if isEmptyDataPieTokens}
+              <div
+                class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+              >
+                Empty
+              </div>
+            {:else}
+              <div class={`${typeWalletAddress !== "BTC" ? "-mt-15" : ""}`}>
+                <TokenAllocation
+                  {handleSelectedTableTokenHolding}
+                  {holdingTokenData}
+                  {dataPieChartToken}
+                  listOptionTypeCategory={[]}
+                  selectedOption={{}}
+                  id="pie-chart-token-allocation"
+                  isComparePage={false}
+                  {dataOverviewBundlePieChart}
+                />
+              </div>
+            {/if}
+          {/if}
+
+          {#if selectedType === "nft"}
+            {#if isEmptyDataPieNfts}
+              <div
+                class="flex justify-center items-center h-full xl:text-lg text-xl text-gray-400 h-[465px]"
+              >
+                Empty
+              </div>
+            {:else}
+              <EChart
+                id="pie-chart-nft-allocation"
+                {theme}
+                notMerge={true}
+                option={optionPie}
+                height={465}
               />
-            </div>
+            {/if}
           {/if}
         </div>
       {/if}

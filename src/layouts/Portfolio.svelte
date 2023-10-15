@@ -47,6 +47,7 @@
     market: i18n("newtabPage.market", "Market"),
     settings: i18n("newtabPage.settings", "Settings"),
     overview: i18n("newtabPage.overview", "Overview"),
+    dailyCheckin: i18n("newtabPage.dailyCheckin", "Daily Checkin"),
     Balance: i18n("newtabPage.Balance", "Balance"),
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
@@ -118,19 +119,18 @@
   let dataUpdatedTime;
   let totalPositions = 0;
   let totalAssets = 0;
-  let isEmptyDataPie = false;
+  let isEmptyDataPieTokens = false;
+  let isEmptyDataPieNfts = false;
   let syncMsg = "";
-  let dataPieChart = {
-    token: {
-      sumOrderBreakdownToken: 0,
-      formatDataPieChartTopFiveToken: [],
-      dataPieChartOrderBreakdownToken: [],
-    },
-    nft: {
-      sumOrderBreakdownNft: 0,
-      formatDataPieChartTopFiveNft: [],
-      dataPieChartOrderBreakdownNft: [],
-    },
+  let dataPieChartToken = {
+    sumOrderBreakdownToken: 0,
+    formatDataPieChartTopFiveToken: [],
+    dataPieChartOrderBreakdownToken: [],
+  };
+  let dataPieChartNft = {
+    sumOrderBreakdownNft: 0,
+    formatDataPieChartTopFiveNft: [],
+    dataPieChartOrderBreakdownNft: [],
   };
   let selectedTokenHolding = {
     data: [],
@@ -146,24 +146,98 @@
     return response;
   };
 
-  const formatTokenBreakdown = (overviewData) => {
-    if (
-      overviewData?.breakdownToken?.filter((item) => item?.value !== 0)
-        .length === 0
-      // || overviewData?.breakdownNft?.length === 0
-    ) {
-      isEmptyDataPie = true;
+  const formatNFTBreakdown = (data) => {
+    if (data?.length === 0) {
+      isEmptyDataPieNfts = true;
     } else {
-      isEmptyDataPie = false;
+      isEmptyDataPieNfts = false;
     }
 
-    // pie chart format data Token holding
-    const sumToken = (overviewData?.breakdownToken || []).reduce(
+    const formatData = data.map((item) => {
+      return {
+        ...item,
+        current_value:
+          item?.floorPrice * item?.marketPrice * item?.tokens?.length,
+      };
+    });
+
+    const sumNft = (formatData || []).reduce(
+      (prev, item) => prev + Number(item?.current_value),
+      0
+    );
+
+    const sortBreakdownNft = formatData.sort((a, b) => {
+      if (a.current_value < b.current_value) {
+        return 1;
+      }
+      if (a.current_value > b.current_value) {
+        return -1;
+      }
+      return 0;
+    });
+
+    const topFiveBreakdownNft = sortBreakdownNft?.slice(0, 5).map((item) => {
+      return {
+        ...item,
+        id: item.collection.id || "N/A",
+        name: item.collection.name || "N/A",
+      };
+    });
+
+    const orderBreakdownNft = sortBreakdownNft?.slice(
+      5,
+      sortBreakdownNft.length
+    );
+
+    const sumOrderBreakdownNft = (orderBreakdownNft || []).reduce(
+      (prev, item) => prev + Number(item.current_value),
+      0
+    );
+
+    const dataPieChartOrderBreakdownNft = [
+      {
+        name: "Other NFT Collection",
+        name_ratio: "Ratio",
+        value: (sumOrderBreakdownNft / sumNft) * 100 || 0,
+        name_value: "Value",
+        value_value: sumOrderBreakdownNft,
+        name_balance: "",
+        value_balance: 0,
+      },
+    ];
+
+    const formatDataPieChartTopFiveNft = topFiveBreakdownNft?.map((item) => {
+      return {
+        name: item.name || item.collection.name,
+        name_ratio: "Ratio",
+        value: (Number(item.current_value) / sumNft) * 100 || 0,
+        name_value: "Value",
+        value_value: Number(item.current_value),
+        name_balance: "Balance",
+        value_balance: Number(item?.tokens?.length),
+      };
+    });
+
+    dataPieChartNft = {
+      sumOrderBreakdownNft,
+      formatDataPieChartTopFiveNft,
+      dataPieChartOrderBreakdownNft,
+    };
+  };
+
+  const formatTokenBreakdown = (data) => {
+    if (data?.filter((item) => item?.value !== 0).length === 0) {
+      isEmptyDataPieTokens = true;
+    } else {
+      isEmptyDataPieTokens = false;
+    }
+
+    const sumToken = (data || []).reduce(
       (prev, item) => prev + Number(item.value),
       0
     );
 
-    const sortBreakdownToken = overviewData?.breakdownToken?.sort((a, b) => {
+    const sortBreakdownToken = data?.sort((a, b) => {
       if (a.value < b.value) {
         return 1;
       }
@@ -211,7 +285,9 @@
     const formatDataPieChartTopFiveToken = topFiveBreakdownToken?.map(
       (item) => {
         return {
-          logo: item.logo,
+          logo:
+            item.logo ||
+            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png",
           name: item.name || item.symbol,
           symbol: item.symbol,
           name_ratio: "Ratio",
@@ -224,75 +300,10 @@
       }
     );
 
-    // pie chart format data NFT holding
-    const sumNft = (overviewData?.breakdownNft || []).reduce(
-      (prev, item) => prev + Number(item.value),
-      0
-    );
-
-    const sortBreakdownNft = overviewData?.breakdownNft?.sort((a, b) => {
-      if (a.value < b.value) {
-        return 1;
-      }
-      if (a.value > b.value) {
-        return -1;
-      }
-      return 0;
-    });
-
-    const topFiveBreakdownNft = sortBreakdownNft?.slice(0, 5).map((item) => {
-      return {
-        ...item,
-        id: item.id || "N/A",
-        name: item.collection.name || "N/A",
-      };
-    });
-
-    const orderBreakdownNft = sortBreakdownNft?.slice(
-      5,
-      sortBreakdownNft.length
-    );
-
-    const sumOrderBreakdownNft = (orderBreakdownNft || []).reduce(
-      (prev, item) => prev + Number(item.value),
-      0
-    );
-
-    const dataPieChartOrderBreakdownNft = [
-      {
-        name: "Other NFT Collection",
-        name_ratio: "Ratio",
-        value: (sumOrderBreakdownNft / sumNft) * 100 || 0,
-        name_value: "Value",
-        value_value: sumOrderBreakdownNft,
-        name_balance: "",
-        value_balance: 0,
-      },
-    ];
-
-    const formatDataPieChartTopFiveNft = topFiveBreakdownNft?.map((item) => {
-      return {
-        name: item.collection.name || item.collection.symbol,
-        name_ratio: "Ratio",
-        value: (Number(item.value) / sumNft) * 100 || 0,
-        name_value: "Value",
-        value_value: Number(item.value),
-        name_balance: "Balance",
-        value_balance: Number(item.amount || item.balance),
-      };
-    });
-
-    dataPieChart = {
-      token: {
-        sumOrderBreakdownToken,
-        formatDataPieChartTopFiveToken,
-        dataPieChartOrderBreakdownToken,
-      },
-      nft: {
-        sumOrderBreakdownNft,
-        formatDataPieChartTopFiveNft,
-        dataPieChartOrderBreakdownNft,
-      },
+    dataPieChartToken = {
+      sumOrderBreakdownToken,
+      formatDataPieChartTopFiveToken,
+      dataPieChartOrderBreakdownToken,
     };
   };
 
@@ -368,7 +379,7 @@
       ?.filter((item) => item?.profit?.realizedProfit)
       ?.filter((item) => Number(item.amount) === 0);
 
-    formatTokenBreakdown({ breakdownToken: holdingTokenData });
+    formatTokenBreakdown(holdingTokenData);
   };
 
   // nft holding
@@ -381,6 +392,7 @@
 
   const formatDataHoldingNFT = (data) => {
     holdingNFTData = data;
+    formatNFTBreakdown(holdingNFTData);
   };
 
   // positions
@@ -715,17 +727,15 @@
           select: [],
         };
         selectedDataPieChart = {};
-        dataPieChart = {
-          token: {
-            sumOrderBreakdownToken: 0,
-            formatDataPieChartTopFiveToken: [],
-            dataPieChartOrderBreakdownToken: [],
-          },
-          nft: {
-            sumOrderBreakdownNft: 0,
-            formatDataPieChartTopFiveNft: [],
-            dataPieChartOrderBreakdownNft: [],
-          },
+        dataPieChartToken = {
+          sumOrderBreakdownToken: 0,
+          formatDataPieChartTopFiveToken: [],
+          dataPieChartOrderBreakdownToken: [],
+        };
+        dataPieChartNft = {
+          sumOrderBreakdownNft: 0,
+          formatDataPieChartTopFiveNft: [],
+          dataPieChartOrderBreakdownNft: [],
         };
         overviewData = {
           breakdownToken: [],
@@ -799,6 +809,7 @@
       </div>
     </div>
   </span>
+
   <span slot="overview">
     {#if !isLoadingSync}
       <Overview
@@ -809,6 +820,7 @@
       />
     {/if}
   </span>
+
   <span slot="body">
     <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-26">
       {#if isLoadingSync}
@@ -838,16 +850,21 @@
               <Charts
                 {handleSelectedTableTokenHolding}
                 isLoading={$queryOverview.isFetching}
-                isLoadingBreakdown={$queryAllTokenHolding.some(
+                isLoadingBreakdownTokens={$queryAllTokenHolding.some(
+                  (item) => item.isFetching === true
+                )}
+                isLoadingBreakdownNfts={$queryAllNftHolding.some(
                   (item) => item.isFetching === true
                 )}
                 holdingTokenData={holdingTokenData?.filter(
                   (item) => Number(item.amount) > 0
                 )}
-                {dataOverviewBundlePieChart}
                 {overviewDataPerformance}
-                {dataPieChart}
-                {isEmptyDataPie}
+                {dataPieChartToken}
+                {dataPieChartNft}
+                {isEmptyDataPieTokens}
+                {isEmptyDataPieNfts}
+                {dataOverviewBundlePieChart}
               />
 
               <!-- {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX" || typeWalletAddress === "BUNDLE"}
