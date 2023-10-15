@@ -15,7 +15,7 @@
 
   export let handleSelectedTableTokenHolding = (data, selectDataPieChart) => {};
   export let holdingTokenData;
-  export let dataPieChart;
+  export let dataPieChartToken;
   export let listOptionTypeCategory;
   export let selectedOption;
   export let id;
@@ -65,7 +65,9 @@
                 <img src=${
                   params?.data?.logo ||
                   "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                } alt="" width=20 height=20 style="border-radius: 100%" />
+                }
+                onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/getnimbus/assets/main/token.png';"
+                alt="" width=20 height=20 style="border-radius: 100%" />
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                   darkMode ? "white" : "black"
                 }">
@@ -320,7 +322,7 @@
   }
 
   $: {
-    if (dataPersonalizeTag && holdingTokenData && dataPieChart) {
+    if (dataPersonalizeTag && holdingTokenData && dataPieChartToken) {
       const listCategory = dataPersonalizeTag.map((item) => {
         return {
           label: item.category,
@@ -374,11 +376,11 @@
       tokenDataHolding = {
         value: "All",
         dataPie:
-          dataPieChart.token.sumOrderBreakdownToken > 0
-            ? dataPieChart.token.formatDataPieChartTopFiveToken.concat(
-                dataPieChart.token.dataPieChartOrderBreakdownToken
+          dataPieChartToken.sumOrderBreakdownToken > 0
+            ? dataPieChartToken.formatDataPieChartTopFiveToken.concat(
+                dataPieChartToken.dataPieChartOrderBreakdownToken
               )
-            : dataPieChart.token.formatDataPieChartTopFiveToken,
+            : dataPieChartToken.formatDataPieChartTopFiveToken,
         dataTable: {
           data: {
             name: "All",
