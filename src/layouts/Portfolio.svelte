@@ -47,6 +47,7 @@
     market: i18n("newtabPage.market", "Market"),
     settings: i18n("newtabPage.settings", "Settings"),
     overview: i18n("newtabPage.overview", "Overview"),
+    dailyCheckin: i18n("newtabPage.dailyCheckin", "Daily Checkin"),
     Balance: i18n("newtabPage.Balance", "Balance"),
     Ratio: i18n("newtabPage.Ratio", "Ratio"),
     Value: i18n("newtabPage.Value", "Value"),
@@ -799,6 +800,7 @@
       </div>
     </div>
   </span>
+
   <span slot="overview">
     {#if !isLoadingSync}
       <Overview
@@ -809,6 +811,7 @@
       />
     {/if}
   </span>
+
   <span slot="body">
     <div class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-26">
       {#if isLoadingSync}
