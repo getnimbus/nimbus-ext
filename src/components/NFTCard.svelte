@@ -4,6 +4,9 @@
 
   import TooltipNumber from "./TooltipNumber.svelte";
 
+  import TrendUp from "~/assets/trend-up.svg";
+  import TrendDown from "~/assets/trend-down.svg";
+
   export let data;
   export let nativeToken;
   export let marketPrice;
@@ -132,24 +135,32 @@
             />
           </div>
         </div>
-        <div
-          class={`flex ${
-            profitAndLossPercent !== 0
-              ? profitAndLossPercent >= 0
-                ? "text-[#00A878]"
-                : "text-red-500"
-              : ""
-          }`}
-        >
-          {#if profitAndLossPercent < 0}
-            ↓
-          {:else}
-            ↑
+
+        <div class="flex items-center justify-end gap-1">
+          <div
+            class={`flex items-center ${
+              profitAndLossPercent !== 0
+                ? profitAndLossPercent >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+                : ""
+            }`}
+          >
+            <TooltipNumber
+              number={Math.abs(profitAndLossPercent) * 100}
+              type={Math.abs(Number(profitAndLossPercent)) > 100
+                ? "balance"
+                : "percent"}
+            />
+            <span>%</span>
+          </div>
+          {#if profitAndLossPercent !== 0}
+            <img
+              src={profitAndLossPercent >= 0 ? TrendUp : TrendDown}
+              alt="trend"
+              class="mb-1"
+            />
           {/if}
-          <TooltipNumber
-            number={Math.abs(profitAndLossPercent) * 100}
-            type="percent"
-          />%
         </div>
       </div>
     </div>
