@@ -102,6 +102,7 @@
   let suggestList = [];
   let selectedIndexAddress = 0;
   let listAddressElement;
+  let indexSelectedAddressResult = -1;
 
   const debounceSearch = (value) => {
     clearTimeout(timerDebounce);
@@ -240,19 +241,30 @@
   onMount(() => {
     getSuggestList();
     Mousetrap.bindGlobal(["up", "down"], (event) => {
-      if (event.key === "ArrowUp" && selectedIndexAddress > 0) {
-        selectedIndexAddress -= 1;
-      } else if (
-        event.key === "ArrowDown" &&
-        selectedIndexAddress < listAddress.length - 1
-      ) {
-        selectedIndexAddress += 1;
-      }
-      const itemElement = listAddressElement.querySelector(
-        `div:nth-child(${selectedIndexAddress + 1})`
-      );
-      if (itemElement) {
-        itemElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      if (searchListAddressResult.length !== 0) {
+        if (event.key === "ArrowUp" && selectedIndexAddress > 0) {
+          selectedIndexAddress -= 1;
+        }
+        if (event.key === "ArrowDown") {
+          if (
+            searchListAddressResult.length === listAddress.length &&
+            selectedIndexAddress < listAddress.length - 1
+          ) {
+            selectedIndexAddress += 1;
+          }
+          if (
+            searchListAddressResult.length < listAddress.length &&
+            selectedIndexAddress < searchListAddressResult.length - 1
+          ) {
+            selectedIndexAddress += 1;
+          }
+        }
+        const itemElement = listAddressElement.querySelector(
+          `div:nth-child(${selectedIndexAddress + 1})`
+        );
+        if (itemElement) {
+          itemElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
       }
     });
     Mousetrap.bindGlobal(["/"], function () {
@@ -265,9 +277,15 @@
 
     Mousetrap.bindGlobal(["enter"], async function () {
       if (selectedIndexAddress !== -1) {
-        const selectedAddress = listAddress[selectedIndexAddress]?.value;
+        let selectedAddress;
+        if (indexSelectedAddressResult === -1) {
+          selectedAddress = listAddress[selectedIndexAddress]?.value;
+        } else {
+          selectedAddress = listAddress[indexSelectedAddressResult]?.value;
+        }
         handleSearchAddress(selectedAddress);
         showPopoverSearch = false;
+        indexSelectedAddressResult = -1;
       }
     });
   });
@@ -393,13 +411,27 @@
     document.body.style.overflow = "unset";
   }
 
-  const goldImg =
-    "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
   $: {
-    if (search && search?.length !== 0) {
+    if (
+      search &&
+      search?.length !== 0 &&
+      searchListAddressResult.length === 0
+    ) {
       selectedIndexAddress = -1;
     } else {
       selectedIndexAddress = 0;
+    }
+  }
+
+  $: {
+    if (selectedIndexAddress) {
+      if (
+        searchListAddressResult.length !== 0 &&
+        searchListAddressResult?.length < listAddress?.length
+      ) {
+        const addressResult = searchListAddressResult[selectedIndexAddress];
+        indexSelectedAddressResult = listAddress.indexOf(addressResult);
+      }
     }
   }
 
@@ -711,7 +743,11 @@
                 darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
               }`}
             >
-              <img src={goldImg} alt="" class="w-[26px] h-[26px]" />
+              <img
+                src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
+                alt=""
+                class="w-[26px] h-[26px]"
+              />
             </div>
           </Link>
         </div>
@@ -1222,7 +1258,8 @@
           if (
             search &&
             search?.length !== 0 &&
-            (event.which == 13 || event.keyCode == 13)
+            (event.which == 13 || event.keyCode == 13) &&
+            selectedIndexAddress === -1
           ) {
             handleSearchAddress(search);
             showPopoverSearch = false;
