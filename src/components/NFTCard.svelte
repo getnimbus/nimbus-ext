@@ -27,14 +27,14 @@
   });
 
   $: profitAndLoss =
-    Number(data?.cost || 0) === 0
+    Number(data?.price || 0) === 0
       ? 0
-      : Number(floorPrice) * marketPrice - Number(data?.cost);
+      : Number(floorPrice) - Number(data?.price);
 
   $: profitAndLossPercent =
-    Math.abs(Number(data?.cost || 0)) === 0
+    Math.abs(Number(data?.price || 0)) === 0
       ? 0
-      : profitAndLoss / Math.abs(Number(data?.cost));
+      : (profitAndLoss * marketPrice) / Math.abs(Number(data?.cost));
 </script>
 
 <div
@@ -102,15 +102,15 @@
         <div class="flex xl:flex-row flex-col xl:items-center items-end gap-1">
           <div
             class={`${
-              Number(profitAndLoss / marketPrice) !== 0
-                ? Number(profitAndLoss / marketPrice) >= 0
+              Number(profitAndLoss) !== 0
+                ? Number(profitAndLoss) >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
                 : ""
             }`}
           >
             <TooltipNumber
-              number={Math.abs(Number(profitAndLoss / marketPrice))}
+              number={Math.abs(Number(profitAndLoss))}
               type="balance"
             /><span class="ml-1">
               {nativeToken?.symbol || ""}
@@ -119,14 +119,17 @@
           <div class="xl:block hidden">|</div>
           <div
             class={`flex ${
-              profitAndLossPercent !== 0
-                ? profitAndLossPercent >= 0
+              profitAndLoss !== 0
+                ? profitAndLoss >= 0
                   ? "text-[#00A878]"
                   : "text-red-500"
                 : ""
             }`}
           >
-            <TooltipNumber number={Math.abs(profitAndLoss)} type="value" />
+            <TooltipNumber
+              number={Math.abs(profitAndLoss) * marketPrice}
+              type="value"
+            />
           </div>
         </div>
         <div
