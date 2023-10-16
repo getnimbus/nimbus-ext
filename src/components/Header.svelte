@@ -424,14 +424,12 @@
   }
 
   $: {
-    if (selectedIndexAddress) {
-      if (
-        searchListAddressResult.length !== 0 &&
-        searchListAddressResult?.length < listAddress?.length
-      ) {
-        const addressResult = searchListAddressResult[selectedIndexAddress];
-        indexSelectedAddressResult = listAddress.indexOf(addressResult);
-      }
+    if (
+      searchListAddressResult.length !== 0 &&
+      searchListAddressResult?.length < listAddress?.length
+    ) {
+      const addressResult = searchListAddressResult[selectedIndexAddress];
+      indexSelectedAddressResult = listAddress.indexOf(addressResult);
     }
   }
 
