@@ -215,7 +215,7 @@
                 <div class="xl:text-2xl text-4xl">
                   {formatDataLeaderboard[currentUserRank]?.point || 0}
                 </div>
-                <div class="xl:text-xl text-2xl font-light">GM point</div>
+                <div class="xl:text-xl text-2xl font-normal">GM point</div>
               </div>
             </th>
           </tr>
