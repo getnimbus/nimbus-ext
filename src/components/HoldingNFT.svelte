@@ -9,6 +9,7 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import OverlaySidebar from "./OverlaySidebar.svelte";
   import NftDetailSidebar from "~/UI/NFTDetail/NFTDetailSidebar.svelte";
+  import Copy from "~/components/Copy.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -48,6 +49,8 @@
 
   $: profitAndLossPercent =
     Math.abs(totalCost || 0) === 0 ? 0 : profitAndLoss / Math.abs(totalCost);
+
+  $: console.log("data: ", data);
 </script>
 
 <tr
@@ -58,11 +61,6 @@
       address: selectedWallet,
       collection_type: data.collectionId,
     });
-    // navigate(
-    //   `nft-detail?id=${encodeURIComponent(
-    //     data.collectionId
-    //   )}&address=${encodeURIComponent(selectedWallet)}`
-    // );
   }}
 >
   <td
@@ -368,14 +366,13 @@
 
 <!-- Sidebar NFT Detail -->
 <OverlaySidebar
-  clickOutSideToClose
   isOpen={showSideNftDetail}
   on:close={() => {
     showSideNftDetail = false;
   }}
 >
   <div class="flex flex-col gap-6 p-6">
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-start">
       <div
         class="xl:text-5xl text-6xl text-gray-500 cursor-pointer"
         on:click|stopPropagation={() => {
@@ -384,8 +381,18 @@
       >
         &times;
       </div>
-      <div class="xl:text-3xl text-4xl font-semibold">
-        {data?.collection?.name || "-"}
+      <div class="flex flex-col items-end">
+        <div class="xl:text-3xl text-4xl font-semibold">
+          {data?.collection?.name || "-"}
+        </div>
+        <div class="text-3xl xl:text-xl">
+          <Copy
+            address={data?.tokens[0]?.contractAddress}
+            isShorten
+            iconColor={`${darkMode ? "#fff" : "#000"}`}
+            color={`${darkMode ? "#fff" : "#000"}`}
+          />
+        </div>
       </div>
     </div>
     <NftDetailSidebar

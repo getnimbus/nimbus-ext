@@ -4,7 +4,6 @@
   const dispatch = createEventDispatcher();
 
   export let isOpen;
-  export let clickOutSideToClose = false;
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -43,10 +42,9 @@
       : "opacity-0 transform translate-x-[100vw]"
   }`}
   style="z-index: 2147483647;"
-  on:click={clickOutSideToClose ? handleClose : null}
 >
   <div
-    class={`fixed min-h-screen top-0 right-0 xl:w-[60%] w-[80%] sidebar sidebar-container ${
+    class={`fixed min-h-screen top-0 right-0 2xl:w-[40%] xl:w-[60%] w-[80%] sidebar sidebar-container ${
       isOpen
         ? "opacity-100 transform translate-x-[0px]"
         : "opacity-0 transform translate-x-[100vw]"
