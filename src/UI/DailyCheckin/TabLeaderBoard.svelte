@@ -5,6 +5,7 @@
   import { shorterAddress } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
+  import { each } from "svelte/internal";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -155,7 +156,7 @@
     </div>
   </div>
 
-  <div class="relative flex flex-col gap-4 justify-center items-center -mt-60">
+  <div class="relative flex flex-col gap-4 justify-center items-center -mt-48">
     <div
       class="flex items-center gap-1 px-2 py-1 rounded-lg text-gray-500 shadow"
     >
@@ -174,14 +175,14 @@
       <div class="text-sm">This rank will reset every month</div>
     </div>
     <div
-      class={`mx-auto xl:w-3/5 w-full max-h-[600px] overflow-y-auto border border_0000000d rounded-[10px] ${
+      class={`mx-auto xl:w-3/5 w-full min-h-[600px] border border_0000000d rounded-[10px] ${
         darkMode ? "bg-[#131313]" : "bg-[#fff]"
       }`}
     >
       <table class="table-auto w-full h-full">
         <thead>
           <tr class="bg-[#FFB800] sticky top-0">
-            <th colspan="3" class="pt-2 px-6 rounded-t-xl">
+            <th colspan="3" class="pt-2 px-6 rounded-t-xl font-medium">
               <div class="flex justify-start xl:text-sm text-lg">
                 Your current rank
               </div>
@@ -189,9 +190,9 @@
           </tr>
 
           <tr class="bg-[#FFB800] sticky top-[29px]">
-            <th class="py-2 pl-6">
+            <th class="py-2 pl-6 font-medium">
               <div
-                class={`flex justify-start text-3xl font-normal w-6 ${
+                class={`flex justify-start text-3xl font-normal w-4 ${
                   !darkMode && "text-[#27326F]"
                 }`}
               >
@@ -199,7 +200,7 @@
               </div>
             </th>
 
-            <th class="py-2">
+            <th class="py-2 font-medium">
               <div class="flex items-end justify-start xl:text-base text-xl">
                 {formatDataLeaderboard[currentUserRank]?.owner
                   ? shorterAddress(
@@ -209,18 +210,18 @@
               </div>
             </th>
 
-            <th class="py-2 pr-6">
+            <th class="py-2 pr-6 font-medium">
               <div class="flex items-center justify-end gap-1">
                 <div class="xl:text-2xl text-4xl">
                   {formatDataLeaderboard[currentUserRank]?.point || 0}
                 </div>
-                <div class="xl:text-xl text-2xl font-light">GM point</div>
+                <div class="xl:text-xl text-2xl font-normal">GM point</div>
               </div>
             </th>
           </tr>
 
           <tr>
-            <th colspan="3" class="py-2 px-6">
+            <th colspan="3" class="py-2 px-6 font-medium">
               <div class="flex justify-start xl:text-sm text-lg">
                 Runners up
               </div>
@@ -246,13 +247,13 @@
                   <div
                     class="flex items-center justify-center h-full px-3 py-4"
                   >
-                    There are no one checkin yet
+                    There is no one checkin yet
                   </div>
                 </td>
               </tr>
             {/if}
 
-            {#if formatDataLeaderboard?.length < 3}
+            {#if formatDataLeaderboard?.length < 4}
               <tr>
                 <td colspan="3">
                   <div
@@ -264,7 +265,7 @@
               </tr>
             {/if}
 
-            {#each formatDataLeaderboard.slice(3) as item}
+            {#each formatDataLeaderboard.slice(3, 20) as item}
               <tr class="group transition-all">
                 <td
                   class={`py-2 pl-6 ${
@@ -278,7 +279,7 @@
                   }`}
                 >
                   <div
-                    class={`flex justify-start text-3xl font-normal w-6 ${
+                    class={`flex justify-start text-3xl font-normal w-4 ${
                       !darkMode && "text-[#27326F]"
                     }`}
                   >

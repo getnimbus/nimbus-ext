@@ -125,7 +125,7 @@
         class="flex flex-col gap-3 bg-[#1589EB] py-4 px-6 rounded-lg min-w-[250px] w-max"
       >
         <div class="text-2xl font-medium text-white">My GM Points</div>
-        <div class="text-4xl font-semibold flex items-center gap-2 text-white">
+        <div class="text-4xl font-medium flex items-center gap-2 text-white">
           {#if $queryDailyCheckin.isFetching}
             <Loading />
           {:else}
@@ -140,7 +140,7 @@
       </div>
 
       <div class="flex flex-col gap-4">
-        <div class="-ml-3 flex items-center gap-2">
+        <div class="-ml-3 flex items-center gap-2 px-3">
           <AnimateSharedLayout>
             {#each dailyCheckinTypePortfolio as type}
               <div
@@ -214,17 +214,17 @@
                 Empty
               </div>
             {:else}
-              <div class="overflow-x-auto py-5 px-4">
+              <div class="overflow-x-auto py-5">
                 <div class="grid grid-cols-7 gap-4 w-[1350px]">
                   {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
                     <div
-                      class={`flex flex-col gap-2 items-center rounded-lg py-8 transform scale-95 transition-all ${
+                      class={`flex flex-col gap-2 items-center filter rounded-lg py-8 transform scale-95 transition-all ${
                         selectedCheckinIndex > index && darkMode
                           ? "grayscale bg-gray-700"
                           : selectedCheckinIndex > index && !darkMode
                           ? "grayscale bg-gray-100"
                           : selectedCheckinIndex === index
-                          ? "bg-black text-white scale-100"
+                          ? "bg-black text-white scale-100 drop-shadow-lg"
                           : darkMode
                           ? "bg-gray-700"
                           : "bg-gray-100"
@@ -248,7 +248,7 @@
             {/if}
 
             <div class="flex flex-col gap-4">
-              <div class="xl:text-base text-lg font-medium">
+              <div class="xl:text-lg text-xl font-medium">
                 This month reward
               </div>
               {#if $queryReward.data === undefined}
@@ -301,8 +301,8 @@
                       darkMode ? "bg-gray-700" : "bg-gray-100"
                     } `}
                   >
-                    <th class="py-2 pl-3 text-left">Date</th>
-                    <th class="py-2 pr-3 text-right">Point</th>
+                    <th class="py-2 pl-3 text-left font-medium">Date</th>
+                    <th class="py-2 pr-3 text-right font-medium">Point</th>
                   </tr>
                 </thead>
                 {#if $queryDailyCheckin?.data === undefined}
@@ -357,7 +357,7 @@
     }}
   >
     <div class="flex flex-col items-center justify-center gap-10">
-      <div class="xl:text-2xl text-4xl text-white font-bold">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
         Received successfully
       </div>
       <img
@@ -365,11 +365,12 @@
         alt=""
         class="w-40 h-40"
       />
-      <div class="xl:text-2xl text-4xl text-white font-bold">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
         +{$queryDailyCheckin?.data?.pointStreak[selectedCheckinIndex]} GM Points
       </div>
     </div>
   </div>
 {/if}
 
-<style windi:preflights:global windi:safelist:global></style>
+<style windi:preflights:global windi:safelist:global>
+</style>
