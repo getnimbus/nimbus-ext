@@ -60,10 +60,8 @@
 
   let userConfigs = {
     filter_spam_tx_alert: false,
-    id: "",
-    owner: "",
-    price_alert: "",
-    summary_setting_alert: [],
+    price_alert: 0,
+    summary_setting_alert: "",
     transaction_alert: false,
   };
 
@@ -73,7 +71,7 @@
 
   let filterSpamTrx = false;
   let selectedPercent = 0;
-  let selectedSummary = [];
+  let selectedSummary = "";
 
   let isLoadingSave = false;
 
@@ -98,7 +96,7 @@
       selectedPercent = 0;
     }
     if (!summary) {
-      selectedSummary = [];
+      selectedSummary = "";
     }
   }
 
@@ -120,29 +118,38 @@
     }
 
     const payload = {
-      price_alert: selectedPercent,
-      summary_setting_alert: selectedSummary,
-      transaction_alert: transaction,
-      filter_spam_tx_alert: filterSpamTrx,
+      price: {
+        enabled: percent,
+        value: selectedPercent !== 0 ? selectedPercent : null,
+      },
+      portfolioSummary: {
+        enabled: summary,
+        value: selectedSummary.length !== 0 ? selectedSummary : null,
+      },
+      transaction: {
+        enabled: transaction,
+        filterSpam: filterSpamTrx,
+      },
     };
 
     isLoadingSave = true;
     try {
-      const res = await nimbus.put("/users/alert-notification", payload);
+      const res = await nimbus.put("/users/configs/alert-settings", payload);
+      if (res && res?.data) {
+        selectedPercent = Number(res?.data?.alert_settings?.price?.value);
+        selectedSummary = res?.data?.alert_settings?.portfolioSummary?.value;
+        transaction = res?.data?.alert_settings?.transaction?.enabled;
+        filterSpamTrx = res?.data?.alert_settings?.transaction?.filterSpam;
+        if (Number(res?.data?.alert_settings?.price?.value) !== null) {
+          percent = true;
+        }
+        if (res?.data?.alert_settings?.portfolioSummary?.value.length !== 0) {
+          summary = true;
+        }
 
-      selectedPercent = Number(res.data.price_alert);
-      selectedSummary = res.data.summary_setting_alert;
-      transaction = res.data.transaction_alert;
-      filterSpamTrx = res.data.filter_spam_tx_alert;
-      if (res.data.price_alert !== "0") {
-        percent = true;
+        toastMsg = "Your settings have been successfully saved!";
+        isSuccess = true;
       }
-      if (res.data.summary_setting_alert.length !== 0) {
-        summary = true;
-      }
-
-      toastMsg = "Your settings have been successfully saved!";
-      isSuccess = true;
     } catch (e) {
       console.error(e);
       toastMsg =
@@ -159,7 +166,7 @@
     selectedSummary = userConfigs.summary_setting_alert;
     transaction = userConfigs.transaction_alert;
     filterSpamTrx = userConfigs.filter_spam_tx_alert;
-    if (userConfigs.price_alert !== "0") {
+    if (userConfigs.price_alert !== 0) {
       percent = true;
     }
     if (userConfigs.summary_setting_alert.length !== 0) {
@@ -169,23 +176,35 @@
 
   const getUserConfigs = async () => {
     try {
-      const response: any = await nimbus.get("/users/configs");
-      if (response?.status === 401) {
+      const res: any = await nimbus.get("/users/configs");
+      if (res?.status === 401) {
         localStorage.removeItem("evm_token");
         user.update((n) => (n = {}));
-        throw new Error(response?.response?.error);
+        throw new Error(res?.response?.error);
       }
-      userConfigs = response?.data;
+      userConfigs = {
+        filter_spam_tx_alert:
+          res?.data?.alert_settings?.transaction?.filterSpam,
+        price_alert: Number(res?.data?.alert_settings?.price?.value),
+        summary_setting_alert:
+          res?.data?.alert_settings?.portfolioSummary?.value,
+        transaction_alert: res?.data?.alert_settings?.transaction?.enabled,
+      };
 
-      selectedPercent = Number(response?.data.price_alert);
-      selectedSummary = response?.data.summary_setting_alert;
-      transaction = response?.data.transaction_alert;
-      filterSpamTrx = response?.data.filter_spam_tx_alert;
-      if (response?.data.price_alert !== "0") {
-        percent = true;
-      }
-      if (response?.data.summary_setting_alert.length !== 0) {
-        summary = true;
+      if (res && res?.data) {
+        selectedPercent = Number(res?.data?.alert_settings?.price?.value);
+        selectedSummary = res?.data?.alert_settings?.portfolioSummary?.value;
+        transaction = res?.data?.alert_settings?.transaction?.enabled;
+        filterSpamTrx = res?.data?.alert_settings?.transaction?.filterSpam;
+        if (Number(res?.data?.alert_settings?.price?.value) !== null) {
+          percent = true;
+        }
+        if (res?.data?.alert_settings?.portfolioSummary?.value.length !== 0) {
+          summary = true;
+        }
+
+        toastMsg = "Your settings have been successfully saved!";
+        isSuccess = true;
       }
     } catch (e) {
       console.error(e);
@@ -273,12 +292,12 @@
         {#each summaryList as item}
           <div class="flex items-center xl:gap-2 gap-6 cursor-pointer w-max">
             <input
-              type="checkbox"
+              type="radio"
               disabled={!summary}
               name={item.id}
               id={item.id}
               value={item.value}
-              class={`cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] ${
+              class={`cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-full border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] ${
                 summary ? "" : "bg-gray-200 border-gray-200"
               }`}
               bind:group={selectedSummary}
