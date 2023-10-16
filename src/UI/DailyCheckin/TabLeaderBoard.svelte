@@ -72,9 +72,9 @@
 {:else}
   <div class="relative">
     <div class="flex flex-col items-center justify-center">
-      <div class="2xl:w-1/2 xl:w-3/5 w-4/5 flex">
-        <div class="flex-1 flex flex-col justify-end 2xl:h-[390px] h-[350px]">
-          <div class="2xl:h-[215px] h-[175px] w-full">
+      <div class="xl:w-3/5 w-4/5 flex">
+        <div class="flex-1 flex flex-col justify-end h-[350px]">
+          <div class="h-[175px] w-full">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank2.svg"
               alt=""
@@ -95,7 +95,7 @@
         </div>
 
         <div class="flex-1">
-          <div class="2xl:h-[285px] h-[205px] w-full">
+          <div class="h-[205px] w-full">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank1.svg"
               alt=""
@@ -115,8 +115,8 @@
           </div>
         </div>
 
-        <div class="flex-1 flex flex-col justify-end 2xl:h-[390px] h-[350px]">
-          <div class="2xl:h-[215px] h-[175px] w-full">
+        <div class="flex-1 flex flex-col justify-end h-[350px]">
+          <div class="h-[175px] w-full">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank3.svg"
               alt=""
