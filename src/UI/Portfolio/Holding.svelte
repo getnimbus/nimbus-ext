@@ -23,19 +23,6 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
 
-  let filteredHoldingDataToken = [];
-  let filteredHoldingDataNFT = [];
-  let marketPriceToken;
-  let marketPriceNFT;
-  let formatData = [];
-  let formatDataNFT = [];
-  let sumTokens = 0;
-  let sumAllTokens = 0;
-  let sumNFT = 0;
-  let tableTokenHeader;
-  let isStickyTableToken = false;
-  let tableNFTHeader;
-  let isStickyTableNFT = false;
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
@@ -50,6 +37,20 @@
   typeWallet.subscribe((value) => {
     typeWalletAddress = value;
   });
+
+  let filteredHoldingDataToken = [];
+  let filteredHoldingDataNFT = [];
+  let marketPriceToken;
+  let marketPriceNFT;
+  let formatData = [];
+  let formatDataNFT = [];
+  let sumTokens = 0;
+  let sumAllTokens = 0;
+  let sumNFT = 0;
+  let tableTokenHeader;
+  let isStickyTableToken = false;
+  let tableNFTHeader;
+  let isStickyTableNFT = false;
 
   let selectedTypeTable = {
     label: "",

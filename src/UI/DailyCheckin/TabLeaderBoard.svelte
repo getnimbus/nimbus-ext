@@ -72,8 +72,8 @@
   <div class="relative">
     <div class="flex flex-col items-center justify-center">
       <div class="xl:w-3/5 w-4/5 flex">
-        <div class="flex-1 flex flex-col justify-end h-[250px]">
-          <div class="h-[95px]">
+        <div class="flex-1 flex flex-col justify-end h-[350px]">
+          <div class="h-[175px] w-full">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank2.svg"
               alt=""
@@ -94,7 +94,7 @@
         </div>
 
         <div class="flex-1">
-          <div class="h-[125px]">
+          <div class="h-[205px] w-full">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank1.svg"
               alt=""
@@ -114,8 +114,8 @@
           </div>
         </div>
 
-        <div class="flex-1 flex flex-col justify-end h-[250px]">
-          <div class="h-[95px]">
+        <div class="flex-1 flex flex-col justify-end h-[350px]">
+          <div class="h-[175px] w-full">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank3.svg"
               alt=""
@@ -136,7 +136,7 @@
         </div>
       </div>
       <div
-        class="xl:w-3/5 w-full flex items-center justify-center -mt-14 -z-10"
+        class="xl:w-3/5 w-full flex items-center justify-center -mt-10 -z-10"
       >
         <img
           src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/Rankstatus.png"

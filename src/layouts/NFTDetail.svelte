@@ -14,9 +14,9 @@
   import OverviewCard from "~/components/OverviewCard.svelte";
   import Loading from "~/components/Loading.svelte";
   import TooltipTitle from "~/components/TooltipTitle.svelte";
+  import NftDetailItem from "~/UI/NFTDetail/NFTDetailItem.svelte";
 
   import LeftArrow from "~/assets/left-arrow.svg";
-  import NftDetailItem from "~/UI/NFTDetail/NFTDetailItem.svelte";
 
   let typeWalletAddress: string = "";
   typeWallet.subscribe((value) => {
