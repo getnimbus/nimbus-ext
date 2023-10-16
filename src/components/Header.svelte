@@ -49,6 +49,7 @@
   import All from "~/assets/all.svg";
   import BitcoinLogo from "~/assets/bitcoin.png";
   import SolanaLogo from "~/assets/solana.png";
+  import Bundles from "~/assets/bundles.png";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -142,42 +143,42 @@
   }
 
   const formatDataListAddress = (data) => {
-    const structWalletData = data
-      .filter((item) => item.type !== "BUNDLE")
-      .map((item) => {
-        let logo = All;
-        if (item?.type === "BTC") {
-          logo = BitcoinLogo;
-        }
-        if (item?.type === "SOL") {
-          logo = SolanaLogo;
-        }
-        return {
-          id: item.id,
-          type: item.type,
-          label: item.label,
-          value: item.type === "CEX" ? item.id : item.accountId,
-          logo: item.type === "CEX" ? item.logo : logo,
-          accounts:
-            item?.accounts?.map((account) => {
-              let logo = All;
-              if (account?.type === "BTC") {
-                logo = BitcoinLogo;
-              }
-              if (account?.type === "SOL") {
-                logo = SolanaLogo;
-              }
-              return {
-                id: account?.id,
-                type: account?.type,
-                label: account?.label,
-                value:
-                  account?.type === "CEX" ? account?.id : account?.accountId,
-                logo: account?.type === "CEX" ? account?.logo : logo,
-              };
-            }) || [],
-        };
-      });
+    const structWalletData = data.map((item) => {
+      let logo = All;
+      if (item?.type === "BTC") {
+        logo = BitcoinLogo;
+      }
+      if (item?.type === "SOL") {
+        logo = SolanaLogo;
+      }
+      if (item?.type === "BUNDLE") {
+        logo = Bundles;
+      }
+      return {
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        value: item.type === "CEX" ? item.id : item.accountId,
+        logo: item.type === "CEX" ? item.logo : logo,
+        accounts:
+          item?.accounts?.map((account) => {
+            let logo = All;
+            if (account?.type === "BTC") {
+              logo = BitcoinLogo;
+            }
+            if (account?.type === "SOL") {
+              logo = SolanaLogo;
+            }
+            return {
+              id: account?.id,
+              type: account?.type,
+              label: account?.label,
+              value: account?.type === "CEX" ? account?.id : account?.accountId,
+              logo: account?.type === "CEX" ? account?.logo : logo,
+            };
+          }) || [],
+      };
+    });
     listAddress = structWalletData;
   };
 
@@ -282,6 +283,8 @@
           selectedAddress = listAddress[selectedIndexAddress]?.value;
         } else {
           selectedAddress = listAddress[indexSelectedAddressResult]?.value;
+          search = "";
+          searchListAddressResult = listAddress;
         }
         handleSearchAddress(selectedAddress);
         showPopoverSearch = false;
