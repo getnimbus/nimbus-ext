@@ -253,7 +253,7 @@
               </tr>
             {/if}
 
-            {#if formatDataLeaderboard?.length < 3}
+            {#if formatDataLeaderboard?.length < 4}
               <tr>
                 <td colspan="3">
                   <div
