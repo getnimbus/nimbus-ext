@@ -952,13 +952,13 @@
         </div>
       {:else}
         <div class="hidden text-3xl xl:text-base xl:block">
-          <Copy address={selectedWallet} iconColor="#fff" color="#fff" />
+          <Copy address={selectedWallet} iconColor="#000" color="#000" />
         </div>
         <div class="block text-3xl xl:text-base xl:hidden">
           <Copy
             address={selectedWallet}
-            iconColor="#fff"
-            color="#fff"
+            iconColor="#000"
+            color="#000"
             isShorten
             iconSize={24}
           />
