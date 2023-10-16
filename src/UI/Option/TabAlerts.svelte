@@ -140,10 +140,10 @@
         selectedSummary = res?.data?.alert_settings?.portfolioSummary?.value;
         transaction = res?.data?.alert_settings?.transaction?.enabled;
         filterSpamTrx = res?.data?.alert_settings?.transaction?.filterSpam;
-        if (Number(res?.data?.alert_settings?.price?.value) !== null) {
+        if (Number(res?.data?.alert_settings?.price?.value) !== 0) {
           percent = true;
         }
-        if (res?.data?.alert_settings?.portfolioSummary?.value.length !== 0) {
+        if (res?.data?.alert_settings?.portfolioSummary?.value !== null) {
           summary = true;
         }
 
@@ -169,7 +169,7 @@
     if (userConfigs.price_alert !== 0) {
       percent = true;
     }
-    if (userConfigs.summary_setting_alert.length !== 0) {
+    if (userConfigs.summary_setting_alert !== null) {
       summary = true;
     }
   };
@@ -196,10 +196,10 @@
         selectedSummary = res?.data?.alert_settings?.portfolioSummary?.value;
         transaction = res?.data?.alert_settings?.transaction?.enabled;
         filterSpamTrx = res?.data?.alert_settings?.transaction?.filterSpam;
-        if (Number(res?.data?.alert_settings?.price?.value) !== null) {
+        if (Number(res?.data?.alert_settings?.price?.value) !== 0) {
           percent = true;
         }
-        if (res?.data?.alert_settings?.portfolioSummary?.value.length !== 0) {
+        if (res?.data?.alert_settings?.portfolioSummary?.value !== null) {
           summary = true;
         }
 
