@@ -268,7 +268,7 @@
               on:click|stopPropagation={() => (selectedTypeDisplay = "grid")}
             >
               <div
-                class={`relative z-20 xl:w-[20px] xl:h-[20px] w-[32px] h-[32px] ${
+                class={`relative z-20 xl:w-[18px] xl:h-[18px] w-[32px] h-[32px] ${
                   selectedTypeDisplay === "grid" && "text-white"
                 }`}
               >
@@ -315,7 +315,7 @@
               on:click|stopPropagation={() => (selectedTypeDisplay = "table")}
             >
               <div
-                class={`relative z-20 xl:w-[20px] xl:h-[20px] w-[32px] h-[32px] ${
+                class={`relative z-20 xl:w-[18px] xl:h-[18px] w-[32px] h-[32px] ${
                   selectedTypeDisplay === "table" && "text-white"
                 }`}
               >

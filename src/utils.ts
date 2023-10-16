@@ -463,7 +463,7 @@ export const chainList = [
   },
   {
     logo: Matic,
-    label: "Matic",
+    label: "Polygon",
     value: "MATIC",
   },
   {
@@ -473,7 +473,7 @@ export const chainList = [
   },
   {
     logo: Avax,
-    label: "Avax",
+    label: "Avalanche",
     value: "AVAX",
   },
   {

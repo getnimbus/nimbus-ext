@@ -668,7 +668,7 @@
                       {MultipleLang.current_value}
                     </div>
                   </th>
-                  <th class="py-3">
+                  <th class="py-3 pr-3 rounded-tr-[10px]">
                     <div
                       class="text-right xl:text-xs text-xl uppercase font-medium"
                     >
@@ -679,7 +679,6 @@
                       </TooltipTitle>
                     </div>
                   </th>
-                  <th class="py-3 w-10 rounded-tr-[10px]" />
                 </tr>
               </thead>
 
@@ -687,7 +686,7 @@
                 <tbody>
                   {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0 && !isLoadingNFT}
                     <tr>
-                      <td {colspan}>
+                      <td colspan={6}>
                         <div
                           class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
                         >
@@ -707,7 +706,7 @@
                 {#if isLoadingNFT}
                   <tbody>
                     <tr>
-                      <td {colspan}>
+                      <td colspan={6}>
                         <div
                           class="flex justify-center items-center h-full py-3 px-3"
                         >
@@ -723,7 +722,7 @@
                 {#if isLoadingNFT}
                   <tbody>
                     <tr>
-                      <td {colspan}>
+                      <td colspan={6}>
                         <div
                           class="flex justify-center items-center h-full py-3 px-3"
                         >
@@ -736,7 +735,7 @@
                   <tbody>
                     {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0}
                       <tr>
-                        <td {colspan}>
+                        <td colspan={6}>
                           <div
                             class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
                           >
