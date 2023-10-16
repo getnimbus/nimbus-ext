@@ -11,7 +11,7 @@
     typeWallet,
     isShowHeaderMobile,
     userId,
-    publicEvmAddress,
+    userPublicAddress,
   } from "~/store";
   import { shorterAddress } from "~/utils";
   import mixpanel from "mixpanel-browser";
@@ -220,10 +220,19 @@
     wallet.update((n) => (n = value));
     typeWallet.update((n) => (n = searchAccountType));
     if (searchAccountType === "EVM") {
-      navigate(`/?type=${searchAccountType}&chain=ALL&address=${value}`);
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname +
+          `?type=${searchAccountType}&chain=ALL&address=${value}`
+      );
     }
     if (searchAccountType === "BTC" || searchAccountType === "SOL") {
-      navigate(`/?type=${searchAccountType}&address=${value}`);
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + `?type=${searchAccountType}&address=${value}`
+      );
     }
     handleSaveSuggest(value);
   };
@@ -255,9 +264,11 @@
     });
 
     Mousetrap.bindGlobal(["enter"], async function () {
-      const selectedAddress = listAddress[selectedIndexAddress].value;
-      handleSearchAddress(selectedAddress);
-      showPopoverSearch = false;
+      if (selectedIndexAddress !== -1) {
+        const selectedAddress = listAddress[selectedIndexAddress]?.value;
+        handleSearchAddress(selectedAddress);
+        showPopoverSearch = false;
+      }
     });
   });
 
@@ -358,7 +369,7 @@
   $: {
     if (!$queryUserInfo.isError && $queryUserInfo.data !== undefined) {
       localStorage.setItem("evm_address", $queryUserInfo.data.publicAddress);
-      publicEvmAddress.update((n) => (n = $queryUserInfo.data.publicAddress));
+      userPublicAddress.update((n) => (n = $queryUserInfo.data.publicAddress));
       userId.update((n) => (n = $queryUserInfo.data.id));
       userID = $queryUserInfo.data.id;
       publicAddress = $queryUserInfo.data.publicAddress;
@@ -385,12 +396,21 @@
   const goldImg =
     "https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg";
   $: {
-    if (search.length !== 0) {
+    if (search && search?.length !== 0) {
       selectedIndexAddress = -1;
     } else {
       selectedIndexAddress = 0;
     }
   }
+
+  $: searchListAddressResult = search
+    ? listAddress?.filter(
+        (item) =>
+          item.label.toLowerCase() === search.toLowerCase() ||
+          item.label.toLowerCase().includes(search.toLowerCase()) ||
+          item.value.toLowerCase().includes(search.toLowerCase())
+      )
+    : listAddress;
 </script>
 
 <div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">
@@ -684,18 +704,19 @@
 
       <!-- Daily Checkin -->
       {#if userInfo && Object.keys(userInfo).length !== 0}
-        <Link to="daily-checkin">
-          <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
+        <div class="xl:block hidden">
+          <Link to="daily-checkin">
             <div
-              class={`rounded-full flex justify-center items-center w-full h-full ${
+              class={`rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
                 darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
               }`}
             >
               <img src={goldImg} alt="" class="w-[26px] h-[26px]" />
             </div>
-          </div>
-        </Link>
+          </Link>
+        </div>
       {/if}
+
       <!-- <div
         class={`cursor-pointer rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
           darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
@@ -956,34 +977,6 @@
           {#if userInfo && Object.keys(userInfo).length !== 0}
             <div
               on:click={() => {
-                navActive = "settings";
-                isShowHeaderMobile.update((n) => (n = false));
-              }}
-            >
-              <Link to="settings/?tab=accounts">
-                <div
-                  class={`flex items-center gap-3 text-white px-5 py-6 
-            ${
-              darkMode
-                ? navActive === "settings"
-                  ? "bg-[#212121] rounded-[1000px] opacity-100"
-                  : "opacity-70"
-                : navActive === "settings"
-                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
-                : "opacity-70"
-            }
-          `}
-                >
-                  <img src={SettingsIcon} alt="" width="40" height="40" />
-                  <span class="text-3xl font-medium">Settings</span>
-                </div>
-              </Link>
-            </div>
-          {/if}
-
-          {#if userInfo && Object.keys(userInfo).length !== 0}
-            <div
-              on:click={() => {
                 navActive = "daily-checkin";
                 isShowHeaderMobile.update((n) => (n = false));
               }}
@@ -1019,6 +1012,32 @@
                     </g>
                   </svg>
                   <span class="text-3xl font-medium">Daily Checkin</span>
+                </div>
+              </Link>
+            </div>
+
+            <div
+              on:click={() => {
+                navActive = "settings";
+                isShowHeaderMobile.update((n) => (n = false));
+              }}
+            >
+              <Link to="settings/?tab=accounts">
+                <div
+                  class={`flex items-center gap-3 text-white px-5 py-6 
+            ${
+              darkMode
+                ? navActive === "settings"
+                  ? "bg-[#212121] rounded-[1000px] opacity-100"
+                  : "opacity-70"
+                : navActive === "settings"
+                ? "bg-[#525B8C] rounded-[1000px] opacity-100"
+                : "opacity-70"
+            }
+          `}
+                >
+                  <img src={SettingsIcon} alt="" width="40" height="40" />
+                  <span class="text-3xl font-medium">Settings</span>
                 </div>
               </Link>
             </div>
@@ -1199,9 +1218,10 @@
       />
       <input
         on:keyup={({ target: { value } }) => debounceSearch(value)}
-        on:keydown={async (event) => {
+        on:keydown={(event) => {
           if (
-            search.length !== 0 &&
+            search &&
+            search?.length !== 0 &&
             (event.which == 13 || event.keyCode == 13)
           ) {
             handleSearchAddress(search);
@@ -1227,20 +1247,22 @@
           List addresses
         </div>
         <div
-          class="xl:max-h-[310px] max-h-[380px] w-full flex flex-col gap-2"
+          class="xl:max-h-[310px] xl:h-[310px] max-h-[380px] h-[380px] w-full flex flex-col gap-2"
           style="overflow-y: scroll;"
           bind:this={listAddressElement}
         >
-          {#each listAddress as item, index}
+          {#each searchListAddressResult as item, index}
             <div
               id={item.value}
               class={`address-item relative xl:text-sm text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md ${
                 darkMode ? "hover:bg-[#343434]" : "hover:bg-[#eff0f4]"
               }`}
               class:selected={index === selectedIndexAddress}
-              on:click={async () => {
-                handleSearchAddress(item.value);
-                showPopoverSearch = false;
+              on:click={() => {
+                if (selectedIndexAddress !== -1) {
+                  handleSearchAddress(item.value);
+                  showPopoverSearch = false;
+                }
               }}
             >
               <img src={item.logo} alt="" class="w-6 h-6 rounded-full" />
@@ -1286,13 +1308,13 @@
       <div class="flex flex-col gap-2">
         {#each suggestList as suggest}
           <div
-            class="xl:text-sm text-xl cursor-pointer py-1"
-            on:click={async () => {
+            class="xl:text-sm text-xl cursor-pointer py-1 w-max"
+            on:click={() => {
               handleSearchAddress(suggest);
               showPopoverSearch = false;
             }}
           >
-            {suggest.length > 9 ? shorterAddress(suggest) : suggest}
+            {suggest && suggest?.length > 9 ? shorterAddress(suggest) : suggest}
           </div>
         {/each}
       </div>

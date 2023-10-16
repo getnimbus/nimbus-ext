@@ -86,11 +86,11 @@
           }`}
         >
           <TooltipNumber
-            number={Math.abs(profitAndLoss) / item?.marketPrice}
+            number={Math.abs(profitAndLoss) / marketPrice}
             type="balance"
           />
           <div>
-            {item?.nativeToken?.symbol || ""}
+            {nativeToken?.symbol || ""}
           </div>
         </div>
 
