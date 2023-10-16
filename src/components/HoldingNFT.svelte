@@ -2,10 +2,14 @@
   import { useNavigate } from "svelte-navigator";
   import { shorterName, detectedChain } from "~/utils";
   import { typeWallet, isDarkMode } from "~/store";
+  import mixpanel from "mixpanel-browser";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import OverlaySidebar from "./OverlaySidebar.svelte";
+  import NftDetailSidebar from "~/UI/NFTDetail/NFTDetailSidebar.svelte";
+  import Copy from "~/components/Copy.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -28,6 +32,8 @@
   let showTooltipListNFT = false;
   let isShowTooltipName = false;
 
+  let showSideNftDetail = false;
+
   $: totalCost = data?.tokens?.reduce(
     (prev, item) => prev + Number(item.cost),
     0
@@ -48,11 +54,11 @@
 <tr
   class="group transition-all cursor-pointer"
   on:click={() => {
-    navigate(
-      `nft-detail?id=${encodeURIComponent(
-        data.collectionId
-      )}&address=${encodeURIComponent(selectedWallet)}`
-    );
+    showSideNftDetail = true;
+    mixpanel.track("nft_detail_page", {
+      address: selectedWallet,
+      collection_type: data.collectionId,
+    });
   }}
 >
   <td
@@ -355,6 +361,44 @@
     </div>
   </td>
 </tr>
+
+<!-- Sidebar NFT Detail -->
+<OverlaySidebar
+  isOpen={showSideNftDetail}
+  on:close={() => {
+    showSideNftDetail = false;
+  }}
+>
+  <div class="flex flex-col gap-6 p-6">
+    <div class="flex justify-between items-start">
+      <div
+        class="xl:text-5xl text-6xl text-gray-500 cursor-pointer"
+        on:click|stopPropagation={() => {
+          showSideNftDetail = false;
+        }}
+      >
+        &times;
+      </div>
+      <div class="flex flex-col items-end">
+        <div class="xl:text-3xl text-4xl font-semibold">
+          {data?.collection?.name || "-"}
+        </div>
+        <div class="text-3xl xl:text-xl">
+          <Copy
+            address={data?.tokens[0]?.contractAddress}
+            isShorten
+            iconColor={`${darkMode ? "#fff" : "#000"}`}
+            color={`${darkMode ? "#fff" : "#000"}`}
+          />
+        </div>
+      </div>
+    </div>
+    <NftDetailSidebar
+      collectionId={data.collectionId}
+      addressWallet={selectedWallet}
+    />
+  </div>
+</OverlaySidebar>
 
 <style windi:preflights:global windi:safelist:global>
 </style>
