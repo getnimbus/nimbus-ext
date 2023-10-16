@@ -29,19 +29,23 @@ export const decodeEvent = (ev: MessageEvent) => {
   }
 }
 
-export const priceSubscribe = (cmc_id: number[] | string[], callback: (any) => void) => {
+export const priceSubscribe = (cmc_id: number[] | string[], isNullCmcId: boolean, chain: string, callback: (any) => void) => {
   try {
     if (!socket) {
       console.log('WS is not initiated');
-      initWS(() => priceSubscribe(cmc_id, callback));
+      initWS(() => priceSubscribe(cmc_id, isNullCmcId, chain, callback));
     } else {
-      socket.send(JSON.stringify({ "ids": cmc_id.join(',') }));
+      if (isNullCmcId) {
+        socket.send(JSON.stringify({ "ids": cmc_id.join(','), "type": "mobula", "chain": chain }));
+      } else {
+        socket.send(JSON.stringify({ "ids": cmc_id.join(',') }));
+      }
 
       socket.addEventListener('message', (ev) => {
         const data = decodeEvent(ev);
-        if (data?.d?.id) {
-          if (cmc_id.includes(data.d.id)) {
-            callback(data.d)
+        if (data?.id) {
+          if (cmc_id[0].toString().toLowerCase() === data?.id.toLowerCase()) {
+            callback(data)
           }
         }
       })

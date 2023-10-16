@@ -159,9 +159,7 @@
     </div>
   </div>
 
-  <div
-    class={`${isLoading || listAddressLabel?.length === 0 ? "h-[800px]" : ""}`}
-  >
+  <div class={`${isLoading ? "h-[400px]" : ""}`}>
     <div
       class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
         darkMode ? "bg-[#131313]" : "bg-[#fff]"

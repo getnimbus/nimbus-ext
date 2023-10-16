@@ -98,10 +98,10 @@
           <TabNft />
         {:else if activeTabValue === "notification"}
           <TabNotification /> -->
-        {:else if activeTabValue === "report-tokens"}
-          <TabReportTokens />
           <!-- {:else if activeTabValue === "alerts"}
           <TabAlerts /> -->
+        {:else if activeTabValue === "report-tokens"}
+          <TabReportTokens />
           <!-- {:else if activeTabValue === "settings"}
           <TabSettings /> -->
         {/if}

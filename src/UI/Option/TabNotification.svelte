@@ -93,11 +93,7 @@
 <div class="flex flex-col gap-2">
   <div class="xl:title-3 title-1 mb-2">{MultipleLang.title}</div>
 
-  <div
-    class={`${
-      $query.isFetching || listAddress?.length === 0 ? "h-[800px]" : ""
-    }`}
-  >
+  <div class={`${$query.isFetching ? "h-[400px]" : ""}`}>
     <div
       class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto ${
         darkMode ? "bg-[#131313]" : "bg-[#fff]"

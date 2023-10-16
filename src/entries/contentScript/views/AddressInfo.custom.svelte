@@ -169,6 +169,7 @@
     try {
       const response: any = await sendMessage("getPreview", {
         address: address,
+        chain: "ALL",
       });
 
       if (response) {
@@ -597,10 +598,7 @@
                 <div class="text-[#00000099] text-sm">Net Worth</div>
                 <div class="flex items-end gap-4">
                   <div class="text-2xl font-medium text-black flex">
-                    $<TooltipNumber
-                      number={addressInfo.networth}
-                      type="balance"
-                    />
+                    <TooltipNumber number={addressInfo.networth} type="value" />
                   </div>
                   <div class="flex items-center gap-2">
                     {#if addressInfo.priceChange}
@@ -739,28 +737,41 @@
                                 </div>
                               </div>
                             </td>
+
                             <td class="pr-4 py-2">
                               <div class="relative">
                                 <div
-                                  class="flex justify-start"
+                                  class="flex justify-start w-max"
                                   on:mouseenter={() =>
                                     (showTooltipListNFT = true)}
                                   on:mouseleave={() =>
                                     (showTooltipListNFT = false)}
                                 >
-                                  {#each item?.tokens.slice(0, 10) as token, index}
-                                    <img
-                                      src={token?.imageUrl}
-                                      alt=""
-                                      class={`w-6 h-6 rounded-md border border-gray-300 overflow-hidden ${
-                                        index > 0 && "-ml-2"
-                                      }`}
-                                    />
-                                  {/each}
-                                  {#if item?.tokens.length > 10}
-                                    <div class="relative w-6 h-6">
+                                  {#if item?.tokens.length > 5}
+                                    {#each item?.tokens.slice(0, 5) as token, index}
                                       <img
-                                        src={item?.tokens[10].imageUrl}
+                                        src={token?.imageUrl ||
+                                          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
+                                        on:error={(e) => {
+                                          e.target.src =
+                                            "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384";
+                                        }}
+                                        alt=""
+                                        class={`w-6 h-6 rounded-md border border-gray-300 overflow-hidden ${
+                                          index > 0 && "-ml-2"
+                                        }`}
+                                      />
+                                    {/each}
+                                    <div
+                                      class="relative xl:w-9 xl:h-9 w-12 h-12"
+                                    >
+                                      <img
+                                        src={data?.tokens[4].imageUrl ||
+                                          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
+                                        on:error={(e) => {
+                                          e.target.src =
+                                            "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384";
+                                        }}
                                         alt=""
                                         class="w-6 h-6 rounded-md border border-gray-300 overflow-hidden -ml-2"
                                       />
@@ -770,18 +781,33 @@
                                         ...
                                       </div>
                                     </div>
+                                    {#if showTooltipListNFT && item?.tokens?.length > 5}
+                                      <div
+                                        class="absolute -top-7 left-0"
+                                        style="z-index: 2147483648;"
+                                      >
+                                        <tooltip-detail
+                                          text={`${item?.tokens?.length} NFTs on collection ${item?.collectionName}`}
+                                        />
+                                      </div>
+                                    {/if}
+                                  {:else}
+                                    {#each item?.tokens as token, index}
+                                      <img
+                                        src={token?.imageUrl ||
+                                          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
+                                        on:error={(e) => {
+                                          e.target.src =
+                                            "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384";
+                                        }}
+                                        alt=""
+                                        class={`w-6 h-6 rounded-md border border-gray-300 overflow-hidden ${
+                                          index > 0 && "-ml-2"
+                                        }`}
+                                      />
+                                    {/each}
                                   {/if}
                                 </div>
-                                {#if showTooltipListNFT && item?.tokens?.length > 10}
-                                  <div
-                                    class="absolute -top-7 left-0"
-                                    style="z-index: 2147483648;"
-                                  >
-                                    <tooltip-detail
-                                      text={`${item?.tokens?.length} NFTs on collection ${item?.collectionName}`}
-                                    />
-                                  </div>
-                                {/if}
                               </div>
                             </td>
                           </tr>

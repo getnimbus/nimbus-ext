@@ -407,16 +407,40 @@
 
   $: {
     if (holdingTokenData) {
-      holdingTokenData
-        ?.filter((item) => item?.cmc_id)
-        ?.map((item: any) => {
-          priceSubscribe([item?.cmc_id], (data) => {
+      const filteredHoldingTokenData = holdingTokenData?.filter(
+        (item) => item?.cmc_id
+      );
+
+      const filteredNullCmcHoldingTokenData = holdingTokenData?.filter(
+        (item) => item?.cmc_id === null
+      );
+
+      const groupFilteredNullCmcHoldingTokenData = groupBy(
+        filteredNullCmcHoldingTokenData,
+        "chain"
+      );
+
+      const chainList = Object.keys(groupFilteredNullCmcHoldingTokenData);
+
+      chainList.map((chain) => {
+        groupFilteredNullCmcHoldingTokenData[chain].map((item) => {
+          priceSubscribe([item?.contractAddress], true, chain, (data) => {
             marketPriceToken = {
               id: data.id,
-              market_price: data.p,
+              market_price: data.price,
             };
           });
         });
+      });
+
+      filteredNullCmcHoldingTokenData?.map((item) => {
+        priceSubscribe([item?.contractAddress], true, "", (data) => {
+          marketPriceToken = {
+            id: data.id,
+            market_price: data.price,
+          };
+        });
+      });
     }
   }
 
@@ -437,16 +461,36 @@
 
   $: {
     if (marketPriceToken) {
-      formatData = formatData.map((item) => {
-        if (marketPriceToken.id === item.cmc_id) {
+      const formatDataWithMarketPrice = formatData.map((item) => {
+        if (
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.cmc_id?.toString().toLowerCase() ||
+          marketPriceToken?.id.toString().toLowerCase() ===
+            item?.contractAddress.toString().toLowerCase()
+        ) {
           return {
             ...item,
             market_price: marketPriceToken.market_price,
+            value: Number(item?.amount) * Number(marketPriceToken.market_price),
           };
         }
         return { ...item };
       });
-      sumTokens = formatData.reduce((prev, item: any) => prev + item.value, 0);
+
+      formatData = formatDataWithMarketPrice.sort((a, b) => {
+        if (a.value < b.value) {
+          return 1;
+        }
+        if (a.value > b.value) {
+          return -1;
+        }
+        return 0;
+      });
+
+      sumTokens = formatDataWithMarketPrice.reduce(
+        (prev, item: any) => prev + item.value,
+        0
+      );
     }
   }
 
@@ -577,7 +621,7 @@
       class="custom_token_breakdown_container rounded-[20px] xl:p-8 p-6 xl:shadow-md"
     >
       <div
-        class={`rounded-[20px] p-6 flex flex-col gap-4 bg-red-500 ${
+        class={`rounded-[20px] p-6 flex flex-col gap-4 ${
           darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
         }`}
       >
@@ -1019,15 +1063,10 @@
               </div>
 
               <div
-                class={`${
-                  $queryTokenHolding.isFetching ||
-                  searchDataResult?.length === 0
-                    ? "h-[800px]"
-                    : ""
-                }`}
+                class={`${$queryTokenHolding.isFetching ? "h-[400px]" : ""}`}
               >
                 <div
-                  class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+                  class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
                     darkMode
                       ? "bg-[#131313]"
                       : "bg-[#fff] border border_0000000d"
@@ -1455,7 +1494,7 @@
   </div>
 {/if}
 
-<style>
+<style windi:preflights:global windi:safelist:global>
   .header {
     background-repeat: no-repeat;
     background-size: auto;

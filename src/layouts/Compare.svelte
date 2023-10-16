@@ -101,12 +101,10 @@
   let selectedType;
 
   let holdingTokenData: TokenData = [];
-  let dataPieChart = {
-    token: {
-      sumOrderBreakdownToken: 0,
-      formatDataPieChartTopFiveToken: [],
-      dataPieChartOrderBreakdownToken: [],
-    },
+  let dataPieChartToken = {
+    sumOrderBreakdownToken: 0,
+    formatDataPieChartTopFiveToken: [],
+    dataPieChartOrderBreakdownToken: [],
   };
   let isEmptyDataPie = false;
   let showCompareTable = false;
@@ -117,11 +115,9 @@
 
   let holdingTokenDataCompare: TokenData = [];
   let dataPieChartCompare = {
-    token: {
-      sumOrderBreakdownToken: 0,
-      formatDataPieChartTopFiveToken: [],
-      dataPieChartOrderBreakdownToken: [],
-    },
+    sumOrderBreakdownToken: 0,
+    formatDataPieChartTopFiveToken: [],
+    dataPieChartOrderBreakdownToken: [],
   };
 
   let listSuggestion = [];
@@ -433,15 +429,11 @@
       };
     });
 
-    const formatDataPie = {
-      token: {
-        sumOrderBreakdownToken,
-        formatDataPieChartTopFiveToken,
-        dataPieChartOrderBreakdownToken,
-      },
+    dataPieChartToken = {
+      sumOrderBreakdownToken,
+      formatDataPieChartTopFiveToken,
+      dataPieChartOrderBreakdownToken,
     };
-
-    dataPieChart = formatDataPie;
   };
 
   const formatDataPersonalTag = (data) => {
@@ -847,15 +839,11 @@
         }
       );
 
-      const formatDataPie = {
-        token: {
-          sumOrderBreakdownToken,
-          formatDataPieChartTopFiveToken,
-          dataPieChartOrderBreakdownToken,
-        },
+      dataPieChartCompare = {
+        sumOrderBreakdownToken,
+        formatDataPieChartTopFiveToken,
+        dataPieChartOrderBreakdownToken,
       };
-
-      dataPieChartCompare = formatDataPie;
     }
   }
 
@@ -964,13 +952,13 @@
         </div>
       {:else}
         <div class="hidden text-3xl xl:text-base xl:block">
-          <Copy address={selectedWallet} iconColor="#fff" color="#fff" />
+          <Copy address={selectedWallet} iconColor="#000" color="#000" />
         </div>
         <div class="block text-3xl xl:text-base xl:hidden">
           <Copy
             address={selectedWallet}
-            iconColor="#fff"
-            color="#fff"
+            iconColor="#000"
+            color="#000"
             isShorten
             iconSize={24}
           />
@@ -1032,7 +1020,7 @@
                         }
                       }}
                       {holdingTokenData}
-                      {dataPieChart}
+                      {dataPieChartToken}
                       listOptionTypeCategory={typeListCategory}
                       selectedOption={selectedType}
                       id="pie-chart-token-allocation"
@@ -1109,7 +1097,7 @@
                             }
                           }}
                           holdingTokenData={holdingTokenDataCompare}
-                          dataPieChart={dataPieChartCompare}
+                          dataPieChartToken={dataPieChartCompare}
                           listOptionTypeCategory={typeListCategory}
                           selectedOption={selectedType}
                           id="pie-chart-token-allocation-compare"
@@ -1175,7 +1163,7 @@
                                   variant="disabled"
                                 >
                                   <div
-                                    class={`text-base ${
+                                    class={`xl:text-base text-2xl ${
                                       darkMode ? "text-gray-400" : ""
                                     }`}
                                   >
@@ -1187,43 +1175,56 @@
                           </div>
                           <div class="border-t-[1px] relative">
                             <div
-                              class={`absolute top-[-10px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
+                              class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
                                 darkMode ? "bg-[#222222]" : "bg-white"
-                              } text-sm px-2`}
+                              } xl:text-sm text-xl px-2`}
                             >
                               Or
                             </div>
                           </div>
                           <div class="flex flex-col gap-2">
-                            <div
-                              class={`border focus:outline-none w-full py-2 px-3 rounded-lg ${
-                                searchCompare && !darkMode
-                                  ? "bg-[#F0F2F7]"
-                                  : "bg_fafafbff"
-                              }`}
-                            >
-                              <input
-                                on:keyup={({ target: { value } }) =>
-                                  debounceSearch(value)}
-                                on:keydown={(e) => {
-                                  if (
-                                    (e.which == 13 || e.keyCode == 13) &&
-                                    search
-                                  ) {
-                                    searchCompare = search;
-                                  }
-                                }}
-                                value={search}
-                                placeholder={"Search address to compare"}
-                                type="text"
-                                class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-xl font-normal text-[#5E656B] placeholder-[#5E656B] h-7 ${
+                            <div class="grid grid-cols-3 items-center gap-4">
+                              <div
+                                class={`col-span-2 border focus:outline-none w-full h-full px-3 rounded-lg ${
                                   searchCompare && !darkMode
                                     ? "bg-[#F0F2F7]"
-                                    : "bg-transparent"
+                                    : "bg_fafafbff"
                                 }`}
-                              />
+                              >
+                                <input
+                                  on:keyup={({ target: { value } }) =>
+                                    debounceSearch(value)}
+                                  value={search}
+                                  placeholder={"Search address to compare"}
+                                  type="text"
+                                  class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] h-full ${
+                                    searchCompare && !darkMode
+                                      ? "bg-[#F0F2F7]"
+                                      : "bg-transparent"
+                                  }`}
+                                />
+                              </div>
+                              <div class="col-span-1 h-full">
+                                {#if search}
+                                  <Button
+                                    on:click={() => {
+                                      searchCompare = search;
+                                    }}
+                                  >
+                                    <div class="text-2xl xl:text-base">
+                                      Compare
+                                    </div>
+                                  </Button>
+                                {:else}
+                                  <Button disabled>
+                                    <div class="text-2xl xl:text-base">
+                                      Compare
+                                    </div>
+                                  </Button>
+                                {/if}
+                              </div>
                             </div>
-                            <div class="flex justify-end text-xl xl:text-sm">
+                            <div class="flex justify-start text-xl xl:text-sm">
                               <div
                                 on:click={() =>
                                   (showCompareWhalesSuggest = true)}

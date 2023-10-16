@@ -14,6 +14,7 @@ import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
 import Base from "~/assets/base.svg"
+import confetti from "canvas-confetti";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
@@ -154,12 +155,23 @@ export const typeTrx = [
 
 export const typePieChart = [
   {
-    label: "Token",
+    label: "Tokens",
     value: "token",
   },
   {
-    label: "NFT",
+    label: "NFTs",
     value: "nft",
+  },
+]
+
+export const typeClosedHoldingTokenChart = [
+  {
+    label: "Value",
+    value: "value",
+  },
+  {
+    label: "Percent",
+    value: "percent",
   },
 ]
 
@@ -201,6 +213,28 @@ export const performanceTypeChartPortfolio = [
   {
     label: "Net Worth",
     value: "networth",
+  },
+]
+
+export const dailyCheckinTypePortfolio = [
+  {
+    label: "Collect GM Point",
+    value: "collectGMPoint",
+  },
+  {
+    label: "History",
+    value: "history",
+  },
+]
+
+export const dailyCheckinRewardsTypePortfolio = [
+  {
+    label: "Redeem Gift",
+    value: "redeemGift",
+  },
+  {
+    label: "Your gift",
+    value: "yourGift",
   },
 ]
 
@@ -429,7 +463,7 @@ export const chainList = [
   },
   {
     logo: Matic,
-    label: "Matic",
+    label: "Polygon",
     value: "MATIC",
   },
   {
@@ -439,7 +473,7 @@ export const chainList = [
   },
   {
     logo: Avax,
-    label: "Avax",
+    label: "Avalanche",
     value: "AVAX",
   },
   {
@@ -540,7 +574,7 @@ export const formatValue = (input: number) => {
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.000000") === "NaN"
     ? formatNumberSmall(input)
-    : input < 0.01 ? numeral(input).format("0,0.000000") : numeral(input).format("0,0.0000");
+    : input !== 0 && input > 0 && input < 0.01 ? numeral(input).format("0,0.000000") : numeral(input).format("0,0.0000");
 };
 
 export const formatBalance = (input: number) => {
@@ -910,4 +944,38 @@ export const autoFontSize = () => {
       return 14;
     }
   }
+};
+
+const fire = (particleRatio, opts) => {
+  confetti({
+    ...opts,
+    origin: { y: 0.7 },
+    zIndex: 100,
+    particleCount: Math.floor(200 * particleRatio),
+  });
+}
+
+export const triggerFirework = () => {
+  fire(0.25, {
+    spread: 26,
+    startVelocity: 55,
+  });
+  fire(0.2, {
+    spread: 60,
+  });
+  fire(0.35, {
+    spread: 100,
+    decay: 0.91,
+    scalar: 0.8,
+  });
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 25,
+    decay: 0.92,
+    scalar: 1.2,
+  });
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 45,
+  });
 };

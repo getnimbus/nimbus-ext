@@ -12,6 +12,8 @@
     isDarkMode,
     isShowHeaderMobile,
     triggerConnectWallet,
+    userId,
+    userPublicAddress,
   } from "~/store";
   import { nimbus } from "~/lib/network";
   import mixpanel from "mixpanel-browser";
@@ -28,6 +30,11 @@
   import Logo from "~/assets/logo-1.svg";
 
   const wallets$ = onboard.state.select("wallets");
+
+  let userID = "";
+  userId.subscribe((value) => {
+    userID = value;
+  });
 
   let isConnectWallet = false;
   triggerConnectWallet.subscribe((value) => {
@@ -115,6 +122,7 @@
     wallet.update((n) => (n = ""));
     chain.update((n) => (n = ""));
     typeWallet.update((n) => (n = ""));
+    userPublicAddress.update((n) => (n = ""));
     showPopover = false;
     localStorage.removeItem("evm_address");
     localStorage.removeItem("evm_token");
@@ -177,6 +185,8 @@
               picture: User,
             })
         );
+        queryClient.invalidateQueries(["users-me"]);
+        queryClient.invalidateQueries(["list-address"]);
       }
     } catch (e) {
       console.error("error: ", e);
@@ -313,6 +323,18 @@
             </div>
           </Link>
         </div>
+
+        <!-- <div on:click={() => (showPopover = false)}>
+          <Link to={`profile?id=${userID}`}>
+            <div
+              class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
+                darkMode ? "hover:bg-[#222222]" : "hover:bg-[#eff0f4]"
+              }`}
+            >
+              My Profile
+            </div>
+          </Link>
+        </div> -->
 
         <div
           class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${

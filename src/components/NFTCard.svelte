@@ -1,11 +1,16 @@
 <script lang="ts">
-  import { wallet, typeWallet } from "~/store";
+  import { wallet, typeWallet, isDarkMode } from "~/store";
   import { shorterName } from "~/utils";
 
   import TooltipNumber from "./TooltipNumber.svelte";
 
+  import TrendUp from "~/assets/trend-up.svg";
+  import TrendDown from "~/assets/trend-down.svg";
+
   export let data;
+  export let nativeToken;
   export let marketPrice;
+  export let floorPrice;
 
   let showTooltipName = false;
 
@@ -19,79 +24,146 @@
     typeWalletAddress = value;
   });
 
-  $: profitAndLoss = data?.est_valueBTC * marketPrice - (data.totalCost || 0);
-  $: profitAndLossPercent =
-    Math.abs(data.totalCost || 0) === 0
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
+
+  $: profitAndLoss =
+    Number(data?.price || 0) === 0
       ? 0
-      : profitAndLoss / Math.abs(data.totalCost);
+      : Number(floorPrice) - Number(data?.price);
+
+  $: profitAndLossPercent =
+    Math.abs(Number(data?.price || 0)) === 0
+      ? 0
+      : (profitAndLoss * marketPrice) / Math.abs(Number(data?.cost));
 </script>
 
 <div
-  class="border border_0000000d rounded-[10px] px-1 pt-1 pb-3 flex flex-col gap-2"
+  class={`rounded-[10px] px-3 pt-2 pb-3 flex flex-col gap-2 ${
+    darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+  }`}
 >
   <div class="rounded-[10px] overflow-hidden xl:h-[270px] h-[470px]">
     <img
-      src={data?.image_url ||
+      src={data?.imageUrl ||
         "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
+      on:error={(e) => {
+        e.target.src =
+          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384";
+      }}
       alt=""
-      class="w-full h-full object-cover"
+      class="w-full h-full object-contain"
     />
   </div>
-  <div class="flex flex-col gap-1">
+
+  <div class="flex flex-col xl:gap-2 gap-4">
     <div
-      class="xl:text-sm text-2xl font-semibold relative"
+      class="xl:text-base text-3xl font-semibold relative"
       on:mouseenter={() => (showTooltipName = true)}
       on:mouseleave={() => (showTooltipName = false)}
     >
-      {shorterName(data?.item_id, 30)}
-      {#if showTooltipName && data?.item_id.length > 30}
+      {shorterName(data?.name, 30)}
+      {data?.tokenId && nativeToken?.symbol !== "SOL"
+        ? `#${data?.tokenId}`
+        : ""}
+      {#if showTooltipName && data?.name.length > 30}
         <span class="absolute -top-7 left-0" style="z-index: 2147483648;">
-          <tooltip-detail text={data?.item_id} />
+          <tooltip-detail text={data?.name} />
         </span>
       {/if}
     </div>
-    <div class="flex gap-1 items-center">
-      <div class="xl:text-sm text-2xl font-semibold">
-        {typeWalletAddress === "EVM" ? "Token ID" : "Inscription"}
-      </div>
-      <div class="xl:text-sm text-2xl font-semibold">
-        #{data?.inscription_number}
-      </div>
-    </div>
-    <div class="xl:text-xs text-lg font-normal text-[#616b84] flex gap-1">
-      <div>Est. value</div>
-      <div class="flex items-center gap-1">
-        <TooltipNumber number={data?.est_valueBTC} type="balance" />
-        {typeWalletAddress === "EVM" ? "ETH" : "BTC"} | $<TooltipNumber
-          number={data?.est_valueBTC * marketPrice}
-          type="balance"
-        />
-      </div>
-    </div>
-    <div class="xl:text-xs text-lg font-normal text-[#616b84] flex gap-1">
-      <div>Profit & Loss</div>
-      <div class="flex gap-1">
-        <div
-          class={`flex ${
-            profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
-          }`}
-        >
-          $<TooltipNumber number={Math.abs(profitAndLoss)} type="balance" />
-        </div>
-        <div
-          class={`flex ${
-            profitAndLossPercent >= 0 ? "text-[#00A878]" : "text-red-500"
-          }`}
-        >
-          {#if profitAndLossPercent < 0}
-            ↓
-          {:else}
-            ↑
-          {/if}
+
+    <!-- <div
+      class="xl:text-sm text-lg font-normal flex items-center justify-between gap-2"
+    >
+      <div class="text-[#616b84]">Rarity Score</div>
+      <TooltipNumber number={data?.rarityScore} type="percent" />
+    </div> -->
+
+    <div
+      class="xl:text-sm text-2xl font-normal flex xl:items-center items-start justify-between gap-1"
+    >
+      <div class="text-[#616b84]">Cost</div>
+      <div class="flex xl:flex-row flex-col xl:items-center items-end gap-1">
+        <span>
           <TooltipNumber
-            number={Math.abs(profitAndLossPercent) * 100}
-            type="percent"
-          />%
+            number={Number(data?.price || 0)}
+            type="balance"
+          /><span class="ml-1">
+            {nativeToken?.symbol || ""}
+          </span>
+        </span>
+        <span class="xl:block hidden">|</span>
+        <TooltipNumber number={Number(data?.cost || 0)} type="value" />
+      </div>
+    </div>
+
+    <div
+      class="xl:text-sm text-2xl font-normal flex items-start justify-between gap-1"
+    >
+      <div class="text-[#616b84]">PnL</div>
+      <div class="flex flex-col items-end">
+        <div class="flex xl:flex-row flex-col xl:items-center items-end gap-1">
+          <div
+            class={`${
+              Number(profitAndLoss) !== 0
+                ? Number(profitAndLoss) >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+                : ""
+            }`}
+          >
+            <TooltipNumber
+              number={Math.abs(Number(profitAndLoss))}
+              type="balance"
+            /><span class="ml-1">
+              {nativeToken?.symbol || ""}
+            </span>
+          </div>
+          <div class="xl:block hidden">|</div>
+          <div
+            class={`flex ${
+              profitAndLoss !== 0
+                ? profitAndLoss >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+                : ""
+            }`}
+          >
+            <TooltipNumber
+              number={Math.abs(profitAndLoss) * marketPrice}
+              type="value"
+            />
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-1">
+          <div
+            class={`flex items-center ${
+              profitAndLossPercent !== 0
+                ? profitAndLossPercent >= 0
+                  ? "text-[#00A878]"
+                  : "text-red-500"
+                : ""
+            }`}
+          >
+            <TooltipNumber
+              number={Math.abs(profitAndLossPercent) * 100}
+              type={Math.abs(Number(profitAndLossPercent)) > 100
+                ? "balance"
+                : "percent"}
+            />
+            <span>%</span>
+          </div>
+          {#if profitAndLossPercent !== 0}
+            <img
+              src={profitAndLossPercent >= 0 ? TrendUp : TrendDown}
+              alt="trend"
+              class="mb-1"
+            />
+          {/if}
         </div>
       </div>
     </div>

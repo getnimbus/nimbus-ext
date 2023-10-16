@@ -196,6 +196,8 @@
   let groupedToBundles = true;
   let selectYourWalletsBundle = [];
 
+  let indexSelectedAddress = 0;
+
   const isRequiredFieldValid = (value) => {
     return value != null && value !== "";
   };
@@ -261,14 +263,11 @@
     return response?.data;
   };
 
-  $: query = createQuery({
+  const query = createQuery({
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
-    enabled:
-      Object.keys(userInfo).length !== 0 &&
-      selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0",
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -290,91 +289,7 @@
     }
   }
 
-  const formatDataListAddress = async (data) => {
-    const structWalletData = data.map((item) => {
-      let logo = All;
-      if (item?.type === "BTC") {
-        logo = BitcoinLogo;
-      }
-      if (item?.type === "SOL") {
-        logo = SolanaLogo;
-      }
-      if (item?.type === "BUNDLE") {
-        logo = Bundles;
-      }
-      return {
-        id: item.id,
-        type: item.type,
-        label: item.label,
-        value: item.type === "CEX" ? item.id : item.accountId,
-        logo: item.type === "CEX" ? item.logo : logo,
-        accounts:
-          item?.accounts?.map((account) => {
-            let logo = All;
-            if (account?.type === "BTC") {
-              logo = BitcoinLogo;
-            }
-            if (account?.type === "SOL") {
-              logo = SolanaLogo;
-            }
-            return {
-              id: account?.id,
-              type: account?.type,
-              label: account?.label,
-              value: account?.type === "CEX" ? account?.id : account?.accountId,
-              logo: account?.type === "CEX" ? account?.logo : logo,
-            };
-          }) || [],
-      };
-    });
-
-    listAddress = structWalletData;
-
-    const selectYourBundle = listAddress.find(
-      (item) => item.type === "BUNDLE" && item.label === "Your wallets"
-    );
-    selectYourWalletsBundle = selectYourBundle?.accounts.map(
-      (item) => item.value
-    );
-
-    if (selectYourBundle === undefined) {
-      await nimbus.post("/address/personalize/bundle", {
-        name: "Your wallets",
-        addresses: listAddress.map((item) => item.value),
-      });
-      queryClient.invalidateQueries(["list-bundle"]);
-    }
-
-    // check type wallet
-    const selectedTypeWalletRes = await browser.storage.sync.get(
-      "typeWalletAddress"
-    );
-    if (selectedTypeWalletRes?.typeWalletAddress !== null) {
-      typeWallet.update((n) => (n = selectedTypeWalletRes.typeWalletAddress));
-    } else {
-      typeWallet.update((n) => (n = listAddress[0]?.type));
-    }
-
-    // check chain wallet
-    const selectedChainRes = await browser.storage.sync.get("selectedChain");
-    if (selectedChainRes?.selectedChain !== null) {
-      chain.update((n) => (n = selectedChainRes.selectedChain));
-    } else {
-      chain.update((n) => (n = "ALL"));
-    }
-
-    // check wallet
-    const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
-    if (selectedWalletRes?.selectedWallet !== null) {
-      wallet.update((n) => (n = selectedWalletRes.selectedWallet));
-    } else {
-      wallet.update((n) => (n = listAddress[0]?.value));
-    }
-
-    updateStateFromParams();
-  };
-
-  const updateStateFromParams = () => {
+  const initialUpdateStateFromParams = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const addressParams = urlParams.get("address");
     const chainParams = urlParams.get("chain");
@@ -461,6 +376,162 @@
     }
   };
 
+  const handleUpdateParams = () => {
+    const selected = listAddress.find((item) => {
+      return item.value === selectedWallet;
+    });
+
+    if (selected && Object.keys(selected).length !== 0) {
+      if (selected.type === "BUNDLE") {
+        typeWallet.update((n) => (n = "BUNDLE"));
+        browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&address=${selectedWallet}`
+        );
+      }
+
+      if (selected.type === "CEX") {
+        typeWallet.update((n) => (n = "CEX"));
+        browser.storage.sync.set({ typeWalletAddress: "CEX" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&address=${selectedWallet}`
+        );
+      }
+
+      if (selected.type === "EVM") {
+        typeWallet.update((n) => (n = "EVM"));
+        browser.storage.sync.set({ typeWalletAddress: "EVM" });
+        if (selectedChain) {
+          chain.update((n) => (n = selectedChain));
+        } else {
+          chain.update((n) => (n = "ALL"));
+        }
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
+        );
+      }
+
+      if (selected.type === "SOL") {
+        typeWallet.update((n) => (n = "SOL"));
+        browser.storage.sync.set({ typeWalletAddress: "SOL" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&address=${selectedWallet}`
+        );
+      }
+
+      if (selected.type === "BTC") {
+        typeWallet.update((n) => (n = "BTC"));
+        browser.storage.sync.set({ typeWalletAddress: "BTC" });
+        chain.update((n) => (n = "ALL"));
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+            `?type=${typeWalletAddress}&address=${selectedWallet}`
+        );
+      }
+    }
+  };
+
+  const formatDataListAddress = async (data) => {
+    const structWalletData = data.map((item) => {
+      let logo = All;
+      if (item?.type === "BTC") {
+        logo = BitcoinLogo;
+      }
+      if (item?.type === "SOL") {
+        logo = SolanaLogo;
+      }
+      if (item?.type === "BUNDLE") {
+        logo = Bundles;
+      }
+      return {
+        id: item.id,
+        type: item.type,
+        label: item.label,
+        value: item.type === "CEX" ? item.id : item.accountId,
+        logo: item.type === "CEX" ? item.logo : logo,
+        accounts:
+          item?.accounts?.map((account) => {
+            let logo = All;
+            if (account?.type === "BTC") {
+              logo = BitcoinLogo;
+            }
+            if (account?.type === "SOL") {
+              logo = SolanaLogo;
+            }
+            return {
+              id: account?.id,
+              type: account?.type,
+              label: account?.label,
+              value: account?.type === "CEX" ? account?.id : account?.accountId,
+              logo: account?.type === "CEX" ? account?.logo : logo,
+            };
+          }) || [],
+      };
+    });
+
+    listAddress = structWalletData;
+
+    const selectYourBundle = listAddress.find(
+      (item) => item.type === "BUNDLE" && item.label === "Your wallets"
+    );
+    selectYourWalletsBundle = selectYourBundle?.accounts.map(
+      (item) => item.value
+    );
+
+    if (selectYourBundle === undefined) {
+      await nimbus.post("/address/personalize/bundle", {
+        name: "Your wallets",
+        addresses: listAddress.map((item) => item.value),
+      });
+      queryClient.invalidateQueries(["list-bundle"]);
+    }
+
+    // check type wallet
+    const selectedTypeWalletRes = await browser.storage.sync.get(
+      "typeWalletAddress"
+    );
+    if (selectedTypeWalletRes?.typeWalletAddress !== null) {
+      typeWallet.update((n) => (n = selectedTypeWalletRes.typeWalletAddress));
+    } else {
+      typeWallet.update((n) => (n = listAddress[0]?.type));
+    }
+
+    // check chain wallet
+    const selectedChainRes = await browser.storage.sync.get("selectedChain");
+    if (selectedChainRes?.selectedChain !== null) {
+      chain.update((n) => (n = selectedChainRes.selectedChain));
+    } else {
+      chain.update((n) => (n = "ALL"));
+    }
+
+    // check wallet
+    const selectedWalletRes = await browser.storage.sync.get("selectedWallet");
+    if (selectedWalletRes?.selectedWallet !== null) {
+      wallet.update((n) => (n = selectedWalletRes.selectedWallet));
+    } else {
+      wallet.update((n) => (n = listAddress[0]?.value));
+    }
+
+    initialUpdateStateFromParams();
+  };
+
   const handleCreateUser = async () => {
     const evmAddress = localStorage.getItem("evm_address");
     if (evmAddress) {
@@ -526,14 +597,36 @@
           label: dataFormat.label,
         });
 
+        const searchAccountType = await validateAddress(dataFormat.value);
         queryClient.invalidateQueries(["list-address"]);
         wallet.update((n) => (n = dataFormat.value));
-        window.history.replaceState(
-          null,
-          "",
-          window.location.pathname +
-            `?type=EVM&chain=ALL&address=${dataFormat.value}`
-        );
+        chain.update((n) => (n = "ALL"));
+        typeWallet.update((n) => (n = searchAccountType));
+
+        browser.storage.sync.set({ selectedChain: "ALL" });
+        browser.storage.sync.set({
+          typeWalletAddress: searchAccountType,
+        });
+        browser.storage.sync.set({
+          selectedWallet: dataFormat.value,
+        });
+
+        if (searchAccountType === "EVM") {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname +
+              `?type=${searchAccountType}&chain=ALL&address=${dataFormat.value}`
+          );
+        }
+        if (searchAccountType === "BTC" || searchAccountType === "SOL") {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname +
+              `?type=${searchAccountType}&address=${dataFormat.value}`
+          );
+        }
 
         e.target.reset();
         errors = {};
@@ -660,7 +753,7 @@
   };
 
   onMount(() => {
-    updateStateFromParams();
+    initialUpdateStateFromParams();
     if (
       localStorage.getItem("isGetUserEmailYet") !== null &&
       localStorage.getItem("isGetUserEmailYet") === "true"
@@ -684,93 +777,7 @@
               `?type=EVM&chain=${selectedChain}&address=${selectedWallet}`
           );
         } else {
-          const selected = listAddress.find((item) => {
-            return item.value === selectedWallet;
-          });
-
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "BUNDLE"
-          ) {
-            typeWallet.update((n) => (n = "BUNDLE"));
-            browser.storage.sync.set({ typeWalletAddress: "BUNDLE" });
-            chain.update((n) => (n = "ALL"));
-            window.history.replaceState(
-              null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&address=${selectedWallet}`
-            );
-          }
-
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "CEX"
-          ) {
-            typeWallet.update((n) => (n = "CEX"));
-            browser.storage.sync.set({ typeWalletAddress: "CEX" });
-            chain.update((n) => (n = "ALL"));
-            window.history.replaceState(
-              null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&address=${selectedWallet}`
-            );
-          }
-
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "EVM"
-          ) {
-            typeWallet.update((n) => (n = "EVM"));
-            browser.storage.sync.set({ typeWalletAddress: "EVM" });
-            if (selectedChain) {
-              chain.update((n) => (n = selectedChain));
-            } else {
-              chain.update((n) => (n = "ALL"));
-            }
-            window.history.replaceState(
-              null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
-            );
-          }
-
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "SOL"
-          ) {
-            typeWallet.update((n) => (n = "SOL"));
-            browser.storage.sync.set({ typeWalletAddress: "SOL" });
-            chain.update((n) => (n = "ALL"));
-            window.history.replaceState(
-              null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&address=${selectedWallet}`
-            );
-          }
-
-          if (
-            selected &&
-            Object.keys(selected).length !== 0 &&
-            selected.type === "BTC"
-          ) {
-            typeWallet.update((n) => (n = "BTC"));
-            browser.storage.sync.set({ typeWalletAddress: "BTC" });
-            chain.update((n) => (n = "ALL"));
-            window.history.replaceState(
-              null,
-              "",
-              window.location.pathname +
-                `?type=${typeWalletAddress}&address=${selectedWallet}`
-            );
-          }
+          handleUpdateParams();
         }
       }
     }
@@ -795,13 +802,16 @@
 
   $: {
     if (
-      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 3 &&
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2 &&
       packageSelected === "FREE"
     ) {
       isDisabled = true;
+    } else {
+      isDisabled = false;
     }
+
     if (
-      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 7 &&
+      listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6 &&
       packageSelected === "EXPLORER"
     ) {
       if (
@@ -811,7 +821,10 @@
         localStorage.setItem("isGetUserEmailYet", "true");
       }
       isDisabled = true;
+    } else {
+      isDisabled = false;
     }
+
     if (packageSelected === "PROFESSIONAL") {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
@@ -823,9 +836,6 @@
   }
 
   $: {
-    if (Object.keys(userInfo).length === 0) {
-      tooltipDisableAddBtn = "Connect wallet to add account";
-    }
     if (isDisabled) {
       if (packageSelected === "FREE") {
         tooltipDisableAddBtn =
@@ -839,8 +849,8 @@
   }
 
   $: {
-    const evmToken = localStorage.getItem("evm_token");
-    if (Object.keys(userInfo).length === 0 && !evmToken) {
+    if (Object.keys(userInfo).length === 0) {
+      tooltipDisableAddBtn = "Connect wallet to add account";
       listAddress = [];
       const urlParams = new URLSearchParams(window.location.search);
       const addressParams = urlParams.get("address");
@@ -857,6 +867,55 @@
       );
     }
   }
+
+  $: {
+    if (selectedWallet) {
+      const selectedAddress = listAddress
+        .sort((a, b) => {
+          if (a.type === "BUNDLE" && a.label === "Your wallets") return -1;
+          if (b.type === "BUNDLE" && b.label === "Your wallets") return 1;
+          return 0;
+        })
+        .find(
+          (item) => item.value.toLowerCase() === selectedWallet.toLowerCase()
+        );
+      indexSelectedAddress = listAddress.indexOf(selectedAddress);
+    }
+  }
+
+  const handleSelectNextAddress = () => {
+    if (indexSelectedAddress < listAddress.length - 1) {
+      indexSelectedAddress = indexSelectedAddress + 1;
+
+      const selectAddress = listAddress.sort((a, b) => {
+        if (a.type === "BUNDLE" && a.label === "Your wallets") return -1;
+        if (b.type === "BUNDLE" && b.label === "Your wallets") return 1;
+        return 0;
+      })[indexSelectedAddress];
+
+      wallet.update((n) => (n = selectAddress.value));
+      browser.storage.sync.set({ selectedWallet: selectedWallet });
+      browser.storage.sync.set({ selectedChain: selectedChain });
+      handleUpdateParams();
+    }
+  };
+
+  const handleSelectPrevAddress = () => {
+    if (indexSelectedAddress > 0) {
+      indexSelectedAddress = indexSelectedAddress - 1;
+
+      const selectAddress = listAddress.sort((a, b) => {
+        if (a.type === "BUNDLE" && a.label === "Your wallets") return -1;
+        if (b.type === "BUNDLE" && b.label === "Your wallets") return 1;
+        return 0;
+      })[indexSelectedAddress];
+
+      wallet.update((n) => (n = selectAddress.value));
+      browser.storage.sync.set({ selectedWallet: selectedWallet });
+      browser.storage.sync.set({ selectedChain: selectedChain });
+      handleUpdateParams();
+    }
+  };
 </script>
 
 {#if $query.isFetching}
@@ -952,7 +1011,7 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class="w-5 h-5 xl:w-4 xl:h-4"
+                              class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
                             />
                             {item.label}
                             {#if item.value === selectedWallet}
@@ -993,6 +1052,56 @@
                           />
                         {/if}
                       </div>
+                      {#if listAddress.length > 10}
+                        <div class="flex items-center gap-3">
+                          <div
+                            class={`cursor-pointer overflow-hidden border border-white rounded-full ${
+                              indexSelectedAddress === 0 ? "opacity-50" : ""
+                            }`}
+                            on:click={handleSelectPrevAddress}
+                          >
+                            <div class="transform -translate-x-[1px]">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fill="#fff"
+                                  fill-rule="evenodd"
+                                  d="M12.79 5.23a.75.75 0 0 1-.02 1.06L8.832 10l3.938 3.71a.75.75 0 1 1-1.04 1.08l-4.5-4.25a.75.75 0 0 1 0-1.08l4.5-4.25a.75.75 0 0 1 1.06.02Z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                          <div
+                            class={`cursor-pointer overflow-hidden border border-white rounded-full ${
+                              indexSelectedAddress === listAddress.length - 1
+                                ? "opacity-50"
+                                : ""
+                            }`}
+                            on:click={handleSelectNextAddress}
+                          >
+                            <div class="transform translate-x-[1px]">
+                              <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fill="#fff"
+                                  fill-rule="evenodd"
+                                  d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10L7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      {/if}
                     {:else}
                       <AnimateSharedLayout>
                         {#each listAddress as item}
@@ -1008,7 +1117,7 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class="w-5 h-5 xl:w-4 xl:h-4"
+                              class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
                             />
                             {item.label}
                             {#if item.value === selectedWallet}
@@ -1366,7 +1475,6 @@
                       </div>
                     {/if}
                   </div> -->
-
                   <div class="hidden xl:block">
                     {#if typeWalletAddress === "BTC"}
                       <div
