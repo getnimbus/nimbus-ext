@@ -73,13 +73,11 @@
                 src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
                 class="w-[28px] h-[28px]"
               />
-              <div class="text-white xl:text-lg text-2xl font-semibold">
+              <div class="text-white xl:text-lg text-2xl font-medium">
                 {redeemData?.cost}
               </div>
             </div>
-            <div class="text-white xl:text-lg text-2xl font-semibold">
-              Redeem
-            </div>
+            <div class="text-white xl:text-lg text-2xl font-medium">Redeem</div>
           </Button>
         {:else}
           <Button
@@ -93,13 +91,11 @@
                 src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/c43eb2dd7d132a2686c32939ea36b0e97055abc7/src/assets/Gold4.svg"
                 class="w-[28px] h-[28px]"
               />
-              <div class="text-white xl:text-lg text-2xl font-semibold">
+              <div class="text-white xl:text-lg text-2xl font-medium">
                 {redeemData?.cost}
               </div>
             </div>
-            <div class="text-white xl:text-lg text-2xl font-semibold">
-              Redeem
-            </div>
+            <div class="text-white xl:text-lg text-2xl font-medium">Redeem</div>
           </Button>
         {/if}
       </div>

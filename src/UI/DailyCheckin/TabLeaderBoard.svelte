@@ -86,7 +86,7 @@
               {shorterAddress(formatDataLeaderboard[1]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-semibold">
+              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-medium">
                 {formatDataLeaderboard[1]?.point || 0}
               </div>
               <div class="font-normal xl:text-base text-lg">GM Point</div>
@@ -107,7 +107,7 @@
               {shorterAddress(formatDataLeaderboard[0]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-semibold">
+              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-medium">
                 {formatDataLeaderboard[0]?.point || 0}
               </div>
               <div class="font-normal xl:text-base text-lg">GM Point</div>
@@ -128,7 +128,7 @@
               {shorterAddress(formatDataLeaderboard[2]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-semibold">
+              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-medium">
                 {formatDataLeaderboard[2]?.point || 0}
               </div>
               <div class="font-normal xl:text-base text-lg">GM Point</div>
