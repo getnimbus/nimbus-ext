@@ -5,6 +5,7 @@
   import { shorterAddress } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
+  import { each } from "svelte/internal";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -73,7 +74,7 @@
     <div class="flex flex-col items-center justify-center">
       <div class="xl:w-3/5 w-4/5 flex">
         <div class="flex-1 flex flex-col justify-end h-[250px]">
-          <div class="h-[95px]">
+          <div class="h-[125px]">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank2.svg"
               alt=""
@@ -81,7 +82,7 @@
             />
           </div>
           <div class="flex flex-col justify-center items-center gap-1 -mt-1">
-            <div class="xl:text-lg text-xl font-bold">
+            <div class="xl:text-lg text-xl font-medium">
               {shorterAddress(formatDataLeaderboard[1]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
@@ -93,8 +94,8 @@
           </div>
         </div>
 
-        <div class="flex-1">
-          <div class="h-[125px]">
+        <div class="flex-1 -mt-5">
+          <div class="h-[160px]">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank1.svg"
               alt=""
@@ -102,7 +103,7 @@
             />
           </div>
           <div class="flex flex-col justify-center items-center gap-1 -mt-1">
-            <div class="xl:text-lg text-xl font-bold">
+            <div class="xl:text-lg text-xl font-medium">
               {shorterAddress(formatDataLeaderboard[0]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
@@ -115,7 +116,7 @@
         </div>
 
         <div class="flex-1 flex flex-col justify-end h-[250px]">
-          <div class="h-[95px]">
+          <div class="h-[125px]">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank3.svg"
               alt=""
@@ -123,7 +124,7 @@
             />
           </div>
           <div class="flex flex-col justify-center items-center gap-1 -mt-1">
-            <div class="xl:text-lg text-xl font-bold">
+            <div class="xl:text-lg text-xl font-medium">
               {shorterAddress(formatDataLeaderboard[2]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
@@ -174,7 +175,7 @@
       <div class="text-sm">This rank will reset every month</div>
     </div>
     <div
-      class={`mx-auto xl:w-3/5 w-full max-h-[600px] overflow-y-auto border border_0000000d rounded-[10px] ${
+      class={`mx-auto xl:w-3/5 w-full min-h-[600px] border border_0000000d rounded-[10px] ${
         darkMode ? "bg-[#131313]" : "bg-[#fff]"
       }`}
     >
@@ -191,7 +192,7 @@
           <tr class="bg-[#FFB800] sticky top-[29px]">
             <th class="py-2 pl-6">
               <div
-                class={`flex justify-start text-3xl font-normal w-6 ${
+                class={`flex justify-start text-3xl font-normal w-4 ${
                   !darkMode && "text-[#27326F]"
                 }`}
               >
@@ -246,7 +247,7 @@
                   <div
                     class="flex items-center justify-center h-full px-3 py-4"
                   >
-                    There are no one checkin yet
+                    There is no one checkin yet
                   </div>
                 </td>
               </tr>
@@ -264,7 +265,7 @@
               </tr>
             {/if}
 
-            {#each formatDataLeaderboard.slice(3) as item}
+            {#each formatDataLeaderboard.slice(3, 20) as item}
               <tr class="group transition-all">
                 <td
                   class={`py-2 pl-6 ${
@@ -276,7 +277,7 @@
                   }`}
                 >
                   <div
-                    class={`flex justify-start text-3xl font-normal w-6 ${
+                    class={`flex justify-start text-3xl font-normal w-4 ${
                       !darkMode && "text-[#27326F]"
                     }`}
                   >
