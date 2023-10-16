@@ -429,7 +429,7 @@
           />
         </div>
 
-        <div class={`${isLoadingToken ? "h-[400px]" : ""}`}>
+        <div class={`${isLoadingToken ? "min-h-[400px]" : ""}`}>
           <div
             class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
               darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
@@ -613,7 +613,7 @@
             />
           </div>
 
-          <div class={`${isLoadingNFT ? "h-[400px]" : ""}`}>
+          <div class={`${isLoadingNFT ? "min-h-[400px]" : ""}`}>
             <div
               class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
                 darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
