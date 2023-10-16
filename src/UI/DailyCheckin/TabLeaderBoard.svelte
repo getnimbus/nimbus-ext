@@ -74,7 +74,7 @@
     <div class="flex flex-col items-center justify-center">
       <div class="xl:w-3/5 w-4/5 flex">
         <div class="flex-1 flex flex-col justify-end h-[250px] mt-20 2xl:ml-14">
-          <div class="h-[165px] 2xl:h-[210px]">
+          <div class="h-[155px] 2xl:h-[210px]">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank2.svg"
               alt=""
@@ -94,7 +94,7 @@
           </div>
         </div>
 
-        <div class="flex-1 2xl:-mt-20 -mt-10">
+        <div class="flex-1 2xl:-mt-20 -mt-8">
           <div class="h-[210px] 2xl:h-[300px]">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank1.svg"
