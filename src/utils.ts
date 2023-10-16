@@ -155,11 +155,11 @@ export const typeTrx = [
 
 export const typePieChart = [
   {
-    label: "Token",
+    label: "Tokens",
     value: "token",
   },
   {
-    label: "NFT",
+    label: "NFTs",
     value: "nft",
   },
 ]
