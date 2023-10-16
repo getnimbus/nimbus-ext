@@ -46,7 +46,8 @@
 
   const formatDataHoldingNFT = (dataNftHolding) => {
     const selectedCollection = dataNftHolding.find(
-      (item) => item?.collectionId.toLowerCase() === collectionId.toLowerCase()
+      (item) =>
+        item?.collectionId?.toLowerCase() === collectionId?.toLowerCase()
     );
     if (selectedCollection) {
       tokens = selectedCollection?.tokens;
