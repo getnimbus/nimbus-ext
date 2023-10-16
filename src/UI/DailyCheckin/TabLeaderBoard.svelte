@@ -72,21 +72,21 @@
 {:else}
   <div class="relative">
     <div class="flex flex-col items-center justify-center">
-      <div class="xl:w-3/5 w-4/5 flex">
-        <div class="flex-1 flex flex-col justify-end h-[350px]">
-          <div class="h-[175px] w-full">
+      <div class="2xl:w-1/2 xl:w-3/5 w-4/5 flex">
+        <div class="flex-1 flex flex-col justify-end 2xl:h-[390px] h-[350px]">
+          <div class="2xl:h-[215px] h-[175px] w-full">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank2.svg"
               alt=""
               class="w-full h-full object-contain"
             />
           </div>
-          <div class="flex flex-col justify-center items-center gap-1 -mt-1">
-            <div class="xl:text-lg text-xl font-bold">
+          <div class="flex flex-col justify-center items-center gap-1 -mt-3">
+            <div class="xl:text-lg text-xl font-medium">
               {shorterAddress(formatDataLeaderboard[1]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-semibold">
+              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-medium">
                 {formatDataLeaderboard[1]?.point || 0}
               </div>
               <div class="font-normal xl:text-base text-lg">GM Point</div>
@@ -95,19 +95,19 @@
         </div>
 
         <div class="flex-1">
-          <div class="h-[205px] w-full">
+          <div class="2xl:h-[285px] h-[205px] w-full">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank1.svg"
               alt=""
               class="w-full h-full object-contain"
             />
           </div>
-          <div class="flex flex-col justify-center items-center gap-1 -mt-1">
-            <div class="xl:text-lg text-xl font-bold">
+          <div class="flex flex-col justify-center items-center gap-1 -mt-3">
+            <div class="xl:text-lg text-xl font-medium">
               {shorterAddress(formatDataLeaderboard[0]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-semibold">
+              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-medium">
                 {formatDataLeaderboard[0]?.point || 0}
               </div>
               <div class="font-normal xl:text-base text-lg">GM Point</div>
@@ -115,20 +115,20 @@
           </div>
         </div>
 
-        <div class="flex-1 flex flex-col justify-end h-[350px]">
-          <div class="h-[175px] w-full">
+        <div class="flex-1 flex flex-col justify-end 2xl:h-[390px] h-[350px]">
+          <div class="2xl:h-[215px] h-[175px] w-full">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank3.svg"
               alt=""
               class="w-full h-full object-contain"
             />
           </div>
-          <div class="flex flex-col justify-center items-center gap-1 -mt-1">
-            <div class="xl:text-lg text-xl font-bold">
+          <div class="flex flex-col justify-center items-center gap-1 -mt-3">
+            <div class="xl:text-lg text-xl font-medium">
               {shorterAddress(formatDataLeaderboard[2]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-semibold">
+              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-medium">
                 {formatDataLeaderboard[2]?.point || 0}
               </div>
               <div class="font-normal xl:text-base text-lg">GM Point</div>
@@ -146,7 +146,7 @@
       </div>
     </div>
     <div
-      class="absolute -top-58 left-1/2 transform -translate-x-1/2 -z-20 xl:w-3/5 w-full h-full opacity-60"
+      class="absolute -top-58 left-1/2 transform -translate-x-1/2 -z-20 xl:w-1/2 w-2/3 h-full opacity-60"
     >
       <img
         src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/frameLeaderboard.png"
