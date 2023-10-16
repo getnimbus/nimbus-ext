@@ -140,7 +140,7 @@
       </div>
 
       <div class="flex flex-col gap-4">
-        <div class="-ml-3 flex items-center gap-2">
+        <div class="-ml-3 flex items-center gap-2 px-3">
           <AnimateSharedLayout>
             {#each dailyCheckinTypePortfolio as type}
               <div
@@ -214,7 +214,7 @@
                 Empty
               </div>
             {:else}
-              <div class="overflow-x-auto py-5 px-4">
+              <div class="overflow-x-auto py-5">
                 <div class="grid grid-cols-7 gap-4 w-[1350px]">
                   {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
                     <div
