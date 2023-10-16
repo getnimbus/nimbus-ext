@@ -283,12 +283,12 @@
           selectedAddress = listAddress[selectedIndexAddress]?.value;
         } else {
           selectedAddress = listAddress[indexSelectedAddressResult]?.value;
-          search = "";
-          searchListAddressResult = listAddress;
         }
         handleSearchAddress(selectedAddress);
         showPopoverSearch = false;
         indexSelectedAddressResult = -1;
+        search = "";
+        searchListAddressResult = listAddress;
       }
     });
   });
