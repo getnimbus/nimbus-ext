@@ -1011,7 +1011,7 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
+                              class="w-5 h-5 xl:w-4 xl:h-4"
                             />
                             {item.label}
                             {#if item.value === selectedWallet}
@@ -1117,7 +1117,7 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class="w-5 h-5 xl:w-4 xl:h-4 rounded-full"
+                              class="w-5 h-5 xl:w-4 xl:h-4"
                             />
                             {item.label}
                             {#if item.value === selectedWallet}
@@ -1194,11 +1194,7 @@
                           wallet.update((n) => (n = item.value));
                         }}
                       >
-                        <img
-                          src={item.logo}
-                          alt=""
-                          class="w-5 h-5 rounded-full"
-                        />
+                        <img src={item.logo} alt="" class="w-5 h-5" />
                         {item.label}
                         {#if item.value === selectedWallet}
                           <Motion
