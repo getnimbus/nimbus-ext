@@ -125,7 +125,7 @@
         class="flex flex-col gap-3 bg-[#1589EB] py-4 px-6 rounded-lg min-w-[250px] w-max"
       >
         <div class="text-2xl font-medium text-white">My GM Points</div>
-        <div class="text-4xl font-semibold flex items-center gap-2 text-white">
+        <div class="text-4xl font-medium flex items-center gap-2 text-white">
           {#if $queryDailyCheckin.isFetching}
             <Loading />
           {:else}
@@ -357,7 +357,7 @@
     }}
   >
     <div class="flex flex-col items-center justify-center gap-10">
-      <div class="xl:text-2xl text-4xl text-white font-bold">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
         Received successfully
       </div>
       <img
@@ -365,7 +365,7 @@
         alt=""
         class="w-40 h-40"
       />
-      <div class="xl:text-2xl text-4xl text-white font-bold">
+      <div class="xl:text-2xl text-4xl text-white font-medium">
         +{$queryDailyCheckin?.data?.pointStreak[selectedCheckinIndex]} GM Points
       </div>
     </div>
@@ -373,9 +373,4 @@
 {/if}
 
 <style windi:preflights:global windi:safelist:global>
-  .droptheshadow {
-    --tw-drop-shadow: drop-shadow(0 20px 13px rgba(0, 0, 0, 0.03))
-      drop-shadow(0 8px 5px rgba(0, 0, 0, 0.08));
-    --tw-shadow-color: 75, 85, 99;
-  }
 </style>

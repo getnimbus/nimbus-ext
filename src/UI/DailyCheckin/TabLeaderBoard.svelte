@@ -73,20 +73,20 @@
   <div class="relative">
     <div class="flex flex-col items-center justify-center">
       <div class="xl:w-3/5 w-4/5 flex">
-        <div class="flex-1 flex flex-col justify-end h-[300px]">
-          <div class="h-[165px]">
+        <div class="flex-1 flex flex-col justify-end h-[250px] mt-20 2xl:ml-14">
+          <div class="h-[155px] 2xl:h-[210px]">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank2.svg"
               alt=""
               class="w-full h-full object-contain"
             />
           </div>
-          <div class="flex flex-col justify-center items-center gap-1 -mt-1">
+          <div class="flex flex-col justify-center items-center gap-1 -mt-3">
             <div class="xl:text-lg text-xl font-medium">
               {shorterAddress(formatDataLeaderboard[1]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-semibold">
+              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-medium">
                 {formatDataLeaderboard[1]?.point || 0}
               </div>
               <div class="font-normal xl:text-base text-lg">GM Point</div>
@@ -94,8 +94,8 @@
           </div>
         </div>
 
-        <div class="flex-1 -mt-12">
-          <div class="h-[210px]">
+        <div class="flex-1 2xl:-mt-20 -mt-8">
+          <div class="h-[210px] 2xl:h-[300px]">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank1.svg"
               alt=""
@@ -107,7 +107,7 @@
               {shorterAddress(formatDataLeaderboard[0]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-semibold">
+              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-medium">
                 {formatDataLeaderboard[0]?.point || 0}
               </div>
               <div class="font-normal xl:text-base text-lg">GM Point</div>
@@ -115,8 +115,8 @@
           </div>
         </div>
 
-        <div class="flex-1 flex flex-col justify-end h-[250px] mt-10">
-          <div class="h-[165px]">
+        <div class="flex-1 flex flex-col justify-end h-[250px] mt-20 2xl:mr-14">
+          <div class="h-[155px] 2xl:h-[200px]">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank3.svg"
               alt=""
@@ -128,7 +128,7 @@
               {shorterAddress(formatDataLeaderboard[2]?.owner) || "-"}
             </div>
             <div class="flex items-center gap-1">
-              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-semibold">
+              <div class="xl:text-2xl text-3xl text-[#FFCB59] font-medium">
                 {formatDataLeaderboard[2]?.point || 0}
               </div>
               <div class="font-normal xl:text-base text-lg">GM Point</div>
@@ -137,7 +137,7 @@
         </div>
       </div>
       <div
-        class="xl:w-3/5 w-full flex items-center justify-center -mt-24 -z-10"
+        class="xl:w-3/5 w-full flex items-center justify-center 2xl:-mt-6 -mt-20 -z-10"
       >
         <img
           src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/Rankstatus.png"
@@ -146,7 +146,7 @@
       </div>
     </div>
     <div
-      class="absolute -top-58 left-1/2 transform -translate-x-1/2 -z-20 xl:w-1/2 w-full h-full opacity-60"
+      class="absolute -top-58 left-1/2 transform -translate-x-1/2 -z-20 xl:w-1/2 w-2/3 h-full opacity-60"
     >
       <img
         src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/frameLeaderboard.png"
@@ -156,7 +156,7 @@
     </div>
   </div>
 
-  <div class="relative flex flex-col gap-4 justify-center items-center -mt-60">
+  <div class="relative flex flex-col gap-4 justify-center items-center -mt-48">
     <div
       class="flex items-center gap-1 px-2 py-1 rounded-lg text-gray-500 shadow"
     >
