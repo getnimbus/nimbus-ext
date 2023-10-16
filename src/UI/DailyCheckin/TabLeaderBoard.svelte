@@ -73,8 +73,8 @@
   <div class="relative">
     <div class="flex flex-col items-center justify-center">
       <div class="xl:w-3/5 w-4/5 flex">
-        <div class="flex-1 flex flex-col justify-end h-[250px]">
-          <div class="h-[125px]">
+        <div class="flex-1 flex flex-col justify-end h-[300px]">
+          <div class="h-[165px]">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank2.svg"
               alt=""
@@ -94,15 +94,15 @@
           </div>
         </div>
 
-        <div class="flex-1 -mt-5">
-          <div class="h-[160px]">
+        <div class="flex-1 -mt-12">
+          <div class="h-[210px]">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank1.svg"
               alt=""
               class="w-full h-full object-contain"
             />
           </div>
-          <div class="flex flex-col justify-center items-center gap-1 -mt-1">
+          <div class="flex flex-col justify-center items-center gap-1 -mt-3">
             <div class="xl:text-lg text-xl font-medium">
               {shorterAddress(formatDataLeaderboard[0]?.owner) || "-"}
             </div>
@@ -115,15 +115,15 @@
           </div>
         </div>
 
-        <div class="flex-1 flex flex-col justify-end h-[250px]">
-          <div class="h-[125px]">
+        <div class="flex-1 flex flex-col justify-end h-[250px] mt-10">
+          <div class="h-[165px]">
             <img
               src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/eecd3ee46b098a2d8f4bb57c7c26dc8029d3304a/src/assets/dailycheckin/Rank3.svg"
               alt=""
               class="w-full h-full object-contain"
             />
           </div>
-          <div class="flex flex-col justify-center items-center gap-1 -mt-1">
+          <div class="flex flex-col justify-center items-center gap-1 -mt-3">
             <div class="xl:text-lg text-xl font-medium">
               {shorterAddress(formatDataLeaderboard[2]?.owner) || "-"}
             </div>
@@ -137,7 +137,7 @@
         </div>
       </div>
       <div
-        class="xl:w-3/5 w-full flex items-center justify-center -mt-14 -z-10"
+        class="xl:w-3/5 w-full flex items-center justify-center -mt-24 -z-10"
       >
         <img
           src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/Rankstatus.png"
@@ -146,7 +146,7 @@
       </div>
     </div>
     <div
-      class="absolute -top-58 left-1/2 transform -translate-x-1/2 -z-20 xl:w-3/5 w-full h-full opacity-60"
+      class="absolute -top-58 left-1/2 transform -translate-x-1/2 -z-20 xl:w-1/2 w-full h-full opacity-60"
     >
       <img
         src="https://raw.githubusercontent.com/getnimbus/nimbus-ext/feat/daily-checking/src/assets/dailycheckin/frameLeaderboard.png"
@@ -182,7 +182,7 @@
       <table class="table-auto w-full h-full">
         <thead>
           <tr class="bg-[#FFB800] sticky top-0">
-            <th colspan="3" class="pt-2 px-6 rounded-t-xl">
+            <th colspan="3" class="pt-2 px-6 rounded-t-xl font-medium">
               <div class="flex justify-start xl:text-sm text-lg">
                 Your current rank
               </div>
@@ -190,7 +190,7 @@
           </tr>
 
           <tr class="bg-[#FFB800] sticky top-[29px]">
-            <th class="py-2 pl-6">
+            <th class="py-2 pl-6 font-medium">
               <div
                 class={`flex justify-start text-3xl font-normal w-4 ${
                   !darkMode && "text-[#27326F]"
@@ -200,7 +200,7 @@
               </div>
             </th>
 
-            <th class="py-2">
+            <th class="py-2 font-medium">
               <div class="flex items-end justify-start xl:text-base text-xl">
                 {formatDataLeaderboard[currentUserRank]?.owner
                   ? shorterAddress(
@@ -210,7 +210,7 @@
               </div>
             </th>
 
-            <th class="py-2 pr-6">
+            <th class="py-2 pr-6 font-medium">
               <div class="flex items-center justify-end gap-1">
                 <div class="xl:text-2xl text-4xl">
                   {formatDataLeaderboard[currentUserRank]?.point || 0}
@@ -221,7 +221,7 @@
           </tr>
 
           <tr>
-            <th colspan="3" class="py-2 px-6">
+            <th colspan="3" class="py-2 px-6 font-medium">
               <div class="flex justify-start xl:text-sm text-lg">
                 Runners up
               </div>
