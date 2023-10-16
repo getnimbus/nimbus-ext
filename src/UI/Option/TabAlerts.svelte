@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
+  import { wallet, user } from "~/store";
 
   import Button from "~/components/Button.svelte";
 
@@ -40,18 +43,35 @@
     },
   ];
 
+  let userInfo = {};
+  user.subscribe((value) => {
+    userInfo = value;
+  });
+
+  let selectedWallet: string = "";
+  wallet.subscribe((value) => {
+    selectedWallet = value;
+  });
+
   let show = false;
   let counter = 3;
   let toastMsg = "";
   let isSuccess = false;
+
+  let userConfigs = {
+    filter_spam_tx_alert: false,
+    price_alert: 0,
+    summary_setting_alert: "",
+    transaction_alert: false,
+  };
 
   let percent = false;
   let summary = false;
   let transaction = false;
 
   let filterSpamTrx = false;
-  let selectedPercent = [];
-  let selectedSummary = [];
+  let selectedPercent = 0;
+  let selectedSummary = "";
 
   let isLoadingSave = false;
 
@@ -73,15 +93,15 @@
       filterSpamTrx = false;
     }
     if (!percent) {
-      selectedPercent = [];
+      selectedPercent = 0;
     }
     if (!summary) {
-      selectedSummary = [];
+      selectedSummary = "";
     }
   }
 
   const onSubmitSettingAlert = async () => {
-    if (percent && selectedPercent.length === 0) {
+    if (percent && selectedPercent === 0) {
       toastMsg =
         "Please select at least one price percent to receive notification";
       isSuccess = false;
@@ -97,25 +117,103 @@
       return;
     }
 
-    isLoadingSave = true;
+    const payload = {
+      price: {
+        enabled: percent,
+        value: selectedPercent !== 0 ? selectedPercent : null,
+      },
+      portfolioSummary: {
+        enabled: summary,
+        value: selectedSummary.length !== 0 ? selectedSummary : null,
+      },
+      transaction: {
+        enabled: transaction,
+        filterSpam: filterSpamTrx,
+      },
+    };
 
+    isLoadingSave = true;
     try {
-      isLoadingSave = false;
-      console.log({
-        selectedPercent,
-        selectedSummary,
-        transaction,
-        filterSpamTrx,
-      });
+      const res = await nimbus.put("/users/configs/alert-settings", payload);
+      if (res && res?.data) {
+        selectedPercent = Number(res?.data?.alert_settings?.price?.value);
+        selectedSummary = res?.data?.alert_settings?.portfolioSummary?.value;
+        transaction = res?.data?.alert_settings?.transaction?.enabled;
+        filterSpamTrx = res?.data?.alert_settings?.transaction?.filterSpam;
+        if (Number(res?.data?.alert_settings?.price?.value) !== 0) {
+          percent = true;
+        }
+        if (res?.data?.alert_settings?.portfolioSummary?.value !== null) {
+          summary = true;
+        }
+
+        toastMsg = "Your settings have been successfully saved!";
+        isSuccess = true;
+      }
     } catch (e) {
       console.error(e);
-      isLoadingSave = false;
       toastMsg =
         "There are some problem when save you settings. Please try again!";
       isSuccess = false;
+    } finally {
+      isLoadingSave = false;
       trigger();
     }
   };
+
+  const cancelSaveSetting = () => {
+    selectedPercent = Number(userConfigs.price_alert);
+    selectedSummary = userConfigs.summary_setting_alert;
+    transaction = userConfigs.transaction_alert;
+    filterSpamTrx = userConfigs.filter_spam_tx_alert;
+    if (userConfigs.price_alert !== 0) {
+      percent = true;
+    }
+    if (userConfigs.summary_setting_alert !== null) {
+      summary = true;
+    }
+  };
+
+  const getUserConfigs = async () => {
+    try {
+      const res: any = await nimbus.get("/users/configs");
+      if (res?.status === 401) {
+        localStorage.removeItem("evm_token");
+        user.update((n) => (n = {}));
+        throw new Error(res?.response?.error);
+      }
+      userConfigs = {
+        filter_spam_tx_alert:
+          res?.data?.alert_settings?.transaction?.filterSpam,
+        price_alert: Number(res?.data?.alert_settings?.price?.value),
+        summary_setting_alert:
+          res?.data?.alert_settings?.portfolioSummary?.value,
+        transaction_alert: res?.data?.alert_settings?.transaction?.enabled,
+      };
+
+      if (res && res?.data) {
+        selectedPercent = Number(res?.data?.alert_settings?.price?.value);
+        selectedSummary = res?.data?.alert_settings?.portfolioSummary?.value;
+        transaction = res?.data?.alert_settings?.transaction?.enabled;
+        filterSpamTrx = res?.data?.alert_settings?.transaction?.filterSpam;
+        if (Number(res?.data?.alert_settings?.price?.value) !== 0) {
+          percent = true;
+        }
+        if (res?.data?.alert_settings?.portfolioSummary?.value !== null) {
+          summary = true;
+        }
+
+        toastMsg = "Your settings have been successfully saved!";
+        isSuccess = true;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  onMount(() => {
+    getUserConfigs();
+  });
 </script>
 
 <div class="flex flex-col gap-4">
@@ -132,65 +230,74 @@
     <div class="flex flex-col gap-3">
       <div class="flex justify-between items-center gap-6">
         <div class="flex flex-col">
-          <div class="xl:text-base text-xl">Price change notification</div>
-          <div class="xl:text-sm text-base text-gray-400">
+          <div class="xl:text-base text-2xl">Price change notification</div>
+          <div class="xl:text-sm text-xl text-gray-400">
             Receive notification whenever your price percent change
           </div>
         </div>
         <label class="switch">
-          <input type="checkbox" bind:checked={percent} />
+          <input
+            type="checkbox"
+            checked={percent}
+            on:click={() => {
+              percent = !percent;
+            }}
+          />
           <span class="slider" />
         </label>
       </div>
       <div class="flex flex-col gap-3">
         {#each percentList as item}
-          <div class="flex items-center gap-2 cursor-pointer w-max">
+          <label class="flex items-center xl:gap-2 gap-6 cursor-pointer w-max">
             <input
-              type="checkbox"
+              type="radio"
               disabled={!percent}
               name={item.id}
               id={item.id}
               value={item.value}
-              class={`cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] ${
+              bind:group={selectedPercent}
+              class={`cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-full border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] ${
                 percent ? "" : "bg-gray-200 border-gray-200"
               }`}
-              bind:group={selectedPercent}
             />
-            <label
-              for={item.id}
-              class="xl:text-sm text-2xl font-normal cursor-pointer"
-            >
+            <div class="xl:text-sm text-2xl font-normal cursor-pointer">
               {item.content}
-            </label>
-          </div>
+            </div>
+          </label>
         {/each}
       </div>
     </div>
     <div class="flex flex-col gap-4">
       <div class="flex justify-between items-center gap-6">
         <div class="flex flex-col">
-          <div class="xl:text-base text-xl">
+          <div class="xl:text-base text-2xl">
             Frequency of portfolio summary notification
           </div>
-          <div class="xl:text-sm text-base text-gray-400">
+          <div class="xl:text-sm text-xl text-gray-400">
             Receive portfolio summary every daily, weekly or monthly
           </div>
         </div>
         <label class="switch">
-          <input type="checkbox" bind:checked={summary} />
+          <input
+            type="checkbox"
+            checked={summary}
+            on:click={() => {
+              summary = !summary;
+            }}
+          />
           <span class="slider" />
         </label>
       </div>
       <div class="flex flex-col gap-3">
         {#each summaryList as item}
-          <div class="flex items-center gap-2 cursor-pointer w-max">
+          <div class="flex items-center xl:gap-2 gap-6 cursor-pointer w-max">
             <input
-              type="checkbox"
+              type="radio"
               disabled={!summary}
               name={item.id}
               id={item.id}
               value={item.value}
-              class={`cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-[0.25rem] border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] ${
+              class={`cursor-pointer relative xl:w-4 xl:h-4 w-6 h-6 appearance-none rounded-full border outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] ${
                 summary ? "" : "bg-gray-200 border-gray-200"
               }`}
               bind:group={selectedSummary}
@@ -208,13 +315,19 @@
     <div class="flex flex-col gap-4">
       <div class="flex justify-between items-center gap-6">
         <div class="flex flex-col">
-          <div class="xl:text-base text-xl">Transaction notification</div>
-          <div class="xl:text-sm text-base text-gray-400">
+          <div class="xl:text-base text-2xl">Transaction notification</div>
+          <div class="xl:text-sm text-xl text-gray-400">
             Receive notification whenever you have transaction
           </div>
         </div>
         <label class="switch">
-          <input type="checkbox" bind:checked={transaction} />
+          <input
+            type="checkbox"
+            checked={transaction}
+            on:click={() => {
+              transaction = !transaction;
+            }}
+          />
           <span class="slider" />
         </label>
       </div>
@@ -226,7 +339,10 @@
           <input
             type="checkbox"
             disabled={!transaction}
-            bind:checked={filterSpamTrx}
+            checked={filterSpamTrx}
+            on:click={() => {
+              filterSpamTrx = !filterSpamTrx;
+            }}
           />
           <span class="slider" />
         </label>
@@ -235,16 +351,7 @@
 
     <div class="flex justify-start gap-6 lg:gap-2 mt-6">
       <div class="w-[120px]">
-        <Button
-          variant="secondary"
-          on:click={() => {
-            transaction = false;
-            percent = false;
-            summary = false;
-          }}
-        >
-          Cancel</Button
-        >
+        <Button variant="secondary" on:click={cancelSaveSetting}>Cancel</Button>
       </div>
       <div class="w-[120px]">
         <Button type="submit" variant="tertiary" isLoading={isLoadingSave}>
