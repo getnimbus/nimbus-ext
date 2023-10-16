@@ -301,8 +301,8 @@
                       darkMode ? "bg-gray-700" : "bg-gray-100"
                     } `}
                   >
-                    <th class="py-2 pl-3 text-left">Date</th>
-                    <th class="py-2 pr-3 text-right">Point</th>
+                    <th class="py-2 pl-3 text-left font-medium">Date</th>
+                    <th class="py-2 pr-3 text-right font-medium">Point</th>
                   </tr>
                 </thead>
                 {#if $queryDailyCheckin?.data === undefined}
