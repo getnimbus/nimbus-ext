@@ -218,15 +218,15 @@
                 <div class="grid grid-cols-7 gap-4 w-[1350px]">
                   {#each $queryDailyCheckin?.data?.pointStreak || [] as item, index}
                     <div
-                      class={`flex flex-col gap-2 items-center rounded-lg py-8 transform scale-95 transition-all  ${
+                      class={`flex flex-col gap-2 items-center filter rounded-lg py-8 transform scale-95 transition-all ${
                         selectedCheckinIndex > index && darkMode
                           ? "grayscale bg-gray-700"
                           : selectedCheckinIndex > index && !darkMode
                           ? "grayscale bg-gray-100"
                           : selectedCheckinIndex === index
-                          ? "bg-black text-white scale-100"
+                          ? "bg-black text-white scale-100 drop-shadow-lg"
                           : darkMode
-                          ? "bg-gray-700 "
+                          ? "bg-gray-700"
                           : "bg-gray-100"
                       }`}
                     >
@@ -373,4 +373,9 @@
 {/if}
 
 <style windi:preflights:global windi:safelist:global>
+  .droptheshadow {
+    --tw-drop-shadow: drop-shadow(0 20px 13px rgba(0, 0, 0, 0.03))
+      drop-shadow(0 8px 5px rgba(0, 0, 0, 0.08));
+    --tw-shadow-color: 75, 85, 99;
+  }
 </style>
