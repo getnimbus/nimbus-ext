@@ -24,11 +24,10 @@
   import Button from "./Button.svelte";
   import Copy from "~/components/Copy.svelte";
   import OverlaySidebar from "./OverlaySidebar.svelte";
+  import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
-  import Chart from "~/assets/chart.svg";
-  import Detail from "~/assets/detail.svg";
 
   export let data;
   export let selectedWallet;
@@ -83,6 +82,8 @@
 
   let showSideTokenDetail = false;
 
+  let selectedTokenDetail = {};
+
   const trigger = () => {
     showToast = true;
     counter = 3;
@@ -108,7 +109,7 @@
     },
   };
 
-  const reasonReportData = [
+  const reasonReport = [
     {
       id: "trash",
       content: "This token is trash 🗑️",
@@ -911,7 +912,10 @@
     {/if}
     <div
       class="flex justify-center cursor-pointer"
-      on:click={() => (showSideTokenDetail = true)}
+      on:click={() => {
+        showSideTokenDetail = true;
+        selectedTokenDetail = data;
+      }}
     >
       <div
         use:tooltip={{
@@ -1322,7 +1326,7 @@
             Reason
           </div>
 
-          {#each reasonReportData as item}
+          {#each reasonReport as item}
             <div class="flex items-center gap-2 cursor-pointer w-max">
               <input
                 type="checkbox"
@@ -1399,28 +1403,107 @@
 </AppOverlay>
 
 <!-- Sidebar Token Detail -->
-<OverlaySidebar
-  isOpen={showSideTokenDetail}
-  on:close={() => {
-    showSideTokenDetail = false;
-  }}
->
+<OverlaySidebar isOpen={showSideTokenDetail}>
   <div class="flex flex-col gap-6 p-6">
     <div class="flex justify-between items-start">
       <div
         class="xl:text-5xl text-6xl text-gray-500 cursor-pointer"
         on:click|stopPropagation={() => {
           showSideTokenDetail = false;
+          selectedTokenDetail = {};
         }}
       >
         &times;
       </div>
-      <div class="flex flex-col items-end">
-        <div>token logo and name and symbol</div>
-        <div>token price</div>
-      </div>
+      {#if selectedTokenDetail && Object.keys(selectedTokenDetail).length !== 0}
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-4">
+            <div class="relative">
+              <img
+                src={logo}
+                alt=""
+                width="46"
+                height="46"
+                class="rounded-full"
+                on:error={() => {
+                  logo =
+                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+                }}
+              />
+              {#if (typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE") && selectedTokenDetail?.chain !== "CEX" && selectedTokenDetail?.chain !== "BTC"}
+                <div class="absolute -top-2 -right-1">
+                  <img
+                    src={detectedChain(selectedTokenDetail.chain)}
+                    alt=""
+                    width="26"
+                    height="26"
+                    class="rounded-full"
+                  />
+                </div>
+              {/if}
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-start gap-2">
+                <div
+                  class="relative font-medium xl:text-xl text-2xl"
+                  on:mouseover={() => {
+                    isShowTooltipName = true;
+                  }}
+                  on:mouseleave={() => (isShowTooltipName = false)}
+                >
+                  {#if selectedTokenDetail.name === undefined}
+                    N/A
+                  {:else}
+                    {selectedTokenDetail?.name?.length > 20
+                      ? shorterName(selectedTokenDetail.name, 20)
+                      : selectedTokenDetail.name}
+                  {/if}
+                  {#if isShowTooltipName && selectedTokenDetail?.name?.length > 20}
+                    <div
+                      class="absolute left-0 -top-8"
+                      style="z-index: 2147483648;"
+                    >
+                      <tooltip-detail text={selectedTokenDetail.name} />
+                    </div>
+                  {/if}
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <div
+                  class="relative font-medium text_00000080 xl:text-base text-lg"
+                  on:mouseover={() => {
+                    isShowTooltipSymbol = true;
+                  }}
+                  on:mouseleave={() => (isShowTooltipSymbol = false)}
+                >
+                  {#if selectedTokenDetail.symbol === undefined}
+                    N/A
+                  {:else}
+                    {shorterName(selectedTokenDetail.symbol, 20)}
+                  {/if}
+                  {#if isShowTooltipSymbol && selectedTokenDetail.symbol.length > 20}
+                    <div
+                      class="absolute left-0 -top-8"
+                      style="z-index: 2147483648;"
+                    >
+                      <tooltip-detail text={selectedTokenDetail.symbol} />
+                    </div>
+                  {/if}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center font-medium xl:text-2xl text-3xl">
+            $<TooltipNumber
+              number={selectedTokenDetail?.market_price}
+              type="balance"
+            />
+          </div>
+        </div>
+      {/if}
     </div>
-    <div>hello world</div>
+    <TokenDetailSidebar data={selectedTokenDetail} />
   </div>
 </OverlaySidebar>
 
