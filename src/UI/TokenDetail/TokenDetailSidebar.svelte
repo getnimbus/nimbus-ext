@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
-  import { priceSubscribe } from "~/lib/price-ws";
   import { createQuery } from "@tanstack/svelte-query";
   import {
     typeWallet,
@@ -14,9 +12,11 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
+  import TokenHistoryItem from "./TokenHistoryItem.svelte";
 
   export let data;
 
@@ -60,7 +60,7 @@
 
   const handleGetTradeHistory = async () => {
     const response: any = await nimbus.get(
-      `/v2/address/${selectedWallet}/token/${data?.contractAddress}/trade-history`
+      `/v2/address/${selectedWallet}/token/${data?.contractAddress}/trade-history?chain=ETH`
     );
     if (response?.status === 401) {
       throw new Error(response?.response?.error);
@@ -83,12 +83,27 @@
     },
   });
 
+  let sellHistoryTradeList = [];
+  let buyHistoryTradeList = [];
+  let dataHistoryTokenDetail = [];
+
   $: {
     if (
       !$queryHistoryTokenDetail.isError &&
-      $queryHistoryTokenDetail.data !== undefined
+      $queryHistoryTokenDetail.data !== undefined &&
+      $queryHistoryTokenDetail.data.length !== 0
     ) {
-      console.log("HELLO: ", $queryHistoryTokenDetail.data);
+      dataHistoryTokenDetail = $queryHistoryTokenDetail.data;
+      sellHistoryTradeList = $queryHistoryTokenDetail.data.filter(
+        (item) =>
+          item?.from_token_address.toLowerCase() ===
+          data?.contractAddress.toLowerCase()
+      );
+      buyHistoryTradeList = $queryHistoryTokenDetail.data.filter(
+        (item) =>
+          item?.to_token_address.toLowerCase() ===
+          data?.contractAddress.toLowerCase()
+      );
     }
   }
 </script>
@@ -113,7 +128,9 @@
       </OverviewCard>
 
       <OverviewCard title={"30D Trx (Buy/Sell)"}>
-        <div class="xl:text-3xl text-5xl">0/0</div>
+        <div class="xl:text-3xl text-5xl">
+          {buyHistoryTradeList.length}/{sellHistoryTradeList.length}
+        </div>
       </OverviewCard>
     </div>
 
@@ -207,14 +224,98 @@
       </OverviewCard>
     </div>
   </div>
+
+  <div class="token_detail_container rounded-[20px] xl:p-8 p-6 xl:shadow-md">
+    <div
+      class={`rounded-[20px] p-6 flex flex-col gap-4 ${
+        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      }`}
+    >
+      <div class="xl:text-2xl text-4xl font-medium">History</div>
+      <div
+        class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+          darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+        }`}
+      >
+        <table class="table-auto xl:w-full w-[1400px] h-full">
+          <thead>
+            <tr class="bg_f4f5f8">
+              <th
+                class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[100px]"
+              >
+                <div class="text-left xl:text-xs text-xl uppercase font-medium">
+                  Quantity
+                </div>
+              </th>
+
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  Cost/Profit
+                </div>
+              </th>
+
+              <th class="py-3">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  Price
+                </div>
+              </th>
+
+              <th class="py-3 pr-3 rounded-tr-[10px]">
+                <div
+                  class="text-right xl:text-xs text-xl uppercase font-medium"
+                >
+                  Time
+                </div>
+              </th>
+            </tr>
+          </thead>
+          {#if $queryHistoryTokenDetail.isFetching}
+            <tbody>
+              <tr>
+                <td colspan="4">
+                  <div
+                    class="flex justify-center items-center h-full py-3 px-3"
+                  >
+                    <Loading />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          {:else}
+            <tbody>
+              {#if dataHistoryTokenDetail && dataHistoryTokenDetail?.length === 0}
+                <tr>
+                  <td colspan="4">
+                    <div
+                      class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                    >
+                      Empty
+                    </div>
+                  </td>
+                </tr>
+              {:else}
+                {#each dataHistoryTokenDetail as data}
+                  <TokenHistoryItem {data} />
+                {/each}
+              {/if}
+            </tbody>
+          {/if}
+        </table>
+      </div>
+    </div>
+  </div>
 </ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global>
-  :global(body) .nft_detail_container {
+  :global(body) .token_detail_container {
     background: #fff;
     box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
   }
-  :global(body.dark) .nft_detail_container {
+  :global(body.dark) .token_detail_container {
     background: #0f0f0f;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
   }
