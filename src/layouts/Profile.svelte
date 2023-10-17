@@ -29,6 +29,7 @@
 
   import User from "~/assets/user.png";
   import UpArrow from "~/assets/up-arrow.svg";
+  import ProfitData from "~/UI/Profile/ProfitData.svelte";
 
   let userID = "";
   userId.subscribe((value) => {
@@ -552,6 +553,8 @@
                 {submitSocialData}
               />
             </div>
+
+            <ProfitData {selectedAddress} />
 
             <TradingStats {selectedAddress} />
 
