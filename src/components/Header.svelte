@@ -869,7 +869,7 @@
               </Link>
             </div>
 
-            <!-- <div
+            <div
               on:click={() => {
                 navActive = "profile";
                 queryClient.invalidateQueries(["users-me"]);
@@ -906,7 +906,7 @@
                   <span class="text-3xl font-medium">My Profile</span>
                 </div>
               </Link>
-            </div> -->
+            </div>
           {/if}
 
           <div
