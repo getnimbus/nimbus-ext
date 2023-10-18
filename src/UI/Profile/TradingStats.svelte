@@ -93,7 +93,7 @@
   $: totalToken = $queryTradingStats?.data?.metadata?.length || 0;
 </script>
 
-<div class="col-span-2 border border_0000001a rounded-xl flex flex-col">
+<div class="col-span-4 border border_0000001a rounded-xl flex flex-col">
   <div
     class="flex justify-start text-3xl font-medium xl:text-xl px-6 pb-3 pt-6"
   >

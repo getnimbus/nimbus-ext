@@ -334,9 +334,9 @@
         <div class="flex items-center justify-end lg:gap-2 gap-6">
           {#if isEdit}
             <div class="w-[120px]">
-              <Button variant="secondary" on:click={handleCancelEditProfile}
-                >Cancel</Button
-              >
+              <Button variant="secondary" on:click={handleCancelEditProfile}>
+                Cancel
+              </Button>
             </div>
             <div class="w-[120px]">
               <Button
@@ -347,8 +347,9 @@
             </div>
           {:else}
             <div class="xl:w-[160px] w-[220px]">
-              <Button on:click={() => (isEdit = true)}>Edit your profile</Button
-              >
+              <Button on:click={() => (isEdit = true)}>
+                Edit your profile
+              </Button>
             </div>
           {/if}
         </div>
@@ -456,8 +457,9 @@
                         <Button
                           variant="secondary"
                           on:click={() => (isOpenModalSelectNFT = true)}
-                          >Change</Button
                         >
+                          Change
+                        </Button>
                       </div>
                     {/if}
                   </div>
@@ -494,7 +496,8 @@
                           <TooltipNumber
                             number={Number(selectProfileNFT?.floorPrice)}
                             type="balance"
-                          /><span class="ml-1">
+                          />
+                          <span class="ml-1">
                             {selectProfileNFT?.nativeToken?.symbol || ""}
                           </span>
                         </div>
@@ -556,9 +559,9 @@
 
             <ProfitData {selectedAddress} />
 
-            <TradingStats {selectedAddress} />
-
             <TopProfitAndLoss {selectedAddress} />
+
+            <TradingStats {selectedAddress} />
 
             <ClosedPositionChart {selectedAddress} />
           </div>
