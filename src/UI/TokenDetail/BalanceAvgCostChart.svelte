@@ -48,7 +48,7 @@
                   }">
                     <span>${item?.marker}</span>
                     ${
-                      item?.seriesName === "seriesName"
+                      item?.seriesName === "Current Price"
                         ? "Current Balance"
                         : "Balance"
                     }
@@ -158,7 +158,7 @@
           {
             name: "Current Price",
             type: "bar",
-            data: [data?.amount, data?.market_price],
+            data: [Math.max(...dataChart), data?.market_price],
           },
         ],
       };
