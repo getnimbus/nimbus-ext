@@ -8,10 +8,10 @@
   import { groupBy } from "lodash";
 
   import EChart from "~/components/EChart.svelte";
+  import Loading from "~/components/Loading.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
-  import Loading from "~/components/Loading.svelte";
 
   export let contractAddress;
   export let sellHistoryTradeList;
@@ -492,7 +492,7 @@
   </div>
 {:else}
   <div class="h-full">
-    {#if $queryTokenPrice.isError || (dataPriceChart && dataPriceChart.length === 0)}
+    {#if $queryTokenPrice.isError || (dataPriceChart && dataPriceChart.length === 0) || (dataAvgCost && dataAvgCost.length === 0)}
       <div
         class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
       >
@@ -500,7 +500,13 @@
       </div>
     {:else}
       <div class="relative">
-        <EChart {id} {theme} notMerge={true} option={optionLine} height={485} />
+        <EChart
+          id={id + "linechart"}
+          {theme}
+          notMerge={true}
+          option={optionLine}
+          height={485}
+        />
         <div
           class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
         >
