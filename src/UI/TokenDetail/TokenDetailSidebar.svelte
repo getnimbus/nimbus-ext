@@ -15,6 +15,7 @@
   import Loading from "~/components/Loading.svelte";
   import TokenHistoryItem from "./TokenHistoryItem.svelte";
   import PriceChart from "./PriceChart.svelte";
+  import BalanceAvgCostChart from "./BalanceAvgCostChart.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
@@ -234,7 +235,16 @@
     </div>
   </div>
 
-  <div class="token_detail_container rounded-[20px] xl:p-8 p-6 xl:shadow-md">
+  <div class="flex flex-col gap-6">
+    <div
+      class={`rounded-[20px] p-6 flex flex-col gap-4 ${
+        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      }`}
+    >
+      <div class="xl:text-2xl text-4xl font-medium">Balance / Avg Cost</div>
+      <BalanceAvgCostChart {data} id={data?.name} />
+    </div>
+
     <div
       class={`rounded-[20px] p-6 flex flex-col gap-4 ${
         darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
@@ -320,12 +330,4 @@
 </ErrorBoundary>
 
 <style windi:preflights:global windi:safelist:global>
-  :global(body) .token_detail_container {
-    background: #fff;
-    box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.1);
-  }
-  :global(body.dark) .token_detail_container {
-    background: #0f0f0f;
-    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
-  }
 </style>
