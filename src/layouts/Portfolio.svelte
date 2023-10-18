@@ -38,6 +38,7 @@
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";
+  import ProductTour from "~/components/ProductTour.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),

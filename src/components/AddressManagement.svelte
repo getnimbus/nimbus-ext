@@ -952,7 +952,7 @@
                 </Button>
               </div>
             {:else}
-              <div class="flex flex-col gap-4">
+              <div class="flex flex-col gap-4 view-add-wallet-tour">
                 <Button
                   on:click={() => {
                     triggerConnectWallet.update((n) => (n = true));
