@@ -6,7 +6,7 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { typeWallet, isDarkMode } from "~/store";
-  import { linkExplorer } from "~/utils";
+  import { chainList, formatTransactionTime, linkExplorer } from "~/utils";
   import mobulaLogo from "~/assets/mobula-logo.png";
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
@@ -43,9 +43,9 @@
   });
 </script>
 
-<div class={`${isLoading ? "h-[400px]" : ""}`}>
+<div>
   <div
-    class={`rounded-[10px] border border_0000000d xl:overflow-hidden overflow-x-auto h-full ${
+    class={`rounded-[10px] min-h-[400px] grid border border_0000000d xl:overflow-hidden overflow-x-auto h-full ${
       darkMode ? "bg-[#131313]" : "bg-[#fff]"
     }`}
   >
@@ -86,8 +86,8 @@
           </th>
         </tr>
       </thead>
+      <tbody>
       {#if isLoading && pageToken?.length === 0}
-        <tbody>
           <tr>
             <td colspan={5}>
               <div class="flex items-center justify-center h-full px-3 py-4">
@@ -95,9 +95,7 @@
               </div>
             </td>
           </tr>
-        </tbody>
       {:else}
-        <tbody>
           {#if data && data?.length === 0}
             <tr>
               <td colspan={5}>
@@ -121,8 +119,13 @@
                   }`}
                 >
                   <div class="flex items-start gap-2 text-left w-max">
-                    <div class="flex flex-col">
-                      <div class="text-2xl xl:text-sm">
+                    <div class="flex flex-col space-y-2">
+                      <div class="text-2xl xl:text-sm flex gap-2">
+                        <img
+                          src={chainList.find(chain => chain.value === item?.chain)?.logo}
+                          alt=""
+                          class="object-contain w-5 h-5"
+                        />
                         {#if typeWalletAddress === "DEX"}
                           <Copy
                             address={item?.transaction_hash}
@@ -147,9 +150,7 @@
                         {/if}
                       </div>
                       <div class="text-lg text-gray-400 xl:text-xs">
-                        {dayjs(new Date(item?.detail.timestamp)).format(
-                          "YYYY-MM-DD, hh:mm A"
-                        )}
+                        {formatTransactionTime(new Date(item?.detail.timestamp))}
                       </div>
                     </div>
                   </div>
@@ -295,8 +296,8 @@
               </tr>
             {/each}
           {/if}
-        </tbody>
       {/if}
+      </tbody>
     </table>
   </div>
 </div>
