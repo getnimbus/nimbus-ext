@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { nimbus } from "~/lib/network";
   import { priceSubscribe } from "~/lib/price-ws";
   import { typeWallet, isDarkMode } from "~/store";
@@ -33,8 +32,6 @@
   let marketPriceNFT;
 
   let selectedTypeDisplay: "grid" | "table" = "grid";
-  let tableNFTHeader;
-  let isStickyTableNFT = false;
 
   // nft holding
   const getHoldingNFT = async (address) => {
@@ -99,17 +96,6 @@
       formatDataHoldingNFT($queryNftHolding.data);
     }
   }
-
-  onMount(() => {
-    const handleScroll = () => {
-      const clientRectNFTHeader = tableNFTHeader?.getBoundingClientRect();
-      isStickyTableNFT = clientRectNFTHeader?.top <= 0;
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  });
 
   $: {
     if (marketPriceNFT && data) {
@@ -385,10 +371,7 @@
               }`}
             >
               <table class="table-auto xl:w-full w-[1400px] h-full">
-                <thead
-                  class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
-                  bind:this={tableNFTHeader}
-                >
+                <thead>
                   <tr class="bg_f4f5f8">
                     <th
                       class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[220px]"
@@ -408,7 +391,7 @@
                       </div>
                     </th>
 
-                    <th class="py-3 pr-3">
+                    <th class="py-3 pr-3 rounded-tr-[10px]">
                       <div
                         class="text-right xl:text-xs text-xl uppercase font-medium"
                       >
