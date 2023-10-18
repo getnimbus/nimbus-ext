@@ -3,7 +3,14 @@
   import { shorterAddress, clickOutside } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
-  import { wallet, user, isDarkMode, typeWallet, userId } from "~/store";
+  import {
+    wallet,
+    user,
+    isDarkMode,
+    typeWallet,
+    userId,
+    userPublicAddress,
+  } from "~/store";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { flatMap } from "lodash";
@@ -12,6 +19,7 @@
   import Summary from "~/UI/Profile/Summary.svelte";
   import SocialMedia from "~/UI/Profile/SocialMedia.svelte";
   import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
+  import TopProfitAndLoss from "~/UI/Profile/TopProfitAndLoss.svelte";
   import TradingStats from "~/UI/Profile/TradingStats.svelte";
   import Button from "~/components/Button.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
@@ -21,6 +29,7 @@
 
   import User from "~/assets/user.png";
   import UpArrow from "~/assets/up-arrow.svg";
+  import ProfitData from "~/UI/Profile/ProfitData.svelte";
 
   let userID = "";
   userId.subscribe((value) => {
@@ -152,8 +161,7 @@
   const handleCancelEditProfile = () => {
     isEdit = false;
 
-    selectedAddress =
-      userProfile?.profileAddress || localStorage.getItem("evm_address");
+    selectedAddress = userProfile?.profileAddress || $userPublicAddress;
     selectProfileNFT = dataNftHighlight;
     description = userProfile?.intro || "What's on your mind?";
     socialDataTelegram = {
@@ -174,8 +182,7 @@
       }
       userProfile = response?.data;
 
-      selectedAddress =
-        userProfile?.profileAddress || localStorage.getItem("evm_address");
+      selectedAddress = userProfile?.profileAddress || $userPublicAddress;
       description = userProfile?.intro || "What's on your mind?";
       socialDataTelegram = {
         label: userProfile.social?.telegram?.status || "Telegram",
@@ -313,7 +320,7 @@
     class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
   >
     <div class="flex flex-col justify-center gap-2">
-      <div class="xl:text-5xl text-7xl font-semibold">My Profile</div>
+      <div class="xl:text-5xl text-7xl font-medium">My Profile</div>
       <div class="xl:text-xl text-3xl">
         One place that aggregates all your personal information
       </div>
@@ -547,7 +554,11 @@
               />
             </div>
 
+            <ProfitData {selectedAddress} />
+
             <TradingStats {selectedAddress} />
+
+            <TopProfitAndLoss {selectedAddress} />
 
             <ClosedPositionChart {selectedAddress} />
           </div>
@@ -622,12 +633,13 @@
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
-            ><path
+          >
+            <path
               fill-rule="evenodd"
               d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
               clip-rule="evenodd"
-            /></svg
-          >
+            />
+          </svg>
           <span class="sr-only">Check icon</span>
         {:else}
           <svg
@@ -636,12 +648,13 @@
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
-            ><path
+          >
+            <path
               fill-rule="evenodd"
               d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
               clip-rule="evenodd"
-            /></svg
-          >
+            />
+          </svg>
           <span class="sr-only">Error icon</span>
         {/if}
       </svelte:fragment>

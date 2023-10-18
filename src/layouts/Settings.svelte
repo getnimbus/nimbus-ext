@@ -20,11 +20,11 @@
       value: "accounts",
       type: "Accounts",
     },
-    {
-      label: i18n("optionsPage.tab-title-alerts", "Alerts"),
-      value: "alerts",
-      type: "Alerts",
-    },
+    // {
+    //   label: i18n("optionsPage.tab-title-alerts", "Alerts"),
+    //   value: "alerts",
+    //   type: "Alerts",
+    // },
     {
       label: i18n("optionsPage.tab-title-report-token", "Report Tokens"),
       value: "report-tokens",
@@ -98,10 +98,10 @@
           <TabNft />
         {:else if activeTabValue === "notification"}
           <TabNotification /> -->
+          <!-- {:else if activeTabValue === "alerts"}
+          <TabAlerts /> -->
         {:else if activeTabValue === "report-tokens"}
           <TabReportTokens />
-        {:else if activeTabValue === "alerts"}
-          <TabAlerts />
           <!-- {:else if activeTabValue === "settings"}
           <TabSettings /> -->
         {/if}
