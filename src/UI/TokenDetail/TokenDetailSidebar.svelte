@@ -110,6 +110,14 @@
 </script>
 
 <ErrorBoundary>
+  <PriceChart
+    contractAddress={data?.contractAddress}
+    {sellHistoryTradeList}
+    {buyHistoryTradeList}
+    id={data?.name}
+    avgCost={data?.profit?.averageCost}
+  />
+
   <div class="flex flex-col justify-between gap-6">
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
       <OverviewCard title={"Avg Cost"}>
@@ -225,14 +233,6 @@
       </OverviewCard>
     </div>
   </div>
-
-  <PriceChart
-    contractAddress={data?.contractAddress}
-    {sellHistoryTradeList}
-    {buyHistoryTradeList}
-    id={data?.name}
-    avgCost={data?.profit?.averageCost}
-  />
 
   <div class="token_detail_container rounded-[20px] xl:p-8 p-6 xl:shadow-md">
     <div

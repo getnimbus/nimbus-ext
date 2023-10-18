@@ -3,8 +3,9 @@
   import { createQuery } from "@tanstack/svelte-query";
   import { mobula } from "~/lib/network";
   import { isDarkMode } from "~/store";
-  import { autoFontSize, formatCurrency, formatValue } from "~/utils";
+  import { autoFontSize, formatCurrency } from "~/utils";
   import numeral from "numeral";
+  import { groupBy } from "lodash";
 
   import EChart from "~/components/EChart.svelte";
 
@@ -40,7 +41,6 @@
       trigger: "axis",
       extraCssText: "z-index: 9997",
       formatter: function (params) {
-        console.log("params", params);
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 320px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
@@ -51,29 +51,35 @@
               ${params
                 .map((item) => {
                   return `
-                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                    darkMode ? "white" : "black"
-                  }">
-                    <span>${item?.marker}</span>
-                    <span>${
-                      item?.seriesName === "series\u00001"
-                        ? "Avg Cost"
-                        : item?.seriesName === "series\u00000"
-                        ? "Price USD"
-                        : item?.seriesName
-                    }</span>
-                  </div>
+                    ${
+                      item?.seriesName === "Trade"
+                        ? handleSumTradeBuyAndSell(item?.data?.data)
+                        : `
+                        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                          <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                            darkMode ? "white" : "black"
+                          }">
+                            <span>${item?.marker}</span>
+                            <span>${
+                              item?.seriesName === "series\u00001"
+                                ? "Avg Cost"
+                                : item?.seriesName === "series\u00000"
+                                ? "Price USD"
+                                : item?.seriesName
+                            }</span>
+                          </div>
 
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
-                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      darkMode ? "white" : "black"
-                    }">
-                      $${formatCurrency(Math.abs(item.value[1]))}
-                    </div>
-                  </div>
-                </div>
-                `;
+                          <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+                            <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                              darkMode ? "white" : "black"
+                            }">
+                              $${formatCurrency(Math.abs(item.value[1]))}
+                            </div>
+                          </div>
+                        </div>
+                      `
+                    }
+                  `;
                 })
                 .join("")}
             </div>`;
@@ -164,21 +170,73 @@
     return closestObject;
   };
 
-  // Function to filter duplicates based on the 'date' field and collect duplicates into a separate array
-  function filterAndCollectDuplicates(arr) {
-    const uniqueDates = new Set();
-    const duplicates = [];
+  const filterAndCollectDuplicates = (arr) => {
+    let dateMap = new Map();
+    let duplicates = [];
 
     arr.forEach((item) => {
       const date = dayjs(item.date);
-      const dateStr = date.format("YYYY-MM-DD"); // Change the format as needed
-      if (uniqueDates.has(dateStr)) {
-        duplicates.push(item);
+      const dateStr = date.format("YYYY-MM-DD");
+
+      if (dateMap.has(dateStr)) {
+        dateMap.get(dateStr).push(item);
+      } else {
+        dateMap.set(dateStr, [item]);
       }
-      uniqueDates.add(dateStr);
     });
+
+    dateMap.forEach((duplicateGroup) => {
+      if (duplicateGroup.length > 1) {
+        duplicates.push(...duplicateGroup);
+      }
+    });
+
     return duplicates;
-  }
+  };
+
+  const handleSumTradeBuyAndSell = (arr) => {
+    const groupBuySellHistoryData = groupBy(arr, "type");
+    const buySellHistoryData = Object.getOwnPropertyNames(
+      groupBuySellHistoryData
+    );
+
+    const formatData = buySellHistoryData.map((item) => {
+      return {
+        type: item,
+        value: groupBuySellHistoryData[item]?.reduce(
+          (prev, item) => prev + Number(item.value[1]),
+          0
+        ),
+      };
+    });
+
+    return `
+       ${formatData
+         .map((item) => {
+           return `
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                  darkMode ? "white" : "black"
+                }">
+                  <span style="margin-top: 5px; display:inline-block; margin-right:4px; border-radius:10px; width:10px; height:10px; background-color: ${
+                    item?.type === "buy" ? "#00b580" : "#ef4444"
+                  };"></span>
+                  <span style="text-transform: capitalize;">${item?.type}</span>
+                </div>
+
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                    darkMode ? "white" : "black"
+                  }">
+                    $${formatCurrency(Math.abs(item.value))}
+                  </div>
+                </div>
+              </div>
+            `;
+         })
+         .join("")}
+    `;
+  };
 
   $: {
     if (
@@ -187,7 +245,7 @@
       ((sellHistoryTradeList && sellHistoryTradeList.length !== 0) ||
         (buyHistoryTradeList && buyHistoryTradeList.length !== 0))
     ) {
-      const formatDataBuyHistoryTrade = buyHistoryTradeList.map((item) => {
+      const formatDataBuyHistory = buyHistoryTradeList.map((item) => {
         const selected = findClosestObject(
           item.created_at * 1000,
           dataPriceChart.map((item) => {
@@ -198,13 +256,12 @@
           })
         );
         return {
-          itemStyle: { color: "#547fef" },
+          itemStyle: { color: "#00b580" },
           value: [item.created_at * 1000, selected.value[1]],
           type: "buy",
         };
       });
-
-      const formatDataSellHistoryTrade = sellHistoryTradeList.map((item) => {
+      const formatDataSellHistory = sellHistoryTradeList.map((item) => {
         const selected = findClosestObject(
           item.created_at * 1000,
           dataPriceChart.map((item) => {
@@ -220,54 +277,65 @@
           type: "sell",
         };
       });
+      const dataHistory = formatDataBuyHistory.concat(formatDataSellHistory);
 
-      console.log({
-        formatDataBuyHistoryTrade: formatDataBuyHistoryTrade.map((item) => {
+      const tradeHistoryData = filterAndCollectDuplicates(
+        dataHistory.map((item) => {
           return {
             ...item,
-            id: dayjs(item.value[0]).format("YYYY-MM-DD"),
+            date: dayjs(item.value[0]).format("YYYY-MM-DD"),
           };
-        }),
-        formatDataSellHistoryTrade: formatDataSellHistoryTrade.map((item) => {
-          return {
-            ...item,
-            id: dayjs(item.value[0]).format("YYYY-MM-DD"),
-          };
-        }),
+        })
+      );
+      const groupBuyTradeHistoryData = groupBy(tradeHistoryData, "date");
+      const dateTradeHistoryData = Object.getOwnPropertyNames(
+        groupBuyTradeHistoryData
+      );
+      const dataTrade = dateTradeHistoryData.map((item) => {
+        const selected = findClosestObject(
+          groupBuyTradeHistoryData[item][0].value[0],
+          dataPriceChart.map((item) => {
+            return {
+              ...item,
+              date: item.value[0],
+            };
+          })
+        );
+        return {
+          dateFormat: item,
+          date: groupBuyTradeHistoryData[item][0].value[0],
+          data: groupBuyTradeHistoryData[item],
+
+          itemStyle: { color: "#6b7280" },
+          value: [
+            groupBuyTradeHistoryData[item][0].value[0],
+            selected.value[1],
+          ],
+          type: "trade",
+        };
       });
 
-      const dataHistoryTrade = formatDataBuyHistoryTrade.concat(
-        formatDataSellHistoryTrade
-      );
-      console.log(
-        "dataHistoryTrade: ",
-        dataHistoryTrade.map((item) => {
+      const filteredDuplicateHistoryData = dataHistory
+        .map((item) => {
           return {
             ...item,
             date: item.value[0],
           };
         })
-      );
-
-      const duplicateHistoryDateTrade = filterAndCollectDuplicates(
-        dataHistoryTrade.map((item) => {
-          return {
-            ...item,
-            date: item.value[0],
-          };
-        })
-      );
-      console.log(
-        "blabla: ",
-        duplicateHistoryDateTrade.map((item) => {
-          return {
-            ...item,
-            date: dayjs(item.date).format("YYYY-MM-DD hh:mm:ss"),
-          };
-        })
-      );
-
-      console.log("dataPriceChart: ", dataPriceChart);
+        .filter(
+          (elem) =>
+            !tradeHistoryData
+              .map((item) => {
+                return {
+                  ...item,
+                  date: item.value[0],
+                };
+              })
+              .find(({ date }) => elem.date === date)
+        );
+      const groupBuyHistoryData = groupBy(filteredDuplicateHistoryData, "type");
+      const dataBuy = groupBuyHistoryData["buy"];
+      const dataSell = groupBuyHistoryData["sell"];
 
       optionLine = {
         ...optionLine,
@@ -297,18 +365,46 @@
             data: dataAvgCost,
           },
           {
+            name: "Trade",
+            type: "scatter",
+            symbolSize: 20,
+            data: dataTrade || [],
+            label: {
+              show: true,
+              position: "inside",
+              fontSize: 10,
+              formatter: () => {
+                return "Trade";
+              },
+            },
+          },
+          {
             name: "Buy",
             type: "scatter",
-            symbolSize: 10,
-            itemStyle: { color: "#547fef" },
-            data: formatDataBuyHistoryTrade,
+            symbolSize: 20,
+            data: dataBuy || [],
+            label: {
+              show: true,
+              position: "inside",
+              fontSize: 10,
+              formatter: () => {
+                return "Buy";
+              },
+            },
           },
           {
             name: "Sell",
             type: "scatter",
-            symbolSize: 10,
-            itemStyle: { color: "#ef4444" },
-            data: formatDataSellHistoryTrade,
+            symbolSize: 20,
+            data: dataSell || [],
+            label: {
+              show: true,
+              position: "inside",
+              fontSize: 10,
+              formatter: () => {
+                return "Sell";
+              },
+            },
           },
         ],
       };
@@ -329,18 +425,58 @@
             data: [],
           },
           {
+            type: "line",
+            symbol: "circle",
+            datasetIndex: 1,
+            symbolSize: 0.1,
+            lineStyle: {
+              type: "dashed",
+              color: "#eab308",
+            },
+            showSymbol: false,
+            data: [],
+          },
+          {
+            name: "Trade",
+            type: "scatter",
+            symbolSize: 20,
+            data: [],
+            label: {
+              show: true,
+              position: "inside",
+              fontSize: 10,
+              formatter: () => {
+                return "Trade";
+              },
+            },
+          },
+          {
             name: "Buy",
             type: "scatter",
-            symbolSize: 10,
-            itemStyle: { color: "#547fef" },
+            symbolSize: 20,
             data: [],
+            label: {
+              show: true,
+              position: "inside",
+              fontSize: 10,
+              formatter: () => {
+                return "Buy";
+              },
+            },
           },
           {
             name: "Sell",
             type: "scatter",
-            symbolSize: 10,
-            itemStyle: { color: "#ef4444" },
+            symbolSize: 20,
             data: [],
+            label: {
+              show: true,
+              position: "inside",
+              fontSize: 10,
+              formatter: () => {
+                return "Sell";
+              },
+            },
           },
         ],
       };
