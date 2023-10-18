@@ -17,6 +17,8 @@
 
   $: costBuy = Number(data?.quantity_in) * Number(data?.to_price);
   $: costSell = Number(data?.quantity_out) * Number(data?.from_price);
+
+  $: withinLast24Hours = dayjs().diff(dayjs(data?.created_at * 1000), "hour");
 </script>
 
 <tr class="group transition-all">
@@ -81,7 +83,9 @@
     }`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium text-right">
-      {dayjs(data?.created_at * 1000).fromNow()}
+      {withinLast24Hours < 24 && withinLast24Hours > 0
+        ? dayjs(data?.created_at * 1000).fromNow()
+        : dayjs(data?.created_at * 1000).format("YYYY-MM-DD")}
     </div>
   </td>
 </tr>

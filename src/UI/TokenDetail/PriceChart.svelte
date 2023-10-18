@@ -108,6 +108,7 @@
     },
     yAxis: {
       type: "value",
+      position: "right",
       axisLabel: {
         formatter: function (value, index) {
           return (
@@ -139,7 +140,7 @@
         return {
           value: [item[0], item[1]],
           itemStyle: {
-            color: "#00b580",
+            color: "#1e96fc",
           },
         };
       });
@@ -347,7 +348,7 @@
             symbolSize: 0.1,
             lineStyle: {
               type: "solid",
-              color: "#00b580",
+              color: "#1e96fc",
             },
             showSymbol: false,
             data: dataPriceChart,
@@ -369,42 +370,18 @@
             type: "scatter",
             symbolSize: 20,
             data: dataTrade || [],
-            label: {
-              show: true,
-              position: "inside",
-              fontSize: 10,
-              formatter: () => {
-                return "Trade";
-              },
-            },
           },
           {
             name: "Buy",
             type: "scatter",
             symbolSize: 20,
             data: dataBuy || [],
-            label: {
-              show: true,
-              position: "inside",
-              fontSize: 10,
-              formatter: () => {
-                return "Buy";
-              },
-            },
           },
           {
             name: "Sell",
             type: "scatter",
             symbolSize: 20,
             data: dataSell || [],
-            label: {
-              show: true,
-              position: "inside",
-              fontSize: 10,
-              formatter: () => {
-                return "Sell";
-              },
-            },
           },
         ],
       };
@@ -419,7 +396,7 @@
             symbolSize: 0.1,
             lineStyle: {
               type: "solid",
-              color: "#00b580",
+              color: "#1e96fc",
             },
             showSymbol: false,
             data: [],
@@ -441,42 +418,18 @@
             type: "scatter",
             symbolSize: 20,
             data: [],
-            label: {
-              show: true,
-              position: "inside",
-              fontSize: 10,
-              formatter: () => {
-                return "Trade";
-              },
-            },
           },
           {
             name: "Buy",
             type: "scatter",
             symbolSize: 20,
             data: [],
-            label: {
-              show: true,
-              position: "inside",
-              fontSize: 10,
-              formatter: () => {
-                return "Buy";
-              },
-            },
           },
           {
             name: "Sell",
             type: "scatter",
             symbolSize: 20,
             data: [],
-            label: {
-              show: true,
-              position: "inside",
-              fontSize: 10,
-              formatter: () => {
-                return "Sell";
-              },
-            },
           },
         ],
       };
@@ -501,7 +454,7 @@
     {:else}
       <div class="relative">
         <EChart
-          id={id + "linechart"}
+          id={id + "line-chart"}
           {theme}
           notMerge={true}
           option={optionLine}

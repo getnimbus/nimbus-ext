@@ -81,7 +81,6 @@
   let showTokenInfoBundle = false;
 
   let showSideTokenDetail = false;
-
   let selectedTokenDetail = {};
 
   const trigger = () => {
@@ -123,6 +122,13 @@
       content: "I hate this token 😠",
     },
   ];
+
+  const closeSideTokenDetail = (event) => {
+    if (event.key === "Escape") {
+      showSideTokenDetail = false;
+      selectedTokenDetail = {};
+    }
+  };
 
   const handleReportTrashCoin = async () => {
     isLoadingReportTrashCoin = true;
@@ -232,6 +238,8 @@
     })
     .filter((item) => Number(item?.amount) !== 0);
 </script>
+
+<svelte:window on:keydown={closeSideTokenDetail} />
 
 <tr
   key={data?.symbol}
