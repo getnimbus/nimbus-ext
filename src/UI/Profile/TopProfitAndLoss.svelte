@@ -94,7 +94,7 @@
 
 <div class="col-span-4 grid grid-cols-2 flex flex-col gap-5">
   <div class="flex flex-col border border_0000001a rounded-xl px-6 py-6">
-    <div class="flex justify-start xl:text-xl text-3xl font-medium pb-3">
+    <div class="flex justify-start xl:text-xl text-3xl font-medium mb-5">
       Top 5 Profit(30D)
     </div>
     <div class="flex flex-col gap-4">
@@ -135,7 +135,7 @@
     </div>
   </div>
   <div class="flex flex-col border border_0000001a rounded-xl px-6 py-6">
-    <div class="flex justify-start xl:text-xl text-3xl font-medium pb-3">
+    <div class="flex justify-start xl:text-xl text-3xl font-medium mb-5">
       Top 5 Loss(30D)
     </div>
     <div class="flex flex-col gap-4">

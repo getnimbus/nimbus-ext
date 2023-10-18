@@ -21,6 +21,7 @@
   import LogoWhite from "~/assets/logo-white.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
+  import dayjs from "dayjs";
 
   export let selectedAddress;
 
@@ -228,6 +229,14 @@
     series: [],
   };
 
+  const handleFilter30Day = (item) => {
+    const date = dayjs(item?.last_transferred_at);
+    const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
+    return (
+      thirtyDaysInMilliseconds - dayjs(dayjs()).diff(date, "millisecond") > 0
+    );
+  };
+
   const getHoldingToken = async (address) => {
     const response: HoldingTokenRes = await nimbus
       .get(`/v2/address/${address}/holding?chain=ALL`)
@@ -257,6 +266,7 @@
     closedHoldingPosition = formatData
       .filter((item) => item?.profit?.realizedProfit)
       .filter((item) => Number(item.amount) === 0)
+      .filter(handleFilter30Day)
       .map((item) => {
         return {
           ...item,
@@ -352,7 +362,7 @@
 </script>
 
 <div
-  class="xl:col-span-4 col-span-2 border border_0000001a rounded-xl flex flex-col min-h-[465px]"
+  class="col-span-4 border border_0000001a rounded-xl flex flex-col min-h-[465px]"
 >
   <div
     class="flex justify-start text-3xl font-medium xl:text-xl px-6 pb-3 pt-6"

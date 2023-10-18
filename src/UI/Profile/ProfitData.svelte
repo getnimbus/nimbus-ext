@@ -9,6 +9,7 @@
   let netWorth = 0;
   let unRealizedProfit = 0;
   let set30DayPnl = 0;
+  let winRate = 0;
   let totalCost = 0;
 
   const getTradingStats = async (address) => {
@@ -74,25 +75,32 @@
     }
   }
 
-  $: winRate =
-    $queryTradingStats?.data?.lfStats?.totalTrade &&
-    Number($queryTradingStats?.data?.lfStats?.totalTrade) !== 0
-      ? (Number($queryTradingStats?.data?.lfStats?.winTrade) /
-          Number($queryTradingStats?.data?.lfStats?.totalTrade)) *
-        100
-      : 0;
+  $: {
+    if ($queryTradingStats?.data) {
+      const tradingStats = $queryTradingStats?.data.filter(
+        (e) => e.startTrade < 2592000000
+      );
+      winRate =
+        tradingStats.lfStats?.totalTrade &&
+        Number(tradingStats.lfStats?.totalTrade) !== 0
+          ? (Number(tradingStats.lfStats?.winTrade) /
+              Number(tradingStats.lfStats?.totalTrade)) *
+            100
+          : 0;
 
-  $: unRealizedProfit = $queryTradingStats?.data?.metadata.reduce(
-    (prev, item) => prev + Number(item.unrealizedProfit),
-    0
-  );
+      unRealizedProfit = tradingStats.metadata.reduce(
+        (prev, item) => prev + Number(item.unrealizedProfit),
+        0
+      );
 
-  $: totalCost = $queryTradingStats?.data?.metadata.reduce(
-    (prev, item) => prev + Number(item.cost),
-    0
-  );
+      totalCost = tradingStats.metadata.reduce(
+        (prev, item) => prev + Number(item.cost),
+        0
+      );
 
-  $: set30DayPnl = unRealizedProfit + profit - totalCost / totalCost;
+      set30DayPnl = unRealizedProfit + profit - totalCost / totalCost;
+    }
+  }
 </script>
 
 <div
@@ -142,7 +150,7 @@
   </div>
   <div class="grid grid-cols-2 col-span-2 gap-3">
     <div class="flex flex-col gap-2 items-center justify-between">
-      <span class="text-xs">30D PnL</span>
+      <span class="text-xl xl:text-xs font-medium text_00000099">30D PnL</span>
       <span
         class={`${
           set30DayPnl > 0
