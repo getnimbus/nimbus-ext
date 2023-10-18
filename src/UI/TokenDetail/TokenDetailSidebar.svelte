@@ -13,10 +13,11 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import OverviewCard from "~/components/OverviewCard.svelte";
   import Loading from "~/components/Loading.svelte";
+  import TokenHistoryItem from "./TokenHistoryItem.svelte";
+  import PriceChart from "./PriceChart.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
-  import TokenHistoryItem from "./TokenHistoryItem.svelte";
 
   export let data;
 
@@ -224,6 +225,14 @@
       </OverviewCard>
     </div>
   </div>
+
+  <PriceChart
+    contractAddress={data?.contractAddress}
+    {sellHistoryTradeList}
+    {buyHistoryTradeList}
+    id={data?.name}
+    avgCost={data?.profit?.averageCost}
+  />
 
   <div class="token_detail_container rounded-[20px] xl:p-8 p-6 xl:shadow-md">
     <div
