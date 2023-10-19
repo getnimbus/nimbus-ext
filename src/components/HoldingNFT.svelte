@@ -304,12 +304,7 @@
 </tr>
 
 <!-- Sidebar NFT Detail -->
-<OverlaySidebar
-  isOpen={showSideNftDetail}
-  on:close={() => {
-    showSideNftDetail = false;
-  }}
->
+<OverlaySidebar isOpen={showSideNftDetail}>
   <div class="flex flex-col gap-6 p-6">
     <div class="flex justify-between items-start">
       <div

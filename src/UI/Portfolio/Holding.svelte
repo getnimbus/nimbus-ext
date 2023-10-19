@@ -495,9 +495,7 @@
                     Unrealized PnL
                   </div>
                 </th>
-                {#if typeWalletAddress === "BUNDLE"}
-                  <th class="py-3 w-10 rounded-tr-[10px]" />
-                {/if}
+                <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
               </tr>
             </thead>
 
