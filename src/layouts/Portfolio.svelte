@@ -8,9 +8,15 @@
   import { onDestroy, onMount } from "svelte";
   import { i18n } from "~/lib/i18n";
   import { disconnectWs, initWS } from "~/lib/price-ws";
-  import { chainList } from "~/utils";
+  import { chainList, driverObj } from "~/utils";
   import { wait } from "../entries/background/utils";
-  import { wallet, chain, typeWallet, selectedBundle } from "~/store";
+  import {
+    wallet,
+    chain,
+    typeWallet,
+    selectedBundle,
+    userPublicAddress,
+  } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
   import {
@@ -38,7 +44,6 @@
   import "~/components/Tooltip.custom.svelte";
 
   import Reload from "~/assets/reload.svg";
-  import ProductTour from "~/components/ProductTour.svelte";
 
   const MultipleLang = {
     portfolio: i18n("newtabPage.portfolio", "Portfolio"),
@@ -138,6 +143,14 @@
     select: [],
   };
   let selectedDataPieChart = {};
+
+  $: {
+    if ($userPublicAddress && !localStorage.getItem("view-portfolio-tour")) {
+      setTimeout(() => {
+        driverObj.drive();
+      }, 2000);
+    }
+  }
 
   // overview
   const getOverview = async (address, chain) => {

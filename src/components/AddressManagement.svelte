@@ -10,6 +10,7 @@
     isDarkMode,
     selectedBundle,
     triggerConnectWallet,
+    userPublicAddress,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
@@ -22,6 +23,7 @@
     listLogoCEX,
     listProviderCEX,
     clickOutside,
+    driverObj,
   } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -53,6 +55,7 @@
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
   import Bundles from "~/assets/bundles.png";
+  // import "driver.js/dist/driver.css";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -883,6 +886,25 @@
     }
   }
 
+  $: {
+    if (
+      !localStorage.getItem("view-use-wallet-or-demo-tour") &&
+      !$userPublicAddress
+    ) {
+      setTimeout(() => {
+        driverObj.highlight({
+          element: "#view-use-wallet-or-demo",
+          popover: {
+            title: "Introduce App",
+            description: "Add wallet or view Demo wallet",
+            disableButtons: ["next"],
+          },
+        });
+        // localStorage.setItem("view-use-wallet-or-demo-tour", "true");
+      }, 1000);
+    }
+  }
+
   const handleSelectNextAddress = () => {
     if (indexSelectedAddress < listAddress.length - 1) {
       indexSelectedAddress = indexSelectedAddress + 1;
@@ -926,7 +948,10 @@
   <div>
     {#if listAddress.length === 0 && selectedWallet?.length === 0}
       <div class="flex items-center justify-center h-screen">
-        <div class="flex flex-col items-center justify-center w-2/3 gap-4 p-6">
+        <div
+          class="flex flex-col items-center justify-center w-2/3 gap-4 p-6"
+          id="view-use-wallet-or-demo"
+        >
           {#if $query.isError && Object.keys(userInfo).length !== 0}
             <div class="xl:text-lg text-2xl">
               {$query.error}
@@ -952,7 +977,7 @@
                 </Button>
               </div>
             {:else}
-              <div class="flex flex-col gap-4 view-add-wallet-tour">
+              <div class="flex flex-col gap-4">
                 <Button
                   on:click={() => {
                     triggerConnectWallet.update((n) => (n = true));

@@ -373,190 +373,138 @@
   }`}
 >
   <ErrorBoundary>
-    <div class="flex items-end gap-3">
-      <div class="xl:text-2xl text-4xl font-medium">
-        {MultipleLang.holding}
-      </div>
-      <!-- <a
+    <div id="view-token-detail" class="flex flex-col gap-6">
+      <div class="flex items-end gap-3">
+        <div class="xl:text-2xl text-4xl font-medium">
+          {MultipleLang.holding}
+        </div>
+        <!-- <a
         href="https://forms.gle/HfmvSTzd5frPPYDz8"
         target="_blank"
         class="xl:text-sm text-2xl font-normal text-blue-500 mb-[2px] hover:text-blue-700 transition-all"
       >
         Get investment opportunities notification
       </a> -->
-    </div>
-
-    <!-- token holding table -->
-    <div class="flex flex-col gap-2">
-      <div class="flex justify-between items-center">
-        <div class="flex items-center gap-4">
-          <div class="xl:text-xl text-3xl font-medium">
-            {MultipleLang.token}
-          </div>
-          {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
-            <Select
-              type="lang"
-              positionSelectList="left-0"
-              listSelect={selectedTokenHolding?.select || []}
-              bind:selected={selectedTypeTable}
-            />
-          {/if}
-        </div>
-        <div class="xl:text-3xl text-4xl font-medium text-right">
-          <TooltipNumber number={sumTokens} type="value" personalValue />
-          {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
-            <span class="xl:text-xl text-2xl font-medium text-gray-400">
-              <TooltipNumber
-                number={selectedDataPieChart?.series[0]?.data.filter(
-                  (item) => item.name === selectedTypeTable?.value
-                )[0]?.value}
-                type="percent"
-              />%
-            </span>
-          {/if}
-        </div>
       </div>
+
+      <!-- token holding table -->
       <div class="flex flex-col gap-2">
-        <div class="flex items-center justify-end gap-2">
-          <div class="xl:text-sm text-2xl font-regular text-gray-400">
-            Hide tokens less than
-          </div>
-          <Select
-            type="filter"
-            positionSelectList="right-0"
-            listSelect={filterTokenValueType}
-            bind:selected={filterTokenType}
-          />
-        </div>
-
-        <div
-          class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-            darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
-          }`}
-        >
-          <table class="table-auto xl:w-full w-[1800px] h-full">
-            <thead
-              class={isStickyTableToken ? "sticky top-0 z-10" : ""}
-              bind:this={tableTokenHeader}
-            >
-              <tr class="bg_f4f5f8">
-                <th
-                  class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
-                >
-                  <div
-                    class="text-left xl:text-xs text-xl uppercase font-medium"
-                  >
-                    {MultipleLang.assets}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    {MultipleLang.price}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    {MultipleLang.amount}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    {MultipleLang.value}
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    Avg Cost
-                  </div>
-                </th>
-                <th class="py-3">
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    Realized PnL
-                  </div>
-                </th>
-                <th
-                  class={`py-3 pr-3 ${
-                    typeWalletAddress !== "BUNDLE" ? "rounded-tr-[10px]" : ""
-                  }`}
-                >
-                  <div
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    Unrealized PnL
-                  </div>
-                </th>
-                {#if typeWalletAddress === "BUNDLE"}
-                  <th class="py-3 w-10 rounded-tr-[10px]" />
-                {/if}
-              </tr>
-            </thead>
-
-            {#if selectedChain === "ALL"}
-              <tbody>
-                {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
-                  <tr>
-                    <td {colspan}>
-                      <div
-                        class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
-                      >
-                        {#if holdingTokenData && holdingTokenData.length === 0}
-                          {MultipleLang.empty}
-                        {:else}
-                          All tokens less than $1
-                        {/if}
-                      </div>
-                    </td>
-                  </tr>
-                {/if}
-                {#each filteredHoldingDataToken as holding}
-                  <HoldingToken
-                    data={holding}
-                    {selectedWallet}
-                    sumAllTokens={totalAssets - sumNFT}
-                  />
-                {/each}
-              </tbody>
-              {#if isLoadingToken}
-                <tbody>
-                  <tr>
-                    <td {colspan}>
-                      <div
-                        class="flex justify-center items-center h-full py-3 px-3"
-                      >
-                        <Loading />
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              {/if}
+        <div class="flex justify-between items-center">
+          <div class="flex items-center gap-4">
+            <div class="xl:text-xl text-3xl font-medium">
+              {MultipleLang.token}
+            </div>
+            {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
+              <Select
+                type="lang"
+                positionSelectList="left-0"
+                listSelect={selectedTokenHolding?.select || []}
+                bind:selected={selectedTypeTable}
+              />
             {/if}
+          </div>
+          <div class="xl:text-3xl text-4xl font-medium text-right">
+            <TooltipNumber number={sumTokens} type="value" personalValue />
+            {#if selectedTokenHolding && Object.keys(selectedTokenHolding).length !== 0 && selectedTokenHolding?.select.length !== 0}
+              <span class="xl:text-xl text-2xl font-medium text-gray-400">
+                <TooltipNumber
+                  number={selectedDataPieChart?.series[0]?.data.filter(
+                    (item) => item.name === selectedTypeTable?.value
+                  )[0]?.value}
+                  type="percent"
+                />%
+              </span>
+            {/if}
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-end gap-2">
+            <div class="xl:text-sm text-2xl font-regular text-gray-400">
+              Hide tokens less than
+            </div>
+            <Select
+              type="filter"
+              positionSelectList="right-0"
+              listSelect={filterTokenValueType}
+              bind:selected={filterTokenType}
+            />
+          </div>
 
-            {#if selectedChain !== "ALL"}
-              {#if isLoadingToken}
+          <div
+            class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+              darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+            }`}
+          >
+            <table class="table-auto xl:w-full w-[1800px] h-full">
+              <thead
+                class={isStickyTableToken ? "sticky top-0 z-10" : ""}
+                bind:this={tableTokenHeader}
+              >
+                <tr class="bg_f4f5f8">
+                  <th
+                    class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
+                  >
+                    <div
+                      class="text-left xl:text-xs text-xl uppercase font-medium"
+                    >
+                      {MultipleLang.assets}
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      {MultipleLang.price}
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      {MultipleLang.amount}
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      {MultipleLang.value}
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      Avg Cost
+                    </div>
+                  </th>
+                  <th class="py-3">
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      Realized PnL
+                    </div>
+                  </th>
+                  <th
+                    class={`py-3 pr-3 ${
+                      typeWalletAddress !== "BUNDLE" ? "rounded-tr-[10px]" : ""
+                    }`}
+                  >
+                    <div
+                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                    >
+                      Unrealized PnL
+                    </div>
+                  </th>
+                  {#if typeWalletAddress === "BUNDLE"}
+                    <th class="py-3 w-10 rounded-tr-[10px]" />
+                  {/if}
+                </tr>
+              </thead>
+
+              {#if selectedChain === "ALL"}
                 <tbody>
-                  <tr>
-                    <td {colspan}>
-                      <div
-                        class="flex justify-center items-center h-full py-3 px-3"
-                      >
-                        <Loading />
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              {:else}
-                <tbody>
-                  {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+                  {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
                     <tr>
                       <td {colspan}>
                         <div
@@ -570,26 +518,80 @@
                         </div>
                       </td>
                     </tr>
-                  {:else}
-                    {#each filteredHoldingDataToken as holding}
-                      <HoldingToken
-                        data={holding}
-                        {selectedWallet}
-                        sumAllTokens={totalAssets - sumNFT}
-                      />
-                    {/each}
                   {/if}
+                  {#each filteredHoldingDataToken as holding}
+                    <HoldingToken
+                      data={holding}
+                      {selectedWallet}
+                      sumAllTokens={totalAssets - sumNFT}
+                    />
+                  {/each}
                 </tbody>
+                {#if isLoadingToken}
+                  <tbody>
+                    <tr>
+                      <td {colspan}>
+                        <div
+                          class="flex justify-center items-center h-full py-3 px-3"
+                        >
+                          <Loading />
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                {/if}
               {/if}
-            {/if}
-          </table>
+
+              {#if selectedChain !== "ALL"}
+                {#if isLoadingToken}
+                  <tbody>
+                    <tr>
+                      <td {colspan}>
+                        <div
+                          class="flex justify-center items-center h-full py-3 px-3"
+                        >
+                          <Loading />
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                {:else}
+                  <tbody>
+                    {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+                      <tr>
+                        <td {colspan}>
+                          <div
+                            class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                          >
+                            {#if holdingTokenData && holdingTokenData.length === 0}
+                              {MultipleLang.empty}
+                            {:else}
+                              All tokens less than $1
+                            {/if}
+                          </div>
+                        </td>
+                      </tr>
+                    {:else}
+                      {#each filteredHoldingDataToken as holding}
+                        <HoldingToken
+                          data={holding}
+                          {selectedWallet}
+                          sumAllTokens={totalAssets - sumNFT}
+                        />
+                      {/each}
+                    {/if}
+                  </tbody>
+                {/if}
+              {/if}
+            </table>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- nft holding table -->
     {#if typeWalletAddress !== "CEX"}
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-2" id="view-nft-detail">
         <div class="flex justify-between items-center">
           <div class="xl:text-xl text-3xl font-medium">
             {MultipleLang.nft}

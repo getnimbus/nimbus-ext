@@ -15,6 +15,8 @@ import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
 import Base from "~/assets/base.svg"
 import confetti from "canvas-confetti";
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
@@ -979,3 +981,51 @@ export const triggerFirework = () => {
     startVelocity: 45,
   });
 };
+
+export const driverObj = driver({
+  showProgress: true,
+  overlayColor: "#27326f",
+  onDestroyStarted: () => {
+    if (!driverObj.hasNextStep() || confirm("Are you sure?")) {
+      driverObj.destroy();
+    }
+  },
+  showButtons: ["next", "previous", "close"],
+  steps: [
+    // {
+    //   element: "#view-use-wallet-or-demo",
+    //   popover: {
+    //     title: "Introduce App",
+    //     description: "Add wallet or view Demo wallet",
+    //   },
+    // },
+    {
+      element: "#view-the-pnl",
+      popover: {
+        title: "Introduce App",
+        description: "Viewing the PnL for Token and NFT",
+      },
+    },
+    {
+      element: "#view-token-detail",
+      popover: {
+        title: "Introduce App",
+        description: "View token detail",
+      },
+    },
+    {
+      element: "#view-nft-detail",
+      popover: {
+        title: "Introduce App",
+        description: "View NFT detail",
+      },
+    },
+    {
+      element: "#view-closed-positions",
+      popover: {
+        title: "Introduce App",
+        description: "View closed positions",
+      },
+    },
+  ],
+});
