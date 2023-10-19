@@ -130,11 +130,11 @@
                 }}
                 class="rounded-full"
               />
-              <span class="text-2xl xl:text-xs font-medium">
+              <span class="text-lg xl:text-xs font-medium">
                 {item.name}
               </span>
             </div>
-            <span class="text-green-400">
+            <span class="text-green-400 xl:text-base text-lg">
               <TooltipNumber number={item.realizedProfit} type="value" />
               <!-- (+<TooltipNumber number={32} type="percent" />X) -->
             </span>
@@ -171,11 +171,11 @@
                 }}
                 class="rounded-full"
               />
-              <span class="text-2xl xl:text-xs font-medium">
+              <span class="text-lg xl:text-xs font-medium">
                 {item.name}
               </span>
             </div>
-            <span class="text-red-500">
+            <span class="text-red-500 xl:text-base text-lg">
               <TooltipNumber number={item.realizedProfit} type="value" />
               <!-- (-<TooltipNumber number={32} type="percent" />X) -->
             </span>

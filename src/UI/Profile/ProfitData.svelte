@@ -140,94 +140,76 @@
       }
     }
   }
+
+  $: totalToken = $queryTradingStats?.data?.metadata?.length || 0;
 </script>
 
 <div
-  class="col-span-4 grid grid-cols-5 gap-3 border border_0000001a rounded-xl p-6"
+  class="col-span-4 grid xl:grid-cols-6 grid-cols-3 gap-5 border border_0000001a rounded-xl p-6"
 >
-  <div class="col-span-3 grid grid-cols-3 gap-3">
-    <div class="flex flex-col gap-2 justify-between">
-      <span class="text-xl xl:text-xs font-medium text_00000099">Balance</span>
-      <span class="xl:text-base text-lg">
-        {#if $queryTokenHolding.isLoading}
-          <Loading />
-        {:else}
-          <TooltipNumber number={netWorth} type="value" />
-        {/if}
-      </span>
-    </div>
-    <div class="flex flex-col gap-2 justify-between">
-      <span class="text-xl xl:text-xs font-medium text_00000099">
-        30D Unrealized PnL
-      </span>
-      <span
-        class={`xl:text-base text-lg ${
-          unRealizedProfit < 0
-            ? "text-red-500"
-            : unRealizedProfit > 0
-            ? "text-green-400"
-            : ""
+  <div class="flex flex-col gap-2 justify-between">
+    <span class="text-xl xl:text-xs font-medium text_00000099">Balance</span>
+    <span class="xl:text-base text-lg">
+      <TooltipNumber number={netWorth} type="value" />
+    </span>
+  </div>
+  <div class="flex flex-col gap-2 justify-between">
+    <span class="text-xl xl:text-xs font-medium text_00000099">
+      30D Unrealized PnL
+    </span>
+    <span
+      class={`xl:text-base text-lg ${
+        unRealizedProfit < 0
+          ? "text-red-500"
+          : unRealizedProfit > 0
+          ? "text-green-400"
+          : ""
+      }`}
+    >
+      <TooltipNumber number={unRealizedProfit} type="value" />
+    </span>
+  </div>
+  <div class="flex flex-col gap-2 justify-between">
+    <span class="text-xl xl:text-xs font-medium text_00000099">
+      30D Realized PnL
+    </span>
+    <div class="xl:text-base text-lg">
+      <div
+        class={`${
+          profit !== 0 ? (profit >= 0 ? "text-green-400" : "text-red-500") : ""
         }`}
       >
-        {#if $queryTokenHolding.isLoading}
-          <Loading />
-        {:else}
-          <TooltipNumber number={unRealizedProfit} type="value" />
-        {/if}
-      </span>
-    </div>
-    <div class="flex flex-col gap-2 justify-between">
-      <span class="text-xl xl:text-xs font-medium text_00000099">
-        30D Realized PnL
-      </span>
-      <div class="xl:text-base text-lg">
-        <div
-          class={`${
-            profit !== 0
-              ? profit >= 0
-                ? "text-green-400"
-                : "text-red-500"
-              : ""
-          }`}
-        >
-          {#if $queryTokenHolding.isLoading}
-            <Loading />
-          {:else}
-            <TooltipNumber number={Math.abs(profit)} type="value" />
-          {/if}
-        </div>
+        <TooltipNumber number={Math.abs(profit)} type="value" />
       </div>
     </div>
   </div>
-  <div class="grid grid-cols-2 col-span-2 gap-3">
-    <div class="flex flex-col gap-2 justify-between">
-      <span class="text-xl xl:text-xs font-medium text_00000099">30D PnL</span>
-      <span
-        class={`${
-          set30DayPnl > 0
-            ? "text-green-400"
-            : set30DayPnl < 0
-            ? "text-red-500"
-            : ""
-        }`}
-      >
-        {#if $queryTokenHolding.isLoading}
-          <Loading />
-        {:else}
-          <TooltipNumber number={set30DayPnl} type="percent" />%
-        {/if}
-      </span>
-    </div>
-    <div class="flex flex-col gap-2 justify-between">
-      <span class="text-xl xl:text-xs font-medium text_00000099">Winrate</span>
-      <span class="xl:text-base text-lg">
-        {#if $queryTokenHolding.isLoading}
-          <Loading />
-        {:else}
-          <TooltipNumber number={winRate} type="percent" />%
-        {/if}
-      </span>
-    </div>
+  <div class="flex flex-col gap-2 justify-between">
+    <span class="text-xl xl:text-xs font-medium text_00000099">30D PnL</span>
+    <span
+      class={`${
+        set30DayPnl > 0
+          ? "text-green-400"
+          : set30DayPnl < 0
+          ? "text-red-500"
+          : ""
+      }`}
+    >
+      <TooltipNumber number={set30DayPnl} type="percent" />%
+    </span>
+  </div>
+  <div class="flex flex-col gap-2 justify-between">
+    <span class="text-xl xl:text-xs font-medium text_00000099">
+      Trade Tokens
+    </span>
+    <span class="xl:text-base text-lg">
+      {totalToken}
+    </span>
+  </div>
+  <div class="flex flex-col gap-2 justify-between">
+    <span class="text-xl xl:text-xs font-medium text_00000099">Winrate</span>
+    <span class="xl:text-base text-lg">
+      <TooltipNumber number={winRate} type="percent" />%
+    </span>
   </div>
 </div>
 
