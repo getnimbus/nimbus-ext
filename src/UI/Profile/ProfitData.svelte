@@ -158,7 +158,7 @@
     </div>
     <div class="flex flex-col gap-2 justify-between">
       <span class="text-xl xl:text-xs font-medium text_00000099">
-        30D Unrealized
+        30D Unrealized PnL
       </span>
       <span
         class={`xl:text-base text-lg ${
@@ -178,7 +178,7 @@
     </div>
     <div class="flex flex-col gap-2 justify-between">
       <span class="text-xl xl:text-xs font-medium text_00000099">
-        30D Realized Profit
+        30D Realized PnL
       </span>
       <div class="xl:text-base text-lg">
         <div
