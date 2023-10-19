@@ -6,6 +6,7 @@
   import { nimbus } from "~/lib/network";
   import { user } from "~/store";
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
+  import { shorterName } from "~/utils";
 
   export let selectedAddress;
 
@@ -130,9 +131,19 @@
                 }}
                 class="rounded-full"
               />
-              <span class="text-lg xl:text-xs font-medium">
-                {item.name}
-              </span>
+              <span class="flex flex-col">
+                <span class="text-lg xl:text-base font-medium">
+                  {item.name}
+                </span><span
+                  class="text-lg font-medium text_00000080 xl:text-xs"
+                >
+                  {#if item.symbol === undefined}
+                    N/A
+                  {:else}
+                    {shorterName(item.symbol, 20)}
+                  {/if}
+                </span></span
+              >
             </div>
             <span class="text-green-400 xl:text-base text-lg">
               <TooltipNumber number={item.realizedProfit} type="value" />
@@ -171,8 +182,17 @@
                 }}
                 class="rounded-full"
               />
-              <span class="text-lg xl:text-xs font-medium">
-                {item.name}
+              <span class="flex flex-col">
+                <span class="text-lg xl:text-base font-medium">
+                  {item.name}
+                </span>
+                <span class="text-lg font-medium text_00000080 xl:text-xs">
+                  {#if item.symbol === undefined}
+                    N/A
+                  {:else}
+                    {shorterName(item.symbol, 20)}
+                  {/if}
+                </span>
               </span>
             </div>
             <span class="text-red-500 xl:text-base text-lg">
