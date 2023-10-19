@@ -39,32 +39,22 @@
               }">
                 ${numeral(params[0].axisValue).format("$0.000000a")}
               </div>
-              ${params
-                .map((item) => {
-                  return `
-                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
                     darkMode ? "white" : "black"
                   }">
-                    <span>${item?.marker}</span>
-                    ${
-                      item?.seriesName === "Current Price"
-                        ? "Current Balance"
-                        : "Balance"
-                    }
+                    <span>${params[0]?.marker}</span>
+                    Balance
                   </div>
 
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                     <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       darkMode ? "white" : "black"
                     };">
-                        ${numeral(item.value).format("0.00a")}
+                        ${numeral(params[0]?.value).format("0.00a")}
                     </div>
                   </div>
                 </div>
-                `;
-                })
-                .join("")}
             </div>`;
       },
     },
@@ -82,7 +72,23 @@
       data: [],
       axisLabel: {
         formatter: function (value, index) {
-          return "$" + numeral(Math.abs(value)).format("0.000000a");
+          if (value.toString().includes("e-")) {
+            const numStr = value.toString();
+            const eIndex = numStr.indexOf("e");
+            if (eIndex !== -1) {
+              const significand = parseFloat(
+                numStr
+                  .slice(0, 4)
+                  .split("")
+                  .filter((e) => e != ".")
+                  .join("")
+              );
+
+              return `$0.0...0${significand}`;
+            }
+          } else {
+            return "$" + numeral(Math.abs(value)).format("0.000000a");
+          }
         },
         fontSize: autoFontSize(),
       },
@@ -158,6 +164,10 @@
           {
             name: "Current Price",
             type: "bar",
+            itemStyle: {
+              color: "#eab308",
+              borderColor: "#eab308",
+            },
             data: [Math.max(...dataChart), data?.market_price],
           },
         ],
