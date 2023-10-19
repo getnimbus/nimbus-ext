@@ -1,0 +1,232 @@
+<script lang="ts">
+  import { createQuery } from "@tanstack/svelte-query";
+  import dayjs from "dayjs";
+  import { nimbus } from "~/lib/network";
+  import { user } from "~/store";
+
+  import Loading from "~/components/Loading.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
+
+  export let selectedAddress;
+
+  let netWorth = 0;
+  let unRealizedProfit = 0;
+  let set30DayPnl = 0;
+  let winRate = 0;
+  let totalCost = 0;
+  let totalToken = 0;
+
+  const formatDataHoldingToken = (dataTokenHolding) => {
+    const formatData = dataTokenHolding
+      .map((item) => {
+        return {
+          ...item,
+          value:
+            Number(item?.amount) * Number(item?.price?.price || item?.rate),
+        };
+      })
+      .sort((a, b) => {
+        if (a.value < b.value) {
+          return 1;
+        }
+        if (a.value > b.value) {
+          return -1;
+        }
+        return 0;
+      });
+
+    netWorth = formatData.reduce((prev, item) => prev + item.value, 0);
+
+    const formatWinRate = formatData
+      .filter((item) => item?.profit?.realizedProfit)
+      .filter((item) => {
+        const date = dayjs(item?.last_transferred_at);
+        const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
+        return (
+          thirtyDaysInMilliseconds - dayjs(dayjs()).diff(date, "millisecond") >
+          0
+        );
+      })
+      .map((item) => {
+        return {
+          ...item,
+          realizedProfit: item?.profit?.realizedProfit,
+          percentRealizedProfit:
+            (item?.avgCost || 0) === 0
+              ? 0
+              : (Number(item?.profit?.realizedProfit) /
+                  Number(Math.abs(item?.avgCost))) *
+                100,
+        };
+      });
+
+    winRate =
+      (formatWinRate.filter((item) => item?.profit?.realizedProfit > 0).length /
+        formatWinRate.length) *
+      100;
+
+    totalToken = formatWinRate.length;
+  };
+
+  const getTradingStats = async (address) => {
+    const response: any = await nimbus.get(
+      `/v2/analysis/${address}/trading-stats`
+    );
+    if (response?.status === 401) {
+      throw new Error(response?.response?.error);
+    }
+    return response?.data;
+  };
+
+  const getHoldingToken = async (address) => {
+    const response = await nimbus
+      .get(`/v2/address/${address}/holding?chain=ALL`)
+      .then((response) => response.data);
+    return response;
+  };
+
+  $: queryTradingStats = createQuery({
+    queryKey: ["trading-stats", selectedAddress],
+    queryFn: () => getTradingStats(selectedAddress),
+    staleTime: Infinity,
+    retry: false,
+    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
+    onError(err) {
+      localStorage.removeItem("evm_token");
+      user.update((n) => (n = {}));
+    },
+  });
+
+  $: queryTokenHolding = createQuery({
+    queryKey: ["token-holding", selectedAddress],
+    queryFn: () => getHoldingToken(selectedAddress),
+    staleTime: Infinity,
+    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
+  });
+
+  $: profit =
+    $queryTradingStats?.data !== undefined
+      ? $queryTradingStats?.data?.latestStats?.unrealizedProfit +
+        $queryTradingStats?.data?.latestStats?.totalRealizedProfit
+      : 0;
+
+  $: {
+    if (
+      !$queryTokenHolding.isError &&
+      $queryTokenHolding.data &&
+      $queryTokenHolding?.data !== undefined
+    ) {
+      formatDataHoldingToken($queryTokenHolding.data);
+    }
+  }
+
+  $: {
+    if (!$queryTradingStats.isError && $queryTradingStats?.data !== undefined) {
+      const tradingStatsMeta = $queryTradingStats?.data?.metadata.filter(
+        (e) => e.startTrade < 2592000000
+      );
+
+      unRealizedProfit = tradingStatsMeta?.reduce(
+        (prev, item) => prev + Number(item.unrealizedProfit),
+        0
+      );
+
+      totalCost = tradingStatsMeta?.reduce(
+        (prev, item) => prev + Number(item.cost),
+        0
+      );
+
+      if (unRealizedProfit === 0 && profit === 0) {
+        set30DayPnl = 0;
+      } else {
+        set30DayPnl = unRealizedProfit + profit - totalCost / totalCost;
+      }
+    }
+  }
+</script>
+
+<div
+  class="col-span-4 grid xl:grid-cols-6 grid-cols-3 gap-5 border border_0000001a rounded-xl p-6"
+>
+  {#if $queryTokenHolding.isFetching && $queryTradingStats.isFetching}
+    <div class="xl:col-span-6 col-span-3 flex items-center justify-center">
+      <Loading />
+    </div>
+  {:else}
+    <div class="flex flex-col gap-2 justify-between">
+      <div class="text-xl xl:text-xs font-medium text_00000099">Balance</div>
+      <div class="xl:text-base text-lg">
+        <TooltipNumber number={netWorth} type="value" />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2 justify-between">
+      <div class="text-xl xl:text-xs font-medium text_00000099">
+        30D Unrealized PnL
+      </div>
+      <div
+        class={`flex items-center xl:text-base text-lg ${
+          unRealizedProfit !== 0
+            ? unRealizedProfit >= 0
+              ? "text-[#00A878]"
+              : "text-red-500"
+            : ""
+        }`}
+      >
+        {#if unRealizedProfit < 0}-{/if}
+        <TooltipNumber number={Math.abs(unRealizedProfit)} type="value" />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2 justify-between">
+      <div class="text-xl xl:text-xs font-medium text_00000099">
+        30D Realized PnL
+      </div>
+      <div
+        class={`flex items-center xl:text-base text-lg ${
+          profit !== 0 ? (profit >= 0 ? "text-[#00A878]" : "text-red-500") : ""
+        }`}
+      >
+        {#if profit < 0}-{/if}
+        <TooltipNumber number={Math.abs(profit)} type="value" />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2 justify-between">
+      <div class="text-xl xl:text-xs font-medium text_00000099">30D PnL</div>
+      <div
+        class={`flex items-center xl:text-base text-lg ${
+          set30DayPnl !== 0
+            ? set30DayPnl >= 0
+              ? "text-[#00A878]"
+              : "text-red-500"
+            : ""
+        }`}
+      >
+        {#if set30DayPnl < 0}-{/if}
+        <TooltipNumber
+          number={Math.abs(set30DayPnl)}
+          type={Math.abs(Number(set30DayPnl)) > 100 ? "balance" : "percent"}
+        />%
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2 justify-between">
+      <div class="text-xl xl:text-xs font-medium text_00000099">
+        Trade Tokens
+      </div>
+      <div class="xl:text-base text-lg">
+        {totalToken}
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2 justify-between">
+      <div class="text-xl xl:text-xs font-medium text_00000099">Winrate</div>
+      <div class="xl:text-base text-lg">
+        <TooltipNumber number={winRate} type="percent" />%
+      </div>
+    </div>
+  {/if}
+</div>
+
+<style windi:preflights:global windi:safelist:global></style>
