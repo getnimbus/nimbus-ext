@@ -18,6 +18,7 @@
   export let buyHistoryTradeList;
   export let id;
   export let avgCost;
+  export let chain;
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -161,9 +162,41 @@
     series: [],
   };
 
+  let chainType = "Ethereum";
+
+  $: {
+    if (chain) {
+      switch (chain) {
+        case "ETH":
+          chainType = "Ethereum";
+          break;
+        case "BNB":
+          chainType = "BNB Smart Chain (BEP20)";
+          break;
+        case "XDAI":
+          chainType = "XDAI";
+          break;
+        case "MATIC":
+          chainType = "Polygon";
+          break;
+        case "OP":
+          chainType = "Optimistic";
+          break;
+        case "AVAX":
+          chainType = "Avalanche C-Chain";
+          break;
+        case "ARB":
+          chainType = "Arbitrum";
+          break;
+        default:
+          chainType = "Ethereum";
+      }
+    }
+  }
+
   const handleGetTokenPrice = async () => {
     const response = await mobula.get(
-      `/1/market/history?blockchain=Ethereum&asset=${contractAddress}&from=${dayjs()
+      `/1/market/history?blockchain=${chainType}&asset=${contractAddress}&from=${dayjs()
         .subtract(30, "day")
         .unix()}&to'`
     );
@@ -171,11 +204,15 @@
   };
 
   $: queryTokenPrice = createQuery({
-    queryKey: ["token-price", contractAddress],
+    queryKey: ["token-price", contractAddress, chainType],
     queryFn: () => handleGetTokenPrice(),
     staleTime: Infinity,
     retry: false,
-    enabled: contractAddress !== undefined && contractAddress.length !== 0,
+    enabled:
+      contractAddress !== undefined &&
+      contractAddress.length !== 0 &&
+      chainType !== undefined &&
+      chainType.length !== 0,
   });
 
   $: {
@@ -641,7 +678,6 @@
           type: "trade",
         };
       });
-      console.log("dataTrade: ", dataTrade);
 
       const filteredDuplicateHistoryData = dataHistory
         .map((item) => {

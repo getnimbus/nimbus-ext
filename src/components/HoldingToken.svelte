@@ -1,7 +1,5 @@
 <script lang="ts">
-  import { useNavigate } from "svelte-navigator";
   import {
-    chain,
     typeWallet,
     isDarkMode,
     user,
@@ -32,10 +30,6 @@
   export let data;
   export let selectedWallet;
   export let sumAllTokens;
-
-  $: selectedChain = $chain;
-
-  const navigate = useNavigate();
 
   let selectBundle = {};
   selectedBundle.subscribe((value) => {
@@ -195,11 +189,6 @@
       ? 0
       : (Number(data?.market_price) - Number(data?.profit?.averageCost)) /
         Number(data?.profit?.averageCost || 0);
-
-  $: clickable =
-    data.name !== "Bitcoin" &&
-    data.name !== "Ethereum" &&
-    selectedChain !== "XDAI";
 
   $: ratio = (value / sumAllTokens) * 100;
 
