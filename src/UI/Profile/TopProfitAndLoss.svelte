@@ -108,18 +108,18 @@
 
     <div class="min-h-[400px]">
       {#if $queryTokenHolding.isFetching}
-        <div class="flex justify-center items-center">
+        <div class="h-full flex justify-center items-center">
           <Loading />
         </div>
       {:else}
         <div class="h-full flex flex-col gap-4">
           {#if top5ProfitToken.length === 0}
-            <div class="h-full flex items-center justify-center">
+            <div class="h-full flex items-center justify-center text-center">
               There is no closed holding position in the last 30 day
             </div>
           {:else}
             {#each top5ProfitToken as item}
-              <div class="flex justify-between gap-2">
+              <div class="h-full flex justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
                   <img
                     src={item.logo}
@@ -162,18 +162,18 @@
 
     <div class="min-h-[400px]">
       {#if $queryTokenHolding.isLoading}
-        <div class="flex justify-center items-center">
+        <div class="h-full flex justify-center items-center">
           <Loading />
         </div>
       {:else}
         <div class="h-full flex flex-col gap-4">
           {#if top5LossToken.length === 0}
-            <div class="h-full flex items-center justify-center">
+            <div class="h-full flex items-center justify-center text-center">
               There is no closed holding position in the last 30 day
             </div>
           {:else}
             {#each top5LossToken as item}
-              <div class="flex items-center justify-between gap-2">
+              <div class="h-full flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
                   <img
                     src={item.logo}
