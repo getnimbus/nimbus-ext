@@ -11,6 +11,7 @@
     shorterName,
     typeClosedHoldingTokenChart,
   } from "~/utils";
+  import dayjs from "dayjs";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -21,7 +22,6 @@
   import LogoWhite from "~/assets/logo-white.svg";
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
-  import dayjs from "dayjs";
 
   export let selectedAddress;
 
@@ -217,14 +217,6 @@
     series: [],
   };
 
-  const handleFilter30Day = (item) => {
-    const date = dayjs(item?.last_transferred_at);
-    const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
-    return (
-      thirtyDaysInMilliseconds - dayjs(dayjs()).diff(date, "millisecond") > 0
-    );
-  };
-
   const getHoldingToken = async (address) => {
     const response: HoldingTokenRes = await nimbus
       .get(`/v2/address/${address}/holding?chain=ALL`)
@@ -253,7 +245,14 @@
 
     closedHoldingPosition = formatData
       .filter((item) => item?.profit?.realizedProfit)
-      .filter(handleFilter30Day)
+      .filter((item) => {
+        const date = dayjs(item?.last_transferred_at);
+        const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
+        return (
+          thirtyDaysInMilliseconds - dayjs(dayjs()).diff(date, "millisecond") >
+          0
+        );
+      })
       .map((item) => {
         return {
           ...item,

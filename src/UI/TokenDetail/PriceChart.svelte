@@ -24,15 +24,6 @@
     darkMode = value;
   });
 
-  const handleGetTokenPrice = async () => {
-    const response = await mobula.get(
-      `/1/market/history?blockchain=Ethereum&asset=${contractAddress}&from=${dayjs()
-        .subtract(30, "day")
-        .unix()}&to'`
-    );
-    return response?.data?.price_history;
-  };
-
   let dataPriceChart = [];
   let dataAvgCost = [];
 
@@ -168,6 +159,15 @@
       },
     },
     series: [],
+  };
+
+  const handleGetTokenPrice = async () => {
+    const response = await mobula.get(
+      `/1/market/history?blockchain=Ethereum&asset=${contractAddress}&from=${dayjs()
+        .subtract(30, "day")
+        .unix()}&to'`
+    );
+    return response?.data?.price_history;
   };
 
   $: queryTokenPrice = createQuery({
@@ -308,19 +308,21 @@
   };
 
   const handleTooltipTrade = (data) => {
-    const groupBuySellHistoryData = groupBy(data.data, "type");
+    const formatDataTrade = data.data.map((item) => {
+      return {
+        ...item,
+        past_value:
+          item.type === "sell"
+            ? Number(item.past_price) * Number(item.quantity_out)
+            : Number(item.past_price) * Number(item.quantity_in),
+      };
+    });
+    const groupBuySellHistoryData = groupBy(formatDataTrade, "type");
     const buySellHistoryData = Object.getOwnPropertyNames(
       groupBuySellHistoryData
     );
 
     const formatData = buySellHistoryData.map((item) => {
-      const calculatePastValues = groupBuySellHistoryData[item].map((item) => {
-        return {
-          sell: Number(item.past_price) * Number(item.quantity_out),
-          buy: Number(item.past_price) * Number(item.quantity_in),
-        };
-      });
-
       return {
         type: item,
         amount:
@@ -335,20 +337,14 @@
               ),
         value: 0,
         price: data?.value[1],
-        sum_values:
-          item === "sell"
-            ? calculatePastValues?.reduce(
-                (prev, item) => prev + Number(item.sell),
-                0
-              )
-            : calculatePastValues?.reduce(
-                (prev, item) => prev + Number(item.buy),
-                0
-              ),
+        past_value: groupBuySellHistoryData[item].reduce(
+          (prev, item) => prev + Number(item.past_value),
+          0
+        ),
       };
     });
 
-    const typeList = data?.data.map((item) => {
+    const typeList = formatDataTrade.map((item) => {
       if (item.type === "sell") {
         return "sell";
       } else if (item.type === "buy") {
@@ -359,14 +355,20 @@
     const allTypeSell = typeList.every((item) => item === "sell");
     const allTypeBuy = typeList.every((item) => item === "buy");
 
+    const sumPastValue = formatDataTrade.reduce(
+      (prev, item) => prev + Number(item.past_value),
+      0
+    );
+
+    const selectedPastPrice = formatDataTrade.find((item) => {
+      return item.value[0] === data?.value[0];
+    });
+
     if (allTypeSell) {
-      const sumAmountSell = data?.data.reduce(
+      const sumAmountSell = formatDataTrade.reduce(
         (prev, item) => prev + Number(item.quantity_out),
         0
       );
-      const selectedPastPrice = data?.data.find((item) => {
-        return item.value[0] === data?.value[0];
-      });
       return `
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
@@ -379,9 +381,7 @@
               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                 darkMode ? "white" : "black"
               }">
-                $${formatCurrency(
-                  Number(sumAmountSell) * Number(selectedPastPrice?.past_price)
-                )}
+                $${formatCurrency(Number(sumPastValue))}
               </div>
             </div>
           </div>
@@ -420,13 +420,10 @@
     }
 
     if (allTypeBuy) {
-      const sumAmountBuy = data?.data.reduce(
+      const sumAmountBuy = formatDataTrade.reduce(
         (prev, item) => prev + Number(item.quantity_in),
         0
       );
-      const selectedPastPrice = data?.data.find((item) => {
-        return item.value[0] === data?.value[0];
-      });
       return `
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
@@ -439,9 +436,7 @@
               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                 darkMode ? "white" : "black"
               }">
-                $${formatCurrency(
-                  Number(sumAmountBuy) * Number(selectedPastPrice?.past_price)
-                )}
+                $${formatCurrency(Number(sumPastValue))}
               </div>
             </div>
           </div>
@@ -518,7 +513,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       darkMode ? "white" : "black"
                     }">
-                      $${formatCurrency(item.sum_values)}
+                      $${formatCurrency(item.past_value)}
                     </div>
                   </div>
                 </div>

@@ -336,7 +336,8 @@
     }
   }
 
-  $: colspan = typeWalletAddress !== "EVM" ? 8 : 7;
+  $: colspan =
+    typeWalletAddress === "SOL" || typeWalletAddress === "EVM" ? 8 : 7;
 
   $: {
     if (selectedWallet || selectedChain) {
