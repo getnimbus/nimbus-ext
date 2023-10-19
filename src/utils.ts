@@ -1014,18 +1014,18 @@ export const driverObj = driver({
       },
     },
     {
-      element: "#view-nft-detail",
+      element: ".view-nft-detail",
       popover: {
         title: "Introduce App",
         description: "View NFT detail",
       },
     },
-    {
-      element: "#view-closed-positions",
-      popover: {
-        title: "Introduce App",
-        description: "View closed positions",
-      },
-    },
+    // {
+    //   element: "#view-closed-positions",
+    //   popover: {
+    //     title: "Introduce App",
+    //     description: "View closed positions",
+    //   },
+    // },
   ],
 });

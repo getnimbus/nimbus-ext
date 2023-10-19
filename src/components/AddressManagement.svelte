@@ -889,7 +889,9 @@
   $: {
     if (
       !localStorage.getItem("view-use-wallet-or-demo-tour") &&
-      !$userPublicAddress
+      !$wallet &&
+      !$userPublicAddress &&
+      $wallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
     ) {
       setTimeout(() => {
         driverObj.highlight({
@@ -897,7 +899,6 @@
           popover: {
             title: "Introduce App",
             description: "Add wallet or view Demo wallet",
-            disableButtons: ["next"],
           },
         });
         // localStorage.setItem("view-use-wallet-or-demo-tour", "true");

@@ -32,6 +32,7 @@
   export let data;
   export let selectedWallet;
   export let sumAllTokens;
+  export let index;
 
   $: selectedChain = $chain;
 
@@ -234,6 +235,7 @@
   class={`group transition-all ${
     isOpenTokenInfoBundle ? (darkMode ? "bg-[#000]" : "bg-gray-100") : ""
   }`}
+  id="view-token-detail"
   on:click={() => {
     // if (clickable) {
     //   navigate(
