@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
+  import dayjs from "dayjs";
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import { nimbus } from "~/lib/network";
@@ -18,6 +19,14 @@
       .get(`/v2/address/${address}/holding?chain=ALL`)
       .then((response) => response.data);
     return response;
+  };
+
+  const handleFilter30Day = (item) => {
+    const date = dayjs(item?.last_transferred_at);
+    const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
+    return (
+      thirtyDaysInMilliseconds - dayjs(dayjs()).diff(date, "millisecond") > 0
+    );
   };
 
   const formatDataHoldingToken = (dataTokenHolding) => {
@@ -41,7 +50,7 @@
 
     closedHoldingPosition = formatData
       .filter((item) => item?.profit?.realizedProfit)
-      .filter((item) => Number(item.amount) === 0)
+      .filter(handleFilter30Day)
       .map((item) => {
         return {
           ...item,
@@ -95,7 +104,7 @@
 <div class="col-span-4 grid grid-cols-2 flex flex-col gap-5">
   <div class="flex flex-col border border_0000001a rounded-xl px-6 py-6">
     <div class="flex justify-start xl:text-xl text-3xl font-medium mb-5">
-      Top 5 Profit(30D)
+      Top 5 Profit (30D)
     </div>
     <div class="flex flex-col gap-4">
       {#if $queryTokenHolding.isLoading}
@@ -104,7 +113,7 @@
         </div>
       {:else if top5ProfitToken.length === 0}
         <div class="flex items-center justify-center">
-          There are no closed holding position
+          There is no closed holding position in the last 30 day
         </div>
       {:else}
         {#each top5ProfitToken as item}
@@ -126,7 +135,7 @@
               </span>
             </div>
             <span class="text-green-400">
-              +<TooltipNumber number={item.realizedProfit} type="value" />
+              <TooltipNumber number={item.realizedProfit} type="value" />
               <!-- (+<TooltipNumber number={32} type="percent" />X) -->
             </span>
           </div>
@@ -136,7 +145,7 @@
   </div>
   <div class="flex flex-col border border_0000001a rounded-xl px-6 py-6">
     <div class="flex justify-start xl:text-xl text-3xl font-medium mb-5">
-      Top 5 Loss(30D)
+      Top 5 Loss (30D)
     </div>
     <div class="flex flex-col gap-4">
       {#if $queryTokenHolding.isLoading}
@@ -145,7 +154,7 @@
         </div>
       {:else if top5LossToken.length === 0}
         <div class="flex items-center justify-center">
-          There are no closed holding position
+          There is no closed holding position in the last 30 day
         </div>
       {:else}
         {#each top5LossToken as item}
