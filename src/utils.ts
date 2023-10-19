@@ -989,6 +989,7 @@ export const formatTransactionTime = (date: Date) => {
   }
   return dayjs(date).fromNow();
 };
+
 export const driverObj = driver({
   showProgress: true,
   overlayColor: "#27326f",
