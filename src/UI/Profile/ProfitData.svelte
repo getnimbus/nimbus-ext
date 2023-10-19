@@ -148,8 +148,8 @@
 <div
   class="col-span-4 grid xl:grid-cols-6 grid-cols-3 gap-5 border border_0000001a rounded-xl p-6"
 >
-  {#if $queryTokenHolding.isLoading || $queryTradingStats.isLoading}
-    <div class="flex items-center justify-center">
+  {#if $queryTokenHolding.isLoading || !$queryTradingStats.isLoading}
+    <div class="xl:col-span-6 col-span-3 flex items-center justify-center">
       <Loading />
     </div>
   {:else}
