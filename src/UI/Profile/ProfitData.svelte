@@ -13,6 +13,7 @@
   let set30DayPnl = 0;
   let winRate = 0;
   let totalCost = 0;
+  let totalToken = 0;
 
   const handleFilter30Day = (item) => {
     const date = dayjs(item?.last_transferred_at);
@@ -63,6 +64,8 @@
       (formatWinRate.filter((item) => item?.profit?.realizedProfit > 0).length /
         formatWinRate.length) *
       100;
+
+    totalToken = formatWinRate.length;
   };
 
   const getTradingStats = async (address) => {
@@ -140,8 +143,6 @@
       }
     }
   }
-
-  $: totalToken = $queryTradingStats?.data?.metadata?.length || 0;
 </script>
 
 <div

@@ -130,7 +130,7 @@
                 }}
                 class="rounded-full"
               />
-              <span class="text-lg xl:text-xs font-medium">
+              <span class="text-lg xl:text-base font-medium">
                 {item.name}
               </span>
             </div>
@@ -171,7 +171,7 @@
                 }}
                 class="rounded-full"
               />
-              <span class="text-lg xl:text-xs font-medium">
+              <span class="text-lg xl:text-base font-medium">
                 {item.name}
               </span>
             </div>
