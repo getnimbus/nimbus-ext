@@ -147,70 +147,80 @@
 <div
   class="col-span-4 grid xl:grid-cols-6 grid-cols-3 gap-5 border border_0000001a rounded-xl p-6"
 >
-  <div class="flex flex-col gap-2 justify-between">
-    <span class="text-xl xl:text-xs font-medium text_00000099">Balance</span>
-    <span class="xl:text-base text-lg">
-      <TooltipNumber number={netWorth} type="value" />
-    </span>
-  </div>
-  <div class="flex flex-col gap-2 justify-between">
-    <span class="text-xl xl:text-xs font-medium text_00000099">
-      30D Unrealized PnL
-    </span>
-    <span
-      class={`xl:text-base text-lg ${
-        unRealizedProfit < 0
-          ? "text-red-500"
-          : unRealizedProfit > 0
-          ? "text-green-400"
-          : ""
-      }`}
-    >
-      <TooltipNumber number={unRealizedProfit} type="value" />
-    </span>
-  </div>
-  <div class="flex flex-col gap-2 justify-between">
-    <span class="text-xl xl:text-xs font-medium text_00000099">
-      30D Realized PnL
-    </span>
-    <div class="xl:text-base text-lg">
-      <div
-        class={`${
-          profit !== 0 ? (profit >= 0 ? "text-green-400" : "text-red-500") : ""
+  {#if $queryTokenHolding.isLoading || $queryTradingStats.isLoading}
+    <div class="flex items-center justify-center">
+      <Loading />
+    </div>
+  {:else}
+    <div class="flex flex-col gap-2 justify-between">
+      <span class="text-xl xl:text-xs font-medium text_00000099">Balance</span>
+      <span class="xl:text-base text-lg">
+        <TooltipNumber number={netWorth} type="value" />
+      </span>
+    </div>
+    <div class="flex flex-col gap-2 justify-between">
+      <span class="text-xl xl:text-xs font-medium text_00000099">
+        30D Unrealized PnL
+      </span>
+      <span
+        class={`xl:text-base text-lg ${
+          unRealizedProfit < 0
+            ? "text-red-500"
+            : unRealizedProfit > 0
+            ? "text-green-400"
+            : ""
         }`}
       >
-        <TooltipNumber number={Math.abs(profit)} type="value" />
+        <TooltipNumber number={unRealizedProfit} type="value" />
+      </span>
+    </div>
+    <div class="flex flex-col gap-2 justify-between">
+      <span class="text-xl xl:text-xs font-medium text_00000099">
+        30D Realized PnL
+      </span>
+      <div class="xl:text-base text-lg">
+        <div
+          class={`${
+            profit !== 0
+              ? profit >= 0
+                ? "text-green-400"
+                : "text-red-500"
+              : ""
+          }`}
+        >
+          <TooltipNumber number={Math.abs(profit)} type="value" />
+        </div>
       </div>
     </div>
-  </div>
-  <div class="flex flex-col gap-2 justify-between">
-    <span class="text-xl xl:text-xs font-medium text_00000099">30D PnL</span>
-    <span
-      class={`${
-        set30DayPnl > 0
-          ? "text-green-400"
-          : set30DayPnl < 0
-          ? "text-red-500"
-          : ""
-      }`}
-    >
-      <TooltipNumber number={set30DayPnl} type="percent" />%
-    </span>
-  </div>
-  <div class="flex flex-col gap-2 justify-between">
-    <span class="text-xl xl:text-xs font-medium text_00000099">
-      Trade Tokens
-    </span>
-    <span class="xl:text-base text-lg">
-      {totalToken}
-    </span>
-  </div>
-  <div class="flex flex-col gap-2 justify-between">
-    <span class="text-xl xl:text-xs font-medium text_00000099">Winrate</span>
-    <span class="xl:text-base text-lg">
-      <TooltipNumber number={winRate} type="percent" />%
-    </span>
-  </div>
+    <div class="flex flex-col gap-2 justify-between">
+      <span class="text-xl xl:text-xs font-medium text_00000099">30D PnL</span>
+      <span
+        class={`${
+          set30DayPnl > 0
+            ? "text-green-400"
+            : set30DayPnl < 0
+            ? "text-red-500"
+            : ""
+        }`}
+      >
+        <TooltipNumber number={set30DayPnl} type="percent" />%
+      </span>
+    </div>
+    <div class="flex flex-col gap-2 justify-between">
+      <span class="text-xl xl:text-xs font-medium text_00000099">
+        Trade Tokens
+      </span>
+      <span class="xl:text-base text-lg">
+        {totalToken}
+      </span>
+    </div>
+    <div class="flex flex-col gap-2 justify-between">
+      <span class="text-xl xl:text-xs font-medium text_00000099">Winrate</span>
+      <span class="xl:text-base text-lg">
+        <TooltipNumber number={winRate} type="percent" />%
+      </span>
+    </div>
+  {/if}
 </div>
 
 <style windi:preflights:global windi:safelist:global></style>
