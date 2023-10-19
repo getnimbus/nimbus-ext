@@ -72,9 +72,6 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/trading-stats`
     );
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
     return response?.data;
   };
 
@@ -91,10 +88,6 @@
     staleTime: Infinity,
     retry: false,
     enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
   });
 
   $: queryTokenHolding = createQuery({
