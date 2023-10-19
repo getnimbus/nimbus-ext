@@ -3,7 +3,7 @@
   import { createQuery } from "@tanstack/svelte-query";
   import { mobula } from "~/lib/network";
   import { isDarkMode } from "~/store";
-  import { autoFontSize, formatCurrency } from "~/utils";
+  import { autoFontSize, formatBalance, formatCurrency } from "~/utils";
   import numeral from "numeral";
   import { groupBy } from "lodash";
 
@@ -43,17 +43,38 @@
       formatter: function (params) {
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 320px;">
-              <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
-              }">
-                 ${dayjs(params[0].axisValue).format("YYYY-MM-DD HH:mm")}
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                  darkMode ? "white" : "black"
+                }">
+                  ${dayjs(params[0].axisValue).format("YYYY-MM-DD HH:mm")}
+                </div>
+                
+                ${
+                  params[0]?.seriesName === "Buy" ||
+                  params[0]?.seriesName === "Sell" ||
+                  params[0]?.seriesName === "Trade"
+                    ? `
+                  <div style="display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                    darkMode ? "white" : "black"
+                  }">
+                    <span>${params[0]?.marker}</span>
+                    <span>${params[0]?.seriesName}</span>
+                  </div>
+                `
+                    : ``
+                }
               </div>
+
               ${params
                 .map((item) => {
                   return `
                     ${
                       item?.seriesName === "Trade"
-                        ? handleSumTradeBuyAndSell(item?.data?.data)
+                        ? handleTooltipSumTradeBuyAndSell(item?.data)
+                        : item?.seriesName === "Buy" ||
+                          item?.seriesName === "Sell"
+                        ? handleTooltipBuyAndSell(item?.data)
                         : `
                         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
@@ -105,10 +126,26 @@
       position: "right",
       axisLabel: {
         formatter: function (value, index) {
-          return (
-            `${value < 0 ? "-" : ""} $` +
-            numeral(Math.abs(value)).format("0.0000a")
-          );
+          if (value.toString().includes("e-")) {
+            const numStr = value.toString();
+            const eIndex = numStr.indexOf("e");
+            if (eIndex !== -1) {
+              const significand = parseFloat(
+                numStr
+                  .slice(0, 4)
+                  .split("")
+                  .filter((e) => e != ".")
+                  .join("")
+              );
+
+              return `${value < 0 ? "-" : ""} $` + `0.0...0${significand}`;
+            }
+          } else {
+            return (
+              `${value < 0 ? "-" : ""} $` +
+              numeral(Math.abs(value)).format("0.000000a")
+            );
+          }
         },
         fontSize: autoFontSize(),
       },
@@ -189,8 +226,72 @@
     return duplicates;
   };
 
-  const handleSumTradeBuyAndSell = (arr) => {
-    const groupBuySellHistoryData = groupBy(arr, "type");
+  const handleTooltipBuyAndSell = (data) => {
+    return `
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+              darkMode ? "white" : "black"
+            }">
+              Value
+            </div>
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+              <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                darkMode ? "white" : "black"
+              }">
+                $${
+                  data?.type === "buy"
+                    ? formatCurrency(
+                        Number(data?.quantity_in) * Number(data.value[1])
+                      )
+                    : formatCurrency(
+                        Number(data?.quantity_out) * Number(data.value[1])
+                      )
+                }
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+              darkMode ? "white" : "black"
+            }">
+              Amount
+            </div>
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+              <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                darkMode ? "white" : "black"
+              }">
+                ${
+                  data?.type === "buy"
+                    ? formatBalance(Number(data?.quantity_in))
+                    : formatBalance(Number(data?.quantity_out))
+                }
+              </div>
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+              darkMode ? "white" : "black"
+            }">
+              Price
+            </div>
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+              <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                darkMode ? "white" : "black"
+              }">
+                $${formatCurrency(Math.abs(data.value[1]))}
+              </div>
+            </div>
+          </div>
+
+        </div>
+    `;
+  };
+
+  const handleTooltipSumTradeBuyAndSell = (data) => {
+    const groupBuySellHistoryData = groupBy(data.data, "type");
     const buySellHistoryData = Object.getOwnPropertyNames(
       groupBuySellHistoryData
     );
@@ -251,6 +352,8 @@
           })
         );
         return {
+          quantity_in: item.quantity_in,
+          quantity_out: item.quantity_out,
           itemStyle: { color: "#00b580" },
           value: [item.created_at * 1000, selected.value[1]],
           type: "buy",
@@ -267,6 +370,8 @@
           })
         );
         return {
+          quantity_in: item.quantity_in,
+          quantity_out: item.quantity_out,
           itemStyle: { color: "#ef4444" },
           value: [item.created_at * 1000, selected.value[1]],
           type: "sell",
@@ -309,6 +414,7 @@
           type: "trade",
         };
       });
+      console.log("dataTrade: ", dataTrade);
 
       const filteredDuplicateHistoryData = dataHistory
         .map((item) => {
@@ -331,6 +437,17 @@
       const groupBuyHistoryData = groupBy(filteredDuplicateHistoryData, "type");
       const dataBuy = groupBuyHistoryData["buy"];
       const dataSell = groupBuyHistoryData["sell"];
+      console.log("dataBuy: ", dataBuy);
+      console.log("dataSell: ", dataSell);
+
+      // const hello = dataTrade.map((item) => {
+      //   const isIncludeSell = item.data.filter(
+      //     (eachData) => eachData.type === "sell"
+      //   );
+      //   console.log("isIncludeSell: ", isIncludeSell);
+
+      //   return {};
+      // });
 
       optionLine = {
         ...optionLine,
@@ -394,7 +511,6 @@
     } else {
       optionLine = {
         ...optionLine,
-        dataset: [],
         series: [
           {
             name: "Trade",
