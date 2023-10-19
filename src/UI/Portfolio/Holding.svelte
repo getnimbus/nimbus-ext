@@ -336,7 +336,8 @@
     }
   }
 
-  $: colspan = typeWalletAddress !== "EVM" ? 8 : 7;
+  $: colspan =
+    typeWalletAddress === "SOL" || typeWalletAddress === "EVM" ? 8 : 7;
 
   $: {
     if (selectedWallet || selectedChain) {
@@ -485,8 +486,12 @@
                   </div>
                 </th>
                 <th
-                  class={`py-3 pr-3 ${
-                    typeWalletAddress !== "BUNDLE" ? "rounded-tr-[10px]" : ""
+                  class={`py-3 ${
+                    typeWalletAddress === "SOL" ||
+                    typeWalletAddress === "EVM" ||
+                    typeWalletAddress === "BUNDLE"
+                      ? ""
+                      : "pr-3 rounded-tr-[10px]"
                   }`}
                 >
                   <div
@@ -495,7 +500,9 @@
                     Unrealized PnL
                   </div>
                 </th>
-                <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
+                {#if typeWalletAddress === "SOL" || typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE"}
+                  <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
+                {/if}
               </tr>
             </thead>
 
