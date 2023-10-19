@@ -1,10 +1,11 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
   import dayjs from "dayjs";
-  import Loading from "~/components/Loading.svelte";
-  import TooltipNumber from "~/components/TooltipNumber.svelte";
   import { nimbus } from "~/lib/network";
   import { user } from "~/store";
+
+  import Loading from "~/components/Loading.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   export let selectedAddress;
 
@@ -14,14 +15,6 @@
   let winRate = 0;
   let totalCost = 0;
   let totalToken = 0;
-
-  const handleFilter30Day = (item) => {
-    const date = dayjs(item?.last_transferred_at);
-    const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
-    return (
-      thirtyDaysInMilliseconds - dayjs(dayjs()).diff(date, "millisecond") > 0
-    );
-  };
 
   const formatDataHoldingToken = (dataTokenHolding) => {
     const formatData = dataTokenHolding
@@ -46,7 +39,14 @@
 
     const formatWinRate = formatData
       .filter((item) => item?.profit?.realizedProfit)
-      .filter(handleFilter30Day)
+      .filter((item) => {
+        const date = dayjs(item?.last_transferred_at);
+        const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
+        return (
+          thirtyDaysInMilliseconds - dayjs(dayjs()).diff(date, "millisecond") >
+          0
+        );
+      })
       .map((item) => {
         return {
           ...item,
@@ -121,7 +121,7 @@
   }
 
   $: {
-    if ($queryTradingStats?.data) {
+    if (!$queryTradingStats.isError && $queryTradingStats?.data !== undefined) {
       const tradingStatsMeta = $queryTradingStats?.data?.metadata.filter(
         (e) => e.startTrade < 2592000000
       );
@@ -148,78 +148,83 @@
 <div
   class="col-span-4 grid xl:grid-cols-6 grid-cols-3 gap-5 border border_0000001a rounded-xl p-6"
 >
-  {#if $queryTokenHolding.isLoading || !$queryTradingStats.isLoading}
+  {#if $queryTokenHolding.isFetching && $queryTradingStats.isFetching}
     <div class="xl:col-span-6 col-span-3 flex items-center justify-center">
       <Loading />
     </div>
   {:else}
     <div class="flex flex-col gap-2 justify-between">
-      <span class="text-xl xl:text-xs font-medium text_00000099">Balance</span>
-      <span class="xl:text-base text-lg">
-        <TooltipNumber number={netWorth} type="value" />
-      </span>
-    </div>
-    <div class="flex flex-col gap-2 justify-between">
-      <span class="text-xl xl:text-xs font-medium text_00000099">
-        30D Unrealized PnL
-      </span>
-      <span
-        class={`xl:text-base text-lg ${
-          unRealizedProfit < 0
-            ? "text-red-500"
-            : unRealizedProfit > 0
-            ? "text-green-400"
-            : ""
-        }`}
-      >
-        <TooltipNumber number={unRealizedProfit} type="value" />
-      </span>
-    </div>
-    <div class="flex flex-col gap-2 justify-between">
-      <span class="text-xl xl:text-xs font-medium text_00000099">
-        30D Realized PnL
-      </span>
+      <div class="text-xl xl:text-xs font-medium text_00000099">Balance</div>
       <div class="xl:text-base text-lg">
-        <div
-          class={`${
-            profit !== 0
-              ? profit >= 0
-                ? "text-green-400"
-                : "text-red-500"
-              : ""
-          }`}
-        >
-          <TooltipNumber number={Math.abs(profit)} type="value" />
-        </div>
+        <TooltipNumber number={netWorth} type="value" />
       </div>
     </div>
+
     <div class="flex flex-col gap-2 justify-between">
-      <span class="text-xl xl:text-xs font-medium text_00000099">30D PnL</span>
-      <span
-        class={`${
-          set30DayPnl > 0
-            ? "text-green-400"
-            : set30DayPnl < 0
-            ? "text-red-500"
+      <div class="text-xl xl:text-xs font-medium text_00000099">
+        30D Unrealized PnL
+      </div>
+      <div
+        class={`flex items-center xl:text-base text-lg ${
+          unRealizedProfit !== 0
+            ? unRealizedProfit >= 0
+              ? "text-[#00A878]"
+              : "text-red-500"
             : ""
         }`}
       >
-        <TooltipNumber number={set30DayPnl} type="percent" />%
-      </span>
+        {#if unRealizedProfit < 0}-{/if}
+        <TooltipNumber number={Math.abs(unRealizedProfit)} type="value" />
+      </div>
     </div>
+
     <div class="flex flex-col gap-2 justify-between">
-      <span class="text-xl xl:text-xs font-medium text_00000099">
+      <div class="text-xl xl:text-xs font-medium text_00000099">
+        30D Realized PnL
+      </div>
+      <div
+        class={`flex items-center xl:text-base text-lg ${
+          profit !== 0 ? (profit >= 0 ? "text-[#00A878]" : "text-red-500") : ""
+        }`}
+      >
+        {#if profit < 0}-{/if}
+        <TooltipNumber number={Math.abs(profit)} type="value" />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2 justify-between">
+      <div class="text-xl xl:text-xs font-medium text_00000099">30D PnL</div>
+      <div
+        class={`flex items-center xl:text-base text-lg ${
+          set30DayPnl !== 0
+            ? set30DayPnl >= 0
+              ? "text-[#00A878]"
+              : "text-red-500"
+            : ""
+        }`}
+      >
+        {#if set30DayPnl < 0}-{/if}
+        <TooltipNumber
+          number={Math.abs(set30DayPnl)}
+          type={Math.abs(Number(set30DayPnl)) > 100 ? "balance" : "percent"}
+        />%
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2 justify-between">
+      <div class="text-xl xl:text-xs font-medium text_00000099">
         Trade Tokens
-      </span>
-      <span class="xl:text-base text-lg">
+      </div>
+      <div class="xl:text-base text-lg">
         {totalToken}
-      </span>
+      </div>
     </div>
+
     <div class="flex flex-col gap-2 justify-between">
-      <span class="text-xl xl:text-xs font-medium text_00000099">Winrate</span>
-      <span class="xl:text-base text-lg">
+      <div class="text-xl xl:text-xs font-medium text_00000099">Winrate</div>
+      <div class="xl:text-base text-lg">
         <TooltipNumber number={winRate} type="percent" />%
-      </span>
+      </div>
     </div>
   {/if}
 </div>
