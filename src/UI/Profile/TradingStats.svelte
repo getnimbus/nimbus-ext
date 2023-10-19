@@ -5,9 +5,8 @@
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
-
-  import TrendUp from "~/assets/trend-up.svg";
-  import TrendDown from "~/assets/trend-down.svg";
+  import type { HoldingTokenRes } from "~/types/HoldingTokenData";
+  import dayjs from "dayjs";
 
   export let selectedAddress;
 
@@ -23,6 +22,48 @@
 
   let biggestWin = {};
   let worseLose = {};
+  let winRate = 0;
+
+  const handleFilter30Day = (item) => {
+    const date = dayjs(item?.last_transferred_at);
+    const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
+    return (
+      thirtyDaysInMilliseconds - dayjs(dayjs()).diff(date, "millisecond") > 0
+    );
+  };
+
+  const formatDataHoldingToken = (dataTokenHolding) => {
+    const formatData = dataTokenHolding
+      .map((item) => {
+        return {
+          ...item,
+          value:
+            Number(item?.amount) * Number(item?.price?.price || item?.rate),
+        };
+      })
+      .sort((a, b) => {
+        if (a.value < b.value) {
+          return 1;
+        }
+        if (a.value > b.value) {
+          return -1;
+        }
+        return 0;
+      });
+
+    const formatWinRate = formatData
+      .filter(
+        (item) =>
+          Number(item.price.price) !== 0 &&
+          item?.profit?.realizedProfit !== undefined
+      )
+      .filter(handleFilter30Day);
+
+    winRate =
+      (formatWinRate.filter((item) => item?.profit?.realizedProfit > 0).length /
+        formatWinRate.length) *
+      100;
+  };
 
   const getTradingStats = async (address) => {
     const response: any = await nimbus.get(
@@ -33,6 +74,21 @@
     }
     return response?.data;
   };
+
+  const getHoldingToken = async (address) => {
+    const response: HoldingTokenRes = await nimbus
+      .get(`/v2/address/${address}/holding?chain=ALL`)
+      .then((response) => response.data);
+    return response;
+  };
+
+  $: queryTokenHolding = createQuery({
+    queryKey: ["token-holding", selectedAddress],
+    queryFn: () => getHoldingToken(selectedAddress),
+    staleTime: Infinity,
+    enabled:
+      selectedAddress?.length !== 0 && Object.keys(userInfo).length !== 0,
+  });
 
   $: queryTradingStats = createQuery({
     queryKey: ["trading-stats", selectedAddress],
@@ -55,12 +111,14 @@
 
   $: {
     if ($queryTradingStats?.data !== undefined) {
-      const formatData = $queryTradingStats?.data.metadata.map((item) => {
-        return {
-          ...item,
-          profit: Number(item.realizedProfit) + Number(item.unrealizedProfit),
-        };
-      });
+      const formatData = $queryTradingStats?.data?.metadata
+        .filter((item) => item.startTrade < 2592000000)
+        .map((item) => {
+          return {
+            ...item,
+            profit: Number(item.realizedProfit) + Number(item.unrealizedProfit),
+          };
+        });
 
       if (formatData.length !== 0) {
         biggestWin = formatData.reduce((maxObject, currentObject) => {
@@ -82,13 +140,15 @@
     }
   }
 
-  $: winRate =
-    $queryTradingStats?.data?.lfStats?.totalTrade &&
-    Number($queryTradingStats?.data?.lfStats?.totalTrade) !== 0
-      ? (Number($queryTradingStats?.data?.lfStats?.winTrade) /
-          Number($queryTradingStats?.data?.lfStats?.totalTrade)) *
-        100
-      : 0;
+  $: {
+    if (
+      !$queryTokenHolding.isError &&
+      $queryTokenHolding.data &&
+      $queryTokenHolding?.data !== undefined
+    ) {
+      formatDataHoldingToken($queryTokenHolding.data);
+    }
+  }
 
   $: totalToken = $queryTradingStats?.data?.metadata?.length || 0;
 </script>
@@ -131,7 +191,7 @@
                 <div
                   class="flex items-center justify-end xl:text-base text-2xl col-span-1"
                 >
-                  {$queryTradingStats?.data?.lfStats?.totalTrade || 0}
+                  {$queryTradingStats?.data?.latestStats?.totalTrade || 0}
                 </div>
               </div>
 
