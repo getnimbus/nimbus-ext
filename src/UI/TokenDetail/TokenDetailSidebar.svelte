@@ -117,6 +117,7 @@
     {buyHistoryTradeList}
     id={data?.name}
     avgCost={data?.profit?.averageCost}
+    chain={data?.chain}
   />
 
   <div class="flex flex-col justify-between gap-6">

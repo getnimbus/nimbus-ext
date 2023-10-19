@@ -412,7 +412,13 @@
                     </div>
                   </th>
                   <th
-                    class="py-3 pr-3 rounded-tr-[10px] pr-3 rounded-tr-[10px]"
+                    class={`py-3 ${
+                      typeWalletAddress === "SOL" ||
+                      typeWalletAddress === "EVM" ||
+                      typeWalletAddress === "BUNDLE"
+                        ? ""
+                        : "pr-3 rounded-tr-[10px]"
+                    }`}
                   >
                     <div
                       class="text-right xl:text-xs text-xl uppercase font-medium"
@@ -420,24 +426,15 @@
                       ROI
                     </div>
                   </th>
-                  <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
+                  {#if typeWalletAddress === "SOL" || typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE"}
+                    <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
+                  {/if}
                 </tr>
               </thead>
-              {#if isLoadingToken}
+
+              {#if selectedChain === "ALL"}
                 <tbody>
-                  <tr>
-                    <td {colspan}>
-                      <div
-                        class="flex justify-center items-center h-full py-3 px-3"
-                      >
-                        <Loading />
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              {:else}
-                <tbody>
-                  {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+                  {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
                     <tr>
                       <td {colspan}>
                         <div
@@ -451,15 +448,69 @@
                         </div>
                       </td>
                     </tr>
-                  {:else}
-                    {#each filteredHoldingDataToken as holding}
-                      <ClosedHoldingTokenPosition
-                        data={holding}
-                        {selectedWallet}
-                      />
-                    {/each}
                   {/if}
+                  {#each filteredHoldingDataToken as holding}
+                    <ClosedHoldingTokenPosition
+                      data={holding}
+                      {selectedWallet}
+                    />
+                  {/each}
                 </tbody>
+
+                {#if isLoadingToken}
+                  <tbody>
+                    <tr>
+                      <td {colspan}>
+                        <div
+                          class="flex justify-center items-center h-full py-3 px-3"
+                        >
+                          <Loading />
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                {/if}
+              {/if}
+
+              {#if selectedChain !== "ALL"}
+                {#if isLoadingToken}
+                  <tbody>
+                    <tr>
+                      <td {colspan}>
+                        <div
+                          class="flex justify-center items-center h-full py-3 px-3"
+                        >
+                          <Loading />
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                {:else}
+                  <tbody>
+                    {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0}
+                      <tr>
+                        <td {colspan}>
+                          <div
+                            class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                          >
+                            {#if holdingTokenData && holdingTokenData.length === 0}
+                              {MultipleLang.empty}
+                            {:else}
+                              All tokens less than $1
+                            {/if}
+                          </div>
+                        </td>
+                      </tr>
+                    {:else}
+                      {#each filteredHoldingDataToken as holding}
+                        <ClosedHoldingTokenPosition
+                          data={holding}
+                          {selectedWallet}
+                        />
+                      {/each}
+                    {/if}
+                  </tbody>
+                {/if}
               {/if}
             </table>
           </div>
