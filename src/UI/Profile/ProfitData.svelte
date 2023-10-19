@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createQuery } from "@tanstack/svelte-query";
   import dayjs from "dayjs";
+  import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import { nimbus } from "~/lib/network";
   import { user } from "~/store";
@@ -43,12 +44,21 @@
     netWorth = formatData.reduce((prev, item) => prev + item.value, 0);
 
     const formatWinRate = formatData
-      .filter(
-        (item) =>
-          Number(item.price.price) !== 0 &&
-          item?.profit?.realizedProfit !== undefined
-      )
-      .filter(handleFilter30Day);
+      .filter((item) => item?.profit?.realizedProfit)
+      .filter(handleFilter30Day)
+      .map((item) => {
+        return {
+          ...item,
+          realizedProfit: item?.profit?.realizedProfit,
+          percentRealizedProfit:
+            (item?.avgCost || 0) === 0
+              ? 0
+              : (Number(item?.profit?.realizedProfit) /
+                  Number(Math.abs(item?.avgCost))) *
+                100,
+        };
+      });
+
     winRate =
       (formatWinRate.filter((item) => item?.profit?.realizedProfit > 0).length /
         formatWinRate.length) *
@@ -139,7 +149,11 @@
     <div class="flex flex-col gap-2 justify-between">
       <span class="text-xl xl:text-xs font-medium text_00000099">Balance</span>
       <span class="xl:text-base text-lg">
-        <TooltipNumber number={netWorth} type="value" />
+        {#if $queryTokenHolding.isLoading}
+          <Loading />
+        {:else}
+          <TooltipNumber number={netWorth} type="value" />
+        {/if}
       </span>
     </div>
     <div class="flex flex-col gap-2 justify-between">
@@ -155,7 +169,11 @@
             : ""
         }`}
       >
-        <TooltipNumber number={unRealizedProfit} type="value" />
+        {#if $queryTokenHolding.isLoading}
+          <Loading />
+        {:else}
+          <TooltipNumber number={unRealizedProfit} type="value" />
+        {/if}
       </span>
     </div>
     <div class="flex flex-col gap-2 justify-between">
@@ -172,7 +190,11 @@
               : ""
           }`}
         >
-          <TooltipNumber number={Math.abs(profit)} type="value" />
+          {#if $queryTokenHolding.isLoading}
+            <Loading />
+          {:else}
+            <TooltipNumber number={Math.abs(profit)} type="value" />
+          {/if}
         </div>
       </div>
     </div>
@@ -189,13 +211,21 @@
             : ""
         }`}
       >
-        <TooltipNumber number={set30DayPnl} type="percent" />%
+        {#if $queryTokenHolding.isLoading}
+          <Loading />
+        {:else}
+          <TooltipNumber number={set30DayPnl} type="percent" />%
+        {/if}
       </span>
     </div>
     <div class="flex flex-col gap-2 justify-between">
       <span class="text-xl xl:text-xs font-medium text_00000099">Winrate</span>
       <span class="xl:text-base text-lg">
-        <TooltipNumber number={winRate} type="percent" />%
+        {#if $queryTokenHolding.isLoading}
+          <Loading />
+        {:else}
+          <TooltipNumber number={winRate} type="percent" />%
+        {/if}
       </span>
     </div>
   </div>
