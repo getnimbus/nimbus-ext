@@ -263,7 +263,7 @@
                 class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[100px]"
               >
                 <div class="text-left xl:text-xs text-xl uppercase font-medium">
-                  Quantity
+                  Amount
                 </div>
               </th>
 
@@ -271,7 +271,7 @@
                 <div
                   class="text-right xl:text-xs text-xl uppercase font-medium"
                 >
-                  Cost/Profit
+                  Cost/Gain
                 </div>
               </th>
 

@@ -72,7 +72,23 @@
       data: [],
       axisLabel: {
         formatter: function (value, index) {
-          return "$" + numeral(Math.abs(value)).format("0.000000a");
+          if (value.toString().includes("e-")) {
+            const numStr = value.toString();
+            const eIndex = numStr.indexOf("e");
+            if (eIndex !== -1) {
+              const significand = parseFloat(
+                numStr
+                  .slice(0, 4)
+                  .split("")
+                  .filter((e) => e != ".")
+                  .join("")
+              );
+
+              return `$0.0...0${significand}`;
+            }
+          } else {
+            return "$" + numeral(Math.abs(value)).format("0.000000a");
+          }
         },
         fontSize: autoFontSize(),
       },

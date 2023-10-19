@@ -46,7 +46,7 @@
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 darkMode ? "white" : "black"
               }">
-                 ${dayjs(params[0].axisValue).format("YYYY-MM-DD")}
+                 ${dayjs(params[0].axisValue).format("YYYY-MM-DD HH:mm")}
               </div>
               ${params
                 .map((item) => {
@@ -60,13 +60,7 @@
                             darkMode ? "white" : "black"
                           }">
                             <span>${item?.marker}</span>
-                            <span>${
-                              item?.seriesName === "series\u00001"
-                                ? "Avg Cost"
-                                : item?.seriesName === "series\u00000"
-                                ? "Price USD"
-                                : item?.seriesName
-                            }</span>
+                            <span>${item?.seriesName}</span>
                           </div>
 
                           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
@@ -342,8 +336,35 @@
         ...optionLine,
         series: [
           {
+            name: "Trade",
+            type: "scatter",
+            zlevel: 2,
+            z: 2,
+            symbolSize: 16,
+            data: dataTrade || [],
+          },
+          {
+            name: "Buy",
+            type: "scatter",
+            zlevel: 2,
+            z: 3,
+            symbolSize: 16,
+            data: dataBuy || [],
+          },
+          {
+            name: "Sell",
+            type: "scatter",
+            zlevel: 2,
+            z: 3,
+            symbolSize: 16,
+            data: dataSell || [],
+          },
+          {
+            name: "Price",
             type: "line",
             symbol: "circle",
+            zlevel: 1,
+            z: 2,
             datasetIndex: 1,
             symbolSize: 0.1,
             lineStyle: {
@@ -354,8 +375,11 @@
             data: dataPriceChart,
           },
           {
+            name: "Avg Cost",
             type: "line",
             symbol: "circle",
+            zlevel: 1,
+            z: 2,
             datasetIndex: 1,
             symbolSize: 0.1,
             lineStyle: {
@@ -365,33 +389,43 @@
             showSymbol: false,
             data: dataAvgCost,
           },
-          {
-            name: "Trade",
-            type: "scatter",
-            symbolSize: 20,
-            data: dataTrade || [],
-          },
-          {
-            name: "Buy",
-            type: "scatter",
-            symbolSize: 20,
-            data: dataBuy || [],
-          },
-          {
-            name: "Sell",
-            type: "scatter",
-            symbolSize: 20,
-            data: dataSell || [],
-          },
         ],
       };
     } else {
       optionLine = {
         ...optionLine,
+        dataset: [],
         series: [
           {
+            name: "Trade",
+            type: "scatter",
+            zlevel: 2,
+            z: 2,
+            symbolSize: 16,
+            data: [],
+          },
+          {
+            name: "Buy",
+            type: "scatter",
+            zlevel: 2,
+            z: 3,
+            symbolSize: 16,
+            data: [],
+          },
+          {
+            name: "Sell",
+            type: "scatter",
+            zlevel: 2,
+            z: 3,
+            symbolSize: 16,
+            data: [],
+          },
+          {
+            name: "Price",
             type: "line",
             symbol: "circle",
+            zlevel: 1,
+            z: 2,
             datasetIndex: 1,
             symbolSize: 0.1,
             lineStyle: {
@@ -402,8 +436,11 @@
             data: [],
           },
           {
+            name: "Avg Cost",
             type: "line",
             symbol: "circle",
+            zlevel: 1,
+            z: 2,
             datasetIndex: 1,
             symbolSize: 0.1,
             lineStyle: {
@@ -411,24 +448,6 @@
               color: "#eab308",
             },
             showSymbol: false,
-            data: [],
-          },
-          {
-            name: "Trade",
-            type: "scatter",
-            symbolSize: 20,
-            data: [],
-          },
-          {
-            name: "Buy",
-            type: "scatter",
-            symbolSize: 20,
-            data: [],
-          },
-          {
-            name: "Sell",
-            type: "scatter",
-            symbolSize: 20,
             data: [],
           },
         ],
