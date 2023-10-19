@@ -259,10 +259,10 @@
                 $${
                   data?.type === "buy"
                     ? formatCurrency(
-                        Number(data?.quantity_in) * Number(data.value[1])
+                        Number(data?.quantity_in) * Number(data.past_price)
                       )
                     : formatCurrency(
-                        Number(data?.quantity_out) * Number(data.value[1])
+                        Number(data?.quantity_out) * Number(data.past_price)
                       )
                 }
               </div>
@@ -298,7 +298,7 @@
               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                 darkMode ? "white" : "black"
               }">
-                $${formatCurrency(Math.abs(data.value[1]))}
+                $${formatCurrency(data.past_price)}
               </div>
             </div>
           </div>
@@ -314,6 +314,13 @@
     );
 
     const formatData = buySellHistoryData.map((item) => {
+      const calculatePastValues = groupBuySellHistoryData[item].map((item) => {
+        return {
+          sell: Number(item.past_price) * Number(item.quantity_out),
+          buy: Number(item.past_price) * Number(item.quantity_in),
+        };
+      });
+
       return {
         type: item,
         amount:
@@ -326,7 +333,18 @@
                 (prev, item) => prev + Number(item.quantity_in),
                 0
               ),
+        value: 0,
         price: data?.value[1],
+        sum_values:
+          item === "sell"
+            ? calculatePastValues?.reduce(
+                (prev, item) => prev + Number(item.sell),
+                0
+              )
+            : calculatePastValues?.reduce(
+                (prev, item) => prev + Number(item.buy),
+                0
+              ),
       };
     });
 
@@ -346,6 +364,9 @@
         (prev, item) => prev + Number(item.quantity_out),
         0
       );
+      const selectedPastPrice = data?.data.find((item) => {
+        return item.value[0] === data?.value[0];
+      });
       return `
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
@@ -359,7 +380,7 @@
                 darkMode ? "white" : "black"
               }">
                 $${formatCurrency(
-                  Number(sumAmountSell) * Number(data?.value[1])
+                  Number(sumAmountSell) * Number(selectedPastPrice?.past_price)
                 )}
               </div>
             </div>
@@ -390,7 +411,7 @@
               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                 darkMode ? "white" : "black"
               }">
-                $${formatCurrency(data?.value[1])}
+                $${formatCurrency(selectedPastPrice?.past_price)}
               </div>
             </div>
           </div>
@@ -403,6 +424,9 @@
         (prev, item) => prev + Number(item.quantity_in),
         0
       );
+      const selectedPastPrice = data?.data.find((item) => {
+        return item.value[0] === data?.value[0];
+      });
       return `
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
@@ -416,7 +440,7 @@
                 darkMode ? "white" : "black"
               }">
                 $${formatCurrency(
-                  Number(sumAmountBuy) * Number(data?.value[1])
+                  Number(sumAmountBuy) * Number(selectedPastPrice?.past_price)
                 )}
               </div>
             </div>
@@ -447,7 +471,7 @@
               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                 darkMode ? "white" : "black"
               }">
-                $${formatCurrency(data?.value[1])}
+                $${formatCurrency(selectedPastPrice?.past_price)}
               </div>
             </div>
           </div>
@@ -494,9 +518,7 @@
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       darkMode ? "white" : "black"
                     }">
-                      $${formatCurrency(
-                        Number(item?.amount) * Number(item?.price)
-                      )}
+                      $${formatCurrency(item.sum_values)}
                     </div>
                   </div>
                 </div>
@@ -545,6 +567,7 @@
           itemStyle: { color: "#00b580" },
           value: [item.created_at * 1000, selected.value[1]],
           type: "buy",
+          past_price: item.to_price,
         };
       });
       const formatDataSellHistory = sellHistoryTradeList.map((item) => {
@@ -563,6 +586,7 @@
           itemStyle: { color: "#ef4444" },
           value: [item.created_at * 1000, selected.value[1]],
           type: "sell",
+          past_price: item.from_price,
         };
       });
       const dataHistory = formatDataBuyHistory.concat(formatDataSellHistory);
@@ -622,6 +646,7 @@
           type: "trade",
         };
       });
+      console.log("dataTrade: ", dataTrade);
 
       const filteredDuplicateHistoryData = dataHistory
         .map((item) => {
