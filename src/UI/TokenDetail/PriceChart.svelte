@@ -41,6 +41,17 @@
       trigger: "axis",
       extraCssText: "z-index: 9997",
       formatter: function (params) {
+        const typeList = params[0].data?.data?.map((item) => {
+          if (item.type === "sell") {
+            return "sell";
+          } else if (item.type === "buy") {
+            return "buy";
+          }
+        });
+
+        const allTypeSell = typeList?.every((item) => item === "sell");
+        const allTypeBuy = typeList?.every((item) => item === "buy");
+
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 320px;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -59,7 +70,13 @@
                     darkMode ? "white" : "black"
                   }">
                     <span>${params[0]?.marker}</span>
-                    <span>${params[0]?.seriesName}</span>
+                    <span>${
+                      allTypeSell
+                        ? `Sell +${params[0].data?.data.length}`
+                        : allTypeBuy
+                        ? `Buy +${params[0].data?.data.length}`
+                        : params[0]?.seriesName
+                    }</span>
                   </div>
                 `
                     : ``
@@ -71,7 +88,7 @@
                   return `
                     ${
                       item?.seriesName === "Trade"
-                        ? handleTooltipSumTradeBuyAndSell(item?.data)
+                        ? handleTooltipTrade(item?.data)
                         : item?.seriesName === "Buy" ||
                           item?.seriesName === "Sell"
                         ? handleTooltipBuyAndSell(item?.data)
@@ -290,7 +307,7 @@
     `;
   };
 
-  const handleTooltipSumTradeBuyAndSell = (data) => {
+  const handleTooltipTrade = (data) => {
     const groupBuySellHistoryData = groupBy(data.data, "type");
     const buySellHistoryData = Object.getOwnPropertyNames(
       groupBuySellHistoryData
@@ -299,19 +316,165 @@
     const formatData = buySellHistoryData.map((item) => {
       return {
         type: item,
-        value: groupBuySellHistoryData[item]?.reduce(
-          (prev, item) => prev + Number(item.value[1]),
-          0
-        ),
+        amount:
+          item === "sell"
+            ? groupBuySellHistoryData[item]?.reduce(
+                (prev, item) => prev + Number(item.quantity_out),
+                0
+              )
+            : groupBuySellHistoryData[item]?.reduce(
+                (prev, item) => prev + Number(item.quantity_in),
+                0
+              ),
+        price: data?.value[1],
       };
     });
 
+    const typeList = data?.data.map((item) => {
+      if (item.type === "sell") {
+        return "sell";
+      } else if (item.type === "buy") {
+        return "buy";
+      }
+    });
+
+    const allTypeSell = typeList.every((item) => item === "sell");
+    const allTypeBuy = typeList.every((item) => item === "buy");
+
+    if (allTypeSell) {
+      const sumAmountSell = data?.data.reduce(
+        (prev, item) => prev + Number(item.quantity_out),
+        0
+      );
+      return `
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+              darkMode ? "white" : "black"
+            }">
+              Value
+            </div>
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+              <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                darkMode ? "white" : "black"
+              }">
+                $${formatCurrency(
+                  Number(sumAmountSell) * Number(data?.value[1])
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+              darkMode ? "white" : "black"
+            }">
+              Amount
+            </div>
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+              <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                darkMode ? "white" : "black"
+              }">
+                ${formatBalance(Number(sumAmountSell))}
+              </div>
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+              darkMode ? "white" : "black"
+            }">
+              Price
+            </div>
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+              <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                darkMode ? "white" : "black"
+              }">
+                $${formatCurrency(data?.value[1])}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (allTypeBuy) {
+      const sumAmountBuy = data?.data.reduce(
+        (prev, item) => prev + Number(item.quantity_in),
+        0
+      );
+      return `
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+              darkMode ? "white" : "black"
+            }">
+              Value
+            </div>
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+              <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                darkMode ? "white" : "black"
+              }">
+                $${formatCurrency(
+                  Number(sumAmountBuy) * Number(data?.value[1])
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+              darkMode ? "white" : "black"
+            }">
+              Amount
+            </div>
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+              <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                darkMode ? "white" : "black"
+              }">
+                ${formatBalance(Number(sumAmountBuy))}
+              </div>
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+              darkMode ? "white" : "black"
+            }">
+              Price
+            </div>
+            <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+              <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                darkMode ? "white" : "black"
+              }">
+                $${formatCurrency(data?.value[1])}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     return `
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+          <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+            darkMode ? "white" : "black"
+          }">
+            Price
+          </div>
+          <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+            <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+              darkMode ? "white" : "black"
+            }">
+              $${formatCurrency(formatData[0]?.price)}
+            </div>
+          </div>
+        </div>
        ${formatData
          .map((item) => {
            return `
-              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div style="display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
                   darkMode ? "white" : "black"
                 }">
                   <span style="margin-top: 5px; display:inline-block; margin-right:4px; border-radius:10px; width:10px; height:10px; background-color: ${
@@ -320,11 +483,36 @@
                   <span style="text-transform: capitalize;">${item?.type}</span>
                 </div>
 
-                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
-                  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+           
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
                     darkMode ? "white" : "black"
                   }">
-                    $${formatCurrency(Math.abs(item.value))}
+                    Value
+                  </div>
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                      darkMode ? "white" : "black"
+                    }">
+                      $${formatCurrency(
+                        Number(item?.amount) * Number(item?.price)
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                    darkMode ? "white" : "black"
+                  }">
+                    Amount
+                  </div>
+                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
+                    <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                      darkMode ? "white" : "black"
+                    }">
+                      ${formatBalance(Number(item?.amount))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -392,6 +580,7 @@
         groupBuyTradeHistoryData
       );
       const dataTrade = dateTradeHistoryData.map((item) => {
+        let color = "#6b7280";
         const selected = findClosestObject(
           groupBuyTradeHistoryData[item][0].value[0],
           dataPriceChart.map((item) => {
@@ -401,12 +590,31 @@
             };
           })
         );
+
+        const typeList = groupBuyTradeHistoryData[item].map((item) => {
+          if (item.type === "sell") {
+            return "sell";
+          } else if (item.type === "buy") {
+            return "buy";
+          }
+        });
+
+        const allTypeSell = typeList.every((item) => item === "sell");
+        const allTypeBuy = typeList.every((item) => item === "buy");
+
+        if (allTypeSell) {
+          color = "#ef4444";
+        }
+
+        if (allTypeBuy) {
+          color = "#00b580";
+        }
+
         return {
           dateFormat: item,
           date: groupBuyTradeHistoryData[item][0].value[0],
           data: groupBuyTradeHistoryData[item],
-
-          itemStyle: { color: "#6b7280" },
+          itemStyle: { color },
           value: [
             groupBuyTradeHistoryData[item][0].value[0],
             selected.value[1],
@@ -414,7 +622,6 @@
           type: "trade",
         };
       });
-      console.log("dataTrade: ", dataTrade);
 
       const filteredDuplicateHistoryData = dataHistory
         .map((item) => {
@@ -437,17 +644,6 @@
       const groupBuyHistoryData = groupBy(filteredDuplicateHistoryData, "type");
       const dataBuy = groupBuyHistoryData["buy"];
       const dataSell = groupBuyHistoryData["sell"];
-      console.log("dataBuy: ", dataBuy);
-      console.log("dataSell: ", dataSell);
-
-      // const hello = dataTrade.map((item) => {
-      //   const isIncludeSell = item.data.filter(
-      //     (eachData) => eachData.type === "sell"
-      //   );
-      //   console.log("isIncludeSell: ", isIncludeSell);
-
-      //   return {};
-      // });
 
       optionLine = {
         ...optionLine,
