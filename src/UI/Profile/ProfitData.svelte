@@ -43,12 +43,21 @@
     netWorth = formatData.reduce((prev, item) => prev + item.value, 0);
 
     const formatWinRate = formatData
-      .filter(
-        (item) =>
-          Number(item.price.price) !== 0 &&
-          item?.profit?.realizedProfit !== undefined
-      )
-      .filter(handleFilter30Day);
+      .filter((item) => item?.profit?.realizedProfit)
+      .filter(handleFilter30Day)
+      .map((item) => {
+        return {
+          ...item,
+          realizedProfit: item?.profit?.realizedProfit,
+          percentRealizedProfit:
+            (item?.avgCost || 0) === 0
+              ? 0
+              : (Number(item?.profit?.realizedProfit) /
+                  Number(Math.abs(item?.avgCost))) *
+                100,
+        };
+      });
+
     winRate =
       (formatWinRate.filter((item) => item?.profit?.realizedProfit > 0).length /
         formatWinRate.length) *
