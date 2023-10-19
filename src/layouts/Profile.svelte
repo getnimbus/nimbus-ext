@@ -561,8 +561,6 @@
 
             <TopProfitAndLoss {selectedAddress} />
 
-            <TradingStats {selectedAddress} />
-
             <ClosedPositionChart {selectedAddress} />
           </div>
         </div>
