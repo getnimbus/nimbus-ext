@@ -17,6 +17,8 @@
 
   $: costBuy = Number(data?.quantity_in) * Number(data?.to_price);
   $: costSell = Number(data?.quantity_out) * Number(data?.from_price);
+
+  $: withinLast24Hours = dayjs().diff(dayjs(data?.created_at * 1000), "hour");
 </script>
 
 <tr class="group transition-all">
@@ -68,9 +70,19 @@
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
       {#if Number(data?.quantity_out) === 0}
-        <TooltipNumber number={data?.to_price} type="value" />
-      {:else}
-        <TooltipNumber number={data?.from_price} type="value" />
+        {#if data?.to_price < 0.01}
+          $<TooltipNumber number={data?.to_price} type="balance" />
+        {:else}
+          <TooltipNumber number={data?.to_price} type="value" />
+        {/if}
+      {/if}
+
+      {#if Number(data?.quantity_out) !== 0}
+        {#if data?.from_price < 0.01}
+          $<TooltipNumber number={data?.from_price} type="balance" />
+        {:else}
+          <TooltipNumber number={data?.from_price} type="value" />
+        {/if}
       {/if}
     </div>
   </td>
@@ -81,7 +93,9 @@
     }`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium text-right">
-      {dayjs(data?.created_at * 1000).fromNow()}
+      {withinLast24Hours < 24 && withinLast24Hours > 0
+        ? dayjs(data?.created_at * 1000).fromNow()
+        : dayjs(data?.created_at * 1000).format("YYYY-MM-DD")}
     </div>
   </td>
 </tr>
