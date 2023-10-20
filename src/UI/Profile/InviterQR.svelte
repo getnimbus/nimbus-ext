@@ -55,7 +55,9 @@
 </script>
 
 <div class="flex flex-col justify-center items-center gap-3">
-  <div class="xl:text-base text-xl">Check your profit at Nimbus</div>
+  <div class="xl:text-base text-xl text-center">
+    Track your portfolio and follow whales at Nimbus
+  </div>
   <div class="xl:w-32 xl:h-32 w-42 h-42">
     <img src={qrImageDataUrl} alt="Invite QR Code" class="w-full h-full" />
   </div>

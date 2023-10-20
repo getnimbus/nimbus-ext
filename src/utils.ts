@@ -17,6 +17,7 @@ import Base from "~/assets/base.svg"
 import confetti from "canvas-confetti";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
+import dayjs from "dayjs";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
@@ -1029,3 +1030,10 @@ export const driverObj = driver({
     // },
   ],
 });
+
+export const formatTransactionTime = (date: Date) => {
+  if (dayjs().diff(date, 'days') >= 1) {
+    return dayjs(date).format('YYYY-MM-DD, hh:mm A');
+  }
+  return dayjs(date).fromNow();
+};
