@@ -37,12 +37,32 @@
         type: "shadow",
       },
       formatter: function (params) {
+        let price = "";
+        if (params[0].axisValue.toString().includes("e-")) {
+          const numStr = params[0].axisValue.toString();
+          const eIndex = numStr.indexOf("e");
+          if (eIndex !== -1) {
+            const significand = parseFloat(
+              numStr
+                .slice(0, 4)
+                .split("")
+                .filter((e) => e != ".")
+                .join("")
+            );
+
+            price = `$0.0...0${significand}`;
+          }
+        } else {
+          price =
+            "$" + numeral(Math.abs(params[0].axisValue)).format("0.000000a");
+        }
+
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 darkMode ? "white" : "black"
               }">
-                ${numeral(params[0].axisValue).format("$0.000000a")}
+                ${price}
               </div>
                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
@@ -206,7 +226,7 @@
           height={485}
         />
         <div
-          class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
+          class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
         >
           <img
             src={darkMode ? LogoWhite : Logo}
