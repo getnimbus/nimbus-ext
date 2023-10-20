@@ -1,22 +1,18 @@
 <script>
-  import { useNavigate } from "svelte-navigator";
-  import { chain, typeWallet, isDarkMode, isHidePortfolio } from "~/store";
+  import { typeWallet, isDarkMode, isHidePortfolio } from "~/store";
   import { detectedChain, shorterName } from "~/utils";
-  import numeral from "numeral";
 
   import "~/components/Tooltip.custom.svelte";
+  import tooltip from "~/entries/contentScript/views/tooltip";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
+  import OverlaySidebar from "./OverlaySidebar.svelte";
+  import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
-  import Chart from "~/assets/chart.svg";
 
   export let data;
   export let selectedWallet;
-
-  $: selectedChain = $chain;
-
-  const navigate = useNavigate();
 
   let typeWalletAddress = "";
   typeWallet.subscribe((value) => {
@@ -36,6 +32,9 @@
   let isShowCMC = false;
   let isShowCoingecko = false;
 
+  let showSideTokenDetail = false;
+  let selectedTokenDetail = {};
+
   $: value = Number(data?.amount) * Number(data?.market_price);
 
   $: realizedProfit = data?.profit?.realizedProfit
@@ -47,11 +46,6 @@
       ? 0
       : realizedProfit / Math.abs(Number(data?.avgCost));
 
-  $: clickable =
-    data.name !== "Bitcoin" &&
-    data.name !== "Ethereum" &&
-    selectedChain !== "XDAI";
-
   $: logo =
     data.logo ||
     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
@@ -59,18 +53,7 @@
 
 <tr
   key={data?.symbol}
-  class={`group transition-all`}
-  on:click={() => {
-    // if (clickable) {
-    //   navigate(
-    //     `/position-detail?id=${encodeURIComponent(
-    //       data.positionId
-    //     )}&type=${encodeURIComponent(
-    //       data.positionType
-    //     )}&address=${encodeURIComponent(selectedWallet)}`
-    //   );
-    // }
-  }}
+  class="group transition-all"
   on:mouseover={() => {
     if (data?.cmc_slug) {
       isShowCMC = true;
@@ -432,9 +415,13 @@
   </td>
 
   <td
-    class={`py-3 pr-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
+    class={`py-3 ${
+      typeWalletAddress === "SOL" ||
+      typeWalletAddress === "EVM" ||
+      typeWalletAddress === "BUNDLE"
+        ? ""
+        : "pr-3"
+    } ${darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
   >
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
@@ -479,26 +466,195 @@
     </div>
   </td>
 
-  <!-- <td
-    class={`py-3 w-10 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
-  >
-    {#if clickable}
-      <div class="flex justify-center">
+  {#if typeWalletAddress === "SOL" || typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE"}
+    <td
+      class={`py-3 xl:w-12 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
+        darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      }`}
+    >
+      {#if typeWalletAddress === "EVM" || typeWalletAddress === "SOL"}
         <div
-          use:tooltip={{
-            content: `<tooltip-detail text="Show detail" />`,
-            allowHTML: true,
-            placement: "top",
+          class="flex justify-center cursor-pointer"
+          on:click={() => {
+            showSideTokenDetail = true;
+            selectedTokenDetail = data;
           }}
         >
-          <img src={Chart} alt="" width={14} height={14} />
+          <div
+            use:tooltip={{
+              content: `<tooltip-detail text="Show token detail" />`,
+              allowHTML: true,
+              placement: "top",
+            }}
+            class="xl:w-[14px] xl:h-[14px] w-[26px] h-[26px]"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              version="1.1"
+              viewBox="0 0 256 256"
+              xml:space="preserve"
+            >
+              <defs />
+              <g
+                style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                fill={darkMode ? "white" : "#00000080"}
+                transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"
+              >
+                <path
+                  d="M 87.994 0 H 69.342 c -1.787 0 -2.682 2.16 -1.418 3.424 l 5.795 5.795 l -33.82 33.82 L 28.056 31.196 l -3.174 -3.174 c -1.074 -1.074 -2.815 -1.074 -3.889 0 L 0.805 48.209 c -1.074 1.074 -1.074 2.815 0 3.889 l 3.174 3.174 c 1.074 1.074 2.815 1.074 3.889 0 l 15.069 -15.069 l 14.994 14.994 c 1.074 1.074 2.815 1.074 3.889 0 l 1.614 -1.614 c 0.083 -0.066 0.17 -0.125 0.247 -0.202 l 37.1 -37.1 l 5.795 5.795 C 87.84 23.34 90 22.445 90 20.658 V 2.006 C 90 0.898 89.102 0 87.994 0 z"
+                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                  transform=" matrix(1 0 0 1 0 0) "
+                  fill={darkMode ? "white" : "#00000080"}
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 65.626 37.8 v 49.45 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 23.518 L 65.626 37.8 z"
+                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                  fill={darkMode ? "white" : "#00000080"}
+                  transform=" matrix(1 0 0 1 0 0) "
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 47.115 56.312 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 42.03 L 47.115 56.312 z"
+                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                  fill={darkMode ? "white" : "#00000080"}
+                  transform=" matrix(1 0 0 1 0 0) "
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 39.876 60.503 c -1.937 0 -3.757 -0.754 -5.127 -2.124 l -6.146 -6.145 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 59.844 C 41.952 60.271 40.933 60.503 39.876 60.503 z"
+                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                  fill={darkMode ? "white" : "#00000080"}
+                  transform=" matrix(1 0 0 1 0 0) "
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 22.937 46.567 L 11.051 58.453 c -0.298 0.298 -0.621 0.562 -0.959 0.8 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 48.004 L 22.937 46.567 z"
+                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                  fill={darkMode ? "white" : "#00000080"}
+                  transform=" matrix(1 0 0 1 0 0) "
+                  stroke-linecap="round"
+                />
+              </g>
+            </svg>
+          </div>
         </div>
-      </div>
-    {/if}
-  </td> -->
+      {/if}
+    </td>
+  {/if}
 </tr>
 
-<style>
+<!-- Sidebar Token Detail -->
+<OverlaySidebar isOpen={showSideTokenDetail}>
+  <div class="flex flex-col gap-6 p-6">
+    <div class="flex justify-between items-start">
+      <div
+        class="xl:text-5xl text-6xl text-gray-500 cursor-pointer"
+        on:click|stopPropagation={() => {
+          showSideTokenDetail = false;
+          selectedTokenDetail = {};
+        }}
+      >
+        &times;
+      </div>
+      {#if selectedTokenDetail && Object.keys(selectedTokenDetail).length !== 0}
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-4">
+            <div class="relative">
+              <img
+                src={logo}
+                alt=""
+                width="46"
+                height="46"
+                class="rounded-full"
+                on:error={() => {
+                  logo =
+                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+                }}
+              />
+              {#if (typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE") && selectedTokenDetail?.chain !== "CEX" && selectedTokenDetail?.chain !== "BTC"}
+                <div class="absolute -top-2 -right-1">
+                  <img
+                    src={detectedChain(selectedTokenDetail.chain)}
+                    alt=""
+                    width="26"
+                    height="26"
+                    class="rounded-full"
+                  />
+                </div>
+              {/if}
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-start gap-2">
+                <div
+                  class="relative font-medium xl:text-xl text-2xl"
+                  on:mouseover={() => {
+                    isShowTooltipName = true;
+                  }}
+                  on:mouseleave={() => (isShowTooltipName = false)}
+                >
+                  {#if selectedTokenDetail.name === undefined}
+                    N/A
+                  {:else}
+                    {selectedTokenDetail?.name?.length > 20
+                      ? shorterName(selectedTokenDetail.name, 20)
+                      : selectedTokenDetail.name}
+                  {/if}
+                  {#if isShowTooltipName && selectedTokenDetail?.name?.length > 20}
+                    <div
+                      class="absolute left-0 -top-8"
+                      style="z-index: 2147483648;"
+                    >
+                      <tooltip-detail text={selectedTokenDetail.name} />
+                    </div>
+                  {/if}
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <div
+                  class="relative font-medium text_00000080 xl:text-base text-lg"
+                  on:mouseover={() => {
+                    isShowTooltipSymbol = true;
+                  }}
+                  on:mouseleave={() => (isShowTooltipSymbol = false)}
+                >
+                  {#if selectedTokenDetail.symbol === undefined}
+                    N/A
+                  {:else}
+                    {shorterName(selectedTokenDetail.symbol, 20)}
+                  {/if}
+                  {#if isShowTooltipSymbol && selectedTokenDetail.symbol.length > 20}
+                    <div
+                      class="absolute left-0 -top-8"
+                      style="z-index: 2147483648;"
+                    >
+                      <tooltip-detail text={selectedTokenDetail.symbol} />
+                    </div>
+                  {/if}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center font-medium xl:text-2xl text-3xl">
+            $<TooltipNumber
+              number={selectedTokenDetail?.market_price}
+              type="balance"
+            />
+          </div>
+        </div>
+      {/if}
+    </div>
+    <TokenDetailSidebar data={selectedTokenDetail} />
+  </div>
+</OverlaySidebar>
+
+<style windi:preflights:global windi:safelist:global>
+  :global(body) .bg_fafafbff {
+    background: #fafafbff;
+  }
+  :global(body.dark) .bg_fafafbff {
+    background: #212121;
+  }
 </style>
