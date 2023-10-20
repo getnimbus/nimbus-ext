@@ -1,8 +1,8 @@
 <script lang="ts">
   import dayjs from "dayjs";
   import { createQuery } from "@tanstack/svelte-query";
-  import { mobula } from "~/lib/network";
-  import { isDarkMode } from "~/store";
+  import { mobula, defillama } from "~/lib/network";
+  import { isDarkMode, typeWallet } from "~/store";
   import { autoFontSize, formatBalance, formatCurrency } from "~/utils";
   import numeral from "numeral";
   import { groupBy } from "lodash";
@@ -23,6 +23,11 @@
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let dataPriceChart = [];
@@ -194,6 +199,18 @@
     }
   }
 
+  const handleGetTokenPriceSol = async () => {
+    const response = await defillama.get(
+      `/chart/solana:${contractAddress}?start=1664364537&span=30&period=30d&searchWidth=600`
+    );
+    const formatRes = response?.coins[`solana:${contractAddress}`]?.prices.map(
+      (item) => {
+        return [item.timestamp * 1000, item.price];
+      }
+    );
+    return formatRes;
+  };
+
   const handleGetTokenPrice = async () => {
     const response = await mobula.get(
       `/1/market/history?blockchain=${chainType}&asset=${contractAddress}&from=${dayjs()
@@ -212,8 +229,46 @@
       contractAddress !== undefined &&
       contractAddress.length !== 0 &&
       chainType !== undefined &&
-      chainType.length !== 0,
+      chainType.length !== 0 &&
+      typeWalletAddress === "EVM",
   });
+
+  $: queryTokenPriceSol = createQuery({
+    queryKey: ["token-price-sol", contractAddress, chainType],
+    queryFn: () => handleGetTokenPriceSol(),
+    staleTime: Infinity,
+    retry: false,
+    enabled:
+      contractAddress !== undefined &&
+      contractAddress.length !== 0 &&
+      typeWalletAddress === "SOL",
+  });
+
+  $: {
+    if (
+      !$queryTokenPriceSol.isError &&
+      $queryTokenPriceSol.data !== undefined &&
+      $queryTokenPriceSol.data.length !== 0
+    ) {
+      dataPriceChart = $queryTokenPriceSol.data?.map((item) => {
+        return {
+          value: [item[0], item[1]],
+          itemStyle: {
+            color: "#1e96fc",
+          },
+        };
+      });
+
+      dataAvgCost = $queryTokenPriceSol.data?.map((item) => {
+        return {
+          value: [item[0], avgCost],
+          itemStyle: {
+            color: "#eab308",
+          },
+        };
+      });
+    }
+  }
 
   $: {
     if (
@@ -826,13 +881,13 @@
   $: theme = darkMode ? "dark" : "white";
 </script>
 
-{#if $queryTokenPrice.isFetching}
+{#if $queryTokenPrice.isFetching || $queryTokenPriceSol.isFetching}
   <div class="flex items-center justify-center h-[475px]">
     <Loading />
   </div>
 {:else}
   <div class="h-full">
-    {#if $queryTokenPrice.isError || (dataPriceChart && dataPriceChart.length === 0) || (dataAvgCost && dataAvgCost.length === 0)}
+    {#if $queryTokenPrice.isError || $queryTokenPriceSol.isError || (dataPriceChart && dataPriceChart.length === 0) || (dataAvgCost && dataAvgCost.length === 0)}
       <div
         class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
       >
