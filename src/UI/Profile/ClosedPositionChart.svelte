@@ -11,6 +11,7 @@
     shorterName,
     typeClosedHoldingTokenChart,
   } from "~/utils";
+  import dayjs from "dayjs";
 
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
 
@@ -55,56 +56,48 @@
             params[0]?.name?.toLowerCase()
         );
         return `
-              <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
-                <div style="display: flex; align-items: centers; gap: 4px">
-                    <img src=${
-                      selectedItem?.logo ||
-                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                    } alt="" width=20 height=20 style="border-radius: 100%" />
-                    <div style="margin-top: 2px; font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                      darkMode ? "white" : "black"
-                    }">
-                      ${
-                        selectedItem?.name?.length > 20
-                          ? shorterName(selectedItem?.name, 20)
-                          : selectedItem?.name || "N/A"
-                      } ${
-          selectedItem?.symbol ? `(${selectedItem?.symbol})` : ""
-        }
-                    </div>
-                </div>
+  <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
+  <div style="display: flex; align-items: centers; gap: 4px">
+  <img src=${
+    selectedItem?.logo ||
+    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+  } alt="" width=20 height=20 style="border-radius: 100%" />
+  <div style="margin-top: 2px; font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+    darkMode ? "white" : "black"
+  }">
+  ${
+    selectedItem?.name?.length > 20
+      ? shorterName(selectedItem?.name, 20)
+      : selectedItem?.name || "N/A"
+  } ${selectedItem?.symbol ? `(${selectedItem?.symbol})` : ""}
+  </div>
+  </div>
   
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                  <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    darkMode ? "white" : "black"
-                  }">
-                    ROI
-                  </div>
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+  <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+    darkMode ? "white" : "black"
+  }">
+  ROI
+  </div>
   
-                  <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px;">
-                      <div style="display:flex; justify-content: flex-end; align-items: center; color: ${
-                        params[0].value >= 0 ? "#05a878" : "#f25f5d"
-                      };">
-                        <span>${params[0].value < 0 ? "-" : ""}</span>
-                        ${formatValue(Math.abs(params[0].value))}
-                      </div>  
-                      <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; color: ${
-                        selectedItem?.percentRealizedProfit >= 0
-                          ? "#05a878"
-                          : "#f25f5d"
-                      };">
-                        ${formatPercent(
-                          Math.abs(selectedItem?.percentRealizedProfit)
-                        )}%
-                        <img src=${
-                          selectedItem?.percentRealizedProfit >= 0
-                            ? TrendUp
-                            : TrendDown
-                        } alt="" style="margin-bottom: 4px;" />
-                      </div>
-                  </div>
-                </div>
-              </div>`;
+  <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px;">
+  <div style="display:flex; justify-content: flex-end; align-items: center; color: ${
+    params[0].value >= 0 ? "#05a878" : "#f25f5d"
+  };">
+  <span>${params[0].value < 0 ? "-" : ""}</span>
+  ${formatValue(Math.abs(params[0].value))}
+  </div>
+  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; color: ${
+    selectedItem?.percentRealizedProfit >= 0 ? "#05a878" : "#f25f5d"
+  };">
+  ${formatPercent(Math.abs(selectedItem?.percentRealizedProfit))}%
+  <img src=${
+    selectedItem?.percentRealizedProfit >= 0 ? TrendUp : TrendDown
+  } alt="" style="margin-bottom: 4px;" />
+  </div>
+  </div>
+  </div>
+  </div>`;
       },
     },
     toolbox: {
@@ -153,51 +146,47 @@
             params[0]?.name?.toLowerCase()
         );
         return `
-              <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
-                <div style="display: flex; align-items: centers; gap: 4px">
-                  <img src=${
-                    selectedItem?.logo ||
-                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                  } alt="" width=20 height=20 style="border-radius: 100%" />
-                  <div style="margin-top: 2px; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    darkMode ? "white" : "black"
-                  }">
-                    ${
-                      selectedItem?.name?.length > 20
-                        ? shorterName(selectedItem?.name, 20)
-                        : selectedItem?.name || "N/A"
-                    } ${selectedItem?.symbol ? `(${selectedItem?.symbol})` : ""}
-                  </div>
-                </div>
+  <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
+  <div style="display: flex; align-items: centers; gap: 4px">
+  <img src=${
+    selectedItem?.logo ||
+    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+  } alt="" width=20 height=20 style="border-radius: 100%" />
+  <div style="margin-top: 2px; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+    darkMode ? "white" : "black"
+  }">
+  ${
+    selectedItem?.name?.length > 20
+      ? shorterName(selectedItem?.name, 20)
+      : selectedItem?.name || "N/A"
+  } ${selectedItem?.symbol ? `(${selectedItem?.symbol})` : ""}
+  </div>
+  </div>
   
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                  <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    darkMode ? "white" : "black"
-                  }">
-                    ROI
-                  </div>
-                  <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px;">
-                      <div style="display:flex; justify-content: flex-end; align-items: center; color: ${
-                        selectedItem?.realizedProfit >= 0
-                          ? "#05a878"
-                          : "#f25f5d"
-                      };">
-                        <span>${
-                          selectedItem?.realizedProfit < 0 ? "-" : ""
-                        }</span>
-                        ${formatValue(Math.abs(selectedItem?.realizedProfit))}  
-                      </div>  
-                      <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; color: ${
-                        params[0].value >= 0 ? "#05a878" : "#f25f5d"
-                      };">
-                        ${formatPercent(Math.abs(params[0].value))}%
-                        <img src=${
-                          params[0].value >= 0 ? TrendUp : TrendDown
-                        } alt="" style="margin-bottom: 4px;" />
-                      </div>
-                  </div>
-                </div>
-              </div>`;
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+  <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+    darkMode ? "white" : "black"
+  }">
+  ROI
+  </div>
+  <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px;">
+  <div style="display:flex; justify-content: flex-end; align-items: center; color: ${
+    selectedItem?.realizedProfit >= 0 ? "#05a878" : "#f25f5d"
+  };">
+  <span>${selectedItem?.realizedProfit < 0 ? "-" : ""}</span>
+  ${formatValue(Math.abs(selectedItem?.realizedProfit))}
+  </div>
+  <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; color: ${
+    params[0].value >= 0 ? "#05a878" : "#f25f5d"
+  };">
+  ${formatPercent(Math.abs(params[0].value))}%
+  <img src=${
+    params[0].value >= 0 ? TrendUp : TrendDown
+  } alt="" style="margin-bottom: 4px;" />
+  </div>
+  </div>
+  </div>
+  </div>`;
       },
     },
     toolbox: {
@@ -256,7 +245,14 @@
 
     closedHoldingPosition = formatData
       .filter((item) => item?.profit?.realizedProfit)
-      .filter((item) => Number(item.amount) === 0)
+      .filter((item) => {
+        const date = dayjs(item?.last_transferred_at);
+        const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
+        return (
+          thirtyDaysInMilliseconds - dayjs(dayjs()).diff(date, "millisecond") >
+          0
+        );
+      })
       .map((item) => {
         return {
           ...item,
@@ -352,7 +348,7 @@
 </script>
 
 <div
-  class="xl:col-span-4 col-span-2 border border_0000001a rounded-xl flex flex-col min-h-[465px]"
+  class="col-span-4 border border_0000001a rounded-xl flex flex-col min-h-[465px]"
 >
   <div
     class="flex justify-start text-3xl font-medium xl:text-xl px-6 pb-3 pt-6"
@@ -410,7 +406,7 @@
             <div
               class="h-full flex justify-center items-center xl:text-base text-lg"
             >
-              There are no closed holding position
+              There is no closed holding position in the last 30 day
             </div>
           {:else}
             <div class="relative pl-4">

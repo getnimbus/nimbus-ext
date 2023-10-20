@@ -324,7 +324,7 @@
           </Link>
         </div>
 
-        <!-- <div on:click={() => (showPopover = false)}>
+        <div on:click={() => (showPopover = false)}>
           <Link to={`profile?id=${userID}`}>
             <div
               class={`text-2xl text_00000066 cursor-pointer xl:text-base rounded-md transition-all px-2 py-1 ${
@@ -334,7 +334,7 @@
               My Profile
             </div>
           </Link>
-        </div> -->
+        </div>
 
         <div
           class={`hidden text-2xl text_00000066 cursor-pointer xl:block xl:text-base rounded-md transition-all px-2 py-1 ${
