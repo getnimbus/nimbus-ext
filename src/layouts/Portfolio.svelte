@@ -148,6 +148,7 @@
     if ($userPublicAddress && !localStorage.getItem("view-portfolio-tour")) {
       setTimeout(() => {
         driverObj.drive();
+        localStorage.setItem("view-portfolio-tour", "true");
       }, 2000);
     }
   }

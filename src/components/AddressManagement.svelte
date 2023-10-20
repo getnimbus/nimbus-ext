@@ -886,12 +886,12 @@
     }
   }
 
+  $: console.log("this is wallet  : ", $wallet);
+
   $: {
     if (
       !localStorage.getItem("view-use-wallet-or-demo-tour") &&
-      !$wallet &&
-      !$userPublicAddress &&
-      $wallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+      !$userPublicAddress
     ) {
       setTimeout(() => {
         driverObj.highlight({
@@ -901,7 +901,7 @@
             description: "Add wallet or view Demo wallet",
           },
         });
-        // localStorage.setItem("view-use-wallet-or-demo-tour", "true");
+        localStorage.setItem("view-use-wallet-or-demo-tour", "true");
       }, 1000);
     }
   }

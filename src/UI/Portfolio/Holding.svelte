@@ -365,6 +365,11 @@
       sumTokens = 0;
     }
   }
+
+  $: {
+    if (formatDataNFT && formatDataNFT.length === 0) {
+    }
+  }
 </script>
 
 <div
@@ -692,7 +697,7 @@
                     <tr>
                       <td colspan={6}>
                         <div
-                          class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                          class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400 view-nft-detail"
                         >
                           {#if formatDataNFT && formatDataNFT.length === 0}
                             {MultipleLang.empty}
@@ -741,7 +746,7 @@
                       <tr>
                         <td colspan={6}>
                           <div
-                            class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                            class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400 view-nft-detail"
                           >
                             {#if formatDataNFT && formatDataNFT.length === 0}
                               {MultipleLang.empty}
