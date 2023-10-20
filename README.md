@@ -1,8 +1,10 @@
-# Nimbus - A personalized Web3 portfolio tool for DEFI users
+# Nimbus - A personalized portfolio tool for Web3 investors
+
+![Nimubs architecture](./doc/intro.png)
+
+Website: https://getnimbus.io
 
 ## Project Setup
-
-![Nimubs architecture](./doc/architecture.jpg)
 
 ```sh
 yarn install
