@@ -243,7 +243,11 @@
       }`}
     >
       <div class="xl:text-2xl text-4xl font-medium">Balance / Avg Cost</div>
-      <BalanceAvgCostChart {data} id={data?.name} />
+      <BalanceAvgCostChart
+        {data}
+        id={data?.name}
+        avgCost={data?.profit?.averageCost}
+      />
       {#if typeWalletAddress !== "EVM"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
