@@ -810,6 +810,14 @@
               type: "dashed",
               color: "#eab308",
             },
+            endLabel: {
+              show: true,
+              offset: [-75, -14],
+              formatter: () => {
+                return "Avg Cost";
+              },
+              color: "#eab308",
+            },
             showSymbol: false,
             data: dataAvgCost,
           },
@@ -903,7 +911,7 @@
           height={485}
         />
         <div
-          class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
+          class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
         >
           <img
             src={darkMode ? LogoWhite : Logo}
