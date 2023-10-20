@@ -13,6 +13,7 @@
 
   export let data;
   export let id;
+  export let avgCost;
 
   let selectedWallet: string = "";
   wallet.subscribe((value) => {
@@ -33,9 +34,6 @@
     tooltip: {
       trigger: "axis",
       extraCssText: "z-index: 9997",
-      axisPointer: {
-        type: "shadow",
-      },
       formatter: function (params) {
         let price = "";
         if (params[0].axisValue.toString().includes("e-")) {
@@ -56,7 +54,6 @@
           price =
             "$" + numeral(Math.abs(params[0].axisValue)).format("0.000000a");
         }
-
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
@@ -76,7 +73,7 @@
                     <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                       darkMode ? "white" : "black"
                     };">
-                        ${numeral(params[0]?.value).format("0.00a")}
+                      ${numeral(params[0]?.value[1]).format("0.00a")}
                     </div>
                   </div>
                 </div>
@@ -92,9 +89,8 @@
       },
     },
     xAxis: {
-      type: "category",
+      type: "value",
       axisTick: { show: false },
-      data: [],
       axisLabel: {
         formatter: function (value, index) {
           if (value.toString().includes("e-")) {
@@ -165,36 +161,45 @@
       $queryHistoryTokenDetailAnalysis.data !== undefined &&
       $queryHistoryTokenDetailAnalysis.data.length !== 0
     ) {
-      const formatXAxis = $queryHistoryTokenDetailAnalysis.data.map((item) => {
-        return item?.price;
-      });
-
       const dataChart = $queryHistoryTokenDetailAnalysis.data.map((item) => {
-        return item?.totalToken;
+        return [item?.price, item?.totalToken];
       });
 
       optionBar = {
         ...optionBar,
-        xAxis: {
-          ...optionBar.xAxis,
-          data: formatXAxis,
-        },
         series: [
           {
             emphasis: {
               focus: "series",
             },
             type: "bar",
+            itemStyle: {
+              color: "#27326F",
+              borderColor: "#27326F",
+            },
             data: dataChart,
           },
           {
             name: "Current Price",
             type: "bar",
             itemStyle: {
+              color: "#1e96fc",
+              borderColor: "#1e96fc",
+            },
+            data: $queryHistoryTokenDetailAnalysis.data.map((item) => {
+              return [data?.market_price, item?.totalToken];
+            }),
+          },
+          {
+            name: "Avg Cost",
+            type: "bar",
+            itemStyle: {
               color: "#eab308",
               borderColor: "#eab308",
             },
-            data: [Math.max(...dataChart), data?.market_price],
+            data: $queryHistoryTokenDetailAnalysis.data.map((item) => {
+              return [avgCost, item?.totalToken];
+            }),
           },
         ],
       };
