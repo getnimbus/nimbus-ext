@@ -177,7 +177,7 @@
   const getUserConfigs = async () => {
     try {
       const res: any = await nimbus.get("/users/configs");
-      if (res?.status === 401) {
+      if (res?.status === 403) {
         localStorage.removeItem("evm_token");
         user.update((n) => (n = {}));
         throw new Error(res?.response?.error);

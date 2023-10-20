@@ -114,7 +114,7 @@
 
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
-    if (response?.status === 401) {
+    if (response?.status === 403) {
       throw new Error(response?.response?.error);
     }
     return response?.data;
@@ -366,7 +366,7 @@
 
   const getUserInfo = async () => {
     const response: any = await nimbus.get("/users/me");
-    if (response?.status === 401) {
+    if (response?.status === 403) {
       throw new Error(response?.response?.error);
     }
     return response?.data;
