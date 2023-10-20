@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
-  import { wallet, user, isDarkMode } from "~/store";
+  import { wallet, user, isDarkMode, typeWallet } from "~/store";
   import { autoFontSize } from "~/utils";
   import numeral from "numeral";
 
@@ -22,6 +22,11 @@
   let darkMode = false;
   isDarkMode.subscribe((value) => {
     darkMode = value;
+  });
+
+  let typeWalletAddress: string = "";
+  typeWallet.subscribe((value) => {
+    typeWalletAddress = value;
   });
 
   let optionBar = {
@@ -110,7 +115,7 @@
 
   const handleGetTradeHistoryAnalysis = async () => {
     const response: any = await nimbus.get(
-      `/v2/address/${selectedWallet}/token/${data?.contractAddress}/trade-analysis?chain=ETH`
+      `/v2/address/${selectedWallet}/token/${data?.contractAddress}/trade-analysis?chain=${data?.chain}`
     );
     if (response?.status === 401) {
       throw new Error(response?.response?.error);
@@ -126,7 +131,8 @@
     enabled:
       data !== undefined &&
       Object.keys(data).length !== 0 &&
-      selectedWallet.length !== 0,
+      selectedWallet.length !== 0 &&
+      typeWalletAddress === "EVM",
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -193,7 +199,7 @@
     {:else}
       <div class="relative">
         <EChart
-          id={id + "barchart"}
+          id={id + "bar-chart"}
           {theme}
           notMerge={true}
           option={optionBar}
