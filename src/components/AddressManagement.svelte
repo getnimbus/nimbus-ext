@@ -939,6 +939,8 @@
       handleUpdateParams();
     }
   };
+
+  $: console.log("thisbafs : ", $query);
 </script>
 
 {#if $query.isFetching}
@@ -982,6 +984,7 @@
                 <Button
                   on:click={() => {
                     triggerConnectWallet.update((n) => (n = true));
+                    driverObj.destroy();
                   }}
                 >
                   <div class="text-2xl font-medium xl:text-base">
@@ -1000,6 +1003,7 @@
                     navigate(
                       `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
                     );
+                    driverObj.destroy();
                   }}
                 >
                   Try Demo account

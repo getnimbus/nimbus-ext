@@ -145,12 +145,38 @@
   let selectedDataPieChart = {};
 
   $: {
-    if ($userPublicAddress && !localStorage.getItem("view-portfolio-tour")) {
-      setTimeout(() => {
-        driverObj.drive();
-        localStorage.setItem("view-portfolio-tour", "true");
-      }, 2000);
+    // if (!$queryTokenHolding.isFetching) {
+    console.log(
+      "HEELLO: ",
+      selectedChain === "ALL"
+        ? $queryAllTokenHolding &&
+            $queryAllTokenHolding.some((item) => item.isFetching === true) &&
+            $queryAllNftHolding &&
+            $queryAllNftHolding.some((item) => item.isFetching === true)
+        : !isErrorAllData &&
+            $queryTokenHolding.isFetching &&
+            $queryVaults.isFetching &&
+            $queryOverview.isFetching &&
+            $queryNftHolding.isFetching
+    );
+    if (
+      $userPublicAddress &&
+      !localStorage.getItem("view-portfolio-tour") &&
+      (selectedChain === "ALL"
+        ? $queryAllTokenHolding &&
+          $queryAllTokenHolding.some((item) => item.isFetching === true) &&
+          $queryAllNftHolding &&
+          $queryAllNftHolding.some((item) => item.isFetching === true)
+        : !isErrorAllData &&
+          $queryTokenHolding.isFetching &&
+          $queryVaults.isFetching &&
+          $queryOverview.isFetching &&
+          $queryNftHolding.isFetching)
+    ) {
+      driverObj.drive();
     }
+    // localStorage.setItem("view-portfolio-tour", "true");
+    // }
   }
 
   // overview
