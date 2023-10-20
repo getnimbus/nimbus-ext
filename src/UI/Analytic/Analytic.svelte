@@ -74,7 +74,7 @@
                   }}
                 >
                   <div
-                    class={`relative z-20 ${
+                    class={`relative z-2 ${
                       type.value === selectedTimeFrame && "text-white"
                     }`}
                   >
@@ -87,7 +87,7 @@
                       transition={{ type: "spring", duration: 0.6 }}
                     >
                       <div
-                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-1"
                         use:motion
                       />
                     </Motion>
@@ -149,7 +149,7 @@
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
             darkMode ? "bg-[#222222e6]" : "bg-white/90"
-          } z-30 backdrop-blur-md`}
+          } z-10 backdrop-blur-md`}
         >
           {#if packageSelected === "FREE"}
             <div class="flex flex-col items-center gap-1">
