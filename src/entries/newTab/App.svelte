@@ -425,4 +425,30 @@
       display: none !important;
     }
   }
+  :global(body) .driver-popover {
+    /* border-radius: 10px; */
+    border-radius: 12px;
+    padding: 18px 26px 18px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  :global(body) .driver-popover-prev-btn,
+  :global(body) .driver-popover-next-btn {
+    border-radius: 12px;
+    padding: 10px 16px 10px 16px;
+    background-color: #1e96fc;
+    color: white;
+    text-shadow: none;
+  }
+
+  :global(body) .driver-popover-prev-btn:hover,
+  :global(body) .driver-popover-next-btn:hover {
+    background-color: #4fadfd;
+  }
+
+  :global(body) .driver-popover-footer {
+    gap: 25px;
+  }
 </style>

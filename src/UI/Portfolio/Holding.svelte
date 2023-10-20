@@ -365,6 +365,11 @@
       sumTokens = 0;
     }
   }
+
+  $: {
+    if (formatDataNFT && formatDataNFT.length === 0) {
+    }
+  }
 </script>
 
 <div
@@ -373,7 +378,7 @@
   }`}
 >
   <ErrorBoundary>
-    <div id="view-token-detail" class="flex flex-col gap-6">
+    <div class="flex flex-col gap-6">
       <div class="flex items-end gap-3">
         <div class="xl:text-2xl text-4xl font-medium">
           {MultipleLang.holding}
@@ -519,11 +524,12 @@
                       </td>
                     </tr>
                   {/if}
-                  {#each filteredHoldingDataToken as holding}
+                  {#each filteredHoldingDataToken as holding, index}
                     <HoldingToken
                       data={holding}
                       {selectedWallet}
                       sumAllTokens={totalAssets - sumNFT}
+                      {index}
                     />
                   {/each}
                 </tbody>
@@ -572,11 +578,12 @@
                         </td>
                       </tr>
                     {:else}
-                      {#each filteredHoldingDataToken as holding}
+                      {#each filteredHoldingDataToken as holding, index}
                         <HoldingToken
                           data={holding}
                           {selectedWallet}
                           sumAllTokens={totalAssets - sumNFT}
+                          {index}
                         />
                       {/each}
                     {/if}
@@ -591,7 +598,7 @@
 
     <!-- nft holding table -->
     {#if typeWalletAddress !== "CEX"}
-      <div class="flex flex-col gap-2" id="view-nft-detail">
+      <div class="flex flex-col gap-2">
         <div class="flex justify-between items-center">
           <div class="xl:text-xl text-3xl font-medium">
             {MultipleLang.nft}
@@ -690,7 +697,7 @@
                     <tr>
                       <td colspan={6}>
                         <div
-                          class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                          class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400 view-nft-detail"
                         >
                           {#if formatDataNFT && formatDataNFT.length === 0}
                             {MultipleLang.empty}
@@ -701,8 +708,8 @@
                       </td>
                     </tr>
                   {/if}
-                  {#each filteredHoldingDataNFT as holding}
-                    <HoldingNFT data={holding} {selectedWallet} />
+                  {#each filteredHoldingDataNFT as holding, index}
+                    <HoldingNFT data={holding} {selectedWallet} {index} />
                   {/each}
                 </tbody>
                 {#if isLoadingNFT}
@@ -739,7 +746,7 @@
                       <tr>
                         <td colspan={6}>
                           <div
-                            class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                            class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400 view-nft-detail"
                           >
                             {#if formatDataNFT && formatDataNFT.length === 0}
                               {MultipleLang.empty}
@@ -750,8 +757,8 @@
                         </td>
                       </tr>
                     {:else}
-                      {#each filteredHoldingDataNFT as holding}
-                        <HoldingNFT data={holding} {selectedWallet} />
+                      {#each filteredHoldingDataNFT as holding, index}
+                        <HoldingNFT data={holding} {selectedWallet} {index} />
                       {/each}
                     {/if}
                   </tbody>

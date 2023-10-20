@@ -16,6 +16,7 @@
 
   export let data;
   export let selectedWallet;
+  export let index;
 
   const navigate = useNavigate();
 
@@ -52,7 +53,9 @@
 </script>
 
 <tr
-  class="group transition-all cursor-pointer"
+  class={`group transition-all cursor-pointer ${
+    index === 0 && "view-nft-detail"
+  } `}
   on:click={() => {
     showSideNftDetail = true;
     mixpanel.track("nft_detail_page", {

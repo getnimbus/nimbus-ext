@@ -316,7 +316,6 @@
   class={`flex flex-col gap-6 rounded-[20px] p-6 ${
     darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
   }`}
-  id="view-closed-positions"
 >
   <ErrorBoundary>
     <div class="flex items-end gap-3">

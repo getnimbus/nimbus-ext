@@ -886,6 +886,8 @@
     }
   }
 
+  $: console.log("this is wallet  : ", $wallet);
+
   $: {
     if (
       !localStorage.getItem("view-use-wallet-or-demo-tour") &&
@@ -897,10 +899,9 @@
           popover: {
             title: "Introduce App",
             description: "Add wallet or view Demo wallet",
-            disableButtons: ["next"],
           },
         });
-        // localStorage.setItem("view-use-wallet-or-demo-tour", "true");
+        localStorage.setItem("view-use-wallet-or-demo-tour", "true");
       }, 1000);
     }
   }
