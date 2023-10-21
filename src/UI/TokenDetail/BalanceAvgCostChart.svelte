@@ -54,6 +54,8 @@
           price =
             "$" + numeral(Math.abs(params[0].axisValue)).format("0.000000a");
         }
+
+        console.log("params: ", params);
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
@@ -61,22 +63,54 @@
               }">
                 ${price}
               </div>
-               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                    darkMode ? "white" : "black"
-                  }">
-                    <span>${params[0]?.marker}</span>
-                    Balance
-                  </div>
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                  darkMode ? "white" : "black"
+                }">
+                  <span>${params[0]?.marker}</span>
+                  Balance
+                </div>
 
-                  <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
-                    <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      darkMode ? "white" : "black"
-                    };">
-                      ${numeral(params[0]?.value[1]).format("0.00a")}
-                    </div>
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                  <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                    darkMode ? "white" : "black"
+                  };">
+                    ${numeral(params[0]?.value[1]).format("0.0000a")}
                   </div>
                 </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                  darkMode ? "white" : "black"
+                }">
+                  <div style="margin-top: 5px; display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#eab308;"></div>
+                  Avg Price
+                </div>
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                  <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                    darkMode ? "white" : "black"
+                  };">
+                    $${numeral(avgCost).format("0.0000a")}
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
+                  darkMode ? "white" : "black"
+                }">
+                  <div style="margin-top: 5px; display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#1e96fc;"></div>
+                  Current Price
+                </div>
+                <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
+                  <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                    darkMode ? "white" : "black"
+                  };">
+                    $${numeral(data?.market_price).format("0.0000a")}
+                  </div>
+                </div>
+              </div>
             </div>`;
       },
     },
@@ -91,6 +125,13 @@
     xAxis: {
       type: "value",
       axisTick: { show: false },
+      nameGap: 30,
+      min: function (value) {
+        return value.min * 0.95;
+      },
+      max: function (value) {
+        return value.max * 1.05;
+      },
       axisLabel: {
         formatter: function (value, index) {
           if (value.toString().includes("e-")) {
@@ -165,12 +206,17 @@
         return [item?.price, item?.totalToken];
       });
 
+      console.log({
+        avgCost,
+        price: data?.market_price,
+      });
+
       optionBar = {
         ...optionBar,
         series: [
           {
-            emphasis: {
-              focus: "series",
+            tooltip: {
+              show: true,
             },
             type: "bar",
             itemStyle: {
@@ -178,28 +224,35 @@
               borderColor: "#27326F",
             },
             data: dataChart,
-          },
-          {
-            name: "Current Price",
-            type: "bar",
-            itemStyle: {
-              color: "#1e96fc",
-              borderColor: "#1e96fc",
+            markLine: {
+              precision: 10,
+              symbol: ["none", "none"],
+              data: [
+                {
+                  name: "Current Price",
+                  label: "Current Price",
+                  xAxis: data?.market_price,
+                  lineStyle: {
+                    color: "#1e96fc",
+                    type: "solid",
+                    width: 2,
+                  },
+                },
+                {
+                  name: "Avg Cost",
+                  label: "Avg Cost",
+                  xAxis: avgCost,
+                  lineStyle: {
+                    color: "#eab308",
+                    type: "dashed",
+                    width: 2,
+                  },
+                },
+              ],
+              label: {
+                show: false,
+              },
             },
-            data: $queryHistoryTokenDetailAnalysis.data.map((item) => {
-              return [data?.market_price, item?.totalToken];
-            }),
-          },
-          {
-            name: "Avg Cost",
-            type: "bar",
-            itemStyle: {
-              color: "#eab308",
-              borderColor: "#eab308",
-            },
-            data: $queryHistoryTokenDetailAnalysis.data.map((item) => {
-              return [avgCost, item?.totalToken];
-            }),
           },
         ],
       };

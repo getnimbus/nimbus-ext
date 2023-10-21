@@ -22,6 +22,9 @@
 
   const handleDailyCheckin = async () => {
     const response = await nimbus.get(`/v2/checkin/${$userPublicAddress}`);
+    if (response?.status === 403) {
+      throw new Error(response?.response?.error);
+    }
     return response.data;
   };
 

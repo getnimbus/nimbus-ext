@@ -176,7 +176,7 @@
   const getUserProfile = async (id) => {
     try {
       const response: any = await nimbus.get(`/users/${id}/profile`);
-      if (response?.status === 401) {
+      if (response?.status === 403) {
         throw new Error(response?.response?.error);
       }
       userProfile = response?.data;
@@ -198,7 +198,7 @@
 
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
-    if (response?.status === 401) {
+    if (response?.status === 403) {
       throw new Error(response?.response?.error);
     }
     return response?.data;
@@ -208,7 +208,7 @@
     const response = await nimbus
       .get(`/v2/address/${address}/nft-holding?chain=ALL`)
       .then((response) => response?.data);
-    if (response?.status === 401) {
+    if (response?.status === 403) {
       throw new Error(response?.response?.error);
     }
     return response;
