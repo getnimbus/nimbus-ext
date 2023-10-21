@@ -91,6 +91,13 @@
     xAxis: {
       type: "value",
       axisTick: { show: false },
+      nameGap: 30,
+      min: function (value) {
+        return value.min * 0.95;
+      },
+      max: function (value) {
+        return value.max * 1.05;
+      },
       axisLabel: {
         formatter: function (value, index) {
           if (value.toString().includes("e-")) {
@@ -164,7 +171,7 @@
       const dataChart = $queryHistoryTokenDetailAnalysis.data.map((item) => {
         return [item?.price, item?.totalToken];
       });
-
+      console.log(dataChart);
       optionBar = {
         ...optionBar,
         series: [
@@ -178,35 +185,61 @@
               borderColor: "#27326F",
             },
             data: dataChart,
+            markLine: {
+              precision: 10,
+              symbol: ["none", "none"],
+              data: [
+                {
+                  name: "Current Price",
+                  label: "Current Price",
+                  xAxis: data?.market_price,
+                  // symbol: "none",
+                  lineStyle: {
+                    color: "#1e96fc",
+                    type: "solid",
+                    width: 2,
+                  },
+                },
+                {
+                  name: "Avg Cost",
+                  label: "Avg Cost",
+                  xAxis: avgCost,
+                  // symbol: "none",
+                  lineStyle: {
+                    color: "#eab308",
+                    width: 2,
+                  },
+                },
+              ],
+              label: {
+                show: false,
+                formatter: "{b}",
+                // distance: [20, 8],
+              },
+            },
           },
-          {
-            name: "Current Price",
-            type: "bar",
-            tooltip: {
-              show: false,
-            },
-            itemStyle: {
-              color: "#1e96fc",
-              borderColor: "#1e96fc",
-            },
-            data: $queryHistoryTokenDetailAnalysis.data.map((item) => {
-              return [data?.market_price, item?.totalToken];
-            }),
-          },
-          {
-            name: "Avg Cost",
-            type: "bar",
-            tooltip: {
-              show: false,
-            },
-            itemStyle: {
-              color: "#eab308",
-              borderColor: "#eab308",
-            },
-            data: $queryHistoryTokenDetailAnalysis.data.map((item) => {
-              return [avgCost, item?.totalToken];
-            }),
-          },
+          // {
+          //   name: "Current Price",
+          //   type: "bar",
+          //   itemStyle: {
+          //     color: "#1e96fc",
+          //     borderColor: "#1e96fc",
+          //   },
+          //   data: $queryHistoryTokenDetailAnalysis.data.map((item) => {
+          //     return [data?.market_price, item?.totalToken * 1.1];
+          //   }),
+          // },
+          // {
+          //   name: "Avg Cost",
+          //   type: "bar",
+          //   itemStyle: {
+          //     color: "#eab308",
+          //     borderColor: "#eab308",
+          //   },
+          //   data: $queryHistoryTokenDetailAnalysis.data.map((item) => {
+          //     return [avgCost, item?.totalToken * 1.1];
+          //   }),
+          // },
         ],
       };
     }
