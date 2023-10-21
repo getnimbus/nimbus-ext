@@ -201,13 +201,21 @@
 
   const handleGetTokenPriceSol = async () => {
     const response = await defillama.get(
-      `/chart/solana:${contractAddress}?start=1664364537&span=30&period=30d&searchWidth=600`
+      `/chart/${
+        contractAddress === "11111111111111111111111111111111"
+          ? "coingecko:solana"
+          : `solana:${contractAddress}`
+      }?start=1664364537&span=30&period=30d&searchWidth=600`
     );
-    const formatRes = response?.coins[`solana:${contractAddress}`]?.prices.map(
-      (item) => {
-        return [item.timestamp * 1000, item.price];
-      }
-    );
+    const formatRes = response?.coins[
+      `${
+        contractAddress === "11111111111111111111111111111111"
+          ? "coingecko:solana"
+          : `solana:${contractAddress}`
+      }`
+    ]?.prices.map((item) => {
+      return [item.timestamp * 1000, item.price];
+    });
     return formatRes;
   };
 
