@@ -145,7 +145,6 @@
   let selectedDataPieChart = {};
 
   $: {
-    // if (!$queryTokenHolding.isFetching) {
     console.log(
       "HEELLO: ",
       selectedChain === "ALL"
@@ -174,9 +173,8 @@
           $queryNftHolding.isFetching)
     ) {
       driverObj.drive();
+      localStorage.setItem("view-portfolio-tour", "true");
     }
-    // localStorage.setItem("view-portfolio-tour", "true");
-    // }
   }
 
   // overview
