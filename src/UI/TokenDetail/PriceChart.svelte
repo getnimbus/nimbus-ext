@@ -640,13 +640,8 @@
   };
 
   $: {
-    if (
-      dataPriceChart &&
-      dataPriceChart.length !== 0 &&
-      ((sellHistoryTradeList && sellHistoryTradeList.length !== 0) ||
-        (buyHistoryTradeList && buyHistoryTradeList.length !== 0))
-    ) {
-      const formatDataBuyHistory = buyHistoryTradeList.map((item) => {
+    if (dataPriceChart && dataPriceChart.length !== 0) {
+      const formatDataBuyHistory = buyHistoryTradeList?.map((item) => {
         const selected = findClosestObject(
           item.created_at * 1000,
           dataPriceChart.map((item) => {
@@ -665,7 +660,7 @@
           past_price: item.to_price,
         };
       });
-      const formatDataSellHistory = sellHistoryTradeList.map((item) => {
+      const formatDataSellHistory = sellHistoryTradeList?.map((item) => {
         const selected = findClosestObject(
           item.created_at * 1000,
           dataPriceChart.map((item) => {
@@ -827,7 +822,7 @@
               color: "#eab308",
             },
             showSymbol: false,
-            data: dataAvgCost,
+            data: dataAvgCost || [],
           },
         ],
       };
@@ -903,7 +898,7 @@
   </div>
 {:else}
   <div class="h-full">
-    {#if $queryTokenPrice.isError || $queryTokenPriceSol.isError || (dataPriceChart && dataPriceChart.length === 0) || (dataAvgCost && dataAvgCost.length === 0)}
+    {#if $queryTokenPrice.isError || $queryTokenPriceSol.isError || (dataPriceChart && dataPriceChart.length === 0)}
       <div
         class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
       >
