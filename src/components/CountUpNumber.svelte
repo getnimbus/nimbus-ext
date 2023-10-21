@@ -48,9 +48,10 @@
         {#if type === "balance" || type === "percent"}
           <span>
             {#if numberSize === "K"}
-              <span {id}>{formatCurrency($formatted)}</span>
+              <span {id} class="tabular-nums">{formatCurrency($formatted)}</span
+              >
             {:else}
-              <span {id}>{numberFormat}</span>
+              <span {id} class="tabular-nums">{numberFormat}</span>
             {/if}
           </span>
         {/if}
@@ -58,9 +59,9 @@
         {#if type === "value"}
           <span>
             {#if numberSize === "K"}
-              <span {id}>{formatValue($formatted)}</span>
+              <span {id} class="tabular-nums">{formatValue($formatted)}</span>
             {:else}
-              <span {id}>${numberFormat}</span>
+              <span {id} class="tabular-nums">${numberFormat}</span>
             {/if}
           </span>
         {/if}

@@ -16,6 +16,7 @@
     typeWallet,
     selectedBundle,
     userPublicAddress,
+    triggerUpdateBundle,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
@@ -86,6 +87,11 @@
   let selectBundle = {};
   selectedBundle.subscribe((value) => {
     selectBundle = value;
+  });
+
+  let updateBundle = false;
+  triggerUpdateBundle.subscribe((value) => {
+    updateBundle = value;
   });
 
   let enabledFetchAllData = false;
@@ -351,7 +357,7 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}`
     );
-    if (response?.error) {
+    if (response?.status === 403) {
       throw new Error(response?.error);
     }
     return response?.data || [];
@@ -811,18 +817,29 @@
 
   $: loading =
     selectedChain === "ALL"
-      ? $queryAllTokenHolding.some((item) => item.isFetching === true) &&
-        $queryAllNftHolding.some((item) => item.isFetching === true)
+      ? $queryAllTokenHolding &&
+        $queryAllTokenHolding.some((item) => item.isFetching === true) &&
+        $queryAllTokenHolding &&
+        $queryAllNftHolding.some((item) => item.isFetching === true) &&
+        $queryVaults.isFetching &&
+        $queryOverview.isFetching
       : !isErrorAllData &&
         $queryTokenHolding.isFetching &&
+        $queryNftHolding.isFetching &&
         $queryVaults.isFetching &&
-        $queryOverview.isFetching &&
-        !$queryNftHolding.isFetching;
+        $queryOverview.isFetching;
 
   $: chainListQueries =
     typeWalletAddress?.length !== 0 && typeWalletAddress !== "EVM"
       ? [chainList[0].value]
       : chainList.slice(1).map((item) => item.value);
+
+  $: {
+    if (updateBundle) {
+      handleGetAllData("reload");
+      triggerUpdateBundle.update((n) => (n = false));
+    }
+  }
 </script>
 
 <AddressManagement title={MultipleLang.overview}>

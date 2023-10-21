@@ -12,6 +12,7 @@
     selectedPackage,
     isDarkMode,
     user,
+    triggerUpdateBundle,
   } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { API_URL, nimbus } from "~/lib/network";
@@ -271,7 +272,7 @@
 
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
-    if (response?.status === 401) {
+    if (response?.status === 403) {
       throw new Error(response?.response?.error);
     }
     return response?.data;
@@ -696,7 +697,7 @@
 
   const getListBundle = async () => {
     const response: any = await nimbus.get("/address/personalize/bundle");
-    if (response?.status === 401) {
+    if (response?.status === 403) {
       throw new Error(response?.response?.error);
     }
     return response.data;
@@ -779,14 +780,11 @@
 
         queryClient.invalidateQueries(["list-bundle"]);
         queryClient.invalidateQueries(["list-address"]);
-        queryClient.invalidateQueries(["overview"]);
-        queryClient.invalidateQueries(["vaults"]);
-        queryClient.invalidateQueries(["token-holding"]);
-        queryClient.invalidateQueries(["nft-holding"]);
         queryClient.invalidateQueries(["personalize-tag"]);
-        queryClient.invalidateQueries(["compare"]);
         queryClient.invalidateQueries(["historical"]);
         queryClient.invalidateQueries(["inflow-outflow"]);
+
+        triggerUpdateBundle.update((n) => (n = true));
 
         toastMsg = "Successfully edit your bundle!";
       } else {
