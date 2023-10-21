@@ -783,13 +783,17 @@
 
   $: loading =
     selectedChain === "ALL"
-      ? $queryAllTokenHolding.some((item) => item.isFetching === true) &&
-        $queryAllNftHolding.some((item) => item.isFetching === true)
+      ? $queryAllTokenHolding &&
+        $queryAllTokenHolding.some((item) => item.isFetching === true) &&
+        $queryAllTokenHolding &&
+        $queryAllNftHolding.some((item) => item.isFetching === true) &&
+        $queryVaults.isFetching &&
+        $queryOverview.isFetching
       : !isErrorAllData &&
         $queryTokenHolding.isFetching &&
+        $queryNftHolding.isFetching &&
         $queryVaults.isFetching &&
-        $queryOverview.isFetching &&
-        !$queryNftHolding.isFetching;
+        $queryOverview.isFetching;
 
   $: chainListQueries =
     typeWalletAddress?.length !== 0 && typeWalletAddress !== "EVM"
