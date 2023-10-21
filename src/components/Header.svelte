@@ -289,6 +289,9 @@
         indexSelectedAddressResult = -1;
         search = "";
         searchListAddressResult = listAddress;
+      } else {
+        search = "";
+        searchListAddressResult = listAddress;
       }
     });
   });
