@@ -983,13 +983,6 @@ export const triggerFirework = () => {
   });
 };
 
-export const formatTransactionTime = (date: Date) => {
-  if (dayjs().diff(date, 'days') >= 1) {
-    return dayjs(date).format('YYYY-MM-DD, hh:mm A');
-  }
-  return dayjs(date).fromNow();
-};
-
 export const driverObj = driver({
   showProgress: true,
   overlayColor: "#27326f",
@@ -1037,3 +1030,4 @@ export const driverObj = driver({
     // },
   ],
 });
+>>>>>>>>> Temporary merge branch 2
