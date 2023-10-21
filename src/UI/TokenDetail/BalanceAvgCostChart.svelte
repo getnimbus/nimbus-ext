@@ -57,7 +57,7 @@
 
         console.log("params: ", params);
         return `
-            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
+            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 260px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 darkMode ? "white" : "black"
               }">
@@ -75,7 +75,7 @@
                   <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                     darkMode ? "white" : "black"
                   };">
-                    ${numeral(params[0]?.value[1]).format("0.0000a")}
+                    ${numeral(params[0]?.value[1]).format("0.000000a")}
                   </div>
                 </div>
               </div>
@@ -91,7 +91,7 @@
                   <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                     darkMode ? "white" : "black"
                   };">
-                    $${numeral(avgCost).format("0.0000a")}
+                    $${numeral(avgCost).format("0.000000a")}
                   </div>
                 </div>
               </div>
@@ -107,7 +107,7 @@
                   <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                     darkMode ? "white" : "black"
                   };">
-                    $${numeral(data?.market_price).format("0.0000a")}
+                    $${numeral(data?.market_price).format("0.000000a")}
                   </div>
                 </div>
               </div>
