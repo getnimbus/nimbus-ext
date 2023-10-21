@@ -169,8 +169,8 @@
         ...optionBar,
         series: [
           {
-            emphasis: {
-              focus: "series",
+            tooltip: {
+              show: true,
             },
             type: "bar",
             itemStyle: {
@@ -182,6 +182,9 @@
           {
             name: "Current Price",
             type: "bar",
+            tooltip: {
+              show: false,
+            },
             itemStyle: {
               color: "#1e96fc",
               borderColor: "#1e96fc",
@@ -193,6 +196,9 @@
           {
             name: "Avg Cost",
             type: "bar",
+            tooltip: {
+              show: false,
+            },
             itemStyle: {
               color: "#eab308",
               borderColor: "#eab308",
