@@ -150,39 +150,6 @@
   };
   let selectedDataPieChart = {};
 
-  $: {
-    console.log(
-      "HEELLO: ",
-      selectedChain === "ALL"
-        ? $queryAllTokenHolding &&
-            $queryAllTokenHolding.some((item) => item.isFetching === true) &&
-            $queryAllNftHolding &&
-            $queryAllNftHolding.some((item) => item.isFetching === true)
-        : !isErrorAllData &&
-            $queryTokenHolding.isFetching &&
-            $queryVaults.isFetching &&
-            $queryOverview.isFetching &&
-            $queryNftHolding.isFetching
-    );
-    if (
-      $userPublicAddress &&
-      !localStorage.getItem("view-portfolio-tour") &&
-      (selectedChain === "ALL"
-        ? $queryAllTokenHolding &&
-          $queryAllTokenHolding.some((item) => item.isFetching === true) &&
-          $queryAllNftHolding &&
-          $queryAllNftHolding.some((item) => item.isFetching === true)
-        : !isErrorAllData &&
-          $queryTokenHolding.isFetching &&
-          $queryVaults.isFetching &&
-          $queryOverview.isFetching &&
-          $queryNftHolding.isFetching)
-    ) {
-      driverObj.drive();
-      localStorage.setItem("view-portfolio-tour", "true");
-    }
-  }
-
   // overview
   const getOverview = async (address, chain) => {
     const response: OverviewDataRes = await nimbus
@@ -838,6 +805,17 @@
     if (updateBundle) {
       handleGetAllData("reload");
       triggerUpdateBundle.update((n) => (n = false));
+    }
+  }
+
+  $: {
+    if (
+      $userPublicAddress &&
+      !localStorage.getItem("view-portfolio-tour") &&
+      loading
+    ) {
+      driverObj.drive();
+      localStorage.setItem("view-portfolio-tour", "true");
     }
   }
 </script>
