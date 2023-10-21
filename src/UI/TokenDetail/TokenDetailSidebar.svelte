@@ -62,7 +62,7 @@
 
   const handleGetTradeHistory = async () => {
     const response: any = await nimbus.get(
-      `/v2/address/${selectedWallet}/token/${data?.contractAddress}/trade-history?chain=ETH`
+      `/v2/address/${selectedWallet}/token/${data?.contractAddress}/trade-history?chain=${data?.chain}`
     );
     if (response?.status === 401) {
       throw new Error(response?.response?.error);
@@ -238,12 +238,25 @@
 
   <div class="flex flex-col gap-6">
     <div
-      class={`rounded-[20px] p-6 flex flex-col gap-4 ${
+      class={`rounded-[20px] p-6 flex flex-col gap-4 relative ${
         darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
       <div class="xl:text-2xl text-4xl font-medium">Balance / Avg Cost</div>
-      <BalanceAvgCostChart {data} id={data?.name} />
+      <BalanceAvgCostChart
+        {data}
+        id={data?.name}
+        avgCost={data?.profit?.averageCost}
+      />
+      {#if typeWalletAddress !== "EVM"}
+        <div
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
+            darkMode ? "bg-[#222222e6]" : "bg-white/90"
+          } z-30 backdrop-blur-md`}
+        >
+          <div class="text-lg">Coming soon 🚀</div>
+        </div>
+      {/if}
     </div>
 
     <div

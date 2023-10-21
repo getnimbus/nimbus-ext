@@ -28,10 +28,10 @@
   let formatDataNFT = [];
   let sumAllTokens = 0;
   let sumNFT = 0;
-  let tableTokenHeader;
-  let isStickyTableToken = false;
-  let tableNFTHeader;
-  let isStickyTableNFT = false;
+  let tableClosedTokenHeader;
+  let isStickyTableClosedToken = false;
+  let tableClosedNFTHeader;
+  let isStickyTableClosedNFT = false;
 
   let filterTokenType = {
     label: "$1",
@@ -76,10 +76,11 @@
 
   onMount(() => {
     const handleScroll = () => {
-      const clientRectTokenHeader = tableTokenHeader?.getBoundingClientRect();
-      isStickyTableToken = clientRectTokenHeader?.top <= 0;
-      const clientRectNFTHeader = tableNFTHeader?.getBoundingClientRect();
-      isStickyTableNFT = clientRectNFTHeader?.top <= 0;
+      const clientRectTokenHeader =
+        tableClosedTokenHeader?.getBoundingClientRect();
+      isStickyTableClosedToken = clientRectTokenHeader?.top <= 0;
+      const clientRectNFTHeader = tableClosedNFTHeader?.getBoundingClientRect();
+      isStickyTableClosedNFT = clientRectNFTHeader?.top <= 0;
     };
     window.addEventListener("scroll", handleScroll);
     return () => {
@@ -376,14 +377,14 @@
         </div>
 
         <div
-          class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
+          class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
             darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
           }`}
         >
           <table class="table-auto xl:w-full w-[1400px] h-full">
             <thead
-              class={isStickyTableToken ? "sticky top-0 z-10" : ""}
-              bind:this={tableTokenHeader}
+              class={isStickyTableClosedToken ? "sticky top-0 z-10" : ""}
+              bind:this={tableClosedTokenHeader}
             >
               <tr class="bg_f4f5f8">
                 <th
@@ -528,8 +529,8 @@
         >
           <table class="table-auto xl:w-full w-[1400px]">
             <thead
-              class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
-              bind:this={tableNFTHeader}
+              class={isStickyTableClosedNFT ? "sticky top-0 z-10" : ""}
+              bind:this={tableClosedNFTHeader}
             >
               <tr class="bg_f4f5f8">
                 <th
