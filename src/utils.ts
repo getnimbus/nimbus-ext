@@ -18,6 +18,9 @@ import confetti from "canvas-confetti";
 import dayjs from "dayjs";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
+import dayjs from "dayjs";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
@@ -983,6 +986,7 @@ export const triggerFirework = () => {
   });
 };
 
+
 export const driverObj = driver({
   showProgress: true,
   overlayColor: "#27326f",
@@ -1030,4 +1034,10 @@ export const driverObj = driver({
     // },
   ],
 });
->>>>>>>>> Temporary merge branch 2
+
+export const formatTransactionTime = (date: Date) => {
+  if (dayjs().diff(date, 'days') >= 1) {
+    return dayjs(date).format('YYYY-MM-DD, hh:mm A');
+  }
+  return dayjs(date).fromNow();
+};
