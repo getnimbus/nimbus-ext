@@ -10,7 +10,13 @@
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import { chainList } from "~/utils";
   import { wait } from "../entries/background/utils";
-  import { wallet, chain, typeWallet, selectedBundle } from "~/store";
+  import {
+    wallet,
+    chain,
+    typeWallet,
+    selectedBundle,
+    triggerUpdateBundle,
+  } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
   import {
@@ -80,6 +86,11 @@
   let selectBundle = {};
   selectedBundle.subscribe((value) => {
     selectBundle = value;
+  });
+
+  let updateBundle = false;
+  triggerUpdateBundle.subscribe((value) => {
+    updateBundle = value;
   });
 
   let enabledFetchAllData = false;
@@ -784,6 +795,13 @@
     typeWalletAddress?.length !== 0 && typeWalletAddress !== "EVM"
       ? [chainList[0].value]
       : chainList.slice(1).map((item) => item.value);
+
+  $: {
+    if (updateBundle) {
+      handleGetAllData("reload");
+      triggerUpdateBundle.update((n) => (n = false));
+    }
+  }
 </script>
 
 <AddressManagement title={MultipleLang.overview}>
