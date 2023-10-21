@@ -1,11 +1,19 @@
 <script lang="ts">
   import dayjs from "dayjs";
+  import isBetween from "dayjs/plugin/isBetween";
+  dayjs.extend(isBetween);
   import { createQuery } from "@tanstack/svelte-query";
   import { mobula, defillama } from "~/lib/network";
   import { isDarkMode, typeWallet } from "~/store";
-  import { autoFontSize, formatBalance, formatCurrency } from "~/utils";
+  import {
+    autoFontSize,
+    formatBalance,
+    formatCurrency,
+    timeFrame,
+  } from "~/utils";
   import numeral from "numeral";
   import { groupBy } from "lodash";
+  import { AnimateSharedLayout, Motion } from "svelte-motion";
 
   import EChart from "~/components/EChart.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -30,9 +38,9 @@
     typeWalletAddress = value;
   });
 
+  let selectedTimeFrame: "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
   let dataPriceChart = [];
   let dataAvgCost = [];
-
   let optionLine = {
     tooltip: {
       trigger: "axis",
@@ -166,8 +174,30 @@
     },
     series: [],
   };
-
   let chainType = "Ethereum";
+  let time: any = 30;
+
+  $: {
+    switch (selectedTimeFrame) {
+      case "ALL":
+        time = "ALL";
+        break;
+      case "7D":
+        time = 7;
+        break;
+      case "30D":
+        time = 30;
+        break;
+      case "3M":
+        time = 90;
+        break;
+      case "1Y":
+        time = 365;
+        break;
+      default:
+        time = 30;
+    }
+  }
 
   $: {
     if (chain) {
@@ -205,7 +235,7 @@
         contractAddress === "11111111111111111111111111111111"
           ? "coingecko:solana"
           : `solana:${contractAddress}`
-      }?start=1664364537&span=30&period=30d&searchWidth=600`
+      }?start=1664364537&span=${time}&period=1d&searchWidth=600`
     );
     const formatRes = response?.coins[
       `${
@@ -221,15 +251,15 @@
 
   const handleGetTokenPrice = async () => {
     const response = await mobula.get(
-      `/1/market/history?blockchain=${chainType}&asset=${contractAddress}&from=${dayjs()
-        .subtract(30, "day")
-        .unix()}&to'`
+      `/1/market/history?blockchain=${chainType}&asset=${contractAddress}&from=${
+        time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf()
+      }&to`
     );
     return response?.data?.price_history;
   };
 
   $: queryTokenPrice = createQuery({
-    queryKey: ["token-price", contractAddress, chainType],
+    queryKey: ["token-price", contractAddress, chainType, time],
     queryFn: () => handleGetTokenPrice(),
     staleTime: Infinity,
     retry: false,
@@ -242,7 +272,7 @@
   });
 
   $: queryTokenPriceSol = createQuery({
-    queryKey: ["token-price-sol", contractAddress, chainType],
+    queryKey: ["token-price-sol", contractAddress, chainType, time],
     queryFn: () => handleGetTokenPriceSol(),
     staleTime: Infinity,
     retry: false,
@@ -640,252 +670,287 @@
   };
 
   $: {
-    if (dataPriceChart && dataPriceChart.length !== 0) {
-      const formatDataBuyHistory = buyHistoryTradeList?.map((item) => {
-        const selected = findClosestObject(
-          item.created_at * 1000,
-          dataPriceChart.map((item) => {
-            return {
-              ...item,
-              date: item.value[0],
-            };
-          })
-        );
-        return {
-          quantity_in: item.quantity_in,
-          quantity_out: item.quantity_out,
-          itemStyle: { color: "#00b580" },
-          value: [item.created_at * 1000, selected.value[1]],
-          type: "buy",
-          past_price: item.to_price,
-        };
-      });
-      const formatDataSellHistory = sellHistoryTradeList?.map((item) => {
-        const selected = findClosestObject(
-          item.created_at * 1000,
-          dataPriceChart.map((item) => {
-            return {
-              ...item,
-              date: item.value[0],
-            };
-          })
-        );
-        return {
-          quantity_in: item.quantity_in,
-          quantity_out: item.quantity_out,
-          itemStyle: { color: "#ef4444" },
-          value: [item.created_at * 1000, selected.value[1]],
-          type: "sell",
-          past_price: item.from_price,
-        };
-      });
-      const dataHistory = formatDataBuyHistory.concat(formatDataSellHistory);
+    if (time) {
+      if (dataPriceChart && dataPriceChart.length !== 0) {
+        const firstDataPriceChart = dataPriceChart[0]?.value[0];
+        const lastDataPriceChart =
+          dataPriceChart[dataPriceChart.length - 1]?.value[0];
 
-      const tradeHistoryData = filterAndCollectDuplicates(
-        dataHistory.map((item) => {
+        const formatDataBuyHistory = buyHistoryTradeList?.map((item) => {
+          const selected = findClosestObject(
+            item.created_at * 1000,
+            dataPriceChart.map((item) => {
+              return {
+                ...item,
+                date: item.value[0],
+              };
+            })
+          );
           return {
-            ...item,
-            date: dayjs(item.value[0]).format("YYYY-MM-DD"),
+            quantity_in: item.quantity_in,
+            quantity_out: item.quantity_out,
+            itemStyle: { color: "#00b580" },
+            value: [item.created_at * 1000, selected.value[1]],
+            type: "buy",
+            past_price: item.to_price,
           };
-        })
-      );
-      const groupBuyTradeHistoryData = groupBy(tradeHistoryData, "date");
-      const dateTradeHistoryData = Object.getOwnPropertyNames(
-        groupBuyTradeHistoryData
-      );
-      const dataTrade = dateTradeHistoryData.map((item) => {
-        let color = "#6b7280";
-        const selected = findClosestObject(
-          groupBuyTradeHistoryData[item][0].value[0],
-          dataPriceChart.map((item) => {
+        });
+        const formatDataSellHistory = sellHistoryTradeList?.map((item) => {
+          const selected = findClosestObject(
+            item.created_at * 1000,
+            dataPriceChart.map((item) => {
+              return {
+                ...item,
+                date: item.value[0],
+              };
+            })
+          );
+          return {
+            quantity_in: item.quantity_in,
+            quantity_out: item.quantity_out,
+            itemStyle: { color: "#ef4444" },
+            value: [item.created_at * 1000, selected.value[1]],
+            type: "sell",
+            past_price: item.from_price,
+          };
+        });
+        const dataHistory = formatDataBuyHistory.concat(formatDataSellHistory);
+
+        // logic data trade
+        const tradeHistoryData = filterAndCollectDuplicates(
+          dataHistory.map((item) => {
             return {
               ...item,
-              date: item.value[0],
+              date: dayjs(item.value[0]).format("YYYY-MM-DD"),
             };
           })
         );
+        const groupBuyTradeHistoryData = groupBy(tradeHistoryData, "date");
+        const dateTradeHistoryData = Object.getOwnPropertyNames(
+          groupBuyTradeHistoryData
+        );
+        const dataTrade = dateTradeHistoryData.map((item) => {
+          let color = "#6b7280";
+          const selected = findClosestObject(
+            groupBuyTradeHistoryData[item][0].value[0],
+            dataPriceChart.map((item) => {
+              return {
+                ...item,
+                date: item.value[0],
+              };
+            })
+          );
 
-        const typeList = groupBuyTradeHistoryData[item].map((item) => {
-          if (item.type === "sell") {
-            return "sell";
-          } else if (item.type === "buy") {
-            return "buy";
+          const typeList = groupBuyTradeHistoryData[item].map((item) => {
+            if (item.type === "sell") {
+              return "sell";
+            } else if (item.type === "buy") {
+              return "buy";
+            }
+          });
+
+          const allTypeSell = typeList.every((item) => item === "sell");
+          const allTypeBuy = typeList.every((item) => item === "buy");
+
+          if (allTypeSell) {
+            color = "#ef4444";
           }
+
+          if (allTypeBuy) {
+            color = "#00b580";
+          }
+
+          return {
+            dateFormat: item,
+            date: groupBuyTradeHistoryData[item][0].value[0],
+            data: groupBuyTradeHistoryData[item],
+            itemStyle: { color },
+            value: [
+              groupBuyTradeHistoryData[item][0].value[0],
+              selected.value[1],
+            ],
+            type: "trade",
+          };
+        });
+        const formatDataTrade = dataTrade.filter((item) => {
+          return dayjs(item.date).isBetween(
+            dayjs(firstDataPriceChart),
+            dayjs(lastDataPriceChart),
+            null,
+            "[]"
+          );
         });
 
-        const allTypeSell = typeList.every((item) => item === "sell");
-        const allTypeBuy = typeList.every((item) => item === "buy");
-
-        if (allTypeSell) {
-          color = "#ef4444";
-        }
-
-        if (allTypeBuy) {
-          color = "#00b580";
-        }
-
-        return {
-          dateFormat: item,
-          date: groupBuyTradeHistoryData[item][0].value[0],
-          data: groupBuyTradeHistoryData[item],
-          itemStyle: { color },
-          value: [
-            groupBuyTradeHistoryData[item][0].value[0],
-            selected.value[1],
-          ],
-          type: "trade",
-        };
-      });
-
-      const filteredDuplicateHistoryData = dataHistory
-        .map((item) => {
-          return {
-            ...item,
-            date: item.value[0],
-          };
-        })
-        .filter(
-          (elem) =>
-            !tradeHistoryData
-              .map((item) => {
-                return {
-                  ...item,
-                  date: item.value[0],
-                };
-              })
-              .find(({ date }) => elem.date === date)
+        // logic data buy and data sell
+        const filteredDuplicateHistoryData = dataHistory
+          .map((item) => {
+            return {
+              ...item,
+              date: item.value[0],
+            };
+          })
+          .filter(
+            (elem) =>
+              !tradeHistoryData
+                .map((item) => {
+                  return {
+                    ...item,
+                    date: item.value[0],
+                  };
+                })
+                .find(({ date }) => elem.date === date)
+          );
+        const groupBuyHistoryData = groupBy(
+          filteredDuplicateHistoryData,
+          "type"
         );
-      const groupBuyHistoryData = groupBy(filteredDuplicateHistoryData, "type");
-      const dataBuy = groupBuyHistoryData["buy"];
-      const dataSell = groupBuyHistoryData["sell"];
+        const dataBuy = groupBuyHistoryData["buy"];
+        const dataSell = groupBuyHistoryData["sell"];
+        const formatDataBuy = (dataBuy || []).filter((item) => {
+          return dayjs(item.date).isBetween(
+            dayjs(firstDataPriceChart),
+            dayjs(lastDataPriceChart),
+            null,
+            "[]"
+          );
+        });
+        const formatDataSell = (dataSell || []).filter((item) => {
+          return dayjs(item.date).isBetween(
+            dayjs(firstDataPriceChart),
+            dayjs(lastDataPriceChart),
+            null,
+            "[]"
+          );
+        });
 
-      optionLine = {
-        ...optionLine,
-        series: [
-          {
-            name: "Trade",
-            type: "scatter",
-            zlevel: 2,
-            z: 2,
-            symbolSize: 16,
-            data: dataTrade || [],
-          },
-          {
-            name: "Buy",
-            type: "scatter",
-            zlevel: 2,
-            z: 3,
-            symbolSize: 16,
-            data: dataBuy || [],
-          },
-          {
-            name: "Sell",
-            type: "scatter",
-            zlevel: 2,
-            z: 3,
-            symbolSize: 16,
-            data: dataSell || [],
-          },
-          {
-            name: "Price",
-            type: "line",
-            symbol: "circle",
-            zlevel: 1,
-            z: 2,
-            datasetIndex: 1,
-            symbolSize: 0.1,
-            lineStyle: {
-              type: "solid",
-              color: "#1e96fc",
+        optionLine = {
+          ...optionLine,
+          series: [
+            {
+              name: "Trade",
+              type: "scatter",
+              zlevel: 2,
+              z: 2,
+              symbolSize: 16,
+              data: formatDataTrade || [],
             },
-            showSymbol: false,
-            data: dataPriceChart,
-          },
-          {
-            name: "Avg Cost",
-            type: "line",
-            symbol: "circle",
-            zlevel: 1,
-            z: 2,
-            datasetIndex: 1,
-            symbolSize: 0.1,
-            lineStyle: {
-              type: "dashed",
-              color: "#eab308",
+            {
+              name: "Buy",
+              type: "scatter",
+              zlevel: 2,
+              z: 3,
+              symbolSize: 16,
+              data: formatDataBuy || [],
             },
-            endLabel: {
-              show: true,
-              offset: [-75, -14],
-              formatter: () => {
-                return "Avg Cost";
+            {
+              name: "Sell",
+              type: "scatter",
+              zlevel: 2,
+              z: 3,
+              symbolSize: 16,
+              data: formatDataSell || [],
+            },
+            {
+              name: "Price",
+              type: "line",
+              symbol: "circle",
+              zlevel: 1,
+              z: 2,
+              datasetIndex: 1,
+              symbolSize: 0.1,
+              lineStyle: {
+                type: "solid",
+                color: "#1e96fc",
               },
-              color: "#eab308",
+              showSymbol: false,
+              data: dataPriceChart,
             },
-            showSymbol: false,
-            data: dataAvgCost || [],
-          },
-        ],
-      };
-    } else {
-      optionLine = {
-        ...optionLine,
-        series: [
-          {
-            name: "Trade",
-            type: "scatter",
-            zlevel: 2,
-            z: 2,
-            symbolSize: 16,
-            data: [],
-          },
-          {
-            name: "Buy",
-            type: "scatter",
-            zlevel: 2,
-            z: 3,
-            symbolSize: 16,
-            data: [],
-          },
-          {
-            name: "Sell",
-            type: "scatter",
-            zlevel: 2,
-            z: 3,
-            symbolSize: 16,
-            data: [],
-          },
-          {
-            name: "Price",
-            type: "line",
-            symbol: "circle",
-            zlevel: 1,
-            z: 2,
-            datasetIndex: 1,
-            symbolSize: 0.1,
-            lineStyle: {
-              type: "solid",
-              color: "#1e96fc",
+            {
+              name: "Avg Cost",
+              type: "line",
+              symbol: "circle",
+              zlevel: 1,
+              z: 2,
+              datasetIndex: 1,
+              symbolSize: 0.1,
+              lineStyle: {
+                type: "dashed",
+                color: "#eab308",
+              },
+              endLabel: {
+                show: true,
+                offset: [-75, -14],
+                formatter: () => {
+                  return "Avg Cost";
+                },
+                color: "#eab308",
+              },
+              showSymbol: false,
+              data: dataAvgCost || [],
             },
-            showSymbol: false,
-            data: [],
-          },
-          {
-            name: "Avg Cost",
-            type: "line",
-            symbol: "circle",
-            zlevel: 1,
-            z: 2,
-            datasetIndex: 1,
-            symbolSize: 0.1,
-            lineStyle: {
-              type: "dashed",
-              color: "#eab308",
+          ],
+        };
+      } else {
+        optionLine = {
+          ...optionLine,
+          series: [
+            {
+              name: "Trade",
+              type: "scatter",
+              zlevel: 2,
+              z: 2,
+              symbolSize: 16,
+              data: [],
             },
-            showSymbol: false,
-            data: [],
-          },
-        ],
-      };
+            {
+              name: "Buy",
+              type: "scatter",
+              zlevel: 2,
+              z: 3,
+              symbolSize: 16,
+              data: [],
+            },
+            {
+              name: "Sell",
+              type: "scatter",
+              zlevel: 2,
+              z: 3,
+              symbolSize: 16,
+              data: [],
+            },
+            {
+              name: "Price",
+              type: "line",
+              symbol: "circle",
+              zlevel: 1,
+              z: 2,
+              datasetIndex: 1,
+              symbolSize: 0.1,
+              lineStyle: {
+                type: "solid",
+                color: "#1e96fc",
+              },
+              showSymbol: false,
+              data: [],
+            },
+            {
+              name: "Avg Cost",
+              type: "line",
+              symbol: "circle",
+              zlevel: 1,
+              z: 2,
+              datasetIndex: 1,
+              symbolSize: 0.1,
+              lineStyle: {
+                type: "dashed",
+                color: "#eab308",
+              },
+              showSymbol: false,
+              data: [],
+            },
+          ],
+        };
+      }
     }
   }
 
@@ -905,23 +970,59 @@
         Empty
       </div>
     {:else}
-      <div class="relative">
-        <EChart
-          id={id + "line-chart"}
-          {theme}
-          notMerge={true}
-          option={optionLine}
-          height={485}
-        />
-        <div
-          class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
-        >
-          <img
-            src={darkMode ? LogoWhite : Logo}
-            alt=""
-            width="140"
-            height="140"
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center justify-start gap-1">
+          <div class="mr-1 xl:text-sm text-base">Timeframe</div>
+          <AnimateSharedLayout>
+            {#each timeFrame as type}
+              <div
+                class="relative cursor-pointer xl:text-sm text-base font-medium py-1 px-3 rounded-[100px] transition-all"
+                on:click={() => {
+                  selectedTimeFrame = type.value;
+                }}
+              >
+                <div
+                  class={`relative z-20 ${
+                    type.value === selectedTimeFrame && "text-white"
+                  }`}
+                >
+                  {type.label}
+                </div>
+                {#if type.value === selectedTimeFrame}
+                  <Motion
+                    let:motion
+                    layoutId="active-pill"
+                    transition={{ type: "spring", duration: 0.6 }}
+                  >
+                    <div
+                      class="absolute inset-0 rounded-full z-10"
+                      style="background:rgba(30, 150, 252, 1);"
+                      use:motion
+                    />
+                  </Motion>
+                {/if}
+              </div>
+            {/each}
+          </AnimateSharedLayout>
+        </div>
+        <div class="relative">
+          <EChart
+            id={id + "line-chart"}
+            {theme}
+            notMerge={true}
+            option={optionLine}
+            height={485}
           />
+          <div
+            class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
+          >
+            <img
+              src={darkMode ? LogoWhite : Logo}
+              alt=""
+              width="140"
+              height="140"
+            />
+          </div>
         </div>
       </div>
     {/if}

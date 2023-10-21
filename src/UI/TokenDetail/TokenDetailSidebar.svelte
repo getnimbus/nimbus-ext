@@ -248,7 +248,7 @@
         id={data?.name}
         avgCost={data?.profit?.averageCost}
       />
-      {#if typeWalletAddress !== "EVM"}
+      {#if typeWalletAddress !== "EVM" || data?.chain !== "ETH"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
             darkMode ? "bg-[#222222e6]" : "bg-white/90"
