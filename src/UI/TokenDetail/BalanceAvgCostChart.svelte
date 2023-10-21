@@ -206,11 +206,6 @@
         return [item?.price, item?.totalToken];
       });
 
-      console.log({
-        avgCost,
-        price: data?.market_price,
-      });
-
       optionBar = {
         ...optionBar,
         series: [
