@@ -972,8 +972,8 @@
         Empty
       </div>
     {:else}
-      <div class="flex flex-col gap-2">
-        <div class="flex items-center justify-start gap-1">
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center justify-end gap-1">
           <div class="mr-1 xl:text-sm text-base">Timeframe</div>
           <AnimateSharedLayout>
             {#each timeFrame as type}
