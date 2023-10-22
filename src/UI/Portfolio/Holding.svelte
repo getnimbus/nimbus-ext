@@ -336,7 +336,8 @@
     }
   }
 
-  $: colspan = typeWalletAddress !== "EVM" ? 8 : 7;
+  $: colspan =
+    typeWalletAddress === "SOL" || typeWalletAddress === "EVM" ? 8 : 7;
 
   $: {
     if (selectedWallet || selectedChain) {
@@ -506,6 +507,69 @@
                   {/if}
                 </tr>
               </thead>
+                    Realized PnL
+                  </div>
+                </th>
+                <th
+                  class={`py-3 ${
+                    typeWalletAddress === "SOL" ||
+                    typeWalletAddress === "EVM" ||
+                    typeWalletAddress === "BUNDLE"
+                      ? ""
+                      : "pr-3 rounded-tr-[10px]"
+                  }`}
+                >
+                  <div
+                    class="text-right xl:text-xs text-xl uppercase font-medium"
+                  >
+                    Unrealized PnL
+                  </div>
+                </th>
+                {#if typeWalletAddress === "SOL" || typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE"}
+                  <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
+                {/if}
+              </tr>
+            </thead>
+
+            {#if selectedChain === "ALL"}
+              <tbody>
+                {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
+                  <tr>
+                    <td {colspan}>
+                      <div
+                        class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                      >
+                        {#if holdingTokenData && holdingTokenData.length === 0}
+                          {MultipleLang.empty}
+                        {:else}
+                          All tokens less than $1
+                        {/if}
+                      </div>
+                    </td>
+                  </tr>
+                {/if}
+                {#each filteredHoldingDataToken as holding}
+                  <HoldingToken
+                    data={holding}
+                    {selectedWallet}
+                    sumAllTokens={totalAssets - sumNFT}
+                  />
+                {/each}
+              </tbody>
+              {#if isLoadingToken}
+                <tbody>
+                  <tr>
+                    <td {colspan}>
+                      <div
+                        class="flex justify-center items-center h-full py-3 px-3"
+                      >
+                        <Loading />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              {/if}
+            {/if}
 
               {#if selectedChain === "ALL"}
                 <tbody>

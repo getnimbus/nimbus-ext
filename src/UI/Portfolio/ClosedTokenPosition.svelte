@@ -28,10 +28,10 @@
   let formatDataNFT = [];
   let sumAllTokens = 0;
   let sumNFT = 0;
-  let tableTokenHeader;
-  let isStickyTableToken = false;
-  let tableNFTHeader;
-  let isStickyTableNFT = false;
+  let tableClosedTokenHeader;
+  let isStickyTableClosedToken = false;
+  let tableClosedNFTHeader;
+  let isStickyTableClosedNFT = false;
 
   let filterTokenType = {
     label: "$1",
@@ -76,10 +76,11 @@
 
   onMount(() => {
     const handleScroll = () => {
-      const clientRectTokenHeader = tableTokenHeader?.getBoundingClientRect();
-      isStickyTableToken = clientRectTokenHeader?.top <= 0;
-      const clientRectNFTHeader = tableNFTHeader?.getBoundingClientRect();
-      isStickyTableNFT = clientRectNFTHeader?.top <= 0;
+      const clientRectTokenHeader =
+        tableClosedTokenHeader?.getBoundingClientRect();
+      isStickyTableClosedToken = clientRectTokenHeader?.top <= 0;
+      const clientRectNFTHeader = tableClosedNFTHeader?.getBoundingClientRect();
+      isStickyTableClosedNFT = clientRectNFTHeader?.top <= 0;
     };
     window.addEventListener("scroll", handleScroll);
     return () => {
@@ -375,53 +376,99 @@
           />
         </div>
 
-        <div class={`${isLoadingToken ? "h-[400px]" : ""}`}>
-          <div
-            class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
-              darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
-            }`}
-          >
-            <table class="table-auto xl:w-full w-[1400px] h-full">
-              <thead
-                class={isStickyTableToken ? "sticky top-0 z-10" : ""}
-                bind:this={tableTokenHeader}
-              >
-                <tr class="bg_f4f5f8">
-                  <th
-                    class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
+        <div
+          class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+            darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+          }`}
+        >
+          <table class="table-auto xl:w-full w-[1400px] h-full">
+            <thead
+              class={isStickyTableClosedToken ? "sticky top-0 z-10" : ""}
+              bind:this={tableClosedTokenHeader}
+            >
+              <tr class="bg_f4f5f8">
+                <th
+                  class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[420px]"
+                >
+                  <div
+                    class="text-left xl:text-xs text-xl uppercase font-medium"
                   >
-                    <div
-                      class="text-left xl:text-xs text-xl uppercase font-medium"
-                    >
-                      {MultipleLang.assets}
-                    </div>
-                  </th>
-                  <th class="py-3">
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
-                    >
-                      {MultipleLang.price}
-                    </div>
-                  </th>
-                  <th class="py-3">
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
-                    >
-                      Average Cost
-                    </div>
-                  </th>
-                  <th
-                    class="py-3 pr-3 rounded-tr-[10px] pr-3 rounded-tr-[10px]"
+                    {MultipleLang.assets}
+                  </div>
+                </th>
+                <th class="py-3">
+                  <div
+                    class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
-                    >
-                      ROI
-                    </div>
-                  </th>
-                  <!-- <th class="py-3 w-10 rounded-tr-[10px]" /> -->
-                </tr>
-              </thead>
+                    {MultipleLang.price}
+                  </div>
+                </th>
+                <th class="py-3">
+                  <div
+                    class="text-right xl:text-xs text-xl uppercase font-medium"
+                  >
+                    Average Cost
+                  </div>
+                </th>
+                <th
+                  class={`py-3 ${
+                    typeWalletAddress === "SOL" ||
+                    typeWalletAddress === "EVM" ||
+                    typeWalletAddress === "BUNDLE"
+                      ? ""
+                      : "pr-3 rounded-tr-[10px]"
+                  }`}
+                >
+                  <div
+                    class="text-right xl:text-xs text-xl uppercase font-medium"
+                  >
+                    ROI
+                  </div>
+                </th>
+                {#if typeWalletAddress === "SOL" || typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE"}
+                  <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
+                {/if}
+              </tr>
+            </thead>
+
+            {#if selectedChain === "ALL"}
+              <tbody>
+                {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
+                  <tr>
+                    <td {colspan}>
+                      <div
+                        class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
+                      >
+                        {#if holdingTokenData && holdingTokenData.length === 0}
+                          {MultipleLang.empty}
+                        {:else}
+                          All tokens less than $1
+                        {/if}
+                      </div>
+                    </td>
+                  </tr>
+                {/if}
+                {#each filteredHoldingDataToken as holding}
+                  <ClosedHoldingTokenPosition data={holding} {selectedWallet} />
+                {/each}
+              </tbody>
+
+              {#if isLoadingToken}
+                <tbody>
+                  <tr>
+                    <td {colspan}>
+                      <div
+                        class="flex justify-center items-center h-full py-3 px-3"
+                      >
+                        <Loading />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              {/if}
+            {/if}
+
+            {#if selectedChain !== "ALL"}
               {#if isLoadingToken}
                 <tbody>
                   <tr>
@@ -460,8 +507,8 @@
                   {/if}
                 </tbody>
               {/if}
-            </table>
-          </div>
+            {/if}
+          </table>
         </div>
       </div>
     </div>
@@ -482,8 +529,8 @@
         >
           <table class="table-auto xl:w-full w-[1400px]">
             <thead
-              class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
-              bind:this={tableNFTHeader}
+              class={isStickyTableClosedNFT ? "sticky top-0 z-10" : ""}
+              bind:this={tableClosedNFTHeader}
             >
               <tr class="bg_f4f5f8">
                 <th

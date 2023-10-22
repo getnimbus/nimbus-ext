@@ -35,6 +35,12 @@
 
   let showSideNftDetail = false;
 
+  const closeSideNFTDetail = (event) => {
+    if (event.key === "Escape") {
+      showSideNftDetail = false;
+    }
+  };
+
   $: totalCost = data?.tokens?.reduce(
     (prev, item) => prev + Number(item.cost),
     0
@@ -51,6 +57,8 @@
   $: profitAndLossPercent =
     Math.abs(totalCost || 0) === 0 ? 0 : profitAndLoss / Math.abs(totalCost);
 </script>
+
+<svelte:window on:keydown={closeSideNFTDetail} />
 
 <tr
   class={`group transition-all cursor-pointer ${
@@ -307,12 +315,7 @@
 </tr>
 
 <!-- Sidebar NFT Detail -->
-<OverlaySidebar
-  isOpen={showSideNftDetail}
-  on:close={() => {
-    showSideNftDetail = false;
-  }}
->
+<OverlaySidebar isOpen={showSideNftDetail}>
   <div class="flex flex-col gap-6 p-6">
     <div class="flex justify-between items-start">
       <div
