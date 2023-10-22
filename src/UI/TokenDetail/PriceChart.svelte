@@ -235,9 +235,9 @@
         contractAddress === "11111111111111111111111111111111"
           ? "coingecko:solana"
           : `solana:${contractAddress}`
-      }?start=1664364537&span=${
-        time === "ALL" ? 1825 : time
-      }&period=1d&searchWidth=600`
+      }?start=${dayjs()
+        .subtract(time === "ALL" ? 1825 : time, "day")
+        .unix()}&span=${time === "ALL" ? 1825 : time}&period=1d&searchWidth=600`
     );
     const formatRes = response?.coins[
       `${
