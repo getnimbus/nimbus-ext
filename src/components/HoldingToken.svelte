@@ -235,7 +235,7 @@
   class={`group transition-all ${
     isOpenTokenInfoBundle ? (darkMode ? "bg-[#000]" : "bg-gray-100") : ""
   }`}
-  id="view-token-detail"
+  id={` ${index === 0 && "view-nft-detail"}`}
   on:click={() => {
     // if (clickable) {
     //   navigate(
