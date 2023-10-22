@@ -235,7 +235,9 @@
         contractAddress === "11111111111111111111111111111111"
           ? "coingecko:solana"
           : `solana:${contractAddress}`
-      }?start=1664364537&span=${time}&period=1d&searchWidth=600`
+      }?start=1664364537&span=${
+        time === "ALL" ? 1825 : time
+      }&period=1d&searchWidth=600`
     );
     const formatRes = response?.coins[
       `${
@@ -1029,4 +1031,5 @@
   </div>
 {/if}
 
-<style></style>
+<style windi:preflights:global windi:safelist:global>
+</style>
