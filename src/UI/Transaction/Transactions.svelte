@@ -149,6 +149,7 @@
   let selectedCoin = {
     name: 'All',
     logo: All,
+    symbol: 'all'
   }
   let searchValue = "";
   let timerSearchDebounce;
@@ -236,7 +237,7 @@
     isLoading = true;
     try {
       const response: TrxHistoryDataRes = await nimbus.get(
-        `/v2/address/${selectedWallet}/history?chain=${selectedChain}&pageToken=${page}${type !== 'all' ? `&type=${coin}` : ""}${coin !== 'All' ? `&coin=${coin}` : ""}`
+        `/v2/address/${selectedWallet}/history?chain=${selectedChain}&pageToken=${page}${type !== 'all' ? `&type=${coin}` : ""}${coin !== 'all' ? `&coin=${coin}` : ""}`
       );
       if (response && response?.data) {
         data = [...data, ...response?.data?.data];
@@ -250,7 +251,7 @@
   };
 
   const handleLoadMore = (paginate: string) => {
-    getListTransactions(paginate, selectedType.value, selectedCoin.name);
+    getListTransactions(paginate, selectedType.value, selectedCoin.symbol);
   };
 
   $: {
@@ -263,7 +264,7 @@
         selectedChain?.length !== 0 &&
         typeWalletAddress !== "SOL"
       ) {
-        getListTransactions("", selectedType.value, selectedCoin.name);
+        getListTransactions("", selectedType.value, selectedCoin.symbol);
       }
     }
   }

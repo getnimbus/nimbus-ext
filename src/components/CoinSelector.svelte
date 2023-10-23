@@ -8,6 +8,7 @@
   
   const DEFAULT_COINS = [{
     name: 'All',
+    symbol: 'all',
     logo: All
   }]
 
@@ -39,7 +40,6 @@
       console.log(error);
     }
   })
-  console.log(coins)
 
 </script>
 
@@ -106,8 +106,8 @@
         {#each coins as item}
         <div
           class="content_item"
-          class:active={item.name === selected?.value}
-          id={item.name}
+          class:active={item.symbol === selected?.symbol}
+          id={item.symbol}
           on:click={() => {
             selected = item;
             open = false;
