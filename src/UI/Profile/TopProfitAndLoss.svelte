@@ -106,7 +106,7 @@
   <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-6 py-6">
     <div class="xl:text-xl text-3xl font-medium">Top 5 Profit (30D)</div>
 
-    <div class="min-h-[400px]">
+    <div class="min-h-[350px]">
       {#if $queryTokenHolding.isFetching}
         <div class="h-full flex justify-center items-center">
           <Loading />
@@ -160,7 +160,7 @@
   <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-6 py-6">
     <div class="xl:text-xl text-3xl font-medium">Top 5 Loss (30D)</div>
 
-    <div class="min-h-[400px]">
+    <div class="min-h-[350px]">
       {#if $queryTokenHolding.isLoading}
         <div class="h-full flex justify-center items-center">
           <Loading />
