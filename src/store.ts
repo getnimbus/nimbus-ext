@@ -14,6 +14,7 @@ export const isHidePortfolio = writable(false);
 export const triggerConnectWallet = writable(false);
 export const userId = writable("");
 export const userPublicAddress = writable("");
+export const triggerUpdateBundle = writable(false);
 
 
 // let isFirstTime = true;

@@ -26,11 +26,8 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
           ...authorization,
         },
       }).then(async (response) => {
-        if (response.status === 401) {
-          return {
-            response: await response.json(),
-            status: response.status,
-          };
+        if (response.status === 403) {
+          throw new Error(await response.json())
         }
         return await response.json();
       });
@@ -133,6 +130,11 @@ export const mixpanel = createAxiosInterface({
 
 export const goplus = createAxiosInterface({
   baseURL: "https://api.gopluslabs.io/api/v1",
+  getHeaderAuthorize: () => { },
+});
+
+export const mobula = createAxiosInterface({
+  baseURL: "https://api.app-mobula.com/api",
   getHeaderAuthorize: () => { },
 });
 

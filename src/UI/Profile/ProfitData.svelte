@@ -72,9 +72,6 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/trading-stats`
     );
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
     return response?.data;
   };
 
@@ -91,10 +88,6 @@
     staleTime: Infinity,
     retry: false,
     enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
-    onError(err) {
-      localStorage.removeItem("evm_token");
-      user.update((n) => (n = {}));
-    },
   });
 
   $: queryTokenHolding = createQuery({
@@ -145,85 +138,89 @@
   }
 </script>
 
-<div
-  class="col-span-4 grid xl:grid-cols-6 grid-cols-3 gap-5 border border_0000001a rounded-xl p-6"
->
+<div class="col-span-4 border border_0000001a rounded-xl p-6">
   {#if $queryTokenHolding.isFetching && $queryTradingStats.isFetching}
-    <div class="xl:col-span-6 col-span-3 flex items-center justify-center">
+    <div class="h-full flex items-center justify-center">
       <Loading />
     </div>
   {:else}
-    <div class="flex flex-col gap-2 justify-between">
-      <div class="text-xl xl:text-xs font-medium text_00000099">Balance</div>
-      <div class="xl:text-base text-lg">
-        <TooltipNumber number={netWorth} type="value" />
+    <div class="grid xl:grid-cols-6 grid-cols-3 gap-5">
+      <div class="flex flex-col gap-2 justify-between">
+        <div class="text-xl xl:text-xs font-medium text_00000099">Balance</div>
+        <div class="xl:text-base text-lg">
+          <TooltipNumber number={netWorth} type="value" />
+        </div>
       </div>
-    </div>
 
-    <div class="flex flex-col gap-2 justify-between">
-      <div class="text-xl xl:text-xs font-medium text_00000099">
-        30D Unrealized PnL
+      <div class="flex flex-col gap-2 justify-between">
+        <div class="text-xl xl:text-xs font-medium text_00000099">
+          30D Unrealized PnL
+        </div>
+        <div
+          class={`flex items-center xl:text-base text-lg ${
+            unRealizedProfit !== 0
+              ? unRealizedProfit >= 0
+                ? "text-[#00A878]"
+                : "text-red-500"
+              : ""
+          }`}
+        >
+          {#if unRealizedProfit < 0}-{/if}
+          <TooltipNumber number={Math.abs(unRealizedProfit)} type="value" />
+        </div>
       </div>
-      <div
-        class={`flex items-center xl:text-base text-lg ${
-          unRealizedProfit !== 0
-            ? unRealizedProfit >= 0
-              ? "text-[#00A878]"
-              : "text-red-500"
-            : ""
-        }`}
-      >
-        {#if unRealizedProfit < 0}-{/if}
-        <TooltipNumber number={Math.abs(unRealizedProfit)} type="value" />
-      </div>
-    </div>
 
-    <div class="flex flex-col gap-2 justify-between">
-      <div class="text-xl xl:text-xs font-medium text_00000099">
-        30D Realized PnL
+      <div class="flex flex-col gap-2 justify-between">
+        <div class="text-xl xl:text-xs font-medium text_00000099">
+          30D Realized PnL
+        </div>
+        <div
+          class={`flex items-center xl:text-base text-lg ${
+            profit !== 0
+              ? profit >= 0
+                ? "text-[#00A878]"
+                : "text-red-500"
+              : ""
+          }`}
+        >
+          {#if profit < 0}-{/if}
+          <TooltipNumber number={Math.abs(profit)} type="value" />
+        </div>
       </div>
-      <div
-        class={`flex items-center xl:text-base text-lg ${
-          profit !== 0 ? (profit >= 0 ? "text-[#00A878]" : "text-red-500") : ""
-        }`}
-      >
-        {#if profit < 0}-{/if}
-        <TooltipNumber number={Math.abs(profit)} type="value" />
-      </div>
-    </div>
 
-    <div class="flex flex-col gap-2 justify-between">
-      <div class="text-xl xl:text-xs font-medium text_00000099">30D PnL</div>
-      <div
-        class={`flex items-center xl:text-base text-lg ${
-          set30DayPnl !== 0
-            ? set30DayPnl >= 0
-              ? "text-[#00A878]"
-              : "text-red-500"
-            : ""
-        }`}
-      >
-        {#if set30DayPnl < 0}-{/if}
-        <TooltipNumber
-          number={Math.abs(set30DayPnl)}
-          type={Math.abs(Number(set30DayPnl)) > 100 ? "balance" : "percent"}
-        />%
+      <div class="flex flex-col gap-2 justify-between">
+        <div class="text-xl xl:text-xs font-medium text_00000099">30D PnL</div>
+        <div
+          class={`flex items-center xl:text-base text-lg ${
+            set30DayPnl !== 0
+              ? set30DayPnl >= 0
+                ? "text-[#00A878]"
+                : "text-red-500"
+              : ""
+          }`}
+        >
+          {#if set30DayPnl < 0}-{/if}
+          <TooltipNumber
+            number={Math.abs(set30DayPnl)}
+            type={Math.abs(Number(set30DayPnl)) > 100 ? "balance" : "percent"}
+          />%
+        </div>
       </div>
-    </div>
 
-    <div class="flex flex-col gap-2 justify-between">
-      <div class="text-xl xl:text-xs font-medium text_00000099">
-        Trade Tokens
+      <div class="flex flex-col gap-2 justify-between">
+        <div class="text-xl xl:text-xs font-medium text_00000099">
+          Trade Tokens
+        </div>
+        <div class="xl:text-base text-lg">
+          {totalToken}
+        </div>
       </div>
-      <div class="xl:text-base text-lg">
-        {totalToken}
-      </div>
-    </div>
 
-    <div class="flex flex-col gap-2 justify-between">
-      <div class="text-xl xl:text-xs font-medium text_00000099">Winrate</div>
-      <div class="xl:text-base text-lg">
-        <TooltipNumber number={winRate} type="percent" />%
+      <div class="flex flex-col gap-2 justify-between">
+        <div class="text-xl xl:text-xs font-medium text_00000099">Winrate</div>
+        <div class="xl:text-base text-lg">
+          <TooltipNumber number={winRate} type="percent" />%
+        </div>
       </div>
     </div>
   {/if}

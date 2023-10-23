@@ -58,9 +58,6 @@
 
   const getReferrals = async () => {
     const response: any = await nimbus.get("/referrals");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
     return response.data;
   };
 

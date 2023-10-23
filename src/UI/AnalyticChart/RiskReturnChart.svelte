@@ -257,9 +257,6 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
-    if (response?.error) {
-      throw new Error(response?.error);
-    }
     return response?.data || [];
   };
 
@@ -693,7 +690,7 @@
                   on:click={() => (selectedTypeChart = type.value)}
                 >
                   <div
-                    class={`relative z-20 ${
+                    class={`relative z-2 ${
                       selectedTypeChart === type.value && "text-white"
                     }`}
                   >
@@ -706,7 +703,7 @@
                       transition={{ type: "spring", duration: 0.6 }}
                     >
                       <div
-                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-1"
                         use:motion
                       />
                     </Motion>

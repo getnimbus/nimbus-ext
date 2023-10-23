@@ -130,9 +130,6 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
-    if (response?.error) {
-      throw new Error(response?.error);
-    }
     return response?.data || [];
   };
 

@@ -35,6 +35,7 @@
   let openScreenSuccess: boolean = false;
   let isLoadingCheckin: boolean = false;
   let selectedCheckinIndex = 0;
+  let selectedIndexRewards: number = 0;
   let isDisabledCheckin = false;
 
   const queryClient = useQueryClient();
@@ -186,7 +187,10 @@
                 {#if isDisabledCheckin}
                   <Button
                     variant="primary"
-                    on:click={handleCheckin}
+                    on:click={() => {
+                      selectedIndexRewards = $queryDailyCheckin?.data?.steak;
+                      handleCheckin();
+                    }}
                     isLoading={isLoadingCheckin}
                   >
                     <div
@@ -366,7 +370,7 @@
         class="w-40 h-40"
       />
       <div class="xl:text-2xl text-4xl text-white font-medium">
-        +{$queryDailyCheckin?.data?.pointStreak[selectedCheckinIndex]} GM Points
+        +{$queryDailyCheckin?.data?.pointStreak[selectedIndexRewards]} GM Points
       </div>
     </div>
   </div>

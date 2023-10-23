@@ -136,6 +136,7 @@
                     {item.name}
                   </span><span
                     class="text-lg font-medium text_00000080 xl:text-xs"
+
                   >
                     {#if item.symbol === undefined}
                       N/A
@@ -186,6 +187,7 @@
                 <span class="flex flex-col">
                   <span class="text-lg xl:text-base font-medium">
                     {item.name}
+
                   </span>
                   <span class="text-lg font-medium text_00000080 xl:text-xs">
                     {#if item.symbol === undefined}

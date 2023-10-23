@@ -10,7 +10,13 @@
   import { disconnectWs, initWS } from "~/lib/price-ws";
   import { chainList } from "~/utils";
   import { wait } from "../entries/background/utils";
-  import { wallet, chain, typeWallet, selectedBundle } from "~/store";
+  import {
+    wallet,
+    chain,
+    typeWallet,
+    selectedBundle,
+    triggerUpdateBundle,
+  } from "~/store";
   import mixpanel from "mixpanel-browser";
   import { nimbus } from "~/lib/network";
   import {
@@ -80,6 +86,11 @@
   let selectBundle = {};
   selectedBundle.subscribe((value) => {
     selectBundle = value;
+  });
+
+  let updateBundle = false;
+  triggerUpdateBundle.subscribe((value) => {
+    updateBundle = value;
   });
 
   let enabledFetchAllData = false;
@@ -312,9 +323,6 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}`
     );
-    if (response?.error) {
-      throw new Error(response?.error);
-    }
     return response?.data || [];
   };
 
@@ -772,18 +780,29 @@
 
   $: loading =
     selectedChain === "ALL"
-      ? $queryAllTokenHolding.some((item) => item.isFetching === true) &&
-        $queryAllNftHolding.some((item) => item.isFetching === true)
+      ? $queryAllTokenHolding &&
+        $queryAllTokenHolding.some((item) => item.isFetching === true) &&
+        $queryAllTokenHolding &&
+        $queryAllNftHolding.some((item) => item.isFetching === true) &&
+        $queryVaults.isFetching &&
+        $queryOverview.isFetching
       : !isErrorAllData &&
         $queryTokenHolding.isFetching &&
+        $queryNftHolding.isFetching &&
         $queryVaults.isFetching &&
-        $queryOverview.isFetching &&
-        !$queryNftHolding.isFetching;
+        $queryOverview.isFetching;
 
   $: chainListQueries =
     typeWalletAddress?.length !== 0 && typeWalletAddress !== "EVM"
       ? [chainList[0].value]
       : chainList.slice(1).map((item) => item.value);
+
+  $: {
+    if (updateBundle) {
+      handleGetAllData("reload");
+      triggerUpdateBundle.update((n) => (n = false));
+    }
+  }
 </script>
 
 <AddressManagement title={MultipleLang.overview}>
