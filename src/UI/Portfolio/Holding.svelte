@@ -492,29 +492,6 @@
                     </div>
                   </th>
                   <th
-                    class={`py-3 pr-3 ${
-                      typeWalletAddress !== "BUNDLE" ? "rounded-tr-[10px]" : ""
-                    }`}
-                  >
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
-                    >
-                      Unrealized PnL
-                    </div>
-                  </th>
-                  {#if typeWalletAddress === "BUNDLE"}
-                    <th class="py-3 w-10 rounded-tr-[10px]" />
-                  {/if}
-                </tr>
-              </thead>
-              <thead>
-                <tr>
-                  <th
-                    class="text-right xl:text-xs text-xl uppercase font-medium"
-                  >
-                    <div>Realized PnL</div>
-                  </th>
-                  <th
                     class={`py-3 ${
                       typeWalletAddress === "SOL" ||
                       typeWalletAddress === "EVM" ||
