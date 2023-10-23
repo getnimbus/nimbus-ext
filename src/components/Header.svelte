@@ -1310,7 +1310,13 @@
                 }
               }}
             >
-              <img src={item.logo} alt="" class="w-6 h-6" />
+              <img
+                src={item.logo}
+                alt=""
+                class={`w-6 h-6 ${
+                  item.type !== "BUNDLE" ? "rounded-full" : ""
+                }`}
+              />
               <div class="flex-1 flex justify-between items-center">
                 <div class="hover:underline">{item.label}</div>
                 <div
