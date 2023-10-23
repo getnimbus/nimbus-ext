@@ -9,12 +9,13 @@
 
   export let selectedAddress;
 
-  let netWorth = 0;
+  let balance = 0;
   let unRealizedProfit = 0;
   let set30DayPnl = 0;
   let winRate = 0;
   let totalCost = 0;
   let totalToken = 0;
+  let realizedProfit = 0;
 
   const formatDataHoldingToken = (dataTokenHolding) => {
     const formatData = dataTokenHolding
@@ -25,6 +26,7 @@
             Number(item?.amount) * Number(item?.price?.price || item?.rate),
         };
       })
+      .filter((item) => item?.profit?.realizedProfit)
       .sort((a, b) => {
         if (a.value < b.value) {
           return 1;
@@ -35,10 +37,9 @@
         return 0;
       });
 
-    netWorth = formatData.reduce((prev, item) => prev + item.value, 0);
+    balance = formatData.reduce((prev, item) => prev + item.value, 0);
 
-    const formatWinRate = formatData
-      .filter((item) => item?.profit?.realizedProfit)
+    const format30D = formatData
       .filter((item) => {
         const date = dayjs(item?.last_transferred_at);
         const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
@@ -61,11 +62,11 @@
       });
 
     winRate =
-      (formatWinRate.filter((item) => item?.profit?.realizedProfit > 0).length /
-        formatWinRate.length) *
+      (format30D.filter((item) => item?.profit?.realizedProfit > 0).length /
+        format30D.length) *
       100;
 
-    totalToken = formatWinRate.length;
+    totalToken = format30D.length;
   };
 
   const getTradingStats = async (address) => {
@@ -97,12 +98,6 @@
     enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
   });
 
-  $: profit =
-    $queryTradingStats?.data !== undefined
-      ? $queryTradingStats?.data?.latestStats?.unrealizedProfit +
-        $queryTradingStats?.data?.latestStats?.totalRealizedProfit
-      : 0;
-
   $: {
     if (
       !$queryTokenHolding.isError &&
@@ -116,11 +111,16 @@
   $: {
     if (!$queryTradingStats.isError && $queryTradingStats?.data !== undefined) {
       const tradingStatsMeta = $queryTradingStats?.data?.metadata.filter(
-        (e) => e.startTrade < 2592000000
+        (item) => item.startTrade < 2592000000
       );
 
       unRealizedProfit = tradingStatsMeta?.reduce(
         (prev, item) => prev + Number(item.unrealizedProfit),
+        0
+      );
+
+      realizedProfit = tradingStatsMeta.reduce(
+        (prev, item) => prev + Number(item.realizedProfit),
         0
       );
 
@@ -129,10 +129,10 @@
         0
       );
 
-      if (unRealizedProfit === 0 && profit === 0) {
+      if (unRealizedProfit === 0 && realizedProfit === 0) {
         set30DayPnl = 0;
       } else {
-        set30DayPnl = unRealizedProfit + profit - totalCost / totalCost;
+        set30DayPnl = unRealizedProfit + realizedProfit - totalCost / totalCost;
       }
     }
   }
@@ -148,7 +148,7 @@
       <div class="flex flex-col gap-2 justify-between">
         <div class="text-xl xl:text-xs font-medium text_00000099">Balance</div>
         <div class="xl:text-base text-lg">
-          <TooltipNumber number={netWorth} type="value" />
+          <TooltipNumber number={balance} type="value" />
         </div>
       </div>
 
@@ -176,15 +176,15 @@
         </div>
         <div
           class={`flex items-center xl:text-base text-lg ${
-            profit !== 0
-              ? profit >= 0
+            realizedProfit !== 0
+              ? realizedProfit >= 0
                 ? "text-[#00A878]"
                 : "text-red-500"
               : ""
           }`}
         >
-          {#if profit < 0}-{/if}
-          <TooltipNumber number={Math.abs(profit)} type="value" />
+          {#if realizedProfit < 0}-{/if}
+          <TooltipNumber number={Math.abs(realizedProfit)} type="value" />
         </div>
       </div>
 

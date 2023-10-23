@@ -22,13 +22,22 @@
     return response;
   };
 
+  const getTradingStats = async (address) => {
+    const response: any = await nimbus.get(
+      `/v2/analysis/${address}/trading-stats`
+    );
+    return response?.data;
+  };
+
   const formatDataHoldingToken = (dataTokenHolding) => {
-    const formatData = dataTokenHolding
+    const formatData = dataTokenHolding.metadata
+      .filter((item) => item.startTrade < 2592000000)
       .map((item) => {
         return {
-          ...item,
+          ...item.holding,
           value:
-            Number(item?.amount) * Number(item?.price?.price || item?.rate),
+            Number(item?.holding?.amount) *
+            Number(item?.holding?.price?.price || item?.holding?.rate),
         };
       })
       .sort((a, b) => {
@@ -91,13 +100,21 @@
     enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
   });
 
+  $: queryTradingStats = createQuery({
+    queryKey: ["trading-stats", selectedAddress],
+    queryFn: () => getTradingStats(selectedAddress),
+    staleTime: Infinity,
+    retry: false,
+    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
+  });
+
   $: {
     if (
-      !$queryTokenHolding.isError &&
-      $queryTokenHolding.data &&
-      $queryTokenHolding.data !== undefined
+      !$queryTradingStats.isError &&
+      $queryTradingStats.data &&
+      $queryTradingStats.data !== undefined
     ) {
-      formatDataHoldingToken($queryTokenHolding.data);
+      formatDataHoldingToken($queryTradingStats.data);
     }
   }
 </script>
@@ -106,7 +123,7 @@
   <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-6 py-6">
     <div class="xl:text-xl text-3xl font-medium">Top 5 Profit (30D)</div>
 
-    <div class="min-h-[400px]">
+    <div class="min-h-[280px]">
       {#if $queryTokenHolding.isFetching}
         <div class="h-full flex justify-center items-center">
           <Loading />
@@ -119,7 +136,7 @@
             </div>
           {:else}
             {#each top5ProfitToken as item}
-              <div class="h-full flex justify-between gap-2">
+              <div class="flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
                   <img
                     src={item.logo}
@@ -135,16 +152,15 @@
                   <span class="flex flex-col">
                     <span class="text-lg xl:text-base font-medium">
                       {item.name}
-                    </span><span
-                      class="text-lg font-medium text_00000080 xl:text-xs"
-                    >
+                    </span>
+                    <span class="text-lg font-medium text_00000080 xl:text-xs">
                       {#if item.symbol === undefined}
                         N/A
                       {:else}
                         {shorterName(item.symbol, 20)}
                       {/if}
-                    </span></span
-                  >
+                    </span>
+                  </span>
                 </div>
                 <div class="text-[#00A878] xl:text-base text-lg">
                   <TooltipNumber number={item.realizedProfit} type="value" />
@@ -160,7 +176,7 @@
   <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-6 py-6">
     <div class="xl:text-xl text-3xl font-medium">Top 5 Loss (30D)</div>
 
-    <div class="min-h-[400px]">
+    <div class="min-h-[280px]">
       {#if $queryTokenHolding.isLoading}
         <div class="h-full flex justify-center items-center">
           <Loading />
@@ -173,7 +189,7 @@
             </div>
           {:else}
             {#each top5LossToken as item}
-              <div class="h-full flex items-center justify-between gap-2">
+              <div class="flex items-center justify-between gap-2">
                 <div class="flex-1 flex items-center gap-2">
                   <img
                     src={item.logo}

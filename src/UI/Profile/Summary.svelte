@@ -70,8 +70,6 @@
       });
     }
   }
-
-  $: console.log("closedHoldingPosition: ", closedHoldingPosition);
 </script>
 
 <div class="col-span-2 border border_0000001a rounded-xl">
