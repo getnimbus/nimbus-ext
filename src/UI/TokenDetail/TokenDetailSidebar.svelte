@@ -64,9 +64,6 @@
     const response: any = await nimbus.get(
       `/v2/address/${selectedWallet}/token/${data?.contractAddress}/trade-history?chain=${data?.chain}`
     );
-    if (response?.status === 403) {
-      throw new Error(response?.response?.error);
-    }
     return response?.data;
   };
 
