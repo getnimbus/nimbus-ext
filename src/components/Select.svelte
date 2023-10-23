@@ -113,7 +113,7 @@
             <img
               src={item.value === "ALL" ? All : item.logo}
               alt=""
-              class="xl:w-5 xl:h-5 w-7 h-7"
+              class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
             />
           {/if}
           <div
