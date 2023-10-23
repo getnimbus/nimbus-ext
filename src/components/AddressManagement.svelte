@@ -1036,7 +1036,9 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class="w-5 h-5 xl:w-4 xl:h-4"
+                              class={`w-5 h-5 xl:w-4 xl:h-4 ${
+                                item.type !== "BUNDLE" ? "rounded-full" : ""
+                              }`}
                             />
                             {item.label}
                             {#if item.value === selectedWallet}
@@ -1142,7 +1144,9 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class="w-5 h-5 xl:w-4 xl:h-4"
+                              class={`w-5 h-5 xl:w-4 xl:h-4 ${
+                                item.type !== "BUNDLE" ? "rounded-full" : ""
+                              }`}
                             />
                             {item.label}
                             {#if item.value === selectedWallet}
