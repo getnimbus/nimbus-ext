@@ -21,8 +21,6 @@
   import AddressManagement from "~/components/AddressManagement.svelte";
   import CalendarChart from "~/components/CalendarChart.svelte";
   import HistoricalTransactions from "./HistoricalTransactions.svelte";
-  import Loading from "~/components/Loading.svelte";
-  import Combobox from "~/components/CoinSelector.svelte";
   import CoinSelector from "~/components/CoinSelector.svelte";
 
   let darkMode = false;
@@ -121,36 +119,36 @@
 
   const types = [
     {
-      label: 'All',
-      value: 'all',
+      label: "All",
+      value: "all",
     },
     {
-      label: 'Buy',
-      value: 'buy'
+      label: "Buy",
+      value: "buy",
     },
     {
-      label: 'Swap',
-      value: 'swap'
+      label: "Swap",
+      value: "swap",
     },
     {
-      label: 'Sell',
-      value: 'sell'
+      label: "Sell",
+      value: "sell",
     },
     {
-      label: 'Unknown',
-      value: 'unknown'
-    }
-  ]
+      label: "Unknown",
+      value: "unknown",
+    },
+  ];
 
   let selectedType = {
-    label: 'All',
-    value: 'all',
+    label: "All",
+    value: "all",
   };
   let selectedCoin = {
-    name: 'All',
+    name: "All",
     logo: All,
-    symbol: 'all'
-  }
+    symbol: "all",
+  };
   let searchValue = "";
   let timerSearchDebounce;
 
@@ -233,11 +231,17 @@
     }
   }
 
-  const getListTransactions = async (page: string, type: string, coin: string) => {
+  const getListTransactions = async (
+    page: string,
+    type: string,
+    coin: string
+  ) => {
     isLoading = true;
     try {
       const response: TrxHistoryDataRes = await nimbus.get(
-        `/v2/address/${selectedWallet}/history?chain=${selectedChain}&pageToken=${page}${type !== 'all' ? `&type=${coin}` : ""}${coin !== 'all' ? `&coin=${coin}` : ""}`
+        `/v2/address/${selectedWallet}/history?chain=${selectedChain}&pageToken=${page}${
+          type !== "all" ? `&type=${coin}` : ""
+        }${coin !== "all" ? `&coin=${coin}` : ""}`
       );
       if (response && response?.data) {
         data = [...data, ...response?.data?.data];
@@ -349,11 +353,9 @@
             </div>
           </div>
           <div class="flex mb-4 gap-4">
-            <CoinSelector 
-              bind:selected={selectedCoin}
-            />
-            <Select 
-              type="lang" 
+            <CoinSelector bind:selected={selectedCoin} />
+            <Select
+              type="lang"
               bind:selected={selectedType}
               listSelect={types}
             />
