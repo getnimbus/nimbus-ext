@@ -10,7 +10,8 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-
+  import All from "~/assets/all.svg";
+  import Select from "~/components/Select.svelte";
   import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
   import type {
     AnalyticHistoricalRes,
@@ -20,7 +21,7 @@
   import AddressManagement from "~/components/AddressManagement.svelte";
   import CalendarChart from "~/components/CalendarChart.svelte";
   import HistoricalTransactions from "./HistoricalTransactions.svelte";
-  import Loading from "~/components/Loading.svelte";
+  import CoinSelector from "~/components/CoinSelector.svelte";
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -116,7 +117,38 @@
     },
   };
 
-  let selectedType = "all";
+  const types = [
+    {
+      label: "All",
+      value: "all",
+    },
+    {
+      label: "Buy",
+      value: "buy",
+    },
+    {
+      label: "Swap",
+      value: "swap",
+    },
+    {
+      label: "Sell",
+      value: "sell",
+    },
+    {
+      label: "Unknown",
+      value: "unknown",
+    },
+  ];
+
+  let selectedType = {
+    label: "All",
+    value: "all",
+  };
+  let selectedCoin = {
+    name: "All",
+    logo: All,
+    symbol: "all",
+  };
   let searchValue = "";
   let timerSearchDebounce;
 
@@ -199,11 +231,17 @@
     }
   }
 
-  const getListTransactions = async (page: string) => {
+  const getListTransactions = async (
+    page: string,
+    type: string,
+    coin: string
+  ) => {
     isLoading = true;
     try {
       const response: TrxHistoryDataRes = await nimbus.get(
-        `/v2/address/${selectedWallet}/history?chain=${selectedChain}&pageToken=${page}`
+        `/v2/address/${selectedWallet}/history?chain=${selectedChain}&pageToken=${page}${
+          type !== "all" ? `&type=${coin}` : ""
+        }${coin !== "all" ? `&coin=${coin}` : ""}`
       );
       if (response && response?.data) {
         data = [...data, ...response?.data?.data];
@@ -217,7 +255,7 @@
   };
 
   const handleLoadMore = (paginate: string) => {
-    getListTransactions(paginate);
+    getListTransactions(paginate, selectedType.value, selectedCoin.symbol);
   };
 
   $: {
@@ -230,7 +268,7 @@
         selectedChain?.length !== 0 &&
         typeWalletAddress !== "SOL"
       ) {
-        getListTransactions("");
+        getListTransactions("", selectedType.value, selectedCoin.symbol);
       }
     }
   }
@@ -313,6 +351,14 @@
                 class="xl:w-[250px] w-full text-sm py-2 xl:px-3 px-2 rounded-[1000px] text_00000099 placeholder-[#00000099] border border-[#00000070] focus:outline-none focus:ring-0"
               /> -->
             </div>
+          </div>
+          <div class="flex mb-4 gap-4">
+            <CoinSelector bind:selected={selectedCoin} />
+            <Select
+              type="lang"
+              bind:selected={selectedType}
+              listSelect={types}
+            />
           </div>
           <HistoricalTransactions
             {isLoading}
