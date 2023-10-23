@@ -553,47 +553,6 @@
                 {/if}
               {/if}
 
-              {#if selectedChain === "ALL"}
-                <tbody>
-                  {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
-                    <tr>
-                      <td {colspan}>
-                        <div
-                          class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400"
-                        >
-                          {#if holdingTokenData && holdingTokenData.length === 0}
-                            {MultipleLang.empty}
-                          {:else}
-                            All tokens less than $1
-                          {/if}
-                        </div>
-                      </td>
-                    </tr>
-                  {/if}
-                  {#each filteredHoldingDataToken as holding, index}
-                    <HoldingToken
-                      data={holding}
-                      {selectedWallet}
-                      sumAllTokens={totalAssets - sumNFT}
-                      {index}
-                    />
-                  {/each}
-                </tbody>
-                {#if isLoadingToken}
-                  <tbody>
-                    <tr>
-                      <td {colspan}>
-                        <div
-                          class="flex justify-center items-center h-full py-3 px-3"
-                        >
-                          <Loading />
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                {/if}
-              {/if}
-
               {#if selectedChain !== "ALL"}
                 {#if isLoadingToken}
                   <tbody>
