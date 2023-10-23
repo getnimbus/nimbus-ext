@@ -132,7 +132,8 @@
       if (unRealizedProfit === 0 && realizedProfit === 0) {
         set30DayPnl = 0;
       } else {
-        set30DayPnl = unRealizedProfit + realizedProfit - totalCost / totalCost;
+        set30DayPnl =
+          (unRealizedProfit + realizedProfit - totalCost) / totalCost;
       }
     }
   }
