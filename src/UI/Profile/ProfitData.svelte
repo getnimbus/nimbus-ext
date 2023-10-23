@@ -26,7 +26,6 @@
             Number(item?.amount) * Number(item?.price?.price || item?.rate),
         };
       })
-      .filter((item) => item?.profit?.realizedProfit)
       .sort((a, b) => {
         if (a.value < b.value) {
           return 1;
@@ -48,6 +47,7 @@
           0
         );
       })
+      .filter((item) => item?.profit?.realizedProfit)
       .map((item) => {
         return {
           ...item,
@@ -133,7 +133,7 @@
         set30DayPnl = 0;
       } else {
         set30DayPnl =
-          (unRealizedProfit + realizedProfit - totalCost) / totalCost;
+          ((unRealizedProfit + realizedProfit - totalCost) / totalCost) * 100;
       }
     }
   }
@@ -147,7 +147,9 @@
   {:else}
     <div class="grid xl:grid-cols-6 grid-cols-3 gap-5">
       <div class="flex flex-col gap-2 justify-between">
-        <div class="text-xl xl:text-xs font-medium text_00000099">Balance</div>
+        <div class="text-xl xl:text-xs font-medium text_00000099">
+          Portfolio Value
+        </div>
         <div class="xl:text-base text-lg">
           <TooltipNumber number={balance} type="value" />
         </div>
