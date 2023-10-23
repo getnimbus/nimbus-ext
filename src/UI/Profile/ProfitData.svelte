@@ -39,14 +39,6 @@
     balance = formatData.reduce((prev, item) => prev + item.value, 0);
 
     const format30D = formatData
-      .filter((item) => {
-        const date = dayjs(item?.last_transferred_at);
-        const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
-        return (
-          thirtyDaysInMilliseconds - dayjs(dayjs()).diff(date, "millisecond") >
-          0
-        );
-      })
       .filter((item) => item?.profit?.realizedProfit)
       .map((item) => {
         return {
@@ -111,7 +103,7 @@
   $: {
     if (!$queryTradingStats.isError && $queryTradingStats?.data !== undefined) {
       const tradingStatsMeta = $queryTradingStats?.data?.metadata.filter(
-        (item) => item.startTrade < 2592000000
+        (item) => dayjs().subtract(30, "day").valueOf() < item.lastTrade * 1000
       );
 
       unRealizedProfit = tradingStatsMeta?.reduce(

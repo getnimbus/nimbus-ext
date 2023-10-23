@@ -233,7 +233,9 @@
 
   const formatDataHoldingToken = (dataTokenHolding) => {
     const formatData = dataTokenHolding.metadata
-      .filter((item) => item.startTrade < 2592000000)
+      .filter(
+        (item) => dayjs().subtract(30, "day").valueOf() < item.lastTrade * 1000
+      )
       .map((item) => {
         return {
           ...item.holding,
@@ -253,16 +255,7 @@
       });
 
     closedHoldingPosition = formatData
-      .filter((item) => item)
       .filter((item) => item?.profit?.realizedProfit)
-      .filter((item) => {
-        const date = dayjs(item?.last_transferred_at);
-        const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
-        return (
-          thirtyDaysInMilliseconds - dayjs(dayjs()).diff(date, "millisecond") >
-          0
-        );
-      })
       .map((item) => {
         return {
           ...item,
