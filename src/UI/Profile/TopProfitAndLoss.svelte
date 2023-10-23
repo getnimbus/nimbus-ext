@@ -106,108 +106,104 @@
   <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-6 py-6">
     <div class="xl:text-xl text-3xl font-medium">Top 5 Profit (30D)</div>
 
-    <div class="min-h-[400px]">
-      {#if $queryTokenHolding.isFetching}
-        <div class="flex justify-center items-center">
-          <Loading />
-        </div>
-      {:else}
-        <div class="h-full flex flex-col gap-4">
-          {#if top5ProfitToken.length === 0}
-            <div class="h-full flex items-center justify-center">
-              There is no closed holding position in the last 30 day
-            </div>
-          {:else}
-            {#each top5ProfitToken as item}
-              <div class="flex justify-between gap-2">
-                <div class="flex-1 flex items-center gap-2">
-                  <img
-                    src={item.logo}
-                    alt=""
-                    width="30"
-                    height="30"
-                    on:error={({ target }) => {
-                      target.src =
-                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-                    }}
-                    class="rounded-full"
-                  />
-                  <span class="flex flex-col">
-                    <span class="text-lg xl:text-base font-medium">
-                      {item.name}
-                    </span><span
-                      class="text-lg font-medium text_00000080 xl:text-xs"
-                    >
-                      {#if item.symbol === undefined}
-                        N/A
-                      {:else}
-                        {shorterName(item.symbol, 20)}
-                      {/if}
-                    </span></span
+    {#if $queryTokenHolding.isFetching}
+      <div class="flex justify-center items-center">
+        <Loading />
+      </div>
+    {:else}
+      <div class="h-full flex flex-col gap-4">
+        {#if top5ProfitToken.length === 0}
+          <div class="h-full flex items-center justify-center">
+            There is no closed holding position in the last 30 day
+          </div>
+        {:else}
+          {#each top5ProfitToken as item}
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex-1 flex items-center gap-2">
+                <img
+                  src={item.logo}
+                  alt=""
+                  width="30"
+                  height="30"
+                  on:error={({ target }) => {
+                    target.src =
+                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+                  }}
+                  class="rounded-full"
+                />
+                <span class="flex flex-col">
+                  <span class="text-lg xl:text-base font-medium">
+                    {item.name}
+                  </span><span
+                    class="text-lg font-medium text_00000080 xl:text-xs"
                   >
-                </div>
-                <div class="text-[#00A878] xl:text-base text-lg">
-                  <TooltipNumber number={item.realizedProfit} type="value" />
-                </div>
+                    {#if item.symbol === undefined}
+                      N/A
+                    {:else}
+                      {shorterName(item.symbol, 20)}
+                    {/if}
+                  </span></span
+                >
               </div>
-            {/each}
-          {/if}
-        </div>
-      {/if}
-    </div>
+              <div class="text-[#00A878] xl:text-base text-lg">
+                <TooltipNumber number={item.realizedProfit} type="value" />
+              </div>
+            </div>
+          {/each}
+        {/if}
+      </div>
+    {/if}
   </div>
 
   <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-6 py-6">
     <div class="xl:text-xl text-3xl font-medium">Top 5 Loss (30D)</div>
 
-    <div class="min-h-[400px]">
-      {#if $queryTokenHolding.isLoading}
-        <div class="flex justify-center items-center">
-          <Loading />
-        </div>
-      {:else}
-        <div class="h-full flex flex-col gap-4">
-          {#if top5LossToken.length === 0}
-            <div class="h-full flex items-center justify-center">
-              There is no closed holding position in the last 30 day
-            </div>
-          {:else}
-            {#each top5LossToken as item}
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex-1 flex items-center gap-2">
-                  <img
-                    src={item.logo}
-                    alt=""
-                    width="30"
-                    height="30"
-                    on:error={({ target }) => {
-                      target.src =
-                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-                    }}
-                    class="rounded-full"
-                  />
-                  <span class="flex flex-col">
-                    <span class="text-lg xl:text-base font-medium">
-                      {item.name}
-                    </span>
-                    <span class="text-lg font-medium text_00000080 xl:text-xs">
-                      {#if item.symbol === undefined}
-                        N/A
-                      {:else}
-                        {shorterName(item.symbol, 20)}
-                      {/if}
-                    </span>
+    {#if $queryTokenHolding.isLoading}
+      <div class="flex justify-center items-center">
+        <Loading />
+      </div>
+    {:else}
+      <div class="h-full flex flex-col gap-4">
+        {#if top5LossToken.length === 0}
+          <div class="h-full flex items-center justify-center">
+            There is no closed holding position in the last 30 day
+          </div>
+        {:else}
+          {#each top5LossToken as item}
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex-1 flex items-center gap-2">
+                <img
+                  src={item.logo}
+                  alt=""
+                  width="30"
+                  height="30"
+                  on:error={({ target }) => {
+                    target.src =
+                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+                  }}
+                  class="rounded-full"
+                />
+                <span class="flex flex-col">
+                  <span class="text-lg xl:text-base font-medium">
+                    {item.name}
                   </span>
-                </div>
-                <div class="text-red-500 xl:text-base text-lg">
-                  <TooltipNumber number={item.realizedProfit} type="value" />
-                </div>
+                  <span class="text-lg font-medium text_00000080 xl:text-xs">
+                    {#if item.symbol === undefined}
+                      N/A
+                    {:else}
+                      {shorterName(item.symbol, 20)}
+                    {/if}
+                  </span>
+                </span>
               </div>
-            {/each}
-          {/if}
-        </div>
-      {/if}
-    </div>
+              <div class="text-red-500 xl:text-base text-lg">
+                <TooltipNumber number={item.realizedProfit} type="value" />
+              </div>
+            </div>
+          {/each}
+        {/if}
+      </div>
+    {/if}
   </div>
 </div>
 
