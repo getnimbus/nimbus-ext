@@ -863,11 +863,8 @@
             {
               name: "Price",
               type: "line",
-              symbol: "circle",
               zlevel: 1,
               z: 2,
-              datasetIndex: 1,
-              symbolSize: 0.1,
               lineStyle: {
                 type: "solid",
                 color: "#1e96fc",
@@ -878,11 +875,8 @@
             {
               name: "Avg Cost",
               type: "line",
-              symbol: "circle",
               zlevel: 1,
               z: 2,
-              datasetIndex: 1,
-              symbolSize: 0.1,
               lineStyle: {
                 type: "dashed",
                 color: "#eab308",
@@ -967,53 +961,65 @@
   $: theme = darkMode ? "dark" : "white";
 </script>
 
-{#if $queryTokenPrice.isFetching || $queryTokenPriceSol.isFetching}
-  <div class="flex items-center justify-center h-[475px]">
-    <Loading />
-  </div>
-{:else}
-  <div class="h-full">
-    {#if $queryTokenPrice.isError || $queryTokenPriceSol.isError || (dataPriceChart && dataPriceChart.length === 0)}
-      <div
-        class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
-      >
-        Empty
-      </div>
-    {:else}
-      <div class="flex flex-col gap-4">
-        <div class="flex justify-end">
-          <AnimateSharedLayout>
-            {#each timeFrame as type}
+<div class="flex flex-col gap-4">
+  <div class="flex justify-end">
+    <AnimateSharedLayout>
+      {#each timeFrame as type}
+        <div
+          class="relative cursor-pointer xl:text-sm text-base font-medium py-1 px-3 rounded-[100px] transition-all"
+          on:click={() => {
+            if (
+              !$queryTokenPrice.isError ||
+              !$queryTokenPriceSol.isError ||
+              (dataPriceChart && dataPriceChart.length !== 0)
+            ) {
+              selectedTimeFrame = type.value;
+            }
+          }}
+        >
+          <div
+            class={`relative z-20 ${
+              type.value === selectedTimeFrame && "text-white"
+            }`}
+          >
+            {type.label}
+          </div>
+          {#if type.value === selectedTimeFrame}
+            <Motion
+              let:motion
+              layoutId="active-pill"
+              transition={{ type: "spring", duration: 0.6 }}
+            >
               <div
-                class="relative cursor-pointer xl:text-sm text-base font-medium py-1 px-3 rounded-[100px] transition-all"
-                on:click={() => {
-                  selectedTimeFrame = type.value;
-                }}
-              >
-                <div
-                  class={`relative z-20 ${
-                    type.value === selectedTimeFrame && "text-white"
-                  }`}
-                >
-                  {type.label}
-                </div>
-                {#if type.value === selectedTimeFrame}
-                  <Motion
-                    let:motion
-                    layoutId="active-pill"
-                    transition={{ type: "spring", duration: 0.6 }}
-                  >
-                    <div
-                      class="absolute inset-0 rounded-full z-10"
-                      style="background:rgba(30, 150, 252, 1);"
-                      use:motion
-                    />
-                  </Motion>
-                {/if}
-              </div>
-            {/each}
-          </AnimateSharedLayout>
+                class="absolute inset-0 rounded-full z-10"
+                style={`background:${
+                  !$queryTokenPrice.isError ||
+                  !$queryTokenPriceSol.isError ||
+                  (dataPriceChart && dataPriceChart.length !== 0)
+                    ? "rgba(30, 150, 252, 1)"
+                    : "#dddddd"
+                } `}
+                use:motion
+              />
+            </Motion>
+          {/if}
         </div>
+      {/each}
+    </AnimateSharedLayout>
+  </div>
+  {#if $queryTokenPrice.isFetching || $queryTokenPriceSol.isFetching}
+    <div class="flex items-center justify-center h-[475px]">
+      <Loading />
+    </div>
+  {:else}
+    <div class="h-full">
+      {#if $queryTokenPrice.isError || $queryTokenPriceSol.isError || (dataPriceChart && dataPriceChart.length === 0)}
+        <div
+          class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
+        >
+          Empty
+        </div>
+      {:else}
         <div class="relative">
           <EChart
             id={id + "line-chart"}
@@ -1033,10 +1039,10 @@
             />
           </div>
         </div>
-      </div>
-    {/if}
-  </div>
-{/if}
+      {/if}
+    </div>
+  {/if}
+</div>
 
 <style windi:preflights:global windi:safelist:global>
 </style>
