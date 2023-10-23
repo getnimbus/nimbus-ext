@@ -8,7 +8,7 @@
   export let listSelect;
   export let selected;
   export let type: "chain" | "wallet" | "lang" | "filter";
-  export let positionSelectList;
+  export let positionSelectList = 'left-0';
 
   let open = false;
 
@@ -34,7 +34,7 @@
 <div class="wrapper" use:clickOutside on:click_outside={() => (open = false)}>
   <div
     class={`button xl:text-sm text-2xl ${
-      type === "lang" || type === "filter" ? "bg-[#1E96FC]" : ""
+      type === "filter" ? "bg-[#1E96FC]" : ""
     }`}
     class:active={open}
     on:click={() => (open = !open)}
