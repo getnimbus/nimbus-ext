@@ -55,7 +55,6 @@
             "$" + numeral(Math.abs(params[0].axisValue)).format("0.000000a");
         }
 
-        console.log("params: ", params);
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 260px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
@@ -174,9 +173,6 @@
     const response: any = await nimbus.get(
       `/v2/address/${selectedWallet}/token/${data?.contractAddress}/trade-analysis?chain=${data?.chain}`
     );
-    if (response?.status === 403) {
-      throw new Error(response?.response?.error);
-    }
     return response?.data;
   };
 
@@ -206,6 +202,54 @@
         return [item?.price, item?.totalToken];
       });
 
+      if (avgCost !== undefined) {
+        optionBar = {
+          ...optionBar,
+          series: [
+            {
+              tooltip: {
+                show: true,
+              },
+              type: "bar",
+              itemStyle: {
+                color: "#27326F",
+                borderColor: "#27326F",
+              },
+              data: dataChart,
+              markLine: {
+                precision: 10,
+                symbol: ["none", "none"],
+                data: [
+                  {
+                    name: "Current Price",
+                    label: "Current Price",
+                    xAxis: data?.market_price,
+                    lineStyle: {
+                      color: "#1e96fc",
+                      type: "solid",
+                      width: 2,
+                    },
+                  },
+                  {
+                    name: "Avg Cost",
+                    label: "Avg Cost",
+                    xAxis: avgCost,
+                    lineStyle: {
+                      color: "#eab308",
+                      type: "dashed",
+                      width: 2,
+                    },
+                  },
+                ],
+                label: {
+                  show: false,
+                },
+              },
+            },
+          ],
+        };
+      }
+    } else {
       optionBar = {
         ...optionBar,
         series: [
@@ -218,7 +262,7 @@
               color: "#27326F",
               borderColor: "#27326F",
             },
-            data: dataChart,
+            data: [],
             markLine: {
               precision: 10,
               symbol: ["none", "none"],
@@ -226,7 +270,7 @@
                 {
                   name: "Current Price",
                   label: "Current Price",
-                  xAxis: data?.market_price,
+                  xAxis: 0,
                   lineStyle: {
                     color: "#1e96fc",
                     type: "solid",
@@ -236,7 +280,7 @@
                 {
                   name: "Avg Cost",
                   label: "Avg Cost",
-                  xAxis: avgCost,
+                  xAxis: 0,
                   lineStyle: {
                     color: "#eab308",
                     type: "dashed",

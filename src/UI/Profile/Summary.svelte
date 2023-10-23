@@ -70,6 +70,8 @@
       });
     }
   }
+
+  $: console.log("closedHoldingPosition: ", closedHoldingPosition);
 </script>
 
 <div class="col-span-2 border border_0000001a rounded-xl">
@@ -93,7 +95,7 @@
             </span>{" "}
           {/each} and other assets.
         </div>
-        {#if closedHoldingPosition.length !== 0}
+        {#if closedHoldingPosition.length !== 0 && closedHoldingPosition[0]?.profit?.realizedProfit > 0}
           <div class="xl:text-base text-xl">
             The best trading is
             <span class="font-medium">

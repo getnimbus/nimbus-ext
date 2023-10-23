@@ -64,9 +64,6 @@
     const response: any = await nimbus.get(
       `/v2/address/${selectedWallet}/token/${data?.contractAddress}/trade-history?chain=${data?.chain}`
     );
-    if (response?.status === 403) {
-      throw new Error(response?.response?.error);
-    }
     return response?.data;
   };
 
@@ -242,7 +239,9 @@
         darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      <div class="xl:text-2xl text-4xl font-medium">Balance / Avg Cost</div>
+      <div class="xl:text-2xl text-4xl font-medium">
+        Market Balance / Avg Cost
+      </div>
       <BalanceAvgCostChart
         {data}
         id={data?.name}

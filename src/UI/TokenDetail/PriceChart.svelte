@@ -253,7 +253,11 @@
 
   const handleGetTokenPrice = async () => {
     const response = await mobula.get(
-      `/1/market/history?blockchain=${chainType}&asset=${contractAddress}&from=${
+      `/1/market/history?blockchain=${chainType}&asset=${
+        contractAddress === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          ? "ethereum"
+          : contractAddress
+      }&from=${
         time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf()
       }&to`
     );
@@ -299,14 +303,16 @@
         };
       });
 
-      dataAvgCost = $queryTokenPriceSol.data?.map((item) => {
-        return {
-          value: [item[0], avgCost],
-          itemStyle: {
-            color: "#eab308",
-          },
-        };
-      });
+      if (avgCost !== undefined) {
+        dataAvgCost = $queryTokenPriceSol.data?.map((item) => {
+          return {
+            value: [item[0], avgCost],
+            itemStyle: {
+              color: "#eab308",
+            },
+          };
+        });
+      }
     }
   }
 
@@ -325,14 +331,16 @@
         };
       });
 
-      dataAvgCost = $queryTokenPrice.data?.map((item) => {
-        return {
-          value: [item[0], avgCost],
-          itemStyle: {
-            color: "#eab308",
-          },
-        };
-      });
+      if (avgCost !== undefined) {
+        dataAvgCost = $queryTokenPrice.data?.map((item) => {
+          return {
+            value: [item[0], avgCost],
+            itemStyle: {
+              color: "#eab308",
+            },
+          };
+        });
+      }
     }
   }
 
