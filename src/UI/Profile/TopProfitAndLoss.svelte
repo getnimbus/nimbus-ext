@@ -111,7 +111,7 @@
         <Loading />
       </div>
     {:else}
-      <div class="h-full flex flex-col gap-4">
+      <div class="h-full flex flex-col gap-2">
         {#if top5ProfitToken.length === 0}
           <div class="h-full flex items-center justify-center">
             There is no closed holding position in the last 30 day
@@ -163,7 +163,7 @@
         <Loading />
       </div>
     {:else}
-      <div class="h-full flex flex-col gap-4">
+      <div class="h-full flex flex-col gap-2">
         {#if top5LossToken.length === 0}
           <div class="h-full flex items-center justify-center">
             There is no closed holding position in the last 30 day
