@@ -268,34 +268,6 @@
             {/await}
           </Route>
 
-          <Route path="position-detail">
-            {#await import("~/layouts/TokenDetail.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              <div class="flex items-center justify-center h-screen">
-                Something when wrong! Please reload your browser to try again
-              </div>
-            {/await}
-          </Route>
-
-          <Route path="test-detail">
-            {#await import("~/layouts/PositionDetail.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              <div class="flex items-center justify-center h-screen">
-                Something when wrong! Please reload your browser to try again
-              </div>
-            {/await}
-          </Route>
-
           <Route path="profile">
             {#await import("~/layouts/Profile.svelte")}
               <div class="flex items-center justify-center h-screen">
