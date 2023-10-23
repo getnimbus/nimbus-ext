@@ -26,8 +26,12 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
           ...authorization,
         },
       }).then(async (response) => {
+        // console.log("res: ", response)
         if (response.status !== 401) {
-          throw new Error(await response.json());
+          return {
+            response: await response.json(),
+            status: response.status,
+          };
         }
         return await response.json();
       });
