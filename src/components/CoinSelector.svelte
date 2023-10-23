@@ -1,134 +1,146 @@
 <script lang="ts">
-  import debounce from 'lodash/debounce';
-
   import { clickOutside } from "~/utils";
+  import { mobula } from "~/lib/network";
+  import { createQuery } from "@tanstack/svelte-query";
+  import { isDarkMode } from "~/store";
+
+  import Loading from "./Loading.svelte";
+
   import All from "~/assets/all.svg";
+  import AllWhite from "~/assets/all-white.svg";
   import UpArrow from "~/assets/up-arrow.svg";
-  import { onMount } from 'svelte';
-  
-  const DEFAULT_COINS = [{
-    name: 'All',
-    symbol: 'all',
-    logo: All
-  }]
+  import Search from "~/assets/search.svg";
+  import SearchBlack from "~/assets/search-black.svg";
+
+  export let selected = null;
+  export let positionSelectList = "left-0";
+
+  let darkMode = false;
+  isDarkMode.subscribe((value) => {
+    darkMode = value;
+  });
+
+  const DEFAULT_COINS = [
+    {
+      name: "All",
+      symbol: "all",
+      logo: All,
+    },
+  ];
 
   let coins = DEFAULT_COINS;
-  export let selected = null;
-  export let positionSelectList = 'left-0';
-  let isLoading = false
   let open = false;
+  let timerDebounce;
+  let search = "";
 
-  const search = debounce(async e => {
-    try {
-      isLoading = true
-      const res = await fetch(`https://api.app-mobula.com/api/1/search?name=${e.target.value ?? ''}`);
-      const { data = [] } = await res.json();
-      coins = [...DEFAULT_COINS, ...data]
-    } catch (error) {
-      console.log(error);
-    } finally{
-      isLoading = false
+  const debounceSearch = (value) => {
+    clearTimeout(timerDebounce);
+    timerDebounce = setTimeout(() => {
+      search = value;
+    }, 300);
+  };
+
+  const handleSearchTokenMobula = async (searchValue: string) => {
+    const response = await mobula.get(`/1/search?name=${searchValue}`);
+    return response.data;
+  };
+
+  $: query = createQuery({
+    queryKey: ["search-token-mobula", search],
+    queryFn: () => handleSearchTokenMobula(search),
+    staleTime: Infinity,
+    retry: false,
+  });
+
+  $: {
+    if (
+      !$query.isError &&
+      $query.data !== undefined &&
+      $query.data.length !== 0
+    ) {
+      coins = [...DEFAULT_COINS, ...$query.data];
     }
-  }, 400)
-
-  onMount(async () => {
-    try {
-      const res = await fetch(`https://api.app-mobula.com/api/1/search?name= `);
-      const { data = [] } = await res.json();
-      coins = [...DEFAULT_COINS, ...data]
-    } catch (error) {
-      console.log(error);
-    }
-  })
-
+  }
 </script>
 
 <div class="wrapper" use:clickOutside on:click_outside={() => (open = false)}>
   <div
-    class={`button xl:text-sm text-2xl`}
+    class={`button xl:text-sm text-2xl bg-[#1E96FC]`}
     class:active={open}
     on:click={() => (open = !open)}
   >
-      {#if selected}
-        <div class="flex items-center gap-2">
-          <img
-            src={selected.logo}
-            alt=""
-            class="xl:w-5 xl:h-5 w-7 h-7"
-          />
-          <div
-            class={`xl:text-sm text-2xl name`}
-          >
-            {selected.name}
-          </div>
+    {#if selected}
+      <div class="flex items-center gap-2">
+        <img
+          src={selected.name === "All" ? AllWhite : selected.logo}
+          alt=""
+          class="xl:w-5 xl:h-5 w-7 h-7"
+        />
+        <div class={`xl:text-sm text-2xl name`}>
+          {selected.name}
         </div>
-      {:else}
-        <div class="flex items-center gap-2">
-          Select Coin
-          <img
-            src={UpArrow}
-            alt=""
-            class="transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
-            class:rotate-0={open}
-          />
       </div>
-      {/if}
-      <img
-        src={UpArrow}
-        alt=""
-        class="transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
-        class:rotate-0={open}
-      />
+    {:else}
+      <div class="flex items-center gap-2">
+        Select Coin
+        <img
+          src={UpArrow}
+          alt=""
+          class="transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
+          class:rotate-0={open}
+        />
+      </div>
+    {/if}
+    <img
+      src={UpArrow}
+      alt=""
+      class="transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
+      class:rotate-0={open}
+    />
   </div>
 
   {#if open}
     <div
       class={`select_content content group xl:max-h-[300px] xl:w-[200px] xl:min-w-[200px] xl:max-h-[310px] max-h-[380px] w-[300px] min-w-[300px] mt-2 ${positionSelectList}`}
     >
-      <input class="px-4 rounded-[1000px] cursor-pointer p-1 border mb-2 bg-transparent focus-visible:outline-none" placeholder="Search for Coin" on:keydown={search}/>
-      {#if isLoading}
+      <div class="flex items-center gap-2 mb-2 w-max">
+        <img
+          src={darkMode ? Search : SearchBlack}
+          alt=""
+          class="xl:w-5 xl:h-5 w-9 h-9"
+        />
+        <input
+          class={`flex-1 xl:py-2 py-3 xl:text-sm text-2xl border-none focus:outline-none focus:ring-0 ${
+            darkMode ? "bg-[#131313]" : "bg-[#fff]"
+          }`}
+          placeholder="Search"
+          on:keyup={({ target: { value } }) => debounceSearch(value)}
+        />
+      </div>
+      {#if $query.isFetching}
         <div class="h-45 flex justify-center items-center">
-          <svg
-            class="animate-spin h-5 w-5"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path
-              class="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
+          <Loading />
         </div>
       {:else}
         {#each coins as item}
-        <div
-          class="content_item"
-          class:active={item.symbol === selected?.symbol}
-          id={item.symbol}
-          on:click={() => {
-            selected = item;
-            open = false;
-          }}
-        >
-          {#if item.logo}
-            <img
-              src={item.logo}
-              alt=""
-              class="xl:w-5 xl:h-5 w-7 h-7"
-            />
-          {/if}
           <div
-            class={`xl:text-sm text-2xl name`}
+            class="content_item"
+            class:active={item.symbol === selected?.symbol}
+            id={item.symbol}
+            on:click={() => {
+              selected = item;
+              open = false;
+            }}
           >
-            {item.name}
+            {#if item.logo}
+              <img src={item.logo} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
+            {/if}
+            <div class={`xl:text-sm text-2xl name`}>
+              {item.name}
+            </div>
           </div>
-        </div>
-      {/each}
+        {/each}
       {/if}
-      
     </div>
   {/if}
 </div>
