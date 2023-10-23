@@ -936,8 +936,6 @@
       handleUpdateParams();
     }
   };
-
-  $: console.log("thisbafs : ", $query);
 </script>
 
 {#if $query.isFetching}
