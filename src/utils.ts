@@ -1012,7 +1012,7 @@ export const driverObj = driver({
       },
     },
     {
-      element: "#view-token-detail",
+      element: ".view-token-detail",
       popover: {
         title: "Introduce App",
         description: "View token detail",

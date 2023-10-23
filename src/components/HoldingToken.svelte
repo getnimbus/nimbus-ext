@@ -233,10 +233,9 @@
 
 <tr
   key={data?.symbol}
-  class={`group transition-all ${
+  class={`group transition-all view-token-detail ${
     isOpenTokenInfoBundle ? (darkMode ? "bg-[#000]" : "bg-gray-100") : ""
   }`}
-  id="view-token-detail"
   on:click={() => {
     // if (clickable) {
     //   navigate(

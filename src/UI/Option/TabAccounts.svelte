@@ -272,9 +272,6 @@
 
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
-    if (response?.status === 403) {
-      throw new Error(response?.response?.error);
-    }
     return response?.data;
   };
 
@@ -697,9 +694,6 @@
 
   const getListBundle = async () => {
     const response: any = await nimbus.get("/address/personalize/bundle");
-    if (response?.status === 403) {
-      throw new Error(response?.response?.error);
-    }
     return response.data;
   };
 

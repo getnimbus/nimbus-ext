@@ -253,7 +253,11 @@
 
   const handleGetTokenPrice = async () => {
     const response = await mobula.get(
-      `/1/market/history?blockchain=${chainType}&asset=${contractAddress}&from=${
+      `/1/market/history?blockchain=${chainType}&asset=${
+        contractAddress === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          ? "ethereum"
+          : contractAddress
+      }&from=${
         time === "ALL" ? "" : dayjs().subtract(time, "day").valueOf()
       }&to`
     );
@@ -299,14 +303,16 @@
         };
       });
 
-      dataAvgCost = $queryTokenPriceSol.data?.map((item) => {
-        return {
-          value: [item[0], avgCost],
-          itemStyle: {
-            color: "#eab308",
-          },
-        };
-      });
+      if (avgCost !== undefined) {
+        dataAvgCost = $queryTokenPriceSol.data?.map((item) => {
+          return {
+            value: [item[0], avgCost],
+            itemStyle: {
+              color: "#eab308",
+            },
+          };
+        });
+      }
     }
   }
 
@@ -325,14 +331,16 @@
         };
       });
 
-      dataAvgCost = $queryTokenPrice.data?.map((item) => {
-        return {
-          value: [item[0], avgCost],
-          itemStyle: {
-            color: "#eab308",
-          },
-        };
-      });
+      if (avgCost !== undefined) {
+        dataAvgCost = $queryTokenPrice.data?.map((item) => {
+          return {
+            value: [item[0], avgCost],
+            itemStyle: {
+              color: "#eab308",
+            },
+          };
+        });
+      }
     }
   }
 
@@ -973,8 +981,7 @@
       </div>
     {:else}
       <div class="flex flex-col gap-4">
-        <div class="flex items-center justify-end gap-1">
-          <div class="mr-1 xl:text-sm text-base">Timeframe</div>
+        <div class="flex justify-end">
           <AnimateSharedLayout>
             {#each timeFrame as type}
               <div
