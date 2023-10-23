@@ -330,8 +330,11 @@
                   </td>
                 </tr>
               {:else}
-                {#each dataHistoryTokenDetail as data}
-                  <TokenHistoryItem {data} />
+                {#each dataHistoryTokenDetail as item}
+                  <TokenHistoryItem
+                    data={item}
+                    contractAddress={data?.contractAddress}
+                  />
                 {/each}
               {/if}
             </tbody>
