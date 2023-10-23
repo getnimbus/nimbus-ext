@@ -968,7 +968,13 @@
         <div
           class="relative cursor-pointer xl:text-sm text-base font-medium py-1 px-3 rounded-[100px] transition-all"
           on:click={() => {
-            selectedTimeFrame = type.value;
+            if (
+              !$queryTokenPrice.isError ||
+              !$queryTokenPriceSol.isError ||
+              (dataPriceChart && dataPriceChart.length !== 0)
+            ) {
+              selectedTimeFrame = type.value;
+            }
           }}
         >
           <div
@@ -986,7 +992,13 @@
             >
               <div
                 class="absolute inset-0 rounded-full z-10"
-                style="background:rgba(30, 150, 252, 1);"
+                style={`background:${
+                  !$queryTokenPrice.isError ||
+                  !$queryTokenPriceSol.isError ||
+                  (dataPriceChart && dataPriceChart.length !== 0)
+                    ? "rgba(30, 150, 252, 1)"
+                    : "#dddddd"
+                } `}
                 use:motion
               />
             </Motion>

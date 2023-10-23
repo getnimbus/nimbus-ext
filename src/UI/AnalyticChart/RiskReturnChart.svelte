@@ -80,7 +80,7 @@
   let selectedTypeChart = "overview";
   let riskBreakdownData = [];
   let dataShrapeRatioGroup = {};
-  let optionBar = {
+  let optionScatter = {
     tooltip: {
       trigger: "item",
       extraCssText: "z-index: 9997",
@@ -464,8 +464,8 @@
         ],
       };
 
-      optionBar = {
-        ...optionBar,
+      optionScatter = {
+        ...optionScatter,
         legend: {
           data: legendDataBarChart,
         },
@@ -718,7 +718,7 @@
                 id="risk-return-chart-analytic"
                 {theme}
                 notMerge={true}
-                option={optionBar}
+                option={optionScatter}
                 height={465}
               />
             {:else}
