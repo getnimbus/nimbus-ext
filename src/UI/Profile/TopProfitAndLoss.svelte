@@ -119,7 +119,7 @@
   }
 </script>
 
-<div class="col-span-4 grid grid-cols-2 flex flex-col gap-5">
+<div class="col-span-4 grid grid-cols-2 gap-5">
   <div class="flex flex-col gap-5 border border_0000001a rounded-xl px-6 py-6">
     <div class="xl:text-xl text-3xl font-medium">Top 5 Profit (30D)</div>
 
