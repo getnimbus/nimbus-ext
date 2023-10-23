@@ -394,45 +394,51 @@
     </div>
   {/if}
 
-  <div class="flex flex-col gap-4">
-    <div class="flex flex-col gap-2">
+  <div class="flex flex-col gap-10">
+    <div class="flex flex-col">
       <div class="xl:text-lg text-xl">Win / Lose addresses</div>
-      <ProgressBar
-        lowerIsBetter={false}
-        isProfitLoss={true}
-        leftLabel="0"
-        rightLabel={`${sumCount}`}
-        averageText={`${sumCount / 2}`}
-        progress={(sumCountWinHistoryTokenDetail / sumCount) * 100}
-        tooltipText={`${sumCountWinHistoryTokenDetail} addresses win`}
-        isDoubleMark
-        progressTwo={(sumCountLossHistoryTokenDetail / sumCount) * 100}
-        tooltipTextTwo={`${sumCountLossHistoryTokenDetail} addresses lose`}
-      />
+      <div class="px-10">
+        <ProgressBar
+          lowerIsBetter={false}
+          isProfitLoss={true}
+          leftLabel="0"
+          rightLabel={`${sumCount}`}
+          averageText={`${Math.round(sumCount / 2)}`}
+          progress={(sumCountWinHistoryTokenDetail / sumCount) * 100}
+          tooltipText={`${sumCountWinHistoryTokenDetail} addresses win`}
+          isDoubleMark
+          progressTwo={(sumCountLossHistoryTokenDetail / sumCount) * 100}
+          tooltipTextTwo={`${sumCountLossHistoryTokenDetail} addresses lose`}
+        />
+      </div>
     </div>
 
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col">
       <div class="xl:text-lg text-xl">Profit / Loss</div>
-      <ProgressBar
-        lowerIsBetter={false}
-        isProfitLoss={true}
-        leftLabel="$0"
-        rightLabel={`${formatPrice(
-          Number(data?.market_price) * Number(sumTotalToken)
-        )}`}
-        averageText={`$${formatPrice(
-          (Number(data?.market_price) * Number(sumTotalToken)) / 2
-        )}`}
-        progress={(sumWinProfitHistoryTokenDetail /
-          (Number(data?.market_price) * Number(sumTotalToken))) *
-          100}
-        tooltipText={`Profit $${formatPrice(sumWinProfitHistoryTokenDetail)}`}
-        isDoubleMark
-        progressTwo={(sumLossProfitHistoryTokenDetail /
-          (Number(data?.market_price) * Number(sumTotalToken))) *
-          100}
-        tooltipTextTwo={`Loss $${formatPrice(sumLossProfitHistoryTokenDetail)}`}
-      />
+      <div class="px-10">
+        <ProgressBar
+          lowerIsBetter={false}
+          isProfitLoss={true}
+          leftLabel="$0"
+          rightLabel={`$${formatPrice(
+            Number(data?.market_price) * Number(sumTotalToken)
+          )}`}
+          averageText={`$${formatPrice(
+            (Number(data?.market_price) * Number(sumTotalToken)) / 2
+          )}`}
+          progress={(sumWinProfitHistoryTokenDetail /
+            (Number(data?.market_price) * Number(sumTotalToken))) *
+            100}
+          tooltipText={`Profit $${formatPrice(sumWinProfitHistoryTokenDetail)}`}
+          isDoubleMark
+          progressTwo={(sumLossProfitHistoryTokenDetail /
+            (Number(data?.market_price) * Number(sumTotalToken))) *
+            100}
+          tooltipTextTwo={`Loss $${formatPrice(
+            sumLossProfitHistoryTokenDetail
+          )}`}
+        />
+      </div>
     </div>
   </div>
 </div>
