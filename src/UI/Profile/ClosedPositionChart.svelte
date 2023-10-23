@@ -224,13 +224,22 @@
     return response;
   };
 
+  const getTradingStats = async (address) => {
+    const response: any = await nimbus.get(
+      `/v2/analysis/${address}/trading-stats`
+    );
+    return response?.data;
+  };
+
   const formatDataHoldingToken = (dataTokenHolding) => {
-    const formatData = dataTokenHolding
+    const formatData = dataTokenHolding.metadata
+      .filter((item) => item.startTrade < 2592000000)
       .map((item) => {
         return {
-          ...item,
+          ...item.holding,
           value:
-            Number(item?.amount) * Number(item?.price?.price || item?.rate),
+            Number(item?.holding.amount) *
+            Number(item?.holding.price?.price || item?.holding.rate),
         };
       })
       .sort((a, b) => {
@@ -244,6 +253,7 @@
       });
 
     closedHoldingPosition = formatData
+      .filter((item) => item)
       .filter((item) => item?.profit?.realizedProfit)
       .filter((item) => {
         const date = dayjs(item?.last_transferred_at);
@@ -334,13 +344,21 @@
       selectedAddress?.length !== 0 && Object.keys(userInfo).length !== 0,
   });
 
+  $: queryTradingStats = createQuery({
+    queryKey: ["trading-stats", selectedAddress],
+    queryFn: () => getTradingStats(selectedAddress),
+    staleTime: Infinity,
+    retry: false,
+    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
+  });
+
   $: {
     if (
-      !$queryTokenHolding.isError &&
-      $queryTokenHolding.data &&
-      $queryTokenHolding.data !== undefined
+      !$queryTradingStats.isError &&
+      $queryTradingStats.data &&
+      $queryTradingStats.data !== undefined
     ) {
-      formatDataHoldingToken($queryTokenHolding.data);
+      formatDataHoldingToken($queryTradingStats.data);
     }
   }
 
