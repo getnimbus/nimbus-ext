@@ -52,7 +52,9 @@
   }
 </script>
 
-<div class="w-full h-full rounded-xl border p-5 flex flex-col gap-2">
+<div
+  class="w-full h-full rounded-xl border border_0000001a p-5 flex flex-col gap-2"
+>
   <IconSocialMedia type={typeSocialMedia} />
 
   <div class="flex flex-col mb-2">

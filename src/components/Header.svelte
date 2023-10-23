@@ -1278,7 +1278,7 @@
         placeholder={MultipleLang.search_placeholder}
         type="text"
         class={`flex-1 xl:py-2 py-3 xl:text-sm text-2xl border-none focus:outline-none focus:ring-0 ${
-          darkMode ? "bg-[#131313]" : "bg-[#fff]"
+          darkMode ? "bg-[#0f0f0f]" : "bg-[#fff]"
         }`}
       />
     </div>
