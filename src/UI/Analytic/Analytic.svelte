@@ -1,9 +1,16 @@
 <script lang="ts">
   import { timeFrame } from "~/utils";
-  import { wallet, selectedPackage, isDarkMode, typeWallet } from "~/store";
+  import {
+    wallet,
+    selectedPackage,
+    isDarkMode,
+    typeWallet,
+    triggerUpdateBundle,
+  } from "~/store";
   import { useNavigate } from "svelte-navigator";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import mixpanel from "mixpanel-browser";
+  import { useQueryClient } from "@tanstack/svelte-query";
 
   import AddressManagement from "~/components/AddressManagement.svelte";
   import Button from "~/components/Button.svelte";
@@ -19,6 +26,7 @@
   import tooltip from "~/entries/contentScript/views/tooltip";
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   let darkMode = false;
   isDarkMode.subscribe((value) => {
@@ -50,6 +58,20 @@
       } else {
         isShowSoon = false;
       }
+    }
+  }
+
+  $: {
+    if ($triggerUpdateBundle) {
+      queryClient.invalidateQueries(["historical"]);
+      queryClient.invalidateQueries(["inflow-outflow"]);
+      queryClient.invalidateQueries(["token-holding"]);
+      queryClient.invalidateQueries(["list-all-token"]);
+      queryClient.invalidateQueries(["compare"]);
+      queryClient.invalidateQueries(["compare-breakdown"]);
+      queryClient.invalidateQueries(["personalize-tag"]);
+
+      triggerUpdateBundle.update((n) => (n = false));
     }
   }
 </script>
