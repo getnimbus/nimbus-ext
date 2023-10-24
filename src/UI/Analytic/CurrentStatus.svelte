@@ -403,7 +403,7 @@
   };
 
   $: queryHoldingToken = createQuery({
-    queryKey: ["holding-token", selectedWallet, selectedChain],
+    queryKey: ["token-holding", selectedWallet, selectedChain],
     enabled: enabledQuery,
     queryFn: () => getHoldingToken(selectedWallet, selectedChain),
     staleTime: Infinity,
