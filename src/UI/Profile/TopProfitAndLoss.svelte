@@ -4,7 +4,7 @@
   import { nimbus } from "~/lib/network";
   import { user } from "~/store";
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
-  import { shorterName } from "~/utils";
+  import { shorterName, handleImgError } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -126,22 +126,12 @@
                     alt=""
                     width="30"
                     height="30"
-                    on:error={async (e) => {
-                      fetch(item.logo, {
-                        headers: {
-                          "x-api-key": "lapis-fridge-d84f5377deca",
-                        },
-                      })
-                        .then((r) => r.blob())
-                        .then(
-                          (d) => (e.target.src = window.URL.createObjectURL(d))
-                        )
-                        .catch(
-                          () =>
-                            (e.target.src =
-                              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png")
-                        );
-                    }}
+                    on:error={(e) =>
+                      handleImgError(
+                        e,
+                        item?.logo,
+                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                      )}
                     class="rounded-full"
                   />
                   <span class="flex flex-col">
@@ -192,22 +182,12 @@
                     alt=""
                     width="30"
                     height="30"
-                    on:error={async (e) => {
-                      fetch(item.logo, {
-                        headers: {
-                          "x-api-key": "lapis-fridge-d84f5377deca",
-                        },
-                      })
-                        .then((r) => r.blob())
-                        .then(
-                          (d) => (e.target.src = window.URL.createObjectURL(d))
-                        )
-                        .catch(
-                          () =>
-                            (e.target.src =
-                              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png")
-                        );
-                    }}
+                    on:error={(e) =>
+                      handleImgError(
+                        e,
+                        item?.logo,
+                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                      )}
                     class="rounded-full"
                   />
                   <span class="flex flex-col">

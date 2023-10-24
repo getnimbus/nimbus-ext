@@ -12,6 +12,7 @@
     correlationsMatrixColor,
     equalizeArrayLengths,
     formatPercent,
+    handleImgError,
   } from "~/utils";
   import { nimbus } from "~/lib/network";
   import dayjs from "dayjs";
@@ -470,23 +471,12 @@
                         src={item.logo}
                         alt=""
                         class="w-full h-full object-contain"
-                        on:error={async (e) => {
-                          fetch(item.logo, {
-                            headers: {
-                              "x-api-key": "lapis-fridge-d84f5377deca",
-                            },
-                          })
-                            .then((r) => r.blob())
-                            .then(
-                              (d) =>
-                                (e.target.src = window.URL.createObjectURL(d))
-                            )
-                            .catch(
-                              () =>
-                                (e.target.src =
-                                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png")
-                            );
-                        }}
+                        on:error={(e) =>
+                          handleImgError(
+                            e,
+                            item.logo,
+                            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                          )}
                       />
                     </div>
                     <div class="text-2xl xl:text-base">
@@ -590,24 +580,12 @@
                                 src={item.value}
                                 alt="Coin Icon"
                                 class="w-full h-full object-contain"
-                                on:error={async (e) => {
-                                  fetch(item.value, {
-                                    headers: {
-                                      "x-api-key": "lapis-fridge-d84f5377deca",
-                                    },
-                                  })
-                                    .then((r) => r.blob())
-                                    .then(
-                                      (d) =>
-                                        (e.target.src =
-                                          window.URL.createObjectURL(d))
-                                    )
-                                    .catch(
-                                      () =>
-                                        (e.target.src =
-                                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png")
-                                    );
-                                }}
+                                on:error={(e) =>
+                                  handleImgError(
+                                    e,
+                                    item.value,
+                                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                                  )}
                               />
                             </div>
                           </td>
@@ -705,23 +683,12 @@
                         src={item.logo}
                         alt="Coin Icon"
                         class="w-full h-full object-contain"
-                        on:error={async (e) => {
-                          fetch(item.logo, {
-                            headers: {
-                              "x-api-key": "lapis-fridge-d84f5377deca",
-                            },
-                          })
-                            .then((r) => r.blob())
-                            .then(
-                              (d) =>
-                                (e.target.src = window.URL.createObjectURL(d))
-                            )
-                            .catch(
-                              () =>
-                                (e.target.src =
-                                  "https://raw.githubusercontent.com/getnimbus/assets/main/token.png")
-                            );
-                        }}
+                        on:error={(e) =>
+                          handleImgError(
+                            e,
+                            item.logo,
+                            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                          )}
                       />
                     </div>
                     <div class="xl:text-sm text-2xl">

@@ -987,3 +987,25 @@ export const formatTransactionTime = (date: Date) => {
   }
   return dayjs(date).fromNow();
 };
+
+export const handleImgError = async (e, image, defaultImage) => {
+  if (image.includes("https://api.center.dev")) {
+    fetch(image, {
+      headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
+    })
+      .then((r) => r.blob())
+      .then((d) => {
+        e.target.src = window.URL.createObjectURL(d);
+        e.onerror = null;
+      })
+      .catch(() => {
+        e.target.src =
+          defaultImage;
+        e.onerror = null;
+      })
+  } else {
+    e.target.src =
+      defaultImage;
+    e.onerror = null;
+  }
+}; 
