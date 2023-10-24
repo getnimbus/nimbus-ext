@@ -240,7 +240,7 @@
     try {
       const response: TrxHistoryDataRes = await nimbus.get(
         `/v2/address/${selectedWallet}/history?chain=${selectedChain}&pageToken=${page}${
-          type !== "all" ? `&type=${coin}` : ""
+          type !== "all" ? `&type=${type}` : ""
         }${coin !== "all" ? `&coin=${coin}` : ""}`
       );
       if (response && response?.data) {
