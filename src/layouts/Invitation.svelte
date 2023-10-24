@@ -16,21 +16,6 @@
 
   const queryClient = useQueryClient();
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
-  let userID = "";
-  userId.subscribe((value) => {
-    userID = value;
-  });
-
   const qrcode = QRCode(0, "L");
 
   let link = "";
@@ -85,7 +70,7 @@
   onMount(() => {
     const evmAddress = localStorage.getItem("evm_address");
     userAddress = evmAddress;
-    link = `https://app.getnimbus.io/?invitation=${userID}`;
+    link = `https://app.getnimbus.io/?invitation=${$userId}`;
     qrcode.addData(link);
     qrcode.make();
     qrImageDataUrl = qrcode.createDataURL(6, 0);
@@ -156,7 +141,7 @@
       <div
         style="box-shadow: 0 5px 20px rgba(0, 0, 0, 8%);"
         class={`flex flex-col gap-3 border border_0000001a rounded-[20px] py-4 px-6 ${
-          darkMode ? "bg-[#0f0f0f]" : "bg-white"
+          $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
         }`}
       >
         <div class="xl:text-base text-2xl text-center text_00000066 mb-2">
@@ -202,7 +187,7 @@
           >
             <div
               class={`flex items-center gap-1 transition-all ease-in py-1 px-3 rounded-[10px] cursor-pointer flex-1 ${
-                darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
+                $isDarkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
               }`}
               on:click={() => {
                 copy();
@@ -214,7 +199,7 @@
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke={`${darkMode ? "#cdcdcd" : "#00000099"}`}
+                stroke={`${$isDarkMode ? "#cdcdcd" : "#00000099"}`}
                 stroke-width="1.8"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -233,7 +218,7 @@
 
           <div
             class={`flex items-center gap-1 transition-all ease-in py-1 px-2 rounded-[10px] cursor-pointer flex-1 ${
-              darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
+              $isDarkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
             }`}
             on:click={downloadQRCode}
           >
@@ -243,7 +228,7 @@
               height="24"
               viewBox="0 0 24 24"
               fill="none"
-              stroke={`${darkMode ? "#cdcdcd" : "#00000099"}`}
+              stroke={`${$isDarkMode ? "#cdcdcd" : "#00000099"}`}
               stroke-width="1.8"
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -259,7 +244,7 @@
 
           <div
             class={`flex items-center gap-1 transition-all ease-in py-1 px-2 rounded-[10px] cursor-pointer flex-1 ${
-              darkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
+              $isDarkMode ? "hover:bg-[#00000066]" : "hover:bg-[#eff0f4]"
             }`}
             on:click={copyQRCode}
           >
@@ -269,7 +254,7 @@
               height="24"
               viewBox="0 0 24 24"
               fill="none"
-              stroke={`${darkMode ? "#cdcdcd" : "#00000099"}`}
+              stroke={`${$isDarkMode ? "#cdcdcd" : "#00000099"}`}
               stroke-width="1.8"
               stroke-linecap="round"
               stroke-linejoin="round"

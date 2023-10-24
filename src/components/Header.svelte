@@ -66,36 +66,6 @@
 
   let userID = "";
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
-  let selectedWallet;
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let showHeaderMobile = false;
-  isShowHeaderMobile.subscribe((value) => {
-    showHeaderMobile = value;
-  });
-
   let timerDebounce;
   let search = "";
   let showPopoverSearch = false;
@@ -122,7 +92,7 @@
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
-    enabled: Object.keys(userInfo).length !== 0,
+    enabled: Object.keys($user).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -405,7 +375,7 @@
   $: navActive = $absoluteMatch ? $absoluteMatch.params.page : "portfolio";
 
   // Prevent layout flick
-  $: if (showHeaderMobile) {
+  $: if ($isShowHeaderMobile) {
     document.body.style.overflow = "hidden";
   } else {
     document.body.style.overflow = "unset";
@@ -445,9 +415,7 @@
 
 <div class="mobile-header-container py-1 border-b-[1px] border-[#ffffff1a]">
   <div class="flex justify-between items-center max-w-[2000px] m-auto w-[90%]">
-    <Link
-      to={`/?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`}
-    >
+    <Link to={`/?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}>
       <img
         src={Logo}
         alt="logo"
@@ -456,10 +424,10 @@
     </Link>
 
     <div class="items-center hidden gap-1 xl:flex">
-      {#if selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
+      {#if $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all ${
-            darkMode
+            $isDarkMode
               ? navActive === "portfolio"
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
@@ -471,7 +439,7 @@
             navActive = "portfolio";
             navigate(
               `/?type=EVM&chain=${
-                selectedChain || "All"
+                $chain || "All"
               }&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
             );
           }}
@@ -485,7 +453,7 @@
         <div
           class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
-            darkMode
+            $isDarkMode
               ? navActive === "analytic"
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
@@ -498,7 +466,7 @@
             navActive = "analytic";
             navigate(
               `/analytic?type=EVM&chain=${
-                selectedChain || "All"
+                $chain || "All"
               }&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
             );
           }}
@@ -517,12 +485,10 @@
           </span>
         </div>
       {:else}
-        <Link
-          to={`/?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`}
-        >
+        <Link to={`/?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`}>
           <div
             class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all ${
-              darkMode
+              $isDarkMode
                 ? navActive === "portfolio"
                   ? "bg-[#212121] opacity-100"
                   : "opacity-70 hover:bg-[#212121]"
@@ -543,14 +509,12 @@
         </Link>
 
         <Link
-          to={`${
-            userInfo && Object.keys(userInfo).length !== 0 ? "analytic" : "/"
-          }`}
+          to={`${$user && Object.keys($user).length !== 0 ? "analytic" : "/"}`}
         >
           <div
             class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
-            darkMode
+            $isDarkMode
               ? navActive === "analytic"
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
@@ -560,7 +524,7 @@
           }
           `}
             on:click={() => {
-              if (userInfo && Object.keys(userInfo).length !== 0) {
+              if ($user && Object.keys($user).length !== 0) {
                 navActive = "analytic";
                 queryClient.invalidateQueries(["users-me"]);
               } else {
@@ -590,7 +554,7 @@
 
       <div
         on:click={() => {
-          if (userInfo && Object.keys(userInfo).length !== 0) {
+          if ($user && Object.keys($user).length !== 0) {
             navActive = "transactions";
             queryClient.invalidateQueries(["users-me"]);
           } else {
@@ -604,15 +568,13 @@
       >
         <Link
           to={`${
-            userInfo && Object.keys(userInfo).length !== 0
-              ? "transactions"
-              : "/"
+            $user && Object.keys($user).length !== 0 ? "transactions" : "/"
           }`}
         >
           <div
             class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
-            darkMode
+            $isDarkMode
               ? navActive === "transactions"
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
@@ -639,7 +601,7 @@
           <div
             class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
-            darkMode
+            $isDarkMode
               ? navActive === "whales"
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
@@ -666,7 +628,7 @@
           <div
             class={`flex items-center gap-2 cursor-pointer py-2 xl:px-4 px-2 rounded-[1000px] hover:opacity-100 transition-all
           ${
-            darkMode
+            $isDarkMode
               ? navActive === "news"
                 ? "bg-[#212121] opacity-100"
                 : "opacity-70 hover:bg-[#212121]"
@@ -689,7 +651,7 @@
       <!-- Search -->
       <div
         class={`px-4 xl:w-[220px] w-[400px] flex items-center gap-1 rounded-[1000px] cursor-pointer ${
-          darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+          $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
         }`}
       >
         <img src={Search} alt="" class="xl:w-5 xl:h-5 w-9 h-9" />
@@ -699,7 +661,7 @@
             search = "";
           }}
           class={`flex-1 xl:py-2 py-3 rounded-r-[1000px] text-[#ffffff80] xl:text-sm text-2xl ${
-            darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+            $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
           }`}
         >
           {MultipleLang.search_placeholder}
@@ -721,7 +683,7 @@
       <!-- <div class="xl:w-10 xl:h-10 w-12 h-12 relative xl:block hidden">
         <div
           class={`rounded-full flex justify-center items-center w-full h-full ${
-            darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+            $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
           }`}
         >
           <img src={ChangeLogIcon} alt="" class="w-[26px] h-[26px]" />
@@ -733,7 +695,7 @@
       </div> -->
 
       <!-- Daily Checkin -->
-      {#if userInfo && Object.keys(userInfo).length !== 0}
+      {#if $user && Object.keys($user).length !== 0}
         <div
           class="xl:block hidden"
           use:tooltip={{
@@ -745,7 +707,7 @@
           <Link to="daily-checkin">
             <div
               class={`rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
-                darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+                $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
               }`}
             >
               <img
@@ -760,7 +722,7 @@
 
       <!-- <div
         class={`cursor-pointer rounded-full flex justify-center items-center xl:w-10 xl:h-10 w-12 h-12 ${
-          darkMode ? "bg-[#212121]" : "bg-[#525B8C]"
+          $isDarkMode ? "bg-[#212121]" : "bg-[#525B8C]"
         }`}
       >
         <img src={Bell} alt="" class="xl:w-5 xl:h-5 w-7 h-7" />
@@ -777,7 +739,7 @@
 <!-- Mobile header -->
 <div
   class={`fixed inset-0 w-full mobile mobile-container ${
-    showHeaderMobile
+    $isShowHeaderMobile
       ? "opacity-100 transform translate-x-[0px]"
       : "opacity-0 transform translate-x-[-100vw]"
   }`}
@@ -801,7 +763,7 @@
 
     <div class="flex flex-col justify-between h-full">
       <div class="flex flex-col gap-8">
-        {#if userInfo && Object.keys(userInfo).length !== 0}
+        {#if $user && Object.keys($user).length !== 0}
           <div class="flex justify-between items-center px-4 text-white">
             <div class="text-3xl">
               GM 👋, {shorterAddress(
@@ -812,7 +774,7 @@
         {/if}
 
         <div class="flex flex-col gap-3">
-          {#if userInfo && Object.keys(userInfo).length !== 0}
+          {#if $user && Object.keys($user).length !== 0}
             <div
               on:click={() => {
                 navActive = "upgrade";
@@ -824,7 +786,7 @@
                 <div
                   class={`flex items-center gap-3 text-white px-5 py-6 
             ${
-              darkMode
+              $isDarkMode
                 ? navActive === "upgrade"
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
@@ -877,7 +839,7 @@
                 <div
                   class={`flex items-center gap-3 text-white px-5 py-6 
             ${
-              darkMode
+              $isDarkMode
                 ? navActive === "profile"
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
@@ -916,7 +878,7 @@
               <div
                 class={`flex items-center gap-3 text-white px-5 py-6 
             ${
-              darkMode
+              $isDarkMode
                 ? navActive === "whales"
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
@@ -944,7 +906,7 @@
               <div
                 class={`flex items-center gap-3 text-white px-5 py-6 
             ${
-              darkMode
+              $isDarkMode
                 ? navActive === "news"
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
@@ -962,7 +924,7 @@
             </Link>
           </div>
 
-          {#if userInfo && Object.keys(userInfo).length !== 0}
+          {#if $user && Object.keys($user).length !== 0}
             <div
               on:click={() => {
                 navActive = "invitation";
@@ -974,7 +936,7 @@
                 <div
                   class={`flex items-center gap-3 text-white px-5 py-6 
             ${
-              darkMode
+              $isDarkMode
                 ? navActive === "invitation"
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
@@ -1015,7 +977,7 @@
             </a>
           </div>
 
-          {#if userInfo && Object.keys(userInfo).length !== 0}
+          {#if $user && Object.keys($user).length !== 0}
             <div
               on:click={() => {
                 navActive = "daily-checkin";
@@ -1026,7 +988,7 @@
                 <div
                   class={`flex items-center gap-3 text-white px-5 py-6 
               ${
-                darkMode
+                $isDarkMode
                   ? navActive === "daily-checkin"
                     ? "bg-[#212121] rounded-[1000px] opacity-100"
                     : "opacity-70"
@@ -1067,7 +1029,7 @@
                 <div
                   class={`flex items-center gap-3 text-white px-5 py-6 
             ${
-              darkMode
+              $isDarkMode
                 ? navActive === "settings"
                   ? "bg-[#212121] rounded-[1000px] opacity-100"
                   : "opacity-70"
@@ -1091,7 +1053,7 @@
           <DarkModeFooter />
           <div class="w-max flex flex-col gap-6">
             <AuthEvm />
-            {#if Object.keys(userInfo).length === 0}
+            {#if Object.keys($user).length === 0}
               <div
                 class="text-3xl font-semibold text-white cursor-pointer xl:text-base"
                 on:click={() => {
@@ -1196,7 +1158,7 @@
       <div class="flex flex-col gap-1">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            code && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+            code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
           class:input-border-error={errors.code && errors.code.required}
         >
@@ -1211,7 +1173,7 @@
             placeholder="Your code"
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              code && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }`}
             on:keyup={({ target: { value } }) => (code = value)}
           />
@@ -1256,7 +1218,7 @@
   <div class="-mt-6 flex flex-col xl:gap-3 gap-6 text-sm">
     <div class="flex items-center">
       <img
-        src={darkMode ? Search : SearchBlack}
+        src={$isDarkMode ? Search : SearchBlack}
         alt=""
         class="xl:w-5 xl:h-5 w-9 h-9"
       />
@@ -1278,15 +1240,15 @@
         placeholder={MultipleLang.search_placeholder}
         type="text"
         class={`flex-1 xl:py-2 py-3 xl:text-sm text-2xl border-none focus:outline-none focus:ring-0 ${
-          darkMode ? "bg-[#0f0f0f]" : "bg-[#fff]"
+          $isDarkMode ? "bg-[#0f0f0f]" : "bg-[#fff]"
         }`}
       />
     </div>
-    {#if Object.keys(userInfo).length !== 0}
+    {#if Object.keys($user).length !== 0}
       <div class="flex flex-col gap-2 mb-2">
         <div
           class={`xl:text-xs text-sm ${
-            darkMode ? "text-gray-200" : "text-gray-400"
+            $isDarkMode ? "text-gray-200" : "text-gray-400"
           }`}
         >
           List addresses
@@ -1300,7 +1262,7 @@
             <div
               id={item.value}
               class={`address-item relative xl:text-sm text-xl flex items-center gap-3 cursor-pointer p-2 rounded-md ${
-                darkMode ? "hover:bg-[#343434]" : "hover:bg-[#eff0f4]"
+                $isDarkMode ? "hover:bg-[#343434]" : "hover:bg-[#eff0f4]"
               }`}
               class:selected={index === selectedIndexAddress}
               on:click={() => {
@@ -1321,7 +1283,7 @@
                 <div class="hover:underline">{item.label}</div>
                 <div
                   class={`xl:text-sm text-base xl:flex hidden items-center gap-2 ${
-                    darkMode ? "text-gray-300" : "text-gray-500"
+                    $isDarkMode ? "text-gray-300" : "text-gray-500"
                   }`}
                 >
                   {#if index === selectedIndexAddress}
@@ -1337,7 +1299,7 @@
                 </div>
                 <div
                   class={`xl:text-sm text-base xl:hidden block ${
-                    darkMode ? "text-gray-300" : "text-gray-500"
+                    $isDarkMode ? "text-gray-300" : "text-gray-500"
                   }`}
                 >
                   {shorterAddress(item.value)}
@@ -1351,7 +1313,7 @@
     <div class="flex flex-col gap-2">
       <div
         class={`xl:text-xs text-sm ${
-          darkMode ? "text-gray-200" : "text-gray-400"
+          $isDarkMode ? "text-gray-200" : "text-gray-400"
         }`}
       >
         Recent searches

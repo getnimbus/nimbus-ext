@@ -11,11 +11,6 @@
   export let data;
   export let contractAddress;
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   $: costBuy = Number(data?.quantity_in) * Number(data?.to_price);
   $: costSell = Number(data?.quantity_out) * Number(data?.from_price);
 
@@ -25,7 +20,7 @@
 <tr class="group transition-all">
   <td
     class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 w-[100px] ${
-      darkMode
+      $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
@@ -47,7 +42,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="xl:text-sm text-2xl font-medium flex justify-end">
@@ -66,7 +61,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
@@ -90,7 +85,7 @@
 
   <td
     class={`py-3 pr-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium text-right">

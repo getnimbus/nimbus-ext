@@ -11,16 +11,6 @@
 
   const navigate = useNavigate();
 
-  let packageSelected = "";
-  selectedPackage.subscribe((value) => {
-    packageSelected = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   let isShowTooltipProtocol = false;
   let sortTVL = "default";
   let sortAPY = "default";
@@ -34,7 +24,7 @@
   });
 
   const toggleSortTVL = () => {
-    if (packageSelected === "FREE") {
+    if ($selectedPackage === "FREE") {
       return;
     }
     switch (sortTVL) {
@@ -85,7 +75,7 @@
   };
 
   const toggleSortAPY = () => {
-    if (packageSelected === "FREE") {
+    if ($selectedPackage === "FREE") {
       return;
     }
 
@@ -143,7 +133,7 @@
   </div>
   <div
     class={`rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative ${
-      darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+      $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
     <table class="table-auto xl:w-full w-[1200px]">
@@ -176,7 +166,7 @@
                   xmlns="http://www.w3.org/2000/svg"
                   height="1.2em"
                   viewBox="0 0 320 512"
-                  fill={darkMode ? "#fff" : "#000"}
+                  fill={$isDarkMode ? "#fff" : "#000"}
                   ><path
                     d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
                   /></svg
@@ -197,7 +187,7 @@
                   xmlns="http://www.w3.org/2000/svg"
                   height="1.2em"
                   viewBox="0 0 320 512"
-                  fill={darkMode ? "#fff" : "#000"}
+                  fill={$isDarkMode ? "#fff" : "#000"}
                   ><path
                     d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
                   /></svg
@@ -219,7 +209,7 @@
             </td>
           </tr>
         {:else}
-          {#each (formatData || [])?.slice(0, packageSelected === "FREE" ? 10 : undefined) as item}
+          {#each (formatData || [])?.slice(0, $selectedPackage === "FREE" ? 10 : undefined) as item}
             <tr
               class="transition-all cursor-pointer group"
               on:click={() => {
@@ -228,7 +218,7 @@
             >
               <td
                 class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[550px] ${
-                  darkMode
+                  $isDarkMode
                     ? "bg-[#131313] group-hover:bg-[#000]"
                     : "bg-white group-hover:bg-gray-100"
                 }`}
@@ -244,7 +234,9 @@
 
               <td
                 class={`py-3 ${
-                  darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
                 }`}
               >
                 <div class="flex justify-end font-medium xl:text-sm text-2xl">
@@ -254,7 +246,9 @@
 
               <td
                 class={`py-3 ${
-                  darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
                 }`}
               >
                 <div
@@ -288,7 +282,9 @@
 
               <td
                 class={`py-3 ${
-                  darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
                 }`}
               >
                 <div
@@ -300,7 +296,9 @@
 
               <td
                 class={`py-3 pr-3 ${
-                  darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
                 }`}
               >
                 <div
@@ -312,10 +310,10 @@
             </tr>
           {/each}
         {/if}
-        {#if packageSelected === "FREE"}
+        {#if $selectedPackage === "FREE"}
           <tr
             class={`absolute z-10 left-0 right-0 bottom-0 top-[220px] flex justify-center pt-10 backdrop-blur-md bg-gradient-to-t to-transparent ${
-              darkMode
+              $isDarkMode
                 ? "bg-[#222222e6] from-[#000] via-[#222222]"
                 : "bg-white/90 from-white via-white"
             } `}

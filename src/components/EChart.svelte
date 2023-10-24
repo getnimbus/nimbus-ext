@@ -13,11 +13,6 @@
   export let replaceMerge = undefined;
   export let lazyUpdate = false;
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   let chart; // our chart instance
 
   const autoFontSize = () => {
@@ -47,7 +42,7 @@
           ...option,
           tooltip: {
             ...(option?.tooltip || {}),
-            backgroundColor: darkMode ? "#131313" : "#fff",
+            backgroundColor: $isDarkMode ? "#131313" : "#fff",
           },
           backgroundColor: "transparent",
           textStyle: {

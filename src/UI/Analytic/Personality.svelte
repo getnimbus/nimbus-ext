@@ -16,26 +16,6 @@
   import CalendarChart from "~/components/CalendarChart.svelte";
   import Button from "~/components/Button.svelte";
 
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let packageSelected = "";
-  selectedPackage.subscribe((value) => {
-    packageSelected = value;
-  });
-
   let option = {
     tooltip: {
       extraCssText: "z-index: 9997",
@@ -200,18 +180,18 @@
   };
 
   $: enabledQuery = Boolean(
-    (typeWalletAddress === "EVM" ||
-      typeWalletAddress === "CEX" ||
-      typeWalletAddress === "SOL" ||
-      typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0 &&
-      packageSelected !== "FREE"
+    ($typeWallet === "EVM" ||
+      $typeWallet === "CEX" ||
+      $typeWallet === "SOL" ||
+      $typeWallet === "BUNDLE") &&
+      $wallet.length !== 0 &&
+      $selectedPackage !== "FREE"
   );
 
   $: query = createQuery({
-    queryKey: ["historical", selectedWallet, selectedChain],
+    queryKey: ["historical", $wallet, $chain],
     enabled: enabledQuery,
-    queryFn: () => getAnalyticHistorical(selectedWallet, selectedChain),
+    queryFn: () => getAnalyticHistorical($wallet, $chain),
     staleTime: Infinity,
   });
 

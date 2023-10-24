@@ -29,11 +29,6 @@
     ),
   };
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   let whalesData = [];
   let isLoading = false;
   let tableHeader;
@@ -148,7 +143,7 @@
     <div class={`${isLoading ? "h-[400px]" : ""}`}>
       <div
         class={`rounded-[10px] border border_0000000d xl:overflow-hidden overflow-x-auto h-full ${
-          darkMode ? "bg-[#131313]" : "bg-[#fff]"
+          $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
         }`}
       >
         <table class="table-auto xl:w-full w-[2800px] h-full">

@@ -15,21 +15,6 @@
   export let id;
   export let avgCost;
 
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   let optionBar = {
     tooltip: {
       trigger: "axis",
@@ -58,13 +43,13 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 260px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${price}
               </div>
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   <span>${params[0]?.marker}</span>
                   Balance
@@ -72,7 +57,7 @@
 
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                   <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   };">
                     ${numeral(params[0]?.value[1]).format("0.000000a")}
                   </div>
@@ -81,14 +66,14 @@
 
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   <div style="margin-top: 5px; display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#eab308;"></div>
                   Avg Price
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                   <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   };">
                     $${numeral(avgCost).format("0.000000a")}
                   </div>
@@ -97,14 +82,14 @@
 
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   <div style="margin-top: 5px; display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#1e96fc;"></div>
                   Current Price
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                   <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   };">
                     $${numeral(data?.market_price).format("0.000000a")}
                   </div>
@@ -169,23 +154,23 @@
     series: [],
   };
 
-  const handleGetTradeHistoryAnalysis = async () => {
+  const handleGetTradeHistoryAnalysis = async (address) => {
     const response: any = await nimbus.get(
-      `/v2/address/${selectedWallet}/token/${data?.contractAddress}/trade-analysis?chain=${data?.chain}`
+      `/v2/address/${address}/token/${data?.contractAddress}/trade-analysis?chain=${data?.chain}`
     );
     return response?.data;
   };
 
   $: queryHistoryTokenDetailAnalysis = createQuery({
-    queryKey: ["trade-history-analysis", data, selectedWallet],
-    queryFn: () => handleGetTradeHistoryAnalysis(),
+    queryKey: ["trade-history-analysis", data, $wallet],
+    queryFn: () => handleGetTradeHistoryAnalysis($wallet),
     staleTime: Infinity,
     retry: false,
     enabled:
       data !== undefined &&
       Object.keys(data).length !== 0 &&
-      selectedWallet.length !== 0 &&
-      typeWalletAddress === "EVM",
+      $wallet.length !== 0 &&
+      $typeWallet === "EVM",
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -298,7 +283,7 @@
     }
   }
 
-  $: theme = darkMode ? "dark" : "white";
+  $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
 {#if $queryHistoryTokenDetailAnalysis.isFetching}
@@ -326,7 +311,7 @@
           class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
         >
           <img
-            src={darkMode ? LogoWhite : Logo}
+            src={$isDarkMode ? LogoWhite : Logo}
             alt=""
             width="140"
             height="140"
