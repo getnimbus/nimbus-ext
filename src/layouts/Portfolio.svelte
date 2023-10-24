@@ -89,11 +89,6 @@
     selectBundle = value;
   });
 
-  let updateBundle = false;
-  triggerUpdateBundle.subscribe((value) => {
-    updateBundle = value;
-  });
-
   let enabledFetchAllData = false;
   let isErrorAllData = false;
   let isLoadingSync = false;
@@ -799,7 +794,7 @@
       : chainList.slice(1).map((item) => item.value);
 
   $: {
-    if (updateBundle) {
+    if ($triggerUpdateBundle) {
       handleGetAllData("reload");
       triggerUpdateBundle.update((n) => (n = false));
     }

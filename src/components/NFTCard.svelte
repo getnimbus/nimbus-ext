@@ -1,6 +1,6 @@
 <script lang="ts">
   import { wallet, typeWallet, isDarkMode } from "~/store";
-  import { shorterName } from "~/utils";
+  import { shorterName, handleImgError } from "~/utils";
 
   import TooltipNumber from "./TooltipNumber.svelte";
 
@@ -49,10 +49,12 @@
     <img
       src={data?.imageUrl ||
         "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-      on:error={(e) => {
-        e.target.src =
-          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384";
-      }}
+      on:error={(e) =>
+        handleImgError(
+          e,
+          data?.imageUrl,
+          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+        )}
       alt=""
       class="w-full h-full object-contain"
     />
