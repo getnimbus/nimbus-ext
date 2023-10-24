@@ -237,7 +237,7 @@
     isLoading = true;
     try {
       const response: TrxHistoryDataRes = await nimbus.get(
-        `/v2/address/${selectedWallet}/history?chain=${selectedChain}&pageToken=${page}${type !== 'all' ? `&type=${coin}` : ""}${coin !== 'all' ? `&coin=${coin}` : ""}`
+        `/v2/address/${selectedWallet}/history?chain=${selectedChain}&pageToken=${page}${type !== 'all' ? `&type=${type}` : ""}${coin !== 'all' ? `&coin=${coin}` : ""}`
       );
       if (response && response?.data) {
         data = [...data, ...response?.data?.data];
