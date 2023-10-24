@@ -8,7 +8,7 @@
   export let listSelect;
   export let selected;
   export let type: "chain" | "wallet" | "lang" | "filter";
-  export let positionSelectList = 'left-0';
+  export let positionSelectList = "left-0";
 
   let open = false;
 
@@ -34,7 +34,7 @@
 <div class="wrapper" use:clickOutside on:click_outside={() => (open = false)}>
   <div
     class={`button xl:text-sm text-2xl ${
-      type === "filter" ? "bg-[#1E96FC]" : ""
+      type === "lang" || type === "filter" ? "bg-[#1E96FC]" : ""
     }`}
     class:active={open}
     on:click={() => (open = !open)}
@@ -113,7 +113,7 @@
             <img
               src={item.value === "ALL" ? All : item.logo}
               alt=""
-              class="xl:w-5 xl:h-5 w-7 h-7"
+              class="xl:w-5 xl:h-5 w-7 h-7 rounded-full"
             />
           {/if}
           <div
