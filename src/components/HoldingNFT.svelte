@@ -125,9 +125,17 @@
             <img
               src={token?.imageUrl ||
                 "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-              on:error={(e) => {
-                e.target.src =
-                  "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384";
+              on:error={async (e) => {
+                fetch(token?.imageUrl, {
+                  headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
+                })
+                  .then((r) => r.blob())
+                  .then((d) => (e.target.src = window.URL.createObjectURL(d)))
+                  .catch(
+                    () =>
+                      (e.target.src =
+                        "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384")
+                  );
               }}
               alt=""
               class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border border-gray-300 overflow-hidden ${
@@ -139,9 +147,17 @@
             <img
               src={data?.tokens[4].imageUrl ||
                 "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-              on:error={(e) => {
-                e.target.src =
-                  "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384";
+              on:error={async (e) => {
+                fetch(data?.tokens[4].imageUrl, {
+                  headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
+                })
+                  .then((r) => r.blob())
+                  .then((d) => (e.target.src = window.URL.createObjectURL(d)))
+                  .catch(
+                    () =>
+                      (e.target.src =
+                        "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384")
+                  );
               }}
               alt=""
               class="xl:w-9 xl:h-9 w-12 h-12 rounded-md border border-gray-300 overflow-hidden -ml-2"
@@ -164,9 +180,17 @@
             <img
               src={token?.imageUrl ||
                 "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-              on:error={(e) => {
-                e.target.src =
-                  "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384";
+              on:error={async (e) => {
+                fetch(token?.imageUrl, {
+                  headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
+                })
+                  .then((r) => r.blob())
+                  .then((d) => (e.target.src = window.URL.createObjectURL(d)))
+                  .catch(
+                    () =>
+                      (e.target.src =
+                        "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384")
+                  );
               }}
               alt=""
               class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border border-gray-300 overflow-hidden ${

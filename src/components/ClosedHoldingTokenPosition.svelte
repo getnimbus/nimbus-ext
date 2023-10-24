@@ -86,9 +86,17 @@
           width="30"
           height="30"
           class="rounded-full"
-          on:error={() => {
-            logo =
-              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+          on:error={async () => {
+            fetch(logo, {
+              headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
+            })
+              .then((r) => r.blob())
+              .then((d) => (logo = window.URL.createObjectURL(d)))
+              .catch(
+                (e) =>
+                  (logo =
+                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png")
+              );
           }}
         />
         {#if (typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE") && data?.chain !== "CEX" && data?.chain !== "SOL" && data?.chain !== "BTC"}
@@ -568,9 +576,17 @@
                 width="46"
                 height="46"
                 class="rounded-full"
-                on:error={() => {
-                  logo =
-                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+                on:error={async () => {
+                  fetch(logo, {
+                    headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
+                  })
+                    .then((r) => r.blob())
+                    .then((d) => (logo = window.URL.createObjectURL(d)))
+                    .catch(
+                      (e) =>
+                        (logo =
+                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png")
+                    );
                 }}
               />
               {#if (typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE") && selectedTokenDetail?.chain !== "CEX" && selectedTokenDetail?.chain !== "BTC"}

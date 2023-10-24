@@ -126,9 +126,21 @@
                     alt=""
                     width="30"
                     height="30"
-                    on:error={({ target }) => {
-                      target.src =
-                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+                    on:error={async (e) => {
+                      fetch(item.logo, {
+                        headers: {
+                          "x-api-key": "lapis-fridge-d84f5377deca",
+                        },
+                      })
+                        .then((r) => r.blob())
+                        .then(
+                          (d) => (e.target.src = window.URL.createObjectURL(d))
+                        )
+                        .catch(
+                          () =>
+                            (e.target.src =
+                              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png")
+                        );
                     }}
                     class="rounded-full"
                   />
@@ -180,9 +192,21 @@
                     alt=""
                     width="30"
                     height="30"
-                    on:error={({ target }) => {
-                      target.src =
-                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
+                    on:error={async (e) => {
+                      fetch(item.logo, {
+                        headers: {
+                          "x-api-key": "lapis-fridge-d84f5377deca",
+                        },
+                      })
+                        .then((r) => r.blob())
+                        .then(
+                          (d) => (e.target.src = window.URL.createObjectURL(d))
+                        )
+                        .catch(
+                          () =>
+                            (e.target.src =
+                              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png")
+                        );
                     }}
                     class="rounded-full"
                   />
