@@ -4,7 +4,6 @@
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
   import {
-    wallet,
     user,
     isDarkMode,
     typeWallet,
@@ -29,31 +28,6 @@
   import User from "~/assets/user.png";
   import UpArrow from "~/assets/up-arrow.svg";
   import ProfitData from "~/UI/Profile/ProfitData.svelte";
-
-  let userID = "";
-  userId.subscribe((value) => {
-    userID = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -250,8 +224,7 @@
     queryKey: ["nft-holding", selectedAddress],
     queryFn: () => getHoldingNFT(selectedAddress),
     staleTime: Infinity,
-    enabled:
-      selectedAddress?.length !== 0 && Object.keys(userInfo).length !== 0,
+    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -269,7 +242,7 @@
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
-    enabled: Object.keys(userInfo).length !== 0,
+    enabled: Object.keys($user).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -320,7 +293,7 @@
       on:submit|preventDefault={handleSubmitProfile}
       class="flex flex-col gap-4"
     >
-      {#if Object.keys(userInfo).length !== 0 && userID === userIdParams}
+      {#if Object.keys($user).length !== 0 && $userId === userIdParams}
         <div class="flex items-center justify-end lg:gap-2 gap-6">
           {#if isEdit}
             <div class="w-[120px]">
@@ -364,7 +337,7 @@
             >
               <div
                 class={`text-2xl xl:text-base font-medium flex items-center gap-2 ${
-                  darkMode || isEdit ? "text-white" : "text-black"
+                  $isDarkMode || isEdit ? "text-white" : "text-black"
                 }`}
               >
                 {shorterAddress(selectedAddress)}
@@ -412,7 +385,7 @@
                       </div>
                       <div
                         class={`text-3xl xl:text-sm ${
-                          darkMode ? "text-white" : "text-black"
+                          $isDarkMode ? "text-white" : "text-black"
                         }`}
                       >
                         {shorterAddress(item?.value)}
@@ -464,9 +437,7 @@
                         class="flex items-center gap-2 xl:text-lg text-2xl font-medium"
                       >
                         <div>
-                          {typeWalletAddress === "EVM"
-                            ? "Token ID"
-                            : "Inscription"}
+                          {$typeWallet === "EVM" ? "Token ID" : "Inscription"}
                         </div>
                         <div>
                           #{selectProfileNFT?.tokenId}
@@ -502,7 +473,7 @@
                   <div class="xl:text-base text-lg">
                     There is no NFT highlight yet in your profile
                   </div>
-                  {#if Object.keys(userInfo).length !== 0 && isEdit}
+                  {#if Object.keys($user).length !== 0 && isEdit}
                     <div class="w-max">
                       <Button
                         variant="tertiary"
