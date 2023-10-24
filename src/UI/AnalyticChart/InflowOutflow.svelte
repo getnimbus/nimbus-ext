@@ -14,26 +14,6 @@
 
   const listDirection = ["inflow", "outflow"];
 
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let packageSelected = "";
-  selectedPackage.subscribe((value) => {
-    packageSelected = value;
-  });
-
   let option = {
     tooltip: {
       trigger: "axis",
@@ -355,9 +335,9 @@
   };
 
   $: query = createQuery({
-    queryKey: ["inflow-outflow", selectedWallet, selectedChain],
+    queryKey: ["inflow-outflow", $wallet, $chain],
     enabled: enabledQuery,
-    queryFn: () => getInflowOutflow(selectedWallet, selectedChain),
+    queryFn: () => getInflowOutflow($wallet, $chain),
     staleTime: Infinity,
   });
 
@@ -368,12 +348,12 @@
   }
 
   $: enabledQuery = Boolean(
-    (typeWalletAddress === "EVM" ||
-      typeWalletAddress === "CEX" ||
-      typeWalletAddress === "SOL" ||
-      typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0 &&
-      packageSelected !== "FREE"
+    ($typeWallet === "EVM" ||
+      $typeWallet === "CEX" ||
+      $typeWallet === "SOL" ||
+      $typeWallet === "BUNDLE") &&
+      $wallet.length !== 0 &&
+      $selectedPackage !== "FREE"
   );
 </script>
 

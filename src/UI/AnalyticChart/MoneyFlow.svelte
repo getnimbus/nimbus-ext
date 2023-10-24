@@ -20,26 +20,6 @@
 
   const listDirection = ["inflow", "outflow"];
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   let sumData = {
     inflow: 0,
     outflow: 0,
@@ -56,7 +36,7 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${dayjs(params[0].axisValue).format("YYYY-MM-DD")}
               </div>
@@ -68,7 +48,7 @@
                     "border-top: 0.8px solid #d1d5db; padding-top: 10px;"
                   }">
                     <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
-                      darkMode ? "white" : "black"
+                      $isDarkMode ? "white" : "black"
                     }">
                           ${item.marker}
                           ${item.seriesName}
@@ -306,7 +286,7 @@
             return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${dayjs(params[0].axisValue).format("YYYY-MM-DD")}
               </div>
@@ -318,7 +298,7 @@
                     "border-top: 0.8px solid #d1d5db; padding-top: 10px;"
                   }">
                     <div style="font-weight: 500; font-size: 14px; line-height: 12px; display: flex; align-items: centers; gap: 6px; color: ${
-                      darkMode ? "white" : "black"
+                      $isDarkMode ? "white" : "black"
                     }">
                           ${item.marker}
                           ${item.seriesName}
@@ -372,15 +352,9 @@
   };
 
   $: query = createQuery({
-    queryKey: [
-      "inflow-outflow",
-      selectedWallet,
-      selectedChain,
-      selectedTimeFrame,
-    ],
+    queryKey: ["inflow-outflow", $wallet, $chain, selectedTimeFrame],
     enabled: enabledQuery,
-    queryFn: () =>
-      getInflowOutflow(selectedWallet, selectedChain, selectedTimeFrame),
+    queryFn: () => getInflowOutflow($wallet, $chain, selectedTimeFrame),
     staleTime: Infinity,
   });
 
@@ -391,18 +365,18 @@
   }
 
   $: enabledQuery =
-    selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+    $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          (typeWalletAddress === "EVM" ||
-            typeWalletAddress === "CEX" ||
-            typeWalletAddress === "SOL" ||
-            typeWalletAddress === "BUNDLE") &&
-            selectedWallet.length !== 0 &&
+          ($typeWallet === "EVM" ||
+            $typeWallet === "CEX" ||
+            $typeWallet === "SOL" ||
+            $typeWallet === "BUNDLE") &&
+            $wallet.length !== 0 &&
             packageSelected !== "FREE"
         );
 
-  $: theme = darkMode ? "dark" : "white";
+  $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
 <AnalyticSection>
@@ -471,10 +445,10 @@
           </div>
         </div>
       {/if}
-      {#if typeWalletAddress === "SOL"}
+      {#if $typeWallet === "SOL"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
-            darkMode ? "bg-[#222222e6]" : "bg-white/90"
+            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
           } z-10 backdrop-blur-md`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
@@ -494,7 +468,7 @@
           {#if $query.isError || ($query.data && $query.data.length === 0)}
             <div
               class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-                darkMode ? "bg-[#222222e6]" : "bg-white/90"
+                $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
               }`}
             >
               Empty
@@ -512,7 +486,7 @@
                 class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
               >
                 <img
-                  src={darkMode ? LogoWhite : Logo}
+                  src={$isDarkMode ? LogoWhite : Logo}
                   alt=""
                   width="140"
                   height="140"
@@ -522,10 +496,10 @@
           {/if}
         </div>
       {/if}
-      {#if typeWalletAddress === "SOL"}
+      {#if $typeWallet === "SOL"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
-            darkMode ? "bg-[#222222e6]" : "bg-white/90"
+            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
           } z-10 backdrop-blur-md`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>

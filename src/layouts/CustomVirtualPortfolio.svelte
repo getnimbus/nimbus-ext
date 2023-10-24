@@ -20,11 +20,6 @@
   let selectedWallet: string = "";
   let selectedChain: string = "";
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   let showDisableAddBtn = false;
   let listVirtualPortfolio = [];
   let selectedVirtualPortfolio = {};
@@ -189,8 +184,8 @@
               <div class="text-base">
                 <Copy
                   address={selectedWallet}
-                  iconColor={`${darkMode ? "#fff" : "#000"}`}
-                  color={`${darkMode ? "#fff" : "#000"}`}
+                  iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                  color={`${$isDarkMode ? "#fff" : "#000"}`}
                 />
               </div>
             {/if}
@@ -327,14 +322,14 @@
               {#if listVirtualPortfolio.length > 2}
                 <Button variant="disabled" disabled>
                   <img
-                    src={darkMode ? PlusBlack : Plus}
+                    src={$isDarkMode ? PlusBlack : Plus}
                     alt=""
                     width="12"
                     height="12"
                   />
                   <div
                     class={`text-2xl font-medium xl:text-base ${
-                      darkMode ? "text-gray-400" : "text-white"
+                      $isDarkMode ? "text-gray-400" : "text-white"
                     }`}
                   >
                     Add virtual portfolio

@@ -10,11 +10,6 @@
   export let socialData;
   export let submitSocialData = (data) => {};
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   let isOpenModal = false;
   let linkHref = "";
   let userName = socialData.username;
@@ -115,7 +110,7 @@
     >
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+          label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
         }`}
       >
         <div class="xl:text-base text-2xl text-[#666666] font-medium">
@@ -128,7 +123,7 @@
           placeholder="Your label"
           value={label}
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
           on:keyup={({ target: { value } }) => (label = value)}
         />
@@ -136,7 +131,7 @@
 
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          userName && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+          userName && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
         }`}
       >
         <div class="xl:text-base text-2xl text-[#666666] font-medium">
@@ -149,7 +144,7 @@
           placeholder="Your username"
           value={userName}
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            userName && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            userName && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
           on:keyup={({ target: { value } }) => (userName = value)}
         />

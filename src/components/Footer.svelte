@@ -5,11 +5,6 @@
 
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
 </script>
 
 <div
@@ -17,7 +12,7 @@
 >
   <div class="xl:-ml-10 -ml-8 flex items-center">
     <img
-      src={darkMode ? LogoWhite : Logo}
+      src={$isDarkMode ? LogoWhite : Logo}
       alt="logo"
       class="xl:w-[167px] w-[197px] xl:h-[50px] h-[80px]"
     />

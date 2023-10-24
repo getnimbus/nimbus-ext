@@ -50,38 +50,13 @@
 
   const navigate = useNavigate();
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let packageSelected = "";
-  selectedPackage.subscribe((value) => {
-    packageSelected = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let selectBundle = {};
-  selectedBundle.subscribe((value) => {
-    selectBundle = value;
-  });
-
   onMount(() => {
     mixpanel.track("user_compare");
     const urlParams = new URLSearchParams(window.location.search);
     let addressParams = urlParams.get("address");
 
     if (addressParams) {
-      selectedWallet = addressParams;
+      $wallet = addressParams;
     }
   });
 
@@ -133,7 +108,7 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${params[0].axisValue}
               </div>
@@ -142,7 +117,7 @@
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
@@ -154,7 +129,7 @@
                         ? item.value >= 0
                           ? "#05a878"
                           : "#f25f5d"
-                        : darkMode
+                        : $isDarkMode
                         ? "white"
                         : "black"
                     };">
@@ -213,7 +188,7 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${dayjs(params[0].axisValue).format("YYYY-MM-DD")}
               </div>
@@ -222,7 +197,7 @@
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
@@ -302,23 +277,23 @@
   };
 
   $: query = createQuery({
-    queryKey: ["compare", selectedWallet, searchCompare],
-    queryFn: () => getAnalyticCompare(selectedWallet, searchCompare),
-    enabled: packageSelected !== "FREE" && !!selectedWallet,
+    queryKey: ["compare", $wallet, searchCompare],
+    queryFn: () => getAnalyticCompare($wallet, searchCompare),
+    enabled: $selectedPackage !== "FREE" && !!$wallet,
     staleTime: Infinity,
   });
 
   $: queryPersonalTag = createQuery({
-    queryKey: ["personal-tag", selectedWallet],
-    queryFn: () => getPersonalizeTag(selectedWallet),
-    enabled: packageSelected !== "FREE" && !!selectedWallet,
+    queryKey: ["personal-tag", $wallet],
+    queryFn: () => getPersonalizeTag($wallet),
+    enabled: $selectedPackage !== "FREE" && !!$wallet,
     staleTime: Infinity,
   });
 
   $: querySimilar = createQuery({
-    queryKey: ["similar", selectedWallet],
-    queryFn: () => getSimilarAddress(selectedWallet),
-    enabled: showCompareWhalesSuggest && !!selectedWallet,
+    queryKey: ["similar", $wallet],
+    queryFn: () => getSimilarAddress($wallet),
+    enabled: showCompareWhalesSuggest && !!$wallet,
     placeholderData: [],
     staleTime: Infinity,
   });
@@ -855,7 +830,7 @@
     showCompareWhalesSuggest = false;
   };
 
-  $: theme = darkMode ? "dark" : "white";
+  $: theme = $isDarkMode ? "dark" : "white";
 
   const debounceSearch = (value) => {
     clearTimeout(timerDebounce);
@@ -873,14 +848,14 @@
       <div class="font-semibold xl:text-5xl text-7xl">
         Optimize your portfolio
       </div>
-      {#if selectBundle && Object.keys(selectBundle).length !== 0 && selectBundle?.type === "BUNDLE"}
+      {#if $selectedBundle && Object.keys($selectedBundle).length !== 0 && $selectedBundle?.type === "BUNDLE"}
         <div
           class="relative w-max"
           on:click={() => (showPopover = !showPopover)}
         >
           <div class="flex cursor-pointer">
-            {#if selectBundle && selectBundle?.accounts && selectBundle?.accounts?.length > 8}
-              {#each selectBundle?.accounts.slice(0, 7) as item, index}
+            {#if $selectedBundle && $selectedBundle?.accounts && $selectedBundle?.accounts?.length > 8}
+              {#each $selectedBundle?.accounts.slice(0, 7) as item, index}
                 <div class={`${index > 0 && "-ml-2"}`}>
                   <div class="hidden xl:block">
                     <Avatar src={item?.logo} stacked size="sm" />
@@ -899,7 +874,7 @@
                 </div>
               </div>
             {:else}
-              {#each selectBundle?.accounts as item, index}
+              {#each $selectedBundle?.accounts as item, index}
                 <div class={`${index > 0 && "-ml-2"}`}>
                   <div class="hidden xl:block">
                     <Avatar src={item?.logo} stacked size="sm" />
@@ -918,7 +893,7 @@
               use:clickOutside
               on:click_outside={() => (showPopover = false)}
             >
-              {#each selectBundle?.accounts as item}
+              {#each $selectedBundle?.accounts as item}
                 <div class="hidden xl:flex xl:flex-col">
                   <div class="text-2xl xl:text-xs font-medium text_00000099">
                     {item.label}
@@ -926,8 +901,8 @@
                   <div class="text-3xl xl:text-sm">
                     <Copy
                       address={item?.value}
-                      iconColor={darkMode ? "#fff" : "#000"}
-                      color={darkMode ? "#fff" : "#000"}
+                      iconColor={$isDarkMode ? "#fff" : "#000"}
+                      color={$isDarkMode ? "#fff" : "#000"}
                       isShorten
                     />
                   </div>
@@ -939,8 +914,8 @@
                   <div class="text-3xl xl:text-sm">
                     <Copy
                       address={item?.value}
-                      iconColor={darkMode ? "#fff" : "#000"}
-                      color={darkMode ? "#fff" : "#000"}
+                      iconColor={$isDarkMode ? "#fff" : "#000"}
+                      color={$isDarkMode ? "#fff" : "#000"}
                       isShorten
                       iconSize={24}
                     />
@@ -952,11 +927,11 @@
         </div>
       {:else}
         <div class="hidden text-3xl xl:text-base xl:block">
-          <Copy address={selectedWallet} iconColor="#000" color="#000" />
+          <Copy address={$wallet} iconColor="#000" color="#000" />
         </div>
         <div class="block text-3xl xl:text-base xl:hidden">
           <Copy
-            address={selectedWallet}
+            address={$wallet}
             iconColor="#000"
             color="#000"
             isShorten
@@ -980,7 +955,7 @@
         <div class="grid flex-1 w-full grid-cols-1 gap-6 xl:grid-cols-2">
           <div
             class={`rounded-[20px] p-6 min-h-[535px] relative ${
-              darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
+              $isDarkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
             }`}
           >
             <div class="w-full mb-6 text-4xl font-medium xl:text-2xl">
@@ -995,10 +970,10 @@
                 {#if isEmptyDataPie}
                   <div
                     class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
-                      darkMode ? "bg-[#222222e6]" : "bg-white/90"
+                      $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
                     }`}
                   >
-                    {#if typeWalletAddress === "CEX"}
+                    {#if $typeWallet === "CEX"}
                       Not enough data. CEX integration can only get data from
                       the day you connect
                     {:else}
@@ -1034,7 +1009,7 @@
 
           <div
             class={`rounded-[20px] p-6 min-h-[535px] relative ${
-              darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
+              $isDarkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
             }`}
           >
             {#if compareData && Object.keys(compareData).length !== 0 && compareData?.compare}
@@ -1048,8 +1023,8 @@
                       <Copy
                         isShorten
                         address={searchCompare}
-                        iconColor={`${darkMode ? "#fff" : "#000"}`}
-                        color={`${darkMode ? "#fff" : "#000"}`}
+                        iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                        color={`${$isDarkMode ? "#fff" : "#000"}`}
                       />
                     </div>
                   </div>
@@ -1073,10 +1048,10 @@
                       {#if compareData && Object.keys(compareData).length === 0}
                         <div
                           class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-                            darkMode ? "bg-[#222222e6]" : "bg-white/90"
+                            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
                           }`}
                         >
-                          {#if typeWalletAddress === "CEX"}
+                          {#if $typeWallet === "CEX"}
                             Not enough data. CEX integration can only get data
                             from the day you connect
                           {:else}
@@ -1125,10 +1100,10 @@
                       </div>
                       <div
                         class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
-                          darkMode ? "bg-[#222222e6]" : "bg-white/90"
+                          $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
                         }`}
                       >
-                        {#if typeWalletAddress === "CEX"}
+                        {#if $typeWallet === "CEX"}
                           Not enough data. CEX integration can only get data
                           from the day you connect
                         {:else}
@@ -1164,7 +1139,7 @@
                                 >
                                   <div
                                     class={`xl:text-base text-2xl ${
-                                      darkMode ? "text-gray-400" : ""
+                                      $isDarkMode ? "text-gray-400" : ""
                                     }`}
                                   >
                                     {suggestion.name}
@@ -1176,7 +1151,7 @@
                           <div class="border-t-[1px] relative">
                             <div
                               class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
-                                darkMode ? "bg-[#222222]" : "bg-white"
+                                $isDarkMode ? "bg-[#222222]" : "bg-white"
                               } xl:text-sm text-xl px-2`}
                             >
                               Or
@@ -1186,7 +1161,7 @@
                             <div class="grid grid-cols-3 items-center gap-4">
                               <div
                                 class={`col-span-2 border focus:outline-none w-full h-full px-3 rounded-lg ${
-                                  searchCompare && !darkMode
+                                  searchCompare && !$isDarkMode
                                     ? "bg-[#F0F2F7]"
                                     : "bg_fafafbff"
                                 }`}
@@ -1198,7 +1173,7 @@
                                   placeholder={"Search address to compare"}
                                   type="text"
                                   class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] h-full ${
-                                    searchCompare && !darkMode
+                                    searchCompare && !$isDarkMode
                                       ? "bg-[#F0F2F7]"
                                       : "bg-transparent"
                                   }`}
@@ -1251,13 +1226,13 @@
               <div class="flex items-center gap-1">
                 <div
                   class={`xl:text-base text-2xl ${
-                    darkMode ? "text-gray-400" : ""
+                    $isDarkMode ? "text-gray-400" : ""
                   }`}
                 >
                   Get re-balance action
                 </div>
                 <img
-                  src={darkMode ? LeftArrowBlack : LeftArrow}
+                  src={$isDarkMode ? LeftArrowBlack : LeftArrow}
                   alt=""
                   class="xl:w-4 xl:h-4 w-6 h-6 transform rotate-180 mt-[2px]"
                 />
@@ -1282,7 +1257,7 @@
     <!-- Performance chart -->
     <div
       class={`rounded-[20px] p-6 relative ${
-        darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
+        $isDarkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
       }`}
     >
       <div class="mb-3 text-4xl font-medium xl:text-2xl">Performance</div>
@@ -1296,10 +1271,10 @@
             <div class="h-[433px]">
               <div
                 class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
-                  darkMode ? "bg-[#222222e6]" : "bg-white/90"
+                  $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
                 }`}
               >
-                {#if typeWalletAddress === "CEX"}
+                {#if $typeWallet === "CEX"}
                   Not enough data. CEX integration can only get data from the
                   day you connect
                 {:else}
@@ -1320,7 +1295,7 @@
                 class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
               >
                 <img
-                  src={darkMode ? LogoWhite : Logo}
+                  src={$isDarkMode ? LogoWhite : Logo}
                   alt=""
                   width="140"
                   height="140"
@@ -1335,7 +1310,7 @@
     <!-- Risks chart -->
     <div
       class={`rounded-[20px] p-6 relative ${
-        darkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
+        $isDarkMode ? "bg-[#222222]" : "bg-white border border_0000001a"
       }`}
     >
       <div class="w-full mb-1">
@@ -1355,10 +1330,10 @@
             <div class="h-[465px]">
               <div
                 class={`absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg rounded-[20px] ${
-                  darkMode ? "bg-[#222222e6]" : "bg-white/90"
+                  $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
                 }`}
               >
-                {#if typeWalletAddress === "CEX"}
+                {#if $typeWallet === "CEX"}
                   Not enough data. CEX integration can only get data from the
                   day you connect
                 {:else}
@@ -1379,7 +1354,7 @@
                 class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
               >
                 <img
-                  src={darkMode ? LogoWhite : Logo}
+                  src={$isDarkMode ? LogoWhite : Logo}
                   alt=""
                   width="140"
                   height="140"
@@ -1391,10 +1366,10 @@
       {/if}
     </div>
 
-    {#if packageSelected === "FREE"}
+    {#if $selectedPackage === "FREE"}
       <div
         class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center justify-center gap-3 ${
-          darkMode ? "bg-[#222222e6]" : "bg-white/90"
+          $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
         } z-30 backdrop-blur-md`}
       >
         <div class="flex flex-col items-center gap-1">
@@ -1423,7 +1398,11 @@
     }}
   >
     <div class="mt-12 xl:mt-9">
-      <CompareResult {darkMode} {holdingTokenData} {holdingTokenDataCompare} />
+      <CompareResult
+        darkMode={$isDarkMode}
+        {holdingTokenData}
+        {holdingTokenDataCompare}
+      />
     </div>
   </AppOverlay>
 
@@ -1442,7 +1421,7 @@
         </div>
       {:else}
         <WhalesList
-          {darkMode}
+          darkMode={$isDarkMode}
           data={$querySimilar.data}
           copyAddress={handleCopyAddress}
           closeModal={handleCloseWhalesListModal}

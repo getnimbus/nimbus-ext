@@ -20,11 +20,6 @@
     empty: i18n("newtabPage.empty", "Empty"),
   };
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   let searchValue = "";
   let timerDebounce;
   let virtualPortfolioName = "";
@@ -279,7 +274,7 @@
                   >
                     <td
                       class={`py-3 pl-3 ${
-                        darkMode
+                        $isDarkMode
                           ? "group-hover:bg-[#000]"
                           : "group-hover:bg-gray-100"
                       }`}
@@ -328,7 +323,7 @@
 
                     <td
                       class={`py-3 w-10 ${
-                        darkMode
+                        $isDarkMode
                           ? "group-hover:bg-[#000]"
                           : "group-hover:bg-gray-100"
                       }`}
@@ -516,7 +511,7 @@
         <Button variant="disabled" disabled>
           <div
             class={`xl:text-base text-2xl font-medium ${
-              darkMode ? "text-gray-400" : "text-white"
+              $isDarkMode ? "text-gray-400" : "text-white"
             }`}
           >
             {defaultData && Object.keys(defaultData).length !== 0
