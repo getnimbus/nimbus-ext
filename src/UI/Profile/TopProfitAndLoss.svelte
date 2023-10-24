@@ -4,7 +4,7 @@
   import { nimbus } from "~/lib/network";
   import { user } from "~/store";
   import type { HoldingTokenRes } from "~/types/HoldingTokenData";
-  import { shorterName } from "~/utils";
+  import { shorterName, handleImgError } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
   import TooltipNumber from "~/components/TooltipNumber.svelte";
@@ -126,10 +126,12 @@
                     alt=""
                     width="30"
                     height="30"
-                    on:error={({ target }) => {
-                      target.src =
-                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-                    }}
+                    on:error={(e) =>
+                      handleImgError(
+                        e,
+                        item?.logo,
+                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                      )}
                     class="rounded-full"
                   />
                   <span class="flex flex-col">
@@ -180,10 +182,12 @@
                     alt=""
                     width="30"
                     height="30"
-                    on:error={({ target }) => {
-                      target.src =
-                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-                    }}
+                    on:error={(e) =>
+                      handleImgError(
+                        e,
+                        item?.logo,
+                        "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                      )}
                     class="rounded-full"
                   />
                   <span class="flex flex-col">

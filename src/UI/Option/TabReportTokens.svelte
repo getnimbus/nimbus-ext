@@ -1,12 +1,13 @@
 <script>
-  import Button from "~/components/Button.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
   import { i18n } from "~/lib/i18n";
   import { isDarkMode, user } from "~/store";
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { handleImgError } from "~/utils";
 
+  import Button from "~/components/Button.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
 
   const MultipleLang = {
@@ -217,10 +218,12 @@
                         width="35"
                         height="35"
                         class="rounded-full"
-                        on:error={(e) => {
-                          e.target.src =
-                            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-                        }}
+                        on:error={(e) =>
+                          handleImgError(
+                            e,
+                            item?.logoUrl,
+                            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                          )}
                       />
                       <div class="xl:text-base text-2xl">
                         {item.contractName}

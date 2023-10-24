@@ -6,7 +6,7 @@
     selectedBundle,
     isHidePortfolio,
   } from "~/store";
-  import { detectedChain, shorterName } from "~/utils";
+  import { detectedChain, shorterName, handleImgError } from "~/utils";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
@@ -306,10 +306,12 @@
           width="30"
           height="30"
           class="rounded-full"
-          on:error={() => {
-            logo =
-              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-          }}
+          on:error={(e) =>
+            handleImgError(
+              e,
+              logo,
+              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+            )}
         />
         {#if (typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE") && data?.chain !== "CEX" && data?.chain !== "BTC"}
           <div class="absolute -top-2 -right-1">
@@ -1024,10 +1026,12 @@
                   src={item?.logo}
                   alt=""
                   class="rounded-full w-[30px] h-[30px]"
-                  on:error={() => {
-                    logo =
-                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-                  }}
+                  on:error={(e) =>
+                    handleImgError(
+                      e,
+                      item?.logo,
+                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                    )}
                 />
                 <div class="flex flex-col items-start">
                   <div class="font-medium xl:text-sm text-xl text_00000099">
@@ -1161,10 +1165,12 @@
                       src={item?.logo}
                       alt=""
                       class="rounded-full w-[30px] h-[30px]"
-                      on:error={() => {
-                        logo =
-                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-                      }}
+                      on:error={(e) =>
+                        handleImgError(
+                          e,
+                          item?.logo,
+                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                        )}
                     />
                     <div class="flex flex-col items-start">
                       <div class="font-medium xl:text-sm text-xl text_00000099">
@@ -1427,10 +1433,12 @@
                 width="46"
                 height="46"
                 class="rounded-full"
-                on:error={() => {
-                  logo =
-                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-                }}
+                on:error={(e) =>
+                  handleImgError(
+                    e,
+                    logo,
+                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                  )}
               />
               {#if (typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE") && selectedTokenDetail?.chain !== "CEX" && selectedTokenDetail?.chain !== "BTC"}
                 <div class="absolute -top-2 -right-1">

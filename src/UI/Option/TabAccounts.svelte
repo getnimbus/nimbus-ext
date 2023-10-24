@@ -774,11 +774,6 @@
 
         queryClient.invalidateQueries(["list-bundle"]);
         queryClient.invalidateQueries(["list-address"]);
-        queryClient.invalidateQueries(["personalize-tag"]);
-        queryClient.invalidateQueries(["historical"]);
-        queryClient.invalidateQueries(["inflow-outflow"]);
-
-        triggerUpdateBundle.update((n) => (n = true));
 
         toastMsg = "Successfully edit your bundle!";
       } else {
@@ -798,12 +793,15 @@
             ),
           };
         });
+
         selectedBundle = listBundle[listBundle.length - 1];
         selectedAddresses = listBundle[listBundle.length - 1].addresses;
         nameBundle = listBundle[listBundle.length - 1].name;
 
         toastMsg = "Successfully create your bundle!";
       }
+
+      triggerUpdateBundle.update((n) => (n = true));
 
       isSuccess = true;
       trigger();
