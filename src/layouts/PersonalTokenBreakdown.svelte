@@ -41,26 +41,6 @@
 
   const queryClient = useQueryClient();
 
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   let holdingTokenData: TokenData = [];
   let marketPriceToken;
   let formatData = [];
@@ -132,8 +112,8 @@
     let addressParams = urlParams.get("address");
 
     if (chainParams && addressParams) {
-      selectedWallet = addressParams;
-      selectedChain = chainParams;
+      $wallet = addressParams;
+      $chain = chainParams;
     }
 
     const handleScroll = () => {
@@ -236,7 +216,7 @@
 
     try {
       const response = await nimbus.post(
-        `/address/${selectedWallet}/personalize/tag`,
+        `/address/${$wallet}/personalize/tag`,
         {
           category: formData.category,
           tagName: formData.tag.name,
@@ -350,8 +330,8 @@
   const deleteCustomCategory = async () => {
     isLoadingDelete = true;
     try {
-      const response = await nimbus.delete(
-        `/address/${selectedWallet}/personalize/tag?category=${selectedCustom.category}`,
+      await nimbus.delete(
+        `/address/${$wallet}/personalize/tag?category=${selectedCustom.category}`,
         {}
       );
 
@@ -379,9 +359,9 @@
 
   // query token holding
   $: queryTokenHolding = createQuery({
-    queryKey: ["holding-token", selectedWallet, selectedChain],
-    enabled: !!selectedWallet,
-    queryFn: () => getHoldingToken(selectedWallet, selectedChain),
+    queryKey: ["holding-token", $wallet, $chain],
+    enabled: !!$wallet,
+    queryFn: () => getHoldingToken($wallet, $chain),
     staleTime: Infinity,
   });
 
@@ -393,9 +373,9 @@
 
   // query tag
   $: queryTag = createQuery({
-    queryKey: ["personalize-tag", selectedWallet],
-    enabled: !!selectedWallet,
-    queryFn: () => getPersonalizeTag(selectedWallet),
+    queryKey: ["personalize-tag", $wallet],
+    enabled: !!$wallet,
+    queryFn: () => getPersonalizeTag($wallet),
     staleTime: Infinity,
   });
 
@@ -605,9 +585,9 @@
                 Custom Token Breakdown
               </div>
             </div>
-            {#if selectedWallet && selectedWallet.length !== 0}
+            {#if $wallet && $wallet.length !== 0}
               <div class="text-base">
-                <Copy address={selectedWallet} iconColor="#fff" color="#fff" />
+                <Copy address={$wallet} iconColor="#fff" color="#fff" />
               </div>
             {/if}
           </div>
@@ -622,7 +602,7 @@
     >
       <div
         class={`rounded-[20px] p-6 flex flex-col gap-4 ${
-          darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+          $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
         }`}
       >
         <div class="xl:text-2xl text-4xl font-medium">
@@ -777,14 +757,14 @@
                   {#if listCustom.length > 2}
                     <Button variant="disabled" disabled>
                       <img
-                        src={darkMode ? PlusBlack : Plus}
+                        src={$isDarkMode ? PlusBlack : Plus}
                         alt=""
                         width="12"
                         height="12"
                       />
                       <div
                         class={` font-medium ${
-                          darkMode ? "text-gray-400" : "text-white"
+                          $isDarkMode ? "text-gray-400" : "text-white"
                         }`}
                       >
                         Add Category
@@ -820,7 +800,9 @@
           <form on:submit|preventDefault={onSubmit} class="flex flex-col gap-6">
             <div
               class={`flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
-                formData.category && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                formData.category && !$isDarkMode
+                  ? "bg-[#F0F2F7]"
+                  : "bg_fafafbff"
               }`}
             >
               <div class="xl:text-base text-2xl text-[#666666] font-medium">
@@ -831,7 +813,7 @@
                 placeholder="Your category name"
                 required
                 class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                  formData.category && !darkMode
+                  formData.category && !$isDarkMode
                     ? "bg-[#F0F2F7]"
                     : "bg-transparent"
                 }`}
@@ -840,12 +822,7 @@
                   if (isAddCustom) {
                     return;
                   }
-                  updatePersonalizeTag(
-                    selectedWallet,
-                    formData.category,
-                    "",
-                    ""
-                  );
+                  updatePersonalizeTag($wallet, formData.category, "", "");
                 }}
               />
             </div>
@@ -857,7 +834,7 @@
                     <div class="w-[600px]">
                       <div
                         class={`flex justify-between gap-1 border bg-white focus:outline-none w-full py-[6px] px-3 rounded-t-lg ${
-                          query && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                          query && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
                         } ${
                           showSuggestListTag ? "rounded-none" : "rounded-b-lg"
                         }`}
@@ -866,7 +843,7 @@
                           type="text"
                           placeholder="Your tag name"
                           class={`flex-1 p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                            query && !darkMode
+                            query && !$isDarkMode
                               ? "bg-[#F0F2F7]"
                               : "bg-transparent"
                           }`}
@@ -909,7 +886,7 @@
                         <div class="relative w-full">
                           <div
                             class={`absolute top-0 left-0 flex flex-col gap-1 border-b border-x-[1px] w-full ${
-                              darkMode ? "bg-[#212121]" : "bg-white"
+                              $isDarkMode ? "bg-[#212121]" : "bg-white"
                             } text-[#5E656B] rounded-b-lg py-2 px-3 z-50`}
                           >
                             <div class="xl:text-xs text-xl">
@@ -920,7 +897,7 @@
                                 <div
                                   class={`rounded-lg ${
                                     editTag && editTag === item
-                                      ? darkMode
+                                      ? $isDarkMode
                                         ? "bg-[#00000033]"
                                         : "bg-[#F0F2F7]"
                                       : ""
@@ -928,7 +905,7 @@
                                 >
                                   <div
                                     class={`xl:text-sm text-2xl px-2 py-1 rounded-lg cursor-pointer flex justify-between ${
-                                      darkMode
+                                      $isDarkMode
                                         ? "hover:bg-[#00000033]"
                                         : "hover:bg-[#F0F2F7]"
                                     }`}
@@ -950,7 +927,7 @@
                                             class="xl:text-sm text-base font-medium w-max text-[#1e96fc] cursor-pointer"
                                             on:click={() => {
                                               updatePersonalizeTag(
-                                                selectedWallet,
+                                                $wallet,
                                                 formData.category,
                                                 tag,
                                                 editTag
@@ -982,7 +959,7 @@
                                       </div>
                                       <div
                                         class={`flex justify-center items-center px-2 rounded ${
-                                          darkMode
+                                          $isDarkMode
                                             ? "hover:bg-[#222222]"
                                             : "hover:bg-gray-200"
                                         }`}
@@ -1013,7 +990,7 @@
                                   </div>
                                   <div
                                     class={`py-1 px-2 rounded-lg flex-1 ${
-                                      darkMode
+                                      $isDarkMode
                                         ? "hover:bg-[#00000066]"
                                         : "hover:bg-[#F0F2F7]"
                                     }`}
@@ -1045,7 +1022,9 @@
                 <div class="w-max">
                   <div
                     class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
-                      searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                      searchValue && !$isDarkMode
+                        ? "bg-[#F0F2F7]"
+                        : "bg_fafafbff"
                     }`}
                   >
                     <input
@@ -1053,7 +1032,7 @@
                       placeholder={"Find by token name"}
                       type="text"
                       class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                        searchValue && !darkMode
+                        searchValue && !$isDarkMode
                           ? "bg-[#F0F2F7]"
                           : "bg-transparent"
                       }`}
@@ -1067,7 +1046,7 @@
               >
                 <div
                   class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-                    darkMode
+                    $isDarkMode
                       ? "bg-[#131313]"
                       : "bg-[#fff] border border_0000000d"
                   }`}
@@ -1135,7 +1114,7 @@
                                 xmlns="http://www.w3.org/2000/svg"
                                 height="1.2em"
                                 viewBox="0 0 320 512"
-                                fill={darkMode ? "#fff" : "#000"}
+                                fill={$isDarkMode ? "#fff" : "#000"}
                                 ><path
                                   d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
                                 /></svg
@@ -1174,7 +1153,7 @@
                             <tr class="group transition-all">
                               <td
                                 class={`py-3 w-10 xl:static xl:bg-transparent sticky left-0 z-9 ${
-                                  darkMode
+                                  $isDarkMode
                                     ? "bg-[#131313] group-hover:bg-[#000]"
                                     : "bg-white group-hover:bg-gray-100"
                                 }`}
@@ -1193,7 +1172,7 @@
 
                               <td
                                 class={`py-3 xl:static xl:bg-transparent sticky left-10 z-9 xl:w-[230px] w-[280px] ${
-                                  darkMode
+                                  $isDarkMode
                                     ? "bg-[#131313] group-hover:bg-[#000]"
                                     : "bg-white group-hover:bg-gray-100"
                                 }`}
@@ -1207,7 +1186,7 @@
                                       height="30"
                                       class="rounded-full"
                                     />
-                                    {#if typeWalletAddress === "EVM"}
+                                    {#if $typeWallet === "EVM"}
                                       <div class="absolute -top-2 -right-1">
                                         <img
                                           src={detectedChain(data.chain)}
@@ -1286,7 +1265,7 @@
 
                               <td
                                 class={`py-3 ${
-                                  darkMode
+                                  $isDarkMode
                                     ? "group-hover:bg-[#000]"
                                     : "group-hover:bg-gray-100"
                                 }`}
@@ -1303,7 +1282,7 @@
 
                               <td
                                 class={`py-3 ${
-                                  darkMode
+                                  $isDarkMode
                                     ? "group-hover:bg-[#000]"
                                     : "group-hover:bg-gray-100"
                                 }`}
@@ -1320,7 +1299,7 @@
 
                               <td
                                 class={`py-3 ${
-                                  darkMode
+                                  $isDarkMode
                                     ? "group-hover:bg-[#000]"
                                     : "group-hover:bg-gray-100"
                                 }`}
@@ -1337,7 +1316,7 @@
 
                               <td
                                 class={`py-3 ${
-                                  darkMode
+                                  $isDarkMode
                                     ? "group-hover:bg-[#000]"
                                     : "group-hover:bg-gray-100"
                                 }`}
@@ -1371,7 +1350,7 @@
 
                               <td
                                 class={`pr-3 py-3 ${
-                                  darkMode
+                                  $isDarkMode
                                     ? "group-hover:bg-[#000]"
                                     : "group-hover:bg-gray-100"
                                 }`}
@@ -1399,7 +1378,7 @@
             {toggleSortOrderTag}
             isLoadingToken={$queryTokenHolding.isFetching}
             {searchDataResult}
-            {selectedWallet}
+            selectedWallet={$wallet}
             {sumTokens}
           />
         {/if}

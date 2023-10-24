@@ -27,31 +27,6 @@
 
   import All from "~/assets/all.svg";
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let packageSelected = "";
-  selectedPackage.subscribe((value) => {
-    packageSelected = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   let listCoinPrice = [];
   let dataTokenHolding = [];
   let listTokenHolding = [];
@@ -131,9 +106,9 @@
   };
 
   $: queryHoldingToken = createQuery({
-    queryKey: ["token-holding", selectedWallet, selectedChain],
+    queryKey: ["token-holding", $wallet, $chain],
     enabled: enabledQuery,
-    queryFn: () => getHoldingToken(selectedWallet, selectedChain),
+    queryFn: () => getHoldingToken($wallet, $chain),
     staleTime: Infinity,
   });
 
@@ -386,21 +361,21 @@
   }
 
   $: enabledQuery =
-    selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+    $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          (typeWalletAddress === "EVM" ||
-            typeWalletAddress === "CEX" ||
-            typeWalletAddress === "SOL" ||
-            typeWalletAddress === "BUNDLE") &&
-            selectedWallet.length !== 0 &&
-            packageSelected !== "FREE"
+          ($typeWallet === "EVM" ||
+            $typeWallet === "CEX" ||
+            $typeWallet === "SOL" ||
+            $typeWallet === "BUNDLE") &&
+            $wallet.length !== 0 &&
+            $selectedPackage !== "FREE"
         );
 </script>
 
 <div
   class={`flex flex-col gap-2 rounded-[20px] p-6 ${
-    darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
   }`}
 >
   <div class="xl:text-2xl text-4xl font-medium">
@@ -414,7 +389,7 @@
 
   <div
     class={`flex flex-col gap-1 xl:text-sm text-xl ${
-      darkMode ? "text-[#ebebeb]" : "text-gray-700"
+      $isDarkMode ? "text-[#ebebeb]" : "text-gray-700"
     } `}
   >
     <div class="flex items-start xl:gap-1 gap-5">
@@ -462,7 +437,7 @@
               {#each listTokenHolding as item}
                 <div
                   class={`border-b ${
-                    darkMode ? "border-[#0f0f0f]" : "border-gray-200"
+                    $isDarkMode ? "border-[#0f0f0f]" : "border-gray-200"
                   } last:border-none py-2 px-1 w-full text-center flex items-center justify-between`}
                 >
                   <div class="flex items-center gap-2">
@@ -511,7 +486,7 @@
 
             <div
               class={`pt-4 border-t ${
-                darkMode ? "border-[#0f0f0f]" : "border-gray-200"
+                $isDarkMode ? "border-[#0f0f0f]" : "border-gray-200"
               }`}
             >
               <Button
@@ -539,7 +514,7 @@
                     <th
                       class={`py-[6px] text-2xl xl:text-base font-medium ${
                         colIndex === index
-                          ? darkMode
+                          ? $isDarkMode
                             ? "bg-[#cdcdcd26]"
                             : "bg-[#dbeafe]"
                           : ""
@@ -552,7 +527,7 @@
                   {#each matrix as data, indexY}
                     <tr
                       class={`border ${
-                        darkMode ? "border-[#0f0f0f]" : "border-gray-200"
+                        $isDarkMode ? "border-[#0f0f0f]" : "border-gray-200"
                       } ${!colImg ? "active" : ""}`}
                     >
                       {#each data as item, indexX}
@@ -560,7 +535,7 @@
                           <td
                             class={`py-2 px-1 ${
                               colIndex === indexX
-                                ? darkMode
+                                ? $isDarkMode
                                   ? "bg-[#cdcdcd26]"
                                   : "bg-[#dbeafe]"
                                 : ""
@@ -592,10 +567,12 @@
                         {:else}
                           <td
                             class={`py-2 px-1 text-2xl xl:text-base text-center border ${
-                              darkMode ? "border-[#0f0f0f]" : "border-gray-200"
+                              $isDarkMode
+                                ? "border-[#0f0f0f]"
+                                : "border-gray-200"
                             } ${
                               colIndex === indexX
-                                ? darkMode
+                                ? $isDarkMode
                                   ? "bg-[#cdcdcd26]"
                                   : "bg-[#dbeafe]"
                                 : ""
@@ -636,7 +613,7 @@
     <div class="flex flex-col">
       <div
         class={`border focus:outline-none w-full py-[6px] px-3 rounded-lg ${
-          searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+          searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
         }`}
       >
         <input
@@ -644,7 +621,7 @@
           value={searchValue}
           placeholder={"Find by token name"}
           class={`w-full p-0 border-none focus:outline-none focus:ring-0 xl:text-base text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            searchValue && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            searchValue && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
         />
       </div>
@@ -674,7 +651,7 @@
                 {#each searchDataResult || [] as item}
                   <div
                     class={`border-b last:border-none py-3 px-1 w-full text-center flex items-center justify-start gap-2 cursor-pointer ${
-                      darkMode ? "border-[#222222]" : "border-gray-200"
+                      $isDarkMode ? "border-[#222222]" : "border-gray-200"
                     }`}
                     on:click={handleSelectToken(item)}
                   >
@@ -695,7 +672,7 @@
                       {item.full_name}
                       <span
                         class={`${
-                          darkMode ? "text-gray-600" : "text-gray-400"
+                          $isDarkMode ? "text-gray-600" : "text-gray-400"
                         }`}
                         >{item.name.toLocaleUpperCase()}
                       </span>

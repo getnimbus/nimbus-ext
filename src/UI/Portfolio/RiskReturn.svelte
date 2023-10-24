@@ -18,26 +18,6 @@
   export let isError;
   export let data;
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   let selectedTypeReturn: "overview" | "month" = "overview";
   let scrollContainer;
   let isScrollStart = true;
@@ -66,7 +46,7 @@
   <div class="grid xl:grid-cols-2 grid-cols-1 gap-6">
     <div
       class={`rounded-[20px] ${
-        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
       {#if isLoading}
@@ -81,10 +61,10 @@
           {#if isError}
             <div
               class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-                darkMode ? "bg-[#222222e6]" : "bg-white/90"
+                $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
               }`}
             >
-              {#if typeWalletAddress === "CEX"}
+              {#if $typeWallet === "CEX"}
                 Not enough data. CEX integration can only get data from the day
                 you connect
               {:else}
@@ -101,7 +81,7 @@
                         "The Sharpe ratio measures how well an investment performs relative to its risk.",
                         SharpeRatioExplain,
                         true,
-                        darkMode,
+                        $isDarkMode,
                         "360px"
                       )}
                       isBigIcon
@@ -150,7 +130,7 @@
                         "Volatility measures the extent of price fluctuations for an asset over time.",
                         VolatilityExplain,
                         true,
-                        darkMode,
+                        $isDarkMode,
                         "360px"
                       )}
                       isExplainVideo
@@ -199,7 +179,7 @@
                         "Max drawdown is the biggest loss experienced by an investment or portfolio.",
                         MaxDrawdownExplain,
                         true,
-                        darkMode,
+                        $isDarkMode,
                         "360px"
                       )}
                       isExplainVideo
@@ -248,7 +228,7 @@
 
     <div
       class={`rounded-[20px] ${
-        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
       {#if isLoading}
@@ -301,10 +281,10 @@
           {#if isError}
             <div
               class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-                darkMode ? "bg-[#222222e6]" : "bg-white/90"
+                $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
               }`}
             >
-              {#if typeWalletAddress === "CEX"}
+              {#if $typeWallet === "CEX"}
                 Not enough data. CEX integration can only get data from the day
                 you connect
               {:else}

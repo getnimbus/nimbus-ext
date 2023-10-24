@@ -14,19 +14,6 @@
   export let data;
   export let selectedWallet;
 
-  let typeWalletAddress = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let hiddenPortfolio = false;
-  isHidePortfolio.subscribe((value) => (hiddenPortfolio = value));
-
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
   let isShowCMC = false;
@@ -73,7 +60,7 @@
 >
   <td
     class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-9 w-[420px] ${
-      darkMode
+      $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
@@ -93,7 +80,7 @@
               "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
             )}
         />
-        {#if (typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE") && data?.chain !== "CEX" && data?.chain !== "SOL" && data?.chain !== "BTC"}
+        {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.chain !== "CEX" && data?.chain !== "SOL" && data?.chain !== "BTC"}
           <div class="absolute -top-2 -right-1">
             <img
               src={detectedChain(data.chain)}
@@ -158,7 +145,7 @@
                 class="w-full h-full object-contain rounded-full"
                 ><path
                   d="m66.54 46.41a4.09 4.09 0 0 1 -4.17.28c-1.54-.87-2.37-2.91-2.37-5.69v-8.52c0-4.09-1.62-7-4.33-7.79-4.58-1.34-8 4.27-9.32 6.38l-8.1 13.11v-16c-.09-3.69-1.29-5.9-3.56-6.56-1.5-.44-3.75-.26-5.94 3.08l-18.11 29.07a32 32 0 0 1 -3.64-14.94c0-17.52 14-31.77 31.25-31.77s31.3 14.25 31.3 31.77v.09s0 .06 0 .09c.17 3.39-.93 6.09-3 7.4zm10-7.57v-.17c-.14-21.35-17.26-38.67-38.29-38.67s-38.25 17.42-38.25 38.83 17.16 38.84 38.25 38.84a37.81 37.81 0 0 0 26-10.36 3.56 3.56 0 0 0 .18-5 3.43 3.43 0 0 0 -4.86-.23 30.93 30.93 0 0 1 -44.57-2.08l16.3-26.2v12.09c0 5.81 2.25 7.69 4.14 8.24s4.78.17 7.81-4.75l9-14.57c.28-.47.55-.87.79-1.22v7.41c0 5.43 2.18 9.77 6 11.91a11 11 0 0 0 11.21-.45c4.2-2.73 6.49-7.67 6.25-13.62z"
-                  fill={`${darkMode ? "#d1d5db" : "#17181b"}`}
+                  fill={`${$isDarkMode ? "#d1d5db" : "#17181b"}`}
                 /></svg
               >
             </a>
@@ -394,7 +381,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
@@ -404,7 +391,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="xl:text-sm text-2xl text_00000099 font-medium flex justify-end">
@@ -418,12 +405,10 @@
 
   <td
     class={`py-3 ${
-      typeWalletAddress === "SOL" ||
-      typeWalletAddress === "EVM" ||
-      typeWalletAddress === "BUNDLE"
+      $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"
         ? ""
         : "pr-3"
-    } ${darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
+    } ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
   >
     <div
       class="flex items-center justify-end gap-1 xl:text-sm text-2xl font-medium"
@@ -468,13 +453,13 @@
     </div>
   </td>
 
-  {#if typeWalletAddress === "SOL" || typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE"}
+  {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
     <td
       class={`py-3 xl:w-12 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
-        darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+        $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       }`}
     >
-      {#if typeWalletAddress === "EVM" || typeWalletAddress === "SOL"}
+      {#if $typeWallet === "EVM" || $typeWallet === "SOL"}
         <div
           class="flex justify-center cursor-pointer"
           on:click={() => {
@@ -500,41 +485,41 @@
               <defs />
               <g
                 style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                fill={darkMode ? "white" : "#00000080"}
+                fill={$isDarkMode ? "white" : "#00000080"}
                 transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"
               >
                 <path
                   d="M 87.994 0 H 69.342 c -1.787 0 -2.682 2.16 -1.418 3.424 l 5.795 5.795 l -33.82 33.82 L 28.056 31.196 l -3.174 -3.174 c -1.074 -1.074 -2.815 -1.074 -3.889 0 L 0.805 48.209 c -1.074 1.074 -1.074 2.815 0 3.889 l 3.174 3.174 c 1.074 1.074 2.815 1.074 3.889 0 l 15.069 -15.069 l 14.994 14.994 c 1.074 1.074 2.815 1.074 3.889 0 l 1.614 -1.614 c 0.083 -0.066 0.17 -0.125 0.247 -0.202 l 37.1 -37.1 l 5.795 5.795 C 87.84 23.34 90 22.445 90 20.658 V 2.006 C 90 0.898 89.102 0 87.994 0 z"
                   style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
                   transform=" matrix(1 0 0 1 0 0) "
-                  fill={darkMode ? "white" : "#00000080"}
+                  fill={$isDarkMode ? "white" : "#00000080"}
                   stroke-linecap="round"
                 />
                 <path
                   d="M 65.626 37.8 v 49.45 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 23.518 L 65.626 37.8 z"
                   style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                  fill={darkMode ? "white" : "#00000080"}
+                  fill={$isDarkMode ? "white" : "#00000080"}
                   transform=" matrix(1 0 0 1 0 0) "
                   stroke-linecap="round"
                 />
                 <path
                   d="M 47.115 56.312 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 42.03 L 47.115 56.312 z"
                   style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                  fill={darkMode ? "white" : "#00000080"}
+                  fill={$isDarkMode ? "white" : "#00000080"}
                   transform=" matrix(1 0 0 1 0 0) "
                   stroke-linecap="round"
                 />
                 <path
                   d="M 39.876 60.503 c -1.937 0 -3.757 -0.754 -5.127 -2.124 l -6.146 -6.145 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 59.844 C 41.952 60.271 40.933 60.503 39.876 60.503 z"
                   style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                  fill={darkMode ? "white" : "#00000080"}
+                  fill={$isDarkMode ? "white" : "#00000080"}
                   transform=" matrix(1 0 0 1 0 0) "
                   stroke-linecap="round"
                 />
                 <path
                   d="M 22.937 46.567 L 11.051 58.453 c -0.298 0.298 -0.621 0.562 -0.959 0.8 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 48.004 L 22.937 46.567 z"
                   style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
-                  fill={darkMode ? "white" : "#00000080"}
+                  fill={$isDarkMode ? "white" : "#00000080"}
                   transform=" matrix(1 0 0 1 0 0) "
                   stroke-linecap="round"
                 />
@@ -577,7 +562,7 @@
                     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
                   )}
               />
-              {#if (typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE") && selectedTokenDetail?.chain !== "CEX" && selectedTokenDetail?.chain !== "BTC"}
+              {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX" && selectedTokenDetail?.chain !== "BTC"}
                 <div class="absolute -top-2 -right-1">
                   <img
                     src={detectedChain(selectedTokenDetail.chain)}

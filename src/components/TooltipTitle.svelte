@@ -12,11 +12,6 @@
 
   export let tooltipText = "";
   export let link = "";
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
 </script>
 
 {#if isHaveIcon}
@@ -25,7 +20,7 @@
     <span class="cursor-pointer">
       {#if type === "default"}
         <img
-          src={darkMode ? information_white : information}
+          src={$isDarkMode ? information_white : information}
           alt=""
           class={`${isBigIcon ? "w-4 h-4" : "w-3 h-3"}`}
           use:tooltip={{

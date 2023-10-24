@@ -13,11 +13,6 @@
   import RealtimeVideo from "~/assets/pricing/Realtime.mp4";
   import RebalanceVideo from "~/assets/pricing/Rebalance.mp4";
   import CustomAllocationVideo from "~/assets/pricing/Custom-Allocation.mp4";
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
 </script>
 
 <div class="flex items-end gap-2 font-semibold text-4xl xl:text-3xl">
@@ -40,7 +35,7 @@
           "Get latest market information and real-time market update",
           RealtimeVideo,
           false,
-          darkMode
+          $isDarkMode
         ),
         allowHTML: true,
         placement: "top",
@@ -61,7 +56,7 @@
           "Get up to 1000+ yield farming opportunities to boost your earning",
           YieldFarmingVideo,
           false,
-          darkMode
+          $isDarkMode
         ),
         allowHTML: true,
         placement: "top",
@@ -78,7 +73,7 @@
           "Custom your token category to diversify your portfolio on your own way",
           CustomAllocationVideo,
           false,
-          darkMode
+          $isDarkMode
         ),
         allowHTML: true,
         placement: "top",
@@ -94,7 +89,7 @@
           "Know what is your portfolio risk, in every single token you hold",
           RiskVideo,
           false,
-          darkMode
+          $isDarkMode
         ),
         allowHTML: true,
         placement: "top",
@@ -107,7 +102,7 @@
     <div
       class="underline cursor-pointer text-xl xl:text-base decoration-dotted"
       use:tooltip={{
-        content: getTooltipContent("", ReturnVideo, false, darkMode),
+        content: getTooltipContent("", ReturnVideo, false, $isDarkMode),
         allowHTML: true,
         placement: "top",
         interactive: true,
@@ -118,7 +113,7 @@
     <div
       class="underline cursor-pointer text-xl xl:text-base decoration-dotted"
       use:tooltip={{
-        content: getTooltipContent("", RiskReturnVideo, false, darkMode),
+        content: getTooltipContent("", RiskReturnVideo, false, $isDarkMode),
         allowHTML: true,
         placement: "top",
         interactive: true,
@@ -133,7 +128,7 @@
           "We suggest you how to optimize your portfolio to minimize the risk while maximizing the return",
           RebalanceVideo,
           false,
-          darkMode
+          $isDarkMode
         ),
         allowHTML: true,
         placement: "top",

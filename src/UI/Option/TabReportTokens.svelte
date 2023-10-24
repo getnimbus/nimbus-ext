@@ -48,16 +48,6 @@
     },
   };
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
   let selectedItemDelete;
   let isOpenConfirmDelete = false;
   let isLoadingDelete = false;
@@ -92,7 +82,7 @@
     queryFn: () => handleDataReportToken(),
     staleTime: Infinity,
     retry: false,
-    enabled: Object.keys(userInfo).length !== 0,
+    enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -133,7 +123,7 @@
   <div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
     <div
       class={`border border_0000000d rounded-[10px] overflow-x-auto h-full ${
-        darkMode ? "bg-[#131313]" : "bg-[#fff]"
+        $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
       }`}
     >
       <table class="table-auto xl:w-full w-[1800px] h-full">
@@ -206,7 +196,7 @@
                 <tr class="group transition-all">
                   <td
                     class={`pl-3 py-3 ${
-                      darkMode
+                      $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
@@ -233,7 +223,7 @@
 
                   <td
                     class={`py-3 ${
-                      darkMode
+                      $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
@@ -245,7 +235,7 @@
 
                   <td
                     class={`py-3 ${
-                      darkMode
+                      $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
@@ -257,7 +247,7 @@
 
                   <td
                     class={`py-3 pr-3 ${
-                      darkMode
+                      $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}

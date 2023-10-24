@@ -8,11 +8,6 @@
   let userAddress = "";
   let link = "";
 
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
   const queryClient = useQueryClient();
   const qrcode = QRCode(0, "L");
 

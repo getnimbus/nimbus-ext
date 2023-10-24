@@ -25,16 +25,6 @@
     empty: i18n("newtabPage.empty", "Empty"),
   };
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   let tableTokenHeader;
   let isStickyTableToken = false;
   let isShowTooltipName = false;
@@ -56,7 +46,7 @@
 <div class={`${isLoadingToken ? "h-[400px]" : ""}`}>
   <div
     class={`rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
-      darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+      $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
     }`}
   >
     <table class="table-auto xl:w-full w-[1400px] h-full">
@@ -104,7 +94,7 @@
                   xmlns="http://www.w3.org/2000/svg"
                   height="1.2em"
                   viewBox="0 0 320 512"
-                  fill={darkMode ? "#fff" : "#000"}
+                  fill={$isDarkMode ? "#fff" : "#000"}
                   ><path
                     d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"
                   /></svg
@@ -141,7 +131,7 @@
               <tr class="group transition-all">
                 <td
                   class={`py-3 pl-3 xl:static xl:bg-transparent sticky left-0 z-9 xl:w-[230px] w-[280px] ${
-                    darkMode
+                    $isDarkMode
                       ? "bg-[#131313] group-hover:bg-[#000]"
                       : "bg-white group-hover:bg-gray-100"
                   }`}
@@ -155,7 +145,7 @@
                         height="30"
                         class="rounded-full"
                       />
-                      {#if typeWalletAddress === "EVM"}
+                      {#if $typeWallet === "EVM"}
                         <div class="absolute -top-2 -right-1">
                           <img
                             src={detectedChain(data.chain)}
@@ -234,7 +224,7 @@
 
                 <td
                   class={`py-3 ${
-                    darkMode
+                    $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}
@@ -248,7 +238,7 @@
 
                 <td
                   class={`py-3 ${
-                    darkMode
+                    $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}
@@ -262,7 +252,7 @@
 
                 <td
                   class={`py-3 ${
-                    darkMode
+                    $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}
@@ -279,7 +269,7 @@
 
                 <td
                   class={`py-3 ${
-                    darkMode
+                    $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}
@@ -309,7 +299,7 @@
 
                 <td
                   class={`py-3 pr-3 ${
-                    darkMode
+                    $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}
