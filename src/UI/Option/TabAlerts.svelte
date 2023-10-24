@@ -43,16 +43,6 @@
     },
   ];
 
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
   let show = false;
   let counter = 3;
   let toastMsg = "";

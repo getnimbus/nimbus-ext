@@ -1,5 +1,4 @@
 <script>
-  import dayjs from "dayjs";
   import { isDarkMode } from "~/store";
 
   import "~/components/Tooltip.custom.svelte";
@@ -9,11 +8,6 @@
   import TrendDown from "~/assets/trend-down.svg";
 
   export let data;
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
 
   $: profit = data.market_price * data?.amount + (data.inputValue || 0);
   $: value = data.market_price * data?.amount;
@@ -26,7 +20,7 @@
 <tr class="group transition-all">
   <td
     class={`pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 ${
-      darkMode
+      $isDarkMode
         ? "bg-[#110c2a] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
@@ -65,7 +59,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="flex justify-end xl:text-sm text-2xl text_00000099 font-medium">
@@ -75,7 +69,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="flex justify-end xl:text-sm text-2xl text_00000099 font-medium">
@@ -84,7 +78,7 @@
   </td>
 
   <!-- <td   class={`py-3 ${
-                  darkMode
+                  $isDarkMode
                     ? "group-hover:bg-[#000]"
                     : "group-hover:bg-gray-100"
                 }`}>
@@ -94,7 +88,7 @@
   </td>
 
   <td   class={`py-3 ${
-                  darkMode
+                  $isDarkMode
                     ? "group-hover:bg-[#000]"
                     : "group-hover:bg-gray-100"
                 }`}>
@@ -105,7 +99,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="flex justify-end xl:text-sm text-2xl text_00000099 font-medium">
@@ -115,7 +109,7 @@
 
   <td
     class={`py-3 pr-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="xl:text-sm text-2xl font-medium flex flex-col">

@@ -17,6 +17,20 @@
   let totalToken = 0;
   let realizedProfit = 0;
 
+  const getTradingStats = async (address) => {
+    const response: any = await nimbus.get(
+      `/v2/analysis/${address}/trading-stats`
+    );
+    return response?.data;
+  };
+
+  const getHoldingToken = async (address) => {
+    const response = await nimbus
+      .get(`/v2/address/${address}/holding?chain=ALL`)
+      .then((response) => response.data);
+    return response;
+  };
+
   const formatDataHoldingToken = (dataTokenHolding) => {
     const formatData = dataTokenHolding
       .map((item) => {
@@ -61,18 +75,32 @@
     totalToken = format30D.length;
   };
 
-  const getTradingStats = async (address) => {
-    const response: any = await nimbus.get(
-      `/v2/analysis/${address}/trading-stats`
+  const formatDataTradingStats = (data) => {
+    const tradingStatsMeta = data?.metadata.filter(
+      (item) => dayjs().subtract(30, "day").valueOf() < item.lastTrade * 1000
     );
-    return response?.data;
-  };
 
-  const getHoldingToken = async (address) => {
-    const response = await nimbus
-      .get(`/v2/address/${address}/holding?chain=ALL`)
-      .then((response) => response.data);
-    return response;
+    unRealizedProfit = tradingStatsMeta?.reduce(
+      (prev, item) => prev + Number(item.unrealizedProfit),
+      0
+    );
+
+    realizedProfit = tradingStatsMeta.reduce(
+      (prev, item) => prev + Number(item.realizedProfit),
+      0
+    );
+
+    totalCost = tradingStatsMeta?.reduce(
+      (prev, item) => prev + Number(item.cost),
+      0
+    );
+
+    if (unRealizedProfit === 0 && realizedProfit === 0) {
+      set30DayPnl = 0;
+    } else {
+      set30DayPnl =
+        ((unRealizedProfit + realizedProfit - totalCost) / totalCost) * 100;
+    }
   };
 
   $: queryTradingStats = createQuery({
@@ -101,32 +129,12 @@
   }
 
   $: {
-    if (!$queryTradingStats.isError && $queryTradingStats?.data !== undefined) {
-      const tradingStatsMeta = $queryTradingStats?.data?.metadata.filter(
-        (item) => dayjs().subtract(30, "day").valueOf() < item.lastTrade * 1000
-      );
-
-      unRealizedProfit = tradingStatsMeta?.reduce(
-        (prev, item) => prev + Number(item.unrealizedProfit),
-        0
-      );
-
-      realizedProfit = tradingStatsMeta.reduce(
-        (prev, item) => prev + Number(item.realizedProfit),
-        0
-      );
-
-      totalCost = tradingStatsMeta?.reduce(
-        (prev, item) => prev + Number(item.cost),
-        0
-      );
-
-      if (unRealizedProfit === 0 && realizedProfit === 0) {
-        set30DayPnl = 0;
-      } else {
-        set30DayPnl =
-          ((unRealizedProfit + realizedProfit - totalCost) / totalCost) * 100;
-      }
+    if (
+      !$queryTradingStats.isError &&
+      $queryTradingStats.data &&
+      $queryTradingStats?.data !== undefined
+    ) {
+      formatDataTradingStats($queryTradingStats.data);
     }
   }
 </script>

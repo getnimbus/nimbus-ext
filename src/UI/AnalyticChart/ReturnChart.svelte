@@ -28,31 +28,6 @@
 
   export let selectedTimeFrame;
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let packageSelected = "";
-  selectedPackage.subscribe((value) => {
-    packageSelected = value;
-  });
-
   let data;
   let optionBar = {
     tooltip: {
@@ -65,7 +40,7 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${dayjs(params[0].axisValueLabel).format("YYYY-MM-DD")}
               </div>
@@ -74,7 +49,7 @@
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
@@ -134,21 +109,21 @@
   };
 
   $: enabledQuery =
-    selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+    $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          (typeWalletAddress === "EVM" ||
-            typeWalletAddress === "CEX" ||
-            typeWalletAddress === "SOL" ||
-            typeWalletAddress === "BUNDLE") &&
-            selectedWallet.length !== 0 &&
-            packageSelected !== "FREE"
+          ($typeWallet === "EVM" ||
+            $typeWallet === "CEX" ||
+            $typeWallet === "SOL" ||
+            $typeWallet === "BUNDLE") &&
+            $wallet.length !== 0 &&
+            $selectedPackage !== "FREE"
         );
 
   $: query = createQuery({
-    queryKey: ["compare", selectedWallet, selectedChain, selectedTimeFrame],
+    queryKey: ["compare", $wallet, $chain, selectedTimeFrame],
     enabled: enabledQuery,
-    queryFn: () => getAnalyticCompare(selectedWallet, selectedTimeFrame),
+    queryFn: () => getAnalyticCompare($wallet, selectedTimeFrame),
     staleTime: Infinity,
   });
 
@@ -256,7 +231,7 @@
     data?.base?.netWorthChange?.networth30D >
     data?.btc?.netWorthChange?.networth30D;
 
-  $: theme = darkMode ? "dark" : "white";
+  $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
 <AnalyticSection>
@@ -284,10 +259,10 @@
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              darkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
             }`}
           >
-            {#if typeWalletAddress === "CEX"}
+            {#if $typeWallet === "CEX"}
               Not enough data. CEX integration can only get data from the day
               you connect
             {:else}
@@ -508,10 +483,10 @@
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              darkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
             }`}
           >
-            {#if typeWalletAddress === "CEX"}
+            {#if $typeWallet === "CEX"}
               Not enough data. CEX integration can only get data from the day
               you connect
             {:else}
@@ -531,7 +506,7 @@
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >
               <img
-                src={darkMode ? LogoWhite : Logo}
+                src={$isDarkMode ? LogoWhite : Logo}
                 alt=""
                 width="140"
                 height="140"

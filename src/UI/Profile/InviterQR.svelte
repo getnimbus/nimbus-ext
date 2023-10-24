@@ -2,21 +2,11 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import QRCode from "qrcode-generator";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, user, wallet, chain, typeWallet } from "~/store";
+  import { user, wallet, chain, typeWallet } from "~/store";
 
   let qrImageDataUrl = undefined;
   let userAddress = "";
   let link = "";
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
 
   const queryClient = useQueryClient();
   const qrcode = QRCode(0, "L");

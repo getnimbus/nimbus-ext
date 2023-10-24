@@ -18,31 +18,12 @@
   const currentDate = dayjs();
   const next7Days = currentDate.add(7, "day");
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let packageSelected = "";
-  selectedPackage.subscribe((value) => {
-    packageSelected = value;
-  });
-
-  // let userInfo = {};
-  // user.subscribe((value) => {
-  //   userInfo = value;
-  // });
-
   // let listNft = [];
   // let isLoading = false;
 
   let isOpenModal = false;
   let isLoadingSendMail = false;
   let email = "";
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
 
   // const handleBuy = async () => {
   //   const res = await nimbus
@@ -78,7 +59,7 @@
   // };
 
   // $: {
-  //   if (Object.keys(userInfo).length !== 0) {
+  //   if (Object.keys($user).length !== 0) {
   //     handleGetNft();
   //   } else {
   //     listNft = [];
@@ -100,7 +81,7 @@
         "/subscription/analysis",
         {
           email: data.email,
-          address: selectedWallet,
+          address: $wallet,
         },
         {
           headers: { "Content-Type": "application/json" },
@@ -122,7 +103,7 @@
     const next7DaysStorage = localStorage.getItem("next7Days");
     const isSubmitStorage = localStorage.getItem("isShowFormAnalytic");
 
-    if (packageSelected === "FREE") {
+    if ($selectedPackage === "FREE") {
       if (currentDayStorage && next7DaysStorage) {
         const isTodayBetween = currentDate.isBetween(
           currentDayStorage,
@@ -144,7 +125,7 @@
 </script>
 
 <ErrorBoundary>
-  <!-- {#if Object.keys(userInfo).length === 0}
+  <!-- {#if Object.keys($user).length === 0}
     <div class="flex justify-center items-center h-screen">
       <div class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center">
         <div class="text-lg">Please connect wallet to use this feature</div>
@@ -214,7 +195,7 @@
           <div class="flex flex-col gap-1">
             <div
               class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-                email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
               }`}
             >
               <div class="xl:text-base text-2xl text-[#666666] font-medium">
@@ -227,7 +208,7 @@
                 placeholder="Your email"
                 value=""
                 class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                  email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                  email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                 }
               `}
                 on:keyup={({ target: { value } }) => (email = value)}

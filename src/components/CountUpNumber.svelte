@@ -25,9 +25,6 @@
   export let type: "amount" | "balance" | "percent" | "value" = "balance";
   export let personalValue: boolean = false;
 
-  let hiddenPortfolio = false;
-  isHidePortfolio.subscribe((value) => (hiddenPortfolio = value));
-
   let numberFormat = 0;
   let numberSize = "";
   let showTooltip = false;
@@ -36,7 +33,7 @@
   $: numberFormat = formatBigBalance($formatted).number_format;
 </script>
 
-{#if hiddenPortfolio && personalValue === true}
+{#if $isHidePortfolio && personalValue === true}
   <span>******</span>
 {:else}
   <span class="relative">

@@ -62,11 +62,6 @@
     },
   };
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   let isLoading = false;
   let listAddressLabel = [];
   let selectedHighlight = {
@@ -162,7 +157,7 @@
   <div class={`${isLoading ? "h-[400px]" : ""}`}>
     <div
       class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
-        darkMode ? "bg-[#131313]" : "bg-[#fff]"
+        $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
       }`}
     >
       <table class="table-auto xl:w-full w-[1200px] h-full">
@@ -230,8 +225,8 @@
                     >
                       <Copy
                         address={item.address}
-                        iconColor={`${darkMode ? "#fff" : "#000"}`}
-                        color={`${darkMode ? "#fff" : "#000"}`}
+                        iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                        color={`${$isDarkMode ? "#fff" : "#000"}`}
                       />
                     </div>
                   </td>

@@ -14,16 +14,6 @@
   import Logo from "~/assets/logo-1.svg";
   import LoadingPremium from "~/components/LoadingPremium.svelte";
 
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
   let selectedType: "category" | "sector" | "rank" = "category";
   let isLoadingSectorGrowth = false;
   let isEmptySectorGrowth = false;
@@ -166,8 +156,8 @@
       const response: AnalyticSectorGrowthRes = await sendMessage(
         "getSectorGrowth",
         {
-          address: selectedWallet,
-          chain: selectedChain,
+          address: $wallet,
+          chain: $chain,
           // fromDate: "YYYY-MM-DD",
           // toDate: "YYYY-MM-DD",
         }
@@ -177,7 +167,7 @@
         isEmptySectorGrowth = true;
         isLoadingSectorGrowth = false;
         return;
-      } else if (selectedWallet === response?.address) {
+      } else if ($wallet === response?.address) {
         if (response?.result?.length === 0) {
           isEmptySectorGrowth = true;
           isLoadingSectorGrowth = false;
@@ -311,9 +301,7 @@
 
   const getPersonalizeTag = async () => {
     try {
-      const response = await nimbus.get(
-        `/address/${selectedWallet}/personalize/tag`
-      );
+      const response = await nimbus.get(`/address/${$wallet}/personalize/tag`);
       if (response && response.data) {
         const categoriesData = Object.getOwnPropertyNames(response.data);
         const categoriesDataList = categoriesData.map((item) => {
@@ -413,8 +401,8 @@
   }
 
   $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
+    if ($wallet || $chain) {
+      if ($wallet?.length !== 0 && $chain?.length !== 0) {
         typeListCategory = [...typeList];
         dataRank = [];
         dataCategory = [];
