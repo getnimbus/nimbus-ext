@@ -995,17 +995,17 @@ export const handleImgError = async (e, image, defaultImage) => {
     })
       .then((r) => r.blob())
       .then((d) => {
+        e.target.onerror = null;
         e.target.src = window.URL.createObjectURL(d);
-        e.onerror = null;
       })
       .catch(() => {
+        e.target.onerror = null;
         e.target.src =
           defaultImage;
-        e.onerror = null;
       })
   } else {
+    e.target.onerror = null;
     e.target.src =
       defaultImage;
-    e.onerror = null;
   }
 }; 
