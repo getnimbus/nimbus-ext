@@ -991,17 +991,16 @@ export const formatTransactionTime = (date: Date) => {
 export const handleImgError = async (e, image, defaultImage) => {
   e.target.onerror = null; // break loop
   if (image.includes("https://api.center.dev")) {
-    const res = await fetch(image, {
+    fetch(image, {
       headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
     })
       .then((r) => r.blob())
       .then((d) => {
-        return window.URL.createObjectURL(d);
+        e.target.src = window.URL.createObjectURL(d);
       })
       .catch(() => {
-        return defaultImage;
+        e.target.src = defaultImage
       })
-    e.target.src = window.URL.createObjectURL(res);
   } else {
     e.target.src =
       defaultImage;
