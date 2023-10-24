@@ -1,6 +1,6 @@
 <script>
   import { typeWallet, isDarkMode, isHidePortfolio } from "~/store";
-  import { detectedChain, shorterName } from "~/utils";
+  import { detectedChain, shorterName, handleImgError } from "~/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -86,10 +86,12 @@
           width="30"
           height="30"
           class="rounded-full"
-          on:error={() => {
-            logo =
-              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-          }}
+          on:error={(e) =>
+            handleImgError(
+              e,
+              logo,
+              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+            )}
         />
         {#if (typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE") && data?.chain !== "CEX" && data?.chain !== "SOL" && data?.chain !== "BTC"}
           <div class="absolute -top-2 -right-1">
@@ -568,10 +570,12 @@
                 width="46"
                 height="46"
                 class="rounded-full"
-                on:error={() => {
-                  logo =
-                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-                }}
+                on:error={(e) =>
+                  handleImgError(
+                    e,
+                    logo,
+                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                  )}
               />
               {#if (typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE") && selectedTokenDetail?.chain !== "CEX" && selectedTokenDetail?.chain !== "BTC"}
                 <div class="absolute -top-2 -right-1">
