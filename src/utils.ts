@@ -1005,17 +1005,31 @@ export const driverObj = driver({
     //   },
     // },
     {
-      element: "#view-the-pnl",
+      element: ".view-the-pnl",
       popover: {
         title: "Introduce App",
         description: "Viewing the PnL for Token and NFT",
       },
     },
     {
-      element: ".view-token-detail",
+      element: ".view-token-detail1",
       popover: {
         title: "Introduce App",
-        description: "View token detail",
+        description: "View your token PnL",
+      },
+    },
+    {
+      element: ".view-token-detail2",
+      popover: {
+        title: "Introduce App",
+        description: "View your token PnL",
+      },
+    },
+    {
+      element: ".view-icon-detail",
+      popover: {
+        title: "Introduce App",
+        description: "Get the detail",
       },
     },
     {

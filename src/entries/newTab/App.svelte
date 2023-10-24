@@ -409,10 +409,11 @@
   :global(body) .driver-popover-prev-btn,
   :global(body) .driver-popover-next-btn {
     border-radius: 12px;
-    padding: 10px 16px 10px 16px;
+    padding: 8px 16px 8px 16px;
     background-color: #1e96fc;
     color: white;
     text-shadow: none;
+    border: none;
   }
 
   :global(body) .driver-popover-prev-btn:hover,
@@ -422,5 +423,10 @@
 
   :global(body) .driver-popover-footer {
     gap: 25px;
+  }
+  :global(body) .driver-popover-close-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 25px;
   }
 </style>

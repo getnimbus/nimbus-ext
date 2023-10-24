@@ -801,11 +801,7 @@
   }
 
   $: {
-    if (
-      $userPublicAddress &&
-      !localStorage.getItem("view-portfolio-tour") &&
-      loading
-    ) {
+    if (!localStorage.getItem("view-portfolio-tour") && loading) {
       driverObj.drive();
       localStorage.setItem("view-portfolio-tour", "true");
     }
