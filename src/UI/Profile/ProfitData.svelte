@@ -101,6 +101,12 @@
       set30DayPnl =
         ((unRealizedProfit + realizedProfit - totalCost) / totalCost) * 100;
     }
+
+    // console.log({
+    //   unRealizedProfit,
+    //   realizedProfit,
+    //   totalCost,
+    // });
   };
 
   $: queryTradingStats = createQuery({
@@ -145,7 +151,7 @@
       <Loading />
     </div>
   {:else}
-    <div class="grid xl:grid-cols-6 grid-cols-3 gap-5">
+    <div class="grid xl:grid-cols-5 grid-cols-3 gap-5">
       <div class="flex flex-col gap-2 justify-between">
         <div class="text-xl xl:text-xs font-medium text_00000099">
           Portfolio Value
@@ -191,7 +197,7 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-2 justify-between">
+      <!-- <div class="flex flex-col gap-2 justify-between">
         <div class="text-xl xl:text-xs font-medium text_00000099">30D PnL</div>
         <div
           class={`flex items-center xl:text-base text-lg ${
@@ -208,7 +214,7 @@
             type={Math.abs(Number(set30DayPnl)) > 100 ? "balance" : "percent"}
           />%
         </div>
-      </div>
+      </div> -->
 
       <div class="flex flex-col gap-2 justify-between">
         <div class="text-xl xl:text-xs font-medium text_00000099">
