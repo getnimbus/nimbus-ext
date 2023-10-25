@@ -392,7 +392,7 @@
                   <div
                     class="text-right xl:text-xs text-xl uppercase font-medium"
                   >
-                    Average Cost
+                    Avg Cost
                   </div>
                 </th>
                 <th
