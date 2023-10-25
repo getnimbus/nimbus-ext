@@ -321,7 +321,13 @@
     }
   }
 
-  $: colspan = $typeWallet === "SOL" || $typeWallet === "EVM" ? 8 : 7;
+  $: colspan =
+    $typeWallet === "SOL" ||
+    $typeWallet === "EVM" ||
+    $typeWallet === "BUNDLE" ||
+    $typeWallet === "CEX"
+      ? 8
+      : 7;
 
   $: {
     if (selectedWallet || $chain) {
@@ -473,7 +479,8 @@
                   class={`py-3 ${
                     $typeWallet === "SOL" ||
                     $typeWallet === "EVM" ||
-                    $typeWallet === "BUNDLE"
+                    $typeWallet === "BUNDLE" ||
+                    $typeWallet === "CEX"
                       ? ""
                       : "pr-3 rounded-tr-[10px]"
                   }`}
@@ -484,8 +491,8 @@
                     Unrealized PnL
                   </div>
                 </th>
-                {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
-                  <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
+                {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+                  <th class="py-3 xl:w-14 w-32 rounded-tr-[10px]" />
                 {/if}
               </tr>
             </thead>
