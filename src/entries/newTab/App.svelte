@@ -66,7 +66,6 @@
   <QueryClientProvider client={queryClient}>
     <Mixpanel>
       <Router history={undefined}>
-        <!-- flex flex-col pb-40 xl:pb-14  -->
         <div class="flex flex-col pb-40 xl:pb-14">
           <Header />
 
@@ -397,6 +396,7 @@
       display: none !important;
     }
   }
+
   :global(body) .driver-popover {
     /* border-radius: 10px; */
     border-radius: 12px;
