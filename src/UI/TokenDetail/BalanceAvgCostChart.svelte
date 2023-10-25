@@ -7,6 +7,7 @@
 
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import EChart from "~/components/EChart.svelte";
+  import TooltipNumber from "~/components/TooltipNumber.svelte";
 
   import Logo from "~/assets/logo-1.svg";
   import LogoWhite from "~/assets/logo-white.svg";
@@ -20,32 +21,12 @@
       trigger: "axis",
       extraCssText: "z-index: 9997",
       formatter: function (params) {
-        let price = "";
-        if (params[0].axisValue.toString().includes("e-")) {
-          const numStr = params[0].axisValue.toString();
-          const eIndex = numStr.indexOf("e");
-          if (eIndex !== -1) {
-            const significand = parseFloat(
-              numStr
-                .slice(0, 4)
-                .split("")
-                .filter((e) => e != ".")
-                .join("")
-            );
-
-            price = `$0.0...0${significand}`;
-          }
-        } else {
-          price =
-            "$" + numeral(Math.abs(params[0].axisValue)).format("0.000000a");
-        }
-
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 260px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
                 $isDarkMode ? "white" : "black"
               }">
-                ${price}
+                $${formatPrice(params[0].axisValue)}
               </div>
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
@@ -59,7 +40,7 @@
                   <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                     $isDarkMode ? "white" : "black"
                   };">
-                    ${numeral(params[0]?.value[1]).format("0.000000a")}
+                    ${formatPrice(params[0]?.value[1])}
                   </div>
                 </div>
               </div>
@@ -75,7 +56,7 @@
                   <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                     $isDarkMode ? "white" : "black"
                   };">
-                    $${numeral(avgCost).format("0.000000a")}
+                    $${formatPrice(avgCost)}
                   </div>
                 </div>
               </div>
@@ -91,7 +72,7 @@
                   <div style="margin-top: 4px; display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
                     $isDarkMode ? "white" : "black"
                   };">
-                    $${numeral(data?.market_price).format("0.000000a")}
+                    $${formatPrice(data?.market_price)}
                   </div>
                 </div>
               </div>
@@ -118,23 +99,7 @@
       },
       axisLabel: {
         formatter: function (value, index) {
-          if (value.toString().includes("e-")) {
-            const numStr = value.toString();
-            const eIndex = numStr.indexOf("e");
-            if (eIndex !== -1) {
-              const significand = parseFloat(
-                numStr
-                  .slice(0, 4)
-                  .split("")
-                  .filter((e) => e != ".")
-                  .join("")
-              );
-
-              return `$0.0...0${significand}`;
-            }
-          } else {
-            return "$" + numeral(Math.abs(value)).format("0.000000a");
-          }
+          return "$" + formatPrice(value);
         },
         fontSize: autoFontSize(),
       },
@@ -176,6 +141,33 @@
       user.update((n) => (n = {}));
     },
   });
+
+  const formatPrice = (value: number) => {
+    if (value.toString().includes("e-")) {
+      const numStr = value.toString();
+      const eIndex = numStr.indexOf("e");
+      if (eIndex !== -1) {
+        const significand = parseFloat(
+          numStr
+            .slice(0, 4)
+            .split("")
+            .filter((e) => e != ".")
+            .join("")
+        );
+
+        return `0.0...0${significand}`;
+      }
+    } else {
+      return numeral(Math.abs(value)).format("0.000000a");
+    }
+  };
+
+  let sumCount = 0;
+  let sumCountWinHistoryTokenDetail = 0;
+  let sumCountLossHistoryTokenDetail = 0;
+  let sumTotalToken = 0;
+  let sumWinProfitHistoryTokenDetail = 0;
+  let sumLossProfitHistoryTokenDetail = 0;
 
   $: {
     if (
@@ -233,6 +225,70 @@
             },
           ],
         };
+
+        sumCount = $queryHistoryTokenDetailAnalysis.data.reduce(
+          (prev, item) => prev + Number(item.count),
+          0
+        );
+
+        sumTotalToken = $queryHistoryTokenDetailAnalysis.data.reduce(
+          (prev, item) => prev + Number(item.totalToken),
+          0
+        );
+
+        // logic win
+        const winHistoryTokenDetail =
+          $queryHistoryTokenDetailAnalysis.data.filter(
+            (item) => item.price < data?.market_price
+          );
+
+        const formatWinHistoryTokenDetail = winHistoryTokenDetail.map(
+          (item) => {
+            return {
+              ...item,
+              valueProfit:
+                Number(data?.market_price) * Number(item.totalToken) -
+                Number(item.price) * Number(item.totalToken),
+            };
+          }
+        );
+
+        sumWinProfitHistoryTokenDetail = formatWinHistoryTokenDetail.reduce(
+          (prev, item) => prev + Number(item.valueProfit),
+          0
+        );
+
+        sumCountWinHistoryTokenDetail = winHistoryTokenDetail.reduce(
+          (prev, item) => prev + Number(item.count),
+          0
+        );
+
+        // logic lose
+        const lossHistoryTokenDetail =
+          $queryHistoryTokenDetailAnalysis.data.filter(
+            (item) => item.price > data?.market_price
+          );
+
+        const formatLossHistoryTokenDetail = lossHistoryTokenDetail.map(
+          (item) => {
+            return {
+              ...item,
+              valueProfit:
+                Number(data?.market_price) * Number(item.totalToken) -
+                Number(item.price) * Number(item.totalToken),
+            };
+          }
+        );
+
+        sumLossProfitHistoryTokenDetail = formatLossHistoryTokenDetail.reduce(
+          (prev, item) => prev + Number(item.valueProfit),
+          0
+        );
+
+        sumCountLossHistoryTokenDetail = lossHistoryTokenDetail.reduce(
+          (prev, item) => prev + Number(item.count),
+          0
+        );
       }
     } else {
       optionBar = {
@@ -286,41 +342,109 @@
   $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
-{#if $queryHistoryTokenDetailAnalysis.isFetching}
-  <div class="flex items-center justify-center h-[475px]">
-    <LoadingPremium />
-  </div>
-{:else}
-  <div class="h-full">
-    {#if $queryHistoryTokenDetailAnalysis.isError || ($queryHistoryTokenDetailAnalysis.data !== undefined && $queryHistoryTokenDetailAnalysis.data.length === 0)}
-      <div
-        class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
-      >
-        Empty
-      </div>
-    {:else}
-      <div class="relative">
-        <EChart
-          id={id + "bar-chart"}
-          {theme}
-          notMerge={true}
-          option={optionBar}
-          height={485}
-        />
+<div class="flex flex-col pb-10">
+  {#if $queryHistoryTokenDetailAnalysis.isFetching}
+    <div class="flex items-center justify-center h-[475px]">
+      <LoadingPremium />
+    </div>
+  {:else}
+    <div class="h-full">
+      {#if $queryHistoryTokenDetailAnalysis.isError || ($queryHistoryTokenDetailAnalysis.data !== undefined && $queryHistoryTokenDetailAnalysis.data.length === 0)}
         <div
-          class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
+          class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
         >
-          <img
-            src={$isDarkMode ? LogoWhite : Logo}
-            alt=""
-            width="140"
-            height="140"
+          Empty
+        </div>
+      {:else}
+        <div class="relative">
+          <EChart
+            id={id + "bar-chart"}
+            {theme}
+            notMerge={true}
+            option={optionBar}
+            height={485}
           />
+          <div
+            class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
+          >
+            <img
+              src={$isDarkMode ? LogoWhite : Logo}
+              alt=""
+              width="140"
+              height="140"
+            />
+          </div>
+        </div>
+      {/if}
+    </div>
+  {/if}
+
+  <div class="flex flex-col gap-14">
+    <div class="flex flex-col gap-2">
+      <div class="xl:text-lg text-xl">Win / Lose addresses</div>
+      <div
+        class="h-2 rounded-lg relative"
+        style={`background: linear-gradient(to right, #25b770 ${(
+          (sumCountWinHistoryTokenDetail / sumCount) *
+          100
+        ).toFixed(2)}%, #e14040 ${(
+          (sumCountLossHistoryTokenDetail / sumCount) *
+          100
+        ).toFixed(2)}%)`}
+      >
+        <div class="absolute top-5 left-0 xl:text-sm text-xl">
+          <TooltipNumber
+            number={(sumCountWinHistoryTokenDetail / sumCount) * 100}
+            type="percent"
+          />% Win
+        </div>
+        <div class="absolute top-5 right-0 xl:text-sm text-xl">
+          <TooltipNumber
+            number={(sumCountLossHistoryTokenDetail / sumCount) * 100}
+            type="percent"
+          />% Lose
         </div>
       </div>
-    {/if}
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <div class="xl:text-lg text-xl">Profit / Loss</div>
+      <div
+        class="h-2 rounded-lg relative"
+        style={`background: linear-gradient(to right, #25b770 ${Math.abs(
+          (sumWinProfitHistoryTokenDetail /
+            (Math.abs(sumLossProfitHistoryTokenDetail) +
+              Math.abs(sumWinProfitHistoryTokenDetail))) *
+            100
+        ).toFixed(2)}%, #e14040 ${Math.abs(
+          (sumLossProfitHistoryTokenDetail /
+            (Math.abs(sumLossProfitHistoryTokenDetail) +
+              Math.abs(sumWinProfitHistoryTokenDetail))) *
+            100
+        ).toFixed(2)}%)`}
+      >
+        <div class="flex gap-1 absolute top-5 left-0 xl:text-sm text-xl w-max">
+          Profit
+          <div class="flex">
+            {#if sumWinProfitHistoryTokenDetail < 0}-{/if}<TooltipNumber
+              number={Math.abs(sumWinProfitHistoryTokenDetail)}
+              type="value"
+            />
+          </div>
+        </div>
+        <div class="flex gap-1 absolute top-5 right-0 xl:text-sm text-xl">
+          Loss
+          <div class="flex">
+            {#if sumLossProfitHistoryTokenDetail < 0}-{/if}<TooltipNumber
+              number={Math.abs(sumLossProfitHistoryTokenDetail)}
+              type="value"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-{/if}
+</div>
 
 <style windi:preflights:global windi:safelist:global>
 </style>
