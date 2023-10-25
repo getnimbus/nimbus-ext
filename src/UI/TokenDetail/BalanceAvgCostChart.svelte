@@ -413,11 +413,13 @@
         class="h-2 rounded-lg relative"
         style={`background: linear-gradient(to right, #25b770 ${Math.abs(
           (sumWinProfitHistoryTokenDetail /
-            (Number(data?.market_price) * Number(sumTotalToken))) *
+            (Math.abs(sumLossProfitHistoryTokenDetail) +
+              Math.abs(sumWinProfitHistoryTokenDetail))) *
             100
         ).toFixed(2)}%, #e14040 ${Math.abs(
           (sumLossProfitHistoryTokenDetail /
-            (Number(data?.market_price) * Number(sumTotalToken))) *
+            (Math.abs(sumLossProfitHistoryTokenDetail) +
+              Math.abs(sumWinProfitHistoryTokenDetail))) *
             100
         ).toFixed(2)}%)`}
       >
