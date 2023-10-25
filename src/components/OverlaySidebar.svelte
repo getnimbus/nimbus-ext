@@ -1,31 +1,5 @@
 <script>
-  import { onMount, createEventDispatcher } from "svelte";
-  import { isDarkMode } from "~/store";
-  const dispatch = createEventDispatcher();
-
   export let isOpen;
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  const handleClose = () => {
-    dispatch("close");
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === "Escape") {
-      handleClose();
-    }
-  };
-
-  onMount(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  });
 
   // Prevent layout flick
   $: if (isOpen) {

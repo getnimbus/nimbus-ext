@@ -10,6 +10,7 @@
     isDarkMode,
     selectedBundle,
     triggerConnectWallet,
+    userPublicAddress,
   } from "~/store";
   import { i18n } from "~/lib/i18n";
   import dayjs from "dayjs";
@@ -22,6 +23,7 @@
     listLogoCEX,
     listProviderCEX,
     clickOutside,
+    driverObj,
   } from "~/utils";
   import mixpanel from "mixpanel-browser";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
@@ -53,6 +55,7 @@
   import FollowWhale from "~/assets/whale-tracking.gif";
   import Success from "~/assets/shield-done.svg";
   import Bundles from "~/assets/bundles.png";
+  // import "driver.js/dist/driver.css";
 
   const MultipleLang = {
     empty_wallet: i18n("newtabPage.empty-wallet", "No account added yet."),
@@ -110,41 +113,6 @@
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
-  let packageSelected = "";
-  selectedPackage.subscribe((value) => {
-    packageSelected = value;
-  });
-
-  let selectBundle = {};
-  selectedBundle.subscribe((value) => {
-    selectBundle = value;
-  });
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -257,9 +225,6 @@
 
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
     return response?.data;
   };
 
@@ -327,8 +292,7 @@
       window.history.replaceState(
         null,
         "",
-        window.location.pathname +
-          `?type=${typeWalletAddress}&address=${selectedWallet}`
+        window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
       );
     }
 
@@ -345,8 +309,7 @@
         window.history.replaceState(
           null,
           "",
-          window.location.pathname +
-            `?type=${typeWalletAddress}&address=${selectedWallet}`
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
         );
       }
 
@@ -355,7 +318,7 @@
           null,
           "",
           window.location.pathname +
-            `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
+            `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
         );
       }
     }
@@ -369,8 +332,7 @@
         window.history.replaceState(
           null,
           "",
-          window.location.pathname +
-            `?type=${typeWalletAddress}&address=${selectedWallet}`
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
         );
       }
     }
@@ -378,7 +340,7 @@
 
   const handleUpdateParams = () => {
     const selected = listAddress.find((item) => {
-      return item.value === selectedWallet;
+      return item.value === $wallet;
     });
 
     if (selected && Object.keys(selected).length !== 0) {
@@ -389,8 +351,7 @@
         window.history.replaceState(
           null,
           "",
-          window.location.pathname +
-            `?type=${typeWalletAddress}&address=${selectedWallet}`
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
         );
       }
 
@@ -401,16 +362,15 @@
         window.history.replaceState(
           null,
           "",
-          window.location.pathname +
-            `?type=${typeWalletAddress}&address=${selectedWallet}`
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
         );
       }
 
       if (selected.type === "EVM") {
         typeWallet.update((n) => (n = "EVM"));
         browser.storage.sync.set({ typeWalletAddress: "EVM" });
-        if (selectedChain) {
-          chain.update((n) => (n = selectedChain));
+        if ($chain) {
+          chain.update((n) => (n = $chain));
         } else {
           chain.update((n) => (n = "ALL"));
         }
@@ -418,7 +378,7 @@
           null,
           "",
           window.location.pathname +
-            `?type=${typeWalletAddress}&chain=${selectedChain}&address=${selectedWallet}`
+            `?type=${$typeWallet}&chain=${$chain}&address=${$wallet}`
         );
       }
 
@@ -429,8 +389,7 @@
         window.history.replaceState(
           null,
           "",
-          window.location.pathname +
-            `?type=${typeWalletAddress}&address=${selectedWallet}`
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
         );
       }
 
@@ -441,8 +400,7 @@
         window.history.replaceState(
           null,
           "",
-          window.location.pathname +
-            `?type=${typeWalletAddress}&address=${selectedWallet}`
+          window.location.pathname + `?type=${$typeWallet}&address=${$wallet}`
         );
       }
     }
@@ -735,7 +693,7 @@
     try {
       await nimbus.post("/subscription/analysis", {
         email: data.email,
-        address: selectedWallet,
+        address: $wallet,
       });
       isLoadingSendMail = false;
       localStorage.setItem("isGetUserEmailYet", "true");
@@ -764,17 +722,17 @@
   });
 
   $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
-        browser.storage.sync.set({ selectedWallet: selectedWallet });
-        browser.storage.sync.set({ selectedChain: selectedChain });
+    if ($wallet || $chain) {
+      if ($wallet?.length !== 0 && $chain?.length !== 0) {
+        browser.storage.sync.set({ selectedWallet: $wallet });
+        browser.storage.sync.set({ selectedChain: $chain });
 
-        if (selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0") {
+        if ($wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0") {
           window.history.replaceState(
             null,
             "",
             window.location.pathname +
-              `?type=EVM&chain=${selectedChain}&address=${selectedWallet}`
+              `?type=EVM&chain=${$chain}&address=${$wallet}`
           );
         } else {
           handleUpdateParams();
@@ -803,7 +761,7 @@
   $: {
     if (
       listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2 &&
-      packageSelected === "FREE"
+      $selectedPackage === "FREE"
     ) {
       isDisabled = true;
     } else {
@@ -812,7 +770,7 @@
 
     if (
       listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6 &&
-      packageSelected === "EXPLORER"
+      $selectedPackage === "EXPLORER"
     ) {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
@@ -825,7 +783,7 @@
       isDisabled = false;
     }
 
-    if (packageSelected === "PROFESSIONAL") {
+    if ($selectedPackage === "PROFESSIONAL") {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
         localStorage.getItem("isGetUserEmailYet") === "false"
@@ -837,11 +795,11 @@
 
   $: {
     if (isDisabled) {
-      if (packageSelected === "FREE") {
+      if ($selectedPackage === "FREE") {
         tooltipDisableAddBtn =
           "You've reached the maximum number of accounts. Upgrade to the EXPLORER Plan to add more";
       }
-      if (packageSelected === "EXPLORER") {
+      if ($selectedPackage === "EXPLORER") {
         tooltipDisableAddBtn =
           "You've reached the maximum number of accounts. Upgrade to the ALPHA Plan to add more";
       }
@@ -849,7 +807,7 @@
   }
 
   $: {
-    if (Object.keys(userInfo).length === 0) {
+    if (Object.keys($user).length === 0) {
       tooltipDisableAddBtn = "Connect wallet to add account";
       listAddress = [];
       const urlParams = new URLSearchParams(window.location.search);
@@ -861,28 +819,26 @@
   }
 
   $: {
-    if (selectedWallet) {
+    if ($wallet) {
       selectedBundle.update(
-        (n) => (n = listAddress.find((item) => item.value === selectedWallet))
+        (n) => (n = listAddress.find((item) => item.value === $wallet))
       );
     }
   }
 
   $: {
-    if (selectedWallet) {
+    if ($wallet) {
       const selectedAddress = listAddress
         .sort((a, b) => {
           if (a.type === "BUNDLE" && a.label === "Your wallets") return -1;
           if (b.type === "BUNDLE" && b.label === "Your wallets") return 1;
           return 0;
         })
-        .find(
-          (item) => item.value.toLowerCase() === selectedWallet.toLowerCase()
-        );
+        .find((item) => item.value.toLowerCase() === $wallet.toLowerCase());
       indexSelectedAddress = listAddress.indexOf(selectedAddress);
     }
   }
-
+  
   const handleSelectNextAddress = () => {
     if (indexSelectedAddress < listAddress.length - 1) {
       indexSelectedAddress = indexSelectedAddress + 1;
@@ -894,8 +850,8 @@
       })[indexSelectedAddress];
 
       wallet.update((n) => (n = selectAddress.value));
-      browser.storage.sync.set({ selectedWallet: selectedWallet });
-      browser.storage.sync.set({ selectedChain: selectedChain });
+      browser.storage.sync.set({ selectedWallet: $wallet });
+      browser.storage.sync.set({ selectedChain: $chain });
       handleUpdateParams();
     }
   };
@@ -911,8 +867,8 @@
       })[indexSelectedAddress];
 
       wallet.update((n) => (n = selectAddress.value));
-      browser.storage.sync.set({ selectedWallet: selectedWallet });
-      browser.storage.sync.set({ selectedChain: selectedChain });
+      browser.storage.sync.set({ selectedWallet: $wallet });
+      browser.storage.sync.set({ selectedChain: $chain });
       handleUpdateParams();
     }
   };
@@ -924,22 +880,22 @@
   </div>
 {:else}
   <div>
-    {#if listAddress.length === 0 && selectedWallet?.length === 0}
+    {#if listAddress.length === 0 && $wallet?.length === 0}
       <div class="flex items-center justify-center h-screen">
         <div class="flex flex-col items-center justify-center w-2/3 gap-4 p-6">
-          {#if $query.isError && Object.keys(userInfo).length !== 0}
+          {#if $query.isError && Object.keys($user).length !== 0}
             <div class="xl:text-lg text-2xl">
               {$query.error}
             </div>
           {:else}
             <div class="xl:text-lg text-2xl">
-              {#if Object.keys(userInfo).length !== 0}
+              {#if Object.keys($user).length !== 0}
                 {MultipleLang.addwallet}
               {:else}
                 Connect wallet to start tracking your investments
               {/if}
             </div>
-            {#if Object.keys(userInfo).length !== 0}
+            {#if Object.keys($user).length !== 0}
               <div class="w-max">
                 <Button
                   variant="tertiary"
@@ -956,6 +912,7 @@
                 <Button
                   on:click={() => {
                     triggerConnectWallet.update((n) => (n = true));
+                    driverObj.destroy();
                   }}
                 >
                   <div class="text-2xl font-medium xl:text-base">
@@ -974,6 +931,7 @@
                     navigate(
                       `/?type=EVM&chain=ALL&address=0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0`
                     );
+                    driverObj.destroy();
                   }}
                 >
                   Try Demo account
@@ -1002,8 +960,7 @@
                           <div
                             id={item.value}
                             class="relative xl:text-base text-2xl text-white py-1 px-2 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
-                            class:hover:no-underline={item.value ===
-                              selectedWallet}
+                            class:hover:no-underline={item.value === $wallet}
                             on:click={() => {
                               wallet.update((n) => (n = item.value));
                             }}
@@ -1011,10 +968,12 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class="w-5 h-5 xl:w-4 xl:h-4"
+                              class={`w-5 h-5 xl:w-4 xl:h-4 ${
+                                item.type !== "BUNDLE" ? "rounded-full" : ""
+                              }`}
                             />
                             {item.label}
-                            {#if item.value === selectedWallet}
+                            {#if item.value === $wallet}
                               <Motion
                                 let:motion
                                 layoutId="active-pill"
@@ -1041,12 +1000,12 @@
                               5,
                               listAddress.length
                             )}
-                            bind:selected={selectedWallet}
+                            bind:selected={$wallet}
                           />
                         </div>
                         {#if listAddress
                           .slice(5, listAddress.length)
-                          .find((item) => item.value === selectedWallet) !== undefined}
+                          .find((item) => item.value === $wallet) !== undefined}
                           <div
                             class="absolute inset-0 rounded-full bg-[#ffffff1c] z-1"
                           />
@@ -1108,8 +1067,7 @@
                           <div
                             id={item.value}
                             class="relative xl:text-base text-2xl text-white py-1 xl:pl-2 xl:pr-3 px-3 flex items-center rounded-[100px] gap-2 cursor-pointer transition-all hover:underline"
-                            class:hover:no-underline={item.value ===
-                              selectedWallet}
+                            class:hover:no-underline={item.value === $wallet}
                             on:click={() => {
                               wallet.update((n) => (n = item.value));
                             }}
@@ -1117,10 +1075,12 @@
                             <img
                               src={item.logo}
                               alt=""
-                              class="w-5 h-5 xl:w-4 xl:h-4"
+                              class={`w-5 h-5 xl:w-4 xl:h-4 ${
+                                item.type !== "BUNDLE" ? "rounded-full" : ""
+                              }`}
                             />
                             {item.label}
-                            {#if item.value === selectedWallet}
+                            {#if item.value === $wallet}
                               <Motion
                                 let:motion
                                 layoutId="active-pill"
@@ -1189,14 +1149,14 @@
                       <div
                         id={item.value}
                         class="w-max flex-shrink-0 relative text-2xl text-white py-1 px-3 flex items-center gap-2 rounded-[100px]"
-                        class:hover:no-underline={item.value === selectedWallet}
+                        class:hover:no-underline={item.value === $wallet}
                         on:click={() => {
                           wallet.update((n) => (n = item.value));
                         }}
                       >
                         <img src={item.logo} alt="" class="w-5 h-5" />
                         {item.label}
-                        {#if item.value === selectedWallet}
+                        {#if item.value === $wallet}
                           <Motion
                             let:motion
                             layoutId="active-pill"
@@ -1249,17 +1209,17 @@
               <div
                 class="relative xl:w-max w-[260px] flex justify-end"
                 on:mouseenter={() => {
-                  if (isDisabled || Object.keys(userInfo).length === 0) {
+                  if (isDisabled || Object.keys($user).length === 0) {
                     showDisableAddWallet = true;
                   }
                 }}
                 on:mouseleave={() => {
-                  if (isDisabled || Object.keys(userInfo).length === 0) {
+                  if (isDisabled || Object.keys($user).length === 0) {
                     showDisableAddWallet = false;
                   }
                 }}
               >
-                {#if isDisabled || Object.keys(userInfo).length === 0}
+                {#if isDisabled || Object.keys($user).length === 0}
                   <div>
                     {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
                       <Button
@@ -1285,13 +1245,13 @@
                     {:else}
                       <Button variant="disabled" disabled>
                         <img
-                          src={darkMode ? PlusBlack : Plus}
+                          src={$isDarkMode ? PlusBlack : Plus}
                           alt=""
                           class="w-4 h-4 xl:w-3 xl:h-3"
                         />
                         <div
                           class={`text-2xl font-medium xl:text-base ${
-                            darkMode ? "text-gray-400" : "text-white"
+                            $isDarkMode ? "text-gray-400" : "text-white"
                           }`}
                         >
                           Add account
@@ -1315,7 +1275,7 @@
                 {#if showDisableAddWallet}
                   <div
                     class={`absolute transform ${
-                      Object.keys(userInfo).length === 0 ? "-top-8" : "-top-12"
+                      Object.keys($user).length === 0 ? "-top-8" : "-top-12"
                     } right-0`}
                     style="z-index: 2147483648;"
                   >
@@ -1346,14 +1306,14 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                  {#if selectBundle && Object.keys(selectBundle).length !== 0 && selectBundle?.type === "BUNDLE"}
+                  {#if $selectedBundle && Object.keys($selectedBundle).length !== 0 && $selectedBundle?.type === "BUNDLE"}
                     <div
                       class="relative"
                       on:click={() => (showPopover = !showPopover)}
                     >
                       <div class="flex cursor-pointer">
-                        {#if selectBundle && selectBundle?.accounts && selectBundle?.accounts?.length > 8}
-                          {#each selectBundle?.accounts.slice(0, 7) as item, index}
+                        {#if $selectedBundle && $selectedBundle?.accounts && $selectedBundle?.accounts?.length > 8}
+                          {#each $selectedBundle?.accounts.slice(0, 7) as item, index}
                             <div class={`${index > 0 && "-ml-2"}`}>
                               <div class="hidden xl:block">
                                 <Avatar src={item?.logo} stacked size="sm" />
@@ -1372,7 +1332,7 @@
                             </div>
                           </div>
                         {:else}
-                          {#each selectBundle?.accounts as item, index}
+                          {#each $selectedBundle?.accounts as item, index}
                             <div class={`${index > 0 && "-ml-2"}`}>
                               <div class="hidden xl:block">
                                 <Avatar src={item?.logo} stacked size="sm" />
@@ -1391,7 +1351,7 @@
                           use:clickOutside
                           on:click_outside={() => (showPopover = false)}
                         >
-                          {#each selectBundle?.accounts as item}
+                          {#each $selectedBundle?.accounts as item}
                             <div class="hidden xl:flex xl:flex-col">
                               <div
                                 class="text-2xl xl:text-xs font-medium text_00000099"
@@ -1401,8 +1361,8 @@
                               <div class="text-3xl xl:text-sm">
                                 <Copy
                                   address={item?.value}
-                                  iconColor={darkMode ? "#fff" : "#000"}
-                                  color={darkMode ? "#fff" : "#000"}
+                                  iconColor={$isDarkMode ? "#fff" : "#000"}
+                                  color={$isDarkMode ? "#fff" : "#000"}
                                   isShorten
                                 />
                               </div>
@@ -1416,8 +1376,8 @@
                               <div class="text-3xl xl:text-sm">
                                 <Copy
                                   address={item?.value}
-                                  iconColor={darkMode ? "#fff" : "#000"}
-                                  color={darkMode ? "#fff" : "#000"}
+                                  iconColor={$isDarkMode ? "#fff" : "#000"}
+                                  color={$isDarkMode ? "#fff" : "#000"}
                                   isShorten
                                   iconSize={24}
                                 />
@@ -1429,15 +1389,11 @@
                     </div>
                   {:else}
                     <div class="hidden text-3xl xl:text-base xl:block">
-                      <Copy
-                        address={selectedWallet}
-                        iconColor="#fff"
-                        color="#fff"
-                      />
+                      <Copy address={$wallet} iconColor="#fff" color="#fff" />
                     </div>
                     <div class="block text-3xl xl:text-base xl:hidden">
                       <Copy
-                        address={selectedWallet}
+                        address={$wallet}
                         iconColor="#fff"
                         color="#fff"
                         isShorten
@@ -1472,7 +1428,7 @@
                     {/if}
                   </div> -->
                   <div class="hidden xl:block">
-                    {#if typeWalletAddress === "BTC"}
+                    {#if $typeWallet === "BTC"}
                       <div
                         use:tooltip={{
                           content: `<tooltip-detail text="Coming soon!" />`,
@@ -1484,7 +1440,7 @@
                         <Button variant="premium" disabled>
                           <div
                             class={`${
-                              darkMode ? "text-gray-400" : "text-white"
+                              $isDarkMode ? "text-gray-400" : "text-white"
                             }`}
                           >
                             Optimize return
@@ -1493,7 +1449,7 @@
                       </div>
                     {:else}
                       <div>
-                        {#if Object.keys(userInfo).length !== 0}
+                        {#if Object.keys($user).length !== 0}
                           <div
                             use:tooltip={{
                               content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
@@ -1507,7 +1463,7 @@
                               on:click={() => {
                                 navigate(
                                   `/compare?address=${encodeURIComponent(
-                                    selectedWallet
+                                    $wallet
                                   )}`
                                 );
                                 mixpanel.track("user_compare");
@@ -1527,7 +1483,7 @@
 
               <div class="flex flex-col gap-6">
                 <div class="block xl:hidden">
-                  {#if typeWalletAddress === "BTC"}
+                  {#if $typeWallet === "BTC"}
                     <div
                       use:tooltip={{
                         content: `<tooltip-detail text="Coming soon!" />`,
@@ -1538,7 +1494,9 @@
                     >
                       <Button variant="premium" disabled>
                         <div
-                          class={`${darkMode ? "text-gray-400" : "text-white"}`}
+                          class={`${
+                            $isDarkMode ? "text-gray-400" : "text-white"
+                          }`}
                         >
                           Optimize return
                         </div>
@@ -1546,7 +1504,7 @@
                     </div>
                   {:else}
                     <div>
-                      {#if Object.keys(userInfo).length !== 0}
+                      {#if Object.keys($user).length !== 0}
                         <div
                           use:tooltip={{
                             content: `<tooltip-detail text="Optimize this portfolio by Minimizing risk & Maximizing return" />`,
@@ -1560,7 +1518,7 @@
                             on:click={() => {
                               navigate(
                                 `/compare?address=${encodeURIComponent(
-                                  selectedWallet
+                                  $wallet
                                 )}`
                               );
                               mixpanel.track("user_compare");
@@ -1575,18 +1533,18 @@
                     </div>
                   {/if}
                 </div>
-                {#if typeWalletAddress === "EVM"}
+                {#if $typeWallet === "EVM"}
                   <Select
                     type="chain"
                     positionSelectList="right-0"
                     listSelect={chainList}
-                    bind:selected={selectedChain}
+                    bind:selected={$chain}
                   />
                 {/if}
               </div>
             </div>
 
-            {#key selectedWallet || selectedChain}
+            {#key $wallet || $chain}
               {#if type === "portfolio"}
                 <slot name="overview" />
               {/if}
@@ -1595,7 +1553,7 @@
         </div>
       </div>
 
-      {#key selectedWallet || selectedChain}
+      {#key $wallet || $chain}
         <slot name="body" />
       {/key}
     {/if}
@@ -1655,7 +1613,7 @@
       <div class="border-t-[1px] relative">
         <div
           class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
-            darkMode ? "bg-[#0f0f0f]" : "bg-white"
+            $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
           } xl:text-sm text-xl px-2`}
         >
           Or
@@ -1669,7 +1627,7 @@
           <div class="flex flex-col gap-1">
             <div
               class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-                address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
               }`}
               class:input-border-error={errors.address &&
                 errors.address.required}
@@ -1684,7 +1642,7 @@
                 placeholder={"Your wallet address"}
                 value=""
                 class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                  address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                  address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                 } `}
                 on:keyup={({ target: { value } }) => (address = value)}
               />
@@ -1698,7 +1656,7 @@
           <div class="flex flex-col gap-1">
             <div
               class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-                label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
               }`}
               class:input-border-error={errors.label && errors.label.required}
             >
@@ -1712,7 +1670,7 @@
                 placeholder={MultipleLang.content.modal_label_label}
                 value=""
                 class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                  label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                  label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                 }
               `}
                 on:keyup={({ target: { value } }) => (label = value)}
@@ -1800,9 +1758,8 @@
     </div>
     <div class="flex justify-end w-full">
       <CopyToClipboard
-        text={`/start ${selectedWallet} ${
-          listAddress.filter((item) => item.value === selectedWallet)?.[0]
-            ?.label || ""
+        text={`/start ${$wallet} ${
+          listAddress.filter((item) => item.value === $wallet)?.[0]?.label || ""
         }`}
         let:copy
       >
@@ -1829,10 +1786,9 @@
               style="z-index: 2147483648;"
             >
               <tooltip-detail
-                text={`/start ${selectedWallet} ${
-                  listAddress.filter(
-                    (item) => item.value === selectedWallet
-                  )?.[0]?.label || ""
+                text={`/start ${$wallet} ${
+                  listAddress.filter((item) => item.value === $wallet)?.[0]
+                    ?.label || ""
                 }`}
               />
             </div>
@@ -1867,7 +1823,7 @@
     >
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+          email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
         }`}
       >
         <div class="xl:text-base text-2xl text-[#666666] font-medium">
@@ -1881,7 +1837,7 @@
           placeholder="Your email"
           value=""
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }`}
           on:keyup={({ target: { value } }) => (email = value)}
         />

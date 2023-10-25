@@ -10,7 +10,8 @@
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { createQuery } from "@tanstack/svelte-query";
   import { nimbus } from "~/lib/network";
-
+  import All from "~/assets/all.svg";
+  import Select from "~/components/Select.svelte";
   import type { TrxHistoryDataRes } from "~/types/TrxHistoryData";
   import type {
     AnalyticHistoricalRes,
@@ -20,27 +21,7 @@
   import AddressManagement from "~/components/AddressManagement.svelte";
   import CalendarChart from "~/components/CalendarChart.svelte";
   import HistoricalTransactions from "./HistoricalTransactions.svelte";
-  import Loading from "~/components/Loading.svelte";
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
+  import CoinSelector from "~/components/CoinSelector.svelte";
 
   let isLoading = false;
   let data = [];
@@ -53,19 +34,19 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 180px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${dayjs(params.data[0]).format("YYYY-MM-DD")}
               </div>
               <div style="display: flex; align-items: centers; justify-content: space-between;">
                 <div style="width: 135px; font-weight: 500; font-size: 14px; line-height: 17px; display: flex; align-items: centers; gap: 6px; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   <div style="background: #00b580; width: 12px; height: 12px; border-radius: 100%; margin-top: 3px;"></div>
                   Activity
                 </div>
                 <div style="display:flex; justify-content: center; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   ${params.data[1]}
                 </div>
@@ -116,7 +97,38 @@
     },
   };
 
-  let selectedType = "all";
+  const types = [
+    {
+      label: "All",
+      value: "all",
+    },
+    {
+      label: "Buy",
+      value: "buy",
+    },
+    {
+      label: "Swap",
+      value: "swap",
+    },
+    {
+      label: "Sell",
+      value: "sell",
+    },
+    {
+      label: "Unknown",
+      value: "unknown",
+    },
+  ];
+
+  let selectedType = {
+    label: "All",
+    value: "all",
+  };
+  let selectedCoin = {
+    name: "All",
+    logo: All,
+    symbol: "all",
+  };
   let searchValue = "";
   let timerSearchDebounce;
 
@@ -180,16 +192,16 @@
   };
 
   $: enabledQuery = Boolean(
-    (typeWalletAddress === "EVM" ||
-      typeWalletAddress === "CEX" ||
-      typeWalletAddress === "BUNDLE") &&
-      selectedWallet.length !== 0
+    ($typeWallet === "EVM" ||
+      $typeWallet === "CEX" ||
+      $typeWallet === "BUNDLE") &&
+      $wallet.length !== 0
   );
 
   $: query = createQuery({
-    queryKey: ["historical", selectedWallet, selectedChain],
+    queryKey: ["historical", $wallet, $chain],
     enabled: enabledQuery,
-    queryFn: () => getAnalyticHistorical(selectedWallet, selectedChain),
+    queryFn: () => getAnalyticHistorical($wallet, $chain),
     staleTime: Infinity,
   });
 
@@ -199,11 +211,17 @@
     }
   }
 
-  const getListTransactions = async (page: string) => {
+  const getListTransactions = async (
+    page: string,
+    type: string,
+    coin: string
+  ) => {
     isLoading = true;
     try {
       const response: TrxHistoryDataRes = await nimbus.get(
-        `/v2/address/${selectedWallet}/history?chain=${selectedChain}&pageToken=${page}`
+        `/v2/address/${$wallet}/history?chain=${$chain}&pageToken=${page}${
+          type !== "all" ? `&type=${type}` : ""
+        }${coin !== "all" ? `&coin=${coin}` : ""}`
       );
       if (response && response?.data) {
         data = [...data, ...response?.data?.data];
@@ -217,20 +235,20 @@
   };
 
   const handleLoadMore = (paginate: string) => {
-    getListTransactions(paginate);
+    getListTransactions(paginate, selectedType.value, selectedCoin.symbol);
   };
 
   $: {
-    if (selectedWallet) {
+    if ($wallet) {
       data = [];
       pageToken = "";
       isLoading = false;
       if (
-        selectedWallet?.length !== 0 &&
-        selectedChain?.length !== 0 &&
-        typeWalletAddress !== "SOL"
+        $wallet?.length !== 0 &&
+        $chain?.length !== 0 &&
+        $typeWallet !== "SOL"
       ) {
-        getListTransactions("");
+        getListTransactions("", selectedType.value, selectedCoin.symbol);
       }
     }
   }
@@ -242,10 +260,10 @@
       class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] -mt-32 relative min-h-screen"
     >
       <div class="trx_container flex flex-col gap-7 rounded-[20px] xl:p-8 p-6">
-        {#if typeWalletAddress === "EVM" || typeWalletAddress === "CEX"}
+        {#if $typeWallet === "EVM" || $typeWallet === "CEX"}
           <div
             class={`rounded-[20px] pt-6 pb-9 flex flex-col gap-4  ${
-              darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+              $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
             }`}
           >
             <CalendarChart
@@ -263,7 +281,7 @@
 
         <div
           class={`rounded-[20px] p-6 flex flex-col gap-4 ${
-            darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+            $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
           }`}
         >
           <div class="flex flex-col justify-between gap-4 xl:flex-row">
@@ -314,6 +332,14 @@
               /> -->
             </div>
           </div>
+          <div class="flex mb-4 gap-4">
+            <CoinSelector bind:selected={selectedCoin} />
+            <Select
+              type="lang"
+              bind:selected={selectedType}
+              listSelect={types}
+            />
+          </div>
           <HistoricalTransactions
             {isLoading}
             {pageToken}
@@ -323,11 +349,11 @@
         </div>
       </div>
 
-      {#if typeWalletAddress === "BUNDLE" || typeWalletAddress === "SOL"}
+      {#if $typeWallet === "BUNDLE" || $typeWallet === "SOL"}
         <div
-          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 justify-center ${
-            darkMode ? "bg-[#222222e6]" : "bg-white/90"
-          } z-30 backdrop-blur-md`}
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 justify-center z-30 backdrop-blur-md ${
+            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+          }`}
         >
           <div class="text-lg">Coming soon 🚀</div>
         </div>

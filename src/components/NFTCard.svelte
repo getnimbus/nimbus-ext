@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { wallet, typeWallet, isDarkMode } from "~/store";
-  import { shorterName } from "~/utils";
+  import { typeWallet, isDarkMode } from "~/store";
+  import { shorterName, handleImgError } from "~/utils";
 
   import TooltipNumber from "./TooltipNumber.svelte";
 
@@ -13,21 +13,6 @@
   export let floorPrice;
 
   let showTooltipName = false;
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
 
   $: profitAndLoss =
     Number(data?.price || 0) === 0
@@ -42,17 +27,19 @@
 
 <div
   class={`rounded-[10px] px-3 pt-2 pb-3 flex flex-col gap-2 ${
-    darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+    $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
   }`}
 >
   <div class="rounded-[10px] overflow-hidden xl:h-[270px] h-[470px]">
     <img
       src={data?.imageUrl ||
         "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-      on:error={(e) => {
-        e.target.src =
-          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384";
-      }}
+      on:error={(e) =>
+        handleImgError(
+          e,
+          data?.imageUrl,
+          "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+        )}
       alt=""
       class="w-full h-full object-contain"
     />

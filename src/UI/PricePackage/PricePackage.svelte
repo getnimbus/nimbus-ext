@@ -13,25 +13,15 @@
   import ProfessionalPlan from "./ProfessionalPlan.svelte";
   import Button from "~/components/Button.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
+  import Error from "~/components/Error.svelte";
 
   import YieldFarmingVideo from "~/assets/pricing/Yield-Farming.mp4";
   import RealtimeVideo from "~/assets/pricing/Realtime.mp4";
-  import Error from "~/components/Error.svelte";
 
   export let selectedPackage = (item) => {};
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
 
   let selectedTypePackage: "month" | "year" = "year";
   let buyPackage = "Free";
@@ -44,9 +34,6 @@
 
   const getUserInfo = async () => {
     const response: any = await nimbus.get("/users/me");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
     return response?.data;
   };
 
@@ -225,7 +212,7 @@
                   "Get latest market information and real-time market update",
                   RealtimeVideo,
                   false,
-                  darkMode
+                  $isDarkMode
                 ),
                 allowHTML: true,
                 placement: "top",
@@ -247,7 +234,7 @@
                   "Get up to 1000+ yield farming opportunities to boost your earning",
                   YieldFarmingVideo,
                   false,
-                  darkMode
+                  $isDarkMode
                 ),
                 allowHTML: true,
                 placement: "top",
@@ -1007,7 +994,7 @@
       >
         <div
           class={`input-2 input-border w-full xl:py-[6px] py-3 px-3 ${
-            code && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+            code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
           <input
@@ -1018,7 +1005,7 @@
             placeholder="Couple code"
             value=""
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              code && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              code && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }`}
             on:keyup={({ target: { value } }) => (code = value)}
           />

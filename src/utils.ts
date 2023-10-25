@@ -2,6 +2,10 @@ import numeral from "numeral";
 import jwt_decode from "jwt-decode";
 import { nimbus } from "./lib/network";
 import { groupBy } from "lodash";
+import confetti from "canvas-confetti";
+import dayjs from "dayjs";
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
 
 import logo from "~/assets/bitcoin.png";
 import Bnb from "~/assets/bnb.png";
@@ -13,21 +17,20 @@ import Avax from "~/assets/avax.png";
 import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
-import Base from "~/assets/base.svg"
-import confetti from "canvas-confetti";
+import Base from "~/assets/base.svg";
 
-export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g
-export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g
-export const BTCAddressRegex = /(\b(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}\b)/g
-export const BTCTrxRegex = /(\b(?!0x.*$)[a-fA-F0-9]{64}\b)/g
-export const SOLAddressRegex = /(\b[a-zA-Z0-9]{32,44}\b)/g
-export const SOLTrxRegex = /(\b[a-zA-Z0-9]{87,88}\b)/g
+export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
+export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
+export const BTCAddressRegex = /(\b(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}\b)/g;
+export const BTCTrxRegex = /(\b(?!0x.*$)[a-fA-F0-9]{64}\b)/g;
+export const SOLAddressRegex = /(\b[a-zA-Z0-9]{32,44}\b)/g;
+export const SOLTrxRegex = /(\b[a-zA-Z0-9]{87,88}\b)/g;
 
 export const regexList = [
   {
     name: "ETH",
     regex_address: ETHAddressRegex,
-    regex_trx: ETHTrxRegex
+    regex_trx: ETHTrxRegex,
   },
   {
     name: "BTC",
@@ -49,7 +52,7 @@ export const regexList = [
   //   regex_address: /(\b\w+(?:\.\w+)*\.near\b)/g,
   //   regex_trx: /(\b[a-zA-Z0-9]{43,44}\b)/g,
   // }
-]
+];
 
 export const netWorthFilter = [
   {
@@ -162,7 +165,7 @@ export const typePieChart = [
     label: "NFTs",
     value: "nft",
   },
-]
+];
 
 export const typeClosedHoldingTokenChart = [
   {
@@ -173,7 +176,7 @@ export const typeClosedHoldingTokenChart = [
     label: "Percent",
     value: "percent",
   },
-]
+];
 
 export const typePackage = [
   {
@@ -184,7 +187,7 @@ export const typePackage = [
     label: "Yearly (Save 17%)",
     value: "year",
   },
-]
+];
 
 export const filterTokenValueType = [
   {
@@ -214,7 +217,7 @@ export const performanceTypeChartPortfolio = [
     label: "Net Worth",
     value: "networth",
   },
-]
+];
 
 export const dailyCheckinTypePortfolio = [
   {
@@ -225,7 +228,7 @@ export const dailyCheckinTypePortfolio = [
     label: "History",
     value: "history",
   },
-]
+];
 
 export const dailyCheckinRewardsTypePortfolio = [
   {
@@ -236,7 +239,7 @@ export const dailyCheckinRewardsTypePortfolio = [
     label: "Your gift",
     value: "yourGift",
   },
-]
+];
 
 export const returnType = [
   {
@@ -247,7 +250,7 @@ export const returnType = [
     label: "By month",
     value: "month",
   },
-]
+];
 
 export const timeFrame = [
   {
@@ -270,7 +273,7 @@ export const timeFrame = [
     label: "ALL",
     value: "ALL",
   },
-]
+];
 
 export const getAddressContext = (address: string) => {
   if (!address) {
@@ -279,126 +282,165 @@ export const getAddressContext = (address: string) => {
 
   if (address.match(ETHAddressRegex)) {
     return {
-      type: 'EVM',
-      address
-    }
+      type: "EVM",
+      address,
+    };
   }
 
   if (address.match(BTCAddressRegex)) {
     return {
-      type: 'BTC',
-      address
-    }
+      type: "BTC",
+      address,
+    };
   }
 
   if (address.match(SOLAddressRegex)) {
     return {
-      type: 'SOL',
-      address
-    }
+      type: "SOL",
+      address,
+    };
   }
 
   return undefined;
+};
+
+export let explorerOnChain = (type, hash) => {
+  let linkTrx = ""
+  switch (type) {
+    case "ETH":
+      linkTrx = `https://etherscan.io/tx/${hash}`;
+      break;
+    case "XDAI":
+      linkTrx = `https://gnosisscan.io/tx/${hash}`;
+      break;
+    case "BNB":
+      linkTrx = `https://bscscan.com/tx/${hash}`;
+      break;
+    case "MATIC":
+      linkTrx = `https://polygonscan.com/tx/${hash}`;
+      break;
+    case "OP":
+      linkTrx = `https://optimistic.etherscan.io/tx/${hash}`;
+      break;
+    case "AVAX":
+      linkTrx = `https://snowtrace.io/tx/${hash}`;
+      break;
+    case "ARB":
+      linkTrx = `https://arbiscan.io/tx/${hash}`;
+      break;
+    case "BASE":
+      linkTrx = `https://basescan.org/tx/${hash}`
+      break;
+    case "SCROLL":
+      linkTrx = `https://blockscout.scroll.io/tx/${hash}`
+      break;
+    case "SOL":
+      linkTrx = `https://solscan.io/tx/${hash}`
+      break;
+    default:
+      linkTrx = ""
+  }
+  return linkTrx
 }
 
 export const detectedChain = (type) => {
-  let chain
+  let chain;
   switch (type) {
     case "ETH":
-      chain = Ethereum
+      chain = Ethereum;
       break;
     case "XDAI":
-      chain = Gnosis
+      chain = Gnosis;
       break;
     case "BNB":
-      chain = Bnb
+      chain = Bnb;
       break;
     case "MATIC":
-      chain = Matic
+      chain = Matic;
       break;
     case "OP":
-      chain = Optimism
+      chain = Optimism;
       break;
     case "AVAX":
-      chain = Avax
+      chain = Avax;
       break;
     case "ARB":
-      chain = Arbitrum
+      chain = Arbitrum;
       break;
     case "BASE":
-      chain = Base
+      chain = Base;
       break;
     case "SOL":
-      chain = Solana
+      chain = Solana;
       break;
     default:
-      chain = logo
+      chain = logo;
   }
-  return chain
-}
+  return chain;
+};
 
 export const linkExplorer = (chain, hash) => {
   let links = {
     trx: "",
-    address: ""
-  }
+    address: "",
+  };
   switch (chain) {
+    case "ETH":
+      links = {
+        trx: `https://etherscan.io/tx/${hash}`,
+        address: `https://etherscan.io/address/${hash}`,
+      };
+      break;
+    case "XDAI":
+      links = {
+        trx: `https://gnosisscan.io/tx/${hash}`,
+        address: `https://gnosisscan.io/address/${hash}`,
+      };
+      break;
+    case "BNB":
+      links = {
+        trx: `https://bscscan.com/tx/${hash}`,
+        address: `https://bscscan.com/address/${hash}`,
+      };
+      break;
+    case "MATIC":
+      links = {
+        trx: `https://polygonscan.com/tx/${hash}`,
+        address: `https://polygonscan.com/address/${hash}`,
+      };
+      break;
+    case "OP":
+      links = {
+        trx: `https://optimistic.etherscan.io/tx/${hash}`,
+        address: `https://optimistic.etherscan.io/address/${hash}`,
+      };
+      break;
+    case "AVAX":
+      links = {
+        trx: `https://snowtrace.io/tx/${hash}`,
+        address: `https://snowtrace.io/address/${hash}`,
+      };
+      break;
+    case "ARB":
+      links = {
+        trx: `https://arbiscan.io/tx/${hash}`,
+        address: `https://arbiscan.io/address/${hash}`,
+      };
+      break;
     case "BTC":
       links = {
         trx: `https://www.oklink.com/btc/tx/${hash}`,
         address: `https://www.oklink.com/btc/address/${hash}`
       }
       break;
-    case "ETH":
-      links = {
-        trx: `https://etherscan.io/tx/${hash}`,
-        address: `https://etherscan.io/address/${hash}`
-      }
-      break;
-    case "XDAI":
-      links = {
-        trx: `https://gnosisscan.io/tx/${hash}`,
-        address: `https://gnosisscan.io/address/${hash}`
-      }
-      break;
-    case "BNB":
-      links = {
-        trx: `https://bscscan.com/tx/${hash}`,
-        address: `https://bscscan.com/address/${hash}`,
-      }
-      break;
-    case "MATIC":
-      links = {
-        trx: `https://polygonscan.com/tx/${hash}`,
-        address: `https://polygonscan.com/address/${hash}`,
-      }
-      break;
-    case "OP":
-      links = {
-        trx: `https://optimistic.etherscan.io/tx/${hash}`,
-        address: `https://optimistic.etherscan.io/address/${hash}`,
-      }
-      break;
-    case "AVAX":
-      links = {
-        trx: `https://snowtrace.io/tx/${hash}`,
-        address: `https://snowtrace.io/address/${hash}`,
-      }
-      break;
-    case "ARB":
-      links = {
-        trx: `https://arbiscan.io/tx/${hash}`,
-        address: `https://arbiscan.io/address/${hash}`,
-      }
-      break;
     default:
       links = {
         trx: "",
-        address: ""
-      }
+        address: "",
+      };
   }
-  return links
-}
+  return links;
+};
 
 export const listProviderCEX = [
   "binance",
@@ -432,7 +474,7 @@ export const listProviderCEX = [
   "bitso",
   "upbit",
   "bitstamp",
-]
+];
 
 export const listLogoCEX = [
   "https://s2.coinmarketcap.com/static/img/exchanges/64x64/270.png",
@@ -568,22 +610,28 @@ export const formatSupperSmallNumber = (number: number) => {
 export const formatValue = (input: number) => {
   return numeral(input).format("0,0.00") === "NaN"
     ? formatNumberSmall(input)
-    : input !== 0 && input > 0 && input < 0.01 ? "<$0.01" : numeral(input).format("$0,0.00");
+    : input !== 0 && input > 0 && input < 0.01
+      ? "<$0.01"
+      : numeral(input).format("$0,0.00");
 };
 
 export const formatCurrency = (input: number) => {
   return numeral(input).format("0,0.000000") === "NaN"
     ? formatNumberSmall(input)
-    : input !== 0 && input > 0 && input < 0.01 ? numeral(input).format("0,0.000000") : numeral(input).format("0,0.0000");
+    : input !== 0 && input > 0 && input < 0.01
+      ? numeral(input).format("0,0.000000")
+      : numeral(input).format("0,0.0000");
 };
 
 export const formatBalance = (input: number) => {
-  return numeral(input).format("0,0.00") === "NaN" ? formatSmallBalance(input) : numeral(input).format("0,0.00")
+  return numeral(input).format("0,0.00") === "NaN"
+    ? formatSmallBalance(input)
+    : numeral(input).format("0,0.00");
 };
 
 export const formatPercent = (input: number) => {
-  return numeral(input).format("0,0.00")
-}
+  return numeral(input).format("0,0.00");
+};
 
 export const formatSmallBalance = (input: number) => {
   return numeral(input).format("0.000e+0");
@@ -593,36 +641,37 @@ export const formatBigBalance = (input: number) => {
   if (formatPercent(input) === "NaN") {
     return {
       number_format: formatSmallBalance(input),
-      number_size: ""
-    }
+      number_size: "",
+    };
   } else {
     const regExp = /[a-zA-Z]/g;
-    const numberFormat = numeral(input).format("0.00a")
+    const numberFormat = numeral(input).format("0.00a");
     if (regExp.test(numberFormat)) {
       return {
         number_format: Number(numberFormat.slice(0, -1)),
-        number_size: numberFormat.slice(-1).toUpperCase()
-      }
+        number_size: numberFormat.slice(-1).toUpperCase(),
+      };
     } else {
       return {
         number_format: Number(numberFormat),
-        number_size: ""
-      }
+        number_size: "",
+      };
     }
   }
-}
+};
 
 const formatNumberSmall = (scientificNotation) => {
   const num = parseFloat(scientificNotation);
   const eIndex = num.toString().indexOf("e");
   const exponent = parseInt(num.toString().slice(eIndex + 2), 10);
   const significand = parseFloat(
-    num.toString()
+    num
+      .toString()
       .slice(0, eIndex)
       .slice(0, 4)
       .split("")
       .filter((e) => {
-        return e !== "."
+        return e !== ".";
       })
       .join("")
   );
@@ -631,14 +680,14 @@ const formatNumberSmall = (scientificNotation) => {
     return "NaN";
   }
 
-  let formatarr = ["0", '.'];
+  let formatarr = ["0", "."];
   for (let i = 0; i < exponent - 1; i++) {
-    formatarr.push("0")
+    formatarr.push("0");
   }
-  const formatString = formatarr.join("").toString()
-  const formattedNum = formatString + significand
+  const formatString = formatarr.join("").toString();
+  const formattedNum = formatString + significand;
   return formattedNum;
-}
+};
 
 export const shorterAddress = (string: string) => {
   return string ? string.slice(0, 6) + "..." + string.substr(-4) : string;
@@ -648,15 +697,17 @@ export const shorterName = (string: string, length: number = 10) => {
   if (string?.length > length) {
     return string.slice(0, length) + "...";
   } else {
-    return string
+    return string;
   }
-}
+};
 
 export const flattenArray = (arr) => {
   return arr.reduce(function (flat, toFlatten) {
-    return flat.concat(Array.isArray(toFlatten) ? flattenArray(toFlatten) : toFlatten);
-  }, [])
-}
+    return flat.concat(
+      Array.isArray(toFlatten) ? flattenArray(toFlatten) : toFlatten
+    );
+  }, []);
+};
 
 export const escapeRegex = (string: string) => {
   return string.toString().replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
@@ -672,13 +723,15 @@ export const add3Dots = (string: string, limit: number) => {
     string = string.substring(0, limit) + dots;
   }
   return string;
-}
+};
 
 export const handleGetAccessToken = async (code: string) => {
-  const res = await nimbus.post("/auth", {
-    code,
-    direct_url: "https://app.getnimbus.io",
-  }).then((response) => response)
+  const res = await nimbus
+    .post("/auth", {
+      code,
+      direct_url: "https://app.getnimbus.io",
+    })
+    .then((response) => response);
   if (res.data) {
     localStorage.setItem("token", JSON.stringify(res.data));
     if (APP_TYPE.TYPE !== "EXT") {
@@ -692,7 +745,9 @@ export const handleFormatDataPieChart = (data, type) => {
   const formatData = data.map((item) => {
     return {
       ...item,
-      value: item?.price?.price ? Number(item?.amount) * Number(item?.price?.price) : 0,
+      value: item?.price?.price
+        ? Number(item?.amount) * Number(item?.price?.price)
+        : 0,
     };
   });
 
@@ -778,111 +833,112 @@ export const correlationsMatrixColor = (value: number) => {
 
   const opacity = (value + 1) / 2;
 
-  const interpolatedColorMax = [
-    maxColor[0],
-    maxColor[1],
-    maxColor[2],
-    opacity,
-  ];
+  const interpolatedColorMax = [maxColor[0], maxColor[1], maxColor[2], opacity];
 
-  const interpolatedColorMin = [
-    minColor[0],
-    minColor[1],
-    minColor[2],
-    opacity,
-  ];
+  const interpolatedColorMin = [minColor[0], minColor[1], minColor[2], opacity];
 
   if (value > 0) {
-    return `rgba(${interpolatedColorMax.join(', ')})`;
+    return `rgba(${interpolatedColorMax.join(", ")})`;
   }
   if (value < 0) {
-    return `rgba(${interpolatedColorMin.join(', ')})`;
+    return `rgba(${interpolatedColorMin.join(", ")})`;
   }
-}
+};
 
 export const volatilityColorChart = (value: number) => {
-  let color = '#35b86d'; // green
+  let color = "#35b86d"; // green
 
   if (value > 5 && value <= 15) {
-    color = '#a2c04c';
+    color = "#a2c04c";
   }
 
   if (value > 15 && value <= 30) {
-    color = '#d8c42f';
+    color = "#d8c42f";
   }
 
   if (value > 30 && value <= 50) {
-    color = '#fec406';
+    color = "#fec406";
   }
 
   if (value > 50 && value <= 75) {
-    color = '#f79e28'
+    color = "#f79e28";
   }
 
   if (value > 75 && value <= 100) {
-    color = '#f28a30'
+    color = "#f28a30";
   }
 
   if (value > 100 && value <= 150) {
-    color = '#e6553d'
+    color = "#e6553d";
   }
 
   // red
   if (value > 150) {
-    color = '#e14240'
+    color = "#e14240";
   }
 
   if (value === null) {
-    color = "#6AC7F5"
+    color = "#6AC7F5";
   }
 
-  return color
-}
+  return color;
+};
 
 export const sharpeRatioColorChart = (value: number) => {
-  let color = "#e14240" // red
+  let color = "#e14240"; // red
 
   if (value > -1 && value <= 0) {
-    color = "#e6553d"
+    color = "#e6553d";
   }
 
   if (value > -1 && value <= 0) {
-    color = "#f28a30"
+    color = "#f28a30";
   }
 
   if (value > 0.5 && value <= 1) {
-    color = "#f79e28"
+    color = "#f79e28";
   }
 
   if (value > 1 && value <= 1.5) {
-    color = "#fec406"
+    color = "#fec406";
   }
 
   if (value > 1.5 && value <= 2) {
-    color = "#d8c42f"
+    color = "#d8c42f";
   }
 
   if (value > 2 && value <= 3) {
-    color = "#a2c04c"
+    color = "#a2c04c";
   }
 
   //green
   if (value > 3) {
-    color = "#35b86d"
+    color = "#35b86d";
   }
 
   if (value === null) {
-    color = "#6AC7F5"
+    color = "#6AC7F5";
   }
 
-  return color
-}
+  return color;
+};
 
-export const getTooltipContent = (text: string, videoUrl: string, isMaxWidth: boolean, darkMode: boolean, width?: string) => {
+export const getTooltipContent = (
+  text: string,
+  videoUrl: string,
+  isMaxWidth: boolean,
+  darkMode: boolean,
+  width?: string
+) => {
   return `
-      <div style="padding: 8px; border-radius: 8px; background: ${darkMode ? "#0f0f0f" : "#000"}; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
-        ${text ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>` : ""} 
-        <div style="border-radius: 6px; width: ${width ? width : "100%"}; overflow: hidden">
+      <div style="padding: 8px; border-radius: 8px; background: ${darkMode ? "#0f0f0f" : "#000"
+    }; width: ${isMaxWidth ? "100%" : "560px"}; height: auto;">
+        ${text
+      ? `<div style="margin-bottom: 6px; font-size: 14px; line-height: 20px; color: #fff;">${text}</div>`
+      : ""
+    } 
+        <div style="border-radius: 6px; width: ${width ? width : "100%"
+    }; overflow: hidden">
           <video autoplay muted playsinline disablepictureinpicture loop>
             <source type="video/mp4" src="${videoUrl}" />
           </video>
@@ -898,7 +954,7 @@ export const dateDiffInDays = (a, b) => {
   const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
-}
+};
 
 export const clickOutside = (node) => {
   const handleClick = (event) => {
@@ -925,7 +981,7 @@ export const equalizeArrayLengths = (arrA, arrB) => {
   const newArrayB = arrB.slice(0, minLength);
 
   return [newArrayA, newArrayB];
-}
+};
 
 export const autoFontSize = () => {
   const windowWidth =
@@ -953,7 +1009,7 @@ const fire = (particleRatio, opts) => {
     zIndex: 100,
     particleCount: Math.floor(200 * particleRatio),
   });
-}
+};
 
 export const triggerFirework = () => {
   fire(0.25, {
@@ -978,4 +1034,96 @@ export const triggerFirework = () => {
     spread: 120,
     startVelocity: 45,
   });
+};
+
+export const driverObj = driver({
+  showProgress: true,
+  overlayColor: "#27326f",
+  onDestroyStarted: () => {
+    driverObj.destroy();
+    // if (!driverObj.hasNextStep() || confirm("Are you sure?")) {
+    //   driverObj.destroy();
+    // }
+  },
+  showButtons: ["next", "previous", "close"],
+  steps: [
+    // {
+    //   element: "#view-use-wallet-or-demo",
+    //   popover: {
+    //     title: "Introduce App",
+    //     description: "Add wallet or view Demo wallet",
+    //   },
+    // },
+    {
+      element: ".view-the-pnl",
+      popover: {
+        title: "Track your token performance 📊",
+        description:
+          "View your Portfolio diversify, compare your invesment with Bitcoin or Ethereum",
+      },
+    },
+    {
+      element: ".view-token-detail1",
+      popover: {
+        title: "Your profit and loss, in every token 💰",
+        description:
+          "We have the most important metrics for Investors - Profit and loss",
+      },
+    },
+    {
+      element: ".view-token-detail2",
+      popover: {
+        title: "Your profit and loss, in every token 💰",
+        description:
+          "We have the most important metrics for Investors - Profit and loss",
+      },
+    },
+    {
+      element: ".view-icon-detail",
+      popover: {
+        title: "Get your trading detail 🧐",
+        description:
+          "View your trading activities on the Price chart, get market bought distribution to make wise more",
+      },
+    },
+    {
+      element: ".view-nft-detail",
+      popover: {
+        title: "Not just token, we track NFT as well 🌁",
+        description: "All of your NFTs, and of course, Profit and loss",
+      },
+    },
+    // {
+    //   element: "#view-closed-positions",
+    //   popover: {
+    //     title: "Introduce App",
+    //     description: "View closed positions",
+    //   },
+    // },
+  ],
+});
+
+export const formatTransactionTime = (date: Date) => {
+  if (dayjs().diff(date, "days") >= 1) {
+    return dayjs(date).format("YYYY-MM-DD, hh:mm A");
+  }
+  return dayjs(date).fromNow();
+};
+
+export const handleImgError = async (e, image, defaultImage) => {
+  e.target.onerror = null; // break loop
+  if (image.includes("https://api.center.dev")) {
+    fetch(image, {
+      headers: { "x-api-key": "lapis-fridge-d84f5377deca" },
+    })
+      .then((r) => r.blob())
+      .then((d) => {
+        e.target.src = window.URL.createObjectURL(d);
+      })
+      .catch(() => {
+        e.target.src = defaultImage;
+      });
+  } else {
+    e.target.src = defaultImage;
+  }
 };

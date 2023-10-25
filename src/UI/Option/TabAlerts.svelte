@@ -43,16 +43,6 @@
     },
   ];
 
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
   let show = false;
   let counter = 3;
   let toastMsg = "";
@@ -177,11 +167,6 @@
   const getUserConfigs = async () => {
     try {
       const res: any = await nimbus.get("/users/configs");
-      if (res?.status === 401) {
-        localStorage.removeItem("evm_token");
-        user.update((n) => (n = {}));
-        throw new Error(res?.response?.error);
-      }
       userConfigs = {
         filter_spam_tx_alert:
           res?.data?.alert_settings?.transaction?.filterSpam,

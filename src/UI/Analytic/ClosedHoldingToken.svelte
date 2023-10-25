@@ -30,31 +30,6 @@
   import TrendDown from "~/assets/trend-down.svg";
   import TrendUp from "~/assets/trend-up.svg";
 
-  let packageSelected = "";
-  selectedPackage.subscribe((value) => {
-    packageSelected = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   let closedHoldingPosition = [];
   let selectedTypeChart: "value" | "percent" = "value";
   let optionBarValue = {
@@ -78,7 +53,7 @@
                     "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
                   } alt="" width=20 height=20 style="border-radius: 100%" />
                   <div style="margin-top: 2px; font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   }">
                     ${
                       selectedItem?.name?.length > 20
@@ -90,7 +65,7 @@
 
               <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   ROI
                 </div>
@@ -174,7 +149,7 @@
                   "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
                 } alt="" width=20 height=20 style="border-radius: 100%" />
                 <div style="margin-top: 2px; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   ${
                     selectedItem?.name?.length > 20
@@ -186,7 +161,7 @@
 
               <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   ROI
                 </div>
@@ -398,8 +373,8 @@
   };
 
   $: queryTokenHolding = createQuery({
-    queryKey: ["token-holding", selectedWallet, selectedChain],
-    queryFn: () => getHoldingToken(selectedWallet, selectedChain),
+    queryKey: ["token-holding", $wallet, $chain],
+    queryFn: () => getHoldingToken($wallet, $chain),
     placeholderData: [],
     staleTime: Infinity,
     enabled: enabledQuery,
@@ -412,18 +387,18 @@
   }
 
   $: enabledQuery =
-    selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+    $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          (typeWalletAddress === "EVM" ||
-            typeWalletAddress === "CEX" ||
-            typeWalletAddress === "SOL" ||
-            typeWalletAddress === "BUNDLE") &&
-            selectedWallet.length !== 0 &&
-            packageSelected !== "FREE"
+          ($typeWallet === "EVM" ||
+            $typeWallet === "CEX" ||
+            $typeWallet === "SOL" ||
+            $typeWallet === "BUNDLE") &&
+            $wallet.length !== 0 &&
+            $selectedPackage !== "FREE"
         );
 
-  $: theme = darkMode ? "dark" : "white";
+  $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
 <AnalyticSection>
@@ -449,10 +424,10 @@
           {#if $queryTokenHolding.isError}
             <div
               class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-                darkMode ? "bg-[#222222e6]" : "bg-white/90"
+                $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
               }`}
             >
-              {#if typeWalletAddress === "CEX"}
+              {#if $typeWallet === "CEX"}
                 Not enough data. CEX integration can only get data from the day
                 you connect
               {:else}
@@ -520,10 +495,10 @@
           {/if}
         </div>
       {/if}
-      {#if typeWalletAddress === "CEX" || typeWalletAddress === "SOL"}
+      {#if $typeWallet === "CEX" || $typeWallet === "SOL"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
-            darkMode ? "bg-[#222222e6]" : "bg-white/90"
+            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
           } z-10 backdrop-blur-md`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
@@ -543,10 +518,10 @@
           {#if $queryTokenHolding.isError}
             <div
               class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-                darkMode ? "bg-[#222222e6]" : "bg-white/90"
+                $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
               }`}
             >
-              {#if typeWalletAddress === "CEX"}
+              {#if $typeWallet === "CEX"}
                 Not enough data. CEX integration can only get data from the day
                 you connect
               {:else}
@@ -562,7 +537,7 @@
                     on:click={() => (selectedTypeChart = type.value)}
                   >
                     <div
-                      class={`relative z-20 ${
+                      class={`relative z-2 ${
                         selectedTypeChart === type.value && "text-white"
                       }`}
                     >
@@ -575,7 +550,7 @@
                         transition={{ type: "spring", duration: 0.6 }}
                       >
                         <div
-                          class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                          class="absolute inset-0 rounded-full bg-[#1E96FC] z-1"
                           use:motion
                         />
                       </Motion>
@@ -605,7 +580,7 @@
                   class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
                 >
                   <img
-                    src={darkMode ? LogoWhite : Logo}
+                    src={$isDarkMode ? LogoWhite : Logo}
                     alt=""
                     width="140"
                     height="140"
@@ -616,10 +591,10 @@
           {/if}
         </div>
       {/if}
-      {#if typeWalletAddress === "CEX" || typeWalletAddress === "SOL"}
+      {#if $typeWallet === "CEX" || $typeWallet === "SOL"}
         <div
           class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
-            darkMode ? "bg-[#222222e6]" : "bg-white/90"
+            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
           } z-10 backdrop-blur-md`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>

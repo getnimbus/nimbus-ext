@@ -15,7 +15,7 @@ icon: goal
 | Bitcoin   | ![](/img/chains/bitcoin.png)  | ✅      | ✅                     | ✅                  |
 | BNB chain | ![](/img/chains/bnb.png)      | ✅      | ✅                     | ✅                  |
 | Polygon   | ![](/img/chains/matic.png)    | ✅      | ✅                     | ✅                  |
-| Optimisim | ![](/img/chains/optimism.png) | ✅      | ✅                     | ✅                  |
+| Optimism  | ![](/img/chains/optimism.png) | ✅      | ✅                     | ✅                  |
 | Avalanche | ![](/img/chains/avax.png)     | ✅      | ✅                     | ✅                  |
 | Arbitrum  | ![](/img/chains/arbitrum.png) | ✅      | ✅                     | ✅                  |
 

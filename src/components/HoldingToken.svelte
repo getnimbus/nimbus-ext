@@ -1,20 +1,25 @@
 <script lang="ts">
-  import { useNavigate } from "svelte-navigator";
   import {
-    chain,
     typeWallet,
     isDarkMode,
     user,
     selectedBundle,
     isHidePortfolio,
   } from "~/store";
-  import { detectedChain, shorterName } from "~/utils";
+  import {
+    detectedChain,
+    shorterName,
+    handleImgError,
+    shorterAddress,
+  } from "~/utils";
   import numeral from "numeral";
   import { Progressbar, Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import dayjs from "dayjs";
   import { nimbus } from "~/lib/network";
   import { i18n } from "~/lib/i18n";
+  import CopyToClipboard from "svelte-copy-to-clipboard";
+  import { wait } from "../entries/background/utils";
 
   import "~/components/Tooltip.custom.svelte";
   import tooltip from "~/entries/contentScript/views/tooltip";
@@ -23,42 +28,15 @@
   import VaultTable from "~/UI/Portfolio/VaultTable.svelte";
   import Button from "./Button.svelte";
   import Copy from "~/components/Copy.svelte";
+  import OverlaySidebar from "./OverlaySidebar.svelte";
+  import TokenDetailSidebar from "~/UI/TokenDetail/TokenDetailSidebar.svelte";
 
   import TrendUp from "~/assets/trend-up.svg";
   import TrendDown from "~/assets/trend-down.svg";
-  import Chart from "~/assets/chart.svg";
-  import Detail from "~/assets/detail.svg";
 
   export let data;
   export let selectedWallet;
   export let sumAllTokens;
-
-  $: selectedChain = $chain;
-
-  const navigate = useNavigate();
-
-  let selectBundle = {};
-  selectedBundle.subscribe((value) => {
-    selectBundle = value;
-  });
-
-  let typeWalletAddress = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
-  let hiddenPortfolio = false;
-  isHidePortfolio.subscribe((value) => (hiddenPortfolio = value));
 
   let isShowTooltipName = false;
   let isShowTooltipSymbol = false;
@@ -79,6 +57,11 @@
 
   let isOpenTokenInfoBundle = false;
   let showTokenInfoBundle = false;
+
+  let showSideTokenDetail = false;
+  let selectedTokenDetail = {};
+  let isCopied = false;
+  let isShowTooltipContractAddress = false;
 
   const trigger = () => {
     showToast = true;
@@ -105,7 +88,7 @@
     },
   };
 
-  const reasonReportData = [
+  const reasonReport = [
     {
       id: "trash",
       content: "This token is trash 🗑️",
@@ -119,6 +102,13 @@
       content: "I hate this token 😠",
     },
   ];
+
+  const closeSideTokenDetail = (event) => {
+    if (event.key === "Escape") {
+      showSideTokenDetail = false;
+      selectedTokenDetail = {};
+    }
+  };
 
   const handleReportTrashCoin = async () => {
     isLoadingReportTrashCoin = true;
@@ -186,11 +176,6 @@
       : (Number(data?.market_price) - Number(data?.profit?.averageCost)) /
         Number(data?.profit?.averageCost || 0);
 
-  $: clickable =
-    data.name !== "Bitcoin" &&
-    data.name !== "Ethereum" &&
-    selectedChain !== "XDAI";
-
   $: ratio = (value / sumAllTokens) * 100;
 
   $: {
@@ -214,7 +199,7 @@
 
   $: formatDataBreakdown = (data?.breakdown || [])
     .map((item) => {
-      const selectedAddress = selectBundle?.accounts.find(
+      const selectedAddress = $selectedBundle?.accounts.find(
         (account) =>
           account?.id?.toLowerCase() === item?.owner?.toLowerCase() ||
           account?.value?.toLowerCase() === item?.owner?.toLowerCase()
@@ -228,6 +213,8 @@
     })
     .filter((item) => Number(item?.amount) !== 0);
 </script>
+
+<svelte:window on:keydown={closeSideTokenDetail} />
 
 <tr
   key={data?.symbol}
@@ -246,7 +233,7 @@
     // }
   }}
   on:mouseover={() => {
-    if (userInfo && Object.keys(userInfo).length !== 0) {
+    if ($user && Object.keys($user).length !== 0) {
       isShowReport = true;
     }
 
@@ -258,7 +245,7 @@
     }
   }}
   on:mouseleave={() => {
-    if (userInfo && Object.keys(userInfo).length !== 0) {
+    if ($user && Object.keys($user).length !== 0) {
       isShowReport = false;
     }
 
@@ -273,10 +260,10 @@
   <td
     class={`pl-3 py-3 xl:static sticky left-0 z-9 w-[450px] ${
       isOpenTokenInfoBundle
-        ? darkMode
+        ? $isDarkMode
           ? "bg-[#000]"
           : "bg-gray-100"
-        : darkMode
+        : $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
@@ -293,17 +280,20 @@
             width="16"
             height="16"
             viewBox="0 0 24 24"
-            ><g
+          >
+            <g
               fill="none"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              ><path d="M0 0h24v24H0z" /><path
+            >
+              <path d="M0 0h24v24H0z" />
+              <path
                 fill="currentColor"
                 d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
-              /></g
-            ></svg
-          >
+              />
+            </g>
+          </svg>
         </div>
       {/if}
       <div class="relative">
@@ -313,12 +303,14 @@
           width="30"
           height="30"
           class="rounded-full"
-          on:error={() => {
-            logo =
-              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-          }}
+          on:error={(e) =>
+            handleImgError(
+              e,
+              logo,
+              "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+            )}
         />
-        {#if (typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE") && data?.chain !== "CEX" && data?.chain !== "BTC"}
+        {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && data?.chain !== "CEX" && data?.chain !== "BTC"}
           <div class="absolute -top-2 -right-1">
             <img
               src={detectedChain(data.chain)}
@@ -357,17 +349,20 @@
                       width="16"
                       height="16"
                       viewBox="0 0 24 24"
-                      ><g
+                    >
+                      <g
                         fill="none"
                         stroke-linecap="round"
                         stroke-linejoin="round"
                         stroke-width="2"
-                        ><path d="M0 0h24v24H0z" /><path
+                      >
+                        <path d="M0 0h24v24H0z" />
+                        <path
                           fill="currentColor"
                           d="M19 4c.852 0 1.297.986.783 1.623l-.076.084L15.915 9.5l3.792 3.793c.603.602.22 1.614-.593 1.701L19 15H6v6a1 1 0 0 1-.883.993L5 22a1 1 0 0 1-.993-.883L4 21V5a1 1 0 0 1 .883-.993L5 4h14z"
-                        /></g
-                      ></svg
-                    >
+                        />
+                      </g>
+                    </svg>
                   </span>
                 {/if}
               </div>
@@ -425,11 +420,12 @@
                 viewBox="0 0 76.52 77.67"
                 xmlns="http://www.w3.org/2000/svg"
                 class="object-contain w-full h-full rounded-full"
-                ><path
-                  d="m66.54 46.41a4.09 4.09 0 0 1 -4.17.28c-1.54-.87-2.37-2.91-2.37-5.69v-8.52c0-4.09-1.62-7-4.33-7.79-4.58-1.34-8 4.27-9.32 6.38l-8.1 13.11v-16c-.09-3.69-1.29-5.9-3.56-6.56-1.5-.44-3.75-.26-5.94 3.08l-18.11 29.07a32 32 0 0 1 -3.64-14.94c0-17.52 14-31.77 31.25-31.77s31.3 14.25 31.3 31.77v.09s0 .06 0 .09c.17 3.39-.93 6.09-3 7.4zm10-7.57v-.17c-.14-21.35-17.26-38.67-38.29-38.67s-38.25 17.42-38.25 38.83 17.16 38.84 38.25 38.84a37.81 37.81 0 0 0 26-10.36 3.56 3.56 0 0 0 .18-5 3.43 3.43 0 0 0 -4.86-.23 30.93 30.93 0 0 1 -44.57-2.08l16.3-26.2v12.09c0 5.81 2.25 7.69 4.14 8.24s4.78.17 7.81-4.75l9-14.57c.28-.47.55-.87.79-1.22v7.41c0 5.43 2.18 9.77 6 11.91a11 11 0 0 0 11.21-.45c4.2-2.73 6.49-7.67 6.25-13.62z"
-                  fill={`${darkMode ? "#d1d5db" : "#17181b"}`}
-                /></svg
               >
+                <path
+                  d="m66.54 46.41a4.09 4.09 0 0 1 -4.17.28c-1.54-.87-2.37-2.91-2.37-5.69v-8.52c0-4.09-1.62-7-4.33-7.79-4.58-1.34-8 4.27-9.32 6.38l-8.1 13.11v-16c-.09-3.69-1.29-5.9-3.56-6.56-1.5-.44-3.75-.26-5.94 3.08l-18.11 29.07a32 32 0 0 1 -3.64-14.94c0-17.52 14-31.77 31.25-31.77s31.3 14.25 31.3 31.77v.09s0 .06 0 .09c.17 3.39-.93 6.09-3 7.4zm10-7.57v-.17c-.14-21.35-17.26-38.67-38.29-38.67s-38.25 17.42-38.25 38.83 17.16 38.84 38.25 38.84a37.81 37.81 0 0 0 26-10.36 3.56 3.56 0 0 0 .18-5 3.43 3.43 0 0 0 -4.86-.23 30.93 30.93 0 0 1 -44.57-2.08l16.3-26.2v12.09c0 5.81 2.25 7.69 4.14 8.24s4.78.17 7.81-4.75l9-14.57c.28-.47.55-.87.79-1.22v7.41c0 5.43 2.18 9.77 6 11.91a11 11 0 0 0 11.21-.45c4.2-2.73 6.49-7.67 6.25-13.62z"
+                  fill={`${$isDarkMode ? "#d1d5db" : "#17181b"}`}
+                />
+              </svg>
             </a>
           {/if}
 
@@ -663,7 +659,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
@@ -673,7 +669,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
@@ -698,7 +694,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="flex flex-col gap-1">
@@ -723,18 +719,12 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="flex justify-end text-2xl font-medium xl:text-sm text_00000099">
-      ${#if hiddenPortfolio}
-        ******
-      {:else if data?.profit}
-        <TooltipNumber
-          number={data?.profit?.averageCost}
-          type="balance"
-          personalValue
-        />
+      ${#if data?.profit}
+        <TooltipNumber number={data?.profit?.averageCost} type="balance" />
       {:else}
         0
       {/if}
@@ -743,13 +733,13 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
-      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm"
+      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail1"
     >
-      {#if ["BTC"].includes(typeWalletAddress)}
+      {#if ["BTC"].includes($typeWallet)}
         N/A
       {:else}
         <div class="flex flex-col">
@@ -798,14 +788,16 @@
   </td>
 
   <td
-    class={`py-3 pr-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
-    }`}
+    class={`py-3 ${
+      $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"
+        ? ""
+        : "pr-3"
+    } ${$isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"}`}
   >
     <div
-      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm"
+      class="flex items-center justify-end gap-1 text-2xl font-medium xl:text-sm view-token-detail2"
     >
-      {#if ["BTC"].includes(typeWalletAddress)}
+      {#if ["BTC"].includes($typeWallet)}
         N/A
       {:else}
         <div class="flex flex-col">
@@ -853,81 +845,149 @@
     </div>
   </td>
 
-  {#if typeWalletAddress === "BUNDLE"}
+  {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
     <td
-      class={`py-3 w-10 ${
-        darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      class={`py-3 xl:w-14 w-32 h-full flex justify-center items-center xl:gap-3 gap-6 ${
+        $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
       }`}
     >
-      <!-- {#if clickable}
-        <div class="flex justify-center">
+      {#if $typeWallet === "BUNDLE"}
+        <div
+          class="flex justify-center view-icon-detail"
+          use:tooltip={{
+            content: `<tooltip-detail text="Show bundles detail" />`,
+            allowHTML: true,
+            placement: "top",
+          }}
+        >
+          <div
+            class="xl:block hidden cursor-pointer transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
+            class:rotate-0={isOpenTokenInfoBundle}
+            on:click={() => (isOpenTokenInfoBundle = !isOpenTokenInfoBundle)}
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10 8.36365L6 4.00001L2 8.36365"
+                stroke={$isDarkMode ? "white" : "#00000080"}
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <div
+            class="xl:hidden block"
+            on:click={() => (showTokenInfoBundle = true)}
+          >
+            <svg
+              width="34"
+              height="34"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill={$isDarkMode ? "white" : "#00000080"}
+                d="M3.5 4A1.5 1.5 0 0 0 2 5.5v2A1.5 1.5 0 0 0 3.5 9h2A1.5 1.5 0 0 0 7 7.5v-2A1.5 1.5 0 0 0 5.5 4h-2ZM3 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2ZM9.5 5a.5.5 0 0 0 0 1h8a.5.5 0 0 0 0-1h-8Zm0 2a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6Zm-6 4A1.5 1.5 0 0 0 2 12.5v2A1.5 1.5 0 0 0 3.5 16h2A1.5 1.5 0 0 0 7 14.5v-2A1.5 1.5 0 0 0 5.5 11h-2ZM3 12.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2Zm6.5-.5a.5.5 0 0 0 0 1h8a.5.5 0 0 0 0-1h-8Zm0 2a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6Z"
+              />
+            </svg>
+          </div>
+        </div>
+      {/if}
+
+      {#if $typeWallet === "EVM" || $typeWallet === "SOL" || $typeWallet === "BUNDLE" || $typeWallet === "CEX"}
+        <div
+          class="flex justify-center cursor-pointer view-icon-detail"
+          on:click={() => {
+            showSideTokenDetail = true;
+            selectedTokenDetail = data;
+          }}
+        >
           <div
             use:tooltip={{
-              content: `<tooltip-detail text="Show detail" />`,
+              content: `<tooltip-detail text="Show token detail" />`,
               allowHTML: true,
               placement: "top",
             }}
+            class="xl:w-[14px] xl:h-[14px] w-[26px] h-[26px]"
           >
-            <img src={Chart} alt="" width={14} height={14} />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              version="1.1"
+              viewBox="0 0 256 256"
+              xml:space="preserve"
+            >
+              <defs />
+              <g
+                style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                fill={$isDarkMode ? "white" : "#00000080"}
+                transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)"
+              >
+                <path
+                  d="M 87.994 0 H 69.342 c -1.787 0 -2.682 2.16 -1.418 3.424 l 5.795 5.795 l -33.82 33.82 L 28.056 31.196 l -3.174 -3.174 c -1.074 -1.074 -2.815 -1.074 -3.889 0 L 0.805 48.209 c -1.074 1.074 -1.074 2.815 0 3.889 l 3.174 3.174 c 1.074 1.074 2.815 1.074 3.889 0 l 15.069 -15.069 l 14.994 14.994 c 1.074 1.074 2.815 1.074 3.889 0 l 1.614 -1.614 c 0.083 -0.066 0.17 -0.125 0.247 -0.202 l 37.1 -37.1 l 5.795 5.795 C 87.84 23.34 90 22.445 90 20.658 V 2.006 C 90 0.898 89.102 0 87.994 0 z"
+                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                  transform=" matrix(1 0 0 1 0 0) "
+                  fill={$isDarkMode ? "white" : "#00000080"}
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 65.626 37.8 v 49.45 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 23.518 L 65.626 37.8 z"
+                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                  fill={$isDarkMode ? "white" : "#00000080"}
+                  transform=" matrix(1 0 0 1 0 0) "
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 47.115 56.312 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 42.03 L 47.115 56.312 z"
+                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                  fill={$isDarkMode ? "white" : "#00000080"}
+                  transform=" matrix(1 0 0 1 0 0) "
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 39.876 60.503 c -1.937 0 -3.757 -0.754 -5.127 -2.124 l -6.146 -6.145 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 59.844 C 41.952 60.271 40.933 60.503 39.876 60.503 z"
+                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                  fill={$isDarkMode ? "white" : "#00000080"}
+                  transform=" matrix(1 0 0 1 0 0) "
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M 22.937 46.567 L 11.051 58.453 c -0.298 0.298 -0.621 0.562 -0.959 0.8 V 87.25 c 0 1.519 1.231 2.75 2.75 2.75 h 8.782 c 1.519 0 2.75 -1.231 2.75 -2.75 V 48.004 L 22.937 46.567 z"
+                  style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill-rule: nonzero; opacity: 1;"
+                  fill={$isDarkMode ? "white" : "#00000080"}
+                  transform=" matrix(1 0 0 1 0 0) "
+                  stroke-linecap="round"
+                />
+              </g>
+            </svg>
           </div>
         </div>
-      {/if} -->
-      <div class="flex justify-center">
-        <div
-          class="xl:block hidden cursor-pointer transform rotate-180 xl:w-3 xl:h-3 w-5 h-5"
-          class:rotate-0={isOpenTokenInfoBundle}
-          on:click={() => (isOpenTokenInfoBundle = !isOpenTokenInfoBundle)}
-        >
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M10 8.36365L6 4.00001L2 8.36365"
-              stroke={darkMode ? "white" : "black"}
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </div>
-        <div
-          class="xl:hidden block"
-          on:click={() => (showTokenInfoBundle = true)}
-        >
-          <svg
-            width="34"
-            height="34"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill={darkMode ? "white" : "black"}
-              d="M3.5 4A1.5 1.5 0 0 0 2 5.5v2A1.5 1.5 0 0 0 3.5 9h2A1.5 1.5 0 0 0 7 7.5v-2A1.5 1.5 0 0 0 5.5 4h-2ZM3 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2ZM9.5 5a.5.5 0 0 0 0 1h8a.5.5 0 0 0 0-1h-8Zm0 2a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6Zm-6 4A1.5 1.5 0 0 0 2 12.5v2A1.5 1.5 0 0 0 3.5 16h2A1.5 1.5 0 0 0 7 14.5v-2A1.5 1.5 0 0 0 5.5 11h-2ZM3 12.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2Zm6.5-.5a.5.5 0 0 0 0 1h8a.5.5 0 0 0 0-1h-8Zm0 2a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6Z"
-            />
-          </svg>
-        </div>
-      </div>
+      {/if}
     </td>
   {/if}
 </tr>
 
 {#if isOpenTokenInfoBundle}
   <tr class="border-t-[1px] border_0000000d">
-    <td class={`xl:pt-2 py-2 pl-3 ${darkMode ? "bg-[#000]" : "bg-gray-100"}`}>
+    <td
+      class={`xl:pt-2 py-2 pl-3 ${$isDarkMode ? "bg-[#000]" : "bg-gray-100"}`}
+    >
       <div class="xl:text-sm text-2xl">Token breakdown</div>
     </td>
     <td
       colspan={8}
-      class={`xl:py-0 py-2 pr-3 ${darkMode ? "bg-[#000]" : "bg-gray-100"}`}
+      class={`xl:py-0 py-2 pr-3 ${$isDarkMode ? "bg-[#000]" : "bg-gray-100"}`}
     />
   </tr>
 
   <tr>
-    <td colspan={8} class={`${darkMode ? "bg-[#000]" : "bg-gray-100"}`}>
+    <td colspan={8} class={`${$isDarkMode ? "bg-[#000]" : "bg-gray-100"}`}>
       <div class="-mt-1 flex items-center">
         <div class="py-2 pl-3 flex-1">
           <div class="text-left xl:text-sm text-xl font-medium">Account</div>
@@ -946,7 +1006,7 @@
     <td colspan={8}>
       <div
         class={`-mt-2 -mx-[1px] max-h-[500px] overflow-y-auto ${
-          darkMode ? "bg-[#000]" : "bg-gray-100"
+          $isDarkMode ? "bg-[#000]" : "bg-gray-100"
         }`}
       >
         {#each formatDataBreakdown as item}
@@ -957,10 +1017,12 @@
                   src={item?.logo}
                   alt=""
                   class="rounded-full w-[30px] h-[30px]"
-                  on:error={() => {
-                    logo =
-                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-                  }}
+                  on:error={(e) =>
+                    handleImgError(
+                      e,
+                      item?.logo,
+                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                    )}
                 />
                 <div class="flex flex-col items-start">
                   <div class="font-medium xl:text-sm text-xl text_00000099">
@@ -971,8 +1033,8 @@
                   >
                     <Copy
                       address={item?.owner}
-                      iconColor={darkMode ? "#fff" : "#000"}
-                      color={darkMode ? "#fff" : "#000"}
+                      iconColor={$isDarkMode ? "#fff" : "#000"}
+                      color={$isDarkMode ? "#fff" : "#000"}
                       isShorten
                     />
                   </div>
@@ -1045,7 +1107,7 @@
     <div class="text-4xl font-medium xl:text-2xl">Token breakdown</div>
     <div
       class={`rounded-[10px] overflow-visible overflow-y-auto h-[563px] relative ${
-        darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+        $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
       }`}
     >
       <table class="table-auto xl:w-full w-[1200px]">
@@ -1084,7 +1146,7 @@
               <tr class="transition-all cursor-pointer group">
                 <td
                   class={`pl-3 py-3 ${
-                    darkMode
+                    $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}
@@ -1094,10 +1156,12 @@
                       src={item?.logo}
                       alt=""
                       class="rounded-full w-[30px] h-[30px]"
-                      on:error={() => {
-                        logo =
-                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-                      }}
+                      on:error={(e) =>
+                        handleImgError(
+                          e,
+                          item?.logo,
+                          "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                        )}
                     />
                     <div class="flex flex-col items-start">
                       <div class="font-medium xl:text-sm text-xl text_00000099">
@@ -1108,8 +1172,8 @@
                       >
                         <Copy
                           address={item?.owner}
-                          iconColor={darkMode ? "#fff" : "#000"}
-                          color={darkMode ? "#fff" : "#000"}
+                          iconColor={$isDarkMode ? "#fff" : "#000"}
+                          color={$isDarkMode ? "#fff" : "#000"}
                           isShorten
                         />
                       </div>
@@ -1119,7 +1183,7 @@
 
                 <td
                   class={`py-3 ${
-                    darkMode
+                    $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}
@@ -1161,7 +1225,7 @@
 
                 <td
                   class={`py-3 pr-3 ${
-                    darkMode
+                    $isDarkMode
                       ? "group-hover:bg-[#000]"
                       : "group-hover:bg-gray-100"
                   }`}
@@ -1214,7 +1278,7 @@
       <div class="flex flex-col gap-6 xl:gap-3">
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+            !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
           <div class="xl:text-base text-2xl text-[#666666] font-medium">
@@ -1226,7 +1290,7 @@
             name="chain"
             value={data.chain}
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }`}
             disabled
           />
@@ -1234,7 +1298,7 @@
 
         <div
           class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-            !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+            !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
           <div class="xl:text-base text-2xl text-[#666666] font-medium">
@@ -1246,7 +1310,7 @@
             name="contract_address"
             value={data.contractAddress}
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }`}
             disabled
           />
@@ -1254,14 +1318,14 @@
 
         <div
           class={`flex flex-col gap-3 input-2 input-border w-full py-[8px] px-3 ${
-            darkMode && "bg-transparent"
+            $isDarkMode && "bg-transparent"
           }`}
         >
           <div class="xl:text-base text-2xl text-[#666666] font-medium">
             Reason
           </div>
 
-          {#each reasonReportData as item}
+          {#each reasonReport as item}
             <div class="flex items-center gap-2 cursor-pointer w-max">
               <input
                 type="checkbox"
@@ -1303,7 +1367,7 @@
               id="reason"
               name="reason"
               class={`mb-2 p-0 input-2 input-border w-full py-[6px] px-3 focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               }`}
             />
           {/if}
@@ -1336,6 +1400,181 @@
     </form>
   </div>
 </AppOverlay>
+
+<!-- Sidebar Token Detail -->
+<OverlaySidebar isOpen={showSideTokenDetail}>
+  <div class="flex flex-col gap-6 p-6">
+    <div class="flex justify-between items-start">
+      <div
+        class="xl:text-5xl text-6xl text-gray-500 cursor-pointer"
+        on:click|stopPropagation={() => {
+          showSideTokenDetail = false;
+          selectedTokenDetail = {};
+        }}
+      >
+        &times;
+      </div>
+      {#if selectedTokenDetail && Object.keys(selectedTokenDetail).length !== 0}
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-4">
+            <div class="relative">
+              <img
+                src={logo}
+                alt=""
+                width="46"
+                height="46"
+                class="rounded-full"
+                on:error={(e) =>
+                  handleImgError(
+                    e,
+                    logo,
+                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                  )}
+              />
+              {#if ($typeWallet === "EVM" || $typeWallet === "BUNDLE") && selectedTokenDetail?.chain !== "CEX" && selectedTokenDetail?.chain !== "BTC"}
+                <div class="absolute -top-2 -right-1">
+                  <img
+                    src={detectedChain(selectedTokenDetail.chain)}
+                    alt=""
+                    width="26"
+                    height="26"
+                    class="rounded-full"
+                  />
+                </div>
+              {/if}
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-start gap-2">
+                <div
+                  class="relative font-medium xl:text-xl text-2xl"
+                  on:mouseover={() => {
+                    isShowTooltipName = true;
+                  }}
+                  on:mouseleave={() => (isShowTooltipName = false)}
+                >
+                  {#if selectedTokenDetail.name === undefined}
+                    N/A
+                  {:else}
+                    {selectedTokenDetail?.name?.length > 20
+                      ? shorterName(selectedTokenDetail.name, 20)
+                      : selectedTokenDetail.name}
+                  {/if}
+                  {#if isShowTooltipName && selectedTokenDetail?.name?.length > 20}
+                    <div
+                      class="absolute left-0 -top-8"
+                      style="z-index: 2147483648;"
+                    >
+                      <tooltip-detail text={selectedTokenDetail.name} />
+                    </div>
+                  {/if}
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <div
+                  class="relative font-medium text_00000080 xl:text-base text-lg"
+                  on:mouseover={() => {
+                    isShowTooltipSymbol = true;
+                  }}
+                  on:mouseleave={() => (isShowTooltipSymbol = false)}
+                >
+                  {#if selectedTokenDetail.symbol === undefined}
+                    N/A
+                  {:else}
+                    {shorterName(selectedTokenDetail.symbol, 20)}
+                  {/if}
+                  {#if isShowTooltipSymbol && selectedTokenDetail.symbol.length > 20}
+                    <div
+                      class="absolute left-0 -top-8"
+                      style="z-index: 2147483648;"
+                    >
+                      <tooltip-detail text={selectedTokenDetail.symbol} />
+                    </div>
+                  {/if}
+                </div>
+                <CopyToClipboard
+                  text={selectedTokenDetail?.contractAddress}
+                  let:copy
+                  on:copy={async () => {
+                    isCopied = true;
+                    await wait(1000);
+                    isCopied = false;
+                  }}
+                >
+                  <div
+                    class="cursor-pointer relative"
+                    on:mouseover={() => {
+                      isShowTooltipContractAddress = true;
+                    }}
+                    on:mouseleave={() => (isShowTooltipContractAddress = false)}
+                    on:click={copy}
+                  >
+                    {#if isCopied}
+                      <svg
+                        width={20}
+                        height={20}
+                        id="Layer_1"
+                        data-name="Layer 1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 122.88 74.46"
+                        fill={$isDarkMode ? "#d1d5db" : "#00000080"}
+                        ><path
+                          fill-rule="evenodd"
+                          d="M1.87,47.2a6.33,6.33,0,1,1,8.92-9c8.88,8.85,17.53,17.66,26.53,26.45l-3.76,4.45-.35.37a6.33,6.33,0,0,1-8.95,0L1.87,47.2ZM30,43.55a6.33,6.33,0,1,1,8.82-9.07l25,24.38L111.64,2.29c5.37-6.35,15,1.84,9.66,8.18L69.07,72.22l-.3.33a6.33,6.33,0,0,1-8.95.12L30,43.55Zm28.76-4.21-.31.33-9.07-8.85L71.67,4.42c5.37-6.35,15,1.83,9.67,8.18L58.74,39.34Z"
+                        /></svg
+                      >
+                    {:else}
+                      <svg
+                        width={20}
+                        height={20}
+                        viewBox="0 0 12 11"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M8.1875 3.3125H10.6875V10.1875H3.8125V7.6875"
+                          stroke={$isDarkMode ? "#d1d5db" : "#00000080"}
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <path
+                          d="M8.1875 0.8125H1.3125V7.6875H8.1875V0.8125Z"
+                          stroke={$isDarkMode ? "#d1d5db" : "#00000080"}
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    {/if}
+
+                    {#if isShowTooltipContractAddress}
+                      <div
+                        class="absolute right-0 -top-8"
+                        style="z-index: 2147483648;"
+                      >
+                        <tooltip-detail
+                          text={shorterAddress(
+                            selectedTokenDetail?.contractAddress
+                          )}
+                        />
+                      </div>
+                    {/if}
+                  </div>
+                </CopyToClipboard>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center font-medium xl:text-2xl text-3xl">
+            $<TooltipNumber
+              number={selectedTokenDetail?.market_price}
+              type="balance"
+            />
+          </div>
+        </div>
+      {/if}
+    </div>
+    <TokenDetailSidebar data={selectedTokenDetail} />
+  </div>
+</OverlaySidebar>
 
 {#if showToast}
   <div class="fixed z-30 w-full top-3 right-3">

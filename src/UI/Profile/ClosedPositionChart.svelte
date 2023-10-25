@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
-  import { isDarkMode, typeWallet, user } from "~/store";
+  import { isDarkMode, user } from "~/store";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import numeral from "numeral";
   import {
@@ -11,8 +11,7 @@
     shorterName,
     typeClosedHoldingTokenChart,
   } from "~/utils";
-
-  import type { HoldingTokenRes } from "~/types/HoldingTokenData";
+  import dayjs from "dayjs";
 
   import LoadingPremium from "~/components/LoadingPremium.svelte";
   import EChart from "~/components/EChart.svelte";
@@ -23,21 +22,6 @@
   import TrendUp from "~/assets/trend-up.svg";
 
   export let selectedAddress;
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
 
   let closedHoldingPosition = [];
   let selectedTypeChart: "value" | "percent" = "value";
@@ -55,56 +39,54 @@
             params[0]?.name?.toLowerCase()
         );
         return `
-              <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
-                <div style="display: flex; align-items: centers; gap: 4px">
-                    <img src=${
-                      selectedItem?.logo ||
-                      "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                    } alt="" width=20 height=20 style="border-radius: 100%" />
-                    <div style="margin-top: 2px; font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                      darkMode ? "white" : "black"
-                    }">
-                      ${
-                        selectedItem?.name?.length > 20
-                          ? shorterName(selectedItem?.name, 20)
-                          : selectedItem?.name || "N/A"
-                      } ${
-          selectedItem?.symbol ? `(${selectedItem?.symbol})` : ""
-        }
-                    </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
+            <div style="display: flex; align-items: centers; gap: 4px">
+              <img src=${
+                selectedItem?.logo ||
+                "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+              } alt="" width=20 height=20 style="border-radius: 100%" />
+              <div style="margin-top: 2px; font-weight: 500; font-size: 16px; line-height: 19px; color: ${
+                $isDarkMode ? "white" : "black"
+              }">
+                ${
+                  selectedItem?.name?.length > 20
+                    ? shorterName(selectedItem?.name, 20)
+                    : selectedItem?.name || "N/A"
+                } ${selectedItem?.symbol ? `(${selectedItem?.symbol})` : ""}
+              </div>
+            </div>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                $isDarkMode ? "white" : "black"
+              }">
+                ROI
+              </div>
+            
+              <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px;">
+                <div style="display:flex; justify-content: flex-end; align-items: center; color: ${
+                  params[0].value >= 0 ? "#05a878" : "#f25f5d"
+                };">
+                  <span>${params[0].value < 0 ? "-" : ""}</span>
+                  ${formatValue(Math.abs(params[0].value))}
                 </div>
-  
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                  <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    darkMode ? "white" : "black"
-                  }">
-                    ROI
-                  </div>
-  
-                  <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px;">
-                      <div style="display:flex; justify-content: flex-end; align-items: center; color: ${
-                        params[0].value >= 0 ? "#05a878" : "#f25f5d"
-                      };">
-                        <span>${params[0].value < 0 ? "-" : ""}</span>
-                        ${formatValue(Math.abs(params[0].value))}
-                      </div>  
-                      <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; color: ${
-                        selectedItem?.percentRealizedProfit >= 0
-                          ? "#05a878"
-                          : "#f25f5d"
-                      };">
-                        ${formatPercent(
-                          Math.abs(selectedItem?.percentRealizedProfit)
-                        )}%
-                        <img src=${
-                          selectedItem?.percentRealizedProfit >= 0
-                            ? TrendUp
-                            : TrendDown
-                        } alt="" style="margin-bottom: 4px;" />
-                      </div>
-                  </div>
+                <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; color: ${
+                  selectedItem?.percentRealizedProfit >= 0
+                    ? "#05a878"
+                    : "#f25f5d"
+                };">
+                  ${formatPercent(
+                    Math.abs(selectedItem?.percentRealizedProfit)
+                  )}%
+                  <img src=${
+                    selectedItem?.percentRealizedProfit >= 0
+                      ? TrendUp
+                      : TrendDown
+                  } alt="" style="margin-bottom: 4px;" />
                 </div>
-              </div>`;
+              </div>
+            </div>
+          </div>`;
       },
     },
     toolbox: {
@@ -153,51 +135,47 @@
             params[0]?.name?.toLowerCase()
         );
         return `
-              <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
-                <div style="display: flex; align-items: centers; gap: 4px">
+          <div style="display: flex; flex-direction: column; gap: 12px; min-width: 400px;">
+            <div style="display: flex; align-items: centers; gap: 4px">
+              <img src=${
+                selectedItem?.logo ||
+                "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+              } alt="" width=20 height=20 style="border-radius: 100%" />
+              <div style="margin-top: 2px; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                $isDarkMode ? "white" : "black"
+              }">
+                ${
+                  selectedItem?.name?.length > 20
+                    ? shorterName(selectedItem?.name, 20)
+                    : selectedItem?.name || "N/A"
+                } ${selectedItem?.symbol ? `(${selectedItem?.symbol})` : ""}
+              </div>
+            </div>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: ${
+                $isDarkMode ? "white" : "black"
+              }">
+                ROI
+              </div>
+              <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px;">
+                <div style="display:flex; justify-content: flex-end; align-items: center; color: ${
+                  selectedItem?.realizedProfit >= 0 ? "#05a878" : "#f25f5d"
+                };">
+                  <span>${selectedItem?.realizedProfit < 0 ? "-" : ""}</span>
+                  ${formatValue(Math.abs(selectedItem?.realizedProfit))}
+                </div>
+                <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; color: ${
+                  params[0].value >= 0 ? "#05a878" : "#f25f5d"
+                };">
+                  ${formatPercent(Math.abs(params[0].value))}%
                   <img src=${
-                    selectedItem?.logo ||
-                    "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
-                  } alt="" width=20 height=20 style="border-radius: 100%" />
-                  <div style="margin-top: 2px; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    darkMode ? "white" : "black"
-                  }">
-                    ${
-                      selectedItem?.name?.length > 20
-                        ? shorterName(selectedItem?.name, 20)
-                        : selectedItem?.name || "N/A"
-                    } ${selectedItem?.symbol ? `(${selectedItem?.symbol})` : ""}
-                  </div>
+                    params[0].value >= 0 ? TrendUp : TrendDown
+                  } alt="" style="margin-bottom: 4px;" />
                 </div>
-  
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                  <div style="font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                    darkMode ? "white" : "black"
-                  }">
-                    ROI
-                  </div>
-                  <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; gap: 4px; flex: 1; width: 100%; text-align: right; font-weight: 500; font-size: 14px; line-height: 17px;">
-                      <div style="display:flex; justify-content: flex-end; align-items: center; color: ${
-                        selectedItem?.realizedProfit >= 0
-                          ? "#05a878"
-                          : "#f25f5d"
-                      };">
-                        <span>${
-                          selectedItem?.realizedProfit < 0 ? "-" : ""
-                        }</span>
-                        ${formatValue(Math.abs(selectedItem?.realizedProfit))}  
-                      </div>  
-                      <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; color: ${
-                        params[0].value >= 0 ? "#05a878" : "#f25f5d"
-                      };">
-                        ${formatPercent(Math.abs(params[0].value))}%
-                        <img src=${
-                          params[0].value >= 0 ? TrendUp : TrendDown
-                        } alt="" style="margin-bottom: 4px;" />
-                      </div>
-                  </div>
-                </div>
-              </div>`;
+              </div>
+            </div>
+          </div>`;
       },
     },
     toolbox: {
@@ -228,20 +206,24 @@
     series: [],
   };
 
-  const getHoldingToken = async (address) => {
-    const response: HoldingTokenRes = await nimbus
-      .get(`/v2/address/${address}/holding?chain=ALL`)
-      .then((response) => response.data);
-    return response;
+  const getTradingStats = async (address) => {
+    const response: any = await nimbus.get(
+      `/v2/analysis/${address}/trading-stats`
+    );
+    return response?.data;
   };
 
   const formatDataHoldingToken = (dataTokenHolding) => {
-    const formatData = dataTokenHolding
+    const formatData = dataTokenHolding.metadata
+      .filter(
+        (item) => dayjs().subtract(30, "day").valueOf() < item.lastTrade * 1000
+      )
       .map((item) => {
         return {
-          ...item,
+          ...item.holding,
           value:
-            Number(item?.amount) * Number(item?.price?.price || item?.rate),
+            Number(item?.holding.amount) *
+            Number(item?.holding.price?.price || item?.holding.rate),
         };
       })
       .sort((a, b) => {
@@ -256,7 +238,6 @@
 
     closedHoldingPosition = formatData
       .filter((item) => item?.profit?.realizedProfit)
-      .filter((item) => Number(item.amount) === 0)
       .map((item) => {
         return {
           ...item,
@@ -330,29 +311,29 @@
     }
   };
 
-  $: queryTokenHolding = createQuery({
-    queryKey: ["token-holding", selectedAddress],
-    queryFn: () => getHoldingToken(selectedAddress),
+  $: queryTradingStats = createQuery({
+    queryKey: ["trading-stats", selectedAddress],
+    queryFn: () => getTradingStats(selectedAddress),
     staleTime: Infinity,
-    enabled:
-      selectedAddress?.length !== 0 && Object.keys(userInfo).length !== 0,
+    retry: false,
+    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
   });
 
   $: {
     if (
-      !$queryTokenHolding.isError &&
-      $queryTokenHolding.data &&
-      $queryTokenHolding.data !== undefined
+      !$queryTradingStats.isError &&
+      $queryTradingStats.data &&
+      $queryTradingStats.data !== undefined
     ) {
-      formatDataHoldingToken($queryTokenHolding.data);
+      formatDataHoldingToken($queryTradingStats.data);
     }
   }
 
-  $: theme = darkMode ? "dark" : "white";
+  $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
 <div
-  class="xl:col-span-4 col-span-2 border border_0000001a rounded-xl flex flex-col min-h-[465px]"
+  class="col-span-4 border border_0000001a rounded-xl flex flex-col min-h-[465px]"
 >
   <div
     class="flex justify-start text-3xl font-medium xl:text-xl px-6 pb-3 pt-6"
@@ -360,13 +341,13 @@
     Positions 30D
   </div>
 
-  {#if $queryTokenHolding.isFetching}
+  {#if $queryTradingStats.isFetching}
     <div class="flex items-center justify-center px-6 pb-6 flex-1">
       <LoadingPremium />
     </div>
   {:else}
     <div class="h-full relative">
-      {#if $queryTokenHolding.isError}
+      {#if $queryTradingStats.isError}
         <div
           class="h-full flex justify-center items-center xl:text-base text-lg"
         >
@@ -410,7 +391,7 @@
             <div
               class="h-full flex justify-center items-center xl:text-base text-lg"
             >
-              There are no closed holding position
+              There is no closed holding position in the last 30 day
             </div>
           {:else}
             <div class="relative pl-4">
@@ -427,7 +408,7 @@
                 class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
               >
                 <img
-                  src={darkMode ? LogoWhite : Logo}
+                  src={$isDarkMode ? LogoWhite : Logo}
                   alt=""
                   width="140"
                   height="140"

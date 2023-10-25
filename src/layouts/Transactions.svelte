@@ -9,11 +9,6 @@
   import ErrorBoundary from "~/components/ErrorBoundary.svelte";
   import Transactions from "~/UI/Transaction/Transactions.svelte";
 
-  // let userInfo = {};
-  // user.subscribe((value) => {
-  //   userInfo = value;
-  // });
-
   // let listNft = [];
   // let isLoading = false;
 
@@ -51,7 +46,7 @@
   // };
 
   // $: {
-  //   if (Object.keys(userInfo).length !== 0) {
+  //   if (Object.keys($user).length !== 0) {
   //     handleGetNft();
   //   } else {
   //     listNft = [];
@@ -64,7 +59,7 @@
 </script>
 
 <ErrorBoundary>
-  <!-- {#if Object.keys(userInfo).length === 0}
+  <!-- {#if Object.keys($user).length === 0}
     <div class="flex justify-center items-center h-screen">
       <div class="p-6 w-2/3 flex flex-col gap-4 justify-center items-center">
         <div class="text-lg">Please connect wallet to use this feature</div>

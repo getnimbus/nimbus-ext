@@ -9,10 +9,9 @@
 
   export let selectedAddress;
 
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
+  let topThreeTokenHolding = [];
+  let closedHoldingPosition = [];
+  let netWorth = 0;
 
   const getHoldingToken = async (address) => {
     const response = await nimbus
@@ -25,13 +24,8 @@
     queryKey: ["token-holding", selectedAddress],
     queryFn: () => getHoldingToken(selectedAddress),
     staleTime: Infinity,
-    enabled:
-      selectedAddress?.length !== 0 && Object.keys(userInfo).length !== 0,
+    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
   });
-
-  let topThreeTokenHolding = [];
-  let closedHoldingPosition = [];
-  let netWorth = 0;
 
   $: {
     if (
@@ -93,7 +87,7 @@
             </span>{" "}
           {/each} and other assets.
         </div>
-        {#if closedHoldingPosition.length !== 0}
+        {#if closedHoldingPosition.length !== 0 && closedHoldingPosition[0]?.profit?.realizedProfit > 0}
           <div class="xl:text-base text-xl">
             The best trading is
             <span class="font-medium">

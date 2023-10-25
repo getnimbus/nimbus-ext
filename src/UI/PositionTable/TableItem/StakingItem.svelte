@@ -10,11 +10,6 @@
 
   export let data;
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   $: profit = data.amount * data.market_price - Math.abs(data?.avgCost);
   $: value = data.market_price * data?.amount;
   $: profitPercent =
@@ -24,7 +19,7 @@
 <tr class="group transition-all">
   <td
     class={`pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 ${
-      darkMode
+      $isDarkMode
         ? "bg-[#110c2a] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
@@ -48,7 +43,7 @@
 
   <td
     class={`py-3  ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="flex justify-end xl:text-sm text-2xl text_00000099 font-medium">
@@ -57,7 +52,7 @@
   </td>
 
   <!-- <td    class={`py-3  ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}>
     <div class="text-right xl:text-sm text-2xl text_00000099 font-medium">
       {dayjs(data.inputTime).format("YYYY-MM-DD, hh:mm A")}
@@ -66,7 +61,7 @@
 
   <td
     class={`py-3  ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="flex justify-end xl:text-sm text-2xl text_00000099 font-medium">
@@ -76,7 +71,7 @@
 
   <td
     class={`py-3  ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="flex justify-end xl:text-sm text-2xl text_00000099 font-medium">
@@ -86,7 +81,7 @@
 
   <td
     class={`py-3 pr-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div class="xl:text-sm text-2xl font-medium flex flex-col">

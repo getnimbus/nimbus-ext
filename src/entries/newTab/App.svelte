@@ -66,7 +66,6 @@
   <QueryClientProvider client={queryClient}>
     <Mixpanel>
       <Router history={undefined}>
-        <!-- flex flex-col pb-40 xl:pb-14  -->
         <div class="flex flex-col pb-40 xl:pb-14">
           <Header />
 
@@ -268,34 +267,6 @@
             {/await}
           </Route>
 
-          <Route path="position-detail">
-            {#await import("~/layouts/TokenDetail.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              <div class="flex items-center justify-center h-screen">
-                Something when wrong! Please reload your browser to try again
-              </div>
-            {/await}
-          </Route>
-
-          <Route path="test-detail">
-            {#await import("~/layouts/PositionDetail.svelte")}
-              <div class="flex items-center justify-center h-screen">
-                <Loading />
-              </div>
-            {:then { default: component }}
-              <svelte:component this={component} />
-            {:catch error}
-              <div class="flex items-center justify-center h-screen">
-                Something when wrong! Please reload your browser to try again
-              </div>
-            {/await}
-          </Route>
-
           <Route path="profile">
             {#await import("~/layouts/Profile.svelte")}
               <div class="flex items-center justify-center h-screen">
@@ -424,5 +395,40 @@
     .fb-feedback-widget-feedback-button-container {
       display: none !important;
     }
+  }
+
+  :global(body) .driver-popover {
+    /* border-radius: 10px; */
+    border-radius: 12px;
+    padding: 18px 26px 18px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  :global(body) .driver-popover-prev-btn,
+  :global(body) .driver-popover-next-btn {
+    border-radius: 12px;
+    padding: 8px 16px 8px 16px;
+    background-color: #1e96fc;
+    color: white;
+    text-shadow: none;
+    border: none;
+  }
+
+  :global(body) .driver-popover-prev-btn:hover,
+  :global(body) .driver-popover-next-btn:hover {
+    background-color: #4fadfd;
+  }
+
+  :global(body) .driver-popover-footer {
+    gap: 25px;
+  }
+
+  :global(body) .driver-popover-close-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 25px;
+    color: #6b7280;
   }
 </style>

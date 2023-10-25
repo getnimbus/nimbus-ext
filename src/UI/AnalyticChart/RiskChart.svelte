@@ -44,31 +44,6 @@
 
   export let selectedTimeFrame;
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let packageSelected = "";
-  selectedPackage.subscribe((value) => {
-    packageSelected = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   const riskTypeChart = [
     {
       label: "Overview",
@@ -95,7 +70,7 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${params[0].axisValue}
               </div>
@@ -104,7 +79,7 @@
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
@@ -116,7 +91,7 @@
                         ? item.value >= 0
                           ? "#05a878"
                           : "#f25f5d"
-                        : darkMode
+                        : $isDarkMode
                         ? "white"
                         : "black"
                     };">
@@ -175,12 +150,12 @@
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 350px;">
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   <span>${params?.marker}</span> ${params?.data?.name}
                 </div>
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px;">
                     ${formatValue(Number(params?.data?.value))}
@@ -208,7 +183,7 @@
                     return `
                       <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                         <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                          darkMode ? "white" : "black"
+                          $isDarkMode ? "white" : "black"
                         }">
                             <img src=${
                               item?.logo ||
@@ -220,7 +195,7 @@
                         </div>
                         <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right;">
                           <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                            darkMode ? "white" : "black"
+                            $isDarkMode ? "white" : "black"
                           }">
                            ${formatValue(
                              Number(item?.amount) * Number(item?.price?.price)
@@ -269,9 +244,6 @@
     const response: any = await nimbus.get(
       `/v2/analysis/${address}/compare?compareAddress=${""}&timeRange=${timeFrame}`
     );
-    if (response?.error) {
-      throw new Error(response?.error);
-    }
     return response?.data || [];
   };
 
@@ -283,33 +255,28 @@
   };
 
   $: enabledQuery =
-    selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+    $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          (typeWalletAddress === "EVM" ||
-            typeWalletAddress === "CEX" ||
-            typeWalletAddress === "SOL" ||
-            typeWalletAddress === "BUNDLE") &&
-            selectedWallet.length !== 0 &&
-            packageSelected !== "FREE"
+          ($typeWallet === "EVM" ||
+            $typeWallet === "CEX" ||
+            $typeWallet === "SOL" ||
+            $typeWallet === "BUNDLE") &&
+            $wallet.length !== 0 &&
+            $selectedPackage !== "FREE"
         );
 
   $: query = createQuery({
-    queryKey: ["compare", selectedWallet, selectedChain, selectedTimeFrame],
+    queryKey: ["compare", $wallet, $chain, selectedTimeFrame],
     enabled: enabledQuery,
-    queryFn: () => getAnalyticCompare(selectedWallet, selectedTimeFrame),
+    queryFn: () => getAnalyticCompare($wallet, selectedTimeFrame),
     staleTime: Infinity,
   });
 
   $: queryBreakdown = createQuery({
-    queryKey: [
-      "compare-breakdown",
-      selectedWallet,
-      selectedChain,
-      selectedTimeFrame,
-    ],
+    queryKey: ["compare-breakdown", $wallet, $chain, selectedTimeFrame],
     enabled: enabledQuery,
-    queryFn: () => getRiskBreakdown(selectedWallet, selectedTimeFrame),
+    queryFn: () => getRiskBreakdown($wallet, selectedTimeFrame),
     staleTime: Infinity,
   });
 
@@ -529,7 +496,7 @@
     2
   ).toFixed(2);
 
-  $: theme = darkMode ? "dark" : "white";
+  $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
 <AnalyticSection>
@@ -552,10 +519,10 @@
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              darkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
             }`}
           >
-            {#if typeWalletAddress === "CEX"}
+            {#if $typeWallet === "CEX"}
               Not enough data. CEX integration can only get data from the day
               you connect
             {:else}
@@ -573,7 +540,7 @@
                         "The Sharpe ratio measures how well an investment performs relative to its risk.",
                         SharpeRatioExplain,
                         true,
-                        darkMode,
+                        $isDarkMode,
                         "360px"
                       )}
                       isBigIcon
@@ -601,7 +568,7 @@
                         "Volatility measures the extent of price fluctuations for an asset over time.",
                         VolatilityExplain,
                         true,
-                        darkMode,
+                        $isDarkMode,
                         "360px"
                       )}
                       isExplainVideo
@@ -629,7 +596,7 @@
                         "Max drawdown is the biggest loss experienced by an investment or portfolio.",
                         MaxDrawdownExplain,
                         true,
-                        darkMode,
+                        $isDarkMode,
                         "360px"
                       )}
                       isExplainVideo
@@ -717,10 +684,10 @@
         {#if $query.isError}
           <div
             class={`rounded-[20px] absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center text-center gap-3 z-30 backdrop-blur-md xl:text-xs text-lg ${
-              darkMode ? "bg-[#222222e6]" : "bg-white/90"
+              $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
             }`}
           >
-            {#if typeWalletAddress === "CEX"}
+            {#if $typeWallet === "CEX"}
               Not enough data. CEX integration can only get data from the day
               you connect
             {:else}
@@ -736,7 +703,7 @@
                   on:click={() => (selectedTypeChart = type.value)}
                 >
                   <div
-                    class={`relative z-20 ${
+                    class={`relative z-2 ${
                       selectedTypeChart === type.value && "text-white"
                     }`}
                   >
@@ -749,7 +716,7 @@
                       transition={{ type: "spring", duration: 0.6 }}
                     >
                       <div
-                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-10"
+                        class="absolute inset-0 rounded-full bg-[#1E96FC] z-1"
                         use:motion
                       />
                     </Motion>
@@ -780,7 +747,7 @@
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >
               <img
-                src={darkMode ? LogoWhite : Logo}
+                src={$isDarkMode ? LogoWhite : Logo}
                 alt=""
                 width="140"
                 height="140"

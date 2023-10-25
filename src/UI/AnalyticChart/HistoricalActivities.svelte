@@ -15,21 +15,6 @@
   export let packageSelected;
   export let darkMode;
 
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   let option = {
     tooltip: {
       extraCssText: "z-index: 9997",
@@ -155,21 +140,21 @@
   };
 
   $: enabledQuery =
-    selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+    $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          (typeWalletAddress === "EVM" ||
-            typeWalletAddress === "CEX" ||
-            typeWalletAddress === "SOL" ||
-            typeWalletAddress === "BUNDLE") &&
-            selectedWallet.length !== 0 &&
+          ($typeWallet === "EVM" ||
+            $typeWallet === "CEX" ||
+            $typeWallet === "SOL" ||
+            $typeWallet === "BUNDLE") &&
+            $wallet.length !== 0 &&
             packageSelected !== "FREE"
         );
 
   $: query = createQuery({
-    queryKey: ["historical", selectedWallet, selectedChain],
+    queryKey: ["historical", $wallet, $chain],
     enabled: enabledQuery,
-    queryFn: () => getAnalyticHistorical(selectedWallet, selectedChain),
+    queryFn: () => getAnalyticHistorical($wallet, $chain),
     staleTime: Infinity,
   });
 
@@ -194,7 +179,7 @@
     id="historical-activities-analytic"
     type="normal"
   />
-  {#if typeWalletAddress === "SOL"}
+  {#if $typeWallet === "SOL"}
     <div
       class={`absolute top-0 left-0 rounded-[20px] z-30 w-full h-full flex items-center justify-center ${
         darkMode ? "bg-[#222222e6]" : "bg-white/90"

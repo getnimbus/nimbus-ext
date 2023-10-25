@@ -3,7 +3,13 @@
   import { shorterAddress, clickOutside } from "~/utils";
   import { nimbus } from "~/lib/network";
   import { createQuery } from "@tanstack/svelte-query";
-  import { wallet, user, isDarkMode, typeWallet, userId } from "~/store";
+  import {
+    user,
+    isDarkMode,
+    typeWallet,
+    userId,
+    userPublicAddress,
+  } from "~/store";
   import { Toast } from "flowbite-svelte";
   import { blur } from "svelte/transition";
   import { flatMap } from "lodash";
@@ -12,7 +18,7 @@
   import Summary from "~/UI/Profile/Summary.svelte";
   import SocialMedia from "~/UI/Profile/SocialMedia.svelte";
   import ClosedPositionChart from "~/UI/Profile/ClosedPositionChart.svelte";
-  import TradingStats from "~/UI/Profile/TradingStats.svelte";
+  import TopProfitAndLoss from "~/UI/Profile/TopProfitAndLoss.svelte";
   import Button from "~/components/Button.svelte";
   import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
@@ -21,31 +27,7 @@
 
   import User from "~/assets/user.png";
   import UpArrow from "~/assets/up-arrow.svg";
-
-  let userID = "";
-  userId.subscribe((value) => {
-    userID = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
+  import ProfitData from "~/UI/Profile/ProfitData.svelte";
 
   let toastMsg = "";
   let isSuccessToast = false;
@@ -152,8 +134,7 @@
   const handleCancelEditProfile = () => {
     isEdit = false;
 
-    selectedAddress =
-      userProfile?.profileAddress || localStorage.getItem("evm_address");
+    selectedAddress = userProfile?.profileAddress || $userPublicAddress;
     selectProfileNFT = dataNftHighlight;
     description = userProfile?.intro || "What's on your mind?";
     socialDataTelegram = {
@@ -169,13 +150,9 @@
   const getUserProfile = async (id) => {
     try {
       const response: any = await nimbus.get(`/users/${id}/profile`);
-      if (response?.status === 401) {
-        throw new Error(response?.response?.error);
-      }
       userProfile = response?.data;
 
-      selectedAddress =
-        userProfile?.profileAddress || localStorage.getItem("evm_address");
+      selectedAddress = userProfile?.profileAddress || $userPublicAddress;
       description = userProfile?.intro || "What's on your mind?";
       socialDataTelegram = {
         label: userProfile.social?.telegram?.status || "Telegram",
@@ -192,20 +169,14 @@
 
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
     return response?.data;
   };
 
   const getHoldingNFT = async (address) => {
-    const response = await nimbus
-      .get(`/v2/address/${address}/nft-holding?chain=ALL`)
-      .then((response) => response?.data);
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
-    return response;
+    const response = await nimbus.get(
+      `/v2/address/${address}/nft-holding?chain=ALL`
+    );
+    return response?.data;
   };
 
   const formatDataListAddress = (data) => {
@@ -253,8 +224,7 @@
     queryKey: ["nft-holding", selectedAddress],
     queryFn: () => getHoldingNFT(selectedAddress),
     staleTime: Infinity,
-    enabled:
-      selectedAddress?.length !== 0 && Object.keys(userInfo).length !== 0,
+    enabled: selectedAddress?.length !== 0 && Object.keys($user).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -272,7 +242,7 @@
     queryKey: ["list-address"],
     queryFn: () => getListAddress(),
     staleTime: Infinity,
-    enabled: Object.keys(userInfo).length !== 0,
+    enabled: Object.keys($user).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -313,7 +283,7 @@
     class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 flex flex-col gap-10"
   >
     <div class="flex flex-col justify-center gap-2">
-      <div class="xl:text-5xl text-7xl font-semibold">My Profile</div>
+      <div class="xl:text-5xl text-7xl font-medium">My Profile</div>
       <div class="xl:text-xl text-3xl">
         One place that aggregates all your personal information
       </div>
@@ -323,13 +293,13 @@
       on:submit|preventDefault={handleSubmitProfile}
       class="flex flex-col gap-4"
     >
-      {#if Object.keys(userInfo).length !== 0 && userID === userIdParams}
+      {#if Object.keys($user).length !== 0 && $userId === userIdParams}
         <div class="flex items-center justify-end lg:gap-2 gap-6">
           {#if isEdit}
             <div class="w-[120px]">
-              <Button variant="secondary" on:click={handleCancelEditProfile}
-                >Cancel</Button
-              >
+              <Button variant="secondary" on:click={handleCancelEditProfile}>
+                Cancel
+              </Button>
             </div>
             <div class="w-[120px]">
               <Button
@@ -340,8 +310,9 @@
             </div>
           {:else}
             <div class="xl:w-[160px] w-[220px]">
-              <Button on:click={() => (isEdit = true)}>Edit your profile</Button
-              >
+              <Button on:click={() => (isEdit = true)}>
+                Edit your profile
+              </Button>
             </div>
           {/if}
         </div>
@@ -366,7 +337,7 @@
             >
               <div
                 class={`text-2xl xl:text-base font-medium flex items-center gap-2 ${
-                  darkMode || isEdit ? "text-white" : "text-black"
+                  $isDarkMode || isEdit ? "text-white" : "text-black"
                 }`}
               >
                 {shorterAddress(selectedAddress)}
@@ -414,7 +385,7 @@
                       </div>
                       <div
                         class={`text-3xl xl:text-sm ${
-                          darkMode ? "text-white" : "text-black"
+                          $isDarkMode ? "text-white" : "text-black"
                         }`}
                       >
                         {shorterAddress(item?.value)}
@@ -449,8 +420,9 @@
                         <Button
                           variant="secondary"
                           on:click={() => (isOpenModalSelectNFT = true)}
-                          >Change</Button
                         >
+                          Change
+                        </Button>
                       </div>
                     {/if}
                   </div>
@@ -465,9 +437,7 @@
                         class="flex items-center gap-2 xl:text-lg text-2xl font-medium"
                       >
                         <div>
-                          {typeWalletAddress === "EVM"
-                            ? "Token ID"
-                            : "Inscription"}
+                          {$typeWallet === "EVM" ? "Token ID" : "Inscription"}
                         </div>
                         <div>
                           #{selectProfileNFT?.tokenId}
@@ -487,7 +457,8 @@
                           <TooltipNumber
                             number={Number(selectProfileNFT?.floorPrice)}
                             type="balance"
-                          /><span class="ml-1">
+                          />
+                          <span class="ml-1">
                             {selectProfileNFT?.nativeToken?.symbol || ""}
                           </span>
                         </div>
@@ -502,7 +473,7 @@
                   <div class="xl:text-base text-lg">
                     There is no NFT highlight yet in your profile
                   </div>
-                  {#if Object.keys(userInfo).length !== 0 && isEdit}
+                  {#if Object.keys($user).length !== 0 && isEdit}
                     <div class="w-max">
                       <Button
                         variant="tertiary"
@@ -525,7 +496,7 @@
                   rows="5"
                   value={description}
                   class="bg-dark-50 text-white xl:text-base text-xl rounded-lg border-0 outline-none w-full"
-                  on:keyup={({ target: { value } }) => (description = value)}
+                  on:change={({ target: { value } }) => (description = value)}
                 />
               {:else}
                 <div>{description}</div>
@@ -547,7 +518,9 @@
               />
             </div>
 
-            <TradingStats {selectedAddress} />
+            <ProfitData {selectedAddress} />
+
+            <TopProfitAndLoss {selectedAddress} />
 
             <ClosedPositionChart {selectedAddress} />
           </div>
@@ -622,12 +595,13 @@
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
-            ><path
+          >
+            <path
               fill-rule="evenodd"
               d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
               clip-rule="evenodd"
-            /></svg
-          >
+            />
+          </svg>
           <span class="sr-only">Check icon</span>
         {:else}
           <svg
@@ -636,12 +610,13 @@
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
-            ><path
+          >
+            <path
               fill-rule="evenodd"
               d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
               clip-rule="evenodd"
-            /></svg
-          >
+            />
+          </svg>
           <span class="sr-only">Error icon</span>
         {/if}
       </svelte:fragment>

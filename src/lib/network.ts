@@ -26,11 +26,8 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
           ...authorization,
         },
       }).then(async (response) => {
-        if (response.status === 401) {
-          return {
-            response: await response.json(),
-            status: response.status,
-          };
+        if (response.status === 403) {
+          throw new Error(await response.json());
         }
         return await response.json();
       });
@@ -94,54 +91,62 @@ const createAxiosInterface = ({ baseURL, getHeaderAuthorize }: IOption) => {
 
 export const messari = createAxiosInterface({
   baseURL: "https://data.messari.io/api/v1",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });
 
 export const coinGeko = createAxiosInterface({
   baseURL: "https://api.coingecko.com/api/v3",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });
 
-export const API_URL = import.meta.env.VITE_API_URL || "https://api-staging.getnimbus.io"
+export const API_URL =
+  import.meta.env.VITE_API_URL || "https://api-staging.getnimbus.io";
 
 export const nimbus = createAxiosInterface({
   baseURL: API_URL,
   getHeaderAuthorize: () => {
-    const evmToken = localStorage.getItem("evm_token");
-    if (evmToken) {
-      return {
-        Authorization: `${evmToken}`,
-      };
+    if (APP_TYPE.TYPE === "WEB") {
+      const evmToken = localStorage.getItem("evm_token");
+      if (evmToken) {
+        return {
+          Authorization: `${evmToken}`,
+        };
+      }
     }
   },
 });
 
 export const defillama = createAxiosInterface({
   baseURL: "https://coins.llama.fi",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });
 
 export const coinmarketcap = createAxiosInterface({
   baseURL: "https://s3.coinmarketcap.com",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });
 
 export const mixpanel = createAxiosInterface({
   baseURL: "https://api.mixpanel.com",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });
 
 export const goplus = createAxiosInterface({
   baseURL: "https://api.gopluslabs.io/api/v1",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
+});
+
+export const mobula = createAxiosInterface({
+  baseURL: "https://api.app-mobula.com/api",
+  getHeaderAuthorize: () => {},
 });
 
 export const nimbusApi = createAxiosInterface({
   baseURL: "https://nimbus-api-production.up.railway.app/api",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });
 
 export const aptos = createAxiosInterface({
   baseURL: "https://aptos-celebtron-api.getnimbus.io/api/v1",
-  getHeaderAuthorize: () => { },
+  getHeaderAuthorize: () => {},
 });

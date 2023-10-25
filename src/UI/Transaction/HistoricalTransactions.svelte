@@ -6,7 +6,7 @@
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
   import { typeWallet, isDarkMode } from "~/store";
-  import { linkExplorer } from "~/utils";
+  import { chainList, formatTransactionTime, linkExplorer } from "~/utils";
   import mobulaLogo from "~/assets/mobula-logo.png";
   import Button from "~/components/Button.svelte";
   import Copy from "~/components/Copy.svelte";
@@ -17,16 +17,6 @@
   export let isLoading;
   export let pageToken;
   export let loadMore = (pageToken) => {};
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
 
   let tableHeader;
   let isSticky = false;
@@ -43,10 +33,10 @@
   });
 </script>
 
-<div class={`${isLoading ? "h-[400px]" : ""}`}>
+<div>
   <div
-    class={`rounded-[10px] border border_0000000d xl:overflow-hidden overflow-x-auto h-full ${
-      darkMode ? "bg-[#131313]" : "bg-[#fff]"
+    class={`rounded-[10px] min-h-[400px] grid border border_0000000d xl:overflow-hidden overflow-x-auto h-full ${
+      $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
     }`}
   >
     <table class="table-auto xl:w-full w-[1400px] h-full">
@@ -86,8 +76,8 @@
           </th>
         </tr>
       </thead>
-      {#if isLoading && pageToken?.length === 0}
-        <tbody>
+      <tbody>
+        {#if isLoading && pageToken?.length === 0}
           <tr>
             <td colspan={5}>
               <div class="flex items-center justify-center h-full px-3 py-4">
@@ -95,208 +85,206 @@
               </div>
             </td>
           </tr>
-        </tbody>
-      {:else}
-        <tbody>
-          {#if data && data?.length === 0}
-            <tr>
-              <td colspan={5}>
+        {:else if data && data?.length === 0}
+          <tr>
+            <td colspan={5}>
+              <div
+                class="flex items-center justify-center h-full px-3 py-4 text-lg text-gray-400"
+              >
+                Empty
+              </div>
+            </td>
+          </tr>
+        {:else}
+          {#each data || [] as item}
+            <tr
+              class="group transition-all border-b-[0.5px] border_0000000d last:border-none"
+            >
+              <td
+                class={`pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 ${
+                  $isDarkMode
+                    ? "bg-[#131313] group-hover:bg-[#000]"
+                    : "bg-white group-hover:bg-gray-100"
+                }`}
+              >
+                <div class="flex items-start gap-2 text-left w-max">
+                  <div class="flex flex-col space-y-2">
+                    <div class="text-2xl xl:text-sm flex gap-2">
+                      <img
+                        src={chainList.find(
+                          (chain) => chain.value === item?.chain
+                        )?.logo}
+                        alt=""
+                        class="object-contain w-5 h-5"
+                      />
+                      {#if $typeWallet === "DEX"}
+                        <Copy
+                          address={item?.transaction_hash}
+                          textTooltip="Copy transaction to clipboard"
+                          iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                          color={`${$isDarkMode ? "#fff" : "#000"}`}
+                          isShorten={true}
+                          isLink={true}
+                          link={`${
+                            linkExplorer(item?.chain, item?.transaction_hash)
+                              .trx
+                          }`}
+                        />
+                      {:else}
+                        <Copy
+                          address={item?.transaction_hash}
+                          textTooltip="Copy transaction to clipboard"
+                          iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                          color={`${$isDarkMode ? "#fff" : "#000"}`}
+                          isShorten={true}
+                        />
+                      {/if}
+                    </div>
+                    <div class="text-lg text-gray-400 xl:text-xs">
+                      {formatTransactionTime(new Date(item?.detail.timestamp))}
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <td
+                class={`py-3  ${
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
+                {#if item?.detail?.from}
+                  <div class="text-2xl w-max xl:text-sm">
+                    {#if $typeWallet === "DEX"}
+                      <Copy
+                        address={item?.detail?.from}
+                        iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                        color={`${$isDarkMode ? "#fff" : "#000"}`}
+                        textTooltip="Copy address"
+                        isShorten={true}
+                        isLink={true}
+                        link={`${
+                          linkExplorer(item?.chain, item?.detail?.from).address
+                        }`}
+                      />
+                    {:else}
+                      <Copy
+                        address={item?.detail?.from}
+                        textTooltip="Copy address"
+                        iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                        color={`${$isDarkMode ? "#fff" : "#000"}`}
+                        isShorten={true}
+                      />
+                    {/if}
+                  </div>
+                {/if}
+              </td>
+
+              <td
+                class={`py-3  ${
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
+                {#if item?.detail?.to}
+                  <div class="text-2xl w-max xl:text-sm">
+                    {#if $typeWallet === "DEX"}
+                      <Copy
+                        address={item?.detail?.to}
+                        iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                        color={`${$isDarkMode ? "#fff" : "#000"}`}
+                        textTooltip="Copy address"
+                        isShorten={true}
+                        isLink={true}
+                        link={`${
+                          linkExplorer(item?.chain, item?.detail?.to).address
+                        }`}
+                      />
+                    {:else}
+                      <Copy
+                        address={item?.detail?.to}
+                        textTooltip="Copy address"
+                        iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                        color={`${$isDarkMode ? "#fff" : "#000"}`}
+                        isShorten={true}
+                      />
+                    {/if}
+                  </div>
+                {/if}
+              </td>
+
+              <td
+                class={`py-3 min-w-[100px] ${
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
                 <div
-                  class="flex items-center justify-center h-full px-3 py-4 text-lg text-gray-400"
+                  class="flex justify-start text-2xl font-medium xl:text-sm text_00000099"
                 >
-                  Empty
+                  {#if item?.type}
+                    <div
+                      class="w-max px-2 py-1 text_27326F font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
+                    >
+                      {item?.type}
+                    </div>
+                  {/if}
+                </div>
+              </td>
+
+              <td
+                class={`py-3 pr-3 ${
+                  $isDarkMode
+                    ? "group-hover:bg-[#000]"
+                    : "group-hover:bg-gray-100"
+                }`}
+              >
+                <div
+                  class="flex flex-col items-start gap-2 text-2xl font-medium xl:text-sm"
+                >
+                  {#each item.changes as change}
+                    <div class="flex items-center gap-2">
+                      <img
+                        src={change?.logo}
+                        alt=""
+                        class="object-contain overflow-hidden rounded-full w-7 h-7"
+                      />
+                      <div
+                        class={`flex gap-1 ${
+                          change?.total < 0 ? "text_00000099" : "text-[#00A878]"
+                        }`}
+                      >
+                        <div class="flex gap-1">
+                          <div class="flex">
+                            {change?.total < 0 ? "-" : "+"}<TooltipNumber
+                              number={Math.abs(change?.total)}
+                              type="balance"
+                            />
+                          </div>
+                          <div>
+                            {change?.symbol || change?.name || "⎯"}
+                          </div>
+                        </div>
+                        <div class="flex w-max">
+                          (<TooltipNumber
+                            number={Math.abs(
+                              change?.total * change?.price?.price
+                            )}
+                            type="value"
+                          />)
+                        </div>
+                      </div>
+                    </div>
+                  {/each}
                 </div>
               </td>
             </tr>
-          {:else}
-            {#each data || [] as item}
-              <tr
-                class="group transition-all border-b-[0.5px] border_0000000d last:border-none"
-              >
-                <td
-                  class={`pl-3 py-4 xl:static xl:bg-transparent sticky left-0 z-9 ${
-                    darkMode
-                      ? "bg-[#131313] group-hover:bg-[#000]"
-                      : "bg-white group-hover:bg-gray-100"
-                  }`}
-                >
-                  <div class="flex items-start gap-2 text-left w-max">
-                    <div class="flex flex-col">
-                      <div class="text-2xl xl:text-sm">
-                        {#if typeWalletAddress === "DEX"}
-                          <Copy
-                            address={item?.transaction_hash}
-                            textTooltip="Copy transaction to clipboard"
-                            iconColor={`${darkMode ? "#fff" : "#000"}`}
-                            color={`${darkMode ? "#fff" : "#000"}`}
-                            isShorten={true}
-                            isLink={true}
-                            link={`${
-                              linkExplorer(item?.chain, item?.transaction_hash)
-                                .trx
-                            }`}
-                          />
-                        {:else}
-                          <Copy
-                            address={item?.transaction_hash}
-                            textTooltip="Copy transaction to clipboard"
-                            iconColor={`${darkMode ? "#fff" : "#000"}`}
-                            color={`${darkMode ? "#fff" : "#000"}`}
-                            isShorten={true}
-                          />
-                        {/if}
-                      </div>
-                      <div class="text-lg text-gray-400 xl:text-xs">
-                        {dayjs(new Date(item?.detail.timestamp)).format(
-                          "YYYY-MM-DD, hh:mm A"
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </td>
-
-                <td
-                  class={`py-3  ${
-                    darkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  {#if item?.detail?.from}
-                    <div class="text-2xl w-max xl:text-sm">
-                      {#if typeWalletAddress === "DEX"}
-                        <Copy
-                          address={item?.detail?.from}
-                          iconColor={`${darkMode ? "#fff" : "#000"}`}
-                          color={`${darkMode ? "#fff" : "#000"}`}
-                          textTooltip="Copy address"
-                          isShorten={true}
-                          isLink={true}
-                          link={`${
-                            linkExplorer(item?.chain, item?.detail?.from)
-                              .address
-                          }`}
-                        />
-                      {:else}
-                        <Copy
-                          address={item?.detail?.from}
-                          textTooltip="Copy address"
-                          iconColor={`${darkMode ? "#fff" : "#000"}`}
-                          color={`${darkMode ? "#fff" : "#000"}`}
-                          isShorten={true}
-                        />
-                      {/if}
-                    </div>
-                  {/if}
-                </td>
-
-                <td
-                  class={`py-3  ${
-                    darkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  {#if item?.detail?.to}
-                    <div class="text-2xl w-max xl:text-sm">
-                      {#if typeWalletAddress === "DEX"}
-                        <Copy
-                          address={item?.detail?.to}
-                          iconColor={`${darkMode ? "#fff" : "#000"}`}
-                          color={`${darkMode ? "#fff" : "#000"}`}
-                          textTooltip="Copy address"
-                          isShorten={true}
-                          isLink={true}
-                          link={`${
-                            linkExplorer(item?.chain, item?.detail?.to).address
-                          }`}
-                        />
-                      {:else}
-                        <Copy
-                          address={item?.detail?.to}
-                          textTooltip="Copy address"
-                          iconColor={`${darkMode ? "#fff" : "#000"}`}
-                          color={`${darkMode ? "#fff" : "#000"}`}
-                          isShorten={true}
-                        />
-                      {/if}
-                    </div>
-                  {/if}
-                </td>
-
-                <td
-                  class={`py-3 min-w-[100px] ${
-                    darkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  <div
-                    class="flex justify-start text-2xl font-medium xl:text-sm text_00000099"
-                  >
-                    {#if item?.type}
-                      <div
-                        class="w-max px-2 py-1 text_27326F font-normal bg-[#6AC7F533] rounded-[5px] capitalize"
-                      >
-                        {item?.type}
-                      </div>
-                    {/if}
-                  </div>
-                </td>
-
-                <td
-                  class={`py-3 pr-3 ${
-                    darkMode
-                      ? "group-hover:bg-[#000]"
-                      : "group-hover:bg-gray-100"
-                  }`}
-                >
-                  <div
-                    class="flex flex-col items-start gap-2 text-2xl font-medium xl:text-sm"
-                  >
-                    {#each item.changes as change}
-                      <div class="flex items-center gap-2">
-                        <img
-                          src={change?.logo}
-                          alt=""
-                          class="object-contain overflow-hidden rounded-full w-7 h-7"
-                        />
-                        <div
-                          class={`flex gap-1 ${
-                            change?.total < 0
-                              ? "text_00000099"
-                              : "text-[#00A878]"
-                          }`}
-                        >
-                          <div class="flex gap-1">
-                            <div class="flex">
-                              {change?.total < 0 ? "-" : "+"}<TooltipNumber
-                                number={Math.abs(change?.total)}
-                                type="balance"
-                              />
-                            </div>
-                            <div>
-                              {change?.symbol || change?.name || "⎯"}
-                            </div>
-                          </div>
-                          <div class="flex w-max">
-                            (<TooltipNumber
-                              number={Math.abs(
-                                change?.total * change?.price?.price
-                              )}
-                              type="value"
-                            />)
-                          </div>
-                        </div>
-                      </div>
-                    {/each}
-                  </div>
-                </td>
-              </tr>
-            {/each}
-          {/if}
-        </tbody>
-      {/if}
+          {/each}
+        {/if}
+      </tbody>
     </table>
   </div>
 </div>
@@ -313,7 +301,7 @@
     </div>
   </div>
 {/if}
-{#if typeWalletAddress !== "SOL" && typeWalletAddress !== "CEX"}
+{#if $typeWallet !== "SOL" && $typeWallet !== "CEX"}
   <div class="flex items-center gap-2">
     <a href="https://mobula.fi/" target="_blank">
       <img

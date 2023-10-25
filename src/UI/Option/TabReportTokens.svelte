@@ -1,12 +1,13 @@
 <script>
-  import Button from "~/components/Button.svelte";
-  import AppOverlay from "~/components/Overlay.svelte";
   import { i18n } from "~/lib/i18n";
   import { isDarkMode, user } from "~/store";
   import { nimbus } from "~/lib/network";
   import { Toast } from "flowbite-svelte";
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
+  import { handleImgError } from "~/utils";
 
+  import Button from "~/components/Button.svelte";
+  import AppOverlay from "~/components/Overlay.svelte";
   import Loading from "~/components/Loading.svelte";
 
   const MultipleLang = {
@@ -47,16 +48,6 @@
     },
   };
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
   let selectedItemDelete;
   let isOpenConfirmDelete = false;
   let isLoadingDelete = false;
@@ -83,9 +74,6 @@
 
   const handleDataReportToken = async () => {
     const response = await nimbus.get("/holding/trash");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
     return response.data;
   };
 
@@ -94,7 +82,7 @@
     queryFn: () => handleDataReportToken(),
     staleTime: Infinity,
     retry: false,
-    enabled: Object.keys(userInfo).length !== 0,
+    enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -135,7 +123,7 @@
   <div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
     <div
       class={`border border_0000000d rounded-[10px] overflow-x-auto h-full ${
-        darkMode ? "bg-[#131313]" : "bg-[#fff]"
+        $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
       }`}
     >
       <table class="table-auto xl:w-full w-[1800px] h-full">
@@ -208,7 +196,7 @@
                 <tr class="group transition-all">
                   <td
                     class={`pl-3 py-3 ${
-                      darkMode
+                      $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
@@ -220,10 +208,12 @@
                         width="35"
                         height="35"
                         class="rounded-full"
-                        on:error={(e) => {
-                          e.target.src =
-                            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png";
-                        }}
+                        on:error={(e) =>
+                          handleImgError(
+                            e,
+                            item?.logoUrl,
+                            "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
+                          )}
                       />
                       <div class="xl:text-base text-2xl">
                         {item.contractName}
@@ -233,7 +223,7 @@
 
                   <td
                     class={`py-3 ${
-                      darkMode
+                      $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
@@ -245,7 +235,7 @@
 
                   <td
                     class={`py-3 ${
-                      darkMode
+                      $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
@@ -257,7 +247,7 @@
 
                   <td
                     class={`py-3 pr-3 ${
-                      darkMode
+                      $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}

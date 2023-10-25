@@ -5,7 +5,6 @@
   import { nimbus } from "~/lib/network";
   import CopyToClipboard from "svelte-copy-to-clipboard";
   import { createQuery } from "@tanstack/svelte-query";
-  import { useNavigate } from "svelte-navigator";
   import { isDarkMode, user } from "~/store";
 
   import Loading from "~/components/Loading.svelte";
@@ -33,18 +32,6 @@
     },
   };
 
-  const navigate = useNavigate();
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
   let listAddress = [];
   let isOpenFollowWhaleModal = false;
   let showCommandTooltip = false;
@@ -65,9 +52,6 @@
 
   const getListAddress = async () => {
     const response: any = await nimbus.get("/accounts/list");
-    if (response?.status === 401) {
-      throw new Error(response?.response?.error);
-    }
     return response?.data;
   };
 
@@ -76,7 +60,7 @@
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
-    enabled: Object.keys(userInfo).length !== 0,
+    enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -96,7 +80,7 @@
   <div class={`${$query.isFetching ? "h-[400px]" : ""}`}>
     <div
       class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto ${
-        darkMode ? "bg-[#131313]" : "bg-[#fff]"
+        $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
       }`}
     >
       <table class="table-auto xl:w-full w-[1200px] h-full">
@@ -152,7 +136,7 @@
                 <tr class="group transition-all">
                   <td
                     class={`pl-3 py-3  ${
-                      darkMode
+                      $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
@@ -160,15 +144,15 @@
                     <div class="text-left xl:text-base text-2xl">
                       <Copy
                         address={item.address}
-                        iconColor={`${darkMode ? "#fff" : "#000"}`}
-                        color={`${darkMode ? "#fff" : "#000"}`}
+                        iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                        color={`${$isDarkMode ? "#fff" : "#000"}`}
                       />
                     </div>
                   </td>
 
                   <td
                     class={`py-3  ${
-                      darkMode
+                      $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
@@ -182,7 +166,7 @@
 
                   <td
                     class={`py-3 pr-3 ${
-                      darkMode
+                      $isDarkMode
                         ? "group-hover:bg-[#000]"
                         : "group-hover:bg-gray-100"
                     }`}
