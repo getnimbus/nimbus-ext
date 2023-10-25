@@ -22,24 +22,6 @@
 
   export let data;
 
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let hiddenPortfolio = false;
-  isHidePortfolio.subscribe((value) => (hiddenPortfolio = value));
-
   $: realizedProfit = data?.profit?.realizedProfit
     ? Number(data?.profit?.realizedProfit)
     : 0;
@@ -60,22 +42,22 @@
       : (Number(data?.market_price) - Number(data?.profit?.averageCost)) /
         Number(data?.profit?.averageCost || 0);
 
-  const handleGetTradeHistory = async () => {
+  const handleGetTradeHistory = async (address) => {
     const response: any = await nimbus.get(
-      `/v2/address/${selectedWallet}/token/${data?.contractAddress}/trade-history?chain=${data?.chain}`
+      `/v2/address/${address}/token/${data?.contractAddress}/trade-history?chain=${data?.chain}`
     );
     return response?.data;
   };
 
   $: queryHistoryTokenDetail = createQuery({
-    queryKey: ["trade-history", data, selectedWallet],
-    queryFn: () => handleGetTradeHistory(),
+    queryKey: ["trade-history", data, $wallet],
+    queryFn: () => handleGetTradeHistory($wallet),
     staleTime: Infinity,
     retry: false,
     enabled:
       data !== undefined &&
       Object.keys(data).length !== 0 &&
-      selectedWallet.length !== 0,
+      $wallet.length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -121,7 +103,7 @@
     <div class="flex-1 flex md:flex-row flex-col justify-between gap-6">
       <OverviewCard title={"Avg Cost"}>
         <div class="flex justify-end xl:text-3xl text-5xl">
-          ${#if hiddenPortfolio}
+          ${#if $isHidePortfolio}
             ******
           {:else if data?.profit}
             <TooltipNumber
@@ -236,7 +218,7 @@
   <div class="flex flex-col gap-6">
     <div
       class={`rounded-[20px] p-6 flex flex-col gap-4 relative ${
-        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
       <div class="xl:text-2xl text-4xl font-medium">
@@ -247,10 +229,10 @@
         id={data?.name}
         avgCost={data?.profit?.averageCost}
       />
-      {#if typeWalletAddress !== "EVM" || (typeWalletAddress === "EVM" && data?.chain !== "ETH")}
+      {#if $typeWallet !== "EVM" || ($typeWallet === "EVM" && data?.chain !== "ETH")}
         <div
           class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex flex-col items-center gap-3 pt-62 ${
-            darkMode ? "bg-[#222222e6]" : "bg-white/90"
+            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
           } z-30 backdrop-blur-md`}
         >
           <div class="text-lg">Coming soon 🚀</div>
@@ -260,13 +242,13 @@
 
     <div
       class={`rounded-[20px] p-6 flex flex-col gap-4 ${
-        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
       <div class="xl:text-2xl text-4xl font-medium">History</div>
       <div
         class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-          darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+          $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
         }`}
       >
         <table class="table-auto xl:w-full w-[1400px] h-full">
@@ -330,8 +312,11 @@
                   </td>
                 </tr>
               {:else}
-                {#each dataHistoryTokenDetail as data}
-                  <TokenHistoryItem {data} />
+                {#each dataHistoryTokenDetail as item}
+                  <TokenHistoryItem
+                    data={item}
+                    contractAddress={data?.contractAddress}
+                  />
                 {/each}
               {/if}
             </tbody>

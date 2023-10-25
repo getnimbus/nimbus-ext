@@ -9,11 +9,6 @@
   export let clickOutSideToClose = false;
   export let isTableContent = false;
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   const handleClose = () => {
     dispatch("close");
   };
@@ -61,7 +56,7 @@
         on:click|stopPropagation
         use:motion
       >
-        <div class={`rounded-xl ${darkMode ? "bg-[#0f0f0f]" : "bg-white"}`}>
+        <div class={`rounded-xl ${$isDarkMode ? "bg-[#0f0f0f]" : "bg-white"}`}>
           <div
             class="absolute top-3 right-5 xl:text-4xl text-6xl text-gray-500 cursor-pointer"
             on:click|stopPropagation={handleClose}
@@ -84,7 +79,7 @@
       : "opacity-0 transform translate-x-[-100vw]"
   }`}
 >
-  <div class={`h-full ${darkMode ? "bg-[#0f0f0f]" : "bg-white"}`}>
+  <div class={`h-full ${$isDarkMode ? "bg-[#0f0f0f]" : "bg-white"}`}>
     <div
       class="h-[100px] max-w-[100vw] m-auto w-[90%] flex justify-end items-center"
     >

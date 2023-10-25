@@ -20,7 +20,6 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { wait } from "~/entries/background/utils";
-  import { useNavigate } from "svelte-navigator";
   import * as browser from "webextension-polyfill";
 
   import AppOverlay from "~/components/Overlay.svelte";
@@ -116,23 +115,6 @@
       ),
     },
   };
-
-  const navigate = useNavigate();
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let packageSelected = "";
-  selectedPackage.subscribe((value) => {
-    packageSelected = value;
-  });
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
 
   let errors: any = {};
   let errorsEdit: any = {};
@@ -310,7 +292,7 @@
     queryFn: () => getListAddress(),
     staleTime: Infinity,
     retry: false,
-    enabled: Object.keys(userInfo).length !== 0,
+    enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -628,7 +610,7 @@
   $: {
     if (
       listAddress.filter((item) => item.type !== "BUNDLE")?.length > 2 &&
-      packageSelected === "FREE"
+      $selectedPackage === "FREE"
     ) {
       isDisabled = true;
     } else {
@@ -637,7 +619,7 @@
 
     if (
       listAddress.filter((item) => item.type !== "BUNDLE")?.length > 6 &&
-      packageSelected === "EXPLORER"
+      $selectedPackage === "EXPLORER"
     ) {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
@@ -650,7 +632,7 @@
       isDisabled = false;
     }
 
-    if (packageSelected === "PROFESSIONAL") {
+    if ($selectedPackage === "PROFESSIONAL") {
       if (
         localStorage.getItem("isGetUserEmailYet") !== null &&
         localStorage.getItem("isGetUserEmailYet") === "false"
@@ -661,15 +643,15 @@
   }
 
   $: {
-    if (Object.keys(userInfo).length === 0) {
+    if ($user && Object.keys($user).length === 0) {
       tooltipDisableAddBtn = "Connect wallet to add account";
     }
     if (isDisabled) {
-      if (packageSelected === "FREE") {
+      if ($selectedPackage === "FREE") {
         tooltipDisableAddBtn =
           "You've reached the maximum number of accounts. Upgrade to the EXPLORER Plan to add more";
       }
-      if (packageSelected === "EXPLORER") {
+      if ($selectedPackage === "EXPLORER") {
         tooltipDisableAddBtn =
           "You've reached the maximum number of accounts. Upgrade to the ALPHA Plan to add more";
       }
@@ -679,9 +661,12 @@
   onMount(() => {
     const evmToken = localStorage.getItem("evm_token");
     if (evmToken) {
-      userInfo = {
-        picture: User,
-      };
+      user.update(
+        (n) =>
+          (n = {
+            picture: User,
+          })
+      );
     }
     if (
       localStorage.getItem("isGetUserEmailYet") !== null &&
@@ -701,7 +686,7 @@
     queryKey: ["list-bundle"],
     queryFn: () => getListBundle(),
     staleTime: Infinity,
-    enabled: Object.keys(userInfo).length !== 0,
+    enabled: $user && Object.keys($user).length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -774,11 +759,6 @@
 
         queryClient.invalidateQueries(["list-bundle"]);
         queryClient.invalidateQueries(["list-address"]);
-        queryClient.invalidateQueries(["personalize-tag"]);
-        queryClient.invalidateQueries(["historical"]);
-        queryClient.invalidateQueries(["inflow-outflow"]);
-
-        triggerUpdateBundle.update((n) => (n = true));
 
         toastMsg = "Successfully edit your bundle!";
       } else {
@@ -798,12 +778,15 @@
             ),
           };
         });
+
         selectedBundle = listBundle[listBundle.length - 1];
         selectedAddresses = listBundle[listBundle.length - 1].addresses;
         nameBundle = listBundle[listBundle.length - 1].name;
 
         toastMsg = "Successfully create your bundle!";
       }
+
+      triggerUpdateBundle.update((n) => (n = true));
 
       isSuccess = true;
       trigger();
@@ -873,7 +856,7 @@
         </div>
       </div>
       <div class="relative xl:w-max w-[200px]">
-        {#if Object.keys(userInfo).length !== 0}
+        {#if $user && Object.keys($user).length !== 0}
           <Button variant="tertiary" on:click={() => (isOpenAddModal = true)}>
             <img src={Plus} alt="" width="12" height="12" />
             <div class="text-2xl font-medium text-white xl:text-base">
@@ -892,14 +875,14 @@
           >
             <Button variant="disabled">
               <img
-                src={darkMode ? PlusBlack : Plus}
+                src={$isDarkMode ? PlusBlack : Plus}
                 alt=""
                 width="12"
                 height="12"
               />
               <div
                 class={`text-2xl font-medium xl:text-base ${
-                  darkMode ? "text-gray-400" : "text-white"
+                  $isDarkMode ? "text-gray-400" : "text-white"
                 }`}
               >
                 {MultipleLang.content.btn_text}
@@ -1066,17 +1049,17 @@
             <div
               class="relative xl:w-max w-[200px]"
               on:mouseenter={() => {
-                if (isDisabled || Object.keys(userInfo).length === 0) {
+                if (isDisabled || ($user && Object.keys($user).length === 0)) {
                   showDisableAddWallet = true;
                 }
               }}
               on:mouseleave={() => {
-                if (isDisabled || Object.keys(userInfo).length === 0) {
+                if (isDisabled || ($user && Object.keys($user).length === 0)) {
                   showDisableAddWallet = false;
                 }
               }}
             >
-              {#if isDisabled || Object.keys(userInfo).length === 0}
+              {#if isDisabled || ($user && Object.keys($user).length === 0)}
                 <div>
                   {#if localStorage.getItem("isGetUserEmailYet") !== null && localStorage.getItem("isGetUserEmailYet") === "false"}
                     <Button
@@ -1098,13 +1081,13 @@
                   {:else}
                     <Button variant="disabled" disabled>
                       <img
-                        src={darkMode ? PlusBlack : Plus}
+                        src={$isDarkMode ? PlusBlack : Plus}
                         alt=""
                         class="w-4 h-4 xl:w-3 xl:h-3"
                       />
                       <div
                         class={`text-2xl font-medium xl:text-base ${
-                          darkMode ? "text-gray-400" : "text-white"
+                          $isDarkMode ? "text-gray-400" : "text-white"
                         }`}
                       >
                         Add account
@@ -1149,7 +1132,7 @@
       >
         <div
           class={`flex flex-col gap-1 input-2 w-full py-[6px] px-3 ${
-            nameBundle && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+            nameBundle && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
           }`}
         >
           <div class="xl:text-base text-2xl text-[#666666] font-medium">
@@ -1159,7 +1142,7 @@
             type="text"
             placeholder="Your bundle name"
             class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-              nameBundle && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+              nameBundle && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
             }`}
             required
             disabled={selectedBundle?.name === "Your wallets" ? true : false}
@@ -1170,7 +1153,7 @@
         <div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
           <div
             class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
-              darkMode ? "bg-[#131313]" : "bg-[#fff]"
+              $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
             }`}
           >
             <table class="table-auto xl:w-full w-[1800px] h-full">
@@ -1231,7 +1214,7 @@
                       <tr class="transition-all group">
                         <td
                           class={`pl-3 py-3 ${
-                            darkMode
+                            $isDarkMode
                               ? "group-hover:bg-[#000]"
                               : "group-hover:bg-gray-100"
                           }`}
@@ -1253,7 +1236,7 @@
 
                         <td
                           class={`py-3  ${
-                            darkMode
+                            $isDarkMode
                               ? "group-hover:bg-[#000]"
                               : "group-hover:bg-gray-100"
                           }`}
@@ -1263,15 +1246,15 @@
                           >
                             <Copy
                               address={item.address}
-                              iconColor={`${darkMode ? "#fff" : "#000"}`}
-                              color={`${darkMode ? "#fff" : "#000"}`}
+                              iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                              color={`${$isDarkMode ? "#fff" : "#000"}`}
                             />
                           </div>
                         </td>
 
                         <td
                           class={`py-3 pr-3 ${
-                            darkMode
+                            $isDarkMode
                               ? "group-hover:bg-[#000]"
                               : "group-hover:bg-gray-100"
                           }`}
@@ -1334,7 +1317,7 @@
       <div class={`${$query.isLoading ? "h-[400px]" : ""}`}>
         <div
           class={`border border_0000000d rounded-[10px] xl:overflow-hidden overflow-x-auto h-full ${
-            darkMode ? "bg-[#131313]" : "bg-[#fff]"
+            $isDarkMode ? "bg-[#131313]" : "bg-[#fff]"
           }`}
         >
           <table class="table-auto xl:w-full w-[1800px] h-full">
@@ -1420,7 +1403,7 @@
                     <tr class="transition-all group">
                       <td
                         class={`pl-3 py-3 ${
-                          darkMode
+                          $isDarkMode
                             ? "group-hover:bg-[#000]"
                             : "group-hover:bg-gray-100"
                         }`}
@@ -1446,7 +1429,7 @@
 
                       <td
                         class={`py-3 ${
-                          darkMode
+                          $isDarkMode
                             ? "group-hover:bg-[#000]"
                             : "group-hover:bg-gray-100"
                         }`}
@@ -1456,15 +1439,15 @@
                         >
                           <Copy
                             address={item.address}
-                            iconColor={`${darkMode ? "#fff" : "#000"}`}
-                            color={`${darkMode ? "#fff" : "#000"}`}
+                            iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                            color={`${$isDarkMode ? "#fff" : "#000"}`}
                           />
                         </div>
                       </td>
 
                       <td
                         class={`py-3 pr-3 ${
-                          darkMode
+                          $isDarkMode
                             ? "group-hover:bg-[#000]"
                             : "group-hover:bg-gray-100"
                         }`}
@@ -1552,7 +1535,7 @@
       <div class="border-t-[1px] relative">
         <div
           class={`absolute xl:top-[-10px] top-[-14px] left-1/2 transform -translate-x-1/2 text-gray-400 ${
-            darkMode ? "bg-[#0f0f0f]" : "bg-white"
+            $isDarkMode ? "bg-[#0f0f0f]" : "bg-white"
           } xl:text-sm text-xl px-2`}
         >
           Or
@@ -1566,7 +1549,7 @@
           <div class="flex flex-col gap-1">
             <div
               class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-                address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
               }`}
               class:input-border-error={errors.address &&
                 errors.address.required}
@@ -1581,7 +1564,7 @@
                 placeholder="Your wallet address"
                 value=""
                 class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                  address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                  address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                 }
               `}
                 on:keyup={({ target: { value } }) => (address = value)}
@@ -1596,7 +1579,7 @@
           <div class="flex flex-col gap-1">
             <div
               class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-                label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+                label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
               }`}
               class:input-border-error={errors.label && errors.label.required}
             >
@@ -1610,7 +1593,7 @@
                 placeholder={MultipleLang.content.modal_label_label}
                 value=""
                 class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                  label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                  label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
                 }
               `}
                 on:keyup={({ target: { value } }) => (label = value)}
@@ -1685,7 +1668,7 @@
         <div class="flex flex-col gap-1 opacity-50">
           <div
             class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-              address && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+              address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
             }`}
           >
             <div class="xl:text-base text-2xl font-semibold text-[#666666]">
@@ -1699,7 +1682,7 @@
               placeholder={MultipleLang.content.modal_address_label}
               value={address}
               class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                address && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                address && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               }`}
             />
           </div>
@@ -1707,7 +1690,7 @@
         <div class="flex flex-col gap-1">
           <div
             class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-              label && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+              label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
             }`}
             class:input-border-error={errorsEdit.label &&
               errorsEdit.label.required}
@@ -1722,7 +1705,7 @@
               placeholder={MultipleLang.content.modal_label_label}
               bind:value={label}
               class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-                label && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+                label && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
               }`}
               on:keyup={({ target: { value } }) => (label = value)}
             />
@@ -1868,7 +1851,7 @@
     >
       <div
         class={`flex flex-col gap-1 input-2 input-border w-full py-[6px] px-3 ${
-          email && !darkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
+          email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg_fafafbff"
         }`}
       >
         <div class="xl:text-base text-2xl text-[#666666] font-medium">
@@ -1882,7 +1865,7 @@
           placeholder="Your email"
           value=""
           class={`p-0 border-none focus:outline-none focus:ring-0 xl:text-sm text-2xl font-normal text-[#5E656B] placeholder-[#5E656B] ${
-            email && !darkMode ? "bg-[#F0F2F7]" : "bg-transparent"
+            email && !$isDarkMode ? "bg-[#F0F2F7]" : "bg-transparent"
           }
               `}
           on:keyup={({ target: { value } }) => (email = value)}

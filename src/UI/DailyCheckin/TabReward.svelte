@@ -2,21 +2,11 @@
   import { createQuery, useQueryClient } from "@tanstack/svelte-query";
   import { AnimateSharedLayout, Motion } from "svelte-motion";
   import { nimbus } from "~/lib/network";
-  import { isDarkMode, user, userPublicAddress } from "~/store";
+  import { user, userPublicAddress } from "~/store";
   import { dailyCheckinRewardsTypePortfolio } from "~/utils";
 
   import Loading from "~/components/Loading.svelte";
   import RedeemCard from "~/components/RedeemCard.svelte";
-
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
 
   let selectedType: "redeemGift" | "yourGift" = "redeemGift";
 
@@ -56,7 +46,9 @@
     queryFn: () => handleDailyCheckin(),
     staleTime: Infinity,
     enabled:
-      Object.keys(userInfo).length !== 0 && $userPublicAddress.length !== 0,
+      $user &&
+      Object.keys($user).length !== 0 &&
+      $userPublicAddress.length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));
@@ -68,7 +60,9 @@
     queryFn: () => handleRewards(),
     staleTime: Infinity,
     enabled:
-      Object.keys(userInfo).length !== 0 && $userPublicAddress.length !== 0,
+      $user &&
+      Object.keys($user).length !== 0 &&
+      $userPublicAddress.length !== 0,
     onError(err) {
       localStorage.removeItem("evm_token");
       user.update((n) => (n = {}));

@@ -43,26 +43,6 @@
 
   const navigate = useNavigate();
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   let selectedType: "category" | "sector" | "rank" = "category";
   let isEmptyDataPie = false;
   let dataRank = [];
@@ -84,7 +64,7 @@
                   "https://raw.githubusercontent.com/getnimbus/assets/main/token.png"
                 } alt="" width=20 height=20 style="border-radius: 100%" />
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   ${params?.name} ${
           params?.data?.symbol ? `(${params?.data?.symbol})` : ""
@@ -96,7 +76,7 @@
                 params?.data?.name_balance.length !== 0
                   ? `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                     ${MultipleLang[params?.data?.name_balance]}
@@ -110,7 +90,7 @@
               }
 
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   ${MultipleLang[params?.data?.name_value]}
@@ -121,7 +101,7 @@
               </div>
               
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   ${MultipleLang[params?.data?.name_ratio]}
@@ -183,7 +163,7 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 260px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${dayjs(params[0].axisValue).format("YYYY-MM-DD")}
               </div>
@@ -192,7 +172,7 @@
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
@@ -261,7 +241,7 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 320px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                  ${dayjs(params[0].axisValue).format("YYYY-MM-DD")}
               </div>
@@ -270,7 +250,7 @@
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
@@ -278,7 +258,7 @@
 
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      darkMode ? "white" : "black"
+                      $isDarkMode ? "white" : "black"
                     }">
                       ${formatValue(Math.abs(item.value[1]))}
                     </div>
@@ -371,9 +351,9 @@
   };
 
   $: queryPersonalTag = createQuery({
-    queryKey: ["personalize-tag", selectedWallet],
+    queryKey: ["personalize-tag", $wallet],
     enabled: enabledQuery,
-    queryFn: () => getPersonalizeTag(selectedWallet),
+    queryFn: () => getPersonalizeTag($wallet),
     staleTime: Infinity,
   });
 
@@ -403,9 +383,9 @@
   };
 
   $: queryHoldingToken = createQuery({
-    queryKey: ["holding-token", selectedWallet, selectedChain],
+    queryKey: ["token-holding", $wallet, $chain],
     enabled: enabledQuery,
-    queryFn: () => getHoldingToken(selectedWallet, selectedChain),
+    queryFn: () => getHoldingToken($wallet, $chain),
     staleTime: Infinity,
   });
 
@@ -424,9 +404,9 @@
   };
 
   $: queryCompare = createQuery({
-    queryKey: ["compare", selectedWallet, selectedChain, selectedTimeFrame],
+    queryKey: ["compare", $wallet, $chain, selectedTimeFrame],
     enabled: enabledQuery,
-    queryFn: () => getAnalyticCompare(selectedWallet, selectedTimeFrame),
+    queryFn: () => getAnalyticCompare($wallet, selectedTimeFrame),
     staleTime: Infinity,
   });
 
@@ -730,25 +710,25 @@
   }
 
   $: enabledQuery =
-    selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+    $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          (typeWalletAddress === "EVM" ||
-            typeWalletAddress === "CEX" ||
-            typeWalletAddress === "SOL" ||
-            typeWalletAddress === "BUNDLE") &&
-            selectedWallet.length !== 0 &&
+          ($typeWallet === "EVM" ||
+            $typeWallet === "CEX" ||
+            $typeWallet === "SOL" ||
+            $typeWallet === "BUNDLE") &&
+            $wallet.length !== 0 &&
             packageSelected !== "FREE"
         );
 
-  $: theme = darkMode ? "dark" : "white";
+  $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
 <div class="flex flex-col justify-between gap-6 xl:flex-row">
   <!-- Token allocation -->
   <div
     class={`xl:w-1/2 w-full flex flex-col justify-between items-start gap-2 rounded-[20px] p-6 ${
-      darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
     }`}
   >
     <div class="text-4xl font-medium xl:text-2xl">
@@ -844,13 +824,13 @@
         {/if}
       </div>
       <div class="flex-1">
-        {#if selectedWallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
+        {#if $wallet !== "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"}
           <div
             on:click={() => {
               navigate(
                 `/personal-token-breakdown?chain=${encodeURIComponent(
-                  selectedChain
-                )}&address=${encodeURIComponent(selectedWallet)}`
+                  $chain
+                )}&address=${encodeURIComponent($wallet)}`
               );
             }}
             class="mt-1 text-2xl font-medium text-blue-500 cursor-pointer xl:text-base hover:underline w-max"
@@ -893,7 +873,7 @@
                 class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
               >
                 <img
-                  src={darkMode ? LogoWhite : Logo}
+                  src={$isDarkMode ? LogoWhite : Logo}
                   alt=""
                   width="140"
                   height="140"
@@ -909,12 +889,12 @@
   <!-- Performance -->
   <div
     class={`xl:w-1/2 w-full relative rounded-[20px] p-6 ${
-      darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
     }`}
   >
     <div class="flex justify-between items-start mb-6">
       <div class="flex justify-start">
-        {#if typeWalletAddress === "CEX" || typeWalletAddress === "SOL"}
+        {#if $typeWallet === "CEX" || $typeWallet === "SOL"}
           <TooltipTitle
             tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
             type="warning"
@@ -962,10 +942,10 @@
         </div>
       {/if}
     </div>
-    {#if selectedChain === "XDAI"}
+    {#if $chain === "XDAI"}
       <div
         class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center ${
-          darkMode ? "bg-[#222222e6]" : "bg-white/90"
+          $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
         } z-30 backdrop-blur-md`}
       >
         <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
@@ -981,7 +961,7 @@
           <div
             class="flex justify-center items-center h-full xl:text-xs text-lg text-center h-[465px]"
           >
-            {#if typeWalletAddress === "CEX" && $queryCompare.isError}
+            {#if $typeWallet === "CEX" && $queryCompare.isError}
               Not enough data. CEX integration can only get data from the day
               you connect
             {:else}
@@ -1003,7 +983,7 @@
               class="absolute transform -translate-x-1/2 -translate-y-1/2 opacity-50 pointer-events-none top-1/2 left-1/2"
             >
               <img
-                src={darkMode ? LogoWhite : Logo}
+                src={$isDarkMode ? LogoWhite : Logo}
                 alt=""
                 width="140"
                 height="140"

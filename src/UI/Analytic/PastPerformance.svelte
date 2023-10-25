@@ -14,26 +14,6 @@
 
   export let packageSelected;
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   // const handleGetDateRange = (data) => {
   //   console.log(data);
   // };
@@ -46,21 +26,20 @@
   };
 
   $: enabledQuery =
-    selectedWallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
+    $wallet === "0x9b4f0d1c648b6b754186e35ef57fa6936deb61f0"
       ? true
       : Boolean(
-          (typeWalletAddress === "EVM" ||
-            typeWalletAddress === "CEX" ||
-            typeWalletAddress === "BUNDLE") &&
-            selectedWallet.length !== 0 &&
+          ($typeWallet === "EVM" ||
+            $typeWallet === "CEX" ||
+            $typeWallet === "BUNDLE") &&
+            $wallet.length !== 0 &&
             packageSelected !== "FREE"
         );
 
   $: query = createQuery({
-    queryKey: ["holding-history", selectedWallet, selectedChain],
+    queryKey: ["holding-history", $wallet, $chain],
     enabled: enabledQuery,
-    queryFn: () =>
-      getTotalValueHistoryAndDailyGain(selectedWallet, selectedChain),
+    queryFn: () => getTotalValueHistoryAndDailyGain($wallet, $chain),
     staleTime: Infinity,
   });
 </script>
@@ -75,10 +54,10 @@
     <TotalValueHistory isLoading={$query.isFetching} isEmpty={$query.isError} dataTotalValueHistory={$query.data.holdingHistory} />
     <DailyPnL isLoading={$query.isFetching} isEmpty={$query.isError} dataDailyPnL={$query.data.returnsChange} />
     <SectorGrowth /> -->
-    {#if typeWalletAddress === "DEX"}
-      <TotalGasFee {packageSelected} {darkMode} />
+    {#if $typeWallet === "DEX"}
+      <TotalGasFee {packageSelected} darkMode={$isDarkMode} />
     {:else}
-      <HistoricalActivities {packageSelected} {darkMode} />
+      <HistoricalActivities {packageSelected} darkMode={$isDarkMode} />
     {/if}
   </div>
 </div>

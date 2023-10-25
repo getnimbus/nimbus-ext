@@ -23,21 +23,6 @@
   import TooltipNumber from "~/components/TooltipNumber.svelte";
   import Loading from "~/components/Loading.svelte";
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   let filteredHoldingDataToken = [];
   let filteredHoldingDataNFT = [];
   let marketPriceToken;
@@ -336,12 +321,11 @@
     }
   }
 
-  $: colspan =
-    typeWalletAddress === "SOL" || typeWalletAddress === "EVM" ? 8 : 7;
+  $: colspan = $typeWallet === "SOL" || $typeWallet === "EVM" ? 8 : 7;
 
   $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
+    if (selectedWallet || $chain) {
+      if (selectedWallet?.length !== 0 && $chain?.length !== 0) {
         sumTokens = 0;
         sumAllTokens = 0;
         sumNFT = 0;
@@ -375,7 +359,7 @@
 
 <div
   class={`flex flex-col gap-6 rounded-[20px] p-6 ${
-    darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+    $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
   }`}
 >
   <ErrorBoundary>
@@ -438,7 +422,7 @@
 
           <div
             class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-              darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+              $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
             }`}
           >
             <table class="table-auto xl:w-full w-[1800px] h-full">
@@ -493,9 +477,9 @@
                   </th>
                   <th
                     class={`py-3 ${
-                      typeWalletAddress === "SOL" ||
-                      typeWalletAddress === "EVM" ||
-                      typeWalletAddress === "BUNDLE"
+                      $typeWallet === "SOL" ||
+                      $typeWallet === "EVM" ||
+                      $typeWallet === "BUNDLE"
                         ? ""
                         : "pr-3 rounded-tr-[10px]"
                     }`}
@@ -506,13 +490,13 @@
                       Unrealized PnL
                     </div>
                   </th>
-                  {#if typeWalletAddress === "SOL" || typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE"}
+                  {#if $typeWallet === "SOL" || $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
                     <th class="py-3 xl:w-12 w-32 rounded-tr-[10px]" />
                   {/if}
                 </tr>
               </thead>
 
-              {#if selectedChain === "ALL"}
+              {#if $chain === "ALL"}
                 <tbody>
                   {#if filteredHoldingDataToken && filteredHoldingDataToken.length === 0 && !isLoadingToken}
                     <tr>
@@ -529,12 +513,11 @@
                       </td>
                     </tr>
                   {/if}
-                  {#each filteredHoldingDataToken as holding, index}
+                  {#each filteredHoldingDataToken as holding}
                     <HoldingToken
                       data={holding}
                       {selectedWallet}
                       sumAllTokens={totalAssets - sumNFT}
-                      {index}
                     />
                   {/each}
                 </tbody>
@@ -553,7 +536,7 @@
                 {/if}
               {/if}
 
-              {#if selectedChain !== "ALL"}
+              {#if $chain !== "ALL"}
                 {#if isLoadingToken}
                   <tbody>
                     <tr>
@@ -583,12 +566,11 @@
                         </td>
                       </tr>
                     {:else}
-                      {#each filteredHoldingDataToken as holding, index}
+                      {#each filteredHoldingDataToken as holding}
                         <HoldingToken
                           data={holding}
                           {selectedWallet}
                           sumAllTokens={totalAssets - sumNFT}
-                          {index}
                         />
                       {/each}
                     {/if}
@@ -599,155 +581,107 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- nft holding table -->
-    {#if typeWalletAddress !== "CEX"}
-      <div class="flex flex-col gap-2">
-        <div class="flex justify-between items-center">
-          <div class="xl:text-xl text-3xl font-medium">
-            {MultipleLang.nft}
-          </div>
-          <div class="xl:text-3xl text-4xl font-medium text-right">
-            <TooltipNumber number={sumNFT} type="value" />
-          </div>
-        </div>
+      <!-- nft holding table -->
+      {#if $typeWallet !== "CEX"}
         <div class="flex flex-col gap-2">
-          <div class="flex items-center justify-end gap-2">
-            <div class="xl:text-sm text-2xl font-regular text-gray-400">
-              Hide NFT Collections less than
+          <div class="flex justify-between items-center">
+            <div class="xl:text-xl text-3xl font-medium">
+              {MultipleLang.nft}
             </div>
-            <Select
-              type="filter"
-              positionSelectList="right-0"
-              listSelect={filterTokenValueType}
-              bind:selected={filterNFTType}
-            />
+            <div class="xl:text-3xl text-4xl font-medium text-right">
+              <TooltipNumber number={sumNFT} type="value" />
+            </div>
           </div>
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-end gap-2">
+              <div class="xl:text-sm text-2xl font-regular text-gray-400">
+                Hide NFT Collections less than
+              </div>
+              <Select
+                type="filter"
+                positionSelectList="right-0"
+                listSelect={filterTokenValueType}
+                bind:selected={filterNFTType}
+              />
+            </div>
 
-          <div
-            class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-              darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
-            }`}
-          >
-            <table class="table-auto xl:w-full w-[1400px] h-full">
-              <thead
-                class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
-                bind:this={tableNFTHeader}
-              >
-                <tr class="bg_f4f5f8">
-                  <th
-                    class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[220px]"
-                  >
-                    <div
-                      class="text-left xl:text-xs text-xl uppercase font-medium"
+            <div
+              class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
+                $isDarkMode
+                  ? "bg-[#131313]"
+                  : "bg-[#fff] border border_0000000d"
+              }`}
+            >
+              <table class="table-auto xl:w-full w-[1400px] h-full">
+                <thead
+                  class={isStickyTableNFT ? "sticky top-0 z-10" : ""}
+                  bind:this={tableNFTHeader}
+                >
+                  <tr class="bg_f4f5f8">
+                    <th
+                      class="pl-3 py-3 rounded-tl-[10px] xl:static xl:bg-transparent sticky left-0 z-10 bg_f4f5f8 w-[220px]"
                     >
-                      {MultipleLang.collection}
-                    </div>
-                  </th>
-                  <th
-                    class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg_f4f5f8 w-[160px]"
-                  >
-                    <div
-                      class="text-left xl:text-xs text-xl uppercase font-medium"
-                    >
-                      {MultipleLang.Balance}
-                    </div>
-                  </th>
-                  <th class="py-3">
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
-                    >
-                      <TooltipTitle
-                        tooltipText={false
-                          ? "The Floor price from Magic Eden marketplace. "
-                          : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
-                        link={false ? "https://magiceden.io/ordinals" : ""}
+                      <div
+                        class="text-left xl:text-xs text-xl uppercase font-medium"
                       >
-                        {MultipleLang.floor_price}
-                      </TooltipTitle>
-                    </div>
-                  </th>
-                  <th class="py-3">
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
+                        {MultipleLang.collection}
+                      </div>
+                    </th>
+                    <th
+                      class="py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 bg_f4f5f8 w-[160px]"
                     >
-                      Cost
-                    </div>
-                  </th>
-                  <th class="py-3">
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
-                    >
-                      {MultipleLang.current_value}
-                    </div>
-                  </th>
-                  <th class="py-3 pr-3 rounded-tr-[10px]">
-                    <div
-                      class="text-right xl:text-xs text-xl uppercase font-medium"
-                    >
-                      <TooltipTitle
-                        tooltipText="Price NFTs now - Price NFTs at time you spent"
+                      <div
+                        class="text-left xl:text-xs text-xl uppercase font-medium"
                       >
-                        {MultipleLang.profit}
-                      </TooltipTitle>
-                    </div>
-                  </th>
-                </tr>
-              </thead>
+                        {MultipleLang.Balance}
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        <TooltipTitle
+                          tooltipText={false
+                            ? "The Floor price from Magic Eden marketplace. "
+                            : "The Floor price of last 24h, if there is no volume, the floor price is 0"}
+                          link={false ? "https://magiceden.io/ordinals" : ""}
+                        >
+                          {MultipleLang.floor_price}
+                        </TooltipTitle>
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        Cost
+                      </div>
+                    </th>
+                    <th class="py-3">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        {MultipleLang.current_value}
+                      </div>
+                    </th>
+                    <th class="py-3 pr-3 rounded-tr-[10px]">
+                      <div
+                        class="text-right xl:text-xs text-xl uppercase font-medium"
+                      >
+                        <TooltipTitle
+                          tooltipText="Price NFTs now - Price NFTs at time you spent"
+                        >
+                          {MultipleLang.profit}
+                        </TooltipTitle>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
 
-              {#if selectedChain === "ALL"}
-                <tbody>
-                  {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0 && !isLoadingNFT}
-                    <tr>
-                      <td colspan={6}>
-                        <div
-                          class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400 view-nft-detail"
-                        >
-                          {#if formatDataNFT && formatDataNFT.length === 0}
-                            {MultipleLang.empty}
-                          {:else}
-                            All NFT Collections less than $1
-                          {/if}
-                        </div>
-                      </td>
-                    </tr>
-                  {/if}
-                  {#each filteredHoldingDataNFT as holding, index}
-                    <HoldingNFT data={holding} {selectedWallet} {index} />
-                  {/each}
-                </tbody>
-                {#if isLoadingNFT}
+                {#if $chain === "ALL"}
                   <tbody>
-                    <tr>
-                      <td colspan={6}>
-                        <div
-                          class="flex justify-center items-center h-full py-3 px-3"
-                        >
-                          <Loading />
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                {/if}
-              {/if}
-
-              {#if selectedChain !== "ALL"}
-                {#if isLoadingNFT}
-                  <tbody>
-                    <tr>
-                      <td colspan={6}>
-                        <div
-                          class="flex justify-center items-center h-full py-3 px-3"
-                        >
-                          <Loading />
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                {:else}
-                  <tbody>
-                    {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0}
+                    {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0 && !isLoadingNFT}
                       <tr>
                         <td colspan={6}>
                           <div
@@ -761,20 +695,70 @@
                           </div>
                         </td>
                       </tr>
-                    {:else}
-                      {#each filteredHoldingDataNFT as holding, index}
-                        <HoldingNFT data={holding} {selectedWallet} {index} />
-                      {/each}
                     {/if}
+                    {#each filteredHoldingDataNFT as holding, index}
+                      <HoldingNFT data={holding} {selectedWallet} {index} />
+                    {/each}
                   </tbody>
+                  {#if isLoadingNFT}
+                    <tbody>
+                      <tr>
+                        <td colspan={6}>
+                          <div
+                            class="flex justify-center items-center h-full py-3 px-3"
+                          >
+                            <Loading />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  {/if}
                 {/if}
-              {/if}
-            </table>
+
+                {#if $chain !== "ALL"}
+                  {#if isLoadingNFT}
+                    <tbody>
+                      <tr>
+                        <td colspan={6}>
+                          <div
+                            class="flex justify-center items-center h-full py-3 px-3"
+                          >
+                            <Loading />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  {:else}
+                    <tbody>
+                      {#if filteredHoldingDataNFT && filteredHoldingDataNFT.length === 0}
+                        <tr>
+                          <td colspan={6}>
+                            <div
+                              class="flex justify-center items-center h-full py-3 px-3 xl:text-lg text-xl text-gray-400 view-nft-detail"
+                            >
+                              {#if formatDataNFT && formatDataNFT.length === 0}
+                                {MultipleLang.empty}
+                              {:else}
+                                All NFT Collections less than $1
+                              {/if}
+                            </div>
+                          </td>
+                        </tr>
+                      {:else}
+                        {#each filteredHoldingDataNFT as holding, index}
+                          <HoldingNFT data={holding} {selectedWallet} {index} />
+                        {/each}
+                      {/if}
+                    </tbody>
+                  {/if}
+                {/if}
+              </table>
+            </div>
           </div>
         </div>
-      </div>
-    {/if}
-  </ErrorBoundary>
+      {/if}
+    </div></ErrorBoundary
+  >
 </div>
 
 <style>

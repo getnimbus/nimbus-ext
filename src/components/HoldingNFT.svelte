@@ -1,6 +1,6 @@
 <script lang="ts">
   import { useNavigate } from "svelte-navigator";
-  import { shorterName, detectedChain } from "~/utils";
+  import { shorterName, detectedChain, handleImgError } from "~/utils";
   import { typeWallet, isDarkMode } from "~/store";
   import mixpanel from "mixpanel-browser";
 
@@ -19,16 +19,6 @@
   export let index;
 
   const navigate = useNavigate();
-
-  let typeWalletAddress = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
 
   let showTooltipListNFT = false;
   let isShowTooltipName = false;
@@ -74,7 +64,7 @@
 >
   <td
     class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 w-[220px] ${
-      darkMode
+      $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
@@ -98,7 +88,7 @@
           </div>
         {/if}
       </div>
-      {#if typeWalletAddress === "EVM" || typeWalletAddress === "BUNDLE"}
+      {#if $typeWallet === "EVM" || $typeWallet === "BUNDLE"}
         <img
           src={detectedChain(data.nativeToken.symbol)}
           alt=""
@@ -112,7 +102,7 @@
 
   <td
     class={`py-3 xl:static xl:bg-transparent sticky left-[220px] z-10 w-[200px] ${
-      darkMode
+      $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
@@ -128,10 +118,12 @@
             <img
               src={token?.imageUrl ||
                 "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-              on:error={(e) => {
-                e.target.src =
-                  "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384";
-              }}
+              on:error={(e) =>
+                handleImgError(
+                  e,
+                  token?.imageUrl,
+                  "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                )}
               alt=""
               class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border border-gray-300 overflow-hidden ${
                 index > 0 && "-ml-2"
@@ -142,10 +134,12 @@
             <img
               src={data?.tokens[4].imageUrl ||
                 "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-              on:error={(e) => {
-                e.target.src =
-                  "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384";
-              }}
+              on:error={(e) =>
+                handleImgError(
+                  e,
+                  data?.tokens[4].imageUrl,
+                  "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                )}
               alt=""
               class="xl:w-9 xl:h-9 w-12 h-12 rounded-md border border-gray-300 overflow-hidden -ml-2"
             />
@@ -167,10 +161,12 @@
             <img
               src={token?.imageUrl ||
                 "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-              on:error={(e) => {
-                e.target.src =
-                  "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384";
-              }}
+              on:error={(e) =>
+                handleImgError(
+                  e,
+                  token?.imageUrl,
+                  "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+                )}
               alt=""
               class={`xl:w-9 xl:h-9 w-12 h-12 rounded-md border border-gray-300 overflow-hidden ${
                 index > 0 && "-ml-2"
@@ -184,7 +180,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
@@ -205,7 +201,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
@@ -225,7 +221,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
@@ -246,7 +242,7 @@
 
   <td
     class={`py-3 pr-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
@@ -334,8 +330,8 @@
           <Copy
             address={data?.tokens[0]?.contractAddress}
             isShorten
-            iconColor={`${darkMode ? "#fff" : "#000"}`}
-            color={`${darkMode ? "#fff" : "#000"}`}
+            iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+            color={`${$isDarkMode ? "#fff" : "#000"}`}
           />
         </div>
       </div>

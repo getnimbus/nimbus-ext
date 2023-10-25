@@ -28,16 +28,6 @@
   export let avgCost;
   export let chain;
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
   let selectedTimeFrame: "7D" | "30D" | "3M" | "1Y" | "ALL" = "30D";
   let dataPriceChart = [];
   let dataAvgCost = [];
@@ -61,7 +51,7 @@
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 320px;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   ${dayjs(params[0].axisValue).format("YYYY-MM-DD HH:mm")}
                 </div>
@@ -72,7 +62,7 @@
                   params[0]?.seriesName === "Trade"
                     ? `
                   <div style="display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   }">
                     <span>${params[0]?.marker}</span>
                     <span>${
@@ -100,7 +90,7 @@
                         : `
                         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                            darkMode ? "white" : "black"
+                            $isDarkMode ? "white" : "black"
                           }">
                             <span>${item?.marker}</span>
                             <span>${item?.seriesName}</span>
@@ -108,7 +98,7 @@
 
                           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
                             <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                              darkMode ? "white" : "black"
+                              $isDarkMode ? "white" : "black"
                             }">
                               $${formatCurrency(Math.abs(item.value[1]))}
                             </div>
@@ -274,7 +264,7 @@
       contractAddress.length !== 0 &&
       chainType !== undefined &&
       chainType.length !== 0 &&
-      typeWalletAddress === "EVM",
+      $typeWallet === "EVM",
   });
 
   $: queryTokenPriceSol = createQuery({
@@ -285,7 +275,7 @@
     enabled:
       contractAddress !== undefined &&
       contractAddress.length !== 0 &&
-      typeWalletAddress === "SOL",
+      $typeWallet === "SOL",
   });
 
   $: {
@@ -388,13 +378,13 @@
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-              darkMode ? "white" : "black"
+              $isDarkMode ? "white" : "black"
             }">
               Value
             </div>
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 $${
                   data?.type === "buy"
@@ -411,13 +401,13 @@
 
           <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-              darkMode ? "white" : "black"
+              $isDarkMode ? "white" : "black"
             }">
               Amount
             </div>
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${
                   data?.type === "buy"
@@ -430,13 +420,13 @@
           
           <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-              darkMode ? "white" : "black"
+              $isDarkMode ? "white" : "black"
             }">
               Price
             </div>
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 $${formatCurrency(data.past_price)}
               </div>
@@ -513,13 +503,13 @@
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-              darkMode ? "white" : "black"
+              $isDarkMode ? "white" : "black"
             }">
               Value
             </div>
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 $${formatCurrency(Number(sumPastValue))}
               </div>
@@ -528,13 +518,13 @@
 
           <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-              darkMode ? "white" : "black"
+              $isDarkMode ? "white" : "black"
             }">
               Amount
             </div>
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${formatBalance(Number(sumAmountSell))}
               </div>
@@ -543,13 +533,13 @@
           
           <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-              darkMode ? "white" : "black"
+              $isDarkMode ? "white" : "black"
             }">
               Price
             </div>
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 $${formatCurrency(selectedPastPrice?.past_price)}
               </div>
@@ -568,13 +558,13 @@
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-              darkMode ? "white" : "black"
+              $isDarkMode ? "white" : "black"
             }">
               Value
             </div>
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 $${formatCurrency(Number(sumPastValue))}
               </div>
@@ -583,13 +573,13 @@
 
           <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-              darkMode ? "white" : "black"
+              $isDarkMode ? "white" : "black"
             }">
               Amount
             </div>
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${formatBalance(Number(sumAmountBuy))}
               </div>
@@ -598,13 +588,13 @@
           
           <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-              darkMode ? "white" : "black"
+              $isDarkMode ? "white" : "black"
             }">
               Price
             </div>
             <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
               <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 $${formatCurrency(selectedPastPrice?.past_price)}
               </div>
@@ -617,13 +607,13 @@
     return `
         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-            darkMode ? "white" : "black"
+            $isDarkMode ? "white" : "black"
           }">
             Price
           </div>
           <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
             <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-              darkMode ? "white" : "black"
+              $isDarkMode ? "white" : "black"
             }">
               $${formatCurrency(formatData[0]?.price)}
             </div>
@@ -634,7 +624,7 @@
            return `
               <div style="display: flex; flex-direction: column; gap: 6px;">
                 <div style="display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   <span style="margin-top: 5px; display:inline-block; margin-right:4px; border-radius:10px; width:10px; height:10px; background-color: ${
                     item?.type === "buy" ? "#00b580" : "#ef4444"
@@ -645,13 +635,13 @@
            
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   }">
                     Value
                   </div>
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      darkMode ? "white" : "black"
+                      $isDarkMode ? "white" : "black"
                     }">
                       $${formatCurrency(item.past_value)}
                     </div>
@@ -660,13 +650,13 @@
 
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   }">
                     Amount
                   </div>
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      darkMode ? "white" : "black"
+                      $isDarkMode ? "white" : "black"
                     }">
                       ${formatBalance(Number(item?.amount))}
                     </div>
@@ -863,11 +853,8 @@
             {
               name: "Price",
               type: "line",
-              symbol: "circle",
               zlevel: 1,
               z: 2,
-              datasetIndex: 1,
-              symbolSize: 0.1,
               lineStyle: {
                 type: "solid",
                 color: "#1e96fc",
@@ -878,11 +865,8 @@
             {
               name: "Avg Cost",
               type: "line",
-              symbol: "circle",
               zlevel: 1,
               z: 2,
-              datasetIndex: 1,
-              symbolSize: 0.1,
               lineStyle: {
                 type: "dashed",
                 color: "#eab308",
@@ -964,56 +948,68 @@
     }
   }
 
-  $: theme = darkMode ? "dark" : "white";
+  $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
-{#if $queryTokenPrice.isFetching || $queryTokenPriceSol.isFetching}
-  <div class="flex items-center justify-center h-[475px]">
-    <Loading />
-  </div>
-{:else}
-  <div class="h-full">
-    {#if $queryTokenPrice.isError || $queryTokenPriceSol.isError || (dataPriceChart && dataPriceChart.length === 0)}
-      <div
-        class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
-      >
-        Empty
-      </div>
-    {:else}
-      <div class="flex flex-col gap-4">
-        <div class="flex justify-end">
-          <AnimateSharedLayout>
-            {#each timeFrame as type}
+<div class="flex flex-col gap-4">
+  <div class="flex justify-end">
+    <AnimateSharedLayout>
+      {#each timeFrame as type}
+        <div
+          class="relative cursor-pointer xl:text-sm text-base font-medium py-1 px-3 rounded-[100px] transition-all"
+          on:click={() => {
+            if (
+              !$queryTokenPrice.isError ||
+              !$queryTokenPriceSol.isError ||
+              (dataPriceChart && dataPriceChart.length !== 0)
+            ) {
+              selectedTimeFrame = type.value;
+            }
+          }}
+        >
+          <div
+            class={`relative z-20 ${
+              type.value === selectedTimeFrame && "text-white"
+            }`}
+          >
+            {type.label}
+          </div>
+          {#if type.value === selectedTimeFrame}
+            <Motion
+              let:motion
+              layoutId="active-pill"
+              transition={{ type: "spring", duration: 0.6 }}
+            >
               <div
-                class="relative cursor-pointer xl:text-sm text-base font-medium py-1 px-3 rounded-[100px] transition-all"
-                on:click={() => {
-                  selectedTimeFrame = type.value;
-                }}
-              >
-                <div
-                  class={`relative z-20 ${
-                    type.value === selectedTimeFrame && "text-white"
-                  }`}
-                >
-                  {type.label}
-                </div>
-                {#if type.value === selectedTimeFrame}
-                  <Motion
-                    let:motion
-                    layoutId="active-pill"
-                    transition={{ type: "spring", duration: 0.6 }}
-                  >
-                    <div
-                      class="absolute inset-0 rounded-full z-10"
-                      style="background:rgba(30, 150, 252, 1);"
-                      use:motion
-                    />
-                  </Motion>
-                {/if}
-              </div>
-            {/each}
-          </AnimateSharedLayout>
+                class="absolute inset-0 rounded-full z-10"
+                style={`background:${
+                  !$queryTokenPrice.isError ||
+                  !$queryTokenPriceSol.isError ||
+                  (dataPriceChart && dataPriceChart.length !== 0)
+                    ? "rgba(30, 150, 252, 1)"
+                    : "#dddddd"
+                } `}
+                use:motion
+              />
+            </Motion>
+          {/if}
         </div>
+      {/each}
+    </AnimateSharedLayout>
+  </div>
+  {#if $queryTokenPrice.isFetching || $queryTokenPriceSol.isFetching}
+    <div class="flex items-center justify-center h-[475px]">
+      <Loading />
+    </div>
+  {:else}
+    <div class="h-full">
+      {#if $queryTokenPrice.isError || $queryTokenPriceSol.isError || (dataPriceChart && dataPriceChart.length === 0)}
+        <div
+          class="flex justify-center items-center h-full text-lg text-gray-400 h-[475px]"
+        >
+          Empty
+        </div>
+      {:else}
         <div class="relative">
           <EChart
             id={id + "line-chart"}
@@ -1026,17 +1022,17 @@
             class="opacity-40 absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2"
           >
             <img
-              src={darkMode ? LogoWhite : Logo}
+              src={$isDarkMode ? LogoWhite : Logo}
               alt=""
               width="140"
               height="140"
             />
           </div>
         </div>
-      </div>
-    {/if}
-  </div>
-{/if}
+      {/if}
+    </div>
+  {/if}
+</div>
 
 <style windi:preflights:global windi:safelist:global>
 </style>

@@ -36,11 +36,6 @@
     },
   });
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   let activeTabValue = "wallets";
 
   browser.storage.onChanged.addListener((changes) => {
@@ -90,7 +85,11 @@
           class="max-w-[2000px] m-auto w-[100%] flex gap-1 xl:flex-row flex-col"
         >
           <div class="xl:w-64 w-full px-4 py-3">
-            <SidebarTabs bind:activeTabValue {darkMode} {listSideBar} />
+            <SidebarTabs
+              bind:activeTabValue
+              darkMode={$isDarkMode}
+              {listSideBar}
+            />
           </div>
           <div class="flex-1 px-6 py-4">
             {#if activeTabValue === "highlight"}

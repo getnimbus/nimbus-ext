@@ -1,5 +1,6 @@
 <script lang="ts">
   import { isDarkMode } from "~/store";
+  import { handleImgError } from "~/utils";
 
   import TooltipNumber from "~/components/TooltipNumber.svelte";
 
@@ -10,11 +11,6 @@
   export let nativeToken;
   export let marketPrice;
   export let floorPrice;
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
 
   $: profitAndLoss =
     Number(item?.price || 0) === 0
@@ -30,7 +26,7 @@
 <tr class="group transition-all">
   <td
     class={`pl-3 py-3 xl:static xl:bg-transparent sticky left-0 z-10 w-[220px] ${
-      darkMode
+      $isDarkMode
         ? "bg-[#131313] group-hover:bg-[#000]"
         : "bg-white group-hover:bg-gray-100"
     }`}
@@ -42,10 +38,12 @@
       <img
         src={item?.imageUrl ||
           "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"}
-        on:error={(e) => {
-          e.target.src =
-            "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384";
-        }}
+        on:error={(e) =>
+          handleImgError(
+            e,
+            item?.imageUrl,
+            "https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384"
+          )}
         alt=""
         class="w-12 h-12 rounded-md border border-gray-300 overflow-hidden"
       />
@@ -54,7 +52,7 @@
 
   <td
     class={`py-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div
@@ -72,7 +70,7 @@
 
   <td
     class={`py-3 pr-3 ${
-      darkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
+      $isDarkMode ? "group-hover:bg-[#000]" : "group-hover:bg-gray-100"
     }`}
   >
     <div

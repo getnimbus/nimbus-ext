@@ -31,26 +31,6 @@
     Value: i18n("newtabPage.Value", "Value"),
   };
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
   let optionPie = {
     title: {
       text: "",
@@ -69,7 +49,7 @@
                 onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/getnimbus/assets/main/token.png';"
                 alt="" width=20 height=20 style="border-radius: 100%" />
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   ${params?.name} ${
           params?.data?.symbol ? `(${params?.data?.symbol})` : ""
@@ -81,7 +61,7 @@
                 params?.data?.name_balance.length !== 0
                   ? `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                     ${MultipleLang[params?.data?.name_balance]}
@@ -95,7 +75,7 @@
               }
 
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   ${MultipleLang[params?.data?.name_value]}
@@ -106,7 +86,7 @@
               </div>
               
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   ${MultipleLang[params?.data?.name_ratio]}
@@ -149,7 +129,7 @@
   };
 
   $: typeListCategory =
-    typeWalletAddress === "BUNDLE" && !isComparePage
+    $typeWallet === "BUNDLE" && !isComparePage
       ? [
           {
             label: "All",
@@ -243,7 +223,7 @@
     if (
       dataOverviewBundlePieChart.length !== 0 &&
       holdingTokenData &&
-      typeWalletAddress === "BUNDLE"
+      $typeWallet === "BUNDLE"
     ) {
       dataAccounts = {
         value: "Account",
@@ -274,9 +254,7 @@
 
   const getPersonalizeTag = async () => {
     try {
-      const response = await nimbus.get(
-        `/address/${selectedWallet}/personalize/tag`
-      );
+      const response = await nimbus.get(`/address/${$wallet}/personalize/tag`);
       if (response && response.data) {
         const categoriesData = Object.getOwnPropertyNames(response.data);
         const categoriesDataList = categoriesData.map((item) => {
@@ -433,10 +411,10 @@
   }
 
   $: {
-    if (selectedWallet || selectedChain) {
-      if (selectedWallet?.length !== 0 && selectedChain?.length !== 0) {
+    if ($wallet || $chain) {
+      if ($wallet?.length !== 0 && $chain?.length !== 0) {
         typeListCategory =
-          typeWalletAddress === "BUNDLE" && !isComparePage
+          $typeWallet === "BUNDLE" && !isComparePage
             ? [
                 {
                   label: "All",
@@ -641,12 +619,12 @@
     }
   }
 
-  $: theme = darkMode ? "dark" : "white";
+  $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
 <div class="w-full">
   {#if listOptionTypeCategory && listOptionTypeCategory.length === 0}
-    {#if typeWalletAddress !== "BTC"}
+    {#if $typeWallet !== "BTC"}
       <div class="flex justify-end mb-5">
         <Select
           type="lang"

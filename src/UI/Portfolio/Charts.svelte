@@ -48,31 +48,6 @@
     Value: i18n("newtabPage.Value", "Value"),
   };
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
-  let selectedWallet: string = "";
-  wallet.subscribe((value) => {
-    selectedWallet = value;
-  });
-
-  let selectedChain: string = "";
-  chain.subscribe((value) => {
-    selectedChain = value;
-  });
-
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let selectBundle = {};
-  selectedBundle.subscribe((value) => {
-    selectBundle = value;
-  });
-
   let selectedType: "token" | "nft" = "token";
   let selectedTypePerformance: "percent" | "networth" = "percent";
   let optionPie = {
@@ -90,7 +65,7 @@
                 onerror="this.onerror=null;this.src='https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384';"
                 alt="" width=20 height=20 style="border-radius: 100%" />
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   ${params?.name} ${
           params?.data?.symbol ? `(${params?.data?.symbol})` : ""
@@ -102,7 +77,7 @@
                 params?.data?.name_balance
                   ? `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                     ${MultipleLang[params?.data?.name_balance]}
@@ -116,7 +91,7 @@
               }
 
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   ${MultipleLang[params?.data?.name_value]}
@@ -127,7 +102,7 @@
               </div>
               
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   ${MultipleLang[params?.data?.name_ratio]}
@@ -179,7 +154,7 @@
         return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${params[0].axisValue}
               </div>
@@ -188,7 +163,7 @@
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
@@ -333,7 +308,7 @@
             return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 220px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${params[0].axisValue}
               </div>
@@ -342,7 +317,7 @@
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
@@ -410,7 +385,7 @@
               return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 260px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${params[0].axisValue}
               </div>
@@ -419,7 +394,7 @@
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500;color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
@@ -521,7 +496,7 @@
               return `
             <div style="display: flex; flex-direction: column; gap: 12px; min-width: 320px;">
               <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 ${params[0].axisValue}
               </div>
@@ -530,14 +505,14 @@
                   return `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); display: flex; align-items: centers; gap: 4px; font-weight: 500; color: ${
-                    darkMode ? "white" : "black"
+                    $isDarkMode ? "white" : "black"
                   }">
                     <span>${item?.marker}</span>
                     ${item?.seriesName}
                   </div>
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); text-align: right; margin-top: 2px;">
                     <div style="display:flex; justify-content: flex-end; align-items: center; gap: 4px; flex: 1; font-weight: 500; font-size: 14px; line-height: 17px; color: ${
-                      darkMode ? "white" : "black"
+                      $isDarkMode ? "white" : "black"
                     }">
                       ${formatValue(Math.abs(item.value))}
                     </div>
@@ -635,7 +610,7 @@
                 onerror="this.onerror=null;this.src='https://i.seadn.io/gae/TLlpInyXo6n9rzaWHeuXxM6SDoFr0cFA0TWNpFQpv5-oNpXlYKzxsVUynd0XUIYBW2G8eso4-4DSQuDR3LC_2pmzfHCCrLBPcBdU?auto=format&dpr=1&w=384';"
                 alt="" width=20 height=20 style="border-radius: 100%" />
                 <div style="font-weight: 500; font-size: 16px; line-height: 19px; color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   ${params?.name} ${
                 params?.data?.symbol ? `(${params?.data?.symbol})` : ""
@@ -647,7 +622,7 @@
                 params?.data?.name_balance
                   ? `
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
-                  darkMode ? "white" : "black"
+                  $isDarkMode ? "white" : "black"
                 }">
                   <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                     ${MultipleLang[params?.data?.name_balance]}
@@ -661,7 +636,7 @@
               }
 
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   ${MultipleLang[params?.data?.name_value]}
@@ -672,7 +647,7 @@
               </div>
               
               <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); color: ${
-                darkMode ? "white" : "black"
+                $isDarkMode ? "white" : "black"
               }">
                 <div style="grid-template-columns: repeat(1, minmax(0, 1fr)); font-weight: 500; font-size: 14px; line-height: 17px;">
                   ${MultipleLang[params?.data?.name_ratio]}
@@ -717,7 +692,7 @@
     }
   }
 
-  $: theme = darkMode ? "dark" : "white";
+  $: theme = $isDarkMode ? "dark" : "white";
 </script>
 
 <ErrorBoundary>
@@ -727,12 +702,12 @@
   >
     <div
       class={`xl:w-1/2 w-full rounded-[20px] p-6 xl:block hidden ${
-        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
       <div class="w-full flex items-center gap-4 mb-6">
         <div class="text-4xl font-medium xl:text-2xl">Allocation</div>
-        {#if typeWalletAddress !== "CEX"}
+        {#if $typeWallet !== "CEX"}
           <div class="flex items-center gap-1">
             <AnimateSharedLayout>
               {#each typePieChart as type}
@@ -780,7 +755,7 @@
                 Empty
               </div>
             {:else}
-              <div class={`${typeWalletAddress !== "BTC" ? "-mt-15" : ""}`}>
+              <div class={`${$typeWallet !== "BTC" ? "-mt-15" : ""}`}>
                 <TokenAllocation
                   {handleSelectedTableTokenHolding}
                   {holdingTokenData}
@@ -818,23 +793,23 @@
 
     <div
       class={`xl:w-1/2 w-full rounded-[20px] p-6 relative ${
-        darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+        $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
       }`}
     >
-      {#if selectedChain === "XDAI" || typeWalletAddress === "BTC"}
+      {#if $chain === "XDAI" || $typeWallet === "BTC"}
         <div class="pl-4 text-4xl font-medium xl:text-2xl">
           {MultipleLang.performance}
         </div>
         <div
-          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center ${
-            darkMode ? "bg-[#222222e6]" : "bg-white/90"
-          } z-10 backdrop-blur-md`}
+          class={`absolute top-0 left-0 rounded-[20px] w-full h-full flex items-center justify-center z-10 backdrop-blur-md ${
+            $isDarkMode ? "bg-[#222222e6]" : "bg-white/90"
+          }`}
         >
           <div class="text-2xl xl:text-lg">Coming soon 🚀</div>
         </div>
       {:else}
         <div class="flex justify-between mb-6">
-          {#if typeWalletAddress === "CEX" || typeWalletAddress === "SOL" || selectBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
+          {#if $typeWallet === "CEX" || $typeWallet === "SOL" || $selectedBundle?.accounts?.find((item) => item.type === "CEX") !== undefined}
             <TooltipTitle
               tooltipText="Due to privacy, the performance data can only get after 7 days you connect to Nimbus"
               type="warning"

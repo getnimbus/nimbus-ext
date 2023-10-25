@@ -16,16 +16,6 @@
   export let collectionId;
   export let addressWallet;
 
-  let typeWalletAddress: string = "";
-  typeWallet.subscribe((value) => {
-    typeWalletAddress = value;
-  });
-
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   let tokens = [];
   let data = {};
   let nativeToken = {};
@@ -241,7 +231,7 @@
 
   <div
     class={`rounded-[20px] p-6 flex flex-col gap-4 ${
-      darkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
+      $isDarkMode ? "bg-[#222222]" : "bg-[#fff] border border_0000001a"
     }`}
   >
     <div class="flex justify-between items-center">
@@ -366,7 +356,7 @@
         {:else}
           <div
             class={`rounded-[10px] xl:overflow-visible overflow-x-auto h-full ${
-              darkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
+              $isDarkMode ? "bg-[#131313]" : "bg-[#fff] border border_0000000d"
             }`}
           >
             <table class="table-auto xl:w-full w-[1400px] h-full">

@@ -32,10 +32,6 @@
   const queryClient = useQueryClient();
 
   let isOpenAuthModal = false;
-  let userInfo = {};
-  user.subscribe((value) => {
-    userInfo = value;
-  });
   let signMessageAddress = "";
   let showPopover = false;
   let addressWallet = "";
@@ -162,19 +158,19 @@
   }
 
   $: {
-    if (Object.keys(userInfo).length !== 0) {
+    if ($user && Object.keys($user).length !== 0) {
       isOpenAuthModal = false;
     }
   }
 </script>
 
-{#if Object.keys(userInfo).length !== 0}
+{#if $user && Object.keys($user).length !== 0}
   <div class="relative">
     <div
       class="w-[40px] h-[40px] rounded-full overflow-hidden cursor-pointer"
       on:click={() => (showPopover = !showPopover)}
     >
-      <img src={userInfo.picture} alt="" class="object-cover w-full h-full" />
+      <img src={$user.picture} alt="" class="object-cover w-full h-full" />
     </div>
     {#if showPopover}
       <div

@@ -35,11 +35,6 @@
     // },
   ];
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   let isLoadingBuy = false;
   let selectedPackage;
 
@@ -170,8 +165,8 @@
               <Copy
                 address="TRIAL"
                 textTooltip="Copy coupon to clipboard"
-                iconColor={`${darkMode ? "#fff" : "#000"}`}
-                color={`${darkMode ? "#fff" : "#000"}`}
+                iconColor={`${$isDarkMode ? "#fff" : "#000"}`}
+                color={`${$isDarkMode ? "#fff" : "#000"}`}
               />
             </span>
           </div>

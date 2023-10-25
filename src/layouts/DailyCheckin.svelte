@@ -29,11 +29,6 @@
     },
   ];
 
-  let darkMode = false;
-  isDarkMode.subscribe((value) => {
-    darkMode = value;
-  });
-
   let activeTabValue = "daily-checkin";
 
   $: {
@@ -71,7 +66,7 @@
       class="max-w-[2000px] m-auto xl:w-[90%] w-[90%] py-8 grid xl:grid-cols-6 grid-cols-1 gap-6"
     >
       <div class="col-span-1">
-        <SidebarTabs bind:activeTabValue {darkMode} {listSideBar} />
+        <SidebarTabs bind:activeTabValue darkMode={$isDarkMode} {listSideBar} />
       </div>
       <div class="xl:col-span-5 col-span-1">
         {#if activeTabValue === "checkin"}
