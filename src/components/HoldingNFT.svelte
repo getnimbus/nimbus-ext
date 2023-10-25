@@ -16,7 +16,6 @@
 
   export let data;
   export let selectedWallet;
-  export let index;
 
   const navigate = useNavigate();
 
