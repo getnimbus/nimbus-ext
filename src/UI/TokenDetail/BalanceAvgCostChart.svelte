@@ -407,7 +407,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-2">
+    <!-- <div class="flex flex-col gap-2">
       <div class="xl:text-lg text-xl">Profit / Loss</div>
       <div
         class="h-2 rounded-lg relative"
@@ -442,7 +442,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </div>
 
