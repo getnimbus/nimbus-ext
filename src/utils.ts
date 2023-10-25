@@ -2,6 +2,10 @@ import numeral from "numeral";
 import jwt_decode from "jwt-decode";
 import { nimbus } from "./lib/network";
 import { groupBy } from "lodash";
+import confetti from "canvas-confetti";
+import dayjs from "dayjs";
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
 
 import logo from "~/assets/bitcoin.png";
 import Bnb from "~/assets/bnb.png";
@@ -14,10 +18,6 @@ import Solana from "~/assets/solana.png";
 import Arbitrum from "~/assets/arbitrum.png";
 import Gnosis from "~/assets/gnosis.png";
 import Base from "~/assets/base.svg";
-import confetti from "canvas-confetti";
-import { driver } from "driver.js";
-import "driver.js/dist/driver.css";
-import dayjs from "dayjs";
 
 export const ETHAddressRegex = /(\b0x[a-fA-F0-9]{40}\b)/g;
 export const ETHTrxRegex = /(\b0x[a-fA-F0-9]{64}\b)/g;
