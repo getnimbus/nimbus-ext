@@ -388,7 +388,7 @@
           (sumCountWinHistoryTokenDetail / sumCount) *
           100
         ).toFixed(2)}%, #e14040 ${(
-          (sumCountLossHistoryTokenDetail / sumCount) *
+          (sumCountWinHistoryTokenDetail / sumCount) *
           100
         ).toFixed(2)}%)`}
       >
@@ -417,7 +417,7 @@
               Math.abs(sumWinProfitHistoryTokenDetail))) *
             100
         ).toFixed(2)}%, #e14040 ${Math.abs(
-          (sumLossProfitHistoryTokenDetail /
+          (sumWinProfitHistoryTokenDetail /
             (Math.abs(sumLossProfitHistoryTokenDetail) +
               Math.abs(sumWinProfitHistoryTokenDetail))) *
             100
